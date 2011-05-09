@@ -1,22 +1,22 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
-import br.com.oncast.ontrack.shared.beans.TreeStructure;
+import br.com.oncast.ontrack.shared.beans.Scope;
 
-public class MoveRightScopeAction<T extends TreeStructure<T>> implements TreeStructureAction {
+public class MoveRightScopeAction implements ScopeAction {
 
-	private final T selectedTreeStructure;
+	private final Scope selectedScope;
 
-	public MoveRightScopeAction(final T selectedTreeStructure) {
-		this.selectedTreeStructure = selectedTreeStructure;
+	public MoveRightScopeAction(final Scope selectedScope) {
+		this.selectedScope = selectedScope;
 	}
 
 	@Override
 	public void execute() {
-		if (selectedTreeStructure.isRoot()) return;
-		if (selectedTreeStructure.getIndex() == 0) return;
+		if (selectedScope.isRoot()) return;
+		if (selectedScope.getIndex() == 0) return;
 
-		final TreeStructure<T> sibling = selectedTreeStructure.getParent().getChildren().get(selectedTreeStructure.getIndex() - 1);
-		selectedTreeStructure.getParent().remove(selectedTreeStructure);
-		sibling.add(selectedTreeStructure);
+		final Scope sibling = selectedScope.getParent().getChildren().get(selectedScope.getIndex() - 1);
+		selectedScope.getParent().remove(selectedScope);
+		sibling.add(selectedScope);
 	}
 }
