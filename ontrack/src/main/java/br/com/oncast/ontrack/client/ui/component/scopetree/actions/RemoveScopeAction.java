@@ -10,12 +10,9 @@ public class RemoveScopeAction implements ScopeAction {
 	}
 
 	@Override
-	public void execute() {
-		if (selectedScope.isRoot()) return;
-
+	public void execute() throws UnableToCompleteActionException {
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
 		selectedScope.getParent().remove(selectedScope);
-
-		return;
 	}
 
 }
