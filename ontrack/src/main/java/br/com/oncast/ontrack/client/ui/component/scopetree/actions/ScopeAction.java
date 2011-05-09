@@ -1,5 +1,5 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
-public interface TreeStructureAction {
+public interface ScopeAction {
 	void execute();
 }
