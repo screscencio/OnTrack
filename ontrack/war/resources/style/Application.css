@@ -1,0 +1,14 @@
+html, body, .rootPanel {
+	width: 100%;
+	height: 100%;
+	margin: 0px auto;
+	padding: 0px;
+}
+
+.gwt-Tree { }
+
+.gwt-Tree .gwt-TreeItem { }
+
+.gwt-TreeItem-selected { 
+	color: red;
+}
