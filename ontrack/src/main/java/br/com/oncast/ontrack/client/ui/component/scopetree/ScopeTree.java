@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTree implements IsWidget {
@@ -24,7 +25,7 @@ public class ScopeTree implements IsWidget {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 
-				final ScopeTreeItem selected = tree.getSelected();
+				final TreeItem selected = tree.getSelected();
 				if (selected == null) return;
 
 				if (event.isControlKeyDown()) {
@@ -51,13 +52,13 @@ public class ScopeTree implements IsWidget {
 	}
 
 	protected void execute(final ScopeAction action) {
-		// - Recupera ação sobre arvore equivalente a ação sobre escopo obtida
-		// - Executa ação sobre o escopo
+		// - Recupera aÃ§Ã£o sobre arvore equivalente a aÃ§Ã£o sobre escopo obtida
+		// - Executa aÃ§Ã£o sobre o escopo
 		// -- Caso resultado indique sucesso
-		// --- Recupera ação de arvore equivalente
-		// --- Executa ação sobre a arvore
-		// ---- Caso ação sobre arvore tenha sucesso empilha na pilha de controle e envia ao servidor
-		// ---- Caso ação sobre arvore tenha falha
+		// --- Recupera aÃ§Ã£o de arvore equivalente
+		// --- Executa aÃ§Ã£o sobre a arvore
+		// ---- Caso aÃ§Ã£o sobre arvore tenha sucesso empilha na pilha de controle e envia ao servidor
+		// ---- Caso aÃ§Ã£o sobre arvore tenha falha
 		// ----- executa rollback sobre o escopo
 		// ----- exibe mensagem na tela
 		// -- Caso resultado indique falha exibe mensagem na tela
