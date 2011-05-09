@@ -1,9 +1,12 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveDownScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveLeftScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveRightScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveUpScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.RemoveScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
@@ -29,15 +32,27 @@ public class ScopeTree implements IsWidget {
 				if (selected == null) return;
 
 				if (event.isControlKeyDown()) {
-					if (event.getNativeKeyCode() == KeyCodes.KEY_DOWN) {
+					switch (event.getNativeKeyCode()) {
+					case KeyCodes.KEY_DOWN:
 						execute(new MoveDownScopeAction((Scope) selected.getUserObject()));
-					} else if (event.getNativeKeyCode() == KeyCodes.KEY_UP) {
+						break;
+					case KeyCodes.KEY_UP:
 						execute(new MoveUpScopeAction((Scope) selected.getUserObject()));
-					} else if (event.getNativeKeyCode() == KeyCodes.KEY_LEFT) {
+						break;
+					case KeyCodes.KEY_LEFT:
 						execute(new MoveLeftScopeAction((Scope) selected.getUserObject()));
-					} else if (event.getNativeKeyCode() == KeyCodes.KEY_RIGHT) {
+						break;
+					case KeyCodes.KEY_RIGHT:
 						execute(new MoveRightScopeAction((Scope) selected.getUserObject()));
+						break;
+					default:
+						break;
 					}
+				} else if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) {
+					execute(new RemoveScopeAction((Scope) selected.getUserObject()));
+				} else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					if (event.isShiftKeyDown()) execute(new InsertSiblingUpScopeAction((Scope) selected.getUserObject()));
+					else execute(new InsertSiblingDownScopeAction((Scope) selected.getUserObject()));
 				}
 			}
 		});
@@ -52,13 +67,13 @@ public class ScopeTree implements IsWidget {
 	}
 
 	protected void execute(final ScopeAction action) {
-		// - Recupera ação sobre arvore equivalente a ação sobre escopo obtida
-		// - Executa ação sobre o escopo
+		// - Recupera a��o sobre arvore equivalente a a��o sobre escopo obtida
+		// - Executa a��o sobre o escopo
 		// -- Caso resultado indique sucesso
-		// --- Recupera ação de arvore equivalente
-		// --- Executa ação sobre a arvore
-		// ---- Caso ação sobre arvore tenha sucesso empilha na pilha de controle e envia ao servidor
-		// ---- Caso ação sobre arvore tenha falha
+		// --- Recupera a��o de arvore equivalente
+		// --- Executa a��o sobre a arvore
+		// ---- Caso a��o sobre arvore tenha sucesso empilha na pilha de controle e envia ao servidor
+		// ---- Caso a��o sobre arvore tenha falha
 		// ----- executa rollback sobre o escopo
 		// ----- exibe mensagem na tela
 		// -- Caso resultado indique falha exibe mensagem na tela
