@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.CustomGwtTree;
-import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeWidget extends Composite {
 
@@ -29,8 +28,8 @@ public class ScopeTreeWidget extends Composite {
 		tree.clear();
 	}
 
-	public TreeItem getSelected() {
-		return tree.getSelectedItem();
+	public ScopeTreeItem getSelected() {
+		return (ScopeTreeItem) tree.getSelectedItem();
 	}
 
 	public void setSelected(final ScopeTreeItem selected) {

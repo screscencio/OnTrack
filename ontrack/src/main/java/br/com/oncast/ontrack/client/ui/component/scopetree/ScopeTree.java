@@ -8,9 +8,11 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveRightScop
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.RemoveScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactory;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -67,16 +69,21 @@ public class ScopeTree implements IsWidget {
 	}
 
 	protected void execute(final ScopeAction action) {
-		// - Recupera a��o sobre arvore equivalente a a��o sobre escopo obtida
-		// - Executa a��o sobre o escopo
-		// -- Caso resultado indique sucesso
-		// --- Recupera a��o de arvore equivalente
-		// --- Executa a��o sobre a arvore
-		// ---- Caso a��o sobre arvore tenha sucesso empilha na pilha de controle e envia ao servidor
-		// ---- Caso a��o sobre arvore tenha falha
-		// ----- executa rollback sobre o escopo
-		// ----- exibe mensagem na tela
-		// -- Caso resultado indique falha exibe mensagem na tela
+		try {
+			action.execute();
+			try {
+				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).execute();
+				// TODO Push ScopeAction into "Undo Stack"
+				// TODO Push ScopeAction into "Server Changes Stack"
+			} catch (final UnableToCompleteActionException e) {
+				// TODO Rollback ScopeAction.
+				throw e;
+			}
+		} catch (final UnableToCompleteActionException e) {
+			// TODO Implement an adequate exception treatment.
+			// TODO Show error message.
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

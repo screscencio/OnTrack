@@ -11,10 +11,7 @@ public class InsertSiblingDownScopeAction implements ScopeAction {
 
 	@Override
 	public void execute() {
-		if (selectedScope.isRoot()) selectedScope.add(new Scope("Novo scopo Down"));
+		if (selectedScope.isRoot()) return;
 		else selectedScope.getParent().add(selectedScope.getIndex() + 1, new Scope("Novo scope Down"));
-
-		return;
 	}
-
 }

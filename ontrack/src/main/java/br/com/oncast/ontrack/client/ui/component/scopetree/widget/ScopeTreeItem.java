@@ -16,4 +16,8 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			addItem(new ScopeTreeItem(childScope));
 		}
 	}
+
+	public boolean isRoot() {
+		return getParentItem() == null;
+	}
 }
