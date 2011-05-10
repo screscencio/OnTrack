@@ -35,17 +35,17 @@ public class ScopeTree implements IsWidget {
 
 				if (event.isControlKeyDown()) {
 					switch (event.getNativeKeyCode()) {
-					case KeyCodes.KEY_DOWN:
-						execute(new MoveDownScopeAction((Scope) selected.getUserObject()));
-						break;
 					case KeyCodes.KEY_UP:
 						execute(new MoveUpScopeAction((Scope) selected.getUserObject()));
 						break;
-					case KeyCodes.KEY_LEFT:
-						execute(new MoveLeftScopeAction((Scope) selected.getUserObject()));
+					case KeyCodes.KEY_DOWN:
+						execute(new MoveDownScopeAction((Scope) selected.getUserObject()));
 						break;
 					case KeyCodes.KEY_RIGHT:
 						execute(new MoveRightScopeAction((Scope) selected.getUserObject()));
+						break;
+					case KeyCodes.KEY_LEFT:
+						execute(new MoveLeftScopeAction((Scope) selected.getUserObject()));
 						break;
 					default:
 						break;
