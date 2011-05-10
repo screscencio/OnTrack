@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveDownScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveLeftScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveRightScopeAction;
@@ -51,6 +53,20 @@ public class ScopeTreeWidgetActionFactory {
 			@Override
 			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
 				return new MoveLeftScopeTreeWidgetAction(tree.getSelected());
+			}
+		});
+
+		actionFactoryMap.put(InsertSiblingUpScopeAction.class, new ActionFactory() {
+			@Override
+			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
+				return new InsertSiblingUpTreeWidgetAction(tree.getSelected());
+			}
+		});
+
+		actionFactoryMap.put(InsertSiblingDownScopeAction.class, new ActionFactory() {
+			@Override
+			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
+				return new InsertSiblingDownTreeWidgetAction(tree.getSelected());
 			}
 		});
 	}
