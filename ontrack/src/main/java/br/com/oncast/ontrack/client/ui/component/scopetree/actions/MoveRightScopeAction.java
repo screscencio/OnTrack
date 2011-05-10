@@ -11,12 +11,23 @@ public class MoveRightScopeAction implements ScopeAction {
 	}
 
 	@Override
-	public void execute() {
-		if (selectedScope.isRoot()) return;
-		if (selectedScope.getIndex() == 0) return;
+	public void execute() throws UnableToCompleteActionException {
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
 
-		final Scope sibling = selectedScope.getParent().getChildren().get(selectedScope.getIndex() - 1);
+		final int index = selectedScope.getIndex();
+		if (isFirstNode(index)) throw new UnableToCompleteActionException(
+				"It is not possible to move right the first node, because it will be moved to a node above it.");
+
+		final Scope upperSibling = getUpperSibling();
 		selectedScope.getParent().remove(selectedScope);
-		sibling.add(selectedScope);
+		upperSibling.add(selectedScope);
+	}
+
+	private Scope getUpperSibling() {
+		return selectedScope.getParent().getChildren().get(selectedScope.getIndex() - 1);
+	}
+
+	private boolean isFirstNode(final int index) {
+		return index == 0;
 	}
 }
