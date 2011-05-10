@@ -1,8 +1,12 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
 
 import br.com.oncast.ontrack.client.ui.component.editableLabel.widget.EditableLabel;
+import br.com.oncast.ontrack.client.ui.component.editableLabel.widget.EditionHandler;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeItemEditionEvent;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.TreeItem;
 
@@ -12,7 +16,19 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	public ScopeTreeItem(final Scope scope) {
 		super();
-		this.setWidget(descriptionLabel = new EditableLabel(scope.getDescription()));
+		this.setWidget(descriptionLabel = new EditableLabel(scope.getDescription(), new EditionHandler() {
+
+			@Override
+			public void onEdit(final String newContent) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEvent(ScopeTreeItem.this));
+			}
+		}));
+		descriptionLabel.getClickHandlerRegistrator().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				if (ScopeTreeItem.this.isSelected()) descriptionLabel.switchToEditionMode();
+			}
+		});
 		setUserObject(scope);
 
 		for (final Scope childScope : scope.getChildren()) {
