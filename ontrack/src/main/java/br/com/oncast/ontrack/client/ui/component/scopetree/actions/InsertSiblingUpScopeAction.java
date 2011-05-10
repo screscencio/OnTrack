@@ -10,10 +10,8 @@ public class InsertSiblingUpScopeAction implements ScopeAction {
 	}
 
 	@Override
-	public void execute() {
-		if (selectedScope.isRoot()) return;
+	public void execute() throws UnableToCompleteActionException {
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
 		else selectedScope.getParent().add(selectedScope.getIndex(), new Scope("Novo scope Up"));
-
-		return;
 	}
 }
