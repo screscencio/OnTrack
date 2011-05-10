@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveDownScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveLeftScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveRightScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.RemoveScopeAction;
@@ -43,6 +44,13 @@ public class ScopeTreeWidgetActionFactory {
 			@Override
 			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
 				return new MoveRightScopeTreeWidgetAction(tree.getSelected());
+			}
+		});
+
+		actionFactoryMap.put(MoveLeftScopeAction.class, new ActionFactory() {
+			@Override
+			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
+				return new MoveLeftScopeTreeWidgetAction(tree.getSelected());
 			}
 		});
 	}
