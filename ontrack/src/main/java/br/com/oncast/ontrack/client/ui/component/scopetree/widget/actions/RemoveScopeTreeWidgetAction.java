@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 
 import com.google.gwt.user.client.ui.Tree;

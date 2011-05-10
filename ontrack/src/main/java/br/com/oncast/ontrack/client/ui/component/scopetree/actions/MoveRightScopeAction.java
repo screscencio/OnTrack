@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 public class MoveRightScopeAction implements ScopeAction {
@@ -29,5 +30,10 @@ public class MoveRightScopeAction implements ScopeAction {
 
 	private boolean isFirstNode(final int index) {
 		return index == 0;
+	}
+
+	@Override
+	public Scope getScope() {
+		return selectedScope;
 	}
 }

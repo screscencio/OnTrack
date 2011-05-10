@@ -8,8 +8,11 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
+	private final EditableLabel descriptionLabel;
+
 	public ScopeTreeItem(final Scope scope) {
-		super(new EditableLabel(scope.getDescription()));
+		super();
+		this.setWidget(descriptionLabel = new EditableLabel(scope.getDescription()));
 		setUserObject(scope);
 
 		for (final Scope childScope : scope.getChildren()) {
@@ -19,5 +22,18 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	public boolean isRoot() {
 		return getParentItem() == null;
+	}
+
+	@Override
+	public Scope getUserObject() {
+		return (Scope) super.getUserObject();
+	}
+
+	public String getDescription() {
+		return descriptionLabel.getValue();
+	}
+
+	public void setDescription(final String description) {
+		descriptionLabel.setValue(description);
 	}
 }

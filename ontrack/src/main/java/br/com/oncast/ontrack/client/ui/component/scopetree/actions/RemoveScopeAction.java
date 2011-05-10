@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 public class RemoveScopeAction implements ScopeAction {
@@ -15,4 +16,8 @@ public class RemoveScopeAction implements ScopeAction {
 		selectedScope.getParent().remove(selectedScope);
 	}
 
+	@Override
+	public Scope getScope() {
+		return selectedScope;
+	}
 }
