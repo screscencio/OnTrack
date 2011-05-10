@@ -59,8 +59,8 @@ public class ScopeTree implements IsWidget {
 			}
 
 			@Override
-			public void onItemUpdate(final ScopeTreeItem item) {
-				execute(new UpdateScopeAction(item.getReferencedScope(), item.getDescription()));
+			public void onItemUpdate(final ScopeTreeItem item, final String newContent) {
+				execute(new UpdateScopeAction(item.getReferencedScope(), newContent));
 			}
 		});
 	}

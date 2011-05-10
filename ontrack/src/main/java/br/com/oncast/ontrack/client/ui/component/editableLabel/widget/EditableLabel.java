@@ -58,16 +58,19 @@ public class EditableLabel extends Composite implements HasValue<String> {
 		editBox.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(final BlurEvent event) {
-				switchToVisualization();
+				// switchToVisualization();
 			}
 		});
 		editBox.addKeyPressHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(final KeyPressEvent event) {
-
 				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+					event.preventDefault();
+					event.stopPropagation();
 					switchToVisualization();
 				} else if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+					event.preventDefault();
+					event.stopPropagation();
 					editBox.setText(editLabel.getText()); // reset to the original value
 					switchToVisualization();
 				}

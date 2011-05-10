@@ -18,7 +18,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 			@Override
 			public void onEdit(final String newContent) {
-				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEvent(ScopeTreeItem.this));
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEvent(ScopeTreeItem.this, newContent));
 			}
 		}));
 		setUserObject(scope);
