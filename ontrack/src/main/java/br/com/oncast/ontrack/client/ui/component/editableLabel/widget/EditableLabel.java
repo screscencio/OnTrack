@@ -3,7 +3,8 @@ package br.com.oncast.ontrack.client.ui.component.editableLabel.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -48,6 +49,12 @@ public class EditableLabel extends Composite implements HasValue<String> {
 		editLabel.setText(text);
 		deckPanel.showWidget(0);
 
+		editLabel.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(final DoubleClickEvent event) {
+				switchToEditionMode();
+			}
+		});
 		editBox.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(final BlurEvent event) {
@@ -68,10 +75,6 @@ public class EditableLabel extends Composite implements HasValue<String> {
 		});
 	}
 
-	public HasClickHandlers getClickHandlerRegistrator() {
-		return editLabel;
-	}
-
 	public void switchToEditionMode() {
 		if (deckPanel.getVisibleWidget() == 1) return;
 		editBox.setText(getValue());
@@ -82,8 +85,8 @@ public class EditableLabel extends Composite implements HasValue<String> {
 	public void switchToVisualization() {
 		if (deckPanel.getVisibleWidget() == 0) return;
 		// setValue(editBox.getText(), true); // fires events, too
-		editionHandler.onEdit(editBox.getText());
 		deckPanel.showWidget(0);
+		if (!editLabel.getText().equals(editBox.getText())) editionHandler.onEdit(editBox.getText());
 	}
 
 	@Override
