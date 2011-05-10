@@ -12,8 +12,11 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveUpScopeAc
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.RemoveScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UpdateScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
+import br.com.oncast.ontrack.shared.beans.Scope;
 
 // TODO Change RuntimeException to something more appropriated.
 // TODO Refactor this class to decentralize Action to WidgetActionFactory mappings.
@@ -25,57 +28,57 @@ public class ScopeTreeWidgetActionMapper {
 	static {
 		actionFactoryMap.put(RemoveScopeAction.class, new ScopeTreeWidgetActionFactory() {
 			@Override
-			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
-				return new RemoveScopeTreeWidgetAction(tree.getSelected());
+			public ScopeTreeWidgetAction create(final ScopeTreeItem referencedScopeTreeItem, final Scope referencedScope) {
+				return new RemoveScopeTreeWidgetAction(referencedScopeTreeItem);
 			}
 		});
 
 		actionFactoryMap.put(MoveDownScopeAction.class, new ScopeTreeWidgetActionFactory() {
 			@Override
-			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
-				return new MoveDownScopeTreeWidgetAction(tree.getSelected());
+			public ScopeTreeWidgetAction create(final ScopeTreeItem referencedScopeTreeItem, final Scope referencedScope) {
+				return new MoveDownScopeTreeWidgetAction(referencedScopeTreeItem);
 			}
 		});
 
 		actionFactoryMap.put(MoveUpScopeAction.class, new ScopeTreeWidgetActionFactory() {
 			@Override
-			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
-				return new MoveUpScopeTreeWidgetAction(tree.getSelected());
+			public ScopeTreeWidgetAction create(final ScopeTreeItem referencedScopeTreeItem, final Scope referencedScope) {
+				return new MoveUpScopeTreeWidgetAction(referencedScopeTreeItem);
 			}
 		});
 
 		actionFactoryMap.put(MoveRightScopeAction.class, new ScopeTreeWidgetActionFactory() {
 			@Override
-			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
-				return new MoveRightScopeTreeWidgetAction(tree.getSelected());
+			public ScopeTreeWidgetAction create(final ScopeTreeItem referencedScopeTreeItem, final Scope referencedScope) {
+				return new MoveRightScopeTreeWidgetAction(referencedScopeTreeItem);
 			}
 		});
 
 		actionFactoryMap.put(MoveLeftScopeAction.class, new ScopeTreeWidgetActionFactory() {
 			@Override
-			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
-				return new MoveLeftScopeTreeWidgetAction(tree.getSelected());
+			public ScopeTreeWidgetAction create(final ScopeTreeItem referencedScopeTreeItem, final Scope referencedScope) {
+				return new MoveLeftScopeTreeWidgetAction(referencedScopeTreeItem);
 			}
 		});
 
 		actionFactoryMap.put(InsertSiblingUpScopeAction.class, new ScopeTreeWidgetActionFactory() {
 			@Override
-			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
-				return new InsertSiblingUpScopeTreeWidgetAction(tree.getSelected());
+			public ScopeTreeWidgetAction create(final ScopeTreeItem referencedScopeTreeItem, final Scope referencedScope) {
+				return new InsertSiblingUpScopeTreeWidgetAction(referencedScopeTreeItem);
 			}
 		});
 
 		actionFactoryMap.put(InsertSiblingDownScopeAction.class, new ScopeTreeWidgetActionFactory() {
 			@Override
-			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
-				return new InsertSiblingDownScopeTreeWidgetAction(tree.getSelected());
+			public ScopeTreeWidgetAction create(final ScopeTreeItem referencedScopeTreeItem, final Scope referencedScope) {
+				return new InsertSiblingDownScopeTreeWidgetAction(referencedScopeTreeItem);
 			}
 		});
 
 		actionFactoryMap.put(UpdateScopeAction.class, new ScopeTreeWidgetActionFactory() {
 			@Override
-			public ScopeTreeWidgetAction create(final ScopeTreeWidget tree, final ScopeAction action) {
-				return new UpdateScopeTreeWidgetAction(tree.getSelected(), action.getScope());
+			public ScopeTreeWidgetAction create(final ScopeTreeItem referencedScopeTreeItem, final Scope referencedScope) {
+				return new UpdateScopeTreeWidgetAction(referencedScopeTreeItem, referencedScope);
 			}
 		});
 	}
@@ -84,6 +87,11 @@ public class ScopeTreeWidgetActionMapper {
 		final Class<? extends ScopeAction> clazz = action.getClass();
 		if (!actionFactoryMap.containsKey(clazz)) throw new UnableToCompleteActionException("This action is not supported.");
 
-		return actionFactoryMap.get(clazz).create(tree, action);
+		try {
+			final Scope referencedScope = action.getScope();
+			return actionFactoryMap.get(clazz).create(tree.getScopeTreeItemFor(referencedScope), referencedScope);
+		} catch (final NotFoundException e) {
+			throw new UnableToCompleteActionException("It was not possible to find the tree item in which the action should be performed on.");
+		}
 	}
 }
