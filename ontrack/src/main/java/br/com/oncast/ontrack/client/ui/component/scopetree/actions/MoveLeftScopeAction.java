@@ -11,9 +11,9 @@ public class MoveLeftScopeAction implements ScopeAction {
 	}
 
 	@Override
-	public void execute() {
-		if (selectedScope.isRoot()) return;
-		if (selectedScope.getParent().isRoot()) return;
+	public void execute() throws UnableToCompleteActionException {
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
+		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException("It is not possible to move left when a node parent is a root node.");
 
 		final Scope parent = selectedScope.getParent();
 		parent.remove(selectedScope);
