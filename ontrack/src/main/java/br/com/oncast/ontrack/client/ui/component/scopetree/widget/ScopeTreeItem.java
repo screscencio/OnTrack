@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
 
+import br.com.oncast.ontrack.client.ui.component.editableLabel.widget.EditableLabel;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	public ScopeTreeItem(final Scope scope) {
-		super(new Label(scope.getDescription()));
+		super(new EditableLabel(scope.getDescription()));
 		setUserObject(scope);
 
 		for (final Scope childScope : scope.getChildren()) {
