@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 public class MoveDownScopeAction implements ScopeAction {
@@ -24,5 +25,10 @@ public class MoveDownScopeAction implements ScopeAction {
 
 	private boolean isLastNode(final int index, final Scope parent) {
 		return parent.getChildren().size() - 1 == index;
+	}
+
+	@Override
+	public Scope getScope() {
+		return selectedScope;
 	}
 }

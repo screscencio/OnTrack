@@ -8,17 +8,17 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveRightScop
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.RemoveScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeAction;
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UpdateScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactory;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionMapper;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTree implements IsWidget {
@@ -30,32 +30,37 @@ public class ScopeTree implements IsWidget {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 
-				final TreeItem selected = tree.getSelected();
+				final ScopeTreeItem selected = tree.getSelected();
 				if (selected == null) return;
 
 				if (event.isControlKeyDown()) {
 					switch (event.getNativeKeyCode()) {
 					case KeyCodes.KEY_UP:
-						execute(new MoveUpScopeAction((Scope) selected.getUserObject()));
+						execute(new MoveUpScopeAction(selected.getUserObject()));
 						break;
 					case KeyCodes.KEY_DOWN:
-						execute(new MoveDownScopeAction((Scope) selected.getUserObject()));
+						execute(new MoveDownScopeAction(selected.getUserObject()));
 						break;
 					case KeyCodes.KEY_RIGHT:
-						execute(new MoveRightScopeAction((Scope) selected.getUserObject()));
+						execute(new MoveRightScopeAction(selected.getUserObject()));
 						break;
 					case KeyCodes.KEY_LEFT:
-						execute(new MoveLeftScopeAction((Scope) selected.getUserObject()));
+						execute(new MoveLeftScopeAction(selected.getUserObject()));
 						break;
 					default:
 						break;
 					}
 				} else if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) {
-					execute(new RemoveScopeAction((Scope) selected.getUserObject()));
+					execute(new RemoveScopeAction(selected.getUserObject()));
 				} else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					if (event.isShiftKeyDown()) execute(new InsertSiblingUpScopeAction((Scope) selected.getUserObject()));
-					else execute(new InsertSiblingDownScopeAction((Scope) selected.getUserObject()));
+					if (event.isShiftKeyDown()) execute(new InsertSiblingUpScopeAction(selected.getUserObject()));
+					else execute(new InsertSiblingDownScopeAction(selected.getUserObject()));
 				}
+			}
+
+			@Override
+			public void onItemUpdate(final ScopeTreeItem item) {
+				execute(new UpdateScopeAction(item.getUserObject(), item.getDescription()));
 			}
 		});
 	}
@@ -72,7 +77,7 @@ public class ScopeTree implements IsWidget {
 		try {
 			action.execute();
 			try {
-				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).execute();
+				ScopeTreeWidgetActionMapper.getEquivalentActionFor(tree, action).execute();
 				// TODO Push ScopeAction into "Undo Stack"
 				// TODO Push ScopeAction into "Server Changes Stack"
 			} catch (final UnableToCompleteActionException e) {

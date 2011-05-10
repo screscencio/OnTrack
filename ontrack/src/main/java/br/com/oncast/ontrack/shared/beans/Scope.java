@@ -6,7 +6,7 @@ import java.util.List;
 public class Scope {
 
 	private final List<Scope> childrenList;
-	private final String description;
+	private String description;
 	private Scope parent;
 
 	public Scope(final String description) {
@@ -53,5 +53,9 @@ public class Scope {
 
 	public boolean isRoot() {
 		return parent == null;
+	}
+
+	public void setDescription(final String description) {
+		this.description = description;
 	}
 }

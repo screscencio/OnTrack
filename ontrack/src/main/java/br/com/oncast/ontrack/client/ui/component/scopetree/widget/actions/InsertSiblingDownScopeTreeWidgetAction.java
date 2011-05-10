@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
-public class InsertSiblingDownTreeWidgetAction implements ScopeTreeWidgetAction {
+public class InsertSiblingDownScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 
 	private final ScopeTreeItem treeItem;
 
-	public InsertSiblingDownTreeWidgetAction(final ScopeTreeItem treeItem) {
+	public InsertSiblingDownScopeTreeWidgetAction(final ScopeTreeItem treeItem) {
 		this.treeItem = treeItem;
 	}
 
