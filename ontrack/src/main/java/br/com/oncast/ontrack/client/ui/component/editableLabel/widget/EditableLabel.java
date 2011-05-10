@@ -21,16 +21,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * Allows in-place editing of Labels. Activated via click.
- * 
- * The reference value is always the one in the label and change events are only fired after editing has finished.
- * 
- * TODO make it optional how to activate the editing mode
- * 
- * @author Jonas Huckestein
- * 
- */
 public class EditableLabel extends Composite implements HasValue<String> {
 
 	private static EditableLabelUiBinder uiBinder = GWT.create(EditableLabelUiBinder.class);
@@ -54,7 +44,6 @@ public class EditableLabel extends Composite implements HasValue<String> {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		editLabel.setText(text);
-
 		deckPanel.showWidget(0);
 
 		editLabel.addDoubleClickHandler(new DoubleClickHandler() {
@@ -64,7 +53,6 @@ public class EditableLabel extends Composite implements HasValue<String> {
 				switchToEdit();
 			}
 		});
-
 		editBox.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(final BlurEvent event) {

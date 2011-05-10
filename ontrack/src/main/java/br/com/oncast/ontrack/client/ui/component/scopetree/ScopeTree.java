@@ -36,31 +36,31 @@ public class ScopeTree implements IsWidget {
 				if (event.isControlKeyDown()) {
 					switch (event.getNativeKeyCode()) {
 					case KeyCodes.KEY_UP:
-						execute(new MoveUpScopeAction(selected.getUserObject()));
+						execute(new MoveUpScopeAction(selected.getReferencedScope()));
 						break;
 					case KeyCodes.KEY_DOWN:
-						execute(new MoveDownScopeAction(selected.getUserObject()));
+						execute(new MoveDownScopeAction(selected.getReferencedScope()));
 						break;
 					case KeyCodes.KEY_RIGHT:
-						execute(new MoveRightScopeAction(selected.getUserObject()));
+						execute(new MoveRightScopeAction(selected.getReferencedScope()));
 						break;
 					case KeyCodes.KEY_LEFT:
-						execute(new MoveLeftScopeAction(selected.getUserObject()));
+						execute(new MoveLeftScopeAction(selected.getReferencedScope()));
 						break;
 					default:
 						break;
 					}
 				} else if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) {
-					execute(new RemoveScopeAction(selected.getUserObject()));
+					execute(new RemoveScopeAction(selected.getReferencedScope()));
 				} else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					if (event.isShiftKeyDown()) execute(new InsertSiblingUpScopeAction(selected.getUserObject()));
-					else execute(new InsertSiblingDownScopeAction(selected.getUserObject()));
+					if (event.isShiftKeyDown()) execute(new InsertSiblingUpScopeAction(selected.getReferencedScope()));
+					else execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
 				}
 			}
 
 			@Override
 			public void onItemUpdate(final ScopeTreeItem item) {
-				execute(new UpdateScopeAction(item.getUserObject(), item.getDescription()));
+				execute(new UpdateScopeAction(item.getReferencedScope(), item.getDescription()));
 			}
 		});
 	}
@@ -86,7 +86,7 @@ public class ScopeTree implements IsWidget {
 			}
 		} catch (final UnableToCompleteActionException e) {
 			// TODO Implement an adequate exception treatment.
-			// TODO Show error message.
+			// TODO Implement an exception that should inform and error to the user and other that only logs it.
 			// TODO Maybe create a type of exception when we don't want to display any messages.
 			throw new RuntimeException(e);
 		}

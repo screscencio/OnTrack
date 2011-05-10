@@ -24,8 +24,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		return getParentItem() == null;
 	}
 
-	@Override
-	public Scope getUserObject() {
+	public Scope getReferencedScope() {
 		return (Scope) super.getUserObject();
 	}
 
