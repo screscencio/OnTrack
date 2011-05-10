@@ -83,6 +83,10 @@ public class ScopeTree implements IsWidget {
 			// TODO Implement an adequate exception treatment.
 			// TODO Show error message.
 			throw new RuntimeException(e);
+		} catch (final Exception e) {
+			// TODO Implement an adequate exception treatment.
+			// Maybe create a type of exception when we don't want to display any messages.
+			throw new RuntimeException(e);
 		}
 	}
 
