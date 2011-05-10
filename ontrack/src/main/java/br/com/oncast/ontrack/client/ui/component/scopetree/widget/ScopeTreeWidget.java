@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
 
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeItemEditionEvent;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -14,6 +16,7 @@ public class ScopeTreeWidget extends Composite {
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
 		initWidget(tree = new CustomGwtTree());
 		tree.addKeyUpHandler(interactionHandler);
+		tree.addHandler(interactionHandler, ScopeTreeItemEditionEvent.getType());
 	}
 
 	public void add(final ScopeTreeItem item) {

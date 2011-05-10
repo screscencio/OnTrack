@@ -3,8 +3,7 @@ package br.com.oncast.ontrack.client.ui.component.editableLabel.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -39,52 +38,51 @@ public class EditableLabel extends Composite implements HasValue<String> {
 	@UiField
 	protected FocusPanel focusPanel;
 
-	public EditableLabel(final String text) {
+	private final EditionHandler editionHandler;
 
+	public EditableLabel(final String text, final EditionHandler editionHandler) {
+
+		this.editionHandler = editionHandler;
 		initWidget(uiBinder.createAndBindUi(this));
 
 		editLabel.setText(text);
 		deckPanel.showWidget(0);
 
-		editLabel.addDoubleClickHandler(new DoubleClickHandler() {
-
-			@Override
-			public void onDoubleClick(final DoubleClickEvent event) {
-				switchToEdit();
-			}
-		});
 		editBox.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(final BlurEvent event) {
-				switchToLabel();
+				switchToVisualization();
 			}
 		});
-
 		editBox.addKeyPressHandler(new KeyPressHandler() {
-
 			@Override
 			public void onKeyPress(final KeyPressEvent event) {
 
 				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					switchToLabel();
+					switchToVisualization();
 				} else if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
 					editBox.setText(editLabel.getText()); // reset to the original value
-					switchToLabel();
+					switchToVisualization();
 				}
 			}
 		});
 	}
 
-	public void switchToEdit() {
+	public HasClickHandlers getClickHandlerRegistrator() {
+		return editLabel;
+	}
+
+	public void switchToEditionMode() {
 		if (deckPanel.getVisibleWidget() == 1) return;
 		editBox.setText(getValue());
 		deckPanel.showWidget(1);
 		editBox.setFocus(true);
 	}
 
-	public void switchToLabel() {
+	public void switchToVisualization() {
 		if (deckPanel.getVisibleWidget() == 0) return;
-		setValue(editBox.getText(), true); // fires events, too
+		// setValue(editBox.getText(), true); // fires events, too
+		editionHandler.onEdit(editBox.getText());
 		deckPanel.showWidget(0);
 	}
 
