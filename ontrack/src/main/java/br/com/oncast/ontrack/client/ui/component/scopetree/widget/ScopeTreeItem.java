@@ -43,4 +43,8 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	public void setDescription(final String description) {
 		descriptionLabel.setValue(description);
 	}
+
+	public void enterEditMode() {
+		descriptionLabel.switchToEditionMode();
+	}
 }
