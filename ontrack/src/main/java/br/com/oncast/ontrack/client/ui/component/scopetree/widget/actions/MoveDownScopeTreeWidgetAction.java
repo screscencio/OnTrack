@@ -24,7 +24,6 @@ public class MoveDownScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 		final int index = parentItem.getChildIndex(treeItem);
 		if (isLastNode(index, parentItem)) throw new UnableToCompleteActionException("It is not possible to move down the last node.");
 
-		treeItem.remove();
 		parentItem.insertItem(index + 1, treeItem);
 
 		tree.setSelectedItem(treeItem);
