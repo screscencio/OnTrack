@@ -24,7 +24,6 @@ public class MoveUpScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 		final int index = parentItem.getChildIndex(treeItem);
 		if (isFirstNode(index)) throw new UnableToCompleteActionException("It is not possible to move up the first node.");
 
-		treeItem.remove();
 		parentItem.insertItem(index - 1, treeItem);
 
 		tree.setSelectedItem(treeItem);

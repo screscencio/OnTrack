@@ -27,7 +27,6 @@ public class MoveRightScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 				"It is not possible to move right the first node, because it will be moved to a node above it.");
 
 		final TreeItem upperSibling = getUpperSibling(parentItem, index);
-		treeItem.remove();
 		upperSibling.addItem(treeItem);
 
 		tree.setSelectedItem(treeItem);
