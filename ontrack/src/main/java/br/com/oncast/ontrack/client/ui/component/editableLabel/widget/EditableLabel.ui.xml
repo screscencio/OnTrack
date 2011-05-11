@@ -2,14 +2,18 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
-		.editableLabel {
+	    .editableLabel {
+			height: 15px;
+			min-height: 15px;
+	    }
+		.visualizationLabel {
 			cursor: pointer;
 			cursor: hand;
 		}
 	</ui:style>
-	<g:FocusPanel ui:field="focusPanel">
+	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
 		<g:DeckPanel ui:field="deckPanel">
-			<g:Label styleName="{style.editableLabel}" ui:field="editLabel" />
+			<g:Label styleName="{style.visualizationLabel}" ui:field="editLabel" />
 			<g:TextBox styleName="edit" ui:field="editBox" />
 		</g:DeckPanel>
 	</g:FocusPanel>

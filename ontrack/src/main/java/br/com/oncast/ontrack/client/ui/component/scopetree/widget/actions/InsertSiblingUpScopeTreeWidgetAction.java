@@ -6,16 +6,20 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 public class InsertSiblingUpScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 
-	private final ScopeTreeItem treeItem;
+	private final ScopeTreeItem parentTreeItem;
+	private final Scope referencedScope;
 
-	public InsertSiblingUpScopeTreeWidgetAction(final ScopeTreeItem treeItem) {
-		this.treeItem = treeItem;
+	public InsertSiblingUpScopeTreeWidgetAction(final ScopeTreeItem parentTreeItem, final Scope referencedScope) {
+		this.parentTreeItem = parentTreeItem;
+		this.referencedScope = referencedScope;
 	}
 
 	@Override
 	public void execute() throws UnableToCompleteActionException {
-		if (treeItem.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
-		else treeItem.getParentItem().insertItem(treeItem.getParentItem().getChildIndex(treeItem), new ScopeTreeItem(new Scope("Novo scope Up")));
+		if (parentTreeItem.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
+		final ScopeTreeItem newItem = new ScopeTreeItem(referencedScope);
+		parentTreeItem.getParentItem().insertItem(parentTreeItem.getParentItem().getChildIndex(parentTreeItem), newItem);
+		newItem.enterEditMode();
 	}
 
 }

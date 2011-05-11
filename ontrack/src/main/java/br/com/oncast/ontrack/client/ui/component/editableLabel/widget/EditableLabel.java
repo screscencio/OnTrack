@@ -6,13 +6,14 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -49,7 +50,7 @@ public class EditableLabel extends Composite implements HasValue<String> {
 		editLabel.setText(text);
 		deckPanel.showWidget(0);
 
-		editLabel.addDoubleClickHandler(new DoubleClickHandler() {
+		focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(final DoubleClickEvent event) {
 				switchToEditionMode();
@@ -58,20 +59,27 @@ public class EditableLabel extends Composite implements HasValue<String> {
 		editBox.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(final BlurEvent event) {
-				// switchToVisualization();
+				switchToVisualization();
 			}
 		});
-		editBox.addKeyPressHandler(new KeyPressHandler() {
+		editBox.addKeyUpHandler(new KeyUpHandler() {
+
 			@Override
-			public void onKeyPress(final KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+			public void onKeyUp(final KeyUpEvent event) {
+				if (event.getNativeKeyCode() == 113) {
+					switchToEditionMode();
+				}
+
+				if (!isEditing()) return;
+
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					event.preventDefault();
 					event.stopPropagation();
 					switchToVisualization();
-				} else if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+				} else if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
 					event.preventDefault();
 					event.stopPropagation();
-					editBox.setText(editLabel.getText()); // reset to the original value
+					editBox.setText(editLabel.getText());
 					switchToVisualization();
 				}
 			}
@@ -79,15 +87,20 @@ public class EditableLabel extends Composite implements HasValue<String> {
 	}
 
 	public void switchToEditionMode() {
-		if (deckPanel.getVisibleWidget() == 1) return;
+		if (isEditing()) return;
 		editBox.setText(getValue());
 		deckPanel.showWidget(1);
-		editBox.setFocus(true);
+		new Timer() {
+
+			@Override
+			public void run() {
+				editBox.setFocus(true);
+			}
+		}.schedule(300);
 	}
 
 	public void switchToVisualization() {
-		if (deckPanel.getVisibleWidget() == 0) return;
-		// setValue(editBox.getText(), true); // fires events, too
+		if (!isEditing()) return;
 		deckPanel.showWidget(0);
 		if (!editLabel.getText().equals(editBox.getText())) editionHandler.onEdit(editBox.getText());
 	}
@@ -112,5 +125,9 @@ public class EditableLabel extends Composite implements HasValue<String> {
 	public void setValue(final String value, final boolean fireEvents) {
 		if (fireEvents) ValueChangeEvent.fireIfNotEqual(this, getValue(), value);
 		setValue(value);
+	}
+
+	private boolean isEditing() {
+		return deckPanel.getVisibleWidget() == 1;
 	}
 }

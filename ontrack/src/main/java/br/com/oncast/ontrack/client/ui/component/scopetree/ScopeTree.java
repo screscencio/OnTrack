@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UpdateScopeAc
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionMapper;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactory;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
@@ -53,8 +53,11 @@ public class ScopeTree implements IsWidget {
 				} else if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) {
 					execute(new RemoveScopeAction(selected.getReferencedScope()));
 				} else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					if (event.isShiftKeyDown()) execute(new InsertSiblingUpScopeAction(selected.getReferencedScope()));
-					else execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
+					if (event.isShiftKeyDown()) {
+						execute(new InsertSiblingUpScopeAction(selected.getReferencedScope()));
+					} else {
+						execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
+					}
 				}
 			}
 
@@ -77,7 +80,7 @@ public class ScopeTree implements IsWidget {
 		try {
 			action.execute();
 			try {
-				ScopeTreeWidgetActionMapper.getEquivalentActionFor(tree, action).execute();
+				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).execute();
 				// TODO Push ScopeAction into "Undo Stack"
 				// TODO Push ScopeAction into "Server Changes Stack"
 			} catch (final UnableToCompleteActionException e) {

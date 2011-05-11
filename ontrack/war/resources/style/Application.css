@@ -5,10 +5,27 @@ html, body, .rootPanel {
 	padding: 0px;
 }
 
-.gwt-Tree { }
+.gwt-Tree {
+}
 
-.gwt-Tree .gwt-TreeItem { }
+.gwt-Tree .gwt-TreeItem { 
+	height: 20px;
+	
+    border: 1px solid transparent;
+    border-left: 0px;
+    border-right: 0px;
+}
 
-.gwt-TreeItem-selected { 
+.gwt-Tree .gwt-TreeItem :hover {
+	background-color: #E4ECF7;
+	border-bottom: #1px solid transparent;
+	border-bottom: #1px solid #B6D4FC;
+}
+
+.gwt-TreeItem.gwt-TreeItem-selected>div { 
 	color: red;
+	background-color: #BBCEE9;
+	border: 1px solid #7892B4;
+	border-left: 0px;
+	border-right: 0px;
 }
