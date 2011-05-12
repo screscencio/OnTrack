@@ -9,6 +9,7 @@ import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_LEF
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_UP;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertFatherScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveDownScopeAction;
@@ -66,9 +67,11 @@ public class ScopeTree implements IsWidget {
 						} else {
 							execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
 						}
-					} else if (event.getNativeKeyCode() == KEY_INSERT) {
+					} else if (event.getNativeKeyCode() == KEY_INSERT && !event.isShiftKeyDown()) {
 						execute(new InsertChildScopeAction(selected.getReferencedScope()));
-					} else if (event.getNativeKeyCode() == KEY_F2) {
+					} else if (event.getNativeKeyCode() == KEY_INSERT && event.isShiftKeyDown()) {
+						execute(new InsertFatherScopeAction(selected.getReferencedScope()));
+					} else if (event.getNativeKeyCode() == KEY_F2 || event.getNativeKeyCode() == 69) {
 						tree.getSelected().enterEditMode();
 					}
 				}
