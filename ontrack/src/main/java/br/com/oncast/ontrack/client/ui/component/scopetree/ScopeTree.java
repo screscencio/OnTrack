@@ -1,5 +1,13 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_DELETE;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_DOWN;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_F2;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_INSERT;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_LEFT;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_RIGHT;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_UP;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingUpScopeAction;
@@ -17,7 +25,6 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeT
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,32 +43,32 @@ public class ScopeTree implements IsWidget {
 
 				if (event.isControlKeyDown()) {
 					switch (event.getNativeKeyCode()) {
-					case KeyCodes.KEY_UP:
+					case KEY_UP:
 						execute(new MoveUpScopeAction(selected.getReferencedScope()));
 						break;
-					case KeyCodes.KEY_DOWN:
+					case KEY_DOWN:
 						execute(new MoveDownScopeAction(selected.getReferencedScope()));
 						break;
-					case KeyCodes.KEY_RIGHT:
+					case KEY_RIGHT:
 						execute(new MoveRightScopeAction(selected.getReferencedScope()));
 						break;
-					case KeyCodes.KEY_LEFT:
+					case KEY_LEFT:
 						execute(new MoveLeftScopeAction(selected.getReferencedScope()));
 						break;
 					default:
 						break;
 					}
 				} else {
-					if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) execute(new RemoveScopeAction(selected.getReferencedScope()));
-					else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					if (event.getNativeKeyCode() == KEY_DELETE) execute(new RemoveScopeAction(selected.getReferencedScope()));
+					else if (event.getNativeKeyCode() == KEY_ENTER) {
 						if (event.isShiftKeyDown()) {
 							execute(new InsertSiblingUpScopeAction(selected.getReferencedScope()));
 						} else {
 							execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
 						}
-					} else if (event.getNativeKeyCode() == 45) {
+					} else if (event.getNativeKeyCode() == KEY_INSERT) {
 						execute(new InsertChildScopeAction(selected.getReferencedScope()));
-					} else if (event.getNativeKeyCode() == 113 || event.getNativeKeyCode() == 69) {
+					} else if (event.getNativeKeyCode() == KEY_F2) {
 						tree.getSelected().enterEditMode();
 					}
 				}

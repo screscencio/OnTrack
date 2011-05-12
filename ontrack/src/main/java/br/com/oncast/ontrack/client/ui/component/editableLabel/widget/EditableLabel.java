@@ -1,11 +1,13 @@
 package br.com.oncast.ontrack.client.ui.component.editableLabel.widget;
 
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -68,11 +70,11 @@ public class EditableLabel extends Composite implements HasValue<String> {
 			public void onKeyUp(final KeyUpEvent event) {
 				if (!isEditing()) return;
 
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+				if (event.getNativeKeyCode() == KEY_ENTER) {
 					event.preventDefault();
 					event.stopPropagation();
 					switchToVisualization();
-				} else if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+				} else if (event.getNativeKeyCode() == KEY_ESCAPE) {
 					event.preventDefault();
 					event.stopPropagation();
 					editBox.setText(editLabel.getText());
