@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -50,13 +51,18 @@ public class ScopeTree implements IsWidget {
 					default:
 						break;
 					}
-				} else if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) {
-					execute(new RemoveScopeAction(selected.getReferencedScope()));
-				} else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					if (event.isShiftKeyDown()) {
-						execute(new InsertSiblingUpScopeAction(selected.getReferencedScope()));
-					} else {
-						execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
+				} else {
+					if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) execute(new RemoveScopeAction(selected.getReferencedScope()));
+					else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+						if (event.isShiftKeyDown()) {
+							execute(new InsertSiblingUpScopeAction(selected.getReferencedScope()));
+						} else {
+							execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
+						}
+					} else if (event.getNativeKeyCode() == 45) {
+						Window.alert("Insert");
+					} else if (event.getNativeKeyCode() == 113 || event.getNativeKeyCode() == 69) {
+						tree.getSelected().enterEditMode();
 					}
 				}
 			}

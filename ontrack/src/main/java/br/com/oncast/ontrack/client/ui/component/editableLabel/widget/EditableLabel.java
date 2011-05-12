@@ -66,10 +66,6 @@ public class EditableLabel extends Composite implements HasValue<String> {
 
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				if (event.getNativeKeyCode() == 113) {
-					switchToEditionMode();
-				}
-
 				if (!isEditing()) return;
 
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
