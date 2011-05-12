@@ -6,6 +6,7 @@ html, body, .rootPanel {
 }
 
 .gwt-Tree {
+	font-family: serif;
 }
 
 .gwt-Tree .gwt-TreeItem { 
@@ -16,14 +17,20 @@ html, body, .rootPanel {
     border-right: 0px;
 }
 
+.gwt-Tree .gwt-TreeItem>div {
+	padding-left: 3px; 
+}
+
 .gwt-Tree .gwt-TreeItem :hover {
 	background-color: #E4ECF7;
 	border-bottom: #1px solid transparent;
 	border-bottom: #1px solid #B6D4FC;
 }
 
-.gwt-TreeItem.gwt-TreeItem-selected>div { 
-	color: red;
+.gwt-TreeItem.gwt-TreeItem-selected { 
+    height: 20px;
+	
+	color: white;
 	background-color: #BBCEE9;
 	border: 1px solid #7892B4;
 	border-left: 0px;
