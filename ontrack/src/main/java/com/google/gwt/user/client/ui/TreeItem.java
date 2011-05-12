@@ -649,6 +649,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		if (!isRoot && children.size() == 0) {
 			updateState(false, false);
 		}
+		if (children.size() == 0) setState(false);
 	}
 
 	/**

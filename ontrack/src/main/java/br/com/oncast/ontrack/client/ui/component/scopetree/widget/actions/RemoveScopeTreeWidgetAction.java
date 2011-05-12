@@ -24,7 +24,6 @@ public class RemoveScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 		final int childIndex = parentItem.getChildIndex(treeItem);
 		treeItem.remove();
 
-		if (parentItem.getChildCount() == 0) parentItem.setState(false);
 		tree.setSelectedItem(((parentItem.getChildCount() > 0) ? parentItem.getChild((parentItem.getChildCount() - 1 < childIndex) ? parentItem.getChildCount() - 1
 				: childIndex)
 				: parentItem));

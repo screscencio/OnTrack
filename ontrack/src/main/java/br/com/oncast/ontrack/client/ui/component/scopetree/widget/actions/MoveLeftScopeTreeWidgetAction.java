@@ -24,7 +24,6 @@ public class MoveLeftScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 
 		final TreeItem parentItem = treeItem.getParentItem();
 
-		if (parentItem.getChildCount() == 0) parentItem.setState(false);
 		parentItem.getParentItem().insertItem(getNewPosition(parentItem), treeItem);
 
 		tree.setSelectedItem(treeItem);
