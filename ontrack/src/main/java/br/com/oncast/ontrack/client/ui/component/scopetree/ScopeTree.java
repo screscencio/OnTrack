@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveDownScopeAction;
@@ -18,7 +19,6 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -60,7 +60,7 @@ public class ScopeTree implements IsWidget {
 							execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
 						}
 					} else if (event.getNativeKeyCode() == 45) {
-						Window.alert("Insert");
+						execute(new InsertChildScopeAction(selected.getReferencedScope()));
 					} else if (event.getNativeKeyCode() == 113 || event.getNativeKeyCode() == 69) {
 						tree.getSelected().enterEditMode();
 					}
