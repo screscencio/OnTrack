@@ -6,15 +6,15 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTre
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.CustomGwtTree;
+import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeWidget extends Composite {
 
-	private final CustomGwtTree tree;
+	private final Tree tree;
 
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
-		initWidget(tree = new CustomGwtTree());
+		initWidget(tree = new Tree());
 		tree.addKeyUpHandler(interactionHandler);
 		tree.addHandler(interactionHandler, ScopeTreeItemEditionEvent.getType());
 	}

@@ -21,7 +21,13 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 // TODO Refactor this class to decentralize Action to WidgetActionFactory mappings.
 public class ScopeTreeWidgetActionFactory {
 
-	public static ScopeTreeWidgetAction getEquivalentActionFor(final ScopeTreeWidget tree, final ScopeAction action) throws UnableToCompleteActionException {
+	private final ScopeTreeWidget tree;
+
+	public ScopeTreeWidgetActionFactory(final ScopeTreeWidget tree) {
+		this.tree = tree;
+	}
+
+	public ScopeTreeWidgetAction getEquivalentActionFor(final ScopeAction action) throws UnableToCompleteActionException {
 		final Class<? extends ScopeAction> clazz = action.getClass();
 
 		try {
