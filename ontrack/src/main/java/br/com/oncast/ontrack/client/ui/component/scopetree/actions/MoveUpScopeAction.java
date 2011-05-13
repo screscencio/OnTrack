@@ -23,6 +23,11 @@ public class MoveUpScopeAction implements ScopeAction {
 		parent.add(index - 1, selectedScope);
 	}
 
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new MoveDownScopeAction(selectedScope).execute();
+	}
+
 	private boolean isFirstNode(final int index) {
 		return index == 0;
 	}

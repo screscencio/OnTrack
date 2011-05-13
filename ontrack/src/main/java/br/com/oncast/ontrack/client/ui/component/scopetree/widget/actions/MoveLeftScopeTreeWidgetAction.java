@@ -32,4 +32,9 @@ public class MoveLeftScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 	private int getNewPosition(final TreeItem parentItem) {
 		return parentItem.getParentItem().getChildIndex(parentItem) + 1;
 	}
+
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new MoveRightScopeTreeWidgetAction(treeItem).execute();
+	}
 }

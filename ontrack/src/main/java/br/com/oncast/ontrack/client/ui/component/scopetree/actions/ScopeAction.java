@@ -7,5 +7,7 @@ public interface ScopeAction {
 
 	void execute() throws UnableToCompleteActionException;
 
+	void rollback() throws UnableToCompleteActionException;
+
 	Scope getScope();
 }

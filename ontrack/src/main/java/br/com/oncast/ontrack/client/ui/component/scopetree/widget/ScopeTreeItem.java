@@ -47,4 +47,9 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	public void enterEditMode() {
 		descriptionLabel.switchToEditionMode();
 	}
+
+	@Override
+	public ScopeTreeItem getChild(final int index) {
+		return (ScopeTreeItem) super.getChild(index);
+	}
 }

@@ -17,10 +17,15 @@ public class MoveDownScopeAction implements ScopeAction {
 
 		final int index = selectedScope.getIndex();
 		final Scope parent = selectedScope.getParent();
-		if (isLastNode(index, parent)) return;
+		if (isLastNode(index, parent)) throw new UnableToCompleteActionException("It is not possible to move down the node when it is the last node.");
 
 		parent.remove(selectedScope);
 		parent.add(index + 1, selectedScope);
+	}
+
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new MoveUpScopeAction(selectedScope).execute();
 	}
 
 	private boolean isLastNode(final int index, final Scope parent) {

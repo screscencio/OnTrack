@@ -32,4 +32,9 @@ public class MoveDownScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 	private boolean isLastNode(final int index, final TreeItem parentItem) {
 		return parentItem.getChildCount() - 1 == index;
 	}
+
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new MoveUpScopeTreeWidgetAction(treeItem).execute();
+	}
 }

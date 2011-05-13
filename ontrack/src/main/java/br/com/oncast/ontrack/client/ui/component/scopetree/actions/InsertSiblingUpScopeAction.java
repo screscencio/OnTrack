@@ -15,7 +15,12 @@ public class InsertSiblingUpScopeAction implements InsertionScopeAction {
 	@Override
 	public void execute() throws UnableToCompleteActionException {
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
-		else selectedScope.getParent().add(selectedScope.getIndex(), newScope);
+		selectedScope.getParent().add(selectedScope.getIndex(), newScope);
+	}
+
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new RemoveScopeAction(newScope).execute();
 	}
 
 	@Override

@@ -19,6 +19,11 @@ public class InsertChildScopeAction implements InsertionScopeAction {
 	}
 
 	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new RemoveScopeAction(newScope).execute();
+	}
+
+	@Override
 	public Scope getScope() {
 		return selectedScope;
 	}

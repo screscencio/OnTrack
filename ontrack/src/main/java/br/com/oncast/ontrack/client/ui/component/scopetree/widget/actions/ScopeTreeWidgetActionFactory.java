@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertFatherScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingUpScopeAction;
@@ -36,6 +37,8 @@ public class ScopeTreeWidgetActionFactory {
 			if (clazz.equals(InsertSiblingUpScopeAction.class)) return new InsertSiblingUpScopeTreeWidgetAction(referencedScopeTreeItem,
 					((InsertionScopeAction) action).getNewScope());
 			if (clazz.equals(InsertSiblingDownScopeAction.class)) return new InsertSiblingDownScopeTreeWidgetAction(referencedScopeTreeItem,
+					((InsertionScopeAction) action).getNewScope());
+			if (clazz.equals(InsertChildScopeAction.class)) return new InsertChildScopeTreeWidgetAction(referencedScopeTreeItem,
 					((InsertionScopeAction) action).getNewScope());
 			if (clazz.equals(InsertFatherScopeAction.class)) return new InsertFatherScopeTreeWidgetAction(referencedScopeTreeItem,
 					((InsertionScopeAction) action).getNewScope());

@@ -4,4 +4,6 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCo
 
 public interface ScopeTreeWidgetAction {
 	void execute() throws UnableToCompleteActionException;
+
+	void rollback() throws UnableToCompleteActionException;
 }
