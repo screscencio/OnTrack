@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
 
+import java.util.Iterator;
+
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeItemEditionEvent;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
@@ -48,22 +50,13 @@ public class ScopeTreeWidget extends Composite {
 	}
 
 	public ScopeTreeItem getScopeTreeItemFor(final Scope scope) throws NotFoundException {
-		final int itemCount = tree.getItemCount();
-		for (int i = 0; i < itemCount; i++) {
-			final TreeItem item = tree.getItem(i);
-			final TreeItem result = recursiveSearch(scope, item);
-			if (result != null) return (ScopeTreeItem) result;
+		final Iterator<TreeItem> treeItemIterator = tree.treeItemIterator();
+		while (treeItemIterator.hasNext()) {
+			final TreeItem item = treeItemIterator.next();
+			if (item.getUserObject().equals(scope)) {
+				return (ScopeTreeItem) item;
+			}
 		}
 		throw new NotFoundException();
-	}
-
-	private TreeItem recursiveSearch(final Scope scope, final TreeItem item) {
-		if (item.getUserObject().equals(scope)) return item;
-		final int childCount = item.getChildCount();
-		for (int i = 0; i < childCount; i++) {
-			final TreeItem result = recursiveSearch(scope, item.getChild(i));
-			if (result != null) return result;
-		}
-		return null;
 	}
 }
