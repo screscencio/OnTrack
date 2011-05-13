@@ -86,6 +86,7 @@ public class EditableLabel extends Composite implements HasValue<String> {
 
 	public void switchToEditionMode() {
 		if (isEditing()) return;
+
 		editBox.setText(getValue());
 		deckPanel.showWidget(1);
 		new Timer() {

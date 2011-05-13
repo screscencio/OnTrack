@@ -8,6 +8,12 @@ import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_INS
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_LEFT;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_UP;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_Y;
+import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_Z;
+
+import java.util.EmptyStackException;
+import java.util.Stack;
+
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertFatherScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
@@ -33,6 +39,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScopeTree implements IsWidget {
 
 	private final ScopeTreeWidget tree;
+	private final Stack<ScopeAction> undoStack;
+	private final Stack<ScopeAction> redoStack;
 
 	public ScopeTree() {
 		tree = new ScopeTreeWidget(new ScopeTreeWidgetInteractionHandler() {
@@ -42,6 +50,7 @@ public class ScopeTree implements IsWidget {
 				final ScopeTreeItem selected = tree.getSelected();
 				if (selected == null) return;
 
+				// TODO Refactor this code to organize mappings from inputs to actions
 				if (event.isControlKeyDown()) {
 					switch (event.getNativeKeyCode()) {
 					case KEY_UP:
@@ -56,7 +65,11 @@ public class ScopeTree implements IsWidget {
 					case KEY_LEFT:
 						execute(new MoveLeftScopeAction(selected.getReferencedScope()));
 						break;
-					default:
+					case KEY_Z:
+						undo();
+						break;
+					case KEY_Y:
+						redo();
 						break;
 					}
 				} else {
@@ -82,6 +95,8 @@ public class ScopeTree implements IsWidget {
 				execute(new UpdateScopeAction(item.getReferencedScope(), newContent));
 			}
 		});
+		undoStack = new Stack<ScopeAction>();
+		redoStack = new Stack<ScopeAction>();
 	}
 
 	public void setScope(final Scope scope) {
@@ -97,17 +112,61 @@ public class ScopeTree implements IsWidget {
 			action.execute();
 			try {
 				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).execute();
-				// TODO Push ScopeAction into "Undo Stack"
-				// TODO Push ScopeAction into "Server Changes Stack"
+				undoStack.push(action);
+				redoStack.clear();
 			} catch (final UnableToCompleteActionException e) {
-				// TODO Rollback ScopeAction.
+				action.rollback();
 				throw e;
 			}
 		} catch (final UnableToCompleteActionException e) {
 			// TODO Implement an adequate exception treatment.
-			// TODO Implement an exception that should inform and error to the user and other that only logs it.
+			// TODO Display error to the user
 			// TODO Maybe create a type of exception when we don't want to display any messages.
 			throw new RuntimeException(e);
+		}
+	}
+
+	protected void undo() {
+		try {
+			final ScopeAction action = undoStack.pop();
+			action.rollback();
+			try {
+				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).rollback();
+				redoStack.push(action);
+			} catch (final UnableToCompleteActionException e) {
+				action.execute();
+				throw e;
+			}
+		} catch (final UnableToCompleteActionException e) {
+			undoStack.clear();
+			// TODO Implement an adequate exception treatment.
+			// TODO Display error to the user
+			// TODO Maybe create a type of exception when we don't want to display any messages.
+			throw new RuntimeException(e);
+		} catch (final EmptyStackException e) {
+			// Purposefully ignoring exception
+		}
+	}
+
+	protected void redo() {
+		try {
+			final ScopeAction action = redoStack.pop();
+			action.execute();
+			try {
+				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).execute();
+				undoStack.push(action);
+			} catch (final UnableToCompleteActionException e) {
+				action.rollback();
+				throw e;
+			}
+		} catch (final UnableToCompleteActionException e) {
+			redoStack.clear();
+			// TODO Implement an adequate exception treatment.
+			// TODO Display error to the user
+			// TODO Maybe create a type of exception when we don't want to display any messages.
+			throw new RuntimeException(e);
+		} catch (final EmptyStackException e) {
+			// Purposefully ignoring exception
 		}
 	}
 

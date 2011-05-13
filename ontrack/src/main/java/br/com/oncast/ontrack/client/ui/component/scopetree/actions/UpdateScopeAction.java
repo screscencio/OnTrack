@@ -7,6 +7,7 @@ public class UpdateScopeAction implements ScopeAction {
 
 	private final Scope selectedScope;
 	private final String description;
+	private String oldDescription;
 
 	public UpdateScopeAction(final Scope scope, final String description) {
 		this.selectedScope = scope;
@@ -15,7 +16,14 @@ public class UpdateScopeAction implements ScopeAction {
 
 	@Override
 	public void execute() throws UnableToCompleteActionException {
+		oldDescription = selectedScope.getDescription();
 		selectedScope.setDescription(description);
+	}
+
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		if (oldDescription == null) throw new UnableToCompleteActionException("The action cannot be rolled back because it has never being executed.");
+		selectedScope.setDescription(oldDescription);
 	}
 
 	@Override

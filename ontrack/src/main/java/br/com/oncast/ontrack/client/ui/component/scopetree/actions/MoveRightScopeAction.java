@@ -24,6 +24,11 @@ public class MoveRightScopeAction implements ScopeAction {
 		upperSibling.add(selectedScope);
 	}
 
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new MoveLeftScopeAction(selectedScope).execute();
+	}
+
 	private Scope getUpperSibling() {
 		return selectedScope.getParent().getChildren().get(selectedScope.getIndex() - 1);
 	}

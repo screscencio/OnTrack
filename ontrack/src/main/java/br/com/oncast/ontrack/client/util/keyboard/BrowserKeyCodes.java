@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.util.keyboard;
 
-
 public class BrowserKeyCodes {
 
 	private BrowserKeyCodes() {}
@@ -40,4 +39,8 @@ public class BrowserKeyCodes {
 	public static final int KEY_INSERT = 45;
 
 	public static final int KEY_F2 = 113;
+
+	public static final int KEY_Y = 89;
+
+	public static final int KEY_Z = 90;
 }

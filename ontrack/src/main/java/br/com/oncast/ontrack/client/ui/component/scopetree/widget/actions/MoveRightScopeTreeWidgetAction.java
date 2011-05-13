@@ -33,6 +33,11 @@ public class MoveRightScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 		tree.getSelectedItem().getParentItem().setState(true);
 	}
 
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new MoveLeftScopeTreeWidgetAction(treeItem).execute();
+	}
+
 	private TreeItem getUpperSibling(final TreeItem parentItem, final int index) {
 		return parentItem.getChild(index - 1);
 	}

@@ -22,6 +22,11 @@ public class MoveLeftScopeAction implements ScopeAction {
 	}
 
 	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new MoveRightScopeAction(selectedScope).execute();
+	}
+
+	@Override
 	public Scope getScope() {
 		return selectedScope;
 	}

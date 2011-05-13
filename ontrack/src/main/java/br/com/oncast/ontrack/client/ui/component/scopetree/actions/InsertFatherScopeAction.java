@@ -24,6 +24,17 @@ public class InsertFatherScopeAction implements InsertionScopeAction {
 	}
 
 	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
+
+		final Scope parent = newScope.getParent();
+		final int index = newScope.getIndex();
+		parent.remove(newScope);
+
+		parent.add(index, selectedScope);
+	}
+
+	@Override
 	public Scope getScope() {
 		return selectedScope;
 	}

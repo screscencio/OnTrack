@@ -19,4 +19,9 @@ public class UpdateScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 		treeItem.setDescription(scope.getDescription());
 		treeItem.getTree().setSelectedItem(treeItem);
 	}
+
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		execute();
+	}
 }

@@ -23,4 +23,12 @@ public class InsertChildScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 		newItem.setSelected(true);
 		newItem.enterEditMode();
 	}
+
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		final int childCount = parentTreeItem.getChildCount();
+		if (childCount == 0) throw new UnableToCompleteActionException("The action cannot be undone because an inconsistence was found.");
+
+		new RemoveScopeTreeWidgetAction(parentTreeItem.getChild(childCount - 1)).execute();
+	}
 }

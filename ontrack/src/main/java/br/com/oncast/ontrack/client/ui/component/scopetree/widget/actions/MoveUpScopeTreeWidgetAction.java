@@ -32,4 +32,9 @@ public class MoveUpScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 	private boolean isFirstNode(final int index) {
 		return index == 0;
 	}
+
+	@Override
+	public void rollback() throws UnableToCompleteActionException {
+		new MoveDownScopeTreeWidgetAction(treeItem).execute();
+	}
 }
