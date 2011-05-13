@@ -10,10 +10,6 @@ import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_RIG
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_UP;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_Y;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_Z;
-
-import java.util.EmptyStackException;
-import java.util.Stack;
-
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertFatherScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
@@ -23,11 +19,10 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveLeftScope
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveRightScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.RemoveScopeAction;
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UpdateScopeAction;
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactory;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.beans.Scope;
@@ -39,8 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScopeTree implements IsWidget {
 
 	private final ScopeTreeWidget tree;
-	private final Stack<ScopeAction> undoStack;
-	private final Stack<ScopeAction> redoStack;
+	private final ScopeTreeWidgetActionManager actionManager;
 
 	public ScopeTree() {
 		tree = new ScopeTreeWidget(new ScopeTreeWidgetInteractionHandler() {
@@ -54,36 +48,36 @@ public class ScopeTree implements IsWidget {
 				if (event.isControlKeyDown()) {
 					switch (event.getNativeKeyCode()) {
 					case KEY_UP:
-						execute(new MoveUpScopeAction(selected.getReferencedScope()));
+						actionManager.execute(new MoveUpScopeAction(selected.getReferencedScope()));
 						break;
 					case KEY_DOWN:
-						execute(new MoveDownScopeAction(selected.getReferencedScope()));
+						actionManager.execute(new MoveDownScopeAction(selected.getReferencedScope()));
 						break;
 					case KEY_RIGHT:
-						execute(new MoveRightScopeAction(selected.getReferencedScope()));
+						actionManager.execute(new MoveRightScopeAction(selected.getReferencedScope()));
 						break;
 					case KEY_LEFT:
-						execute(new MoveLeftScopeAction(selected.getReferencedScope()));
+						actionManager.execute(new MoveLeftScopeAction(selected.getReferencedScope()));
 						break;
 					case KEY_Z:
-						undo();
+						actionManager.undo();
 						break;
 					case KEY_Y:
-						redo();
+						actionManager.redo();
 						break;
 					}
 				} else {
-					if (event.getNativeKeyCode() == KEY_DELETE) execute(new RemoveScopeAction(selected.getReferencedScope()));
+					if (event.getNativeKeyCode() == KEY_DELETE) actionManager.execute(new RemoveScopeAction(selected.getReferencedScope()));
 					else if (event.getNativeKeyCode() == KEY_ENTER) {
 						if (event.isShiftKeyDown()) {
-							execute(new InsertSiblingUpScopeAction(selected.getReferencedScope()));
+							actionManager.execute(new InsertSiblingUpScopeAction(selected.getReferencedScope()));
 						} else {
-							execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
+							actionManager.execute(new InsertSiblingDownScopeAction(selected.getReferencedScope()));
 						}
 					} else if (event.getNativeKeyCode() == KEY_INSERT && !event.isShiftKeyDown()) {
-						execute(new InsertChildScopeAction(selected.getReferencedScope()));
+						actionManager.execute(new InsertChildScopeAction(selected.getReferencedScope()));
 					} else if (event.getNativeKeyCode() == KEY_INSERT && event.isShiftKeyDown()) {
-						execute(new InsertFatherScopeAction(selected.getReferencedScope()));
+						actionManager.execute(new InsertFatherScopeAction(selected.getReferencedScope()));
 					} else if (event.getNativeKeyCode() == KEY_F2 || event.getNativeKeyCode() == 69) {
 						tree.getSelected().enterEditMode();
 					}
@@ -92,11 +86,10 @@ public class ScopeTree implements IsWidget {
 
 			@Override
 			public void onItemUpdate(final ScopeTreeItem item, final String newContent) {
-				execute(new UpdateScopeAction(item.getReferencedScope(), newContent));
+				actionManager.execute(new UpdateScopeAction(item.getReferencedScope(), newContent));
 			}
 		});
-		undoStack = new Stack<ScopeAction>();
-		redoStack = new Stack<ScopeAction>();
+		actionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactory(tree));
 	}
 
 	public void setScope(final Scope scope) {
@@ -105,69 +98,6 @@ public class ScopeTree implements IsWidget {
 
 		tree.add(rootItem);
 		tree.setSelected(rootItem);
-	}
-
-	protected void execute(final ScopeAction action) {
-		try {
-			action.execute();
-			try {
-				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).execute();
-				undoStack.push(action);
-				redoStack.clear();
-			} catch (final UnableToCompleteActionException e) {
-				action.rollback();
-				throw e;
-			}
-		} catch (final UnableToCompleteActionException e) {
-			// TODO Implement an adequate exception treatment.
-			// TODO Display error to the user
-			// TODO Maybe create a type of exception when we don't want to display any messages.
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected void undo() {
-		try {
-			final ScopeAction action = undoStack.pop();
-			action.rollback();
-			try {
-				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).rollback();
-				redoStack.push(action);
-			} catch (final UnableToCompleteActionException e) {
-				action.execute();
-				throw e;
-			}
-		} catch (final UnableToCompleteActionException e) {
-			undoStack.clear();
-			// TODO Implement an adequate exception treatment.
-			// TODO Display error to the user
-			// TODO Maybe create a type of exception when we don't want to display any messages.
-			throw new RuntimeException(e);
-		} catch (final EmptyStackException e) {
-			// Purposefully ignoring exception
-		}
-	}
-
-	protected void redo() {
-		try {
-			final ScopeAction action = redoStack.pop();
-			action.execute();
-			try {
-				ScopeTreeWidgetActionFactory.getEquivalentActionFor(tree, action).execute();
-				undoStack.push(action);
-			} catch (final UnableToCompleteActionException e) {
-				action.rollback();
-				throw e;
-			}
-		} catch (final UnableToCompleteActionException e) {
-			redoStack.clear();
-			// TODO Implement an adequate exception treatment.
-			// TODO Display error to the user
-			// TODO Maybe create a type of exception when we don't want to display any messages.
-			throw new RuntimeException(e);
-		} catch (final EmptyStackException e) {
-			// Purposefully ignoring exception
-		}
 	}
 
 	@Override
