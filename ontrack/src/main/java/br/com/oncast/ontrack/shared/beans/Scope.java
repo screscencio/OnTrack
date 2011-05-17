@@ -58,4 +58,17 @@ public class Scope {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if (!(other instanceof Scope)) return false;
+		final Scope otherScope = (Scope) other;
+
+		if (!this.getDescription().equals(otherScope.getDescription())) return false;
+
+		for (int i = 0; i < this.getChildren().size(); i++) {
+			if (!this.getChildren().get(i).equals(otherScope.getChildren().get(i))) return false;
+		}
+		return true;
+	}
 }

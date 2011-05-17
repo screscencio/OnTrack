@@ -83,8 +83,8 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype.ImagePrototypeElemen
  * {@example com.google.gwt.examples.TreeExample}
  * </p>
  */
-public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimation, HasAllKeyHandlers, HasAllFocusHandlers,
-		HasSelectionHandlers<TreeItem>, HasOpenHandlers<TreeItem>, HasCloseHandlers<TreeItem>, HasAllMouseHandlers {
+public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimation, HasAllKeyHandlers, HasAllFocusHandlers, HasSelectionHandlers<TreeItem>,
+		HasOpenHandlers<TreeItem>, HasCloseHandlers<TreeItem>, HasAllMouseHandlers {
 	/*
 	 * For compatibility with UiBinder interface HasTreeItems should be declared before HasWidgets, so that corresponding parser will run first and add TreeItem
 	 * children as items, not as widgets.
