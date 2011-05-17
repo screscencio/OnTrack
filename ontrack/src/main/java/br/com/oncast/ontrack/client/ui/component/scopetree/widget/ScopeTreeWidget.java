@@ -49,6 +49,14 @@ public class ScopeTreeWidget extends Composite {
 		tree.setFocus(focus);
 	}
 
+	private ScopeTreeItem getItem(final int index) {
+		return (ScopeTreeItem) tree.getItem(index);
+	}
+
+	private int getItemCount() {
+		return tree.getItemCount();
+	}
+
 	public ScopeTreeItem getScopeTreeItemFor(final Scope scope) throws NotFoundException {
 		final Iterator<TreeItem> treeItemIterator = tree.treeItemIterator();
 		while (treeItemIterator.hasNext()) {
@@ -58,5 +66,21 @@ public class ScopeTreeWidget extends Composite {
 			}
 		}
 		throw new NotFoundException();
+	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if (!(other instanceof ScopeTreeWidget)) return false;
+		final ScopeTreeWidget otherTree = (ScopeTreeWidget) other;
+
+		final int itemCount = tree.getItemCount();
+		final int otherTreeItemCount = otherTree.getItemCount();
+		if (itemCount != otherTreeItemCount) return false;
+
+		for (int i = 0; i < itemCount; i++) {
+			if (!otherTree.getItem(i).equals(tree.getItem(i))) return false;
+		}
+
+		return true;
 	}
 }
