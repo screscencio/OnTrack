@@ -27,9 +27,11 @@ public class Scope {
 		return childrenList;
 	}
 
-	public void add(final Scope scope) {
+	public Scope add(final Scope scope) {
 		childrenList.add(scope);
 		scope.parent = this;
+
+		return this;
 	}
 
 	public void add(final int beforeIndex, final Scope scope) {
@@ -65,10 +67,16 @@ public class Scope {
 		final Scope otherScope = (Scope) other;
 
 		if (!this.getDescription().equals(otherScope.getDescription())) return false;
+		if (this.getChildren().size() != otherScope.getChildren().size()) return false;
 
 		for (int i = 0; i < this.getChildren().size(); i++) {
 			if (!this.getChildren().get(i).equals(otherScope.getChildren().get(i))) return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return description;
 	}
 }

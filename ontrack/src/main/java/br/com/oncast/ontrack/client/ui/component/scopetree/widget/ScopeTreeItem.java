@@ -59,6 +59,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		final ScopeTreeItem otherTreeItem = (ScopeTreeItem) other;
 
 		if (!this.getDescription().equals(otherTreeItem.getDescription())) return false;
+		if (this.getChildCount() != otherTreeItem.getChildCount()) return false;
 
 		for (int i = 0; i < this.getChildCount(); i++) {
 			if (!this.getChild(i).equals(otherTreeItem.getChild(i))) return false;

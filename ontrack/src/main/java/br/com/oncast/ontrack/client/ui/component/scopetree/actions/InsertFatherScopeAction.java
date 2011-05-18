@@ -14,7 +14,7 @@ public class InsertFatherScopeAction implements InsertionScopeAction {
 
 	@Override
 	public void execute() throws UnableToCompleteActionException {
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a father for a root node.");
 
 		final Scope parent = selectedScope.getParent();
 		final int index = selectedScope.getIndex();

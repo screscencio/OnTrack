@@ -36,12 +36,12 @@ public class MoveDownScopeTreeWidgetTest extends GwtTest {
 
 	private Scope getScope() {
 		rootScope = new Scope("Project");
-		firstScope = new Scope("111");
+		firstScope = new Scope("1");
 		rootScope.add(firstScope);
-		rootScope.add(new Scope("222"));
-		thirdScope = new Scope("333");
+		rootScope.add(new Scope("2"));
+		thirdScope = new Scope("3");
 		rootScope.add(thirdScope);
-		lastScope = new Scope("444");
+		lastScope = new Scope("4");
 		rootScope.add(lastScope);
 
 		return rootScope;
@@ -49,10 +49,10 @@ public class MoveDownScopeTreeWidgetTest extends GwtTest {
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("222"));
-		projectScope.add(new Scope("111"));
-		projectScope.add(new Scope("444"));
-		projectScope.add(new Scope("333"));
+		projectScope.add(new Scope("2"));
+		projectScope.add(new Scope("1"));
+		projectScope.add(new Scope("4"));
+		projectScope.add(new Scope("3"));
 
 		return projectScope;
 	}
@@ -64,7 +64,7 @@ public class MoveDownScopeTreeWidgetTest extends GwtTest {
 	}
 
 	@Test
-	public void scopeShouldBeMovedDown() throws NotFoundException {
+	public void shouldMoveDownScope() throws NotFoundException {
 		tree.add(new ScopeTreeItem(scope));
 
 		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveDownScopeAction(firstScope));
@@ -75,14 +75,14 @@ public class MoveDownScopeTreeWidgetTest extends GwtTest {
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void lastScopeShouldNotBeMovedDown() throws NotFoundException {
+	public void shouldNotMoveLastScope() throws NotFoundException {
 		tree.add(new ScopeTreeItem(scope));
 
 		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveDownScopeAction(lastScope));
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void rootScopeShouldNotBeMovedDown() throws NotFoundException {
+	public void shouldNotMoveRootScope() throws NotFoundException {
 		tree.add(new ScopeTreeItem(scope));
 
 		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveDownScopeAction(rootScope));
