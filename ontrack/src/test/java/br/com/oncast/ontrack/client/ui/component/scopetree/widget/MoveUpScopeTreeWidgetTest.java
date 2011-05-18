@@ -1,65 +1,56 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactory;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactoryImpl;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.octo.gwt.test.GwtTest;
 
-public class ScopeTreeWidgetTest extends GwtTest {
+public class MoveUpScopeTreeWidgetTest extends GwtTest {
 
 	private Scope scope;
-	private Scope scopeToBeMoved;
+	private Scope rootScope;
+	private Scope firstScope;
+	private Scope fourthScope;
 	private ScopeTreeWidget tree;
 	private ScopeTreeWidget modifedTree;
-	private ScopeTreeWidgetInteractionHandler interactionHandler;
 
 	@Before
 	public void setUp() {
 		scope = getScope();
 
-		interactionHandler = new ScopeTreeWidgetInteractionHandler() {
-			@Override
-			public void onItemUpdate(final ScopeTreeItem item, final String newContent) {}
-
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {}
-		};
-
+		final ScopeTreeWidgetInteractionHandler interactionHandler = mock(ScopeTreeWidgetInteractionHandler.class);
 		tree = new ScopeTreeWidget(interactionHandler);
 		modifedTree = new ScopeTreeWidget(interactionHandler);
 	}
 
 	private Scope getScope() {
-		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("111"));
-		projectScope.add(new Scope("222"));
+		rootScope = new Scope("Project");
+		firstScope = new Scope("111");
+		rootScope.add(firstScope);
+		rootScope.add(new Scope("222"));
+		rootScope.add(new Scope("333"));
+		fourthScope = new Scope("444");
+		rootScope.add(fourthScope);
 
-		scopeToBeMoved = new Scope("333");
-
-		projectScope.add(scopeToBeMoved);
-		projectScope.add(new Scope("444"));
-
-		return projectScope;
+		return rootScope;
 	}
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
 		projectScope.add(new Scope("111"));
-		projectScope.add(new Scope("333"));
 		projectScope.add(new Scope("222"));
 		projectScope.add(new Scope("444"));
+		projectScope.add(new Scope("333"));
 
 		return projectScope;
 	}
@@ -74,10 +65,24 @@ public class ScopeTreeWidgetTest extends GwtTest {
 	public void scopeShouldBeMovedUp() throws NotFoundException {
 		tree.add(new ScopeTreeItem(scope));
 
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactory(tree)).execute(new MoveUpScopeAction(scopeToBeMoved));
+		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveUpScopeAction(fourthScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void firstScopeShouldNotBeMovedUp() throws NotFoundException {
+		tree.add(new ScopeTreeItem(scope));
+
+		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveUpScopeAction(firstScope));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void rootScopeShouldNotBeMovedUp() throws NotFoundException {
+		tree.add(new ScopeTreeItem(scope));
+
+		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveUpScopeAction(rootScope));
 	}
 
 	@Override
