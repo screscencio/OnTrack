@@ -23,7 +23,7 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UpdateScopeAc
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactory;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactoryImpl;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
@@ -89,7 +89,7 @@ public class ScopeTree implements IsWidget {
 				actionManager.execute(new UpdateScopeAction(item.getReferencedScope(), newContent));
 			}
 		});
-		actionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactory(tree));
+		actionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
 	}
 
 	public void setScope(final Scope scope) {
