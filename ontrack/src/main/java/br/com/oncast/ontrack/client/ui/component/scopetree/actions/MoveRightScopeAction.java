@@ -17,7 +17,7 @@ public class MoveRightScopeAction implements ScopeAction {
 
 		final int index = selectedScope.getIndex();
 		if (isFirstNode(index)) throw new UnableToCompleteActionException(
-				"It is not possible to move right the first node, because it will be moved to a node above it.");
+				"The action cannot be processed because there is no node where this node could be moded into.");
 
 		final Scope upperSibling = getUpperSibling();
 		selectedScope.getParent().remove(selectedScope);
