@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
+package br.com.oncast.ontrack.client.ui.component.scopetree.sync;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -6,8 +6,10 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveRightScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertFatherScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactoryImpl;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
@@ -15,12 +17,11 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.octo.gwt.test.GwtTest;
 
-public class MoveRightScopeTreeWidgetTest extends GwtTest {
+public class InsertFatherScopeTreeWidgetTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
-	private Scope secondScope;
 	private ScopeTreeWidget tree;
 	private ScopeTreeWidget modifedTree;
 
@@ -36,18 +37,16 @@ public class MoveRightScopeTreeWidgetTest extends GwtTest {
 	private Scope getScope() {
 		rootScope = new Scope("Project");
 		firstScope = new Scope("1");
-		secondScope = new Scope("2");
-
 		rootScope.add(firstScope);
-		rootScope.add(secondScope);
-		secondScope.add(new Scope("2.1"));
+		rootScope.add(new Scope("2"));
 
 		return rootScope;
 	}
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("1").add(new Scope("2").add(new Scope("2.1"))));
+		projectScope.add(new Scope("").add(new Scope("1")));
+		projectScope.add(new Scope("2"));
 
 		return projectScope;
 	}
@@ -59,27 +58,20 @@ public class MoveRightScopeTreeWidgetTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldMoveRightScope() throws NotFoundException {
+	public void shouldInsertFatherScope() throws NotFoundException {
 		tree.add(new ScopeTreeItem(scope));
 
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveRightScopeAction(secondScope));
+		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new InsertFatherScopeAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveRightFirstScope() throws NotFoundException {
+	public void shouldNotInsertFatherForRootScope() throws NotFoundException {
 		tree.add(new ScopeTreeItem(scope));
 
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveRightScopeAction(firstScope));
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveRootScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
-
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveRightScopeAction(rootScope));
+		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new InsertFatherScopeAction(rootScope));
 	}
 
 	@Override
