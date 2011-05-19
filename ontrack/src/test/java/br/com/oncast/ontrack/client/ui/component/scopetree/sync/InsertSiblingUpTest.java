@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveDownScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
@@ -17,15 +17,14 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.octo.gwt.test.GwtTest;
 
-public class MoveDownScopeTreeWidgetTest extends GwtTest {
+public class InsertSiblingUpTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
-	private Scope thirdScope;
-	private Scope lastScope;
 	private ScopeTreeWidget tree;
-	private ScopeTreeWidget modifedTree;
+	private ScopeTreeWidget treeAfterManipulation;
+	private ScopeTreeWidgetActionManager scopeTreeWidgetActionManager;
 
 	@Before
 	public void setUp() {
@@ -33,7 +32,11 @@ public class MoveDownScopeTreeWidgetTest extends GwtTest {
 
 		final ScopeTreeWidgetInteractionHandler interactionHandler = mock(ScopeTreeWidgetInteractionHandler.class);
 		tree = new ScopeTreeWidget(interactionHandler);
-		modifedTree = new ScopeTreeWidget(interactionHandler);
+		treeAfterManipulation = new ScopeTreeWidget(interactionHandler);
+
+		tree.add(new ScopeTreeItem(scope));
+
+		scopeTreeWidgetActionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
 	}
 
 	private Scope getScope() {
@@ -41,53 +44,65 @@ public class MoveDownScopeTreeWidgetTest extends GwtTest {
 		firstScope = new Scope("1");
 		rootScope.add(firstScope);
 		rootScope.add(new Scope("2"));
-		thirdScope = new Scope("3");
-		rootScope.add(thirdScope);
-		lastScope = new Scope("4");
-		rootScope.add(lastScope);
 
 		return rootScope;
 	}
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("2"));
+		projectScope.add(new Scope(""));
 		projectScope.add(new Scope("1"));
-		projectScope.add(new Scope("4"));
-		projectScope.add(new Scope("3"));
+		projectScope.add(new Scope("2"));
 
 		return projectScope;
 	}
 
-	private ScopeTreeWidget getModifiedTree() {
-		modifedTree.add(new ScopeTreeItem(getModifiedScope()));
+	private Scope getUnmodifiedScope() {
+		final Scope unmodifiedScope = new Scope("Project");
+		unmodifiedScope.add(new Scope("1"));
+		unmodifiedScope.add(new Scope("2"));
 
-		return modifedTree;
+		return unmodifiedScope;
+	}
+
+	private ScopeTreeWidget getUnmodifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getUnmodifiedScope()));
+
+		return treeAfterManipulation;
+	}
+
+	private ScopeTreeWidget getModifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getModifiedScope()));
+
+		return treeAfterManipulation;
 	}
 
 	@Test
-	public void shouldMoveDownScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
-
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveDownScopeAction(firstScope));
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveDownScopeAction(thirdScope));
+	public void shouldInsertSiblingUp() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertSiblingUpScopeAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveLastScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
-
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveDownScopeAction(lastScope));
+	public void shouldNotInsertSiblingUpForRoot() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertSiblingUpScopeAction(rootScope));
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveRootScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
+	@Test
+	public void shouldRemoveInsertedSiblingAfterUndo() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertSiblingUpScopeAction(firstScope));
 
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveDownScopeAction(rootScope));
+		assertEquals(getModifiedScope(), scope);
+		assertEquals(getModifiedTree(), tree);
+
+		scopeTreeWidgetActionManager.undo();
+
+		assertEquals(getUnmodifiedScope(), scope);
+		assertEquals(getUnmodifiedTree(), tree);
 	}
 
 	@Override
