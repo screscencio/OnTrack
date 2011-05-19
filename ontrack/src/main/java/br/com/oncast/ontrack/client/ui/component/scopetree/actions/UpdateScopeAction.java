@@ -22,7 +22,7 @@ public class UpdateScopeAction implements ScopeAction {
 
 	@Override
 	public void rollback() throws UnableToCompleteActionException {
-		if (oldDescription == null) throw new UnableToCompleteActionException("The action cannot be rolled back because it has never being executed.");
+		if (oldDescription == null) throw new UnableToCompleteActionException("The action cannot be rolled back because it has never been executed.");
 		selectedScope.setDescription(oldDescription);
 	}
 
