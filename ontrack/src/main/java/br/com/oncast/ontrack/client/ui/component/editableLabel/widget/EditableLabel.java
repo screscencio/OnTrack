@@ -69,14 +69,13 @@ public class EditableLabel extends Composite implements HasValue<String> {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				if (!isEditing()) return;
+				event.preventDefault();
+				event.stopPropagation();
 
 				if (event.getNativeKeyCode() == KEY_ENTER) {
-					event.preventDefault();
-					event.stopPropagation();
 					switchToVisualization();
-				} else if (event.getNativeKeyCode() == KEY_ESCAPE) {
-					event.preventDefault();
-					event.stopPropagation();
+				}
+				else if (event.getNativeKeyCode() == KEY_ESCAPE) {
 					editBox.setText(editLabel.getText());
 					switchToVisualization();
 				}
@@ -93,9 +92,10 @@ public class EditableLabel extends Composite implements HasValue<String> {
 
 			@Override
 			public void run() {
+				editBox.selectAll();
 				editBox.setFocus(true);
 			}
-		}.schedule(300);
+		}.schedule(200);
 	}
 
 	public void switchToVisualization() {
