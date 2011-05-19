@@ -17,13 +17,14 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.octo.gwt.test.GwtTest;
 
-public class InsertChildScopeTreeWidgetTest extends GwtTest {
+public class InsertChildTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
 	private ScopeTreeWidget tree;
-	private ScopeTreeWidget modifedTree;
+	private ScopeTreeWidget treeAfterManipulation;
+	private ScopeTreeWidgetActionManager scopeTreeWidgetActionManager;
 
 	@Before
 	public void setUp() {
@@ -31,7 +32,11 @@ public class InsertChildScopeTreeWidgetTest extends GwtTest {
 
 		final ScopeTreeWidgetInteractionHandler interactionHandler = mock(ScopeTreeWidgetInteractionHandler.class);
 		tree = new ScopeTreeWidget(interactionHandler);
-		modifedTree = new ScopeTreeWidget(interactionHandler);
+		treeAfterManipulation = new ScopeTreeWidget(interactionHandler);
+
+		tree.add(new ScopeTreeItem(scope));
+
+		scopeTreeWidgetActionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
 	}
 
 	private Scope getScope() {
@@ -60,41 +65,65 @@ public class InsertChildScopeTreeWidgetTest extends GwtTest {
 		return projectScope;
 	}
 
-	private ScopeTreeWidget getModifiedTree() {
-		modifedTree.add(new ScopeTreeItem(getModifiedScope()));
+	private Scope getUnmodifiedScope() {
+		final Scope unmodifiedScope = new Scope("Project");
+		unmodifiedScope.add(new Scope("1"));
+		unmodifiedScope.add(new Scope("2"));
 
-		return modifedTree;
+		return unmodifiedScope;
+	}
+
+	private ScopeTreeWidget getUnmodifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getUnmodifiedScope()));
+
+		return treeAfterManipulation;
+	}
+
+	private ScopeTreeWidget getModifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getModifiedScope()));
+
+		return treeAfterManipulation;
 	}
 
 	private ScopeTreeWidget getModifiedTreeForRootChild() {
-		modifedTree.add(new ScopeTreeItem(getModifiedScopeForRootChild()));
+		treeAfterManipulation.add(new ScopeTreeItem(getModifiedScopeForRootChild()));
 
-		return modifedTree;
+		return treeAfterManipulation;
 	}
 
 	@Test
-	public void shouldInsertChildScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
-
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new InsertChildScopeAction(firstScope));
+	public void shouldInsertChild() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertChildScopeAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test
-	public void shouldInsertChildForRootScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
-
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new InsertChildScopeAction(rootScope));
+	public void shouldInsertChildForRoot() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertChildScopeAction(rootScope));
 
 		assertEquals(getModifiedScopeForRootChild(), scope);
 		assertEquals(getModifiedTreeForRootChild(), tree);
+	}
+
+	@Test
+	public void shouldRemoveInsertedChildAfterUndo() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertChildScopeAction(firstScope));
+
+		assertEquals(getModifiedScope(), scope);
+		assertEquals(getModifiedTree(), tree);
+
+		scopeTreeWidgetActionManager.undo();
+
+		assertEquals(getUnmodifiedScope(), scope);
+		assertEquals(getUnmodifiedTree(), tree);
 	}
 
 	@Override
 	public String getModuleName() {
 		return "br.com.oncast.ontrack.Application";
 	}
-
 }

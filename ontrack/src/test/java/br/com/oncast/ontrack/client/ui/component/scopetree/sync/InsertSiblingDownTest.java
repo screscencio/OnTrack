@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertFatherScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
@@ -17,13 +17,14 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.octo.gwt.test.GwtTest;
 
-public class InsertFatherScopeTreeWidgetTest extends GwtTest {
+public class InsertSiblingDownTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
 	private ScopeTreeWidget tree;
-	private ScopeTreeWidget modifedTree;
+	private ScopeTreeWidget treeAfterManipulation;
+	private ScopeTreeWidgetActionManager scopeTreeWidgetActionManager;
 
 	@Before
 	public void setUp() {
@@ -31,7 +32,11 @@ public class InsertFatherScopeTreeWidgetTest extends GwtTest {
 
 		final ScopeTreeWidgetInteractionHandler interactionHandler = mock(ScopeTreeWidgetInteractionHandler.class);
 		tree = new ScopeTreeWidget(interactionHandler);
-		modifedTree = new ScopeTreeWidget(interactionHandler);
+		treeAfterManipulation = new ScopeTreeWidget(interactionHandler);
+
+		tree.add(new ScopeTreeItem(scope));
+
+		scopeTreeWidgetActionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
 	}
 
 	private Scope getScope() {
@@ -45,33 +50,59 @@ public class InsertFatherScopeTreeWidgetTest extends GwtTest {
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("").add(new Scope("1")));
+		projectScope.add(new Scope("1"));
+		projectScope.add(new Scope(""));
 		projectScope.add(new Scope("2"));
 
 		return projectScope;
 	}
 
-	private ScopeTreeWidget getModifiedTree() {
-		modifedTree.add(new ScopeTreeItem(getModifiedScope()));
+	private Scope getUnmodifiedScope() {
+		final Scope unmodifiedScope = new Scope("Project");
+		unmodifiedScope.add(new Scope("1"));
+		unmodifiedScope.add(new Scope("2"));
 
-		return modifedTree;
+		return unmodifiedScope;
+	}
+
+	private ScopeTreeWidget getUnmodifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getUnmodifiedScope()));
+
+		return treeAfterManipulation;
+	}
+
+	private ScopeTreeWidget getModifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getModifiedScope()));
+
+		return treeAfterManipulation;
 	}
 
 	@Test
-	public void shouldInsertFatherScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
-
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new InsertFatherScopeAction(firstScope));
+	public void shouldInsertSiblingDown() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertSiblingDownScopeAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotInsertFatherForRootScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
+	public void shouldNotInsertSiblingDownForRoot() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertSiblingDownScopeAction(rootScope));
+	}
 
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new InsertFatherScopeAction(rootScope));
+	@Test
+	public void shouldRemoveInsertedSiblingAfterUndo() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new InsertSiblingDownScopeAction(firstScope));
+
+		assertEquals(getModifiedScope(), scope);
+		assertEquals(getModifiedTree(), tree);
+
+		scopeTreeWidgetActionManager.undo();
+
+		assertEquals(getUnmodifiedScope(), scope);
+		assertEquals(getUnmodifiedTree(), tree);
 	}
 
 	@Override

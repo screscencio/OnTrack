@@ -17,13 +17,14 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.octo.gwt.test.GwtTest;
 
-public class UpdateScopeTreeWidgetTest extends GwtTest {
+public class UpdateTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
 	private ScopeTreeWidget tree;
 	private ScopeTreeWidget treeAfterManipulation;
+	private ScopeTreeWidgetActionManager scopeTreeWidgetActionManager;
 
 	@Before
 	public void setUp() {
@@ -33,6 +34,8 @@ public class UpdateScopeTreeWidgetTest extends GwtTest {
 		tree = new ScopeTreeWidget(interactionHandler);
 		tree.add(new ScopeTreeItem(scope));
 		treeAfterManipulation = new ScopeTreeWidget(interactionHandler);
+
+		scopeTreeWidgetActionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
 	}
 
 	private Scope getScope() {
@@ -42,14 +45,6 @@ public class UpdateScopeTreeWidgetTest extends GwtTest {
 		rootScope.add(new Scope("2"));
 
 		return rootScope;
-	}
-
-	private Scope getUnmodifiedScope() {
-		final Scope unmodifiedScope = new Scope("Project");
-		unmodifiedScope.add(new Scope("1"));
-		unmodifiedScope.add(new Scope("2"));
-
-		return unmodifiedScope;
 	}
 
 	private Scope getModifiedScope() {
@@ -68,6 +63,28 @@ public class UpdateScopeTreeWidgetTest extends GwtTest {
 		return projectScope;
 	}
 
+	private Scope getUnmodifiedScope() {
+		final Scope unmodifiedScope = new Scope("Project");
+		unmodifiedScope.add(new Scope("1"));
+		unmodifiedScope.add(new Scope("2"));
+
+		return unmodifiedScope;
+	}
+
+	private ScopeTreeWidget getModifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getModifiedScope()));
+
+		return treeAfterManipulation;
+	}
+
+	private ScopeTreeWidget getModifiedRootTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getModifiedRootScope()));
+
+		return treeAfterManipulation;
+	}
+
 	private ScopeTreeWidget getUnmodifiedTree() {
 		treeAfterManipulation.clear();
 		treeAfterManipulation.add(new ScopeTreeItem(getUnmodifiedScope()));
@@ -75,21 +92,9 @@ public class UpdateScopeTreeWidgetTest extends GwtTest {
 		return treeAfterManipulation;
 	}
 
-	private ScopeTreeWidget getModifiedTree() {
-		treeAfterManipulation.add(new ScopeTreeItem(getModifiedScope()));
-
-		return treeAfterManipulation;
-	}
-
-	private ScopeTreeWidget getModifiedRootTree() {
-		treeAfterManipulation.add(new ScopeTreeItem(getModifiedRootScope()));
-
-		return treeAfterManipulation;
-	}
-
 	@Test
 	public void shouldUpdateScopeWithNewValue() throws NotFoundException {
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new UpdateScopeAction(firstScope, "3"));
+		scopeTreeWidgetActionManager.execute(new UpdateScopeAction(firstScope, "3"));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
@@ -97,7 +102,7 @@ public class UpdateScopeTreeWidgetTest extends GwtTest {
 
 	@Test
 	public void shouldUpdateRootScope() throws NotFoundException {
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new UpdateScopeAction(rootScope, "Root"));
+		scopeTreeWidgetActionManager.execute(new UpdateScopeAction(rootScope, "Root"));
 
 		assertEquals(getModifiedRootScope(), scope);
 		assertEquals(getModifiedRootTree(), tree);
@@ -105,7 +110,6 @@ public class UpdateScopeTreeWidgetTest extends GwtTest {
 
 	@Test
 	public void shouldRollbackUpdatedScope() throws NotFoundException {
-		final ScopeTreeWidgetActionManager scopeTreeWidgetActionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
 		scopeTreeWidgetActionManager.execute(new UpdateScopeAction(firstScope, "3"));
 
 		assertEquals(getModifiedScope(), scope);
