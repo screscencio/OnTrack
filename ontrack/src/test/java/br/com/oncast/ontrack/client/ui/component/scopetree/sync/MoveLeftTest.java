@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertFatherScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveLeftScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
@@ -17,11 +17,12 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.octo.gwt.test.GwtTest;
 
-public class InsertFatherTest extends GwtTest {
+public class MoveLeftTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
+	private Scope childScope;
 	private ScopeTreeWidget tree;
 	private ScopeTreeWidget treeAfterManipulation;
 	private ScopeTreeWidgetActionManager scopeTreeWidgetActionManager;
@@ -43,6 +44,9 @@ public class InsertFatherTest extends GwtTest {
 		rootScope = new Scope("Project");
 		firstScope = new Scope("1");
 		rootScope.add(firstScope);
+		childScope = new Scope("1.1");
+		firstScope.add(childScope);
+		firstScope.add(new Scope("1.2"));
 		rootScope.add(new Scope("2"));
 
 		return rootScope;
@@ -50,7 +54,8 @@ public class InsertFatherTest extends GwtTest {
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("").add(new Scope("1")));
+		projectScope.add(new Scope("1").add(new Scope("1.2")));
+		projectScope.add(new Scope("1.1"));
 		projectScope.add(new Scope("2"));
 
 		return projectScope;
@@ -58,7 +63,7 @@ public class InsertFatherTest extends GwtTest {
 
 	private Scope getUnmodifiedScope() {
 		final Scope unmodifiedScope = new Scope("Project");
-		unmodifiedScope.add(new Scope("1"));
+		unmodifiedScope.add(new Scope("1").add(new Scope("1.1")).add(new Scope("1.2")));
 		unmodifiedScope.add(new Scope("2"));
 
 		return unmodifiedScope;
@@ -79,21 +84,26 @@ public class InsertFatherTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldInsertFather() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new InsertFatherScopeAction(firstScope));
+	public void shouldMoveLeft() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new MoveLeftScopeAction(childScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotInsertFatherForRoot() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new InsertFatherScopeAction(rootScope));
+	public void shouldNotMoveToTheSameLevelAsRoot() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new MoveLeftScopeAction(firstScope));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotMoveRoot() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new MoveLeftScopeAction(rootScope));
 	}
 
 	@Test
-	public void shouldRemoveInsertedFatherAfterUndo() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new InsertFatherScopeAction(firstScope));
+	public void shouldMoveRightAfterUndo() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new MoveLeftScopeAction(childScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);

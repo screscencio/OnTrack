@@ -17,14 +17,15 @@ import br.com.oncast.ontrack.shared.beans.Scope;
 
 import com.octo.gwt.test.GwtTest;
 
-public class MoveRightScopeTreeWidgetTest extends GwtTest {
+public class MoveRightTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
 	private Scope secondScope;
 	private ScopeTreeWidget tree;
-	private ScopeTreeWidget modifedTree;
+	private ScopeTreeWidget treeAfterManipulation;
+	private ScopeTreeWidgetActionManager scopeTreeWidgetActionManager;
 
 	@Before
 	public void setUp() {
@@ -32,7 +33,11 @@ public class MoveRightScopeTreeWidgetTest extends GwtTest {
 
 		final ScopeTreeWidgetInteractionHandler interactionHandler = mock(ScopeTreeWidgetInteractionHandler.class);
 		tree = new ScopeTreeWidget(interactionHandler);
-		modifedTree = new ScopeTreeWidget(interactionHandler);
+		treeAfterManipulation = new ScopeTreeWidget(interactionHandler);
+
+		tree.add(new ScopeTreeItem(scope));
+
+		scopeTreeWidgetActionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
 	}
 
 	private Scope getScope() {
@@ -54,34 +59,57 @@ public class MoveRightScopeTreeWidgetTest extends GwtTest {
 		return projectScope;
 	}
 
-	private ScopeTreeWidget getModifiedTree() {
-		modifedTree.add(new ScopeTreeItem(getModifiedScope()));
+	private Scope getUnmodifiedScope() {
+		final Scope unmodifiedScope = new Scope("Project");
+		unmodifiedScope.add(new Scope("1"));
+		unmodifiedScope.add(new Scope("2").add(new Scope("2.1")));
 
-		return modifedTree;
+		return unmodifiedScope;
+	}
+
+	private ScopeTreeWidget getUnmodifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getUnmodifiedScope()));
+
+		return treeAfterManipulation;
+	}
+
+	private ScopeTreeWidget getModifiedTree() {
+		treeAfterManipulation.clear();
+		treeAfterManipulation.add(new ScopeTreeItem(getModifiedScope()));
+
+		return treeAfterManipulation;
 	}
 
 	@Test
-	public void shouldMoveRightScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
-
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveRightScopeAction(secondScope));
+	public void shouldMoveRight() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new MoveRightScopeAction(secondScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveRightFirstScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
-
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveRightScopeAction(firstScope));
+	public void shouldNotMoveRightFirst() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new MoveRightScopeAction(firstScope));
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveRootScope() throws NotFoundException {
-		tree.add(new ScopeTreeItem(scope));
+	public void shouldNotMoveRoot() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new MoveRightScopeAction(rootScope));
+	}
 
-		new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree)).execute(new MoveRightScopeAction(rootScope));
+	@Test
+	public void shouldMoveLeftAfterUndo() throws NotFoundException {
+		scopeTreeWidgetActionManager.execute(new MoveRightScopeAction(secondScope));
+
+		assertEquals(getModifiedScope(), scope);
+		assertEquals(getModifiedTree(), tree);
+
+		scopeTreeWidgetActionManager.undo();
+
+		assertEquals(getUnmodifiedScope(), scope);
+		assertEquals(getUnmodifiedTree(), tree);
 	}
 
 	@Override
