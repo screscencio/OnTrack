@@ -33,7 +33,7 @@ public class RemoveScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 
 	@Override
 	public void rollback() throws UnableToCompleteActionException {
-		if (parentItem == null) throw new UnableToCompleteActionException("The action cannot be rolled back because it has never being executed.");
+		if (parentItem == null) throw new UnableToCompleteActionException("The action cannot be rolled back because it has never been executed.");
 		parentItem.insertItem(childIndex, treeItem);
 	}
 }
