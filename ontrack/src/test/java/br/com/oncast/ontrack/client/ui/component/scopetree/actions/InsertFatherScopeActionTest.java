@@ -26,8 +26,8 @@ public class InsertFatherScopeActionTest {
 		assertEquals(rootScope.getChildren().get(0), childScope);
 		final InsertFatherScopeAction insertFatherScopeAction = new InsertFatherScopeAction(childScope);
 		insertFatherScopeAction.execute();
-		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScope());
-		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScope());
+		assertEquals(childScope.getParent(), insertFatherScopeAction.getScope());
+		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getScope());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
@@ -41,8 +41,8 @@ public class InsertFatherScopeActionTest {
 		assertEquals(rootScope.getChildren().get(0), childScope);
 		final InsertFatherScopeAction insertFatherScopeAction = new InsertFatherScopeAction(childScope);
 		insertFatherScopeAction.execute();
-		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScope());
-		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScope());
+		assertEquals(childScope.getParent(), insertFatherScopeAction.getScope());
+		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getScope());
 		insertFatherScopeAction.rollback();
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
