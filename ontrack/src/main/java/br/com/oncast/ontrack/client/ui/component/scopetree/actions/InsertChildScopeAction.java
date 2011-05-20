@@ -3,9 +3,9 @@ package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
-public class InsertChildScopeAction implements InsertionScopeAction {
+public class InsertChildScopeAction implements ScopeAction {
 
-	private final Scope selectedScope;
+	private Scope selectedScope;
 	private final Scope newScope;
 
 	public InsertChildScopeAction(final Scope selectedScope) {
@@ -16,6 +16,7 @@ public class InsertChildScopeAction implements InsertionScopeAction {
 	@Override
 	public void execute() throws UnableToCompleteActionException {
 		selectedScope.add(newScope);
+		selectedScope = newScope;
 	}
 
 	@Override
@@ -26,10 +27,5 @@ public class InsertChildScopeAction implements InsertionScopeAction {
 	@Override
 	public Scope getScope() {
 		return selectedScope;
-	}
-
-	@Override
-	public Scope getNewScope() {
-		return newScope;
 	}
 }
