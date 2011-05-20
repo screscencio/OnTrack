@@ -30,8 +30,8 @@ public class InsertChildScopeActionTest {
 		final InsertChildScopeAction insertChildScopeAction = new InsertChildScopeAction(selectedScope);
 		assertEquals(1, selectedScope.getChildren().size());
 		insertChildScopeAction.execute();
-		final Scope insertedScope = insertChildScopeAction.getScope().getChildren().get(insertChildScopeAction.getScope().getChildren().size() - 1);
-		assertEquals(insertedScope, insertChildScopeAction.getNewScope());
+		final Scope insertedScope = selectedScope.getChildren().get(selectedScope.getChildren().size() - 1);
+		assertEquals(insertedScope, insertChildScopeAction.getScope());
 	}
 
 	@Test

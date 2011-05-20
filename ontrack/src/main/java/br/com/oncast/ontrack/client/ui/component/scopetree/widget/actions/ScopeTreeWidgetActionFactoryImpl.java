@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingDownScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertSiblingUpScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveDownScopeAction;
@@ -37,8 +38,7 @@ public class ScopeTreeWidgetActionFactoryImpl implements ScopeTreeWidgetActionFa
 		if (clazz.equals(UpdateScopeAction.class)) return new UpdateScopeTreeWidgetAction(tree, action);
 		if (clazz.equals(InsertSiblingUpScopeAction.class)) return new InsertSiblingUpScopeTreeWidgetAction(tree, action);
 		if (clazz.equals(InsertSiblingDownScopeAction.class)) return new InsertSiblingDownScopeTreeWidgetAction(tree, action);
-		// if (clazz.equals(InsertChildScopeAction.class)) return new InsertChildScopeTreeWidgetAction(referencedScopeTreeItem,
-		// ((InsertionScopeAction) action).getNewScope());
+		if (clazz.equals(InsertChildScopeAction.class)) return new InsertChildScopeTreeWidgetAction(tree, action);
 		// if (clazz.equals(InsertFatherScopeAction.class)) return new InsertFatherScopeTreeWidgetAction(referencedScopeTreeItem,
 		// ((InsertionScopeAction) action).getNewScope());
 
