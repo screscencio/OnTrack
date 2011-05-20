@@ -22,7 +22,7 @@ public class RemoveScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 
 	@Override
 	public void execute() throws UnableToCompleteActionException {
-		final ScopeTreeItem treeItem = getTreeItemFor(referencedScope);
+		final ScopeTreeItem treeItem = getTreeItemFor(tree, referencedScope);
 		if (treeItem.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
 
 		final Tree tree = treeItem.getTree();
@@ -40,11 +40,11 @@ public class RemoveScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 	public void rollback() throws UnableToCompleteActionException {
 		final Scope parentScope = referencedScope.getParent();
 		final int childIndex = referencedScope.getIndex();
-		final ScopeTreeItem parentItem = getTreeItemFor(parentScope);
+		final ScopeTreeItem parentItem = getTreeItemFor(tree, parentScope);
 		parentItem.insertItem(childIndex, new ScopeTreeItem(referencedScope));
 	}
 
-	private ScopeTreeItem getTreeItemFor(final Scope scope) throws UnableToCompleteActionException {
+	private ScopeTreeItem getTreeItemFor(final ScopeTreeWidget tree, final Scope scope) throws UnableToCompleteActionException {
 		ScopeTreeItem treeItem;
 		try {
 			treeItem = tree.getScopeTreeItemFor(scope);
