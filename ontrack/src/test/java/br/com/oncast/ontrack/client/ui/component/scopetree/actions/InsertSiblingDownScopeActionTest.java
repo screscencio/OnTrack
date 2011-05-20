@@ -30,7 +30,7 @@ public class InsertSiblingDownScopeActionTest {
 		final InsertSiblingDownScopeAction insertSiblingDownScopeAction = new InsertSiblingDownScopeAction(firstChild);
 		insertSiblingDownScopeAction.execute();
 		assertEquals(3, rootScope.getChildren().size());
-		assertEquals(firstChild.getParent().getChildren().get(firstChild.getIndex() + 1), insertSiblingDownScopeAction.getNewScope());
+		assertEquals(firstChild.getParent().getChildren().get(firstChild.getIndex() + 1), insertSiblingDownScopeAction.getScope());
 		assertEquals(firstChild.getParent().getChildren().get(firstChild.getIndex() + 2), lastChild);
 	}
 
@@ -46,7 +46,7 @@ public class InsertSiblingDownScopeActionTest {
 		final InsertSiblingDownScopeAction insertSiblingDownScopeAction = new InsertSiblingDownScopeAction(firstChild);
 		insertSiblingDownScopeAction.execute();
 		assertEquals(3, rootScope.getChildren().size());
-		assertEquals(firstChild.getParent().getChildren().get(firstChild.getIndex() + 1), insertSiblingDownScopeAction.getNewScope());
+		assertEquals(firstChild.getParent().getChildren().get(firstChild.getIndex() + 1), insertSiblingDownScopeAction.getScope());
 		assertEquals(firstChild.getParent().getChildren().get(firstChild.getIndex() + 2), lastChild);
 		insertSiblingDownScopeAction.rollback();
 		assertEquals(firstChild.getParent().getChildren().get(firstChild.getIndex() + 1), lastChild);
