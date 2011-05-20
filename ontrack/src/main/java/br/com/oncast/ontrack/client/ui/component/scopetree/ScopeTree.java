@@ -4,9 +4,8 @@ import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_F2;
 import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UpdateScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactory;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactoryImpl;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
@@ -30,7 +29,10 @@ public class ScopeTree implements IsWidget {
 				ScopeTreeShortcutMappings.interpretKeyboardCommand(event.getNativeKeyCode(), event.isControlKeyDown(), event.isShiftKeyDown(), actionManager,
 						selected.getReferencedScope());
 
-				if (event.getNativeKeyCode() == KEY_F2) tree.getSelected().enterEditMode();
+				if (event.getNativeKeyCode() == KEY_F2) {
+					tree.getSelected().enterEditMode();
+					tree.setSelected(null);
+				}
 			}
 
 			@Override
