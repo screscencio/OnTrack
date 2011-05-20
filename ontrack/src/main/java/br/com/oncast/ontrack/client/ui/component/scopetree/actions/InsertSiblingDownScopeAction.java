@@ -3,8 +3,8 @@ package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.beans.Scope;
 
-public class InsertSiblingDownScopeAction implements InsertionScopeAction {
-	private final Scope selectedScope;
+public class InsertSiblingDownScopeAction implements ScopeAction {
+	private Scope selectedScope;
 	private final Scope newScope;
 
 	public InsertSiblingDownScopeAction(final Scope selectedScope) {
@@ -16,6 +16,7 @@ public class InsertSiblingDownScopeAction implements InsertionScopeAction {
 	public void execute() throws UnableToCompleteActionException {
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
 		selectedScope.getParent().add(selectedScope.getIndex() + 1, newScope);
+		selectedScope = newScope;
 	}
 
 	@Override
@@ -27,10 +28,4 @@ public class InsertSiblingDownScopeAction implements InsertionScopeAction {
 	public Scope getScope() {
 		return selectedScope;
 	}
-
-	@Override
-	public Scope getNewScope() {
-		return newScope;
-	}
-
 }

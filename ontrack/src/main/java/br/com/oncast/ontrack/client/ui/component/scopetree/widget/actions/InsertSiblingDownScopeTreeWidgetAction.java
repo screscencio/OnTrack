@@ -1,38 +1,46 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.beans.Scope;
-
-import com.google.gwt.user.client.ui.TreeItem;
 
 public class InsertSiblingDownScopeTreeWidgetAction implements ScopeTreeWidgetAction {
 
-	private final ScopeTreeItem treeItem;
-	private final Scope referencedScope;
+	private final ScopeTreeWidget tree;
+	private final ScopeAction action;
 
-	public InsertSiblingDownScopeTreeWidgetAction(final ScopeTreeItem treeItem, final Scope referencedScope) {
-		this.treeItem = treeItem;
-		this.referencedScope = referencedScope;
+	public InsertSiblingDownScopeTreeWidgetAction(final ScopeTreeWidget tree, final ScopeAction action) {
+		this.tree = tree;
+		this.action = action;
 	}
 
 	@Override
 	public void execute() throws UnableToCompleteActionException {
-		if (treeItem.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
+		final Scope newScope = action.getScope();
+		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
 
-		final ScopeTreeItem newItem = new ScopeTreeItem(referencedScope);
-		treeItem.getParentItem().insertItem(treeItem.getParentItem().getChildIndex(treeItem) + 1, newItem);
+		final ScopeTreeItem parentTreeItem = getTreeItemFor(tree, newScope.getParent());
+		final ScopeTreeItem newItem = new ScopeTreeItem(newScope);
+		parentTreeItem.insertItem(newScope.getIndex(), newItem);
 		newItem.enterEditMode();
 	}
 
 	@Override
 	public void rollback() throws UnableToCompleteActionException {
-		if (treeItem.isRoot()) throw new UnableToCompleteActionException("The action cannot be undone because an inconsistence was found.");
-		final TreeItem parentItem = treeItem.getParentItem();
-		final int index = parentItem.getChildIndex(treeItem) + 1;
+		new RemoveScopeTreeWidgetAction(tree, action).execute();
+	}
 
-		if (index > parentItem.getChildCount() - 1) throw new UnableToCompleteActionException("The action cannot be undone because an inconsistence was found.");
-
-		// new RemoveScopeTreeWidgetAction((ScopeTreeItem) parentItem.getChild(index)).execute();
+	private ScopeTreeItem getTreeItemFor(final ScopeTreeWidget tree, final Scope scope) throws UnableToCompleteActionException {
+		ScopeTreeItem treeItem;
+		try {
+			treeItem = tree.getScopeTreeItemFor(scope);
+		}
+		catch (final NotFoundException e) {
+			throw new UnableToCompleteActionException("Tree item could not be found.", e);
+		}
+		return treeItem;
 	}
 }
