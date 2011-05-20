@@ -32,6 +32,6 @@ public class InsertSiblingUpScopeTreeWidgetAction implements ScopeTreeWidgetActi
 
 		if (index < 0) throw new UnableToCompleteActionException("The action cannot be undone because an inconsistence was found.");
 
-		new RemoveScopeTreeWidgetAction((ScopeTreeItem) parentItem.getChild(index)).execute();
+		// new RemoveScopeTreeWidgetAction((ScopeTreeItem) parentItem.getChild(index)).execute();
 	}
 }

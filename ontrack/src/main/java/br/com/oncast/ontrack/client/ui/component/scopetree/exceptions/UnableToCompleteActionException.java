@@ -6,4 +6,8 @@ public class UnableToCompleteActionException extends Exception {
 	public UnableToCompleteActionException(final String description) {
 		super(description);
 	}
+
+	public UnableToCompleteActionException(final String description, final NotFoundException e) {
+		super(description, e);
+	}
 }

@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidge
 import br.com.oncast.ontrack.shared.beans.Scope;
 
 // TODO Refactor this class to decentralize Action to WidgetActionFactory mappings.
+// TODO Analize refactoring so that every widgetAction receives the tree and the action in its constructor.
 public class ScopeTreeWidgetActionFactoryImpl implements ScopeTreeWidgetActionFactory {
 
 	private final ScopeTreeWidget tree;
@@ -38,7 +39,7 @@ public class ScopeTreeWidgetActionFactoryImpl implements ScopeTreeWidgetActionFa
 			final Scope referencedScope = action.getScope();
 			final ScopeTreeItem referencedScopeTreeItem = tree.getScopeTreeItemFor(referencedScope);
 
-			if (clazz.equals(RemoveScopeAction.class)) return new RemoveScopeTreeWidgetAction(referencedScopeTreeItem);
+			if (clazz.equals(RemoveScopeAction.class)) return new RemoveScopeTreeWidgetAction(tree, action);
 			if (clazz.equals(MoveDownScopeAction.class)) return new MoveDownScopeTreeWidgetAction(referencedScopeTreeItem);
 			if (clazz.equals(MoveUpScopeAction.class)) return new MoveUpScopeTreeWidgetAction(referencedScopeTreeItem);
 			if (clazz.equals(MoveRightScopeAction.class)) return new MoveRightScopeTreeWidgetAction(referencedScopeTreeItem);
@@ -55,7 +56,8 @@ public class ScopeTreeWidgetActionFactoryImpl implements ScopeTreeWidgetActionFa
 
 			throw new UnableToCompleteActionException("It was not possible to find the desired action.");
 
-		} catch (final NotFoundException e) {
+		}
+		catch (final NotFoundException e) {
 			throw new UnableToCompleteActionException("It was not possible to find the tree item in which the action should be performed on.");
 		}
 	}
