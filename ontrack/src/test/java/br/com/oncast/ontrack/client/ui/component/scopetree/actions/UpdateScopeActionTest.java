@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class UpdateScopeActionTest {
 
@@ -23,14 +24,14 @@ public class UpdateScopeActionTest {
 	@Test
 	public void updateActionChangeScopeDescription() throws UnableToCompleteActionException {
 		assertEquals("root", rootScope.getDescription());
-		new UpdateScopeAction(rootScope, "new text").execute();
+		new ScopeUpdateAction(rootScope, "new text").execute();
 		assertEquals("new text", rootScope.getDescription());
 	}
 
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals("root", rootScope.getDescription());
-		final UpdateScopeAction updateScopeAction = new UpdateScopeAction(rootScope, "new text");
+		final ScopeUpdateAction updateScopeAction = new ScopeUpdateAction(rootScope, "new text");
 		updateScopeAction.execute();
 		assertEquals("new text", rootScope.getDescription());
 		updateScopeAction.rollback();
@@ -39,6 +40,6 @@ public class UpdateScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void ifTheActionNotExecutedCantBeRolledBack() throws UnableToCompleteActionException {
-		new UpdateScopeAction(rootScope, "new text").rollback();
+		new ScopeUpdateAction(rootScope, "new text").rollback();
 	}
 }

@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class InsertChildScopeActionTest {
 
@@ -20,24 +21,24 @@ public class InsertChildScopeActionTest {
 	@Test
 	public void insertChildMustInsertNewChild() throws UnableToCompleteActionException {
 		assertEquals(selectedScope.getChildren().size(), 0);
-		new InsertChildScopeAction(selectedScope).execute();
+		new ScopeInsertChildAction(selectedScope).execute();
 		assertEquals(1, selectedScope.getChildren().size());
 	}
 
 	@Test
 	public void theInsertedChildMustBeTheLastChild() throws UnableToCompleteActionException {
-		new InsertChildScopeAction(selectedScope).execute();
-		final InsertChildScopeAction insertChildScopeAction = new InsertChildScopeAction(selectedScope);
+		new ScopeInsertChildAction(selectedScope).execute();
+		final ScopeInsertChildAction insertChildScopeAction = new ScopeInsertChildAction(selectedScope);
 		assertEquals(1, selectedScope.getChildren().size());
 		insertChildScopeAction.execute();
 		final Scope insertedScope = selectedScope.getChildren().get(selectedScope.getChildren().size() - 1);
-		assertEquals(insertedScope, insertChildScopeAction.getScope());
+		assertEquals(insertedScope, insertChildScopeAction.getNewScope());
 	}
 
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals(selectedScope.getChildren().size(), 0);
-		final InsertChildScopeAction insertChildScopeAction = new InsertChildScopeAction(selectedScope);
+		final ScopeInsertChildAction insertChildScopeAction = new ScopeInsertChildAction(selectedScope);
 		insertChildScopeAction.execute();
 		assertEquals(1, selectedScope.getChildren().size());
 		insertChildScopeAction.rollback();

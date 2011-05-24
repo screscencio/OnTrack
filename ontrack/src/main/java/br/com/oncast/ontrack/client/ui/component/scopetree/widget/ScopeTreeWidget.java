@@ -2,10 +2,10 @@ package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
 
 import java.util.Iterator;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeItemEditionEvent;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
@@ -57,15 +57,13 @@ public class ScopeTreeWidget extends Composite {
 		return tree.getItemCount();
 	}
 
-	public ScopeTreeItem getScopeTreeItemFor(final Scope scope) throws NotFoundException {
+	public ScopeTreeItem getScopeTreeItemFor(final Scope scope) throws ScopeNotFoundException {
 		final Iterator<TreeItem> treeItemIterator = tree.treeItemIterator();
 		while (treeItemIterator.hasNext()) {
 			final TreeItem item = treeItemIterator.next();
-			if (item.getUserObject().equals(scope)) {
-				return (ScopeTreeItem) item;
-			}
+			if (item.getUserObject().equals(scope)) { return (ScopeTreeItem) item; }
 		}
-		throw new NotFoundException();
+		throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
 	}
 
 	@Override
@@ -82,5 +80,9 @@ public class ScopeTreeWidget extends Composite {
 		}
 
 		return true;
+	}
+
+	public void setSelectedItem(final ScopeTreeItem treeItem) {
+		tree.setSelectedItem(treeItem);
 	}
 }

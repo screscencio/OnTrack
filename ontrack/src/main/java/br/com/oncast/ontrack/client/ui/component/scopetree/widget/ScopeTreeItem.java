@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
 import br.com.oncast.ontrack.client.ui.component.editableLabel.widget.EditableLabel;
 import br.com.oncast.ontrack.client.ui.component.editableLabel.widget.EditionHandler;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeItemEditionEvent;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -65,5 +65,10 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			if (!this.getChild(i).equals(otherTreeItem.getChild(i))) return false;
 		}
 		return true;
+	}
+
+	@Override
+	public ScopeTreeItem getParentItem() {
+		return (ScopeTreeItem) super.getParentItem();
 	}
 }

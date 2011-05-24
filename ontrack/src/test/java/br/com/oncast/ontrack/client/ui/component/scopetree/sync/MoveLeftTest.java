@@ -6,14 +6,14 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.MoveLeftScopeAction;
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactoryImpl;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionFactoryImpl;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionManager;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.exceptions.ActionNotFoundException;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveLeftAction;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -25,7 +25,7 @@ public class MoveLeftTest extends GwtTest {
 	private Scope childScope;
 	private ScopeTreeWidget tree;
 	private ScopeTreeWidget treeAfterManipulation;
-	private ScopeTreeWidgetActionManager scopeTreeWidgetActionManager;
+	private ScopeTreeActionManager scopeTreeWidgetActionManager;
 
 	@Before
 	public void setUp() {
@@ -37,7 +37,7 @@ public class MoveLeftTest extends GwtTest {
 
 		tree.add(new ScopeTreeItem(scope));
 
-		scopeTreeWidgetActionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
+		scopeTreeWidgetActionManager = new ScopeTreeActionManager(new ScopeTreeActionFactoryImpl(tree));
 	}
 
 	private Scope getScope() {
@@ -84,26 +84,26 @@ public class MoveLeftTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldMoveLeft() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new MoveLeftScopeAction(childScope));
+	public void shouldMoveLeft() throws ActionNotFoundException {
+		scopeTreeWidgetActionManager.execute(new ScopeMoveLeftAction(childScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveToTheSameLevelAsRoot() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new MoveLeftScopeAction(firstScope));
+	public void shouldNotMoveToTheSameLevelAsRoot() throws ActionNotFoundException {
+		scopeTreeWidgetActionManager.execute(new ScopeMoveLeftAction(firstScope));
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveRoot() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new MoveLeftScopeAction(rootScope));
+	public void shouldNotMoveRoot() throws ActionNotFoundException {
+		scopeTreeWidgetActionManager.execute(new ScopeMoveLeftAction(rootScope));
 	}
 
 	@Test
-	public void shouldMoveRightAfterUndo() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new MoveLeftScopeAction(childScope));
+	public void shouldMoveRightAfterUndo() throws ActionNotFoundException {
+		scopeTreeWidgetActionManager.execute(new ScopeMoveLeftAction(childScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);

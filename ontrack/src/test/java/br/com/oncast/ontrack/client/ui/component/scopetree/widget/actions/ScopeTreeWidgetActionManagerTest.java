@@ -10,35 +10,36 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class ScopeTreeWidgetActionManagerTest {
 
-	private ScopeTreeWidgetActionManager scopeManager;
+	private ScopeTreeActionManager scopeManager;
 	private Scope rootScope;
-	private InsertChildScopeAction normalAction;
-	private InsertChildScopeAction normalActionWithBadWidgetAction;
-	private InsertChildScopeAction exceptionAction;
-	private ScopeTreeWidgetActionFactory factoryMock;
-	private ScopeTreeWidgetAction widgetExceptionActionMock;
+	private ScopeInsertChildAction normalAction;
+	private ScopeInsertChildAction normalActionWithBadWidgetAction;
+	private ScopeInsertChildAction exceptionAction;
+	private ScopeTreeActionFactory factoryMock;
+	private ScopeTreeAction widgetExceptionActionMock;
 
 	@Before
-	public void setUp() throws UnableToCompleteActionException {
-		factoryMock = mock(ScopeTreeWidgetActionFactory.class);
+	public void setUp() throws Exception {
+		factoryMock = mock(ScopeTreeActionFactory.class);
 		rootScope = new Scope("root");
-		exceptionAction = mock(InsertChildScopeAction.class);
-		normalActionWithBadWidgetAction = new InsertChildScopeAction(rootScope);
+		exceptionAction = mock(ScopeInsertChildAction.class);
+		normalActionWithBadWidgetAction = new ScopeInsertChildAction(rootScope);
 		doThrow(new UnableToCompleteActionException("")).when(exceptionAction).rollback();
-		normalAction = new InsertChildScopeAction(rootScope);
-		final ScopeTreeWidgetAction widgetActionMock = mock(ScopeTreeWidgetAction.class);
-		widgetExceptionActionMock = mock(ScopeTreeWidgetAction.class);
-		doThrow(new UnableToCompleteActionException("")).when(widgetExceptionActionMock).execute();
-		when(factoryMock.getEquivalentActionFor(normalAction)).thenReturn(widgetActionMock);
-		when(factoryMock.getEquivalentActionFor(normalActionWithBadWidgetAction)).thenReturn(widgetExceptionActionMock);
-		when(factoryMock.getEquivalentActionFor(exceptionAction)).thenReturn(widgetExceptionActionMock);
-		scopeManager = new ScopeTreeWidgetActionManager(factoryMock);
+		normalAction = new ScopeInsertChildAction(rootScope);
+		final ScopeTreeAction widgetActionMock = mock(ScopeTreeAction.class);
+		widgetExceptionActionMock = mock(ScopeTreeAction.class);
+		doThrow(new ScopeNotFoundException("")).when(widgetExceptionActionMock).execute();
+		when(factoryMock.createEquivalentActionFor(normalAction)).thenReturn(widgetActionMock);
+		when(factoryMock.createEquivalentActionFor(normalActionWithBadWidgetAction)).thenReturn(widgetExceptionActionMock);
+		when(factoryMock.createEquivalentActionFor(exceptionAction)).thenReturn(widgetExceptionActionMock);
+		scopeManager = new ScopeTreeActionManager(factoryMock);
 	}
 
 	@Test
@@ -89,12 +90,12 @@ public class ScopeTreeWidgetActionManagerTest {
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void executeOkUndoExceptionNormalAction() throws UnableToCompleteActionException {
-		final InsertChildScopeAction rollbackException = new InsertChildScopeAction(rootScope);
-		final ScopeTreeWidgetAction rollbackWidgetException = mock(ScopeTreeWidgetAction.class);
+	public void executeOkUndoExceptionNormalAction() throws Exception {
+		final ScopeInsertChildAction rollbackException = new ScopeInsertChildAction(rootScope);
+		final ScopeTreeAction rollbackWidgetException = mock(ScopeTreeAction.class);
 
 		doThrow(new UnableToCompleteActionException("")).when(rollbackWidgetException).rollback();
-		when(factoryMock.getEquivalentActionFor(rollbackException)).thenReturn(rollbackWidgetException);
+		when(factoryMock.createEquivalentActionFor(rollbackException)).thenReturn(rollbackWidgetException);
 
 		scopeManager.execute(rollbackException);
 		assertEquals(1, rootScope.getChildren().size());
@@ -103,13 +104,13 @@ public class ScopeTreeWidgetActionManagerTest {
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void executeOkUndoOkRedoException() throws UnableToCompleteActionException {
-		final InsertChildScopeAction rollbackException = new InsertChildScopeAction(rootScope);
-		final ScopeTreeWidgetAction normalWidgetException = mock(ScopeTreeWidgetAction.class);
-		final ScopeTreeWidgetAction execute = mock(ScopeTreeWidgetAction.class);
+	public void executeOkUndoOkRedoException() throws Exception {
+		final ScopeInsertChildAction rollbackException = new ScopeInsertChildAction(rootScope);
+		final ScopeTreeAction normalWidgetException = mock(ScopeTreeAction.class);
+		final ScopeTreeAction execute = mock(ScopeTreeAction.class);
 
 		doThrow(new UnableToCompleteActionException("")).when(execute).execute();
-		when(factoryMock.getEquivalentActionFor(rollbackException)).thenReturn(normalWidgetException).thenReturn(execute);
+		when(factoryMock.createEquivalentActionFor(rollbackException)).thenReturn(normalWidgetException).thenReturn(execute);
 
 		scopeManager.execute(rollbackException);
 		assertEquals(1, rootScope.getChildren().size());

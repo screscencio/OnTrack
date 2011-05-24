@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveDownAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class MoveDownScopeActionTest {
 
@@ -25,14 +26,14 @@ public class MoveDownScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedDown() throws UnableToCompleteActionException {
-		new MoveDownScopeAction(rootScope).execute();
+		new ScopeMoveDownAction(rootScope).execute();
 	}
 
 	@Test
 	public void movedDownScopeMustBeDown() throws UnableToCompleteActionException {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
-		final MoveDownScopeAction moveDown = new MoveDownScopeAction(firstChild);
+		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild);
 		moveDown.execute();
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
@@ -42,7 +43,7 @@ public class MoveDownScopeActionTest {
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
-		final MoveDownScopeAction moveDown = new MoveDownScopeAction(firstChild);
+		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild);
 		moveDown.execute();
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
@@ -53,7 +54,7 @@ public class MoveDownScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void lastNodeCantBeMovedDown() throws UnableToCompleteActionException {
-		new MoveDownScopeAction(lastChild).execute();
+		new ScopeMoveDownAction(lastChild).execute();
 	}
 
 }

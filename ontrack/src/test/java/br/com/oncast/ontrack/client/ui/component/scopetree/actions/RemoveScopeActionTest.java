@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class RemoveScopeActionTest {
 
@@ -25,7 +26,7 @@ public class RemoveScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootScopeCantBeRemoved() throws UnableToCompleteActionException {
-		new RemoveScopeAction(rootScope).execute();
+		new ScopeRemoveAction(rootScope).execute();
 	}
 
 	@Test
@@ -33,7 +34,7 @@ public class RemoveScopeActionTest {
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, rootScope.getChildren().get(1));
-		new RemoveScopeAction(firstChild).execute();
+		new ScopeRemoveAction(firstChild).execute();
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(lastChild, rootScope.getChildren().get(0));
 	}
@@ -43,7 +44,7 @@ public class RemoveScopeActionTest {
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, rootScope.getChildren().get(1));
-		final RemoveScopeAction removeScopeAction = new RemoveScopeAction(firstChild);
+		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(firstChild);
 		removeScopeAction.execute();
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(lastChild, rootScope.getChildren().get(0));

@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_F2;
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.UpdateScopeAction;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactoryImpl;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionFactoryImpl;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionManager;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScopeTree implements IsWidget {
 
 	private final ScopeTreeWidget tree;
-	private final ScopeTreeWidgetActionManager actionManager;
+	private final ScopeTreeActionManager actionManager;
 
 	public ScopeTree() {
 		tree = new ScopeTreeWidget(new ScopeTreeWidgetInteractionHandler() {
@@ -37,10 +37,10 @@ public class ScopeTree implements IsWidget {
 
 			@Override
 			public void onItemUpdate(final ScopeTreeItem item, final String newContent) {
-				actionManager.execute(new UpdateScopeAction(item.getReferencedScope(), newContent));
+				actionManager.execute(new ScopeUpdateAction(item.getReferencedScope(), newContent));
 			}
 		});
-		actionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
+		actionManager = new ScopeTreeActionManager(new ScopeTreeActionFactoryImpl(tree));
 	}
 
 	public void setScope(final Scope scope) {

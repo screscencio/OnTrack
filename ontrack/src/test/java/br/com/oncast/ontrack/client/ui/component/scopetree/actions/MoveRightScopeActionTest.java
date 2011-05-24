@@ -5,8 +5,10 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class MoveRightScopeActionTest {
 
@@ -25,12 +27,12 @@ public class MoveRightScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedRight() throws UnableToCompleteActionException {
-		new MoveLeftScopeAction(rootScope).execute();
+		new ScopeMoveLeftAction(rootScope).execute();
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void aScopeCantBeMovedIfDontHaveUpSibling() throws UnableToCompleteActionException {
-		new MoveLeftScopeAction(firstChild).execute();
+		new ScopeMoveLeftAction(firstChild).execute();
 	}
 
 	@Test
@@ -38,7 +40,7 @@ public class MoveRightScopeActionTest {
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, rootScope.getChildren().get(1));
-		new MoveRightScopeAction(lastChild).execute();
+		new ScopeMoveRightAction(lastChild).execute();
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, firstChild.getChildren().get(0));
@@ -50,7 +52,7 @@ public class MoveRightScopeActionTest {
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(0, firstChild.getChildren().size());
 		assertEquals(lastChild, rootScope.getChildren().get(1));
-		final MoveRightScopeAction moveRightScopeAction = new MoveRightScopeAction(lastChild);
+		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild);
 		moveRightScopeAction.execute();
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(1, firstChild.getChildren().size());
