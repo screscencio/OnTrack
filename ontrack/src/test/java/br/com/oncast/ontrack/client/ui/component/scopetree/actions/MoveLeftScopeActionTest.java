@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class MoveLeftScopeActionTest {
 
@@ -25,13 +26,13 @@ public class MoveLeftScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedLeft() throws UnableToCompleteActionException {
-		new MoveLeftScopeAction(rootScope).execute();
+		new ScopeMoveLeftAction(rootScope).execute();
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void aRootChildCantbeMovedLeft() throws UnableToCompleteActionException {
 		assertEquals(rootScope.getChildren().get(0), middle);
-		new MoveLeftScopeAction(middle).execute();
+		new ScopeMoveLeftAction(middle).execute();
 	}
 
 	@Test
@@ -39,7 +40,7 @@ public class MoveLeftScopeActionTest {
 		assertEquals(middle.getChildren().get(0), lastChild);
 		assertEquals(1, middle.getChildren().size());
 		assertEquals(1, rootScope.getChildren().size());
-		new MoveLeftScopeAction(lastChild).execute();
+		new ScopeMoveLeftAction(lastChild).execute();
 		assertEquals(0, middle.getChildren().size());
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(middle, rootScope.getChildren().get(0));
@@ -51,7 +52,7 @@ public class MoveLeftScopeActionTest {
 		assertEquals(middle.getChildren().get(0), lastChild);
 		assertEquals(1, middle.getChildren().size());
 		assertEquals(1, rootScope.getChildren().size());
-		final MoveLeftScopeAction moveLeftScopeAction = new MoveLeftScopeAction(lastChild);
+		final ScopeMoveLeftAction moveLeftScopeAction = new ScopeMoveLeftAction(lastChild);
 		moveLeftScopeAction.execute();
 		assertEquals(0, middle.getChildren().size());
 		assertEquals(2, rootScope.getChildren().size());

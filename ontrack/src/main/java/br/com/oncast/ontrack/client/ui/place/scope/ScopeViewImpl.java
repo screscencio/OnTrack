@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.place.scope;
 
 import br.com.oncast.ontrack.client.ui.component.scopetree.ScopeTree;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
 
 import com.google.gwt.user.client.ui.Widget;
 

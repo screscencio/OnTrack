@@ -6,14 +6,14 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.InsertChildScopeAction;
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.NotFoundException;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionFactoryImpl;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeWidgetActionManager;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionFactoryImpl;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionManager;
 import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widget.exceptions.ActionNotFoundException;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -24,7 +24,7 @@ public class InsertChildTest extends GwtTest {
 	private Scope firstScope;
 	private ScopeTreeWidget tree;
 	private ScopeTreeWidget treeAfterManipulation;
-	private ScopeTreeWidgetActionManager scopeTreeWidgetActionManager;
+	private ScopeTreeActionManager scopeTreeWidgetActionManager;
 
 	@Before
 	public void setUp() {
@@ -36,7 +36,7 @@ public class InsertChildTest extends GwtTest {
 
 		tree.add(new ScopeTreeItem(scope));
 
-		scopeTreeWidgetActionManager = new ScopeTreeWidgetActionManager(new ScopeTreeWidgetActionFactoryImpl(tree));
+		scopeTreeWidgetActionManager = new ScopeTreeActionManager(new ScopeTreeActionFactoryImpl(tree));
 	}
 
 	private Scope getScope() {
@@ -94,24 +94,24 @@ public class InsertChildTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldInsertChild() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new InsertChildScopeAction(firstScope));
+	public void shouldInsertChild() throws ActionNotFoundException {
+		scopeTreeWidgetActionManager.execute(new ScopeInsertChildAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test
-	public void shouldInsertChildForRoot() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new InsertChildScopeAction(rootScope));
+	public void shouldInsertChildForRoot() throws ActionNotFoundException {
+		scopeTreeWidgetActionManager.execute(new ScopeInsertChildAction(rootScope));
 
 		assertEquals(getModifiedScopeForRootChild(), scope);
 		assertEquals(getModifiedTreeForRootChild(), tree);
 	}
 
 	@Test
-	public void shouldRemoveInsertedChildAfterUndo() throws NotFoundException {
-		scopeTreeWidgetActionManager.execute(new InsertChildScopeAction(firstScope));
+	public void shouldRemoveInsertedChildAfterUndo() throws ActionNotFoundException {
+		scopeTreeWidgetActionManager.execute(new ScopeInsertChildAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);

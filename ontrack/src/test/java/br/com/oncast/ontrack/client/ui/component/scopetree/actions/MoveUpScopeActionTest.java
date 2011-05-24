@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class MoveUpScopeActionTest {
 	private Scope rootScope;
@@ -24,14 +25,14 @@ public class MoveUpScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedUp() throws UnableToCompleteActionException {
-		new MoveUpScopeAction(rootScope).execute();
+		new ScopeMoveUpAction(rootScope).execute();
 	}
 
 	@Test
 	public void movedDownScopeMustBeDown() throws UnableToCompleteActionException {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
-		final MoveUpScopeAction moveUp = new MoveUpScopeAction(lastChild);
+		final ScopeMoveUpAction moveUp = new ScopeMoveUpAction(lastChild);
 		moveUp.execute();
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
@@ -41,7 +42,7 @@ public class MoveUpScopeActionTest {
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
-		final MoveUpScopeAction moveDown = new MoveUpScopeAction(lastChild);
+		final ScopeMoveUpAction moveDown = new ScopeMoveUpAction(lastChild);
 		moveDown.execute();
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
@@ -52,6 +53,6 @@ public class MoveUpScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void lastNodeCantBeMovedDown() throws UnableToCompleteActionException {
-		new MoveUpScopeAction(firstChild).execute();
+		new ScopeMoveUpAction(firstChild).execute();
 	}
 }

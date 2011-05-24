@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.beans.Scope;
+import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class InsertFatherScopeActionTest {
 
@@ -24,25 +25,25 @@ public class InsertFatherScopeActionTest {
 	public void mustInsertAScopeAsFather() throws UnableToCompleteActionException {
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
-		final InsertFatherScopeAction insertFatherScopeAction = new InsertFatherScopeAction(childScope);
+		final ScopeInsertAsFatherAction insertFatherScopeAction = new ScopeInsertAsFatherAction(childScope);
 		insertFatherScopeAction.execute();
-		assertEquals(childScope.getParent(), insertFatherScopeAction.getScope());
-		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getScope());
+		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScope());
+		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScope());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void insertingFatherAtRootNodeMustThrowException() throws UnableToCompleteActionException {
-		new InsertFatherScopeAction(rootScope).execute();
+		new ScopeInsertAsFatherAction(rootScope).execute();
 	}
 
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
-		final InsertFatherScopeAction insertFatherScopeAction = new InsertFatherScopeAction(childScope);
+		final ScopeInsertAsFatherAction insertFatherScopeAction = new ScopeInsertAsFatherAction(childScope);
 		insertFatherScopeAction.execute();
-		assertEquals(childScope.getParent(), insertFatherScopeAction.getScope());
-		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getScope());
+		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScope());
+		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScope());
 		insertFatherScopeAction.rollback();
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
