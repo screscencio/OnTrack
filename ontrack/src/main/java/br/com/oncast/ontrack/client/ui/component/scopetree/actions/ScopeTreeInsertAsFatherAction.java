@@ -1,7 +1,7 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
+package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.ui.component.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;

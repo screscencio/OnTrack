@@ -1,0 +1,32 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder 
+    xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.component.scopetree.widgets.tags">
+
+	<ui:style>
+		.editableLabel {
+			height: 15px;
+			min-height: 15px;
+		}
+		
+		.visualizationLabel {
+			cursor: pointer;
+			cursor: hand;
+		}
+		
+		.visualizationPanel {
+			display: inline;
+		}
+	</ui:style>
+
+	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
+		<g:DeckPanel ui:field="deckPanel">
+			<g:HorizontalPanel styleName="{style.visualizationPanel}">
+				<g:Label styleName="{style.visualizationLabel}" ui:field="descriptionLabel" />
+				<t:ReleaseTag ui:field="releaseTag" />
+			</g:HorizontalPanel>
+			<g:TextBox styleName="edit" ui:field="editionBox" />
+		</g:DeckPanel>
+	</g:FocusPanel>
+</ui:UiBinder>

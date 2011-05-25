@@ -1,33 +1,31 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
+package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.ui.component.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
 
-class ScopeTreeInsertChildAction implements ScopeTreeAction {
+class ScopeTreeInsertSiblingAction implements ScopeTreeAction {
 
 	private final ScopeTreeWidget tree;
 	private final ScopeInsertAction action;
 
-	public ScopeTreeInsertChildAction(final ScopeTreeWidget tree, final ScopeInsertAction action) {
+	public ScopeTreeInsertSiblingAction(final ScopeTreeWidget tree, final ScopeInsertAction action) {
 		this.tree = tree;
 		this.action = action;
 	}
 
 	@Override
 	public void execute() throws ScopeNotFoundException {
-		final Scope scope = action.getScope();
 		final Scope newScope = action.getNewScope();
+		final Scope parentScope = action.getNewScope().getParent();
 
-		final ScopeTreeItem parentTreeItem = tree.getScopeTreeItemFor(scope);
+		final ScopeTreeItem parentTreeItem = tree.getScopeTreeItemFor(parentScope);
 		final ScopeTreeItem newItem = new ScopeTreeItem(newScope);
 
-		parentTreeItem.insertItem(scope.getChildIndex(newScope), newItem);
-
-		parentTreeItem.setState(true);
-		newItem.setSelected(true);
+		parentTreeItem.insertItem(parentScope.getChildIndex(newScope), newItem);
+		tree.setSelected(newItem);
 		newItem.enterEditMode();
 	}
 

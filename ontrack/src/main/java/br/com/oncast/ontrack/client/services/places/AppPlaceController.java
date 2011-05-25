@@ -1,6 +1,6 @@
-package br.com.oncast.ontrack.client.service.place;
+package br.com.oncast.ontrack.client.services.places;
 
-import br.com.oncast.ontrack.client.service.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.place.AppPlaceHistoryMapper;
 import br.com.oncast.ontrack.client.ui.place.scope.ScopePlace;
 

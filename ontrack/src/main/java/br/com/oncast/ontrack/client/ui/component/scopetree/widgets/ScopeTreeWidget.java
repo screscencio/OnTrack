@@ -1,9 +1,10 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
+package br.com.oncast.ontrack.client.ui.component.scopetree.widgets;
 
 import java.util.Iterator;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeItemEditionEvent;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.component.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.component.scopetree.events.ScopeTreeItemEditionEvent;
+import br.com.oncast.ontrack.client.ui.component.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
 

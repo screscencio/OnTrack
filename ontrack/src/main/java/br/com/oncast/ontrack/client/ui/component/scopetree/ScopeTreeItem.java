@@ -1,8 +1,8 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.widget;
+package br.com.oncast.ontrack.client.ui.component.scopetree;
 
-import br.com.oncast.ontrack.client.ui.component.editableLabel.widget.EditableLabel;
-import br.com.oncast.ontrack.client.ui.component.editableLabel.widget.EditionHandler;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeItemEditionEvent;
+import br.com.oncast.ontrack.client.ui.component.scopetree.events.ScopeTreeItemEditionEvent;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widgets.ScopeTreeItemWidget;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.scope.Scope;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
@@ -10,11 +10,11 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
-	private final EditableLabel descriptionLabel;
+	private final ScopeTreeItemWidget descriptionLabel;
 
 	public ScopeTreeItem(final Scope scope) {
 		super();
-		this.setWidget(descriptionLabel = new EditableLabel(scope.getDescription(), new EditionHandler() {
+		this.setWidget(descriptionLabel = new ScopeTreeItemWidget(scope.getDescription(), new ScopeTreeItemWidgetEditionHandler() {
 
 			@Override
 			public void onEdit(final String newContent) {

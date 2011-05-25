@@ -1,11 +1,10 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_F2;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionFactoryImpl;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionManager;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionFactoryImpl;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionManager;
+import br.com.oncast.ontrack.client.ui.component.scopetree.events.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
 

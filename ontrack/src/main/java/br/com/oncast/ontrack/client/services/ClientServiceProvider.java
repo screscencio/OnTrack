@@ -1,6 +1,6 @@
-package br.com.oncast.ontrack.client.service;
+package br.com.oncast.ontrack.client.services;
 
-import br.com.oncast.ontrack.client.service.place.AppPlaceController;
+import br.com.oncast.ontrack.client.services.places.AppPlaceController;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;

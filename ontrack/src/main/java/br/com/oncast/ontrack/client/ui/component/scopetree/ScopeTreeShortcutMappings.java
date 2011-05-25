@@ -9,7 +9,7 @@ import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_RIG
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_UP;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_Y;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_Z;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionManager;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionManager;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
