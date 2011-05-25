@@ -13,6 +13,8 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
@@ -20,6 +22,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,6 +43,12 @@ public class EditableLabel extends Composite implements HasValue<String> {
 	protected TextBox editBox;
 
 	@UiField
+	protected Label tagLabel;
+
+	@UiField
+	protected HorizontalPanel tagPanel;
+
+	@UiField
 	protected FocusPanel focusPanel;
 
 	private final EditionHandler editionHandler;
@@ -50,6 +59,7 @@ public class EditableLabel extends Composite implements HasValue<String> {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		editLabel.setText(text);
+		tagLabel.setText("Release 1 / Iteration 1");
 		deckPanel.showWidget(0);
 
 		focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
@@ -111,13 +121,13 @@ public class EditableLabel extends Composite implements HasValue<String> {
 
 	@Override
 	public String getValue() {
-		return editLabel.getText();
+		return editLabel.getText().trim() + " @" + tagLabel.getText().trim();
 	}
 
 	@Override
 	public void setValue(final String value) {
-		editLabel.setText(value);
-		editBox.setText(value);
+		final MatchResult exec = RegExp.compile("[a-zA-Z0-9][^@?][a-zA-Z0-9]*").exec(value);
+		// TODO make regex.
 	}
 
 	@Override
