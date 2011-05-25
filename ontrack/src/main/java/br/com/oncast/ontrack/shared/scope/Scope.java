@@ -3,11 +3,14 @@ package br.com.oncast.ontrack.shared.scope;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.shared.release.Release;
+
 public class Scope {
 
 	private final List<Scope> childrenList;
 	private String description;
 	private Scope parent;
+	private Release release;
 
 	public Scope(final String description) {
 		this(description, null);
@@ -81,5 +84,13 @@ public class Scope {
 
 	public void clearChildren() {
 		this.childrenList.clear();
+	}
+
+	public void setRelease(Release release) {
+		this.release = release;
+	}
+
+	public Release getRelease() {
+		return release;
 	}
 }
