@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
+package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
 import java.util.EmptyStackException;
 import java.util.Stack;

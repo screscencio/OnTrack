@@ -1,6 +1,6 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions;
+package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
@@ -21,7 +21,7 @@ public class ScopeTreeActionFactoryImpl implements ScopeTreeActionFactory {
 	}
 
 	/**
-	 * @see br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionFactory#createEquivalentActionFor(br.com.oncast.ontrack.shared.scope.actions.ScopeAction)
+	 * @see br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionFactory#createEquivalentActionFor(br.com.oncast.ontrack.shared.scope.actions.ScopeAction)
 	 */
 	@Override
 	public ScopeTreeAction createEquivalentActionFor(final ScopeAction action) throws ScopeNotFoundException {

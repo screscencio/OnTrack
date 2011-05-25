@@ -10,6 +10,9 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeAction;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionFactory;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionManager;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;

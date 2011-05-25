@@ -6,12 +6,12 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionFactoryImpl;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.actions.ScopeTreeActionManager;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.event.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widget.exceptions.ActionNotFoundException;
+import br.com.oncast.ontrack.client.ui.component.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionFactoryImpl;
+import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionManager;
+import br.com.oncast.ontrack.client.ui.component.scopetree.events.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.ActionNotFoundException;
+import br.com.oncast.ontrack.client.ui.component.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingDownAction;
 
