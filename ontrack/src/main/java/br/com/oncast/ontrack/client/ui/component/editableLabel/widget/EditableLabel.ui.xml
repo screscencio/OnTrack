@@ -10,10 +10,28 @@
 			cursor: pointer;
 			cursor: hand;
 		}
+		.tagPanel{
+			display: inline;	
+		}
+		.tagLabel{
+			border-radius:5%;
+   			-moz-border-radius:5%;
+   			-webkit-border-radius:5px;
+			margin-left: 10px;
+			margin-top: 1px;
+			padding-left: 2px;
+			padding-right: 2px;
+			border: 2px;
+			color: white;
+			background-color: red;
+		}
 	</ui:style>
 	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
 		<g:DeckPanel ui:field="deckPanel">
-			<g:Label styleName="{style.visualizationLabel}" ui:field="editLabel" />
+			<g:HorizontalPanel styleName="{style.tagPanel}" ui:field="tagPanel">
+				<g:Label styleName="{style.visualizationLabel}" ui:field="editLabel" />
+				<g:Label styleName="{style.tagLabel}" ui:field="tagLabel" />
+			</g:HorizontalPanel>
 			<g:TextBox styleName="edit" ui:field="editBox" />
 		</g:DeckPanel>
 	</g:FocusPanel>
