@@ -10,19 +10,19 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
-	private final ScopeTreeItemWidget descriptionLabel;
+	private final ScopeTreeItemWidget scopeItemWidget;
 
 	public ScopeTreeItem(final Scope scope) {
 		super();
-		this.setWidget(descriptionLabel = new ScopeTreeItemWidget(scope.getDescription(), new ScopeTreeItemWidgetEditionHandler() {
+		this.setWidget(scopeItemWidget = new ScopeTreeItemWidget(scope, new ScopeTreeItemWidgetEditionHandler() {
 
 			@Override
-			public void onEdit(final String newContent) {
-				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEvent(ScopeTreeItem.this, newContent));
+			public void onEdit(final String pattern) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEvent(ScopeTreeItem.this, pattern));
 			}
 		}));
-		setUserObject(scope);
 
+		setReferencedScope(scope);
 		for (final Scope childScope : scope.getChildren()) {
 			addItem(new ScopeTreeItem(childScope));
 		}
@@ -32,20 +32,8 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		return getParentItem() == null;
 	}
 
-	public Scope getReferencedScope() {
-		return (Scope) super.getUserObject();
-	}
-
-	public String getDescription() {
-		return descriptionLabel.getValue();
-	}
-
-	public void setDescription(final String description) {
-		descriptionLabel.setValue(description);
-	}
-
 	public void enterEditMode() {
-		descriptionLabel.switchToEditionMode();
+		scopeItemWidget.switchToEditionMode();
 	}
 
 	@Override
@@ -53,12 +41,13 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		return (ScopeTreeItem) super.getChild(index);
 	}
 
+	// TODO Refactor this so equals bases itself on the referenced scope
 	@Override
 	public boolean equals(final Object other) {
 		if (!(other instanceof ScopeTreeItem)) return false;
 		final ScopeTreeItem otherTreeItem = (ScopeTreeItem) other;
 
-		if (!this.getDescription().equals(otherTreeItem.getDescription())) return false;
+		if (!this.getReferencedScope().equals(otherTreeItem.getReferencedScope())) return false;
 		if (this.getChildCount() != otherTreeItem.getChildCount()) return false;
 
 		for (int i = 0; i < this.getChildCount(); i++) {
@@ -70,5 +59,13 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	@Override
 	public ScopeTreeItem getParentItem() {
 		return (ScopeTreeItem) super.getParentItem();
+	}
+
+	public void setReferencedScope(final Scope scope) {
+		scopeItemWidget.setScope(scope);
+	}
+
+	public Scope getReferencedScope() {
+		return scopeItemWidget.getScope();
 	}
 }

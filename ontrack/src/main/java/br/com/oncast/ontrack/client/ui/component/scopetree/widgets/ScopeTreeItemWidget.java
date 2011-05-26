@@ -2,6 +2,9 @@ package br.com.oncast.ontrack.client.ui.component.scopetree.widgets;
 
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
+import br.com.oncast.ontrack.shared.release.Release;
+import br.com.oncast.ontrack.shared.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -36,21 +39,21 @@ public class ScopeTreeItemWidget extends Composite {
 	protected TextBox editionBox;
 
 	@UiField
-	protected Label releaseTag;
+	protected Tag releaseTag;
 
 	@UiField
 	protected FocusPanel focusPanel;
 
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
 
-	public ScopeTreeItemWidget(final String text, final ScopeTreeItemWidgetEditionHandler editionHandler) {
+	private Scope scope;
+
+	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
+		setScope(scope);
 
-		descriptionLabel.setText(text);
 		this.editionHandler = editionHandler;
-
-		releaseTag.setText("Release 1 / Iteration 1");
 
 		focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
@@ -87,12 +90,10 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	public String getValue() {
-		return descriptionLabel.getText().trim() + " @" + releaseTag.getText().trim();
+		return descriptionLabel.getText().trim();
 	}
 
 	public void setValue(final String value) {
-		// final MatchResult exec = RegExp.compile("[a-zA-Z0-9][^@?][a-zA-Z0-9]*").exec(value);
-		// TODO make regex.
 		descriptionLabel.setText(value);
 		editionBox.setText(value);
 	}
@@ -120,5 +121,22 @@ public class ScopeTreeItemWidget extends Composite {
 
 	private boolean isEditing() {
 		return deckPanel.getVisibleWidget() == 1;
+	}
+
+	public void setScope(final Scope scope) {
+		this.scope = scope;
+		descriptionLabel.setText(scope.getDescription());
+		editionBox.setText(scope.getDescription());
+		setRelease(scope.getRelease());
+	}
+
+	public Scope getScope() {
+		return scope;
+	}
+
+	private void setRelease(final Release release) {
+		final boolean isReleasePresent = release != null;
+		releaseTag.setVisible(isReleasePresent);
+		releaseTag.setText(isReleasePresent ? release.getFullDescription() : "");
 	}
 }
