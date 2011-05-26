@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -17,12 +19,17 @@ public class Tag extends Composite implements HasText {
 	@UiField
 	protected Label tagLabel;
 
+	@UiField
+	protected Label closeLabel;
+
 	public Tag() {
 		initWidget(uiBinder.createAndBindUi(this));
+		initCloseLabel();
 	}
 
 	public Tag(final String firstName) {
 		initWidget(uiBinder.createAndBindUi(this));
+		initCloseLabel();
 	}
 
 	@Override
@@ -33,5 +40,16 @@ public class Tag extends Composite implements HasText {
 	@Override
 	public void setText(final String text) {
 		tagLabel.setText(text);
+	}
+
+	private void initCloseLabel() {
+		closeLabel.setText("X");
+		closeLabel.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				// TODO remove tag.
+			}
+		});
 	}
 }
