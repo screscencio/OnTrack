@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.place;
 
-import br.com.oncast.ontrack.client.ui.place.scope.ScopeActivity;
-import br.com.oncast.ontrack.client.ui.place.scope.ScopePlace;
+import br.com.oncast.ontrack.client.ui.place.planning.PlanningActivity;
+import br.com.oncast.ontrack.client.ui.place.planning.PlannnigPlace;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -11,7 +11,7 @@ public class AppActivityMapper implements ActivityMapper {
 
 	@Override
 	public Activity getActivity(final Place place) {
-		if (place instanceof ScopePlace) return new ScopeActivity();
+		if (place instanceof PlannnigPlace) return new PlanningActivity();
 		return null;
 	}
 

@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.place.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.place.AppPlaceHistoryMapper;
-import br.com.oncast.ontrack.client.ui.place.scope.ScopePlace;
+import br.com.oncast.ontrack.client.ui.place.planning.PlannnigPlace;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 public class ApplicationEntryPoint implements EntryPoint {
 
-	private static final ScopePlace DEFAULT_APP_PLACE = new ScopePlace("");
+	private static final PlannnigPlace DEFAULT_APP_PLACE = new PlannnigPlace("");
 
 	@Override
 	public void onModuleLoad() {

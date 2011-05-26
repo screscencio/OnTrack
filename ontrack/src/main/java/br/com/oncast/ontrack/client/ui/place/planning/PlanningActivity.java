@@ -1,18 +1,32 @@
-package br.com.oncast.ontrack.client.ui.place.scope;
+package br.com.oncast.ontrack.client.ui.place.planning;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-public class ScopeActivity extends AbstractActivity {
+public class PlanningActivity extends AbstractActivity {
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-		final ScopeView scopeView = new ScopeViewImpl();
+		final PlanningView scopeView = new PlanningPanel();
 		scopeView.setScope(getScope());
+		scopeView.setReleases(getReleases());
 		panel.setWidget(scopeView);
+	}
+
+	private List<Release> getReleases() {
+		final List<Release> releases = new ArrayList<Release>();
+		releases.add(new Release("R1"));
+		releases.add(new Release("R2"));
+		releases.add(new Release("R3"));
+
+		return releases;
 	}
 
 	private Scope getScope() {
