@@ -59,6 +59,7 @@ public class Scope {
 		this.description = description;
 	}
 
+	// Refactor this so that it uses this object id
 	@Override
 	public boolean equals(final Object other) {
 		if (!(other instanceof Scope)) return false;
@@ -86,7 +87,7 @@ public class Scope {
 		this.childrenList.clear();
 	}
 
-	public void setRelease(Release release) {
+	public void setRelease(final Release release) {
 		this.release = release;
 	}
 

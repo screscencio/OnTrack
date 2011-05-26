@@ -5,7 +5,10 @@ import java.util.List;
 
 import br.com.oncast.ontrack.shared.scope.Scope;
 
+// TODO Standardize this class methods with other tree structures like Scope. (eg.: getReleases -> getChildren)
 public class Release {
+
+	private static final String SEPARATOR = "/";
 
 	private String description;
 	private Release parent;
@@ -21,8 +24,17 @@ public class Release {
 		this.description = description;
 	}
 
+	public boolean isRoot() {
+		return parent == null;
+	}
+
 	public String getDescription() {
 		return description;
+	}
+
+	public String getFullDescription() {
+		if (isRoot()) return description;
+		return parent.getFullDescription() + SEPARATOR + description;
 	}
 
 	public void setDescription(final String description) {

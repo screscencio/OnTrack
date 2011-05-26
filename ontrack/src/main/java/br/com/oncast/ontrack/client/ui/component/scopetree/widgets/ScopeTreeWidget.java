@@ -61,8 +61,8 @@ public class ScopeTreeWidget extends Composite {
 	public ScopeTreeItem getScopeTreeItemFor(final Scope scope) throws ScopeNotFoundException {
 		final Iterator<TreeItem> treeItemIterator = tree.treeItemIterator();
 		while (treeItemIterator.hasNext()) {
-			final TreeItem item = treeItemIterator.next();
-			if (item.getUserObject().equals(scope)) { return (ScopeTreeItem) item; }
+			final ScopeTreeItem item = (ScopeTreeItem) treeItemIterator.next();
+			if (item.getReferencedScope().equals(scope)) { return item; }
 		}
 		throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
 	}

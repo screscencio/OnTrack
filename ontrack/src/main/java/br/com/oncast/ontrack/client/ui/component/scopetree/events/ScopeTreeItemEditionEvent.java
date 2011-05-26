@@ -8,11 +8,11 @@ public class ScopeTreeItemEditionEvent extends GwtEvent<ScopeTreeItemEditionEven
 
 	public static Type<ScopeTreeItemEditionEventHandler> TYPE;
 	private final ScopeTreeItem scopeTreeItem;
-	private final String newContent;
+	private final String pattern;
 
-	public ScopeTreeItemEditionEvent(final ScopeTreeItem scopeTreeItem, final String newContent) {
+	public ScopeTreeItemEditionEvent(final ScopeTreeItem scopeTreeItem, final String pattern) {
 		this.scopeTreeItem = scopeTreeItem;
-		this.newContent = newContent;
+		this.pattern = pattern;
 	}
 
 	public static Type<ScopeTreeItemEditionEventHandler> getType() {
@@ -29,6 +29,6 @@ public class ScopeTreeItemEditionEvent extends GwtEvent<ScopeTreeItemEditionEven
 
 	@Override
 	protected void dispatch(final ScopeTreeItemEditionEventHandler handler) {
-		handler.onItemUpdate(scopeTreeItem, newContent);
+		handler.onItemUpdate(scopeTreeItem, pattern);
 	}
 }
