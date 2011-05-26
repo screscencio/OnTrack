@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.services.places;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.place.AppPlaceHistoryMapper;
-import br.com.oncast.ontrack.client.ui.place.scope.ScopePlace;
+import br.com.oncast.ontrack.client.ui.place.planning.PlannnigPlace;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -27,7 +27,7 @@ public class AppPlaceController {
 		placeController.goTo(place);
 	}
 
-	public void configure(final AcceptsOneWidget container, final ScopePlace defaultAppPlace, final ActivityMapper activityMapper,
+	public void configure(final AcceptsOneWidget container, final PlannnigPlace defaultAppPlace, final ActivityMapper activityMapper,
 			final PlaceHistoryMapper placeHistoryMapper) {
 		if (configured) throw new RuntimeException("The placeController is already configured.");
 		configured = true;
