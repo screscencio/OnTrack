@@ -6,12 +6,12 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionFactoryImpl;
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionManager;
-import br.com.oncast.ontrack.client.ui.component.scopetree.events.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.client.ui.component.scopetree.exceptions.ActionNotFoundException;
-import br.com.oncast.ontrack.client.ui.component.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionManager;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveDownAction;
 
@@ -26,7 +26,7 @@ public class MoveDownTest extends GwtTest {
 	private Scope lastScope;
 	private ScopeTreeWidget tree;
 	private ScopeTreeWidget treeAfterManipulation;
-	private ScopeTreeActionManager scopeTreeWidgetActionManager;
+	private ActionManager scopeTreeWidgetActionManager;
 
 	@Before
 	public void setUp() {
@@ -38,7 +38,7 @@ public class MoveDownTest extends GwtTest {
 
 		tree.add(new ScopeTreeItem(scope));
 
-		scopeTreeWidgetActionManager = new ScopeTreeActionManager(new ScopeTreeActionFactoryImpl(tree));
+		scopeTreeWidgetActionManager = new ActionManager(new ScopeTreeActionFactory(tree));
 	}
 
 	private Scope getScope() {
