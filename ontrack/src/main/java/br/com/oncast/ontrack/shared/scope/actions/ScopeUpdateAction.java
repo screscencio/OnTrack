@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.shared.scope.actions;
 
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.scope.pattern.ScopePatternParser;
+import br.com.oncast.ontrack.shared.scope.pattern.ScopeParser;
 
 public class ScopeUpdateAction implements ScopeAction {
 
@@ -17,7 +17,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	public ScopeUpdateAction(final Scope scope, final String newPattern) {
 		this.selectedScope = scope;
 
-		final ScopePatternParser patternParser = new ScopePatternParser(newPattern);
+		final ScopeParser patternParser = new ScopeParser(newPattern);
 		this.newDescription = patternParser.getScopeDescription();
 		this.newRelease = patternParser.getReleaseDescription();
 	}

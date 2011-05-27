@@ -32,9 +32,7 @@ html,body,.rootPanel {
 
 <!-- Release Panel -->
 .gwt-StackLayoutPanel {
-	width: 500px;
 	border: 1px solid black;
-	
 }
 
 .gwt-StackLayoutPanel .gwt-StackLayoutPanelHeader {
@@ -46,7 +44,4 @@ html,body,.rootPanel {
 	
 .gwt-StackLayoutPanel .gwt-StackLayoutPanelContent {
 	border: 1px solid #BBCEE9;
-}
-
-html>body .gwt-StackLayoutPanel {
 }
