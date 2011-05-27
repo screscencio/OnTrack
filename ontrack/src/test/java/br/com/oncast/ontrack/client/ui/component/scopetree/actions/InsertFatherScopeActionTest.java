@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.project.Project;
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
@@ -26,14 +28,14 @@ public class InsertFatherScopeActionTest {
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
 		final ScopeInsertAsFatherAction insertFatherScopeAction = new ScopeInsertAsFatherAction(childScope);
-		insertFatherScopeAction.execute();
+		insertFatherScopeAction.execute(new ProjectContext(new Project()));
 		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScope());
 		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScope());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void insertingFatherAtRootNodeMustThrowException() throws UnableToCompleteActionException {
-		new ScopeInsertAsFatherAction(rootScope).execute();
+		new ScopeInsertAsFatherAction(rootScope).execute(new ProjectContext(new Project()));
 	}
 
 	@Test
@@ -41,10 +43,10 @@ public class InsertFatherScopeActionTest {
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
 		final ScopeInsertAsFatherAction insertFatherScopeAction = new ScopeInsertAsFatherAction(childScope);
-		insertFatherScopeAction.execute();
+		insertFatherScopeAction.execute(new ProjectContext(new Project()));
 		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScope());
 		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScope());
-		insertFatherScopeAction.rollback();
+		insertFatherScopeAction.rollback(new ProjectContext(new Project()));
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
 	}

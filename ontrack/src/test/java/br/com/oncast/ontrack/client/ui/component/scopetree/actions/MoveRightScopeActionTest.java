@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.project.Project;
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveRightAction;
@@ -27,12 +29,12 @@ public class MoveRightScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedRight() throws UnableToCompleteActionException {
-		new ScopeMoveLeftAction(rootScope).execute();
+		new ScopeMoveLeftAction(rootScope).execute(new ProjectContext(new Project()));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void aScopeCantBeMovedIfDontHaveUpSibling() throws UnableToCompleteActionException {
-		new ScopeMoveLeftAction(firstChild).execute();
+		new ScopeMoveLeftAction(firstChild).execute(new ProjectContext(new Project()));
 	}
 
 	@Test
@@ -40,7 +42,7 @@ public class MoveRightScopeActionTest {
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, rootScope.getChildren().get(1));
-		new ScopeMoveRightAction(lastChild).execute();
+		new ScopeMoveRightAction(lastChild).execute(new ProjectContext(new Project()));
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, firstChild.getChildren().get(0));
@@ -53,12 +55,12 @@ public class MoveRightScopeActionTest {
 		assertEquals(0, firstChild.getChildren().size());
 		assertEquals(lastChild, rootScope.getChildren().get(1));
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild);
-		moveRightScopeAction.execute();
+		moveRightScopeAction.execute(new ProjectContext(new Project()));
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(1, firstChild.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, firstChild.getChildren().get(0));
-		moveRightScopeAction.rollback();
+		moveRightScopeAction.rollback(new ProjectContext(new Project()));
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(0, firstChild.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));

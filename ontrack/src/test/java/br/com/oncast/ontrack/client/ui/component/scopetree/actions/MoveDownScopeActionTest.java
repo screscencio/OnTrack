@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.project.Project;
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
@@ -26,7 +28,7 @@ public class MoveDownScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedDown() throws UnableToCompleteActionException {
-		new ScopeMoveDownAction(rootScope).execute();
+		new ScopeMoveDownAction(rootScope).execute(new ProjectContext(new Project()));
 	}
 
 	@Test
@@ -34,7 +36,7 @@ public class MoveDownScopeActionTest {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
 		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild);
-		moveDown.execute();
+		moveDown.execute(new ProjectContext(new Project()));
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
 	}
@@ -44,17 +46,17 @@ public class MoveDownScopeActionTest {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
 		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild);
-		moveDown.execute();
+		moveDown.execute(new ProjectContext(new Project()));
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
-		moveDown.rollback();
+		moveDown.rollback(new ProjectContext(new Project()));
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void lastNodeCantBeMovedDown() throws UnableToCompleteActionException {
-		new ScopeMoveDownAction(lastChild).execute();
+		new ScopeMoveDownAction(lastChild).execute(new ProjectContext(new Project()));
 	}
 
 }
