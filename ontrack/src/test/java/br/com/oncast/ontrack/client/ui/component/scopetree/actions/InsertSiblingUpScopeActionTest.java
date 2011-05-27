@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.project.Project;
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingDownAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingUpAction;
@@ -31,7 +33,7 @@ public class InsertSiblingUpScopeActionTest {
 		assertEquals(lastChild.getParent().getChildren().get(1), lastChild);
 		assertEquals(2, rootScope.getChildren().size());
 		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild);
-		insertSiblingDownScopeAction.execute();
+		insertSiblingDownScopeAction.execute(new ProjectContext(new Project()));
 		assertEquals(3, rootScope.getChildren().size());
 		assertEquals(lastChild.getParent().getChildren().get(0), firstChild);
 		assertEquals(lastChild.getParent().getChildren().get(1), insertSiblingDownScopeAction.getNewScope());
@@ -40,7 +42,7 @@ public class InsertSiblingUpScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantAddSiblingDown() throws UnableToCompleteActionException {
-		new ScopeInsertSiblingUpAction(rootScope).execute();
+		new ScopeInsertSiblingUpAction(rootScope).execute(new ProjectContext(new Project()));
 	}
 
 	@Test
@@ -49,12 +51,12 @@ public class InsertSiblingUpScopeActionTest {
 		assertEquals(lastChild.getParent().getChildren().get(1), lastChild);
 		assertEquals(2, rootScope.getChildren().size());
 		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild);
-		insertSiblingDownScopeAction.execute();
+		insertSiblingDownScopeAction.execute(new ProjectContext(new Project()));
 		assertEquals(3, rootScope.getChildren().size());
 		assertEquals(lastChild.getParent().getChildren().get(0), firstChild);
 		assertEquals(lastChild.getParent().getChildren().get(1), insertSiblingDownScopeAction.getNewScope());
 		assertEquals(lastChild.getParent().getChildren().get(2), lastChild);
-		insertSiblingDownScopeAction.rollback();
+		insertSiblingDownScopeAction.rollback(new ProjectContext(new Project()));
 		assertEquals(lastChild.getParent().getChildren().get(0), firstChild);
 		assertEquals(lastChild.getParent().getChildren().get(1), lastChild);
 		assertEquals(2, rootScope.getChildren().size());
