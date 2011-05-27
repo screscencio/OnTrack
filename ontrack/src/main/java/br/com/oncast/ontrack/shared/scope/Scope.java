@@ -5,11 +5,12 @@ import java.util.List;
 
 import br.com.oncast.ontrack.shared.release.Release;
 
+// TODO Test this class
 public class Scope {
 
-	private final List<Scope> childrenList;
 	private String description;
 	private Scope parent;
+	private final List<Scope> childrenList;
 	private Release release;
 
 	public Scope(final String description) {

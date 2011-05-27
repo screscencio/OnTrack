@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.scope.actions;
 
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
@@ -13,7 +14,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	}
 
 	@Override
-	public void execute() throws UnableToCompleteActionException {
+	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
 		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException("It is not possible to move left when a node parent is a root node.");
 
@@ -26,7 +27,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	}
 
 	@Override
-	public void rollback() throws UnableToCompleteActionException {
+	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
 
 		final Scope parent = selectedScope.getParent();

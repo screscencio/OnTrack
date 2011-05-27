@@ -10,9 +10,9 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeAction;
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionFactory;
-import br.com.oncast.ontrack.client.ui.component.scopetree.actions.ScopeTreeActionManager;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionManager;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionExcep
 
 public class ScopeTreeWidgetActionManagerTest {
 
-	private ScopeTreeActionManager scopeManager;
+	private ActionManager scopeManager;
 	private Scope rootScope;
 	private ScopeInsertChildAction normalAction;
 	private ScopeInsertChildAction normalActionWithBadWidgetAction;
@@ -42,7 +42,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		when(factoryMock.createEquivalentActionFor(normalAction)).thenReturn(widgetActionMock);
 		when(factoryMock.createEquivalentActionFor(normalActionWithBadWidgetAction)).thenReturn(widgetExceptionActionMock);
 		when(factoryMock.createEquivalentActionFor(exceptionAction)).thenReturn(widgetExceptionActionMock);
-		scopeManager = new ScopeTreeActionManager(factoryMock);
+		scopeManager = new ActionManager(factoryMock);
 	}
 
 	@Test

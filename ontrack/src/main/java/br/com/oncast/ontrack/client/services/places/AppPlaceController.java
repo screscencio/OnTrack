@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.services.places;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.place.AppPlaceHistoryMapper;
-import br.com.oncast.ontrack.client.ui.place.planning.PlannnigPlace;
+import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
+import br.com.oncast.ontrack.client.ui.places.planning.PlannnigPlace;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;

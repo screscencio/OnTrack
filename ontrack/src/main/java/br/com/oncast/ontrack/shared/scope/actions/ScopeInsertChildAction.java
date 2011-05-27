@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.scope.actions;
 
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
@@ -14,13 +15,13 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	}
 
 	@Override
-	public void execute() throws UnableToCompleteActionException {
+	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
 		selectedScope.add(newScope);
 	}
 
 	@Override
-	public void rollback() throws UnableToCompleteActionException {
-		new ScopeRemoveAction(newScope).execute();
+	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
+		new ScopeRemoveAction(newScope).execute(context);
 	}
 
 	@Override

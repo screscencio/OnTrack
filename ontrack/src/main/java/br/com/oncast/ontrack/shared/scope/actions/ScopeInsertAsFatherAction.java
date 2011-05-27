@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.scope.actions;
 
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
@@ -13,7 +14,7 @@ public class ScopeInsertAsFatherAction implements ScopeInsertAction {
 	}
 
 	@Override
-	public void execute() throws UnableToCompleteActionException {
+	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a father for a root node.");
 
 		final Scope parent = selectedScope.getParent();
@@ -24,7 +25,7 @@ public class ScopeInsertAsFatherAction implements ScopeInsertAction {
 	}
 
 	@Override
-	public void rollback() throws UnableToCompleteActionException {
+	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
 		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
 		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException("It is not possible to rollback this action due to inconsistences.");
 

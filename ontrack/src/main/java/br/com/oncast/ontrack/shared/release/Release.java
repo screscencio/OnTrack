@@ -3,29 +3,18 @@ package br.com.oncast.ontrack.shared.release;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.shared.scope.Scope;
-
-// TODO Standardize this class methods with other tree structures like Scope. (eg.: getReleases -> getChildren)
 public class Release {
 
 	private static final String SEPARATOR = "/";
 
-	private String description;
+	private final String description;
 	private Release parent;
-	private List<Scope> scopes;
-	private List<Release> releases;
-
-	public Release() {
-		scopes = new ArrayList<Scope>();
-		releases = new ArrayList<Release>();
-	}
+	private final List<Release> childrenList;
 
 	public Release(final String description) {
 		this.description = description;
-	}
 
-	public boolean isRoot() {
-		return parent == null;
+		childrenList = new ArrayList<Release>();
 	}
 
 	public String getDescription() {
@@ -37,35 +26,42 @@ public class Release {
 		return parent.getFullDescription() + SEPARATOR + description;
 	}
 
-	public void setDescription(final String description) {
-		this.description = description;
+	public boolean isRoot() {
+		return parent == null;
 	}
 
-	public List<Scope> getScopes() {
-		return scopes;
+	public void addRelease(final Release release) {
+		if (childrenList.contains(release)) return;
+		childrenList.add(release);
 	}
 
-	public void setScopes(final List<Scope> scopes) {
-		this.scopes = scopes;
+	// TODO Test this
+	public Release loadRelease(final String releaseDescription) {
+		final String[] releaseDescriptionSegments = releaseDescription.split(SEPARATOR);
+
+		final String descriptionSegment = releaseDescriptionSegments[0];
+
+		final Release childRelease = findDirectChildRelease(descriptionSegment);
+		if (childRelease == null) return createNewSubRelease(descriptionSegment);
+		if (releaseDescriptionSegments.length == 1) return childRelease;
+
+		return childRelease.loadRelease(releaseDescription.substring(descriptionSegment.length() + SEPARATOR.length(), releaseDescription.length()));
 	}
 
-	public List<Release> getReleases() {
-		return releases;
+	private Release createNewSubRelease(final String descriptionSegment) {
+		final Release newRelease = new Release(descriptionSegment);
+		addRelease(newRelease);
+		return newRelease;
 	}
 
-	public void setReleases(final List<Release> releases) {
-		this.releases = releases;
+	private Release findDirectChildRelease(final String releaseDescription) {
+		for (final Release release : childrenList)
+			if (release.getDescription().equals(releaseDescription)) return release;
+
+		return null;
 	}
 
-	public Release getParent() {
-		return parent;
-	}
-
-	public void setParent(final Release parent) {
-		this.parent = parent;
-	}
-
-	public void addScope(final Scope scope) {
-		scopes.add(scope);
+	public List<Release> getChildReleases() {
+		return childrenList;
 	}
 }
