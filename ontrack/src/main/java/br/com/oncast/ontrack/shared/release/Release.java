@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Release {
 
-	private static final String SEPARATOR = "/";
+	public static final String SEPARATOR = "/";
 
 	private final String description;
 	private Release parent;
@@ -33,6 +33,7 @@ public class Release {
 	public void addRelease(final Release release) {
 		if (childrenList.contains(release)) return;
 		childrenList.add(release);
+		release.parent = this;
 	}
 
 	// TODO Test this
@@ -41,8 +42,8 @@ public class Release {
 
 		final String descriptionSegment = releaseDescriptionSegments[0];
 
-		final Release childRelease = findDirectChildRelease(descriptionSegment);
-		if (childRelease == null) return createNewSubRelease(descriptionSegment);
+		Release childRelease = findDirectChildRelease(descriptionSegment);
+		if (childRelease == null) childRelease = createNewSubRelease(descriptionSegment);
 		if (releaseDescriptionSegments.length == 1) return childRelease;
 
 		return childRelease.loadRelease(releaseDescription.substring(descriptionSegment.length() + SEPARATOR.length(), releaseDescription.length()));
@@ -56,7 +57,7 @@ public class Release {
 
 	private Release findDirectChildRelease(final String releaseDescription) {
 		for (final Release release : childrenList)
-			if (release.getDescription().equals(releaseDescription)) return release;
+			if (release.getDescription().toLowerCase().equals(releaseDescription.trim().toLowerCase())) return release;
 
 		return null;
 	}

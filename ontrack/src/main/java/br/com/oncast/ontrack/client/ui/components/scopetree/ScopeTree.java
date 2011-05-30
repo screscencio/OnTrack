@@ -78,6 +78,7 @@ public class ScopeTree implements IsWidget {
 		final ScopeTreeItem rootItem = new ScopeTreeItem(scope);
 
 		tree.add(rootItem);
+		rootItem.setState(true);
 		tree.setSelected(rootItem);
 	}
 

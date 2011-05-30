@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.scope.exceptions.MalformedScopeException;
+import br.com.oncast.ontrack.shared.scope.stringrepresentation.ScopeRepresentationParser;
 
 public class ScopePatternParserTest {
 
@@ -20,7 +21,7 @@ public class ScopePatternParserTest {
 
 	@Test
 	public void shouldMatchScope() {
-		final ScopeParser parser = new ScopeParser(STORY);
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(STORY);
 
 		assertEquals(STORY, parser.getScopeDescription());
 		assertNull(parser.getReleaseDescription());
@@ -28,7 +29,7 @@ public class ScopePatternParserTest {
 
 	@Test
 	public void shouldMatchScopeAndRelease() {
-		final ScopeParser parser = new ScopeParser(STORY + SPACE + RELEASE);
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(STORY + SPACE + RELEASE);
 
 		assertEquals(STORY, parser.getScopeDescription());
 		assertEquals(RELEASE_EXPECTED, parser.getReleaseDescription());
@@ -36,7 +37,7 @@ public class ScopePatternParserTest {
 
 	@Test
 	public void shouldMatchScopeAndReleaseWithQuotes() {
-		final ScopeParser parser = new ScopeParser(STORY + SPACE + RELEASE_WITH_QUOTES);
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(STORY + SPACE + RELEASE_WITH_QUOTES);
 
 		assertEquals(STORY, parser.getScopeDescription());
 		assertEquals(RELEASE_WITH_QUOTES_EXPECTED, parser.getReleaseDescription());
@@ -44,7 +45,7 @@ public class ScopePatternParserTest {
 
 	@Test
 	public void shouldMatchScopeAndReleaseAndIteration() {
-		final ScopeParser parser = new ScopeParser(STORY + SPACE + RELEASE_PLUS_ITERATION);
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(STORY + SPACE + RELEASE_PLUS_ITERATION);
 
 		assertEquals(STORY, parser.getScopeDescription());
 		assertEquals(RELEASE_PLUS_ITERATION_EXPECTED, parser.getReleaseDescription());
@@ -52,7 +53,7 @@ public class ScopePatternParserTest {
 
 	@Test
 	public void shouldMatchAnEmptyScope() {
-		final ScopeParser parser = new ScopeParser("");
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser("");
 
 		assertEquals("", parser.getScopeDescription());
 		assertNull(parser.getReleaseDescription());
@@ -60,7 +61,7 @@ public class ScopePatternParserTest {
 
 	@Test
 	public void shouldMatchScopeWithSpaceInItsDescription() {
-		final ScopeParser parser = new ScopeParser(" ");
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(" ");
 
 		assertEquals("", parser.getScopeDescription());
 		assertNull(parser.getReleaseDescription());
@@ -69,7 +70,7 @@ public class ScopePatternParserTest {
 	@Test
 	public void shouldMatchAScopeWithSymbolsInItsDescription() {
 		final String symbols = "!?*&%#$()-_+=[]{}\\/,.:;<>~^'`ªº°¹²³£¢¬§";
-		final ScopeParser parser = new ScopeParser(STORY + symbols + SPACE + RELEASE);
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(STORY + symbols + SPACE + RELEASE);
 
 		assertEquals(STORY + symbols, parser.getScopeDescription());
 		assertEquals(RELEASE_EXPECTED, parser.getReleaseDescription());
@@ -78,7 +79,7 @@ public class ScopePatternParserTest {
 	@Test
 	public void shouldMatchAScopeWithNumbersInItsDescription() {
 		final String numbers = "1234567890";
-		final ScopeParser parser = new ScopeParser(STORY + numbers + SPACE + RELEASE);
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(STORY + numbers + SPACE + RELEASE);
 
 		assertEquals(STORY + numbers, parser.getScopeDescription());
 		assertEquals(RELEASE_EXPECTED, parser.getReleaseDescription());
@@ -86,31 +87,31 @@ public class ScopePatternParserTest {
 
 	@Test(expected = MalformedScopeException.class)
 	public void shouldNotAcceptMoreThanOneReleaseAtSameTime() {
-		new ScopeParser(STORY + SPACE + RELEASE + SPACE + RELEASE_WITH_QUOTES);
+		new ScopeRepresentationParser(STORY + SPACE + RELEASE + SPACE + RELEASE_WITH_QUOTES);
 	}
 
 	@Test(expected = MalformedScopeException.class)
 	public void shouldNotAcceptMoreThanOneReleaseAtSameTime_Variation() {
-		new ScopeParser(STORY + SPACE + RELEASE_WITH_QUOTES + SPACE + RELEASE);
+		new ScopeRepresentationParser(STORY + SPACE + RELEASE_WITH_QUOTES + SPACE + RELEASE);
 	}
 
 	@Test(expected = MalformedScopeException.class)
 	public void shouldNotAcceptMoreThanOneReleaseAtSameTime_Variation2() {
-		new ScopeParser(STORY + SPACE + "@@R1 @Teste");
+		new ScopeRepresentationParser(STORY + SPACE + "@@R1 @Teste");
 	}
 
 	@Test(expected = MalformedScopeException.class)
 	public void shouldConsiderOrder() {
-		new ScopeParser(RELEASE + SPACE + STORY);
+		new ScopeRepresentationParser(RELEASE + SPACE + STORY);
 	}
 
 	@Test(expected = MalformedScopeException.class)
 	public void shouldNotAcceptAReleaseWithoutAScope() {
-		new ScopeParser(SPACE + RELEASE);
+		new ScopeRepresentationParser(SPACE + RELEASE);
 	}
 
 	@Test(expected = MalformedScopeException.class)
 	public void shouldNotAcceptAReleaseWithoutAScope_Variation() {
-		new ScopeParser(RELEASE);
+		new ScopeRepresentationParser(RELEASE);
 	}
 }

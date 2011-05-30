@@ -17,6 +17,12 @@ public class ProjectContext {
 
 	public Release loadRelease(final String releaseDescription) {
 		if (releaseDescription == null || releaseDescription.isEmpty()) return null;
-		return project.getProjectRelease().loadRelease(releaseDescription);
+
+		final String[] releaseDescriptionSegments = releaseDescription.split(Release.SEPARATOR);
+		final String descriptionSegment = releaseDescriptionSegments[0];
+		final String releaseLoadQuery = !descriptionSegment.equals(project.getProjectRelease().getDescription()) ? releaseDescription : releaseDescription
+				.substring(descriptionSegment.length() + Release.SEPARATOR.length(), releaseDescription.length());
+
+		return project.getProjectRelease().loadRelease(releaseLoadQuery);
 	}
 }

@@ -22,14 +22,19 @@ public class Tag extends Composite implements HasText {
 	@UiField
 	protected Label closeLabel;
 
+	private ClickHandler closeClickHandler;
+
 	public Tag() {
 		initWidget(uiBinder.createAndBindUi(this));
-		initCloseLabel();
-	}
+		closeLabel.setText("X");
+		closeLabel.addClickHandler(new ClickHandler() {
 
-	public Tag(final String firstName) {
-		initWidget(uiBinder.createAndBindUi(this));
-		initCloseLabel();
+			@Override
+			public void onClick(final ClickEvent event) {
+				if (closeClickHandler == null) return;
+				closeClickHandler.onClick(event);
+			}
+		});
 	}
 
 	@Override
@@ -42,14 +47,7 @@ public class Tag extends Composite implements HasText {
 		tagLabel.setText(text);
 	}
 
-	private void initCloseLabel() {
-		closeLabel.setText("X");
-		closeLabel.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				// TODO remove tag.
-			}
-		});
+	public void setCloseButtonClickHandler(final ClickHandler clickHandler) {
+		this.closeClickHandler = clickHandler;
 	}
 }

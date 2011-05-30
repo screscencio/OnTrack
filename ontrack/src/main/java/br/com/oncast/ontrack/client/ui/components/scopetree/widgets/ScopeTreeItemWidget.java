@@ -5,10 +5,13 @@ import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ESC
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.scope.stringrepresentation.ScopeRepresentationBuilder;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -86,11 +89,19 @@ public class ScopeTreeItemWidget extends Composite {
 			}
 		});
 
+		releaseTag.setCloseButtonClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				editionHandler.onEdit(new ScopeRepresentationBuilder(scope).includeScopeDescription().toString());
+			}
+		});
+
 		deckPanel.showWidget(0);
 	}
 
 	public String getValue() {
-		return descriptionLabel.getText().trim();
+		return new ScopeRepresentationBuilder(scope).includeScopeDescription().includeReleaseReference().toString();
 	}
 
 	public void setValue(final String value) {
@@ -116,7 +127,9 @@ public class ScopeTreeItemWidget extends Composite {
 	public void switchToVisualization() {
 		if (!isEditing()) return;
 		deckPanel.showWidget(0);
-		if (!descriptionLabel.getText().equals(editionBox.getText())) editionHandler.onEdit(editionBox.getText());
+
+		if (!getValue().equals(editionBox.getText())) editionHandler.onEdit(editionBox.getText());
+		else editionHandler.onCancel();
 	}
 
 	private boolean isEditing() {
