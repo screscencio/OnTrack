@@ -18,13 +18,18 @@
 		.visualizationPanel {
 			display: inline;
 		}
+		
+		.tag {
+			margin-left: 5px;
+			margin-top: -1px;
+		}
 	</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
 		<g:DeckPanel ui:field="deckPanel">
 			<g:HorizontalPanel styleName="{style.visualizationPanel}">
-				<g:Label styleName="{style.visualizationLabel}" ui:field="descriptionLabel" />
-				<t:Tag ui:field="releaseTag" />
+				<g:Label ui:field="descriptionLabel" styleName="{style.visualizationLabel}" />
+				<t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 			</g:HorizontalPanel>
 			<g:TextBox styleName="edit" ui:field="editionBox" />
 		</g:DeckPanel>

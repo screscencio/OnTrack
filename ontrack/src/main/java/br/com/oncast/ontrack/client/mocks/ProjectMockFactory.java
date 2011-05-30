@@ -11,7 +11,7 @@ public class ProjectMockFactory {
 	}
 
 	private static Release getProjectRelease() {
-		final Release projectRelease = new Release("ProjectRelease");
+		final Release projectRelease = new Release("project");
 		final Release r1 = new Release("R1");
 		final Release r2 = new Release("R2");
 		final Release r3 = new Release("R3");

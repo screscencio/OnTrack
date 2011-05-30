@@ -171,6 +171,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	}
 
 	protected void keyboardNavigation(final Event event) {
+
 		if (event.getAltKey() || event.getCtrlKey() || event.getShiftKey()) {
 			super.onBrowserEvent(event);
 			return;
@@ -223,7 +224,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		if (LocaleInfo.getCurrentLocale().isRTL()) {
 			if (code == KeyCodes.KEY_RIGHT) {
 				code = KeyCodes.KEY_LEFT;
-			} else if (code == KeyCodes.KEY_LEFT) {
+			}
+			else if (code == KeyCodes.KEY_LEFT) {
 				code = KeyCodes.KEY_RIGHT;
 			}
 		}
@@ -437,9 +439,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	 * Ensures that the currently-selected item is visible, opening its parents and scrolling the tree as necessary.
 	 */
 	public void ensureSelectedItemVisible() {
-		if (curSelection == null) {
-			return;
-		}
+		if (curSelection == null) { return; }
 
 		TreeItem parent = curSelection.getParentItem();
 		while (parent != null) {
@@ -558,7 +558,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 				// The click event should have given focus to this element already.
 				// Avoid moving focus back up to the tree (so that focusable widgets
 				// attached to TreeItems can receive keyboard events).
-			} else if (curSelection != null) {
+			}
+			else if (curSelection != null) {
 				setFocus(true);
 			}
 			break;
@@ -605,7 +606,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		switch (eventType) {
 		case Event.ONKEYDOWN:
 		case Event.ONKEYUP: {
-			if (isArrowKey(DOM.eventGetKeyCode(event)) && !(event.getAltKey() || event.getCtrlKey() || event.getShiftKey())) {
+			if ((isArrowKey(DOM.eventGetKeyCode(event)) && !(event.getAltKey() || event.getCtrlKey() || event.getShiftKey())) && curSelection != null) {
 				DOM.eventCancelBubble(event, true);
 				DOM.eventPreventDefault(event);
 				return;
@@ -621,9 +622,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	public boolean remove(final Widget w) {
 		// Validate.
 		final TreeItem item = childWidgets.get(w);
-		if (item == null) {
-			return false;
-		}
+		if (item == null) { return false; }
 
 		// Delegate to TreeItem.setWidget, which performs correct removal.
 		item.setWidget(null);
@@ -671,7 +670,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	public void setFocus(final boolean focus) {
 		if (focus) {
 			FocusPanel.impl.focus(focusable);
-		} else {
+		}
+		else {
 			FocusPanel.impl.blur(focusable);
 		}
 	}
@@ -693,9 +693,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	 */
 	public void setSelectedItem(final TreeItem item, final boolean fireEvents) {
 		if (item == null) {
-			if (curSelection == null) {
-				return;
-			}
+			if (curSelection == null) { return; }
 			curSelection.setSelected(false);
 			curSelection = null;
 			return;
@@ -719,7 +717,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	protected void doAttachChildren() {
 		try {
 			AttachDetachException.tryCommand(this, AttachDetachException.attachCommand);
-		} finally {
+		}
+		finally {
 			DOM.setEventListener(focusable, this);
 		}
 	}
@@ -728,7 +727,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	protected void doDetachChildren() {
 		try {
 			AttachDetachException.tryCommand(this, AttachDetachException.detachCommand);
-		} finally {
+		}
+		finally {
 			DOM.setEventListener(focusable, null);
 		}
 	}
@@ -741,7 +741,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	 * @return <code>true</code> if the Tree will response to arrow keys by changing the currently selected item
 	 */
 	protected boolean isKeyboardNavigationEnabled(final TreeItem currentItem) {
-		return true;
+		return currentItem != null;
 	}
 
 	/**
@@ -772,7 +772,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	void fireStateChanged(final TreeItem item, final boolean open) {
 		if (open) {
 			OpenEvent.fire(this, item);
-		} else {
+		}
+		else {
 			CloseEvent.fire(this, item);
 		}
 	}
@@ -812,7 +813,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		// Orphan.
 		try {
 			widget.setParent(null);
-		} finally {
+		}
+		finally {
 			// Logical detach.
 			childWidgets.remove(widget);
 		}
@@ -835,9 +837,11 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	void showLeafImage(final TreeItem treeItem) {
 		if (useLeafImages || treeItem.isFullNode()) {
 			showImage(treeItem, images.treeLeaf());
-		} else if (LocaleInfo.getCurrentLocale().isRTL()) {
+		}
+		else if (LocaleInfo.getCurrentLocale().isRTL()) {
 			DOM.setStyleAttribute(treeItem.getElement(), "paddingRight", indentValue);
-		} else {
+		}
+		else {
 			DOM.setStyleAttribute(treeItem.getElement(), "paddingLeft", indentValue);
 		}
 	}
@@ -855,9 +859,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	 * Collects parents going up the element tree, terminated at the tree root.
 	 */
 	protected void collectElementChain(final ArrayList<Element> chain, final Element hRoot, final Element hElem) {
-		if ((hElem == null) || (hElem == hRoot)) {
-			return;
-		}
+		if ((hElem == null) || (hElem == hRoot)) { return; }
 
 		collectElementChain(chain, hRoot, DOM.getParent(hElem));
 		chain.add(hElem);
@@ -872,7 +874,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 			if (item.getChildCount() > 0 && DOM.isOrHasChild(item.getImageElement(), hElem)) {
 				item.setState(!item.getState(), true);
 				return true;
-			} else if (DOM.isOrHasChild(item.getElement(), hElem)) {
+			}
+			else if (DOM.isOrHasChild(item.getElement(), hElem)) {
 				onSelection(item, true, !shouldTreeDelegateFocusToElement(hElem));
 				return true;
 			}
@@ -882,25 +885,19 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	}
 
 	private TreeItem findDeepestOpenChild(final TreeItem item) {
-		if (!item.getState()) {
-			return item;
-		}
+		if (!item.getState()) { return item; }
 		return findDeepestOpenChild(item.getChild(item.getChildCount() - 1));
 	}
 
 	protected TreeItem findItemByChain(final ArrayList<Element> chain, final int idx, final TreeItem root) {
-		if (idx == chain.size()) {
-			return root;
-		}
+		if (idx == chain.size()) { return root; }
 
 		final Element hCurElem = chain.get(idx);
 		for (int i = 0, n = root.getChildCount(); i < n; ++i) {
 			final TreeItem child = root.getChild(i);
 			if (child.getElement() == hCurElem) {
 				final TreeItem retItem = findItemByChain(chain, idx + 1, root.getChild(i));
-				if (retItem == null) {
-					return child;
-				}
+				if (retItem == null) { return child; }
 				return retItem;
 			}
 		}
@@ -970,9 +967,11 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		if (topClosedParent != null) {
 			// Select the first visible parent if curSelection is hidden
 			setSelectedItem(topClosedParent);
-		} else if (curSelection.getState()) {
+		}
+		else if (curSelection.getState()) {
 			curSelection.setState(false);
-		} else {
+		}
+		else {
 			final TreeItem parent = curSelection.getParentItem();
 			if (parent != null) {
 				setSelectedItem(parent);
@@ -986,9 +985,11 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		if (topClosedParent != null) {
 			// Select the first visible parent if curSelection is hidden
 			setSelectedItem(topClosedParent);
-		} else if (!curSelection.getState()) {
+		}
+		else if (!curSelection.getState()) {
 			curSelection.setState(true);
-		} else if (curSelection.getChildCount() > 0) {
+		}
+		else if (curSelection.getChildCount() > 0) {
 			setSelectedItem(curSelection.getChild(0));
 		}
 	}
@@ -1001,7 +1002,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		if (focusableWidget != null) {
 			focusableWidget.setFocus(true);
 			DOM.scrollIntoView(((Widget) focusableWidget).getElement());
-		} else {
+		}
+		else {
 			// Get the location and size of the given item's content element relative
 			// to the tree.
 			final Element selectedElem = curSelection.getContentElem();
@@ -1044,9 +1046,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	 * Moves to the next item, going into children as if dig is enabled.
 	 */
 	protected void moveSelectionDown(final TreeItem sel, final boolean dig) {
-		if (sel == root) {
-			return;
-		}
+		if (sel == root) { return; }
 
 		// Find a parent that is visible
 		final TreeItem topClosedParent = getTopClosedParent(sel);
@@ -1064,10 +1064,12 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		if (!dig || !sel.getState()) {
 			if (idx < parent.getChildCount() - 1) {
 				onSelection(parent.getChild(idx + 1), true, true);
-			} else {
+			}
+			else {
 				moveSelectionDown(parent, false);
 			}
-		} else if (sel.getChildCount() > 0) {
+		}
+		else if (sel.getChildCount() > 0) {
 			onSelection(sel.getChild(0), true, true);
 		}
 	}
@@ -1092,7 +1094,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		if (idx > 0) {
 			final TreeItem sibling = parent.getChild(idx - 1);
 			onSelection(findDeepestOpenChild(sibling), true, true);
-		} else {
+		}
+		else {
 			onSelection(parent, true, true);
 		}
 	}
@@ -1100,9 +1103,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	protected void onSelection(final TreeItem item, final boolean fireEvents, final boolean moveFocus) {
 		// 'root' isn't a real item, so don't let it be selected
 		// (some cases in the keyboard handler will try to do this)
-		if (item == root) {
-			return;
-		}
+		if (item == root) { return; }
 
 		if (curSelection != null) {
 			curSelection.setSelected(false);
@@ -1142,7 +1143,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 			// If no image element has been created yet, create one from the
 			// prototype.
 			DOM.appendChild(holder, proto.createElement().<Element> cast());
-		} else {
+		}
+		else {
 			// Otherwise, simply apply the prototype to the existing element.
 			proto.applyTo(child.<ImagePrototypeElement> cast());
 		}
@@ -1191,10 +1193,12 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 
 		if (curSelection.getChildCount() == 0) {
 			Accessibility.removeState(curSelectionContentElem, Accessibility.STATE_EXPANDED);
-		} else {
+		}
+		else {
 			if (curSelection.getState()) {
 				Accessibility.setState(curSelectionContentElem, Accessibility.STATE_EXPANDED, "true");
-			} else {
+			}
+			else {
 				Accessibility.setState(curSelectionContentElem, Accessibility.STATE_EXPANDED, "false");
 			}
 		}

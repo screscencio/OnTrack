@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.shared.scope.actions;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.scope.pattern.ScopeParser;
+import br.com.oncast.ontrack.shared.scope.stringrepresentation.ScopeRepresentationParser;
 
 public class ScopeUpdateAction implements ScopeAction {
 
@@ -18,7 +18,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	public ScopeUpdateAction(final Scope scope, final String newPattern) {
 		this.selectedScope = scope;
 
-		final ScopeParser patternParser = new ScopeParser(newPattern);
+		final ScopeRepresentationParser patternParser = new ScopeRepresentationParser(newPattern);
 		this.newDescription = patternParser.getScopeDescription();
 		this.newReleaseDescription = patternParser.getReleaseDescription();
 	}

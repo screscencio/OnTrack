@@ -20,6 +20,11 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			public void onEdit(final String pattern) {
 				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEvent(ScopeTreeItem.this, pattern));
 			}
+
+			@Override
+			public void onCancel() {
+				getTree().setSelectedItem(ScopeTreeItem.this);
+			}
 		}));
 
 		setReferencedScope(scope);
