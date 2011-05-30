@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 
 import java.util.List;
 
+import br.com.oncast.ontrack.client.mocks.ProjectMockFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionManager;
