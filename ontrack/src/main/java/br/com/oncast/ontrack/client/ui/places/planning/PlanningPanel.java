@@ -5,8 +5,8 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 
@@ -16,6 +16,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO Refactor this XMLs file so that proportions are proportional (and not defined by pixels)
 public class PlanningPanel extends Composite implements PlanningView {
 
 	private static PlanningPanelUiBinder uiBinder = GWT.create(PlanningPanelUiBinder.class);

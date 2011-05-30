@@ -2,8 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel;
 
 import java.util.List;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.release.Release;
@@ -31,9 +29,7 @@ public class ReleasePanel extends Composite {
 		actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ScopeAction action, final boolean wasRollback) {
-				throw new NotImplementedException();
-			}
+			public void onActionExecution(final ScopeAction action, final boolean wasRollback) {}
 		};
 	}
 
