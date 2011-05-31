@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.shared.release;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.shared.scope.Scope;
+
 public class Release {
 
 	public static final String SEPARATOR = "/";
@@ -10,11 +12,13 @@ public class Release {
 	private final String description;
 	private Release parent;
 	private final List<Release> childrenList;
+	private final List<Scope> scopeList;
 
 	public Release(final String description) {
 		this.description = description;
 
 		childrenList = new ArrayList<Release>();
+		scopeList = new ArrayList<Scope>();
 	}
 
 	public String getDescription() {
@@ -64,5 +68,18 @@ public class Release {
 
 	public List<Release> getChildReleases() {
 		return childrenList;
+	}
+
+	public List<Scope> getScopeList() {
+		return scopeList;
+	}
+
+	public void addScope(final Scope scope) {
+		if (scopeList.contains(scope)) return;
+		scopeList.add(scope);
+	}
+
+	public void removeScope(final Scope selectedScope) {
+		scopeList.remove(selectedScope);
 	}
 }

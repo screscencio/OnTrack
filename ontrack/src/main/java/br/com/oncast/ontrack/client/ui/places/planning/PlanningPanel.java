@@ -40,8 +40,8 @@ public class PlanningPanel extends Composite implements PlanningView {
 	}
 
 	@Override
-	public void setReleases(final List<Release> releases) {
-		releasePanel.setReleases(releases);
+	public void setRelease(final Release release) {
+		releasePanel.setRelease(release);
 	}
 
 	@Override

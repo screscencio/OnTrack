@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.scope.actions;
 
 import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.scope.stringrepresentation.ScopeRepresentationParser;
@@ -18,25 +19,35 @@ public class ScopeUpdateAction implements ScopeAction {
 	public ScopeUpdateAction(final Scope scope, final String newPattern) {
 		this.selectedScope = scope;
 
-		final ScopeRepresentationParser patternParser = new ScopeRepresentationParser(newPattern);
-		this.newDescription = patternParser.getScopeDescription();
-		this.newReleaseDescription = patternParser.getReleaseDescription();
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(newPattern);
+		this.newDescription = parser.getScopeDescription();
+		this.newReleaseDescription = parser.getReleaseDescription();
 	}
 
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
 		oldDescription = selectedScope.getDescription();
-		oldReleaseDescription = context.getReleaseDescription(selectedScope.getRelease());
+		final Release oldRelease = selectedScope.getRelease();
+		oldReleaseDescription = context.getReleaseDescription(oldRelease);
+		if (oldRelease != null) oldRelease.removeScope(selectedScope);
 
 		selectedScope.setDescription(newDescription);
-		selectedScope.setRelease(context.loadRelease(newReleaseDescription));
+		final Release newRelease = context.loadRelease(newReleaseDescription);
+		selectedScope.setRelease(newRelease);
+		if (newRelease != null) newRelease.addScope(selectedScope);
 	}
 
 	@Override
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
 		if (oldDescription == null) throw new UnableToCompleteActionException("The action cannot be rolled back because it has never been executed.");
+
+		final Release newRelease = selectedScope.getRelease();
+		if (newRelease != null) newRelease.removeScope(selectedScope);
+
 		selectedScope.setDescription(oldDescription);
-		selectedScope.setRelease(context.loadRelease(oldReleaseDescription));
+		final Release oldRelease = context.loadRelease(oldReleaseDescription);
+		selectedScope.setRelease(oldRelease);
+		if (oldRelease != null) oldRelease.addScope(selectedScope);
 	}
 
 	@Override
