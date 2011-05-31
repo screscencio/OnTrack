@@ -3,8 +3,12 @@ html,body,.rootPanel {
 	height: 100%;
 	margin: 0px auto;
 	padding: 0px;
+	
+	font-family: tahoma, verdana, arial, serif;
+    font-size: 14px;
 }
 
+<!-- Scope Tree -->
 .gwt-Tree {
 	font-family: verdana, arial, monospace;
 	font-size: 14px;
@@ -28,20 +32,4 @@ html,body,.rootPanel {
 	color: white;
 	background-color: #BBCEE9;
 	border: 1px solid #7892B4;
-}
-
-<!-- Release Panel -->
-.gwt-StackLayoutPanel {
-	border: 1px solid black;
-}
-
-.gwt-StackLayoutPanel .gwt-StackLayoutPanelHeader {
-	padding-left: 7px;
-	font-weight: bold;
-	font-size: 1.2em;
-	background-color: #BBCEE9;
-}	
-	
-.gwt-StackLayoutPanel .gwt-StackLayoutPanelContent {
-	border: 1px solid #BBCEE9;
 }

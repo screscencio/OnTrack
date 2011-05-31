@@ -2,17 +2,42 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
+	   .rootPanel {
+	      border: 1px solid #a5a5a5; 
+	      margin-bottom: 5px;
+	      
+	      font-size: 13px;
+	   }
+	
+	   .header {
+	   	   padding: 4px;
+	   	   
+	   	   border: 1px solid #d9dae1;
+	   	   background: #a5a5a5;
+	   	   color: #fff;
+	   	}
+	   	
+	   	.body {
+	   	}
+	
+	   .releaseContainer {
+	       padding: 5px;
+           width: 100%;
+	   }
+	   
+	   .scopeContainer {
+           padding: 8px;
+           width: 100%;
+	   }
 	</ui:style>
 
-	<g:HTMLPanel>
-		<g:DisclosurePanel>
-			<g:customHeader>
-				<g:Label ui:field="header" />
-			</g:customHeader>
-			<g:VerticalPanel>
-				<g:VerticalPanel ui:field="releaseContainer" />
-				<g:VerticalPanel ui:field="scopeContainer" />
-			</g:VerticalPanel>
-		</g:DisclosurePanel>
+	<g:HTMLPanel styleName="{style.rootPanel}">
+	   <div class="{style.header}">
+			<g:Label ui:field="header" />
+	   </div>
+	   <g:FlowPanel styleName="{style.body}">
+			<g:VerticalPanel ui:field="releaseContainer" styleName="{style.releaseContainer}" />
+			<g:VerticalPanel ui:field="scopeContainer" styleName="{style.scopeContainer}" />
+	   </g:FlowPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 
