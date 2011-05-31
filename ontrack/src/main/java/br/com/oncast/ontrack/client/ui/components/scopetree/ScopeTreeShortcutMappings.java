@@ -6,7 +6,6 @@ import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ENT
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_INSERT;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_LEFT;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_RIGHT;
-import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_TAB;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_UP;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_Y;
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_Z;
@@ -96,20 +95,6 @@ enum ScopeTreeShortcutMappings {
 	},
 
 	INSERT_SCOPE_AS_PARENT(KEY_INSERT, false, true) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(scope));
-		}
-	},
-
-	INSERT_SCOPE_AS_CHILD_USING_TAB(KEY_TAB, false, false) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(scope));
-		}
-	},
-
-	INSERT_SCOPE_AS_PARENT_USING_TAB(KEY_TAB, false, true) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final Scope scope) {
 			actionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(scope));
