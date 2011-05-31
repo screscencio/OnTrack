@@ -3,14 +3,48 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:rp='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel'
 	xmlns:st='urn:import:br.com.oncast.ontrack.client.ui.components.scopetree'>
-	
-	<g:SplitLayoutPanel height="400px">
-		<g:west size="800">
-			<st:ScopeTree ui:field="scopeTree"></st:ScopeTree>
-		</g:west>
-		<g:east size="400">
-			<rp:ReleasePanel ui:field="releasePanel"></rp:ReleasePanel>
-		</g:east>
-	</g:SplitLayoutPanel>	
+
+	<ui:style>
+		.rootPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			background-color: #d9dae1;
+		}
+		
+		.scopeTree {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			right: 420px;
+			bottom: 10px;
+			padding: 5px;
+			
+            border: 1px solid #a5a5a5;
+		    -moz-box-shadow: 0px 0px 5px #a5a5a5;
+		    -webkit-box-shadow: 0px 0px 5px #a5a5a5;
+		    box-shadow: 0px 0px 5px #a5a5a5;
+		    background: #fff;
+   		}
+		
+		.releasePanel {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			bottom: 10px;
+			width: 400px;
+		}
+	</ui:style>
+
+	<g:FlowPanel styleName="{style.rootPanel}">
+		<g:SimplePanel styleName="{style.scopeTree}">
+			<st:ScopeTree ui:field="scopeTree" />
+		</g:SimplePanel>
+		<g:SimplePanel styleName="{style.releasePanel}">
+    		<rp:ReleasePanel ui:field="releasePanel" />
+		</g:SimplePanel>
+	</g:FlowPanel>
 
 </ui:UiBinder>

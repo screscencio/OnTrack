@@ -36,5 +36,11 @@ public class ReleasePanelItemWidget extends Composite {
 		for (final Scope scope : release.getScopeList()) {
 			scopeContainer.add(new Label(scope.getDescription()));
 		}
+		reviewContainersVisibility();
+	}
+
+	private void reviewContainersVisibility() {
+		if (releaseContainer.getWidgetCount() == 0) releaseContainer.setVisible(false);
+		if (scopeContainer.getWidgetCount() == 0) scopeContainer.setVisible(false);
 	}
 }
