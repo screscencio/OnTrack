@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	</ui:style>
+
+	<g:HTMLPanel>
+		<g:DisclosurePanel>
+			<g:customHeader>
+				<g:Label ui:field="header" />
+			</g:customHeader>
+			<g:VerticalPanel>
+				<g:VerticalPanel ui:field="releaseContainer" />
+				<g:VerticalPanel ui:field="scopeContainer" />
+			</g:VerticalPanel>
+		</g:DisclosurePanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

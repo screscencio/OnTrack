@@ -1,42 +1,41 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel;
 
-import java.util.List;
-
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
 
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.StackLayoutPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
-// TODO Refactor this so that it can be recursive and may work like ScopeTree
-public class ReleasePanel extends Composite {
+public class ReleasePanel implements IsWidget {
 
-	private final StackLayoutPanel stackLayoutPanel;
+	private final ReleasePanelWidget releasePanelWidget;
 	private final ActionExecutionListener actionExecutionListener;
 	private ActionExecutionRequestHandler actionHandler;
+	private Release rootRelease;
 
 	public ReleasePanel() {
-		initWidget(stackLayoutPanel = new StackLayoutPanel(Unit.PX));
+		releasePanelWidget = new ReleasePanelWidget();
 
 		actionExecutionListener = new ActionExecutionListener() {
-
 			@Override
-			public void onActionExecution(final ScopeAction action, final boolean wasRollback) {}
+			public void onActionExecution(final ScopeAction action, final boolean wasRollback) {
+				if (action instanceof ScopeUpdateAction) refresh();
+			}
 		};
 	}
 
-	public void setReleases(final List<Release> releases) {
-		for (final Release release : releases) {
-			this.add(release);
-		}
+	// TODO Refactor to a more performatic approach
+	protected void refresh() {
+		releasePanelWidget.setReleases(rootRelease.getChildReleases());
+	}
+
+	public void setRelease(final Release release) {
+		this.rootRelease = release;
+		releasePanelWidget.setReleases(rootRelease.getChildReleases());
 	}
 
 	public ActionExecutionListener getActionExecutionListener() {
@@ -47,37 +46,8 @@ public class ReleasePanel extends Composite {
 		this.actionHandler = actionHandler;
 	}
 
-	private void add(final Release release) {
-		stackLayoutPanel.add(getReleaseItems(), getHeaderString(release.getDescription()), true, 20);
-	}
-
-	/**
-	 * Get a string representation of the header that includes some text and style.
-	 * 
-	 * @param text the header text
-	 * @return the header as a string
-	 */
-	// TODO Incorporate this in a widget defined by a UIBinder interface
-	private String getHeaderString(final String text) {
-		final HorizontalPanel hPanel = new HorizontalPanel();
-		hPanel.setSpacing(0);
-		hPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		final HTML headerText = new HTML(text);
-		headerText.setStyleName("cw-StackPanelHeader");
-		hPanel.add(headerText);
-
-		return hPanel.getElement().getString();
-	}
-
-	// TODO Remove this "testing" code
-	private VerticalPanel getReleaseItems() {
-		final String[] items = { "0", "1", "2", "3", "4", "5" };
-		final VerticalPanel filtersPanel = new VerticalPanel();
-		filtersPanel.setSpacing(4);
-
-		for (final String filter : items) {
-			filtersPanel.add(new Label(filter));
-		}
-		return filtersPanel;
+	@Override
+	public Widget asWidget() {
+		return releasePanelWidget;
 	}
 }

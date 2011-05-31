@@ -20,7 +20,7 @@ public class PlanningActivity extends AbstractActivity {
 
 		final Project project = getProject();
 		view.setScope(project.getScope());
-		view.setReleases(project.getProjectRelease().getChildReleases());
+		view.setRelease(project.getProjectRelease());
 
 		panel.setWidget(view);
 	}
