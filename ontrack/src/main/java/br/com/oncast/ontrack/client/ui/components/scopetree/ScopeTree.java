@@ -90,4 +90,13 @@ public class ScopeTree implements IsWidget {
 	public void setFocus(final boolean focus) {
 		tree.setFocus(focus);
 	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if (!(other instanceof ScopeTree)) return false;
+
+		final ScopeTree otherTree = (ScopeTree) other;
+
+		return tree.equals(otherTree.asWidget());
+	}
 }
