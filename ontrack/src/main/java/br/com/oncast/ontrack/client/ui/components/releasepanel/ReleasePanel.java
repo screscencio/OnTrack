@@ -30,12 +30,12 @@ public class ReleasePanel implements IsWidget {
 
 	// TODO Refactor to a more performatic approach
 	protected void refresh() {
-		releasePanelWidget.setReleases(rootRelease.getChildReleases());
+		releasePanelWidget.updateReleases(rootRelease.getChildReleases());
 	}
 
 	public void setRelease(final Release release) {
 		this.rootRelease = release;
-		releasePanelWidget.setReleases(rootRelease.getChildReleases());
+		releasePanelWidget.init(rootRelease.getChildReleases());
 	}
 
 	public ActionExecutionListener getActionExecutionListener() {
