@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.scope.actions;
 
 import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
@@ -9,6 +10,7 @@ public class ScopeRemoveAction implements ScopeAction {
 	private final Scope selectedScope;
 	private Scope parent;
 	private int index;
+	private Release release;
 
 	public ScopeRemoveAction(final Scope selectedScope) {
 		this.selectedScope = selectedScope;
@@ -20,11 +22,16 @@ public class ScopeRemoveAction implements ScopeAction {
 		parent = selectedScope.getParent();
 		index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
+		release = selectedScope.getRelease();
+		release.removeScope(selectedScope);
+		selectedScope.setRelease(null);
 	}
 
 	@Override
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
 		parent.add(index, selectedScope);
+		selectedScope.setRelease(release);
+		release.addScope(selectedScope);
 	}
 
 	@Override

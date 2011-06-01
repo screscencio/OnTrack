@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecut
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -23,7 +24,7 @@ public class ReleasePanel implements IsWidget {
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ScopeAction action, final boolean wasRollback) {
-				if (action instanceof ScopeUpdateAction) refresh();
+				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction) refresh();
 			}
 		};
 	}
