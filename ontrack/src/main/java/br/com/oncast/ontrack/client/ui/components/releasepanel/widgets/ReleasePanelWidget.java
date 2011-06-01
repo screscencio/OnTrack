@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.release.Release;
@@ -20,15 +21,43 @@ public class ReleasePanelWidget extends Composite {
 	@UiField
 	protected VerticalPanel releasePanel;
 
+	private final List<ReleasePanelItemWidget> childWidgetsList;
+
 	public ReleasePanelWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
+		childWidgetsList = new ArrayList<ReleasePanelItemWidget>();
 	}
 
-	public void setReleases(final List<Release> releases) {
+	public void init(final List<Release> releases) {
 		releasePanel.clear();
 
 		for (final Release release : releases) {
-			releasePanel.add(new ReleasePanelItemWidget(release));
+			createNewChild(release);
 		}
+	}
+
+	public void updateReleases(final List<Release> releases) {
+		for (final Release release : releases) {
+			final ReleasePanelItemWidget releaseWidget = getReleaseWithDescription(release.getDescription());
+			if (releaseWidget == null) createNewChild(release);
+			else {
+				releaseWidget.updateChildReleases(release.getChildReleases());
+				releaseWidget.updateChildScopes(release.getScopeList());
+			}
+		}
+	}
+
+	private ReleasePanelItemWidget createNewChild(final Release release) {
+		final ReleasePanelItemWidget childItem = new ReleasePanelItemWidget(release);
+		releasePanel.add(childItem);
+		childWidgetsList.add(childItem);
+		return childItem;
+	}
+
+	private ReleasePanelItemWidget getReleaseWithDescription(final String description) {
+		for (final ReleasePanelItemWidget childItem : childWidgetsList) {
+			if (childItem.getHeader().equals(description)) return childItem;
+		}
+		return null;
 	}
 }
