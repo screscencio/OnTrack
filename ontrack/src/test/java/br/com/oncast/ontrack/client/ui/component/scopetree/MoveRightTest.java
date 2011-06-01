@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.sync;
+package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,15 +16,16 @@ import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveRightAction;
 
 import com.octo.gwt.test.GwtTest;
 
-public class RemoveTest extends GwtTest {
+public class MoveRightTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
+	private Scope secondScope;
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
@@ -47,24 +48,26 @@ public class RemoveTest extends GwtTest {
 	private Scope getScope() {
 		rootScope = new Scope("Project");
 		firstScope = new Scope("1");
-		firstScope.add(new Scope("1.1"));
+		secondScope = new Scope("2");
+
 		rootScope.add(firstScope);
-		rootScope.add(new Scope("2"));
+		rootScope.add(secondScope);
+		secondScope.add(new Scope("2.1"));
 
 		return rootScope;
 	}
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("2"));
+		projectScope.add(new Scope("1").add(new Scope("2").add(new Scope("2.1"))));
 
 		return projectScope;
 	}
 
 	private Scope getUnmodifiedScope() {
 		final Scope unmodifiedScope = new Scope("Project");
-		unmodifiedScope.add(new Scope("1").add(new Scope("1.1")));
-		unmodifiedScope.add(new Scope("2"));
+		unmodifiedScope.add(new Scope("1"));
+		unmodifiedScope.add(new Scope("2").add(new Scope("2.1")));
 
 		return unmodifiedScope;
 	}
@@ -82,21 +85,26 @@ public class RemoveTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldRemoveItem() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeRemoveAction(firstScope));
+	public void shouldMoveRight() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(secondScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotRemoveRoot() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeRemoveAction(rootScope));
+	public void shouldNotMoveRightFirst() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(firstScope));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotMoveRoot() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(rootScope));
 	}
 
 	@Test
-	public void shouldInsertRemovedItemAfterUndo() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeRemoveAction(firstScope));
+	public void shouldMoveLeftAfterUndo() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(secondScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);

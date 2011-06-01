@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.sync;
+package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,16 +16,16 @@ import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveLeftAction;
 
 import com.octo.gwt.test.GwtTest;
 
-public class MoveUpTest extends GwtTest {
+public class MoveLeftTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
-	private Scope lastScope;
+	private Scope childScope;
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
@@ -49,30 +49,27 @@ public class MoveUpTest extends GwtTest {
 		rootScope = new Scope("Project");
 		firstScope = new Scope("1");
 		rootScope.add(firstScope);
+		childScope = new Scope("1.1");
+		firstScope.add(childScope);
+		firstScope.add(new Scope("1.2"));
 		rootScope.add(new Scope("2"));
-		rootScope.add(new Scope("3"));
-		lastScope = new Scope("4");
-		rootScope.add(lastScope);
 
 		return rootScope;
 	}
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("1"));
+		projectScope.add(new Scope("1").add(new Scope("1.2")));
+		projectScope.add(new Scope("1.1"));
 		projectScope.add(new Scope("2"));
-		projectScope.add(new Scope("4"));
-		projectScope.add(new Scope("3"));
 
 		return projectScope;
 	}
 
 	private Scope getUnmodifiedScope() {
 		final Scope unmodifiedScope = new Scope("Project");
-		unmodifiedScope.add(new Scope("1"));
+		unmodifiedScope.add(new Scope("1").add(new Scope("1.1")).add(new Scope("1.2")));
 		unmodifiedScope.add(new Scope("2"));
-		unmodifiedScope.add(new Scope("3"));
-		unmodifiedScope.add(new Scope("4"));
 
 		return unmodifiedScope;
 	}
@@ -90,26 +87,26 @@ public class MoveUpTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldMoveUp() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(lastScope));
+	public void shouldMoveLeft() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(childScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveUpFirstItem() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(firstScope));
+	public void shouldNotMoveToTheSameLevelAsRoot() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(firstScope));
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveUpRoot() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(rootScope));
+	public void shouldNotMoveRoot() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(rootScope));
 	}
 
 	@Test
-	public void shouldMoveDownItemAfterUndo() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(lastScope));
+	public void shouldMoveRightAfterUndo() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(childScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);

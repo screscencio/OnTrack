@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.sync;
+package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,15 +16,16 @@ import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingUpAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveUpAction;
 
 import com.octo.gwt.test.GwtTest;
 
-public class InsertSiblingUpTest extends GwtTest {
+public class MoveUpTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
+	private Scope lastScope;
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
@@ -49,15 +50,19 @@ public class InsertSiblingUpTest extends GwtTest {
 		firstScope = new Scope("1");
 		rootScope.add(firstScope);
 		rootScope.add(new Scope("2"));
+		rootScope.add(new Scope("3"));
+		lastScope = new Scope("4");
+		rootScope.add(lastScope);
 
 		return rootScope;
 	}
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope(""));
 		projectScope.add(new Scope("1"));
 		projectScope.add(new Scope("2"));
+		projectScope.add(new Scope("4"));
+		projectScope.add(new Scope("3"));
 
 		return projectScope;
 	}
@@ -66,6 +71,8 @@ public class InsertSiblingUpTest extends GwtTest {
 		final Scope unmodifiedScope = new Scope("Project");
 		unmodifiedScope.add(new Scope("1"));
 		unmodifiedScope.add(new Scope("2"));
+		unmodifiedScope.add(new Scope("3"));
+		unmodifiedScope.add(new Scope("4"));
 
 		return unmodifiedScope;
 	}
@@ -83,21 +90,26 @@ public class InsertSiblingUpTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldInsertSiblingUp() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
+	public void shouldMoveUp() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(lastScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotInsertSiblingUpForRoot() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(rootScope));
+	public void shouldNotMoveUpFirstItem() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(firstScope));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotMoveUpRoot() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(rootScope));
 	}
 
 	@Test
-	public void shouldRemoveInsertedSiblingAfterUndo() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
+	public void shouldMoveDownItemAfterUndo() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(lastScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);

@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.sync;
+package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,16 +16,15 @@ import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
 
 import com.octo.gwt.test.GwtTest;
 
-public class MoveRightTest extends GwtTest {
+public class InsertChildTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
-	private Scope secondScope;
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
@@ -48,18 +47,25 @@ public class MoveRightTest extends GwtTest {
 	private Scope getScope() {
 		rootScope = new Scope("Project");
 		firstScope = new Scope("1");
-		secondScope = new Scope("2");
-
 		rootScope.add(firstScope);
-		rootScope.add(secondScope);
-		secondScope.add(new Scope("2.1"));
+		rootScope.add(new Scope("2"));
 
 		return rootScope;
 	}
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("1").add(new Scope("2").add(new Scope("2.1"))));
+		projectScope.add(new Scope("1").add(new Scope("")));
+		projectScope.add(new Scope("2"));
+
+		return projectScope;
+	}
+
+	private Scope getModifiedScopeForRootChild() {
+		final Scope projectScope = new Scope("Project");
+		projectScope.add(new Scope("1"));
+		projectScope.add(new Scope("2"));
+		projectScope.add(new Scope(""));
 
 		return projectScope;
 	}
@@ -67,7 +73,7 @@ public class MoveRightTest extends GwtTest {
 	private Scope getUnmodifiedScope() {
 		final Scope unmodifiedScope = new Scope("Project");
 		unmodifiedScope.add(new Scope("1"));
-		unmodifiedScope.add(new Scope("2").add(new Scope("2.1")));
+		unmodifiedScope.add(new Scope("2"));
 
 		return unmodifiedScope;
 	}
@@ -84,27 +90,31 @@ public class MoveRightTest extends GwtTest {
 		return treeAfterManipulation;
 	}
 
+	private ScopeTree getModifiedTreeForRootChild() {
+		treeAfterManipulation = new ScopeTree();
+		treeAfterManipulation.setScope(getModifiedScopeForRootChild());
+		return treeAfterManipulation;
+	}
+
 	@Test
-	public void shouldMoveRight() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(secondScope));
+	public void shouldInsertChild() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveRightFirst() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(firstScope));
-	}
+	@Test
+	public void shouldInsertChildForRoot() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(rootScope));
 
-	@Test(expected = RuntimeException.class)
-	public void shouldNotMoveRoot() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(rootScope));
+		assertEquals(getModifiedScopeForRootChild(), scope);
+		assertEquals(getModifiedTreeForRootChild(), tree);
 	}
 
 	@Test
-	public void shouldMoveLeftAfterUndo() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(secondScope));
+	public void shouldRemoveInsertedChildAfterUndo() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
@@ -119,5 +129,4 @@ public class MoveRightTest extends GwtTest {
 	public String getModuleName() {
 		return "br.com.oncast.ontrack.Application";
 	}
-
 }
