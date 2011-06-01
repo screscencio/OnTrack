@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.actions;
+package br.com.oncast.ontrack.shared.scope.actions;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,10 +8,11 @@ import org.junit.Test;
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
-public class MoveUpScopeActionTest {
+public class MoveDownScopeActionTest {
+
 	private Scope rootScope;
 	private Scope firstChild;
 	private Scope lastChild;
@@ -26,16 +27,16 @@ public class MoveUpScopeActionTest {
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
-	public void rootCantbeMovedUp() throws UnableToCompleteActionException {
-		new ScopeMoveUpAction(rootScope).execute(new ProjectContext(new Project()));
+	public void rootCantbeMovedDown() throws UnableToCompleteActionException {
+		new ScopeMoveDownAction(rootScope).execute(new ProjectContext(new Project()));
 	}
 
 	@Test
 	public void movedDownScopeMustBeDown() throws UnableToCompleteActionException {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
-		final ScopeMoveUpAction moveUp = new ScopeMoveUpAction(lastChild);
-		moveUp.execute(new ProjectContext(new Project()));
+		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild);
+		moveDown.execute(new ProjectContext(new Project()));
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
 	}
@@ -44,7 +45,7 @@ public class MoveUpScopeActionTest {
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
-		final ScopeMoveUpAction moveDown = new ScopeMoveUpAction(lastChild);
+		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild);
 		moveDown.execute(new ProjectContext(new Project()));
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
@@ -55,6 +56,7 @@ public class MoveUpScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void lastNodeCantBeMovedDown() throws UnableToCompleteActionException {
-		new ScopeMoveUpAction(firstChild).execute(new ProjectContext(new Project()));
+		new ScopeMoveDownAction(lastChild).execute(new ProjectContext(new Project()));
 	}
+
 }
