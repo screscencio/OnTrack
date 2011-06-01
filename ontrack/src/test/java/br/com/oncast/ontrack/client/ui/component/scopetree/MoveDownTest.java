@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.sync;
+package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,15 +16,17 @@ import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveDownAction;
 
 import com.octo.gwt.test.GwtTest;
 
-public class InsertFatherTest extends GwtTest {
+public class MoveDownTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
+	private Scope thirdScope;
+	private Scope lastScope;
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
@@ -49,14 +51,20 @@ public class InsertFatherTest extends GwtTest {
 		firstScope = new Scope("1");
 		rootScope.add(firstScope);
 		rootScope.add(new Scope("2"));
+		thirdScope = new Scope("3");
+		rootScope.add(thirdScope);
+		lastScope = new Scope("4");
+		rootScope.add(lastScope);
 
 		return rootScope;
 	}
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("").add(new Scope("1")));
 		projectScope.add(new Scope("2"));
+		projectScope.add(new Scope("1"));
+		projectScope.add(new Scope("4"));
+		projectScope.add(new Scope("3"));
 
 		return projectScope;
 	}
@@ -65,6 +73,8 @@ public class InsertFatherTest extends GwtTest {
 		final Scope unmodifiedScope = new Scope("Project");
 		unmodifiedScope.add(new Scope("1"));
 		unmodifiedScope.add(new Scope("2"));
+		unmodifiedScope.add(new Scope("3"));
+		unmodifiedScope.add(new Scope("4"));
 
 		return unmodifiedScope;
 	}
@@ -72,7 +82,6 @@ public class InsertFatherTest extends GwtTest {
 	private ScopeTree getUnmodifiedTree() {
 		treeAfterManipulation = new ScopeTree();
 		treeAfterManipulation.setScope(getUnmodifiedScope());
-
 		return treeAfterManipulation;
 	}
 
@@ -83,25 +92,33 @@ public class InsertFatherTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldInsertFather() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(firstScope));
+	public void shouldMoveDown() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(firstScope));
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(thirdScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldNotInsertFatherForRoot() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(rootScope));
+	public void shouldNotMoveLast() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(lastScope));
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotMoveRoot() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(rootScope));
 	}
 
 	@Test
-	public void shouldRemoveInsertedFatherAfterUndo() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(firstScope));
+	public void shouldMoveUpAfterUndo() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(firstScope));
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(thirdScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 
+		planningActionExecutionRequestHandler.onActionUndoRequest();
 		planningActionExecutionRequestHandler.onActionUndoRequest();
 
 		assertEquals(getUnmodifiedScope(), scope);

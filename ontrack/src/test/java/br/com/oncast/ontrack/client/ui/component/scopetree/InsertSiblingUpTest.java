@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.sync;
+package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,11 +16,11 @@ import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingUpAction;
 
 import com.octo.gwt.test.GwtTest;
 
-public class InsertChildTest extends GwtTest {
+public class InsertSiblingUpTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
@@ -55,17 +55,9 @@ public class InsertChildTest extends GwtTest {
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("1").add(new Scope("")));
-		projectScope.add(new Scope("2"));
-
-		return projectScope;
-	}
-
-	private Scope getModifiedScopeForRootChild() {
-		final Scope projectScope = new Scope("Project");
+		projectScope.add(new Scope(""));
 		projectScope.add(new Scope("1"));
 		projectScope.add(new Scope("2"));
-		projectScope.add(new Scope(""));
 
 		return projectScope;
 	}
@@ -90,31 +82,22 @@ public class InsertChildTest extends GwtTest {
 		return treeAfterManipulation;
 	}
 
-	private ScopeTree getModifiedTreeForRootChild() {
-		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setScope(getModifiedScopeForRootChild());
-		return treeAfterManipulation;
-	}
-
 	@Test
-	public void shouldInsertChild() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(firstScope));
+	public void shouldInsertSiblingUp() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
-	@Test
-	public void shouldInsertChildForRoot() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(rootScope));
-
-		assertEquals(getModifiedScopeForRootChild(), scope);
-		assertEquals(getModifiedTreeForRootChild(), tree);
+	@Test(expected = RuntimeException.class)
+	public void shouldNotInsertSiblingUpForRoot() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(rootScope));
 	}
 
 	@Test
-	public void shouldRemoveInsertedChildAfterUndo() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(firstScope));
+	public void shouldRemoveInsertedSiblingAfterUndo() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
@@ -129,4 +112,5 @@ public class InsertChildTest extends GwtTest {
 	public String getModuleName() {
 		return "br.com.oncast.ontrack.Application";
 	}
+
 }

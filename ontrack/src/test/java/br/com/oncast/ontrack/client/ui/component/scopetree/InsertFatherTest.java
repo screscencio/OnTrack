@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.component.scopetree.sync;
+package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,11 +16,11 @@ import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
 
 import com.octo.gwt.test.GwtTest;
 
-public class UpdateTest extends GwtTest {
+public class InsertFatherTest extends GwtTest {
 
 	private Scope scope;
 	private Scope rootScope;
@@ -55,15 +55,7 @@ public class UpdateTest extends GwtTest {
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("3"));
-		projectScope.add(new Scope("2"));
-
-		return projectScope;
-	}
-
-	private Scope getModifiedRootScope() {
-		final Scope projectScope = new Scope("Root");
-		projectScope.add(new Scope("1"));
+		projectScope.add(new Scope("").add(new Scope("1")));
 		projectScope.add(new Scope("2"));
 
 		return projectScope;
@@ -80,6 +72,7 @@ public class UpdateTest extends GwtTest {
 	private ScopeTree getUnmodifiedTree() {
 		treeAfterManipulation = new ScopeTree();
 		treeAfterManipulation.setScope(getUnmodifiedScope());
+
 		return treeAfterManipulation;
 	}
 
@@ -89,31 +82,22 @@ public class UpdateTest extends GwtTest {
 		return treeAfterManipulation;
 	}
 
-	private ScopeTree getModifiedRootTree() {
-		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setScope(getModifiedRootScope());
-		return treeAfterManipulation;
-	}
-
 	@Test
-	public void shouldUpdateScopeWithNewValue() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
+	public void shouldInsertFather() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
 	}
 
-	@Test
-	public void shouldUpdateRootScope() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(rootScope, "Root"));
-
-		assertEquals(getModifiedRootScope(), scope);
-		assertEquals(getModifiedRootTree(), tree);
+	@Test(expected = RuntimeException.class)
+	public void shouldNotInsertFatherForRoot() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(rootScope));
 	}
 
 	@Test
-	public void shouldRollbackUpdatedScope() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
+	public void shouldRemoveInsertedFatherAfterUndo() throws ActionNotFoundException {
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(firstScope));
 
 		assertEquals(getModifiedScope(), scope);
 		assertEquals(getModifiedTree(), tree);
