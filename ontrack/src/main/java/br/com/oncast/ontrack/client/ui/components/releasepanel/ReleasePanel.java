@@ -29,7 +29,6 @@ public class ReleasePanel implements IsWidget {
 		};
 	}
 
-	// TODO Refactor to a more performatic approach
 	protected void refresh() {
 		releasePanelWidget.updateReleases(rootRelease.getChildReleases());
 	}

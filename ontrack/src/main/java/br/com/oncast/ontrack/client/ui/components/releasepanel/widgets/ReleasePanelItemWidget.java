@@ -32,13 +32,13 @@ public class ReleasePanelItemWidget extends Composite {
 
 	private final List<ReleasePanelItemWidget> childs;
 
-	private final List<Label> scopesList;
+	private final List<ScopeWidget> scopesList;
 
 	private final Release release;
 
 	public ReleasePanelItemWidget(final Release release) {
 		initWidget(uiBinder.createAndBindUi(this));
-		this.scopesList = new ArrayList<Label>();
+		this.scopesList = new ArrayList<ScopeWidget>();
 		this.childs = new ArrayList<ReleasePanelItemWidget>();
 		this.release = release;
 
@@ -74,40 +74,40 @@ public class ReleasePanelItemWidget extends Composite {
 
 	public void updateChildScopes(final List<Scope> scopes) {
 
-		final Iterator<Label> iterator = scopesList.iterator();
+		final Iterator<ScopeWidget> iterator = scopesList.iterator();
 		while (iterator.hasNext()) {
-			final Label scopeLabel = iterator.next();
-			if (!containsWidgetInScopeList(scopes, scopeLabel)) {
+			final ScopeWidget scopeWidget = iterator.next();
+			if (!containsWidgetInScopeList(scopes, scopeWidget)) {
 				iterator.remove();
-				scopeContainer.remove(scopeLabel);
+				scopeContainer.remove(scopeWidget);
 			}
 		}
 
 		for (final Scope scope : scopes) {
-			if (!containsScopeInWidgetList(scope.getDescription())) createScopeItem(scope);
+			if (!containsScopeInWidgetList(scope)) createScopeItem(scope);
 		}
 
 		reviewScopeContainerVisibility();
 	}
 
-	private boolean containsWidgetInScopeList(final List<Scope> scopes, final Label description) {
+	private boolean containsWidgetInScopeList(final List<Scope> scopes, final ScopeWidget scopeWidget) {
 		for (final Scope scope : scopes) {
-			if (scope.getDescription().equals(description.getText())) return true;
+			if (scope.equals(scopeWidget.getScope())) return true;
 		}
 		return false;
 	}
 
-	private boolean containsScopeInWidgetList(final String description) {
-		for (final Label scopeLabel : scopesList) {
-			if (scopeLabel.getText().equals(description)) return true;
+	private boolean containsScopeInWidgetList(final Scope scope) {
+		for (final ScopeWidget scopeWidget : scopesList) {
+			if (scopeWidget.getScope().equals(scope)) return true;
 		}
 		return false;
 	}
 
 	private void createScopeItem(final Scope scope) {
-		final Label labelScope = new Label(scope.getDescription());
-		scopeContainer.add(labelScope);
-		scopesList.add(labelScope);
+		final ScopeWidget scopeWidget = new ScopeWidget(scope);
+		scopeContainer.add(scopeWidget);
+		scopesList.add(scopeWidget);
 	}
 
 	private void createChildItem(final Release childRelease) {
