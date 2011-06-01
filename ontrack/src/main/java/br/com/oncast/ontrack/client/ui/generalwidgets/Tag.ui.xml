@@ -3,36 +3,48 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:style>
-		.tableStyle {
-			border-collapse: collapse;
+		.tag {
 			display: inline-table;
 			margin-right: 4px;
 			margin-top: 3px;
+
+			border-collapse: collapse;
 			vertical-align: top;
 		}
+
+        .tagLabel {
+            padding-left: 4px;
+            padding-right: 6px;
+        }
+
+        .separator {
+            width: 1px;
+        }
+		
 		.closeLabel {
-			cursor: pointer;
 			padding: 1px 4px;
 		}
-		.separator {
-			width: 1px;
+		
+		.clickable:hover {
+			background: #7e1010;
+			cursor: pointer;
 		}
-		.tagLabel {
-			padding-left: 4px;
-			padding-right: 6px;
-		}
+
 		.redColor {
 			padding-bottom: 1px;
+
 			font: 9px verdana, arial, sans-serif;
 			background-color: #CC0000;
 			color: #FFE3E3;
 		}
+
 		.roundedLeft {
 			-moz-border-radius-bottomleft: 3px 3px;
 			border-bottom-left-radius: 3px 3px;
 			-moz-border-radius-topleft: 3px 3px;
 			border-bottom-top-radius: 3px 3px;
 		}
+
 		.roundedRight {
 			-moz-border-radius-bottomright: 3px 3px;
 			border-bottom-right-radius: 3px 3px;
@@ -42,14 +54,14 @@
 	</ui:style>
 	
 	<g:HTMLPanel>
-		<table cellpadding="0" class="{style.tableStyle}">
+		<table cellpadding="0" class="{style.tag}">
 			<tbody>
 				<tr>
 					<td class="{style.redColor} {style.roundedLeft}">
 						<g:Label styleName="{style.tagLabel}" ui:field="tagLabel" />
 					</td>
 					<td style="background-color: #ffe3e3" class="{style.separator}"></td>
-					<td class="{style.redColor} {style.roundedRight}">
+					<td class="{style.redColor} {style.roundedRight} {style.clickable}">
 						<g:Label styleName="{style.closeLabel}" ui:field="closeLabel" />
 					</td>
 				</tr>

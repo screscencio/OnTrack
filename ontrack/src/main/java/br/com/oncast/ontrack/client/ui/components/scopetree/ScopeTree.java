@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
 import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_F2;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.Component;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
@@ -13,10 +14,9 @@ import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeTree implements IsWidget {
+public class ScopeTree implements Component {
 
 	private final ScopeTreeWidget tree;
 	private final ScopeTreeActionFactory treeActionFactory;
@@ -32,8 +32,8 @@ public class ScopeTree implements IsWidget {
 				final ScopeTreeItem selected = tree.getSelected();
 				if (selected == null) return;
 
-				ScopeTreeShortcutMappings.interpretKeyboardCommand(event.getNativeKeyCode(), event.isControlKeyDown(), event.isShiftKeyDown(), actionHandler,
-						selected.getReferencedScope());
+				ScopeTreeShortcutMappings.interpretKeyboardCommand(event.getNativeKeyCode(), event.isControlKeyDown(), event.isShiftKeyDown(),
+						event.isAltKeyDown(), actionHandler, selected.getReferencedScope());
 
 				if (event.getNativeKeyCode() == KEY_F2) {
 					tree.getSelected().enterEditMode();
@@ -65,10 +65,12 @@ public class ScopeTree implements IsWidget {
 		treeActionFactory = new ScopeTreeActionFactory(tree);
 	}
 
+	@Override
 	public ActionExecutionListener getActionExecutionListener() {
 		return actionExecutionListener;
 	}
 
+	@Override
 	public void setActionExecutionRequestHandler(final ActionExecutionRequestHandler actionHandler) {
 		this.actionHandler = actionHandler;
 	}

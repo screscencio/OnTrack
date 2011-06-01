@@ -2,7 +2,25 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
+		.label {
+			height: 20px;
+			margin: 1px;
+			padding-left: 5px;
+			padding-top: 2px;
+			
+            border: 1px solid transparent;
+            background: #cdcfda;
+		}
+		
+		.label:hover {
+			/*
+			background-color: #E4ECF7;
+			border: 1px solid #BBCEE9;
+			*/
+			background-color: #c3c6d5;
+			border: 1px solid #acafc6;
+		}
 	</ui:style>
 
-	<g:Label ui:field="descriptionLabel" />
+	<g:Label ui:field="descriptionLabel" styleName="{style.label}" />
 </ui:UiBinder> 

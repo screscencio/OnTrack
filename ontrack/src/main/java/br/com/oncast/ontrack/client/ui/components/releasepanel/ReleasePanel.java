@@ -8,14 +8,12 @@ import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleasePanel implements IsWidget {
+public class ReleasePanel implements Component {
 
 	private final ReleasePanelWidget releasePanelWidget;
 	private final ActionExecutionListener actionExecutionListener;
-	private ActionExecutionRequestHandler actionHandler;
 	private Release rootRelease;
 
 	public ReleasePanel() {
@@ -29,6 +27,7 @@ public class ReleasePanel implements IsWidget {
 		};
 	}
 
+	// TODO Is really necessary to send the release list?
 	protected void refresh() {
 		releasePanelWidget.updateReleases(rootRelease.getChildReleases());
 	}
@@ -38,13 +37,13 @@ public class ReleasePanel implements IsWidget {
 		releasePanelWidget.init(rootRelease.getChildReleases());
 	}
 
+	@Override
 	public ActionExecutionListener getActionExecutionListener() {
 		return actionExecutionListener;
 	}
 
-	public void setActionExecutionRequestHandler(final ActionExecutionRequestHandler actionHandler) {
-		this.actionHandler = actionHandler;
-	}
+	@Override
+	public void setActionExecutionRequestHandler(final ActionExecutionRequestHandler actionHandler) {}
 
 	@Override
 	public Widget asWidget() {
