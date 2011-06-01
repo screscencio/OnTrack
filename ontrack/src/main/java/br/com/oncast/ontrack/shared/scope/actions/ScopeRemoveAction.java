@@ -23,7 +23,7 @@ public class ScopeRemoveAction implements ScopeAction {
 		index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
 		release = selectedScope.getRelease();
-		release.removeScope(selectedScope);
+		if (release != null) release.removeScope(selectedScope);
 		selectedScope.setRelease(null);
 	}
 
@@ -31,7 +31,7 @@ public class ScopeRemoveAction implements ScopeAction {
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
 		parent.add(index, selectedScope);
 		selectedScope.setRelease(release);
-		release.addScope(selectedScope);
+		if (release != null) release.addScope(selectedScope);
 	}
 
 	@Override
