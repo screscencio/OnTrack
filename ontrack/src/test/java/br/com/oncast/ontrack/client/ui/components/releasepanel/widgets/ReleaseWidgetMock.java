@@ -1,10 +1,10 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel;
+package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelItemWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidgetFactory;
 import br.com.oncast.ontrack.shared.release.Release;
 
-public class ReleaseWidgetMock extends ReleasePanelItemWidget {
+public class ReleaseWidgetMock extends ReleaseWidget {
 
 	private StyleImplementation styleImplementation;
 

@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.release.Release;
@@ -22,13 +21,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO Refactor dividing visualization logic from business logic
-public class ReleasePanelItemWidget extends Composite {
+public class ReleaseWidget extends Composite {
 
 	private static ReleasePanelItemWidgetUiBinder uiBinder = GWT.create(ReleasePanelItemWidgetUiBinder.class);
 
-	interface ReleasePanelItemWidgetUiBinder extends UiBinder<Widget, ReleasePanelItemWidget> {}
+	interface ReleasePanelItemWidgetUiBinder extends UiBinder<Widget, ReleaseWidget> {}
 
-	public interface Style extends CssResource {
+	interface Style extends CssResource {
 		String invisibleBodyContainer();
 
 		String headerContainerStateImageOpened();
@@ -36,9 +35,9 @@ public class ReleasePanelItemWidget extends Composite {
 		String headerContainerStateImageClosed();
 	}
 
-	private final List<ReleasePanelItemWidget> childs;
+	private final LinkedHashMap<Release, ReleaseWidget> releaseWidgetsMap;
 
-	private final List<ScopeWidget> scopesList;
+	private final LinkedHashMap<Scope, ScopeWidget> scopeWidgetsMap;
 
 	private final Release release;
 
@@ -68,22 +67,22 @@ public class ReleasePanelItemWidget extends Composite {
 
 	private final ReleaseWidgetFactory releaseWidgetFactory;
 
-	public ReleasePanelItemWidget(final Release release, final ReleaseWidgetFactory releaseWidgetFactory) {
+	public ReleaseWidget(final Release release, final ReleaseWidgetFactory releaseWidgetFactory) {
 		this.releaseWidgetFactory = releaseWidgetFactory;
 		initWidget(uiBinder.createAndBindUi(this));
-		this.scopesList = new ArrayList<ScopeWidget>();
-		this.childs = new ArrayList<ReleasePanelItemWidget>();
+		this.scopeWidgetsMap = new LinkedHashMap<Scope, ScopeWidget>();
+		this.releaseWidgetsMap = new LinkedHashMap<Release, ReleaseWidget>();
 		this.release = release;
 
 		header.setText(release.getDescription());
 
 		for (final Release childRelease : release.getChildReleases())
-			createChildItem(childRelease);
+			createChildReleaseWidget(childRelease);
 
 		for (final Scope scope : release.getScopeList())
-			createScopeItem(scope);
+			createChildScopeWidget(scope);
 
-		reviewContainersVisibility();
+		reviewContainersState();
 	}
 
 	public Release getRelease() {
@@ -98,78 +97,82 @@ public class ReleasePanelItemWidget extends Composite {
 		return style;
 	}
 
-	// TODO Review this method's algorithm
-	protected void updateChildReleases(final List<Release> childReleases) {
-		for (final Release childRelease : childReleases) {
-			final ReleasePanelItemWidget releaseWithDescription = getReleaseWithDescription(childRelease.getDescription());
-			if (releaseWithDescription != null) {
-				if (!childRelease.getChildReleases().isEmpty()) releaseWithDescription.updateChildReleases(childRelease.getChildReleases());
-				releaseWithDescription.updateChildScopes(childRelease.getScopeList());
-			}
-			else createChildItem(childRelease);
-		}
-
-		reviewContainersVisibility();
+	protected void update() {
+		updateChildReleases();
+		updateChildScopes();
+		reviewContainersState();
 	}
 
-	// TODO Review this method's algorithm
-	protected void updateChildScopes(final List<Scope> scopes) {
+	private void updateChildReleases() {
+		final List<Release> releases = release.getChildReleases();
+		for (int i = 0; i < releases.size(); i++) {
+			final Release release = releases.get(i);
 
-		final Iterator<ScopeWidget> iterator = scopesList.iterator();
-		while (iterator.hasNext()) {
-			final ScopeWidget scopeWidget = iterator.next();
-			if (!containsWidgetInScopeList(scopes, scopeWidget)) {
-				iterator.remove();
+			final ReleaseWidget releaseWidget = releaseWidgetsMap.get(release);
+			if (releaseWidget == null) {
+				createChildReleaseWidgetAt(release, i);
+				continue;
+			}
+
+			if (releaseContainer.getWidgetIndex(releaseWidget) != i) {
+				releaseContainer.remove(releaseWidget);
+				releaseContainer.insert(releaseWidget, i);
+			}
+
+			releaseWidget.update();
+		}
+	}
+
+	private void updateChildScopes() {
+		final List<Scope> scopeList = release.getScopeList();
+		for (int i = 0; i < scopeList.size(); i++) {
+			final Scope scope = scopeList.get(i);
+
+			final ScopeWidget scopeWidget = scopeWidgetsMap.get(scope);
+			if (scopeWidget == null) {
+				createChildScopeWidgetAt(scope, i);
+				continue;
+			}
+
+			if (scopeContainer.getWidgetIndex(scopeWidget) != i) {
 				scopeContainer.remove(scopeWidget);
+				scopeContainer.insert(scopeWidget, i);
 			}
+
+			scopeWidget.update();
 		}
-
-		for (final Scope scope : scopes)
-			if (!containsScopeInWidgetList(scope)) createScopeItem(scope);
-
-		reviewContainersVisibility();
-	}
-
-	// TODO Refactor this so that the label text is not used for this comparasion, instead an instance shoudl be used itself
-	private boolean containsWidgetInScopeList(final List<Scope> scopes, final ScopeWidget scopeWidget) {
-		for (final Scope scope : scopes)
-			if (scope.equals(scopeWidget.getScope())) return true;
-
-		return false;
-	}
-
-	// TODO Refactor this so that the label text is not used for this comparasion, instead an instance shoudl be used itself
-	private boolean containsScopeInWidgetList(final Scope scope) {
-		for (final ScopeWidget scopeWidget : scopesList) {
-			if (scopeWidget.getScope().equals(scope)) return true;
+		for (int i = scopeList.size(); i < scopeContainer.getWidgetCount(); i++) {
+			final ScopeWidget scopeWidget = (ScopeWidget) scopeContainer.getWidget(i);
+			scopeContainer.remove(i);
+			scopeWidgetsMap.remove(scopeWidget.getScope());
 		}
-		return false;
 	}
 
-	// TODO Refactor this so that the label text is not used for this comparasion, instead an instance shoudl be used itself
-	private ReleasePanelItemWidget getReleaseWithDescription(final String description) {
-		for (final ReleasePanelItemWidget childItem : getChilds())
-			if (childItem.getHeader().equals(description)) return childItem;
-
-		return null;
+	private ReleaseWidget createChildReleaseWidget(final Release release) {
+		return createChildReleaseWidgetAt(release, releaseContainer.getWidgetCount());
 	}
 
-	// TODO Refactor this so that an expecialist object is created instead of an label
-	private void createScopeItem(final Scope scope) {
+	private ReleaseWidget createChildReleaseWidgetAt(final Release release, final int index) {
+		final ReleaseWidget childItem = releaseWidgetFactory.createReleaseWidget(release);
+		releaseContainer.insert(childItem, index);
+		releaseWidgetsMap.put(release, childItem);
+		setContainerState(true);
+		return childItem;
+	}
+
+	private void createChildScopeWidget(final Scope scope) {
+		createChildScopeWidgetAt(scope, scopeContainer.getWidgetCount());
+	}
+
+	private ScopeWidget createChildScopeWidgetAt(final Scope scope, final int index) {
 		final ScopeWidget scopeWidget = new ScopeWidget(scope);
-		scopeContainer.add(scopeWidget);
-		scopesList.add(scopeWidget);
+		scopeContainer.insert(scopeWidget, index);
+		scopeWidgetsMap.put(scope, scopeWidget);
 		setContainerState(true);
+		return scopeWidget;
 	}
 
-	private void createChildItem(final Release childRelease) {
-		final ReleasePanelItemWidget child = releaseWidgetFactory.createReleaseWidget(childRelease);
-		releaseContainer.add(child);
-		getChilds().add(child);
-		setContainerState(true);
-	}
-
-	private void reviewContainersVisibility() {
+	private void reviewContainersState() {
 		reviewBodyContainerState();
 		reviewReleaseContainerVisibility();
 		reviewScopeContainerVisibility();
@@ -184,7 +187,7 @@ public class ReleasePanelItemWidget extends Composite {
 
 				@Override
 				public void onClick(final ClickEvent event) {
-					toogleContainerState();
+					setContainerState(!isContainerStateOpen);
 				}
 			});
 			setContainerState(true);
@@ -196,18 +199,6 @@ public class ReleasePanelItemWidget extends Composite {
 		}
 
 		isBodyContainerActive = shouldBodyContainerBeActive;
-	}
-
-	private void reviewScopeContainerVisibility() {
-		scopeContainer.setVisible(scopeContainer.getWidgetCount() != 0);
-	}
-
-	private void reviewReleaseContainerVisibility() {
-		releaseContainer.setVisible(releaseContainer.getWidgetCount() != 0);
-	}
-
-	protected void toogleContainerState() {
-		setContainerState(!isContainerStateOpen);
 	}
 
 	private void setContainerState(final boolean shouldOpen) {
@@ -226,26 +217,24 @@ public class ReleasePanelItemWidget extends Composite {
 		isContainerStateOpen = shouldOpen;
 	}
 
-	protected List<ReleasePanelItemWidget> getChilds() {
-		return childs;
+	private void reviewScopeContainerVisibility() {
+		scopeContainer.setVisible(scopeContainer.getWidgetCount() != 0);
+	}
+
+	private void reviewReleaseContainerVisibility() {
+		releaseContainer.setVisible(releaseContainer.getWidgetCount() != 0);
 	}
 
 	// TODO Review equals for Scope and Release after they have a persistence strategy. Are they using id? Are they verifying their child?
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if (!(obj instanceof ReleasePanelItemWidget)) return false;
-		final ReleasePanelItemWidget other = (ReleasePanelItemWidget) obj;
+		if (!(obj instanceof ReleaseWidget)) return false;
+		final ReleaseWidget other = (ReleaseWidget) obj;
 
 		if (!release.equals(other.getRelease())) return false;
+		if (!releaseWidgetsMap.equals(other.releaseWidgetsMap)) return false;
 
-		if (childs.size() != other.getChilds().size()) return false;
-		if (!childs.equals(other.getChilds())) return false;
-
-		return scopesList.equals(other.getScopeList());
-	}
-
-	public List<ScopeWidget> getScopeList() {
-		return scopesList;
+		return scopeWidgetsMap.equals(other.scopeWidgetsMap);
 	}
 }

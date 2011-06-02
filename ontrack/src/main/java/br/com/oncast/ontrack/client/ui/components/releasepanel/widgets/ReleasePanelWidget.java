@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.release.Release;
@@ -21,50 +21,55 @@ public class ReleasePanelWidget extends Composite {
 	@UiField
 	protected VerticalPanel releasePanel;
 
-	private final List<ReleasePanelItemWidget> childWidgetsList;
+	private final LinkedHashMap<Release, ReleaseWidget> childWidgetsMap;
+
+	private Release rootRelease;
 
 	private final ReleaseWidgetFactory releaseWidgetFactory = new ReleaseWidgetFactoryImpl();
 
 	public ReleasePanelWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
-		childWidgetsList = new ArrayList<ReleasePanelItemWidget>();
+		childWidgetsMap = new LinkedHashMap<Release, ReleaseWidget>();
 	}
 
-	public void init(final List<Release> releases) {
+	public void setRelease(final Release rootRelease) {
+		this.rootRelease = rootRelease;
 		releasePanel.clear();
 
-		for (final Release release : releases) {
-			createNewChild(release);
+		for (final Release childRelease : rootRelease.getChildReleases()) {
+			createChild(childRelease);
 		}
 	}
 
-	public void updateReleases(final List<Release> releases) {
-		for (final Release release : releases) {
-			final ReleasePanelItemWidget releaseWidget = getReleaseWithDescription(release.getDescription());
-			if (releaseWidget == null) createNewChild(release);
-			else {
-				releaseWidget.updateChildReleases(release.getChildReleases());
-				releaseWidget.updateChildScopes(release.getScopeList());
+	public void update() {
+		final List<Release> releases = rootRelease.getChildReleases();
+		for (int i = 0; i < releases.size(); i++) {
+			final Release release = releases.get(i);
+
+			final ReleaseWidget releaseWidget = childWidgetsMap.get(release);
+			if (releaseWidget == null) {
+				createChildAt(release, i);
+				continue;
 			}
+
+			if (releasePanel.getWidgetIndex(releaseWidget) != i) {
+				releasePanel.remove(releaseWidget);
+				releasePanel.insert(releaseWidget, i);
+			}
+
+			releaseWidget.update();
 		}
 	}
 
-	private ReleasePanelItemWidget createNewChild(final Release release) {
-		final ReleasePanelItemWidget childItem = releaseWidgetFactory.createReleaseWidget(release);
-		releasePanel.add(childItem);
-		childWidgetsList.add(childItem);
+	private ReleaseWidget createChild(final Release release) {
+		return createChildAt(release, childWidgetsMap.size());
+	}
+
+	private ReleaseWidget createChildAt(final Release release, final int index) {
+		final ReleaseWidget childItem = releaseWidgetFactory.createReleaseWidget(release);
+		releasePanel.insert(childItem, index);
+		childWidgetsMap.put(release, childItem);
 		return childItem;
-	}
-
-	private ReleasePanelItemWidget getReleaseWithDescription(final String description) {
-		for (final ReleasePanelItemWidget childItem : childWidgetsList) {
-			if (childItem.getHeader().equals(description)) return childItem;
-		}
-		return null;
-	}
-
-	protected List<ReleasePanelItemWidget> getChildWidgetsList() {
-		return childWidgetsList;
 	}
 
 	@Override
@@ -72,6 +77,6 @@ public class ReleasePanelWidget extends Composite {
 		if (!(obj instanceof ReleasePanelWidget)) return false;
 		final ReleasePanelWidget other = (ReleasePanelWidget) obj;
 
-		return childWidgetsList.equals(other.getChildWidgetsList());
+		return childWidgetsMap.equals(other.childWidgetsMap);
 	}
 }

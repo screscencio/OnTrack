@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel;
+package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActionExecutionRequestHandler;

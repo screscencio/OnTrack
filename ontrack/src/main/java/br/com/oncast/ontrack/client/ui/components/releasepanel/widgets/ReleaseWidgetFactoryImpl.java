@@ -5,8 +5,8 @@ import br.com.oncast.ontrack.shared.release.Release;
 public class ReleaseWidgetFactoryImpl implements ReleaseWidgetFactory {
 
 	@Override
-	public ReleasePanelItemWidget createReleaseWidget(final Release release) {
-		return new ReleasePanelItemWidget(release, this);
+	public ReleaseWidget createReleaseWidget(final Release release) {
+		return new ReleaseWidget(release, this);
 	}
 
 }

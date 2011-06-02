@@ -20,11 +20,23 @@ public class ScopeWidget extends Composite {
 
 	private final Scope scope;
 
+	private String currentScopeDescription;
+
 	public ScopeWidget(final Scope scope) {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
-		descriptionLabel.setText(scope.getDescription());
+		updateDescription();
+	}
+
+	public void update() {
+		if (scope.getDescription().equals(currentScopeDescription)) return;
+		updateDescription();
+	}
+
+	private void updateDescription() {
+		currentScopeDescription = scope.getDescription();
+		descriptionLabel.setText(currentScopeDescription);
 	}
 
 	public Scope getScope() {
@@ -35,8 +47,8 @@ public class ScopeWidget extends Composite {
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
 		if (!(obj instanceof ScopeWidget)) return false;
+		
 		final ScopeWidget other = (ScopeWidget) obj;
-
 		return scope.equals(other.getScope());
 	}
 }

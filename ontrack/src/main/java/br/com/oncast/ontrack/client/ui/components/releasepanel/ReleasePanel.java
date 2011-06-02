@@ -22,19 +22,18 @@ public class ReleasePanel implements Component {
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ScopeAction action, final boolean wasRollback) {
-				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction) refresh();
+				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction) update();
 			}
 		};
 	}
 
-	// TODO Is really necessary to send the release list?
-	protected void refresh() {
-		releasePanelWidget.updateReleases(rootRelease.getChildReleases());
+	protected void update() {
+		releasePanelWidget.update();
 	}
 
 	public void setRelease(final Release release) {
 		this.rootRelease = release;
-		releasePanelWidget.init(rootRelease.getChildReleases());
+		releasePanelWidget.setRelease(rootRelease);
 	}
 
 	@Override
@@ -50,11 +49,12 @@ public class ReleasePanel implements Component {
 		return releasePanelWidget;
 	}
 
+	// TODO Review this method
 	@Override
 	public boolean equals(final Object other) {
 		if (!(other instanceof ReleasePanel)) return false;
+		
 		final ReleasePanel otherReleasePanel = (ReleasePanel) other;
-
-		return releasePanelWidget.equals(otherReleasePanel.asWidget());
+		return asWidget().equals(otherReleasePanel.asWidget());
 	}
 }
