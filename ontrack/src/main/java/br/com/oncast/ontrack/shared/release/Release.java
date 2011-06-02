@@ -82,4 +82,22 @@ public class Release {
 	public void removeScope(final Scope selectedScope) {
 		scopeList.remove(selectedScope);
 	}
+
+	// TODO Review this when it have a persistence strategy. Should it use id instead?
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (!(obj instanceof Release)) return false;
+		final Release other = (Release) obj;
+
+		if (description == null) {
+			if (other.getDescription() != null) return false;
+		}
+		else if (!description.equals(other.getDescription())) return false;
+
+		if (childrenList.size() != other.getChildReleases().size()) return false;
+		if (!childrenList.equals(other.getChildReleases())) return false;
+
+		return true;
+	}
 }

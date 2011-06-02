@@ -49,4 +49,12 @@ public class ReleasePanel implements Component {
 	public Widget asWidget() {
 		return releasePanelWidget;
 	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if (!(other instanceof ReleasePanel)) return false;
+		final ReleasePanel otherReleasePanel = (ReleasePanel) other;
+
+		return releasePanelWidget.equals(otherReleasePanel.asWidget());
+	}
 }

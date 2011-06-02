@@ -60,4 +60,16 @@ public class ReleasePanelWidget extends Composite {
 		}
 		return null;
 	}
+
+	protected List<ReleasePanelItemWidget> getChildWidgetsList() {
+		return childWidgetsList;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof ReleasePanelWidget)) return false;
+		final ReleasePanelWidget other = (ReleasePanelWidget) obj;
+
+		return childWidgetsList.equals(other.getChildWidgetsList());
+	}
 }
