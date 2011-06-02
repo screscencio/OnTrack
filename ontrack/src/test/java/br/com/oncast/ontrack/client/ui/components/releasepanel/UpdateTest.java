@@ -2,12 +2,14 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActionExecutionRequestHandler;
 import br.com.oncast.ontrack.mocks.MockFactory;
@@ -28,11 +30,11 @@ public class UpdateTest extends GwtTest {
 	private PlanningActionExecutionRequestHandler planningActionExecutionRequestHandler;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		final Project project = MockFactory.createProject();
 		projectContext = new ProjectContext(project);
+		releasePanel = createReleasePanel();
 
-		releasePanel = new ReleasePanel();
 		releasePanel.setRelease(project.getProjectRelease());
 
 		scope = project.getScope();
@@ -43,12 +45,26 @@ public class UpdateTest extends GwtTest {
 		planningActionExecutionRequestHandler = new PlanningActionExecutionRequestHandler(projectContext, listeners);
 	}
 
+	private ReleasePanel createReleasePanel() throws Exception {
+		final ReleasePanel r = new ReleasePanel();
+
+		final Field widgetField = ReleasePanel.class.getDeclaredField("releasePanelWidget");
+		widgetField.setAccessible(true);
+		final ReleasePanelWidget releasePanelWidget = (ReleasePanelWidget) widgetField.get(r);
+
+		final Field factoryField = ReleasePanelWidget.class.getDeclaredField("releaseWidgetFactory");
+		factoryField.setAccessible(true);
+		factoryField.set(releasePanelWidget, new ReleaseWidgetFactoryMock());
+
+		return r;
+	}
+
 	// TODO Testar os equals sem a comparação de tamanho
 	@Test
-	public void shouldUpdateReleaseWithNewScope() {
-		final ReleasePanel modifiedReleasePanel = new ReleasePanel();
+	public void shouldUpdateReleaseWithNewScope() throws Exception {
+		final ReleasePanel modifiedReleasePanel = createReleasePanel();
 		modifiedReleasePanel.setRelease(getModifiedRelease());
-		System.out.println("");
+
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(firstScope, firstScope.getDescription() + " @R1/It1"));
 
 		assertEquals(modifiedReleasePanel, releasePanel);

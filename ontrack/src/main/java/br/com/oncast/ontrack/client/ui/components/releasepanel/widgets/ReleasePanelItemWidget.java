@@ -66,7 +66,10 @@ public class ReleasePanelItemWidget extends Composite {
 
 	private boolean isBodyContainerActive;
 
-	public ReleasePanelItemWidget(final Release release) {
+	private final ReleaseWidgetFactory releaseWidgetFactory;
+
+	public ReleasePanelItemWidget(final Release release, final ReleaseWidgetFactory releaseWidgetFactory) {
+		this.releaseWidgetFactory = releaseWidgetFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		this.scopesList = new ArrayList<ScopeWidget>();
 		this.childs = new ArrayList<ReleasePanelItemWidget>();
@@ -89,6 +92,10 @@ public class ReleasePanelItemWidget extends Composite {
 
 	public String getHeader() {
 		return header.getText();
+	}
+
+	protected Style getStyle() {
+		return style;
 	}
 
 	// TODO Review this method's algorithm
@@ -156,7 +163,7 @@ public class ReleasePanelItemWidget extends Composite {
 	}
 
 	private void createChildItem(final Release childRelease) {
-		final ReleasePanelItemWidget child = new ReleasePanelItemWidget(childRelease);
+		final ReleasePanelItemWidget child = releaseWidgetFactory.createReleaseWidget(childRelease);
 		releaseContainer.add(child);
 		getChilds().add(child);
 		setContainerState(true);
@@ -183,8 +190,8 @@ public class ReleasePanelItemWidget extends Composite {
 			setContainerState(true);
 		}
 		else {
-			containerStateImage.getElement().removeClassName(style.headerContainerStateImageClosed());
-			containerStateImage.getElement().removeClassName(style.headerContainerStateImageOpened());
+			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageClosed());
+			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageOpened());
 			if (containerStateImageClickHandlerRegistration != null) containerStateImageClickHandlerRegistration.removeHandler();
 		}
 
@@ -207,14 +214,14 @@ public class ReleasePanelItemWidget extends Composite {
 		if (isContainerStateOpen == shouldOpen) return;
 
 		if (shouldOpen) {
-			bodyContainer.removeClassName(style.invisibleBodyContainer());
-			containerStateImage.getElement().removeClassName(style.headerContainerStateImageClosed());
-			containerStateImage.getElement().addClassName(style.headerContainerStateImageOpened());
+			bodyContainer.removeClassName(getStyle().invisibleBodyContainer());
+			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageClosed());
+			containerStateImage.getElement().addClassName(getStyle().headerContainerStateImageOpened());
 		}
 		else {
-			bodyContainer.addClassName(style.invisibleBodyContainer());
-			containerStateImage.getElement().removeClassName(style.headerContainerStateImageOpened());
-			containerStateImage.getElement().addClassName(style.headerContainerStateImageClosed());
+			bodyContainer.addClassName(getStyle().invisibleBodyContainer());
+			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageOpened());
+			containerStateImage.getElement().addClassName(getStyle().headerContainerStateImageClosed());
 		}
 		isContainerStateOpen = shouldOpen;
 	}

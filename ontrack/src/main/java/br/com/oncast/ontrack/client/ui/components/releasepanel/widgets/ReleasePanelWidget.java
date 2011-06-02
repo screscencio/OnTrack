@@ -23,6 +23,8 @@ public class ReleasePanelWidget extends Composite {
 
 	private final List<ReleasePanelItemWidget> childWidgetsList;
 
+	private final ReleaseWidgetFactory releaseWidgetFactory = new ReleaseWidgetFactoryImpl();
+
 	public ReleasePanelWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 		childWidgetsList = new ArrayList<ReleasePanelItemWidget>();
@@ -48,7 +50,7 @@ public class ReleasePanelWidget extends Composite {
 	}
 
 	private ReleasePanelItemWidget createNewChild(final Release release) {
-		final ReleasePanelItemWidget childItem = new ReleasePanelItemWidget(release);
+		final ReleasePanelItemWidget childItem = releaseWidgetFactory.createReleaseWidget(release);
 		releasePanel.add(childItem);
 		childWidgetsList.add(childItem);
 		return childItem;
