@@ -103,10 +103,11 @@ public class ReleaseWidget extends Composite {
 		reviewContainersState();
 	}
 
+	// TODO Extract widget that encapsulates all this logic
 	private void updateChildReleases() {
-		final List<Release> releases = release.getChildReleases();
-		for (int i = 0; i < releases.size(); i++) {
-			final Release release = releases.get(i);
+		final List<Release> releaseList = release.getChildReleases();
+		for (int i = 0; i < releaseList.size(); i++) {
+			final Release release = releaseList.get(i);
 
 			final ReleaseWidget releaseWidget = releaseWidgetsMap.get(release);
 			if (releaseWidget == null) {
@@ -121,8 +122,14 @@ public class ReleaseWidget extends Composite {
 
 			releaseWidget.update();
 		}
+		for (int i = releaseList.size(); i < releaseContainer.getWidgetCount(); i++) {
+			final ReleaseWidget releaseWidget = (ReleaseWidget) releaseContainer.getWidget(i);
+			releaseContainer.remove(i);
+			releaseWidgetsMap.remove(releaseWidget.getRelease());
+		}
 	}
 
+	// TODO Extract widget that encapsulates all this logic
 	private void updateChildScopes() {
 		final List<Scope> scopeList = release.getScopeList();
 		for (int i = 0; i < scopeList.size(); i++) {

@@ -19,56 +19,62 @@ public class ReleasePanelWidget extends Composite {
 	interface ReleasePanelWidgetUiBinder extends UiBinder<Widget, ReleasePanelWidget> {}
 
 	@UiField
-	protected VerticalPanel releasePanel;
+	protected VerticalPanel releaseContainer;
 
-	private final LinkedHashMap<Release, ReleaseWidget> childWidgetsMap;
+	private final LinkedHashMap<Release, ReleaseWidget> releaseWidgetsMap;
 
-	private Release rootRelease;
+	private Release release;
 
 	private final ReleaseWidgetFactory releaseWidgetFactory = new ReleaseWidgetFactoryImpl();
 
 	public ReleasePanelWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
-		childWidgetsMap = new LinkedHashMap<Release, ReleaseWidget>();
+		releaseWidgetsMap = new LinkedHashMap<Release, ReleaseWidget>();
 	}
 
 	public void setRelease(final Release rootRelease) {
-		this.rootRelease = rootRelease;
-		releasePanel.clear();
+		this.release = rootRelease;
+		releaseContainer.clear();
 
 		for (final Release childRelease : rootRelease.getChildReleases()) {
-			createChild(childRelease);
+			createChildReleaseWidget(childRelease);
 		}
 	}
 
+	// TODO Extract widget that encapsulates all this logic
 	public void update() {
-		final List<Release> releases = rootRelease.getChildReleases();
-		for (int i = 0; i < releases.size(); i++) {
-			final Release release = releases.get(i);
+		final List<Release> releaseList = release.getChildReleases();
+		for (int i = 0; i < releaseList.size(); i++) {
+			final Release release = releaseList.get(i);
 
-			final ReleaseWidget releaseWidget = childWidgetsMap.get(release);
+			final ReleaseWidget releaseWidget = releaseWidgetsMap.get(release);
 			if (releaseWidget == null) {
-				createChildAt(release, i);
+				createChildReleaseWidgetAt(release, i);
 				continue;
 			}
 
-			if (releasePanel.getWidgetIndex(releaseWidget) != i) {
-				releasePanel.remove(releaseWidget);
-				releasePanel.insert(releaseWidget, i);
+			if (releaseContainer.getWidgetIndex(releaseWidget) != i) {
+				releaseContainer.remove(releaseWidget);
+				releaseContainer.insert(releaseWidget, i);
 			}
 
 			releaseWidget.update();
 		}
+		for (int i = releaseList.size(); i < releaseContainer.getWidgetCount(); i++) {
+			final ReleaseWidget releaseWidget = (ReleaseWidget) releaseContainer.getWidget(i);
+			releaseContainer.remove(i);
+			releaseWidgetsMap.remove(releaseWidget.getRelease());
+		}
 	}
 
-	private ReleaseWidget createChild(final Release release) {
-		return createChildAt(release, childWidgetsMap.size());
+	private ReleaseWidget createChildReleaseWidget(final Release release) {
+		return createChildReleaseWidgetAt(release, releaseWidgetsMap.size());
 	}
 
-	private ReleaseWidget createChildAt(final Release release, final int index) {
+	private ReleaseWidget createChildReleaseWidgetAt(final Release release, final int index) {
 		final ReleaseWidget childItem = releaseWidgetFactory.createReleaseWidget(release);
-		releasePanel.insert(childItem, index);
-		childWidgetsMap.put(release, childItem);
+		releaseContainer.insert(childItem, index);
+		releaseWidgetsMap.put(release, childItem);
 		return childItem;
 	}
 
@@ -77,6 +83,6 @@ public class ReleasePanelWidget extends Composite {
 		if (!(obj instanceof ReleasePanelWidget)) return false;
 		final ReleasePanelWidget other = (ReleasePanelWidget) obj;
 
-		return childWidgetsMap.equals(other.childWidgetsMap);
+		return releaseWidgetsMap.equals(other.releaseWidgetsMap);
 	}
 }
