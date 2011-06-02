@@ -60,17 +60,21 @@ public class Scope {
 		this.description = description;
 	}
 
-	// Refactor this so that it uses this object id
+	// TODO Review this when it have a persistence strategy. Should it use id instead?
 	@Override
-	public boolean equals(final Object other) {
-		if (!(other instanceof Scope)) return false;
-		final Scope otherScope = (Scope) other;
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (!(obj instanceof Scope)) return false;
+		final Scope other = (Scope) obj;
 
-		if (!this.getDescription().equals(otherScope.getDescription())) return false;
-		if (this.getChildren().size() != otherScope.getChildren().size()) return false;
+		if (description == null) {
+			if (other.getDescription() != null) return false;
+		}
+		else if (!description.equals(other.getDescription())) return false;
 
+		if (this.getChildren().size() != other.getChildren().size()) return false;
 		for (int i = 0; i < this.getChildren().size(); i++) {
-			if (!this.getChildren().get(i).equals(otherScope.getChildren().get(i))) return false;
+			if (!this.getChildren().get(i).equals(other.getChildren().get(i))) return false;
 		}
 		return true;
 	}

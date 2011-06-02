@@ -28,7 +28,7 @@ public class ReleasePanelItemWidget extends Composite {
 
 	interface ReleasePanelItemWidgetUiBinder extends UiBinder<Widget, ReleasePanelItemWidget> {}
 
-	interface Style extends CssResource {
+	public interface Style extends CssResource {
 		String invisibleBodyContainer();
 
 		String headerContainerStateImageOpened();
@@ -141,7 +141,7 @@ public class ReleasePanelItemWidget extends Composite {
 
 	// TODO Refactor this so that the label text is not used for this comparasion, instead an instance shoudl be used itself
 	private ReleasePanelItemWidget getReleaseWithDescription(final String description) {
-		for (final ReleasePanelItemWidget childItem : childs)
+		for (final ReleasePanelItemWidget childItem : getChilds())
 			if (childItem.getHeader().equals(description)) return childItem;
 
 		return null;
@@ -158,7 +158,7 @@ public class ReleasePanelItemWidget extends Composite {
 	private void createChildItem(final Release childRelease) {
 		final ReleasePanelItemWidget child = new ReleasePanelItemWidget(childRelease);
 		releaseContainer.add(child);
-		childs.add(child);
+		getChilds().add(child);
 		setContainerState(true);
 	}
 
@@ -217,5 +217,28 @@ public class ReleasePanelItemWidget extends Composite {
 			containerStateImage.getElement().addClassName(style.headerContainerStateImageClosed());
 		}
 		isContainerStateOpen = shouldOpen;
+	}
+
+	protected List<ReleasePanelItemWidget> getChilds() {
+		return childs;
+	}
+
+	// TODO Review equals for Scope and Release after they have a persistence strategy. Are they using id? Are they verifying their child?
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (!(obj instanceof ReleasePanelItemWidget)) return false;
+		final ReleasePanelItemWidget other = (ReleasePanelItemWidget) obj;
+
+		if (!release.equals(other.getRelease())) return false;
+
+		if (childs.size() != other.getChilds().size()) return false;
+		if (!childs.equals(other.getChilds())) return false;
+
+		return scopesList.equals(other.getScopeList());
+	}
+
+	public List<ScopeWidget> getScopeList() {
+		return scopesList;
 	}
 }

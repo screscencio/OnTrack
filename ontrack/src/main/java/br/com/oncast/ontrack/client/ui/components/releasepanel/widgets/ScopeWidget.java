@@ -30,4 +30,13 @@ public class ScopeWidget extends Composite {
 	public Scope getScope() {
 		return scope;
 	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (!(obj instanceof ScopeWidget)) return false;
+		final ScopeWidget other = (ScopeWidget) obj;
+
+		return scope.equals(other.getScope());
+	}
 }
