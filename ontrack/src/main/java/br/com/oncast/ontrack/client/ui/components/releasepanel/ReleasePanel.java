@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel;
 
+import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;

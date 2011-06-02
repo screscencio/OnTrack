@@ -16,6 +16,6 @@
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.rootPanel}" >
-		<g:VerticalPanel ui:field="releasePanel" styleName="{style.releases}" />
+		<g:VerticalPanel ui:field="releaseContainer" styleName="{style.releases}" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

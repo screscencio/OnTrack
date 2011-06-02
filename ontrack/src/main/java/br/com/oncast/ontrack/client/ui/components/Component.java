@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel;
+package br.com.oncast.ontrack.client.ui.components;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
