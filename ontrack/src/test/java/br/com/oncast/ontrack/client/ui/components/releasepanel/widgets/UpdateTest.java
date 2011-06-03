@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActionExecutionRequestHandler;
 import br.com.oncast.ontrack.mocks.MockFactory;
@@ -24,73 +24,79 @@ import com.octo.gwt.test.GwtTest;
 
 public class UpdateTest extends GwtTest {
 
-	private Scope scope;
-	private Scope firstScope;
+	private Scope scopeUpdated;
 	private ReleasePanel releasePanel;
-	private ProjectContext projectContext;
 	private PlanningActionExecutionRequestHandler planningActionExecutionRequestHandler;
 
 	@Before
 	public void setUp() throws Exception {
 		final Project project = MockFactory.createProject();
-		projectContext = new ProjectContext(project);
-		releasePanel = createReleasePanel();
+		final ProjectContext projectContext = new ProjectContext(project);
 
+		releasePanel = createReleasePanel();
 		releasePanel.setRelease(project.getProjectRelease());
 
-		scope = project.getScope();
-		firstScope = scope.getChildren().get(0);
+		final Scope scopeBefore = project.getScope();
+		scopeUpdated = scopeBefore.getChildren().get(0);
 
 		final List<ActionExecutionListener> listeners = new ArrayList<ActionExecutionListener>();
 		listeners.add(releasePanel.getActionExecutionListener());
 		planningActionExecutionRequestHandler = new PlanningActionExecutionRequestHandler(projectContext, listeners);
 	}
 
-	private ReleasePanel createReleasePanel() throws Exception {
-		final ReleasePanel r = new ReleasePanel();
+	private ReleasePanel createReleasePanel() {
+		final ReleasePanel releasePanelMock = new ReleasePanel();
 
-		final Field widgetField = ReleasePanel.class.getDeclaredField("releasePanelWidget");
-		widgetField.setAccessible(true);
-		final ReleasePanelWidget releasePanelWidget = (ReleasePanelWidget) widgetField.get(r);
+		Field widgetField;
+		try {
+			widgetField = ReleasePanel.class.getDeclaredField("releasePanelWidget");
+			widgetField.setAccessible(true);
+			final ReleasePanelWidget releasePanelWidget = (ReleasePanelWidget) widgetField.get(releasePanelMock);
 
-		final Field factoryField = ReleasePanelWidget.class.getDeclaredField("releaseWidgetFactory");
-		factoryField.setAccessible(true);
-		factoryField.set(releasePanelWidget, new ReleaseWidgetFactoryMock());
+			final Field factoryField = ReleasePanelWidget.class.getDeclaredField("releaseWidgetFactory");
+			factoryField.setAccessible(true);
+			factoryField.set(releasePanelWidget, new ReleaseWidgetFactoryMock());
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+			fail("ReleasePanel could not be created.");
+		}
 
-		return r;
+		return releasePanelMock;
 	}
 
-	// TODO Testar os equals sem a comparação de tamanho
 	@Test
-	public void shouldUpdateReleaseWithNewScope() throws Exception {
-		final ReleasePanel modifiedReleasePanel = createReleasePanel();
-		modifiedReleasePanel.setRelease(getModifiedRelease());
+	public void shouldUpdateReleaseWithNewScope() {
+		final Release modifiedRelease = MockFactory.createProject().getProjectRelease();
+		modifiedRelease.getChildReleases().get(0).getChildReleases().get(0).addScope(scopeUpdated);
 
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(firstScope, firstScope.getDescription() + " @R1/It1"));
+		final ReleasePanel modifiedReleasePanel = createReleasePanel();
+		modifiedReleasePanel.setRelease(modifiedRelease);
+
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
 
 		assertEquals(modifiedReleasePanel, releasePanel);
 	}
 
-	private Release getModifiedRelease() {
-		final Release projectRelease = new Release("project");
-		final Release r1 = new Release("R1");
-		final Release r2 = new Release("R2");
-		final Release r3 = new Release("R3");
-		final Release it1 = new Release("It1");
-		final Release it2 = new Release("It2");
-		final Release it3 = new Release("It3");
-		final Release it4 = new Release("It4");
-		it4.addScope(firstScope);
+	@Test
+	public void shouldRemoveScopeFromRelease() {
+		final Release modifiedRelease = MockFactory.createProject().getProjectRelease();
+		modifiedRelease.getChildReleases().get(0).getChildReleases().get(0).addScope(scopeUpdated);
 
-		projectRelease.addRelease(r1);
-		projectRelease.addRelease(r2);
-		projectRelease.addRelease(r3);
-		r1.addRelease(it1);
-		r1.addRelease(it2);
-		r1.addRelease(it3);
-		r2.addRelease(it4);
+		ReleasePanel modifiedReleasePanel = createReleasePanel();
+		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		return projectRelease;
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
+
+		assertEquals(modifiedReleasePanel, releasePanel);
+
+		modifiedRelease.getChildReleases().get(0).getChildReleases().get(0).removeScope(scopeUpdated);
+		modifiedReleasePanel = createReleasePanel();
+		modifiedReleasePanel.setRelease(modifiedRelease);
+
+		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription()));
+
+		assertEquals(modifiedReleasePanel, releasePanel);
 	}
 
 	@Override
