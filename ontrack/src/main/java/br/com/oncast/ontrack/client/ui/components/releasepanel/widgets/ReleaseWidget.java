@@ -1,8 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 
@@ -13,15 +14,15 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO Refactor dividing visualization logic from business logic
-public class ReleaseWidget extends Composite {
+public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private static ReleasePanelItemWidgetUiBinder uiBinder = GWT.create(ReleasePanelItemWidgetUiBinder.class);
 
@@ -35,9 +36,19 @@ public class ReleaseWidget extends Composite {
 		String headerContainerStateImageClosed();
 	}
 
-	private final LinkedHashMap<Release, ReleaseWidget> releaseWidgetsMap;
+	class ReleaseContainer extends VerticalModelWidgetContainer<Release, ReleaseWidget> {
 
-	private final LinkedHashMap<Scope, ScopeWidget> scopeWidgetsMap;
+		public ReleaseContainer(final ModelWidgetFactory<Release, ReleaseWidget> modelWidgetFactory, final ModelWidgetContainerListener listener) {
+			super(modelWidgetFactory, listener);
+		}
+	}
+
+	class ScopeContainer extends VerticalModelWidgetContainer<Scope, ScopeWidget> {
+
+		public ScopeContainer(final ModelWidgetFactory<Scope, ScopeWidget> modelWidgetFactory, final ModelWidgetContainerListener listener) {
+			super(modelWidgetFactory, listener);
+		}
+	}
 
 	private final Release release;
 
@@ -48,10 +59,14 @@ public class ReleaseWidget extends Composite {
 	protected Label header;
 
 	@UiField
-	protected VerticalPanel releaseContainer;
+	protected ReleaseContainer releaseContainer;
 
 	@UiField
-	protected VerticalPanel scopeContainer;
+	protected ScopeContainer scopeContainer;
+
+	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
+
+	private final ModelWidgetContainerListener containerUpdateListener;
 
 	@UiField
 	protected DivElement bodyContainer;
@@ -65,118 +80,44 @@ public class ReleaseWidget extends Composite {
 
 	private boolean isBodyContainerActive;
 
-	private final ReleaseWidgetFactory releaseWidgetFactory;
+	@UiFactory
+	protected ReleaseContainer createReleaseContainer() {
+		return new ReleaseContainer(releaseWidgetFactory, containerUpdateListener);
+	}
 
-	public ReleaseWidget(final Release release, final ReleaseWidgetFactory releaseWidgetFactory) {
+	@UiFactory
+	protected ScopeContainer createScopeContainer() {
+		return new ScopeContainer(ScopeWidgetFactory.getInstance(), containerUpdateListener);
+	}
+
+	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory) {
 		this.releaseWidgetFactory = releaseWidgetFactory;
-		initWidget(uiBinder.createAndBindUi(this));
-		this.scopeWidgetsMap = new LinkedHashMap<Scope, ScopeWidget>();
-		this.releaseWidgetsMap = new LinkedHashMap<Release, ReleaseWidget>();
 		this.release = release;
+		this.containerUpdateListener = new ModelWidgetContainerListener() {
 
+			@Override
+			public void onUpdateComplete(final boolean hasChanged, final boolean hasNewWidgets) {
+				if (hasChanged) reviewContainersState();
+				if (hasNewWidgets) setContainerState(true);
+			}
+		};
+
+		initWidget(uiBinder.createAndBindUi(this));
 		header.setText(release.getDescription());
 
 		for (final Release childRelease : release.getChildReleases())
-			createChildReleaseWidget(childRelease);
+			releaseContainer.createChildModelWidget(childRelease);
 
 		for (final Scope scope : release.getScopeList())
-			createChildScopeWidget(scope);
+			scopeContainer.createChildModelWidget(scope);
 
 		reviewContainersState();
 	}
 
-	public Release getRelease() {
-		return release;
-	}
-
-	public String getHeader() {
-		return header.getText();
-	}
-
-	protected Style getStyle() {
-		return style;
-	}
-
-	protected void update() {
-		updateChildReleases();
-		updateChildScopes();
-		reviewContainersState();
-	}
-
-	// TODO Extract widget that encapsulates all this logic
-	private void updateChildReleases() {
-		final List<Release> releaseList = release.getChildReleases();
-		for (int i = 0; i < releaseList.size(); i++) {
-			final Release release = releaseList.get(i);
-
-			final ReleaseWidget releaseWidget = releaseWidgetsMap.get(release);
-			if (releaseWidget == null) {
-				createChildReleaseWidgetAt(release, i);
-				continue;
-			}
-
-			if (releaseContainer.getWidgetIndex(releaseWidget) != i) {
-				releaseContainer.remove(releaseWidget);
-				releaseContainer.insert(releaseWidget, i);
-			}
-
-			releaseWidget.update();
-		}
-		for (int i = releaseList.size(); i < releaseContainer.getWidgetCount(); i++) {
-			final ReleaseWidget releaseWidget = (ReleaseWidget) releaseContainer.getWidget(i);
-			releaseContainer.remove(i);
-			releaseWidgetsMap.remove(releaseWidget.getRelease());
-		}
-	}
-
-	// TODO Extract widget that encapsulates all this logic
-	private void updateChildScopes() {
-		final List<Scope> scopeList = release.getScopeList();
-		for (int i = 0; i < scopeList.size(); i++) {
-			final Scope scope = scopeList.get(i);
-
-			final ScopeWidget scopeWidget = scopeWidgetsMap.get(scope);
-			if (scopeWidget == null) {
-				createChildScopeWidgetAt(scope, i);
-				continue;
-			}
-
-			if (scopeContainer.getWidgetIndex(scopeWidget) != i) {
-				scopeContainer.remove(scopeWidget);
-				scopeContainer.insert(scopeWidget, i);
-			}
-
-			scopeWidget.update();
-		}
-		for (int i = scopeList.size(); i < scopeContainer.getWidgetCount(); i++) {
-			final ScopeWidget scopeWidget = (ScopeWidget) scopeContainer.getWidget(i);
-			scopeContainer.remove(i);
-			scopeWidgetsMap.remove(scopeWidget.getScope());
-		}
-	}
-
-	private ReleaseWidget createChildReleaseWidget(final Release release) {
-		return createChildReleaseWidgetAt(release, releaseContainer.getWidgetCount());
-	}
-
-	private ReleaseWidget createChildReleaseWidgetAt(final Release release, final int index) {
-		final ReleaseWidget childItem = releaseWidgetFactory.createReleaseWidget(release);
-		releaseContainer.insert(childItem, index);
-		releaseWidgetsMap.put(release, childItem);
-		setContainerState(true);
-		return childItem;
-	}
-
-	private void createChildScopeWidget(final Scope scope) {
-		createChildScopeWidgetAt(scope, scopeContainer.getWidgetCount());
-	}
-
-	private ScopeWidget createChildScopeWidgetAt(final Scope scope, final int index) {
-		final ScopeWidget scopeWidget = new ScopeWidget(scope);
-		scopeContainer.insert(scopeWidget, index);
-		scopeWidgetsMap.put(scope, scopeWidget);
-		setContainerState(true);
-		return scopeWidget;
+	@Override
+	public void update() {
+		releaseContainer.update(release.getChildReleases());
+		scopeContainer.update(release.getScopeList());
 	}
 
 	private void reviewContainersState() {
@@ -208,7 +149,8 @@ public class ReleaseWidget extends Composite {
 		isBodyContainerActive = shouldBodyContainerBeActive;
 	}
 
-	private void setContainerState(final boolean shouldOpen) {
+	public void setContainerState(final boolean shouldOpen) {
+		if (!isBodyContainerActive) return;
 		if (isContainerStateOpen == shouldOpen) return;
 
 		if (shouldOpen) {
@@ -240,8 +182,25 @@ public class ReleaseWidget extends Composite {
 		final ReleaseWidget other = (ReleaseWidget) obj;
 
 		if (!release.equals(other.getRelease())) return false;
-		if (!releaseWidgetsMap.equals(other.releaseWidgetsMap)) return false;
+		if (!releaseContainer.equals(other.releaseContainer)) return false;
 
-		return scopeWidgetsMap.equals(other.scopeWidgetsMap);
+		return scopeContainer.equals(other.scopeContainer);
+	}
+
+	public Release getRelease() {
+		return release;
+	}
+
+	public String getHeader() {
+		return header.getText();
+	}
+
+	protected Style getStyle() {
+		return style;
+	}
+
+	@Override
+	public Release getModelObject() {
+		return getRelease();
 	}
 }
