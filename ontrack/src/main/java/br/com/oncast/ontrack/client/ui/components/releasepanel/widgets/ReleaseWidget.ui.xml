@@ -21,7 +21,9 @@
 			.headerContainerStateImage {
 				width: 10px;
 				height: 10px;
-				margin-right: 3px;
+				margin-right: 3px; {
+
+}
 			}
 			
 			.headerContainerStateImageOpened {
@@ -66,8 +68,8 @@
 			</table>
 		</div>
 		<div ui:field="bodyContainer">
-			<ow:ReleaseWidget.ReleaseContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
-			<ow:ReleaseWidget.ScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
+			<ow:ReleaseContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
+			<ow:ScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

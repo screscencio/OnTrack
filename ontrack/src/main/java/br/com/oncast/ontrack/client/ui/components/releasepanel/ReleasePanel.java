@@ -50,12 +50,24 @@ public class ReleasePanel implements Component {
 		return releasePanelWidget;
 	}
 
-	// TODO Review this method
 	@Override
-	public boolean equals(final Object other) {
-		if (!(other instanceof ReleasePanel)) return false;
-		
-		final ReleasePanel otherReleasePanel = (ReleasePanel) other;
-		return asWidget().equals(otherReleasePanel.asWidget());
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((releasePanelWidget == null) ? 0 : releasePanelWidget.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof ReleasePanel)) return false;
+		final ReleasePanel other = (ReleasePanel) obj;
+		if (releasePanelWidget == null) {
+			if (other.releasePanelWidget != null) return false;
+		}
+		else if (!releasePanelWidget.equals(other.releasePanelWidget)) return false;
+		return true;
 	}
 }

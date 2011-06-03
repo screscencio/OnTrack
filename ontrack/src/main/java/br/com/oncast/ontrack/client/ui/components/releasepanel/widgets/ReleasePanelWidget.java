@@ -1,8 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import java.util.LinkedHashMap;
-
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.release.Release;
 
@@ -31,14 +30,13 @@ public class ReleasePanelWidget extends Composite {
 		});
 	}
 
-	private final LinkedHashMap<Release, ReleaseWidget> releaseWidgetsMap;
-
 	private Release release;
 
-	private final ReleaseWidgetFactory releaseWidgetFactory = new ReleaseWidgetFactory();
+	// IMPORTANT: This field cannot be 'final' because some tests need to set it to a new value through reflection. Do not remove the 'null' attribution.
+	private ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory = null;
 
 	public ReleasePanelWidget() {
-		releaseWidgetsMap = new LinkedHashMap<Release, ReleaseWidget>();
+		releaseWidgetFactory = new ReleaseWidgetFactory();
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -56,9 +54,14 @@ public class ReleasePanelWidget extends Composite {
 
 	@Override
 	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
 		if (!(obj instanceof ReleasePanelWidget)) return false;
 		final ReleasePanelWidget other = (ReleasePanelWidget) obj;
-
-		return releaseWidgetsMap.equals(other.releaseWidgetsMap);
+		if (release == null) {
+			if (other.release != null) return false;
+		}
+		else if (!release.equals(other.release)) return false;
+		return true;
 	}
 }

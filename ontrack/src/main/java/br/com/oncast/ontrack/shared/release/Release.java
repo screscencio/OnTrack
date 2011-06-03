@@ -83,21 +83,35 @@ public class Release {
 		scopeList.remove(selectedScope);
 	}
 
-	// TODO Review this when it have a persistence strategy. Should it use id instead?
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((childrenList == null) ? 0 : childrenList.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((scopeList == null) ? 0 : scopeList.hashCode());
+		return result;
+	}
+
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
+		if (obj == null) return false;
 		if (!(obj instanceof Release)) return false;
 		final Release other = (Release) obj;
-
-		if (description == null) {
-			if (other.getDescription() != null) return false;
+		if (childrenList == null) {
+			if (other.childrenList != null) return false;
 		}
-		else if (!description.equals(other.getDescription())) return false;
-
-		if (childrenList.size() != other.getChildReleases().size()) return false;
-		if (!childrenList.equals(other.getChildReleases())) return false;
-
+		else if (!childrenList.equals(other.childrenList)) return false;
+		if (description == null) {
+			if (other.description != null) return false;
+		}
+		else if (!description.equals(other.description)) return false;
+		if (scopeList == null) {
+			if (other.scopeList != null) return false;
+		}
+		else if (!scopeList.equals(other.scopeList)) return false;
 		return true;
 	}
+
 }
