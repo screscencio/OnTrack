@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -9,7 +10,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeWidget extends Composite {
+public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	private static ScopeWidgetUiBinder uiBinder = GWT.create(ScopeWidgetUiBinder.class);
 
@@ -29,6 +30,7 @@ public class ScopeWidget extends Composite {
 		updateDescription();
 	}
 
+	@Override
 	public void update() {
 		if (scope.getDescription().equals(currentScopeDescription)) return;
 		updateDescription();
@@ -47,8 +49,13 @@ public class ScopeWidget extends Composite {
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
 		if (!(obj instanceof ScopeWidget)) return false;
-		
+
 		final ScopeWidget other = (ScopeWidget) obj;
 		return scope.equals(other.getScope());
+	}
+
+	@Override
+	public Scope getModelObject() {
+		return getScope();
 	}
 }

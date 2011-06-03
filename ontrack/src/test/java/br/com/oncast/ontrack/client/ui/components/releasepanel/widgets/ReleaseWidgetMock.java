@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.shared.release.Release;
 
 public class ReleaseWidgetMock extends ReleaseWidget {
@@ -40,8 +39,8 @@ public class ReleaseWidgetMock extends ReleaseWidget {
 		}
 	}
 
-	public ReleaseWidgetMock(final Release release, final ReleaseWidgetFactory releaseWidgetFactory) {
-		super(release, releaseWidgetFactory);
+	public ReleaseWidgetMock(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> factory) {
+		super(release, factory);
 	}
 
 	@Override
