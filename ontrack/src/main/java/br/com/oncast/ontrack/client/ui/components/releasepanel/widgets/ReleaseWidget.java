@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 

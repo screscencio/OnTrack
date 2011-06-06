@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
