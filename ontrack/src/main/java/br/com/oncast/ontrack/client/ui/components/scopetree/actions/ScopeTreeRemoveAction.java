@@ -4,7 +4,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
 
 class ScopeTreeRemoveAction implements ScopeTreeAction {
 

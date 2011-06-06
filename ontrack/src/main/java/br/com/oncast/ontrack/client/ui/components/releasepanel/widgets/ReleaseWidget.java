@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 
@@ -33,6 +34,22 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		String headerContainerStateImageOpened();
 
 		String headerContainerStateImageClosed();
+	}
+
+	// IMPORTANT This class should only be used to bypass the GWT limitation in which a class cannot have more that one 'UiFactory' for the same type.
+	protected class ReleaseContainer extends VerticalModelWidgetContainer<Release, ReleaseWidget> {
+
+		public ReleaseContainer(final ModelWidgetFactory<Release, ReleaseWidget> modelWidgetFactory, final ModelWidgetContainerListener listener) {
+			super(modelWidgetFactory, listener);
+		}
+	}
+
+	// IMPORTANT This class should only be used to bypass the GWT limitation in which a class cannot have more that one 'UiFactory' for the same type.
+	protected class ScopeContainer extends VerticalModelWidgetContainer<Scope, ScopeWidget> {
+
+		public ScopeContainer(final ModelWidgetFactory<Scope, ScopeWidget> modelWidgetFactory, final ModelWidgetContainerListener listener) {
+			super(modelWidgetFactory, listener);
+		}
 	}
 
 	private final Release release;
@@ -66,12 +83,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private boolean isBodyContainerActive;
 
 	@UiFactory
-	public ReleaseContainer createReleaseContainer() {
+	protected ReleaseContainer createReleaseContainer() {
 		return new ReleaseContainer(releaseWidgetFactory, containerUpdateListener);
 	}
 
 	@UiFactory
-	public ScopeContainer createScopeContainer() {
+	protected ScopeContainer createScopeContainer() {
 		return new ScopeContainer(ScopeWidgetFactory.getInstance(), containerUpdateListener);
 	}
 
@@ -82,7 +99,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 			@Override
 			public void onUpdateComplete(final boolean hasChanged, final boolean hasNewWidgets) {
-				if (hasChanged) reviewContainersState();
+				if (!hasChanged) return;
+
+				reviewContainersState();
 				if (hasNewWidgets) setContainerState(true);
 			}
 		};

@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.scope.actions;
+package br.com.oncast.ontrack.shared.scope.exceptions;
 
 public class ScopeNotFoundException extends Exception {
 	private static final long serialVersionUID = 1L;

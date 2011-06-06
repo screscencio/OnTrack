@@ -60,24 +60,6 @@ public class Scope {
 		this.description = description;
 	}
 
-	// TODO Review this when it have a persistence strategy. Should it use id instead?
-	// @Override
-	// public boolean equals(final Object obj) {
-	// if (this == obj) return true;
-	// if (!(obj instanceof Scope)) return false;
-	// final Scope other = (Scope) obj;
-	//
-	// if (description == null) {
-	// if (other.getDescription() != null) return false;
-	// }
-	// else if (!description.equals(other.getDescription())) return false;
-	//
-	// if (this.getChildren().size() != other.getChildren().size()) return false;
-	// for (int i = 0; i < this.getChildren().size(); i++) {
-	// if (!this.getChildren().get(i).equals(other.getChildren().get(i))) return false;
-	// }
-	// return true;
-	// }
 	@Override
 	public String toString() {
 		return description;
@@ -108,6 +90,8 @@ public class Scope {
 		return result;
 	}
 
+	// TODO Create another 'equals' like method for testing purposes. Refactor test to not use this 'equals' method.
+	// TODO Review this when it have a persistence strategy. It should use id instead, so that the entire model is not compared.
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;

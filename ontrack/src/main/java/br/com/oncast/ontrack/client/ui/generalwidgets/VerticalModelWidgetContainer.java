@@ -1,7 +1,8 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -20,7 +21,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	@UiField
 	VerticalPanel verticalContainer;
 
-	private final LinkedHashMap<T, E> widgetMap;
+	private final Map<T, E> widgetMap;
 
 	private final ModelWidgetFactory<T, E> modelWidgetFactory;
 
@@ -29,7 +30,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final ModelWidgetContainerListener listener) {
 		this.modelWidgetFactory = modelWidgetFactory;
 		this.listener = listener;
-		widgetMap = new LinkedHashMap<T, E>();
+		widgetMap = new HashMap<T, E>();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
