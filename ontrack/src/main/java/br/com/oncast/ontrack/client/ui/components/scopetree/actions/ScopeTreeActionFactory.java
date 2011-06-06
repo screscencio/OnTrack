@@ -7,9 +7,9 @@ import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
 
 // TODO Refactor this class to decentralize Action to WidgetActionFactory mappings.
 public class ScopeTreeActionFactory {

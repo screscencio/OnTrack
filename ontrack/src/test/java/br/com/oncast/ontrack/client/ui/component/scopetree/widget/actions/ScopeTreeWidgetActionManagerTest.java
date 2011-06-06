@@ -18,7 +18,7 @@ import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class ScopeTreeWidgetActionManagerTest {

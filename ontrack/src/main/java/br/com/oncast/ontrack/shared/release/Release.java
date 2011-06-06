@@ -83,6 +83,7 @@ public class Release {
 		scopeList.remove(selectedScope);
 	}
 
+	// TODO Review this when it have a persistence strategy. It should use id instead, so that the hash can be deterministic.
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -93,6 +94,8 @@ public class Release {
 		return result;
 	}
 
+	// TODO Create another 'equals' like method for testing purposes. Refactor test to not use this 'equals' method.
+	// TODO Review this when it have a persistence strategy. It should use id instead, so that the entire model is not compared.
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
