@@ -58,6 +58,7 @@ public class ScopeTreeWidget extends Composite {
 		return tree.getItemCount();
 	}
 
+	// TODO Examine refactoring this so that it uses a Map.
 	public ScopeTreeItem getScopeTreeItemFor(final Scope scope) throws ScopeNotFoundException {
 		final Iterator<TreeItem> treeItemIterator = tree.treeItemIterator();
 		while (treeItemIterator.hasNext()) {
@@ -67,6 +68,7 @@ public class ScopeTreeWidget extends Composite {
 		throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
 	}
 
+	// TODO Create another 'equals' like method for testing purposes. Refactor test to not use this 'equals' method.
 	@Override
 	public boolean equals(final Object other) {
 		if (!(other instanceof ScopeTreeWidget)) return false;
