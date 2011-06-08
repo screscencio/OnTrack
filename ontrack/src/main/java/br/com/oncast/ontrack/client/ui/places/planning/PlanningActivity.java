@@ -25,7 +25,7 @@ public class PlanningActivity extends AbstractActivity {
 		panel.setWidget(view);
 	}
 
-	public ProjectContext getProjectContext() {
+	private ProjectContext getProjectContext() {
 		if (mockedProjectContext != null) return mockedProjectContext;
 		return mockedProjectContext = new ProjectContext(getProject());
 	}
