@@ -66,8 +66,8 @@
 			</table>
 		</div>
 		<div ui:field="bodyContainer">
-			<ow:ReleaseWidget.ReleaseContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
-			<ow:ReleaseWidget.ScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
+			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
+			<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

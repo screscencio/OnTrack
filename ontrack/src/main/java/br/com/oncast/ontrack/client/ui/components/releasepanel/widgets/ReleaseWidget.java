@@ -32,22 +32,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		String headerContainerStateImageClosed();
 	}
 
-	// IMPORTANT This class should only be used to bypass the GWT limitation in which a class cannot have more that one 'UiFactory' for the same type.
-	protected class ReleaseContainer extends VerticalModelWidgetContainer<Release, ReleaseWidget> {
-
-		public ReleaseContainer(final ModelWidgetFactory<Release, ReleaseWidget> modelWidgetFactory, final ModelWidgetContainerListener listener) {
-			super(modelWidgetFactory, listener);
-		}
-	}
-
-	// IMPORTANT This class should only be used to bypass the GWT limitation in which a class cannot have more that one 'UiFactory' for the same type.
-	protected class ScopeContainer extends VerticalModelWidgetContainer<Scope, ScopeWidget> {
-
-		public ScopeContainer(final ModelWidgetFactory<Scope, ScopeWidget> modelWidgetFactory, final ModelWidgetContainerListener listener) {
-			super(modelWidgetFactory, listener);
-		}
-	}
-
 	private final Release release;
 
 	@UiField
@@ -57,10 +41,10 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Label header;
 
 	@UiField
-	protected ReleaseContainer releaseContainer;
+	protected ReleaseWidgetContainer releaseContainer;
 
 	@UiField
-	protected ScopeContainer scopeContainer;
+	protected ScopeWidgetContainer scopeContainer;
 
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
 
@@ -79,13 +63,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private boolean isBodyContainerActive;
 
 	@UiFactory
-	protected ReleaseContainer createReleaseContainer() {
-		return new ReleaseContainer(releaseWidgetFactory, containerUpdateListener);
+	protected ReleaseWidgetContainer createReleaseContainer() {
+		return new ReleaseWidgetContainer(releaseWidgetFactory, containerUpdateListener);
 	}
 
 	@UiFactory
-	protected ScopeContainer createScopeContainer() {
-		return new ScopeContainer(ScopeWidgetFactory.getInstance(), containerUpdateListener);
+	protected ScopeWidgetContainer createScopeContainer() {
+		return new ScopeWidgetContainer(ScopeWidgetFactory.getInstance(), containerUpdateListener);
 	}
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory) {
