@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,29 +99,29 @@ public class UpdateTest extends GwtTest {
 	public void shouldUpdateScopeWithNewValue() throws ActionNotFoundException {
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
 
-		assertEquals(getModifiedScope(), scope);
-		assertEquals(getModifiedTree(), tree);
+		assertTrue(getModifiedScope().deepEquals(scope));
+		assertTrue(getModifiedTree().deepEquals(tree));
 	}
 
 	@Test
 	public void shouldUpdateRootScope() throws ActionNotFoundException {
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(rootScope, "Root"));
 
-		assertEquals(getModifiedRootScope(), scope);
-		assertEquals(getModifiedRootTree(), tree);
+		assertTrue(getModifiedRootScope().deepEquals(scope));
+		assertTrue(getModifiedRootTree().deepEquals(tree));
 	}
 
 	@Test
 	public void shouldRollbackUpdatedScope() throws ActionNotFoundException {
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
 
-		assertEquals(getModifiedScope(), scope);
-		assertEquals(getModifiedTree(), tree);
+		assertTrue(getModifiedScope().deepEquals(scope));
+		assertTrue(getModifiedTree().deepEquals(tree));
 
 		planningActionExecutionRequestHandler.onActionUndoRequest();
 
-		assertEquals(getUnmodifiedScope(), scope);
-		assertEquals(getUnmodifiedTree(), tree);
+		assertTrue(getUnmodifiedScope().deepEquals(scope));
+		assertTrue(getUnmodifiedTree().deepEquals(tree));
 	}
 
 	@Override

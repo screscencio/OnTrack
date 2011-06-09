@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
@@ -75,7 +75,7 @@ public class UpdateTest extends GwtTest {
 
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
 
-		assertEquals(modifiedReleasePanel, releasePanel);
+		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class UpdateTest extends GwtTest {
 
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
 
-		assertEquals(modifiedReleasePanel, releasePanel);
+		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 
 		modifiedRelease.getChildReleases().get(0).getChildReleases().get(0).removeScope(scopeUpdated);
 		modifiedReleasePanel = createReleasePanel();
@@ -96,7 +96,7 @@ public class UpdateTest extends GwtTest {
 
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription()));
 
-		assertEquals(modifiedReleasePanel, releasePanel);
+		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 	}
 
 	@Override

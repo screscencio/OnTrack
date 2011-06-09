@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
 public class Release {
 
 	public static final String SEPARATOR = "/";
+	private final UUID uuid;
 
 	private final String description;
 	private Release parent;
@@ -15,10 +17,16 @@ public class Release {
 	private final List<Scope> scopeList;
 
 	public Release(final String description) {
+		this(description, null);
+	}
+
+	public Release(final String description, final String uuid) {
 		this.description = description;
 
 		childrenList = new ArrayList<Release>();
 		scopeList = new ArrayList<Scope>();
+		if (uuid != null) this.uuid = new UUID(uuid);
+		else this.uuid = new UUID();
 	}
 
 	public String getDescription() {
@@ -83,21 +91,23 @@ public class Release {
 		scopeList.remove(selectedScope);
 	}
 
-	// TODO Review this when it have a persistence strategy. It should use id instead, so that the hash can be deterministic.
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((childrenList == null) ? 0 : childrenList.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((scopeList == null) ? 0 : scopeList.hashCode());
-		return result;
+		return this.uuid.hashCode();
 	}
 
-	// TODO Create another 'equals' like method for testing purposes. Refactor test to not use this 'equals' method.
-	// TODO Review this when it have a persistence strategy. It should use id instead, so that the entire model is not compared.
 	@Override
 	public boolean equals(final Object obj) {
+		if (!(obj instanceof Release)) return false;
+
+		return this.uuid.equals(((Release) obj).getUuid());
+	}
+
+	public UUID getUuid() {
+		return this.uuid;
+	}
+
+	public boolean deepEquals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof Release)) return false;
@@ -105,7 +115,7 @@ public class Release {
 		if (childrenList == null) {
 			if (other.childrenList != null) return false;
 		}
-		else if (!childrenList.equals(other.childrenList)) return false;
+		else if (!compareChildrenLists(other.childrenList)) return false;
 		if (description == null) {
 			if (other.description != null) return false;
 		}
@@ -113,8 +123,34 @@ public class Release {
 		if (scopeList == null) {
 			if (other.scopeList != null) return false;
 		}
-		else if (!scopeList.equals(other.scopeList)) return false;
+		else if (!compareScopeLists(other.scopeList)) return false;
 		return true;
+	}
+
+	private boolean compareChildrenLists(final List<Release> otherList) {
+		if (childrenList.size() != otherList.size()) return false;
+		final List<Release> cloneList = new ArrayList<Release>();
+		cloneList.addAll(childrenList);
+		for (final Release release : otherList) {
+			for (final Release childScope : childrenList) {
+				if (release.deepEquals(childScope)) cloneList.remove(childScope);
+			}
+		}
+
+		return cloneList.isEmpty();
+	}
+
+	private boolean compareScopeLists(final List<Scope> otherList) {
+		if (scopeList.size() != otherList.size()) return false;
+		final List<Scope> cloneList = new ArrayList<Scope>();
+		cloneList.addAll(scopeList);
+		for (final Scope scope : otherList) {
+			for (final Scope childScope : scopeList) {
+				if (scope.deepEquals(childScope)) cloneList.remove(childScope);
+			}
+		}
+
+		return cloneList.isEmpty();
 	}
 
 }

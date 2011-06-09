@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,29 +100,29 @@ public class InsertChildTest extends GwtTest {
 	public void shouldInsertChild() throws ActionNotFoundException {
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(firstScope));
 
-		assertEquals(getModifiedScope(), scope);
-		assertEquals(getModifiedTree(), tree);
+		assertTrue(getModifiedScope().deepEquals(scope));
+		assertTrue(getModifiedTree().deepEquals(tree));
 	}
 
 	@Test
 	public void shouldInsertChildForRoot() throws ActionNotFoundException {
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(rootScope));
 
-		assertEquals(getModifiedScopeForRootChild(), scope);
-		assertEquals(getModifiedTreeForRootChild(), tree);
+		assertTrue(getModifiedScopeForRootChild().deepEquals(scope));
+		assertTrue(getModifiedTreeForRootChild().deepEquals(tree));
 	}
 
 	@Test
 	public void shouldRemoveInsertedChildAfterUndo() throws ActionNotFoundException {
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(firstScope));
 
-		assertEquals(getModifiedScope(), scope);
-		assertEquals(getModifiedTree(), tree);
+		assertTrue(getModifiedScope().deepEquals(scope));
+		assertTrue(getModifiedTree().deepEquals(tree));
 
 		planningActionExecutionRequestHandler.onActionUndoRequest();
 
-		assertEquals(getUnmodifiedScope(), scope);
-		assertEquals(getUnmodifiedTree(), tree);
+		assertTrue(getUnmodifiedScope().deepEquals(scope));
+		assertTrue(getUnmodifiedTree().deepEquals(tree));
 	}
 
 	@Override

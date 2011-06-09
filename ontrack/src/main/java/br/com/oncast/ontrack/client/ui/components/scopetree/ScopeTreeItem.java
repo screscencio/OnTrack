@@ -46,19 +46,9 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		return (ScopeTreeItem) super.getChild(index);
 	}
 
-	// TODO Refactor this so equals bases itself on the referenced scope
-	@Override
-	public boolean equals(final Object other) {
+	public boolean deepEquals(final Object other) {
 		if (!(other instanceof ScopeTreeItem)) return false;
-		final ScopeTreeItem otherTreeItem = (ScopeTreeItem) other;
-
-		if (!this.getReferencedScope().equals(otherTreeItem.getReferencedScope())) return false;
-		if (this.getChildCount() != otherTreeItem.getChildCount()) return false;
-
-		for (int i = 0; i < this.getChildCount(); i++) {
-			if (!this.getChild(i).equals(otherTreeItem.getChild(i))) return false;
-		}
-		return true;
+		return getReferencedScope().deepEquals(((ScopeTreeItem) other).getReferencedScope());
 	}
 
 	@Override
