@@ -93,12 +93,8 @@ public class ScopeTree implements Component {
 		tree.setFocus(focus);
 	}
 
-	@Override
-	public boolean equals(final Object other) {
+	public boolean deepEquals(final Object other) {
 		if (!(other instanceof ScopeTree)) return false;
-
-		final ScopeTree otherTree = (ScopeTree) other;
-
-		return tree.equals(otherTree.asWidget());
+		return tree.deepEquals(((ScopeTree) other).asWidget());
 	}
 }

@@ -52,14 +52,10 @@ public class ReleasePanel implements Component {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((releasePanelWidget == null) ? 0 : releasePanelWidget.hashCode());
-		return result;
+		return rootRelease.hashCode();
 	}
 
-	@Override
-	public boolean equals(final Object obj) {
+	public boolean deepEquals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof ReleasePanel)) return false;
@@ -67,7 +63,7 @@ public class ReleasePanel implements Component {
 		if (releasePanelWidget == null) {
 			if (other.releasePanelWidget != null) return false;
 		}
-		else if (!releasePanelWidget.equals(other.releasePanelWidget)) return false;
+		else if (!releasePanelWidget.deepEquals(other.releasePanelWidget)) return false;
 		return true;
 	}
 }

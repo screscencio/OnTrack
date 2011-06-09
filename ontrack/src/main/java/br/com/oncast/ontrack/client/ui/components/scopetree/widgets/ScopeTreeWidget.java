@@ -68,9 +68,7 @@ public class ScopeTreeWidget extends Composite {
 		throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
 	}
 
-	// TODO Create another 'equals' like method for testing purposes. Refactor test to not use this 'equals' method.
-	@Override
-	public boolean equals(final Object other) {
+	public boolean deepEquals(final Object other) {
 		if (!(other instanceof ScopeTreeWidget)) return false;
 		final ScopeTreeWidget otherTree = (ScopeTreeWidget) other;
 
@@ -79,7 +77,7 @@ public class ScopeTreeWidget extends Composite {
 		if (itemCount != otherTreeItemCount) return false;
 
 		for (int i = 0; i < itemCount; i++) {
-			if (!otherTree.getItem(i).equals(tree.getItem(i))) return false;
+			if (!otherTree.getItem(i).deepEquals(tree.getItem(i))) return false;
 		}
 
 		return true;

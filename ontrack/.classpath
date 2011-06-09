@@ -13,6 +13,6 @@
 	<classpathentry kind="lib" path="lib/javassist-3.12.1.GA.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-test-utils-0.30-20110524.125031-1.jar" sourcepath="lib/gwt-test-utils-0.30-20110524.125031-1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-test-utils-0.30-20110609.143706-10.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

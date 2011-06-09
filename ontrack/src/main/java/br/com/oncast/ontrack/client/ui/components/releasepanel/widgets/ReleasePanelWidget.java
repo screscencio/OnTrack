@@ -49,8 +49,7 @@ public class ReleasePanelWidget extends Composite {
 		releaseContainer.update(release.getChildReleases());
 	}
 
-	@Override
-	public boolean equals(final Object obj) {
+	public boolean deepEquals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof ReleasePanelWidget)) return false;
@@ -58,7 +57,7 @@ public class ReleasePanelWidget extends Composite {
 		if (release == null) {
 			if (other.release != null) return false;
 		}
-		else if (!release.equals(other.release)) return false;
+		else if (!release.deepEquals(other.release)) return false;
 		return true;
 	}
 }

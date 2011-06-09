@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,8 +90,8 @@ public class MoveLeftTest extends GwtTest {
 	public void shouldMoveLeft() throws ActionNotFoundException {
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(childScope));
 
-		assertEquals(getModifiedScope(), scope);
-		assertEquals(getModifiedTree(), tree);
+		assertTrue(getModifiedScope().deepEquals(scope));
+		assertTrue(getModifiedTree().deepEquals(tree));
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -108,13 +108,13 @@ public class MoveLeftTest extends GwtTest {
 	public void shouldMoveRightAfterUndo() throws ActionNotFoundException {
 		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(childScope));
 
-		assertEquals(getModifiedScope(), scope);
-		assertEquals(getModifiedTree(), tree);
+		assertTrue(getModifiedScope().deepEquals(scope));
+		assertTrue(getModifiedTree().deepEquals(tree));
 
 		planningActionExecutionRequestHandler.onActionUndoRequest();
 
-		assertEquals(getUnmodifiedScope(), scope);
-		assertEquals(getUnmodifiedTree(), tree);
+		assertTrue(getUnmodifiedScope().deepEquals(scope));
+		assertTrue(getUnmodifiedTree().deepEquals(tree));
 	}
 
 	@Override
