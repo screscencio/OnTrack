@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.util.uuid;
+package br.com.oncast.ontrack.shared.util.uuid;
 
 public class UUID {
 	private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
