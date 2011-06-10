@@ -12,11 +12,12 @@ import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeTree implements Component {
+public class ScopeTree implements Component, DeeplyComparable {
 
 	private final ScopeTreeWidget tree;
 	private final ScopeTreeActionFactory treeActionFactory;
@@ -93,6 +94,7 @@ public class ScopeTree implements Component {
 		tree.setFocus(focus);
 	}
 
+	@Override
 	public boolean deepEquals(final Object other) {
 		if (!(other instanceof ScopeTree)) return false;
 		return tree.deepEquals(((ScopeTree) other).asWidget());

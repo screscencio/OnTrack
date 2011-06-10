@@ -7,12 +7,13 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class ScopeTreeWidget extends Composite {
+public class ScopeTreeWidget extends Composite implements DeeplyComparable {
 
 	private final Tree tree;
 
@@ -68,6 +69,7 @@ public class ScopeTreeWidget extends Composite {
 		throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
 	}
 
+	@Override
 	public boolean deepEquals(final Object other) {
 		if (!(other instanceof ScopeTreeWidget)) return false;
 		final ScopeTreeWidget otherTree = (ScopeTreeWidget) other;
