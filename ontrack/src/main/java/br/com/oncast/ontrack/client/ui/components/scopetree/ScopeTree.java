@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_F2;
+import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_F2;
 import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
