@@ -8,10 +8,11 @@ import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleasePanel implements Component {
+public class ReleasePanel implements Component, DeeplyComparable {
 
 	private final ReleasePanelWidget releasePanelWidget;
 	private final ActionExecutionListener actionExecutionListener;
@@ -55,6 +56,7 @@ public class ReleasePanel implements Component {
 		return rootRelease.hashCode();
 	}
 
+	@Override
 	public boolean deepEquals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;

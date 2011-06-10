@@ -1,17 +1,18 @@
 package br.com.oncast.ontrack.shared.scope;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.release.Release;
+import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
+import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparableList;
 import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
 // TODO Test this class
-public class Scope {
+public class Scope implements DeeplyComparable {
 
 	private String description;
 	private Scope parent;
-	private final List<Scope> childrenList;
+	private final DeeplyComparableList<Scope> childrenList;
 	private Release release;
 	private final UUID uuid;
 
@@ -30,7 +31,7 @@ public class Scope {
 	public Scope(final String description, final Scope parent, final String uuid) {
 		this.description = description;
 		this.parent = parent;
-		childrenList = new ArrayList<Scope>();
+		childrenList = new DeeplyComparableList<Scope>();
 		if (uuid != null) this.uuid = new UUID(uuid);
 		else this.uuid = new UUID();
 	}
@@ -109,6 +110,7 @@ public class Scope {
 		return this.uuid.equals(((Scope) obj).getUuid());
 	}
 
+	@Override
 	public boolean deepEquals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
@@ -117,24 +119,11 @@ public class Scope {
 		if (childrenList == null) {
 			if (other.childrenList != null) return false;
 		}
-		else if (!compareChildrenLists(other.getChildren())) return false;
+		else if (!childrenList.deepEquals(other.getChildren())) return false;
 		if (description == null) {
 			if (other.description != null) return false;
 		}
 		else if (!description.equals(other.description)) return false;
 		return true;
-	}
-
-	private boolean compareChildrenLists(final List<Scope> otherList) {
-		if (childrenList.size() != otherList.size()) return false;
-		final List<Scope> cloneList = new ArrayList<Scope>();
-		cloneList.addAll(childrenList);
-		for (final Scope scope : otherList) {
-			for (final Scope childScope : childrenList) {
-				if (scope.deepEquals(childScope)) cloneList.remove(childScope);
-			}
-		}
-
-		return cloneList.isEmpty();
 	}
 }

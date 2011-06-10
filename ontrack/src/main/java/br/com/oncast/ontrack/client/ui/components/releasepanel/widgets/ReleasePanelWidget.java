@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import br.com.oncast.ontrack.shared.release.Release;
+import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -9,7 +10,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleasePanelWidget extends Composite {
+public class ReleasePanelWidget extends Composite implements DeeplyComparable {
 
 	private static ReleasePanelWidgetUiBinder uiBinder = GWT.create(ReleasePanelWidgetUiBinder.class);
 
@@ -49,6 +50,7 @@ public class ReleasePanelWidget extends Composite {
 		releaseContainer.update(release.getChildReleases());
 	}
 
+	@Override
 	public boolean deepEquals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
