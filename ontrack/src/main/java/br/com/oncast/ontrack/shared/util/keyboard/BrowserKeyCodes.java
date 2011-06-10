@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.util.keyboard;
+package br.com.oncast.ontrack.shared.util.keyboard;
 
 public class BrowserKeyCodes {
 

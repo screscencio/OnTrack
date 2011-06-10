@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ENTER;
-import static br.com.oncast.ontrack.client.util.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
