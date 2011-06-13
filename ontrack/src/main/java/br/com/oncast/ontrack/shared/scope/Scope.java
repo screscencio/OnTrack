@@ -10,30 +10,21 @@ import br.com.oncast.ontrack.shared.util.uuid.UUID;
 // TODO Test this class
 public class Scope implements DeeplyComparable {
 
+	private final UUID id;
 	private String description;
 	private Scope parent;
 	private final DeeplyComparableList<Scope> childrenList;
 	private Release release;
-	private final UUID uuid;
 
 	public Scope(final String description) {
-		this(description, null, null);
-	}
+		this.id = new UUID();
 
-	public Scope(final String description, final String uuid) {
-		this(description, null, uuid);
-	}
-
-	public Scope(final String description, final Scope parent) {
-		this(description, parent, null);
-	}
-
-	public Scope(final String description, final Scope parent, final String uuid) {
 		this.description = description;
-		this.parent = parent;
 		childrenList = new DeeplyComparableList<Scope>();
-		if (uuid != null) this.uuid = new UUID(uuid);
-		else this.uuid = new UUID();
+	}
+
+	public UUID getId() {
+		return id;
 	}
 
 	public String getDescription() {
@@ -94,20 +85,16 @@ public class Scope implements DeeplyComparable {
 		return release;
 	}
 
-	public UUID getUuid() {
-		return uuid;
-	}
-
 	@Override
 	public int hashCode() {
-		return uuid.hashCode();
+		return id.hashCode();
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Scope)) return false;
 
-		return this.uuid.equals(((Scope) obj).getUuid());
+		return this.id.equals(((Scope) obj).getId());
 	}
 
 	@Override
