@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.shared.util.uuid.UUID;
 public class Release implements DeeplyComparable {
 
 	public static final String SEPARATOR = "/";
-	private final UUID uuid;
+	private final UUID id;
 
 	private final String description;
 	private Release parent;
@@ -18,16 +18,15 @@ public class Release implements DeeplyComparable {
 	private final DeeplyComparableList<Scope> scopeList;
 
 	public Release(final String description) {
-		this(description, null);
-	}
-
-	public Release(final String description, final String uuid) {
+		this.id = new UUID();
 		this.description = description;
 
 		childrenList = new DeeplyComparableList<Release>();
 		scopeList = new DeeplyComparableList<Scope>();
-		if (uuid != null) this.uuid = new UUID(uuid);
-		else this.uuid = new UUID();
+	}
+
+	public UUID getId() {
+		return this.id;
 	}
 
 	public String getDescription() {
@@ -94,18 +93,13 @@ public class Release implements DeeplyComparable {
 
 	@Override
 	public int hashCode() {
-		return this.uuid.hashCode();
+		return this.id.hashCode();
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Release)) return false;
-
-		return this.uuid.equals(((Release) obj).getUuid());
-	}
-
-	public UUID getUuid() {
-		return this.uuid;
+		return this.id.equals(((Release) obj).getId());
 	}
 
 	@Override
