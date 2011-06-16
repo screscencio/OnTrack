@@ -127,4 +127,15 @@ public class Release implements DeeplyComparable, IsSerializable {
 		return true;
 	}
 
+	public Release findRelease(final UUID releaseId) {
+		if (this.id.equals(releaseId)) return this;
+
+		for (final Release release : childrenList) {
+			final Release releaseLoaded = release.findRelease(releaseId);
+			if (releaseLoaded != null) return releaseLoaded;
+		}
+
+		return null;
+	}
+
 }
