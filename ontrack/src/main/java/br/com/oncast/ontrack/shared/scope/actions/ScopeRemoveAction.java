@@ -36,14 +36,11 @@ public class ScopeRemoveAction implements ScopeAction {
 
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
 
-		for (final Scope child : selectedScope.getChildren()) {
-			final ScopeRemoveAction childRemoved = new ScopeRemoveAction(child);
-			childList.add(childRemoved);
-		}
+		for (final Scope child : selectedScope.getChildren())
+			childList.add(new ScopeRemoveAction(child));
 
-		for (final ScopeRemoveAction childRemoved : childList) {
+		for (final ScopeRemoveAction childRemoved : childList)
 			childRemoved.execute(context);
-		}
 
 		index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
