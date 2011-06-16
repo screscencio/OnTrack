@@ -21,9 +21,14 @@ public class Scope implements DeeplyComparable, IsSerializable {
 	protected Scope() {}
 
 	public Scope(final String description) {
-		this.id = new UUID();
-		this.description = description;
+		this(description, null);
+	}
+
+	public Scope(final String description, final UUID scopeId) {
 		childrenList = new DeeplyComparableList<Scope>();
+		this.description = description;
+		if (scopeId != null) this.id = scopeId;
+		else this.id = new UUID();
 	}
 
 	public UUID getId() {
