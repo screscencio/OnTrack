@@ -36,7 +36,7 @@ public class InsertSiblingUpScopeActionTest {
 		insertSiblingDownScopeAction.execute(new ProjectContext(new Project()));
 		assertEquals(3, rootScope.getChildren().size());
 		assertEquals(lastChild.getParent().getChildren().get(0), firstChild);
-		assertEquals(lastChild.getParent().getChildren().get(1), insertSiblingDownScopeAction.getNewScope());
+		assertEquals(lastChild.getParent().getChildren().get(1), insertSiblingDownScopeAction.getNewScopeId());
 		assertEquals(lastChild.getParent().getChildren().get(2), lastChild);
 	}
 
@@ -54,7 +54,7 @@ public class InsertSiblingUpScopeActionTest {
 		insertSiblingDownScopeAction.execute(new ProjectContext(new Project()));
 		assertEquals(3, rootScope.getChildren().size());
 		assertEquals(lastChild.getParent().getChildren().get(0), firstChild);
-		assertEquals(lastChild.getParent().getChildren().get(1), insertSiblingDownScopeAction.getNewScope());
+		assertEquals(lastChild.getParent().getChildren().get(1), insertSiblingDownScopeAction.getNewScopeId());
 		assertEquals(lastChild.getParent().getChildren().get(2), lastChild);
 		insertSiblingDownScopeAction.rollback(new ProjectContext(new Project()));
 		assertEquals(lastChild.getParent().getChildren().get(0), firstChild);

@@ -5,9 +5,9 @@ import java.util.Iterator;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
+import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
@@ -60,11 +60,11 @@ public class ScopeTreeWidget extends Composite implements DeeplyComparable {
 	}
 
 	// TODO Examine refactoring this so that it uses a Map.
-	public ScopeTreeItem getScopeTreeItemFor(final Scope scope) throws ScopeNotFoundException {
+	public ScopeTreeItem getScopeTreeItemFor(final UUID scopeId) throws ScopeNotFoundException {
 		final Iterator<TreeItem> treeItemIterator = tree.treeItemIterator();
 		while (treeItemIterator.hasNext()) {
 			final ScopeTreeItem item = (ScopeTreeItem) treeItemIterator.next();
-			if (item.getReferencedScope().equals(scope)) { return item; }
+			if (item.getReferencedScope().getId().equals(scopeId)) { return item; }
 		}
 		throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
 	}

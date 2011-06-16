@@ -4,15 +4,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.services.actions.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
-import br.com.oncast.ontrack.client.ui.places.planning.PlanningActionExecutionRequestHandler;
 import br.com.oncast.ontrack.mocks.MockFactory;
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
@@ -26,7 +24,7 @@ public class UpdateTest extends GwtTest {
 
 	private Scope scopeUpdated;
 	private ReleasePanel releasePanel;
-	private PlanningActionExecutionRequestHandler planningActionExecutionRequestHandler;
+	private ActionExecutionService actionExecutionService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -36,12 +34,13 @@ public class UpdateTest extends GwtTest {
 		releasePanel = createReleasePanel();
 		releasePanel.setRelease(project.getProjectRelease());
 
-		final Scope scopeBefore = project.getScope();
+		final Scope scopeBefore = project.getProjectScope();
 		scopeUpdated = scopeBefore.getChildren().get(0);
 
-		final List<ActionExecutionListener> listeners = new ArrayList<ActionExecutionListener>();
-		listeners.add(releasePanel.getActionExecutionListener());
-		planningActionExecutionRequestHandler = new PlanningActionExecutionRequestHandler(projectContext, listeners);
+		final ContextProviderService contextService = new ContextProviderService();
+		contextService.setProjectContext(projectContext);
+		actionExecutionService = new ActionExecutionService(contextService);
+		actionExecutionService.addActionExecutionListener(releasePanel.getActionExecutionListener());
 	}
 
 	private ReleasePanel createReleasePanel() {
@@ -73,7 +72,7 @@ public class UpdateTest extends GwtTest {
 		final ReleasePanel modifiedReleasePanel = createReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
 
 		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 	}
@@ -86,7 +85,7 @@ public class UpdateTest extends GwtTest {
 		ReleasePanel modifiedReleasePanel = createReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
 
 		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 
@@ -94,7 +93,7 @@ public class UpdateTest extends GwtTest {
 		modifiedReleasePanel = createReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription()));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription()));
 
 		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 	}

@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.services.places;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
 import br.com.oncast.ontrack.client.ui.places.planning.PlannnigPlace;
 
@@ -14,13 +13,15 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-public class AppPlaceController {
+public class ApplicationPlaceController {
 
 	private final PlaceController placeController;
+	private final EventBus eventBus;
 	private boolean configured;
 
-	public AppPlaceController() {
-		placeController = new PlaceController(ClientServiceProvider.getInstance().getEventBus());
+	public ApplicationPlaceController(final EventBus eventBus) {
+		this.eventBus = eventBus;
+		placeController = new PlaceController(eventBus);
 	}
 
 	public void goTo(final Place place) {
@@ -32,7 +33,6 @@ public class AppPlaceController {
 		if (configured) throw new RuntimeException("The placeController is already configured.");
 		configured = true;
 
-		final EventBus eventBus = ClientServiceProvider.getInstance().getEventBus();
 		final ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
 		final AppPlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
 		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);

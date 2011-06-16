@@ -2,16 +2,13 @@ package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.services.actions.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
-import br.com.oncast.ontrack.client.ui.places.planning.PlanningActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
@@ -28,20 +25,19 @@ public class UpdateTest extends GwtTest {
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
-	private PlanningActionExecutionRequestHandler planningActionExecutionRequestHandler;
+	private ActionExecutionService actionExecutionService;
 
 	@Before
 	public void setUp() {
 		scope = getScope();
-
 		tree = new ScopeTree();
 		tree.setScope(scope);
 
 		projectContext = new ProjectContext((new Project(scope, new Release(""))));
-
-		final List<ActionExecutionListener> listeners = new ArrayList<ActionExecutionListener>();
-		listeners.add(tree.getActionExecutionListener());
-		planningActionExecutionRequestHandler = new PlanningActionExecutionRequestHandler(projectContext, listeners);
+		final ContextProviderService contextService = new ContextProviderService();
+		contextService.setProjectContext(projectContext);
+		actionExecutionService = new ActionExecutionService(contextService);
+		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 
 	private Scope getScope() {
@@ -97,7 +93,7 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldUpdateScopeWithNewValue() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -105,7 +101,7 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldUpdateRootScope() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(rootScope, "Root"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(rootScope, "Root"));
 
 		assertTrue(getModifiedRootScope().deepEquals(scope));
 		assertTrue(getModifiedRootTree().deepEquals(tree));
@@ -113,12 +109,12 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldRollbackUpdatedScope() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
 
-		planningActionExecutionRequestHandler.onActionUndoRequest();
+		actionExecutionService.onActionUndoRequest();
 
 		assertTrue(getUnmodifiedScope().deepEquals(scope));
 		assertTrue(getUnmodifiedTree().deepEquals(tree));

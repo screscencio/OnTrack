@@ -2,16 +2,13 @@ package br.com.oncast.ontrack.client.ui.component.scopetree;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.services.actions.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
-import br.com.oncast.ontrack.client.ui.places.planning.PlanningActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
@@ -28,20 +25,19 @@ public class InsertSiblingUpTest extends GwtTest {
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
-	private PlanningActionExecutionRequestHandler planningActionExecutionRequestHandler;
+	private ActionExecutionService actionExecutionService;
 
 	@Before
 	public void setUp() {
 		scope = getScope();
-
 		tree = new ScopeTree();
 		tree.setScope(scope);
 
 		projectContext = new ProjectContext((new Project(scope, new Release(""))));
-
-		final List<ActionExecutionListener> listeners = new ArrayList<ActionExecutionListener>();
-		listeners.add(tree.getActionExecutionListener());
-		planningActionExecutionRequestHandler = new PlanningActionExecutionRequestHandler(projectContext, listeners);
+		final ContextProviderService contextService = new ContextProviderService();
+		contextService.setProjectContext(projectContext);
+		actionExecutionService = new ActionExecutionService(contextService);
+		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 
 	private Scope getScope() {
@@ -84,7 +80,7 @@ public class InsertSiblingUpTest extends GwtTest {
 
 	@Test
 	public void shouldInsertSiblingUp() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -92,17 +88,17 @@ public class InsertSiblingUpTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotInsertSiblingUpForRoot() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(rootScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(rootScope));
 	}
 
 	@Test
 	public void shouldRemoveInsertedSiblingAfterUndo() throws ActionNotFoundException {
-		planningActionExecutionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
 
-		planningActionExecutionRequestHandler.onActionUndoRequest();
+		actionExecutionService.onActionUndoRequest();
 
 		assertTrue(getUnmodifiedScope().deepEquals(scope));
 		assertTrue(getUnmodifiedTree().deepEquals(tree));

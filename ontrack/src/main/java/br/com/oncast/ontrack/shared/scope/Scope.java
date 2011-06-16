@@ -7,18 +7,21 @@ import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparableList;
 import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
-// TODO Test this class
-public class Scope implements DeeplyComparable {
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-	private final UUID id;
+// TODO Test this class
+public class Scope implements DeeplyComparable, IsSerializable {
+
+	private UUID id;
 	private String description;
 	private Scope parent;
-	private final DeeplyComparableList<Scope> childrenList;
+	private DeeplyComparableList<Scope> childrenList;
 	private Release release;
+
+	protected Scope() {}
 
 	public Scope(final String description) {
 		this.id = new UUID();
-
 		this.description = description;
 		childrenList = new DeeplyComparableList<Scope>();
 	}
@@ -85,6 +88,18 @@ public class Scope implements DeeplyComparable {
 		return release;
 	}
 
+	// TODO Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
+	public Scope findScope(final UUID scopeId) {
+		if (this.id.equals(scopeId)) return this;
+
+		for (final Scope childScope : childrenList) {
+			final Scope scopeLoaded = childScope.findScope(scopeId);
+			if (scopeLoaded != null) return scopeLoaded;
+		}
+
+		return null;
+	}
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();
@@ -113,4 +128,5 @@ public class Scope implements DeeplyComparable {
 		else if (!description.equals(other.description)) return false;
 		return true;
 	}
+
 }

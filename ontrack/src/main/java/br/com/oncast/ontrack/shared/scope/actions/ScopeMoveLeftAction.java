@@ -3,18 +3,22 @@ package br.com.oncast.ontrack.shared.scope.actions;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
 public class ScopeMoveLeftAction implements ScopeMoveAction {
 
-	private final Scope selectedScope;
+	private UUID selectedScopeId;
 	private int oldIndex;
 
 	public ScopeMoveLeftAction(final Scope selectedScope) {
-		this.selectedScope = selectedScope;
+		this.selectedScopeId = selectedScope.getId();
 	}
+
+	protected ScopeMoveLeftAction() {}
 
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
+		final Scope selectedScope = context.findScope(selectedScopeId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
 		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException("It is not possible to move left when a node parent is a root node.");
 
@@ -28,6 +32,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 
 	@Override
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
+		final Scope selectedScope = context.findScope(selectedScopeId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
 
 		final Scope parent = selectedScope.getParent();
@@ -42,8 +47,8 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	}
 
 	@Override
-	public Scope getScope() {
-		return selectedScope;
+	public UUID getScopeId() {
+		return selectedScopeId;
 	}
 
 	private boolean isFirstNode(final int index) {

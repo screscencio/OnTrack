@@ -29,8 +29,8 @@ public class InsertFatherScopeActionTest {
 		assertEquals(rootScope.getChildren().get(0), childScope);
 		final ScopeInsertAsFatherAction insertFatherScopeAction = new ScopeInsertAsFatherAction(childScope);
 		insertFatherScopeAction.execute(new ProjectContext(new Project()));
-		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScope());
-		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScope());
+		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScopeId());
+		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScopeId());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
@@ -44,8 +44,8 @@ public class InsertFatherScopeActionTest {
 		assertEquals(rootScope.getChildren().get(0), childScope);
 		final ScopeInsertAsFatherAction insertFatherScopeAction = new ScopeInsertAsFatherAction(childScope);
 		insertFatherScopeAction.execute(new ProjectContext(new Project()));
-		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScope());
-		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScope());
+		assertEquals(childScope.getParent(), insertFatherScopeAction.getNewScopeId());
+		assertEquals(rootScope.getChildren().get(0), insertFatherScopeAction.getNewScopeId());
 		insertFatherScopeAction.rollback(new ProjectContext(new Project()));
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
