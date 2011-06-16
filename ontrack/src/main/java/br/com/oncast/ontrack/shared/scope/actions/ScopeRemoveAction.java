@@ -40,7 +40,7 @@ public class ScopeRemoveAction implements ScopeAction {
 	}
 
 	@Override
-	public UUID getScopeId() {
+	public UUID getReferenceId() {
 		return selectedScope.getId();
 	}
 }

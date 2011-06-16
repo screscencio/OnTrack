@@ -19,7 +19,7 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 
 	@Override
 	public void execute(final ProjectContext context) throws ScopeNotFoundException {
-		final Scope scope = context.findScope(action.getScopeId());
+		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope parentScope = scope.getParent();
 		final int index = parentScope.getChildIndex(scope);
 

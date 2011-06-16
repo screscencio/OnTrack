@@ -8,12 +8,12 @@
     <!-- Servlet definitions and mappings -->
 	<servlet>
 		<servlet-name>communicationService</servlet-name>
-		<servlet-class>br.com.oncast.ontrack.server.services.transmission.CommunicationRpcServiceImpl</servlet-class>
+		<servlet-class>br.com.oncast.ontrack.server.services.communication.rpc.CommunicationRpcServiceImpl</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>communicationService</servlet-name>
-		<url-pattern>/communicationService</url-pattern>
+		<url-pattern>/application/communicationService</url-pattern>
 	</servlet-mapping>
 
 

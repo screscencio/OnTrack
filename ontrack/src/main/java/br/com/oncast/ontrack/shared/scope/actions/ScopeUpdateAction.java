@@ -56,7 +56,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	}
 
 	@Override
-	public UUID getScopeId() {
+	public UUID getReferenceId() {
 		return selectedScopeId;
 	}
 }

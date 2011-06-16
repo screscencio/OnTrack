@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.services.actions.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.mocks.MockFactory;

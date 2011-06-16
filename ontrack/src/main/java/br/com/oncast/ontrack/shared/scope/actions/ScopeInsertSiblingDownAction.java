@@ -34,7 +34,7 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 	}
 
 	@Override
-	public UUID getScopeId() {
+	public UUID getReferenceId() {
 		return selectedScopeId;
 	}
 

@@ -4,11 +4,12 @@ import br.com.oncast.ontrack.client.services.communication.CommunicationService;
 import br.com.oncast.ontrack.client.services.communication.DispatchCallback;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
-import br.com.oncast.ontrack.client.ui.places.contextloading.communication.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.services.communication.ProjectContextRequest;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ContextLoadingActivity extends AbstractActivity {
@@ -39,13 +40,14 @@ public class ContextLoadingActivity extends AbstractActivity {
 			public void onFailure(final Throwable cause) {
 				// TODO Hide 'loading' UI indicator.
 				// TODO Treat communication failure.
+				Window.alert("Error!");
 			}
 
 			@Override
 			public void onRequestCompletition(final ProjectContext result) {
 				// TODO Hide 'loading' UI indicator.
 				contextProviderService.setProjectContext(result);
-				placeController.goTo(place);
+				placeController.goTo(place.getDestinationPlace());
 			}
 		});
 	}
