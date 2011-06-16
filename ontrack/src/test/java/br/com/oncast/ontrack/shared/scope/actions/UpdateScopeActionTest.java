@@ -7,41 +7,47 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class UpdateScopeActionTest {
 
 	private Scope rootScope;
 	private Scope firstChild;
+	private ProjectContext context;
 
 	@Before
 	public void setUp() {
 		rootScope = new Scope("root");
 		firstChild = new Scope("first");
 		rootScope.add(firstChild);
+
+		context = new ProjectContext(new Project(rootScope, new Release("")));
 	}
 
 	@Test
 	public void updateActionChangeScopeDescription() throws UnableToCompleteActionException {
 		assertEquals("root", rootScope.getDescription());
-		new ScopeUpdateAction(rootScope, "new text").execute(new ProjectContext(new Project()));
+		new ScopeUpdateAction(rootScope, "new text").execute(context);
 		assertEquals("new text", rootScope.getDescription());
 	}
 
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals("root", rootScope.getDescription());
+
 		final ScopeUpdateAction updateScopeAction = new ScopeUpdateAction(rootScope, "new text");
-		updateScopeAction.execute(new ProjectContext(new Project()));
+		updateScopeAction.execute(context);
+
 		assertEquals("new text", rootScope.getDescription());
-		updateScopeAction.rollback(new ProjectContext(new Project()));
+
+		updateScopeAction.rollback(context);
 		assertEquals("root", rootScope.getDescription());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void ifTheActionNotExecutedCantBeRolledBack() throws UnableToCompleteActionException {
-		new ScopeUpdateAction(rootScope, "new text").rollback(new ProjectContext(new Project()));
+		new ScopeUpdateAction(rootScope, "new text").rollback(context);
 	}
 }

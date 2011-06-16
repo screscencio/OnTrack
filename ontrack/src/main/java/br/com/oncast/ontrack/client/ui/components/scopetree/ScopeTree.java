@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAct
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
@@ -51,11 +52,11 @@ public class ScopeTree implements Component, DeeplyComparable {
 		actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ScopeAction action, final boolean wasRollback) {
+			public void onActionExecution(final ScopeAction action, final ProjectContext context, final boolean wasRollback) {
 				try {
 					final ScopeTreeAction scopeTreeAction = treeActionFactory.createEquivalentActionFor(action);
-					if (!wasRollback) scopeTreeAction.execute();
-					else scopeTreeAction.rollback();
+					if (!wasRollback) scopeTreeAction.execute(context);
+					else scopeTreeAction.rollback(context);
 				}
 				catch (final ScopeNotFoundException e) {
 					// TODO Redraw the entire structure to eliminate inconsistencies

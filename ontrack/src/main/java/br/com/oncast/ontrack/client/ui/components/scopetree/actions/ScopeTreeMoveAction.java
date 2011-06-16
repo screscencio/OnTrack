@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
@@ -17,13 +18,13 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute() throws ScopeNotFoundException {
-		final Scope scope = action.getScope();
+	public void execute(final ProjectContext context) throws ScopeNotFoundException {
+		final Scope scope = context.findScope(action.getScopeId());
 		final Scope parentScope = scope.getParent();
 		final int index = parentScope.getChildIndex(scope);
 
-		final ScopeTreeItem treeItem = tree.getScopeTreeItemFor(scope);
-		final ScopeTreeItem parentItem = tree.getScopeTreeItemFor(parentScope);
+		final ScopeTreeItem treeItem = tree.getScopeTreeItemFor(scope.getId());
+		final ScopeTreeItem parentItem = tree.getScopeTreeItemFor(parentScope.getId());
 
 		treeItem.remove();
 		parentItem.insertItem(index, treeItem);
@@ -32,8 +33,8 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void rollback() throws ScopeNotFoundException {
-		execute();
+	public void rollback(final ProjectContext context) throws ScopeNotFoundException {
+		execute(context);
 	}
 
 	private void openTreeHierarquyFor(final ScopeTreeItem treeItem) {

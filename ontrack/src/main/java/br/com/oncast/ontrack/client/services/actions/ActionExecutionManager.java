@@ -1,19 +1,20 @@
-package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
+package br.com.oncast.ontrack.client.services.actions;
 
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
-public class ActionManager {
+public class ActionExecutionManager {
 
 	private final ActionExecutionListener executionListener;
 	private final Stack<ScopeAction> undoStack;
 	private final Stack<ScopeAction> redoStack;
 
-	public ActionManager(final ActionExecutionListener actionExecutionListener) {
+	public ActionExecutionManager(final ActionExecutionListener actionExecutionListener) {
 		executionListener = actionExecutionListener;
 		undoStack = new Stack<ScopeAction>();
 		redoStack = new Stack<ScopeAction>();
@@ -22,7 +23,7 @@ public class ActionManager {
 	public void execute(final ScopeAction action, final ProjectContext context) {
 		try {
 			action.execute(context);
-			executionListener.onActionExecution(action, false);
+			executionListener.onActionExecution(action, context, false);
 			undoStack.push(action);
 			redoStack.clear();
 		}
@@ -38,7 +39,7 @@ public class ActionManager {
 		try {
 			final ScopeAction action = undoStack.pop();
 			action.rollback(context);
-			executionListener.onActionExecution(action, true);
+			executionListener.onActionExecution(action, context, true);
 			redoStack.push(action);
 		}
 		catch (final UnableToCompleteActionException e) {
@@ -57,7 +58,7 @@ public class ActionManager {
 		try {
 			final ScopeAction action = redoStack.pop();
 			action.execute(context);
-			executionListener.onActionExecution(action, false);
+			executionListener.onActionExecution(action, context, false);
 			undoStack.push(action);
 		}
 		catch (final UnableToCompleteActionException e) {

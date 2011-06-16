@@ -1,0 +1,43 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:rp='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel'
+	xmlns:st='urn:import:br.com.oncast.ontrack.client.ui.components.scopetree'>
+
+	<ui:style>
+		.rootPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			background-color: #d9dae1;
+		}
+		
+		.loadingPanel {
+			position: absolute;
+			top: 40%;
+			height: 100px;
+			right: 50%;
+			margin-right: -100px;
+			width: 200px;
+			padding: 5px;
+			
+            border: 1px solid #a5a5a5;
+		    -moz-box-shadow: 0px 0px 5px #a5a5a5;
+		    -webkit-box-shadow: 0px 0px 5px #a5a5a5;
+		    box-shadow: 0px 0px 5px #a5a5a5;
+		    background: #fff;
+		    text-align: center;
+		    font-size: 20px;
+		    font-weight: bold;
+   		}
+	</ui:style>
+
+	<g:HTMLPanel styleName="{style.rootPanel}">
+		<div class="{style.loadingPanel}">
+			Loading...
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

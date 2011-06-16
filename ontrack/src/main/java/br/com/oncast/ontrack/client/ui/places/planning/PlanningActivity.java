@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.planning;
 
-import br.com.oncast.ontrack.client.mocks.ProjectMockFactory;
-import br.com.oncast.ontrack.shared.project.Project;
-import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.client.services.actions.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -10,29 +10,33 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class PlanningActivity extends AbstractActivity {
 
-	private Project mockedProject;
-	private ProjectContext mockedProjectContext;
+	private final ContextProviderService contextProviderService;
+	private final ActionExecutionService actionExecutionService;
+	private final ActivityActionExecutionListener activityActionExecutionListener;
+
+	public PlanningActivity(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService) {
+		this.contextProviderService = contextProviderService;
+		this.actionExecutionService = actionExecutionService;
+
+		activityActionExecutionListener = new ActivityActionExecutionListener();
+	}
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		final PlanningView view = new PlanningPanel();
-		view.setActionExecutionRequestHandler(new PlanningActionExecutionRequestHandler(getProjectContext(), view.getActionExecutionSuccessListeners()));
 
-		final Project project = getProject();
-		view.setScope(project.getScope());
-		view.setRelease(project.getProjectRelease());
+		activityActionExecutionListener.setActionExecutionListeners(view.getActionExecutionSuccessListeners());
+		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
+
+		view.setActionExecutionRequestHandler(actionExecutionService);
+		view.setScope(contextProviderService.getProjectContext().getProjectScope());
+		view.setRelease(contextProviderService.getProjectContext().getProjectRelease());
 
 		panel.setWidget(view);
 	}
 
-	private ProjectContext getProjectContext() {
-		if (mockedProjectContext != null) return mockedProjectContext;
-		return mockedProjectContext = new ProjectContext(getProject());
-	}
-
-	// TODO Get initial model data from server
-	private Project getProject() {
-		if (mockedProject != null) return mockedProject;
-		return mockedProject = ProjectMockFactory.createProjectMock();
+	@Override
+	public void onStop() {
+		actionExecutionService.removeActionExecutionListener(activityActionExecutionListener);
 	}
 }

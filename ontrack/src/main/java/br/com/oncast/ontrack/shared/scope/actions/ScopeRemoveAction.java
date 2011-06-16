@@ -4,10 +4,12 @@ import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
+// TODO Implement algorithm for remove child scope association with their releases.
 public class ScopeRemoveAction implements ScopeAction {
 
-	private final Scope selectedScope;
+	private Scope selectedScope;
 	private Scope parent;
 	private int index;
 	private Release release;
@@ -15,6 +17,8 @@ public class ScopeRemoveAction implements ScopeAction {
 	public ScopeRemoveAction(final Scope selectedScope) {
 		this.selectedScope = selectedScope;
 	}
+
+	protected ScopeRemoveAction() {}
 
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
@@ -29,13 +33,14 @@ public class ScopeRemoveAction implements ScopeAction {
 
 	@Override
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
+		// TODO save all childs id and restore here.
 		parent.add(index, selectedScope);
 		selectedScope.setRelease(release);
 		if (release != null) release.addScope(selectedScope);
 	}
 
 	@Override
-	public Scope getScope() {
-		return selectedScope;
+	public UUID getScopeId() {
+		return selectedScope.getId();
 	}
 }

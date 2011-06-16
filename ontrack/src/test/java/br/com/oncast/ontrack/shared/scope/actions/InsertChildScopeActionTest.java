@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 
 public class InsertChildScopeActionTest {
@@ -23,7 +23,7 @@ public class InsertChildScopeActionTest {
 	@Test
 	public void insertChildMustInsertNewChild() throws UnableToCompleteActionException {
 		assertEquals(selectedScope.getChildren().size(), 0);
-		new ScopeInsertChildAction(selectedScope).execute(new ProjectContext(new Project()));
+		new ScopeInsertChildAction(selectedScope).execute(new ProjectContext((new Project(selectedScope, new Release("")))));
 		assertEquals(1, selectedScope.getChildren().size());
 	}
 
@@ -34,7 +34,7 @@ public class InsertChildScopeActionTest {
 		assertEquals(1, selectedScope.getChildren().size());
 		insertChildScopeAction.execute(new ProjectContext(new Project()));
 		final Scope insertedScope = selectedScope.getChildren().get(selectedScope.getChildren().size() - 1);
-		assertEquals(insertedScope, insertChildScopeAction.getNewScope());
+		assertEquals(insertedScope, insertChildScopeAction.getNewScopeId());
 	}
 
 	@Test

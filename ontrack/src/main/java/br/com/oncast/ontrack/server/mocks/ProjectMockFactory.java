@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.mocks;
+package br.com.oncast.ontrack.server.mocks;
 
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.release.Release;

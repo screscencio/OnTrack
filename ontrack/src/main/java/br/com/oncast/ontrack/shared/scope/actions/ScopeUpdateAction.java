@@ -5,30 +5,34 @@ import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.scope.stringrepresentation.ScopeRepresentationParser;
+import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
 public class ScopeUpdateAction implements ScopeAction {
 
-	private final Scope selectedScope;
+	private UUID selectedScopeId;
 
-	private final String newDescription;
-	private final String newReleaseDescription;
+	private String newDescription;
+	private String newReleaseDescription;
 
 	private String oldDescription;
 	private String oldReleaseDescription;
 
 	public ScopeUpdateAction(final Scope scope, final String newPattern) {
-		this.selectedScope = scope;
+		this.selectedScopeId = scope.getId();
 
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(newPattern);
 		this.newDescription = parser.getScopeDescription();
 		this.newReleaseDescription = parser.getReleaseDescription();
 	}
 
+	public ScopeUpdateAction() {}
+
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
+		final Scope selectedScope = context.findScope(selectedScopeId);
 		oldDescription = selectedScope.getDescription();
 		final Release oldRelease = selectedScope.getRelease();
-		oldReleaseDescription = context.getReleaseDescription(oldRelease);
+		oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
 		if (oldRelease != null) oldRelease.removeScope(selectedScope);
 
 		selectedScope.setDescription(newDescription);
@@ -41,6 +45,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
 		if (oldDescription == null) throw new UnableToCompleteActionException("The action cannot be rolled back because it has never been executed.");
 
+		final Scope selectedScope = context.findScope(selectedScopeId);
 		final Release newRelease = selectedScope.getRelease();
 		if (newRelease != null) newRelease.removeScope(selectedScope);
 
@@ -51,7 +56,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	}
 
 	@Override
-	public Scope getScope() {
-		return selectedScope;
+	public UUID getScopeId() {
+		return selectedScopeId;
 	}
 }

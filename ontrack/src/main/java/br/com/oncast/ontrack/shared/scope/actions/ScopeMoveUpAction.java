@@ -3,17 +3,21 @@ package br.com.oncast.ontrack.shared.scope.actions;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
 public class ScopeMoveUpAction implements ScopeMoveAction {
 
-	private final Scope selectedScope;
+	private UUID selectedScopeId;
 
 	public ScopeMoveUpAction(final Scope selectedScope) {
-		this.selectedScope = selectedScope;
+		this.selectedScopeId = selectedScope.getId();
 	}
+
+	protected ScopeMoveUpAction() {}
 
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
+		final Scope selectedScope = context.findScope(selectedScopeId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
 
 		final Scope parent = selectedScope.getParent();
@@ -27,7 +31,7 @@ public class ScopeMoveUpAction implements ScopeMoveAction {
 
 	@Override
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
-		new ScopeMoveDownAction(selectedScope).execute(context);
+		new ScopeMoveDownAction(context.findScope(selectedScopeId)).execute(context);
 	}
 
 	private boolean isFirstNode(final int index) {
@@ -35,7 +39,7 @@ public class ScopeMoveUpAction implements ScopeMoveAction {
 	}
 
 	@Override
-	public Scope getScope() {
-		return selectedScope;
+	public UUID getScopeId() {
+		return selectedScopeId;
 	}
 }

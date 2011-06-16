@@ -7,15 +7,19 @@ import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparableList;
 import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
-public class Release implements DeeplyComparable {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class Release implements DeeplyComparable, IsSerializable {
 
 	public static final String SEPARATOR = "/";
-	private final UUID id;
+	private UUID id;
 
-	private final String description;
+	private String description;
 	private Release parent;
-	private final DeeplyComparableList<Release> childrenList;
-	private final DeeplyComparableList<Scope> scopeList;
+	private DeeplyComparableList<Release> childrenList;
+	private DeeplyComparableList<Scope> scopeList;
+
+	protected Release() {}
 
 	public Release(final String description) {
 		this.id = new UUID();

@@ -21,7 +21,25 @@ public class ApplicationEntryPoint implements EntryPoint {
 		rootPanel.setStyleName("rootPanel");
 		RootPanel.get().add(rootPanel);
 
-		ClientServiceProvider.getInstance().getApplicationPlaceController()
-				.configure(rootPanel, DEFAULT_APP_PLACE, new AppActivityMapper(), (PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
+		// FIXME Configure a action execution listener that dispatches executed actions, for that should create an ActionSyncService
+		// TODO Configure a communication channel with a listener for server sent actions
+		// TODO Configure communication error handlers
+		final ClientServiceProvider clientServiceProvider = new ClientServiceProvider();
+		clientServiceProvider.getApplicationPlaceController().configure(rootPanel, DEFAULT_APP_PLACE, new AppActivityMapper(clientServiceProvider),
+				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
 	}
 }
+
+// System.out.println("Action sent: " + action.getScopeId() + " " + action.getClass());
+// transmissionService.transmitAction(action, new AsyncCallback<Void>() {
+//
+// @Override
+// public void onSuccess(final Void result) {
+// System.out.println("Success!");
+// }
+//
+// @Override
+// public void onFailure(final Throwable caught) {
+// System.out.println("Failure!");
+// }
+// });

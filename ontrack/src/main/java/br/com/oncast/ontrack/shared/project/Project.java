@@ -3,24 +3,26 @@ package br.com.oncast.ontrack.shared.project;
 import br.com.oncast.ontrack.shared.release.Release;
 import br.com.oncast.ontrack.shared.scope.Scope;
 
-public class Project {
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-	private Scope scope;
+public class Project implements IsSerializable {
+
+	private Scope projectScope;
 	private Release projectRelease;
 
 	public Project() {}
 
-	public Project(final Scope scope, final Release projectRelease) {
-		this.scope = scope;
+	public Project(final Scope projectScope, final Release projectRelease) {
+		this.projectScope = projectScope;
 		this.projectRelease = projectRelease;
 	}
 
-	public Scope getScope() {
-		return scope;
+	public Scope getProjectScope() {
+		return projectScope;
 	}
 
-	public void setScope(final Scope scope) {
-		this.scope = scope;
+	public void setProjectScope(final Scope scope) {
+		this.projectScope = scope;
 	}
 
 	public Release getProjectRelease() {

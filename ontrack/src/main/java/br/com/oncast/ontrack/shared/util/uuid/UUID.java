@@ -1,16 +1,21 @@
 package br.com.oncast.ontrack.shared.util.uuid;
 
-public class UUID {
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-	private final String id;
+public class UUID implements IsSerializable {
+
+	private String id = "";
+
+	// TODO Verify the algorithm use of the CHARS constant bellow. UUIDs should be represented by Hexadecimal characters only, but our own unique id could
+	// expand this universe as we are storing it as a string (then it should have another name, eg. UniqueId).
 	private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
-
-	public UUID(final String uuid) {
-		this.id = uuid;
-	}
 
 	public UUID() {
 		this.id = generatedId();
+	}
+
+	public UUID(final String uuid) {
+		this.id = uuid;
 	}
 
 	@Override

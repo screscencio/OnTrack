@@ -1,14 +1,16 @@
 package br.com.oncast.ontrack.shared.scope.actions;
 
 import br.com.oncast.ontrack.shared.project.ProjectContext;
-import br.com.oncast.ontrack.shared.scope.Scope;
 import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
-public interface ScopeAction {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public interface ScopeAction extends IsSerializable {
 
 	void execute(final ProjectContext context) throws UnableToCompleteActionException;
 
 	void rollback(final ProjectContext context) throws UnableToCompleteActionException;
 
-	Scope getScope();
+	UUID getScopeId();
 }

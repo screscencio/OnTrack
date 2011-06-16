@@ -4,10 +4,22 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-  
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>Application.html</welcome-file>
-  </welcome-file-list>
+
+    <!-- Servlet definitions and mappings -->
+	<servlet>
+		<servlet-name>communicationService</servlet-name>
+		<servlet-class>br.com.oncast.ontrack.server.services.transmission.CommunicationRpcServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>communicationService</servlet-name>
+		<url-pattern>/communicationService</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>Application.html</welcome-file>
+	</welcome-file-list>
 
 </web-app>
