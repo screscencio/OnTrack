@@ -1,2 +1,0 @@
-serviceClass: transport.TransportService
-path: DA9DB19B37050B46AC130B40D047EB91.gwt.rpc
