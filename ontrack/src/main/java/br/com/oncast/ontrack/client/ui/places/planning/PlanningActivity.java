@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.planning;
 
-import br.com.oncast.ontrack.client.services.actions.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 

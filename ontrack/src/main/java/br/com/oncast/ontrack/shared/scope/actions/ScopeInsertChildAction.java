@@ -31,7 +31,7 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	}
 
 	@Override
-	public UUID getScopeId() {
+	public UUID getReferenceId() {
 		return selectedScopeId;
 	}
 

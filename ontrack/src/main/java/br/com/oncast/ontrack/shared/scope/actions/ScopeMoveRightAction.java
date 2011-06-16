@@ -39,7 +39,7 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 	}
 
 	@Override
-	public UUID getScopeId() {
+	public UUID getReferenceId() {
 		return selectedScopeId;
 	}
 }

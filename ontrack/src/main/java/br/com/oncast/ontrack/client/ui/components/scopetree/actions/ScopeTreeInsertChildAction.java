@@ -19,7 +19,7 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 
 	@Override
 	public void execute(final ProjectContext context) throws ScopeNotFoundException {
-		final Scope scope = context.findScope(action.getScopeId());
+		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope newScope = context.findScope(action.getNewScopeId());
 
 		final ScopeTreeItem parentTreeItem = tree.getScopeTreeItemFor(scope.getId());

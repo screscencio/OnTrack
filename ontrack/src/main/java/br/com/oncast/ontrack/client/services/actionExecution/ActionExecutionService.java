@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.services.actions;
+package br.com.oncast.ontrack.client.services.actionExecution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +15,12 @@ public class ActionExecutionService implements ActionExecutionRequestHandler, Ac
 
 	private final ActionExecutionManager actionManager;
 	private final ContextProviderService contextService;
-	private final List<ActionExecutionListener> actionExecutionSuccessHandlers;
+	private final List<ActionExecutionListener> actionExecutionListeners;
 
 	public ActionExecutionService(final ContextProviderService contextService) {
 		this.contextService = contextService;
 		this.actionManager = new ActionExecutionManager(this);
-		this.actionExecutionSuccessHandlers = new ArrayList<ActionExecutionListener>();
+		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 	}
 
 	@Override
@@ -40,17 +40,17 @@ public class ActionExecutionService implements ActionExecutionRequestHandler, Ac
 
 	@Override
 	public void onActionExecution(final ScopeAction action, final ProjectContext context, final boolean wasRollback) {
-		for (final ActionExecutionListener handler : actionExecutionSuccessHandlers) {
+		for (final ActionExecutionListener handler : actionExecutionListeners) {
 			handler.onActionExecution(action, context, wasRollback);
 		}
 	}
 
-	public void addActionExecutionListener(final ActionExecutionListener actionExecutionSuccessListener) {
-		if (this.actionExecutionSuccessHandlers.contains(actionExecutionSuccessListener)) return;
-		this.actionExecutionSuccessHandlers.add(actionExecutionSuccessListener);
+	public void addActionExecutionListener(final ActionExecutionListener actionExecutionListener) {
+		if (this.actionExecutionListeners.contains(actionExecutionListener)) return;
+		this.actionExecutionListeners.add(actionExecutionListener);
 	}
 
-	public void removeActionExecutionListener(final ActionExecutionListener actionExecutionSuccessListener) {
-		this.actionExecutionSuccessHandlers.remove(actionExecutionSuccessListener);
+	public void removeActionExecutionListener(final ActionExecutionListener actionExecutionListener) {
+		this.actionExecutionListeners.remove(actionExecutionListener);
 	}
 }

@@ -17,7 +17,7 @@
 		.loadingPanel {
 			position: absolute;
 			top: 40%;
-			height: 100px;
+			height: 25px;
 			right: 50%;
 			margin-right: -100px;
 			width: 200px;

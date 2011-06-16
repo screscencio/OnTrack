@@ -19,7 +19,7 @@ class ScopeTreeInsertAsFatherAction implements ScopeTreeAction {
 
 	@Override
 	public void execute(final ProjectContext context) throws ScopeNotFoundException {
-		final Scope scope = context.findScope(action.getScopeId());
+		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope newScope = context.findScope(action.getNewScopeId());
 		final Scope grandParentScope = newScope.getParent();
 
@@ -48,7 +48,7 @@ class ScopeTreeInsertAsFatherAction implements ScopeTreeAction {
 
 	@Override
 	public void rollback(final ProjectContext context) throws ScopeNotFoundException {
-		final Scope scope = context.findScope(action.getScopeId());
+		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope grandParentScope = scope.getParent();
 
 		final ScopeTreeItem treeItem = tree.getScopeTreeItemFor(scope.getId());
