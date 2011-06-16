@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.scope.actions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,17 +16,23 @@ import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionExcep
 public class RemoveScopeActionTest {
 
 	private Scope rootScope;
-	private Scope firstChild;
-	private Scope lastChild;
+	private Scope child1Level1;
+	private Scope child2Level1;
 	private ProjectContext context;
+	private Scope child1Level2;
+	private Scope child1Level3;
 
 	@Before
 	public void setUp() {
 		rootScope = new Scope("root");
-		firstChild = new Scope("child");
-		lastChild = new Scope("last");
-		rootScope.add(firstChild);
-		rootScope.add(lastChild);
+		child1Level1 = new Scope("child1Level1");
+		child2Level1 = new Scope("child2Level1");
+		child1Level2 = new Scope("child1Level2");
+		child1Level3 = new Scope("child2Level2");
+		rootScope.add(child1Level1);
+		rootScope.add(child2Level1);
+		child1Level1.add(child1Level2);
+		child1Level2.add(child1Level3);
 
 		context = new ProjectContext(new Project(rootScope, new Release("")));
 	}
@@ -38,31 +45,84 @@ public class RemoveScopeActionTest {
 	@Test
 	public void aRemovedScopeMustBeRemovedFromFather() throws UnableToCompleteActionException {
 		assertEquals(2, rootScope.getChildren().size());
-		assertEquals(firstChild, rootScope.getChildren().get(0));
-		assertEquals(lastChild, rootScope.getChildren().get(1));
+		assertEquals(child1Level1, rootScope.getChildren().get(0));
+		assertEquals(child2Level1, rootScope.getChildren().get(1));
 
-		new ScopeRemoveAction(firstChild).execute(context);
+		new ScopeRemoveAction(child2Level1).execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
-		assertEquals(lastChild, rootScope.getChildren().get(0));
+		assertEquals(child1Level1, rootScope.getChildren().get(0));
+		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
+		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 	}
 
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals(2, rootScope.getChildren().size());
-		assertEquals(firstChild, rootScope.getChildren().get(0));
-		assertEquals(lastChild, rootScope.getChildren().get(1));
+		assertEquals(child1Level1, rootScope.getChildren().get(0));
+		assertEquals(child2Level1, rootScope.getChildren().get(1));
 
-		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(firstChild);
+		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child2Level1);
 		removeScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
-		assertEquals(lastChild, rootScope.getChildren().get(0));
+		assertEquals(child1Level1, rootScope.getChildren().get(0));
 
 		removeScopeAction.rollback(context);
 
 		assertEquals(2, rootScope.getChildren().size());
-		assertEquals(firstChild, rootScope.getChildren().get(0));
-		assertEquals(lastChild, rootScope.getChildren().get(1));
+		assertEquals(child1Level1, rootScope.getChildren().get(0));
+		assertEquals(child2Level1, rootScope.getChildren().get(1));
+	}
+
+	@Test
+	public void executeMustRemoveChildsFromRemovedScope() throws UnableToCompleteActionException {
+		assertEquals(2, rootScope.getChildren().size());
+		assertEquals(child1Level1, rootScope.getChildren().get(0));
+		assertEquals(child2Level1, rootScope.getChildren().get(1));
+		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
+		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
+
+		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1);
+		removeScopeAction.execute(context);
+
+		assertEquals(1, rootScope.getChildren().size());
+		assertEquals(child2Level1, rootScope.getChildren().get(0));
+		assertNull(child1Level1.getParent());
+		assertNull(child1Level2.getParent());
+		assertNull(child1Level3.getParent());
+		assertEquals(child1Level1.getChildren().size(), 0);
+		assertEquals(child1Level2.getChildren().size(), 0);
+		assertEquals(child1Level3.getChildren().size(), 0);
+	}
+
+	@Test
+	public void rollbackMustRevertChildsFromRemovedScope() throws UnableToCompleteActionException {
+		assertEquals(2, rootScope.getChildren().size());
+		assertEquals(child1Level1, rootScope.getChildren().get(0));
+		assertEquals(child2Level1, rootScope.getChildren().get(1));
+		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
+		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
+
+		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1);
+		removeScopeAction.execute(context);
+
+		assertEquals(1, rootScope.getChildren().size());
+		assertEquals(child2Level1, rootScope.getChildren().get(0));
+		assertNull(child1Level1.getParent());
+		assertNull(child1Level2.getParent());
+		assertNull(child1Level3.getParent());
+		assertEquals(child1Level1.getChildren().size(), 0);
+		assertEquals(child1Level2.getChildren().size(), 0);
+		assertEquals(child1Level3.getChildren().size(), 0);
+
+		removeScopeAction.rollback(context);
+
+		assertEquals(2, rootScope.getChildren().size());
+		assertEquals(child1Level1, rootScope.getChildren().get(0));
+		assertEquals(child2Level1, rootScope.getChildren().get(1));
+		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
+		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
+
 	}
 }
