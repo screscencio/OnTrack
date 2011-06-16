@@ -16,7 +16,7 @@ public class ScopeRemoveAction implements ScopeAction {
 	private UUID parentScopeId;
 	private int index;
 	private String description;
-	private Release release;
+	private UUID releaseId;
 
 	public ScopeRemoveAction(final Scope selectedScope) {
 		this.selectedScopeId = selectedScope.getId();
@@ -44,9 +44,11 @@ public class ScopeRemoveAction implements ScopeAction {
 
 		index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
-		release = selectedScope.getRelease();
 
-		if (release != null) release.removeScope(selectedScope);
+		if (selectedScope.getRelease() != null) {
+			releaseId = selectedScope.getRelease().getId();
+			selectedScope.getRelease().removeScope(selectedScope);
+		}
 		selectedScope.setRelease(null);
 	}
 
@@ -54,14 +56,17 @@ public class ScopeRemoveAction implements ScopeAction {
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope parent = context.findScope(parentScopeId);
 		final Scope newScope = new Scope(description, selectedScopeId);
+		final Release release = context.findRelease(releaseId);
 
 		parent.add(index, newScope);
 		newScope.setRelease(release);
 		if (release != null) release.addScope(newScope);
 
-		for (final ScopeRemoveAction childId : childList) {
-			childId.rollback(context);
+		for (final ScopeRemoveAction childAction : childList) {
+			childAction.rollback(context);
 		}
+
+		childList.clear();
 	}
 
 	@Override

@@ -40,4 +40,9 @@ public class ProjectContext {
 	public Release getProjectRelease() {
 		return project.getProjectRelease();
 	}
+
+	// TODO Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
+	public Release findRelease(final UUID releaseId) {
+		return project.getProjectRelease().findRelease(releaseId);
+	}
 }
