@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.shared.services.communication.ProjectContextRequest
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
@@ -17,19 +18,21 @@ public class ContextLoadingActivity extends AbstractActivity {
 	private final ApplicationPlaceController placeController;
 	private final CommunicationService communicationService;
 	private final ContextProviderService contextProviderService;
-	private final ContextLoadingPlace place;
+	private final Place place;
 
 	public ContextLoadingActivity(final ContextProviderService contextProviderService, final ApplicationPlaceController placeController,
-			final CommunicationService communicationService, final ContextLoadingPlace place) {
+			final CommunicationService communicationService, final Place destinationPlace) {
 		this.contextProviderService = contextProviderService;
 		this.placeController = placeController;
 		this.communicationService = communicationService;
-		this.place = place;
+		this.place = destinationPlace;
 	}
 
 	// TODO Show animations and change the view according to the communication state.
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		if (contextProviderService.isContextAvailable()) placeController.goTo(place);
+
 		final ContextLoadingView view = new ContextLoadingPanel();
 		panel.setWidget(view);
 
@@ -47,7 +50,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 			public void onRequestCompletition(final ProjectContext result) {
 				// TODO Hide 'loading' UI indicator.
 				contextProviderService.setProjectContext(result);
-				placeController.goTo(place.getDestinationPlace());
+				placeController.goTo(place);
 			}
 		});
 	}

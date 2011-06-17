@@ -11,6 +11,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
+import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
 import br.com.oncast.ontrack.mocks.MockFactory;
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
@@ -37,8 +38,7 @@ public class UpdateTest extends GwtTest {
 		final Scope scopeBefore = project.getProjectScope();
 		scopeUpdated = scopeBefore.getChildren().get(0);
 
-		final ContextProviderService contextService = new ContextProviderService();
-		contextService.setProjectContext(projectContext);
+		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
 		actionExecutionService = new ActionExecutionService(contextService);
 		actionExecutionService.addActionExecutionListener(releasePanel.getActionExecutionListener());
 	}

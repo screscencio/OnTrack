@@ -40,4 +40,8 @@ public class ApplicationPlaceController {
 		historyHandler.register(placeController, eventBus, defaultAppPlace);
 		historyHandler.handleCurrentHistory();
 	}
+
+	public Place getCurrentPlace() {
+		return placeController.getWhere();
+	}
 }

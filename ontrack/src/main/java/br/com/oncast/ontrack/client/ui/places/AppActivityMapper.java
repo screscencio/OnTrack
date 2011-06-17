@@ -21,11 +21,21 @@ public class AppActivityMapper implements ActivityMapper {
 	// TODO Potentially lazy load and store activity instances. (ContextLoadingPlace should have the destination place set or should always have a new instance)
 	@Override
 	public Activity getActivity(final Place place) {
-		if (place instanceof ContextLoadingPlace) return new ContextLoadingActivity(services.getContextProviderService(),
-				services.getApplicationPlaceController(), services.getCommunicationService(), (ContextLoadingPlace) place);
-		if (place instanceof PlannnigPlace) return new PlanningActivity(services.getActionExecutionService(), services.getContextProviderService());
+		if (place instanceof ContextLoadingPlace) return createContextLoadingActivity(((ContextLoadingPlace) place).getDestinationPlace());
+		if (!services.getContextProviderService().isContextAvailable()) return createContextLoadingActivity(place);
+
+		if (place instanceof PlannnigPlace) return createPlanningActivity();
 
 		return null;
+	}
+
+	private PlanningActivity createPlanningActivity() {
+		return new PlanningActivity(services.getActionExecutionService(), services.getContextProviderService());
+	}
+
+	private ContextLoadingActivity createContextLoadingActivity(final Place place) {
+		return new ContextLoadingActivity(services.getContextProviderService(), services.getApplicationPlaceController(), services.getCommunicationService(),
+				place);
 	}
 
 }

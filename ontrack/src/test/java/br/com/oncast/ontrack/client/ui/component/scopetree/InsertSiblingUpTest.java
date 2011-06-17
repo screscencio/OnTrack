@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
+import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
 import br.com.oncast.ontrack.shared.project.Project;
 import br.com.oncast.ontrack.shared.project.ProjectContext;
 import br.com.oncast.ontrack.shared.release.Release;
@@ -34,8 +35,7 @@ public class InsertSiblingUpTest extends GwtTest {
 		tree.setScope(scope);
 
 		projectContext = new ProjectContext((new Project(scope, new Release(""))));
-		final ContextProviderService contextService = new ContextProviderService();
-		contextService.setProjectContext(projectContext);
+		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
 		actionExecutionService = new ActionExecutionService(contextService);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}

@@ -17,7 +17,7 @@ public class ActionSyncService {
 			@Override
 			public void onActionExecution(final ScopeAction action, final ProjectContext context, final boolean wasRollback) {
 				// TODO Display 'loading' UI indicator.
-				communicationService.dispatch(new ModelActionSyncRequest(action), new DispatchCallback<Void>() {
+				communicationService.dispatch(new ModelActionSyncRequest(action, wasRollback), new DispatchCallback<Void>() {
 
 					@Override
 					public void onRequestCompletition(final Void response) {

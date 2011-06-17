@@ -31,7 +31,7 @@ public class CommunicationService {
 	}
 
 	public void dispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<Void> dispatchCallback) {
-		rpcServiceAsync.transmitAction(modelActionSyncRequest.getAction(), new AsyncCallback<Void>() {
+		rpcServiceAsync.transmitAction(modelActionSyncRequest.getAction(), modelActionSyncRequest.isRollback(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onSuccess(final Void result) {
