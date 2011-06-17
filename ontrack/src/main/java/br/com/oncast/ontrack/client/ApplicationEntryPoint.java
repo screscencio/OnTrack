@@ -22,8 +22,10 @@ public class ApplicationEntryPoint implements EntryPoint {
 		RootPanel.get().add(applicationUIPanel);
 
 		// TODO Configure communication error handlers
-		final ClientServiceProvider clientServiceProvider = new ClientServiceProvider();
-		clientServiceProvider.getApplicationPlaceController().configure(applicationUIPanel, DEFAULT_APP_PLACE, new AppActivityMapper(clientServiceProvider),
+		final ClientServiceProvider serviceProvider = new ClientServiceProvider();
+
+		serviceProvider.getActionSyncService().setActive(true);
+		serviceProvider.getApplicationPlaceController().configure(applicationUIPanel, DEFAULT_APP_PLACE, new AppActivityMapper(serviceProvider),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
 	}
 }

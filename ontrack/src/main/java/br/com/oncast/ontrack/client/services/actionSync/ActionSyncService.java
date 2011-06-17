@@ -10,12 +10,16 @@ import br.com.oncast.ontrack.shared.services.communication.ModelActionSyncReques
 
 public class ActionSyncService {
 
+	private boolean active;
+
 	// TODO Configure a communication channel with a listener for server-client pushed actions
 	public ActionSyncService(final CommunicationService communicationService, final ActionExecutionService actionExecutionService) {
 		final ActionExecutionListener actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
 			public void onActionExecution(final ScopeAction action, final ProjectContext context, final boolean wasRollback) {
+				if (!active) return;
+
 				// TODO Display 'loading' UI indicator.
 				communicationService.dispatch(new ModelActionSyncRequest(action, wasRollback), new DispatchCallback<Void>() {
 
@@ -33,6 +37,11 @@ public class ActionSyncService {
 			}
 		};
 		actionExecutionService.addActionExecutionListener(actionExecutionListener);
+	}
+
+	// TODO Review the necessity of this method, that was created only to make implicit when the service is active or not.
+	public void setActive(final boolean active) {
+		this.active = active;
 	}
 
 }

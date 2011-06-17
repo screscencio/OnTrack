@@ -14,17 +14,12 @@ import com.google.gwt.event.shared.SimpleEventBus;
 // reference the interfaces, making the code more testable).
 public class ClientServiceProvider {
 
-	// TODO Review: This service is instantiated at construction so it is initialized as soon as possible.
-	private final ActionSyncService actionSyncService;
+	private ActionSyncService actionSyncService;
 	private ApplicationPlaceController placeController;
 	private CommunicationService communicationService;
 	private ContextProviderService contextProviderService;
 	private ActionExecutionService actionExecutionService;
 	private EventBus eventBus;
-
-	public ClientServiceProvider() {
-		actionSyncService = new ActionSyncService(getCommunicationService(), getActionExecutionService());
-	}
 
 	public ApplicationPlaceController getApplicationPlaceController() {
 		if (placeController != null) return placeController;
@@ -47,7 +42,8 @@ public class ClientServiceProvider {
 	}
 
 	public ActionSyncService getActionSyncService() {
-		return actionSyncService;
+		if (actionSyncService != null) return actionSyncService;
+		return actionSyncService = new ActionSyncService(getCommunicationService(), getActionExecutionService());
 	}
 
 	private EventBus getEventBus() {
