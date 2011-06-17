@@ -4,7 +4,6 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.ApplicationUIPanel;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
-import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlannnigPlace;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -15,7 +14,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class ApplicationEntryPoint implements EntryPoint {
 
-	private static final Place DEFAULT_APP_PLACE = new ContextLoadingPlace(new PlannnigPlace(""));
+	private static final Place DEFAULT_APP_PLACE = new PlannnigPlace("");
 
 	@Override
 	public void onModuleLoad() {

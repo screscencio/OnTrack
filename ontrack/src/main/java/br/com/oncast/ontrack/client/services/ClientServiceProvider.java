@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
 import br.com.oncast.ontrack.client.services.communication.CommunicationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 
 import com.google.gwt.event.shared.EventBus;
@@ -37,7 +38,7 @@ public class ClientServiceProvider {
 
 	public ContextProviderService getContextProviderService() {
 		if (contextProviderService != null) return contextProviderService;
-		return contextProviderService = new ContextProviderService();
+		return contextProviderService = new ContextProviderServiceImpl();
 	}
 
 	public CommunicationService getCommunicationService() {

@@ -14,8 +14,9 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 	private Project projectMock;
 
 	@Override
-	public void transmitAction(final ModelAction<?> action) {
-		System.out.println("Action received: " + action.getReferenceId() + " " + action.getClass());
+	public void transmitAction(final ModelAction<?> action, final boolean isRollback) {
+		System.out.println("Action received: " + (isRollback ? "Rolledback " : "Executed ") + action.getClass().getSimpleName() + " for "
+				+ action.getReferenceId());
 	}
 
 	@Override

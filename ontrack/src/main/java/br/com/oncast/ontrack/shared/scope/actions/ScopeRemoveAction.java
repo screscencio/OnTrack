@@ -48,17 +48,19 @@ public class ScopeRemoveAction implements ScopeAction {
 		if (selectedScope.getRelease() != null) {
 			releaseId = selectedScope.getRelease().getId();
 			selectedScope.getRelease().removeScope(selectedScope);
+			selectedScope.setRelease(null);
 		}
-		selectedScope.setRelease(null);
+		else releaseId = null;
 	}
 
 	@Override
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope parent = context.findScope(parentScopeId);
 		final Scope newScope = new Scope(description, selectedScopeId);
-		final Release release = context.findRelease(releaseId);
+		final Release release = releaseId != null ? context.findRelease(releaseId) : null;
 
 		parent.add(index, newScope);
+
 		newScope.setRelease(release);
 		if (release != null) release.addScope(newScope);
 

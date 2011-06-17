@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface CommunicationRpcServiceAsync {
 
-	void transmitAction(ModelAction<?> action, AsyncCallback<Void> callback);
+	void transmitAction(ModelAction<?> action, boolean isRollback, AsyncCallback<Void> callback);
 
 	void loadProject(AsyncCallback<Project> callback);
 }
