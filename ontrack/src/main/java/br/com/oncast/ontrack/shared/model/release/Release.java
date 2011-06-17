@@ -1,11 +1,11 @@
-package br.com.oncast.ontrack.shared.release;
+package br.com.oncast.ontrack.shared.model.release;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparableList;
-import br.com.oncast.ontrack.shared.util.uuid.UUID;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

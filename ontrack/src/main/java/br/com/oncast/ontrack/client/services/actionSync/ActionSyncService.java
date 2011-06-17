@@ -4,8 +4,8 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.communication.CommunicationService;
 import br.com.oncast.ontrack.client.services.communication.DispatchCallback;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
-import br.com.oncast.ontrack.shared.project.ProjectContext;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.services.communication.ModelActionSyncRequest;
 
 public class ActionSyncService {

@@ -10,16 +10,16 @@ import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_UP;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Y;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Z;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
-import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingDownAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingUpAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveDownAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveLeftAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveRightAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveUpAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAsFatherAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingDownAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingUpAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveDownAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 
 // TODO Refactor this class into a shortcut manager with better resposability division and better performance while mapping interactions.
 enum ScopeTreeShortcutMappings {

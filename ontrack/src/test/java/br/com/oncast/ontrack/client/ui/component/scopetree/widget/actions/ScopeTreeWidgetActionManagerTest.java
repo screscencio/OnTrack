@@ -14,13 +14,13 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionMana
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
-import br.com.oncast.ontrack.shared.project.Project;
-import br.com.oncast.ontrack.shared.project.ProjectContext;
-import br.com.oncast.ontrack.shared.release.Release;
-import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
-import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
 public class ScopeTreeWidgetActionManagerTest {
 

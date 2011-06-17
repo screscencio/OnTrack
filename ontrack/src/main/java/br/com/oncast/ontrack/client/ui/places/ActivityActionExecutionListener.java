@@ -3,8 +3,8 @@ package br.com.oncast.ontrack.client.ui.places;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
-import br.com.oncast.ontrack.shared.project.ProjectContext;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 
 public class ActivityActionExecutionListener implements ActionExecutionListener {
 	private List<ActionExecutionListener> actionExecutionSuccessListeners;

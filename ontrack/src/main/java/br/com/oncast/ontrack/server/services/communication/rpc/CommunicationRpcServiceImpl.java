@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.server.services.communication.rpc;
 import br.com.oncast.ontrack.client.services.communication.rpc.CommunicationRpcService;
 import br.com.oncast.ontrack.server.mocks.ProjectMockFactory;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.project.Project;
+import br.com.oncast.ontrack.shared.model.project.Project;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -14,7 +14,7 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 	private Project projectMock;
 
 	@Override
-	public void transmitAction(final ModelAction<?> action, final boolean isRollback) {
+	public void transmitAction(final ModelAction action, final boolean isRollback) {
 		System.out.println("Action received: " + (isRollback ? "Rolledback " : "Executed ") + action.getClass().getSimpleName() + " for "
 				+ action.getReferenceId());
 	}

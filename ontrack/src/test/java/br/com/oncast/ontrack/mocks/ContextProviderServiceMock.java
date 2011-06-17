@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.mocks;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
 public class ContextProviderServiceMock implements ContextProviderService {
 

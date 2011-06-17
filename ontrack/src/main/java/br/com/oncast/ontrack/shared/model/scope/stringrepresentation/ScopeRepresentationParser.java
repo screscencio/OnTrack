@@ -1,6 +1,6 @@
-package br.com.oncast.ontrack.shared.scope.stringrepresentation;
+package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
-import br.com.oncast.ontrack.shared.scope.exceptions.MalformedScopeException;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.MalformedScopeException;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;

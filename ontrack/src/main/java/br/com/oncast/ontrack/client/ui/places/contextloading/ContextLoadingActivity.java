@@ -4,7 +4,7 @@ import br.com.oncast.ontrack.client.services.communication.CommunicationService;
 import br.com.oncast.ontrack.client.services.communication.DispatchCallback;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
-import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.communication.ProjectContextRequest;
 
 import com.google.gwt.activity.shared.AbstractActivity;

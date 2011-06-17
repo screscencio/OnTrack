@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.client.services.communication;
 
 import br.com.oncast.ontrack.client.services.communication.rpc.CommunicationRpcService;
 import br.com.oncast.ontrack.client.services.communication.rpc.CommunicationRpcServiceAsync;
-import br.com.oncast.ontrack.shared.project.Project;
-import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.communication.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.communication.ProjectContextRequest;
 
