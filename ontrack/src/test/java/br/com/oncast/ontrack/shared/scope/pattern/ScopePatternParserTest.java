@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.scope.exceptions.MalformedScopeException;
-import br.com.oncast.ontrack.shared.scope.stringrepresentation.ScopeRepresentationParser;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.MalformedScopeException;
+import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 
 public class ScopePatternParserTest {
 

@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.server.mocks;
 
-import br.com.oncast.ontrack.shared.project.Project;
-import br.com.oncast.ontrack.shared.release.Release;
-import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ProjectMockFactory {
 

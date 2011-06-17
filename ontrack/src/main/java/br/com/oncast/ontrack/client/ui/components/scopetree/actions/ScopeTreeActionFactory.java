@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertAsFatherAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeInsertSiblingAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeMoveAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeRemoveAction;
-import br.com.oncast.ontrack.shared.scope.actions.ScopeUpdateAction;
-import br.com.oncast.ontrack.shared.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAsFatherAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 // TODO Refactor this class to decentralize Action to WidgetActionFactory mappings.
 public class ScopeTreeActionFactory {

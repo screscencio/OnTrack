@@ -1,19 +1,19 @@
-package br.com.oncast.ontrack.shared.scope.actions;
+package br.com.oncast.ontrack.shared.model.scope.actions;
 
-import br.com.oncast.ontrack.shared.project.ProjectContext;
-import br.com.oncast.ontrack.shared.scope.Scope;
-import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.util.uuid.UUID;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
+public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 	private UUID selectedScopeId;
 	private UUID newScopeId;
 
-	public ScopeInsertSiblingUpAction(final Scope selectedScope) {
+	public ScopeInsertSiblingDownAction(final Scope selectedScope) {
 		this.selectedScopeId = selectedScope.getId();
 	}
 
-	protected ScopeInsertSiblingUpAction() {}
+	protected ScopeInsertSiblingDownAction() {}
 
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
@@ -24,12 +24,13 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 		newScopeId = newScope.getId();
 
 		final Scope parent = selectedScope.getParent();
-		parent.add(parent.getChildIndex(selectedScope), newScope);
+		parent.add(parent.getChildIndex(selectedScope) + 1, newScope);
 	}
 
 	@Override
 	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
-		new ScopeRemoveAction(context.findScope(newScopeId)).execute(context);
+		final Scope newScope = context.findScope(newScopeId);
+		new ScopeRemoveAction(newScope).execute(context);
 	}
 
 	@Override

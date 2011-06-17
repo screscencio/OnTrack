@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.util.uuid;
+package br.com.oncast.ontrack.shared.model.uuid;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

@@ -1,6 +1,6 @@
-package br.com.oncast.ontrack.shared.scope.stringrepresentation;
+package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
-import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ScopeRepresentationBuilder {
 

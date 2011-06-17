@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
-import br.com.oncast.ontrack.shared.project.ProjectContext;
-import br.com.oncast.ontrack.shared.scope.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.util.uuid.UUID;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public interface ModelAction<T extends IsSerializable> extends IsSerializable {
+public interface ModelAction extends IsSerializable {
 
 	void execute(final ProjectContext context) throws UnableToCompleteActionException;
 

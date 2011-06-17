@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.scope.exceptions;
+package br.com.oncast.ontrack.shared.model.scope.exceptions;
 
 public class MalformedScopeException extends RuntimeException {
 

@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.services.context;
 
-import br.com.oncast.ontrack.shared.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
 public interface ContextProviderService {
 

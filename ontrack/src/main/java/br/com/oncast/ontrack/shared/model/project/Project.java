@@ -1,7 +1,7 @@
-package br.com.oncast.ontrack.shared.project;
+package br.com.oncast.ontrack.shared.model.project;
 
-import br.com.oncast.ontrack.shared.release.Release;
-import br.com.oncast.ontrack.shared.scope.Scope;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
