@@ -8,7 +8,7 @@ public interface InternalAction {
 
 	public void execute(ScopeTreeWidget tree) throws UnableToCompleteActionException;
 
-	public void rollback() throws UnableToCompleteActionException;
+	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException;
 
 	public ModelAction createEquivalentModelAction(final String value);
 }

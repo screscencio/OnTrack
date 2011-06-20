@@ -39,7 +39,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 		public void rollbackPendingAction() {
 			try {
-				pendingAction.rollback();
+				pendingAction.rollback(tree);
 			}
 			catch (final UnableToCompleteActionException e) {
 				// TODO Implement an adequate exception treatment.
