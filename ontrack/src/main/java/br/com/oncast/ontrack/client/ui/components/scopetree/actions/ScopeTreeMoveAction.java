@@ -23,8 +23,8 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 		final Scope parentScope = scope.getParent();
 		final int index = parentScope.getChildIndex(scope);
 
-		final ScopeTreeItem treeItem = tree.getScopeTreeItemFor(scope.getId());
-		final ScopeTreeItem parentItem = tree.getScopeTreeItemFor(parentScope.getId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
+		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope.getId());
 
 		treeItem.remove();
 		parentItem.insertItem(index, treeItem);

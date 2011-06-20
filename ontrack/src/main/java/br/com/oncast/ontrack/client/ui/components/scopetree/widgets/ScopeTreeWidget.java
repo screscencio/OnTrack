@@ -78,7 +78,7 @@ public class ScopeTreeWidget extends Composite implements DeeplyComparable {
 	}
 
 	// TODO Examine refactoring this so that it uses a Map.
-	public ScopeTreeItem getScopeTreeItemFor(final UUID scopeId) throws ScopeNotFoundException {
+	public ScopeTreeItem findScopeTreeItem(final UUID scopeId) throws ScopeNotFoundException {
 		final Iterator<TreeItem> treeItemIterator = tree.treeItemIterator();
 		while (treeItemIterator.hasNext()) {
 			final ScopeTreeItem item = (ScopeTreeItem) treeItemIterator.next();

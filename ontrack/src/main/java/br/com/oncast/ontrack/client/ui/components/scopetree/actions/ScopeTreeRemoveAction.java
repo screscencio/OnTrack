@@ -19,7 +19,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 
 	@Override
 	public void execute(final ProjectContext context) throws ScopeNotFoundException {
-		final ScopeTreeItem treeItem = tree.getScopeTreeItemFor(action.getReferenceId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(action.getReferenceId());
 
 		final ScopeTreeItem parentItem = treeItem.getParentItem();
 		final int childIndex = parentItem.getChildIndex(treeItem);
@@ -37,7 +37,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 
 		final int childIndex = parentScope.getChildIndex(referencedScope);
 
-		final ScopeTreeItem parentItem = tree.getScopeTreeItemFor(parentScope.getId());
+		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope.getId());
 		final ScopeTreeItem newTreeItem = new ScopeTreeItem(referencedScope);
 		parentItem.insertItem(childIndex, newTreeItem);
 

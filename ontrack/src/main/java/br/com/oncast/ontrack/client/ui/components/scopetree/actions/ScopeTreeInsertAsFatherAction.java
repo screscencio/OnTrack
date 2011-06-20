@@ -23,8 +23,8 @@ class ScopeTreeInsertAsFatherAction implements ScopeTreeAction {
 		final Scope newScope = context.findScope(action.getNewScopeId());
 		final Scope grandParentScope = newScope.getParent();
 
-		final ScopeTreeItem treeItem = tree.getScopeTreeItemFor(scope.getId());
-		final ScopeTreeItem grandParentTreeItem = tree.getScopeTreeItemFor(grandParentScope.getId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
+		final ScopeTreeItem grandParentTreeItem = tree.findScopeTreeItem(grandParentScope.getId());
 		final ScopeTreeItem newTreeItem = new ScopeTreeItem(newScope);
 
 		final int index = grandParentScope.getChildIndex(newScope);
@@ -51,8 +51,8 @@ class ScopeTreeInsertAsFatherAction implements ScopeTreeAction {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope grandParentScope = scope.getParent();
 
-		final ScopeTreeItem treeItem = tree.getScopeTreeItemFor(scope.getId());
-		final ScopeTreeItem grandParentTreeItem = tree.getScopeTreeItemFor(grandParentScope.getId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
+		final ScopeTreeItem grandParentTreeItem = tree.findScopeTreeItem(grandParentScope.getId());
 
 		final int index = grandParentScope.getChildIndex(scope);
 		grandParentTreeItem.removeItem(treeItem.getParentItem());
