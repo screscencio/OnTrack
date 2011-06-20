@@ -3,7 +3,10 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 import java.util.Iterator;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -20,7 +23,22 @@ public class ScopeTreeWidget extends Composite implements DeeplyComparable {
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
 		initWidget(tree = new Tree());
 		tree.addKeyUpHandler(interactionHandler);
-		tree.addHandler(interactionHandler, ScopeTreeItemEditionEvent.getType());
+
+		tree.addHandler(new ScopeTreeItemEditionEndEventHandler() {
+
+			@Override
+			public void onItemUpdateRequest(final ScopeTreeItem item, final String value) {
+				interactionHandler.onItemUpdateRequest(item, value);
+			}
+		}, ScopeTreeItemEditionEndEvent.getType());
+
+		tree.addHandler(new ScopeTreeItemEditionCancelEventHandler() {
+
+			@Override
+			public void onItemEditCancelation() {
+				interactionHandler.onItemEditCancelation();
+			}
+		}, ScopeTreeItemEditionCancelEvent.getType());
 	}
 
 	public void add(final ScopeTreeItem item) {

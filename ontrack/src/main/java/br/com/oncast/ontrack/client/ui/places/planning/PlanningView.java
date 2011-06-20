@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 

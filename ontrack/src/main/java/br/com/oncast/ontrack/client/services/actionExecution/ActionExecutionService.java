@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 
 // TODO Now that this is a globally visible service, refactor this so that only the necessary methods are visible. A possible solution is to encapsulate the two
 // interface implementations using composition (may be acceptable to use inner classes).
@@ -24,7 +22,7 @@ public class ActionExecutionService implements ActionExecutionRequestHandler, Ac
 	}
 
 	@Override
-	public void onActionExecutionRequest(final ScopeAction action) {
+	public void onActionExecutionRequest(final ModelAction action) {
 		actionManager.execute(action, contextService.getProjectContext());
 	}
 
@@ -39,7 +37,7 @@ public class ActionExecutionService implements ActionExecutionRequestHandler, Ac
 	}
 
 	@Override
-	public void onActionExecution(final ScopeAction action, final ProjectContext context, final boolean wasRollback) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final boolean wasRollback) {
 		for (final ActionExecutionListener handler : actionExecutionListeners) {
 			handler.onActionExecution(action, context, wasRollback);
 		}

@@ -6,14 +6,14 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
-	private UUID selectedScopeId;
+	private final UUID selectedScopeId;
 	private UUID newScopeId;
+	private final String pattern;
 
-	public ScopeInsertSiblingDownAction(final Scope selectedScope) {
+	public ScopeInsertSiblingDownAction(final Scope selectedScope, final String pattern) {
+		this.pattern = pattern;
 		this.selectedScopeId = selectedScope.getId();
 	}
-
-	protected ScopeInsertSiblingDownAction() {}
 
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
@@ -25,6 +25,8 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 
 		final Scope parent = selectedScope.getParent();
 		parent.add(parent.getChildIndex(selectedScope) + 1, newScope);
+
+		new ScopeUpdateAction(newScope, pattern).execute(context);
 	}
 
 	@Override

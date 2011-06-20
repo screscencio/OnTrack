@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -18,13 +19,14 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem, DeeplyCompara
 		this.setWidget(scopeItemWidget = new ScopeTreeItemWidget(scope, new ScopeTreeItemWidgetEditionHandler() {
 
 			@Override
-			public void onEdit(final String pattern) {
-				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEvent(ScopeTreeItem.this, pattern));
+			public void onEditionEnd(final String pattern) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEndEvent(ScopeTreeItem.this, pattern));
 			}
 
 			@Override
-			public void onCancel() {
+			public void onEditionCancel() {
 				getTree().setSelectedItem(ScopeTreeItem.this);
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionCancelEvent());
 			}
 		}));
 
@@ -40,6 +42,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem, DeeplyCompara
 
 	public void enterEditMode() {
 		scopeItemWidget.switchToEditionMode();
+		getTree().setSelectedItem(null);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
