@@ -22,7 +22,7 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope newScope = context.findScope(action.getNewScopeId());
 
-		final ScopeTreeItem parentTreeItem = tree.getScopeTreeItemFor(scope.getId());
+		final ScopeTreeItem parentTreeItem = tree.findScopeTreeItem(scope.getId());
 		final ScopeTreeItem newItem = new ScopeTreeItem(newScope);
 
 		parentTreeItem.insertItem(scope.getChildIndex(newScope), newItem);
@@ -34,7 +34,7 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 
 	@Override
 	public void rollback(final ProjectContext context) throws ScopeNotFoundException {
-		final ScopeTreeItem treeItem = tree.getScopeTreeItemFor(action.getNewScopeId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(action.getNewScopeId());
 
 		final ScopeTreeItem parentItem = treeItem.getParentItem();
 		final int childIndex = parentItem.getChildIndex(treeItem);

@@ -28,7 +28,8 @@ public class ProjectContext {
 		return project.getProjectRelease().loadRelease(releaseLoadQuery);
 	}
 
-	// TODO Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
+	// TODO Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return? Take a look at
+	// "InternalInsertionActionUtils".
 	public Scope findScope(final UUID scopeId) {
 		return project.getProjectScope().findScope(scopeId);
 	}
@@ -41,7 +42,8 @@ public class ProjectContext {
 		return project.getProjectRelease();
 	}
 
-	// TODO Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
+	// TODO Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return? Take a look at
+	// "InternalInsertionActionUtils".
 	public Release findRelease(final UUID releaseId) {
 		return project.getProjectRelease().findRelease(releaseId);
 	}

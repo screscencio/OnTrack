@@ -3,20 +3,16 @@ package br.com.oncast.ontrack.client.ui.components.scopetree;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.InternalInsertionAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTree implements Component, DeeplyComparable {
@@ -24,84 +20,11 @@ public class ScopeTree implements Component, DeeplyComparable {
 	private final ScopeTreeWidget tree;
 	private final ScopeTreeActionFactory treeActionFactory;
 	private final ActionExecutionListener actionExecutionListener;
-	private ActionExecutionRequestHandler applicationActionHandler;
+	private final ScopeTreeInteractionHandler treeInteractionHandler;
 
 	public ScopeTree() {
-		tree = new ScopeTreeWidget(new ScopeTreeWidgetInteractionHandler() {
-			private InternalInsertionAction pendingInternalAction = null;
-
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-				if (applicationActionHandler == null) return;
-
-				final ScopeTreeItem selected = tree.getSelected();
-				if (selected == null) return;
-
-				ScopeTreeShortcutMappings.interpretKeyboardCommand(applicationActionHandler, this, event.getNativeKeyCode(), event.isControlKeyDown(),
-						event.isShiftKeyDown(), event.isAltKeyDown(), selected.getReferencedScope());
-			}
-
-			@Override
-			public void onItemUpdateRequest(final ScopeTreeItem item, final String value) {
-				if (applicationActionHandler == null) return;
-
-				if (pendingInternalAction != null) {
-					final ModelAction action = pendingInternalAction.createEquivalentModelAction(value);
-					try {
-						pendingInternalAction.rollback();
-					}
-					catch (final UnableToCompleteActionException e) {
-						// TODO Implement an adequate exception treatment.
-						throw new RuntimeException();
-					}
-					finally {
-						this.pendingInternalAction = null;
-					}
-					applicationActionHandler.onActionExecutionRequest(action);
-				}
-				else applicationActionHandler.onActionExecutionRequest(new ScopeUpdateAction(item.getReferencedScope(), value));
-			}
-
-			@Override
-			public void onItemEditCancelation() {
-				if (pendingInternalAction == null) return;
-
-				try {
-					pendingInternalAction.rollback();
-				}
-				catch (final UnableToCompleteActionException e) {
-					// TODO Implement an adequate exception treatment.
-					throw new RuntimeException();
-				}
-				finally {
-					this.pendingInternalAction = null;
-				}
-			}
-
-			// FIXME Receive editionModeStatus inside the widget, and then create a method to consult for this info, so that actions are only done when not
-			// editing
-
-			// TODO Separate interfaces so that method responsibilities are not mixed.
-			@Override
-			public void onInternalActionExecutionRequest(final InternalInsertionAction internalAction) {
-				this.pendingInternalAction = internalAction;
-
-				try {
-					internalAction.execute(tree.getSelected());
-				}
-				catch (final UnableToCompleteActionException e) {
-					this.pendingInternalAction = null;
-					// TODO Implement an adequate exception treatment.
-					// TODO Display error to the user
-					throw new RuntimeException();
-				}
-			}
-
-			@Override
-			public void onEditionModeRequest() {
-				tree.getSelected().enterEditMode();
-			}
-		});
+		treeInteractionHandler = new ScopeTreeInteractionHandler();
+		tree = new ScopeTreeWidget(treeInteractionHandler);
 		actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
@@ -127,7 +50,7 @@ public class ScopeTree implements Component, DeeplyComparable {
 
 	@Override
 	public void setActionExecutionRequestHandler(final ActionExecutionRequestHandler actionHandler) {
-		this.applicationActionHandler = actionHandler;
+		treeInteractionHandler.configure(tree, actionHandler);
 	}
 
 	public void setScope(final Scope scope) {
