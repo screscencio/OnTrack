@@ -20,7 +20,7 @@ public class EditInternalAction implements InternalAction {
 	}
 
 	@Override
-	public void rollback() throws UnableToCompleteActionException {}
+	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {}
 
 	@Override
 	public ModelAction createEquivalentModelAction(final String newPattern) {
