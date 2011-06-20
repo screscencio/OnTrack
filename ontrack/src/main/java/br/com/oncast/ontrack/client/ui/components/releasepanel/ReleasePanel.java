@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel;
 
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionRequestHandler;
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
@@ -24,7 +24,7 @@ public class ReleasePanel implements Component, DeeplyComparable {
 
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ScopeAction action, final ProjectContext context, final boolean wasRollback) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final boolean wasRollback) {
 				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction) update();
 			}
 		};

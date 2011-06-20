@@ -27,7 +27,6 @@ class ScopeTreeInsertSiblingAction implements ScopeTreeAction {
 
 		parentTreeItem.insertItem(parentScope.getChildIndex(newScope), newItem);
 		tree.setSelected(newItem);
-		newItem.enterEditMode();
 	}
 
 	@Override

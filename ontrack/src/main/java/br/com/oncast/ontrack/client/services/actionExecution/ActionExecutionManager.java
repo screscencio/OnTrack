@@ -3,24 +3,23 @@ package br.com.oncast.ontrack.client.services.actionExecution;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ActionExecutionListener;
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
 public class ActionExecutionManager {
 
 	private final ActionExecutionListener executionListener;
-	private final Stack<ScopeAction> undoStack;
-	private final Stack<ScopeAction> redoStack;
+	private final Stack<ModelAction> undoStack;
+	private final Stack<ModelAction> redoStack;
 
 	public ActionExecutionManager(final ActionExecutionListener actionExecutionListener) {
 		executionListener = actionExecutionListener;
-		undoStack = new Stack<ScopeAction>();
-		redoStack = new Stack<ScopeAction>();
+		undoStack = new Stack<ModelAction>();
+		redoStack = new Stack<ModelAction>();
 	}
 
-	public void execute(final ScopeAction action, final ProjectContext context) {
+	public void execute(final ModelAction action, final ProjectContext context) {
 		try {
 			action.execute(context);
 			executionListener.onActionExecution(action, context, false);
@@ -37,7 +36,7 @@ public class ActionExecutionManager {
 
 	public void undo(final ProjectContext context) {
 		try {
-			final ScopeAction action = undoStack.pop();
+			final ModelAction action = undoStack.pop();
 			action.rollback(context);
 			executionListener.onActionExecution(action, context, true);
 			redoStack.push(action);
@@ -56,7 +55,7 @@ public class ActionExecutionManager {
 
 	public void redo(final ProjectContext context) {
 		try {
-			final ScopeAction action = redoStack.pop();
+			final ModelAction action = redoStack.pop();
 			action.execute(context);
 			executionListener.onActionExecution(action, context, false);
 			undoStack.push(action);

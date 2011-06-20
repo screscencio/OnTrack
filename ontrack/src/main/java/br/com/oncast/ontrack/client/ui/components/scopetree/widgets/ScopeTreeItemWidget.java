@@ -93,7 +93,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				editionHandler.onEdit(new ScopeRepresentationBuilder(scope).includeScopeDescription().toString());
+				editionHandler.onEditionEnd(new ScopeRepresentationBuilder(scope).includeScopeDescription().toString());
 			}
 		});
 
@@ -128,8 +128,8 @@ public class ScopeTreeItemWidget extends Composite {
 		if (!isEditing()) return;
 		deckPanel.showWidget(0);
 
-		if (!getValue().equals(editionBox.getText())) editionHandler.onEdit(editionBox.getText());
-		else editionHandler.onCancel();
+		if (!getValue().equals(editionBox.getText())) editionHandler.onEditionEnd(editionBox.getText());
+		else editionHandler.onEditionCancel();
 	}
 
 	private boolean isEditing() {

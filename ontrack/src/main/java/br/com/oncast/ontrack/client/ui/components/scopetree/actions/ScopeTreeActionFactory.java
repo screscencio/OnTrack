@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAsFatherAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
@@ -20,11 +20,11 @@ public class ScopeTreeActionFactory {
 		this.tree = tree;
 	}
 
-	public ScopeTreeAction createEquivalentActionFor(final ScopeAction action) throws ScopeNotFoundException {
+	public ScopeTreeAction createEquivalentActionFor(final ModelAction action) throws ScopeNotFoundException {
 
-		if (action instanceof ScopeRemoveAction) return new ScopeTreeRemoveAction(tree, action);
-		if (action instanceof ScopeMoveAction) return new ScopeTreeMoveAction(tree, action);
-		if (action instanceof ScopeUpdateAction) return new ScopeTreeUpdateAction(tree, action);
+		if (action instanceof ScopeRemoveAction) return new ScopeTreeRemoveAction(tree, (ScopeRemoveAction) action);
+		if (action instanceof ScopeMoveAction) return new ScopeTreeMoveAction(tree, (ScopeMoveAction) action);
+		if (action instanceof ScopeUpdateAction) return new ScopeTreeUpdateAction(tree, (ScopeUpdateAction) action);
 		if (action instanceof ScopeInsertSiblingAction) return new ScopeTreeInsertSiblingAction(tree, (ScopeInsertAction) action);
 
 		if (action instanceof ScopeInsertChildAction) return new ScopeTreeInsertChildAction(tree, (ScopeInsertAction) action);

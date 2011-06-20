@@ -9,10 +9,10 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ScopeUpdateAction implements ScopeAction {
 
-	private UUID selectedScopeId;
+	private final UUID selectedScopeId;
 
-	private String newDescription;
-	private String newReleaseDescription;
+	private final String newDescription;
+	private final String newReleaseDescription;
 
 	private String oldDescription;
 	private String oldReleaseDescription;
@@ -24,8 +24,6 @@ public class ScopeUpdateAction implements ScopeAction {
 		this.newDescription = parser.getScopeDescription();
 		this.newReleaseDescription = parser.getReleaseDescription();
 	}
-
-	public ScopeUpdateAction() {}
 
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
