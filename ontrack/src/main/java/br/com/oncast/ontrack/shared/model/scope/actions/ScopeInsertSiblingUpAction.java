@@ -8,9 +8,11 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 	private UUID selectedScopeId;
 	private UUID newScopeId;
+	private String pattern;
 
-	public ScopeInsertSiblingUpAction(final Scope selectedScope) {
+	public ScopeInsertSiblingUpAction(final Scope selectedScope, final String pattern) {
 		this.selectedScopeId = selectedScope.getId();
+		this.pattern = pattern;
 	}
 
 	protected ScopeInsertSiblingUpAction() {}
@@ -25,6 +27,8 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 
 		final Scope parent = selectedScope.getParent();
 		parent.add(parent.getChildIndex(selectedScope), newScope);
+
+		new ScopeUpdateAction(newScope, pattern).execute(context);
 	}
 
 	@Override

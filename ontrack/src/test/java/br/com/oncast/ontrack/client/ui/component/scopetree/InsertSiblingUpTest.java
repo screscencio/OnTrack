@@ -27,12 +27,15 @@ public class InsertSiblingUpTest extends GwtTest {
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
 	private ActionExecutionService actionExecutionService;
+	private String newScopeDescription;
 
 	@Before
 	public void setUp() {
 		scope = getScope();
 		tree = new ScopeTree();
 		tree.setScope(scope);
+
+		newScopeDescription = "description for new scope";
 
 		projectContext = new ProjectContext((new Project(scope, new Release(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
@@ -51,7 +54,7 @@ public class InsertSiblingUpTest extends GwtTest {
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope(""));
+		projectScope.add(new Scope(newScopeDescription));
 		projectScope.add(new Scope("1"));
 		projectScope.add(new Scope("2"));
 
@@ -80,7 +83,7 @@ public class InsertSiblingUpTest extends GwtTest {
 
 	@Test
 	public void shouldInsertSiblingUp() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope, newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -88,12 +91,12 @@ public class InsertSiblingUpTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotInsertSiblingUpForRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(rootScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(rootScope, newScopeDescription));
 	}
 
 	@Test
 	public void shouldRemoveInsertedSiblingAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope, newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));

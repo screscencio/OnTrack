@@ -13,11 +13,11 @@ import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Z;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.EditInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingDownInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingUpInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAsFatherAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingUpAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveRightAction;
@@ -103,7 +103,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeInsertSiblingUpAction(scope));
+			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingUpInternalAction(scope));
 		}
 	},
 
