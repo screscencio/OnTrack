@@ -120,7 +120,7 @@ public class ScopeTreeItemWidget extends Composite {
 				editionBox.selectAll();
 				editionBox.setFocus(true);
 			}
-		}.schedule(200);
+		}.schedule(100);
 	}
 
 	public void switchToVisualization(final boolean shouldTryToUpdateChanges) {
