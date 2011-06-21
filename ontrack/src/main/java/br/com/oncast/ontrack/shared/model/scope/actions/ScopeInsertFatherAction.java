@@ -5,19 +5,21 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class ScopeInsertAsFatherAction implements ScopeInsertAction {
-	private UUID scopeId;
+public class ScopeInsertFatherAction implements ScopeInsertAction {
+	private UUID selectedScopeId;
 	private UUID newScopeId;
+	private String pattern;
 
-	public ScopeInsertAsFatherAction(final Scope selectedScope) {
-		this.scopeId = selectedScope.getId();
+	public ScopeInsertFatherAction(final Scope selectedScope, final String pattern) {
+		this.selectedScopeId = selectedScope.getId();
+		this.pattern = pattern;
 	}
 
-	protected ScopeInsertAsFatherAction() {}
+	protected ScopeInsertFatherAction() {}
 
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(scopeId);
+		final Scope selectedScope = context.findScope(selectedScopeId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a father for a root node.");
 
 		final Scope parent = selectedScope.getParent();
@@ -29,6 +31,8 @@ public class ScopeInsertAsFatherAction implements ScopeInsertAction {
 
 		parent.add(index, newScope);
 		newScope.add(selectedScope);
+
+		new ScopeUpdateAction(newScope, pattern).execute(context);
 	}
 
 	@Override
@@ -37,17 +41,27 @@ public class ScopeInsertAsFatherAction implements ScopeInsertAction {
 		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
 		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException("It is not possible to rollback this action due to inconsistences.");
 
+		removeFromRelease(newScope);
+
 		final Scope child = newScope.getChildren().get(0);
 		final Scope parent = newScope.getParent();
 		final int index = parent.getChildIndex(newScope);
 		parent.remove(newScope);
+
 		newScope.clearChildren();
 		parent.add(index, child);
 	}
 
+	private void removeFromRelease(final Scope newScope) {
+		if (newScope.getRelease() != null) {
+			newScope.getRelease().removeScope(newScope);
+			newScope.setRelease(null);
+		}
+	}
+
 	@Override
 	public UUID getReferenceId() {
-		return scopeId;
+		return selectedScopeId;
 	}
 
 	@Override

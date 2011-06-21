@@ -28,20 +28,12 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 
 		treeItem.remove();
 		parentItem.insertItem(index, treeItem);
-		openTreeHierarquyFor(treeItem);
+		treeItem.setHierarchicalState(true);
 		tree.setSelectedItem(treeItem);
 	}
 
 	@Override
 	public void rollback(final ProjectContext context) throws ScopeNotFoundException {
 		execute(context);
-	}
-
-	private void openTreeHierarquyFor(final ScopeTreeItem treeItem) {
-		ScopeTreeItem item = treeItem;
-		while (item != null) {
-			if (!item.getState()) item.setState(true);
-			item = item.getParentItem();
-		}
 	}
 }

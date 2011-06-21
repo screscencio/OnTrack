@@ -68,4 +68,13 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem, DeeplyCompara
 	public Scope getReferencedScope() {
 		return scopeItemWidget.getScope();
 	}
+
+	public void setHierarchicalState(final boolean state) {
+		ScopeTreeItem item = this;
+
+		while (item != null) {
+			if (!item.getState()) item.setState(state);
+			item = item.getParentItem();
+		}
+	}
 }

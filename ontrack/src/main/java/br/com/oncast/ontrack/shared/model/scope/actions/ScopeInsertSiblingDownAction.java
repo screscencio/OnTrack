@@ -11,8 +11,8 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 	private final String pattern;
 
 	public ScopeInsertSiblingDownAction(final Scope selectedScope, final String pattern) {
-		this.pattern = pattern;
 		this.selectedScopeId = selectedScope.getId();
+		this.pattern = pattern;
 	}
 
 	@Override

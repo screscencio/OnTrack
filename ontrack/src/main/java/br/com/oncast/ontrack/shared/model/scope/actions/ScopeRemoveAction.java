@@ -36,15 +36,23 @@ public class ScopeRemoveAction implements ScopeAction {
 
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
 
-		for (final Scope child : selectedScope.getChildren())
-			childList.add(new ScopeRemoveAction(child));
-
-		for (final ScopeRemoveAction childRemoved : childList)
-			childRemoved.execute(context);
+		executeChildActions(context, selectedScope);
 
 		index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
 
+		manageReleaseAssociation(selectedScope);
+	}
+
+	private void executeChildActions(final ProjectContext context, final Scope selectedScope) throws UnableToCompleteActionException {
+		for (final Scope child : selectedScope.getChildren())
+			childList.add(new ScopeRemoveAction(child));
+
+		for (final ScopeRemoveAction childAction : childList)
+			childAction.execute(context);
+	}
+
+	private void manageReleaseAssociation(final Scope selectedScope) {
 		if (selectedScope.getRelease() != null) {
 			releaseId = selectedScope.getRelease().getId();
 			selectedScope.getRelease().removeScope(selectedScope);
