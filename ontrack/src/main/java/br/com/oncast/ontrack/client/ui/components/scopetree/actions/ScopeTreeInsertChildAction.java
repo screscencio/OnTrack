@@ -28,8 +28,7 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 		parentTreeItem.insertItem(scope.getChildIndex(newScope), newItem);
 
 		parentTreeItem.setState(true);
-		newItem.setSelected(true);
-		newItem.enterEditMode();
+		tree.setSelected(newItem);
 	}
 
 	@Override

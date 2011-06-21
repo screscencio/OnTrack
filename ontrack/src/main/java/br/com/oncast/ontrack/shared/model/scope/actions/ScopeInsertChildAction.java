@@ -9,9 +9,11 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 
 	private UUID selectedScopeId;
 	private UUID newScopeId;
+	private String pattern;
 
-	public ScopeInsertChildAction(final Scope selectedScope) {
+	public ScopeInsertChildAction(final Scope selectedScope, final String pattern) {
 		this.selectedScopeId = selectedScope.getId();
+		this.pattern = pattern;
 	}
 
 	protected ScopeInsertChildAction() {}
@@ -19,10 +21,13 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	@Override
 	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = context.findScope(selectedScopeId);
+
 		final Scope newScope = new Scope("");
 		newScopeId = newScope.getId();
 
 		selectedScope.add(newScope);
+
+		new ScopeUpdateAction(newScope, pattern).execute(context);
 	}
 
 	@Override

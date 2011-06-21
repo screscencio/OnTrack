@@ -68,7 +68,7 @@ public class ScopeTreeItemWidget extends Composite {
 		editionBox.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(final BlurEvent event) {
-				switchToVisualization();
+				switchToVisualization(true);
 			}
 		});
 
@@ -80,11 +80,10 @@ public class ScopeTreeItemWidget extends Composite {
 				event.stopPropagation();
 
 				if (event.getNativeKeyCode() == KEY_ENTER) {
-					switchToVisualization();
+					switchToVisualization(true);
 				}
 				else if (event.getNativeKeyCode() == KEY_ESCAPE) {
-					editionBox.setText(descriptionLabel.getText());
-					switchToVisualization();
+					switchToVisualization(false);
 				}
 			}
 		});
@@ -124,12 +123,18 @@ public class ScopeTreeItemWidget extends Composite {
 		}.schedule(200);
 	}
 
-	public void switchToVisualization() {
+	public void switchToVisualization(final boolean shouldTryToUpdateChanges) {
 		if (!isEditing()) return;
 		deckPanel.showWidget(0);
 
-		if (!getValue().equals(editionBox.getText())) editionHandler.onEditionEnd(editionBox.getText());
-		else editionHandler.onEditionCancel();
+		if (!shouldTryToUpdateChanges) {
+			editionBox.setText(descriptionLabel.getText());
+			editionHandler.onEditionCancel();
+		}
+		else {
+			if (!getValue().equals(editionBox.getText()) || editionBox.getText().isEmpty()) editionHandler.onEditionEnd(editionBox.getText());
+			else editionHandler.onEditionCancel();
+		}
 	}
 
 	private boolean isEditing() {

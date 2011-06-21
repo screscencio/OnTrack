@@ -41,6 +41,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 		final ScopeTreeItem newTreeItem = new ScopeTreeItem(referencedScope);
 		parentItem.insertItem(childIndex, newTreeItem);
 
+		newTreeItem.setHierarchicalState(true);
 		tree.setSelected(newTreeItem);
 	}
 }

@@ -7,12 +7,12 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
-class ScopeTreeInsertAsFatherAction implements ScopeTreeAction {
+class ScopeTreeInsertFatherAction implements ScopeTreeAction {
 
 	private final ScopeTreeWidget tree;
 	private final ScopeInsertAction action;
 
-	public ScopeTreeInsertAsFatherAction(final ScopeTreeWidget tree, final ScopeInsertAction action) {
+	public ScopeTreeInsertFatherAction(final ScopeTreeWidget tree, final ScopeInsertAction action) {
 		this.tree = tree;
 		this.action = action;
 	}
@@ -31,19 +31,8 @@ class ScopeTreeInsertAsFatherAction implements ScopeTreeAction {
 		grandParentTreeItem.removeItem(treeItem);
 		grandParentTreeItem.insertItem(index, newTreeItem);
 
-		openHierarquyFor(newTreeItem);
-
-		grandParentTreeItem.setState(true);
+		newTreeItem.setHierarchicalState(true);
 		tree.setSelected(newTreeItem);
-		newTreeItem.enterEditMode();
-	}
-
-	private void openHierarquyFor(final ScopeTreeItem newTreeItem) {
-		ScopeTreeItem item = newTreeItem;
-		while (item != null) {
-			if (!item.getState()) item.setState(true);
-			item = item.getParentItem();
-		}
 	}
 
 	@Override
@@ -58,7 +47,7 @@ class ScopeTreeInsertAsFatherAction implements ScopeTreeAction {
 		grandParentTreeItem.removeItem(treeItem.getParentItem());
 		grandParentTreeItem.insertItem(index, treeItem);
 
-		grandParentTreeItem.setState(true);
+		grandParentTreeItem.setHierarchicalState(true);
 		tree.setSelected(treeItem);
 	}
 }

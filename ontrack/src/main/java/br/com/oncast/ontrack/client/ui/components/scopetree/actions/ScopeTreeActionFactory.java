@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAsFatherAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertFatherAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveAction;
@@ -28,7 +28,7 @@ public class ScopeTreeActionFactory {
 		if (action instanceof ScopeInsertSiblingAction) return new ScopeTreeInsertSiblingAction(tree, (ScopeInsertAction) action);
 
 		if (action instanceof ScopeInsertChildAction) return new ScopeTreeInsertChildAction(tree, (ScopeInsertAction) action);
-		if (action instanceof ScopeInsertAsFatherAction) return new ScopeTreeInsertAsFatherAction(tree, (ScopeInsertAction) action);
+		if (action instanceof ScopeInsertFatherAction) return new ScopeTreeInsertFatherAction(tree, (ScopeInsertAction) action);
 
 		throw new ScopeNotFoundException("It was not possible to find the desired action.");
 	}

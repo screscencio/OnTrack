@@ -23,6 +23,8 @@ public class InsertChildTest extends GwtTest {
 	private Scope scope;
 	private Scope rootScope;
 	private Scope firstScope;
+	private String newScopeDescription;
+
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
@@ -35,6 +37,7 @@ public class InsertChildTest extends GwtTest {
 		tree = new ScopeTree();
 		tree.setScope(scope);
 
+		newScopeDescription = "description for new scope";
 		projectContext = new ProjectContext((new Project(scope, new Release(""))));
 
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
@@ -54,7 +57,7 @@ public class InsertChildTest extends GwtTest {
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("1").add(new Scope("")));
+		projectScope.add(new Scope("1").add(new Scope(newScopeDescription)));
 		projectScope.add(new Scope("2"));
 
 		return projectScope;
@@ -64,7 +67,7 @@ public class InsertChildTest extends GwtTest {
 		final Scope projectScope = new Scope("Project");
 		projectScope.add(new Scope("1"));
 		projectScope.add(new Scope("2"));
-		projectScope.add(new Scope(""));
+		projectScope.add(new Scope(newScopeDescription));
 
 		return projectScope;
 	}
@@ -97,7 +100,7 @@ public class InsertChildTest extends GwtTest {
 
 	@Test
 	public void shouldInsertChild() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(firstScope, newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -105,7 +108,7 @@ public class InsertChildTest extends GwtTest {
 
 	@Test
 	public void shouldInsertChildForRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(rootScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(rootScope, newScopeDescription));
 
 		assertTrue(getModifiedScopeForRootChild().deepEquals(scope));
 		assertTrue(getModifiedTreeForRootChild().deepEquals(tree));
@@ -113,7 +116,7 @@ public class InsertChildTest extends GwtTest {
 
 	@Test
 	public void shouldRemoveInsertedChildAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(firstScope, newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));

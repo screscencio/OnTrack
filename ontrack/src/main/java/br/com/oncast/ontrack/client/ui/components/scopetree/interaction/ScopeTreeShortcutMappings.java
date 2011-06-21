@@ -11,13 +11,13 @@ import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_UP;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Y;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Z;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.EditInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertFatherInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingDownInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingUpInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAsFatherAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveRightAction;
@@ -31,7 +31,39 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			internalActionHandler.onInternalActionExecutionRequest(new EditInternalAction(scope));
+			internalActionHandler.onInternalActionExecutionRequest(new NodeEditionInternalAction(scope));
+		}
+	},
+
+	INSERT_SIBLING_SCOPE_DOWN(KEY_ENTER, false, false, false) {
+		@Override
+		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
+				final Scope scope) {
+			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingDownInternalAction(scope));
+		}
+	},
+
+	INSERT_SIBLING_SCOPE_UP(KEY_ENTER, false, true, false) {
+		@Override
+		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
+				final Scope scope) {
+			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingUpInternalAction(scope));
+		}
+	},
+
+	INSERT_SCOPE_AS_CHILD(KEY_INSERT, false, false, false) {
+		@Override
+		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
+				final Scope scope) {
+			internalActionHandler.onInternalActionExecutionRequest(new InsertChildInternalAction(scope));
+		}
+	},
+
+	INSERT_SCOPE_AS_PARENT(KEY_INSERT, false, true, false) {
+		@Override
+		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
+				final Scope scope) {
+			internalActionHandler.onInternalActionExecutionRequest(new InsertFatherInternalAction(scope));
 		}
 	},
 
@@ -88,38 +120,6 @@ enum ScopeTreeShortcutMappings {
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
 			actionRequestHandler.onActionExecutionRequest(new ScopeRemoveAction(scope));
-		}
-	},
-
-	INSERT_SIBLING_SCOPE_DOWN(KEY_ENTER, false, false, false) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
-			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingDownInternalAction(scope));
-		}
-	},
-
-	INSERT_SIBLING_SCOPE_UP(KEY_ENTER, false, true, false) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
-			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingUpInternalAction(scope));
-		}
-	},
-
-	INSERT_SCOPE_AS_CHILD(KEY_INSERT, false, false, false) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeInsertChildAction(scope));
-		}
-	},
-
-	INSERT_SCOPE_AS_PARENT(KEY_INSERT, false, true, false) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeInsertAsFatherAction(scope));
 		}
 	};
 

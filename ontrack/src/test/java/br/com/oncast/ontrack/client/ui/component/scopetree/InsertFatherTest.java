@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAsFatherAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertFatherAction;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -27,12 +27,16 @@ public class InsertFatherTest extends GwtTest {
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
 	private ActionExecutionService actionExecutionService;
+	private String newScopeDescription;
 
 	@Before
 	public void setUp() {
 		scope = getScope();
 		tree = new ScopeTree();
 		tree.setScope(scope);
+
+		newScopeDescription = "description for new scope";
+
 		projectContext = new ProjectContext((new Project(scope, new Release(""))));
 
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
@@ -51,7 +55,7 @@ public class InsertFatherTest extends GwtTest {
 
 	private Scope getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("").add(new Scope("1")));
+		projectScope.add(new Scope(newScopeDescription).add(new Scope("1")));
 		projectScope.add(new Scope("2"));
 
 		return projectScope;
@@ -80,7 +84,7 @@ public class InsertFatherTest extends GwtTest {
 
 	@Test
 	public void shouldInsertFather() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertAsFatherAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertFatherAction(firstScope, newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -88,12 +92,12 @@ public class InsertFatherTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotInsertFatherForRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertAsFatherAction(rootScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertFatherAction(rootScope, newScopeDescription));
 	}
 
 	@Test
 	public void shouldRemoveInsertedFatherAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertAsFatherAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertFatherAction(firstScope, newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
