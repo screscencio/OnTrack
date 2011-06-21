@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePa
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
@@ -25,7 +26,7 @@ public class ReleasePanel implements Component, DeeplyComparable {
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final boolean wasRollback) {
-				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction) update();
+				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction || action instanceof ScopeInsertAction) update();
 			}
 		};
 	}
