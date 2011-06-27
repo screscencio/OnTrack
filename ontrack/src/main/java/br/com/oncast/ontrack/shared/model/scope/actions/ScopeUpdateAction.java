@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+// TODO Update this class to hold only patterns, not split concepts.
 public class ScopeUpdateAction implements ScopeAction {
 
 	private final UUID selectedScopeId;
