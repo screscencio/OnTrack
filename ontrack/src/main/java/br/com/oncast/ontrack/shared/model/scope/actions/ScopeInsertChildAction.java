@@ -1,10 +1,13 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ScopeInsertChildActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MappedPersistentEntity;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@MappedPersistentEntity(ScopeInsertChildActionEntity.class)
 public class ScopeInsertChildAction implements ScopeInsertAction {
 
 	private UUID referenceId;
