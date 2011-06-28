@@ -3,11 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.PersistentEntityFor;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
-
 @Entity
-@PersistentEntityFor(ScopeInsertChildAction.class)
 public class ScopeInsertChildActionEntity extends ScopeActionEntity implements ModelActionEntity {
 
 	@Column

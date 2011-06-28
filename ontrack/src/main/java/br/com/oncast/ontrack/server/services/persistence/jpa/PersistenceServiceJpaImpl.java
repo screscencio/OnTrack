@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -19,13 +17,11 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public void persist(final ModelAction modelAction) {
 		System.out.println("Persisting entity...");
 
-		final List<ModelActionEntity> entities = EntityFactory.translate(modelAction);
+		final ModelActionEntity entity = EntityFactory.translate(modelAction);
 
 		final EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
-		for (final ModelActionEntity entity : entities) {
-			entityManager.persist(entity);
-		}
+		entityManager.persist(entity);
 		entityManager.getTransaction().commit();
 
 		System.out.println("Entity persisted.");
