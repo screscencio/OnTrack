@@ -12,6 +12,6 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ModelActio
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface MappedPersistentEntity {
+public @interface MapTo {
 	Class<? extends ModelActionEntity> value();
 }
