@@ -35,7 +35,7 @@ public class BeanMapper {
 
 			try {
 				if (field.getType().equals(List.class)) {
-					new TypeMapper().map(childAction, actionEntity, field);
+					new ListMapper().map(childAction, actionEntity, field);
 				}
 				else if (field.getType().equals(UUID.class)) {
 					// FIXME Extract implementation for UUID
