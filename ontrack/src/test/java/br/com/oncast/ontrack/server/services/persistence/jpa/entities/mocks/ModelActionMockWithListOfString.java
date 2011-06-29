@@ -22,10 +22,9 @@ public class ModelActionMockWithListOfString implements ModelAction {
 	}
 
 	@Override
-	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {}
-
-	@Override
-	public void execute(final ProjectContext context) throws UnableToCompleteActionException {}
+	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+		return null;
+	}
 
 	@Override
 	public UUID getReferenceId() {

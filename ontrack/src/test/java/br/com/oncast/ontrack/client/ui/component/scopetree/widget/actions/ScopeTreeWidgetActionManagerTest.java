@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -112,9 +113,11 @@ public class ScopeTreeWidgetActionManagerTest {
 	public void executeOkUndoExceptionNormalAction() throws Exception {
 		final ScopeInsertChildAction rollbackException = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);
 		final ScopeTreeAction rollbackWidgetException = mock(ScopeTreeAction.class);
+		final ScopeAction rollbackAction = mock(ScopeAction.class);
 
-		doThrow(new UnableToCompleteActionException("")).when(rollbackWidgetException).rollback(context);
-		when(scopeTreeActionFactoryMock.createEquivalentActionFor(rollbackException)).thenReturn(rollbackWidgetException);
+		when(rollbackException.execute(context)).thenReturn(rollbackAction);
+		doThrow(new UnableToCompleteActionException("")).when(rollbackWidgetException).execute(context);
+		when(scopeTreeActionFactoryMock.createEquivalentActionFor(rollbackAction)).thenReturn(rollbackWidgetException);
 
 		actionExecutionManager.execute(rollbackException, context);
 		assertEquals(1, rootScope.getChildren().size());

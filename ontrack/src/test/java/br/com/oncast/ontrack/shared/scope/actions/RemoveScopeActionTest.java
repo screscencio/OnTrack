@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -64,12 +65,12 @@ public class RemoveScopeActionTest {
 		assertEquals(child2Level1, rootScope.getChildren().get(1));
 
 		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child2Level1.getId());
-		removeScopeAction.execute(context);
+		final ModelAction rollbackAction = removeScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
 
-		removeScopeAction.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -106,7 +107,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
 		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1.getId());
-		removeScopeAction.execute(context);
+		final ModelAction rollbackAction = removeScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child2Level1, rootScope.getChildren().get(0));
@@ -117,7 +118,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level2.getChildren().size(), 0);
 		assertEquals(child1Level3.getChildren().size(), 0);
 
-		removeScopeAction.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -136,7 +137,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
 		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1.getId());
-		removeScopeAction.execute(context);
+		final ModelAction rollbackAction = removeScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child2Level1, rootScope.getChildren().get(0));
@@ -147,7 +148,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level2.getChildren().size(), 0);
 		assertEquals(child1Level3.getChildren().size(), 0);
 
-		removeScopeAction.rollback(context);
+		final ModelAction redoAction = rollbackAction.execute(context);
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -155,7 +156,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
-		removeScopeAction.execute(context);
+		redoAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child2Level1, rootScope.getChildren().get(0));

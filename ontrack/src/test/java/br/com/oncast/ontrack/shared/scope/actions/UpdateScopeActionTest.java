@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -39,16 +40,11 @@ public class UpdateScopeActionTest {
 		assertEquals("root", rootScope.getDescription());
 
 		final ScopeUpdateAction updateScopeAction = new ScopeUpdateAction(rootScope.getId(), "new text");
-		updateScopeAction.execute(context);
+		final ModelAction rollbackAction = updateScopeAction.execute(context);
 
 		assertEquals("new text", rootScope.getDescription());
 
-		updateScopeAction.rollback(context);
+		rollbackAction.execute(context);
 		assertEquals("root", rootScope.getDescription());
-	}
-
-	@Test(expected = UnableToCompleteActionException.class)
-	public void ifTheActionNotExecutedCantBeRolledBack() throws UnableToCompleteActionException {
-		new ScopeUpdateAction(rootScope.getId(), "new text").rollback(context);
 	}
 }

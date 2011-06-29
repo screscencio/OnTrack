@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -53,12 +54,12 @@ public class MoveDownScopeActionTest {
 		assertEquals(rootScope.getChildren().get(1), lastChild);
 
 		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild.getId());
-		moveDown.execute(context);
+		final ModelAction rollbackAction = moveDown.execute(context);
 
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
 
-		moveDown.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
