@@ -100,7 +100,7 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	public String getValue() {
-		return new ScopeRepresentationBuilder(scope).includeScopeDescription().includeReleaseReference().toString();
+		return new ScopeRepresentationBuilder(scope).includeEverything().toString();
 	}
 
 	public void setValue(final String value) {

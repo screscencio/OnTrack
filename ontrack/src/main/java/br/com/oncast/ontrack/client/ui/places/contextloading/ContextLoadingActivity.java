@@ -43,7 +43,8 @@ public class ContextLoadingActivity extends AbstractActivity {
 			public void onFailure(final Throwable cause) {
 				// TODO Hide 'loading' UI indicator.
 				// TODO Treat communication failure.
-				Window.alert("Error!");
+				Window.alert("Error! Could not load project: " + cause.toString());
+				cause.printStackTrace();
 			}
 
 			@Override

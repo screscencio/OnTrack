@@ -87,7 +87,7 @@ public class MoveUpTest extends GwtTest {
 
 	@Test
 	public void shouldMoveUp() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(lastScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(lastScope.getId()));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -95,17 +95,17 @@ public class MoveUpTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveUpFirstItem() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(firstScope.getId()));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveUpRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(rootScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(rootScope.getId()));
 	}
 
 	@Test
 	public void shouldMoveDownItemAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(lastScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(lastScope.getId()));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));

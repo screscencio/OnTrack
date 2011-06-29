@@ -82,7 +82,7 @@ public class MoveRightTest extends GwtTest {
 
 	@Test
 	public void shouldMoveRight() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveRightAction(secondScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeMoveRightAction(secondScope.getId()));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -90,17 +90,17 @@ public class MoveRightTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveRightFirst() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveRightAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeMoveRightAction(firstScope.getId()));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveRightAction(rootScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeMoveRightAction(rootScope.getId()));
 	}
 
 	@Test
 	public void shouldMoveLeftAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveRightAction(secondScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeMoveRightAction(secondScope.getId()));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));

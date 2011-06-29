@@ -28,17 +28,4 @@ class ScopeTreeInsertSiblingAction implements ScopeTreeAction {
 		parentTreeItem.insertItem(parentScope.getChildIndex(newScope), newItem);
 		tree.setSelected(newItem);
 	}
-
-	@Override
-	public void rollback(final ProjectContext context) throws ScopeNotFoundException {
-		final ScopeTreeItem treeItem = tree.findScopeTreeItem(action.getNewScopeId());
-
-		final ScopeTreeItem parentItem = treeItem.getParentItem();
-		final int childIndex = parentItem.getChildIndex(treeItem);
-		parentItem.removeItem(treeItem);
-
-		tree.setSelectedItem(((parentItem.getChildCount() > 0) ? parentItem.getChild((parentItem.getChildCount() - 1 < childIndex) ? parentItem.getChildCount() - 1
-				: childIndex)
-				: parentItem));
-	}
 }

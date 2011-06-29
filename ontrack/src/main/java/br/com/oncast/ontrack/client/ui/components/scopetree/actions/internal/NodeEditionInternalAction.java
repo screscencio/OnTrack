@@ -29,7 +29,7 @@ public class NodeEditionInternalAction implements InternalAction {
 
 	@Override
 	public ModelAction createEquivalentModelAction(final String newPattern) {
-		return new ScopeUpdateAction(scope, newPattern);
+		return new ScopeUpdateAction(scope.getId(), newPattern);
 	}
 
 }

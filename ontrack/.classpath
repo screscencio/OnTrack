@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/javassist-3.12.1.GA.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar" sourcepath="C:/Users/rhlobo/.m2/repository/org/mockito/mockito-all/1.8.5/mockito-all-1.8.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-test-utils-0.30-20110609.143706-10.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-3.1.jar"/>

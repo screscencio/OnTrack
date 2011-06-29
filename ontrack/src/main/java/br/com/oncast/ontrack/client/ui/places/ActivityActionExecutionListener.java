@@ -10,10 +10,10 @@ public class ActivityActionExecutionListener implements ActionExecutionListener 
 	private List<ActionExecutionListener> actionExecutionSuccessListeners;
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final boolean wasRollback) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context) {
 		if (actionExecutionSuccessListeners == null) return;
 		for (final ActionExecutionListener listener : actionExecutionSuccessListeners)
-			listener.onActionExecution(action, context, wasRollback);
+			listener.onActionExecution(action, context);
 	}
 
 	public void setActionExecutionListeners(final List<ActionExecutionListener> actionExecutionSuccessListeners) {

@@ -40,7 +40,7 @@ public class RemoveScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootScopeCantBeRemoved() throws UnableToCompleteActionException {
-		new ScopeRemoveAction(rootScope).execute(context);
+		new ScopeRemoveAction(rootScope.getId()).execute(context);
 	}
 
 	@Test
@@ -49,7 +49,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
 		assertEquals(child2Level1, rootScope.getChildren().get(1));
 
-		new ScopeRemoveAction(child2Level1).execute(context);
+		new ScopeRemoveAction(child2Level1.getId()).execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -63,7 +63,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
 		assertEquals(child2Level1, rootScope.getChildren().get(1));
 
-		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child2Level1);
+		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child2Level1.getId());
 		removeScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
@@ -84,7 +84,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
-		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1);
+		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1.getId());
 		removeScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
@@ -105,7 +105,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
-		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1);
+		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1.getId());
 		removeScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
@@ -135,7 +135,7 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
-		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1);
+		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1.getId());
 		removeScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());

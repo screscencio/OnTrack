@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -36,7 +37,7 @@ public class InsertChildScopeActionTest {
 	public void mustInsertNewChild() throws UnableToCompleteActionException {
 		assertEquals(selectedScope.getChildren().size(), 1);
 
-		new ScopeInsertChildAction(selectedScope, newScopeDescription).execute(context);
+		new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription).execute(context);
 
 		assertEquals(selectedScope.getChildren().size(), 2);
 		assertEquals(selectedScope.getChildren().get(1).getDescription(), newScopeDescription);
@@ -44,7 +45,7 @@ public class InsertChildScopeActionTest {
 
 	@Test
 	public void theInsertedChildMustBeTheLastChild() throws UnableToCompleteActionException {
-		new ScopeInsertChildAction(selectedScope, newScopeDescription).execute(context);
+		new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription).execute(context);
 
 		assertFalse(selectedScope.getChildren().get(0).getDescription().equals(newScopeDescription));
 		assertEquals(newScopeDescription, selectedScope.getChildren().get(1).getDescription());
@@ -52,19 +53,19 @@ public class InsertChildScopeActionTest {
 
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
-		final ScopeInsertChildAction insertChildScopeAction = new ScopeInsertChildAction(selectedScope, newScopeDescription);
-		insertChildScopeAction.execute(context);
+		final ScopeInsertChildAction insertChildScopeAction = new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription);
+		final ModelAction rollbackAction = insertChildScopeAction.execute(context);
 
 		assertEquals(2, selectedScope.getChildren().size());
 
-		insertChildScopeAction.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(1, selectedScope.getChildren().size());
 	}
 
 	@Test
 	public void mustAssociateScopeWithARelease() throws UnableToCompleteActionException {
-		new ScopeInsertChildAction(selectedScope, newScopeDescription + " @" + newReleaseDescription).execute(context);
+		new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription + " @" + newReleaseDescription).execute(context);
 
 		assertEquals(selectedScope.getChildren().get(1).getDescription(), newScopeDescription);
 		assertEquals(selectedScope.getChildren().get(1).getRelease().getDescription(), newReleaseDescription);
@@ -72,8 +73,9 @@ public class InsertChildScopeActionTest {
 
 	@Test
 	public void mustDisassociateScopeFromReleaseAfterUndo() throws UnableToCompleteActionException {
-		final ScopeInsertChildAction insertFatherScopeAction = new ScopeInsertChildAction(selectedScope, newScopeDescription + " @" + newReleaseDescription);
-		insertFatherScopeAction.execute(context);
+		final ScopeInsertChildAction insertFatherScopeAction = new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription + " @"
+				+ newReleaseDescription);
+		final ModelAction rollbackAction = insertFatherScopeAction.execute(context);
 
 		final Scope insertedScope = selectedScope.getChildren().get(1);
 		final Release release = insertedScope.getRelease();
@@ -82,7 +84,7 @@ public class InsertChildScopeActionTest {
 		assertTrue(release.getScopeList().contains(insertedScope));
 		assertEquals(insertedScope.getDescription(), newScopeDescription);
 
-		insertFatherScopeAction.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(selectedScope.getChildren().size(), 1);
 		assertFalse(release.getScopeList().contains(insertedScope));

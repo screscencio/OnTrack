@@ -79,7 +79,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 			internalActionHandler.rollbackPendingAction();
 			applicationActionHandler.onActionExecutionRequest(action);
 		}
-		else applicationActionHandler.onActionExecutionRequest(new ScopeUpdateAction(item.getReferencedScope(), value));
+		else applicationActionHandler.onActionExecutionRequest(new ScopeUpdateAction(item.getReferencedScope().getId(), value));
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ScopeInsertChildActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -14,15 +15,16 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	private UUID newScopeId;
 	private String pattern;
 
-	public ScopeInsertChildAction(final Scope selectedScope, final String pattern) {
-		this.referenceId = selectedScope.getId();
+	public ScopeInsertChildAction(final UUID referenceId, final String pattern) {
+		this.referenceId = referenceId;
 		this.pattern = pattern;
 	}
 
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeInsertChildAction() {}
 
 	@Override
-	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = context.findScope(referenceId);
 
 		final Scope newScope = new Scope("");
@@ -30,12 +32,8 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 
 		selectedScope.add(newScope);
 
-		new ScopeUpdateAction(newScope, pattern).execute(context);
-	}
-
-	@Override
-	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
-		new ScopeRemoveAction(context.findScope(newScopeId)).execute(context);
+		new ScopeUpdateAction(newScopeId, pattern).execute(context);
+		return new ScopeRemoveAction(newScopeId);
 	}
 
 	@Override

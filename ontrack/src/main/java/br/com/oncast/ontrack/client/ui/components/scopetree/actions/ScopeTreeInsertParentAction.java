@@ -7,12 +7,12 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
-class ScopeTreeInsertChildAction implements ScopeTreeAction {
+class ScopeTreeInsertParentAction implements ScopeTreeAction {
 
 	private final ScopeTreeWidget tree;
 	private final ScopeInsertAction action;
 
-	public ScopeTreeInsertChildAction(final ScopeTreeWidget tree, final ScopeInsertAction action) {
+	public ScopeTreeInsertParentAction(final ScopeTreeWidget tree, final ScopeInsertAction action) {
 		this.tree = tree;
 		this.action = action;
 	}
@@ -21,13 +21,17 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 	public void execute(final ProjectContext context) throws ScopeNotFoundException {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope newScope = context.findScope(action.getNewScopeId());
+		final Scope grandParentScope = newScope.getParent();
 
-		final ScopeTreeItem parentTreeItem = tree.findScopeTreeItem(scope.getId());
-		final ScopeTreeItem newItem = new ScopeTreeItem(newScope);
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
+		final ScopeTreeItem grandParentTreeItem = tree.findScopeTreeItem(grandParentScope.getId());
+		final ScopeTreeItem newTreeItem = new ScopeTreeItem(newScope);
 
-		parentTreeItem.insertItem(scope.getChildIndex(newScope), newItem);
+		final int index = grandParentScope.getChildIndex(newScope);
+		grandParentTreeItem.removeItem(treeItem);
+		grandParentTreeItem.insertItem(index, newTreeItem);
 
-		parentTreeItem.setState(true);
-		tree.setSelected(newItem);
+		newTreeItem.setHierarchicalState(true);
+		tree.setSelected(newTreeItem);
 	}
 }

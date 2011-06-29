@@ -5,6 +5,4 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundExceptio
 
 public interface ScopeTreeAction {
 	void execute(final ProjectContext context) throws ScopeNotFoundException;
-
-	void rollback(final ProjectContext context) throws ScopeNotFoundException;
 }

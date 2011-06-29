@@ -21,9 +21,9 @@ public class ActionExecutionManager {
 
 	public void execute(final ModelAction action, final ProjectContext context) {
 		try {
-			action.execute(context);
-			executionListener.onActionExecution(action, context, false);
-			undoStack.push(action);
+			final ModelAction undoAction = action.execute(context);
+			executionListener.onActionExecution(action, context);
+			undoStack.push(undoAction);
 			redoStack.clear();
 		}
 		catch (final UnableToCompleteActionException e) {
@@ -36,10 +36,10 @@ public class ActionExecutionManager {
 
 	public void undo(final ProjectContext context) {
 		try {
-			final ModelAction action = undoStack.pop();
-			action.rollback(context);
-			executionListener.onActionExecution(action, context, true);
-			redoStack.push(action);
+			final ModelAction undoAction = undoStack.pop();
+			final ModelAction redoAction = undoAction.execute(context);
+			executionListener.onActionExecution(undoAction, context);
+			redoStack.push(redoAction);
 		}
 		catch (final UnableToCompleteActionException e) {
 			undoStack.clear();
@@ -55,10 +55,10 @@ public class ActionExecutionManager {
 
 	public void redo(final ProjectContext context) {
 		try {
-			final ModelAction action = redoStack.pop();
-			action.execute(context);
-			executionListener.onActionExecution(action, context, false);
-			undoStack.push(action);
+			final ModelAction redoAction = redoStack.pop();
+			final ModelAction undoAction = redoAction.execute(context);
+			executionListener.onActionExecution(redoAction, context);
+			undoStack.push(undoAction);
 		}
 		catch (final UnableToCompleteActionException e) {
 			redoStack.clear();
