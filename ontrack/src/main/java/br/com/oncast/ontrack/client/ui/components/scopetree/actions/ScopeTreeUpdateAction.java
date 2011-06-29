@@ -22,9 +22,4 @@ class ScopeTreeUpdateAction implements ScopeTreeAction {
 		treeItem.setReferencedScope(context.findScope(action.getReferenceId()));
 		treeItem.getTree().setSelectedItem(treeItem);
 	}
-
-	@Override
-	public void rollback(final ProjectContext context) throws ScopeNotFoundException {
-		execute(context);
-	}
 }

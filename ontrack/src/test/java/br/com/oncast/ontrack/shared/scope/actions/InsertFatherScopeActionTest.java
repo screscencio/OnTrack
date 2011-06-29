@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertFatherAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
 public class InsertFatherScopeActionTest {
@@ -39,7 +39,7 @@ public class InsertFatherScopeActionTest {
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
 
-		new ScopeInsertFatherAction(childScope, newScopeDescription).execute(context);
+		new ScopeInsertParentAction(childScope.getId(), newScopeDescription).execute(context);
 
 		assertEquals(childScope.getParent().getDescription(), newScopeDescription);
 		assertEquals(rootScope.getChildren().get(0).getDescription(), newScopeDescription);
@@ -47,12 +47,12 @@ public class InsertFatherScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void insertingFatherAtRootNodeMustThrowException() throws UnableToCompleteActionException {
-		new ScopeInsertFatherAction(rootScope, newScopeDescription).execute(context);
+		new ScopeInsertParentAction(rootScope.getId(), newScopeDescription).execute(context);
 	}
 
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
-		final ScopeInsertFatherAction insertFatherScopeAction = new ScopeInsertFatherAction(childScope, newScopeDescription);
+		final ScopeInsertParentAction insertFatherScopeAction = new ScopeInsertParentAction(childScope.getId(), newScopeDescription);
 		insertFatherScopeAction.execute(context);
 
 		assertEquals(childScope.getParent().getDescription(), newScopeDescription);
@@ -66,7 +66,7 @@ public class InsertFatherScopeActionTest {
 
 	@Test
 	public void mustAssociateScopeWithARelease() throws UnableToCompleteActionException {
-		new ScopeInsertFatherAction(childScope, newScopeDescription + " @" + newReleaseDescription).execute(context);
+		new ScopeInsertParentAction(childScope.getId(), newScopeDescription + " @" + newReleaseDescription).execute(context);
 
 		assertEquals(childScope.getParent().getDescription(), newScopeDescription);
 		assertEquals(childScope.getParent().getRelease().getDescription(), newReleaseDescription);
@@ -75,7 +75,8 @@ public class InsertFatherScopeActionTest {
 
 	@Test
 	public void mustDisassociateScopeFromReleaseAfterUndo() throws UnableToCompleteActionException {
-		final ScopeInsertFatherAction insertFatherScopeAction = new ScopeInsertFatherAction(childScope, newScopeDescription + " @" + newReleaseDescription);
+		final ScopeInsertParentAction insertFatherScopeAction = new ScopeInsertParentAction(childScope.getId(), newScopeDescription + " @"
+				+ newReleaseDescription);
 		insertFatherScopeAction.execute(context);
 
 		final Scope insertedParent = childScope.getParent();

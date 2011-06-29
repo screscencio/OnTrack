@@ -17,11 +17,11 @@ public class ActionSyncService {
 		final ActionExecutionListener actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final boolean wasRollback) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context) {
 				if (!active) return;
 
 				// TODO Display 'loading' UI indicator.
-				communicationService.dispatch(new ModelActionSyncRequest(action, wasRollback), new DispatchCallback<Void>() {
+				communicationService.dispatch(new ModelActionSyncRequest(action), new DispatchCallback<Void>() {
 
 					@Override
 					public void onRequestCompletition(final Void response) {
@@ -32,6 +32,7 @@ public class ActionSyncService {
 					public void onFailure(final Throwable caught) {
 						// TODO Hide 'loading' UI indicator.
 						// TODO Treat communication failure.
+						caught.printStackTrace();
 					}
 				});
 			}

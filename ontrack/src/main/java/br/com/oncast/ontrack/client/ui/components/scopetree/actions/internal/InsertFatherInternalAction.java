@@ -4,7 +4,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertFatherAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
 public class InsertFatherInternalAction implements InternalAction {
@@ -43,7 +43,7 @@ public class InsertFatherInternalAction implements InternalAction {
 
 	@Override
 	public ModelAction createEquivalentModelAction(final String value) {
-		return new ScopeInsertFatherAction(scope, value);
+		return new ScopeInsertParentAction(scope.getId(), value);
 	}
 
 }

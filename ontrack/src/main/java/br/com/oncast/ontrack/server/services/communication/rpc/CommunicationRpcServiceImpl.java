@@ -2,8 +2,6 @@ package br.com.oncast.ontrack.server.services.communication.rpc;
 
 import br.com.oncast.ontrack.client.services.communication.rpc.CommunicationRpcService;
 import br.com.oncast.ontrack.server.mocks.ProjectMockFactory;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 
@@ -15,13 +13,12 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 
 	private Project projectMock;
 
-	private final PersistenceService persistenceService = new PersistenceServiceJpaImpl();;
+	// private final PersistenceService persistenceService = new PersistenceServiceJpaImpl();;
 
 	@Override
-	public void transmitAction(final ModelAction action, final boolean isRollback) {
-		System.out.println("Action received: " + (isRollback ? "Rolledback " : "Executed ") + action.getClass().getSimpleName() + " for "
-				+ action.getReferenceId());
-		persistenceService.persist(action);
+	public void transmitAction(final ModelAction action) {
+		System.out.println("Action received: " + action.getClass().getSimpleName() + " for " + action.getReferenceId());
+		// persistenceService.persist(action);
 	}
 
 	@Override

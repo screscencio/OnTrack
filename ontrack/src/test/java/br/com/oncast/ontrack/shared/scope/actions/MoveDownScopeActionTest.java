@@ -32,7 +32,7 @@ public class MoveDownScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedDown() throws UnableToCompleteActionException {
-		new ScopeMoveDownAction(rootScope).execute(context);
+		new ScopeMoveDownAction(rootScope.getId()).execute(context);
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class MoveDownScopeActionTest {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
 
-		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild);
+		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild.getId());
 		moveDown.execute(context);
 
 		assertEquals(rootScope.getChildren().get(0), lastChild);
@@ -52,7 +52,7 @@ public class MoveDownScopeActionTest {
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
 
-		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild);
+		final ScopeMoveDownAction moveDown = new ScopeMoveDownAction(firstChild.getId());
 		moveDown.execute(context);
 
 		assertEquals(rootScope.getChildren().get(0), lastChild);
@@ -66,7 +66,7 @@ public class MoveDownScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void lastNodeCantBeMovedDown() throws UnableToCompleteActionException {
-		new ScopeMoveDownAction(lastChild).execute(context);
+		new ScopeMoveDownAction(lastChild.getId()).execute(context);
 	}
 
 }

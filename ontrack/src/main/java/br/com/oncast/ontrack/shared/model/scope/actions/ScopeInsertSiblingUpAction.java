@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -15,10 +16,11 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 		this.pattern = pattern;
 	}
 
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeInsertSiblingUpAction() {}
 
 	@Override
-	public void execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = context.findScope(selectedScopeId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
 
@@ -28,12 +30,8 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 		final Scope parent = selectedScope.getParent();
 		parent.add(parent.getChildIndex(selectedScope), newScope);
 
-		new ScopeUpdateAction(newScope, pattern).execute(context);
-	}
-
-	@Override
-	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {
-		new ScopeRemoveAction(context.findScope(newScopeId)).execute(context);
+		new ScopeUpdateAction(newScopeId, pattern).execute(context);
+		return new ScopeRemoveAction(newScopeId);
 	}
 
 	@Override

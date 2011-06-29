@@ -79,7 +79,7 @@ public class RemoveTest extends GwtTest {
 
 	@Test
 	public void shouldRemoveItem() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeRemoveAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeRemoveAction(firstScope.getId()));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -87,12 +87,12 @@ public class RemoveTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotRemoveRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeRemoveAction(rootScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeRemoveAction(rootScope.getId()));
 	}
 
 	@Test
 	public void shouldInsertRemovedItemAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeRemoveAction(firstScope));
+		actionExecutionService.onActionExecutionRequest(new ScopeRemoveAction(firstScope.getId()));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));

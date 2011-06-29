@@ -37,7 +37,7 @@ public class InsertChildInternalAction implements InternalAction {
 
 	@Override
 	public ModelAction createEquivalentModelAction(final String value) {
-		return new ScopeInsertChildAction(scope, value);
+		return new ScopeInsertChildAction(scope.getId(), value);
 	}
 
 }

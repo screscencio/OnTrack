@@ -8,8 +8,11 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentRollbackAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateRollbackAction;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -25,8 +28,10 @@ public class ReleasePanel implements Component, DeeplyComparable {
 
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final boolean wasRollback) {
-				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction || action instanceof ScopeInsertAction) update();
+			public void onActionExecution(final ModelAction action, final ProjectContext context) {
+				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction || action instanceof ScopeInsertAction
+						|| action instanceof ScopeInsertParentRollbackAction || action instanceof ScopeRemoveRollbackAction
+						|| action instanceof ScopeUpdateRollbackAction) update();
 			}
 		};
 	}

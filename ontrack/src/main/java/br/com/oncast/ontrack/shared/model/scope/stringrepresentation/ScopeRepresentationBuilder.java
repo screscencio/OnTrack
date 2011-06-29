@@ -33,4 +33,10 @@ public class ScopeRepresentationBuilder {
 
 		return str.toString();
 	}
+
+	public ScopeRepresentationBuilder includeEverything() {
+		includeScopeDescription();
+		includeReleaseReference();
+		return this;
+	}
 }

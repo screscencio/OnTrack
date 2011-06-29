@@ -72,7 +72,7 @@ public class UpdateTest extends GwtTest {
 		final ReleasePanel modifiedReleasePanel = createReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " @R1/It1"));
 
 		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 	}
@@ -85,7 +85,7 @@ public class UpdateTest extends GwtTest {
 		ReleasePanel modifiedReleasePanel = createReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription() + " @R1/It1"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " @R1/It1"));
 
 		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 
@@ -93,7 +93,7 @@ public class UpdateTest extends GwtTest {
 		modifiedReleasePanel = createReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated, scopeUpdated.getDescription()));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription()));
 
 		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
 	}

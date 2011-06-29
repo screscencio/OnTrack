@@ -52,7 +52,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		context = new ProjectContext(new Project(rootScope, new Release("")));
 
 		final ScopeTreeAction widgetActionMock = mock(ScopeTreeAction.class);
-		normalAction = new ScopeInsertChildAction(rootScope, newScopeDescription);
+		normalAction = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(normalAction)).thenReturn(widgetActionMock);
 
 	}
@@ -74,11 +74,11 @@ public class ScopeTreeWidgetActionManagerTest {
 
 	@Test(expected = RuntimeException.class)
 	public void ifWidgetActionsThrowExceptionThenIsRolledBack() throws UnableToCompleteActionException, ScopeNotFoundException {
-		normalActionWithBadWidgetAction = new ScopeInsertChildAction(rootScope, newScopeDescription);
+		normalActionWithBadWidgetAction = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(normalActionWithBadWidgetAction)).thenReturn(widgetExceptionActionMock);
 
 		actionExecutionManager.execute(normalActionWithBadWidgetAction, context);
-		verify(normalActionWithBadWidgetAction, atMost(1)).rollback(context);
+		verify(normalActionWithBadWidgetAction, atMost(2)).execute(context);
 	}
 
 	@Test
@@ -110,7 +110,7 @@ public class ScopeTreeWidgetActionManagerTest {
 
 	@Test(expected = RuntimeException.class)
 	public void executeOkUndoExceptionNormalAction() throws Exception {
-		final ScopeInsertChildAction rollbackException = new ScopeInsertChildAction(rootScope, newScopeDescription);
+		final ScopeInsertChildAction rollbackException = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);
 		final ScopeTreeAction rollbackWidgetException = mock(ScopeTreeAction.class);
 
 		doThrow(new UnableToCompleteActionException("")).when(rollbackWidgetException).rollback(context);
@@ -124,7 +124,7 @@ public class ScopeTreeWidgetActionManagerTest {
 
 	@Test(expected = RuntimeException.class)
 	public void executeOkUndoOkRedoException() throws Exception {
-		final ScopeInsertChildAction rollbackException = new ScopeInsertChildAction(rootScope, newScopeDescription);
+		final ScopeInsertChildAction rollbackException = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);
 		final ScopeTreeAction normalWidgetException = mock(ScopeTreeAction.class);
 		final ScopeTreeAction execute = mock(ScopeTreeAction.class);
 

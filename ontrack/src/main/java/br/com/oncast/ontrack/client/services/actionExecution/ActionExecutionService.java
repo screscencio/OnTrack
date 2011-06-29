@@ -37,9 +37,9 @@ public class ActionExecutionService implements ActionExecutionRequestHandler, Ac
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final boolean wasRollback) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context) {
 		for (final ActionExecutionListener handler : actionExecutionListeners) {
-			handler.onActionExecution(action, context, wasRollback);
+			handler.onActionExecution(action, context);
 		}
 	}
 

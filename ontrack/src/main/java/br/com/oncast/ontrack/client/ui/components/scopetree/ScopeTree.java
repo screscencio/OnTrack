@@ -28,11 +28,10 @@ public class ScopeTree implements Component, DeeplyComparable {
 		actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final boolean wasRollback) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context) {
 				try {
 					final ScopeTreeAction scopeTreeAction = treeActionFactory.createEquivalentActionFor(action);
-					if (!wasRollback) scopeTreeAction.execute(context);
-					else scopeTreeAction.rollback(context);
+					scopeTreeAction.execute(context);
 				}
 				catch (final ScopeNotFoundException e) {
 					// TODO Redraw the entire structure to eliminate inconsistencies

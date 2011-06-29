@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("communicationService")
 public interface CommunicationRpcService extends RemoteService {
 
-	void transmitAction(ModelAction action, boolean isRollback);
+	void transmitAction(ModelAction action);
 
 	public Project loadProject();
 }

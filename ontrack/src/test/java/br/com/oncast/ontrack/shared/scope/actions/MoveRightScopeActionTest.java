@@ -33,12 +33,12 @@ public class MoveRightScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedRight() throws UnableToCompleteActionException {
-		new ScopeMoveLeftAction(rootScope).execute(context);
+		new ScopeMoveLeftAction(rootScope.getId()).execute(context);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void aScopeCantBeMovedIfDontHaveUpSibling() throws UnableToCompleteActionException {
-		new ScopeMoveLeftAction(firstChild).execute(context);
+		new ScopeMoveLeftAction(firstChild.getId()).execute(context);
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class MoveRightScopeActionTest {
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, rootScope.getChildren().get(1));
 
-		new ScopeMoveRightAction(lastChild).execute(context);
+		new ScopeMoveRightAction(lastChild.getId()).execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
@@ -61,7 +61,7 @@ public class MoveRightScopeActionTest {
 		assertEquals(0, firstChild.getChildren().size());
 		assertEquals(lastChild, rootScope.getChildren().get(1));
 
-		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild);
+		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
 		moveRightScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());

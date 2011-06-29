@@ -93,7 +93,7 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldUpdateScopeWithNewValue() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(firstScope.getId(), "3"));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -101,7 +101,7 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldUpdateRootScope() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(rootScope, "Root"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(rootScope.getId(), "Root"));
 
 		assertTrue(getModifiedRootScope().deepEquals(scope));
 		assertTrue(getModifiedRootTree().deepEquals(tree));
@@ -109,7 +109,7 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldRollbackUpdatedScope() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(firstScope, "3"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(firstScope.getId(), "3"));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));

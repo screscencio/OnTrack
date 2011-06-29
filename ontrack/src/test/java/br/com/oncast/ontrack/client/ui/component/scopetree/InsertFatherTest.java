@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertFatherAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentAction;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -84,7 +84,7 @@ public class InsertFatherTest extends GwtTest {
 
 	@Test
 	public void shouldInsertFather() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertFatherAction(firstScope, newScopeDescription));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertParentAction(firstScope.getId(), newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -92,12 +92,12 @@ public class InsertFatherTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotInsertFatherForRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertFatherAction(rootScope, newScopeDescription));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertParentAction(rootScope.getId(), newScopeDescription));
 	}
 
 	@Test
 	public void shouldRemoveInsertedFatherAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertFatherAction(firstScope, newScopeDescription));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertParentAction(firstScope.getId(), newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));

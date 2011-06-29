@@ -30,7 +30,7 @@ public class UpdateScopeActionTest {
 	@Test
 	public void updateActionChangeScopeDescription() throws UnableToCompleteActionException {
 		assertEquals("root", rootScope.getDescription());
-		new ScopeUpdateAction(rootScope, "new text").execute(context);
+		new ScopeUpdateAction(rootScope.getId(), "new text").execute(context);
 		assertEquals("new text", rootScope.getDescription());
 	}
 
@@ -38,7 +38,7 @@ public class UpdateScopeActionTest {
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		assertEquals("root", rootScope.getDescription());
 
-		final ScopeUpdateAction updateScopeAction = new ScopeUpdateAction(rootScope, "new text");
+		final ScopeUpdateAction updateScopeAction = new ScopeUpdateAction(rootScope.getId(), "new text");
 		updateScopeAction.execute(context);
 
 		assertEquals("new text", rootScope.getDescription());
@@ -49,6 +49,6 @@ public class UpdateScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void ifTheActionNotExecutedCantBeRolledBack() throws UnableToCompleteActionException {
-		new ScopeUpdateAction(rootScope, "new text").rollback(context);
+		new ScopeUpdateAction(rootScope.getId(), "new text").rollback(context);
 	}
 }

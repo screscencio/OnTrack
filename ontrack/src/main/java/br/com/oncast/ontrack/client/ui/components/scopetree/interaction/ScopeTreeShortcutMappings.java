@@ -11,12 +11,12 @@ import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_UP;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Y;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Z;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertFatherInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingDownInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingUpInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
@@ -71,7 +71,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(scope));
+			actionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(scope.getId()));
 		}
 	},
 
@@ -79,7 +79,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(scope));
+			actionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(scope.getId()));
 		}
 	},
 
@@ -87,7 +87,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(scope));
+			actionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(scope.getId()));
 		}
 	},
 
@@ -95,7 +95,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(scope));
+			actionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(scope.getId()));
 		}
 	},
 
@@ -119,7 +119,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeRemoveAction(scope));
+			actionRequestHandler.onActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
 		}
 	};
 
