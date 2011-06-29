@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -58,13 +59,13 @@ public class InsertSiblingDownScopeActionTest {
 		assertEquals(2, rootScope.getChildren().size());
 
 		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild, newScopeDescription);
-		insertSiblingDownScopeAction.execute(context);
+		final ModelAction rollbackAction = insertSiblingDownScopeAction.execute(context);
 
 		assertEquals(3, rootScope.getChildren().size());
 		assertEquals(firstChild.getParent().getChildren().get(1).getDescription(), newScopeDescription);
 		assertEquals(firstChild.getParent().getChildren().get(2), lastChild);
 
-		insertSiblingDownScopeAction.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(firstChild.getParent().getChildren().get(1), lastChild);
 		assertEquals(2, rootScope.getChildren().size());

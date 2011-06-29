@@ -30,7 +30,7 @@ public class ScopeRemoveAction implements ScopeAction {
 		final UUID parentScopeId = parent.getId();
 		final String description = selectedScope.getDescription();
 
-		for (final Scope child : selectedScope.getChildren())
+		for (final Scope child : new ArrayList<Scope>(selectedScope.getChildren()))
 			childActionList.add(new ScopeRemoveAction(child.getId()).execute(context));
 
 		final int index = parent.getChildIndex(selectedScope);

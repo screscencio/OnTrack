@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -62,14 +63,14 @@ public class MoveRightScopeActionTest {
 		assertEquals(lastChild, rootScope.getChildren().get(1));
 
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
-		moveRightScopeAction.execute(context);
+		final ModelAction rollbackAction = moveRightScopeAction.execute(context);
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(1, firstChild.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, firstChild.getChildren().get(0));
 
-		moveRightScopeAction.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(0, firstChild.getChildren().size());

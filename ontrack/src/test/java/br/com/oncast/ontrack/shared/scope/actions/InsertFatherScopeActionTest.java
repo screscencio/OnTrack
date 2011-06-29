@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
@@ -53,12 +54,12 @@ public class InsertFatherScopeActionTest {
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		final ScopeInsertParentAction insertFatherScopeAction = new ScopeInsertParentAction(childScope.getId(), newScopeDescription);
-		insertFatherScopeAction.execute(context);
+		final ScopeAction rollbackAction = insertFatherScopeAction.execute(context);
 
 		assertEquals(childScope.getParent().getDescription(), newScopeDescription);
 		assertEquals(rootScope.getChildren().get(0).getDescription(), newScopeDescription);
 
-		insertFatherScopeAction.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
@@ -77,7 +78,7 @@ public class InsertFatherScopeActionTest {
 	public void mustDisassociateScopeFromReleaseAfterUndo() throws UnableToCompleteActionException {
 		final ScopeInsertParentAction insertFatherScopeAction = new ScopeInsertParentAction(childScope.getId(), newScopeDescription + " @"
 				+ newReleaseDescription);
-		insertFatherScopeAction.execute(context);
+		final ScopeAction rollbackAction = insertFatherScopeAction.execute(context);
 
 		final Scope insertedParent = childScope.getParent();
 		final Release release = insertedParent.getRelease();
@@ -87,7 +88,7 @@ public class InsertFatherScopeActionTest {
 		assertEquals(insertedParent.getDescription(), newScopeDescription);
 		assertEquals(rootScope.getChildren().get(0).getDescription(), newScopeDescription);
 
-		insertFatherScopeAction.rollback(context);
+		rollbackAction.execute(context);
 
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);

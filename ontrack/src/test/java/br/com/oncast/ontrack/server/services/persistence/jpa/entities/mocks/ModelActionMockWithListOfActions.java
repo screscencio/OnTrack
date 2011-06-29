@@ -16,10 +16,9 @@ public class ModelActionMockWithListOfActions implements ModelAction {
 	private final List<ModelActionMockWithListOfActions> anActionList = new ArrayList<ModelActionMockWithListOfActions>();
 
 	@Override
-	public void rollback(final ProjectContext context) throws UnableToCompleteActionException {}
-
-	@Override
-	public void execute(final ProjectContext context) throws UnableToCompleteActionException {}
+	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+		return null;
+	}
 
 	@Override
 	public UUID getReferenceId() {
