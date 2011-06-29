@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeMapper {
+public class ListMapper {
 
 	void map(final Object action, final ModelActionEntity actionEntity, final Field field) throws IllegalAccessException, NoSuchFieldException {
 		final Type type = field.getGenericType();
