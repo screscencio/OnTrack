@@ -38,10 +38,18 @@ public class BeanMapperTest {
 	@Test
 	public void shouldMapAClassWithAListOfActions() throws Exception {
 		final ModelActionMockWithListOfActions modelAction = new ModelActionMockWithListOfActions();
+		modelAction.addAction(new ModelActionMockWithListOfActions());
+		modelAction.addAction(new ModelActionMockWithListOfActions());
+		modelAction.addAction(new ModelActionMockWithListOfActions());
+
 		final ModelActionEntityMockWithListOfActions entity = (ModelActionEntityMockWithListOfActions) BeanMapper.map(modelAction);
 
 		assertEquals(modelAction.getReferenceId().toString(), entity.getReferenceId());
 		assertEquals(modelAction.getAString(), entity.getAString());
-		assertEquals(modelAction.getAnActionList(), entity.getAnActionList());
+		assertEquals(modelAction.getAnActionList().size(), entity.getAnActionList().size());
+
+		assertEquals(modelAction.getAnActionList().get(0).getReferenceId().toString(), entity.getAnActionList().get(0).getReferenceId());
+		assertEquals(modelAction.getAnActionList().get(1).getReferenceId().toString(), entity.getAnActionList().get(1).getReferenceId());
+		assertEquals(modelAction.getAnActionList().get(2).getReferenceId().toString(), entity.getAnActionList().get(2).getReferenceId());
 	}
 }

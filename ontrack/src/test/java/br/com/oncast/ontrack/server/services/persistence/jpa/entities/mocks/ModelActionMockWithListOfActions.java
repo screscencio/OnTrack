@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@MapTo(ModelActionEntityMockWithListOfString.class)
+@MapTo(ModelActionEntityMockWithListOfActions.class)
 public class ModelActionMockWithListOfActions implements ModelAction {
 	private final UUID aUUID = new UUID();
 	private final String aString = "a string";
@@ -32,5 +32,9 @@ public class ModelActionMockWithListOfActions implements ModelAction {
 
 	public List<ModelActionMockWithListOfActions> getAnActionList() {
 		return anActionList;
+	}
+
+	public void addAction(final ModelActionMockWithListOfActions action) {
+		anActionList.add(action);
 	}
 };
