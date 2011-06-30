@@ -1,4 +1,5 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.entities;
+package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
+
 
 public class TypeMapperFactory {
 

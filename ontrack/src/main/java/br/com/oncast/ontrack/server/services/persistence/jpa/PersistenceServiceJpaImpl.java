@@ -5,8 +5,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.BeanMapper;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.BeanMapper;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 
 public class PersistenceServiceJpaImpl implements PersistenceService {
