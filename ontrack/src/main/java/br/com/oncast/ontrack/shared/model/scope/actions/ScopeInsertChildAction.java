@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ScopeInsertChildActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertChildActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;

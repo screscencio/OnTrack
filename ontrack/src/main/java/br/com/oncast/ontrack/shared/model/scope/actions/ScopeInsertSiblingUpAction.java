@@ -1,18 +1,22 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertSiblingUpActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@MapTo(ScopeInsertSiblingUpActionEntity.class)
 public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
-	private UUID selectedScopeId;
+
+	private UUID referenceId;
 	private UUID newScopeId;
 	private String pattern;
 
 	public ScopeInsertSiblingUpAction(final Scope selectedScope, final String pattern) {
-		this.selectedScopeId = selectedScope.getId();
+		this.referenceId = selectedScope.getId();
 		this.pattern = pattern;
 	}
 
@@ -21,7 +25,7 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(selectedScopeId);
+		final Scope selectedScope = context.findScope(referenceId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
 
 		final Scope newScope = new Scope("");
@@ -36,7 +40,7 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 
 	@Override
 	public UUID getReferenceId() {
-		return selectedScopeId;
+		return referenceId;
 	}
 
 	@Override

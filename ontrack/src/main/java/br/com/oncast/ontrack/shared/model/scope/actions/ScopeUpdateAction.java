@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeUpdateActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -8,13 +10,14 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@MapTo(ScopeUpdateActionEntity.class)
 public class ScopeUpdateAction implements ScopeAction {
 
-	private UUID selectedScopeId;
+	private UUID referenceId;
 	private String newPattern;
 
 	public ScopeUpdateAction(final UUID selectedScopeId, final String newPattern) {
-		this.selectedScopeId = selectedScopeId;
+		this.referenceId = selectedScopeId;
 		this.newPattern = newPattern;
 	}
 
@@ -27,7 +30,7 @@ public class ScopeUpdateAction implements ScopeAction {
 		final String newDescription = parser.getScopeDescription();
 		final String newReleaseDescription = parser.getReleaseDescription();
 
-		final Scope selectedScope = context.findScope(selectedScopeId);
+		final Scope selectedScope = context.findScope(referenceId);
 		final String oldDescription = selectedScope.getDescription();
 		final Release oldRelease = selectedScope.getRelease();
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
@@ -38,11 +41,11 @@ public class ScopeUpdateAction implements ScopeAction {
 		selectedScope.setRelease(newRelease);
 		if (newRelease != null) newRelease.addScope(selectedScope);
 
-		return new ScopeUpdateRollbackAction(selectedScopeId, newPattern, oldDescription, oldReleaseDescription);
+		return new ScopeUpdateRollbackAction(referenceId, newPattern, oldDescription, oldReleaseDescription);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return selectedScopeId;
+		return referenceId;
 	}
 }

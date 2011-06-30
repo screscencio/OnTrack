@@ -1,18 +1,17 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.entities;
+package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingUpAction;
+
 @Entity
-public class ScopeInsertSiblingUpActionEntity extends ActionEntity {
+@MapTo(ScopeInsertSiblingUpAction.class)
+public class ScopeInsertSiblingUpActionEntity extends ModelActionEntity {
 
-	@Column
 	private String referenceId;
-
-	@Column
 	private String newScopeId;
-
-	@Column
 	private String pattern;
 
 	public String getReferenceId() {
@@ -38,5 +37,4 @@ public class ScopeInsertSiblingUpActionEntity extends ActionEntity {
 	public void setPattern(final String pattern) {
 		this.pattern = pattern;
 	}
-
 }

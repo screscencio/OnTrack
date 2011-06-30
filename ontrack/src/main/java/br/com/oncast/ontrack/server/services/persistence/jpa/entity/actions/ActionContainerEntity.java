@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.entities;
+package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions;
 
 import java.util.Date;
 
@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+
 
 @Entity
 public class ActionContainerEntity {
@@ -20,7 +23,7 @@ public class ActionContainerEntity {
 	private Date timestamp;
 
 	@OneToOne
-	private ActionEntity action;
+	private ModelActionEntity action;
 
 	public ActionContainerEntity() {
 		timestamp = new Date();
@@ -34,11 +37,11 @@ public class ActionContainerEntity {
 		this.id = id;
 	}
 
-	public void setAction(final ActionEntity action) {
+	public void setAction(final ModelActionEntity action) {
 		this.action = action;
 	}
 
-	public ActionEntity getAction() {
+	public ModelActionEntity getAction() {
 		return action;
 	}
 
