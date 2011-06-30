@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ActionEntity;
 
 /**
  * This annotation marks a class that wants to be translated and persisted. You have to define a target class for which the annotated class will be translated.
@@ -13,5 +13,5 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ModelActio
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface MapTo {
-	Class<? extends ModelActionEntity> value();
+	Class<? extends ActionEntity> value();
 }

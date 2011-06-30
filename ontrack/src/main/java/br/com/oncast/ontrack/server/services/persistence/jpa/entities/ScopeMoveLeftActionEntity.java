@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
-public class ScopeMoveLeftActionEntity extends ScopeActionEntity implements ModelActionEntity {
+public class ScopeMoveLeftActionEntity extends ActionEntity {
 
 	@Column
 	private String referenceId;
