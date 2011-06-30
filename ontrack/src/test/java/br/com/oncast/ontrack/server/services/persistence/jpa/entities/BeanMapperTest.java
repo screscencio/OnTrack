@@ -41,4 +41,12 @@ public class BeanMapperTest {
 		assertEquals(modelAction.getAnActionList().get(1).getReferenceId().toString(), entity.getAnActionList().get(1).getReferenceId());
 		assertEquals(modelAction.getAnActionList().get(2).getReferenceId().toString(), entity.getAnActionList().get(2).getReferenceId());
 	}
+
+	public void shouldReturnAnModelActionFromAGivenModelActionEntity() {
+		final ModelActionEntityMock entityAction = new ModelActionEntityMock();
+		final ModelActionMock modelAction = (ModelActionMock) BeanMapper.map(entityAction);
+
+		assertEquals(entityAction.getReferenceId(), modelAction.getReferenceId().toString());
+		assertEquals(entityAction.getAString(), modelAction.getAString());
+	}
 }

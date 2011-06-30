@@ -2,41 +2,40 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
 
 import java.lang.reflect.Field;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-
 public class BeanMapper {
 
-	public static ModelActionEntity map(final Object action) {
-		final ModelActionEntity entity = findMappedClass(action);
-		populateEntity(action, entity);
-		return entity;
+	public static Object map(final Object source) {
+		final Object destination = findMappedClass(source);
+		mapFields(source, destination);
+
+		return destination;
 	}
 
-	private static ModelActionEntity findMappedClass(final Object action) {
-		final MapTo annotation = action.getClass().getAnnotation(MapTo.class);
+	private static Object findMappedClass(final Object source) {
+		final MapTo annotation = source.getClass().getAnnotation(MapTo.class);
 
-		if (annotation == null) throw new RuntimeException("The class of type " + action.getClass() + " must be annotated with " + MapTo.class
+		if (annotation == null) throw new RuntimeException("The class of type " + source.getClass() + " must be annotated with " + MapTo.class
 				+ " for being persisted.");
 
 		try {
-			return (ModelActionEntity) annotation.value().newInstance();
+			return annotation.value().newInstance();
 		}
 		catch (final Exception e) {
 			throw new RuntimeException("The instance of " + annotation.value() + " could not be created.", e);
 		}
 	}
 
-	private static void populateEntity(final Object action, final Object entity) {
-		final Field[] fields = action.getClass().getDeclaredFields();
+	private static void mapFields(final Object source, final Object destination) {
+		final Field[] fields = source.getClass().getDeclaredFields();
 		for (final Field field : fields) {
 			field.setAccessible(true);
 
 			try {
-				final Object value = TypeMapperFactory.getInstance().map(action, entity, field);
+				final Object value = TypeMapperFactory.getInstance().map(source, destination, field);
 
-				final Field entityField = entity.getClass().getDeclaredField(field.getName());
-				entityField.setAccessible(true);
-				entityField.set(entity, value);
+				final Field destinationField = destination.getClass().getDeclaredField(field.getName());
+				destinationField.setAccessible(true);
+				destinationField.set(destination, value);
 			}
 			catch (final Exception e) {
 				throw new RuntimeException("There was not possible to populate the entity.", e);
