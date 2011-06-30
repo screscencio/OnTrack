@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.Mode
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionEntityMockWithListOfActions;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionMock;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionMockWithListOfActions;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.BeanMapper;
 
 public class BeanMapperTest {
 

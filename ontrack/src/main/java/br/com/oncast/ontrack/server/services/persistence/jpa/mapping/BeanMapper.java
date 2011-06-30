@@ -1,8 +1,8 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.entities;
+package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
 
 import java.lang.reflect.Field;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ModelActionEntity;
 
 public class BeanMapper {
 
