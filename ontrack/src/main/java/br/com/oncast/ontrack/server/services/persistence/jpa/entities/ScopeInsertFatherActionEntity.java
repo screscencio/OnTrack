@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
-public class ScopeInsertFatherActionEntity extends ScopeActionEntity implements ModelActionEntity {
+public class ScopeInsertFatherActionEntity extends ActionEntity {
 
 	@Column
 	private String referenceId;
