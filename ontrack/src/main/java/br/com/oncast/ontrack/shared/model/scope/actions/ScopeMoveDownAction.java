@@ -1,17 +1,20 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveDownActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@MapTo(ScopeMoveDownActionEntity.class)
 public class ScopeMoveDownAction implements ScopeMoveAction {
 
-	private UUID selectedScopeId;
+	private UUID referenceId;
 
-	public ScopeMoveDownAction(final UUID selectedScopeId) {
-		this.selectedScopeId = selectedScopeId;
+	public ScopeMoveDownAction(final UUID referenceId) {
+		this.referenceId = referenceId;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -19,7 +22,7 @@ public class ScopeMoveDownAction implements ScopeMoveAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(selectedScopeId);
+		final Scope selectedScope = context.findScope(referenceId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
 
 		final Scope parent = selectedScope.getParent();
@@ -30,7 +33,7 @@ public class ScopeMoveDownAction implements ScopeMoveAction {
 		parent.remove(selectedScope);
 		parent.add(index + 1, selectedScope);
 
-		return new ScopeMoveUpAction(selectedScopeId);
+		return new ScopeMoveUpAction(referenceId);
 	}
 
 	private boolean isLastNode(final int index, final Scope parent) {
@@ -39,6 +42,6 @@ public class ScopeMoveDownAction implements ScopeMoveAction {
 
 	@Override
 	public UUID getReferenceId() {
-		return selectedScopeId;
+		return referenceId;
 	}
 }

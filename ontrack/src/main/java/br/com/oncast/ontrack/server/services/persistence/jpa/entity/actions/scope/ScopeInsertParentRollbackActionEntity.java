@@ -1,18 +1,17 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.entities;
+package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentRollbackAction;
+
 @Entity
-public class ScopeInsertFatherActionEntity extends ActionEntity {
+@MapTo(ScopeInsertParentRollbackAction.class)
+public class ScopeInsertParentRollbackActionEntity extends ModelActionEntity {
 
-	@Column
 	private String referenceId;
-
-	@Column
 	private String newScopeId;
-
-	@Column
 	private String pattern;
 
 	public String getReferenceId() {
@@ -38,5 +37,4 @@ public class ScopeInsertFatherActionEntity extends ActionEntity {
 	public void setPattern(final String pattern) {
 		this.pattern = pattern;
 	}
-
 }

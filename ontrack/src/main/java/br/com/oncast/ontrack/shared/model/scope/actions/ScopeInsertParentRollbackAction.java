@@ -1,20 +1,23 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentRollbackActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@MapTo(ScopeInsertParentRollbackActionEntity.class)
 public class ScopeInsertParentRollbackAction implements ScopeAction {
 
+	private UUID referenceId;
 	private UUID newScopeId;
-	private UUID selectedScopeId;
 	private String pattern;
 
 	public ScopeInsertParentRollbackAction(final UUID newScopeId, final UUID selectedScopeId, final String pattern) {
 		this.newScopeId = newScopeId;
-		this.selectedScopeId = selectedScopeId;
+		this.referenceId = selectedScopeId;
 		this.pattern = pattern;
 	}
 
@@ -37,12 +40,12 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 		newScope.clearChildren();
 		parent.add(index, child);
 
-		return new ScopeInsertParentAction(selectedScopeId, pattern);
+		return new ScopeInsertParentAction(referenceId, pattern);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return selectedScopeId;
+		return referenceId;
 	}
 
 	private void removeFromRelease(final Scope newScope) {

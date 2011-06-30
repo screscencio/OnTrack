@@ -5,8 +5,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ActionContainerEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.ActionContainerEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.BeanMapper;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 
@@ -18,7 +18,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public void persist(final ModelAction modelAction) {
 		System.out.println("Persisting entity...");
 
-		final ActionEntity entity = BeanMapper.map(modelAction);
+		final ModelActionEntity entity = BeanMapper.map(modelAction);
 		final ActionContainerEntity container = new ActionContainerEntity();
 		container.setAction(entity);
 

@@ -1,17 +1,21 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@MapTo(ScopeInsertParentActionEntity.class)
 public class ScopeInsertParentAction implements ScopeInsertAction {
-	private UUID selectedScopeId;
+
+	private UUID referenceId;
 	private UUID newScopeId;
 	private String pattern;
 
 	public ScopeInsertParentAction(final UUID selectedScopeId, final String pattern) {
-		this.selectedScopeId = selectedScopeId;
+		this.referenceId = selectedScopeId;
 		this.pattern = pattern;
 	}
 
@@ -20,7 +24,7 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 
 	@Override
 	public ScopeInsertParentRollbackAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(selectedScopeId);
+		final Scope selectedScope = context.findScope(referenceId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a father for a root node.");
 
 		final Scope parent = selectedScope.getParent();
@@ -34,12 +38,12 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 		newScope.add(selectedScope);
 
 		new ScopeUpdateAction(newScopeId, pattern).execute(context);
-		return new ScopeInsertParentRollbackAction(newScopeId, selectedScopeId, pattern);
+		return new ScopeInsertParentRollbackAction(newScopeId, referenceId, pattern);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return selectedScopeId;
+		return referenceId;
 	}
 
 	@Override

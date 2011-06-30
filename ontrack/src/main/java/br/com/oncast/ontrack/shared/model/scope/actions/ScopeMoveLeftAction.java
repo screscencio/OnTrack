@@ -1,17 +1,20 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveLeftActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@MapTo(ScopeMoveLeftActionEntity.class)
 public class ScopeMoveLeftAction implements ScopeMoveAction {
 
-	private UUID selectedScopeId;
+	private UUID referenceId;
 
 	public ScopeMoveLeftAction(final UUID selectedScopeId) {
-		this.selectedScopeId = selectedScopeId;
+		this.referenceId = selectedScopeId;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -19,7 +22,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(selectedScopeId);
+		final Scope selectedScope = context.findScope(referenceId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
 		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException("It is not possible to move left when a node parent is a root node.");
 
@@ -30,11 +33,11 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 		parent.remove(selectedScope);
 		grandParent.add(grandParent.getChildIndex(parent) + 1, selectedScope);
 
-		return new ScopeMoveRightAction(selectedScopeId, index);
+		return new ScopeMoveRightAction(referenceId, index);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return selectedScopeId;
+		return referenceId;
 	}
 }

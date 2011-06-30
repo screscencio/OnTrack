@@ -3,17 +3,20 @@ package br.com.oncast.ontrack.shared.model.scope.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@MapTo(ScopeRemoveActionEntity.class)
 public class ScopeRemoveAction implements ScopeAction {
 
-	private UUID selectedScopeId;
+	private UUID referenceId;
 
 	public ScopeRemoveAction(final UUID selectedScopeId) {
-		this.selectedScopeId = selectedScopeId;
+		this.referenceId = selectedScopeId;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -21,7 +24,7 @@ public class ScopeRemoveAction implements ScopeAction {
 
 	@Override
 	public ScopeRemoveRollbackAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(selectedScopeId);
+		final Scope selectedScope = context.findScope(referenceId);
 		if (selectedScope.isRoot()) { throw new UnableToCompleteActionException("Unable to remove root level."); }
 
 		final List<ScopeRemoveRollbackAction> childActionList = new ArrayList<ScopeRemoveRollbackAction>();
@@ -44,11 +47,11 @@ public class ScopeRemoveAction implements ScopeAction {
 		}
 		else releaseId = null;
 
-		return new ScopeRemoveRollbackAction(parentScopeId, selectedScopeId, description, releaseId, index, childActionList);
+		return new ScopeRemoveRollbackAction(parentScopeId, referenceId, description, releaseId, index, childActionList);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return selectedScopeId;
+		return referenceId;
 	}
 }
