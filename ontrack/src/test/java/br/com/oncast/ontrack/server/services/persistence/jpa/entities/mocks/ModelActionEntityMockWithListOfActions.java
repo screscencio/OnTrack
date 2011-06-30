@@ -3,9 +3,9 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ActionEntity;
 
-public class ModelActionEntityMockWithListOfActions implements ModelActionEntity {
+public class ModelActionEntityMockWithListOfActions extends ActionEntity {
 	private String aUUID;
 	private String aString;
 	private final List<ModelActionEntityMockWithListOfActions> anActionList = new ArrayList<ModelActionEntityMockWithListOfActions>();

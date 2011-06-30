@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entities.ActionEntity;
 
-public class ModelActionEntityMock implements ModelActionEntity {
+public class ModelActionEntityMock extends ActionEntity {
 	private String aUUID;
 	private String aString;
 
