@@ -15,7 +15,7 @@ public class BeanMapperTest {
 	 * Simple attribute types are String and primitive types.
 	 */
 	@Test
-	public void shouldMapAClassWithSimpleAttributesType() throws Exception {
+	public void shouldMapAClassWithSimpleAttributeTypes() throws Exception {
 		final ModelActionMock modelAction = new ModelActionMock();
 		final ModelActionEntityMock entity = (ModelActionEntityMock) BeanMapper.map(modelAction);
 

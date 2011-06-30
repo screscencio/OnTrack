@@ -3,16 +3,11 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
 @Entity
 public class ScopeRemoveActionEntity extends ScopeActionEntity implements ModelActionEntity {
 
 	@Column
 	private String referenceId;
-
-	@Column
-	private UUID parentScopeId;
 
 	@Column
 	private int index;
@@ -21,7 +16,7 @@ public class ScopeRemoveActionEntity extends ScopeActionEntity implements ModelA
 	private String description;
 
 	@Column
-	private UUID releaseId;
+	private String releaseId;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -29,14 +24,6 @@ public class ScopeRemoveActionEntity extends ScopeActionEntity implements ModelA
 
 	public void setReferenceId(final String referenceId) {
 		this.referenceId = referenceId;
-	}
-
-	public UUID getParentScopeId() {
-		return parentScopeId;
-	}
-
-	public void setParentScopeId(final UUID parentScopeId) {
-		this.parentScopeId = parentScopeId;
 	}
 
 	public int getIndex() {
@@ -55,11 +42,11 @@ public class ScopeRemoveActionEntity extends ScopeActionEntity implements ModelA
 		this.description = description;
 	}
 
-	public UUID getReleaseId() {
+	public String getReleaseId() {
 		return releaseId;
 	}
 
-	public void setReleaseId(final UUID releaseId) {
+	public void setReleaseId(final String releaseId) {
 		this.releaseId = releaseId;
 	}
 
