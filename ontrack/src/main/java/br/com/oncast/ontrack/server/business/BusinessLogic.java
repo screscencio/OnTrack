@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.business;
 
 import java.util.Date;
+import java.util.List;
 
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
@@ -16,7 +17,10 @@ public class BusinessLogic {
 	}
 
 	public Project loadProject() {
-		return persistenceService.load();
+		final ProjectSnapshot snapshot = persistenceService.retrieveProjectSnapshot();
+		final Date timestamp = snapshot.getTimestamp();
+		final List<ModelAction> actionList = persistenceService.retrieveActionsSince(timestamp);
+
 	}
 
 }
