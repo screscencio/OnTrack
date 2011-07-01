@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 
 public interface PersistenceService {
 
-	public void persist(final ModelAction action, final Date timestamp);
+	public void persist(final ModelAction action, final Date timestamp) throws PersistenceException;
 
-	public Project load();
+	public Project loadProjectSnapshot() throws PersistenceException;
 }

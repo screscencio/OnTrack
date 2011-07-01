@@ -52,4 +52,8 @@ public class UUID implements IsSerializable {
 		}
 		return new String(generatedId);
 	}
+
+	public String toStringRepresentation() {
+		return id;
+	}
 }

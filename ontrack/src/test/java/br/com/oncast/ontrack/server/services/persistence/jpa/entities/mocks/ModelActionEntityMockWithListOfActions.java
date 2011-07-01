@@ -3,24 +3,23 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.annotations.MapTo;
+import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.annotations.MapTo;
 
 @MapTo(ModelActionMockWithListOfActions.class)
-public class ModelActionEntityMockWithListOfActions extends ModelActionEntity {
-	private String aUUID;
+public class ModelActionEntityMockWithListOfActions {
 	private String aString;
-	private final List<ModelActionEntityMockWithListOfActions> anActionList = new ArrayList<ModelActionEntityMockWithListOfActions>();
 
-	public String getReferenceId() {
-		return aUUID;
-	}
+	private List<ModelActionEntityMockWithListOfActions> anActionList = null;
 
-	public String getAString() {
-		return aString;
+	public ModelActionEntityMockWithListOfActions() {
+		anActionList = new ArrayList<ModelActionEntityMockWithListOfActions>();
 	}
 
 	public List<ModelActionEntityMockWithListOfActions> getAnActionList() {
 		return anActionList;
+	}
+
+	public String getAString() {
+		return aString;
 	}
 }
