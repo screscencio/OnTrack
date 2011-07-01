@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +9,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
+import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.ActionContainerEntity;
@@ -35,27 +38,35 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		em.getTransaction().commit();
 	}
 
+	// TODO Change to an implementation that use a database
 	@Override
-	public Project loadProjectSnapshot() {
-		// FIXME
+	public ProjectSnapshot retrieveProjectSnapshot() {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(2011, 1, 1);
+
+		return new ProjectSnapshot(new Project(), calendar.getTime());
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<ModelAction> retrieveActionsSince(final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
-		final Query query = em.createQuery("select action from " + ActionContainerEntity.class.getSimpleName() + " as action");
+		final Query query = em
+				.createQuery("select action from ActionContainerEntity as action where action.timestamp > ?timestamp order by action.timestamp asc");
+		query.setParameter("timestamp", timestamp, TemporalType.TIMESTAMP);
 		final List<ActionContainerEntity> actions = query.getResultList();
 
 		final List<ModelAction> modelActionList = new ArrayList<ModelAction>();
 		for (final ActionContainerEntity action : actions) {
-			ModelAction modelAction;
 			try {
-				modelAction = (ModelAction) new GeneralTypeConverter().convert(action.getActionEntity());
-				modelActionList.add(modelAction);
+				modelActionList.add((ModelAction) new GeneralTypeConverter().convert(action.getActionEntity()));
 			}
 			catch (final BeanConverterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new PersistenceException("There was not possible to retrieve actions.", e);
 			}
 		}
 
-		return null;
+		return modelActionList;
 	}
 
 	private ModelActionEntity convertActionToEntity(final ModelAction modelAction) throws PersistenceException {
@@ -68,4 +79,5 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		return entity;
 	}
+
 }
