@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
+package br.com.oncast.ontrack.server.services.persistence.jpa.mapping.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

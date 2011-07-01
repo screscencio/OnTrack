@@ -1,8 +1,7 @@
 package br.com.oncast.ontrack.server.services.communication.rpc;
 
 import br.com.oncast.ontrack.client.services.communication.rpc.CommunicationRpcService;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
+import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 
@@ -12,18 +11,19 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 
 	private static final long serialVersionUID = 1L;
 
-	private final PersistenceService persistenceService = new PersistenceServiceJpaImpl();;
+	private final BusinessLogic business = new BusinessLogic();
 
 	@Override
 	public void transmitAction(final ModelAction action) {
+		// TODO Remover SYSO
 		System.out.println("Action received: " + action.getClass().getSimpleName() + " for " + action.getReferenceId());
-		persistenceService.persist(action);
+		business.handleIncomingAction(action);
 	}
 
 	@Override
 	public Project loadProject() {
+		// TODO Remover SYSO
 		System.out.println("Loading project...");
-		// final Project projectMock = ProjectMockFactory.createProjectMock();
-		return persistenceService.load();
+		return business.loadProject();
 	}
 }

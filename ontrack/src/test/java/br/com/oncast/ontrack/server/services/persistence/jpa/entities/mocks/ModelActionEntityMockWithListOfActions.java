@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.annotations.MapTo;
 
 @MapTo(ModelActionMockWithListOfActions.class)
 public class ModelActionEntityMockWithListOfActions extends ModelActionEntity {

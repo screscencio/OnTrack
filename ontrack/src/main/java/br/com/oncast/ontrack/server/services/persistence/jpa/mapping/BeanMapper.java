@@ -1,45 +1,33 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
 
-import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
-public class BeanMapper {
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.exceptions.BeanMapperException;
 
-	public static Object map(final Object source) {
-		final Object destination = findMappedClass(source);
-		mapFields(source, destination);
+public class BeanMapper implements BeanTypeMapper {
 
-		return destination;
+	private final static GenericTypeMapper DEFAULT_MAPPER = new GenericTypeMapper();
+	public final static Map<Class<?>, BeanTypeMapper> CUSTOM_MAPPERS = new HashMap<Class<?>, BeanTypeMapper>();
+
+	public static void addCustomBeanTypeMapper(final Class<?> originClass, final BeanTypeMapper customMapper) {
+		CUSTOM_MAPPERS.put(originClass, customMapper);
 	}
 
-	private static Object findMappedClass(final Object source) {
-		final MapTo annotation = source.getClass().getAnnotation(MapTo.class);
-
-		if (annotation == null) throw new RuntimeException("The class of type " + source.getClass() + " must be annotated with " + MapTo.class
-				+ " for being persisted.");
-
-		try {
-			return annotation.value().newInstance();
-		}
-		catch (final Exception e) {
-			throw new RuntimeException("The instance of " + annotation.value() + " could not be created.", e);
-		}
+	private boolean hasCustomMapper(final Object sourceBean) {
+		return (CUSTOM_MAPPERS.containsKey(sourceBean.getClass()));
 	}
 
-	private static void mapFields(final Object source, final Object destination) {
-		final Field[] fields = source.getClass().getDeclaredFields();
-		for (final Field field : fields) {
-			field.setAccessible(true);
+	private BeanTypeMapper getCustomMapper(final Object sourceBean) throws BeanMapperException {
+		final Class<? extends Object> originClass = sourceBean.getClass();
 
-			try {
-				final Object value = TypeMapperFactory.getInstance().map(source, destination, field);
+		if (!CUSTOM_MAPPERS.containsKey(originClass)) throw new BeanMapperException("It was not possible to locate a custom TypeMapper.");
+		return CUSTOM_MAPPERS.get(originClass);
+	}
 
-				final Field destinationField = destination.getClass().getDeclaredField(field.getName());
-				destinationField.setAccessible(true);
-				destinationField.set(destination, value);
-			}
-			catch (final Exception e) {
-				throw new RuntimeException("There was not possible to populate the entity.", e);
-			}
-		}
+	@Override
+	public Object createMappedBean(final Object originalBean) throws BeanMapperException {
+		final BeanTypeMapper mapper = (hasCustomMapper(originalBean)) ? getCustomMapper(originalBean) : DEFAULT_MAPPER;
+		return mapper.createMappedBean(originalBean);
 	}
 }

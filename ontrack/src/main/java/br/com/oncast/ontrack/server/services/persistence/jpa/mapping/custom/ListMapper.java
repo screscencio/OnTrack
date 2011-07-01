@@ -1,10 +1,13 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
+package br.com.oncast.ontrack.server.services.persistence.jpa.mapping.custom;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.BeanMapper;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.review.TypeMapper;
 
 
 public class ListMapper extends TypeMapper {

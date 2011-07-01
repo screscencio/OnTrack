@@ -11,7 +11,6 @@ import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 
-
 @Entity
 public class ActionContainerEntity {
 
@@ -23,10 +22,13 @@ public class ActionContainerEntity {
 	private Date timestamp;
 
 	@OneToOne
-	private ModelActionEntity action;
+	private ModelActionEntity actionEntity;
 
-	public ActionContainerEntity() {
-		timestamp = new Date();
+	public ActionContainerEntity() {}
+
+	public ActionContainerEntity(final ModelActionEntity actionEntity, final Date timestamp) {
+		this.actionEntity = actionEntity;
+		this.timestamp = timestamp;
 	}
 
 	public long getId() {
@@ -37,12 +39,12 @@ public class ActionContainerEntity {
 		this.id = id;
 	}
 
-	public void setAction(final ModelActionEntity action) {
-		this.action = action;
+	public ModelActionEntity getActionEntity() {
+		return actionEntity;
 	}
 
-	public ModelActionEntity getAction() {
-		return action;
+	public void setActionEntity(final ModelActionEntity actionEntity) {
+		this.actionEntity = actionEntity;
 	}
 
 	public void setTimestamp(final Date timestamp) {

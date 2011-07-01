@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
+package br.com.oncast.ontrack.server.services.persistence.jpa.mapping.review;
 
 import java.lang.reflect.Field;
 

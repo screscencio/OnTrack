@@ -2,8 +2,9 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
 
 import java.lang.reflect.Field;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.review.TypeMapper;
 
-public class SimpleMapper extends TypeMapper {
+class SimpleMapper extends TypeMapper {
 
 	public SimpleMapper(final TypeMapper myTrailer) {
 		super(myTrailer);
