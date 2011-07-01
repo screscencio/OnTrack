@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks;
 
-import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 
-@Convert(ModelActionMock.class)
+@ConvertTo(ModelActionMock.class)
 public class ModelActionEntityMock {
 	private String aString;
 

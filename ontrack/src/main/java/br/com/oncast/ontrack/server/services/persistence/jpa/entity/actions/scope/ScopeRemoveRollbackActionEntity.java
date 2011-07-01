@@ -7,11 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
 
 @Entity
-@Convert(ScopeRemoveRollbackAction.class)
+@ConvertTo(ScopeRemoveRollbackAction.class)
 public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 
 	private String referenceId;

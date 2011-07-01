@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentRollbackActionEntity;
-import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@Convert(ScopeInsertParentRollbackActionEntity.class)
+@ConvertTo(ScopeInsertParentRollbackActionEntity.class)
 public class ScopeInsertParentRollbackAction implements ScopeAction {
 
 	private UUID referenceId;
