@@ -3,11 +3,11 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentRollbackAction;
 
 @Entity
-@Convert(ScopeInsertParentRollbackAction.class)
+@ConvertTo(ScopeInsertParentRollbackAction.class)
 public class ScopeInsertParentRollbackActionEntity extends ModelActionEntity {
 
 	private String referenceId;

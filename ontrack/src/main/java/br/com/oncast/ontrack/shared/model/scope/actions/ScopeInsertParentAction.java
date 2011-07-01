@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentActionEntity;
-import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@Convert(ScopeInsertParentActionEntity.class)
+@ConvertTo(ScopeInsertParentActionEntity.class)
 public class ScopeInsertParentAction implements ScopeInsertAction {
 
 	private UUID referenceId;

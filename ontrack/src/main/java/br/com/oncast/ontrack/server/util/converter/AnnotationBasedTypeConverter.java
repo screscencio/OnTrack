@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.server.util.converter;
 import java.lang.reflect.Field;
 
 import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
-import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 
@@ -20,9 +20,9 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 	private Object createDestinationInstance(final Object sourceBean) throws BeanConverterException {
 		final Class<?> sourceBeanClass = sourceBean.getClass();
 
-		final Convert annotation = sourceBeanClass.getAnnotation(Convert.class);
+		final ConvertTo annotation = sourceBeanClass.getAnnotation(ConvertTo.class);
 		if (annotation == null) throw new BeanConverterException("The source class " + sourceBeanClass.getSimpleName() + " must be annotated with "
-				+ Convert.class);
+				+ ConvertTo.class);
 
 		Object destinationBean;
 		try {
