@@ -11,7 +11,7 @@ import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 
-@Entity
+@Entity(name = "ActionContainer")
 public class ActionContainerEntity {
 
 	@Id
