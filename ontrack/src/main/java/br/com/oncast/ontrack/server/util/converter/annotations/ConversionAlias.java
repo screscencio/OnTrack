@@ -5,11 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * This annotation marks a class that wants to be translated and persisted. You have to define a target class for which the annotated class will be translated.
- */
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface MapTo {
-	Class<?> value();
+public @interface ConversionAlias {
+	String value();
 }

@@ -3,11 +3,11 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.util.converter.annotations.MapTo;
+import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingUpAction;
 
 @Entity
-@MapTo(ScopeInsertSiblingUpAction.class)
+@Convert(ScopeInsertSiblingUpAction.class)
 public class ScopeInsertSiblingUpActionEntity extends ModelActionEntity {
 
 	private String referenceId;

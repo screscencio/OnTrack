@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public class GeneralTypeConverter implements TypeConverter {
 
 	private final static AnnotationBasedTypeConverter DEFAULT_CONVERTER = new AnnotationBasedTypeConverter();
-	public final static Map<Class<?>, TypeConverter> CUSTOM_CONVERTERS = new HashMap<Class<?>, TypeConverter>();
+	private final static Map<Class<?>, TypeConverter> CUSTOM_CONVERTERS = new HashMap<Class<?>, TypeConverter>();
 
 	public static void addCustomConverter(final Class<?> originClass, final TypeConverter customConverter) {
 		CUSTOM_CONVERTERS.put(originClass, customConverter);
@@ -25,8 +25,10 @@ public class GeneralTypeConverter implements TypeConverter {
 		addCustomConverter(Boolean.class, new BooleanConverter());
 		addCustomConverter(String.class, new StringConverter());
 		addCustomConverter(Integer.class, new IntegerConverter());
-		addCustomConverter(UUID.class, new UUIDConverter()); // FIXME
 		addCustomConverter(ArrayList.class, new ListConverter<ArrayList>(ArrayList.class));
+
+		// TODO Externalize this so that specific application converters are registered by the application itself.
+		addCustomConverter(UUID.class, new UUIDConverter());
 	}
 
 	@Override
