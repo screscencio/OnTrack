@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.server.business.exception.UnableToHandleAction;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -16,7 +15,11 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 
 public class BusinessLogic {
 
-	private final PersistenceService persistenceService = new PersistenceServiceJpaImpl();
+	private final PersistenceService persistenceService;
+
+	public BusinessLogic(final PersistenceService persistenceService) {
+		this.persistenceService = persistenceService;
+	}
 
 	public void handleIncomingAction(final ModelAction action) throws BusinessException {
 		try {
