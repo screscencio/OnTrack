@@ -1,7 +1,8 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.mapping;
+package br.com.oncast.ontrack.server.services.persistence.jpa.mapping.custom;
 
 import java.lang.reflect.Field;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.review.TypeMapper;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class UUIDMapper extends TypeMapper {

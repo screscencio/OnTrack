@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.annotations.MapTo;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentAction;
 
 @Entity

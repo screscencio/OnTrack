@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,24 +16,21 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.BeanMapper;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 
+// TODO Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
 
+	// FIXME Verificar exceções no JPA
 	@Override
-	public void persist(final ModelAction modelAction) {
-		System.out.println("Persisting entity...");
-
-		final ModelActionEntity entity = (ModelActionEntity) BeanMapper.map(modelAction);
-		final ActionContainerEntity container = new ActionContainerEntity();
-		container.setAction(entity);
+	public void persist(final ModelAction modelAction, final Date timestamp) {
+		// FIXME Rever mapper
+		final ActionContainerEntity container = new ActionContainerEntity((ModelActionEntity) new BeanMapper.map(modelAction), timestamp);
 
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		em.getTransaction().begin();
 		em.persist(container);
 		em.getTransaction().commit();
-
-		System.out.println("Entity persisted.");
 	}
 
 	@Override
@@ -43,7 +41,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 		final List<ModelAction> modelActionList = new ArrayList<ModelAction>();
 		for (final ActionContainerEntity action : actions) {
-			final ModelAction modelAction = (ModelAction) BeanMapper.map(action.getAction());
+			final ModelAction modelAction = (ModelAction) BeanMapper.map(action.getActionEntity());
 			modelActionList.add(modelAction);
 		}
 

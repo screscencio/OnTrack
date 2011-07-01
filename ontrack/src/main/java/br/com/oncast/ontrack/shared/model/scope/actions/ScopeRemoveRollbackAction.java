@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.shared.model.scope.actions;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveRollbackActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.MapTo;
+import br.com.oncast.ontrack.server.services.persistence.jpa.mapping.annotations.MapTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
