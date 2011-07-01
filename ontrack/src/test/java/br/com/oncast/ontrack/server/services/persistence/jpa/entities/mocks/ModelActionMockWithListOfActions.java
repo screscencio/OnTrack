@@ -3,9 +3,9 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.server.util.converter.annotations.MapTo;
+import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
 
-@MapTo(ModelActionEntityMockWithListOfActions.class)
+@Convert(ModelActionEntityMockWithListOfActions.class)
 public class ModelActionMockWithListOfActions {
 	private final String aString = "a string";
 

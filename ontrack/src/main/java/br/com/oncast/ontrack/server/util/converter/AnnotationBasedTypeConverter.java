@@ -2,7 +2,9 @@ package br.com.oncast.ontrack.server.util.converter;
 
 import java.lang.reflect.Field;
 
-import br.com.oncast.ontrack.server.util.converter.annotations.MapTo;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.util.converter.annotations.Convert;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 
 class AnnotationBasedTypeConverter implements TypeConverter {
@@ -18,9 +20,9 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 	private Object createDestinationInstance(final Object sourceBean) throws BeanConverterException {
 		final Class<?> sourceBeanClass = sourceBean.getClass();
 
-		final MapTo annotation = sourceBeanClass.getAnnotation(MapTo.class);
+		final Convert annotation = sourceBeanClass.getAnnotation(Convert.class);
 		if (annotation == null) throw new BeanConverterException("The source class " + sourceBeanClass.getSimpleName() + " must be annotated with "
-				+ MapTo.class);
+				+ Convert.class);
 
 		Object destinationBean;
 		try {
@@ -47,6 +49,28 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 		}
 	}
 
+	private Field findDestinationField(final Object destination, final Field sourceField) throws BeanConverterException {
+		Field field = null;
+		try {
+			final String sourceFieldRepresentationName = getFieldRepresentationName(sourceField);
+
+			final Field[] destinationFields = destination.getClass().getDeclaredFields();
+			for (final Field destinationField : destinationFields) {
+				final String destinationFieldRepresentationName = getFieldRepresentationName(destinationField);
+				if (!sourceFieldRepresentationName.equals(destinationFieldRepresentationName)) continue;
+
+				field = destinationField;
+				break;
+			}
+		}
+		catch (final SecurityException e) {
+			throw new BeanConverterException("It was not possible to access the mapping's destination field.", e);
+		}
+		if (field == null) throw new BeanConverterException("It was not possible to locate the mapping's destination field.");
+
+		return field;
+	}
+
 	private void mapField(final Object sourceInstance, final Field sourceField, final Object destinationInstance, final Field destinationField)
 			throws BeanConverterException {
 
@@ -65,25 +89,25 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 	}
 
 	private Object convertValue(final Field sourceField, final Object sourceFieldValue) throws BeanConverterException {
+		final TypeConverter converter = (sourceField.isAnnotationPresent(ConvertUsing.class)) ? instantiateConverter(sourceField.getAnnotation(
+				ConvertUsing.class).value()) : new GeneralTypeConverter();
 
-		new StringToUuidConverter().convert(sourceFieldValue);
-		// FIXME
-		return new GeneralTypeConverter().convert(sourceFieldValue);
+		return converter.convert(sourceFieldValue);
 	}
 
-	private Field findDestinationField(final Object destination, final Field sourceField) throws BeanConverterException {
-		Field field;
+	private TypeConverter instantiateConverter(final Class<? extends TypeConverter> converterClass) throws BeanConverterException {
+		TypeConverter instance;
 		try {
-			// FIXME Search for annotations in the fields.
-			field = destination.getClass().getDeclaredField(sourceField.getName());
+			instance = converterClass.newInstance();
 		}
-		catch (final SecurityException e) {
-			throw new BeanConverterException("It was not possible to access the mapping's destination field.", e);
+		catch (final Exception e) {
+			throw new BeanConverterException("It was not possible to instantiate the converter " + converterClass.getName() + ".");
 		}
-		catch (final NoSuchFieldException e) {
-			throw new BeanConverterException("It was not possible to locate the mapping's destination field.", e);
-		}
-		return field;
+		return instance;
+	}
+
+	private String getFieldRepresentationName(final Field field) {
+		return (field.isAnnotationPresent(ConversionAlias.class)) ? field.getAnnotation(ConversionAlias.class).value() : field.getName();
 	}
 
 	private Object getFieldValue(final Object instance, final Field field) throws BeanConverterException {
