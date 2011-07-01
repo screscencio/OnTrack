@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.annotations.MapTo;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveUpActionEntity;
+import br.com.oncast.ontrack.server.util.converter.annotations.MapTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;

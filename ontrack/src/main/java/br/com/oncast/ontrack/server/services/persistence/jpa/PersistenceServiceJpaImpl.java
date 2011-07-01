@@ -11,10 +11,10 @@ import javax.persistence.Query;
 
 import br.com.oncast.ontrack.server.services.persistence.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.BeanConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.exceptions.BeanConverterException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.ActionContainerEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
+import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 
@@ -37,6 +37,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@Override
 	public Project loadProjectSnapshot() {
+		// FIXME
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		final Query query = em.createQuery("select action from " + ActionContainerEntity.class.getSimpleName() + " as action");
 		final List<ActionContainerEntity> actions = query.getResultList();
@@ -45,7 +46,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		for (final ActionContainerEntity action : actions) {
 			ModelAction modelAction;
 			try {
-				modelAction = (ModelAction) new BeanConverter().convert(action.getActionEntity());
+				modelAction = (ModelAction) new GeneralTypeConverter().convert(action.getActionEntity());
 				modelActionList.add(modelAction);
 			}
 			catch (final BeanConverterException e) {
@@ -60,7 +61,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	private ModelActionEntity convertActionToEntity(final ModelAction modelAction) throws PersistenceException {
 		ModelActionEntity entity;
 		try {
-			entity = (ModelActionEntity) new BeanConverter().convert(modelAction);
+			entity = (ModelActionEntity) new GeneralTypeConverter().convert(modelAction);
 		}
 		catch (final BeanConverterException e) {
 			throw new PersistenceException("It was not possible to convert the action to its entity", e);

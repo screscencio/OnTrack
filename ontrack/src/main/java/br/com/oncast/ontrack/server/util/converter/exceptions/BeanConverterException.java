@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.exceptions;
+package br.com.oncast.ontrack.server.util.converter.exceptions;
 
 public class BeanConverterException extends Exception {
 

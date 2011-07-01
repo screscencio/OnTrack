@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 
 import javax.persistence.Entity;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.annotations.MapTo;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.util.converter.annotations.MapTo;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 
 @Entity
