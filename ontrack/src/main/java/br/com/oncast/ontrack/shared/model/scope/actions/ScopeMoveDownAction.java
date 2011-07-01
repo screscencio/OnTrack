@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveDownActionEntity;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -11,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(ScopeMoveDownActionEntity.class)
 public class ScopeMoveDownAction implements ScopeMoveAction {
 
+	@ConversionAlias("referenceId")
 	private UUID referenceId;
 
 	public ScopeMoveDownAction(final UUID referenceId) {

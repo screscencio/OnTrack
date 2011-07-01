@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertSiblingDownActionEntity;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -11,8 +12,13 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(ScopeInsertSiblingDownActionEntity.class)
 public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 
+	@ConversionAlias("referenceId")
 	private UUID referenceId;
+
+	@ConversionAlias("newScopeId")
 	private UUID newScopeId;
+
+	@ConversionAlias("pattern")
 	private String pattern;
 
 	public ScopeInsertSiblingDownAction(final Scope selectedScope, final String pattern) {

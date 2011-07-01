@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.server.util.converter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@SuppressWarnings("rawtypes")
 public class GeneralTypeConverter implements TypeConverter {
 
 	private final static AnnotationBasedTypeConverter DEFAULT_CONVERTER = new AnnotationBasedTypeConverter();

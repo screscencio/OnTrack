@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.scope.actions;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveRollbackActionEntity;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -14,17 +15,28 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(ScopeRemoveRollbackActionEntity.class)
 public class ScopeRemoveRollbackAction implements ScopeAction {
 
+	@ConversionAlias("referenceId")
+	private UUID referenceId;
+
+	@ConversionAlias("parentScopeId")
 	private UUID parentScopeId;
+
+	@ConversionAlias("index")
 	private int index;
+
+	@ConversionAlias("description")
 	private String description;
+
+	@ConversionAlias("releaseId")
 	private UUID releaseId;
+
+	@ConversionAlias("childActionList")
 	private List<ScopeRemoveRollbackAction> childActionList;
-	private UUID selectedScopeId;
 
 	public ScopeRemoveRollbackAction(final UUID parentScopeId, final UUID selectedScopeId, final String description, final UUID releaseId, final int index,
 			final List<ScopeRemoveRollbackAction> childActionList) {
 		this.parentScopeId = parentScopeId;
-		this.selectedScopeId = selectedScopeId;
+		this.referenceId = selectedScopeId;
 		this.index = index;
 		this.description = description;
 		this.releaseId = releaseId;
@@ -37,7 +49,7 @@ public class ScopeRemoveRollbackAction implements ScopeAction {
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope parent = context.findScope(parentScopeId);
-		final Scope newScope = new Scope(description, selectedScopeId);
+		final Scope newScope = new Scope(description, referenceId);
 		final Release release = releaseId != null ? context.findRelease(releaseId) : null;
 
 		parent.add(index, newScope);
@@ -48,12 +60,12 @@ public class ScopeRemoveRollbackAction implements ScopeAction {
 		for (final ScopeRemoveRollbackAction childAction : childActionList)
 			childAction.execute(context);
 
-		return new ScopeRemoveAction(selectedScopeId);
+		return new ScopeRemoveAction(referenceId);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return selectedScopeId;
+		return referenceId;
 	}
 
 }
