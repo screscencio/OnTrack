@@ -15,7 +15,9 @@ public class ScopeInsertChildActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String referenceId;
 
+	@ConvertUsing(StringToUuidConverter.class)
 	private String newScopeId;
+
 	private String pattern;
 
 	public String getReferenceId() {

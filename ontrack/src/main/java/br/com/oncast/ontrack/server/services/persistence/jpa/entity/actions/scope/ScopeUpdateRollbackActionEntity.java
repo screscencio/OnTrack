@@ -4,15 +4,21 @@ import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.util.converter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateRollbackAction;
 
 @Entity
 @ConvertTo(ScopeUpdateRollbackAction.class)
 public class ScopeUpdateRollbackActionEntity extends ModelActionEntity {
 
+	@ConvertUsing(StringToUuidConverter.class)
 	private String referenceId;
+
 	private String newPattern;
+
 	private String oldDescription;
+
 	private String oldReleaseDescription;
 
 	public String getReferenceId() {

@@ -8,16 +8,25 @@ import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.util.converter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
 
 @Entity
 @ConvertTo(ScopeRemoveRollbackAction.class)
 public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 
+	@ConvertUsing(StringToUuidConverter.class)
 	private String referenceId;
+
+	@ConvertUsing(StringToUuidConverter.class)
 	private String parentScopeId;
+
 	private int index;
+
 	private String description;
+
+	@ConvertUsing(StringToUuidConverter.class)
 	private String releaseId;
 
 	@OneToMany(cascade = CascadeType.ALL)

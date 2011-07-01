@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeUpdateActionEntity;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -13,7 +14,10 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(ScopeUpdateActionEntity.class)
 public class ScopeUpdateAction implements ScopeAction {
 
+	@ConversionAlias("referenceId")
 	private UUID referenceId;
+
+	@ConversionAlias("newPattern")
 	private String newPattern;
 
 	public ScopeUpdateAction(final UUID selectedScopeId, final String newPattern) {

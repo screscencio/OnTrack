@@ -4,14 +4,20 @@ import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.util.converter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentAction;
 
 @Entity
 @ConvertTo(ScopeInsertParentAction.class)
 public class ScopeInsertParentActionEntity extends ModelActionEntity {
 
+	@ConvertUsing(StringToUuidConverter.class)
 	private String referenceId;
+
+	@ConvertUsing(StringToUuidConverter.class)
 	private String newScopeId;
+
 	private String pattern;
 
 	public String getReferenceId() {
