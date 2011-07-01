@@ -1,10 +1,10 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.custom;
+package br.com.oncast.ontrack.server.util.converter.custom;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.BeanConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.TypeConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.exceptions.BeanConverterException;
+import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
+import br.com.oncast.ontrack.server.util.converter.TypeConverter;
+import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ListConverter<T extends List> implements TypeConverter {
@@ -22,7 +22,7 @@ public class ListConverter<T extends List> implements TypeConverter {
 
 		final T convertedList = createNewList();
 		for (final Object item : list)
-			convertedList.add(new BeanConverter().convert(item));
+			convertedList.add(new GeneralTypeConverter().convert(item));
 
 		return convertedList;
 	}

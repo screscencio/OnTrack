@@ -13,10 +13,12 @@ public class BusinessLogic {
 	private final PersistenceService persistenceService = new PersistenceServiceJpaImpl();
 
 	public void handleIncomingAction(final ModelAction action) {
+		// FIXME
 		persistenceService.persist(action, new Date());
 	}
 
 	public Project loadProject() {
+		// FIXME
 		final ProjectSnapshot snapshot = persistenceService.retrieveProjectSnapshot();
 		final Date timestamp = snapshot.getTimestamp();
 		final List<ModelAction> actionList = persistenceService.retrieveActionsSince(timestamp);

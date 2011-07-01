@@ -1,18 +1,18 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter;
+package br.com.oncast.ontrack.server.util.converter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.custom.BooleanConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.custom.IntegerConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.custom.ListConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.custom.StringConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.custom.UUIDConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.exceptions.BeanConverterException;
+import br.com.oncast.ontrack.server.util.converter.custom.BooleanConverter;
+import br.com.oncast.ontrack.server.util.converter.custom.IntegerConverter;
+import br.com.oncast.ontrack.server.util.converter.custom.ListConverter;
+import br.com.oncast.ontrack.server.util.converter.custom.StringConverter;
+import br.com.oncast.ontrack.server.util.converter.custom.UUIDConverter;
+import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class BeanConverter implements TypeConverter {
+public class GeneralTypeConverter implements TypeConverter {
 
 	private final static AnnotationBasedTypeConverter DEFAULT_CONVERTER = new AnnotationBasedTypeConverter();
 	public final static Map<Class<?>, TypeConverter> CUSTOM_CONVERTERS = new HashMap<Class<?>, TypeConverter>();
@@ -25,7 +25,7 @@ public class BeanConverter implements TypeConverter {
 		addCustomConverter(Boolean.class, new BooleanConverter());
 		addCustomConverter(String.class, new StringConverter());
 		addCustomConverter(Integer.class, new IntegerConverter());
-		addCustomConverter(UUID.class, new UUIDConverter());
+		addCustomConverter(UUID.class, new UUIDConverter()); // FIXME
 		addCustomConverter(ArrayList.class, new ListConverter<ArrayList>(ArrayList.class));
 	}
 

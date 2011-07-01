@@ -4,12 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.BeanConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.exceptions.BeanConverterException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionEntityMock;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionEntityMockWithListOfActions;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionMock;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionMockWithListOfActions;
+import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
+import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class BeanConverterTest {
@@ -20,7 +20,7 @@ public class BeanConverterTest {
 	@Test
 	public void shouldMapAClassWithSimpleAttributeTypes() throws Exception {
 		final ModelActionMock modelAction = new ModelActionMock();
-		final ModelActionEntityMock entity = (ModelActionEntityMock) new BeanConverter().convert(modelAction);
+		final ModelActionEntityMock entity = (ModelActionEntityMock) new GeneralTypeConverter().convert(modelAction);
 
 		assertEquals(modelAction.getAString(), entity.getAString());
 	}
@@ -28,7 +28,7 @@ public class BeanConverterTest {
 	@Test
 	public void shouldConvertAnInteger() throws BeanConverterException {
 		final int original = 1;
-		final Object converted = new BeanConverter().convert(original);
+		final Object converted = new GeneralTypeConverter().convert(original);
 
 		assertEquals(original, converted);
 	}
@@ -36,7 +36,7 @@ public class BeanConverterTest {
 	@Test
 	public void shouldConvertAnUUID() throws BeanConverterException {
 		final UUID original = new UUID();
-		final Object converted = new BeanConverter().convert(original);
+		final Object converted = new GeneralTypeConverter().convert(original);
 
 		assertEquals(original.toStringRepresentation(), converted);
 	}
@@ -44,7 +44,7 @@ public class BeanConverterTest {
 	@Test
 	public void shouldConvertAnBoolean() throws BeanConverterException {
 		final boolean original = true;
-		final Object converted = new BeanConverter().convert(original);
+		final Object converted = new GeneralTypeConverter().convert(original);
 
 		assertEquals(original, converted);
 	}
@@ -56,7 +56,7 @@ public class BeanConverterTest {
 		modelAction.addAction(new ModelActionMockWithListOfActions());
 		modelAction.addAction(new ModelActionMockWithListOfActions());
 
-		final ModelActionEntityMockWithListOfActions entity = (ModelActionEntityMockWithListOfActions) new BeanConverter().convert(modelAction);
+		final ModelActionEntityMockWithListOfActions entity = (ModelActionEntityMockWithListOfActions) new GeneralTypeConverter().convert(modelAction);
 
 		assertEquals(modelAction.getAnActionList().size(), entity.getAnActionList().size());
 

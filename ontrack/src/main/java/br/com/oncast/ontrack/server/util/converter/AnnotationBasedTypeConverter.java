@@ -1,9 +1,9 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter;
+package br.com.oncast.ontrack.server.util.converter;
 
 import java.lang.reflect.Field;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.annotations.MapTo;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.exceptions.BeanConverterException;
+import br.com.oncast.ontrack.server.util.converter.annotations.MapTo;
+import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 
 class AnnotationBasedTypeConverter implements TypeConverter {
 
@@ -19,7 +19,8 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 		final Class<?> sourceBeanClass = sourceBean.getClass();
 
 		final MapTo annotation = sourceBeanClass.getAnnotation(MapTo.class);
-		if (annotation == null) throw new BeanConverterException("The source class " + sourceBeanClass.getSimpleName() + " must be annotated with " + MapTo.class);
+		if (annotation == null) throw new BeanConverterException("The source class " + sourceBeanClass.getSimpleName() + " must be annotated with "
+				+ MapTo.class);
 
 		Object destinationBean;
 		try {
@@ -48,6 +49,7 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 
 	private void mapField(final Object sourceInstance, final Field sourceField, final Object destinationInstance, final Field destinationField)
 			throws BeanConverterException {
+
 		final boolean sourceFieldAccessibility = sourceField.isAccessible();
 		if (!sourceFieldAccessibility) sourceField.setAccessible(true);
 
@@ -55,11 +57,18 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 		if (!destinationFieldAccessibility) destinationField.setAccessible(true);
 
 		final Object sourceFieldValue = getFieldValue(sourceInstance, sourceField);
-		final Object destinationFieldValue = new BeanConverter().convert(sourceFieldValue);
+		final Object destinationFieldValue = convertValue(sourceField, sourceFieldValue);
 		setFieldValue(destinationInstance, destinationField, destinationFieldValue);
 
 		sourceField.setAccessible(sourceFieldAccessibility);
 		destinationField.setAccessible(destinationFieldAccessibility);
+	}
+
+	private Object convertValue(final Field sourceField, final Object sourceFieldValue) throws BeanConverterException {
+
+		new StringToUuidConverter().convert(sourceFieldValue);
+		// FIXME
+		return new GeneralTypeConverter().convert(sourceFieldValue);
 	}
 
 	private Field findDestinationField(final Object destination, final Field sourceField) throws BeanConverterException {

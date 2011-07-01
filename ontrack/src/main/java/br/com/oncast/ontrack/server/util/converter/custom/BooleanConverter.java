@@ -1,7 +1,7 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.custom;
+package br.com.oncast.ontrack.server.util.converter.custom;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.TypeConverter;
-import br.com.oncast.ontrack.server.services.persistence.jpa.beanConverter.exceptions.BeanConverterException;
+import br.com.oncast.ontrack.server.util.converter.TypeConverter;
+import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
 
 public class BooleanConverter implements TypeConverter {
 
