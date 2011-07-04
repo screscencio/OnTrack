@@ -40,7 +40,7 @@ public class InsertSiblingDownScopeActionTest {
 		assertEquals(firstChild.getParent().getChildren().get(firstChild.getParent().getChildIndex(firstChild) + 1), lastChild);
 		assertEquals(2, rootScope.getChildren().size());
 
-		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild, newScopeDescription);
+		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild.getId(), newScopeDescription);
 		insertSiblingDownScopeAction.execute(context);
 
 		assertEquals(3, rootScope.getChildren().size());
@@ -50,7 +50,7 @@ public class InsertSiblingDownScopeActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantAddSiblingDown() throws UnableToCompleteActionException {
-		new ScopeInsertSiblingDownAction(rootScope, "text").execute(context);
+		new ScopeInsertSiblingDownAction(rootScope.getId(), "text").execute(context);
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class InsertSiblingDownScopeActionTest {
 		assertEquals(firstChild.getParent().getChildren().get(firstChild.getParent().getChildIndex(firstChild) + 1), lastChild);
 		assertEquals(2, rootScope.getChildren().size());
 
-		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild, newScopeDescription);
+		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild.getId(), newScopeDescription);
 		final ModelAction rollbackAction = insertSiblingDownScopeAction.execute(context);
 
 		assertEquals(3, rootScope.getChildren().size());

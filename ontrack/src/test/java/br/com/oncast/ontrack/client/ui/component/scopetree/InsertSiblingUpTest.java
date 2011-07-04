@@ -83,7 +83,7 @@ public class InsertSiblingUpTest extends GwtTest {
 
 	@Test
 	public void shouldInsertSiblingUp() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope, newScopeDescription));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope.getId(), newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));
@@ -91,12 +91,12 @@ public class InsertSiblingUpTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotInsertSiblingUpForRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(rootScope, newScopeDescription));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(rootScope.getId(), newScopeDescription));
 	}
 
 	@Test
 	public void shouldRemoveInsertedSiblingAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope, newScopeDescription));
+		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingUpAction(firstScope.getId(), newScopeDescription));
 
 		assertTrue(getModifiedScope().deepEquals(scope));
 		assertTrue(getModifiedTree().deepEquals(tree));

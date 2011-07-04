@@ -21,8 +21,8 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 	@ConversionAlias("pattern")
 	private String pattern;
 
-	public ScopeInsertSiblingDownAction(final Scope selectedScope, final String pattern) {
-		this.referenceId = selectedScope.getId();
+	public ScopeInsertSiblingDownAction(final UUID selectedScopeId, final String pattern) {
+		this.referenceId = selectedScopeId;
 		this.pattern = pattern;
 		this.newScopeId = new UUID();
 	}
