@@ -1,11 +1,12 @@
 package br.com.oncast.ontrack.server.util.converter;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
 
 class AnnotationBasedTypeConverter implements TypeConverter {
 
@@ -26,16 +27,28 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 
 		Object destinationBean;
 		try {
-			destinationBean = annotation.value().newInstance();
-		}
-		catch (final InstantiationException e) {
-			throw new BeanConverterException("The mapping's destination class could not be instantiated.", e);
+			final Class<?> clazz = annotation.value();
+			final Constructor<?> constructor = clazz.getDeclaredConstructor();
+			final boolean constructorAccessibility = constructor.isAccessible();
+			constructor.setAccessible(true);
+			destinationBean = constructor.newInstance();
+			constructor.setAccessible(constructorAccessibility);
 		}
 		catch (final IllegalAccessException e) {
 			throw new BeanConverterException("The mapping's destination class could not be accessed.", e);
 		}
 		catch (final ClassCastException e) {
 			throw new BeanConverterException("The mapping's destination class cannot be instantiated to the specified generic type.", e);
+		}
+		catch (final SecurityException e) {
+			throw new BeanConverterException("The mapping's destination class could not be instantiated because of security reasons.", e);
+		}
+		catch (final NoSuchMethodException e) {
+			throw new BeanConverterException(
+					"The mapping's destination class could not be instantiated because there is no default constructor (may be protected).", e);
+		}
+		catch (final Exception e) {
+			throw new BeanConverterException("The mapping's destination class could not be instantiated.", e);
 		}
 
 		return destinationBean;

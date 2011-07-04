@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.Mode
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionMock;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionMockWithListOfActions;
 import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
-import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class BeanConverterTest {

@@ -3,11 +3,11 @@ package br.com.oncast.ontrack.server.business;
 import java.util.Date;
 import java.util.List;
 
-import br.com.oncast.ontrack.server.business.exception.BusinessException;
-import br.com.oncast.ontrack.server.business.exception.UnableToHandleAction;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
+import br.com.oncast.ontrack.shared.exceptions.persistence.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -21,32 +21,35 @@ public class BusinessLogic {
 		this.persistenceService = persistenceService;
 	}
 
-	public void handleIncomingAction(final ModelAction action) throws BusinessException {
+	public void handleIncomingAction(final ModelAction action) throws UnableToHandleActionException {
 		try {
 			persistenceService.persist(action, new Date());
 		}
 		catch (final PersistenceException e) {
-			throw new UnableToHandleAction(e);
+			throw new UnableToHandleActionException("The server could not process the action.", e);
 		}
 	}
 
-	public Project loadProject() throws BusinessException {
-		ProjectSnapshot snapshot;
+	public Project loadProject() throws UnableToLoadProjectException {
 		try {
-			snapshot = persistenceService.retrieveProjectSnapshot();
+			final ProjectSnapshot snapshot = persistenceService.retrieveProjectSnapshot();
 			final List<ModelAction> actionList = persistenceService.retrieveActionsSince(snapshot.getTimestamp());
-			return executeActions(actionList, snapshot.getProject());
+			return applyActionsToProjectSnapshot(snapshot, actionList);
 		}
 		catch (final Exception e) {
-			throw new BusinessException("There was not possible to load the project.", e);
+			// TODO Support beter exception handling (eg. passing the cause exception)
+			throw new UnableToLoadProjectException("The server could not load the project", e);
 		}
 	}
 
-	private Project executeActions(final List<ModelAction> actionList, final Project project) throws UnableToCompleteActionException {
-		for (final ModelAction action : actionList) {
-			action.execute(new ProjectContext(project));
-		}
-		return null;
-	}
+	// TODO Extract the action execution logic to an appropriate manager.
+	private Project applyActionsToProjectSnapshot(final ProjectSnapshot snapshot, final List<ModelAction> actionList) throws UnableToCompleteActionException {
+		final Project project = snapshot.getProject();
+		final ProjectContext projectContext = new ProjectContext(project);
 
+		for (final ModelAction action : actionList)
+			action.execute(projectContext);
+
+		return project;
+	}
 }

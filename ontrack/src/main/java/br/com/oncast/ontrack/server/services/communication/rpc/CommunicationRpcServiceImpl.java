@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.server.services.communication.rpc;
 
 import br.com.oncast.ontrack.client.services.communication.rpc.CommunicationRpcService;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.business.exception.BusinessException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
+import br.com.oncast.ontrack.shared.exceptions.business.BusinessException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 
@@ -16,29 +16,16 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 	private final BusinessLogic business = new BusinessLogic(new PersistenceServiceJpaImpl());
 
 	@Override
-	public void transmitAction(final ModelAction action) {
+	public void transmitAction(final ModelAction action) throws BusinessException {
 		// TODO Remover SYSO
 		System.out.println("Action received: " + action.getClass().getSimpleName() + " for " + action.getReferenceId());
-		try {
-			business.handleIncomingAction(action);
-		}
-		catch (final BusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		business.handleIncomingAction(action);
 	}
 
 	@Override
-	public Project loadProject() {
+	public Project loadProject() throws BusinessException {
 		// TODO Remover SYSO
 		System.out.println("Loading project...");
-		try {
-			return business.loadProject();
-		}
-		catch (final BusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return business.loadProject();
 	}
 }

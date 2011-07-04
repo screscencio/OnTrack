@@ -12,14 +12,17 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.ActionContainerEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
-import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.persistence.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 public class PersistenceServiceJpaImpl implements PersistenceService {
@@ -30,40 +33,56 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	@Override
 	public void persist(final ModelAction modelAction, final Date timestamp) throws PersistenceException {
 		final ModelActionEntity entity = convertActionToEntity(modelAction);
-		final ActionContainerEntity container = new ActionContainerEntity(entity, timestamp);
+		final UserActionEntity container = new UserActionEntity(entity, timestamp);
 
 		final EntityManager em = entityManagerFactory.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(container);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			em.persist(container);
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to persist an action.", e);
+		}
+		finally {
+			em.close();
+		}
 	}
 
-	// TODO Change to an implementation that use a database
+	// TODO Implement a query to obtain a real project snapshot instead of this mocked one.
 	@Override
 	public ProjectSnapshot retrieveProjectSnapshot() {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(2011, 1, 1);
 
-		return new ProjectSnapshot(new Project(), calendar.getTime());
+		return new ProjectSnapshot(new Project(new Scope("Project", new UUID("0")), new Release("proj")), calendar.getTime());
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<ModelAction> retrieveActionsSince(final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
-		final Query query = em
-				.createQuery("select action from ActionContainerEntity as action where action.timestamp > ?timestamp order by action.timestamp asc");
-		query.setParameter("timestamp", timestamp, TemporalType.TIMESTAMP);
-		final List<ActionContainerEntity> actions = query.getResultList();
-
-		final List<ModelAction> modelActionList = new ArrayList<ModelAction>();
-		for (final ActionContainerEntity action : actions) {
-			try {
-				modelActionList.add((ModelAction) new GeneralTypeConverter().convert(action.getActionEntity()));
+		final List<ModelAction> modelActionList;
+		try {
+			final Query query = em
+					.createQuery("select action from UserActionEntity as action where action.timestamp > :timestamp order by action.timestamp asc");
+			query.setParameter("timestamp", timestamp, TemporalType.TIMESTAMP);
+			final List<UserActionEntity> actions = query.getResultList();
+			modelActionList = new ArrayList<ModelAction>();
+			for (final UserActionEntity action : actions) {
+				try {
+					modelActionList.add((ModelAction) new GeneralTypeConverter().convert(action.getActionEntity()));
+				}
+				catch (final BeanConverterException e) {
+					throw new PersistenceException("It was not possible to convert actions.", e);
+				}
 			}
-			catch (final BeanConverterException e) {
-				throw new PersistenceException("There was not possible to retrieve actions.", e);
-			}
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project actions.", e);
+		}
+		finally {
+			em.close();
 		}
 
 		return modelActionList;

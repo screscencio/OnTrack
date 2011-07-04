@@ -23,6 +23,7 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 	public ScopeInsertParentAction(final UUID selectedScopeId, final String pattern) {
 		this.referenceId = selectedScopeId;
 		this.pattern = pattern;
+		this.newScopeId = new UUID();
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -37,8 +38,7 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 		final int index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
 
-		final Scope newScope = new Scope("");
-		newScopeId = newScope.getId();
+		final Scope newScope = new Scope("", newScopeId);
 
 		parent.add(index, newScope);
 		newScope.add(selectedScope);

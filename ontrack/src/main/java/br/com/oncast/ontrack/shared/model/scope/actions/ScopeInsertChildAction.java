@@ -24,6 +24,7 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	public ScopeInsertChildAction(final UUID referenceId, final String pattern) {
 		this.referenceId = referenceId;
 		this.pattern = pattern;
+		this.newScopeId = new UUID();
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -33,10 +34,7 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = context.findScope(referenceId);
 
-		final Scope newScope = new Scope("");
-		newScopeId = newScope.getId();
-
-		selectedScope.add(newScope);
+		selectedScope.add(new Scope("", newScopeId));
 
 		new ScopeUpdateAction(newScopeId, pattern).execute(context);
 		return new ScopeRemoveAction(newScopeId);
