@@ -38,6 +38,6 @@ public class InsertSiblingDownInternalAction implements InternalAction {
 
 	@Override
 	public ModelAction createEquivalentModelAction(final String value) {
-		return new ScopeInsertSiblingDownAction(scope, value);
+		return new ScopeInsertSiblingDownAction(scope.getId(), value);
 	}
 }
