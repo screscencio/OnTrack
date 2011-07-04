@@ -2,19 +2,18 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 
 @Entity
-@Table(name = "ActionContainer")
-public class ActionContainerEntity {
+public class UserActionEntity {
 
 	@Id
 	@GeneratedValue
@@ -23,12 +22,12 @@ public class ActionContainerEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private ModelActionEntity actionEntity;
 
-	public ActionContainerEntity() {}
+	public UserActionEntity() {}
 
-	public ActionContainerEntity(final ModelActionEntity actionEntity, final Date timestamp) {
+	public UserActionEntity(final ModelActionEntity actionEntity, final Date timestamp) {
 		this.actionEntity = actionEntity;
 		this.timestamp = timestamp;
 	}

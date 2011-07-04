@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.util.converter.custom.StringToUuidConverter;
@@ -15,7 +16,8 @@ public class ScopeMoveRightActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String referenceId;
 
-	private int position;
+	@ConversionAlias("position")
+	private int pos;
 
 	private boolean wasIndexSet;
 
@@ -27,14 +29,6 @@ public class ScopeMoveRightActionEntity extends ModelActionEntity {
 		this.referenceId = referenceId;
 	}
 
-	public int getPosition() {
-		return position;
-	}
-
-	public void setPosition(final int position) {
-		this.position = position;
-	}
-
 	public boolean isWasIndexSet() {
 		return wasIndexSet;
 	}
@@ -42,4 +36,13 @@ public class ScopeMoveRightActionEntity extends ModelActionEntity {
 	public void setWasIndexSet(final boolean wasIndexSet) {
 		this.wasIndexSet = wasIndexSet;
 	}
+
+	public int getPos() {
+		return pos;
+	}
+
+	public void setPos(final int pos) {
+		this.pos = pos;
+	}
+
 }

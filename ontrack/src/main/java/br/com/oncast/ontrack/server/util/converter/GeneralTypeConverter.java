@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.server.util.converter.custom.IntegerConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.ListConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.StringConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.UUIDConverter;
-import br.com.oncast.ontrack.server.util.converter.exceptions.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @SuppressWarnings("rawtypes")

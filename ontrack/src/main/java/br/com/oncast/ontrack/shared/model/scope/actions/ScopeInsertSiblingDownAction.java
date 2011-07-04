@@ -24,6 +24,7 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 	public ScopeInsertSiblingDownAction(final Scope selectedScope, final String pattern) {
 		this.referenceId = selectedScope.getId();
 		this.pattern = pattern;
+		this.newScopeId = new UUID();
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -34,8 +35,7 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 		final Scope selectedScope = context.findScope(referenceId);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
 
-		final Scope newScope = new Scope("");
-		newScopeId = newScope.getId();
+		final Scope newScope = new Scope("", newScopeId);
 
 		final Scope parent = selectedScope.getParent();
 		parent.add(parent.getChildIndex(selectedScope) + 1, newScope);

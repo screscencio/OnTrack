@@ -26,6 +26,7 @@ public class CommunicationService {
 			@Override
 			public void onFailure(final Throwable caught) {
 				dispatchCallback.onFailure(caught);
+				caught.printStackTrace();
 			}
 		});
 	}
@@ -41,6 +42,7 @@ public class CommunicationService {
 			@Override
 			public void onFailure(final Throwable caught) {
 				dispatchCallback.onFailure(caught);
+				caught.printStackTrace();
 			}
 		});
 	}
