@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.util.converter.custom.BooleanConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.IntegerConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.ListConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.StringConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.UUIDConverter;
+import br.com.oncast.ontrack.server.util.converter.custom.UserActionEntityConverter;
 import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -30,6 +32,7 @@ public class GeneralTypeConverter implements TypeConverter {
 
 		// TODO Externalize this so that specific application converters are registered by the application itself.
 		addCustomConverter(UUID.class, new UUIDConverter());
+		addCustomConverter(UserActionEntity.class, new UserActionEntityConverter());
 	}
 
 	@Override

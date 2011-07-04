@@ -108,7 +108,7 @@ public class BusinessLogicTest {
 			}
 
 			@Override
-			public void persist(final ModelAction action, final Date timestamp) throws PersistenceException {
+			public void persistAction(final ModelAction action, final Date timestamp) throws PersistenceException {
 				actions.add(action);
 			}
 		};
