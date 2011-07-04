@@ -23,22 +23,25 @@ public class BusinessLogic {
 
 	public void handleIncomingAction(final ModelAction action) throws UnableToHandleActionException {
 		try {
-			persistenceService.persist(action, new Date());
+			persistenceService.persistAction(action, new Date());
 		}
 		catch (final PersistenceException e) {
 			throw new UnableToHandleActionException("The server could not process the action.", e);
 		}
 	}
 
+	// TODO Persist new snapshot after restoring the project correctly.
 	public Project loadProject() throws UnableToLoadProjectException {
 		try {
 			final ProjectSnapshot snapshot = persistenceService.retrieveProjectSnapshot();
 			final List<ModelAction> actionList = persistenceService.retrieveActionsSince(snapshot.getTimestamp());
 			return applyActionsToProjectSnapshot(snapshot, actionList);
 		}
-		catch (final Exception e) {
-			// TODO Support beter exception handling (eg. passing the cause exception)
-			throw new UnableToLoadProjectException("The server could not load the project", e);
+		catch (final PersistenceException e) {
+			throw new UnableToLoadProjectException("The server could not load the project: An persistence exception occured.", e);
+		}
+		catch (final UnableToCompleteActionException e) {
+			throw new UnableToLoadProjectException("The server could not load the project: The project state could not be correctly restored.", e);
 		}
 	}
 

@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 
 public interface PersistenceService {
 
-	public void persist(final ModelAction action, final Date timestamp) throws PersistenceException;
+	public void persistAction(final ModelAction action, final Date timestamp) throws PersistenceException;
 
 	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException;
 
