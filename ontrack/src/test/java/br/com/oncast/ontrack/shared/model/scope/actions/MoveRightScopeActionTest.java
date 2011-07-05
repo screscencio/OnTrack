@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.scope.actions;
+package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import static org.junit.Assert.assertEquals;
 

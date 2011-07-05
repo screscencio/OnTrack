@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.scope;
 
 import java.util.List;
 
+import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
@@ -17,6 +18,7 @@ public class Scope implements DeeplyComparable, IsSerializable {
 	private Scope parent;
 	private DeeplyComparableList<Scope> childrenList;
 	private Release release;
+	private Effort effort;
 
 	protected Scope() {}
 
@@ -27,6 +29,7 @@ public class Scope implements DeeplyComparable, IsSerializable {
 	public Scope(final String description, final UUID scopeId) {
 		this.id = scopeId;
 		this.description = description;
+		this.effort = new Effort();
 
 		childrenList = new DeeplyComparableList<Scope>();
 	}
@@ -41,6 +44,10 @@ public class Scope implements DeeplyComparable, IsSerializable {
 
 	public List<Scope> getChildren() {
 		return childrenList;
+	}
+
+	public Effort getEffort() {
+		return effort;
 	}
 
 	public Scope add(final Scope scope) {
@@ -133,5 +140,4 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		else if (!description.equals(other.description)) return false;
 		return true;
 	}
-
 }

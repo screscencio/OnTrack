@@ -20,6 +20,6 @@ public class ScopeTreeItemEditionCancelEvent extends GwtEvent<ScopeTreeItemEditi
 
 	@Override
 	protected void dispatch(final ScopeTreeItemEditionCancelEventHandler handler) {
-		handler.onItemEditCancelation();
+		handler.onItemEditionCancel();
 	}
 }
