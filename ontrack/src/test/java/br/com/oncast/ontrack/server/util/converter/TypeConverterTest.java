@@ -1,18 +1,18 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.entities;
+package br.com.oncast.ontrack.server.util.converter;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionEntityMock;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionEntityMockWithListOfActions;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionMock;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks.ModelActionMockWithListOfActions;
 import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
+import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionEntityMock;
+import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionEntityMockWithListOfActions;
+import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionMock;
+import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionMockWithListOfActions;
 import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class BeanConverterTest {
+public class TypeConverterTest {
 
 	/**
 	 * Simple attribute types are String and primitive types.

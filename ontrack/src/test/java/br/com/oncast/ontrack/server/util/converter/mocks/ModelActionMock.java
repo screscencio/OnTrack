@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa.entities.mocks;
+package br.com.oncast.ontrack.server.util.converter.mocks;
 
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 
