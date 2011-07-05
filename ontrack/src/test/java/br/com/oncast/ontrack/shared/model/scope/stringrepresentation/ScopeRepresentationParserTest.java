@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.scope.pattern;
+package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -8,7 +8,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.MalformedScopeException;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 
-public class ScopePatternParserTest {
+public class ScopeRepresentationParserTest {
 
 	private static final String STORY = "Isto é uma história";
 	private static final String SPACE = " ";
@@ -18,6 +18,7 @@ public class ScopePatternParserTest {
 	private static final String RELEASE_WITH_QUOTES_EXPECTED = "Release 1";
 	private static final String RELEASE_PLUS_ITERATION = "@R1/It1";
 	private static final String RELEASE_PLUS_ITERATION_EXPECTED = "R1/It1";
+	private static final String EFFORT = "#2";
 
 	@Test
 	public void shouldMatchScope() {
@@ -83,6 +84,15 @@ public class ScopePatternParserTest {
 
 		assertEquals(STORY + numbers, parser.getScopeDescription());
 		assertEquals(RELEASE_EXPECTED, parser.getReleaseDescription());
+	}
+
+	@Test
+	public void shouldMatchScopeEffort() {
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(STORY + SPACE + EFFORT);
+
+		assertEquals(STORY, parser.getScopeDescription());
+		assertTrue(parser.hasDeclaredEffort());
+		assertEquals(2, parser.getDeclaredEffort());
 	}
 
 	@Test(expected = MalformedScopeException.class)

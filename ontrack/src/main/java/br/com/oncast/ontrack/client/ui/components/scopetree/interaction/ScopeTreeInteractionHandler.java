@@ -71,7 +71,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	}
 
 	@Override
-	public void onItemUpdateRequest(final ScopeTreeItem item, final String value) {
+	public void onItemEditionEnd(final ScopeTreeItem item, final String value) {
 		assureConfigured();
 
 		if (internalActionHandler.hasPendingAction()) {
@@ -83,7 +83,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	}
 
 	@Override
-	public void onItemEditCancelation() {
+	public void onItemEditionCancel() {
 		assureConfigured();
 
 		if (!internalActionHandler.hasPendingAction()) return;

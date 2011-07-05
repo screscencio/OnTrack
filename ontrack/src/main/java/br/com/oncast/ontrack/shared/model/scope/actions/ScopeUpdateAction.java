@@ -20,6 +20,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	@ConversionAlias("newPattern")
 	private String newPattern;
 
+	// TODO Parse value and generate specific equivalent actions for that. Remember to only create actions for things that would change. DO NOT STORE PATTERN.
 	public ScopeUpdateAction(final UUID selectedScopeId, final String newPattern) {
 		this.referenceId = selectedScopeId;
 		this.newPattern = newPattern;
@@ -33,17 +34,26 @@ public class ScopeUpdateAction implements ScopeAction {
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(newPattern);
 		final String newDescription = parser.getScopeDescription();
 		final String newReleaseDescription = parser.getReleaseDescription();
+		final int newDeclaredEffort = parser.getDeclaredEffort();
+		final boolean hasDeclaredEffort = parser.hasDeclaredEffort();
 
 		final Scope selectedScope = context.findScope(referenceId);
 		final String oldDescription = selectedScope.getDescription();
 		final Release oldRelease = selectedScope.getRelease();
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
+
+		final boolean hadDeclared = selectedScope.getEffort().hasDeclared();
+		final int oldDeclaredEffort = selectedScope.getEffort().getDeclared();
+
 		if (oldRelease != null) oldRelease.removeScope(selectedScope);
 
 		selectedScope.setDescription(newDescription);
 		final Release newRelease = context.loadRelease(newReleaseDescription);
 		selectedScope.setRelease(newRelease);
 		if (newRelease != null) newRelease.addScope(selectedScope);
+
+		if (hasDeclaredEffort) selectedScope.getEffort().setDeclared(newDeclaredEffort);
+		else selectedScope.getEffort().resetDeclared();
 
 		return new ScopeUpdateRollbackAction(referenceId, newPattern, oldDescription, oldReleaseDescription);
 	}

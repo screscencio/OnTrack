@@ -27,16 +27,16 @@ public class ScopeTreeWidget extends Composite implements DeeplyComparable {
 		tree.addHandler(new ScopeTreeItemEditionEndEventHandler() {
 
 			@Override
-			public void onItemUpdateRequest(final ScopeTreeItem item, final String value) {
-				interactionHandler.onItemUpdateRequest(item, value);
+			public void onItemEditionEnd(final ScopeTreeItem item, final String value) {
+				interactionHandler.onItemEditionEnd(item, value);
 			}
 		}, ScopeTreeItemEditionEndEvent.getType());
 
 		tree.addHandler(new ScopeTreeItemEditionCancelEventHandler() {
 
 			@Override
-			public void onItemEditCancelation() {
-				interactionHandler.onItemEditCancelation();
+			public void onItemEditionCancel() {
+				interactionHandler.onItemEditionCancel();
 			}
 		}, ScopeTreeItemEditionCancelEvent.getType());
 	}

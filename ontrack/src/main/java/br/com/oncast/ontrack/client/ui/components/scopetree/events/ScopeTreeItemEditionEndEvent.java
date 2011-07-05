@@ -29,6 +29,6 @@ public class ScopeTreeItemEditionEndEvent extends GwtEvent<ScopeTreeItemEditionE
 
 	@Override
 	protected void dispatch(final ScopeTreeItemEditionEndEventHandler handler) {
-		handler.onItemUpdateRequest(scopeTreeItem, value);
+		handler.onItemEditionEnd(scopeTreeItem, value);
 	}
 }
