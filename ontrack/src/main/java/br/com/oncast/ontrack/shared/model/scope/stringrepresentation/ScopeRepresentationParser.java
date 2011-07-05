@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
-import br.com.oncast.ontrack.shared.model.scope.exceptions.MalformedScopeException;
-
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -12,53 +10,46 @@ public class ScopeRepresentationParser {
 
 	private String scopeDescription;
 	private String releaseDescription;
+	private int declaredEffort;
 
-	private static final String STORY_PATTERN = "([^@]+)?";
-	private static final String RELEASE_PATTERN = "(@[^@\\s\"]+)";
-	private static final String RELEASE_PATTERN_WITH_QUOTES = "(@\"[^@]+\")";
+	private static final String TAGS = "!@#$%=";
+	// TODO Include TAGS into the patterns below
+	private static final String FULL_PATTERN = "(.*)\\s+([!@#$%=].+)*";
+	private static final String RELEASE_PATTERN = "@([^!@#$%=]+)";
+	private static final String EFFORT_PATTERN = "#([^!@#$%=]+)";
 
-	private final RegExp ONLY_ONE_RELEASE_AT_A_TIME_REGEX = RegExp.compile("(([^@])*@([^@])*){2,}", "gi");
-	private final RegExp SCOPE_REG_EX = RegExp.compile(STORY_PATTERN + "(" + RELEASE_PATTERN + "|" + RELEASE_PATTERN_WITH_QUOTES + ")?", "gi");
+	private final RegExp SCOPE_REGEX = RegExp.compile(FULL_PATTERN, "gi");
 
-	public ScopeRepresentationParser(final String scopeRepresentation) throws MalformedScopeException {
-		scopeDescription = "";
-		releaseDescription = "";
-
-		if (scopeRepresentation.trim().equals("")) return;
-
-		final MatchResult singleReleaseMatchResult = ONLY_ONE_RELEASE_AT_A_TIME_REGEX.exec(scopeRepresentation.trim());
-		if (singleReleaseMatchResult != null) throw new MalformedScopeException("You cannot set more than one release at a time.");
-
-		final MatchResult matchResult = SCOPE_REG_EX.exec(scopeRepresentation);
-
+	// FIXME Delete MalformedScopeRepresentation
+	public ScopeRepresentationParser(final String scopeRepresentation) {
+		final MatchResult matchResult = SCOPE_REGEX.exec(scopeRepresentation);
 		setScopeDescription(matchResult.getGroup(1));
-		setReleaseDescription(matchResult.getGroup(2));
+
+		String tagsRepresentation = matchResult.getGroup(2);
+		if (tagsRepresentation == null) return;
+
+		tagsRepresentation = removeUnusedSymbols(tagsRepresentation);
+		extractReleaseDescription(tagsRepresentation);
+		extractDeclaredEffort(tagsRepresentation);
 	}
 
-	private void setReleaseDescription(final String result) {
-		if ((result != null) && (!result.equals(""))) {
-			releaseDescription = formatRelease(result);
-		}
-	}
-
-	/**
-	 * Format a string, removing the at sign (@) and, if exists, quotes.
-	 */
-	private String formatRelease(final String unformated) {
-		String formated = unformated.substring(1);
-
-		if (unformated.contains("\"")) {
-			formated = formated.replaceAll("\"", "");
-		}
-
-		return formated;
+	private String removeUnusedSymbols(final String tagsRepresentation) {
+		return tagsRepresentation.replaceAll("[\"']", "");
 	}
 
 	private void setScopeDescription(final String result) {
-		if ((result == null) || (result.trim().equals(""))) throw new MalformedScopeException(
-				"You have to set a scope description if you want to set a release.");
+		if (result == null) scopeDescription = "";
+		else scopeDescription = result.trim();
+	}
 
-		scopeDescription = result.trim();
+	private void extractReleaseDescription(final String tagsRepresentation) {
+		final MatchResult result = RegExp.compile(RELEASE_PATTERN, "gi").exec(tagsRepresentation);
+		releaseDescription = result.getGroup(1);
+	}
+
+	private void extractDeclaredEffort(final String tagsRepresentation) {
+		final MatchResult result = RegExp.compile(EFFORT_PATTERN, "gi").exec(tagsRepresentation);
+		if (result.getGroup(1) != null) declaredEffort = Integer.parseInt(result.getGroup(1));
 	}
 
 	public String getScopeDescription() {
@@ -67,5 +58,9 @@ public class ScopeRepresentationParser {
 
 	public String getReleaseDescription() {
 		return releaseDescription;
+	}
+
+	public int getDeclaredEffort() {
+		return declaredEffort;
 	}
 }
