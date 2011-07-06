@@ -78,6 +78,11 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
+	public void shouldMatchReleaseWithSpace() {
+		test(" " + RELEASE_SYMBOL + "release", "", "release", false, 0);
+	}
+
+	@Test
 	public void shouldMatchReleaseWithSpaces() {
 		test(RELEASE_SYMBOL + "release com espaços", "", "release com espaços", false, 0);
 	}
@@ -166,6 +171,16 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
+	public void shouldMatchReleaseAndEffort1() {
+		test(RELEASE_SYMBOL + "release/subrelease " + EFFORT_SYMBOL + "1", "", "release/subrelease", true, 1);
+	}
+
+	@Test
+	public void shouldMatchReleaseAndEffort2() {
+		test(" " + RELEASE_SYMBOL + "release/subrelease " + EFFORT_SYMBOL + "1 ", "", "release/subrelease", true, 1);
+	}
+
+	@Test
 	public void shouldMatchDescriptionAndNoEffort() {
 		test("descrição " + EFFORT_SYMBOL + "21blabla", "descrição", "", false, 0);
 	}
@@ -193,6 +208,26 @@ public class ScopeRepresentationParserTest {
 	@Test
 	public void shouldMatchDescriptionAndReleaseAndEffort() {
 		test("descrição " + RELEASE_SYMBOL + "release" + EFFORT_SYMBOL + "21 ", "descrição", "release", true, 21);
+	}
+
+	@Test
+	public void shouldMatchEffortOnly() {
+		test(EFFORT_SYMBOL + "21", "", "", true, 21);
+	}
+
+	@Test
+	public void shouldMatchEffortOnlyWithSufixSp() {
+		test(EFFORT_SYMBOL + "21sp", "", "", true, 21);
+	}
+
+	@Test
+	public void shouldMatchEffortOnlyWithSufixEp() {
+		test(EFFORT_SYMBOL + "21ep", "", "", true, 21);
+	}
+
+	@Test
+	public void shouldNotMatchEffortOrAnything() {
+		test(EFFORT_SYMBOL + "21epaaa Descrição", "", "", false, 0);
 	}
 
 	private void test(final String pattern, final String descriptionMatch, final String releaseMatch, final boolean hasDeclaredEffort, final int declaredEffort) {

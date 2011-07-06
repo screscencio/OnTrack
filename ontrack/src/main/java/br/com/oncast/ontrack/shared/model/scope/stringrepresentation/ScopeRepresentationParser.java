@@ -19,7 +19,7 @@ public class ScopeRepresentationParser {
 
 	private static final String TAGS = StringRepresentationSymbols.getConcatenedSymbols();
 
-	private final RegExp FULL_REGEX = RegExp.compile("^([\\s]*[^" + TAGS + "].*?)([\\s]+[" + TAGS + "].+)*$", "gi");
+	private final RegExp FULL_REGEX = RegExp.compile("^([\\s]*[^" + TAGS + "\\s].*?)([\\s]+[" + TAGS + "].+)*$", "gi");
 	private final RegExp NODESCRIPTION_REGEX = RegExp.compile("^[\\s]*([" + TAGS + "].+)*$", "gi");
 
 	private final RegExp RELEASE_REGEX = RegExp.compile(RELEASE_SYMBOL + "[\\s]*([^" + TAGS + "]+)", "gi");
@@ -35,19 +35,6 @@ public class ScopeRepresentationParser {
 			if (matchResult == null) return;
 			interpretDescriptionMatch(matchResult.getGroup(1));
 		}
-	}
-
-	private void interpretFullMatch(final String scopeRepresentation, final String tagsRepresentation) {
-		if (scopeRepresentation != null) scopeDescription = scopeRepresentation.trim();
-
-		interpretDescriptionMatch(tagsRepresentation);
-	}
-
-	private void interpretDescriptionMatch(final String tagsRepresentation) {
-		if (tagsRepresentation == null) return;
-
-		extractReleaseDescription(tagsRepresentation);
-		extractDeclaredEffort(tagsRepresentation);
 	}
 
 	public String getScopeDescription() {
@@ -68,6 +55,19 @@ public class ScopeRepresentationParser {
 
 	private String preparePattern(final String tagsRepresentation) {
 		return tagsRepresentation.replace("\"", "").replace("'", "");
+	}
+
+	private void interpretFullMatch(final String scopeRepresentation, final String tagsRepresentation) {
+		if (scopeRepresentation != null) scopeDescription = scopeRepresentation.trim();
+
+		interpretDescriptionMatch(tagsRepresentation);
+	}
+
+	private void interpretDescriptionMatch(final String tagsRepresentation) {
+		if (tagsRepresentation == null) return;
+
+		extractReleaseDescription(tagsRepresentation);
+		extractDeclaredEffort(tagsRepresentation);
 	}
 
 	private void extractReleaseDescription(final String tagsRepresentation) {
