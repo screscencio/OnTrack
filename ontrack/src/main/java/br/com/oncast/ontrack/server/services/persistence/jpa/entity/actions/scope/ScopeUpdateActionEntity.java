@@ -2,13 +2,14 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.util.converter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 
 @Entity
@@ -20,7 +21,8 @@ public class ScopeUpdateActionEntity extends ModelActionEntity {
 
 	private String newDescription;
 
-	private List<ModelAction> subActionList;
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<ModelActionEntity> subActionList;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -38,11 +40,11 @@ public class ScopeUpdateActionEntity extends ModelActionEntity {
 		this.newDescription = newDescription;
 	}
 
-	public List<ModelAction> getSubActionList() {
+	public List<ModelActionEntity> getSubActionList() {
 		return subActionList;
 	}
 
-	public void setSubActionList(final List<ModelAction> subActionList) {
+	public void setSubActionList(final List<ModelActionEntity> subActionList) {
 		this.subActionList = subActionList;
 	}
 }
