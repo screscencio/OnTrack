@@ -96,7 +96,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				editionHandler.onEditionEnd(new ScopeRepresentationBuilder(scope).includeScopeDescription().toString());
+				editionHandler.onEditionEnd(new ScopeRepresentationBuilder(scope).includeEverything().excludeReleaseReference().toString());
 			}
 		});
 

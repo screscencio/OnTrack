@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionEntityMock;
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionEntityMockWithListOfActions;
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionMock;
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionMockWithListOfActions;
-import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class TypeConverterTest {
@@ -26,7 +26,7 @@ public class TypeConverterTest {
 	}
 
 	@Test
-	public void shouldConvertAnInteger() throws BeanConverterException {
+	public void shouldConvertAnInteger() throws TypeConverterException {
 		final int original = 1;
 		final Object converted = new GeneralTypeConverter().convert(original);
 
@@ -34,7 +34,7 @@ public class TypeConverterTest {
 	}
 
 	@Test
-	public void shouldConvertAnUUID() throws BeanConverterException {
+	public void shouldConvertAnUUID() throws TypeConverterException {
 		final UUID original = new UUID();
 		final Object converted = new GeneralTypeConverter().convert(original);
 
@@ -42,7 +42,7 @@ public class TypeConverterTest {
 	}
 
 	@Test
-	public void shouldConvertAnBoolean() throws BeanConverterException {
+	public void shouldConvertAnBoolean() throws TypeConverterException {
 		final boolean original = true;
 		final Object converted = new GeneralTypeConverter().convert(original);
 

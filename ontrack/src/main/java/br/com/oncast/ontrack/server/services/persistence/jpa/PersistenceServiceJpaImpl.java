@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
-import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
 import br.com.oncast.ontrack.shared.exceptions.persistence.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -72,7 +72,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 			return (List<ModelAction>) TYPE_CONVERTER.convert(actions);
 		}
-		catch (final BeanConverterException e) {
+		catch (final TypeConverterException e) {
 			throw new PersistenceException("It was not possible to convert actions.", e);
 		}
 		catch (final Exception e) {
@@ -88,7 +88,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			entity = (ModelActionEntity) TYPE_CONVERTER.convert(modelAction);
 		}
-		catch (final BeanConverterException e) {
+		catch (final TypeConverterException e) {
 			throw new PersistenceException("It was not possible to convert the action to its entity", e);
 		}
 		return entity;
