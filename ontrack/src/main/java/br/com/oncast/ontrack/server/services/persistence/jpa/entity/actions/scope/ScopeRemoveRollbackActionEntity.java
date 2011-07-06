@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.util.converter.custom.StringToUuidConverter;
@@ -22,7 +23,8 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String parentScopeId;
 
-	private int index;
+	@ConversionAlias("index")
+	private int pos;
 
 	private String description;
 
@@ -48,14 +50,6 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 		this.parentScopeId = parentScopeId;
 	}
 
-	public int getIndex() {
-		return index;
-	}
-
-	public void setIndex(final int index) {
-		this.index = index;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -78,5 +72,13 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 
 	public void setChildActionList(final List<ScopeRemoveRollbackActionEntity> childActionList) {
 		this.childActionList = childActionList;
+	}
+
+	public int getPos() {
+		return pos;
+	}
+
+	public void setPos(final int pos) {
+		this.pos = pos;
 	}
 }
