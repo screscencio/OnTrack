@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
-public class StringRepresentationSymbols {
+class StringRepresentationSymbols {
 
 	public static final String RELEASE_SYMBOL = "@";
 
@@ -15,5 +15,4 @@ public class StringRepresentationSymbols {
 		}
 		return str.toString();
 	}
-
 }

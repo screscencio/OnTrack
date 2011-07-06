@@ -6,23 +6,23 @@ import java.lang.reflect.Field;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
 
 class AnnotationBasedTypeConverter implements TypeConverter {
 
 	@Override
-	public Object convert(final Object originalBean) throws BeanConverterException {
+	public Object convert(final Object originalBean) throws TypeConverterException {
 		final Object destinationBean = createDestinationInstance(originalBean);
 		mapFields(originalBean, destinationBean);
 
 		return destinationBean;
 	}
 
-	private Object createDestinationInstance(final Object sourceBean) throws BeanConverterException {
+	private Object createDestinationInstance(final Object sourceBean) throws TypeConverterException {
 		final Class<?> sourceBeanClass = sourceBean.getClass();
 
 		final ConvertTo annotation = sourceBeanClass.getAnnotation(ConvertTo.class);
-		if (annotation == null) throw new BeanConverterException("The source class " + sourceBeanClass.getSimpleName() + " must be annotated with "
+		if (annotation == null) throw new TypeConverterException("The source class " + sourceBeanClass.getSimpleName() + " must be annotated with "
 				+ ConvertTo.class);
 
 		Object destinationBean;
@@ -35,26 +35,26 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 			constructor.setAccessible(constructorAccessibility);
 		}
 		catch (final IllegalAccessException e) {
-			throw new BeanConverterException("The mapping's destination class could not be accessed.", e);
+			throw new TypeConverterException("The mapping's destination class could not be accessed.", e);
 		}
 		catch (final ClassCastException e) {
-			throw new BeanConverterException("The mapping's destination class cannot be instantiated to the specified generic type.", e);
+			throw new TypeConverterException("The mapping's destination class cannot be instantiated to the specified generic type.", e);
 		}
 		catch (final SecurityException e) {
-			throw new BeanConverterException("The mapping's destination class could not be instantiated because of security reasons.", e);
+			throw new TypeConverterException("The mapping's destination class could not be instantiated because of security reasons.", e);
 		}
 		catch (final NoSuchMethodException e) {
-			throw new BeanConverterException(
+			throw new TypeConverterException(
 					"The mapping's destination class could not be instantiated because there is no default constructor (may be protected).", e);
 		}
 		catch (final Exception e) {
-			throw new BeanConverterException("The mapping's destination class could not be instantiated.", e);
+			throw new TypeConverterException("The mapping's destination class could not be instantiated.", e);
 		}
 
 		return destinationBean;
 	}
 
-	private void mapFields(final Object sourceInstance, final Object destinationInstance) throws BeanConverterException {
+	private void mapFields(final Object sourceInstance, final Object destinationInstance) throws TypeConverterException {
 		final Field[] sourceFields = sourceInstance.getClass().getDeclaredFields();
 		for (final Field sourceField : sourceFields) {
 			final Field destinationField = findDestinationField(destinationInstance, sourceField);
@@ -62,7 +62,7 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 		}
 	}
 
-	private Field findDestinationField(final Object destination, final Field sourceField) throws BeanConverterException {
+	private Field findDestinationField(final Object destination, final Field sourceField) throws TypeConverterException {
 		Field field = null;
 		try {
 			final String sourceFieldRepresentationName = getFieldRepresentationName(sourceField);
@@ -77,15 +77,15 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 			}
 		}
 		catch (final SecurityException e) {
-			throw new BeanConverterException("It was not possible to access the mapping's destination field.", e);
+			throw new TypeConverterException("It was not possible to access the mapping's destination field.", e);
 		}
-		if (field == null) throw new BeanConverterException("It was not possible to locate the mapping's destination field.");
+		if (field == null) throw new TypeConverterException("It was not possible to locate the mapping's destination field.");
 
 		return field;
 	}
 
 	private void mapField(final Object sourceInstance, final Field sourceField, final Object destinationInstance, final Field destinationField)
-			throws BeanConverterException {
+			throws TypeConverterException {
 
 		final boolean sourceFieldAccessibility = sourceField.isAccessible();
 		if (!sourceFieldAccessibility) sourceField.setAccessible(true);
@@ -101,20 +101,20 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 		destinationField.setAccessible(destinationFieldAccessibility);
 	}
 
-	private Object convertValue(final Field sourceField, final Object sourceFieldValue) throws BeanConverterException {
+	private Object convertValue(final Field sourceField, final Object sourceFieldValue) throws TypeConverterException {
 		final TypeConverter converter = (sourceField.isAnnotationPresent(ConvertUsing.class)) ? instantiateConverter(sourceField.getAnnotation(
 				ConvertUsing.class).value()) : new GeneralTypeConverter();
 
 		return converter.convert(sourceFieldValue);
 	}
 
-	private TypeConverter instantiateConverter(final Class<? extends TypeConverter> converterClass) throws BeanConverterException {
+	private TypeConverter instantiateConverter(final Class<? extends TypeConverter> converterClass) throws TypeConverterException {
 		TypeConverter instance;
 		try {
 			instance = converterClass.newInstance();
 		}
 		catch (final Exception e) {
-			throw new BeanConverterException("It was not possible to instantiate the converter " + converterClass.getName() + ".");
+			throw new TypeConverterException("It was not possible to instantiate the converter " + converterClass.getName() + ".");
 		}
 		return instance;
 	}
@@ -123,32 +123,32 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 		return (field.isAnnotationPresent(ConversionAlias.class)) ? field.getAnnotation(ConversionAlias.class).value() : field.getName();
 	}
 
-	private Object getFieldValue(final Object instance, final Field field) throws BeanConverterException {
+	private Object getFieldValue(final Object instance, final Field field) throws TypeConverterException {
 		Object fieldValue;
 		try {
 			fieldValue = field.get(instance);
 		}
 		catch (final IllegalArgumentException e) {
-			throw new BeanConverterException("Internal error while accessing the " + instance.getClass().getSimpleName() + "'s field " + field.getName()
+			throw new TypeConverterException("Internal error while accessing the " + instance.getClass().getSimpleName() + "'s field " + field.getName()
 					+ " while trying to 'get' its value.", e);
 		}
 		catch (final IllegalAccessException e) {
-			throw new BeanConverterException("The " + instance.getClass().getSimpleName() + "'s field " + field.getName()
+			throw new TypeConverterException("The " + instance.getClass().getSimpleName() + "'s field " + field.getName()
 					+ " could not be accessed while trying to 'get' its value.", e);
 		}
 		return fieldValue;
 	}
 
-	private void setFieldValue(final Object instance, final Field field, final Object value) throws BeanConverterException {
+	private void setFieldValue(final Object instance, final Field field, final Object value) throws TypeConverterException {
 		try {
 			field.set(instance, value);
 		}
 		catch (final IllegalArgumentException e) {
-			throw new BeanConverterException("Internal error while accessing the " + instance.getClass().getSimpleName() + "'s field " + field.getName()
+			throw new TypeConverterException("Internal error while accessing the " + instance.getClass().getSimpleName() + "'s field " + field.getName()
 					+ " while trying to 'set' its value.", e);
 		}
 		catch (final IllegalAccessException e) {
-			throw new BeanConverterException("The " + instance.getClass().getSimpleName() + "'s field " + field.getName()
+			throw new TypeConverterException("The " + instance.getClass().getSimpleName() + "'s field " + field.getName()
 					+ " could not be accessed while trying to 'set' its value.", e);
 		}
 	}

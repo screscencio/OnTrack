@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.collection.PersistentBag;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.util.converter.custom.BooleanConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.IntegerConverter;
@@ -11,7 +13,7 @@ import br.com.oncast.ontrack.server.util.converter.custom.ListConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.StringConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.UserActionEntityConverter;
-import br.com.oncast.ontrack.shared.exceptions.converter.BeanConverterException;
+import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @SuppressWarnings("rawtypes")
@@ -33,10 +35,11 @@ public class GeneralTypeConverter implements TypeConverter {
 		// TODO Externalize this so that specific application converters are registered by the application itself.
 		addCustomConverter(UUID.class, new UUIDConverter());
 		addCustomConverter(UserActionEntity.class, new UserActionEntityConverter());
+		addCustomConverter(PersistentBag.class, new ListConverter<ArrayList>(ArrayList.class));
 	}
 
 	@Override
-	public Object convert(final Object originalBean) throws BeanConverterException {
+	public Object convert(final Object originalBean) throws TypeConverterException {
 		final TypeConverter converter = (hasCustomConverter(originalBean)) ? getCustomConverter(originalBean) : DEFAULT_CONVERTER;
 		return converter.convert(originalBean);
 	}
@@ -45,10 +48,10 @@ public class GeneralTypeConverter implements TypeConverter {
 		return (CUSTOM_CONVERTERS.containsKey(sourceBean.getClass()));
 	}
 
-	private TypeConverter getCustomConverter(final Object sourceBean) throws BeanConverterException {
+	private TypeConverter getCustomConverter(final Object sourceBean) throws TypeConverterException {
 		final Class<? extends Object> originClass = sourceBean.getClass();
 
-		if (!CUSTOM_CONVERTERS.containsKey(originClass)) throw new BeanConverterException("It was not possible to locate a custom TypeConverter.");
+		if (!CUSTOM_CONVERTERS.containsKey(originClass)) throw new TypeConverterException("It was not possible to locate a custom TypeConverter.");
 		return CUSTOM_CONVERTERS.get(originClass);
 	}
 }

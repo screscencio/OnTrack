@@ -46,4 +46,9 @@ public class ScopeRepresentationBuilder {
 		includeEffort();
 		return this;
 	}
+
+	public ScopeRepresentationBuilder excludeReleaseReference() {
+		includeReleaseReference = false;
+		return this;
+	}
 }
