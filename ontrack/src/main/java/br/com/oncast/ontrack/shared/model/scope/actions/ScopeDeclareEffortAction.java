@@ -10,22 +10,25 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeDeclareEffortActionEntity.class)
-public class ScopeDeclareEffortAction implements ModelAction {
+public class ScopeDeclareEffortAction implements ScopeAction {
 
 	@ConversionAlias("referenceId")
-	private final UUID referenceId;
+	private UUID referenceId;
 
 	@ConversionAlias("hasDeclaredEffort")
-	private final boolean hasDeclaredEffort;
+	private boolean hasDeclaredEffort;
 
 	@ConversionAlias("newDeclaredEffort")
-	private final int newDeclaredEffort;
+	private int newDeclaredEffort;
 
 	public ScopeDeclareEffortAction(final UUID referenceId, final boolean hasDeclaredEffort, final int newDeclaredEffort) {
 		this.referenceId = referenceId;
 		this.hasDeclaredEffort = hasDeclaredEffort;
 		this.newDeclaredEffort = newDeclaredEffort;
 	}
+
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeDeclareEffortAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {

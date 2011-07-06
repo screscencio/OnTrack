@@ -11,18 +11,21 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeBindReleaseActionEntity.class)
-public class ScopeBindReleaseAction implements ModelAction {
+public class ScopeBindReleaseAction implements ScopeAction {
 
 	@ConversionAlias("referenceId")
-	private final UUID referenceId;
+	private UUID referenceId;
 
 	@ConversionAlias("newReleaseDescription")
-	private final String newReleaseDescription;
+	private String newReleaseDescription;
 
 	public ScopeBindReleaseAction(final UUID referenceId, final String newReleaseDescription) {
 		this.referenceId = referenceId;
 		this.newReleaseDescription = newReleaseDescription;
 	}
+
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeBindReleaseAction() {}
 
 	// TODO Reference a release by its ID, not by its description. (Think about the consequences).
 	@Override
