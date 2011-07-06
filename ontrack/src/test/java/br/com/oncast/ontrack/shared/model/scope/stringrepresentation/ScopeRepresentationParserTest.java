@@ -171,6 +171,16 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
+	public void shouldMatchDescriptionAndNoEffortAndRelease() {
+		test("descrição " + EFFORT_SYMBOL + "21blabla " + RELEASE_SYMBOL + "release", "descrição", "release", false, 0);
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndEffortAndReleaseDespiteOrder() {
+		test("descrição " + EFFORT_SYMBOL + "21sp " + RELEASE_SYMBOL + "release", "descrição", "release", true, 21);
+	}
+
+	@Test
 	public void shouldMatchDescriptionAndReleaseAndEffortWithIgnoredCharacters() {
 		test("descrição " + EFFORT_SYMBOL + "21 dfsdfsdep" + RELEASE_SYMBOL + "release", "descrição", "release", true, 21);
 	}

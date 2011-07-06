@@ -42,6 +42,7 @@ public class ScopeUpdateAction implements ScopeAction {
 		final Release oldRelease = selectedScope.getRelease();
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
 
+		// FIXME
 		final boolean hadDeclared = selectedScope.getEffort().hasDeclared();
 		final int oldDeclaredEffort = selectedScope.getEffort().getDeclared();
 
