@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-public class Effort {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class Effort implements IsSerializable {
 
 	private int declared;
 	private boolean hasDeclared;
