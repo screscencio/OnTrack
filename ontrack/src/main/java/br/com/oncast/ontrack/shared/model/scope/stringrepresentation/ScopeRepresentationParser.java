@@ -19,22 +19,25 @@ public class ScopeRepresentationParser {
 
 	private static final String TAGS = StringRepresentationSymbols.getConcatenedSymbols();
 
-	private final RegExp DESCRIPTION_REGEX = RegExp.compile("(.*)[\\s]*([" + TAGS + "].+)*", "gi");
-	private final RegExp RELEASE_REGEX = RegExp.compile(RELEASE_SYMBOL + "([^" + TAGS + "]+)", "gi");
+	// 6 - 18
+	// private final RegExp DESCRIPTION_REGEX = RegExp.compile("^([^" + TAGS + "]*[\\s]+)?([" + TAGS + "].+)*$", "gi");
+
+	// 6 - 18
+	private final RegExp DESCRIPTION_REGEX = RegExp.compile("^(([^" + TAGS + "]*[\\s]+)?([" + TAGS + "].+)*|([^" + TAGS + "]*)?)$", "gi");
+	private final RegExp RELEASE_REGEX = RegExp.compile(RELEASE_SYMBOL + "[\\s]*([^" + TAGS + "]+)", "gi");
 	private final RegExp EFFORT_REGEX = RegExp.compile(EFFORT_SYMBOL + "([\\d]+)(sp)?", "gi");
 
 	// FIXME Delete MalformedScopeRepresentation
 	public ScopeRepresentationParser(final String pattern) {
-		final MatchResult matchResult = DESCRIPTION_REGEX.exec(pattern);
+		final MatchResult matchResult = DESCRIPTION_REGEX.exec(removeUnusedSymbols(pattern + " "));
 		if (matchResult == null) return;
 
 		final String scopeRepresentation = matchResult.getGroup(1);
 		if (scopeRepresentation != null) scopeDescription = scopeRepresentation.trim();
 
-		String tagsRepresentation = matchResult.getGroup(2);
+		final String tagsRepresentation = matchResult.getGroup(2);
 		if (tagsRepresentation == null) return;
 
-		tagsRepresentation = removeUnusedSymbols(tagsRepresentation);
 		extractReleaseDescription(tagsRepresentation);
 		extractDeclaredEffort(tagsRepresentation);
 	}
@@ -66,6 +69,8 @@ public class ScopeRepresentationParser {
 
 	private void extractDeclaredEffort(final String tagsRepresentation) {
 		final MatchResult result = EFFORT_REGEX.exec(tagsRepresentation);
+		if (result == null) return;
+
 		final Integer valueOfEffort = Integer.valueOf(result.getGroup(1));
 		hasDeclaredEffort = (valueOfEffort != null);
 		declaredEffort = valueOfEffort;
