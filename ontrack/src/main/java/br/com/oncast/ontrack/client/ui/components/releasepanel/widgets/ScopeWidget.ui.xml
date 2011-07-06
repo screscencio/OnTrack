@@ -13,10 +13,6 @@
 		}
 		
 		.label:hover {
-			/*
-			background-color: #E4ECF7;
-			border: 1px solid #BBCEE9;
-			*/
 			background-color: #c3c6d5;
 			border: 1px solid #acafc6;
 		}

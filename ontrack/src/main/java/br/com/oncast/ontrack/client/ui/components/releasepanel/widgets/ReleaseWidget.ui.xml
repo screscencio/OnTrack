@@ -6,13 +6,15 @@
 	<ui:style
 		type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Style">
 			.rootPanel {
-				border: 1px solid #a5a5a5;
 				margin-bottom: 5px;
+
+				border: 1px solid #a5a5a5;
 				font-size: 13px;
 			}
 			
 			.header {
 				padding: 4px;
+
 				border: 1px solid #d9dae1;
 				background: #a5a5a5;
 				color: #fff;

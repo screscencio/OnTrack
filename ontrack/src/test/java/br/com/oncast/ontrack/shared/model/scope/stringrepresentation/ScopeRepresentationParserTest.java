@@ -171,6 +171,16 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
+	public void shouldMatchEffortWithSpacesAndTrimIt1() {
+		test(EFFORT_SYMBOL + "   33", "", "", true, 33);
+	}
+
+	@Test
+	public void shouldMatchEffortWithSpacesAndTrimIt2() {
+		test(" " + EFFORT_SYMBOL + "   33 ", "", "", true, 33);
+	}
+
+	@Test
 	public void shouldMatchReleaseAndEffort1() {
 		test(RELEASE_SYMBOL + "release/subrelease " + EFFORT_SYMBOL + "1", "", "release/subrelease", true, 1);
 	}
