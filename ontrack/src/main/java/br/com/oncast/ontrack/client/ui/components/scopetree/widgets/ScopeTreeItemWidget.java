@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
+import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
@@ -37,6 +38,9 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	protected Label descriptionLabel;
+
+	@UiField
+	protected Label effortLabel;
 
 	@UiField
 	protected TextBox editionBox;
@@ -145,11 +149,17 @@ public class ScopeTreeItemWidget extends Composite {
 		this.scope = scope;
 		descriptionLabel.setText(scope.getDescription());
 		editionBox.setText(scope.getDescription());
+		setEffort(scope.getEffort());
 		setRelease(scope.getRelease());
 	}
 
 	public Scope getScope() {
 		return scope;
+	}
+
+	private void setEffort(final Effort effort) {
+		effortLabel.setVisible(effort.hasDeclared());
+		effortLabel.setText(effort.getDeclared() + "ep");
 	}
 
 	private void setRelease(final Release release) {

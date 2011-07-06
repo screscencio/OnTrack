@@ -9,7 +9,6 @@ import com.google.gwt.regexp.shared.RegExp;
 /**
  * Parse a description and translate it into a scope description and a release description.
  */
-// TODO Try to pre-compile regex expressions.
 public class ScopeRepresentationParser {
 
 	private String scopeDescription;
@@ -23,7 +22,7 @@ public class ScopeRepresentationParser {
 	private final RegExp NODESCRIPTION_REGEX = RegExp.compile("^[\\s]*([" + TAGS + "].+)*$", "gi");
 
 	private final RegExp RELEASE_REGEX = RegExp.compile(RELEASE_SYMBOL + "[\\s]*([^" + TAGS + "]+)", "gi");
-	private final RegExp EFFORT_REGEX = RegExp.compile(EFFORT_SYMBOL + "([\\d]+)(?:[es]p)?(?:\\s+.*)?$", "gi");
+	private final RegExp EFFORT_REGEX = RegExp.compile(EFFORT_SYMBOL + "[\\s]*([\\d]+)(?:[es]p)?(?:\\s+.*)?$", "gi");
 
 	public ScopeRepresentationParser(final String pattern) {
 		final String preparedPattern = preparePattern(pattern);
