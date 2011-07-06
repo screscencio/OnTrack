@@ -12,7 +12,6 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateRollbackAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 // TODO Refactor this class to decentralize Action to WidgetActionFactory mappings.
@@ -33,8 +32,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeInsertParentAction) return new ScopeTreeInsertParentAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeInsertParentRollbackAction) return new ScopeTreeParentFatherRollbackAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveRollbackAction) return new ScopeTreeRemoveRollbackAction(tree, (ScopeAction) action);
-		else if (action instanceof ScopeUpdateAction || action instanceof ScopeUpdateRollbackAction) return new ScopeTreeUpdateAction(tree,
-				(ScopeAction) action);
+		else if (action instanceof ScopeUpdateAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
 
 		throw new ScopeNotFoundException("It was not possible to find the desired action.");
 	}

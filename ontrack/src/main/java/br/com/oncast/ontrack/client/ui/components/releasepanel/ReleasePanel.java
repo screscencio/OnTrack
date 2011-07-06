@@ -12,7 +12,6 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentRollbac
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateRollbackAction;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -30,8 +29,7 @@ public class ReleasePanel implements Component, DeeplyComparable {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context) {
 				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction || action instanceof ScopeInsertAction
-						|| action instanceof ScopeInsertParentRollbackAction || action instanceof ScopeRemoveRollbackAction
-						|| action instanceof ScopeUpdateRollbackAction) update();
+						|| action instanceof ScopeInsertParentRollbackAction || action instanceof ScopeRemoveRollbackAction) update();
 			}
 		};
 	}
