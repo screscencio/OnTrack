@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.scope;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 
 public class InferenceEngineTest {
 

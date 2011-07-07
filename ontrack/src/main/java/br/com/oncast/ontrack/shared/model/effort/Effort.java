@@ -6,6 +6,7 @@ public class Effort implements IsSerializable {
 
 	private int declared;
 	private boolean hasDeclared;
+	private float calculed;
 
 	public int getDeclared() {
 		return declared;
@@ -23,5 +24,17 @@ public class Effort implements IsSerializable {
 	public void resetDeclared() {
 		hasDeclared = false;
 		declared = 0;
+	}
+
+	public float getCalculed() {
+		return calculed;
+	}
+
+	public void setCalculed(final float calculed) {
+		this.calculed = calculed;
+	}
+
+	public float getInfered() {
+		return (declared > calculed) ? declared : calculed;
 	}
 }
