@@ -11,7 +11,9 @@ public class DeeplyComparableList<T extends DeeplyComparable> extends ArrayList<
 	public boolean deepEquals(final Object element) {
 		if (!(element instanceof DeeplyComparableList<?>)) return false;
 		final DeeplyComparableList<?> otherList = (DeeplyComparableList<?>) element;
+
 		if (this.size() != otherList.size()) return false;
+
 		final List<T> cloneList = new ArrayList<T>();
 		cloneList.addAll(this);
 		for (final Object externalElement : otherList) {
