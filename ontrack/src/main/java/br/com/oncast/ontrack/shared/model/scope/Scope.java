@@ -42,6 +42,10 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		return description;
 	}
 
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
 	public List<Scope> getChildren() {
 		return childrenList;
 	}
@@ -75,13 +79,8 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		return parent == null;
 	}
 
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	@Override
-	public String toString() {
-		return description;
+	public Scope getChild(final int index) {
+		return childrenList.get(index);
 	}
 
 	public int getChildIndex(final Scope scope) {
@@ -140,4 +139,10 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		else if (!description.equals(other.description)) return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return description;
+	}
+
 }
