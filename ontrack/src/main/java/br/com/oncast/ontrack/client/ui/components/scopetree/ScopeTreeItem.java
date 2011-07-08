@@ -77,4 +77,8 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem, DeeplyCompara
 			item = item.getParentItem();
 		}
 	}
+
+	public ScopeTreeItemWidget getScopeTreeItemWidget() {
+		return scopeItemWidget;
+	}
 }

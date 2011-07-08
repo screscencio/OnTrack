@@ -47,7 +47,7 @@ public class Effort implements IsSerializable, DeeplyComparable {
 		if (!(obj instanceof Effort)) return false;
 
 		final Effort other = (Effort) obj;
-		if (Float.floatToIntBits(calculated) != Float.floatToIntBits(other.calculated)) return false;
+		if (calculated != other.calculated) return false;
 		if (declared != other.declared) return false;
 		return true;
 	}

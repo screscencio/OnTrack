@@ -56,4 +56,9 @@ public class ScopeRemoveAction implements ScopeAction {
 	public UUID getReferenceId() {
 		return referenceId;
 	}
+
+	@Override
+	public boolean changesEffortInference() {
+		return true;
+	}
 }

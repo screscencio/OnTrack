@@ -48,4 +48,8 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 		return referenceId;
 	}
 
+	@Override
+	public boolean changesEffortInference() {
+		return true;
+	}
 }

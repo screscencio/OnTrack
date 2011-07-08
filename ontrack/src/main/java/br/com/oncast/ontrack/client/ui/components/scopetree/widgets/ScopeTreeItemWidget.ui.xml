@@ -29,6 +29,18 @@
             user-select: none;            
 		}
 		
+		.declaredEffortLabel {
+			color: red;
+		}
+		
+		.calculatedEffortLabel {
+			color: green;
+        }
+		
+		.inferedEffortLabel {
+			color: blue;
+        }
+
 		.visualizationPanel {
 			display: inline;
 		}
@@ -43,7 +55,9 @@
 		<g:DeckPanel ui:field="deckPanel">
 			<g:HorizontalPanel styleName="{style.visualizationPanel}">
 				<g:Label ui:field="descriptionLabel" styleName="{style.visualizationLabel}" />
-				<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
+				<g:Label ui:field="declaredEffortLabel" styleName="{style.effortLabel} {style.declaredEffortLabel}" />
+				<g:Label ui:field="calculatedEffortLabel" styleName="{style.effortLabel} {style.calculatedEffortLabel}" />
+				<g:Label ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.inferedEffortLabel}" />
 				<t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 			</g:HorizontalPanel>
 			<g:TextBox styleName="edit" ui:field="editionBox" />

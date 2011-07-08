@@ -42,4 +42,9 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	public UUID getReferenceId() {
 		return referenceId;
 	}
+
+	@Override
+	public boolean changesEffortInference() {
+		return true;
+	}
 }
