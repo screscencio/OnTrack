@@ -1,12 +1,14 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
+import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Effort implements IsSerializable {
+public class Effort implements IsSerializable, DeeplyComparable {
 
 	private int declared;
 	private boolean hasDeclared;
-	private float calculed;
+	private float calculated;
 
 	public int getDeclared() {
 		return declared;
@@ -26,37 +28,27 @@ public class Effort implements IsSerializable {
 		declared = 0;
 	}
 
-	public float getCalculed() {
-		return calculed;
+	public float getCalculated() {
+		return calculated;
 	}
 
-	public void setCalculed(final float calculed) {
-		this.calculed = calculed;
+	public void setCalculated(final float calculed) {
+		this.calculated = calculed;
 	}
 
 	public float getInfered() {
-		return (declared > calculed) ? declared : calculed;
+		return (declared > calculated) ? declared : calculated;
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Float.floatToIntBits(calculed);
-		result = prime * result + declared;
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
+	public boolean deepEquals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof Effort)) return false;
 
 		final Effort other = (Effort) obj;
-		if (Float.floatToIntBits(calculed) != Float.floatToIntBits(other.calculed)) return false;
+		if (Float.floatToIntBits(calculated) != Float.floatToIntBits(other.calculated)) return false;
 		if (declared != other.declared) return false;
 		return true;
 	}
-
 }

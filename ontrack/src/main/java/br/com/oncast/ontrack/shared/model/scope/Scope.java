@@ -133,22 +133,12 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		if (!(obj instanceof Scope)) return false;
 		final Scope other = (Scope) obj;
 
-		if (childrenList == null) {
-			if (other.childrenList != null) return false;
-		}
-		else if (!childrenList.deepEquals(other.getChildren())) return false;
+		boolean equals = true;
+		equals &= childrenList == null ? other.childrenList == null : childrenList.deepEquals(other.childrenList);
+		equals &= description == null ? other.description == null : description.equals(other.description);
+		equals &= effort == null ? other.effort == null : effort.deepEquals(other.effort);
 
-		if (description == null) {
-			if (other.description != null) return false;
-		}
-		else if (!description.equals(other.description)) return false;
-
-		if (effort == null) {
-			if (other.effort != null) return false;
-		}
-		else if (!effort.equals(other.effort)) return false;
-
-		return true;
+		return equals;
 	}
 
 	@Override
