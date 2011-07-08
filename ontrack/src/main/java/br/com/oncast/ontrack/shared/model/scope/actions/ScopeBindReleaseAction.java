@@ -48,4 +48,8 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		return referenceId;
 	}
 
+	@Override
+	public boolean changesEffortInference() {
+		return false;
+	}
 }

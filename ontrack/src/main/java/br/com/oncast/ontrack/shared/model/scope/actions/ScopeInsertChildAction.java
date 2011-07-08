@@ -49,4 +49,9 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	public UUID getNewScopeId() {
 		return newScopeId;
 	}
+
+	@Override
+	public boolean changesEffortInference() {
+		return true;
+	}
 }

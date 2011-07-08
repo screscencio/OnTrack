@@ -46,4 +46,9 @@ public class ScopeMoveUpAction implements ScopeMoveAction {
 	public UUID getReferenceId() {
 		return referenceId;
 	}
+
+	@Override
+	public boolean changesEffortInference() {
+		return false;
+	}
 }

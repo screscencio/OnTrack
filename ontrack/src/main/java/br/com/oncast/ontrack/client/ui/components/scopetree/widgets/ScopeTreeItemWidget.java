@@ -40,7 +40,13 @@ public class ScopeTreeItemWidget extends Composite {
 	protected Label descriptionLabel;
 
 	@UiField
-	protected Label effortLabel;
+	protected Label declaredEffortLabel;
+
+	@UiField
+	protected Label calculatedEffortLabel;
+
+	@UiField
+	protected Label inferedEffortLabel;
 
 	@UiField
 	protected TextBox editionBox;
@@ -157,14 +163,23 @@ public class ScopeTreeItemWidget extends Composite {
 		return scope;
 	}
 
+	// TODO Change the way we show the effort
 	private void setEffort(final Effort effort) {
-		effortLabel.setVisible(effort.hasDeclared());
-		effortLabel.setText(effort.getDeclared() + "ep");
+		declaredEffortLabel.setVisible(effort.hasDeclared());
+		declaredEffortLabel.setText(effort.getDeclared() + "");
+		calculatedEffortLabel.setText(effort.getCalculated() + "");
+		inferedEffortLabel.setText(effort.getInfered() + "");
 	}
 
 	private void setRelease(final Release release) {
 		final boolean isReleasePresent = release != null;
 		releaseTag.setVisible(isReleasePresent);
 		releaseTag.setText(isReleasePresent ? release.getFullDescription() : "");
+	}
+
+	// TODO It may check if the values changed.
+	// TODO It may return a value indicating if the values changed.
+	public void refreshEffort() {
+		setEffort(scope.getEffort());
 	}
 }

@@ -53,4 +53,9 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 	public UUID getNewScopeId() {
 		return newScopeId;
 	}
+
+	@Override
+	public boolean changesEffortInference() {
+		return true;
+	}
 }

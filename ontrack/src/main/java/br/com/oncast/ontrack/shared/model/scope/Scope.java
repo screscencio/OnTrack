@@ -13,17 +13,15 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 // TODO Test this class
 public class Scope implements DeeplyComparable, IsSerializable {
 
-	private final UUID id;
+	private UUID id;
 	private String description;
 	private Scope parent;
-	private final DeeplyComparableList<Scope> childrenList;
+	private DeeplyComparableList<Scope> childrenList;
 	private Release release;
-	private final Effort effort;
+	private Effort effort;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
-	public Scope() {
-		this("");
-	}
+	public Scope() {}
 
 	public Scope(final String description) {
 		this(description, new UUID());

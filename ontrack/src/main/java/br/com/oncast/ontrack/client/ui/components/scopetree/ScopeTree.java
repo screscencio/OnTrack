@@ -5,11 +5,13 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequ
 import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.effort.ScopeTreeEffortUpdateEngine;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
@@ -32,6 +34,9 @@ public class ScopeTree implements Component, DeeplyComparable {
 				try {
 					final ScopeTreeAction scopeTreeAction = treeActionFactory.createEquivalentActionFor(action);
 					scopeTreeAction.execute(context);
+					if (action instanceof ScopeAction) {
+						if (((ScopeAction) action).changesEffortInference()) ScopeTreeEffortUpdateEngine.process(tree, action.getReferenceId());
+					}
 				}
 				catch (final ScopeNotFoundException e) {
 					// TODO Redraw the entire structure to eliminate inconsistencies

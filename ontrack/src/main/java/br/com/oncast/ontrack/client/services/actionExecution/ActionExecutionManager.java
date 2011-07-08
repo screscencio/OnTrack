@@ -4,7 +4,9 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
 public class ActionExecutionManager {
@@ -21,7 +23,7 @@ public class ActionExecutionManager {
 
 	public void execute(final ModelAction action, final ProjectContext context) {
 		try {
-			final ModelAction undoAction = action.execute(context);
+			final ModelAction undoAction = executeAction(action, context);
 			executionListener.onActionExecution(action, context);
 			undoStack.push(undoAction);
 			redoStack.clear();
@@ -37,7 +39,7 @@ public class ActionExecutionManager {
 	public void undo(final ProjectContext context) {
 		try {
 			final ModelAction undoAction = undoStack.pop();
-			final ModelAction redoAction = undoAction.execute(context);
+			final ModelAction redoAction = executeAction(undoAction, context);
 			executionListener.onActionExecution(undoAction, context);
 			redoStack.push(redoAction);
 		}
@@ -56,7 +58,7 @@ public class ActionExecutionManager {
 	public void redo(final ProjectContext context) {
 		try {
 			final ModelAction redoAction = redoStack.pop();
-			final ModelAction undoAction = redoAction.execute(context);
+			final ModelAction undoAction = executeAction(redoAction, context);
 			executionListener.onActionExecution(redoAction, context);
 			undoStack.push(undoAction);
 		}
@@ -70,5 +72,14 @@ public class ActionExecutionManager {
 		catch (final EmptyStackException e) {
 			// Purposefully ignoring exception
 		}
+	}
+
+	private ModelAction executeAction(final ModelAction action, final ProjectContext context) throws UnableToCompleteActionException {
+		final ModelAction reverseAction = action.execute(context);
+		if (action instanceof ScopeAction) {
+			if (((ScopeAction) action).changesEffortInference()) EffortInferenceEngine.process(context.findScope(action.getReferenceId()));
+		}
+
+		return reverseAction;
 	}
 }

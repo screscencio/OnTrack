@@ -9,9 +9,21 @@ public class EffortInferenceEngine {
 
 	public static void process(final Scope scope) {
 		if (!scope.isRoot()) {
+			scope.getEffort().setCalculated(calculateEffort(scope));
 			processBottomUp(scope.getParent());
 		}
 		processTopDown(scope);
+	}
+
+	private static void processBottomUp(final Scope scope) {
+		final float inferedInitial = scope.getEffort().getInfered();
+		scope.getEffort().setCalculated(calculateEffort(scope));
+		final float inferedFinal = scope.getEffort().getInfered();
+
+		if (inferedFinal == inferedInitial) return;
+
+		if (scope.isRoot()) return;
+		processBottomUp(scope.getParent());
 	}
 
 	private static void processTopDown(final Scope scope) {
@@ -40,17 +52,6 @@ public class EffortInferenceEngine {
 			if (!child.getEffort().hasDeclared()) childrenWithNonDeclaredEfforts.add(child);
 
 		return childrenWithNonDeclaredEfforts;
-	}
-
-	private static void processBottomUp(final Scope scope) {
-		final float inferedInitial = scope.getEffort().getInfered();
-		scope.getEffort().setCalculated(calculateEffort(scope));
-		final float inferedFinal = scope.getEffort().getInfered();
-
-		if (inferedFinal == inferedInitial) return;
-
-		if (scope.isRoot()) return;
-		processBottomUp(scope.getParent());
 	}
 
 	private static int calculateEffort(final Scope scope) {

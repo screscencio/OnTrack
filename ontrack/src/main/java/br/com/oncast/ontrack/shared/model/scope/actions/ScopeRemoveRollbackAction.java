@@ -68,4 +68,8 @@ public class ScopeRemoveRollbackAction implements ScopeAction {
 		return referenceId;
 	}
 
+	@Override
+	public boolean changesEffortInference() {
+		return true;
+	}
 }
