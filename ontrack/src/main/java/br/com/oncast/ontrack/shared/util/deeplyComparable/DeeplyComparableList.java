@@ -18,7 +18,10 @@ public class DeeplyComparableList<T extends DeeplyComparable> extends ArrayList<
 		cloneList.addAll(this);
 		for (final Object externalElement : otherList) {
 			for (final T internalElement : this) {
-				if (((DeeplyComparable) externalElement).deepEquals(internalElement)) cloneList.remove(internalElement);
+				if (((DeeplyComparable) externalElement).deepEquals(internalElement)) {
+					cloneList.remove(internalElement);
+					break;
+				}
 			}
 		}
 		return cloneList.isEmpty();
