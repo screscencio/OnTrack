@@ -30,8 +30,13 @@ public class ScopeBuilder {
 		return this;
 	}
 
-	public ScopeBuilder effort(final int value) {
+	public ScopeBuilder declaredEffort(final int value) {
 		scope.getEffort().setDeclared(value);
+		return this;
+	}
+
+	public ScopeBuilder calculatedEffort(final float value) {
+		scope.getEffort().setCalculated(value);
 		return this;
 	}
 

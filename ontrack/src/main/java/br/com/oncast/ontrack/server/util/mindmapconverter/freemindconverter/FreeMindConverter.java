@@ -33,13 +33,20 @@ public class FreeMindConverter {
 
 	private static void pullSync(final ScopeBuilder scope, final MindNode node) {
 		int declaredEffort = 0;
+		float calculatedEffort = 0;
 		boolean effortDeclared = false;
+		boolean effortCalculated = false;
 
 		scope.description(node.getText());
 		for (final MindNode childNode : node.getChildren()) {
-			if (childNode.hasIcon(Icon.CLOCK)) {
+			if (childNode.hasIcon(Icon.PENCIL)) {
 				effortDeclared = true;
 				declaredEffort += extractEffort(childNode);
+				continue;
+			}
+			else if (childNode.hasIcon(Icon.IDEA)) {
+				effortCalculated = true;
+				calculatedEffort += extractEffort(childNode);
 				continue;
 			}
 
@@ -48,7 +55,8 @@ public class FreeMindConverter {
 			scope.add(childScope);
 		}
 
-		if (effortDeclared) scope.effort(declaredEffort);
+		if (effortDeclared) scope.declaredEffort(declaredEffort);
+		if (effortCalculated) scope.calculatedEffort(calculatedEffort);
 	}
 
 	private static float extractEffort(final MindNode effortNode) {

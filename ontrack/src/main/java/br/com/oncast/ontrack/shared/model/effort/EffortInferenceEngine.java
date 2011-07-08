@@ -8,7 +8,9 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class EffortInferenceEngine {
 
 	public static void process(final Scope scope) {
-		processBottomUp(scope);
+		if (!scope.isRoot()) {
+			processBottomUp(scope.getParent());
+		}
 		processTopDown(scope);
 	}
 

@@ -51,4 +51,9 @@ public class Effort implements IsSerializable, DeeplyComparable {
 		if (declared != other.declared) return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Declared: " + declared + ", Calculated: " + calculated + ", Infered: " + getInfered();
+	}
 }

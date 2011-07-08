@@ -1,7 +1,10 @@
 package br.com.oncast.ontrack.server.util.mindmapconverter.freemind;
 
 public enum Icon {
-	CLOCK("clock"), WIZARD("wizard");
+	CLOCK("clock"),
+	PENCIL("pencil"),
+	IDEA("idea"),
+	WIZARD("wizard");
 
 	private final String freemindCode;
 
