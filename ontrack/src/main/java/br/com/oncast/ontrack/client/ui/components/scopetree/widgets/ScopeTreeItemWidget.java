@@ -17,6 +17,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
@@ -33,11 +34,26 @@ public class ScopeTreeItemWidget extends Composite {
 
 	interface EditableLabelUiBinder extends UiBinder<Widget, ScopeTreeItemWidget> {}
 
+	interface Style extends CssResource {
+		String effortLabelTranslucid();
+
+		String effortDifferenceLabelProblem();
+	}
+
+	@UiField
+	protected Style style;
+
 	@UiField
 	protected DeckPanel deckPanel;
 
 	@UiField
 	protected Label descriptionLabel;
+
+	@UiField
+	protected Label effortLabel;
+
+	@UiField
+	protected Label effortDifferenceLabel;
 
 	@UiField
 	protected Label declaredEffortLabel;
@@ -166,9 +182,31 @@ public class ScopeTreeItemWidget extends Composite {
 	// TODO Change the way we show the effort
 	private void setEffort(final Effort effort) {
 		declaredEffortLabel.setVisible(effort.hasDeclared());
-		declaredEffortLabel.setText(effort.getDeclared() + "");
-		calculatedEffortLabel.setText(effort.getCalculated() + "");
-		inferedEffortLabel.setText(effort.getInfered() + "");
+		declaredEffortLabel.setText((effort.getDeclared()) + "");
+		calculatedEffortLabel.setText(((int) effort.getCalculated()) + "");
+		inferedEffortLabel.setText(((int) effort.getInfered()) + "");
+
+		final boolean effortVisibility = effort.hasDeclared() || effort.getInfered() > 0;
+		final int effortErrorDifference = (int) (effort.getCalculated() - effort.getDeclared());
+		final int effortPositiveDifference = effort.getCalculated() != 0 ? (int) (effort.getDeclared() - effort.getCalculated()) : 0;
+		final boolean effortDifferenceVisibility = effort.hasDeclared() && (effortErrorDifference > 0 || effortPositiveDifference > 0);
+
+		effortLabel.setVisible(effortVisibility);
+		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
+		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
+		effortLabel.setText(((int) effort.getInfered()) + "");
+
+		effortDifferenceLabel.setVisible(effortDifferenceVisibility);
+		if (!effortDifferenceVisibility) return;
+
+		if (effortErrorDifference > 0) {
+			effortDifferenceLabel.getElement().addClassName(style.effortDifferenceLabelProblem());
+			effortDifferenceLabel.setText(effortErrorDifference + "");
+		}
+		else {
+			effortDifferenceLabel.getElement().removeClassName(style.effortDifferenceLabelProblem());
+			effortDifferenceLabel.setText(effortPositiveDifference + "");
+		}
 	}
 
 	private void setRelease(final Release release) {
@@ -178,7 +216,6 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	// TODO It may check if the values changed.
-	// TODO It may return a value indicating if the values changed.
 	public void refreshEffort() {
 		setEffort(scope.getEffort());
 	}

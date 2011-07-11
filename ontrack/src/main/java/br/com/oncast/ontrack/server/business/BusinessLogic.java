@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 
 public class BusinessLogic {
 
@@ -45,14 +46,15 @@ public class BusinessLogic {
 		}
 	}
 
-	// TODO Extract the action execution logic to an appropriate manager.
 	private Project applyActionsToProjectSnapshot(final ProjectSnapshot snapshot, final List<ModelAction> actionList) throws UnableToCompleteActionException {
 		final Project project = snapshot.getProject();
-		final ProjectContext projectContext = new ProjectContext(project);
+		final ProjectContext context = new ProjectContext(project);
 
-		for (final ModelAction action : actionList)
-			action.execute(projectContext);
+		for (final ModelAction action : actionList) {
+			ActionExecuter.executeAction(context, action);
+		}
 
 		return project;
 	}
+
 }
