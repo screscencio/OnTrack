@@ -31,11 +31,9 @@ public class ScopeTreeEffortUpdateEngine {
 	// }
 
 	private static void processTopDown(final ScopeTreeItem scopeTreeItem) {
+		scopeTreeItem.getScopeTreeItemWidget().refreshEffort();
 		final int childCount = scopeTreeItem.getChildCount();
-		for (int i = 0; i < childCount; i++) {
-			final ScopeTreeItem child = scopeTreeItem.getChild(i);
-			child.getScopeTreeItemWidget().refreshEffort();
-			processTopDown(child);
-		}
+		for (int i = 0; i < childCount; i++)
+			processTopDown(scopeTreeItem.getChild(i));
 	}
 }
