@@ -39,7 +39,7 @@
 		}
 		
 		.effortLabelTranslucid {
- 			opacity: 0.3;
+ 			opacity: 0.2;
 		}
 		
 		.effortDifferenceLabel {
@@ -66,8 +66,13 @@
             opacity: 0.2;
 		}
 		
-		.calculatedEffortLabel {
+		.bottomUpValueEffortLabel {
 			color: green;
+            opacity: 0.2;
+        }
+		
+		.topDownValueEffortLabel {
+			color: purple;
             opacity: 0.2;
         }
 		
@@ -92,7 +97,8 @@
                 </g:HTMLPanel>
                 <g:HTMLPanel styleName="{style.effort}">
     				<g:Label ui:field="declaredEffortLabel" styleName="{style.effortLabel} {style.declaredEffortLabel}" />
-    	   			<g:Label ui:field="calculatedEffortLabel" styleName="{style.effortLabel} {style.calculatedEffortLabel}" />
+    	   			<g:Label ui:field="bottomUpValueEffortLabel" styleName="{style.effortLabel} {style.bottomUpValueEffortLabel}" />
+    	   			<g:Label ui:field="topDownValueEffortLabel" styleName="{style.effortLabel} {style.topDownValueEffortLabel}" />
     				<g:Label ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.inferedEffortLabel}" />
                 </g:HTMLPanel>
 				<t:Tag ui:field="releaseTag" styleName="{style.tag}" />

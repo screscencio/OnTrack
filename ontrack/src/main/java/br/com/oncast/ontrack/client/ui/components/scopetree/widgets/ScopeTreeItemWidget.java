@@ -59,7 +59,10 @@ public class ScopeTreeItemWidget extends Composite {
 	protected Label declaredEffortLabel;
 
 	@UiField
-	protected Label calculatedEffortLabel;
+	protected Label bottomUpValueEffortLabel;
+
+	@UiField
+	protected Label topDownValueEffortLabel;
 
 	@UiField
 	protected Label inferedEffortLabel;
@@ -183,12 +186,13 @@ public class ScopeTreeItemWidget extends Composite {
 	private void setEffort(final Effort effort) {
 		declaredEffortLabel.setVisible(effort.hasDeclared());
 		declaredEffortLabel.setText((effort.getDeclared()) + "");
-		calculatedEffortLabel.setText(((int) effort.getCalculated()) + "");
+		bottomUpValueEffortLabel.setText(((int) effort.getBottomUpValue()) + "");
+		topDownValueEffortLabel.setText(((int) effort.getTopDownValue()) + "");
 		inferedEffortLabel.setText(((int) effort.getInfered()) + "");
 
 		final boolean effortVisibility = effort.hasDeclared() || effort.getInfered() > 0;
-		final int effortErrorDifference = (int) (effort.getCalculated() - effort.getDeclared());
-		final int effortPositiveDifference = effort.getCalculated() != 0 ? (int) (effort.getDeclared() - effort.getCalculated()) : 0;
+		final int effortErrorDifference = (int) (effort.getProcessedValue() - effort.getDeclared());
+		final int effortPositiveDifference = effort.getProcessedValue() != 0 ? (int) (effort.getDeclared() - effort.getProcessedValue()) : 0;
 		final boolean effortDifferenceVisibility = effort.hasDeclared() && (effortErrorDifference > 0 || effortPositiveDifference > 0);
 
 		effortLabel.setVisible(effortVisibility);

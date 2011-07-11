@@ -8,7 +8,8 @@ public class Effort implements IsSerializable, DeeplyComparable {
 
 	private int declared;
 	private boolean hasDeclared;
-	private float calculated;
+	private float topDownValue;
+	private float bottomUpValue;
 
 	public int getDeclared() {
 		return declared;
@@ -28,16 +29,29 @@ public class Effort implements IsSerializable, DeeplyComparable {
 		declared = 0;
 	}
 
-	public float getCalculated() {
-		return calculated;
-	}
-
-	public void setCalculated(final float calculed) {
-		this.calculated = calculed;
-	}
-
 	public float getInfered() {
-		return (declared > calculated) ? declared : calculated;
+		final float processedValue = getProcessedValue();
+		return (declared > processedValue) ? declared : processedValue;
+	}
+
+	public float getProcessedValue() {
+		return (bottomUpValue != 0) ? bottomUpValue : topDownValue;
+	}
+
+	public float getTopDownValue() {
+		return topDownValue;
+	}
+
+	public void setTopDownValue(final float topDownValue) {
+		this.topDownValue = topDownValue;
+	}
+
+	public float getBottomUpValue() {
+		return bottomUpValue;
+	}
+
+	public void setBottomUpValue(final float bottomUpValue) {
+		this.bottomUpValue = bottomUpValue;
 	}
 
 	@Override
@@ -47,13 +61,14 @@ public class Effort implements IsSerializable, DeeplyComparable {
 		if (!(obj instanceof Effort)) return false;
 
 		final Effort other = (Effort) obj;
-		if (calculated != other.calculated) return false;
+		if (bottomUpValue != other.bottomUpValue) return false;
+		if (topDownValue != other.topDownValue) return false;
 		if (declared != other.declared) return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Declared: " + declared + ", Calculated: " + calculated + ", Infered: " + getInfered();
+		return "Declared: " + declared + ", TopDownValue: " + topDownValue + ", BottomUpValue: " + bottomUpValue + ", Infered: " + getInfered();
 	}
 }
