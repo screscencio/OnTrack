@@ -8,21 +8,19 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class EffortInferenceEngine {
 
 	public static void process(final Scope scope) {
-		if (!scope.isRoot()) {
-			scope.getEffort().setCalculated(calculateEffort(scope));
-			processBottomUp(scope.getParent());
-		}
+		calculateEffort(scope, 3);
+		processBottomUp(scope);
 		processTopDown(scope);
 	}
 
 	private static void processBottomUp(final Scope scope) {
 		final float inferedInitial = scope.getEffort().getInfered();
-		scope.getEffort().setCalculated(calculateEffort(scope));
+		calculateEffort(scope, 2);
 		final float inferedFinal = scope.getEffort().getInfered();
 
 		if (inferedFinal == inferedInitial) return;
-
 		if (scope.isRoot()) return;
+
 		processBottomUp(scope.getParent());
 	}
 
@@ -54,10 +52,14 @@ public class EffortInferenceEngine {
 		return childrenWithNonDeclaredEfforts;
 	}
 
-	private static int calculateEffort(final Scope scope) {
+	private static int calculateEffort(final Scope scope, int i) {
+		i -= 1;
 		int sum = 0;
-		for (final Scope child : scope.getChildren())
+		for (final Scope child : scope.getChildren()) {
+			if (i > 0) calculateEffort(child, i);
 			sum += child.getEffort().getInfered();
+		}
+		scope.getEffort().setCalculated(sum);
 
 		return sum;
 	}
