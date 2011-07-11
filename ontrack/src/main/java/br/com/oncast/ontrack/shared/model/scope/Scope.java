@@ -21,7 +21,7 @@ public class Scope implements DeeplyComparable, IsSerializable {
 	private Effort effort;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
-	public Scope() {}
+	protected Scope() {}
 
 	public Scope(final String description) {
 		this(description, new UUID());
