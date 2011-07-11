@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.server.util.mindmapconverter.scope;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ScopeBuilder {
-	private final Scope scope = new Scope();
+	private final Scope scope = new Scope("");
 
 	private ScopeBuilder() {}
 
