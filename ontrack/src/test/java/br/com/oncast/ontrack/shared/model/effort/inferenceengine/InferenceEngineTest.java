@@ -17,7 +17,7 @@ public class InferenceEngineTest {
 
 	@Test
 	public void shouldApplyInferenceWhenMoveScopeLeft() throws UnableToCompleteActionException {
-		final String fileName = "Project2";
+		final String fileName = "Project1";
 		final Scope original = getOriginalScope(fileName);
 
 		final Scope scope = original.getChild(0).getChild(1);
