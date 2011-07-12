@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class FreeMindConverter {
 	private static Pattern INTEGER_EXTRACTOR = Pattern.compile("\\d+");
+	private static Pattern FLOAT_EXTRACTOR = Pattern.compile("(\\d+)(\\.\\d?)?");
 
 	private final FreeMindMap mindMap;
 
@@ -33,20 +34,27 @@ public class FreeMindConverter {
 
 	private static void pullSync(final ScopeBuilder scope, final MindNode node) {
 		int declaredEffort = 0;
-		float calculatedEffort = 0;
+		float topDownEffort = 0;
+		float bottomUpEffort = 0;
 		boolean effortDeclared = false;
-		boolean effortCalculated = false;
+		boolean topDownEffortCalculated = false;
+		boolean bottomUpEffortCalculated = false;
 
 		scope.description(node.getText());
 		for (final MindNode childNode : node.getChildren()) {
 			if (childNode.hasIcon(Icon.PENCIL)) {
 				effortDeclared = true;
-				declaredEffort += extractEffort(childNode);
+				declaredEffort += extractDeclaredEffort(childNode);
 				continue;
 			}
-			else if (childNode.hasIcon(Icon.IDEA)) {
-				effortCalculated = true;
-				calculatedEffort += extractEffort(childNode);
+			else if (childNode.hasIcon(Icon.DOWN)) {
+				topDownEffortCalculated = true;
+				topDownEffort += extractCalculatedEffort(childNode);
+				continue;
+			}
+			else if (childNode.hasIcon(Icon.UP)) {
+				bottomUpEffortCalculated = true;
+				bottomUpEffort += extractCalculatedEffort(childNode);
 				continue;
 			}
 
@@ -56,13 +64,21 @@ public class FreeMindConverter {
 		}
 
 		if (effortDeclared) scope.declaredEffort(declaredEffort);
-		if (effortCalculated) scope.calculatedEffort(calculatedEffort);
+		if (topDownEffortCalculated) scope.topDownEffort(topDownEffort);
+		if (bottomUpEffortCalculated) scope.bottomUpEffort(bottomUpEffort);
 	}
 
-	private static float extractEffort(final MindNode effortNode) {
+	private static int extractDeclaredEffort(final MindNode effortNode) {
 		final Matcher matcher = INTEGER_EXTRACTOR.matcher(effortNode.getText());
 		if (!matcher.find()) return 0;
 
 		return Integer.valueOf(matcher.group());
+	}
+
+	private static float extractCalculatedEffort(final MindNode effortNode) {
+		final Matcher matcher = FLOAT_EXTRACTOR.matcher(effortNode.getText());
+		if (!matcher.find()) return 0.0f;
+
+		return Float.valueOf(matcher.group());
 	}
 }

@@ -51,6 +51,10 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		return childrenList;
 	}
 
+	public int getChildCount() {
+		return childrenList.size();
+	}
+
 	public Effort getEffort() {
 		return effort;
 	}
@@ -142,10 +146,6 @@ public class Scope implements DeeplyComparable, IsSerializable {
 	@Override
 	public String toString() {
 		return description;
-	}
-
-	public int getChildCount() {
-		return childrenList.size();
 	}
 
 }

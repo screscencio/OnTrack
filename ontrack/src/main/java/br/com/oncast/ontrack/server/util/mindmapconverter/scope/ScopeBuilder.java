@@ -35,8 +35,13 @@ public class ScopeBuilder {
 		return this;
 	}
 
-	public ScopeBuilder calculatedEffort(final float value) {
-		scope.getEffort().setCalculated(value);
+	public ScopeBuilder topDownEffort(final float value) {
+		scope.getEffort().setTopDownValue(value);
+		return this;
+	}
+
+	public ScopeBuilder bottomUpEffort(final float value) {
+		scope.getEffort().setBottomUpValue(value);
 		return this;
 	}
 

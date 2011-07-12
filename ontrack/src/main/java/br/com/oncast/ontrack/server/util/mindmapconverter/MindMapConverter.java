@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 /**
  * A mind map converter that reads a *.mm file and convert it into a scope hierarchy.
  */
+// TODO ++Implement a exporter for generating a *.mm file from a scope hierarchy.
 public class MindMapConverter {
 
 	/**
