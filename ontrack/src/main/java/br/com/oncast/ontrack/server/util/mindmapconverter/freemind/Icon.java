@@ -4,6 +4,8 @@ public enum Icon {
 	CLOCK("clock"),
 	PENCIL("pencil"),
 	IDEA("idea"),
+	DOWN("down"),
+	UP("up"),
 	WIZARD("wizard");
 
 	private final String freemindCode;
