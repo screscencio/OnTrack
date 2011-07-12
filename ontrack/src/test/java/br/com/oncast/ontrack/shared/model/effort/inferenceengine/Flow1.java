@@ -1,12 +1,13 @@
-package br.com.oncast.ontrack.shared.model.effort;
+package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
 
-import static br.com.oncast.ontrack.shared.model.effort.Util.getModifiedScope;
-import static br.com.oncast.ontrack.shared.model.effort.Util.getOriginalScope;
+import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getModifiedScope;
+import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getOriginalScope;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
