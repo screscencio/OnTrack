@@ -19,6 +19,6 @@ public class Util {
 	}
 
 	static Scope getScope(final String fileName) {
-		return MindMapConverter.convert(new File("src/test/java/br/com/oncast/ontrack/shared/model/effort/" + fileName + ".mm"));
+		return MindMapConverter.convert(new File("src/test/java/br/com/oncast/ontrack/shared/model/effort/inferenceengine/" + fileName + ".mm"));
 	}
 }
