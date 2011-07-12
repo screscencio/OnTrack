@@ -201,7 +201,7 @@ public class ScopeTreeItemWidget extends Composite {
 		effortPanel.setVisible(effortVisibility);
 		if (!effortVisibility) return;
 
-		effortLabel.setText(NumberUtils.roundToStringWithOneFractionalDigit(effortValue) + "ep");
+		effortLabel.setText(NumberUtils.roundToStringMaybeWithOneFractionalDigit(effortValue) + "ep");
 		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
 		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
 
