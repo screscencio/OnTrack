@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundExceptio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO Update it so that it refreshes only till finds the ones that have not changed.
+// TODO Optimize this;
 public class ScopeTreeEffortUpdateEngine {
 
 	public static void process(final ScopeTreeWidget tree, final UUID referenceId) throws ScopeNotFoundException {
@@ -14,10 +15,9 @@ public class ScopeTreeEffortUpdateEngine {
 		// processBottomUp(scopeTreeItem);
 		// processTopDown(scopeTreeItem);
 
-		ScopeTreeItem scopeTreeItem = tree.findScopeTreeItem(referenceId);
-		while (!scopeTreeItem.isRoot())
-			scopeTreeItem = scopeTreeItem.getParentItem();
-		processTopDown(scopeTreeItem);
+		final int count = tree.getItemCount();
+		for (int i = 0; i < count; i++)
+			processTopDown(tree.getItem(i));
 	}
 
 	// FIXME
@@ -31,7 +31,7 @@ public class ScopeTreeEffortUpdateEngine {
 	// }
 
 	private static void processTopDown(final ScopeTreeItem scopeTreeItem) {
-		scopeTreeItem.getScopeTreeItemWidget().refreshEffort();
+		scopeTreeItem.getScopeTreeItemWidget().updateEffortDisplay();
 		final int childCount = scopeTreeItem.getChildCount();
 		for (int i = 0; i < childCount; i++)
 			processTopDown(scopeTreeItem.getChild(i));

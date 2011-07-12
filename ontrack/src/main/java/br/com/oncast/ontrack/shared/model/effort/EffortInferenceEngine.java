@@ -7,41 +7,94 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class EffortInferenceEngine {
 
+	private static int opCount = 0;
+
 	public static void process(final Scope scope) {
-		calculateEffort(scope, 3);
-		processBottomUp(scope);
+		preProcessBottomUp(scope, 2);
+		final Scope topMostProcessedScope = processBottomUp(scope);
+		processTopDown(topMostProcessedScope);
 		processTopDown(scope);
 	}
 
-	private static void processBottomUp(final Scope scope) {
-		final float inferedInitial = scope.getEffort().getInfered();
-		calculateEffort(scope, 2);
-		final float inferedFinal = scope.getEffort().getInfered();
+	private static void preProcessBottomUp(final Scope scope, int i) {
+		i -= 1;
+		int sum = 0;
+		for (final Scope child : scope.getChildren()) {
+			if (i > 0) preProcessBottomUp(child, i);
 
-		if (inferedFinal == inferedInitial) return;
-		if (scope.isRoot()) return;
-
-		processBottomUp(scope.getParent());
+			final Effort childEffort = child.getEffort();
+			sum += childEffort.getDeclared() > childEffort.getBottomUpValue() ? childEffort.getDeclared() : childEffort.getBottomUpValue();
+		}
+		scope.getEffort().setBottomUpValue(sum);
+		log("preProcessBottomUp", scope);
 	}
 
-	private static void processTopDown(final Scope scope) {
-		final float infered = scope.getEffort().getInfered();
-		final float calculated = scope.getEffort().getCalculated();
-		final float difference = infered - calculated;
+	private static void log(final String descrip, final Scope scope) {
+		System.out.println("Operation " + opCount++ + ": \t" + descrip + "\t - \t" + scope.getDescription());
+	}
 
-		if (difference == 0) return;
-		if (difference < 0) throw new RuntimeException("Error while infering efforts.");
+	private static Scope processBottomUp(final Scope scope) {
+		log("processBottomUp", scope);
+		if (scope.isRoot()) return scope;
+		final Scope parent = scope.getParent();
+
+		final float inferedInitial = parent.getEffort().getInfered();
+		preProcessBottomUp(parent, 0);
+		final float inferedFinal = parent.getEffort().getInfered();
+
+		if (inferedFinal == inferedInitial) return parent;
+		return processBottomUp(parent);
+	}
+
+	private static boolean processTopDown(final Scope scope) {
+		log("processTopDown", scope);
+		if (scope.getEffort().hasDeclared()) scope.getEffort().setTopDownValue(scope.getEffort().getDeclared());
+
+		float available = scope.getEffort().getTopDownValue() - getDeclaredEffortSum(scope);
+		if (available < 0) available = 0;
 
 		final List<Scope> childrenWithNonDeclaredEfforts = getChildrenWithNonDeclaredEfforts(scope);
-		final int size = childrenWithNonDeclaredEfforts.size();
-		if (size == 0) return;
+		final float portion = getPortion(available, childrenWithNonDeclaredEfforts);
 
-		final float portion = difference / size;
-		for (final Scope child : childrenWithNonDeclaredEfforts) {
-			// TODO Review the method of calculation - could pre calculate it once using the (infered - sumOfDeclaratedChildren / size)
-			child.getEffort().setCalculated(child.getEffort().getCalculated() + portion);
-			processTopDown(child);
+		boolean processTopDown = false;
+
+		final List<Scope> childrenList = scope.getChildren();
+		for (final Scope child : childrenList) {
+			final float initialTopDownValue = child.getEffort().getTopDownValue();
+
+			final float value = (child.getEffort().hasDeclared()) ? child.getEffort().getDeclared() : child.getEffort().getBottomUpValue();
+			if (value > portion) child.getEffort().setTopDownValue(value);
+			else child.getEffort().setTopDownValue(child.getEffort().hasDeclared() ? child.getEffort().getDeclared() : portion);
+
+			if (child.getEffort().getTopDownValue() != initialTopDownValue) processTopDown |= processTopDown(child);
 		}
+
+		// if (processTopDown) preProcessBottomUp(scope, 0);
+		return processTopDown;
+	}
+
+	private static int getDeclaredEffortSum(final Scope scope) {
+		int sum = 0;
+		final List<Scope> children = scope.getChildren();
+		for (final Scope child : children)
+			if (child.getEffort().hasDeclared()) sum += child.getEffort().getDeclared();
+
+		return sum;
+	}
+
+	private static float getPortion(final float available, final List<Scope> scopeList) {
+		if (scopeList.size() == 0) return 0;
+
+		final float portion = available / scopeList.size();
+		for (final Scope scope : scopeList) {
+			if (scope.getEffort().getBottomUpValue() > portion) {
+				final ArrayList<Scope> list = new ArrayList<Scope>(scopeList);
+				list.remove(scope);
+				return getPortion(available - scope.getEffort().getBottomUpValue(), list);
+			}
+		}
+
+		return portion;
 	}
 
 	private static List<Scope> getChildrenWithNonDeclaredEfforts(final Scope scope) {
@@ -50,17 +103,5 @@ public class EffortInferenceEngine {
 			if (!child.getEffort().hasDeclared()) childrenWithNonDeclaredEfforts.add(child);
 
 		return childrenWithNonDeclaredEfforts;
-	}
-
-	private static int calculateEffort(final Scope scope, int i) {
-		i -= 1;
-		int sum = 0;
-		for (final Scope child : scope.getChildren()) {
-			if (i > 0) calculateEffort(child, i);
-			sum += child.getEffort().getInfered();
-		}
-		scope.getEffort().setCalculated(sum);
-
-		return sum;
 	}
 }

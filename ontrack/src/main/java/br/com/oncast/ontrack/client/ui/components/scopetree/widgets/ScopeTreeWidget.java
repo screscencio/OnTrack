@@ -69,11 +69,11 @@ public class ScopeTreeWidget extends Composite implements DeeplyComparable {
 		tree.setFocus(focus);
 	}
 
-	private ScopeTreeItem getItem(final int index) {
+	public ScopeTreeItem getItem(final int index) {
 		return (ScopeTreeItem) tree.getItem(index);
 	}
 
-	private int getItemCount() {
+	public int getItemCount() {
 		return tree.getItemCount();
 	}
 
