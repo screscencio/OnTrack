@@ -10,9 +10,10 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class Flow2 {
 
-	private final String FILE_NAME = "Project1";
+	private final String FILE_NAME = "Flow2";
 	final Scope project = getOriginalScope(FILE_NAME);
 
+	// FIXME Change this class to act like Flow1
 	@Test
 	public void shouldApplyInferencesWhenEffortChanges() {
 		project.getEffort().setDeclared(30);
