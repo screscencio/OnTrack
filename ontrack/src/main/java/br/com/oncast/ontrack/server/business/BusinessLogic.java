@@ -39,7 +39,7 @@ public class BusinessLogic {
 			return applyActionsToProjectSnapshot(snapshot, actionList);
 		}
 		catch (final PersistenceException e) {
-			throw new UnableToLoadProjectException("The server could not load the project: An persistence exception occured.", e);
+			throw new UnableToLoadProjectException("The server could not load the project: A persistence exception occured.", e);
 		}
 		catch (final UnableToCompleteActionException e) {
 			throw new UnableToLoadProjectException("The server could not load the project: The project state could not be correctly restored.", e);
