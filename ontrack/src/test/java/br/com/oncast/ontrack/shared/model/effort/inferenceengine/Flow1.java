@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 public class Flow1 {
 
 	private final String FILE_NAME = "Flow1";
-	final Scope original = getOriginalScope(FILE_NAME);
+	private final Scope original = getOriginalScope(FILE_NAME);
 
 	@Test
 	public void shouldApplyInferencesWhenEffortChanges() throws UnableToCompleteActionException {
