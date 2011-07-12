@@ -24,7 +24,7 @@ public class InferenceEngineTest {
 		final ScopeMoveLeftAction moveLeftAction = new ScopeMoveLeftAction(scope.getId());
 		moveLeftAction.execute(new ProjectContext(new Project(original, null)));
 
-		EffortInferenceEngine.process(scope);
+		EffortInferenceEngine.process(scope.getParent());
 
 		assertTrue(original.deepEquals(getModifiedScope(fileName)));
 	}

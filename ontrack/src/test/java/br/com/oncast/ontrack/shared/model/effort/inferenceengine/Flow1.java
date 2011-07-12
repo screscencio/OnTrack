@@ -42,7 +42,7 @@ public class Flow1 {
 	private void shouldRedistributeInferenceBetweenSiblingsWhenParentEffortIsDeclared() {
 		final Scope scopeWithChangedEffort = original.getChild(1);
 		scopeWithChangedEffort.getEffort().setDeclared(350);
-		EffortInferenceEngine.process(scopeWithChangedEffort);
+		EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
 		for (final Scope child : scopeWithChangedEffort.getChildren()) {
 			assertEquals(child.getEffort().getInfered(), 87.5, 0.1);

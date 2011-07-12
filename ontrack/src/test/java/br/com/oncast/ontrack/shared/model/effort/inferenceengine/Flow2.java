@@ -32,7 +32,7 @@ public class Flow2 {
 	private void shouldRedistributeInferenceBetweenSiblingsWhenParentEffortDeclared() {
 		final Scope a2 = project.getChild(0).getChild(1);
 		a2.getEffort().setDeclared(10);
-		EffortInferenceEngine.process(a2);
+		EffortInferenceEngine.process(a2.getParent());
 
 		assertTrue(project.deepEquals(getModifiedScope(FILE_NAME, 2)));
 	}
@@ -47,7 +47,7 @@ public class Flow2 {
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneChangesItsEffort() {
 		final Scope a21 = project.getChild(0).getChild(1).getChild(0);
 		a21.getEffort().setDeclared(7);
-		EffortInferenceEngine.process(a21);
+		EffortInferenceEngine.process(a21.getParent());
 
 		assertTrue(project.deepEquals(getModifiedScope(FILE_NAME, 4)));
 	}
