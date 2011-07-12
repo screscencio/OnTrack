@@ -174,16 +174,19 @@ public class ScopeTreeItemWidget extends Composite {
 		this.scope = scope;
 		descriptionLabel.setText(scope.getDescription());
 		editionBox.setText(scope.getDescription());
-		setEffort(scope.getEffort());
-		setRelease(scope.getRelease());
+		updateEffortDisplay();
+		updateReleaseDisplay();
 	}
 
 	public Scope getScope() {
 		return scope;
 	}
 
+	// TODO It may check if the values changed.
 	// TODO Change the way we show the effort
-	private void setEffort(final Effort effort) {
+	public void updateEffortDisplay() {
+		final Effort effort = scope.getEffort();
+
 		declaredEffortLabel.setVisible(effort.hasDeclared());
 		declaredEffortLabel.setText((effort.getDeclared()) + "");
 		bottomUpValueEffortLabel.setText(((int) effort.getBottomUpValue()) + "");
@@ -191,14 +194,16 @@ public class ScopeTreeItemWidget extends Composite {
 		inferedEffortLabel.setText(((int) effort.getInfered()) + "");
 
 		final boolean effortVisibility = effort.hasDeclared() || effort.getInfered() > 0;
-		final int effortErrorDifference = (int) (effort.getProcessedValue() - effort.getDeclared());
-		final int effortPositiveDifference = effort.getProcessedValue() != 0 ? (int) (effort.getDeclared() - effort.getProcessedValue()) : 0;
-		final boolean effortDifferenceVisibility = effort.hasDeclared() && (effortErrorDifference > 0 || effortPositiveDifference > 0);
+		final int effortErrorDifference = effort.hasDeclared() ? (int) (effort.getInfered() - effort.getDeclared()) : 0;
+		final int effortPositiveDifference = effort.getBottomUpValue() != 0 ? (int) (effort.getInfered() - effort.getBottomUpValue()) : 0;
+		// final int effortPositiveDifference = effort.getProcessedValue() != 0 ? (int) (effort.getDeclared() - effort.getProcessedValue()) : 0;
+		final boolean effortDifferenceVisibility = (effortErrorDifference > 0 || effortPositiveDifference > 0);
+		// final boolean effortDifferenceVisibility = effort.hasDeclared() && (effortErrorDifference > 0 || effortPositiveDifference > 0); // FIXME
 
 		effortLabel.setVisible(effortVisibility);
 		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
 		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
-		effortLabel.setText(((int) effort.getInfered()) + "");
+		effortLabel.setText(effort.getInfered() + "");
 
 		effortDifferenceLabel.setVisible(effortDifferenceVisibility);
 		if (!effortDifferenceVisibility) return;
@@ -213,14 +218,10 @@ public class ScopeTreeItemWidget extends Composite {
 		}
 	}
 
-	private void setRelease(final Release release) {
+	private void updateReleaseDisplay() {
+		final Release release = scope.getRelease();
 		final boolean isReleasePresent = release != null;
 		releaseTag.setVisible(isReleasePresent);
 		releaseTag.setText(isReleasePresent ? release.getFullDescription() : "");
-	}
-
-	// TODO It may check if the values changed.
-	public void refreshEffort() {
-		setEffort(scope.getEffort());
 	}
 }

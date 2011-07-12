@@ -144,4 +144,8 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		return description;
 	}
 
+	public int getChildCount() {
+		return childrenList.size();
+	}
+
 }
