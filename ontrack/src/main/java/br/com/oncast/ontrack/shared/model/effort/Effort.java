@@ -34,9 +34,8 @@ public class Effort implements IsSerializable, DeeplyComparable {
 		return (declared > processedValue) ? declared : processedValue;
 	}
 
-	public float getProcessedValue() {
+	private float getProcessedValue() {
 		return (bottomUpValue > topDownValue) ? bottomUpValue : topDownValue;
-		// return (bottomUpValue != 0) ? bottomUpValue : topDownValue; // FIXME
 	}
 
 	public float getTopDownValue() {
@@ -64,6 +63,7 @@ public class Effort implements IsSerializable, DeeplyComparable {
 		final Effort other = (Effort) obj;
 		if (bottomUpValue != other.bottomUpValue) return false;
 		if (topDownValue != other.topDownValue) return false;
+		if (hasDeclared != other.hasDeclared) return false;
 		if (declared != other.declared) return false;
 		return true;
 	}

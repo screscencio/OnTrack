@@ -32,7 +32,7 @@ public class GeneralTypeConverter implements TypeConverter {
 		addCustomConverter(Integer.class, new IntegerConverter());
 		addCustomConverter(ArrayList.class, new ListConverter<ArrayList>(ArrayList.class));
 
-		// TODO Externalize this so that specific application converters are registered by the application itself.
+		// TODO +Externalize this so that specific application converters are registered by the application itself.
 		addCustomConverter(UUID.class, new UUIDConverter());
 		addCustomConverter(UserActionEntity.class, new UserActionEntityConverter());
 		addCustomConverter(PersistentBag.class, new ListConverter<ArrayList>(ArrayList.class));

@@ -21,7 +21,7 @@ public class ApplicationEntryPoint implements EntryPoint {
 		final ApplicationUIPanel applicationUIPanel = new ApplicationUIPanel();
 		RootPanel.get().add(applicationUIPanel);
 
-		// TODO Configure communication error handlers
+		// TODO ++++Configure communication error handlers
 		final ClientServiceProvider serviceProvider = new ClientServiceProvider();
 
 		serviceProvider.getActionSyncService().setActive(true);

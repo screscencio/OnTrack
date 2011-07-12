@@ -6,8 +6,9 @@ public class UUID implements IsSerializable {
 
 	private String id = "";
 
-	// TODO Verify the algorithm use of the CHARS constant bellow. UUIDs should be represented by Hexadecimal characters only, but our own unique id could
-	// expand this universe as we are storing it as a string (then it should have another name, eg. UniqueId).
+	// TODO +++Verify the algorithm use of the CHARS constant bellow. UUIDs should be represented by Hexadecimal characters only, but our own unique id could
+	// expand this universe as we are storing it as a string (then it should have another name, eg. UniqueId). AAs we save this as a string, our UUID could use
+	// more characters so that it can express more possibilities.
 	private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
 	public UUID() {

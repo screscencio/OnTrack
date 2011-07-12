@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparableList;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO Test this class
+// TODO +++Test this class
 public class Scope implements DeeplyComparable, IsSerializable {
 
 	private UUID id;
@@ -104,7 +104,7 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		return release;
 	}
 
-	// TODO Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
+	// TODO ++Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
 	public Scope findScope(final UUID scopeId) {
 		if (this.id.equals(scopeId)) return this;
 

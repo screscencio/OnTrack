@@ -39,7 +39,7 @@ public class ScopeTree implements Component, DeeplyComparable {
 					}
 				}
 				catch (final ScopeNotFoundException e) {
-					// TODO Redraw the entire structure to eliminate inconsistencies
+					// TODO ++Redraw the entire structure to eliminate inconsistencies
 					throw new RuntimeException("It was not possible to update the view because an inconsistency with the model was detected.", e);
 				}
 			}

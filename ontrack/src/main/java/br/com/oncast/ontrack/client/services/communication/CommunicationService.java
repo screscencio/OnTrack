@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.shared.services.communication.ProjectContextRequest
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-// TODO Implement/Refactor dispatch method to receive generic "Requests" and asynchronously return "Responses".
+// TODO +++Implement/Refactor dispatch method to receive generic "Requests" and asynchronously return "Responses".
 public class CommunicationService {
 
 	final CommunicationRpcServiceAsync rpcServiceAsync = GWT.create(CommunicationRpcService.class);

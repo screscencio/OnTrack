@@ -7,7 +7,8 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
-// TODO Now that this is a globally visible service, refactor this so that only the necessary methods are visible. A possible solution is to encapsulate the two
+// TODO +Now that this is a globally visible service, refactor this so that only the necessary methods are visible. A possible solution is to encapsulate the
+// two
 // interface implementations using composition (may be acceptable to use inner classes).
 public class ActionExecutionService implements ActionExecutionRequestHandler, ActionExecutionListener {
 

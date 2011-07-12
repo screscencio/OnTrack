@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackActio
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
-// TODO Refactor this class to decentralize Action to WidgetActionFactory mappings.
+// TODO ++Refactor this class to decentralize Action to WidgetActionFactory mappings.
 public class ScopeTreeActionFactory {
 
 	private final ScopeTreeWidget tree;

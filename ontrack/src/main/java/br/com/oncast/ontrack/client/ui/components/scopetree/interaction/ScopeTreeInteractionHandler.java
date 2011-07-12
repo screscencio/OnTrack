@@ -27,8 +27,8 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 			}
 			catch (final UnableToCompleteActionException e) {
 				this.pendingAction = null;
-				// TODO Implement an adequate exception treatment.
-				// TODO Display error to the user
+				// TODO ++Implement an adequate exception treatment.
+				// TODO ++Display error to the user
 				throw new RuntimeException();
 			}
 		}
@@ -42,7 +42,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 				pendingAction.rollback(tree);
 			}
 			catch (final UnableToCompleteActionException e) {
-				// TODO Implement an adequate exception treatment.
+				// TODO ++Implement an adequate exception treatment.
 				throw new RuntimeException();
 			}
 			finally {

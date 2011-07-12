@@ -25,7 +25,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	@ConversionAlias("subActionList")
 	private List<ModelAction> subActionList;
 
-	// TODO Only create necessary subActions
+	// TODO +Only create necessary subActions
 	public ScopeUpdateAction(final UUID referenceId, final String newPattern) {
 		this.referenceId = referenceId;
 
