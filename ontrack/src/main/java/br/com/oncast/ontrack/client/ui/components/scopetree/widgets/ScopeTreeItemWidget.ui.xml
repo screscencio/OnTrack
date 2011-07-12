@@ -21,8 +21,10 @@
         }
 		
 		.effort {
-            margin-left: 5px;
-            margin-right: 5px;
+            margin-left: 4px;
+            margin-right: 4px;
+            padding-left: 3px;
+            padding-right: 3px;
 
             vertical-align: super;
             font-size: smaller;
@@ -34,15 +36,16 @@
 		}
 		
 		.effortLabel {
- 			opacity: 0.9;
+ 			opacity: 0.8;
  			display: inline;
 		}
 		
 		.effortLabelTranslucid {
- 			opacity: 0.2;
+ 			opacity: 0.4;
 		}
 		
 		.effortDifferenceLabel {
+			position: relative;
             padding: 1px;
             padding-left: 2px;
             padding-right: 2px;
@@ -54,36 +57,20 @@
 
             background-color: blue;
             color: #fff;
-            border-radius: 50%;
+            border-radius: 35%;
 		}
 		
 		.effortDifferenceLabelProblem {
             background-color: red;
 		}
 		
-		.declaredEffortLabel {
-			color: red;
-            opacity: 0.2;
-		}
-		
-		.bottomUpValueEffortLabel {
-			color: green;
-            opacity: 0.2;
-        }
-		
-		.topDownValueEffortLabel {
-			color: purple;
-            opacity: 0.2;
-        }
-		
-		.inferedEffortLabel {
-			color: blue;
-            opacity: 0.2;
-        }
-		
 		.tag {
 			margin-left: 5px;
 			margin-top: -1px;
+		}
+		
+		.effortDescriptionLabel {
+			float: right;
 		}
 	</ui:style>
 
@@ -91,17 +78,12 @@
 		<g:DeckPanel ui:field="deckPanel">
 			<g:HorizontalPanel styleName="{style.visualizationPanel}">
 				<g:Label ui:field="descriptionLabel" styleName="{style.visualizationLabel}" />
-                <g:HTMLPanel styleName="{style.effort}">
+                <g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
     				<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
                     <g:Label ui:field="effortDifferenceLabel" styleName="{style.effortDifferenceLabel}" />
                 </g:HTMLPanel>
-                <g:HTMLPanel styleName="{style.effort}">
-    				<g:Label ui:field="declaredEffortLabel" styleName="{style.effortLabel} {style.declaredEffortLabel}" />
-    	   			<g:Label ui:field="bottomUpValueEffortLabel" styleName="{style.effortLabel} {style.bottomUpValueEffortLabel}" />
-    	   			<g:Label ui:field="topDownValueEffortLabel" styleName="{style.effortLabel} {style.topDownValueEffortLabel}" />
-    				<g:Label ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.inferedEffortLabel}" />
-                </g:HTMLPanel>
 				<t:Tag ui:field="releaseTag" styleName="{style.tag}" />
+				<g:Label ui:field="effortDescriptionLabel" styleName="{style.effortDescriptionLabel}" />
 			</g:HorizontalPanel>
 			<g:TextBox styleName="edit" ui:field="editionBox" />
 		</g:DeckPanel>

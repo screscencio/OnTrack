@@ -28,7 +28,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 		this.place = destinationPlace;
 	}
 
-	// TODO Show animations and change the view according to the communication state.
+	// TODO +Show animations and change the view according to the communication state.
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		if (contextProviderService.isContextAvailable()) placeController.goTo(place);
@@ -42,7 +42,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 			@Override
 			public void onFailure(final Throwable cause) {
 				// TODO Hide 'loading' UI indicator.
-				// TODO Treat communication failure.
+				// TODO +++Treat communication failure.
 				Window.alert("Error! Could not load project: " + cause.toString());
 				cause.printStackTrace();
 			}

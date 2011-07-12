@@ -5,30 +5,18 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-// TODO Update it so that it refreshes only till finds the ones that have not changed.
-// TODO Optimize this;
+// TODO +Optimize this; it is updating the entire tree; could it update only specific parts of it?
 public class ScopeTreeEffortUpdateEngine {
 
 	public static void process(final ScopeTreeWidget tree, final UUID referenceId) throws ScopeNotFoundException {
-		// FIXME
-		// final ScopeTreeItem scopeTreeItem = tree.findScopeTreeItem(referenceId);
-		// processBottomUp(scopeTreeItem);
-		// processTopDown(scopeTreeItem);
+		processEntireTree(tree);
+	}
 
+	private static void processEntireTree(final ScopeTreeWidget tree) {
 		final int count = tree.getItemCount();
 		for (int i = 0; i < count; i++)
 			processTopDown(tree.getItem(i));
 	}
-
-	// FIXME
-	// private static void processBottomUp(final ScopeTreeItem scopeTreeItem) {
-	// final ScopeTreeItemWidget scopeWidget = scopeTreeItem.getScopeTreeItemWidget();
-	// // if (scopeWidget == null) return;
-	// scopeWidget.refreshEffort();
-	//
-	// if (scopeTreeItem.isRoot()) return;
-	// processBottomUp(scopeTreeItem.getParentItem());
-	// }
 
 	private static void processTopDown(final ScopeTreeItem scopeTreeItem) {
 		scopeTreeItem.getScopeTreeItemWidget().updateEffortDisplay();

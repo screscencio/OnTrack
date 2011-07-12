@@ -23,7 +23,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-// TODO Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
+// TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 // TODO Analise using CriteriaApi instead of HQL.
 // TODO Implement better exception handling for JPA exceptions
 public class PersistenceServiceJpaImpl implements PersistenceService {

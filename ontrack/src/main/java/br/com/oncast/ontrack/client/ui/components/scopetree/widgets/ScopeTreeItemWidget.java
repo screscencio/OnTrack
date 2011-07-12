@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
+import br.com.oncast.ontrack.shared.util.number.NumberUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -24,6 +25,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -50,22 +52,16 @@ public class ScopeTreeItemWidget extends Composite {
 	protected Label descriptionLabel;
 
 	@UiField
+	protected HTMLPanel effortPanel;
+
+	@UiField
 	protected Label effortLabel;
 
 	@UiField
 	protected Label effortDifferenceLabel;
 
 	@UiField
-	protected Label declaredEffortLabel;
-
-	@UiField
-	protected Label bottomUpValueEffortLabel;
-
-	@UiField
-	protected Label topDownValueEffortLabel;
-
-	@UiField
-	protected Label inferedEffortLabel;
+	protected Label effortDescriptionLabel;
 
 	@UiField
 	protected TextBox editionBox;
@@ -76,6 +72,10 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiField
 	protected FocusPanel focusPanel;
 
+	private float currEffort;
+
+	private float currEffortDifference;
+
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
 
 	private Scope scope;
@@ -83,6 +83,7 @@ public class ScopeTreeItemWidget extends Composite {
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
+		effortPanel.setVisible(false);
 		setScope(scope);
 
 		this.editionHandler = editionHandler;
@@ -182,40 +183,36 @@ public class ScopeTreeItemWidget extends Composite {
 		return scope;
 	}
 
-	// TODO It may check if the values changed.
-	// TODO Change the way we show the effort
 	public void updateEffortDisplay() {
 		final Effort effort = scope.getEffort();
+		effortDescriptionLabel.setText(effort.toString());
 
-		declaredEffortLabel.setVisible(effort.hasDeclared());
-		declaredEffortLabel.setText((effort.getDeclared()) + "");
-		bottomUpValueEffortLabel.setText(((int) effort.getBottomUpValue()) + "");
-		topDownValueEffortLabel.setText(((int) effort.getTopDownValue()) + "");
-		inferedEffortLabel.setText(((int) effort.getInfered()) + "");
-
+		final float effortErrorDifference = effort.hasDeclared() ? effort.getInfered() - effort.getDeclared() : 0;
+		final float effortPositiveDifference = effort.getBottomUpValue() != 0 ? effort.getInfered() - effort.getBottomUpValue() : 0;
 		final boolean effortVisibility = effort.hasDeclared() || effort.getInfered() > 0;
-		final int effortErrorDifference = effort.hasDeclared() ? (int) (effort.getInfered() - effort.getDeclared()) : 0;
-		final int effortPositiveDifference = effort.getBottomUpValue() != 0 ? (int) (effort.getInfered() - effort.getBottomUpValue()) : 0;
-		// final int effortPositiveDifference = effort.getProcessedValue() != 0 ? (int) (effort.getDeclared() - effort.getProcessedValue()) : 0;
 		final boolean effortDifferenceVisibility = (effortErrorDifference > 0 || effortPositiveDifference > 0);
-		// final boolean effortDifferenceVisibility = effort.hasDeclared() && (effortErrorDifference > 0 || effortPositiveDifference > 0); // FIXME
+		final float effortValue = effort.getInfered();
+		final int effortDifferenceValue = ((int) ((effortErrorDifference > 0) ? effortErrorDifference : effortPositiveDifference));
 
-		effortLabel.setVisible(effortVisibility);
+		if (currEffort == effortValue && currEffortDifference == effortDifferenceValue) return;
+		currEffort = effortValue;
+		currEffortDifference = effortDifferenceValue;
+
+		effortPanel.setVisible(effortVisibility);
+		if (!effortVisibility) return;
+
+		effortLabel.setText(NumberUtils.roundToStringWithOneFractionalDigit(effortValue) + "ep");
 		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
 		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
-		effortLabel.setText(effort.getInfered() + "");
 
 		effortDifferenceLabel.setVisible(effortDifferenceVisibility);
 		if (!effortDifferenceVisibility) return;
 
-		if (effortErrorDifference > 0) {
-			effortDifferenceLabel.getElement().addClassName(style.effortDifferenceLabelProblem());
-			effortDifferenceLabel.setText(effortErrorDifference + "");
-		}
-		else {
-			effortDifferenceLabel.getElement().removeClassName(style.effortDifferenceLabelProblem());
-			effortDifferenceLabel.setText(effortPositiveDifference + "");
-		}
+		effortDifferenceLabel.setText(effortDifferenceValue + "");
+		if (effortErrorDifference > 0) effortDifferenceLabel.getElement().addClassName(style.effortDifferenceLabelProblem());
+		else effortDifferenceLabel.getElement().removeClassName(style.effortDifferenceLabelProblem());
+		if (effort.hasDeclared()) effortDifferenceLabel.getElement().removeClassName(style.effortLabelTranslucid());
+		else effortDifferenceLabel.getElement().addClassName(style.effortLabelTranslucid());
 	}
 
 	private void updateReleaseDisplay() {

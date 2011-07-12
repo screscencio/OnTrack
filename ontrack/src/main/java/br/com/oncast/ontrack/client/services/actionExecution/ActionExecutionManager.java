@@ -28,8 +28,8 @@ public class ActionExecutionManager {
 			redoStack.clear();
 		}
 		catch (final UnableToCompleteActionException e) {
-			// TODO Implement an adequate exception treatment.
-			// TODO Display error to the user
+			// TODO ++Implement an adequate exception treatment.
+			// TODO ++Display error to the user
 			// TODO Maybe create a type of exception when we don't want to display any messages.
 			throw new RuntimeException(e);
 		}
@@ -44,8 +44,8 @@ public class ActionExecutionManager {
 		}
 		catch (final UnableToCompleteActionException e) {
 			undoStack.clear();
-			// TODO Implement an adequate exception treatment.
-			// TODO Display error to the user
+			// TODO ++Implement an adequate exception treatment.
+			// TODO ++Display error to the user
 			// TODO Maybe create a type of exception when we don't want to display any messages.
 			throw new RuntimeException(e);
 		}
@@ -63,8 +63,8 @@ public class ActionExecutionManager {
 		}
 		catch (final UnableToCompleteActionException e) {
 			redoStack.clear();
-			// TODO Implement an adequate exception treatment.
-			// TODO Display error to the user
+			// TODO ++Implement an adequate exception treatment.
+			// TODO ++Display error to the user
 			// TODO Maybe create a type of exception when we don't want to display any messages.
 			throw new RuntimeException(e);
 		}

@@ -16,7 +16,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO Refactor this XMLs file so that proportions are proportional (and not defined by pixels)
+// TODO Refactor this XMLs file so that "sizes" are proportional (and not defined by pixels in a hardcoded manner).
 public class PlanningPanel extends Composite implements PlanningView {
 
 	private static PlanningPanelUiBinder uiBinder = GWT.create(PlanningPanelUiBinder.class);

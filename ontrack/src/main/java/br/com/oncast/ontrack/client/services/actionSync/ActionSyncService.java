@@ -31,7 +31,7 @@ public class ActionSyncService {
 					@Override
 					public void onFailure(final Throwable caught) {
 						// TODO Hide 'loading' UI indicator.
-						// TODO Treat communication failure.
+						// TODO +++Treat communication failure.
 						caught.printStackTrace();
 					}
 				});

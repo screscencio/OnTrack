@@ -12,7 +12,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 		throw new RuntimeException();
 	}
 
-	// TODO Throw an event on the eventBus when the context is set so that UI and other services can update theirselfs.
+	// TODO +Verify: Throw an event on the eventBus when the context is set so that UI and other services can update theirselfs.
 	@Override
 	public void setProjectContext(final ProjectContext projectContext) {
 		this.projectContext = projectContext;
