@@ -12,8 +12,8 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 
 public class Flow3Test {
 
-	private final String FILE_NAME = "Flow3";
-	private final Scope original = getOriginalScope(FILE_NAME);
+	private final String FILE_NAME_PREFIX = "Flow3";
+	private final Scope original = getOriginalScope(FILE_NAME_PREFIX);
 
 	@Test
 	public void shouldApplyInferencesWhenEffortChanges() throws UnableToCompleteActionException {
@@ -26,7 +26,7 @@ public class Flow3Test {
 		original.getChild(0).getEffort().setDeclared(12);
 		EffortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME, 1));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
 	}
 
 	private void shouldRedistributeInferencesWhenChildrenReceiveEffortDeclarations() {
@@ -36,7 +36,7 @@ public class Flow3Test {
 		scope.getChild(1).getEffort().setDeclared(8);
 		EffortInferenceEngine.process(scope);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME, 2));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 2));
 	}
 
 	private void shouldRedistributeInferencesWhenSiblingReceiveEffortDeclarations() {
@@ -44,6 +44,6 @@ public class Flow3Test {
 		scope.getChild(1).getEffort().setDeclared(20);
 		EffortInferenceEngine.process(scope);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME, 3));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 3));
 	}
 }

@@ -30,12 +30,8 @@ public class Effort implements IsSerializable, DeeplyComparable {
 	}
 
 	public float getInfered() {
-		final float processedValue = getProcessedValue();
+		final float processedValue = (bottomUpValue > topDownValue) ? bottomUpValue : topDownValue;
 		return (declared > processedValue) ? declared : processedValue;
-	}
-
-	private float getProcessedValue() {
-		return (bottomUpValue > topDownValue) ? bottomUpValue : topDownValue;
 	}
 
 	public float getTopDownValue() {

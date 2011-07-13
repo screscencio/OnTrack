@@ -11,8 +11,8 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class Flow2Test {
 
-	private final String FILE_NAME = "Flow2";
-	private final Scope original = getOriginalScope(FILE_NAME);
+	private final String FILE_NAME_PREFIX = "Flow2";
+	private final Scope original = getOriginalScope(FILE_NAME_PREFIX);
 
 	@Test
 	public void shouldApplyInferencesWhenEffortChanges() {
@@ -26,7 +26,7 @@ public class Flow2Test {
 		original.getEffort().setDeclared(30);
 		EffortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME, 1));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenParentEffortDeclared() {
@@ -34,14 +34,14 @@ public class Flow2Test {
 		a2.getEffort().setDeclared(10);
 		EffortInferenceEngine.process(a2.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME, 2));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 2));
 	}
 
 	private void shouldRedistribuiteEffortWhenRootEffortIsChanged() {
 		original.getEffort().setDeclared(60);
 		EffortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME, 3));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 3));
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneChangesItsEffort() {
@@ -49,7 +49,7 @@ public class Flow2Test {
 		a21.getEffort().setDeclared(7);
 		EffortInferenceEngine.process(a21.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME, 4));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 4));
 
 	}
 
