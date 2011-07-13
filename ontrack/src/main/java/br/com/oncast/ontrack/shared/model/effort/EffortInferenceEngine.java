@@ -68,9 +68,18 @@ public class EffortInferenceEngine {
 		int sum = 0;
 		final List<Scope> children = scope.getChildren();
 		for (final Scope child : children)
-			if (child.getEffort().hasDeclared()) sum += child.getEffort().getDeclared();
+			if (child.getEffort().hasDeclared()) sum += (child.getEffort().getDeclared() > child.getEffort().getBottomUpValue()) ? child.getEffort()
+					.getDeclared() : child.getEffort().getBottomUpValue();
 
 		return sum;
+	}
+
+	private static List<Scope> getChildrenWithNonDeclaredEfforts(final Scope scope) {
+		final List<Scope> childrenWithNonDeclaredEfforts = new ArrayList<Scope>();
+		for (final Scope child : scope.getChildren())
+			if (!child.getEffort().hasDeclared()) childrenWithNonDeclaredEfforts.add(child);
+
+		return childrenWithNonDeclaredEfforts;
 	}
 
 	private static float getPortion(final float available, final List<Scope> scopeList) {
@@ -88,13 +97,5 @@ public class EffortInferenceEngine {
 		}
 
 		return portion;
-	}
-
-	private static List<Scope> getChildrenWithNonDeclaredEfforts(final Scope scope) {
-		final List<Scope> childrenWithNonDeclaredEfforts = new ArrayList<Scope>();
-		for (final Scope child : scope.getChildren())
-			if (!child.getEffort().hasDeclared()) childrenWithNonDeclaredEfforts.add(child);
-
-		return childrenWithNonDeclaredEfforts;
 	}
 }
