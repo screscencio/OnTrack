@@ -4,7 +4,6 @@ import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.get
 import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getOriginalScope;
 import static br.com.oncast.ontrack.utils.assertions.Assert.assertDeepEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -21,7 +20,8 @@ public class Flow1 {
 	public void shouldApplyInferencesWhenEffortChanges() throws UnableToCompleteActionException {
 		shouldApplyInferenceTopDownWhenRootIsModified();
 		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
-		shouldRedistributeInferenceBetweenSiblingsWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
 	}
 
 	private void shouldApplyInferenceTopDownWhenRootIsModified() {
@@ -34,20 +34,33 @@ public class Flow1 {
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded() {
 		final Scope newScope = new Scope("Cancelar pedido");
 		original.getChild(1).add(newScope);
-		EffortInferenceEngine.process(original);
+		EffortInferenceEngine.process(newScope.getParent());
 
-		assertEquals(newScope.getEffort().getInfered(), 62.5, 0.1);
-		assertTrue(original.deepEquals(getModifiedScope(FILE_NAME, 2)));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME, 2));
 	}
 
-	private void shouldRedistributeInferenceBetweenSiblingsWhenParentEffortIsDeclared() {
+	private void shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared() {
 		final Scope scopeWithChangedEffort = original.getChild(1);
 		scopeWithChangedEffort.getEffort().setDeclared(350);
 		EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
 		for (final Scope child : scopeWithChangedEffort.getChildren()) {
-			assertEquals(child.getEffort().getInfered(), 87.5, 0.1);
+			assertEquals(87.5, child.getEffort().getInfered(), 0.1);
 		}
-		assertTrue(original.deepEquals(getModifiedScope(FILE_NAME, 3)));
+
+		assertDeepEquals(original, getModifiedScope(FILE_NAME, 3));
 	}
+
+	private void shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared() {
+		final Scope scopeWithChangedEffort = original.getChild(1).getChild(0);
+		scopeWithChangedEffort.getEffort().setDeclared(150);
+		EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
+
+		assertEquals(66.6, original.getChild(1).getChild(1).getEffort().getInfered(), 0.1);
+		assertEquals(66.6, original.getChild(1).getChild(2).getEffort().getInfered(), 0.1);
+		assertEquals(66.6, original.getChild(1).getChild(3).getEffort().getInfered(), 0.1);
+
+		assertDeepEquals(original, getModifiedScope(FILE_NAME, 4));
+	}
+
 }
