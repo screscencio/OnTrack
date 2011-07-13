@@ -19,6 +19,7 @@ public class Flow3Test {
 	public void shouldApplyInferencesWhenEffortChanges() throws UnableToCompleteActionException {
 		shouldApplyInferenceTopDownThroughChildren();
 		shouldRedistributeInferencesWhenChildrenReceiveEffortDeclarations();
+		shouldRedistributeInferencesWhenSiblingReceiveEffortDeclarations();
 	}
 
 	private void shouldApplyInferenceTopDownThroughChildren() {
@@ -38,23 +39,11 @@ public class Flow3Test {
 		assertDeepEquals(original, getModifiedScope(FILE_NAME, 2));
 	}
 
-	// private void shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded() {
-	// final Scope newScope = new Scope("Cancelar pedido");
-	// original.getChild(1).add(newScope);
-	// EffortInferenceEngine.process(original);
-	//
-	// assertEquals(newScope.getEffort().getInfered(), 62.5, 0.1);
-	// assertTrue(original.deepEquals(getModifiedScope(FILE_NAME, 2)));
-	// }
+	private void shouldRedistributeInferencesWhenSiblingReceiveEffortDeclarations() {
+		final Scope scope = original.getChild(0);
+		scope.getChild(1).getEffort().setDeclared(20);
+		EffortInferenceEngine.process(scope);
 
-	// private void shouldRedistributeInferenceBetweenSiblingsWhenParentEffortIsDeclared() {
-	// final Scope scopeWithChangedEffort = original.getChild(1);
-	// scopeWithChangedEffort.getEffort().setDeclared(350);
-	// EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
-	//
-	// for (final Scope child : scopeWithChangedEffort.getChildren()) {
-	// assertEquals(child.getEffort().getInfered(), 87.5, 0.1);
-	// }
-	// assertTrue(original.deepEquals(getModifiedScope(FILE_NAME, 3)));
-	// }
+		assertDeepEquals(original, getModifiedScope(FILE_NAME, 3));
+	}
 }
