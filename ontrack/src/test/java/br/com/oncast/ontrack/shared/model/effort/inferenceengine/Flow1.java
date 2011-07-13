@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
 
 import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getModifiedScope;
 import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getOriginalScope;
+import static br.com.oncast.ontrack.utils.assertions.Assert.assertDeepEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -27,7 +28,7 @@ public class Flow1 {
 		original.getEffort().setDeclared(1000);
 		EffortInferenceEngine.process(original);
 
-		assertTrue(original.deepEquals(getModifiedScope(FILE_NAME, 1)));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME, 1));
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded() {
