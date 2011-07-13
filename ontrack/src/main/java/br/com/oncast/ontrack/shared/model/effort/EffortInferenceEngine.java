@@ -40,7 +40,8 @@ public class EffortInferenceEngine {
 
 	private static void processTopDown(final Scope scope) {
 		final Effort effort = scope.getEffort();
-		if (effort.hasDeclared()) effort.setTopDownValue(effort.getDeclared());
+
+		if (effort.hasDeclared()) effort.setTopDownValue((effort.getDeclared() > effort.getBottomUpValue()) ? effort.getDeclared() : effort.getBottomUpValue());
 		else if (scope.isRoot()) effort.setTopDownValue(0);
 
 		float available = effort.getTopDownValue() - getDeclaredEffortSum(scope);
@@ -53,7 +54,8 @@ public class EffortInferenceEngine {
 		for (final Scope child : childrenList) {
 			final Effort childEffort = child.getEffort();
 			final boolean childHasDeclared = childEffort.hasDeclared();
-			final float value = childHasDeclared ? childEffort.getDeclared() : childEffort.getBottomUpValue();
+			final float value = childHasDeclared && effort.getDeclared() > effort.getBottomUpValue() ? childEffort.getDeclared() : childEffort
+					.getBottomUpValue();
 
 			final float initialTopDownValue = childEffort.getTopDownValue();
 			if (value > portion) childEffort.setTopDownValue(value);
@@ -72,14 +74,16 @@ public class EffortInferenceEngine {
 	}
 
 	private static float getPortion(final float available, final List<Scope> scopeList) {
+		if (available <= 0) return 0;
 		if (scopeList.size() == 0) return 0;
 
 		final float portion = available / scopeList.size();
 		for (final Scope scope : scopeList) {
-			if (scope.getEffort().getBottomUpValue() > portion) {
+			final float bottomUpValue = scope.getEffort().getBottomUpValue();
+			if (bottomUpValue > portion) {
 				final ArrayList<Scope> list = new ArrayList<Scope>(scopeList);
 				list.remove(scope);
-				return getPortion(available - scope.getEffort().getBottomUpValue(), list);
+				return getPortion(available - bottomUpValue, list);
 			}
 		}
 
