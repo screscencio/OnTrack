@@ -16,5 +16,7 @@
 	<!-- Specify the paths for translatable code -->
 	<source path='client' excludes="**/*Test.java" />
 	<source path='shared' excludes="**/*Test.java" />
+	<source path='client' excludes="**/*TestUtils.java" />
+	<source path='shared' excludes="**/*TestUtils.java" />
 
 </module>
