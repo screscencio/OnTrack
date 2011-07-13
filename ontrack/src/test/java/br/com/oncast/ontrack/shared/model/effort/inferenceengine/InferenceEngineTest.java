@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
 
-import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getModifiedScope;
-import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getOriginalScope;
+import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.TestUtils.getModifiedScope;
+import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.TestUtils.getOriginalScope;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class Assert {
+public class AssertTestUtils {
 
 	public static void assertDeepEquals(final Scope actual, final Scope expected) {
 		for (int i = 0; i < actual.getChildren().size(); i++) {

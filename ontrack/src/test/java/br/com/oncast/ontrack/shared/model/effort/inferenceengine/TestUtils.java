@@ -5,7 +5,7 @@ import java.io.File;
 import br.com.oncast.ontrack.server.util.mindmapconverter.MindMapConverter;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class Util {
+public class TestUtils {
 	static Scope getOriginalScope(final String fileName) {
 		return getScope(fileName + " - original");
 	}

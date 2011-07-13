@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
 
-import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getModifiedScope;
-import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.Util.getOriginalScope;
-import static br.com.oncast.ontrack.utils.assertions.Assert.assertDeepEquals;
+import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.TestUtils.getModifiedScope;
+import static br.com.oncast.ontrack.shared.model.effort.inferenceengine.TestUtils.getOriginalScope;
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class Flow1 {
+public class Flow1Test {
 
 	private final String FILE_NAME = "Flow1";
 	private final Scope original = getOriginalScope(FILE_NAME);
@@ -22,6 +22,7 @@ public class Flow1 {
 		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
 		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
 		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenInferedChanges();
 	}
 
 	private void shouldApplyInferenceTopDownWhenRootIsModified() {
@@ -45,7 +46,7 @@ public class Flow1 {
 		EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
 		for (final Scope child : scopeWithChangedEffort.getChildren()) {
-			assertEquals(87.5, child.getEffort().getInfered(), 0.1);
+			assertEquals(87.5, child.getEffort().getInfered(), 0.09);
 		}
 
 		assertDeepEquals(original, getModifiedScope(FILE_NAME, 3));
@@ -56,11 +57,31 @@ public class Flow1 {
 		scopeWithChangedEffort.getEffort().setDeclared(150);
 		EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
-		assertEquals(66.6, original.getChild(1).getChild(1).getEffort().getInfered(), 0.1);
-		assertEquals(66.6, original.getChild(1).getChild(2).getEffort().getInfered(), 0.1);
-		assertEquals(66.6, original.getChild(1).getChild(3).getEffort().getInfered(), 0.1);
+		assertEquals(66.6, original.getChild(1).getChild(1).getEffort().getInfered(), 0.09);
+		assertEquals(66.6, original.getChild(1).getChild(2).getEffort().getInfered(), 0.09);
+		assertEquals(66.6, original.getChild(1).getChild(3).getEffort().getInfered(), 0.09);
 
 		assertDeepEquals(original, getModifiedScope(FILE_NAME, 4));
+	}
+
+	private void shouldRedistributeEffortBetweenSiblingWhenInferedChanges() {
+		final Scope parentScopeWithChildrenModification = original.getChild(1);
+
+		parentScopeWithChildrenModification.getChild(1).getEffort().setDeclared(150);
+		EffortInferenceEngine.process(parentScopeWithChildrenModification);
+
+		parentScopeWithChildrenModification.getChild(2).getEffort().setDeclared(150);
+		EffortInferenceEngine.process(parentScopeWithChildrenModification);
+
+		parentScopeWithChildrenModification.getChild(3).getEffort().setDeclared(150);
+		EffortInferenceEngine.process(parentScopeWithChildrenModification);
+
+		assertEquals(600, parentScopeWithChildrenModification.getEffort().getInfered(), 0.09);
+		assertEquals(133.3, original.getChild(0).getEffort().getInfered(), 0.09);
+		assertEquals(133.3, original.getChild(2).getEffort().getInfered(), 0.09);
+		assertEquals(133.3, original.getChild(3).getEffort().getInfered(), 0.09);
+
+		assertDeepEquals(original, getModifiedScope(FILE_NAME, 5));
 	}
 
 }
