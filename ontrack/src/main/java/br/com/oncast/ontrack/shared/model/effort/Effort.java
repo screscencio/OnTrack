@@ -10,6 +10,7 @@ public class Effort implements IsSerializable, DeeplyComparable {
 	private boolean hasDeclared;
 	private float topDownValue;
 	private float bottomUpValue;
+	private boolean hasStronglyDefinedChildren;
 
 	public int getDeclared() {
 		return declared;
@@ -18,6 +19,14 @@ public class Effort implements IsSerializable, DeeplyComparable {
 	public void setDeclared(final int declared) {
 		this.declared = declared;
 		this.hasDeclared = true;
+	}
+
+	public boolean isStronglyDefined() {
+		return this.hasStronglyDefinedChildren || this.hasDeclared;
+	}
+
+	public void setHasStronglyDefinedChildren(final boolean stronglyDefined) {
+		this.hasStronglyDefinedChildren = stronglyDefined;
 	}
 
 	public boolean hasDeclared() {

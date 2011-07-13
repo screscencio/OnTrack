@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-// TODO +Optimize this; it is updating the entire tree; could it update only specific parts of it?
+// TODO +Optimize this; it is updating the entire tree; could it update only specific parts of it? could it receive the list of modified scopes?
 public class ScopeTreeEffortUpdateEngine {
 
 	public static void process(final ScopeTreeWidget tree, final UUID referenceId) throws ScopeNotFoundException {
