@@ -4,6 +4,7 @@ import static br.com.oncast.ontrack.utils.TestUtils.getModifiedScope;
 import static br.com.oncast.ontrack.utils.TestUtils.getOriginalScope;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
@@ -13,10 +14,26 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 public class Flow3Test {
 
 	private final String FILE_NAME_PREFIX = "Flow3";
-	private final Scope original = getOriginalScope(FILE_NAME_PREFIX);
+	private Scope original = null;
+
+	@Before
+	public void setUp() {
+		original = getOriginalScope(FILE_NAME_PREFIX);
+	}
 
 	@Test
-	public void shouldApplyInferencesWhenEffortChanges() throws UnableToCompleteActionException {
+	public void testCaseStep01() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownThroughChildren();
+	}
+
+	@Test
+	public void testCaseStep02() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownThroughChildren();
+		shouldRedistributeInferencesWhenChildrenReceiveEffortDeclarations();
+	}
+
+	@Test
+	public void testCaseStep03() throws UnableToCompleteActionException {
 		shouldApplyInferenceTopDownThroughChildren();
 		shouldRedistributeInferencesWhenChildrenReceiveEffortDeclarations();
 		shouldRedistributeInferencesWhenSiblingReceiveEffortDeclarations();
