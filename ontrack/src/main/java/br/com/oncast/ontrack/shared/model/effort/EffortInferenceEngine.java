@@ -48,7 +48,7 @@ public class EffortInferenceEngine {
 
 		if (effort.isStronglyDefined()) effort.setTopDownValue((effort.getDeclared() > effort.getBottomUpValue()) ? effort.getDeclared() : effort
 				.getBottomUpValue());
-		else if (scope.isRoot()) getStronglyDefinedEffortSum(scope);
+		else if (scope.isRoot()) effort.setTopDownValue(getStronglyDefinedEffortSum(scope));
 
 		float available = effort.getTopDownValue() - getStronglyDefinedEffortSum(scope);
 		if (available < 0) available = 0;

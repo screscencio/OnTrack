@@ -8,14 +8,15 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class AssertTestUtils {
 
 	public static void assertDeepEquals(final Scope actual, final Scope expected) {
+		assertEquality(actual, expected);
 		for (int i = 0; i < actual.getChildren().size(); i++) {
-			assertTrue("Checking equality of scope '" + actual.getDescription() + "'.",
-					actual.getChild(i).getDescription().equals(expected.getChild(i).getDescription()));
-			assertEquality("Checking equality of effort of scope '" + actual.getChild(i).getDescription() + "'.", actual.getChild(i).getEffort(), expected
-					.getChild(i).getEffort());
-
 			assertDeepEquals(actual.getChild(i), expected.getChild(i));
 		}
+	}
+
+	private static void assertEquality(final Scope actual, final Scope expected) {
+		assertTrue("Checking equality of scope '" + actual.getDescription() + "'.", actual.getDescription().equals(expected.getDescription()));
+		assertEquality("Checking equality of effort of scope '" + actual.getDescription() + "'.", actual.getEffort(), expected.getEffort());
 	}
 
 	public static void assertEquality(final String message, final Effort actual, final Effort expected) {

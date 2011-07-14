@@ -5,6 +5,7 @@ import static br.com.oncast.ontrack.utils.TestUtils.getOriginalScope;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
@@ -14,18 +15,121 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 public class Flow1Test {
 
 	private final String FILE_NAME_PREFIX = "Flow1";
-	private final Scope original = getOriginalScope(FILE_NAME_PREFIX);
+	private Scope original = null;
+
+	@Before
+	public void setUp() {
+		original = getOriginalScope(FILE_NAME_PREFIX);
+	}
 
 	@Test
-	public void shouldApplyInferencesWhenEffortChanges() throws UnableToCompleteActionException {
+	public void testCaseStep01() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+	}
+
+	@Test
+	public void testCaseStep02() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+	}
+
+	@Test
+	public void testCaseStep03() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+	}
+
+	@Test
+	public void testCaseStep04() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
+	}
+
+	@Test
+	public void testCaseStep05() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenInferedChanges();
+	}
+
+	@Test
+	public void testCaseStep06() throws UnableToCompleteActionException {
 		shouldApplyInferenceTopDownWhenRootIsModified();
 		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
 		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
 		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
 		shouldRedistributeEffortBetweenSiblingWhenInferedChanges();
 		shouldRemoveUnusedInference();
-		shouldChangeAnotherScope1();
-		shouldChangeAnotherScope2();
+	}
+
+	@Test
+	public void testCaseStep07() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenInferedChanges();
+		shouldRemoveUnusedInference();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsChanged();
+	}
+
+	@Test
+	public void testCaseStep08() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenInferedChanges();
+		shouldRemoveUnusedInference();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsChanged();
+		shouldNotDistributeEffortForStronglyDeclaredEfforts();
+	}
+
+	@Test
+	public void testCaseStep09() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenInferedChanges();
+		shouldRemoveUnusedInference();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsChanged();
+		shouldNotDistributeEffortForStronglyDeclaredEfforts();
+		shouldRemoveUnusedInferenceForChildrenIfThereIsNoMoreEffortAvaliable();
+	}
+
+	@Test
+	public void testCaseStep10() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenInferedChanges();
+		shouldRemoveUnusedInference();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsChanged();
+		shouldNotDistributeEffortForStronglyDeclaredEfforts();
+		shouldRemoveUnusedInferenceForChildrenIfThereIsNoMoreEffortAvaliable();
+		shouldUpdateRootEffortWhenSomeChildIsChanged();
+	}
+
+	@Test
+	public void testCaseStep11() throws UnableToCompleteActionException {
+		shouldApplyInferenceTopDownWhenRootIsModified();
+		shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded();
+		shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared();
+		shouldRedistributeEffortBetweenSiblingWhenInferedChanges();
+		shouldRemoveUnusedInference();
+		shouldRedistributeEffortBetweenSiblingWhenOneIsChanged();
+		shouldNotDistributeEffortForStronglyDeclaredEfforts();
+		shouldRemoveUnusedInferenceForChildrenIfThereIsNoMoreEffortAvaliable();
+		shouldUpdateRootEffortWhenSomeChildIsChanged();
+		shouldUpdateRootEffortWhenSomeChildIsChanged2();
 	}
 
 	private void shouldApplyInferenceTopDownWhenRootIsModified() {
@@ -95,7 +199,7 @@ public class Flow1Test {
 		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 6));
 	}
 
-	private void shouldChangeAnotherScope1() {
+	private void shouldRedistributeEffortBetweenSiblingWhenOneIsChanged() {
 		final Scope scopeWithChangedEffort = original.getChild(0).getChild(0);
 		scopeWithChangedEffort.getEffort().setDeclared(30);
 		EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
@@ -103,11 +207,34 @@ public class Flow1Test {
 		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 7));
 	}
 
-	private void shouldChangeAnotherScope2() {
+	private void shouldNotDistributeEffortForStronglyDeclaredEfforts() {
 		final Scope scopeWithChangedEffort = original.getChild(0).getChild(1);
 		scopeWithChangedEffort.getEffort().setDeclared(60);
 		EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
 		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 8));
 	}
+
+	private void shouldRemoveUnusedInferenceForChildrenIfThereIsNoMoreEffortAvaliable() {
+		original.getEffort().resetDeclared();
+		EffortInferenceEngine.process(original);
+
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 9));
+	}
+
+	private void shouldUpdateRootEffortWhenSomeChildIsChanged() {
+		original.getChild(2).getEffort().setDeclared(350);
+		EffortInferenceEngine.process(original);
+
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 10));
+	}
+
+	private void shouldUpdateRootEffortWhenSomeChildIsChanged2() {
+		final Scope scopeWithChangedEffort = original.getChild(3).getChild(0);
+		scopeWithChangedEffort.getEffort().setDeclared(150);
+		EffortInferenceEngine.process(scopeWithChangedEffort.getParent());
+
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 11));
+	}
+
 }
