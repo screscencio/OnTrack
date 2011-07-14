@@ -1,6 +1,9 @@
 <map version="1.0.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1310578582920" ID="ID_1386649517" MODIFIED="1310578586536" TEXT="Escopo">
+<node CREATED="1310154312846" ID="ID_1613476767" MODIFIED="1310653484188" POSITION="right" TEXT="16">
+<icon BUILTIN="down"/>
+</node>
 <node CREATED="1310154312846" ID="ID_242901692" MODIFIED="1310579849978" POSITION="right" TEXT="16">
 <icon BUILTIN="up"/>
 </node>
