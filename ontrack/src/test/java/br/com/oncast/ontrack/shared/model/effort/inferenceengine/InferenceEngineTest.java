@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
 
 import static br.com.oncast.ontrack.utils.TestUtils.getModifiedScope;
 import static br.com.oncast.ontrack.utils.TestUtils.getOriginalScope;
-import static org.junit.Assert.assertTrue;
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 
 import org.junit.Test;
 
@@ -15,18 +15,19 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 
 public class InferenceEngineTest {
 
+	final String FILE_NAME_PREFIX = "Project1";
+	final Scope original = getOriginalScope(FILE_NAME_PREFIX);
+
 	@Test
 	public void shouldApplyInferenceWhenMoveScopeLeft() throws UnableToCompleteActionException {
-		final String fileName = "Project1";
-		final Scope original = getOriginalScope(fileName);
 
 		final Scope scope = original.getChild(0).getChild(1);
 		final ScopeMoveLeftAction moveLeftAction = new ScopeMoveLeftAction(scope.getId());
-		moveLeftAction.execute(new ProjectContext(new Project(original, null)));
 
+		moveLeftAction.execute(new ProjectContext(new Project(original, null)));
 		EffortInferenceEngine.process(scope.getParent());
 
-		assertTrue(original.deepEquals(getModifiedScope(fileName)));
+		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
 	}
 
 }

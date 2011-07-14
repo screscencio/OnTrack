@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeRemoveRollbackActionEntity.class)
-public class ScopeRemoveRollbackAction implements ScopeAction {
+public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
@@ -65,6 +65,11 @@ public class ScopeRemoveRollbackAction implements ScopeAction {
 
 	@Override
 	public UUID getReferenceId() {
+		return parentScopeId;
+	}
+
+	@Override
+	public UUID getNewScopeId() {
 		return referenceId;
 	}
 

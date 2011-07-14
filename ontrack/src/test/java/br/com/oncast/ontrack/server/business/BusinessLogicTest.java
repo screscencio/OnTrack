@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 
 public class BusinessLogicTest {
 
@@ -45,8 +46,9 @@ public class BusinessLogicTest {
 	}
 
 	private void executeActions(final List<ModelAction> actions, final Project project) throws UnableToCompleteActionException {
+		final ProjectContext context = new ProjectContext(project);
 		for (final ModelAction action : ActionMock.getActions()) {
-			action.execute(new ProjectContext(project));
+			ActionExecuter.executeAction(context, action);
 		}
 	}
 
