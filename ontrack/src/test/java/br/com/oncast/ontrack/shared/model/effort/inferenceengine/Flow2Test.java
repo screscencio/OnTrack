@@ -4,6 +4,7 @@ import static br.com.oncast.ontrack.utils.TestUtils.getModifiedScope;
 import static br.com.oncast.ontrack.utils.TestUtils.getOriginalScope;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
@@ -12,10 +13,33 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class Flow2Test {
 
 	private final String FILE_NAME_PREFIX = "Flow2";
-	private final Scope original = getOriginalScope(FILE_NAME_PREFIX);
+	private Scope original = null;
+
+	@Before
+	public void setUp() {
+		original = getOriginalScope(FILE_NAME_PREFIX);
+	}
 
 	@Test
-	public void shouldApplyInferencesWhenEffortChanges() {
+	public void testCaseStep01() {
+		shouldInferBottomUpFromModifiedScopeAndTopDownFromIt();
+	}
+
+	@Test
+	public void testCaseStep02() {
+		shouldInferBottomUpFromModifiedScopeAndTopDownFromIt();
+		shouldRedistributeInferenceBetweenSiblingsWhenParentEffortDeclared();
+	}
+
+	@Test
+	public void testCaseStep03() {
+		shouldInferBottomUpFromModifiedScopeAndTopDownFromIt();
+		shouldRedistributeInferenceBetweenSiblingsWhenParentEffortDeclared();
+		shouldRedistribuiteEffortWhenRootEffortIsChanged();
+	}
+
+	@Test
+	public void testCaseStep04() {
 		shouldInferBottomUpFromModifiedScopeAndTopDownFromIt();
 		shouldRedistributeInferenceBetweenSiblingsWhenParentEffortDeclared();
 		shouldRedistribuiteEffortWhenRootEffortIsChanged();
