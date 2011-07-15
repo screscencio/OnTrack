@@ -1,23 +1,29 @@
 package br.com.oncast.ontrack.shared.model.scope;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparableList;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO +++Test this class
-public class Scope implements DeeplyComparable, IsSerializable {
+public class Scope implements IsSerializable {
 
+	@IgnoreByDeepEquality
 	private UUID id;
+
 	private String description;
+
+	@IgnoreByDeepEquality
 	private Scope parent;
-	private DeeplyComparableList<Scope> childrenList;
+	private List<Scope> childrenList;
+	
+	@IgnoreByDeepEquality
 	private Release release;
 	private Effort effort;
 	private Progress progress;
@@ -35,7 +41,7 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		this.effort = new Effort();
 		this.progress = new Progress();
 
-		childrenList = new DeeplyComparableList<Scope>();
+		childrenList = new ArrayList<Scope>();
 	}
 
 	public UUID getId() {
@@ -137,21 +143,6 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		if (!(obj instanceof Scope)) return false;
 
 		return this.id.equals(((Scope) obj).getId());
-	}
-
-	@Override
-	public boolean deepEquals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof Scope)) return false;
-		final Scope other = (Scope) obj;
-
-		boolean equals = true;
-		equals &= childrenList == null ? other.childrenList == null : childrenList.deepEquals(other.childrenList);
-		equals &= description == null ? other.description == null : description.equals(other.description);
-		equals &= effort == null ? other.effort == null : effort.deepEquals(other.effort);
-
-		return equals;
 	}
 
 	@Override

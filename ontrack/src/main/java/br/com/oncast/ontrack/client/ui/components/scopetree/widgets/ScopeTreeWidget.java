@@ -10,13 +10,12 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class ScopeTreeWidget extends Composite implements DeeplyComparable {
+public class ScopeTreeWidget extends Composite {
 
 	private final Tree tree;
 
@@ -85,22 +84,6 @@ public class ScopeTreeWidget extends Composite implements DeeplyComparable {
 			if (item.getReferencedScope().getId().equals(scopeId)) { return item; }
 		}
 		throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
-	}
-
-	@Override
-	public boolean deepEquals(final Object other) {
-		if (!(other instanceof ScopeTreeWidget)) return false;
-		final ScopeTreeWidget otherTree = (ScopeTreeWidget) other;
-
-		final int itemCount = tree.getItemCount();
-		final int otherTreeItemCount = otherTree.getItemCount();
-		if (itemCount != otherTreeItemCount) return false;
-
-		for (int i = 0; i < itemCount; i++) {
-			if (!otherTree.getItem(i).deepEquals(tree.getItem(i))) return false;
-		}
-
-		return true;
 	}
 
 	public void setSelectedItem(final ScopeTreeItem treeItem) {

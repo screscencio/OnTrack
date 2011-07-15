@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +13,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentAction;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityException;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -83,11 +83,11 @@ public class InsertFatherTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldInsertFather() throws ActionNotFoundException {
+	public void shouldInsertFather() throws ActionNotFoundException, DeepEqualityException {
 		actionExecutionService.onActionExecutionRequest(new ScopeInsertParentAction(firstScope.getId(), newScopeDescription));
 
-		assertTrue(getModifiedScope().deepEquals(scope));
-		assertTrue(getModifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -99,13 +99,13 @@ public class InsertFatherTest extends GwtTest {
 	public void shouldRemoveInsertedFatherAfterUndo() throws ActionNotFoundException {
 		actionExecutionService.onActionExecutionRequest(new ScopeInsertParentAction(firstScope.getId(), newScopeDescription));
 
-		assertTrue(getModifiedScope().deepEquals(scope));
-		assertTrue(getModifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
 		actionExecutionService.onActionUndoRequest();
 
-		assertTrue(getUnmodifiedScope().deepEquals(scope));
-		assertTrue(getUnmodifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
 	}
 
 	@Override

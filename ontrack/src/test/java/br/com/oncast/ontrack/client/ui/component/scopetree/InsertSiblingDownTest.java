@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingDownAction;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -85,8 +84,8 @@ public class InsertSiblingDownTest extends GwtTest {
 	public void shouldInsertSiblingDown() throws ActionNotFoundException {
 		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingDownAction(firstScope.getId(), newScopeDescription));
 
-		assertTrue(getModifiedScope().deepEquals(scope));
-		assertTrue(getModifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -98,13 +97,13 @@ public class InsertSiblingDownTest extends GwtTest {
 	public void shouldRemoveInsertedSiblingAfterUndo() throws ActionNotFoundException {
 		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingDownAction(firstScope.getId(), newScopeDescription));
 
-		assertTrue(getModifiedScope().deepEquals(scope));
-		assertTrue(getModifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
 		actionExecutionService.onActionUndoRequest();
 
-		assertTrue(getUnmodifiedScope().deepEquals(scope));
-		assertTrue(getUnmodifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
 	}
 
 	@Override

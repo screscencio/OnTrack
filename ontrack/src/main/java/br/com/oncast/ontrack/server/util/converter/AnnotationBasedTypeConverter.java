@@ -6,7 +6,10 @@ import java.lang.reflect.Field;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
+import br.com.oncast.ontrack.server.util.converter.exceptions.TypeConverterException;
+import br.com.oncast.ontrack.server.util.introspector.IntrospectionEngine;
+import br.com.oncast.ontrack.server.util.introspector.IntrospectionException;
+import br.com.oncast.ontrack.server.util.introspector.Introspector;
 
 class AnnotationBasedTypeConverter implements TypeConverter {
 
@@ -55,10 +58,19 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 	}
 
 	private void mapFields(final Object sourceInstance, final Object destinationInstance) throws TypeConverterException {
-		final Field[] sourceFields = sourceInstance.getClass().getDeclaredFields();
-		for (final Field sourceField : sourceFields) {
-			final Field destinationField = findDestinationField(destinationInstance, sourceField);
-			mapField(sourceInstance, sourceField, destinationInstance, destinationField);
+		try {
+			IntrospectionEngine.introspectThroughDeclaredFields(sourceInstance, new Introspector<Field>() {
+
+				@Override
+				public void introspect(final Field sourceField) throws Exception {
+					final Field destinationField = findDestinationField(destinationInstance, sourceField);
+					mapField(sourceInstance, sourceField, destinationInstance, destinationField);
+				}
+			});
+		}
+		catch (final IntrospectionException e) {
+			throw new TypeConverterException("It was not possible to map fields from '" + sourceInstance.getClass().getName() + "' to '"
+					+ destinationInstance.getClass().getName() + "'.", e);
 		}
 	}
 
@@ -85,20 +97,10 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 	}
 
 	private void mapField(final Object sourceInstance, final Field sourceField, final Object destinationInstance, final Field destinationField)
-			throws TypeConverterException {
-
-		final boolean sourceFieldAccessibility = sourceField.isAccessible();
-		if (!sourceFieldAccessibility) sourceField.setAccessible(true);
-
-		final boolean destinationFieldAccessibility = destinationField.isAccessible();
-		if (!destinationFieldAccessibility) destinationField.setAccessible(true);
-
-		final Object sourceFieldValue = getFieldValue(sourceInstance, sourceField);
+			throws TypeConverterException, IntrospectionException {
+		final Object sourceFieldValue = IntrospectionEngine.getFieldValue(sourceInstance, sourceField);
 		final Object destinationFieldValue = convertValue(sourceField, sourceFieldValue);
-		setFieldValue(destinationInstance, destinationField, destinationFieldValue);
-
-		sourceField.setAccessible(sourceFieldAccessibility);
-		destinationField.setAccessible(destinationFieldAccessibility);
+		IntrospectionEngine.setFieldValue(destinationInstance, destinationField, destinationFieldValue);
 	}
 
 	private Object convertValue(final Field sourceField, final Object sourceFieldValue) throws TypeConverterException {
@@ -123,35 +125,5 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 
 	private String getFieldRepresentationName(final Field field) {
 		return (field.isAnnotationPresent(ConversionAlias.class)) ? field.getAnnotation(ConversionAlias.class).value() : field.getName();
-	}
-
-	private Object getFieldValue(final Object instance, final Field field) throws TypeConverterException {
-		Object fieldValue;
-		try {
-			fieldValue = field.get(instance);
-		}
-		catch (final IllegalArgumentException e) {
-			throw new TypeConverterException("Internal error while accessing the " + instance.getClass().getSimpleName() + "'s field " + field.getName()
-					+ " while trying to 'get' its value.", e);
-		}
-		catch (final IllegalAccessException e) {
-			throw new TypeConverterException("The " + instance.getClass().getSimpleName() + "'s field " + field.getName()
-					+ " could not be accessed while trying to 'get' its value.", e);
-		}
-		return fieldValue;
-	}
-
-	private void setFieldValue(final Object instance, final Field field, final Object value) throws TypeConverterException {
-		try {
-			field.set(instance, value);
-		}
-		catch (final IllegalArgumentException e) {
-			throw new TypeConverterException("Internal error while accessing the " + instance.getClass().getSimpleName() + "'s field " + field.getName()
-					+ " while trying to 'set' its value.", e);
-		}
-		catch (final IllegalAccessException e) {
-			throw new TypeConverterException("The " + instance.getClass().getSimpleName() + "'s field " + field.getName()
-					+ " could not be accessed while trying to 'set' its value.", e);
-		}
 	}
 }

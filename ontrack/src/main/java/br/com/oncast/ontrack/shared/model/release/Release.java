@@ -1,23 +1,30 @@
 package br.com.oncast.ontrack.shared.model.release;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparableList;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Release implements DeeplyComparable, IsSerializable {
+public class Release implements IsSerializable {
 
+	@IgnoreByDeepEquality
 	public static final String SEPARATOR = "/";
+
+	@IgnoreByDeepEquality
 	private UUID id;
 
 	private String description;
+
+	@IgnoreByDeepEquality
 	private Release parent;
-	private DeeplyComparableList<Release> childrenList;
-	private DeeplyComparableList<Scope> scopeList;
+
+	private List<Release> childrenList;
+
+	private List<Scope> scopeList;
 
 	protected Release() {}
 
@@ -25,8 +32,8 @@ public class Release implements DeeplyComparable, IsSerializable {
 		this.id = new UUID();
 		this.description = description;
 
-		childrenList = new DeeplyComparableList<Release>();
-		scopeList = new DeeplyComparableList<Scope>();
+		childrenList = new ArrayList<Release>();
+		scopeList = new ArrayList<Scope>();
 	}
 
 	public UUID getId() {
@@ -104,27 +111,6 @@ public class Release implements DeeplyComparable, IsSerializable {
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Release)) return false;
 		return this.id.equals(((Release) obj).getId());
-	}
-
-	@Override
-	public boolean deepEquals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof Release)) return false;
-		final Release other = (Release) obj;
-		if (childrenList == null) {
-			if (other.childrenList != null) return false;
-		}
-		else if (!childrenList.deepEquals(other.childrenList)) return false;
-		if (description == null) {
-			if (other.description != null) return false;
-		}
-		else if (!description.equals(other.description)) return false;
-		if (scopeList == null) {
-			if (other.scopeList != null) return false;
-		}
-		else if (!scopeList.deepEquals(other.scopeList)) return false;
-		return true;
 	}
 
 	public Release findRelease(final UUID releaseId) {
