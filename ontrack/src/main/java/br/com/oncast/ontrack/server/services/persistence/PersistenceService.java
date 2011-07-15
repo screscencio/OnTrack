@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.shared.exceptions.persistence.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 
 public interface PersistenceService {

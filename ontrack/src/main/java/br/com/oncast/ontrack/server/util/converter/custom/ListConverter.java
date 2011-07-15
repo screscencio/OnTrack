@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.util.converter.TypeConverter;
-import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
+import br.com.oncast.ontrack.server.util.converter.exceptions.TypeConverterException;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ListConverter<T extends List> implements TypeConverter {

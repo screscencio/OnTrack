@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.exceptions.persistence;
+package br.com.oncast.ontrack.server.services.persistence.exceptions;
 
 public class PersistenceException extends Exception {
 

@@ -5,9 +5,9 @@ import java.util.List;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
-import br.com.oncast.ontrack.shared.exceptions.persistence.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -27,6 +27,7 @@ public class BusinessLogic {
 			persistenceService.persistAction(action, new Date());
 		}
 		catch (final PersistenceException e) {
+			// TODO ++Log original exception and throw a new one that can be shared with GWT code.
 			throw new UnableToHandleActionException("The server could not process the action.", e);
 		}
 	}
@@ -39,9 +40,11 @@ public class BusinessLogic {
 			return applyActionsToProjectSnapshot(snapshot, actionList);
 		}
 		catch (final PersistenceException e) {
+			// TODO ++Log original exception and throw a new one that can be shared with GWT code.
 			throw new UnableToLoadProjectException("The server could not load the project: A persistence exception occured.", e);
 		}
 		catch (final UnableToCompleteActionException e) {
+			// TODO ++Log original exception and throw a new one that can be shared with GWT code.
 			throw new UnableToLoadProjectException("The server could not load the project: The project state could not be correctly restored.", e);
 		}
 	}

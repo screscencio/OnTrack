@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.server.business;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,14 +15,15 @@ import br.com.oncast.ontrack.mocks.actions.ActionMock;
 import br.com.oncast.ontrack.mocks.models.ProjectMock;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
-import br.com.oncast.ontrack.shared.exceptions.persistence.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class BusinessLogicTest {
 
@@ -65,7 +64,8 @@ public class BusinessLogicTest {
 		// TODO Remove the following 2 lines when the problem for Mac users to insert a new child is resolved.
 		final Scope macWorkaround = projectScope.getChild(0);
 		if (macWorkaround.getDescription().equalsIgnoreCase("Example Scope")) projectScope.remove(macWorkaround);
-		assertTrue(project.getProjectScope().deepEquals(projectScope));
+
+		DeepEqualityTestUtils.assertObjectEquality(project.getProjectScope(), projectScope);
 	}
 
 	private void executeActions(final List<ModelAction> actions, final Project project) throws UnableToCompleteActionException {

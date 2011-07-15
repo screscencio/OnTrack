@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +13,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityException;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -99,32 +99,32 @@ public class InsertChildTest extends GwtTest {
 	}
 
 	@Test
-	public void shouldInsertChild() throws ActionNotFoundException {
+	public void shouldInsertChild() throws ActionNotFoundException, DeepEqualityException {
 		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(firstScope.getId(), newScopeDescription));
 
-		assertTrue(getModifiedScope().deepEquals(scope));
-		assertTrue(getModifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 	}
 
 	@Test
-	public void shouldInsertChildForRoot() throws ActionNotFoundException {
+	public void shouldInsertChildForRoot() throws ActionNotFoundException, DeepEqualityException {
 		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(rootScope.getId(), newScopeDescription));
 
-		assertTrue(getModifiedScopeForRootChild().deepEquals(scope));
-		assertTrue(getModifiedTreeForRootChild().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScopeForRootChild());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTreeForRootChild());
 	}
 
 	@Test
-	public void shouldRemoveInsertedChildAfterUndo() throws ActionNotFoundException {
+	public void shouldRemoveInsertedChildAfterUndo() throws ActionNotFoundException, DeepEqualityException {
 		actionExecutionService.onActionExecutionRequest(new ScopeInsertChildAction(firstScope.getId(), newScopeDescription));
 
-		assertTrue(getModifiedScope().deepEquals(scope));
-		assertTrue(getModifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
 		actionExecutionService.onActionUndoRequest();
 
-		assertTrue(getUnmodifiedScope().deepEquals(scope));
-		assertTrue(getUnmodifiedTree().deepEquals(tree));
+		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
 	}
 
 	@Override

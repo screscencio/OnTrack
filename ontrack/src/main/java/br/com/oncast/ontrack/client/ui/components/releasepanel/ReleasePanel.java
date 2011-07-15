@@ -12,14 +12,19 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentRollbac
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleasePanel implements Component, DeeplyComparable {
+public class ReleasePanel implements Component {
 
 	private final ReleasePanelWidget releasePanelWidget;
+
+	@IgnoreByDeepEquality
 	private final ActionExecutionListener actionExecutionListener;
+
+	// TODO Review if this should be tested by deepEquality
+	@IgnoreByDeepEquality
 	private Release rootRelease;
 
 	public ReleasePanel() {
@@ -59,18 +64,5 @@ public class ReleasePanel implements Component, DeeplyComparable {
 	@Override
 	public int hashCode() {
 		return rootRelease.hashCode();
-	}
-
-	@Override
-	public boolean deepEquals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof ReleasePanel)) return false;
-		final ReleasePanel other = (ReleasePanel) obj;
-		if (releasePanelWidget == null) {
-			if (other.releasePanelWidget != null) return false;
-		}
-		else if (!releasePanelWidget.deepEquals(other.releasePanelWidget)) return false;
-		return true;
 	}
 }

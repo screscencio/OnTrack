@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.util.number.NumberUtils;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -32,9 +33,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTreeItemWidget extends Composite {
 
-	private static EditableLabelUiBinder uiBinder = GWT.create(EditableLabelUiBinder.class);
-
 	interface EditableLabelUiBinder extends UiBinder<Widget, ScopeTreeItemWidget> {}
+
+	private static EditableLabelUiBinder uiBinder = GWT.create(EditableLabelUiBinder.class);
 
 	interface Style extends CssResource {
 		String effortLabelTranslucid();
@@ -43,39 +44,52 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected Style style;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected DeckPanel deckPanel;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected Label descriptionLabel;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected HTMLPanel effortPanel;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected Label effortLabel;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected Label effortDifferenceLabel;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected Label progressLabel;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected TextBox editionBox;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected Tag releaseTag;
 
 	@UiField
+	@IgnoreByDeepEquality
 	protected FocusPanel focusPanel;
 
+	@IgnoreByDeepEquality
 	private float currEffort;
 
+	@IgnoreByDeepEquality
 	private float currEffortDifference;
 
+	@IgnoreByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
 
 	private Scope scope;
@@ -201,7 +215,7 @@ public class ScopeTreeItemWidget extends Composite {
 		effortPanel.setVisible(effortVisibility);
 		if (!effortVisibility) return;
 
-		effortLabel.setText(NumberUtils.roundToStringMaybeWithOneFractionalDigit(effortValue) + "ep");
+		effortLabel.setText(NumberUtils.roundFloat(effortValue, 1) + "ep");
 		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
 		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
 

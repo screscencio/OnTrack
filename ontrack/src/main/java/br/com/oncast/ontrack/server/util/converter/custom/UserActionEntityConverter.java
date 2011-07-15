@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.server.util.converter.custom;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.util.converter.TypeConverter;
-import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
+import br.com.oncast.ontrack.server.util.converter.exceptions.TypeConverterException;
 
 public class UserActionEntityConverter implements TypeConverter {
 

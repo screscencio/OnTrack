@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.exceptions.converter;
+package br.com.oncast.ontrack.server.util.converter.exceptions;
 
 public class TypeConverterException extends Exception {
 

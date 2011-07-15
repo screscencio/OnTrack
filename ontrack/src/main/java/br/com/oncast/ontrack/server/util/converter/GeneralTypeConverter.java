@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.server.util.converter.custom.ListConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.StringConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.util.converter.custom.UserActionEntityConverter;
-import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
+import br.com.oncast.ontrack.server.util.converter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @SuppressWarnings("rawtypes")

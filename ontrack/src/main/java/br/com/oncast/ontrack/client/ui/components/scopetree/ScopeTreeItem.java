@@ -5,12 +5,11 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class ScopeTreeItem extends TreeItem implements IsTreeItem, DeeplyComparable {
+public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	private final ScopeTreeItemWidget scopeItemWidget;
 
@@ -48,12 +47,6 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem, DeeplyCompara
 	@Override
 	public ScopeTreeItem getChild(final int index) {
 		return (ScopeTreeItem) super.getChild(index);
-	}
-
-	@Override
-	public boolean deepEquals(final Object other) {
-		if (!(other instanceof ScopeTreeItem)) return false;
-		return getReferencedScope().deepEquals(((ScopeTreeItem) other).getReferencedScope());
 	}
 
 	@Override

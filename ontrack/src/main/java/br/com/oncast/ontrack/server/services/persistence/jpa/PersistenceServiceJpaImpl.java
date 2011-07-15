@@ -12,11 +12,11 @@ import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
-import br.com.oncast.ontrack.shared.exceptions.converter.TypeConverterException;
-import br.com.oncast.ontrack.shared.exceptions.persistence.PersistenceException;
+import br.com.oncast.ontrack.server.util.converter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.release.Release;

@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
@@ -18,6 +17,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -74,7 +74,7 @@ public class UpdateTest extends GwtTest {
 
 		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " @R1/It1"));
 
-		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
+		DeepEqualityTestUtils.assertObjectEquality(releasePanel, modifiedReleasePanel);
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class UpdateTest extends GwtTest {
 
 		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " @R1/It1"));
 
-		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
+		DeepEqualityTestUtils.assertObjectEquality(releasePanel, modifiedReleasePanel);
 
 		modifiedRelease.getChildReleases().get(0).getChildReleases().get(0).removeScope(scopeUpdated);
 		modifiedReleasePanel = createReleasePanel();
@@ -95,7 +95,7 @@ public class UpdateTest extends GwtTest {
 
 		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription()));
 
-		assertTrue(modifiedReleasePanel.deepEquals(releasePanel));
+		DeepEqualityTestUtils.assertObjectEquality(releasePanel, modifiedReleasePanel);
 	}
 
 	@Override

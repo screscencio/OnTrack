@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -10,27 +10,21 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleasePanelWidget extends Composite implements DeeplyComparable {
-
-	private static ReleasePanelWidgetUiBinder uiBinder = GWT.create(ReleasePanelWidgetUiBinder.class);
+public class ReleasePanelWidget extends Composite {
 
 	interface ReleasePanelWidgetUiBinder extends UiBinder<Widget, ReleasePanelWidget> {}
 
+	@IgnoreByDeepEquality
+	private static ReleasePanelWidgetUiBinder uiBinder = GWT.create(ReleasePanelWidgetUiBinder.class);
+
 	@UiField
+	@IgnoreByDeepEquality
 	protected VerticalModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
-
-	@UiFactory
-	protected VerticalModelWidgetContainer<Release, ReleaseWidget> createReleaseContainer() {
-		return new VerticalModelWidgetContainer<Release, ReleaseWidget>(releaseWidgetFactory, new ModelWidgetContainerListener() {
-
-			@Override
-			public void onUpdateComplete(final boolean hasChanged, final boolean hasNewWidgets) {}
-		});
-	}
 
 	private Release release;
 
 	// IMPORTANT: This field cannot be 'final' because some tests need to set it to a new value through reflection. Do not remove the 'null' attribution.
+	@IgnoreByDeepEquality
 	private ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory = null;
 
 	public ReleasePanelWidget() {
@@ -50,16 +44,12 @@ public class ReleasePanelWidget extends Composite implements DeeplyComparable {
 		releaseContainer.update(release.getChildReleases());
 	}
 
-	@Override
-	public boolean deepEquals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof ReleasePanelWidget)) return false;
-		final ReleasePanelWidget other = (ReleasePanelWidget) obj;
-		if (release == null) {
-			if (other.release != null) return false;
-		}
-		else if (!release.deepEquals(other.release)) return false;
-		return true;
+	@UiFactory
+	protected VerticalModelWidgetContainer<Release, ReleaseWidget> createReleaseContainer() {
+		return new VerticalModelWidgetContainer<Release, ReleaseWidget>(releaseWidgetFactory, new ModelWidgetContainerListener() {
+
+			@Override
+			public void onUpdateComplete(final boolean hasChanged, final boolean hasNewWidgets) {}
+		});
 	}
 }

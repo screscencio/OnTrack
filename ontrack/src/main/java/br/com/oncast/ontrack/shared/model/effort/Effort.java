@@ -1,10 +1,8 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Effort implements IsSerializable, DeeplyComparable {
+public class Effort implements IsSerializable {
 
 	private int declared;
 	private boolean hasDeclared;
@@ -57,20 +55,6 @@ public class Effort implements IsSerializable, DeeplyComparable {
 
 	public void setBottomUpValue(final float bottomUpValue) {
 		this.bottomUpValue = bottomUpValue;
-	}
-
-	@Override
-	public boolean deepEquals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof Effort)) return false;
-
-		final Effort other = (Effort) obj;
-		if (bottomUpValue != other.bottomUpValue) return false;
-		if (topDownValue != other.topDownValue) return false;
-		if (hasDeclared != other.hasDeclared) return false;
-		if (declared != other.declared) return false;
-		return true;
 	}
 
 	@Override
