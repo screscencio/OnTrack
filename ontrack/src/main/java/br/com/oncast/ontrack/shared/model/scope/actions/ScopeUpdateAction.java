@@ -35,6 +35,7 @@ public class ScopeUpdateAction implements ScopeAction {
 		subActionList = new ArrayList<ModelAction>();
 		subActionList.add(new ScopeBindReleaseAction(referenceId, parser.getReleaseDescription()));
 		subActionList.add(new ScopeDeclareEffortAction(referenceId, parser.hasDeclaredEffort(), parser.getDeclaredEffort()));
+		subActionList.add(new ScopeProgressAction(referenceId, parser.getProgressDescription()));
 	}
 
 	public ScopeUpdateAction(final UUID referenceId, final String newDescription, final List<ModelAction> subActionList) {

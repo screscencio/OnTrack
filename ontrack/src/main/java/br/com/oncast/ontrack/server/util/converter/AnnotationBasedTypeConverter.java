@@ -102,6 +102,8 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 	}
 
 	private Object convertValue(final Field sourceField, final Object sourceFieldValue) throws TypeConverterException {
+		if (sourceFieldValue == null) return null;
+
 		final TypeConverter converter = (sourceField.isAnnotationPresent(ConvertUsing.class)) ? instantiateConverter(sourceField.getAnnotation(
 				ConvertUsing.class).value()) : new GeneralTypeConverter();
 

@@ -21,7 +21,6 @@ public class ActionMock {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
 		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(ProjectMock.getProject().getProjectScope().getId(), "1");
-		insertChild1.getNewScopeId();
 
 		actions.add(insertChild1);
 		actions.add(new ScopeInsertChildAction(ProjectMock.getProject().getProjectScope().getId(), "2"));
@@ -47,7 +46,6 @@ public class ActionMock {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
 		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(ProjectMock.getProject().getProjectScope().getId(), "a");
-		insertChild1.getNewScopeId();
 
 		actions.add(insertChild1);
 		actions.add(new ScopeUpdateAction(insertChild1.getNewScopeId(), "new description for scope"));
