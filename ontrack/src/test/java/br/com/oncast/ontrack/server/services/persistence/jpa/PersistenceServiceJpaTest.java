@@ -5,6 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,10 +18,17 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 public class PersistenceServiceJpaTest {
 
 	private PersistenceServiceJpaImpl persistenceService;
+	private EntityManager entityManager;
 
 	@Before
 	public void before() {
+		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 		persistenceService = new PersistenceServiceJpaImpl();
+	}
+
+	@After
+	public void tearDown() {
+		entityManager.close();
 	}
 
 	@Test

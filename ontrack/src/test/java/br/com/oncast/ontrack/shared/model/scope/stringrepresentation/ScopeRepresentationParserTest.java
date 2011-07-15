@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.EFFORT_SYMBOL;
+import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.PROGRESS_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.RELEASE_SYMBOL;
 import static org.junit.Assert.assertEquals;
 
@@ -240,12 +241,121 @@ public class ScopeRepresentationParserTest {
 		test(EFFORT_SYMBOL + "21epaaa Descrição", "", "", false, 0);
 	}
 
+	@Test
+	public void shouldMatchDescriptionAndProgress() {
+		test("descrição " + PROGRESS_SYMBOL + "Not started", "descrição", "Not started");
+	}
+
+	@Test
+	public void shouldMatchDescriptionContainingPercentageAndProgress() {
+		test("descrição 100% " + PROGRESS_SYMBOL + "NS", "descrição 100%", "NS");
+	}
+
+	@Test
+	public void shouldMatchProgressOnly() {
+		test(PROGRESS_SYMBOL + "ns", "", "ns");
+	}
+
+	@Test
+	public void shouldMatchProgressWithSpace() {
+		test(" " + PROGRESS_SYMBOL + "n", "", "n");
+	}
+
+	@Test
+	public void shouldMatchProgressWithSpaces() {
+		test(PROGRESS_SYMBOL + "under work", "", "under work");
+	}
+
+	@Test
+	public void shouldMatchProgressWithSpacesAndTrimIt1() {
+		test(PROGRESS_SYMBOL + "Under work ", "", "Under work");
+	}
+
+	@Test
+	public void shouldMatchProgressWithSpacesAndTrimIt2() {
+		test(PROGRESS_SYMBOL + " Under work ", "", "Under work");
+	}
+
+	@Test
+	public void shouldMatchProgressWithSpacesAndTrimIt3() {
+		test(PROGRESS_SYMBOL + "Under work \t", "", "Under work");
+	}
+
+	@Test
+	public void shouldMatchProgressWithSpacesAndTrimIt4() {
+		test(PROGRESS_SYMBOL + "   Under work", "", "Under work");
+	}
+
+	@Test
+	public void shouldMatchProgressAndIgnoreQuotes1() {
+		test(PROGRESS_SYMBOL + "Under\" work", "", "Under work");
+	}
+
+	@Test
+	public void shouldMatchProgressAndIgnoreQuotes2() {
+		test(PROGRESS_SYMBOL + "Under'work", "", "Underwork");
+	}
+
+	@Test
+	public void shouldMatchProgressWithSpacesAndIgnoreQuotes() {
+		test(PROGRESS_SYMBOL + "I am 'design\"ing", "", "I am designing");
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndProgressWithSpacesAndIgnoreQuotes() {
+		test("desc\"rição com espaços " + PROGRESS_SYMBOL + "I am 'design\"ing", "descrição com espaços", "I am designing");
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndProgressWithSimbols() {
+		test("inicio" + ALLOWED_SYMBOLS + "fim " + PROGRESS_SYMBOL + "done" + ALLOWED_SYMBOLS, "inicio" + ALLOWED_SYMBOLS + "fim", "done" + ALLOWED_SYMBOLS);
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndProgressWithSimbolsAndSpacesAndNumbers1() {
+		test("descrição com " + ALLOWED_SYMBOLS + " de monte " + PROGRESS_SYMBOL + "progresso com 3 espaços", "descrição com " + ALLOWED_SYMBOLS + " de monte",
+				"progresso com 3 espaços");
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndProgressWithSimbolsAndSpacesAndNumbers2() {
+		test("descrição com 3 espaços " + PROGRESS_SYMBOL + "progresso com " + ALLOWED_SYMBOLS + " de monte", "descrição com 3 espaços", "progresso com "
+				+ ALLOWED_SYMBOLS + " de monte");
+	}
+
+	@Test
+	public void shouldMatchProgressDiscardingProgressSymbolInsideTheProgressDescription() {
+		test(PROGRESS_SYMBOL + "I am about 80% done", "", "I am about 80");
+	}
+
+	@Test
+	public void shouldMatchScopeDescriptionAndReleaseAndEffortAndProgress() {
+		test("descrição " + RELEASE_SYMBOL + "release" + EFFORT_SYMBOL + "21 " + PROGRESS_SYMBOL + "Not started ", "descrição", "release", "Not started", true,
+				21);
+	}
+
 	private void test(final String pattern, final String descriptionMatch, final String releaseMatch, final boolean hasDeclaredEffort, final int declaredEffort) {
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(pattern);
 		assertEquals(descriptionMatch, parser.getScopeDescription());
 		assertEquals(releaseMatch, parser.getReleaseDescription());
 		assertEquals(hasDeclaredEffort, parser.hasDeclaredEffort());
 		assertEquals(declaredEffort, parser.getDeclaredEffort());
+	}
+
+	private void test(final String pattern, final String descriptionMatch, final String progressMatch) {
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(pattern);
+		assertEquals(descriptionMatch, parser.getScopeDescription());
+		assertEquals(progressMatch, parser.getProgressDescription());
+	}
+
+	private void test(final String pattern, final String descriptionMatch, final String releaseMatch, final String progressMatch,
+			final boolean hasDeclaredEffort, final int declaredEffort) {
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(pattern);
+		assertEquals(descriptionMatch, parser.getScopeDescription());
+		assertEquals(releaseMatch, parser.getReleaseDescription());
+		assertEquals(hasDeclaredEffort, parser.hasDeclaredEffort());
+		assertEquals(declaredEffort, parser.getDeclaredEffort());
+		assertEquals(progressMatch, parser.getProgressDescription());
 	}
 
 }

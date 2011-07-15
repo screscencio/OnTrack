@@ -61,7 +61,7 @@ public class ScopeTreeItemWidget extends Composite {
 	protected Label effortDifferenceLabel;
 
 	@UiField
-	protected Label effortDescriptionLabel;
+	protected Label progressLabel;
 
 	@UiField
 	protected TextBox editionBox;
@@ -175,6 +175,7 @@ public class ScopeTreeItemWidget extends Composite {
 		this.scope = scope;
 		descriptionLabel.setText(scope.getDescription());
 		editionBox.setText(scope.getDescription());
+		updateProgressDisplay();
 		updateEffortDisplay();
 		updateReleaseDisplay();
 	}
@@ -185,7 +186,6 @@ public class ScopeTreeItemWidget extends Composite {
 
 	public void updateEffortDisplay() {
 		final Effort effort = scope.getEffort();
-		effortDescriptionLabel.setText(effort.toString());
 
 		final float effortErrorDifference = effort.hasDeclared() ? effort.getInfered() - effort.getDeclared() : 0;
 		final float effortPositiveDifference = effort.getBottomUpValue() != 0 ? effort.getInfered() - effort.getBottomUpValue() : 0;
@@ -221,4 +221,11 @@ public class ScopeTreeItemWidget extends Composite {
 		releaseTag.setVisible(isReleasePresent);
 		releaseTag.setText(isReleasePresent ? release.getFullDescription() : "");
 	}
+
+	private void updateProgressDisplay() {
+		final String progress = scope.getProgress().getDescription();
+		progressLabel.setText(progress);
+		progressLabel.setVisible(!progress.isEmpty());
+	}
+
 }

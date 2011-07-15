@@ -1,13 +1,14 @@
 package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.EFFORT_SYMBOL;
+import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.PROGRESS_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.RELEASE_SYMBOL;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * Parse a description and translate it into a scope description and a release description.
+ * Parse a description and translate it into a scope description, release description, effort and progress.
  */
 public class ScopeRepresentationParser {
 
@@ -15,6 +16,7 @@ public class ScopeRepresentationParser {
 	private String releaseDescription;
 	private int declaredEffort;
 	private boolean hasDeclaredEffort;
+	private String progressDescription;
 
 	private static final String TAGS = StringRepresentationSymbols.getConcatenedSymbols();
 
@@ -23,6 +25,7 @@ public class ScopeRepresentationParser {
 
 	private final RegExp RELEASE_REGEX = RegExp.compile(RELEASE_SYMBOL + "[\\s]*([^" + TAGS + "]+)", "gi");
 	private final RegExp EFFORT_REGEX = RegExp.compile(EFFORT_SYMBOL + "[\\s]*([\\d]+)(?:[es]p)?(?:\\s+.*)?$", "gi");
+	private final RegExp PROGRESS_REGEX = RegExp.compile(PROGRESS_SYMBOL + "[\\s]*([^" + TAGS + "]+)", "gi");
 
 	public ScopeRepresentationParser(final String pattern) {
 		final String preparedPattern = preparePattern(pattern);
@@ -52,6 +55,10 @@ public class ScopeRepresentationParser {
 		return hasDeclaredEffort;
 	}
 
+	public String getProgressDescription() {
+		return progressDescription;
+	}
+
 	private String preparePattern(final String tagsRepresentation) {
 		return tagsRepresentation.replace("\"", "").replace("'", "");
 	}
@@ -65,11 +72,12 @@ public class ScopeRepresentationParser {
 	private void interpretDescriptionMatch(final String tagsRepresentation) {
 		if (tagsRepresentation == null) return;
 
-		extractReleaseDescription(tagsRepresentation);
+		extractRelease(tagsRepresentation);
 		extractDeclaredEffort(tagsRepresentation);
+		extractProgress(tagsRepresentation);
 	}
 
-	private void extractReleaseDescription(final String tagsRepresentation) {
+	private void extractRelease(final String tagsRepresentation) {
 		final MatchResult result = RELEASE_REGEX.exec(tagsRepresentation);
 		if (result == null) return;
 
@@ -86,5 +94,13 @@ public class ScopeRepresentationParser {
 
 		hasDeclaredEffort = (stringResult != null);
 		declaredEffort = valueOfEffort;
+	}
+
+	private void extractProgress(final String tagsRepresentation) {
+		final MatchResult result = PROGRESS_REGEX.exec(tagsRepresentation);
+		if (result == null) return;
+
+		final String stringResult = result.getGroup(1);
+		progressDescription = stringResult == null ? null : stringResult.trim();
 	}
 }

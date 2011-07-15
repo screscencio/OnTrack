@@ -51,6 +51,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	// TODO Implement a query to obtain a real project snapshot instead of this mocked one.
+	// TODO Change the business logic test, because it assume the inclusion of the 'Example Scope' bellow.
 	@Override
 	public ProjectSnapshot retrieveProjectSnapshot() {
 		final Calendar calendar = Calendar.getInstance();

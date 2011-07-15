@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.scope;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.util.deeplyComparable.DeeplyComparable;
@@ -19,6 +20,7 @@ public class Scope implements DeeplyComparable, IsSerializable {
 	private DeeplyComparableList<Scope> childrenList;
 	private Release release;
 	private Effort effort;
+	private Progress progress;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Scope() {}
@@ -31,6 +33,7 @@ public class Scope implements DeeplyComparable, IsSerializable {
 		this.id = scopeId;
 		this.description = description;
 		this.effort = new Effort();
+		this.progress = new Progress();
 
 		childrenList = new DeeplyComparableList<Scope>();
 	}
@@ -102,6 +105,14 @@ public class Scope implements DeeplyComparable, IsSerializable {
 
 	public Release getRelease() {
 		return release;
+	}
+
+	public Progress getProgress() {
+		return progress;
+	}
+
+	public void setProgress(final Progress progress) {
+		this.progress = progress;
 	}
 
 	// TODO ++Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
