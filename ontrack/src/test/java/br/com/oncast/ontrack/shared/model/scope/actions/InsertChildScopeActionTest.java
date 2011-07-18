@@ -73,9 +73,9 @@ public class InsertChildScopeActionTest {
 
 	@Test
 	public void mustDisassociateScopeFromReleaseAfterUndo() throws UnableToCompleteActionException {
-		final ScopeInsertChildAction insertFatherScopeAction = new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription + " @"
+		final ScopeInsertChildAction insertChildAction = new ScopeInsertChildAction(selectedScope.getId(), newScopeDescription + " @"
 				+ newReleaseDescription);
-		final ModelAction rollbackAction = insertFatherScopeAction.execute(context);
+		final ModelAction rollbackAction = insertChildAction.execute(context);
 
 		final Scope insertedScope = selectedScope.getChildren().get(1);
 		final Release release = insertedScope.getRelease();

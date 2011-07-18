@@ -23,16 +23,16 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String parentScopeId;
 
+	private String description;
+
 	@ConversionAlias("index")
 	private int pos;
 
-	private String description;
-
-	@ConvertUsing(StringToUuidConverter.class)
-	private String releaseId;
-
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<ScopeRemoveRollbackActionEntity> childActionList;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<ModelActionEntity> subActionList;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -58,12 +58,12 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 		this.description = description;
 	}
 
-	public String getReleaseId() {
-		return releaseId;
+	public int getPos() {
+		return pos;
 	}
 
-	public void setReleaseId(final String releaseId) {
-		this.releaseId = releaseId;
+	public void setPos(final int pos) {
+		this.pos = pos;
 	}
 
 	public List<ScopeRemoveRollbackActionEntity> getChildActionList() {
@@ -74,11 +74,12 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 		this.childActionList = childActionList;
 	}
 
-	public int getPos() {
-		return pos;
+	public void setSubActionList(final List<ModelActionEntity> subActionList) {
+		this.subActionList = subActionList;
 	}
 
-	public void setPos(final int pos) {
-		this.pos = pos;
+	public List<ModelActionEntity> getSubActionList() {
+		return subActionList;
 	}
+
 }
