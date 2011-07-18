@@ -43,6 +43,11 @@ public class Progress implements IsSerializable {
 		reset();
 	}
 
+	public Progress(final String progressDescription) {
+		this();
+		setDescription(progressDescription);
+	}
+
 	public String getDescription() {
 		return description;
 	}

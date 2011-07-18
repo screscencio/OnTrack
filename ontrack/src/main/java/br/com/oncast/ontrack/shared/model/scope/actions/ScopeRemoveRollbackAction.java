@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -27,19 +26,19 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 	@ConversionAlias("description")
 	private String description;
 
-	@ConversionAlias("releaseId")
-	private UUID releaseId;
-
 	@ConversionAlias("childActionList")
 	private List<ScopeRemoveRollbackAction> childActionList;
 
-	public ScopeRemoveRollbackAction(final UUID parentScopeId, final UUID selectedScopeId, final String description, final UUID releaseId, final int index,
-			final List<ScopeRemoveRollbackAction> childActionList) {
+	@ConversionAlias("subActionList")
+	private List<ModelAction> subActionList;
+
+	public ScopeRemoveRollbackAction(final UUID parentScopeId, final UUID selectedScopeId, final String description, final int index,
+			final List<ModelAction> subActionList, final List<ScopeRemoveRollbackAction> childActionList) {
 		this.parentScopeId = parentScopeId;
 		this.referenceId = selectedScopeId;
 		this.index = index;
 		this.description = description;
-		this.releaseId = releaseId;
+		this.subActionList = subActionList;
 		this.childActionList = childActionList;
 	}
 
@@ -50,17 +49,23 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope parent = context.findScope(parentScopeId);
 		final Scope newScope = new Scope(description, referenceId);
-		final Release release = releaseId != null ? context.findRelease(releaseId) : null;
 
 		parent.add(index, newScope);
 
-		newScope.setRelease(release);
-		if (release != null) release.addScope(newScope);
-
-		for (final ScopeRemoveRollbackAction childAction : childActionList)
-			childAction.execute(context);
+		executSubActions(context);
+		executeChildActions(context);
 
 		return new ScopeRemoveAction(referenceId);
+	}
+
+	private void executeChildActions(final ProjectContext context) throws UnableToCompleteActionException {
+		for (final ScopeRemoveRollbackAction childAction : childActionList)
+			childAction.execute(context);
+	}
+
+	private void executSubActions(final ProjectContext context) throws UnableToCompleteActionException {
+		for (final ModelAction subAction : subActionList)
+			subAction.execute(context);
 	}
 
 	@Override
