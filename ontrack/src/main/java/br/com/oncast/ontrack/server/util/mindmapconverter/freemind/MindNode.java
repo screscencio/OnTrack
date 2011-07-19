@@ -9,21 +9,21 @@ import org.w3c.dom.Node;
 
 public class MindNode {
 	private final Document document;
-	private final Element xml;
+	private final Element element;
 	private List<MindNode> children;
 	private List<Icon> icons;
 
-	public MindNode(final Document document, final Element xml) {
+	public MindNode(final Document document, final Element element) {
 		this.document = document;
-		this.xml = xml;
+		this.element = element;
 	}
 
 	public String getText() {
-		return xml.getAttribute("TEXT");
+		return element.getAttribute("TEXT");
 	}
 
 	public void setText(final String text) {
-		xml.setAttribute("TEXT", text);
+		element.setAttribute("TEXT", text);
 	}
 
 	public List<MindNode> getChildren() {
@@ -36,12 +36,11 @@ public class MindNode {
 		return icons.contains(icon);
 	}
 
-	public MindNode appendChildAtStart() {
+	public MindNode appendChild() {
+		if (children == null) interpret();
+
 		final Element child = document.createElement("node");
-		xml.appendChild(child);
-		for (int i = 0; i < xml.getChildNodes().getLength() - 1; i++) {
-			xml.appendChild(xml.getChildNodes().item(0));
-		}
+		element.appendChild(child);
 
 		final String id = Long.toString(System.currentTimeMillis());
 		child.setAttribute("CREATED", id);
@@ -58,7 +57,7 @@ public class MindNode {
 		if (icons == null) interpret();
 
 		final Element child = document.createElement("icon");
-		xml.appendChild(child);
+		element.appendChild(child);
 
 		child.setAttribute("BUILTIN", icon.getFreemindCode());
 
@@ -69,8 +68,8 @@ public class MindNode {
 		children = new ArrayList<MindNode>();
 		icons = new ArrayList<Icon>();
 
-		for (int i = 0; i < xml.getChildNodes().getLength(); i++) {
-			final Node n = xml.getChildNodes().item(i);
+		for (int i = 0; i < element.getChildNodes().getLength(); i++) {
+			final Node n = element.getChildNodes().item(i);
 			if (n.getNodeType() != Node.ELEMENT_NODE) continue;
 			if ("node".equals(n.getNodeName())) children.add(new MindNode(document, (Element) n));
 			if ("icon".equals(n.getNodeName())) icons.add(interpretIconNode(n));
@@ -81,16 +80,14 @@ public class MindNode {
 		final String iconName;
 		try {
 			iconName = n.getAttributes().getNamedItem("BUILTIN").getNodeValue();
-		} catch (final Exception e) {
-			throw new RuntimeException(
-					"Unable to interpret icon node on FreeMind MindMap (unable to retrieve 'BUILTIN' attribute from icon node).",
-					e);
+		}
+		catch (final Exception e) {
+			throw new RuntimeException("Unable to interpret icon node on FreeMind MindMap (unable to retrieve 'BUILTIN' attribute from icon node).", e);
 		}
 		for (final Icon i : Icon.values()) {
 			if (i.getFreemindCode().equals(iconName)) return i;
 		}
 
-		throw new RuntimeException("Unable to interpret icon node on FreeMind MindMap (unknown 'BUILTIN' attribute: '"
-				+ iconName + "').");
+		throw new RuntimeException("Unable to interpret icon node on FreeMind MindMap (unknown 'BUILTIN' attribute: '" + iconName + "').");
 	}
 }
