@@ -11,18 +11,18 @@ import br.com.oncast.ontrack.server.util.mindmapconverter.freemind.MindNode;
 import br.com.oncast.ontrack.server.util.mindmapconverter.scope.ScopeBuilder;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class FreeMindConverter {
+public class FreeMindImporter {
 	private static Pattern INTEGER_EXTRACTOR = Pattern.compile("\\d+");
 	private static Pattern FLOAT_EXTRACTOR = Pattern.compile("(\\d+)(\\.\\d?)?");
 
 	private final FreeMindMap mindMap;
 
-	private FreeMindConverter(final FreeMindMap mindMap) {
+	private FreeMindImporter(final FreeMindMap mindMap) {
 		this.mindMap = mindMap;
 	}
 
-	public static FreeMindConverter interpret(final FreeMindMap mindMap) {
-		return new FreeMindConverter(mindMap);
+	public static FreeMindImporter interpret(final FreeMindMap mindMap) {
+		return new FreeMindImporter(mindMap);
 	}
 
 	public Scope getScope() {
@@ -81,4 +81,5 @@ public class FreeMindConverter {
 
 		return Float.valueOf(matcher.group());
 	}
+
 }
