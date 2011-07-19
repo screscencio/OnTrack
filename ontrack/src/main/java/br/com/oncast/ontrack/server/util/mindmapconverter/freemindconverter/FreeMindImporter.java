@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.util.mindmapconverter.freemindconverter;
 
 import static br.com.oncast.ontrack.server.util.mindmapconverter.scope.ScopeBuilder.scope;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,8 +22,8 @@ public class FreeMindImporter {
 		this.mindMap = mindMap;
 	}
 
-	public static FreeMindImporter interpret(final FreeMindMap mindMap) {
-		return new FreeMindImporter(mindMap);
+	public static FreeMindImporter importMapFrom(final File file) {
+		return new FreeMindImporter(FreeMindMap.open(file));
 	}
 
 	public Scope getScope() {

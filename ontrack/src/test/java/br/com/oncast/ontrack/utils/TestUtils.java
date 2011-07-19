@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.utils;
 
 import java.io.File;
 
-import br.com.oncast.ontrack.server.util.mindmapconverter.freemind.FreeMindMap;
 import br.com.oncast.ontrack.server.util.mindmapconverter.freemindconverter.FreeMindImporter;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -20,8 +19,8 @@ public class TestUtils {
 	}
 
 	public static Scope getScope(final String fileName) {
-		final FreeMindMap mindMap = FreeMindMap.open(new File("src/test/java/br/com/oncast/ontrack/shared/model/effort/inferenceengine/" + fileName + ".mm"));
-		final FreeMindImporter importer = FreeMindImporter.interpret(mindMap);
+		final FreeMindImporter importer = FreeMindImporter.importMapFrom(new File("src/test/java/br/com/oncast/ontrack/shared/model/effort/inferenceengine/"
+				+ fileName + ".mm"));
 
 		return importer.getScope();
 	}
