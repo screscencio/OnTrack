@@ -5,10 +5,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class Effort implements IsSerializable {
 
 	private int declared;
-	private boolean hasDeclared;
 	private float topDownValue;
 	private float bottomUpValue;
+	private boolean hasDeclared;
+	private boolean hasSetBottomUpValue;
 	private boolean hasStronglyDefinedChildren;
+	private boolean hasSetTopDownValue;
 
 	public int getDeclared() {
 		return declared;
@@ -36,6 +38,10 @@ public class Effort implements IsSerializable {
 		declared = 0;
 	}
 
+	public boolean hasInfered() {
+		return hasDeclared || hasSetBottomUpValue || hasSetTopDownValue;
+	}
+
 	public float getInfered() {
 		final float processedValue = (bottomUpValue > topDownValue) ? bottomUpValue : topDownValue;
 		return (declared > processedValue) ? declared : processedValue;
@@ -47,6 +53,7 @@ public class Effort implements IsSerializable {
 
 	public void setTopDownValue(final float topDownValue) {
 		this.topDownValue = topDownValue;
+		hasSetTopDownValue = true;
 	}
 
 	public float getBottomUpValue() {
@@ -55,10 +62,12 @@ public class Effort implements IsSerializable {
 
 	public void setBottomUpValue(final float bottomUpValue) {
 		this.bottomUpValue = bottomUpValue;
+		hasSetBottomUpValue = true;
 	}
 
 	@Override
 	public String toString() {
 		return "Declared: " + declared + ", TopDownValue: " + topDownValue + ", BottomUpValue: " + bottomUpValue + ", Infered: " + getInfered();
 	}
+
 }

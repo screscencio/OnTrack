@@ -1,11 +1,14 @@
 package br.com.oncast.ontrack.server.util.mindmapconverter.freemindconverter;
 
+import static br.com.oncast.ontrack.server.util.number.NumberUtils.roundEffort;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
 import br.com.oncast.ontrack.server.util.mindmapconverter.freemind.FreeMindMap;
 import br.com.oncast.ontrack.server.util.mindmapconverter.freemind.Icon;
 import br.com.oncast.ontrack.server.util.mindmapconverter.freemind.MindNode;
+import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -34,9 +37,11 @@ public class FreeMindExporter {
 	}
 
 	private static void populateScopeHierarchy(final MindNode rootNode, final Scope rootScope) {
-		if (rootScope.getEffort().hasDeclared()) appendNodeTo(rootNode, Integer.toString(rootScope.getEffort().getDeclared()), Icon.LAUNCH);
-		// FIXME Add infered effort if it exists
-		// if (rootScope.getEffort().hasInfered()) appendNodeTo(rootNode, Integer.toString(rootScope.getEffort().getInfered()), Icon.LAUNCH, Icon.WIZARD);
+		final Effort effort = rootScope.getEffort();
+
+		if (effort.hasDeclared()) appendNodeTo(rootNode, Integer.toString(effort.getDeclared()), Icon.LAUNCH);
+		if (effort.hasInfered() && (effort.getInfered() > effort.getDeclared())) appendNodeTo(rootNode, roundEffort(effort.getInfered()), Icon.LAUNCH,
+				Icon.WIZARD);
 		if (rootScope.getProgress().hasDeclared()) appendNodeTo(rootNode, rootScope.getProgress().getDescription(), Icon.HOURGLASS);
 
 		for (final Scope childScope : rootScope.getChildren()) {
