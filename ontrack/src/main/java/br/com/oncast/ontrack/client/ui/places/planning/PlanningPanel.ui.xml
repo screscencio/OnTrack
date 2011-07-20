@@ -43,7 +43,7 @@
 			left: 10px;
 			bottom: 10px;
 			padding: 5px;
-			width: 100px;
+			width: 200px;
 		}
 	</ui:style>
 
