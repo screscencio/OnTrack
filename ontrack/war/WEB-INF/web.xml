@@ -5,17 +5,24 @@
 
 <web-app>
 
-    <!-- Servlet definitions and mappings -->
+	<!-- Servlet definitions and mappings -->
 	<servlet>
 		<servlet-name>communicationService</servlet-name>
 		<servlet-class>br.com.oncast.ontrack.server.services.communication.rpc.CommunicationRpcServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>communicationService</servlet-name>
 		<url-pattern>/application/communicationService</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>MindMapExporterServlet</servlet-name>
+		<servlet-class>br.com.oncast.ontrack.server.business.MindMapExporterServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MindMapExporterServlet</servlet-name>
+		<url-pattern>/application/servlet/exporttomindmap</url-pattern>
+	</servlet-mapping>
 
 	<!-- Default page to serve -->
 	<welcome-file-list>

@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.utils.mindmapconverter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import org.junit.Test;
 
@@ -14,13 +16,13 @@ public class FreeMindExporterTest {
 	private static final File PROJECT_MM_FILE = new File("/home/jaime/ProjetoTeste.mm");
 
 	@Test
-	public void shouldExportMapWithVersion() {
+	public void shouldExportMapWithVersion() throws FileNotFoundException {
 		final Scope scope = ScopeMock.getScope();
 		scope.getEffort().setDeclared(100);
 		EffortInferenceEngine.process(scope);
 		scope.getChild(0).getChild(0).getProgress().setDescription("Under work");
 
-		FreeMindExporter.export(new Project(scope, null), PROJECT_MM_FILE);
+		FreeMindExporter.export(new Project(scope, null), new FileOutputStream(PROJECT_MM_FILE));
 	}
 
 }
