@@ -78,6 +78,7 @@ public class FreeMindMap {
 			final Transformer t = TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			t.setOutputProperty(OutputKeys.INDENT, "yes");
+			t.setOutputProperty(OutputKeys.ENCODING, "ASCII");
 			t.transform(new DOMSource(xml), new StreamResult(stream));
 		}
 		catch (final Exception e) {
