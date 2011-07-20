@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class FreeMindConverterTest {
+public class FreeMindExporterTest {
 	private static final File PROJECT_MM_FILE = new File("/home/jaime/ProjetoTeste.mm");
 
 	@Test
