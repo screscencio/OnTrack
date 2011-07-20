@@ -37,6 +37,7 @@ public class MindMapExporterServlet extends HttpServlet {
 	private void configureResponse(final HttpServletResponse response, final String fileName) {
 		response.setContentType("text/xml");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".mm\"");
+		response.setCharacterEncoding("UTF-8");
 	}
 
 }
