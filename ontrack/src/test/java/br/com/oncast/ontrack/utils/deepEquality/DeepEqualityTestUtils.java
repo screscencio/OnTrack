@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.server.util.introspector.IntrospectionEngine;
 import br.com.oncast.ontrack.server.util.introspector.IntrospectionException;
 import br.com.oncast.ontrack.server.util.introspector.Introspector;
+import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
 import br.com.oncast.ontrack.utils.deepEquality.custom.ScopeTreeDeepEqualityComparator;
 
@@ -59,8 +60,16 @@ public class DeepEqualityTestUtils {
 		return customComparatorMap.containsKey(clazz);
 	}
 
-	private static <T> void addCustomDeepEqualityComparator(final Class<T> targetClass, final DeepEqualityComparator<T> deepEqualityComparator) {
+	public static <T> void addCustomDeepEqualityComparator(final Class<T> targetClass, final DeepEqualityComparator<T> deepEqualityComparator) {
 		customComparatorMap.put(targetClass, deepEqualityComparator);
+	}
+
+	public static void removeCustomDeepEqualityComparatorFor(final Class<Effort> targetClass) {
+		if (!customComparatorMap.containsKey(targetClass)) throw new DeepEqualityException(
+				"There was not possible to remove the custom comparator for the class " + targetClass
+						+ ". There is no custom comparator registered for this class");
+
+		customComparatorMap.remove(targetClass);
 	}
 
 	private static void assertMapEquality(final Map<?, ?> expected, final Map<?, ?> actual) throws DeepEqualityException {
@@ -118,4 +127,5 @@ public class DeepEqualityTestUtils {
 	public static void setRequiredFloatingPointPrecision(final double requiredFloatingPointPrecision) {
 		DeepEqualityTestUtils.requiredFloatingPointPrecision = requiredFloatingPointPrecision;
 	}
+
 }

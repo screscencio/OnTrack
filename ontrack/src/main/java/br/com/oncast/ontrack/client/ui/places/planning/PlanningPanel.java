@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -28,6 +29,9 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	@UiField
 	protected ScopeTree scopeTree;
+
+	@UiField
+	protected Anchor exportMap;
 
 	public PlanningPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -45,6 +49,11 @@ public class PlanningPanel extends Composite implements PlanningView {
 	}
 
 	@Override
+	public void setExporterPath(final String href) {
+		exportMap.setHref(href);
+	}
+
+	@Override
 	public void setActionExecutionRequestHandler(final ActionExecutionRequestHandler actionHandler) {
 		scopeTree.setActionExecutionRequestHandler(actionHandler);
 		releasePanel.setActionExecutionRequestHandler(actionHandler);
@@ -57,4 +66,5 @@ public class PlanningPanel extends Composite implements PlanningView {
 		list.add(releasePanel.getActionExecutionListener());
 		return list;
 	}
+
 }

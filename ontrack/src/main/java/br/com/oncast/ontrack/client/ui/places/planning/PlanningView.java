@@ -17,4 +17,6 @@ public interface PlanningView extends IsWidget {
 	List<ActionExecutionListener> getActionExecutionSuccessListeners();
 
 	void setActionExecutionRequestHandler(ActionExecutionRequestHandler actionHandler);
+
+	void setExporterPath(String href);
 }

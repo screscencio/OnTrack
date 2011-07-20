@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
@@ -8,12 +10,14 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
 import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
+import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveRightAction;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityComparator;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -27,6 +31,16 @@ public class MoveRightTest extends GwtTest {
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
 	private ActionExecutionService actionExecutionService;
+
+	@BeforeClass
+	public static void beforeClass() {
+		DeepEqualityTestUtils.addCustomDeepEqualityComparator(Effort.class, new EffortDeepEqualityComparator());
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		DeepEqualityTestUtils.removeCustomDeepEqualityComparatorFor(Effort.class);
+	}
 
 	@Before
 	public void setUp() {
