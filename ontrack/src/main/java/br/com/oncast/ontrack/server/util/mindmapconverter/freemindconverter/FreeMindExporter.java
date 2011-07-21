@@ -17,12 +17,15 @@ public class FreeMindExporter {
 	 * Creates a FreeMind (*.mm) compatible mind map, using a {@link Project} to build the map.
 	 * @param project source of data which the map will be created.
 	 * @param outputStream the stream in which the data will be written.
+	 * @return the mind map exported.
 	 */
-	public static void export(final Project project, final OutputStream outputStream) {
+	public static FreeMindMap export(final Project project, final OutputStream outputStream) {
 		final FreeMindMap mindMap = FreeMindMap.createNewMap();
 
 		populateMap(project, mindMap);
 		save(mindMap, outputStream);
+
+		return mindMap;
 	}
 
 	private static void populateMap(final Project project, final FreeMindMap mindMap) {
