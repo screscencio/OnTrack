@@ -13,7 +13,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,13 +20,10 @@ public class ScopeTree implements Component {
 
 	private final ScopeTreeWidget tree;
 
-	@IgnoreByDeepEquality
 	private final ScopeTreeActionFactory treeActionFactory;
 
-	@IgnoreByDeepEquality
 	private final ActionExecutionListener actionExecutionListener;
 
-	@IgnoreByDeepEquality
 	private final ScopeTreeInteractionHandler treeInteractionHandler;
 
 	public ScopeTree() {
