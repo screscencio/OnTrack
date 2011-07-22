@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +27,11 @@ public class FreeMindExporterTest {
 	@Before
 	public void setUp() {
 		scope = ScopeMock.getScope();
+	}
+
+	@After
+	public void tearDown() {
+		if (PROJECT_MM_FILE.exists()) PROJECT_MM_FILE.delete();
 	}
 
 	/**
