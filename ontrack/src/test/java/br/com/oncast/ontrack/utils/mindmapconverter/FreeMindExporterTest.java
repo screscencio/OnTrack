@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class FreeMindExporterTest {
-	private static final File PROJECT_MM_FILE = new File("/home/jaime/ProjetoTeste.mm");
+	private static final File PROJECT_MM_FILE = new File("src/test/java/br/com/oncast/ontrack/utils/mindmapconverter/ProjetoTeste.mm");
 	private Scope scope;
 
 	@Before
