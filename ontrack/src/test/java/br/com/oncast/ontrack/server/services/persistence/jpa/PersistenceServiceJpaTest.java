@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 public class PersistenceServiceJpaTest {
 
 	private PersistenceServiceJpaImpl persistenceService;
+
 	private EntityManager entityManager;
 
 	@Before
