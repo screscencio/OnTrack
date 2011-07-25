@@ -45,7 +45,7 @@ public class Release implements IsSerializable {
 	}
 
 	public String getFullDescription() {
-		if (isRoot()) return description;
+		if (isRoot() || parent.isRoot()) return description;
 		return parent.getFullDescription() + SEPARATOR + description;
 	}
 
