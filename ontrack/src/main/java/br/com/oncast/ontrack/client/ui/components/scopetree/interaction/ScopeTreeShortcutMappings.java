@@ -4,7 +4,6 @@ import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_DEL
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_DOWN;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_F2;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_INSERT;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_LEFT;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_UP;
@@ -51,7 +50,7 @@ enum ScopeTreeShortcutMappings {
 		}
 	},
 
-	INSERT_SCOPE_AS_CHILD(KEY_INSERT, false, false, false) {
+	INSERT_SCOPE_AS_CHILD(KEY_ENTER, true, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
@@ -59,7 +58,7 @@ enum ScopeTreeShortcutMappings {
 		}
 	},
 
-	INSERT_SCOPE_AS_PARENT(KEY_INSERT, false, true, false) {
+	INSERT_SCOPE_AS_PARENT(KEY_ENTER, true, true, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
