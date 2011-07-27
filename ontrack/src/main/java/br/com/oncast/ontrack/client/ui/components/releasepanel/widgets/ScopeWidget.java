@@ -18,26 +18,38 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiField
 	Label descriptionLabel;
 
+	@UiField
+	Label progressLabel;
+
 	private final Scope scope;
 
 	private String currentScopeDescription;
+
+	private String currentScopeProgress;
 
 	public ScopeWidget(final Scope scope) {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
 		updateDescription();
+		updateProgress();
 	}
 
 	@Override
 	public void update() {
-		if (scope.getDescription().equals(currentScopeDescription)) return;
-		updateDescription();
+		if (!scope.getDescription().equals(currentScopeDescription)) updateDescription();
+		if (!scope.getProgress().getDescription().equals(currentScopeProgress)) updateProgress();
 	}
 
 	private void updateDescription() {
 		currentScopeDescription = scope.getDescription();
 		descriptionLabel.setText(currentScopeDescription);
+	}
+
+	private void updateProgress() {
+		currentScopeProgress = scope.getProgress().getDescription();
+		progressLabel.setText(currentScopeProgress);
+		progressLabel.setVisible(!currentScopeProgress.isEmpty());
 	}
 
 	public Scope getScope() {

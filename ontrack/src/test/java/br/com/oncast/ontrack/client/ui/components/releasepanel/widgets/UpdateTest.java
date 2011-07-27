@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import static org.junit.Assert.fail;
-
-import java.lang.reflect.Field;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 import com.octo.gwt.test.GwtTest;
@@ -32,7 +29,7 @@ public class UpdateTest extends GwtTest {
 		final Project project = MockFactory.createProject();
 		final ProjectContext projectContext = new ProjectContext(project);
 
-		releasePanel = createReleasePanel();
+		releasePanel = new ReleasePanel();
 		releasePanel.setRelease(project.getProjectRelease());
 
 		final Scope scopeBefore = project.getProjectScope();
@@ -43,36 +40,16 @@ public class UpdateTest extends GwtTest {
 		actionExecutionService.addActionExecutionListener(releasePanel.getActionExecutionListener());
 	}
 
-	private ReleasePanel createReleasePanel() {
-		final ReleasePanel releasePanelMock = new ReleasePanel();
-
-		Field widgetField;
-		try {
-			widgetField = ReleasePanel.class.getDeclaredField("releasePanelWidget");
-			widgetField.setAccessible(true);
-			final ReleasePanelWidget releasePanelWidget = (ReleasePanelWidget) widgetField.get(releasePanelMock);
-
-			final Field factoryField = ReleasePanelWidget.class.getDeclaredField("releaseWidgetFactory");
-			factoryField.setAccessible(true);
-			factoryField.set(releasePanelWidget, new ReleaseWidgetFactoryMock());
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
-			fail("ReleasePanel could not be created.");
-		}
-
-		return releasePanelMock;
-	}
-
 	@Test
 	public void shouldUpdateReleaseWithNewScope() {
 		final Release modifiedRelease = MockFactory.createProject().getProjectRelease();
 		modifiedRelease.getChildReleases().get(0).getChildReleases().get(0).addScope(scopeUpdated);
 
-		final ReleasePanel modifiedReleasePanel = createReleasePanel();
+		final ReleasePanel modifiedReleasePanel = new ReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " @R1/It1"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " "
+				+ StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1/It1"));
 
 		DeepEqualityTestUtils.assertObjectEquality(releasePanel, modifiedReleasePanel);
 	}
@@ -82,15 +59,16 @@ public class UpdateTest extends GwtTest {
 		final Release modifiedRelease = MockFactory.createProject().getProjectRelease();
 		modifiedRelease.getChildReleases().get(0).getChildReleases().get(0).addScope(scopeUpdated);
 
-		ReleasePanel modifiedReleasePanel = createReleasePanel();
+		ReleasePanel modifiedReleasePanel = new ReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " @R1/It1"));
+		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " "
+				+ StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1/It1"));
 
 		DeepEqualityTestUtils.assertObjectEquality(releasePanel, modifiedReleasePanel);
 
 		modifiedRelease.getChildReleases().get(0).getChildReleases().get(0).removeScope(scopeUpdated);
-		modifiedReleasePanel = createReleasePanel();
+		modifiedReleasePanel = new ReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
 		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription()));
