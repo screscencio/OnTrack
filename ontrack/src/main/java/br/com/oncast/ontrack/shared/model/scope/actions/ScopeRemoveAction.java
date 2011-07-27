@@ -53,7 +53,7 @@ public class ScopeRemoveAction implements ScopeAction {
 
 	private List<ModelAction> executeSubActions(final ProjectContext context, final Scope selectedScope) throws UnableToCompleteActionException {
 		final List<ModelAction> subActionList = new ArrayList<ModelAction>();
-		subActionList.add(new ScopeProgressAction(referenceId, selectedScope.getProgress().getDescription()));
+		subActionList.add(new ScopeDeclareProgressAction(referenceId, selectedScope.getProgress().getDescription()));
 		subActionList.add(new ScopeBindReleaseAction(referenceId, null));
 		subActionList.add(new ScopeDeclareEffortAction(referenceId, false, 0));
 
@@ -71,6 +71,11 @@ public class ScopeRemoveAction implements ScopeAction {
 
 	@Override
 	public boolean changesEffortInference() {
+		return true;
+	}
+
+	@Override
+	public boolean changesProcessInference() {
 		return true;
 	}
 }

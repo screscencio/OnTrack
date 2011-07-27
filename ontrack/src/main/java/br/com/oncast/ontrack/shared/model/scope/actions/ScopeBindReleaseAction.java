@@ -52,4 +52,9 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	public boolean changesEffortInference() {
 		return false;
 	}
+
+	@Override
+	public boolean changesProcessInference() {
+		return false;
+	}
 }

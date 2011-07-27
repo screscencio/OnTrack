@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
+import java.util.Set;
+
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
@@ -11,8 +13,8 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,13 +34,11 @@ public class ScopeTree implements Component {
 		actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
 				try {
 					final ScopeTreeAction scopeTreeAction = treeActionFactory.createEquivalentActionFor(action);
 					scopeTreeAction.execute(context);
-					if (action instanceof ScopeAction) {
-						if (((ScopeAction) action).changesEffortInference()) ScopeTreeEffortUpdateEngine.process(tree, action.getReferenceId());
-					}
+					ScopeTreeEffortUpdateEngine.process(tree, inferenceInfluencedScopeSet);
 				}
 				catch (final ScopeNotFoundException e) {
 					// TODO ++Redraw the entire structure to eliminate inconsistencies

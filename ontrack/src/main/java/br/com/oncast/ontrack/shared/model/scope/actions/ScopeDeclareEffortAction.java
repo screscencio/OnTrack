@@ -52,4 +52,9 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 	public boolean changesEffortInference() {
 		return true;
 	}
+
+	@Override
+	public boolean changesProcessInference() {
+		return true;
+	}
 }

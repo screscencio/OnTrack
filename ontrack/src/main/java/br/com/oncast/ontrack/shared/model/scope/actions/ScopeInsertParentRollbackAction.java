@@ -59,6 +59,11 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 		return true;
 	}
 
+	@Override
+	public boolean changesProcessInference() {
+		return true;
+	}
+
 	private void removeFromRelease(final Scope newScope) {
 		if (newScope.getRelease() != null) {
 			newScope.getRelease().removeScope(newScope);

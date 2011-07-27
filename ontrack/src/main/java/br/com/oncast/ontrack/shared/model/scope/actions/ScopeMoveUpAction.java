@@ -51,4 +51,9 @@ public class ScopeMoveUpAction implements ScopeMoveAction {
 	public boolean changesEffortInference() {
 		return false;
 	}
+
+	@Override
+	public boolean changesProcessInference() {
+		return false;
+	}
 }
