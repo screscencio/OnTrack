@@ -22,23 +22,23 @@ public class ProgressInferenceEngine implements InferenceEngine {
 
 		final List<Scope> children = scope.getChildren();
 		for (final Scope child : children)
-			preProcessBottomUp(child, inferenceInfluencedScopeSet);
+			calculateBottomUp(child, inferenceInfluencedScopeSet);
 		processBottomUp(scope, inferenceInfluencedScopeSet);
 
 		return inferenceInfluencedScopeSet;
 	}
 
 	private void processBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
-		preProcessBottomUp(scope, inferenceInfluencedScopeSet);
+		calculateBottomUp(scope, inferenceInfluencedScopeSet);
+
+		if (scope.isRoot()) return;
 		processBottomUp(scope.getParent(), inferenceInfluencedScopeSet);
 	}
 
-	private void preProcessBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
+	private void calculateBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
 		final float computedEffort = scope.getProgress().isDone() ? scope.getEffort().getInfered() : calculateComputedEffort(scope);
 		scope.getProgress().setComputedEffort(computedEffort);
 		inferenceInfluencedScopeSet.add(scope.getId());
-
-		if (scope.isRoot()) return;
 	}
 
 	private float calculateComputedEffort(final Scope scope) {
