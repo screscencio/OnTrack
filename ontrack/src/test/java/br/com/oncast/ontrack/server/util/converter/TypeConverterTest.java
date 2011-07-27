@@ -8,8 +8,8 @@ import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionEntityMock;
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionEntityMockWithListOfActions;
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionMock;
 import br.com.oncast.ontrack.server.util.converter.mocks.ModelActionMockWithListOfActions;
-import br.com.oncast.ontrack.server.util.typeConverter.GeneralTypeConverter;
-import br.com.oncast.ontrack.server.util.typeConverter.exceptions.TypeConverterException;
+import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class TypeConverterTest {

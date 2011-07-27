@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_DELETE;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_DOWN;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_ENTER;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_F2;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_LEFT;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_RIGHT;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_UP;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Y;
-import static br.com.oncast.ontrack.shared.util.keyboard.BrowserKeyCodes.KEY_Z;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DELETE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_F2;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LEFT;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_Y;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_Z;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertFatherInternalAction;

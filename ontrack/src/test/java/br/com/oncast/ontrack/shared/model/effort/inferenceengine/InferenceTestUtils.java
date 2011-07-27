@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
 
 import java.io.File;
 
-import br.com.oncast.ontrack.server.util.mmConverter.FreeMindImporter;
+import br.com.oncast.ontrack.server.utils.mmConverter.FreeMindImporter;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class InferenceTestUtils {

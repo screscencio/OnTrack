@@ -12,10 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.mocks.models.ScopeMock;
-import br.com.oncast.ontrack.server.util.mmConverter.FreeMindExporter;
-import br.com.oncast.ontrack.server.util.mmConverter.abstractions.FreeMindMap;
-import br.com.oncast.ontrack.server.util.mmConverter.abstractions.Icon;
-import br.com.oncast.ontrack.server.util.mmConverter.abstractions.MindNode;
+import br.com.oncast.ontrack.server.utils.mmConverter.FreeMindExporter;
+import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.FreeMindMap;
+import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.Icon;
+import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
