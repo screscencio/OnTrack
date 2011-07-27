@@ -3,9 +3,9 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
+import br.com.oncast.ontrack.shared.config.UriConfigurations;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
@@ -32,7 +32,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.setActionExecutionRequestHandler(actionExecutionService);
 		view.setScope(contextProviderService.getProjectContext().getProjectScope());
 		view.setRelease(contextProviderService.getProjectContext().getProjectRelease());
-		view.setExporterPath(GWT.getModuleBaseURL() + "servlet/exporttomindmap");
+		view.setExporterPath(UriConfigurations.EXPORT_TO_MINDMAP_APPLICATION_SERVLET_URL);
 
 		panel.setWidget(view);
 	}

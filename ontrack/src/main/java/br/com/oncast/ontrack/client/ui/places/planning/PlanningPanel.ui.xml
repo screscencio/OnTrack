@@ -16,10 +16,10 @@
 		
 		.scopeTree {
 			position: absolute;
-			top: 25px;
+			top: 10px;
 			left: 10px;
 			right: 420px;
-			bottom: 10px;
+			bottom: 25px;
 			padding: 5px;
 			
             border: 1px solid #a5a5a5;
@@ -31,30 +31,29 @@
 		
 		.releasePanel {
 			position: absolute;
-			top: 25px;
+			top: 10px;
 			right: 10px;
-			bottom: 10px;
+			bottom: 25px;
 			width: 400px;
 		}
 		
 		.exportToMapLink {
 			position: absolute;
-			top: 0px;
+			bottom: 0px;
 			left: 10px;
-			bottom: 10px;
-			padding: 5px;
 			width: 200px;
+			padding: 5px;
 		}
 	</ui:style>
 
 	<g:FlowPanel styleName="{style.rootPanel}">
-		<g:Anchor ui:field="exportMap" text="Export to mind map" styleName="{style.exportToMapLink}"/>
 		<g:SimplePanel styleName="{style.scopeTree}">
 			<st:ScopeTree ui:field="scopeTree" />
 		</g:SimplePanel>
 		<g:SimplePanel styleName="{style.releasePanel}">
     		<rp:ReleasePanel ui:field="releasePanel" />
 		</g:SimplePanel>
+		<g:Anchor ui:field="exportMap" text="Export to mind map" styleName="{style.exportToMapLink}"/>
 	</g:FlowPanel>
 
 </ui:UiBinder>

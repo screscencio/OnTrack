@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentRollbac
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -20,11 +20,11 @@ public class ReleasePanel implements Component {
 
 	private final ReleasePanelWidget releasePanelWidget;
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private final ActionExecutionListener actionExecutionListener;
 
 	// TODO Review if this should be tested by deepEquality
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private Release rootRelease;
 
 	public ReleasePanel() {

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
-import br.com.oncast.ontrack.server.util.mindmapconverter.freemindconverter.FreeMindExporter;
+import br.com.oncast.ontrack.server.util.mmConverter.FreeMindExporter;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.project.Project;
 
@@ -18,26 +18,28 @@ public class MindMapExporterServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		final Project project = getProject();
-		configureResponse(response, project.getProjectScope().getDescription());
+		try {
+			doReply(request, response);
+		}
+		catch (final Exception e) {
+			doHandleError(request, response, e);
+		}
+	}
+
+	private void doReply(final HttpServletRequest request, final HttpServletResponse response) throws UnableToLoadProjectException, IOException {
+		final BusinessLogic business = new BusinessLogic(new PersistenceServiceJpaImpl());
+		final Project project = business.loadProject();
+
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/xml");
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + project.getProjectScope().getDescription() + ".mm\"");
 
 		FreeMindExporter.export(project, response.getOutputStream());
+		response.getOutputStream().flush();
 	}
 
-	private Project getProject() {
-		final BusinessLogic business = new BusinessLogic(new PersistenceServiceJpaImpl());
-		try {
-			return business.loadProject();
-		}
-		catch (final UnableToLoadProjectException e) {
-			throw new RuntimeException("There was not possible to export the mind map.", e);
-		}
+	// TODO +++Display an user-friendly error message.
+	private void doHandleError(final HttpServletRequest request, final HttpServletResponse response, final Exception e) throws ServletException {
+		throw new ServletException(e);
 	}
-
-	private void configureResponse(final HttpServletResponse response, final String fileName) {
-		response.setContentType("text/xml");
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".mm\"");
-		response.setCharacterEncoding("UTF-8");
-	}
-
 }

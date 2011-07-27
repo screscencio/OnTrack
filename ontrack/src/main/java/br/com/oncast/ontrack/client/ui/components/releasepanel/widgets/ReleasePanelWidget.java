@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -14,17 +14,17 @@ public class ReleasePanelWidget extends Composite {
 
 	interface ReleasePanelWidgetUiBinder extends UiBinder<Widget, ReleasePanelWidget> {}
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private static ReleasePanelWidgetUiBinder uiBinder = GWT.create(ReleasePanelWidgetUiBinder.class);
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected VerticalModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
 
 	private Release release;
 
 	// IMPORTANT: This field cannot be 'final' because some tests need to set it to a new value through reflection. Do not remove the 'null' attribution.
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory = null;
 
 	public ReleasePanelWidget() {

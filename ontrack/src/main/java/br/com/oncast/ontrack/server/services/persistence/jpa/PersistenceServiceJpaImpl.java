@@ -15,8 +15,8 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.util.converter.GeneralTypeConverter;
-import br.com.oncast.ontrack.server.util.converter.exceptions.TypeConverterException;
+import br.com.oncast.ontrack.server.util.typeConverter.GeneralTypeConverter;
+import br.com.oncast.ontrack.server.util.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -29,7 +29,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
-	private static final GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
+	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 
 	@Override
 	public void persistAction(final ModelAction modelAction, final Date timestamp) throws PersistenceException {
@@ -97,5 +97,4 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		return entity;
 	}
-
 }

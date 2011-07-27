@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.server.util.converter.mocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.util.typeConverter.annotations.ConvertTo;
 
 @ConvertTo(ModelActionMockWithListOfActions.class)
 public class ModelActionEntityMockWithListOfActions {

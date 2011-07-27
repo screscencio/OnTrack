@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
-import static br.com.oncast.ontrack.utils.mindmapconverter.MindMapImporterUtils.getModifiedScope;
-import static br.com.oncast.ontrack.utils.mindmapconverter.MindMapImporterUtils.getOriginalScope;
+import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getModifiedScope;
+import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOriginalScope;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;

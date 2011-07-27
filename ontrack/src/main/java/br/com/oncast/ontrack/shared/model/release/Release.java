@@ -5,21 +5,21 @@ import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Release implements IsSerializable {
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	public static final String SEPARATOR = "/";
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private UUID id;
 
 	private String description;
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private Release parent;
 
 	private List<Release> childrenList;

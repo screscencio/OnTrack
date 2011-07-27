@@ -34,12 +34,12 @@ public class InsertSiblingDownTest extends GwtTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		DeepEqualityTestUtils.addCustomDeepEqualityComparator(Effort.class, new EffortDeepEqualityComparator());
+		DeepEqualityTestUtils.setCustomDeepEqualityComparator(Effort.class, new EffortDeepEqualityComparator());
 	}
 
 	@AfterClass
 	public static void afterClass() {
-		DeepEqualityTestUtils.removeCustomDeepEqualityComparatorFor(Effort.class);
+		DeepEqualityTestUtils.removeCustomDeepEqualityComparator(Effort.class);
 	}
 
 	@Before

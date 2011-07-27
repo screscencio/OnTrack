@@ -8,9 +8,9 @@ public class Effort implements IsSerializable {
 	private float topDownValue;
 	private float bottomUpValue;
 	private boolean hasDeclared;
-	private boolean hasSetBottomUpValue;
+	private boolean hasTopDownValue;
+	private boolean hasBottomUpValue;
 	private boolean hasStronglyDefinedChildren;
-	private boolean hasSetTopDownValue;
 
 	public int getDeclared() {
 		return declared;
@@ -39,7 +39,7 @@ public class Effort implements IsSerializable {
 	}
 
 	public boolean hasInfered() {
-		return hasDeclared || hasSetBottomUpValue || hasSetTopDownValue;
+		return hasDeclared || hasBottomUpValue || hasTopDownValue;
 	}
 
 	public float getInfered() {
@@ -53,7 +53,7 @@ public class Effort implements IsSerializable {
 
 	public void setTopDownValue(final float topDownValue) {
 		this.topDownValue = topDownValue;
-		hasSetTopDownValue = true;
+		hasTopDownValue = true;
 	}
 
 	public float getBottomUpValue() {
@@ -62,7 +62,7 @@ public class Effort implements IsSerializable {
 
 	public void setBottomUpValue(final float bottomUpValue) {
 		this.bottomUpValue = bottomUpValue;
-		hasSetBottomUpValue = true;
+		hasBottomUpValue = true;
 	}
 
 	@Override

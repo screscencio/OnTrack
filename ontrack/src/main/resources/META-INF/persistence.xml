@@ -5,24 +5,6 @@
 	<persistence-unit name="ontrackPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareEffortActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertChildActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentRollbackActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertSiblingDownActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertSiblingUpActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveDownActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveLeftActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveRightActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveUpActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeProgressActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveRollbackActionEntity</class>
-		<class>br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeUpdateActionEntity</class>
-		
 		<properties>
 			<!-- HSQLDB -->
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
@@ -32,7 +14,7 @@
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.max_fetch_depth" value="3" />
-			
+			<property name="hibernate.archive.autodetection" value="class, hbm" />
 			<!-- /HSQLDB -->
 			
 			<!-- MySQL

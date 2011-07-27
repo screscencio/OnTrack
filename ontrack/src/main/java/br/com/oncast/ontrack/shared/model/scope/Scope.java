@@ -7,23 +7,23 @@ import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO +++Test this class
 public class Scope implements IsSerializable {
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private UUID id;
 
 	private String description;
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private Scope parent;
 	private List<Scope> childrenList;
 	
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private Release release;
 	private Effort effort;
 	private Progress progress;

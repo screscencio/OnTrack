@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentActionEntity;
-import br.com.oncast.ontrack.server.util.converter.annotations.ConversionAlias;
-import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.util.typeConverter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.util.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
