@@ -203,7 +203,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final float effortErrorDifference = effort.hasDeclared() ? effort.getInfered() - effort.getDeclared() : 0;
 		final float effortPositiveDifference = effort.getBottomUpValue() != 0 ? effort.getInfered() - effort.getBottomUpValue() : 0;
-		final boolean effortVisibility = effort.hasDeclared() || effort.getInfered() > 0;
+		final boolean effortVisibility = effort.hasInfered();
 		final boolean effortDifferenceVisibility = (effortErrorDifference > 0 || effortPositiveDifference > 0);
 		final float effortValue = effort.getInfered();
 		final int effortDifferenceValue = ((int) ((effortErrorDifference > 0) ? effortErrorDifference : effortPositiveDifference));
