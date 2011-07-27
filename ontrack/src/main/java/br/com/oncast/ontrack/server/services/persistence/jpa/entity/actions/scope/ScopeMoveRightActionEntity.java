@@ -3,10 +3,10 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.util.typeConverter.annotations.ConversionAlias;
-import br.com.oncast.ontrack.server.util.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.server.util.typeConverter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.server.util.typeConverter.custom.StringToUuidConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveRightAction;
 
 @Entity
