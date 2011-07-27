@@ -25,7 +25,8 @@ public class DeepEqualityTestUtils {
 	private static Map<Class<?>, DeepEqualityComparator<?>> customComparatorMap = new HashMap<Class<?>, DeepEqualityComparator<?>>();
 
 	static {
-		addCustomDeepEqualityComparator(ScopeTree.class, new ScopeTreeDeepEqualityComparator());
+		// TODO +Externalize this so that specific application comparators are registered by the application itself.
+		setCustomDeepEqualityComparator(ScopeTree.class, new ScopeTreeDeepEqualityComparator());
 	}
 
 	public static void assertObjectEquality(final Object expected, final Object actual) throws DeepEqualityException {
@@ -60,11 +61,11 @@ public class DeepEqualityTestUtils {
 		return customComparatorMap.containsKey(clazz);
 	}
 
-	public static <T> void addCustomDeepEqualityComparator(final Class<T> targetClass, final DeepEqualityComparator<T> deepEqualityComparator) {
+	public static <T> void setCustomDeepEqualityComparator(final Class<T> targetClass, final DeepEqualityComparator<T> deepEqualityComparator) {
 		customComparatorMap.put(targetClass, deepEqualityComparator);
 	}
 
-	public static void removeCustomDeepEqualityComparatorFor(final Class<Effort> targetClass) {
+	public static void removeCustomDeepEqualityComparator(final Class<Effort> targetClass) {
 		if (!customComparatorMap.containsKey(targetClass)) throw new DeepEqualityException(
 				"There was not possible to remove the custom comparator for the class " + targetClass
 						+ ". There is no custom comparator registered for this class");
@@ -105,7 +106,7 @@ public class DeepEqualityTestUtils {
 
 				@Override
 				public void introspect(final Field field) throws Exception {
-					if (field.isAnnotationPresent(IgnoreByDeepEquality.class)) return;
+					if (field.isAnnotationPresent(IgnoredByDeepEquality.class)) return;
 
 					final Object expectedValue = IntrospectionEngine.getFieldValue(expected, field);
 					final Object actualValue = IntrospectionEngine.getFieldValue(actual, field);

@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.util.number.NumberUtils;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoreByDeepEquality;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -44,52 +44,52 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected Style style;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected DeckPanel deckPanel;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected Label descriptionLabel;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected HTMLPanel effortPanel;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected Label effortLabel;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected Label effortDifferenceLabel;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected Label progressLabel;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected TextBox editionBox;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected Tag releaseTag;
 
 	@UiField
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	protected FocusPanel focusPanel;
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private float currEffort;
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private float currEffortDifference;
 
-	@IgnoreByDeepEquality
+	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
 
 	private Scope scope;

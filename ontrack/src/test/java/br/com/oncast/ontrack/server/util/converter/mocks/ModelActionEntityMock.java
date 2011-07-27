@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.server.util.converter.mocks;
 
-import br.com.oncast.ontrack.server.util.converter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.util.typeConverter.annotations.ConvertTo;
 
 @ConvertTo(ModelActionMock.class)
 public class ModelActionEntityMock {
