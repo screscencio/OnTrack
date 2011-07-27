@@ -7,7 +7,7 @@ public class Progress implements IsSerializable {
 	public enum STATUS {
 		NOT_STARTED {
 			@Override
-			protected boolean match(final String description) {
+			protected boolean matches(final String description) {
 				final String[] acceptableDescriptions = { "not started", "notstarted", "not_started", "ns", "n" };
 				for (final String acceptable : acceptableDescriptions) {
 					if (acceptable.equalsIgnoreCase(description)) return true;
@@ -17,13 +17,13 @@ public class Progress implements IsSerializable {
 		},
 		UNDER_WORK {
 			@Override
-			protected boolean match(final String description) {
-				return (!NOT_STARTED.match(description) && !DONE.match(description));
+			protected boolean matches(final String description) {
+				return (!NOT_STARTED.matches(description) && !DONE.matches(description));
 			}
 		},
 		DONE {
 			@Override
-			protected boolean match(final String description) {
+			protected boolean matches(final String description) {
 				final String[] acceptableDescriptions = { "done", "dn", "d" };
 				for (final String acceptable : acceptableDescriptions) {
 					if (acceptable.equalsIgnoreCase(description)) return true;
@@ -32,7 +32,7 @@ public class Progress implements IsSerializable {
 			}
 		};
 
-		protected abstract boolean match(String description);
+		protected abstract boolean matches(String description);
 
 	};
 
@@ -68,7 +68,7 @@ public class Progress implements IsSerializable {
 
 	private void setStatus(final String description) {
 		for (final STATUS item : STATUS.values()) {
-			if (item.match(description)) status = item;
+			if (item.matches(description)) status = item;
 		}
 	}
 
