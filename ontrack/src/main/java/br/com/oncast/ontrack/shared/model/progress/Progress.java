@@ -75,4 +75,8 @@ public class Progress implements IsSerializable {
 	public boolean hasDeclared() {
 		return !description.isEmpty();
 	}
+
+	public boolean isDone() {
+		return status.equals(STATUS.DONE);
+	}
 }
