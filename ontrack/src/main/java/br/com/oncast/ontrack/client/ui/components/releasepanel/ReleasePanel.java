@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel;
 
+import java.util.Set;
+
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
@@ -12,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentRollbac
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -32,7 +35,7 @@ public class ReleasePanel implements Component {
 
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
 				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction || action instanceof ScopeInsertAction
 						|| action instanceof ScopeInsertParentRollbackAction || action instanceof ScopeRemoveRollbackAction) update();
 			}

@@ -7,14 +7,15 @@ import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOr
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 
 public class Flow3Test {
 
 	private final String FILE_NAME_PREFIX = "Flow3";
 	private Scope original = null;
+	private final EffortInferenceEngine effortInferenceEngine = new EffortInferenceEngine();
 
 	@Before
 	public void setUp() {
@@ -41,7 +42,7 @@ public class Flow3Test {
 
 	private void shouldApplyInferenceTopDownThroughChildren() {
 		original.getChild(0).getEffort().setDeclared(12);
-		EffortInferenceEngine.process(original);
+		effortInferenceEngine.process(original);
 
 		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
 	}
@@ -49,9 +50,9 @@ public class Flow3Test {
 	private void shouldRedistributeInferencesWhenChildrenReceiveEffortDeclarations() {
 		final Scope scope = original.getChild(0).getChild(0);
 		scope.getChild(0).getEffort().setDeclared(8);
-		EffortInferenceEngine.process(scope);
+		effortInferenceEngine.process(scope);
 		scope.getChild(1).getEffort().setDeclared(8);
-		EffortInferenceEngine.process(scope);
+		effortInferenceEngine.process(scope);
 
 		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 2));
 	}
@@ -59,7 +60,7 @@ public class Flow3Test {
 	private void shouldRedistributeInferencesWhenSiblingReceiveEffortDeclarations() {
 		final Scope scope = original.getChild(0);
 		scope.getChild(1).getEffort().setDeclared(20);
-		EffortInferenceEngine.process(scope);
+		effortInferenceEngine.process(scope);
 
 		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 3));
 	}

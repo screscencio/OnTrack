@@ -2,10 +2,12 @@ package br.com.oncast.ontrack.client.services.actionExecution;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO +Now that this is a globally visible service, refactor this so that only the necessary methods are visible. A possible solution is to encapsulate the
 // two
@@ -38,9 +40,9 @@ public class ActionExecutionService implements ActionExecutionRequestHandler, Ac
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
 		for (final ActionExecutionListener handler : actionExecutionListeners) {
-			handler.onActionExecution(action, context);
+			handler.onActionExecution(action, context, inferenceInfluencedScopeSet);
 		}
 	}
 

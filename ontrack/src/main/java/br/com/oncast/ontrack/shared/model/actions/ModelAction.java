@@ -11,4 +11,8 @@ public interface ModelAction extends IsSerializable {
 	ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException;
 
 	UUID getReferenceId();
+
+	boolean changesEffortInference();
+
+	boolean changesProcessInference();
 }

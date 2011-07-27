@@ -66,4 +66,9 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 	public boolean changesEffortInference() {
 		return true;
 	}
+
+	@Override
+	public boolean changesProcessInference() {
+		return true;
+	}
 }

@@ -3,8 +3,9 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
-import br.com.oncast.ontrack.client.utils.number.NumberUtils;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
@@ -189,16 +190,20 @@ public class ScopeTreeItemWidget extends Composite {
 		this.scope = scope;
 		descriptionLabel.setText(scope.getDescription());
 		editionBox.setText(scope.getDescription());
-		updateProgressDisplay();
-		updateEffortDisplay();
-		updateReleaseDisplay();
+		updateDisplay();
 	}
 
 	public Scope getScope() {
 		return scope;
 	}
 
-	public void updateEffortDisplay() {
+	public void updateDisplay() {
+		updateProgressDisplay();
+		updateEffortDisplay();
+		updateReleaseDisplay();
+	}
+
+	private void updateEffortDisplay() {
 		final Effort effort = scope.getEffort();
 
 		final float effortErrorDifference = effort.hasDeclared() ? effort.getInfered() - effort.getDeclared() : 0;
@@ -215,7 +220,7 @@ public class ScopeTreeItemWidget extends Composite {
 		effortPanel.setVisible(effortVisibility);
 		if (!effortVisibility) return;
 
-		effortLabel.setText(NumberUtils.roundFloat(effortValue, 1) + "ep");
+		effortLabel.setText(ClientDecimalFormat.roundFloat(effortValue, 1) + "ep");
 		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
 		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
 
@@ -237,9 +242,20 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	private void updateProgressDisplay() {
-		final String progress = scope.getProgress().getDescription();
-		progressLabel.setText(progress);
+		final String progress = scope.isLeaf() ? getProgressDescription() : getPercentualProgressDescription();
+		progressLabel.setText(progress + " " + scope.getProgress().getComputedEffort());
 		progressLabel.setVisible(!progress.isEmpty());
 	}
 
+	private String getProgressDescription() {
+		return scope.getProgress().getStatus() == Progress.STATUS.UNDER_WORK ? scope.getProgress().getDescription() : scope.getProgress().getStatus()
+				.toString();
+	}
+
+	private String getPercentualProgressDescription() {
+		final float inferedEffort = scope.getEffort().getInfered();
+		if (inferedEffort == 0) return "";
+
+		return "( " + ClientDecimalFormat.roundFloat(100 * scope.getProgress().getComputedEffort() / inferedEffort, 1) + "% )";
+	}
 }

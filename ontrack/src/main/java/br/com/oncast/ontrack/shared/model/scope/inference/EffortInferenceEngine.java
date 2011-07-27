@@ -1,26 +1,41 @@
-package br.com.oncast.ontrack.shared.model.effort;
+package br.com.oncast.ontrack.shared.model.scope.inference;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class EffortInferenceEngine {
+public class EffortInferenceEngine implements InferenceEngine {
 
-	public static void process(final Scope scope) {
-		preProcessBottomUp(scope, 2);
-		processTopDown(processBottomUp(scope));
-		processTopDown(scope);
+	@Override
+	public boolean shouldProcess(final ModelAction action) {
+		return action.changesEffortInference();
 	}
 
-	private static void preProcessBottomUp(final Scope scope, int recursionIndex) {
+	@Override
+	public Set<UUID> process(final Scope scope) {
+		final Set<UUID> inferenceInfluencedScopeSet = new HashSet<UUID>();
+
+		preProcessBottomUp(scope, 2, inferenceInfluencedScopeSet);
+		processTopDown(processBottomUp(scope, inferenceInfluencedScopeSet), inferenceInfluencedScopeSet);
+		processTopDown(scope, inferenceInfluencedScopeSet);
+
+		return inferenceInfluencedScopeSet;
+	}
+
+	private static void preProcessBottomUp(final Scope scope, int recursionIndex, final Set<UUID> inferenceInfluencedScopeSet) {
 		recursionIndex -= 1;
 		int sum = 0;
 
 		final Effort effort = scope.getEffort();
 		boolean hasStronglyDefinedChildren = scope.getChildren().size() > 0;
 		for (final Scope child : scope.getChildren()) {
-			if (recursionIndex > 0) preProcessBottomUp(child, recursionIndex);
+			if (recursionIndex > 0) preProcessBottomUp(child, recursionIndex, inferenceInfluencedScopeSet);
 
 			final Effort childEffort = child.getEffort();
 			sum += childEffort.getDeclared() > childEffort.getBottomUpValue() ? childEffort.getDeclared() : childEffort.getBottomUpValue();
@@ -28,22 +43,23 @@ public class EffortInferenceEngine {
 		}
 		effort.setBottomUpValue(sum);
 		effort.setHasStronglyDefinedChildren(hasStronglyDefinedChildren);
+		inferenceInfluencedScopeSet.add(scope.getId());
 	}
 
-	private static Scope processBottomUp(final Scope scope) {
+	private static Scope processBottomUp(final Scope scope, final Set<UUID> inferenceInfluencedScopeSet) {
 		if (scope.isRoot()) return scope;
 		final Scope parent = scope.getParent();
 		final Effort parentEffort = parent.getEffort();
 
 		final float inferedInitial = parentEffort.getInfered();
-		preProcessBottomUp(parent, 0);
+		preProcessBottomUp(parent, 0, inferenceInfluencedScopeSet);
 		final float inferedFinal = parentEffort.getInfered();
 
 		if (inferedFinal == inferedInitial) return parent;
-		return processBottomUp(parent);
+		return processBottomUp(parent, inferenceInfluencedScopeSet);
 	}
 
-	private static void processTopDown(final Scope scope) {
+	private static void processTopDown(final Scope scope, final Set<UUID> inferenceInfluencedScopeSet) {
 		final Effort effort = scope.getEffort();
 
 		if (effort.isStronglyDefined()) effort.setTopDownValue((effort.getDeclared() > effort.getBottomUpValue()) ? effort.getDeclared() : effort
@@ -66,7 +82,11 @@ public class EffortInferenceEngine {
 			final float initialTopDownValue = childEffort.getTopDownValue();
 			if (value > portion) childEffort.setTopDownValue(value);
 			else childEffort.setTopDownValue(isChildStronglyDefined ? childEffort.getDeclared() : portion);
-			if (childEffort.getTopDownValue() != initialTopDownValue) processTopDown(child);
+
+			if (childEffort.getTopDownValue() != initialTopDownValue) {
+				inferenceInfluencedScopeSet.add(child.getId());
+				processTopDown(child, inferenceInfluencedScopeSet);
+			}
 		}
 	}
 

@@ -1,11 +1,14 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
+import java.util.Set;
+
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.communication.CommunicationService;
 import br.com.oncast.ontrack.client.services.communication.DispatchCallback;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.communication.ModelActionSyncRequest;
 
 public class ActionSyncService {
@@ -17,7 +20,7 @@ public class ActionSyncService {
 		final ActionExecutionListener actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
 				if (!active) return;
 
 				// TODO Display 'loading' UI indicator.

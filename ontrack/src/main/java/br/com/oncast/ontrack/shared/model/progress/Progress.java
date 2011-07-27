@@ -38,14 +38,10 @@ public class Progress implements IsSerializable {
 
 	private String description;
 	private STATUS status;
+	private float computedEffort;
 
 	public Progress() {
 		reset();
-	}
-
-	public Progress(final String progressDescription) {
-		this();
-		setDescription(progressDescription);
 	}
 
 	public String getDescription() {
@@ -77,6 +73,14 @@ public class Progress implements IsSerializable {
 	}
 
 	public boolean isDone() {
-		return status.equals(STATUS.DONE);
+		return status == STATUS.DONE;
+	}
+
+	public float getComputedEffort() {
+		return computedEffort;
+	}
+
+	public void setComputedEffort(final float computedEffort) {
+		this.computedEffort = computedEffort;
 	}
 }

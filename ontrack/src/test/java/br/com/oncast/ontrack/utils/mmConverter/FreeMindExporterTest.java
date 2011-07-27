@@ -16,9 +16,9 @@ import br.com.oncast.ontrack.server.utils.mmConverter.FreeMindExporter;
 import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.FreeMindMap;
 import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.Icon;
 import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.MindNode;
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 
 public class FreeMindExporterTest {
 	private static final File PROJECT_MM_FILE = new File("src/test/java/br/com/oncast/ontrack/utils/mmConverter/ProjetoTeste.mm");
@@ -92,7 +92,7 @@ public class FreeMindExporterTest {
 	@Test
 	public void exportedMapShouldRepresentEffort() throws FileNotFoundException {
 		scope.getEffort().setDeclared(100);
-		EffortInferenceEngine.process(scope);
+		new EffortInferenceEngine().process(scope);
 
 		final FreeMindMap exportedMap = exportToMindMap(scope);
 		final MindNode scopeHierarchyContainerNode = exportedMap.root().getChildren().get(1);

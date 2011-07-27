@@ -61,4 +61,9 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 	public boolean changesEffortInference() {
 		return true;
 	}
+
+	@Override
+	public boolean changesProcessInference() {
+		return true;
+	}
 }

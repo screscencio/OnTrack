@@ -6,11 +6,11 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.mode
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeProgressAction;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeDeclareProgressAction;
 
 @Entity
-@ConvertTo(ScopeProgressAction.class)
-public class ScopeProgressActionEntity extends ModelActionEntity {
+@ConvertTo(ScopeDeclareProgressAction.class)
+public class ScopeDeclareProgressActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
 	private String referenceId;

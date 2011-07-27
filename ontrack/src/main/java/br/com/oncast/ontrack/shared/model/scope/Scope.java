@@ -17,15 +17,18 @@ public class Scope implements IsSerializable {
 	@IgnoredByDeepEquality
 	private UUID id;
 
-	private String description;
-
 	@IgnoredByDeepEquality
 	private Scope parent;
-	private List<Scope> childrenList;
-	
+
 	@IgnoredByDeepEquality
 	private Release release;
+
+	private String description;
+
+	private List<Scope> childrenList;
+
 	private Effort effort;
+
 	private Progress progress;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
@@ -148,6 +151,10 @@ public class Scope implements IsSerializable {
 	@Override
 	public String toString() {
 		return description;
+	}
+
+	public boolean isLeaf() {
+		return childrenList.size() == 0;
 	}
 
 }

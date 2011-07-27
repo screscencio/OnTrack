@@ -78,8 +78,15 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 		return referenceId;
 	}
 
+	// TODO Result should depend on its subActions.
 	@Override
 	public boolean changesEffortInference() {
+		return true;
+	}
+
+	// TODO Result should depend on its subActions.
+	@Override
+	public boolean changesProcessInference() {
 		return true;
 	}
 }

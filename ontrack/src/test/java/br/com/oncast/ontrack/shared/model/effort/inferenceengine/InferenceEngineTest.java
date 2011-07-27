@@ -6,12 +6,12 @@ import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOr
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 
 public class InferenceEngineTest {
 
@@ -25,7 +25,7 @@ public class InferenceEngineTest {
 		final ScopeMoveLeftAction moveLeftAction = new ScopeMoveLeftAction(scope.getId());
 
 		moveLeftAction.execute(new ProjectContext(new Project(original, null)));
-		EffortInferenceEngine.process(scope.getParent());
+		new EffortInferenceEngine().process(scope.getParent());
 
 		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
 	}
