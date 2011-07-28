@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -33,6 +34,10 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private final Release release;
+
+	// Do not refresh the DOM if these variables don't change.
+	private String releaseDescription;
+	private String progressPercentage;
 
 	@UiField
 	protected Style style;
@@ -87,7 +92,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		};
 
 		initWidget(uiBinder.createAndBindUi(this));
-		header.setText(release.getDescription());
 
 		for (final Release childRelease : release.getChildReleases())
 			releaseContainer.createChildModelWidget(childRelease);
@@ -95,11 +99,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		for (final Scope scope : release.getScopeList())
 			scopeContainer.createChildModelWidget(scope);
 
+		updateHeader();
 		reviewContainersState();
 	}
 
 	@Override
 	public void update() {
+		updateHeader();
 		releaseContainer.update(release.getChildReleases());
 		scopeContainer.update(release.getScopeList());
 	}
@@ -164,6 +170,20 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	public String getHeader() {
 		return header.getText();
+	}
+
+	private void updateHeader() {
+		if (hasChanges()) header.setText(releaseDescription + " (" + progressPercentage + "%)");
+	}
+
+	private boolean hasChanges() {
+		final String progress = ClientDecimalFormat.roundFloat(release.getProgressPercentage(), 1);
+		if ((release.getDescription().equals(releaseDescription)) && (progress.equals(progressPercentage))) return false;
+
+		progressPercentage = progress;
+		releaseDescription = release.getDescription();
+
+		return true;
 	}
 
 	protected Style getStyle() {
