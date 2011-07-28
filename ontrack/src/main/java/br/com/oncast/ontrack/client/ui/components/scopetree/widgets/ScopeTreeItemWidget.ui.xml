@@ -1,93 +1,107 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder 
-    xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-	<ui:style type="br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget.Style">
+	<ui:style
+		type="br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget.Style">
+			.editableLabel {
+				position: relative;
+				height: 15px;
+				min-height: 15px;
+			}
+			
+			.visualizationPanel {
+				position: absolute;
+				top: 0px;
+				bottom: 0px;
+				left: 0px;
+				right: 0px;
+				display: inline;
+			}
+			
+			.visualizationLabel {
+				cursor: pointer;
+				cursor: hand;
+			}
+			
+			.effort {
+				margin-left: 4px;
+				margin-right: 4px;
+				padding-left: 3px;
+				padding-right: 3px;
+				vertical-align: super;
+				font-size: smaller;
+				cursor: default;
+				-moz-user-select: none;
+				-khtml-user-select: none;
+				user-select: none;
+			}
+			
+			.effortLabel {
+				opacity: 0.5;
+				display: inline;
+			}
+			
+			.effortLabelTranslucid {
+				opacity: 0.2;
+			}
+			
+			.effortDifferenceLabel {
+				position: relative;
+				padding: 1px;
+				padding-left: 2px;
+				padding-right: 2px;
+				font-weight: bold;
+				vertical-align: super;
+				font-size: xx-small;
+				display: inline;
+				background-color: blue;
+				color: #fff;
+				border-radius: 35%;
+			}
+			
+			.effortDifferenceLabelProblem {
+				background-color: red;
+			}
+			
+			.tag {
+				margin-left: 5px;
+				margin-top: -1px;
+			}
+			
+			.progressLabel {
+				position: absolute;
+				top: 0px;
+				bottom: 0px;
+				right: 5px;
+				width: 150px;
+				margin-left: 15px;
+				margin-right: 15px;
 
-		.editableLabel {
-			height: 15px;
-			min-height: 15px;
-		}
-		
-		.visualizationLabel {
-			cursor: pointer;
-			cursor: hand;
-		}
-		
-        .visualizationPanel {
-            display: inline;
-        }
-		
-		.effort {
-            margin-left: 4px;
-            margin-right: 4px;
-            padding-left: 3px;
-            padding-right: 3px;
-
-            vertical-align: super;
-            font-size: smaller;
-            
-            cursor: default;
-            -moz-user-select: none;
-            -khtml-user-select: none;
-            user-select: none;            
-		}
-		
-		.effortLabel {
- 			opacity: 0.8;
- 			display: inline;
-		}
-		
-		.effortLabelTranslucid {
- 			opacity: 0.4;
-		}
-		
-		.effortDifferenceLabel {
-			position: relative;
-            padding: 1px;
-            padding-left: 2px;
-            padding-right: 2px;
-            
-            font-weight: bold;
-            vertical-align: super;
-            font-size: xx-small;
-            display: inline;
-
-            background-color: blue;
-            color: #fff;
-            border-radius: 35%;
-		}
-		
-		.effortDifferenceLabelProblem {
-            background-color: red;
-		}
-		
-		.tag {
-			margin-left: 5px;
-			margin-top: -1px;
-		}
-		
-		.progressLabel {
-            opacity: 0.3;
-            margin-left: 15px;
-            margin-right: 15px;
-		}
-	</ui:style>
+				opacity: 0.2;
+				font-size: small;
+				font-stretch: expanded;
+			}
+			
+			.editionBox {
+				
+			}
+		</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
-		<g:DeckPanel ui:field="deckPanel">
-			<g:HorizontalPanel styleName="{style.visualizationPanel}">
-				<g:Label ui:field="descriptionLabel" styleName="{style.visualizationLabel}" />
-                <g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
-    				<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
-                    <g:Label ui:field="effortDifferenceLabel" styleName="{style.effortDifferenceLabel}" />
-                </g:HTMLPanel>
-				<t:Tag ui:field="releaseTag" styleName="{style.tag}" />
+		<g:DeckPanel ui:field="deckPanel" styleName="{style.editableLabel}">
+			<g:FlowPanel styleName="{style.visualizationPanel}">
+				<g:HorizontalPanel>
+					<g:Label ui:field="descriptionLabel" styleName="{style.visualizationLabel}" />
+					<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
+						<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
+						<g:Label ui:field="effortDifferenceLabel" styleName="{style.effortDifferenceLabel}" />
+					</g:HTMLPanel>
+					<t:Tag ui:field="releaseTag" styleName="{style.tag}" />
+				</g:HorizontalPanel>
 				<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
-			</g:HorizontalPanel>
-			<g:TextBox styleName="edit" ui:field="editionBox" />
+			</g:FlowPanel>
+			<g:TextBox ui:field="editionBox" styleName="{style.editionBox}" />
 		</g:DeckPanel>
 	</g:FocusPanel>
 </ui:UiBinder>
