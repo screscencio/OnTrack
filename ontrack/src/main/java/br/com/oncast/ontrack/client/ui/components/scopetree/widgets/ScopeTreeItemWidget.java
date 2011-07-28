@@ -243,7 +243,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	private void updateProgressDisplay() {
 		final String progress = scope.isLeaf() ? getProgressDescription() : getPercentualProgressDescription();
-		progressLabel.setText(progress + " " + scope.getProgress().getComputedEffort());
+		progressLabel.setText(progress);
 		progressLabel.setVisible(!progress.isEmpty());
 	}
 
@@ -256,6 +256,6 @@ public class ScopeTreeItemWidget extends Composite {
 		final float inferedEffort = scope.getEffort().getInfered();
 		if (inferedEffort == 0) return "";
 
-		return "( " + ClientDecimalFormat.roundFloat(100 * scope.getProgress().getComputedEffort() / inferedEffort, 1) + "% )";
+		return ClientDecimalFormat.roundFloat(100 * scope.getProgress().getComputedEffort() / inferedEffort, 1) + "%";
 	}
 }

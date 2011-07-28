@@ -24,12 +24,11 @@ html,body {
 }
 
 .gwt-Tree .gwt-TreeItem:hover {
-	background-color: #E4ECF7;
-	border: 1px solid #BBCEE9;
+	background-color: #fdfdfd;
+	border: 1px solid #fafafa;
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
-	color: white;
-	background-color: #BBCEE9;
-	border: 1px solid #7892B4;
+	background-color: #fafafa;
+	border: 1px solid #f2f2f2;
 }
