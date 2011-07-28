@@ -103,23 +103,23 @@ public class Release implements IsSerializable {
 	}
 
 	public float getProgressPercentage() {
-		final float concludedEffortSum = getConcludedEffortSum();
-		if (concludedEffortSum == 0) return 0;
+		final float concludedEffortSum = getComputedEffortSum();
+		final float effortSum = getEffortSum();
+		if (concludedEffortSum == 0) return (effortSum == 0) ? 100 : 0;
 
-		return (concludedEffortSum / getEffortSum()) * 100;
+		return 100 * concludedEffortSum / effortSum;
 	}
 
-	private float getConcludedEffortSum() {
-		float concludedEffortSum = 0;
+	private float getComputedEffortSum() {
+		float computedEffortSum = 0;
 
 		for (final Release childRelease : childrenList)
-			concludedEffortSum += childRelease.getConcludedEffortSum();
+			computedEffortSum += childRelease.getComputedEffortSum();
 
 		for (final Scope scope : scopeList)
-			// FIXME Should scope retrieve the effort of its children?
-			if (scope.getProgress().isDone()) concludedEffortSum += scope.getEffort().getInfered();
+			computedEffortSum += scope.getEffort().getComputedEffort();
 
-		return concludedEffortSum;
+		return computedEffortSum;
 	}
 
 	private float getEffortSum() {

@@ -5,7 +5,6 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
@@ -242,20 +241,10 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	private void updateProgressDisplay() {
-		final String progress = scope.isLeaf() ? getProgressDescription() : getPercentualProgressDescription();
+		final String progress = scope.isLeaf() ? scope.getProgress().getDescription() : ClientDecimalFormat.roundFloat(scope.getEffort()
+				.getPercentualDescription(), 1)
+				+ "%";
 		progressLabel.setText(progress);
 		progressLabel.setVisible(!progress.isEmpty());
-	}
-
-	private String getProgressDescription() {
-		return scope.getProgress().getStatus() == Progress.STATUS.UNDER_WORK ? scope.getProgress().getDescription() : scope.getProgress().getStatus()
-				.toString();
-	}
-
-	private String getPercentualProgressDescription() {
-		final float inferedEffort = scope.getEffort().getInfered();
-		if (inferedEffort == 0) return "";
-
-		return ClientDecimalFormat.roundFloat(100 * scope.getProgress().getComputedEffort() / inferedEffort, 1) + "%";
 	}
 }

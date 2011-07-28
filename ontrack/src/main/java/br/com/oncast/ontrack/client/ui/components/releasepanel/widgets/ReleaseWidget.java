@@ -36,14 +36,17 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private final Release release;
 
 	// Do not refresh the DOM if these variables don't change.
-	private String releaseDescription;
-	private String progressPercentage;
+	private String currentReleaseDescription;
+	private String currentProgressPercentage;
 
 	@UiField
 	protected Style style;
 
 	@UiField
-	protected Label header;
+	protected Label descriptionLabel;
+
+	@UiField
+	protected Label progressLabel;
 
 	@UiField
 	protected ReleaseWidgetContainer releaseContainer;
@@ -99,15 +102,31 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		for (final Scope scope : release.getScopeList())
 			scopeContainer.createChildModelWidget(scope);
 
-		updateHeader();
+		updateDescription();
+		updateProgress();
 		reviewContainersState();
 	}
 
 	@Override
 	public void update() {
-		updateHeader();
+		updateDescription();
+		updateProgress();
 		releaseContainer.update(release.getChildReleases());
 		scopeContainer.update(release.getScopeList());
+	}
+
+	private void updateDescription() {
+		if (release.getDescription().equals(currentReleaseDescription)) return;
+		currentReleaseDescription = release.getDescription();
+		descriptionLabel.setText(currentReleaseDescription);
+	}
+
+	private void updateProgress() {
+		final String progress = ClientDecimalFormat.roundFloat(release.getProgressPercentage(), 1);
+		if (progress.equals(currentProgressPercentage)) return;
+
+		currentProgressPercentage = progress;
+		progressLabel.setText(currentProgressPercentage + "%");
 	}
 
 	private void reviewContainersState() {
@@ -166,24 +185,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	public Release getRelease() {
 		return release;
-	}
-
-	public String getHeader() {
-		return header.getText();
-	}
-
-	private void updateHeader() {
-		if (hasChanges()) header.setText(releaseDescription + " (" + progressPercentage + "%)");
-	}
-
-	private boolean hasChanges() {
-		final String progress = ClientDecimalFormat.roundFloat(release.getProgressPercentage(), 1);
-		if ((release.getDescription().equals(releaseDescription)) && (progress.equals(progressPercentage))) return false;
-
-		progressPercentage = progress;
-		releaseDescription = release.getDescription();
-
-		return true;
 	}
 
 	protected Style getStyle() {

@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -43,21 +42,20 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	}
 
 	private void updateDescription() {
-		if (scope.getDescription().equals(currentScopeDescription)) return;
-		currentScopeDescription = scope.getDescription();
+		final String description = scope.getDescription();
+		if (description.equals(currentScopeDescription)) return;
+		currentScopeDescription = description;
+
 		descriptionLabel.setText(currentScopeDescription);
 	}
 
 	private void updateProgress() {
-		if (scope.getProgress().getDescription().equals(currentScopeProgress)) return;
-		currentScopeProgress = getProgressDescription();
+		final String description = scope.getProgress().getDescription();
+		if (description.equals(currentScopeProgress)) return;
+		currentScopeProgress = description;
+
 		progressLabel.setText(currentScopeProgress);
 		progressLabel.setVisible(!currentScopeProgress.isEmpty());
-	}
-
-	private String getProgressDescription() {
-		return scope.getProgress().getStatus() == Progress.STATUS.UNDER_WORK ? scope.getProgress().getDescription() : scope.getProgress().getStatus()
-				.toString();
 	}
 
 	public Scope getScope() {

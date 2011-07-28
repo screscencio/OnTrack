@@ -8,9 +8,11 @@ import org.junit.Test;
 import br.com.oncast.ontrack.mocks.models.ReleaseMock;
 import br.com.oncast.ontrack.mocks.models.ScopeMock;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.inference.ProgressInferenceEngine;
 
 public class ReleaseProgressTest {
 
+	private static final ProgressInferenceEngine PROGRESS_INFERENCE_ENGINE = new ProgressInferenceEngine();
 	private Scope scope;
 	private Release r1;
 
@@ -33,6 +35,7 @@ public class ReleaseProgressTest {
 	@Test
 	public void progressShoulbBeZeroIfThereIsNoDoneScope() {
 		scope.getChild(0).getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		assertEquals(0f, r1.getProgressPercentage());
 	}
@@ -40,7 +43,9 @@ public class ReleaseProgressTest {
 	@Test
 	public void shouldGetOnlyDoneScopesToCalculateProgressPercentage() {
 		scope.getChild(0).getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		scope.getChild(1).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		assertEquals(66.6, r1.getProgressPercentage(), 0.09);
 	}
@@ -50,8 +55,11 @@ public class ReleaseProgressTest {
 		r1.addScope(scope.getChild(2));
 
 		scope.getChild(0).getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		scope.getChild(1).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		scope.getChild(2).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		assertEquals(83.3, r1.getProgressPercentage(), 0.09);
 	}
@@ -59,7 +67,9 @@ public class ReleaseProgressTest {
 	@Test
 	public void shouldUpdateProgressPercentageWhenAScopeIsRemovedFromRelease() {
 		scope.getChild(0).getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		scope.getChild(1).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		assertEquals(66.6, r1.getProgressPercentage(), 0.09);
 
@@ -71,15 +81,19 @@ public class ReleaseProgressTest {
 	@Test
 	public void shouldIncludeSubReleasesInProgressPercentageCalculation() {
 		scope.getChild(0).getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		scope.getChild(1).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		final Release it1 = new Release("It1");
 		r1.addRelease(it1);
 
 		final Scope scope2 = scope.getChild(2);
 		scope2.getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		final Scope scope3 = scope.getChild(3);
 		scope3.getProgress().setDescription("Not started");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		it1.addScope(scope2);
 		it1.addScope(scope3);
@@ -90,15 +104,19 @@ public class ReleaseProgressTest {
 	@Test
 	public void shouldBe100IfAllScopesAreDone() {
 		scope.getChild(0).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		scope.getChild(1).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		final Release it1 = new Release("It1");
 		r1.addRelease(it1);
 
 		final Scope scope2 = scope.getChild(2);
 		scope2.getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		final Scope scope3 = scope.getChild(3);
 		scope3.getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		it1.addScope(scope2);
 		it1.addScope(scope3);
@@ -109,15 +127,19 @@ public class ReleaseProgressTest {
 	@Test
 	public void shouldBeZeroEvenIfAllScopesAreUnderWork() {
 		scope.getChild(0).getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		scope.getChild(1).getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		final Release it1 = new Release("It1");
 		r1.addRelease(it1);
 
 		final Scope scope2 = scope.getChild(2);
 		scope2.getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 		final Scope scope3 = scope.getChild(3);
 		scope3.getProgress().setDescription("Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scope);
 
 		it1.addScope(scope2);
 		it1.addScope(scope3);

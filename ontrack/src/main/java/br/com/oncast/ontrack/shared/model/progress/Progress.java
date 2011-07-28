@@ -4,11 +4,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Progress implements IsSerializable {
 
-	public enum STATUS {
+	public enum ProgressState {
 		NOT_STARTED {
 			@Override
 			protected boolean matches(final String description) {
-				final String[] acceptableDescriptions = { "not started", "notstarted", "not_started", "ns", "n" };
+				final String[] acceptableDescriptions = { "not started", "notstarted", "not_started", "ns", "n", "" };
 				for (final String acceptable : acceptableDescriptions) {
 					if (acceptable.equalsIgnoreCase(description)) return true;
 				}
@@ -34,38 +34,40 @@ public class Progress implements IsSerializable {
 
 		protected abstract boolean matches(String description);
 
+		public static ProgressState getStateForDescription(final String description) {
+			for (final ProgressState item : ProgressState.values())
+				if (item != UNDER_WORK && item.matches(description)) return item;
+			return UNDER_WORK;
+		}
+
 	};
 
 	private String description;
-	private STATUS status;
-	private float computedEffort;
+	private ProgressState state;
 
 	public Progress() {
 		reset();
 	}
 
 	public String getDescription() {
-		return description;
+		return (!hasDeclared() || state == ProgressState.UNDER_WORK) ? description : state.toString();
 	}
 
 	public void setDescription(final String newProgressDescription) {
 		description = newProgressDescription;
-		setStatus(description);
+		setState(ProgressState.getStateForDescription(description));
 	}
 
 	public void reset() {
-		description = "";
-		status = STATUS.NOT_STARTED;
+		setDescription("");
 	}
 
-	public STATUS getStatus() {
-		return status;
+	public ProgressState getState() {
+		return state;
 	}
 
-	private void setStatus(final String description) {
-		for (final STATUS item : STATUS.values()) {
-			if (item.matches(description)) status = item;
-		}
+	private void setState(final ProgressState state) {
+		this.state = state;
 	}
 
 	public boolean hasDeclared() {
@@ -73,14 +75,6 @@ public class Progress implements IsSerializable {
 	}
 
 	public boolean isDone() {
-		return status == STATUS.DONE;
-	}
-
-	public float getComputedEffort() {
-		return computedEffort;
-	}
-
-	public void setComputedEffort(final float computedEffort) {
-		this.computedEffort = computedEffort;
+		return state == ProgressState.DONE;
 	}
 }

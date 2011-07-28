@@ -11,6 +11,7 @@ public class Effort implements IsSerializable {
 	private boolean hasTopDownValue;
 	private boolean hasBottomUpValue;
 	private boolean hasStronglyDefinedChildren;
+	private float computedEffort;
 
 	public int getDeclared() {
 		return declared;
@@ -65,9 +66,25 @@ public class Effort implements IsSerializable {
 		hasBottomUpValue = true;
 	}
 
+	public float getComputedEffort() {
+		return computedEffort;
+	}
+
+	public void setComputedEffort(final float computedEffort) {
+		this.computedEffort = computedEffort;
+	}
+
 	@Override
 	public String toString() {
 		return "Declared: " + declared + ", TopDownValue: " + topDownValue + ", BottomUpValue: " + bottomUpValue + ", Infered: " + getInfered();
+	}
+
+	public float getPercentualDescription() {
+		final float inferedEffort = getInfered();
+		if (inferedEffort == 0) return 0;
+
+		final float computedEffort = getComputedEffort();
+		return 100 * computedEffort / inferedEffort;
 	}
 
 }

@@ -13,6 +13,7 @@
 			}
 			
 			.header {
+				position: relative;
 				padding: 4px;
 
 				border: 1px solid #d9dae1;
@@ -36,8 +37,18 @@
 				cursor: pointer;
             }
 
-			.headerText {
+			.headerLabel {
 			}
+			
+			.progressLabel {
+				position: absolute;
+				top: 0px;
+				bottom: 0px;
+				right: 5px;
+				
+				font-size: small;
+				opacity: 0.5;
+			}	
 			
 			.invisibleBodyContainer {
 				display: none;
@@ -62,10 +73,11 @@
 						<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
 				    </td>
 				    <td>
-						<g:Label ui:field="header" styleName="{style.headerText}" />
+						<g:Label ui:field="descriptionLabel" styleName="{style.headerLabel}" />
 				    </td>
 				</tr>
 			</table>
+			<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
 		</div>
 		<div ui:field="bodyContainer">
 			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
