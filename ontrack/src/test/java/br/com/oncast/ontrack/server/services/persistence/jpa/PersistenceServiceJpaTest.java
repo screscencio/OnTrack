@@ -38,9 +38,9 @@ public class PersistenceServiceJpaTest {
 			persistenceService.persistAction(action, new Date());
 		}
 
-		Thread.sleep(1000);
+		Thread.sleep(500);
 		final Date dateAfterSomeActionsWerePersisted = new Date();
-		Thread.sleep(1000);
+		Thread.sleep(500);
 
 		final List<ModelAction> secondWaveOfActions = ActionMock.getActions2();
 		for (final ModelAction action : secondWaveOfActions) {

@@ -102,15 +102,36 @@ public class Release implements IsSerializable {
 		scopeList.remove(selectedScope);
 	}
 
-	@Override
-	public int hashCode() {
-		return this.id.hashCode();
+	public float getProgressPercentage() {
+		final float concludedEffortSum = getConcludedEffortSum();
+		if (concludedEffortSum == 0) return 0;
+
+		return (concludedEffortSum / getEffortSum()) * 100;
 	}
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (!(obj instanceof Release)) return false;
-		return this.id.equals(((Release) obj).getId());
+	private float getConcludedEffortSum() {
+		float concludedEffortSum = 0;
+
+		for (final Release childRelease : childrenList)
+			concludedEffortSum += childRelease.getConcludedEffortSum();
+
+		for (final Scope scope : scopeList)
+			// FIXME Should scope retrieve the effort of its children?
+			if (scope.getProgress().isDone()) concludedEffortSum += scope.getEffort().getInfered();
+
+		return concludedEffortSum;
+	}
+
+	private float getEffortSum() {
+		float effortSum = 0;
+
+		for (final Release childRelease : childrenList)
+			effortSum += childRelease.getEffortSum();
+
+		for (final Scope scope : scopeList)
+			effortSum += scope.getEffort().getInfered();
+
+		return effortSum;
 	}
 
 	public Release findRelease(final UUID releaseId) {
@@ -124,4 +145,14 @@ public class Release implements IsSerializable {
 		return null;
 	}
 
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof Release)) return false;
+		return this.id.equals(((Release) obj).getId());
+	}
 }

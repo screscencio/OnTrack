@@ -21,7 +21,7 @@ public class ReleasePanelWidget extends Composite {
 	@IgnoredByDeepEquality
 	protected VerticalModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
 
-	private Release release;
+	private Release rootRelease;
 
 	// IMPORTANT: This field cannot be 'final' because some tests need to set it to a new value through reflection. Do not remove the 'null' attribution.
 	@IgnoredByDeepEquality
@@ -33,7 +33,7 @@ public class ReleasePanelWidget extends Composite {
 	}
 
 	public void setRelease(final Release rootRelease) {
-		this.release = rootRelease;
+		this.rootRelease = rootRelease;
 		releaseContainer.clear();
 
 		for (final Release childRelease : rootRelease.getChildReleases())
@@ -41,7 +41,7 @@ public class ReleasePanelWidget extends Composite {
 	}
 
 	public void update() {
-		releaseContainer.update(release.getChildReleases());
+		releaseContainer.update(rootRelease.getChildReleases());
 	}
 
 	@UiFactory
