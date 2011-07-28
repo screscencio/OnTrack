@@ -16,12 +16,10 @@
 				bottom: 0px;
 				left: 0px;
 				right: 0px;
-				display: inline;
 			}
 			
-			.visualizationLabel {
+			.descriptionLabel {
 				cursor: pointer;
-				cursor: hand;
 			}
 			
 			.effort {
@@ -64,9 +62,16 @@
 				background-color: red;
 			}
 			
+			.scope {
+			}
+			
 			.tag {
-				margin-left: 5px;
-				margin-top: -1px;
+                position: absolute;
+                top: 0px;
+                bottom: 0px;
+                right: 160px;
+                
+                text-align: right;
 			}
 			
 			.progressLabel {
@@ -75,8 +80,6 @@
 				bottom: 0px;
 				right: 5px;
 				width: 150px;
-				margin-left: 15px;
-				margin-right: 15px;
 
 				opacity: 0.2;
 				font-size: small;
@@ -91,14 +94,14 @@
 	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
 		<g:DeckPanel ui:field="deckPanel" styleName="{style.editableLabel}">
 			<g:FlowPanel styleName="{style.visualizationPanel}">
-				<g:HorizontalPanel>
-					<g:Label ui:field="descriptionLabel" styleName="{style.visualizationLabel}" />
+				<g:HorizontalPanel styleName="{style.scope}" >
+					<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 					<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
 						<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
 						<g:Label ui:field="effortDifferenceLabel" styleName="{style.effortDifferenceLabel}" />
 					</g:HTMLPanel>
-					<t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 				</g:HorizontalPanel>
+				<t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 				<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
 			</g:FlowPanel>
 			<g:TextBox ui:field="editionBox" styleName="{style.editionBox}" />

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.STATUS;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -27,14 +27,14 @@ public class ScopeProgressActionTest {
 
 	@Test
 	public void notStartedShouldBeTheDefaultProgress() throws UnableToCompleteActionException {
-		assertThatProgressIs(STATUS.NOT_STARTED);
+		assertThatProgressIs(ProgressState.NOT_STARTED);
 	}
 
 	@Test
 	public void shouldSetProgressToAScope() throws UnableToCompleteActionException {
 		new ScopeDeclareProgressAction(scope.getId(), "Not started").execute(context);
 
-		assertEquals("Not started", scope.getProgress().getDescription());
+		assertEquals("NOT_STARTED", scope.getProgress().getDescription());
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class ScopeProgressActionTest {
 		new ScopeDeclareProgressAction(scope.getId(), "").execute(context);
 
 		assertEquals("", scope.getProgress().getDescription());
-		assertThatProgressIs(STATUS.NOT_STARTED);
+		assertThatProgressIs(ProgressState.NOT_STARTED);
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class ScopeProgressActionTest {
 		new ScopeDeclareProgressAction(scope.getId(), "Anything").execute(context);
 
 		assertEquals("Anything", scope.getProgress().getDescription());
-		assertThatProgressIs(STATUS.UNDER_WORK);
+		assertThatProgressIs(ProgressState.UNDER_WORK);
 	}
 
 	@Test
@@ -62,15 +62,15 @@ public class ScopeProgressActionTest {
 		new ScopeDeclareProgressAction(scope.getId(), "Under work").execute(context);
 
 		assertEquals("Under work", scope.getProgress().getDescription());
-		assertThatProgressIs(STATUS.UNDER_WORK);
+		assertThatProgressIs(ProgressState.UNDER_WORK);
 	}
 
 	@Test
 	public void shouldSetProgressOfScopeToDone() throws UnableToCompleteActionException {
 		new ScopeDeclareProgressAction(scope.getId(), "Done").execute(context);
 
-		assertEquals("Done", scope.getProgress().getDescription());
-		assertThatProgressIs(STATUS.DONE);
+		assertEquals("DONE", scope.getProgress().getDescription());
+		assertThatProgressIs(ProgressState.DONE);
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class ScopeProgressActionTest {
 				"ns", "N", "n" };
 		for (final String notStartedDespription : acceptableNotStartedDescriptions) {
 			new ScopeDeclareProgressAction(scope.getId(), notStartedDespription).execute(context);
-			assertThatProgressIs(STATUS.NOT_STARTED);
+			assertThatProgressIs(ProgressState.NOT_STARTED);
 		}
 	}
 
@@ -88,7 +88,7 @@ public class ScopeProgressActionTest {
 		final String[] acceptableUnderWorkDescriptions = { "Under work", "Under_work", "under work", "design", "coding", "testing", "acceptance", "anything" };
 		for (final String underWorkDespription : acceptableUnderWorkDescriptions) {
 			new ScopeDeclareProgressAction(scope.getId(), underWorkDespription).execute(context);
-			assertThatProgressIs(STATUS.UNDER_WORK);
+			assertThatProgressIs(ProgressState.UNDER_WORK);
 		}
 	}
 
@@ -97,44 +97,44 @@ public class ScopeProgressActionTest {
 		final String[] acceptableDoneDescriptions = { "Done", "DONE", "done", "DN", "Dn", "dn", "D", "d" };
 		for (final String doneDespription : acceptableDoneDescriptions) {
 			new ScopeDeclareProgressAction(scope.getId(), doneDespription).execute(context);
-			assertThatProgressIs(STATUS.DONE);
+			assertThatProgressIs(ProgressState.DONE);
 		}
 	}
 
 	@Test
 	public void shouldRevertChangesAfterARollback() throws UnableToCompleteActionException {
 		scope.getProgress().setDescription("Done");
-		assertEquals("Done", scope.getProgress().getDescription());
-		assertThatProgressIs(STATUS.DONE);
+		assertEquals("DONE", scope.getProgress().getDescription());
+		assertThatProgressIs(ProgressState.DONE);
 
 		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
 		final ModelAction rollbackAction = progressAction.execute(context);
 
 		assertEquals("Under work", scope.getProgress().getDescription());
-		assertThatProgressIs(STATUS.UNDER_WORK);
+		assertThatProgressIs(ProgressState.UNDER_WORK);
 
 		rollbackAction.execute(context);
 
-		assertEquals("Done", scope.getProgress().getDescription());
-		assertThatProgressIs(STATUS.DONE);
+		assertEquals("DONE", scope.getProgress().getDescription());
+		assertThatProgressIs(ProgressState.DONE);
 	}
 
 	@Test
 	public void shouldRevertChangesAfterARollback2() throws UnableToCompleteActionException {
-		assertThatProgressIs(STATUS.NOT_STARTED);
+		assertThatProgressIs(ProgressState.NOT_STARTED);
 
 		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
 		final ModelAction rollbackAction = progressAction.execute(context);
 
 		assertEquals("Under work", scope.getProgress().getDescription());
-		assertThatProgressIs(STATUS.UNDER_WORK);
+		assertThatProgressIs(ProgressState.UNDER_WORK);
 
 		rollbackAction.execute(context);
 
-		assertThatProgressIs(STATUS.NOT_STARTED);
+		assertThatProgressIs(ProgressState.NOT_STARTED);
 	}
 
-	private void assertThatProgressIs(final Progress.STATUS status) {
-		assertEquals(status, scope.getProgress().getStatus());
+	private void assertThatProgressIs(final Progress.ProgressState status) {
+		assertEquals(status, scope.getProgress().getState());
 	}
 }

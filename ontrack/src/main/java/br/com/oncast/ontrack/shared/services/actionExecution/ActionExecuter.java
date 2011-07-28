@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentRollbac
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceEngine;
+import br.com.oncast.ontrack.shared.model.scope.inference.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ActionExecuter {

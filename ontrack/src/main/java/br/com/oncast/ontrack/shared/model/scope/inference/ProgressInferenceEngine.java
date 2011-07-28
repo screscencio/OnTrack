@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.services.actionExecution;
+package br.com.oncast.ontrack.shared.model.scope.inference;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.inference.InferenceEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProgressInferenceEngine implements InferenceEngine {
@@ -37,7 +36,7 @@ public class ProgressInferenceEngine implements InferenceEngine {
 
 	private void calculateBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
 		final float computedEffort = scope.getProgress().isDone() ? scope.getEffort().getInfered() : calculateComputedEffort(scope);
-		scope.getProgress().setComputedEffort(computedEffort);
+		scope.getEffort().setComputedEffort(computedEffort);
 		inferenceInfluencedScopeSet.add(scope.getId());
 	}
 
@@ -46,7 +45,7 @@ public class ProgressInferenceEngine implements InferenceEngine {
 
 		final List<Scope> children = scope.getChildren();
 		for (final Scope child : children)
-			doneSum += child.getProgress().getComputedEffort();
+			doneSum += child.getEffort().getComputedEffort();
 
 		return doneSum;
 	}

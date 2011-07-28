@@ -24,8 +24,8 @@ html,body {
 }
 
 .gwt-Tree .gwt-TreeItem:hover {
-	background-color: #fdfdfd;
-	border: 1px solid #fafafa;
+	background-color: #fcfcfc;
+	border: 1px solid #f8f8f8;
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
