@@ -37,6 +37,8 @@
 			right: 10px;
 			bottom: 25px;
 			width: 400px;
+			overflow: auto;
+            overflow-x: hidden;
 		}
 		
 		.exportToMapLink {
