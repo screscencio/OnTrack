@@ -54,14 +54,18 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		return (ScopeTreeItem) super.getParentItem();
 	}
 
+	// TODO Analise deprecating (thus removing) this method and using 'getScopeTreeItemWidget().setScope()' instead.
 	public void setReferencedScope(final Scope scope) {
 		scopeItemWidget.setScope(scope);
 	}
 
+	// TODO Analise deprecating (thus removing) this method and using 'getScopeTreeItemWidget().getScope()' instead.
 	public Scope getReferencedScope() {
 		return scopeItemWidget.getScope();
 	}
 
+	// TODO Analise using (maybe deprecating this method) 'Tree#ensureSelectedItemVisible()' method, that ensures that the currently-selected item is visible,
+	// opening its parents and scrolling the tree as necessary.
 	public void setHierarchicalState(final boolean state) {
 		ScopeTreeItem item = this;
 

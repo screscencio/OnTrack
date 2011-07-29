@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -25,19 +24,14 @@ public class ActionExecuter {
 		inferenceEngines.add(new ProgressInferenceEngine());
 	}
 
-	public static ModelAction executeAction(final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
-		return executeAction(context, action, null);
-	}
+	public static ActionExecutionContext executeAction(final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 
-	public static ModelAction executeAction(final ProjectContext context, final ModelAction action, final ActionExecutionListener listener)
-			throws UnableToCompleteActionException {
 		final Scope scope = getEffortInferenceBaseScope(context, action);
 
 		final ModelAction reverseAction = action.execute(context);
 		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines(action, scope);
-		if (listener != null) listener.onActionExecution(action, context, inferenceInfluencedScopeSet);
 
-		return reverseAction;
+		return new ActionExecutionContext(reverseAction, inferenceInfluencedScopeSet);
 	}
 
 	private static Set<UUID> executeInferenceEngines(final ModelAction action, final Scope scope) {
