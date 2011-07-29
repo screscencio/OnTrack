@@ -1216,12 +1216,12 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 
 	void abandonItem(final TreeItem treeItem) {
 		if (treeItemAdoptionListener == null) return;
-		treeItemAdoptionListener.onTreeItemAdopted(treeItem);
+		treeItemAdoptionListener.onTreeItemAbandoned(treeItem);
 	}
 
 	void adoptItem(final TreeItem treeItem) {
 		if (treeItemAdoptionListener == null) return;
-		treeItemAdoptionListener.onTreeItemAbandoned(treeItem);
+		treeItemAdoptionListener.onTreeItemAdopted(treeItem);
 	}
 
 	public void setTreeItemAdoptionListener(final TreeItemAdoptionListener treeItemAdoptionListener) {
