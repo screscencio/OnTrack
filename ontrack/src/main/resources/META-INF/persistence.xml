@@ -21,7 +21,7 @@
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.user" value="ontrack" />
 			<property name="javax.persistence.jdbc.password" value="ontrack" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ontrack" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://192.168.2.95:3306/ontrack" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.max_fetch_depth" value="3" />
