@@ -76,7 +76,7 @@ public class FreeMindExporter {
 	}
 
 	private static void addReleaseNodeTo(final MindNode node, final Scope scope) {
-		if (scope.getRelease() != null) appendNodeTo(node, scope.getRelease().getDescription(), Icon.CALENDAR);
+		if (scope.getRelease() != null) appendNodeTo(node, scope.getRelease().getFullDescription(), Icon.CALENDAR);
 	}
 
 	private static void addEffortNodeTo(final MindNode node, final Scope scope) {

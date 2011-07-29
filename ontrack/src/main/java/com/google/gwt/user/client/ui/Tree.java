@@ -252,6 +252,7 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	protected TreeItem root;
 
 	private boolean useLeafImages;
+	private TreeItemAdoptionListener treeItemAdoptionListener;
 
 	/**
 	 * Constructs an empty tree.
@@ -1211,5 +1212,19 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		// match the id of the currently selected item
 
 		Accessibility.setState(focusable, Accessibility.STATE_ACTIVEDESCENDANT, DOM.getElementAttribute(curSelectionContentElem, "id"));
+	}
+
+	void abandonItem(final TreeItem treeItem) {
+		if (treeItemAdoptionListener == null) return;
+		treeItemAdoptionListener.onTreeItemAdopted(treeItem);
+	}
+
+	void adoptItem(final TreeItem treeItem) {
+		if (treeItemAdoptionListener == null) return;
+		treeItemAdoptionListener.onTreeItemAbandoned(treeItem);
+	}
+
+	public void setTreeItemAdoptionListener(final TreeItemAdoptionListener treeItemAdoptionListener) {
+		this.treeItemAdoptionListener = treeItemAdoptionListener;
 	}
 }

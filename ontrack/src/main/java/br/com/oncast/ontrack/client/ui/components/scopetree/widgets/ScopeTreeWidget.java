@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
@@ -14,10 +15,13 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.TreeItemAdoptionListener;
 
 public class ScopeTreeWidget extends Composite {
 
 	private final Tree tree;
+
+	private final Map<UUID, ScopeTreeItem> itemMapCache = new HashMap<UUID, ScopeTreeItem>();
 
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
 		initWidget(tree = new Tree());
@@ -38,6 +42,21 @@ public class ScopeTreeWidget extends Composite {
 				interactionHandler.onItemEditionCancel();
 			}
 		}, ScopeTreeItemEditionCancelEvent.getType());
+
+		tree.setTreeItemAdoptionListener(new TreeItemAdoptionListener() {
+
+			@Override
+			public void onTreeItemAdopted(final TreeItem treeItem) {
+				final ScopeTreeItem scopeTreeItem = ((ScopeTreeItem) treeItem);
+				itemMapCache.put(scopeTreeItem.getScopeTreeItemWidget().getScope().getId(), scopeTreeItem);
+			}
+
+			@Override
+			public void onTreeItemAbandoned(final TreeItem treeItem) {
+				final ScopeTreeItem scopeTreeItem = ((ScopeTreeItem) treeItem);
+				itemMapCache.remove(scopeTreeItem.getScopeTreeItemWidget().getScope().getId());
+			}
+		});
 	}
 
 	public void add(final ScopeTreeItem item) {
@@ -76,14 +95,10 @@ public class ScopeTreeWidget extends Composite {
 		return tree.getItemCount();
 	}
 
-	// TODO ++Optimize this: Examine refactoring this so that it uses a Map.
 	public ScopeTreeItem findScopeTreeItem(final UUID scopeId) throws ScopeNotFoundException {
-		final Iterator<TreeItem> treeItemIterator = tree.treeItemIterator();
-		while (treeItemIterator.hasNext()) {
-			final ScopeTreeItem item = (ScopeTreeItem) treeItemIterator.next();
-			if (item.getReferencedScope().getId().equals(scopeId)) { return item; }
-		}
-		throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
+		final ScopeTreeItem scopeTreeItem = itemMapCache.get(scopeId);
+		if (scopeTreeItem == null) throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
+		return scopeTreeItem;
 	}
 
 	public void setSelectedItem(final ScopeTreeItem treeItem) {

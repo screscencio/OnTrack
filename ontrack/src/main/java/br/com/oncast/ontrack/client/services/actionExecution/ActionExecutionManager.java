@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionContext;
 
 public class ActionExecutionManager {
 
@@ -22,7 +23,9 @@ public class ActionExecutionManager {
 
 	public void execute(final ModelAction action, final ProjectContext context) {
 		try {
-			final ModelAction undoAction = ActionExecuter.executeAction(context, action, executionListener);
+			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
+			executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet());
+			final ModelAction undoAction = executionContext.getReverseAction();
 			undoStack.push(undoAction);
 			redoStack.clear();
 		}
@@ -37,7 +40,9 @@ public class ActionExecutionManager {
 	public void undo(final ProjectContext context) {
 		try {
 			final ModelAction undoAction = undoStack.pop();
-			final ModelAction redoAction = ActionExecuter.executeAction(context, undoAction, executionListener);
+			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, undoAction);
+			executionListener.onActionExecution(undoAction, context, executionContext.getInferenceInfluencedScopeSet());
+			final ModelAction redoAction = executionContext.getReverseAction();
 			redoStack.push(redoAction);
 		}
 		catch (final UnableToCompleteActionException e) {
@@ -55,7 +60,9 @@ public class ActionExecutionManager {
 	public void redo(final ProjectContext context) {
 		try {
 			final ModelAction redoAction = redoStack.pop();
-			final ModelAction undoAction = ActionExecuter.executeAction(context, redoAction, executionListener);
+			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, redoAction);
+			executionListener.onActionExecution(redoAction, context, executionContext.getInferenceInfluencedScopeSet());
+			final ModelAction undoAction = executionContext.getReverseAction();
 			undoStack.push(undoAction);
 		}
 		catch (final UnableToCompleteActionException e) {

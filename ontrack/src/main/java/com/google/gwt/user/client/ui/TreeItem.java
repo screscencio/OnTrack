@@ -150,7 +150,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 				curItem = item;
 				opening = item.open;
 				run(Math.min(ANIMATION_DURATION, ANIMATION_DURATION_PER_ITEM * curItem.getChildCount()));
-			} else {
+			}
+			else {
 				UIObject.setVisible(item.childSpanElem, item.open);
 			}
 		}
@@ -162,7 +163,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 					UIObject.setVisible(curItem.childSpanElem, true);
 					onUpdate(1.0);
 					DOM.setStyleAttribute(curItem.childSpanElem, "height", "auto");
-				} else {
+				}
+				else {
 					UIObject.setVisible(curItem.childSpanElem, false);
 				}
 				DOM.setStyleAttribute(curItem.childSpanElem, "overflow", "visible");
@@ -413,9 +415,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	 */
 
 	public TreeItem getChild(final int index) {
-		if ((index < 0) || (index >= getChildCount())) {
-			return null;
-		}
+		if ((index < 0) || (index >= getChildCount())) { return null; }
 
 		return children.get(index);
 	}
@@ -427,9 +427,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	 */
 
 	public int getChildCount() {
-		if (children == null) {
-			return 0;
-		}
+		if (children == null) { return 0; }
 		return children.size();
 	}
 
@@ -441,9 +439,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	 */
 
 	public int getChildIndex(final TreeItem child) {
-		if (children == null) {
-			return -1;
-		}
+		if (children == null) { return -1; }
 		return children.indexOf(child);
 	}
 
@@ -543,9 +539,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 
 		// Check the index after detaching in case this item was already the parent.
 		final int childCount = getChildCount();
-		if (beforeIndex < 0 || beforeIndex > childCount) {
-			throw new IndexOutOfBoundsException();
-		}
+		if (beforeIndex < 0 || beforeIndex > childCount) { throw new IndexOutOfBoundsException(); }
 
 		if (children == null) {
 			initChildren();
@@ -556,7 +550,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		final double margin = isRoot ? 0.0 : CHILD_MARGIN;
 		if (LocaleInfo.getCurrentLocale().isRTL()) {
 			item.getElement().getStyle().setMarginRight(margin, Unit.PX);
-		} else {
+		}
+		else {
 			item.getElement().getStyle().setMarginLeft(margin, Unit.PX);
 		}
 
@@ -564,7 +559,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		final Element childContainer = isRoot ? tree.getElement() : childSpanElem;
 		if (beforeIndex == childCount) {
 			childContainer.appendChild(item.getElement());
-		} else {
+		}
+		else {
 			final Element beforeElem = getChild(beforeIndex).getElement();
 			childContainer.insertBefore(item.getElement(), beforeElem);
 		}
@@ -612,7 +608,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		if (parent != null) {
 			// If this item has a parent, remove self from it.
 			parent.removeItem(this);
-		} else if (tree != null) {
+		}
+		else if (tree != null) {
 			// If the item has no parent, but is in the Tree, it must be a top-level
 			// element.
 			tree.removeItem(this);
@@ -627,9 +624,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	@Override
 	public void removeItem(final TreeItem item) {
 		// Validate.
-		if (children == null || !children.contains(item)) {
-			return;
-		}
+		if (children == null || !children.contains(item)) { return; }
 
 		// Orphan.
 		final Tree oldTree = tree;
@@ -638,7 +633,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		// Physical detach.
 		if (isRoot) {
 			oldTree.getElement().removeChild(item.getElement());
-		} else {
+		}
+		else {
 			childSpanElem.removeChild(item.getElement());
 		}
 
@@ -692,9 +688,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	 * @param selected <code>true</code> to select the item, <code>false</code> to deselect it
 	 */
 	public void setSelected(final boolean selected) {
-		if (this.selected == selected) {
-			return;
-		}
+		if (this.selected == selected) { return; }
 		this.selected = selected;
 		setStyleName(getContentElem(), "gwt-TreeItem-selected", selected);
 	}
@@ -715,9 +709,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	 * @param fireEvents <code>true</code> to allow open/close events to be
 	 */
 	public void setState(final boolean open, final boolean fireEvents) {
-		if (open && getChildCount() == 0) {
-			return;
-		}
+		if (open && getChildCount() == 0) { return; }
 
 		// Only do the physical update if it changes
 		if (this.open != open) {
@@ -762,7 +754,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 				if (tree != null) {
 					tree.orphan(widget);
 				}
-			} finally {
+			}
+			finally {
 				// Physical detach old child.
 				contentElem.removeChild(widget.getElement());
 				widget = null;
@@ -823,7 +816,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		final Widget w = getWidget();
 		if (w instanceof HasFocus) {
 			return (HasFocus) w;
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -910,14 +904,14 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		this.parent = parent;
 	}
 
-	void setTree(final Tree newTree) {
+	protected void setTree(final Tree newTree) {
 		// Early out.
-		if (tree == newTree) {
-			return;
-		}
+		if (tree == newTree) { return; }
 
 		// Remove this item from existing tree.
 		if (tree != null) {
+			tree.abandonItem(this);
+
 			if (tree.getSelectedItem() == this) {
 				tree.setSelectedItem(null);
 			}
@@ -934,6 +928,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		updateState(false, true);
 
 		if (newTree != null) {
+			newTree.adoptItem(this);
+
 			if (widget != null) {
 				// Add my widget to the new tree.
 				newTree.adopt(widget, this);
@@ -944,9 +940,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 	void updateState(final boolean animate, final boolean updateTreeSelection) {
 		// If the tree hasn't been set, there is no visual state to update.
 		// If the tree is not attached, then update will be called on attach.
-		if (tree == null || tree.isAttached() == false) {
-			return;
-		}
+		if (tree == null || tree.isAttached() == false) { return; }
 
 		if (getChildCount() == 0) {
 			if (childSpanElem != null) {
@@ -960,14 +954,16 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		// or the children will always take up space.
 		if (animate && (tree != null) && (tree.isAttached())) {
 			itemAnimation.setItemState(this, tree.isAnimationEnabled());
-		} else {
+		}
+		else {
 			itemAnimation.setItemState(this, false);
 		}
 
 		// Change the status image
 		if (open) {
 			tree.showOpenImage(this);
-		} else {
+		}
+		else {
 			tree.showClosedImage(this);
 		}
 
