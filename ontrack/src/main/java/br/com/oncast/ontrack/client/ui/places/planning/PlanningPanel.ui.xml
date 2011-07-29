@@ -33,12 +33,14 @@
 		
 		.releasePanel {
 			position: absolute;
-			top: 10px;
-			right: 10px;
-			bottom: 25px;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
 			width: 400px;
 			overflow: auto;
             overflow-x: hidden;
+            padding-right: 10px;
+            padding-top: 10px;
 		}
 		
 		.exportToMapLink {
