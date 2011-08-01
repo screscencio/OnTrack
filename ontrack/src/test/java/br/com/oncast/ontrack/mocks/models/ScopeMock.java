@@ -14,6 +14,7 @@ public class ScopeMock {
 		return root;
 	}
 
+	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getScope2() {
 		final Scope projectScope = new Scope("Project");
 		final Scope child = new Scope("aaa");
@@ -31,6 +32,24 @@ public class ScopeMock {
 		return projectScope;
 	}
 
+	// IMPORTANT Doesn't change this scope without changing the tests that use it.
+	public static Scope getComplexScope() {
+		final Scope projectScope = new Scope("Project");
+		final Scope child = new Scope("aaa");
+		child.add(new Scope("111"));
+		child.add(new Scope("222"));
+		child.add(new Scope("333").add(new Scope("3.1")).add(new Scope("3.2")));
+		child.add(new Scope("444"));
+		projectScope.add(child);
+
+		projectScope.add(new Scope("bbb").add(new Scope("b1")));
+		projectScope.add(new Scope("ccc").add(new Scope("c1")).add(new Scope("c2").add(new Scope("c21")).add(new Scope("c22"))));
+		projectScope.add(new Scope("ddd"));
+
+		return projectScope;
+	}
+
+	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getScopeWithEffort() {
 		final Scope root = new Scope("Project");
 		final Scope scope = new Scope("0");

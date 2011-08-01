@@ -30,6 +30,10 @@ public class Effort implements IsSerializable {
 		this.hasStronglyDefinedChildren = stronglyDefined;
 	}
 
+	public boolean getHasStronglyDefinedChildren() {
+		return hasStronglyDefinedChildren;
+	}
+
 	public boolean hasDeclared() {
 		return hasDeclared;
 	}
@@ -83,8 +87,6 @@ public class Effort implements IsSerializable {
 		final float inferedEffort = getInfered();
 		if (inferedEffort == 0) return 0;
 
-		final float computedEffort = getComputedEffort();
-		return 100 * computedEffort / inferedEffort;
+		return 100 * getComputedEffort() / inferedEffort;
 	}
-
 }
