@@ -5,12 +5,15 @@ import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getMo
 import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOriginalScope;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class Flow1Test {
 
@@ -135,7 +138,7 @@ public class Flow1Test {
 
 	private void shouldApplyInferenceTopDownWhenRootIsModified() {
 		original.getEffort().setDeclared(1000);
-		effortInferenceEngine.process(original);
+		final Set<UUID> affectedScopes = effortInferenceEngine.process(original);
 
 		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
 	}

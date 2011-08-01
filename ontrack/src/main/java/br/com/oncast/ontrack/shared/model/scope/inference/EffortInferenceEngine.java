@@ -41,9 +41,12 @@ public class EffortInferenceEngine implements InferenceEngine {
 			sum += childEffort.getDeclared() > childEffort.getBottomUpValue() ? childEffort.getDeclared() : childEffort.getBottomUpValue();
 			hasStronglyDefinedChildren &= childEffort.isStronglyDefined();
 		}
-		effort.setBottomUpValue(sum);
-		effort.setHasStronglyDefinedChildren(hasStronglyDefinedChildren);
-		inferenceInfluencedScopeSet.add(scope.getId());
+
+		if (effort.getBottomUpValue() != sum || effort.getHasStronglyDefinedChildren() != hasStronglyDefinedChildren) {
+			effort.setBottomUpValue(sum);
+			effort.setHasStronglyDefinedChildren(hasStronglyDefinedChildren);
+			inferenceInfluencedScopeSet.add(scope.getId());
+		}
 	}
 
 	private static Scope processBottomUp(final Scope scope, final Set<UUID> inferenceInfluencedScopeSet) {
@@ -62,9 +65,11 @@ public class EffortInferenceEngine implements InferenceEngine {
 	private static void processTopDown(final Scope scope, final Set<UUID> inferenceInfluencedScopeSet) {
 		final Effort effort = scope.getEffort();
 
+		final float initialTopDownValue = effort.getTopDownValue();
 		if (effort.isStronglyDefined()) effort.setTopDownValue((effort.getDeclared() > effort.getBottomUpValue()) ? effort.getDeclared() : effort
 				.getBottomUpValue());
 		else if (scope.isRoot()) effort.setTopDownValue(getStronglyDefinedEffortSum(scope));
+		if (effort.getTopDownValue() != initialTopDownValue) inferenceInfluencedScopeSet.add(scope.getId());
 
 		float available = effort.getTopDownValue() - getStronglyDefinedEffortSum(scope);
 		if (available < 0) available = 0;
@@ -79,11 +84,11 @@ public class EffortInferenceEngine implements InferenceEngine {
 			final float value = isChildStronglyDefined && effort.getDeclared() > effort.getBottomUpValue() ? childEffort.getDeclared() : childEffort
 					.getBottomUpValue();
 
-			final float initialTopDownValue = childEffort.getTopDownValue();
+			final float childInitialTopDownValue = childEffort.getTopDownValue();
 			if (value > portion) childEffort.setTopDownValue(value);
 			else childEffort.setTopDownValue(isChildStronglyDefined ? childEffort.getDeclared() : portion);
 
-			if (childEffort.getTopDownValue() != initialTopDownValue) {
+			if (childEffort.getTopDownValue() != childInitialTopDownValue) {
 				inferenceInfluencedScopeSet.add(child.getId());
 				processTopDown(child, inferenceInfluencedScopeSet);
 			}
