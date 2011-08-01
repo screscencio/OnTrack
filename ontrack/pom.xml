@@ -7,8 +7,9 @@
 	<artifactId>ontrackExt</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-
+	
 	<properties>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwtVersion>2.3.0</gwtVersion>
 		<mainClass></mainClass>
 	</properties>
