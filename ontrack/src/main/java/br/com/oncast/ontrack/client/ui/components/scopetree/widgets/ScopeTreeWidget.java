@@ -54,7 +54,7 @@ public class ScopeTreeWidget extends Composite {
 			@Override
 			public void onTreeItemAbandoned(final TreeItem treeItem) {
 				final ScopeTreeItem scopeTreeItem = ((ScopeTreeItem) treeItem);
-				removeRecusivelyToCache(scopeTreeItem);
+				removeRecusivelyFromCache(scopeTreeItem);
 			}
 
 			private void addRecursivelyToCache(final ScopeTreeItem scopeTreeItem) {
@@ -66,12 +66,12 @@ public class ScopeTreeWidget extends Composite {
 				}
 			}
 
-			private void removeRecusivelyToCache(final ScopeTreeItem scopeTreeItem) {
+			private void removeRecusivelyFromCache(final ScopeTreeItem scopeTreeItem) {
 				itemMapCache.remove(scopeTreeItem.getScopeTreeItemWidget().getScope().getId());
 
 				final int count = scopeTreeItem.getChildCount();
 				for (int i = 0; i < count; i++) {
-					removeRecusivelyToCache(scopeTreeItem.getChild(i));
+					removeRecusivelyFromCache(scopeTreeItem.getChild(i));
 				}
 			}
 		});
