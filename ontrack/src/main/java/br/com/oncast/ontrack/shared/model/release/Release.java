@@ -102,15 +102,19 @@ public class Release implements IsSerializable {
 		scopeList.remove(selectedScope);
 	}
 
-	public float getProgressPercentage() {
-		final float concludedEffortSum = getComputedEffortSum();
-		final float effortSum = getEffortSum();
-		if (concludedEffortSum == 0) return (effortSum == 0) ? 100 : 0;
+	public float getEffortSum() {
+		float effortSum = 0;
 
-		return 100 * concludedEffortSum / effortSum;
+		for (final Release childRelease : childrenList)
+			effortSum += childRelease.getEffortSum();
+
+		for (final Scope scope : scopeList)
+			effortSum += scope.getEffort().getInfered();
+
+		return effortSum;
 	}
 
-	private float getComputedEffortSum() {
+	public float getComputedEffortSum() {
 		float computedEffortSum = 0;
 
 		for (final Release childRelease : childrenList)
@@ -122,16 +126,14 @@ public class Release implements IsSerializable {
 		return computedEffortSum;
 	}
 
-	private float getEffortSum() {
-		float effortSum = 0;
+	public boolean isDone() {
+		for (final Scope scope : scopeList)
+			if (!scope.getProgress().isDone()) return false;
 
 		for (final Release childRelease : childrenList)
-			effortSum += childRelease.getEffortSum();
+			if (!childRelease.isDone()) return false;
 
-		for (final Scope scope : scopeList)
-			effortSum += scope.getEffort().getInfered();
-
-		return effortSum;
+		return true;
 	}
 
 	public Release findRelease(final UUID releaseId) {

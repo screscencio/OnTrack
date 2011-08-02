@@ -37,7 +37,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	// Do not refresh the DOM if these variables don't change.
 	private String currentReleaseDescription;
-	private String currentProgressPercentage;
+	private String currentReleaseProgressDescription;
 
 	@UiField
 	protected Style style;
@@ -118,15 +118,26 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private void updateDescription() {
 		if (release.getDescription().equals(currentReleaseDescription)) return;
 		currentReleaseDescription = release.getDescription();
+
 		descriptionLabel.setText(currentReleaseDescription);
 	}
 
 	private void updateProgress() {
-		final String progress = ClientDecimalFormat.roundFloat(release.getProgressPercentage(), 1);
-		if (progress.equals(currentProgressPercentage)) return;
+		final String progress = getProcessDescription();
+		if (progress.equals(currentReleaseProgressDescription)) return;
+		currentReleaseProgressDescription = progress;
 
-		currentProgressPercentage = progress;
-		progressLabel.setText(currentProgressPercentage + "%");
+		progressLabel.setText(currentReleaseProgressDescription);
+	}
+
+	private String getProcessDescription() {
+		if (release.isDone()) return "100%";
+		final float effortSum = release.getEffortSum();
+		if (effortSum == 0) return "";
+
+		final float concludedEffortSum = release.getComputedEffortSum();
+		final float percentage = 100 * concludedEffortSum / effortSum;
+		return ClientDecimalFormat.roundFloat(percentage, 1) + "%";
 	}
 
 	private void reviewContainersState() {
