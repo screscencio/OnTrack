@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
+package br.com.oncast.ontrack.shared.model.effort;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getModifiedScope;
@@ -7,10 +7,10 @@ import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOr
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 
-public class Flow2Test {
+public class InferenceEngineFlow2Test {
 
 	private final String FILE_NAME_PREFIX = "Flow2";
 	private Scope original = null;
