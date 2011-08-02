@@ -33,6 +33,16 @@ public class ScopeMock {
 	}
 
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
+	public static Scope getSimpleScope() {
+		final Scope root = new Scope("Project");
+		root.add(new Scope("1"));
+		root.add(new Scope("2"));
+		root.add(new Scope("3"));
+
+		return root;
+	}
+
+	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getComplexScope() {
 		final Scope projectScope = new Scope("Project");
 		final Scope child = new Scope("aaa");
