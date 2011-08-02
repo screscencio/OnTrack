@@ -25,7 +25,6 @@ public class ActionExecuter {
 	}
 
 	public static ActionExecutionContext executeAction(final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
-
 		final Scope scope = getEffortInferenceBaseScope(context, action);
 
 		final ModelAction reverseAction = action.execute(context);

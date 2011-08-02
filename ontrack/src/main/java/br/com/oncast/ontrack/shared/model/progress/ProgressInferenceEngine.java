@@ -48,8 +48,8 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		else {
 			for (final Scope child : scope.getChildren())
 				processTopDownDistribution(child, progressDescription, inferenceInfluencedScopeSet);
-			calculateBottomUp(scope, inferenceInfluencedScopeSet);
 		}
+		calculateBottomUp(scope, inferenceInfluencedScopeSet);
 	}
 
 	private void processBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
@@ -64,9 +64,15 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 			scope.getProgress().setDescription("");
 			if (determineProgressCompletition(scope)) scope.getProgress().markAsCompleted();
 		}
-		final float computedEffort = scope.getProgress().isDone() ? scope.getEffort().getInfered() : calculateComputedEffort(scope);
-		scope.getEffort().setComputedEffort(computedEffort);
+		scope.getEffort().setComputedEffort((scope.getProgress().isDone() ? scope.getEffort().getInfered() : calculateComputedEffort(scope)));
 		inferenceInfluencedScopeSet.add(scope.getId());
+	}
+
+	private boolean determineProgressCompletition(final Scope scope) {
+		if (scope.isLeaf()) return scope.getProgress().isDone();
+		for (final Scope child : scope.getChildren())
+			if (!child.getProgress().isDone()) return false;
+		return true;
 	}
 
 	private float calculateComputedEffort(final Scope scope) {
@@ -76,12 +82,5 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 			doneSum += child.getEffort().getComputedEffort();
 
 		return doneSum;
-	}
-
-	private boolean determineProgressCompletition(final Scope scope) {
-		if (scope.isLeaf()) return scope.getProgress().isDone();
-		for (final Scope child : scope.getChildren())
-			if (!child.getProgress().isDone()) return false;
-		return true;
 	}
 }
