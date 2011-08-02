@@ -20,7 +20,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 
 	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription) {
 		this.referenceId = referenceId;
-		this.newProgressDescription = newProgressDescription;
+		this.newProgressDescription = newProgressDescription == null ? "" : newProgressDescription;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -31,8 +31,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		final Scope selectedScope = context.findScope(referenceId);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
-		if (newProgressDescription != null && !newProgressDescription.isEmpty()) selectedScope.getProgress().setDescription(newProgressDescription);
-		else selectedScope.getProgress().reset();
+		selectedScope.getProgress().setDescription(newProgressDescription);
 
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription);
 	}

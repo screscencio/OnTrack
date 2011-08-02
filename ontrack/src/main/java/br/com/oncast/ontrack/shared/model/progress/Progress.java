@@ -46,7 +46,7 @@ public class Progress implements IsSerializable {
 	private ProgressState state;
 
 	public Progress() {
-		reset();
+		setDescription("");
 	}
 
 	public String getDescription() {
@@ -56,10 +56,6 @@ public class Progress implements IsSerializable {
 	public void setDescription(final String newProgressDescription) {
 		description = newProgressDescription;
 		setState(ProgressState.getStateForDescription(description));
-	}
-
-	public void reset() {
-		setDescription("");
 	}
 
 	public ProgressState getState() {
@@ -76,5 +72,9 @@ public class Progress implements IsSerializable {
 
 	public boolean isDone() {
 		return state == ProgressState.DONE;
+	}
+
+	public void markAsCompleted() {
+		state = ProgressState.DONE;
 	}
 }

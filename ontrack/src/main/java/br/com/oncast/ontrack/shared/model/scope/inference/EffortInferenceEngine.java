@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class EffortInferenceEngine implements InferenceEngine {
+public class EffortInferenceEngine implements InferenceOverScopeEngine {
 
 	@Override
 	public boolean shouldProcess(final ModelAction action) {

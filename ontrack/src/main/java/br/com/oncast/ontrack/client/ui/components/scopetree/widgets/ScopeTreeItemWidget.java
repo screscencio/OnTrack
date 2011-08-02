@@ -241,10 +241,14 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	private void updateProgressDisplay() {
-		final String progress = scope.isLeaf() ? scope.getProgress().getDescription() : ClientDecimalFormat.roundFloat(scope.getEffort()
-				.getPercentualDescription(), 1)
-				+ "%";
+		final String progress = scope.isLeaf() ? scope.getProgress().getDescription() : getPercentualDescription();
 		progressLabel.setText(progress);
 		progressLabel.setVisible(!progress.isEmpty());
+	}
+
+	private String getPercentualDescription() {
+		return ClientDecimalFormat.roundFloat(scope.getProgress().isDone() ? 100
+				: scope.getEffort().getComputedPercentual(), 1)
+				+ "%";
 	}
 }
