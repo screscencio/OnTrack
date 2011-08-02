@@ -27,7 +27,7 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void progressShoulbBeZeroIfAllScopesAreNotStartedYet() {
-		assertEquals(0f, r1.getProgressPercentage());
+		assertEquals(0f, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
@@ -35,7 +35,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(0).getProgress().setDescription("Underwork");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		assertEquals(0f, r1.getProgressPercentage());
+		assertEquals(0f, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		assertEquals(66.6, r1.getProgressPercentage(), 0.09);
+		assertEquals(66.6, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(2).getProgress().setDescription("Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		assertEquals(83.3, r1.getProgressPercentage(), 0.09);
+		assertEquals(83.3, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
@@ -69,11 +69,11 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		assertEquals(66.6, r1.getProgressPercentage(), 0.09);
+		assertEquals(66.6, getProgressPercentage(r1), 0.09);
 
 		r1.removeScope(scopeHierarchy.getChild(1));
 
-		assertEquals(0, r1.getProgressPercentage(), 0.09);
+		assertEquals(0, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class ReleaseProgressTest {
 		it1.addScope(scope2);
 		it1.addScope(scope3);
 
-		assertEquals(50, r1.getProgressPercentage(), 0.09);
+		assertEquals(50, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
@@ -119,7 +119,7 @@ public class ReleaseProgressTest {
 		it1.addScope(scope2);
 		it1.addScope(scope3);
 
-		assertEquals(100, r1.getProgressPercentage(), 0.09);
+		assertEquals(100, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
@@ -142,7 +142,17 @@ public class ReleaseProgressTest {
 		it1.addScope(scope2);
 		it1.addScope(scope3);
 
-		assertEquals(0, r1.getProgressPercentage(), 0.09);
+		assertEquals(0, getProgressPercentage(r1), 0.09);
+	}
+
+	private double getProgressPercentage(final Release release) {
+		if (release.isDone()) return 100f;
+		final float effortSum = release.getEffortSum();
+		if (effortSum == 0) return 0f;
+
+		final float concludedEffortSum = release.getComputedEffortSum();
+		final float percentage = 100 * concludedEffortSum / effortSum;
+		return percentage;
 	}
 
 	@Test
@@ -155,7 +165,7 @@ public class ReleaseProgressTest {
 			r1.addScope(child);
 		}
 
-		assertEquals(100, r1.getProgressPercentage(), 0.09);
+		assertEquals(100, getProgressPercentage(r1), 0.09);
 	}
 
 }
