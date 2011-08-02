@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 
 public class ProgressInferenceEngineTest {
 
@@ -15,21 +15,21 @@ public class ProgressInferenceEngineTest {
 	private static final EffortInferenceEngine EFFORT_INFERENCE_ENGINE = new EffortInferenceEngine();
 
 	@Test
-	public void aScopeProgressPercentageShouldBe100IfAllItsChildrenAreDone() {
+	public void aScopeProgressPercentageShouldBeZeroIfAllItsChildrenAreDone() {
 		final Scope rootScope = ScopeMock.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
-			child.getProgress().markAsCompleted();
+			child.getProgress().setDescription("DONE");
 			PROGRESS_INFERENCE_ENGINE.process(rootScope);
 		}
 
-		assertEquals(100, rootScope.getEffort().getComputedPercentual(), 0.09);
+		assertEquals(0, rootScope.getEffort().getComputedPercentual(), 0.09);
 	}
 
 	@Test
 	public void aScopeShouldBeDoneIfAllItsChildrenAreDone() {
 		final Scope rootScope = ScopeMock.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
-			child.getProgress().markAsCompleted();
+			child.getProgress().setDescription("DONE");
 			PROGRESS_INFERENCE_ENGINE.process(rootScope);
 		}
 
@@ -39,9 +39,9 @@ public class ProgressInferenceEngineTest {
 	@Test
 	public void aScopeProgressPercentageShouldBeZeroIfAtLeastOneOfItsChildrenIsNotDoneAndTheSumOfAllEstimatedEffortsIsZero() {
 		final Scope rootScope = ScopeMock.getSimpleScope();
-		rootScope.getChild(0).getProgress().markAsCompleted();
+		rootScope.getChild(0).getProgress().setDescription("DONE");
 		PROGRESS_INFERENCE_ENGINE.process(rootScope);
-		rootScope.getChild(1).getProgress().markAsCompleted();
+		rootScope.getChild(1).getProgress().setDescription("DONE");
 		PROGRESS_INFERENCE_ENGINE.process(rootScope);
 
 		assertEquals(0, rootScope.getEffort().getComputedPercentual(), 0.09);
@@ -53,17 +53,18 @@ public class ProgressInferenceEngineTest {
 
 		// Declare and mark as done some scopes
 		rootScope.getChild(0).getEffort().setDeclared(5);
+		rootScope.getChild(0).getProgress().setDescription("DONE");
 		EFFORT_INFERENCE_ENGINE.process(rootScope);
-		rootScope.getChild(0).getProgress().markAsCompleted();
 		PROGRESS_INFERENCE_ENGINE.process(rootScope);
 
 		rootScope.getChild(1).getEffort().setDeclared(10);
+		rootScope.getChild(1).getProgress().setDescription("DONE");
 		EFFORT_INFERENCE_ENGINE.process(rootScope);
-		rootScope.getChild(1).getProgress().markAsCompleted();
 		PROGRESS_INFERENCE_ENGINE.process(rootScope);
 
 		rootScope.getChild(2).getEffort().setDeclared(20);
 		EFFORT_INFERENCE_ENGINE.process(rootScope);
+		PROGRESS_INFERENCE_ENGINE.process(rootScope);
 
 		assertEquals(42.8, rootScope.getEffort().getComputedPercentual(), 0.1);
 	}
@@ -75,7 +76,7 @@ public class ProgressInferenceEngineTest {
 		// Declare and mark as done some scopes
 		rootScope.getChild(0).getChild(0).getChild(0).getEffort().setDeclared(5);
 		EFFORT_INFERENCE_ENGINE.process(rootScope.getChild(0).getChild(0));
-		rootScope.getChild(0).getChild(0).getChild(0).getProgress().markAsCompleted();
+		rootScope.getChild(0).getChild(0).getChild(0).getProgress().setDescription("DONE");
 		PROGRESS_INFERENCE_ENGINE.process(rootScope.getChild(0).getChild(0));
 
 		rootScope.getChild(0).getChild(0).getChild(1).getEffort().setDeclared(10);
@@ -83,12 +84,12 @@ public class ProgressInferenceEngineTest {
 
 		rootScope.getChild(0).getChild(1).getEffort().setDeclared(10);
 		EFFORT_INFERENCE_ENGINE.process(rootScope.getChild(0));
-		rootScope.getChild(0).getChild(1).getProgress().markAsCompleted();
+		rootScope.getChild(0).getChild(1).getProgress().setDescription("DONE");
 		PROGRESS_INFERENCE_ENGINE.process(rootScope.getChild(0));
 
 		rootScope.getChild(1).getEffort().setDeclared(10);
 		EFFORT_INFERENCE_ENGINE.process(rootScope);
-		rootScope.getChild(1).getProgress().markAsCompleted();
+		rootScope.getChild(1).getProgress().setDescription("DONE");
 		PROGRESS_INFERENCE_ENGINE.process(rootScope);
 
 		rootScope.getChild(2).getEffort().setDeclared(20);

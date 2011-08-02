@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
+package br.com.oncast.ontrack.shared.model.effort;
 
 import java.io.File;
 

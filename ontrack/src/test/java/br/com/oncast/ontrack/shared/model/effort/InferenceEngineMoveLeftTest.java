@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
+package br.com.oncast.ontrack.shared.model.effort;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getModifiedScope;
@@ -6,14 +6,14 @@ import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOr
 
 import org.junit.Test;
 
+import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 
-public class MoveLeftTest {
+public class InferenceEngineMoveLeftTest {
 
 	final String FILE_NAME_PREFIX = "Project1";
 	final Scope original = getOriginalScope(FILE_NAME_PREFIX);

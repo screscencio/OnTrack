@@ -74,7 +74,7 @@ public class Progress implements IsSerializable {
 		return state == ProgressState.DONE;
 	}
 
-	public void markAsCompleted() {
+	void markAsCompleted() {
 		state = ProgressState.DONE;
 	}
 }

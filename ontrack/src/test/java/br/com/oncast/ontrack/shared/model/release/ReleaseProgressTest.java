@@ -161,7 +161,7 @@ public class ReleaseProgressTest {
 
 		final Scope rootScope = ScopeMock.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
-			child.getProgress().markAsCompleted();
+			child.getProgress().setDescription("DONE");
 			r1.addScope(child);
 		}
 

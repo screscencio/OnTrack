@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.scope.inference;
+package br.com.oncast.ontrack.shared.model.effort;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class EffortInferenceEngine implements InferenceOverScopeEngine {

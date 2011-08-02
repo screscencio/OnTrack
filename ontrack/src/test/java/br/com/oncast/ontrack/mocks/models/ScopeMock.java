@@ -62,6 +62,7 @@ public class ScopeMock {
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getScopeWithEffort() {
 		final Scope root = new Scope("Project");
+
 		final Scope scope = new Scope("0");
 		scope.getEffort().setDeclared(5);
 		root.add(scope);

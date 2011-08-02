@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.effort.inferenceengine;
+package br.com.oncast.ontrack.shared.model.effort;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +14,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class InferenceEngineScopeInfluenceTest {
