@@ -1,15 +1,15 @@
-package br.com.oncast.ontrack.shared.model.scope.inference;
+package br.com.oncast.ontrack.shared.model.progress;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class ProgressInferenceEngine implements InferenceEngine {
+public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 
 	@Override
 	public boolean shouldProcess(final ModelAction action) {
@@ -21,8 +21,10 @@ public class ProgressInferenceEngine implements InferenceEngine {
 		final HashSet<UUID> inferenceInfluencedScopeSet = new HashSet<UUID>();
 		final List<Scope> children = scope.getChildren();
 
-		for (final Scope child : children)
-			checkTopDownDistribution(child, inferenceInfluencedScopeSet);
+		if (!checkTopDownDistribution(scope, inferenceInfluencedScopeSet)) {
+			for (final Scope child : children)
+				checkTopDownDistribution(child, inferenceInfluencedScopeSet);
+		}
 
 		for (final Scope child : children)
 			calculateBottomUp(child, inferenceInfluencedScopeSet);
@@ -32,22 +34,20 @@ public class ProgressInferenceEngine implements InferenceEngine {
 		return inferenceInfluencedScopeSet;
 	}
 
-	private void checkTopDownDistribution(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
-		if (scope.isLeaf() || !scope.getProgress().hasDeclared()) return;
+	private boolean checkTopDownDistribution(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
+		if (scope.isLeaf() || !scope.getProgress().hasDeclared()) return false;
 		processTopDownDistribution(scope, scope.getProgress().getDescription(), inferenceInfluencedScopeSet);
+		return true;
 	}
 
 	private void processTopDownDistribution(final Scope scope, final String progressDescription, final HashSet<UUID> inferenceInfluencedScopeSet) {
-		final Progress progress = scope.getProgress();
-
 		if (scope.isLeaf()) {
-			progress.setDescription(progressDescription);
+			scope.getProgress().setDescription(progressDescription);
 			inferenceInfluencedScopeSet.add(scope.getId());
 		}
 		else {
 			for (final Scope child : scope.getChildren())
 				processTopDownDistribution(child, progressDescription, inferenceInfluencedScopeSet);
-			progress.reset();
 			calculateBottomUp(scope, inferenceInfluencedScopeSet);
 		}
 	}
@@ -60,6 +60,10 @@ public class ProgressInferenceEngine implements InferenceEngine {
 	}
 
 	private void calculateBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
+		if (!scope.isLeaf()) {
+			scope.getProgress().setDescription("");
+			if (determineProgressCompletition(scope)) scope.getProgress().markAsCompleted();
+		}
 		final float computedEffort = scope.getProgress().isDone() ? scope.getEffort().getInfered() : calculateComputedEffort(scope);
 		scope.getEffort().setComputedEffort(computedEffort);
 		inferenceInfluencedScopeSet.add(scope.getId());
@@ -68,10 +72,16 @@ public class ProgressInferenceEngine implements InferenceEngine {
 	private float calculateComputedEffort(final Scope scope) {
 		float doneSum = 0;
 
-		final List<Scope> children = scope.getChildren();
-		for (final Scope child : children)
+		for (final Scope child : scope.getChildren())
 			doneSum += child.getEffort().getComputedEffort();
 
 		return doneSum;
+	}
+
+	private boolean determineProgressCompletition(final Scope scope) {
+		if (scope.isLeaf()) return scope.getProgress().isDone();
+		for (final Scope child : scope.getChildren())
+			if (!child.getProgress().isDone()) return false;
+		return true;
 	}
 }

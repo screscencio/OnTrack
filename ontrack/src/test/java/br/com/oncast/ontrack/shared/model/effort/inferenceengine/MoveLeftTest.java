@@ -4,7 +4,6 @@ import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepE
 import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getModifiedScope;
 import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOriginalScope;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -16,16 +15,12 @@ import br.com.oncast.ontrack.shared.model.scope.inference.EffortInferenceEngine;
 
 public class MoveLeftTest {
 
-	private final String FILE_NAME_PREFIX = "Project1";
-	private Scope original;
-
-	@Before
-	public void setUp() {
-		original = getOriginalScope(FILE_NAME_PREFIX);
-	}
+	final String FILE_NAME_PREFIX = "Project1";
+	final Scope original = getOriginalScope(FILE_NAME_PREFIX);
 
 	@Test
 	public void shouldApplyInferenceWhenMoveScopeLeft() throws UnableToCompleteActionException {
+
 		final Scope scope = original.getChild(0).getChild(1);
 		final ScopeMoveLeftAction moveLeftAction = new ScopeMoveLeftAction(scope.getId());
 

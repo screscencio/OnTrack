@@ -83,10 +83,12 @@ public class Effort implements IsSerializable {
 		return "Declared: " + declared + ", TopDownValue: " + topDownValue + ", BottomUpValue: " + bottomUpValue + ", Infered: " + getInfered();
 	}
 
-	public float getPercentualDescription() {
+	public float getComputedPercentual() {
 		final float inferedEffort = getInfered();
 		if (inferedEffort == 0) return 0;
 
-		return 100 * getComputedEffort() / inferedEffort;
+		final float computedEffort = getComputedEffort();
+		return 100 * computedEffort / inferedEffort;
 	}
+
 }

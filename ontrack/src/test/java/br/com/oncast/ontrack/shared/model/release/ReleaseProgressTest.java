@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.mocks.models.ReleaseMock;
 import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.inference.ProgressInferenceEngine;
 
 public class ReleaseProgressTest {
 
