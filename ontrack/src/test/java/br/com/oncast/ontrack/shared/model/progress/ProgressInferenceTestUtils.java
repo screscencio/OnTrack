@@ -1,11 +1,23 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.oncast.ontrack.server.utils.mmConverter.FreeMindImporter;
+import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 
 public class ProgressInferenceTestUtils {
+
+	private static final List<InferenceOverScopeEngine> inferenceEngines = new ArrayList<InferenceOverScopeEngine>();
+
+	static {
+		inferenceEngines.add(new EffortInferenceEngine());
+		inferenceEngines.add(new ProgressInferenceEngine());
+	}
+
 	public static Scope getOriginalScope(final String fileName) {
 		return getScope(fileName + " - original");
 	}

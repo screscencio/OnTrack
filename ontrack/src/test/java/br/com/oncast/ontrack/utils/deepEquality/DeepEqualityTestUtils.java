@@ -17,48 +17,18 @@ import br.com.oncast.ontrack.server.utils.introspector.Introspector;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
 import br.com.oncast.ontrack.utils.deepEquality.custom.ScopeTreeDeepEqualityComparator;
+import br.com.oncast.ontrack.utils.identedLogger.IdentedLogger;
 
 // TODO Implement a logger that informs where the error occurred.
 public class DeepEqualityTestUtils {
 
 	private static double requiredFloatingPointPrecision = 0.01;
 	private static Map<Class<?>, DeepEqualityComparator<?>> customComparatorMap = new HashMap<Class<?>, DeepEqualityComparator<?>>();
+	private static IdentedLogger LOGGER = new IdentedLogger(System.out);
 
 	static {
 		// TODO +Externalize this so that specific application comparators are registered by the application itself.
 		setCustomDeepEqualityComparator(ScopeTree.class, new ScopeTreeDeepEqualityComparator());
-	}
-
-	public static void assertObjectEquality(final Object expected, final Object actual) throws DeepEqualityException {
-		if (expected == actual) return;
-
-		Assert.assertNotNull("Given expected object " + expected.getClass().getName() + " is null.", expected);
-		Assert.assertNotNull("Given actual object " + actual.getClass().getName() + " is null.", actual);
-		Assert.assertTrue("Incompatible classes. Expected class '" + expected.getClass().getName() + "' cannot be assignable from '"
-				+ actual.getClass().getName() + "'.", expected.getClass().isAssignableFrom(actual.getClass()));
-
-		if (expected instanceof Character) assertSimpleEquality(expected, actual);
-		else if (expected instanceof Byte) assertSimpleEquality(expected, actual);
-		else if (expected instanceof Short) assertSimpleEquality(expected, actual);
-		else if (expected instanceof Integer) assertSimpleEquality(expected, actual);
-		else if (expected instanceof Long) assertSimpleEquality(expected, actual);
-		else if (expected instanceof Float) assertFloatingPointEquality((Float) expected, (Float) actual);
-		else if (expected instanceof Double) assertFloatingPointEquality((Double) expected, (Double) actual);
-		else if (expected instanceof Boolean) assertSimpleEquality(expected, actual);
-		else if (expected instanceof String) assertSimpleEquality(expected, actual);
-		else if (expected instanceof Collection<?>) assertCollectionEquality((Collection<?>) expected, (Collection<?>) actual);
-		else if (expected instanceof Map<?, ?>) assertMapEquality((Map<?, ?>) expected, (Map<?, ?>) actual);
-		else if (hasCustomDeepEqualityComparator(expected.getClass())) assertCustomDeepEquality(expected, actual);
-		else assertComplexObjectEquality(expected, actual);
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static void assertCustomDeepEquality(final Object expected, final Object actual) {
-		((DeepEqualityComparator) customComparatorMap.get(expected.getClass())).assertObjectEquality(expected, actual);
-	}
-
-	private static boolean hasCustomDeepEqualityComparator(final Class<? extends Object> clazz) {
-		return customComparatorMap.containsKey(clazz);
 	}
 
 	public static <T> void setCustomDeepEqualityComparator(final Class<T> targetClass, final DeepEqualityComparator<T> deepEqualityComparator) {
@@ -71,6 +41,56 @@ public class DeepEqualityTestUtils {
 						+ ". There is no custom comparator registered for this class");
 
 		customComparatorMap.remove(targetClass);
+	}
+
+	public static double getRequiredFloatingPointPrecision() {
+		return requiredFloatingPointPrecision;
+	}
+
+	public static void setRequiredFloatingPointPrecision(final double requiredFloatingPointPrecision) {
+		DeepEqualityTestUtils.requiredFloatingPointPrecision = requiredFloatingPointPrecision;
+	}
+
+	public static void assertObjectEquality(final Object expected, final Object actual) throws DeepEqualityException {
+		LOGGER.log("Asserting object equality between expected '" + expected.toString() + "' (" + expected.getClass().getSimpleName() + ") and actual '"
+				+ actual.toString() + "' (" + actual.getClass().getSimpleName() + ").");
+		LOGGER.indent();
+		try {
+			if (expected == actual) {
+				LOGGER.log("Equality asserted: Both represent the same instance.");
+				return;
+			}
+
+			Assert.assertNotNull("Given expected object " + expected.getClass().getName() + " is null.", expected);
+			Assert.assertNotNull("Given actual object " + actual.getClass().getName() + " is null.", actual);
+			Assert.assertTrue("Incompatible classes. Expected class '" + expected.getClass().getName() + "' cannot be assignable from '"
+					+ actual.getClass().getName() + "'.", expected.getClass().isAssignableFrom(actual.getClass()));
+
+			if (expected instanceof Character) assertSimpleEquality(expected, actual);
+			else if (expected instanceof Byte) assertSimpleEquality(expected, actual);
+			else if (expected instanceof Short) assertSimpleEquality(expected, actual);
+			else if (expected instanceof Integer) assertSimpleEquality(expected, actual);
+			else if (expected instanceof Long) assertSimpleEquality(expected, actual);
+			else if (expected instanceof Float) assertFloatingPointEquality((Float) expected, (Float) actual);
+			else if (expected instanceof Double) assertFloatingPointEquality((Double) expected, (Double) actual);
+			else if (expected instanceof Boolean) assertSimpleEquality(expected, actual);
+			else if (expected instanceof String) assertSimpleEquality(expected, actual);
+			else if (expected instanceof Collection<?>) assertCollectionEquality((Collection<?>) expected, (Collection<?>) actual);
+			else if (expected instanceof Map<?, ?>) assertMapEquality((Map<?, ?>) expected, (Map<?, ?>) actual);
+			else if (hasCustomDeepEqualityComparator(expected.getClass())) assertCustomDeepEquality(expected, actual);
+			else assertComplexObjectEquality(expected, actual);
+		}
+		finally {
+			LOGGER.outdent();
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static void assertCustomDeepEquality(final Object expected, final Object actual) {
+		LOGGER.log("Using custom deep equality comparator.");
+		LOGGER.indent();
+		((DeepEqualityComparator) customComparatorMap.get(expected.getClass())).assertObjectEquality(expected, actual);
+		LOGGER.outdent();
 	}
 
 	private static void assertMapEquality(final Map<?, ?> expected, final Map<?, ?> actual) throws DeepEqualityException {
@@ -101,32 +121,38 @@ public class DeepEqualityTestUtils {
 	}
 
 	private static void assertComplexObjectEquality(final Object expected, final Object actual) throws DeepEqualityException {
+		LOGGER.log("Using reflection-based deep equality comparator.");
+		LOGGER.indent();
 		try {
 			IntrospectionEngine.introspectThroughDeclaredFields(expected, new Introspector<Field>() {
 
 				@Override
 				public void introspect(final Field field) throws Exception {
-					if (field.isAnnotationPresent(IgnoredByDeepEquality.class)) return;
+					if (field.isAnnotationPresent(IgnoredByDeepEquality.class)) {
+						LOGGER.log("Ignoring field: " + field.getName());
+						return;
+					}
+					LOGGER.log("Asserting field: " + field.getName());
+					LOGGER.indent();
 
 					final Object expectedValue = IntrospectionEngine.getFieldValue(expected, field);
 					final Object actualValue = IntrospectionEngine.getFieldValue(actual, field);
 
 					Assert.assertSame("Incompatible classes.", expected.getClass(), actual.getClass());
 					assertObjectEquality(expectedValue, actualValue);
+					LOGGER.outdent();
 				}
 			});
 		}
 		catch (final IntrospectionException e) {
 			throw new DeepEqualityException("A problem while checking the 'deep equality' was found.", e);
 		}
+		finally {
+			LOGGER.outdent();
+		}
 	}
 
-	public static double getRequiredFloatingPointPrecision() {
-		return requiredFloatingPointPrecision;
+	private static boolean hasCustomDeepEqualityComparator(final Class<? extends Object> clazz) {
+		return customComparatorMap.containsKey(clazz);
 	}
-
-	public static void setRequiredFloatingPointPrecision(final double requiredFloatingPointPrecision) {
-		DeepEqualityTestUtils.requiredFloatingPointPrecision = requiredFloatingPointPrecision;
-	}
-
 }

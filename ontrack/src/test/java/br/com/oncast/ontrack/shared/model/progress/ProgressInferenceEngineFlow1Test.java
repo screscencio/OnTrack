@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getModifiedScope;
 import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOriginalScope;
 
@@ -9,17 +8,17 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class ProgressInferenceEngineFlow1Test {
 
 	private final String FILE_NAME_PREFIX = "Flow1";
-	private Scope original = null;
-	private final InferenceOverScopeEngine inferenceEngine = new ProgressInferenceEngine();
+	private Scope rootScope = null;
 
 	@Before
 	public void setUp() {
-		original = getOriginalScope(FILE_NAME_PREFIX);
+		rootScope = getOriginalScope(FILE_NAME_PREFIX);
 	}
 
 	@Test
@@ -28,9 +27,10 @@ public class ProgressInferenceEngineFlow1Test {
 	}
 
 	private void shouldApplyInferenceWhenDeclaringLeafAsDone() {
-		original.getEffort().setDeclared(1000);
-		inferenceEngine.process(original);
+		rootScope.getEffort().setDeclared(20);
+		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
+		DeepEqualityTestUtils.assertObjectEquality(getModifiedScope(FILE_NAME_PREFIX, 1), rootScope);
 	}
+
 }
