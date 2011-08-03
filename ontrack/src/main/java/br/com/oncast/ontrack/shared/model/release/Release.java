@@ -127,6 +127,8 @@ public class Release implements IsSerializable {
 	}
 
 	public boolean isDone() {
+		if (scopeList.isEmpty() && childrenList.isEmpty()) return false;
+
 		for (final Scope scope : scopeList)
 			if (!scope.getProgress().isDone()) return false;
 

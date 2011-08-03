@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.release;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +78,40 @@ public class ReleaseProgressTest {
 	}
 
 	@Test
+	public void shouldUpdateProgressPercentageWhenAScopeIsRemovedFromRelease2() {
+		scopeHierarchy.getChild(0).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+
+		assertEquals(100, getProgressPercentage(r1), 0.09);
+
+		r1.removeScope(scopeHierarchy.getChild(0));
+		r1.removeScope(scopeHierarchy.getChild(1));
+
+		assertEquals(0, getProgressPercentage(r1), 0.09);
+	}
+
+	@Test
+	public void aReleaseShouldNotBeDoneIfAtLeastOneOfItsChildReleasesAreNotDoneEvenIfAllItsScopeAreDone() {
+		final Release release = new Release("R1");
+
+		final Scope scope = new Scope("scope");
+		scope.getProgress().setDescription("Done");
+		release.addScope(scope);
+
+		release.addRelease(new Release("Child release"));
+
+		assertFalse(release.isDone());
+	}
+
+	@Test
+	public void aReleaseShouldNotBeDoneIfItHaveNoScopeAndNoChildRelease() {
+		final Release release = new Release("R1");
+		assertFalse(release.isDone());
+	}
+
+	@Test
 	public void shouldIncludeSubReleasesInProgressPercentageCalculation() {
 		scopeHierarchy.getChild(0).getProgress().setDescription("Underwork");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
@@ -145,6 +180,20 @@ public class ReleaseProgressTest {
 		assertEquals(0, getProgressPercentage(r1), 0.09);
 	}
 
+	@Test
+	public void progressPercentageShouldBe100IfAllItsChildrenAreDoneAndTheSumOfAllEstimatedEffortsIsZero() {
+		final Release release = new Release("Release");
+
+		final Scope rootScope = ScopeMock.getSimpleScope();
+		for (final Scope child : rootScope.getChildren()) {
+			child.getProgress().setDescription("DONE");
+			PROGRESS_INFERENCE_ENGINE.process(rootScope);
+			release.addScope(child);
+		}
+
+		assertEquals(100, getProgressPercentage(release), 0.09);
+	}
+
 	private double getProgressPercentage(final Release release) {
 		if (release.isDone()) return 100f;
 		final float effortSum = release.getEffortSum();
@@ -153,19 +202,6 @@ public class ReleaseProgressTest {
 		final float concludedEffortSum = release.getComputedEffortSum();
 		final float percentage = 100 * concludedEffortSum / effortSum;
 		return percentage;
-	}
-
-	@Test
-	public void progressPercentageShouldBe100IfAllItsChildrenAreDoneAndTheSumOfAllEstimatedEffortsIsZero() {
-		r1.getScopeList().clear();
-
-		final Scope rootScope = ScopeMock.getSimpleScope();
-		for (final Scope child : rootScope.getChildren()) {
-			child.getProgress().setDescription("DONE");
-			r1.addScope(child);
-		}
-
-		assertEquals(100, getProgressPercentage(r1), 0.09);
 	}
 
 }
