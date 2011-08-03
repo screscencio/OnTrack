@@ -11,7 +11,9 @@ public enum Icon {
 	PENCIL("pencil"),
 	IDEA("idea"),
 	DOWN("down"),
-	UP("up");
+	UP("up"),
+	OK("button_ok"),
+	KEY("password");
 
 	private final String freemindCode;
 
