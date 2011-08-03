@@ -45,6 +45,16 @@ public class ScopeBuilder {
 		return this;
 	}
 
+	public ScopeBuilder accomplishedEffort(final float value) {
+		scope.getEffort().setComputedEffort(value);
+		return this;
+	}
+
+	public ScopeBuilder declaredProgress(final String value) {
+		scope.getProgress().setDescription(value);
+		return this;
+	}
+
 	public Scope getScope() {
 		return scope;
 	}
