@@ -58,7 +58,11 @@ public class FreeMindImporter {
 	}
 
 	private static boolean extractEffort(final ScopeBuilder scope, final MindNode childNode) {
-		if (childNode.hasIcon(Icon.PENCIL) || childNode.hasIcon(Icon.LAUNCH)) {
+		if (childNode.hasIcon(Icon.LAUNCH) && childNode.hasIcon(Icon.OK)) {
+			scope.accomplishedEffort(extractCalculatedEffort(childNode));
+			return true;
+		}
+		else if (childNode.hasIcon(Icon.PENCIL)) {
 			scope.declaredEffort(extractDeclaredEffort(childNode));
 			return true;
 		}
@@ -68,10 +72,6 @@ public class FreeMindImporter {
 		}
 		else if (childNode.hasIcon(Icon.UP)) {
 			scope.bottomUpEffort(extractCalculatedEffort(childNode));
-			return true;
-		}
-		else if (childNode.hasIcon(Icon.LAUNCH) && childNode.hasIcon(Icon.OK)) {
-			scope.accomplishedEffort(extractCalculatedEffort(childNode));
 			return true;
 		}
 		return false;

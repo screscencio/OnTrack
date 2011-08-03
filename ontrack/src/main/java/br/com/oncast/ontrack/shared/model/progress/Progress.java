@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Progress implements IsSerializable {
@@ -43,6 +45,8 @@ public class Progress implements IsSerializable {
 	};
 
 	private String description;
+
+	@IgnoredByDeepEquality
 	private ProgressState state;
 
 	public Progress() {

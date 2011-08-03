@@ -78,10 +78,10 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 			}
 		}
 
-		final float newComputedEffort = progress.isDone() ? scope.getEffort().getInfered() : calculateComputedEffort(scope);
+		final float newAccomplishedEffort = progress.isDone() ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
 
-		if (Math.abs(newComputedEffort - scope.getEffort().getComputedEffort()) > EPSILON) {
-			scope.getEffort().setComputedEffort(newComputedEffort);
+		if (Math.abs(newAccomplishedEffort - scope.getEffort().getAccomplishedEffort()) > EPSILON) {
+			scope.getEffort().setAccomplishedEffort(newAccomplishedEffort);
 			shouldBeInsertedIntoSet = true;
 		}
 
@@ -95,11 +95,11 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		return true;
 	}
 
-	private float calculateComputedEffort(final Scope scope) {
+	private float calculateAccomplishedEffort(final Scope scope) {
 		float doneSum = 0;
 
 		for (final Scope child : scope.getChildren())
-			doneSum += child.getEffort().getComputedEffort();
+			doneSum += child.getEffort().getAccomplishedEffort();
 
 		return doneSum;
 	}
