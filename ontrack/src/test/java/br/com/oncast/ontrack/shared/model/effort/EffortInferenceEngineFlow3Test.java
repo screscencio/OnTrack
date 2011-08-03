@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class InferenceEngineFlow3Test {
+public class EffortInferenceEngineFlow3Test {
 
 	private final String FILE_NAME_PREFIX = "Flow3";
 	private Scope original = null;

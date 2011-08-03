@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class InferenceEngineFlow1Test {
+public class EffortInferenceEngineFlow1Test {
 
 	private final String FILE_NAME_PREFIX = "Flow1";
 	private Scope original = null;

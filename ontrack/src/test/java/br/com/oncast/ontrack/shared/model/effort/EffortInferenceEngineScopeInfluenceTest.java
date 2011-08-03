@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class InferenceEngineScopeInfluenceTest {
+public class EffortInferenceEngineScopeInfluenceTest {
 
 	private Scope scope;
 

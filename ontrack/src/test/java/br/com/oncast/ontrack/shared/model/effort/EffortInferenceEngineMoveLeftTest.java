@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class InferenceEngineMoveLeftTest {
+public class EffortInferenceEngineMoveLeftTest {
 
 	final String FILE_NAME_PREFIX = "Project1";
 	final Scope original = getOriginalScope(FILE_NAME_PREFIX);
