@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceTestUtils;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
@@ -19,7 +18,7 @@ public class EffortInferenceEngineFlow1Test {
 
 	@Before
 	public void setUp() {
-		original = ProgressInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX);
+		original = EffortInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX);
 	}
 
 	@Test

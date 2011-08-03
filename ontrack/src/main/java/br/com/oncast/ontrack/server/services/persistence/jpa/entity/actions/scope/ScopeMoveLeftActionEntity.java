@@ -1,6 +1,10 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -15,6 +19,9 @@ public class ScopeMoveLeftActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String referenceId;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<ModelActionEntity> subActionList;
+
 	public String getReferenceId() {
 		return referenceId;
 	}
@@ -22,4 +29,13 @@ public class ScopeMoveLeftActionEntity extends ModelActionEntity {
 	public void setReferenceId(final String referenceId) {
 		this.referenceId = referenceId;
 	}
+
+	public List<ModelActionEntity> getSubActionList() {
+		return subActionList;
+	}
+
+	public void setSubActionList(final List<ModelActionEntity> subActionList) {
+		this.subActionList = subActionList;
+	}
+
 }

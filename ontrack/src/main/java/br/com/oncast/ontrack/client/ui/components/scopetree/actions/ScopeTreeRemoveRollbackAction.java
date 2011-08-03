@@ -27,6 +27,7 @@ public class ScopeTreeRemoveRollbackAction implements ScopeTreeAction {
 		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope.getId());
 		final ScopeTreeItem newTreeItem = new ScopeTreeItem(referencedScope);
 		parentItem.insertItem(childIndex, newTreeItem);
+		parentItem.getScopeTreeItemWidget().updateDisplay();
 
 		newTreeItem.setHierarchicalState(true);
 		tree.setSelected(newTreeItem);

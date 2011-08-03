@@ -18,8 +18,17 @@ public class ScopeRemoveAction implements ScopeAction {
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
 
+	@ConversionAlias("subActionList")
+	private List<ModelAction> subActionList;
+
 	public ScopeRemoveAction(final UUID selectedScopeId) {
 		this.referenceId = selectedScopeId;
+		this.subActionList = new ArrayList<ModelAction>();
+	}
+
+	public ScopeRemoveAction(final UUID selectedScopeId, final List<ModelAction> subActionList) {
+		this.referenceId = selectedScopeId;
+		this.subActionList = subActionList;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -40,6 +49,7 @@ public class ScopeRemoveAction implements ScopeAction {
 		final int index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
 
+		// TODO Analyze the possibility of merging these two lists into only one sub-action list.
 		return new ScopeRemoveRollbackAction(parentScopeId, referenceId, description, index, subActionRollbackList, childActionRollbackList);
 	}
 
@@ -52,7 +62,6 @@ public class ScopeRemoveAction implements ScopeAction {
 	}
 
 	private List<ModelAction> executeSubActions(final ProjectContext context, final Scope selectedScope) throws UnableToCompleteActionException {
-		final List<ModelAction> subActionList = new ArrayList<ModelAction>();
 		subActionList.add(new ScopeDeclareProgressAction(referenceId, selectedScope.getProgress().getDescription()));
 		subActionList.add(new ScopeBindReleaseAction(referenceId, null));
 		subActionList.add(new ScopeDeclareEffortAction(referenceId, false, 0));
