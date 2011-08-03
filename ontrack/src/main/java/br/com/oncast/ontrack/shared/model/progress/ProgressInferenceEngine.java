@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -41,17 +42,23 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 	}
 
 	private void processBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
-		for (final Scope child : scope.getChildren()) {
+		for (final Scope child : scope.getChildren())
 			processBottomUp(child, inferenceInfluencedScopeSet);
-		}
+
 		calculateBottomUp(scope, inferenceInfluencedScopeSet);
 	}
 
 	private void calculateBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
 		boolean shouldBeInsertedIntoSet = false;
 		final Progress progress = scope.getProgress();
-		if (!scope.isLeaf()) {
 
+		if (scope.isLeaf()) {
+			if (!progress.hasDeclared() && progress.isDone()) {
+				progress.setState(ProgressState.NOT_STARTED);
+				shouldBeInsertedIntoSet = true;
+			}
+		}
+		else {
 			if (!progress.getDescription().isEmpty()) {
 				progress.setDescription("");
 				shouldBeInsertedIntoSet = true;
@@ -59,7 +66,13 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 
 			if (shouldProgressBeMarketAsCompleted(scope)) {
 				if (!progress.isDone()) {
-					progress.markAsCompleted();
+					progress.setState(ProgressState.DONE);
+					shouldBeInsertedIntoSet = true;
+				}
+			}
+			else {
+				if (!progress.hasDeclared() && progress.isDone()) {
+					progress.setState(ProgressState.NOT_STARTED);
 					shouldBeInsertedIntoSet = true;
 				}
 			}
