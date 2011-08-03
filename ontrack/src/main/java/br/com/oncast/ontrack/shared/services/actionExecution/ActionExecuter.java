@@ -33,7 +33,7 @@ public class ActionExecuter {
 		return new ActionExecutionContext(reverseAction, inferenceInfluencedScopeSet);
 	}
 
-	private static Set<UUID> executeInferenceEngines(final ModelAction action, final Scope scope) {
+	protected static Set<UUID> executeInferenceEngines(final ModelAction action, final Scope scope) {
 		final Set<UUID> inferenceInfluencedScopeSet = new HashSet<UUID>();
 		for (final InferenceOverScopeEngine inferenceEngine : inferenceEngines)
 			if (inferenceEngine.shouldProcess(action)) inferenceInfluencedScopeSet.addAll(inferenceEngine.process(scope));
