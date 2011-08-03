@@ -10,7 +10,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class InferenceEngineFlow2Test {
+public class EffortInferenceEngineFlow2Test {
 
 	private final String FILE_NAME_PREFIX = "Flow2";
 	private Scope original = null;

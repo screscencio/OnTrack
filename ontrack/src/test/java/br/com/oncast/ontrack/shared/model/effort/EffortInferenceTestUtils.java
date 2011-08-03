@@ -5,7 +5,7 @@ import java.io.File;
 import br.com.oncast.ontrack.server.utils.mmConverter.FreeMindImporter;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class InferenceTestUtils {
+public class EffortInferenceTestUtils {
 	public static Scope getOriginalScope(final String fileName) {
 		return getScope(fileName + " - original");
 	}
@@ -19,7 +19,7 @@ public class InferenceTestUtils {
 	}
 
 	public static Scope getScope(final String fileName) {
-		final FreeMindImporter importer = FreeMindImporter.importMapFrom(new File("src/test/java/br/com/oncast/ontrack/shared/model/effort/inferenceengine/"
+		final FreeMindImporter importer = FreeMindImporter.importMapFrom(new File("src/test/java/br/com/oncast/ontrack/shared/model/progress/"
 				+ fileName + ".mm"));
 
 		return importer.getScope();
