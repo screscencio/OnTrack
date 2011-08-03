@@ -1,3 +1,10 @@
+/*
+ * Decisions:
+ * - [02/08/2011] As suggested by Rodrigo, it was decided to not use "damage-control" because the damage control implementation we had would only
+ * take in account the action modification and not the modifications done by other inference engines (like EffortInferenceEngine).
+ * - [02/08/2011] Progress distribution was removed to simplify the ProgressInferenceEngine and its architecture: CTRL+Z should be thought over.
+ */
+
 package br.com.oncast.ontrack.shared.model.progress;
 
 import java.util.HashSet;
@@ -8,6 +15,8 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+// TODO Possible optimization may be necessary as this algorithm does not make use of "damage-control", because the damage control implementation we had would
+// only take in account the action modification and not the modifications done by other inference engines (like EffortInferenceEngine).
 public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 
 	private static final float EPSILON = 0.01f;
