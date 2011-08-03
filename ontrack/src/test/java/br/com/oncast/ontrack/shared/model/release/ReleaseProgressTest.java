@@ -199,7 +199,7 @@ public class ReleaseProgressTest {
 		final float effortSum = release.getEffortSum();
 		if (effortSum == 0) return 0f;
 
-		final float concludedEffortSum = release.getComputedEffortSum();
+		final float concludedEffortSum = release.getAccomplishedEffortSum();
 		final float percentage = 100 * concludedEffortSum / effortSum;
 		return percentage;
 	}

@@ -22,7 +22,7 @@ public class ProgressInferenceEngineTest {
 			PROGRESS_INFERENCE_ENGINE.process(rootScope);
 		}
 
-		assertEquals(0, rootScope.getEffort().getComputedPercentual(), 0.09);
+		assertEquals(0, rootScope.getEffort().getAccomplishedPercentual(), 0.09);
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class ProgressInferenceEngineTest {
 		rootScope.getChild(1).getProgress().setDescription("DONE");
 		PROGRESS_INFERENCE_ENGINE.process(rootScope);
 
-		assertEquals(0, rootScope.getEffort().getComputedPercentual(), 0.09);
+		assertEquals(0, rootScope.getEffort().getAccomplishedPercentual(), 0.09);
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class ProgressInferenceEngineTest {
 		EFFORT_INFERENCE_ENGINE.process(rootScope);
 		PROGRESS_INFERENCE_ENGINE.process(rootScope);
 
-		assertEquals(42.8, rootScope.getEffort().getComputedPercentual(), 0.1);
+		assertEquals(42.8, rootScope.getEffort().getAccomplishedPercentual(), 0.1);
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class ProgressInferenceEngineTest {
 		rootScope.getChild(2).getEffort().setDeclared(20);
 		EFFORT_INFERENCE_ENGINE.process(rootScope);
 
-		assertEquals(45.4, rootScope.getEffort().getComputedPercentual(), 0.1);
+		assertEquals(45.4, rootScope.getEffort().getAccomplishedPercentual(), 0.1);
 	}
 
 }

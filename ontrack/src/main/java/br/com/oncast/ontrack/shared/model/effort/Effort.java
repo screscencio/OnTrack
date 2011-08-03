@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Effort implements IsSerializable {
@@ -8,10 +10,9 @@ public class Effort implements IsSerializable {
 	private float topDownValue;
 	private float bottomUpValue;
 	private boolean hasDeclared;
-	private boolean hasTopDownValue;
-	private boolean hasBottomUpValue;
+	private float accomplishedEffort;
+	@IgnoredByDeepEquality
 	private boolean hasStronglyDefinedChildren;
-	private float computedEffort;
 
 	public int getDeclared() {
 		return declared;
@@ -44,7 +45,7 @@ public class Effort implements IsSerializable {
 	}
 
 	public boolean hasInfered() {
-		return hasDeclared || hasBottomUpValue || hasTopDownValue;
+		return hasDeclared || topDownValue > 0 || bottomUpValue > 0;
 	}
 
 	public float getInfered() {
@@ -58,7 +59,6 @@ public class Effort implements IsSerializable {
 
 	public void setTopDownValue(final float topDownValue) {
 		this.topDownValue = topDownValue;
-		hasTopDownValue = true;
 	}
 
 	public float getBottomUpValue() {
@@ -67,15 +67,14 @@ public class Effort implements IsSerializable {
 
 	public void setBottomUpValue(final float bottomUpValue) {
 		this.bottomUpValue = bottomUpValue;
-		hasBottomUpValue = true;
 	}
 
-	public float getComputedEffort() {
-		return computedEffort;
+	public float getAccomplishedEffort() {
+		return accomplishedEffort;
 	}
 
-	public void setComputedEffort(final float computedEffort) {
-		this.computedEffort = computedEffort;
+	public void setAccomplishedEffort(final float accomplishedEffort) {
+		this.accomplishedEffort = accomplishedEffort;
 	}
 
 	@Override
@@ -83,11 +82,11 @@ public class Effort implements IsSerializable {
 		return "Declared: " + declared + ", TopDownValue: " + topDownValue + ", BottomUpValue: " + bottomUpValue + ", Infered: " + getInfered();
 	}
 
-	public float getComputedPercentual() {
+	public float getAccomplishedPercentual() {
 		final float inferedEffort = getInfered();
 		if (inferedEffort == 0) return 0;
 
-		return 100 * getComputedEffort() / inferedEffort;
+		return 100 * getAccomplishedEffort() / inferedEffort;
 	}
 
 }

@@ -52,7 +52,7 @@ public class DeepEqualityTestUtils {
 	}
 
 	public static void assertObjectEquality(final Object expected, final Object actual) throws DeepEqualityException {
-		LOGGER.log("Asserting object equality in " + expected.getClass().getSimpleName() + ".");
+		LOGGER.log("Asserting object equality in " + expected.getClass().getSimpleName());
 		LOGGER.indent();
 		try {
 			if (expected == actual) {
@@ -60,10 +60,10 @@ public class DeepEqualityTestUtils {
 				return;
 			}
 
-			Assert.assertNotNull("Given expected object " + expected.getClass().getName() + " is null.", expected);
-			Assert.assertNotNull("Given actual object " + actual.getClass().getName() + " is null.", actual);
+			Assert.assertNotNull("Given expected object " + expected.getClass().getName() + " is null.\n" + LOGGER.getCurrentLogHierarchy(), expected);
+			Assert.assertNotNull("Given actual object " + actual.getClass().getName() + " is null.\n" + LOGGER.getCurrentLogHierarchy(), actual);
 			Assert.assertTrue("Incompatible classes. Expected class '" + expected.getClass().getName() + "' cannot be assignable from '"
-					+ actual.getClass().getName() + "'.", expected.getClass().isAssignableFrom(actual.getClass()));
+					+ actual.getClass().getName() + "'.\n" + LOGGER.getCurrentLogHierarchy(), expected.getClass().isAssignableFrom(actual.getClass()));
 
 			if (expected instanceof Character) assertSimpleEquality(expected, actual);
 			else if (expected instanceof Byte) assertSimpleEquality(expected, actual);
@@ -86,58 +86,63 @@ public class DeepEqualityTestUtils {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void assertCustomDeepEquality(final Object expected, final Object actual) {
-		LOGGER.log("Using custom deep equality comparator.");
-		LOGGER.indent();
 		((DeepEqualityComparator) customComparatorMap.get(expected.getClass())).assertObjectEquality(expected, actual);
-		LOGGER.outdent();
 	}
 
 	private static void assertMapEquality(final Map<?, ?> expected, final Map<?, ?> actual) throws DeepEqualityException {
-		Assert.assertEquals(expected.keySet(), actual.keySet());
-		for (final Object key : (Set<?>) expected.keySet())
+		LOGGER.log("Asserting map");
+		Assert.assertEquals("Different map keySet.\n" + LOGGER.getCurrentLogHierarchy(), expected.keySet(), actual.keySet());
+		for (final Object key : (Set<?>) expected.keySet()) {
+			LOGGER.indent();
+			LOGGER.log("Asserting map item '" + key.toString() + "'");
 			assertObjectEquality(expected.get(key), actual.get(key));
+			LOGGER.outdent();
+		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static void assertCollectionEquality(final Collection<?> expected, final Collection<?> actual) throws DeepEqualityException {
-		Assert.assertEquals(expected.size(), actual.size());
+		LOGGER.log("Asserting collection");
+		Assert.assertEquals("Different collection sizes.\n" + LOGGER.getCurrentLogHierarchy(), expected.size(), actual.size());
 		final List<?> expectedList = new ArrayList(expected);
 		final List<?> actualList = new ArrayList(actual);
-		for (int i = 0; i < expectedList.size(); i++)
+		for (int i = 0; i < expectedList.size(); i++) {
+			LOGGER.indent();
+			LOGGER.log("Asserting collection item '" + i + "'");
 			assertObjectEquality(expectedList.get(i), actualList.get(i));
+			LOGGER.outdent();
+		}
 	}
 
 	protected static void assertFloatingPointEquality(final Float expected, final Float actual) {
-		Assert.assertEquals(expected, actual, requiredFloatingPointPrecision);
+		Assert.assertEquals(LOGGER.getCurrentLogHierarchy(), expected, actual, requiredFloatingPointPrecision);
 	}
 
 	protected static void assertFloatingPointEquality(final Double expected, final Double actual) {
-		Assert.assertEquals(expected, actual, requiredFloatingPointPrecision);
+		Assert.assertEquals(LOGGER.getCurrentLogHierarchy(), expected, actual, requiredFloatingPointPrecision);
 	}
 
 	protected static void assertSimpleEquality(final Object expected, final Object actual) {
-		Assert.assertEquals(expected, actual);
+		Assert.assertEquals(LOGGER.getCurrentLogHierarchy(), expected, actual);
 	}
 
 	private static void assertComplexObjectEquality(final Object expected, final Object actual) throws DeepEqualityException {
-		LOGGER.log("Using reflection-based deep equality comparator.");
-		LOGGER.indent();
 		try {
 			IntrospectionEngine.introspectThroughDeclaredFields(expected, new Introspector<Field>() {
 
 				@Override
 				public void introspect(final Field field) throws Exception {
 					if (field.isAnnotationPresent(IgnoredByDeepEquality.class)) {
-						LOGGER.log("Ignoring field: " + field.getName());
+						LOGGER.log("Ignoring field: '" + field.getName() + "'");
 						return;
 					}
-					LOGGER.log("Asserting field: " + field.getName());
+					LOGGER.log("Asserting '" + field.getName() + "'");
 					LOGGER.indent();
 
 					final Object expectedValue = IntrospectionEngine.getFieldValue(expected, field);
 					final Object actualValue = IntrospectionEngine.getFieldValue(actual, field);
 
-					Assert.assertSame("Incompatible classes.", expected.getClass(), actual.getClass());
+					Assert.assertSame("Incompatible classes.\n" + LOGGER.getCurrentLogHierarchy(), expected.getClass(), actual.getClass());
 					assertObjectEquality(expectedValue, actualValue);
 					LOGGER.outdent();
 				}
@@ -145,9 +150,6 @@ public class DeepEqualityTestUtils {
 		}
 		catch (final IntrospectionException e) {
 			throw new DeepEqualityException("A problem while checking the 'deep equality' was found.", e);
-		}
-		finally {
-			LOGGER.outdent();
 		}
 	}
 

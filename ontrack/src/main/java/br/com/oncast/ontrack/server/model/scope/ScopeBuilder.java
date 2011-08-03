@@ -46,7 +46,7 @@ public class ScopeBuilder {
 	}
 
 	public ScopeBuilder accomplishedEffort(final float value) {
-		scope.getEffort().setComputedEffort(value);
+		scope.getEffort().setAccomplishedEffort(value);
 		return this;
 	}
 

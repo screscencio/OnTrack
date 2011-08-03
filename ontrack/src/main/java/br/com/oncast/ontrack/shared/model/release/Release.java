@@ -114,16 +114,16 @@ public class Release implements IsSerializable {
 		return effortSum;
 	}
 
-	public float getComputedEffortSum() {
-		float computedEffortSum = 0;
+	public float getAccomplishedEffortSum() {
+		float accomplishedEffortSum = 0;
 
 		for (final Release childRelease : childrenList)
-			computedEffortSum += childRelease.getComputedEffortSum();
+			accomplishedEffortSum += childRelease.getAccomplishedEffortSum();
 
 		for (final Scope scope : scopeList)
-			computedEffortSum += scope.getEffort().getComputedEffort();
+			accomplishedEffortSum += scope.getEffort().getAccomplishedEffort();
 
-		return computedEffortSum;
+		return accomplishedEffortSum;
 	}
 
 	public boolean isDone() {

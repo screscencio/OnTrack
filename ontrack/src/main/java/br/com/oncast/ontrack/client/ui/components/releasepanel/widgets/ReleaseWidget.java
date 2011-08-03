@@ -135,7 +135,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		final float effortSum = release.getEffortSum();
 		if (effortSum == 0) return "";
 
-		final float concludedEffortSum = release.getComputedEffortSum();
+		final float concludedEffortSum = release.getAccomplishedEffortSum();
 		final float percentage = 100 * concludedEffortSum / effortSum;
 		return ClientDecimalFormat.roundFloat(percentage, 1) + "%";
 	}

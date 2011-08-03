@@ -212,6 +212,9 @@ public class ScopeTreeItemWidget extends Composite {
 		final float effortValue = effort.getInfered();
 		final int effortDifferenceValue = ((int) ((effortErrorDifference > 0) ? effortErrorDifference : effortPositiveDifference));
 
+		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
+		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
+
 		if (currEffort == effortValue && currEffortDifference == effortDifferenceValue) return;
 		currEffort = effortValue;
 		currEffortDifference = effortDifferenceValue;
@@ -220,8 +223,6 @@ public class ScopeTreeItemWidget extends Composite {
 		if (!effortVisibility) return;
 
 		effortLabel.setText(ClientDecimalFormat.roundFloat(effortValue, 1) + "ep");
-		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
-		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
 
 		effortDifferenceLabel.setVisible(effortDifferenceVisibility);
 		if (!effortDifferenceVisibility) return;
@@ -257,6 +258,6 @@ public class ScopeTreeItemWidget extends Composite {
 	private String getProgressDescriptionForNonLeaf() {
 		if (scope.getProgress().isDone()) return "100%";
 		if (scope.getEffort().getInfered() == 0) return "";
-		return ClientDecimalFormat.roundFloat(scope.getEffort().getComputedPercentual(), 1) + "%";
+		return ClientDecimalFormat.roundFloat(scope.getEffort().getAccomplishedPercentual(), 1) + "%";
 	}
 }

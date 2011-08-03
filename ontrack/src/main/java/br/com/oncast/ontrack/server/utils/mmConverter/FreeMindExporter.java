@@ -83,7 +83,7 @@ public class FreeMindExporter {
 		final Effort effort = scope.getEffort();
 
 		if (effort.hasDeclared()) appendNodeTo(node, Integer.toString(effort.getDeclared()), Icon.LAUNCH);
-		if (effort.hasInfered() && (effort.getInfered() > effort.getDeclared())) appendNodeTo(node, roundEffortValue(effort.getInfered()), Icon.LAUNCH,
+		if (effort.getInfered() > effort.getDeclared()) appendNodeTo(node, roundEffortValue(effort.getInfered()), Icon.LAUNCH,
 				Icon.WIZARD);
 	}
 
