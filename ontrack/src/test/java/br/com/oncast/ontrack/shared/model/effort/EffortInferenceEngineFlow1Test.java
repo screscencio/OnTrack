@@ -1,14 +1,13 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
+import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getModifiedScope;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
-import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getModifiedScope;
-import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOriginalScope;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
+import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceTestUtils;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
@@ -20,7 +19,7 @@ public class EffortInferenceEngineFlow1Test {
 
 	@Before
 	public void setUp() {
-		original = getOriginalScope(FILE_NAME_PREFIX);
+		original = ProgressInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX);
 	}
 
 	@Test

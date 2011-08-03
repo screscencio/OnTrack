@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getModifiedScope;
-import static br.com.oncast.ontrack.utils.mmConverter.MindMapImporterUtils.getOriginalScope;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,19 +15,24 @@ public class ProgressInferenceEngineFlow1Test {
 
 	@Before
 	public void setUp() {
-		rootScope = getOriginalScope(FILE_NAME_PREFIX);
+		rootScope = ProgressInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX);
 	}
 
 	@Test
 	public void testCaseStep01() throws UnableToCompleteActionException {
-		shouldApplyInferenceWhenDeclaringLeafAsDone();
+		shouldApplyEffort();
 	}
 
-	private void shouldApplyInferenceWhenDeclaringLeafAsDone() {
+	@Test
+	public void testCaseStep02() throws UnableToCompleteActionException {
+		shouldApplyEffort();
+	}
+
+	private void shouldApplyEffort() {
 		rootScope.getEffort().setDeclared(20);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 
-		DeepEqualityTestUtils.assertObjectEquality(getModifiedScope(FILE_NAME_PREFIX, 1), rootScope);
+		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 1), rootScope);
 	}
 
 }

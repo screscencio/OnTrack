@@ -31,7 +31,7 @@ public class ProgressInferenceTestUtils {
 	}
 
 	public static Scope getScope(final String fileName) {
-		final FreeMindImporter importer = FreeMindImporter.importMapFrom(new File("src/test/java/br/com/oncast/ontrack/shared/model/effort/"
+		final FreeMindImporter importer = FreeMindImporter.importMapFrom(new File("src/test/java/br/com/oncast/ontrack/shared/model/progress/"
 				+ fileName + ".mm"));
 
 		return importer.getScope();
