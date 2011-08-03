@@ -62,7 +62,7 @@ public class Progress implements IsSerializable {
 		return state;
 	}
 
-	private void setState(final ProgressState state) {
+	void setState(final ProgressState state) {
 		this.state = state;
 	}
 
@@ -72,9 +72,5 @@ public class Progress implements IsSerializable {
 
 	public boolean isDone() {
 		return state == ProgressState.DONE;
-	}
-
-	void markAsCompleted() {
-		state = ProgressState.DONE;
 	}
 }
