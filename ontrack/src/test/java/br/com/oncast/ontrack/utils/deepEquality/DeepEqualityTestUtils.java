@@ -52,8 +52,7 @@ public class DeepEqualityTestUtils {
 	}
 
 	public static void assertObjectEquality(final Object expected, final Object actual) throws DeepEqualityException {
-		LOGGER.log("Asserting object equality between expected '" + expected.toString() + "' (" + expected.getClass().getSimpleName() + ") and actual '"
-				+ actual.toString() + "' (" + actual.getClass().getSimpleName() + ").");
+		LOGGER.log("Asserting object equality in " + expected.getClass().getSimpleName() + ".");
 		LOGGER.indent();
 		try {
 			if (expected == actual) {
