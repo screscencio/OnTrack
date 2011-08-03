@@ -26,6 +26,7 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 		final ScopeTreeItem newItem = new ScopeTreeItem(newScope);
 
 		parentTreeItem.insertItem(scope.getChildIndex(newScope), newItem);
+		parentTreeItem.getScopeTreeItemWidget().updateDisplay();
 
 		parentTreeItem.setState(true);
 		tree.setSelected(newItem);

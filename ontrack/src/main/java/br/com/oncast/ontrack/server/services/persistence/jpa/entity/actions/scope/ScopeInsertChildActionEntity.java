@@ -1,6 +1,10 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -19,6 +23,9 @@ public class ScopeInsertChildActionEntity extends ModelActionEntity {
 	private String newScopeId;
 
 	private String pattern;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<ModelActionEntity> subActionList;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -43,4 +50,13 @@ public class ScopeInsertChildActionEntity extends ModelActionEntity {
 	public void setPattern(final String pattern) {
 		this.pattern = pattern;
 	}
+
+	public List<ModelActionEntity> getSubActionList() {
+		return subActionList;
+	}
+
+	public void setSubActionList(final List<ModelActionEntity> subActionList) {
+		this.subActionList = subActionList;
+	}
+
 }

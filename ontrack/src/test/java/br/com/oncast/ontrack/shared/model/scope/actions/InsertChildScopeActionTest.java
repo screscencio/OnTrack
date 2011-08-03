@@ -8,12 +8,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 
 public class InsertChildScopeActionTest {
 
@@ -89,4 +90,30 @@ public class InsertChildScopeActionTest {
 		assertEquals(selectedScope.getChildren().size(), 1);
 		assertFalse(release.getScopeList().contains(insertedScope));
 	}
+
+	@Test
+	public void rollbackMustGiveBackTheProgressStateToParentIfItWasLeaf() throws UnableToCompleteActionException {
+		final Scope parent = selectedScope.getChild(0);
+		parent.getProgress().setDescription("Done");
+		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(selectedScope);
+
+		assertTrue(parent.getProgress().isDone());
+		assertTrue(parent.getProgress().hasDeclared());
+		assertEquals(ProgressState.DONE, parent.getProgress().getState());
+
+		final ScopeInsertChildAction insertChildAction = new ScopeInsertChildAction(parent.getId(), newScopeDescription);
+		final ModelAction rollbackAction = insertChildAction.execute(context);
+		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
+
+		assertFalse(parent.getProgress().hasDeclared());
+		assertFalse(parent.getProgress().isDone());
+
+		rollbackAction.execute(context);
+		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
+
+		assertTrue(parent.getProgress().isDone());
+		assertTrue(parent.getProgress().hasDeclared());
+		assertEquals(ProgressState.DONE, parent.getProgress().getState());
+	}
+
 }

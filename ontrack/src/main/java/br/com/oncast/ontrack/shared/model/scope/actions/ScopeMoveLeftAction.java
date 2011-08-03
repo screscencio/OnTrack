@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveLeftActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -15,8 +18,18 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
 
+	@ConversionAlias("subActionList")
+	private List<ModelAction> subActionList;
+
 	public ScopeMoveLeftAction(final UUID selectedScopeId) {
 		this.referenceId = selectedScopeId;
+		this.subActionList = new ArrayList<ModelAction>();
+	}
+
+	// TODO Analyze the possibility of replacing the sub-action list for a single typed action.
+	public ScopeMoveLeftAction(final UUID selectedScopeId, final List<ModelAction> subActionList) {
+		this.referenceId = selectedScopeId;
+		this.subActionList = subActionList;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -35,7 +48,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 		parent.remove(selectedScope);
 		grandParent.add(grandParent.getChildIndex(parent) + 1, selectedScope);
 
-		return new ScopeMoveRightAction(referenceId, index);
+		return new ScopeMoveRightAction(referenceId, index, executeSubActions(context));
 	}
 
 	@Override
@@ -52,4 +65,13 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	public boolean changesProcessInference() {
 		return true;
 	}
+
+	private List<ModelAction> executeSubActions(final ProjectContext context) throws UnableToCompleteActionException {
+		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
+		for (final ModelAction subAction : subActionList) {
+			subActionRollbackList.add(subAction.execute(context));
+		}
+		return subActionRollbackList;
+	}
+
 }
