@@ -89,15 +89,18 @@ public class Release implements IsSerializable {
 		return childrenList;
 	}
 
+	// TODO Review bidirectional linkage between Scope and Release: This method should then be removed.
 	public List<Scope> getScopeList() {
 		return scopeList;
 	}
 
+	// TODO Review bidirectional linkage between Scope and Release: Analyze bringing this logic to this method.
 	public void addScope(final Scope scope) {
 		if (scopeList.contains(scope)) return;
 		scopeList.add(scope);
 	}
 
+	// TODO Review bidirectional linkage between Scope and Release: Analyze bringing this logic to this method.
 	public void removeScope(final Scope selectedScope) {
 		scopeList.remove(selectedScope);
 	}
