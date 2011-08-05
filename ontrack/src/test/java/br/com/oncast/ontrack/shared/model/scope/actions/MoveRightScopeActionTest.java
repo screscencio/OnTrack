@@ -1,20 +1,19 @@
 package br.com.oncast.ontrack.shared.model.scope.actions;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 
 public class MoveRightScopeActionTest {
 
@@ -81,52 +80,25 @@ public class MoveRightScopeActionTest {
 	}
 
 	@Test
-	public void rollbackMustGiveBackTheProgressStateToOldParentIfItWasLeaf() throws UnableToCompleteActionException {
-		firstChild.getProgress().setDescription("Done");
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
-
-		assertTrue(firstChild.getProgress().isDone());
-		assertTrue(firstChild.getProgress().hasDeclared());
-		assertEquals(ProgressState.DONE, firstChild.getProgress().getState());
-
+	public void shouldHandleScopeHierarchyCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
-		final ModelAction rollbackAction = moveRightScopeAction.execute(context);
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
+		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
+		actionExecutionManager.execute(moveRightScopeAction, context);
 
-		assertFalse(firstChild.getProgress().hasDeclared());
-		assertFalse(firstChild.getProgress().isDone());
+		for (int i = 0; i < 20; i++) {
+			actionExecutionManager.undo(context);
 
-		rollbackAction.execute(context);
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
+			assertEquals(2, rootScope.getChildren().size());
+			assertEquals(0, firstChild.getChildren().size());
+			assertEquals(firstChild, rootScope.getChildren().get(0));
+			assertEquals(lastChild, rootScope.getChildren().get(1));
 
-		assertTrue(firstChild.getProgress().isDone());
-		assertTrue(firstChild.getProgress().hasDeclared());
-		assertEquals(ProgressState.DONE, firstChild.getProgress().getState());
-	}
+			actionExecutionManager.redo(context);
 
-	@Test
-	public void redoMustRemoveTheProgressStateOfBranch() throws UnableToCompleteActionException {
-		firstChild.getProgress().setDescription("Done");
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
-		assertTrue(firstChild.getProgress().isDone());
-		assertTrue(firstChild.getProgress().hasDeclared());
-		assertEquals(ProgressState.DONE, firstChild.getProgress().getState());
-
-		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
-		final ModelAction rollbackAction = moveRightScopeAction.execute(context);
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
-		assertFalse(firstChild.getProgress().hasDeclared());
-		assertFalse(firstChild.getProgress().isDone());
-
-		final ModelAction redoAction = rollbackAction.execute(context);
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
-		assertTrue(firstChild.getProgress().isDone());
-		assertTrue(firstChild.getProgress().hasDeclared());
-		assertEquals(ProgressState.DONE, firstChild.getProgress().getState());
-
-		redoAction.execute(context);
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
-		assertFalse(firstChild.getProgress().hasDeclared());
-		assertFalse(firstChild.getProgress().isDone());
+			assertEquals(1, rootScope.getChildren().size());
+			assertEquals(1, firstChild.getChildren().size());
+			assertEquals(firstChild, rootScope.getChildren().get(0));
+			assertEquals(lastChild, firstChild.getChildren().get(0));
+		}
 	}
 }

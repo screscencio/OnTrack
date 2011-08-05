@@ -59,8 +59,9 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 	}
 
 	private void executeChildActions(final ProjectContext context) throws UnableToCompleteActionException {
-		for (final ScopeRemoveRollbackAction childAction : childActionList)
-			childAction.execute(context);
+		for (int i = childActionList.size() - 1; i >= 0; i--) {
+			childActionList.get(i).execute(context);
+		}
 	}
 
 	private void executSubActions(final ProjectContext context) throws UnableToCompleteActionException {
