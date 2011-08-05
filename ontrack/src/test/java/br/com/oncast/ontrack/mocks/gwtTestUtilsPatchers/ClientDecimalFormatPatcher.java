@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.patchers;
+package br.com.oncast.ontrack.mocks.gwtTestUtilsPatchers;
 
 import java.text.DecimalFormat;
 

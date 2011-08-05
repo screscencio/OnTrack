@@ -120,10 +120,6 @@ public class Scope implements IsSerializable {
 		return progress;
 	}
 
-	public void setProgress(final Progress progress) {
-		this.progress = progress;
-	}
-
 	// TODO ++Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
 	public Scope findScope(final UUID scopeId) {
 		if (this.id.equals(scopeId)) return this;

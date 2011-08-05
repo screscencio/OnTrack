@@ -83,5 +83,4 @@ public class ScopeMock {
 
 		return root;
 	}
-
 }
