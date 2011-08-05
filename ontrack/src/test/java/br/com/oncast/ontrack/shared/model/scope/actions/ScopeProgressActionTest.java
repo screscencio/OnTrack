@@ -39,9 +39,7 @@ public class ScopeProgressActionTest {
 
 	@Test
 	public void shouldResetProgressOfScope() throws UnableToCompleteActionException {
-		final Progress progress = new Progress();
-		progress.setDescription("Under work");
-		scope.setProgress(progress);
+		scope.getProgress().setDescription("Under work");
 
 		new ScopeDeclareProgressAction(scope.getId(), "").execute(context);
 
