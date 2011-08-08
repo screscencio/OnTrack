@@ -17,11 +17,15 @@ import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
+import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
@@ -30,13 +34,19 @@ public class BusinessLogicTest {
 	private EntityManager entityManager;
 
 	@Before
-	public void before() {
+	public void setUp() {
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 	}
 
 	@After
 	public void tearDown() {
 		entityManager.close();
+	}
+
+	@Test(expected = InvalidIncomingAction.class)
+	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
+		final BusinessLogic business = new BusinessLogic(getPersistenceMock());
+		business.handleIncomingAction(new ScopeUpdateAction(new UUID("id"), "bllla"));
 	}
 
 	@Test

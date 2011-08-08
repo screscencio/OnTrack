@@ -39,7 +39,7 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(referenceId);
+		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		if (selectedScope.isLeaf()) subActionRollbackList.add(removeDeclaredProgress(selectedScope, context));

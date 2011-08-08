@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.project;
 
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectContext {
@@ -28,11 +29,11 @@ public class ProjectContext {
 		return project.getProjectRelease().loadRelease(releaseLoadQuery);
 	}
 
-	// TODO ++Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return? Take a look at
-	// "InternalInsertionActionUtils".
 	// TODO +++Cache results!!!! so that it can be faster (eg. some actions with subactions call this multiple times)
-	public Scope findScope(final UUID scopeId) {
-		return project.getProjectScope().findScope(scopeId);
+	public Scope findScope(final UUID scopeId) throws ScopeNotFoundException {
+		final Scope scope = project.getProjectScope().findScope(scopeId);
+		if (scope == null) throw new ScopeNotFoundException("The scope referenced by id " + scopeId + " was not found.");
+		return scope;
 	}
 
 	public Scope getProjectScope() {

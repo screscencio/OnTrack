@@ -6,4 +6,8 @@ public class ScopeNotFoundException extends Exception {
 	public ScopeNotFoundException(final String message) {
 		super(message);
 	}
+
+	public ScopeNotFoundException() {
+		super();
+	}
 }

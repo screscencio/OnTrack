@@ -1,9 +1,8 @@
 /*
- * Decisions:
- * - [02/08/2011] As suggested by Rodrigo, it was decided to not use "damage-control" because the damage control implementation we had would only
+ * DECISION [02/08/2011] As suggested by Rodrigo, it was decided to not use "damage-control" because the damage control implementation we had would only
  * take in account the action modification and not the modifications done by other inference engines (like EffortInferenceEngine).
- * - [02/08/2011] Progress distribution was removed to simplify the ProgressInferenceEngine and its architecture: CTRL+Z should be thought over.
  */
+// DECISION [02/08/2011] Progress distribution was removed to simplify the ProgressInferenceEngine and its architecture: CTRL+Z should be thought over.
 
 package br.com.oncast.ontrack.shared.model.progress;
 

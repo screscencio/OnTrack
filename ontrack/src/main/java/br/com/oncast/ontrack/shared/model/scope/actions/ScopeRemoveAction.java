@@ -36,7 +36,7 @@ public class ScopeRemoveAction implements ScopeAction {
 
 	@Override
 	public ScopeRemoveRollbackAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(referenceId);
+		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("Unable to remove root level.");
 
 		final Scope parent = selectedScope.getParent();

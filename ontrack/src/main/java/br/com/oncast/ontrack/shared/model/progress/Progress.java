@@ -57,7 +57,9 @@ public class Progress implements IsSerializable {
 		return (!hasDeclared() || state == ProgressState.UNDER_WORK) ? description : state.toString();
 	}
 
-	public void setDescription(final String newProgressDescription) {
+	public void setDescription(String newProgressDescription) {
+		if (newProgressDescription == null) newProgressDescription = "";
+
 		description = newProgressDescription;
 		setState(ProgressState.getStateForDescription(description));
 	}

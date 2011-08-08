@@ -30,7 +30,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	// TODO Reference a release by its ID, not by its description. (Think about the consequences).
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(referenceId);
+		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
 		final Release oldRelease = selectedScope.getRelease();
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
