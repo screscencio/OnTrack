@@ -35,4 +35,8 @@ public class ActionExecuterTestUtils extends ActionExecuter {
 	public static Set<UUID> executeInferenceEnginesForTestingPurposes(final Scope scope) {
 		return ActionExecuterTestUtils.executeInferenceEngines(new ModelActionMockImpl(), scope);
 	}
+
+	public static Scope getEffortInferenceBaseScopeForTestingPurposes(final ProjectContext context, final ModelAction action) {
+		return getEffortInferenceBaseScope(context, action);
+	}
 }
