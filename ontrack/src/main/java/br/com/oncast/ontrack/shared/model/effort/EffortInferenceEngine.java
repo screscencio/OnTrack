@@ -55,10 +55,12 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		final Effort parentEffort = parent.getEffort();
 
 		final float inferedInitial = parentEffort.getInfered();
+		final float bottomUpInitial = parentEffort.getBottomUpValue();
 		preProcessBottomUp(parent, 0, inferenceInfluencedScopeSet);
 		final float inferedFinal = parentEffort.getInfered();
+		final float bottomUpFinal = parentEffort.getBottomUpValue();
 
-		if (inferedFinal == inferedInitial) return parent;
+		if (inferedFinal == inferedInitial && bottomUpInitial == bottomUpFinal) return parent;
 		return processBottomUp(parent, inferenceInfluencedScopeSet);
 	}
 
