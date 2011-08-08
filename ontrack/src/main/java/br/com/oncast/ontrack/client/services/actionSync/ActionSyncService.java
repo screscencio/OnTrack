@@ -6,10 +6,13 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.communication.CommunicationService;
 import br.com.oncast.ontrack.client.services.communication.DispatchCallback;
+import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.communication.ModelActionSyncRequest;
+
+import com.google.gwt.user.client.Window;
 
 public class ActionSyncService {
 
@@ -33,9 +36,16 @@ public class ActionSyncService {
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						// TODO Hide 'loading' UI indicator.
-						// TODO +++Treat communication failure.
-						caught.printStackTrace();
+						// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
+						if (caught instanceof InvalidIncomingAction) {
+							Window.alert("An error ocurred while syncing actions with the server: \nAn invalid action was found. \n\nThe application will be briethly reloaded and some of your lattest changes may be rollbacked.");
+							Window.Location.reload();
+						}
+						else {
+							// TODO Hide 'loading' UI indicator.
+							// TODO +++Treat communication failure.
+							caught.printStackTrace();
+						}
 					}
 				});
 			}

@@ -28,7 +28,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = context.findScope(referenceId);
+		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
 		selectedScope.getProgress().setDescription(newProgressDescription);

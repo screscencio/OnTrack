@@ -19,7 +19,7 @@ public class InsertSiblingDownInternalAction implements InternalAction {
 
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
-		treeItem = InternalActionUtils.findScopeTreeItem(tree, scope);
+		treeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 		if (treeItem.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
 		newTreeItem = new ScopeTreeItem(new Scope(""));
 

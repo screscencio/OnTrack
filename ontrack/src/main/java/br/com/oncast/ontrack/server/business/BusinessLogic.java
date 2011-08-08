@@ -6,6 +6,7 @@ import java.util.List;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -24,11 +25,31 @@ public class BusinessLogic {
 
 	public void handleIncomingAction(final ModelAction action) throws UnableToHandleActionException {
 		try {
+			validateIncomingAction(action);
 			persistenceService.persistAction(action, new Date());
 		}
 		catch (final PersistenceException e) {
 			// TODO ++Log original exception and throw a new one that can be shared with GWT code.
 			throw new UnableToHandleActionException("The server could not process the action.", e);
+		}
+	}
+
+	// TODO Report errors as feedback for development.
+	// TODO Re-think validations strategy as loading the project every time may be a performance bottleneck.
+	// DECISION It is common sense that this validation is needed at this time (of development). Roberto thinks it should be a provisory solution, as it may be
+	// a major performance bottleneck, but that the solution is good to ensure that BetaTesters are safe while the application matures. Rodrigo thinks it should
+	// be permanent (but maybe passive of refactorings) to guarantee user safety in the long term.
+	private void validateIncomingAction(final ModelAction action) throws UnableToHandleActionException {
+		try {
+			final Project project = loadProject();
+			final ProjectContext context = new ProjectContext(project);
+			ActionExecuter.executeAction(context, action);
+		}
+		catch (final UnableToCompleteActionException e) {
+			throw new InvalidIncomingAction(e);
+		}
+		catch (final UnableToLoadProjectException e) {
+			throw new UnableToHandleActionException("Unable to validate action.", e);
 		}
 	}
 

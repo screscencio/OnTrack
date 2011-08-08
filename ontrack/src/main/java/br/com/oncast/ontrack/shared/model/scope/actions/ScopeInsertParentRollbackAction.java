@@ -32,7 +32,7 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope newScope = context.findScope(newScopeId);
+		final Scope newScope = ScopeActionHelper.findScope(newScopeId, context);
 		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
 		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException("It is not possible to rollback this action due to inconsistences.");
 

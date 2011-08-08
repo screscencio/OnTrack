@@ -5,6 +5,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -36,7 +37,7 @@ public class ActionExecuterTestUtils extends ActionExecuter {
 		return ActionExecuterTestUtils.executeInferenceEngines(new ModelActionMockImpl(), scope);
 	}
 
-	public static Scope getEffortInferenceBaseScopeForTestingPurposes(final ProjectContext context, final ModelAction action) {
+	public static Scope getEffortInferenceBaseScopeForTestingPurposes(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {
 		return getEffortInferenceBaseScope(context, action);
 	}
 }

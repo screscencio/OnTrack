@@ -19,7 +19,7 @@ public class InsertChildInternalAction implements InternalAction {
 
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
-		selectedTreeItem = InternalActionUtils.findScopeTreeItem(tree, scope);
+		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 		newTreeItem = new ScopeTreeItem(new Scope(""));
 
 		selectedTreeItem.addItem(newTreeItem);
