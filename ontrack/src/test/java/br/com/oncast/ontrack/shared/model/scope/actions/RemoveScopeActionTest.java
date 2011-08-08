@@ -5,7 +5,10 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -182,5 +185,32 @@ public class RemoveScopeActionTest {
 		assertEquals(child1Level1.getChildren().size(), 0);
 		assertEquals(child1Level2.getChildren().size(), 0);
 		assertEquals(child1Level3.getChildren().size(), 0);
+	}
+
+	@Test
+	public void shouldHandleRemovalCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
+		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
+		actionExecutionManager.execute(new ScopeRemoveAction(child1Level1.getId()), context);
+
+		for (int i = 0; i < 20; i++) {
+			actionExecutionManager.undo(context);
+
+			assertEquals(2, rootScope.getChildren().size());
+			assertEquals(child1Level1, rootScope.getChildren().get(0));
+			assertEquals(child2Level1, rootScope.getChildren().get(1));
+			assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
+			assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
+
+			actionExecutionManager.redo(context);
+
+			assertEquals(1, rootScope.getChildren().size());
+			assertEquals(child2Level1, rootScope.getChildren().get(0));
+			assertNull(child1Level1.getParent());
+			assertNull(child1Level2.getParent());
+			assertNull(child1Level3.getParent());
+			assertEquals(child1Level1.getChildren().size(), 0);
+			assertEquals(child1Level2.getChildren().size(), 0);
+			assertEquals(child1Level3.getChildren().size(), 0);
+		}
 	}
 }
