@@ -62,7 +62,6 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		assertEquals(influencedScopes, new EffortInferenceEngine().process(scope));
 	}
 
-	// TODO When working to fix this test, check all the expectations before running them again.
 	@Test
 	public void shouldReturnAListWithAllInfluencedScopesWhenDeclaringEffortForSomeScope2() throws UnableToCompleteActionException {
 		final Set<UUID> expectedInfluencedScopes = new HashSet<UUID>();
@@ -81,7 +80,6 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
 
-	// TODO When working to fix this test, check all the expectations before running them again.
 	@Test
 	public void shouldReturnAListWithAllInfluencedScopesWhenDeclaringEffortForSomeScope3() throws UnableToCompleteActionException {
 		final Set<UUID> expectedInfluencedScopes = new HashSet<UUID>();
@@ -104,7 +102,6 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
 
-	// TODO When working to fix this test, check all the expectations before running them again.
 	@Test
 	public void shouldReturnAListWithAllInfluencedScopesWhenDeclaringEffortForSomeScope4() throws UnableToCompleteActionException {
 		final Set<UUID> expectedInfluencedScopes = new HashSet<UUID>();
@@ -130,7 +127,6 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
 
-	// TODO When working to fix this test, check all the expectations before running them again.
 	@Test
 	public void shouldReturnAListWithAllInfluencedScopesWhenDeclaringEffortForSomeScope5() throws UnableToCompleteActionException {
 		final Set<UUID> expectedInfluencedScopes = new HashSet<UUID>();
@@ -144,7 +140,7 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		new EffortInferenceEngine().process(scope);
 
 		scope.getChild(2).getChild(1).getChild(0).getEffort().setDeclared(10);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope.getChild(2));
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope.getChild(2).getChild(1));
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}

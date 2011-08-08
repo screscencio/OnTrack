@@ -70,7 +70,11 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		final float initialTopDownValue = effort.getTopDownValue();
 		if (effort.isStronglyDefined()) effort.setTopDownValue((effort.getDeclared() > effort.getBottomUpValue()) ? effort.getDeclared() : effort
 				.getBottomUpValue());
-		else if (scope.isRoot()) effort.setTopDownValue(getStronglyDefinedEffortSum(scope));
+		else if (scope.isRoot()) {
+			final int stronglyDefinedEffortSum = getStronglyDefinedEffortSum(scope);
+			final float bottomUpValue = effort.getBottomUpValue();
+			effort.setTopDownValue(stronglyDefinedEffortSum > bottomUpValue ? stronglyDefinedEffortSum : bottomUpValue);
+		}
 		if (effort.getTopDownValue() != initialTopDownValue) inferenceInfluencedScopeSet.add(scope.getId());
 
 		float available = effort.getTopDownValue() - getStronglyDefinedEffortSum(scope);
@@ -83,8 +87,9 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		for (final Scope child : childrenList) {
 			final Effort childEffort = child.getEffort();
 			final boolean isChildStronglyDefined = childEffort.isStronglyDefined();
-			final float value = isChildStronglyDefined && effort.getDeclared() > effort.getBottomUpValue() ? childEffort.getDeclared() : childEffort
-					.getBottomUpValue();
+			final float value = isChildStronglyDefined && (childEffort.getDeclared() > childEffort.getBottomUpValue()) ? childEffort.getDeclared()
+					: childEffort
+							.getBottomUpValue();
 
 			final float childInitialTopDownValue = childEffort.getTopDownValue();
 			if (value > portion) childEffort.setTopDownValue(value);
