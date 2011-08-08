@@ -85,6 +85,40 @@ public class EffortInferenceEngineFlow4Test {
 		shouldApplyEffortInA22AndInferenceOverTheRestOfTheTree();
 	}
 
+	@Test
+	public void testCaseStep08() throws UnableToCompleteActionException {
+		shouldApplyEffortAtProjectRoot();
+		shouldApplyEffortInA1AndInferenceOverTheRestOfTheTree();
+		shouldApplyEffortInA21AndInferenceOverTheRestOfTheTree();
+		shouldReApplyEffortInferenceAfterUndo();
+		shouldApplyEffortInA3AndInferenceOverTheRestOfTheTree();
+		shouldApplyEffortInA21AndInferenceOverTheRestOfTheTree2();
+		shouldApplyEffortInA22AndInferenceOverTheRestOfTheTree();
+		shouldReturnToInitialStateAfterRollbackingAllActions();
+	}
+
+	@Test
+	public void testCaseStep09() throws UnableToCompleteActionException {
+		shouldApplyEffortAtProjectRoot();
+		shouldApplyEffortInA1AndInferenceOverTheRestOfTheTree();
+		shouldApplyEffortInA21AndInferenceOverTheRestOfTheTree();
+		shouldReApplyEffortInferenceAfterUndo();
+		shouldApplyEffortInA3AndInferenceOverTheRestOfTheTree();
+		shouldApplyEffortInA21AndInferenceOverTheRestOfTheTree2();
+		shouldApplyEffortInA22AndInferenceOverTheRestOfTheTree();
+		shouldReturnToInitialStateAfterRollbackingAllActions();
+	}
+
+	private void shouldReturnToInitialStateAfterRollbackingAllActions() throws UnableToCompleteActionException {
+		while (!rollbackActions.isEmpty()) {
+			final ModelAction rollbackAction = rollbackActions.pop();
+			rollbackAction.execute(projectContext);
+			ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionExecuterTestUtils.getEffortInferenceBaseScopeForTestingPurposes(
+					projectContext, rollbackAction));
+		}
+		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX), rootScope);
+	}
+
 	private ModelAction executeAction(final Scope scope, final ModelAction action) throws UnableToCompleteActionException {
 		final ModelAction rollbackAction = action.execute(projectContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);

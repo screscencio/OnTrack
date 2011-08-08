@@ -40,7 +40,7 @@ public class ActionExecuter {
 		return inferenceInfluencedScopeSet;
 	}
 
-	private static Scope getEffortInferenceBaseScope(final ProjectContext context, final ModelAction action) {
+	protected static Scope getEffortInferenceBaseScope(final ProjectContext context, final ModelAction action) {
 		final Scope s = context.findScope(action.getReferenceId());
 		final Scope scope = s.isRoot() || (action instanceof ScopeInsertParentRollbackAction) ? s : s.getParent();
 		return scope;
