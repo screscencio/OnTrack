@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.utils.mmConverter.abstractions;
+package br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions;
 
 public enum Icon {
 	INFO("info"),

@@ -34,7 +34,7 @@ public class AppActivityMapper implements ActivityMapper {
 	}
 
 	private ContextLoadingActivity createContextLoadingActivity(final Place place) {
-		return new ContextLoadingActivity(services.getContextProviderService(), services.getApplicationPlaceController(), services.getCommunicationService(),
+		return new ContextLoadingActivity(services.getContextProviderService(), services.getApplicationPlaceController(), services.getRequestDispatchService(),
 				place);
 	}
 

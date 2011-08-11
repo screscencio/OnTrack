@@ -128,7 +128,7 @@ public class RemoveScopeActionProgressTest {
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.execute(new ScopeRemoveAction(removedScope.getId()), context);
+		actionExecutionManager.doExecute(new ScopeRemoveAction(removedScope.getId()), context);
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertFalse(removedScope.getProgress().hasDeclared());

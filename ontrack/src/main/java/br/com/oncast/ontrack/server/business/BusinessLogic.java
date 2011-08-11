@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
+import br.com.oncast.ontrack.server.services.actionSync.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
@@ -18,15 +19,18 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 public class BusinessLogic {
 
 	private final PersistenceService persistenceService;
+	private final ActionBroadcastService actionBroadcastService;
 
-	public BusinessLogic(final PersistenceService persistenceService) {
+	protected BusinessLogic(final PersistenceService persistenceService, final ActionBroadcastService actionBroadcastService) {
 		this.persistenceService = persistenceService;
+		this.actionBroadcastService = actionBroadcastService;
 	}
 
 	public void handleIncomingAction(final ModelAction action) throws UnableToHandleActionException {
 		try {
 			validateIncomingAction(action);
 			persistenceService.persistAction(action, new Date());
+			actionBroadcastService.broadcast(action);
 		}
 		catch (final PersistenceException e) {
 			// TODO ++Log original exception and throw a new one that can be shared with GWT code.
@@ -74,9 +78,8 @@ public class BusinessLogic {
 		final Project project = snapshot.getProject();
 		final ProjectContext context = new ProjectContext(project);
 
-		for (final ModelAction action : actionList) {
+		for (final ModelAction action : actionList)
 			ActionExecuter.executeAction(context, action);
-		}
 
 		return project;
 	}

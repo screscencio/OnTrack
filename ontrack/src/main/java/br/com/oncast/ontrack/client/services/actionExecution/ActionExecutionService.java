@@ -26,7 +26,7 @@ public class ActionExecutionService implements ActionExecutionRequestHandler, Ac
 
 	@Override
 	public void onActionExecutionRequest(final ModelAction action) {
-		actionManager.execute(action, contextService.getProjectContext());
+		actionManager.doExecute(action, contextService.getProjectContext());
 	}
 
 	@Override

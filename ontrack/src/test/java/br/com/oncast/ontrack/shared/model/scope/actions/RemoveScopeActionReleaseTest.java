@@ -119,7 +119,7 @@ public class RemoveScopeActionReleaseTest {
 		addScopeToRelease(removedScope3, release);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.execute(new ScopeRemoveAction(removedScope.getId()), context);
+		actionExecutionManager.doExecute(new ScopeRemoveAction(removedScope.getId()), context);
 
 		for (int i = 0; i < 20; i++) {
 			assertNull(removedScope1.getRelease());

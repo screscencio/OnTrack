@@ -14,6 +14,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.mocks.actions.ActionMock;
 import br.com.oncast.ontrack.mocks.models.ProjectMock;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
+import br.com.oncast.ontrack.server.services.actionSync.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
@@ -45,19 +46,19 @@ public class BusinessLogicTest {
 
 	@Test(expected = InvalidIncomingAction.class)
 	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
-		final BusinessLogic business = new BusinessLogic(getPersistenceMock());
+		final BusinessLogic business = new BusinessLogic(getPersistenceMock(), getBroadcastMock());
 		business.handleIncomingAction(new ScopeUpdateAction(new UUID("id"), "bllla"));
 	}
 
 	@Test
 	public void usingMock() throws Exception {
-		final BusinessLogic business = new BusinessLogic(getPersistenceMock());
+		final BusinessLogic business = new BusinessLogic(getPersistenceMock(), getBroadcastMock());
 		shouldConstructAScopeHierarchyFromActions(business);
 	}
 
 	@Test
 	public void goingToPersistence() throws Exception {
-		final BusinessLogic business = new BusinessLogic(new PersistenceServiceJpaImpl());
+		final BusinessLogic business = new BusinessLogic(new PersistenceServiceJpaImpl(), getBroadcastMock());
 		shouldConstructAScopeHierarchyFromActions(business);
 	}
 
@@ -104,6 +105,14 @@ public class BusinessLogicTest {
 			public void persistAction(final ModelAction action, final Date timestamp) throws PersistenceException {
 				actions.add(action);
 			}
+		};
+	}
+
+	private ActionBroadcastService getBroadcastMock() {
+		return new ActionBroadcastService() {
+
+			@Override
+			public void broadcast(final ModelAction action) {}
 		};
 	}
 }

@@ -1,13 +1,13 @@
-package br.com.oncast.ontrack.server.utils.mmConverter;
+package br.com.oncast.ontrack.server.services.exportImport.freemind;
 
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.com.oncast.ontrack.server.model.scope.ScopeBuilder;
-import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.FreeMindMap;
-import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.Icon;
-import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.MindNode;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.FreeMindMap;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 // TODO Review by Lobo - This code has been created by Rodrigo Machado and Jaime and has not yet been reviewed.

@@ -8,7 +8,7 @@
 	<!-- Servlet definitions and mappings -->
 	<servlet>
 		<servlet-name>communicationService</servlet-name>
-		<servlet-class>br.com.oncast.ontrack.server.services.communication.rpc.CommunicationRpcServiceImpl</servlet-class>
+		<servlet-class>br.com.oncast.ontrack.server.services.communication.requestDispatch.CommunicationRpcServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>communicationService</servlet-name>
@@ -17,7 +17,7 @@
 
 	<servlet>
 		<servlet-name>MindMapExporterServlet</servlet-name>
-		<servlet-class>br.com.oncast.ontrack.server.business.MindMapExporterServlet</servlet-class>
+		<servlet-class>br.com.oncast.ontrack.server.services.exportImport.MindMapExporterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>MindMapExporterServlet</servlet-name>

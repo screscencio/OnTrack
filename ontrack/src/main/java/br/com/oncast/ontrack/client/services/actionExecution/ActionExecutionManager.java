@@ -21,7 +21,8 @@ public class ActionExecutionManager {
 		redoStack = new Stack<ModelAction>();
 	}
 
-	public void execute(final ModelAction action, final ProjectContext context) {
+	// FIXME Throw UnableToCompleteActionException
+	public void doExecute(final ModelAction action, final ProjectContext context) {
 		try {
 			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
 			executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet());
@@ -37,6 +38,7 @@ public class ActionExecutionManager {
 		}
 	}
 
+	// FIXME Throw UnableToCompleteActionException
 	public void undo(final ProjectContext context) {
 		try {
 			final ModelAction undoAction = undoStack.pop();
@@ -57,6 +59,7 @@ public class ActionExecutionManager {
 		}
 	}
 
+	// FIXME Throw UnableToCompleteActionException
 	public void redo(final ProjectContext context) {
 		try {
 			final ModelAction redoAction = redoStack.pop();
