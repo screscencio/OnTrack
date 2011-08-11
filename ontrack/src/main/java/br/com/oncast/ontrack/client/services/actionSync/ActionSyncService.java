@@ -4,9 +4,9 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.services.communication.requestDispatch.DispatchCallback;
-import br.com.oncast.ontrack.client.services.communication.requestDispatch.RequestDispatchService;
-import br.com.oncast.ontrack.client.services.communication.serverPush.ServerPushClientService;
+import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
+import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
+import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;

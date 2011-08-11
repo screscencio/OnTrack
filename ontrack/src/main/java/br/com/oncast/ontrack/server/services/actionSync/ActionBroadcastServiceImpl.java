@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.server.services.actionSync;
 
-import br.com.oncast.ontrack.server.services.communication.serverPush.ServerPushServerService;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 

@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.places.contextloading;
 
-import br.com.oncast.ontrack.client.services.communication.requestDispatch.DispatchCallback;
-import br.com.oncast.ontrack.client.services.communication.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
+import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
+import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.communication.requestDispatch.ProjectContextRequest;
 

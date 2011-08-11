@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.services.communication.serverPush;
+package br.com.oncast.ontrack.client.services.serverPush;
 
 import java.util.ArrayList;
 import java.util.HashMap;

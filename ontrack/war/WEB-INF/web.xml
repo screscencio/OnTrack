@@ -8,7 +8,7 @@
 	<!-- Servlet definitions and mappings -->
 	<servlet>
 		<servlet-name>communicationService</servlet-name>
-		<servlet-class>br.com.oncast.ontrack.server.services.communication.requestDispatch.CommunicationRpcServiceImpl</servlet-class>
+		<servlet-class>br.com.oncast.ontrack.server.services.requestDispatch.CommunicationRpcServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>communicationService</servlet-name>

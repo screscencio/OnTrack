@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.services.communication.requestDispatch;
+package br.com.oncast.ontrack.client.services.requestDispatch;
 
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;

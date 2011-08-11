@@ -2,11 +2,11 @@ package br.com.oncast.ontrack.client.services;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
-import br.com.oncast.ontrack.client.services.communication.requestDispatch.RequestDispatchService;
-import br.com.oncast.ontrack.client.services.communication.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
+import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
+import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
