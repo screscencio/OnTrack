@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.business;
+package br.com.oncast.ontrack.server.services.exportImport;
 
 import java.io.IOException;
 
@@ -7,8 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
-import br.com.oncast.ontrack.server.utils.mmConverter.FreeMindExporter;
+import br.com.oncast.ontrack.server.business.BusinessLogic;
+import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindExporter;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.project.Project;
 
@@ -27,7 +28,7 @@ public class MindMapExporterServlet extends HttpServlet {
 	}
 
 	private void doReply(final HttpServletRequest request, final HttpServletResponse response) throws UnableToLoadProjectException, IOException {
-		final BusinessLogic business = new BusinessLogic(new PersistenceServiceJpaImpl());
+		final BusinessLogic business = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
 		final Project project = business.loadProject();
 
 		response.setCharacterEncoding("UTF-8");

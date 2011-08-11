@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.services.communication.rpc;
+package br.com.oncast.ontrack.client.services.communication.requestDispatch;
 
 import br.com.oncast.ontrack.shared.exceptions.business.BusinessException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;

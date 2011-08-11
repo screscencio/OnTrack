@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.services.communication;
+package br.com.oncast.ontrack.client.services.communication.requestDispatch;
 
 public interface DispatchCallback<T> {
 

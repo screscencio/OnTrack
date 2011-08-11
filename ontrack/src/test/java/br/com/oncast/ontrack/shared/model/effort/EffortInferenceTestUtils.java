@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.shared.model.effort;
 
 import java.io.File;
 
-import br.com.oncast.ontrack.server.utils.mmConverter.FreeMindImporter;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindImporter;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class EffortInferenceTestUtils {

@@ -83,7 +83,7 @@ public class MoveRightScopeActionTest {
 	public void shouldHandleScopeHierarchyCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.execute(moveRightScopeAction, context);
+		actionExecutionManager.doExecute(moveRightScopeAction, context);
 
 		for (int i = 0; i < 20; i++) {
 			actionExecutionManager.undo(context);

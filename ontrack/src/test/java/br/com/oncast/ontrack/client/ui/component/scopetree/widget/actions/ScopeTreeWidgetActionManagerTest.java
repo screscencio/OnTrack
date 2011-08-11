@@ -60,7 +60,7 @@ public class ScopeTreeWidgetActionManagerTest {
 
 	@Test
 	public void executeAnActionMustChangeTheTreeProperly() {
-		actionExecutionManager.execute(normalAction, context);
+		actionExecutionManager.doExecute(normalAction, context);
 		assertEquals(1, rootScope.getChildren().size());
 	}
 
@@ -70,7 +70,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		doThrow(new UnableToCompleteActionException("")).when(exceptionAction).execute(context);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(exceptionAction)).thenReturn(widgetExceptionActionMock);
 
-		actionExecutionManager.execute(exceptionAction, context);
+		actionExecutionManager.doExecute(exceptionAction, context);
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -78,13 +78,13 @@ public class ScopeTreeWidgetActionManagerTest {
 		normalActionWithBadWidgetAction = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(normalActionWithBadWidgetAction)).thenReturn(widgetExceptionActionMock);
 
-		actionExecutionManager.execute(normalActionWithBadWidgetAction, context);
+		actionExecutionManager.doExecute(normalActionWithBadWidgetAction, context);
 		verify(normalActionWithBadWidgetAction, atMost(2)).execute(context);
 	}
 
 	@Test
 	public void undoMustRevertChangesAtTheTree() {
-		actionExecutionManager.execute(normalAction, context);
+		actionExecutionManager.doExecute(normalAction, context);
 		assertEquals(1, rootScope.getChildren().size());
 
 		actionExecutionManager.undo(context);
@@ -119,7 +119,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		doThrow(new UnableToCompleteActionException("")).when(rollbackWidgetException).execute(context);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(rollbackAction)).thenReturn(rollbackWidgetException);
 
-		actionExecutionManager.execute(rollbackException, context);
+		actionExecutionManager.doExecute(rollbackException, context);
 		assertEquals(1, rootScope.getChildren().size());
 		actionExecutionManager.undo(context);
 		assertEquals(1, rootScope.getChildren().size());
@@ -134,7 +134,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		doThrow(new UnableToCompleteActionException("")).when(execute).execute(context);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(rollbackException)).thenReturn(normalWidgetException).thenReturn(execute);
 
-		actionExecutionManager.execute(rollbackException, context);
+		actionExecutionManager.doExecute(rollbackException, context);
 		assertEquals(1, rootScope.getChildren().size());
 
 		actionExecutionManager.undo(context);
@@ -146,7 +146,7 @@ public class ScopeTreeWidgetActionManagerTest {
 
 	@Test
 	public void redoAfterUndoMustDontChangeTheTree() {
-		actionExecutionManager.execute(normalAction, context);
+		actionExecutionManager.doExecute(normalAction, context);
 		assertEquals(1, rootScope.getChildren().size());
 
 		actionExecutionManager.undo(context);

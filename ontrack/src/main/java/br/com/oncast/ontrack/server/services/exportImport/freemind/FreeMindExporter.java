@@ -1,13 +1,13 @@
-package br.com.oncast.ontrack.server.utils.mmConverter;
+package br.com.oncast.ontrack.server.services.exportImport.freemind;
 
 import java.io.OutputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.FreeMindMap;
-import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.Icon;
-import br.com.oncast.ontrack.server.utils.mmConverter.abstractions.MindNode;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.FreeMindMap;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;

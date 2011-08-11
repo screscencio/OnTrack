@@ -2,7 +2,8 @@ package br.com.oncast.ontrack.client.services;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
-import br.com.oncast.ontrack.client.services.communication.CommunicationService;
+import br.com.oncast.ontrack.client.services.communication.requestDispatch.RequestDispatchService;
+import br.com.oncast.ontrack.client.services.communication.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
@@ -15,10 +16,11 @@ import com.google.gwt.event.shared.SimpleEventBus;
 public class ClientServiceProvider {
 
 	private ActionSyncService actionSyncService;
-	private ApplicationPlaceController placeController;
-	private CommunicationService communicationService;
-	private ContextProviderService contextProviderService;
 	private ActionExecutionService actionExecutionService;
+	private ContextProviderService contextProviderService;
+	private RequestDispatchService requestDispatchService;
+	private ServerPushClientService serverPushClientService;
+	private ApplicationPlaceController placeController;
 	private EventBus eventBus;
 
 	public ApplicationPlaceController getApplicationPlaceController() {
@@ -36,14 +38,19 @@ public class ClientServiceProvider {
 		return contextProviderService = new ContextProviderServiceImpl();
 	}
 
-	public CommunicationService getCommunicationService() {
-		if (communicationService != null) return communicationService;
-		return communicationService = new CommunicationService();
+	public RequestDispatchService getRequestDispatchService() {
+		if (requestDispatchService != null) return requestDispatchService;
+		return requestDispatchService = new RequestDispatchService();
 	}
 
 	public ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
-		return actionSyncService = new ActionSyncService(getCommunicationService(), getActionExecutionService());
+		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService());
+	}
+
+	private ServerPushClientService getServerPushClientService() {
+		if (serverPushClientService != null) return serverPushClientService;
+		return serverPushClientService = new ServerPushClientService();
 	}
 
 	private EventBus getEventBus() {

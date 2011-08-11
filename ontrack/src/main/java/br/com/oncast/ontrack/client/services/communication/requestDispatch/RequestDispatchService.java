@@ -1,18 +1,16 @@
-package br.com.oncast.ontrack.client.services.communication;
+package br.com.oncast.ontrack.client.services.communication.requestDispatch;
 
-import br.com.oncast.ontrack.client.services.communication.rpc.CommunicationRpcService;
-import br.com.oncast.ontrack.client.services.communication.rpc.CommunicationRpcServiceAsync;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.services.communication.ModelActionSyncRequest;
-import br.com.oncast.ontrack.shared.services.communication.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.communication.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.communication.requestDispatch.ProjectContextRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 // TODO +++Implement/Refactor dispatch method to receive generic "Requests" and asynchronously return "Responses".
 // TODO Provide a centralized exception handling mechanism in which you can register exception handlers.
-public class CommunicationService {
+public class RequestDispatchService {
 
 	final CommunicationRpcServiceAsync rpcServiceAsync = GWT.create(CommunicationRpcService.class);
 

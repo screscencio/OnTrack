@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.server.utils.mmConverter.FreeMindImporter;
+import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindImporter;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
