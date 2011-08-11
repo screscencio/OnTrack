@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.client.services.requestDispatch;
 
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.services.communication.requestDispatch.ModelActionSyncRequest;
-import br.com.oncast.ontrack.shared.services.communication.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;

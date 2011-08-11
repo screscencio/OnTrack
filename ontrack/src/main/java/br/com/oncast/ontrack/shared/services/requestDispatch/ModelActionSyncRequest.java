@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.services.communication.requestDispatch;
+package br.com.oncast.ontrack.shared.services.requestDispatch;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 
