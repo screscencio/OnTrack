@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.server.services.serverPush;
 
-import br.com.oncast.ontrack.shared.services.communication.serverPush.ServerPushEvent;
+import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 // FIXME Should this service be asynchronous? (Run in another thread so that it does not affect this client´s thread)
 public class ServerPushServerServiceImpl implements ServerPushServerService {
