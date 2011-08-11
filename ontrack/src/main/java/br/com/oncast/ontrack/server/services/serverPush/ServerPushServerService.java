@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.communication.serverPush;
+package br.com.oncast.ontrack.server.services.serverPush;
 
 import br.com.oncast.ontrack.shared.services.communication.serverPush.ServerPushEvent;
 

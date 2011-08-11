@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.services.communication.serverPush;
+package br.com.oncast.ontrack.client.services.serverPush;
 
 public interface ServerPushEventHandler<T> {
 

@@ -1,6 +1,6 @@
-package br.com.oncast.ontrack.server.services.communication.requestDispatch;
+package br.com.oncast.ontrack.server.services.requestDispatch;
 
-import br.com.oncast.ontrack.client.services.communication.requestDispatch.CommunicationRpcService;
+import br.com.oncast.ontrack.client.services.requestDispatch.CommunicationRpcService;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
 import br.com.oncast.ontrack.shared.exceptions.business.BusinessException;
