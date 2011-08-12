@@ -53,7 +53,7 @@ public class ProjectActionsAssembler {
 
 	private void visitScope(final UUID uuid, final Scope s) {
 		if (s.getRelease()!=null) {
-			releaseBindingActions.add(new ScopeBindReleaseAction(uuid, s.getRelease().getDescription()));
+			releaseBindingActions.add(new ScopeBindReleaseAction(uuid, s.getRelease().getFullDescription()));
 		}
 
 		if (s.getEffort().hasDeclared()) {
