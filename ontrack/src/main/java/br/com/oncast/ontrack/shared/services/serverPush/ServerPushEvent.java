@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.services.serverPush;
 
-public interface ServerPushEvent {
+import java.io.Serializable;
+
+public interface ServerPushEvent extends Serializable {
 
 }
