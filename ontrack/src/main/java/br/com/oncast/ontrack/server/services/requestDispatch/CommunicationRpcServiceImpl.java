@@ -28,4 +28,9 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 		System.out.println("Loading project...");
 		return business.loadProject();
 	}
+
+	@Override
+	public void startListeningServerPushes() {
+		ServerBusinessLogicLocator.getInstance().getServerPushServerService().startListeningServerPushes();
+	}
 }

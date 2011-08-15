@@ -5,6 +5,8 @@ import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class ServerActionSyncEvent implements ServerPushEvent {
 
+	private static final long serialVersionUID = 1L;
+
 	private ModelAction action;
 
 	protected ServerActionSyncEvent() {}

@@ -5,4 +5,6 @@ import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 public interface ServerPushServerService {
 
 	void pushEvent(ServerPushEvent serverPushEvent);
+
+	void startListeningServerPushes();
 }

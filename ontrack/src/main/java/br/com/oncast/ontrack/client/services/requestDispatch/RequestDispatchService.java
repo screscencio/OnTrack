@@ -45,4 +45,19 @@ public class RequestDispatchService {
 			}
 		});
 	}
+
+	public void startListeningServerPushes(final DispatchCallback<Void> dispatchCallback) {
+		rpcServiceAsync.startListeningServerPushes(new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(final Throwable caught) {
+				dispatchCallback.onFailure(caught);
+			}
+
+			@Override
+			public void onSuccess(final Void result) {
+				dispatchCallback.onRequestCompletition(result);
+			}
+		});
+	}
 }

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -20,6 +21,7 @@ import com.google.gwt.user.client.Window;
 public class ActionSyncService {
 
 	private boolean active;
+	protected Set<UUID> receivedServerPushActions = new HashSet<UUID>();
 
 	public ActionSyncService(final RequestDispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
 			final ActionExecutionService actionExecutionService) {
@@ -28,8 +30,8 @@ public class ActionSyncService {
 			@Override
 			public void onEvent(final ServerActionSyncEvent event) {
 				final ModelAction action = event.getAction();
-				// FIXME Should add action to sync verification stack, and as actions come from onActionExecution verify their presence in the stack (removing
-				// them).
+				receivedServerPushActions.add(action.getReferenceId());
+
 				// FIXME Use a method that does not add anything to the client stack.
 				actionExecutionService.onActionExecutionRequest(action);
 				// FIXME Threat possible errors and then threat/warn synching error (this method should throw UnableToCompleteActionException
@@ -49,6 +51,10 @@ public class ActionSyncService {
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
 				if (!active) return;
 
+				if (receivedServerPushActions.contains(action.getReferenceId())) {
+					receivedServerPushActions.remove(action.getReferenceId());
+					return;
+				}
 				// TODO Display 'loading' UI indicator.
 				requestDispatchService.dispatch(new ModelActionSyncRequest(action), new DispatchCallback<Void>() {
 

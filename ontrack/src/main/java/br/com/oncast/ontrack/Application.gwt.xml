@@ -9,6 +9,7 @@
 	<inherits name="com.google.gwt.user.theme.standard.StandardResources" />
 
 	<!-- Other module inherits -->
+	<inherits name="net.zschech.gwt.comet.Comet" />
 
 	<!-- Specify the app entry point class. -->
 	<entry-point class='br.com.oncast.ontrack.client.ApplicationEntryPoint' />
