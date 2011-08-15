@@ -4,7 +4,28 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
+	<!-- Server push implementation API - GWT-Comet -->
+	<!-- Listener for shutting down the comet processor when the ServletContext is destroyed -->
+	<listener>
+		<listener-class>net.zschech.gwt.comet.server.CometServletContextListener</listener-class>
+	</listener>
 
+	<!-- Listener for invalidating CometSessions when HTTPSessions are invalidated -->
+	<listener>
+		<listener-class>net.zschech.gwt.comet.server.CometHttpSessionListener</listener-class>
+	</listener>
+	
+	<!-- the comet servlet for streaming messages to the client -->
+	<servlet>
+		<servlet-name>serverPushComet</servlet-name>
+		<servlet-class>net.zschech.gwt.comet.server.CometServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>serverPushComet</servlet-name>
+		<url-pattern>/application/comet</url-pattern>
+	</servlet-mapping>
+	<!-- End of server push implementation API - GWT-Comet -->
+	
     <!-- Filters -->
     <filter>
         <filter-name>requestFilter</filter-name>

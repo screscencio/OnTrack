@@ -50,7 +50,7 @@ public class ClientServiceProvider {
 
 	private ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientService();
+		return serverPushClientService = new ServerPushClientService(getRequestDispatchService());
 	}
 
 	private EventBus getEventBus() {

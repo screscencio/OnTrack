@@ -13,4 +13,6 @@ public interface CommunicationRpcService extends RemoteService {
 	void transmitAction(ModelAction action) throws BusinessException;
 
 	public Project loadProject() throws BusinessException;
+
+	void startListeningServerPushes();
 }

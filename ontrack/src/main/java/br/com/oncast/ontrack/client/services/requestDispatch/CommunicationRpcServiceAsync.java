@@ -10,4 +10,6 @@ public interface CommunicationRpcServiceAsync {
 	void transmitAction(ModelAction action, AsyncCallback<Void> callback);
 
 	void loadProject(AsyncCallback<Project> callback);
+
+	void startListeningServerPushes(AsyncCallback<Void> asyncCallback);
 }
