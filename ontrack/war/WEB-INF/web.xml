@@ -5,14 +5,24 @@
 
 <web-app>
 
+    <!-- Filters -->
+    <filter>
+        <filter-name>requestFilter</filter-name>
+        <filter-class>br.com.oncast.ontrack.server.services.httpSessionProvider.RequestFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>requestFilter</filter-name>
+        <url-pattern>/application/*</url-pattern>
+    </filter-mapping>
+    
 	<!-- Servlet definitions and mappings -->
 	<servlet>
-		<servlet-name>communicationService</servlet-name>
+		<servlet-name>requestDispatchService</servlet-name>
 		<servlet-class>br.com.oncast.ontrack.server.services.requestDispatch.CommunicationRpcServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>communicationService</servlet-name>
-		<url-pattern>/application/communicationService</url-pattern>
+		<servlet-name>requestDispatchService</servlet-name>
+		<url-pattern>/application/requestDispatchService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

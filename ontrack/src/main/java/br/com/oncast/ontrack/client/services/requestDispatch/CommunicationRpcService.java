@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-@RemoteServiceRelativePath("communicationService")
+@RemoteServiceRelativePath("requestDispatchService")
 public interface CommunicationRpcService extends RemoteService {
 
 	void transmitAction(ModelAction action) throws BusinessException;
