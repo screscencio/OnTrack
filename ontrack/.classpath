@@ -25,11 +25,11 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.3.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-test-utils-0.30-20110609.143706-10.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-comet-1.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-test-utils-0.31.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
