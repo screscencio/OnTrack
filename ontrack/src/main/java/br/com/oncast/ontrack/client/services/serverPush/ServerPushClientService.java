@@ -6,15 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
-
 public class ServerPushClientService {
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final GwtCometClient serverPushClient;
 
-	public ServerPushClientService(final RequestDispatchService requestDispatchService) {
-		serverPushClient = new GwtCometClient(requestDispatchService, new ServerPushClientEventListener() {
+	public ServerPushClientService() {
+		serverPushClient = new GwtCometClient(new ServerPushClientEventListener() {
 			@Override
 			public void onEvent(final Serializable event) {
 				processIncommingEvent(event);

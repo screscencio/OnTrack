@@ -20,13 +20,6 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 	}
 
 	@Override
-	public void startListeningServerPushes() {
-		System.out.println("Initializing server push...");
-		final CometSession cometSession = CometServlet.getCometSession(httpSessionProvider.getCurrentSession());
-		if (!cometSessionList.contains(cometSession)) cometSessionList.add(cometSession);
-	}
-
-	@Override
 	public void pushEvent(final ServerPushEvent serverPushEvent) {
 		final List<CometSession> removedSessions = new ArrayList<CometSession>();
 		final CometSession callerCometSession = CometServlet.getCometSession(httpSessionProvider.getCurrentSession());
