@@ -5,13 +5,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ontrackExt</groupId>
 	<artifactId>ontrackExt</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>war</packaging>
-	
+
 	<properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<gwtModule>br.com.oncast.ontrack.Application</gwtModule>
 		<gwtVersion>2.3.0</gwtVersion>
-		<mainClass></mainClass>
+		<webappDirectory>${basedir}/war</webappDirectory>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
@@ -20,7 +21,7 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
 			<version>${gwtVersion}</version>
-			<scope>runtime</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -29,26 +30,84 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- Server Related Dependencies -->
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Database Related Dependencies. -->
 		<dependency>
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>1.8.0.7</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>3.6.3.Final</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>3.6.3.Final</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>4.2.0.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Logging / JPA Dependencies -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Misc Dependencies -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Testing Related Dependencies. -->
@@ -83,18 +142,21 @@
 			<classifier>sources</classifier>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.htmlparser</groupId>
+			<artifactId>htmlparser</artifactId>
+			<version>1.6</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
+		<!-- Generate compiled stuff in the folder used for developing mode -->
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+
 		<resources>
 			<resource>
-				<directory>src/main/java</directory>
-			</resource>
-			<resource>
 				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>src/test/java</directory>
 			</resource>
 			<resource>
 				<directory>src/test/resources</directory>
@@ -115,20 +177,27 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>2.3.0-1</version>
 				<executions>
 					<execution>
+						<configuration>
+							<module>${gwtModule}</module>
+							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+						</configuration>
 						<goals>
-							<goal>java</goal>
+							<goal>compile</goal>
 						</goals>
 					</execution>
 				</executions>
-
 				<configuration>
-					<mainClass>${mainClass}</mainClass>
+					<runTarget>Application.html</runTarget>
+					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<webappDirectory>${webappDirectory}</webappDirectory>
+					<outputDirectory>${webappDirectory}</outputDirectory>
 				</configuration>
 			</plugin>
 
@@ -139,7 +208,7 @@
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
-					<encoding>UTF-8</encoding>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 
@@ -150,8 +219,24 @@
 					<argLine>-Xmx512M -XX:MaxPermSize=128M</argLine>
 				</configuration>
 			</plugin>
-		</plugins>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<webappDirectory>${webappDirectory}</webappDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 
 	<repositories>
