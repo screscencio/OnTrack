@@ -6,37 +6,19 @@ import java.util.List;
 import net.zschech.gwt.comet.client.CometClient;
 import net.zschech.gwt.comet.client.CometListener;
 import net.zschech.gwt.comet.client.CometSerializer;
-import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
+import br.com.oncast.ontrack.shared.config.UriConfigurations;
 
 import com.google.gwt.core.client.GWT;
 
 public class GwtCometClient {
 
-	private final RequestDispatchService requestDispatchService;
 	private final ServerPushClientEventListener serverPushClientEventListener;
 
-	public GwtCometClient(final RequestDispatchService requestDispatchService, final ServerPushClientEventListener serverPushClientEventListener) {
-		this.requestDispatchService = requestDispatchService;
+	public GwtCometClient(final ServerPushClientEventListener serverPushClientEventListener) {
 		this.serverPushClientEventListener = serverPushClientEventListener;
 	}
 
 	public void connectToServer() {
-		requestDispatchService.startListeningServerPushes(new DispatchCallback<Void>() {
-			@Override
-			public void onRequestCompletition(final Void response) {
-				startListening();
-			}
-
-			@Override
-			public void onFailure(final Throwable caught) throws ServerPushException {
-				// FIXME Should this exception be checked?
-				throw new ServerPushException("Problems while trying to listen to server pushes.", caught);
-			}
-		});
-	}
-
-	protected void startListening() {
 		final CometListener listener = new CometListener() {
 			@Override
 			public void onConnected(final int heartbeat) {
@@ -73,7 +55,7 @@ public class GwtCometClient {
 
 		System.out.println("Starting server push listener...");
 		final CometSerializer serializer = GWT.create(ServerPushSerializer.class);
-		final CometClient client = new CometClient(GWT.getModuleBaseURL() + "comet", serializer, listener);
+		final CometClient client = new CometClient(UriConfigurations.SERVER_PUSH_COMET_URL, serializer, listener);
 		client.start();
 	}
 }

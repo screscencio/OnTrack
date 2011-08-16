@@ -25,11 +25,18 @@ public class ActionSyncService {
 
 	public ActionSyncService(final RequestDispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
 			final ActionExecutionService actionExecutionService) {
-		final ServerActionSyncEventHandler serverActionSyncEventHandler = new ServerActionSyncEventHandler() {
+
+		serverPushClientService.registerServerEventHandler(createServerActionSyncEventHandler(actionExecutionService));
+		actionExecutionService.addActionExecutionListener(createActionExecutionListener(requestDispatchService));
+	}
+
+	private ServerActionSyncEventHandler createServerActionSyncEventHandler(final ActionExecutionService actionExecutionService) {
+		return new ServerActionSyncEventHandler() {
 
 			@Override
 			public void onEvent(final ServerActionSyncEvent event) {
 				final ModelAction action = event.getAction();
+				// FIXME This way for action sync is not correct.
 				receivedServerPushActions.add(action.getReferenceId());
 
 				// FIXME Use a method that does not add anything to the client stack.
@@ -43,14 +50,16 @@ public class ActionSyncService {
 				return ServerActionSyncEvent.class;
 			}
 		};
-		serverPushClientService.registerServerEventHandler(serverActionSyncEventHandler);
+	}
 
-		final ActionExecutionListener actionExecutionListener = new ActionExecutionListener() {
+	private ActionExecutionListener createActionExecutionListener(final RequestDispatchService requestDispatchService) {
+		return new ActionExecutionListener() {
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
 				if (!active) return;
 
+				// FIXME This way for action sync is not correct.
 				if (receivedServerPushActions.contains(action.getReferenceId())) {
 					receivedServerPushActions.remove(action.getReferenceId());
 					return;
@@ -79,7 +88,6 @@ public class ActionSyncService {
 				});
 			}
 		};
-		actionExecutionService.addActionExecutionListener(actionExecutionListener);
 	}
 
 	// TODO Review the necessity of this method, that was created only to make implicit when the service is active or not.
