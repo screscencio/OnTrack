@@ -58,8 +58,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		calendar.set(2011, 1, 1);
 
 		final Scope projectScope = new Scope("Project", new UUID("0"));
-		projectScope.add(new Scope("Example Scope", new UUID("1")));
-
 		return new ProjectSnapshot(new Project(projectScope, new Release("proj")), calendar.getTime());
 	}
 

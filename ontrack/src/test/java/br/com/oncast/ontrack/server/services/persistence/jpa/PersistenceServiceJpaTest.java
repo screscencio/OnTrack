@@ -35,16 +35,15 @@ public class PersistenceServiceJpaTest {
 	@Test
 	public void shouldOnlyReturnActionsAfterAGivenDate() throws Exception {
 		for (final ModelAction action : ActionMock.getActions()) {
-			persistenceService.persistAction(action, new Date());
+			persistenceService.persistAction(action, new Date(1));
 		}
 
-		Thread.sleep(500);
-		final Date dateAfterSomeActionsWerePersisted = new Date();
-		Thread.sleep(500);
+		final Date dateAfterSomeActionsWerePersisted = new Date(10);
 
 		final List<ModelAction> secondWaveOfActions = ActionMock.getActions2();
+		long k = 100;
 		for (final ModelAction action : secondWaveOfActions) {
-			persistenceService.persistAction(action, new Date());
+			persistenceService.persistAction(action, new Date(k++));
 		}
 
 		final List<ModelAction> actionsReceived = persistenceService.retrieveActionsSince(dateAfterSomeActionsWerePersisted);
