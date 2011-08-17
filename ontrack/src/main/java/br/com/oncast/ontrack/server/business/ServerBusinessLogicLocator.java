@@ -25,6 +25,10 @@ public class ServerBusinessLogicLocator {
 
 	private ServerBusinessLogicLocator() {}
 
+	public void initializeServerPushDependencies() {
+		getActionBroadcastService();
+	}
+
 	public BusinessLogic getBusinessLogic() {
 		if (businessLogic != null) return businessLogic;
 		return businessLogic = new BusinessLogicImpl(getPersistenceService(), getActionBroadcastService());
