@@ -4,20 +4,20 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-	
-    <!-- Filters -->
-    <filter>
-        <filter-name>requestFilter</filter-name>
-        <filter-class>br.com.oncast.ontrack.server.services.httpSessionProvider.RequestFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>requestFilter</filter-name>
-        <url-pattern>/application/*</url-pattern>
-    </filter-mapping>
-    
+	<!-- Filters -->
+	<filter>
+		<filter-name>requestFilter</filter-name>
+		<filter-class>br.com.oncast.ontrack.server.services.httpSessionProvider.RequestFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>requestFilter</filter-name>
+		<url-pattern>/application/*</url-pattern>
+	</filter-mapping>
+
 	<!-- Listeners -->
-	
-	<!-- Listener for shutting down the comet processor when the ServletContext is destroyed -->
+
+	<!-- Listener for shutting down the comet processor when the ServletContext 
+		is destroyed -->
 	<listener>
 		<listener-class>net.zschech.gwt.comet.server.CometServletContextListener</listener-class>
 	</listener>
@@ -26,17 +26,25 @@
 	<listener>
 		<listener-class>net.zschech.gwt.comet.server.CometHttpSessionListener</listener-class>
 	</listener>
+
+	<!-- Listener that manage server push clients connection and disconnection -->
+	<listener>
+		<listener-class>br.com.oncast.ontrack.server.services.serverPush.ServerPushServerServiceImpl$CometHttpSessionListener</listener-class>
+	</listener>
 	
+	<listener>
+		<listener-class>br.com.oncast.ontrack.server.services.serverPush.CometServletContextListener</listener-class>
+	</listener>
 	<!-- Servlet definitions and mappings -->
 	<servlet>
 		<servlet-name>serverPushComet</servlet-name>
-		<servlet-class>net.zschech.gwt.comet.server.CometServlet</servlet-class>
+		<servlet-class>br.com.oncast.ontrack.server.services.serverPush.ServerPushServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>serverPushComet</servlet-name>
 		<url-pattern>/application/comet</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>requestDispatchService</servlet-name>
 		<servlet-class>br.com.oncast.ontrack.server.services.requestDispatch.CommunicationRpcServiceImpl</servlet-class>
