@@ -96,7 +96,7 @@ public class InsertSiblingDownTest extends GwtTest {
 
 	@Test
 	public void shouldInsertSiblingDown() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingDownAction(firstScope.getId(), newScopeDescription));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeInsertSiblingDownAction(firstScope.getId(), newScopeDescription));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
@@ -104,17 +104,17 @@ public class InsertSiblingDownTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotInsertSiblingDownForRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingDownAction(rootScope.getId(), newScopeDescription));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeInsertSiblingDownAction(rootScope.getId(), newScopeDescription));
 	}
 
 	@Test
 	public void shouldRemoveInsertedSiblingAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertSiblingDownAction(firstScope.getId(), newScopeDescription));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeInsertSiblingDownAction(firstScope.getId(), newScopeDescription));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
-		actionExecutionService.onActionUndoRequest();
+		actionExecutionService.onUserActionUndoRequest();
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());

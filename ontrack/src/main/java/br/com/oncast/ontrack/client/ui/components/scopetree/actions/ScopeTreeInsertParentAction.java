@@ -18,7 +18,7 @@ class ScopeTreeInsertParentAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope newScope = context.findScope(action.getNewScopeId());
 		final Scope grandParentScope = newScope.getParent();
@@ -31,7 +31,9 @@ class ScopeTreeInsertParentAction implements ScopeTreeAction {
 		grandParentTreeItem.removeItem(treeItem);
 		grandParentTreeItem.insertItem(index, newTreeItem);
 
-		newTreeItem.setHierarchicalState(true);
-		tree.setSelected(newTreeItem);
+		if (isUserInteraction) {
+			newTreeItem.setHierarchicalState(true);
+			tree.setSelected(newTreeItem);
+		}
 	}
 }

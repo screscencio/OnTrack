@@ -18,7 +18,7 @@ public class ScopeTreeRemoveRollbackAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope referencedScope = context.findScope(action.getNewScopeId());
 		final Scope parentScope = referencedScope.getParent();
 
@@ -27,9 +27,13 @@ public class ScopeTreeRemoveRollbackAction implements ScopeTreeAction {
 		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope.getId());
 		final ScopeTreeItem newTreeItem = new ScopeTreeItem(referencedScope);
 		parentItem.insertItem(childIndex, newTreeItem);
+
+		// TODO Is this necessary? The tree already receives a set of the modified scopes by the inference engines (effort, progress, ...).
 		parentItem.getScopeTreeItemWidget().updateDisplay();
 
-		newTreeItem.setHierarchicalState(true);
-		tree.setSelected(newTreeItem);
+		if (isUserInteraction) {
+			newTreeItem.setHierarchicalState(true);
+			tree.setSelected(newTreeItem);
+		}
 	}
 }

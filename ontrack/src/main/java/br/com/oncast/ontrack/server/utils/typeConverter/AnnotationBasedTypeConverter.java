@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.utils.typeConverter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import br.com.oncast.ontrack.server.utils.introspector.IntrospectionEngine;
 import br.com.oncast.ontrack.server.utils.introspector.IntrospectionException;
@@ -9,6 +10,7 @@ import br.com.oncast.ontrack.server.utils.introspector.Introspector;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.IgnoreByConversion;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 
 class AnnotationBasedTypeConverter implements TypeConverter {
@@ -63,6 +65,8 @@ class AnnotationBasedTypeConverter implements TypeConverter {
 
 				@Override
 				public void introspect(final Field sourceField) throws Exception {
+					if (Modifier.isStatic(sourceField.getModifiers())) return;
+					if (sourceField.isAnnotationPresent(IgnoreByConversion.class)) return;
 					final Field destinationField = findDestinationField(destinationInstance, sourceField);
 					mapField(sourceInstance, sourceField, destinationInstance, destinationField);
 				}

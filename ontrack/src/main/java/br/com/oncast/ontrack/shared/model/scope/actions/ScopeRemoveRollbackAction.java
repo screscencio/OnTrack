@@ -14,6 +14,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(ScopeRemoveRollbackActionEntity.class)
 public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 
+	private static final long serialVersionUID = 1L;
+
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
 

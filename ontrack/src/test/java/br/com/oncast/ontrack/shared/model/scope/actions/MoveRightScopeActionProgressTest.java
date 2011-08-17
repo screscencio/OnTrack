@@ -108,15 +108,15 @@ public class MoveRightScopeActionProgressTest {
 
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doExecute(moveRightScopeAction, context);
+		actionExecutionManager.doUserAction(moveRightScopeAction, context);
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undo(context);
-			actionExecutionManager.redo(context);
+			actionExecutionManager.undoUserAction(context);
+			actionExecutionManager.redoUserAction(context);
 		}
 		assertFalse(firstChild.getProgress().hasDeclared());
 		assertFalse(firstChild.getProgress().isDone());
 
-		actionExecutionManager.undo(context);
+		actionExecutionManager.undoUserAction(context);
 
 		assertTrue(firstChild.getProgress().isDone());
 		assertTrue(firstChild.getProgress().hasDeclared());

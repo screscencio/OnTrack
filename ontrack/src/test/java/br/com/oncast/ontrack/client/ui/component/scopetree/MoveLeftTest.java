@@ -97,7 +97,7 @@ public class MoveLeftTest extends GwtTest {
 
 	@Test
 	public void shouldMoveLeft() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveLeftAction(childScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveLeftAction(childScope.getId()));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
@@ -105,22 +105,22 @@ public class MoveLeftTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveToTheSameLevelAsRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveLeftAction(firstScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveLeftAction(firstScope.getId()));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveLeftAction(rootScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveLeftAction(rootScope.getId()));
 	}
 
 	@Test
 	public void shouldMoveRightAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveLeftAction(childScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveLeftAction(childScope.getId()));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
-		actionExecutionService.onActionUndoRequest();
+		actionExecutionService.onUserActionUndoRequest();
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());

@@ -190,10 +190,10 @@ public class RemoveScopeActionTest {
 	@Test
 	public void shouldHandleRemovalCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doExecute(new ScopeRemoveAction(child1Level1.getId()), context);
+		actionExecutionManager.doUserAction(new ScopeRemoveAction(child1Level1.getId()), context);
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undo(context);
+			actionExecutionManager.undoUserAction(context);
 
 			assertEquals(2, rootScope.getChildren().size());
 			assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -201,7 +201,7 @@ public class RemoveScopeActionTest {
 			assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
 			assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
-			actionExecutionManager.redo(context);
+			actionExecutionManager.redoUserAction(context);
 
 			assertEquals(1, rootScope.getChildren().size());
 			assertEquals(child2Level1, rootScope.getChildren().get(0));

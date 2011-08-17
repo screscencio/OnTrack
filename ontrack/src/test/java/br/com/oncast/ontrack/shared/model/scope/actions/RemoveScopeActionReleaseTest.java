@@ -119,7 +119,7 @@ public class RemoveScopeActionReleaseTest {
 		addScopeToRelease(removedScope3, release);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doExecute(new ScopeRemoveAction(removedScope.getId()), context);
+		actionExecutionManager.doUserAction(new ScopeRemoveAction(removedScope.getId()), context);
 
 		for (int i = 0; i < 20; i++) {
 			assertNull(removedScope1.getRelease());
@@ -129,7 +129,7 @@ public class RemoveScopeActionReleaseTest {
 			assertNull(removedScope3.getRelease());
 			assertFalse(release.getScopeList().contains(removedScope3));
 
-			actionExecutionManager.undo(context);
+			actionExecutionManager.undoUserAction(context);
 
 			removedScope1 = rootScope.getChild(0).getChild(0).getChild(0);
 			removedScope2 = rootScope.getChild(0).getChild(0).getChild(1);
@@ -142,7 +142,7 @@ public class RemoveScopeActionReleaseTest {
 			assertEquals(release, removedScope3.getRelease());
 			assertTrue(release.getScopeList().contains(removedScope3));
 
-			actionExecutionManager.redo(context);
+			actionExecutionManager.redoUserAction(context);
 
 			assertNull(removedScope1.getRelease());
 			assertFalse(release.getScopeList().contains(removedScope1));

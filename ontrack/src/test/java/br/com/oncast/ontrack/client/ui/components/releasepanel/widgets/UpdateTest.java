@@ -48,7 +48,7 @@ public class UpdateTest extends GwtTest {
 		final ReleasePanel modifiedReleasePanel = new ReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " "
+		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " "
 				+ StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1/It1"));
 
 		DeepEqualityTestUtils.assertObjectEquality(releasePanel, modifiedReleasePanel);
@@ -62,7 +62,7 @@ public class UpdateTest extends GwtTest {
 		ReleasePanel modifiedReleasePanel = new ReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " "
+		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription() + " "
 				+ StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1/It1"));
 
 		DeepEqualityTestUtils.assertObjectEquality(releasePanel, modifiedReleasePanel);
@@ -71,7 +71,7 @@ public class UpdateTest extends GwtTest {
 		modifiedReleasePanel = new ReleasePanel();
 		modifiedReleasePanel.setRelease(modifiedRelease);
 
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(scopeUpdated.getId(), scopeUpdated.getDescription()));
 
 		DeepEqualityTestUtils.assertObjectEquality(releasePanel, modifiedReleasePanel);
 	}

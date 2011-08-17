@@ -77,9 +77,9 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		if (internalActionHandler.hasPendingAction()) {
 			final ModelAction action = internalActionHandler.getPendingActionEquivalentModelActionFor(value);
 			internalActionHandler.rollbackPendingAction();
-			applicationActionHandler.onActionExecutionRequest(action);
+			applicationActionHandler.onUserActionExecutionRequest(action);
 		}
-		else applicationActionHandler.onActionExecutionRequest(new ScopeUpdateAction(item.getReferencedScope().getId(), value));
+		else applicationActionHandler.onUserActionExecutionRequest(new ScopeUpdateAction(item.getReferencedScope().getId(), value));
 	}
 
 	@Override

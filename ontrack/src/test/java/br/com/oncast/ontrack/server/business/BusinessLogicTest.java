@@ -46,19 +46,19 @@ public class BusinessLogicTest {
 
 	@Test(expected = InvalidIncomingAction.class)
 	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
-		final BusinessLogic business = new BusinessLogic(getPersistenceMock(), getBroadcastMock());
+		final BusinessLogic business = new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock());
 		business.handleIncomingAction(new ScopeUpdateAction(new UUID("id"), "bllla"));
 	}
 
 	@Test
 	public void usingMock() throws Exception {
-		final BusinessLogic business = new BusinessLogic(getPersistenceMock(), getBroadcastMock());
+		final BusinessLogic business = new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock());
 		shouldConstructAScopeHierarchyFromActions(business);
 	}
 
 	@Test
 	public void goingToPersistence() throws Exception {
-		final BusinessLogic business = new BusinessLogic(new PersistenceServiceJpaImpl(), getBroadcastMock());
+		final BusinessLogic business = new BusinessLogicImpl(new PersistenceServiceJpaImpl(), getBroadcastMock());
 		shouldConstructAScopeHierarchyFromActions(business);
 	}
 

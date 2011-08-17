@@ -12,10 +12,11 @@ public class ActivityActionExecutionListener implements ActionExecutionListener 
 	private List<ActionExecutionListener> actionExecutionSuccessListeners;
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+			final boolean isUserAction) {
 		if (actionExecutionSuccessListeners == null) return;
 		for (final ActionExecutionListener listener : actionExecutionSuccessListeners)
-			listener.onActionExecution(action, context, inferenceInfluencedScopeSet);
+			listener.onActionExecution(action, context, inferenceInfluencedScopeSet, isUserAction);
 	}
 
 	public void setActionExecutionListeners(final List<ActionExecutionListener> actionExecutionSuccessListeners) {

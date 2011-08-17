@@ -88,8 +88,8 @@ public class MoveDownTest extends GwtTest {
 
 	@Test
 	public void shouldMoveDown() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveDownAction(firstScope.getId()));
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveDownAction(thirdScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(firstScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(thirdScope.getId()));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
@@ -97,24 +97,24 @@ public class MoveDownTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveLast() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveDownAction(lastScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(lastScope.getId()));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveDownAction(rootScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(rootScope.getId()));
 	}
 
 	@Test
 	public void shouldMoveUpAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveDownAction(firstScope.getId()));
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveDownAction(thirdScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(firstScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(thirdScope.getId()));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
-		actionExecutionService.onActionUndoRequest();
-		actionExecutionService.onActionUndoRequest();
+		actionExecutionService.onUserActionUndoRequest();
+		actionExecutionService.onUserActionUndoRequest();
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());

@@ -18,7 +18,7 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope parentScope = scope.getParent();
 		final int index = parentScope.getChildIndex(scope);
@@ -30,10 +30,15 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 		if (!treeItem.isRoot()) treeItem.getParentItem().getScopeTreeItemWidget().updateDisplay();
 		treeItem.remove();
 		parentItem.insertItem(index, treeItem);
-		treeItem.setHierarchicalState(true);
-		tree.setSelectedItem(treeItem);
 
+		if (isUserInteraction) {
+			treeItem.setHierarchicalState(true);
+			tree.setSelectedItem(treeItem);
+		}
+
+		// TODO Is this necessary? The tree already receives a set of the modified scopes by the inference engines (effort, progress, ...).
 		treeItem.getScopeTreeItemWidget().updateDisplay();
+		// TODO Is this necessary? The tree already receives a set of the modified scopes by the inference engines (effort, progress, ...).
 		parentItem.getScopeTreeItemWidget().updateDisplay();
 	}
 }
