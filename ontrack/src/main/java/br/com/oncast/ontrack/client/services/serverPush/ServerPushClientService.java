@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+
 public class ServerPushClientService {
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
@@ -21,8 +23,7 @@ public class ServerPushClientService {
 		serverPushClient.connectToServer();
 	}
 
-	public void registerServerEventHandler(final ServerPushEventHandler<?> serverPushEventHandler) {
-		final Class<?> eventClass = serverPushEventHandler.getHandledEventClass();
+	public <T extends ServerPushEvent> void registerServerEventHandler(final Class<T> eventClass, final ServerPushEventHandler<T> serverPushEventHandler) {
 		if (!eventHandlersMap.containsKey(eventClass)) eventHandlersMap.put(eventClass, new ArrayList<ServerPushEventHandler<?>>());
 
 		final List<ServerPushEventHandler<?>> handlerList = eventHandlersMap.get(eventClass);

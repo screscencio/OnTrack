@@ -9,6 +9,6 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public interface ActionExecutionListener {
 
 	// TODO +Verify the removal of the context from the methods signature.
-	void onActionExecution(ModelAction action, ProjectContext context, Set<UUID> inferenceInfluencedScopeSet);
+	void onActionExecution(ModelAction action, ProjectContext context, Set<UUID> inferenceInfluencedScopeSet, boolean isUserAction);
 
 }

@@ -7,42 +7,76 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-// TODO +Now that this is a globally visible service, refactor this so that only the necessary methods are visible. A possible solution is to encapsulate the
-// two
-// interface implementations using composition (may be acceptable to use inner classes).
-public class ActionExecutionService implements ActionExecutionRequestHandler, ActionExecutionListener {
+public class ActionExecutionService implements ActionExecutionRequestHandler {
 
 	private final ActionExecutionManager actionManager;
 	private final ContextProviderService contextService;
 	private final List<ActionExecutionListener> actionExecutionListeners;
 
 	public ActionExecutionService(final ContextProviderService contextService) {
-		this.contextService = contextService;
-		this.actionManager = new ActionExecutionManager(this);
 		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
+		this.contextService = contextService;
+		this.actionManager = new ActionExecutionManager(new ActionExecutionListener() {
+
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isClientAction) {
+				notifyActionExecutionListeners(action, context, inferenceInfluencedScopeSet, isClientAction);
+			}
+		});
+	}
+
+	// TODO Analyze adding this method to ActionExecutionRequestHandler as 'onNonUserActionExecutionRequest'
+	public void executeNonUserAction(final ModelAction action) throws UnableToCompleteActionException {
+		actionManager.doNonUserAction(action, contextService.getProjectContext());
 	}
 
 	@Override
-	public void onActionExecutionRequest(final ModelAction action) {
-		actionManager.doExecute(action, contextService.getProjectContext());
+	public void onUserActionExecutionRequest(final ModelAction action) {
+		try {
+			actionManager.doUserAction(action, contextService.getProjectContext());
+		}
+		catch (final UnableToCompleteActionException e) {
+			// TODO ++Implement an adequate exception treatment.
+			// TODO ++Display error to the user
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public void onActionUndoRequest() {
-		actionManager.undo(contextService.getProjectContext());
+	public void onUserActionUndoRequest() {
+		try {
+			actionManager.undoUserAction(contextService.getProjectContext());
+		}
+		catch (final UnableToCompleteActionException e) {
+			// TODO ++Implement an adequate exception treatment.
+			// TODO ++Display error to the user
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public void onActionRedoRequest() {
-		actionManager.redo(contextService.getProjectContext());
+	public void onUserActionRedoRequest() {
+		try {
+			actionManager.redoUserAction(contextService.getProjectContext());
+		}
+		catch (final UnableToCompleteActionException e) {
+			// TODO ++Implement an adequate exception treatment.
+			// TODO ++Display error to the user
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
-	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
+	private void notifyActionExecutionListeners(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+			final boolean isUserAction) {
 		for (final ActionExecutionListener handler : actionExecutionListeners) {
-			handler.onActionExecution(action, context, inferenceInfluencedScopeSet);
+			handler.onActionExecution(action, context, inferenceInfluencedScopeSet, isUserAction);
 		}
 	}
 

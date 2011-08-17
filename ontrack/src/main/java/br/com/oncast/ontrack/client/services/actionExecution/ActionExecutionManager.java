@@ -11,69 +11,59 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionCont
 
 public class ActionExecutionManager {
 
-	private final ActionExecutionListener executionListener;
 	private final Stack<ModelAction> undoStack;
 	private final Stack<ModelAction> redoStack;
+	private final ActionExecutionListener executionListener;
 
-	public ActionExecutionManager(final ActionExecutionListener actionExecutionListener) {
-		executionListener = actionExecutionListener;
+	public ActionExecutionManager(final ActionExecutionListener executionListener) {
+		this.executionListener = executionListener;
 		undoStack = new Stack<ModelAction>();
 		redoStack = new Stack<ModelAction>();
 	}
 
-	// FIXME Throw UnableToCompleteActionException
-	public void doExecute(final ModelAction action, final ProjectContext context) {
-		try {
-			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-			executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet());
-			final ModelAction undoAction = executionContext.getReverseAction();
-			undoStack.push(undoAction);
-			redoStack.clear();
-		}
-		catch (final UnableToCompleteActionException e) {
-			// TODO ++Implement an adequate exception treatment.
-			// TODO ++Display error to the user
-			// TODO Maybe create a type of exception when we don't want to display any messages.
-			throw new RuntimeException(e);
-		}
+	public void doNonUserAction(final ModelAction action, final ProjectContext context)
+			throws UnableToCompleteActionException {
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
+		executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet(), false);
 	}
 
-	// FIXME Throw UnableToCompleteActionException
-	public void undo(final ProjectContext context) {
+	public void doUserAction(final ModelAction action, final ProjectContext context)
+			throws UnableToCompleteActionException {
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
+		executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet(), true);
+		final ModelAction undoAction = executionContext.getReverseAction();
+		undoStack.push(undoAction);
+		redoStack.clear();
+	}
+
+	public void undoUserAction(final ProjectContext context) throws UnableToCompleteActionException {
 		try {
 			final ModelAction undoAction = undoStack.pop();
 			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, undoAction);
-			executionListener.onActionExecution(undoAction, context, executionContext.getInferenceInfluencedScopeSet());
+			executionListener.onActionExecution(undoAction, context, executionContext.getInferenceInfluencedScopeSet(), true);
 			final ModelAction redoAction = executionContext.getReverseAction();
 			redoStack.push(redoAction);
 		}
 		catch (final UnableToCompleteActionException e) {
 			undoStack.clear();
-			// TODO ++Implement an adequate exception treatment.
-			// TODO ++Display error to the user
-			// TODO Maybe create a type of exception when we don't want to display any messages.
-			throw new RuntimeException(e);
+			throw e;
 		}
 		catch (final EmptyStackException e) {
 			// Purposefully ignoring exception
 		}
 	}
 
-	// FIXME Throw UnableToCompleteActionException
-	public void redo(final ProjectContext context) {
+	public void redoUserAction(final ProjectContext context) throws UnableToCompleteActionException {
 		try {
 			final ModelAction redoAction = redoStack.pop();
 			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, redoAction);
-			executionListener.onActionExecution(redoAction, context, executionContext.getInferenceInfluencedScopeSet());
+			executionListener.onActionExecution(redoAction, context, executionContext.getInferenceInfluencedScopeSet(), true);
 			final ModelAction undoAction = executionContext.getReverseAction();
 			undoStack.push(undoAction);
 		}
 		catch (final UnableToCompleteActionException e) {
 			redoStack.clear();
-			// TODO ++Implement an adequate exception treatment.
-			// TODO ++Display error to the user
-			// TODO Maybe create a type of exception when we don't want to display any messages.
-			throw new RuntimeException(e);
+			throw e;
 		}
 		catch (final EmptyStackException e) {
 			// Purposefully ignoring exception

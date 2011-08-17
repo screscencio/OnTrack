@@ -18,7 +18,7 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope newScope = context.findScope(action.getNewScopeId());
 
@@ -26,9 +26,13 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 		final ScopeTreeItem newItem = new ScopeTreeItem(newScope);
 
 		parentTreeItem.insertItem(scope.getChildIndex(newScope), newItem);
+
+		// TODO Is this necessary? The tree already receives a set of the modified scopes by the inference engines (effort, progress, ...).
 		parentTreeItem.getScopeTreeItemWidget().updateDisplay();
 
-		parentTreeItem.setState(true);
-		tree.setSelected(newItem);
+		if (isUserInteraction) {
+			parentTreeItem.setState(true);
+			tree.setSelected(newItem);
+		}
 	}
 }

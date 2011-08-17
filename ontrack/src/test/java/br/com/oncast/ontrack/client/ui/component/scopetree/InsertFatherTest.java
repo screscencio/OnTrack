@@ -98,7 +98,7 @@ public class InsertFatherTest extends GwtTest {
 
 	@Test
 	public void shouldInsertFather() throws ActionNotFoundException, DeepEqualityException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertParentAction(firstScope.getId(), newScopeDescription));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeInsertParentAction(firstScope.getId(), newScopeDescription));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
@@ -106,17 +106,17 @@ public class InsertFatherTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotInsertFatherForRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertParentAction(rootScope.getId(), newScopeDescription));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeInsertParentAction(rootScope.getId(), newScopeDescription));
 	}
 
 	@Test
 	public void shouldRemoveInsertedFatherAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeInsertParentAction(firstScope.getId(), newScopeDescription));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeInsertParentAction(firstScope.getId(), newScopeDescription));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
-		actionExecutionService.onActionUndoRequest();
+		actionExecutionService.onUserActionUndoRequest();
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());

@@ -5,7 +5,6 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.effort.ScopeTreeEffortUpdateEngine;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInteractionHandler;
@@ -34,10 +33,10 @@ public class ScopeTree implements Component {
 		actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isUserAction) {
 				try {
-					final ScopeTreeAction scopeTreeAction = treeActionFactory.createEquivalentActionFor(action);
-					scopeTreeAction.execute(context);
+					treeActionFactory.createEquivalentActionFor(action).execute(context, isUserAction);
 					ScopeTreeEffortUpdateEngine.process(tree, inferenceInfluencedScopeSet);
 				}
 				catch (final ScopeNotFoundException e) {

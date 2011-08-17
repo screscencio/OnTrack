@@ -4,5 +4,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 public interface ScopeTreeAction {
-	void execute(final ProjectContext context) throws ScopeNotFoundException;
+	// TODO Review if 'isUserInteraction' actions should be processed as other method and if it should be called externally or internally.
+	void execute(final ProjectContext context, boolean isUserInteraction) throws ScopeNotFoundException;
 }

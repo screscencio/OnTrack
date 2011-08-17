@@ -83,17 +83,17 @@ public class MoveRightScopeActionTest {
 	public void shouldHandleScopeHierarchyCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doExecute(moveRightScopeAction, context);
+		actionExecutionManager.doUserAction(moveRightScopeAction, context);
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undo(context);
+			actionExecutionManager.undoUserAction(context);
 
 			assertEquals(2, rootScope.getChildren().size());
 			assertEquals(0, firstChild.getChildren().size());
 			assertEquals(firstChild, rootScope.getChildren().get(0));
 			assertEquals(lastChild, rootScope.getChildren().get(1));
 
-			actionExecutionManager.redo(context);
+			actionExecutionManager.redoUserAction(context);
 
 			assertEquals(1, rootScope.getChildren().size());
 			assertEquals(1, firstChild.getChildren().size());

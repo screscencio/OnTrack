@@ -86,7 +86,7 @@ public class MoveUpTest extends GwtTest {
 
 	@Test
 	public void shouldMoveUp() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(lastScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveUpAction(lastScope.getId()));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
@@ -94,22 +94,22 @@ public class MoveUpTest extends GwtTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveUpFirstItem() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(firstScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveUpAction(firstScope.getId()));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldNotMoveUpRoot() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(rootScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveUpAction(rootScope.getId()));
 	}
 
 	@Test
 	public void shouldMoveDownItemAfterUndo() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeMoveUpAction(lastScope.getId()));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveUpAction(lastScope.getId()));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
-		actionExecutionService.onActionUndoRequest();
+		actionExecutionService.onUserActionUndoRequest();
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());

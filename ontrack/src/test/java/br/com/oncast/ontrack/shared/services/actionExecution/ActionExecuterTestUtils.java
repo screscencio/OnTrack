@@ -12,6 +12,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public class ActionExecuterTestUtils extends ActionExecuter {
 
 	private static final class ModelActionMockImpl implements ModelAction {
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public UUID getReferenceId() {
 			return null;

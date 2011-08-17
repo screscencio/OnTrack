@@ -4,10 +4,10 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 
 public interface ActionExecutionRequestHandler {
 
-	void onActionExecutionRequest(ModelAction action);
+	void onUserActionExecutionRequest(ModelAction action);
 
-	void onActionUndoRequest();
+	void onUserActionUndoRequest();
 
-	void onActionRedoRequest();
+	void onUserActionRedoRequest();
 
 }

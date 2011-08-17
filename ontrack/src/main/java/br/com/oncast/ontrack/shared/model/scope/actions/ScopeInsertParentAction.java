@@ -11,6 +11,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(ScopeInsertParentActionEntity.class)
 public class ScopeInsertParentAction implements ScopeInsertAction {
 
+	private static final long serialVersionUID = 1L;
+
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
 

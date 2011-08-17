@@ -70,7 +70,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeMoveUpAction(scope.getId()));
+			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveUpAction(scope.getId()));
 		}
 	},
 
@@ -78,7 +78,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeMoveDownAction(scope.getId()));
+			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveDownAction(scope.getId()));
 		}
 	},
 
@@ -86,7 +86,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeMoveRightAction(scope.getId()));
+			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveRightAction(scope.getId()));
 		}
 	},
 
@@ -94,7 +94,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeMoveLeftAction(scope.getId()));
+			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveLeftAction(scope.getId()));
 		}
 	},
 
@@ -102,7 +102,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionUndoRequest();
+			actionRequestHandler.onUserActionUndoRequest();
 		}
 	},
 
@@ -110,7 +110,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionRedoRequest();
+			actionRequestHandler.onUserActionRedoRequest();
 		}
 	},
 
@@ -118,7 +118,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
-			actionRequestHandler.onActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
+			actionRequestHandler.onUserActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
 		}
 	};
 

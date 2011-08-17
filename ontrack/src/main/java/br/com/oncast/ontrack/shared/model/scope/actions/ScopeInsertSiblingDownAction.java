@@ -12,6 +12,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(ScopeInsertSiblingDownActionEntity.class)
 public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 
+	private static final long serialVersionUID = 1L;
+
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
 

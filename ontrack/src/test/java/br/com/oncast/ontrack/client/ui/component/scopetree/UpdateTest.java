@@ -106,7 +106,7 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldUpdateScopeWithNewValue() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(firstScope.getId(), "3"));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(firstScope.getId(), "3"));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
@@ -114,7 +114,7 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldUpdateRootScope() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(rootScope.getId(), "Root"));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(rootScope.getId(), "Root"));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedRootScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedRootTree());
@@ -122,12 +122,12 @@ public class UpdateTest extends GwtTest {
 
 	@Test
 	public void shouldRollbackUpdatedScope() throws ActionNotFoundException {
-		actionExecutionService.onActionExecutionRequest(new ScopeUpdateAction(firstScope.getId(), "3"));
+		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(firstScope.getId(), "3"));
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
-		actionExecutionService.onActionUndoRequest();
+		actionExecutionService.onUserActionUndoRequest();
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
