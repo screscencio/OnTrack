@@ -26,7 +26,7 @@ public class ServerPushServlet extends CometServlet {
 
 	@Override
 	public void cometTerminated(final CometServletResponse cometResponse, final boolean serverInitiated) {
-		notifyListenersOnSessionDestroyed(cometResponse.getSession());
+		notifyListenersOnSessionDestroyed(cometResponse.getRequest().getSession().getId());
 	}
 
 	static void addCometSessionListener(final CometSessionListener listener) {
@@ -39,9 +39,9 @@ public class ServerPushServlet extends CometServlet {
 		}
 	}
 
-	private void notifyListenersOnSessionDestroyed(final CometSession cometSession) {
+	private void notifyListenersOnSessionDestroyed(final String sessionId) {
 		for (final CometSessionListener listener : cometSessionListenerSet) {
-			listener.onSessionDestroyed(cometSession);
+			listener.onSessionDestroyed(sessionId);
 		}
 	}
 }

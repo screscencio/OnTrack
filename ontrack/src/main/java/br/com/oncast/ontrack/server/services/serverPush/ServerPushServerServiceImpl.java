@@ -31,8 +31,8 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 			}
 
 			@Override
-			public void onSessionDestroyed(final CometSession cometSession) {
-				removeCometSession(cometSession.getHttpSession().getId());
+			public void onSessionDestroyed(final String sessionId) {
+				removeCometSession(sessionId);
 			}
 		});
 	}
