@@ -24,6 +24,11 @@ public class ServerPushServlet extends CometServlet {
 		}
 	}
 
+	@Override
+	public void cometTerminated(final CometServletResponse cometResponse, final boolean serverInitiated) {
+		notifyListenersOnSessionDestroyed(cometResponse.getSession());
+	}
+
 	static void addCometSessionListener(final CometSessionListener listener) {
 		cometSessionListenerSet.add(listener);
 	}
@@ -31,6 +36,12 @@ public class ServerPushServlet extends CometServlet {
 	private void notifyListenersOnSessionCreated(final CometSession cometSession) {
 		for (final CometSessionListener listener : cometSessionListenerSet) {
 			listener.onSessionCreated(cometSession);
+		}
+	}
+
+	private void notifyListenersOnSessionDestroyed(final CometSession cometSession) {
+		for (final CometSessionListener listener : cometSessionListenerSet) {
+			listener.onSessionDestroyed(cometSession);
 		}
 	}
 }
