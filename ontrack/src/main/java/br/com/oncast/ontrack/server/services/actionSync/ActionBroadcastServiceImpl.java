@@ -40,15 +40,15 @@ public class ActionBroadcastServiceImpl implements ActionBroadcastService {
 		return new ServerPushConnectionListener() {
 			@Override
 			public void onClientConnected(final ServerPushClient client) {
-				// TODO ++Implement a log service.
-				// TODO Remove syso
+				// FIXME +++Implement a log service.
+				// TODO Remove SYSO
 				System.out.println("Putting a new client into the map.");
 				clientMap.put(client.getSessionId(), client);
 			}
 
 			@Override
 			public void onClientDisconnected(final ServerPushClient client) {
-				// TODO Remove syso
+				// TODO Remove SYSO
 				System.out.println("Removing a client from map.");
 				clientMap.remove(client.getSessionId());
 			}
