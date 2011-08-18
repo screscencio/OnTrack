@@ -24,6 +24,8 @@ public class ServerPushClientService {
 
 			@Override
 			public void onDisconnected() {
+				// FIXME
+				Window.alert("The application was disconnected. It will try now to reconnect to server...");
 				connect();
 			}
 
@@ -34,6 +36,9 @@ public class ServerPushClientService {
 
 			@Override
 			public void onError(final Throwable exception) {
+				// FIXME
+				Window.alert("The application found an error while communicating with the server.\n\nException: " + exception.toString());
+
 				// TODO +++Notify Error threatment service.
 				threatSyncingError();
 			}
@@ -66,7 +71,7 @@ public class ServerPushClientService {
 			@Override
 			public void run() {
 				if (!serverPushClient.isRunning()) threatSyncingError();
-				scheduleConnectionHealthMonitor();
+				else scheduleConnectionHealthMonitor();
 			}
 		}.schedule(5000);
 	}
@@ -77,7 +82,7 @@ public class ServerPushClientService {
 
 	private void threatSyncingError() {
 		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
-		Window.alert("An error ocurred while syncing actions with the server: \nAn invalid action was found. \n\nThe application will be briethly reloaded and some of your lattest changes may be rollbacked.");
+		Window.alert("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
 		Window.Location.reload();
 	}
 }

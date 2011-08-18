@@ -85,7 +85,7 @@ public class ActionSyncService {
 
 	private void threatSyncingError() {
 		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
-		Window.alert("An error ocurred while syncing actions with the server: \nAn invalid action was found. \n\nThe application will be briethly reloaded and some of your lattest changes may be rollbacked.");
+		Window.alert("The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.");
 		Window.Location.reload();
 	}
 }
