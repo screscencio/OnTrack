@@ -32,7 +32,7 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 
 			@Override
 			public void onSessionDestroyed(final CometSession cometSession) {
-				removeCometSession(cometSession);
+				removeCometSession(cometSession.getHttpSession().getId());
 			}
 		});
 	}
@@ -50,7 +50,7 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 			catch (final IllegalStateException e) {
 				// This exception is thrown by CometSession when trying to send a message through an invalid connection and by java.util.Queue if the stack is
 				// full.
-				removeCometConnectionFromMap(client.getSessionId());
+				removeCometSession(client.getSessionId());
 				e.printStackTrace();
 			}
 		}
@@ -72,13 +72,12 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 	private void addCometSession(final CometSession cometSession) {
 		final String sessionId = cometSession.getHttpSession().getId();
 		cometSessionMap.put(sessionId, cometSession);
-
 		System.out.println("A new comet session was put inside the map: " + sessionId);
+
 		notifyListenersOnClientConnected(sessionId);
 	}
 
-	protected void removeCometSession(final CometSession cometSession) {
-		final String sessionId = cometSession.getHttpSession().getId();
+	protected void removeCometSession(final String sessionId) {
 		removeCometConnectionFromMap(sessionId);
 		notifyListenersOnClientDisconnected(sessionId);
 	}
