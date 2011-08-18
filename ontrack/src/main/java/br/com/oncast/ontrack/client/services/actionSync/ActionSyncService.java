@@ -76,6 +76,7 @@ public class ActionSyncService {
 				else {
 					// TODO Hide 'loading' UI indicator.
 					// TODO +++Treat communication failure.
+					// TODO +++Notify Error threatment service.
 					caught.printStackTrace();
 				}
 			}
@@ -83,6 +84,7 @@ public class ActionSyncService {
 	}
 
 	private void threatSyncingError() {
+		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
 		Window.alert("An error ocurred while syncing actions with the server: \nAn invalid action was found. \n\nThe application will be briethly reloaded and some of your lattest changes may be rollbacked.");
 		Window.Location.reload();
 	}

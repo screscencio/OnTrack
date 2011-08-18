@@ -2,28 +2,46 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-  <!-- Log all messages to the console -->
+  <!-- Database Related Log - Log all messages to the console -->
   <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender"> 
     <layout class="org.apache.log4j.PatternLayout"> 
       <param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/> 
     </layout> 
   </appender>  
   
-  <!-- Log all SQL DML statements as they are executed -->
+  <!-- Database Related Log - Log all SQL DML statements as they are executed -->
   <logger name="org.hibernate.SQL">
-    <level value="DEBUG" />
+    <level value="INFO" />
     <appender-ref ref="consoleAppender"/>
   </logger>  
   
-  <!-- Log all second-level cache activity -->
+  <!-- Database Related Log - Log all second-level cache activity -->
   <logger name="org.hibernate.cache">
     <level value="WARN" />
     <appender-ref ref="consoleAppender"/>
   </logger>   
   
-  <!-- Log everything -->
+  <!-- Database Related Log - Log everything -->
   <logger name="org.hibernate">
     <level value="WARN" />
+    <appender-ref ref="consoleAppender"/>
+  </logger>
+  
+  <!-- Application Server Log - ActionSync Services -->
+  <logger name="br.com.oncast.ontrack.server.services.actionSync">
+    <level value="DEBUG" />
+    <appender-ref ref="consoleAppender"/>
+  </logger>
+  
+  <!-- Application Server Log - ServerPush Service -->
+  <logger name="br.com.oncast.ontrack.server.services.serverPush">
+    <level value="DEBUG" />
+    <appender-ref ref="consoleAppender"/>
+  </logger>
+  
+  <!-- Application Server Log - RequestDispatch Service -->
+  <logger name="br.com.oncast.ontrack.server.services.requestDispatch">
+    <level value="DEBUG" />
     <appender-ref ref="consoleAppender"/>
   </logger>
   

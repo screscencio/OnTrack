@@ -1,9 +1,14 @@
 package br.com.oncast.ontrack.client.services.serverPush;
 
-import java.io.Serializable;
+import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 interface ServerPushClientEventListener {
 
-	void onEvent(Serializable event);
+	void onEvent(ServerPushEvent event);
 
+	void onConnected();
+
+	void onDisconnected();
+
+	void onError(Throwable exception);
 }

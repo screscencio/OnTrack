@@ -7,55 +7,54 @@ import net.zschech.gwt.comet.client.CometClient;
 import net.zschech.gwt.comet.client.CometListener;
 import net.zschech.gwt.comet.client.CometSerializer;
 import br.com.oncast.ontrack.shared.config.UriConfigurations;
+import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 import com.google.gwt.core.client.GWT;
 
-public class GwtCometClient {
+class GwtCometClient implements ServerPushClient {
 
-	private final ServerPushClientEventListener serverPushClientEventListener;
+	private final CometClient client;
 
 	public GwtCometClient(final ServerPushClientEventListener serverPushClientEventListener) {
-		this.serverPushClientEventListener = serverPushClientEventListener;
-	}
-
-	public void connectToServer() {
-		final CometListener listener = new CometListener() {
+		client = new CometClient(UriConfigurations.SERVER_PUSH_COMET_URL, GWT.<CometSerializer> create(ServerPushSerializer.class), new CometListener() {
 			@Override
 			public void onConnected(final int heartbeat) {
-				System.out.println("Server push connected.");
+				serverPushClientEventListener.onConnected();
 			}
 
 			@Override
 			public void onDisconnected() {
-				System.out.println("Server push disconnected.");
+				serverPushClientEventListener.onDisconnected();
 			}
 
 			@Override
-			public void onHeartbeat() {
-				System.out.println("[" + System.currentTimeMillis() + "] A heartbeat arrived from server: the connection is still alive.");
-			}
+			public void onHeartbeat() {}
 
 			@Override
-			public void onRefresh() {
-				System.out.println("Refreshing server push connection...");
-			}
+			public void onRefresh() {}
 
 			@Override
 			public void onError(final Throwable exception, final boolean connected) {
-				throw new RuntimeException(exception);
+				serverPushClientEventListener.onError(exception);
 			}
 
 			@Override
 			public void onMessage(final List<? extends Serializable> messages) {
 				for (final Serializable message : messages) {
-					serverPushClientEventListener.onEvent(message);
+					if (message instanceof ServerPushEvent) serverPushClientEventListener.onEvent((ServerPushEvent) message);
+					else {
+						// TODO Threat unknown message received by the comet server push lib.
+					}
 				}
 			}
-		};
+		});
+	}
 
-		System.out.println("Starting server push listener...");
-		final CometSerializer serializer = GWT.create(ServerPushSerializer.class);
-		final CometClient client = new CometClient(UriConfigurations.SERVER_PUSH_COMET_URL, serializer, listener);
+	public void start() {
 		client.start();
+	}
+
+	public boolean isRunning() {
+		return client.isRunning();
 	}
 }
