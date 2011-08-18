@@ -29,13 +29,18 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 			public void onSessionCreated(final CometSession cometSession) {
 				addCometSession(cometSession);
 			}
+
+			@Override
+			public void onSessionDestroyed(final CometSession cometSession) {
+				removeCometSession(cometSession);
+			}
 		});
 	}
 
 	@Override
 	public void pushEvent(final ServerPushEvent serverPushEvent, final Collection<ServerPushClient> clientList) {
 		// TODO Remove syso
-		System.out.println("Sending server push event to clients:");
+		System.out.println("Sending server push event to " + clientList.size() + " clients.");
 
 		for (final ServerPushClient client : clientList) {
 			System.out.println("Client: " + client.getSessionId());
@@ -43,10 +48,10 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 				cometSessionMap.get(client.getSessionId()).enqueue(serverPushEvent);
 			}
 			catch (final IllegalStateException e) {
-				// FIXME Verify all the cases when this exception is thrown and thread it properly.
-				System.out.println("The session is being removed from server push channel.");
-				throw new RuntimeException(e);
-				// remove client from map and notify listeners.
+				// This exception is thrown by CometSession when trying to send a message through an invalid connection and by java.util.Queue if the stack is
+				// full.
+				removeCometConnectionFromMap(client.getSessionId());
+				e.printStackTrace();
 			}
 		}
 	}
@@ -72,6 +77,12 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 		notifyListenersOnClientConnected(sessionId);
 	}
 
+	protected void removeCometSession(final CometSession cometSession) {
+		final String sessionId = cometSession.getHttpSession().getId();
+		removeCometConnectionFromMap(sessionId);
+		notifyListenersOnClientDisconnected(sessionId);
+	}
+
 	private static void notifyListenersOnClientConnected(final String clientId) {
 		// TODO Remove syso
 		System.out.println("Notifying listeners on new client connection. Client id: " + clientId);
@@ -88,6 +99,12 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 		}
 	}
 
+	private static void removeCometConnectionFromMap(final String id) {
+		// TODO Remove syso
+		System.out.println("Removing comet session from server push channel...");
+		cometSessionMap.remove(id);
+	}
+
 	/**
 	 * Listens when a {@link HttpSession} is created and destroyed, creates a {@link CometSession} (on session creation) and notifies listeners.
 	 */
@@ -97,14 +114,15 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 
 		@Override
 		public void sessionDestroyed(final HttpSessionEvent event) {
-			System.out.println("HttpSessionListener#sessionDestroyed...");
+			// TODO Remove syso
+			System.out.println("HttpSessionListener#sessionDestroyed.");
 
-			// FIXME When should I invalidate a comet session?
+			// TODO When should it invalidate a comet session? The session is already invalidated at this time?
 			final CometSession cometSession = CometServlet.getCometSession(event.getSession());
 			cometSession.invalidate();
 
 			final String httpSessionId = event.getSession().getId();
-			cometSessionMap.remove(httpSessionId);
+			removeCometConnectionFromMap(httpSessionId);
 			notifyListenersOnClientDisconnected(httpSessionId);
 		}
 	}
