@@ -6,5 +6,5 @@ public interface CometSessionListener {
 
 	void onSessionCreated(CometSession cometSession);
 
-	void onSessionDestroyed(CometSession cometSession);
+	void onSessionDestroyed(String sessionId);
 }
