@@ -25,13 +25,14 @@ public class ServerBusinessLogicLocator {
 
 	private ServerBusinessLogicLocator() {}
 
-	public void initializeServerPushDependencies() {
-		getActionBroadcastService();
-	}
-
 	public BusinessLogic getBusinessLogic() {
 		if (businessLogic != null) return businessLogic;
 		return businessLogic = new BusinessLogicImpl(getPersistenceService(), getActionBroadcastService());
+	}
+
+	public HttpSessionProvider getHttpSessionProvider() {
+		if (httpSessionProvider != null) return httpSessionProvider;
+		return httpSessionProvider = new HttpSessionProvider();
 	}
 
 	private PersistenceService getPersistenceService() {
@@ -44,13 +45,8 @@ public class ServerBusinessLogicLocator {
 		return actionBroadcastService = new ActionBroadcastServiceImpl(getServerPushServerService());
 	}
 
-	public ServerPushServerService getServerPushServerService() {
+	private ServerPushServerService getServerPushServerService() {
 		if (serverPushServerService != null) return serverPushServerService;
 		return serverPushServerService = new ServerPushServerServiceImpl(getHttpSessionProvider());
-	}
-
-	public HttpSessionProvider getHttpSessionProvider() {
-		if (httpSessionProvider != null) return httpSessionProvider;
-		return httpSessionProvider = new HttpSessionProvider();
 	}
 }

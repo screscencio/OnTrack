@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.server.services.serverPush;
 
 public interface ServerPushConnectionListener {
 
-	void onClientConnected(ServerPushClient client);
+	void onClientConnected(ServerPushConnection connection);
 
-	void onClientDisconnected(ServerPushClient client);
+	void onClientDisconnected(ServerPushConnection connection);
 }

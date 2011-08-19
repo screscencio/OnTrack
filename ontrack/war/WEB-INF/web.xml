@@ -1,44 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
 	<!-- FILTERS -->
-	<!-- HttpSessionProviderRequestFilter configures the current session into HttpSessionProvider -->
+	<!-- HttpSessionProvider configuration filter -->
 	<filter>
-		<filter-name>HttpSessionProviderRequestFilter</filter-name>
+		<filter-name>httpSessionProviderRequestFilter</filter-name>
 		<filter-class>br.com.oncast.ontrack.server.services.httpSessionProvider.HttpSessionProviderRequestFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>HttpSessionProviderRequestFilter</filter-name>
+		<filter-name>httpSessionProviderRequestFilter</filter-name>
 		<url-pattern>/application/*</url-pattern>
 	</filter-mapping>
 
 	<!-- LISTENERS -->
+	<!-- ApplicationInitializationService -->
+	<listener>
+        <listener-class>br.com.oncast.ontrack.server.services.setup.ApplicationContextListener</listener-class>
+    </listener>
+	
 	<!-- ServerPush Service Listeners -->
 	<listener>
-		<listener-class>net.zschech.gwt.comet.server.CometServletContextListener</listener-class>
+		<listener-class>br.com.oncast.ontrack.server.services.serverPush.GwtCometServlet$GwtCometServerHttpSessionListener</listener-class>
 	</listener>
-	<listener>
-		<listener-class>br.com.oncast.ontrack.server.services.serverPush.ServerPushServerServiceImpl$CometHttpSessionListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>br.com.oncast.ontrack.server.services.serverPush.CometServletContextListener</listener-class>
-	</listener>
-	
+
 	<!-- SERVLET DEFINITIONS AND MAPPINGS -->
-    <!-- ServerPush Service Definitions and Mappings -->
+	<!-- ServerPush Service Definitions and Mappings -->
 	<servlet>
 		<servlet-name>serverPushComet</servlet-name>
-		<servlet-class>br.com.oncast.ontrack.server.services.serverPush.ServerPushServlet</servlet-class>
+		<servlet-class>br.com.oncast.ontrack.server.services.serverPush.GwtCometServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>serverPushComet</servlet-name>
 		<url-pattern>/application/comet</url-pattern>
 	</servlet-mapping>
 
-    <!-- RequestDispatch Service Definitions and Mappings -->
+	<!-- RequestDispatch Service Definitions and Mappings -->
 	<servlet>
 		<servlet-name>requestDispatchService</servlet-name>
 		<servlet-class>br.com.oncast.ontrack.server.services.requestDispatch.CommunicationRpcServiceImpl</servlet-class>
@@ -48,19 +45,23 @@
 		<url-pattern>/application/requestDispatchService</url-pattern>
 	</servlet-mapping>
 
-    <!-- MindMap Download Service Definitions and Mappings -->
+	<!-- MindMapExporter Service Definitions and Mappings -->
 	<servlet>
-		<servlet-name>MindMapExporterServlet</servlet-name>
+		<servlet-name>mindMapExporterServlet</servlet-name>
 		<servlet-class>br.com.oncast.ontrack.server.services.exportImport.MindMapExporterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>MindMapExporterServlet</servlet-name>
-		<url-pattern>/application/servlet/exporttomindmap</url-pattern>
+		<servlet-name>mindMapExporterServlet</servlet-name>
+		<url-pattern>/application/mindmap/download</url-pattern>
 	</servlet-mapping>
 
-	<!-- Default page to serve -->
+	<!-- SESSION CONFIGURATION -->
+	<session-config>
+		<session-timeout>1</session-timeout>
+	</session-config>
+
+	<!-- DEFAULT PAGE -->
 	<welcome-file-list>
 		<welcome-file>Application.html</welcome-file>
 	</welcome-file-list>
-
 </web-app>
