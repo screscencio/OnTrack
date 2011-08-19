@@ -17,16 +17,8 @@ public class ServerPushServlet extends CometServlet {
 
 	@Override
 	protected void doComet(final CometServletResponse cometResponse) throws ServletException, IOException {
-		CometSession cometSession = cometResponse.getSession(false);
-		if (cometSession == null) {
-			cometSession = cometResponse.getSession();
-			notifyListenersOnSessionCreated(cometSession);
-		}
-	}
-
-	@Override
-	public void cometTerminated(final CometServletResponse cometResponse, final boolean serverInitiated) {
-		notifyListenersOnSessionDestroyed(cometResponse.getRequest().getSession().getId());
+		final CometSession cometSession = cometResponse.getSession(false);
+		if (cometSession == null || !cometSession.isValid()) notifyListenersOnSessionCreated(cometResponse.getSession());
 	}
 
 	static void addCometSessionListener(final CometSessionListener listener) {
@@ -36,12 +28,6 @@ public class ServerPushServlet extends CometServlet {
 	private void notifyListenersOnSessionCreated(final CometSession cometSession) {
 		for (final CometSessionListener listener : cometSessionListenerSet) {
 			listener.onSessionCreated(cometSession);
-		}
-	}
-
-	private void notifyListenersOnSessionDestroyed(final String sessionId) {
-		for (final CometSessionListener listener : cometSessionListenerSet) {
-			listener.onSessionDestroyed(sessionId);
 		}
 	}
 }

@@ -4,38 +4,31 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-	<!-- Filters -->
+	<!-- FILTERS -->
+	<!-- HttpSessionProviderRequestFilter configures the current session into HttpSessionProvider -->
 	<filter>
-		<filter-name>requestFilter</filter-name>
-		<filter-class>br.com.oncast.ontrack.server.services.httpSessionProvider.RequestFilter</filter-class>
+		<filter-name>HttpSessionProviderRequestFilter</filter-name>
+		<filter-class>br.com.oncast.ontrack.server.services.httpSessionProvider.HttpSessionProviderRequestFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>requestFilter</filter-name>
+		<filter-name>HttpSessionProviderRequestFilter</filter-name>
 		<url-pattern>/application/*</url-pattern>
 	</filter-mapping>
 
-	<!-- Listeners -->
-
-	<!-- Listener for shutting down the comet processor when the ServletContext 
-		is destroyed -->
+	<!-- LISTENERS -->
+	<!-- ServerPush Service Listeners -->
 	<listener>
 		<listener-class>net.zschech.gwt.comet.server.CometServletContextListener</listener-class>
 	</listener>
-
-	<!-- Listener for invalidating CometSessions when HTTPSessions are invalidated -->
-	<listener>
-		<listener-class>net.zschech.gwt.comet.server.CometHttpSessionListener</listener-class>
-	</listener>
-
-	<!-- Listener that manage server push clients connection and disconnection -->
 	<listener>
 		<listener-class>br.com.oncast.ontrack.server.services.serverPush.ServerPushServerServiceImpl$CometHttpSessionListener</listener-class>
 	</listener>
-	
 	<listener>
 		<listener-class>br.com.oncast.ontrack.server.services.serverPush.CometServletContextListener</listener-class>
 	</listener>
-	<!-- Servlet definitions and mappings -->
+	
+	<!-- SERVLET DEFINITIONS AND MAPPINGS -->
+    <!-- ServerPush Service Definitions and Mappings -->
 	<servlet>
 		<servlet-name>serverPushComet</servlet-name>
 		<servlet-class>br.com.oncast.ontrack.server.services.serverPush.ServerPushServlet</servlet-class>
@@ -45,6 +38,7 @@
 		<url-pattern>/application/comet</url-pattern>
 	</servlet-mapping>
 
+    <!-- RequestDispatch Service Definitions and Mappings -->
 	<servlet>
 		<servlet-name>requestDispatchService</servlet-name>
 		<servlet-class>br.com.oncast.ontrack.server.services.requestDispatch.CommunicationRpcServiceImpl</servlet-class>
@@ -54,6 +48,7 @@
 		<url-pattern>/application/requestDispatchService</url-pattern>
 	</servlet-mapping>
 
+    <!-- MindMap Download Service Definitions and Mappings -->
 	<servlet>
 		<servlet-name>MindMapExporterServlet</servlet-name>
 		<servlet-class>br.com.oncast.ontrack.server.services.exportImport.MindMapExporterServlet</servlet-class>

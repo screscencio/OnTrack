@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
 
-public class RequestFilter implements Filter {
+public class HttpSessionProviderRequestFilter implements Filter {
 
 	@Override
 	public void destroy() {}
@@ -25,5 +25,4 @@ public class RequestFilter implements Filter {
 
 	@Override
 	public void init(final FilterConfig config) throws ServletException {}
-
 }
