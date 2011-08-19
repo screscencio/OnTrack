@@ -14,6 +14,7 @@ public class ServerPushClientService {
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
+	private final Timer connectionHealthMonitorTimer;
 
 	public ServerPushClientService() {
 		serverPushClient = new GwtCometClient(new ServerPushClientEventListener() {
@@ -24,8 +25,6 @@ public class ServerPushClientService {
 
 			@Override
 			public void onDisconnected() {
-				// FIXME
-				Window.alert("The application was disconnected. It will try now to reconnect to server...");
 				connect();
 			}
 
@@ -36,13 +35,18 @@ public class ServerPushClientService {
 
 			@Override
 			public void onError(final Throwable exception) {
-				// FIXME
-				Window.alert("The application found an error while communicating with the server.\n\nException: " + exception.toString());
-
 				// TODO +++Notify Error threatment service.
-				threatSyncingError();
+				threatSyncingError("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
 			}
 		});
+		connectionHealthMonitorTimer = new Timer() {
+
+			@Override
+			public void run() {
+				if (!serverPushClient.isRunning()) threatSyncingError("The server connection is down.\n\nThe application will be briethly reloaded.");
+				else scheduleConnectionHealthMonitor();
+			}
+		};
 		connect();
 	}
 
@@ -64,25 +68,19 @@ public class ServerPushClientService {
 		handler.onEvent(event);
 	}
 
-	// FIXME Remove this method. For now it is being used as a guarantee of service availability.
+	// TODO Analyze the necessity of this method and timer. For now it is being used as a guarantee of service availability.
 	private void scheduleConnectionHealthMonitor() {
-		new Timer() {
-
-			@Override
-			public void run() {
-				if (!serverPushClient.isRunning()) threatSyncingError();
-				else scheduleConnectionHealthMonitor();
-			}
-		}.schedule(5000);
+		connectionHealthMonitorTimer.cancel();
+		connectionHealthMonitorTimer.schedule(5000);
 	}
 
 	private void connect() {
 		if (!serverPushClient.isRunning()) serverPushClient.start();
 	}
 
-	private void threatSyncingError() {
+	private void threatSyncingError(final String message) {
 		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
-		Window.alert("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
+		Window.alert(message);
 		Window.Location.reload();
 	}
 }

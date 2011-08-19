@@ -116,11 +116,12 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 			// TODO Remove syso
 			System.out.println("HttpSessionListener#sessionDestroyed.");
 
-			// TODO When should it invalidate a comet session? The session is already invalidated at this time?
-			final CometSession cometSession = CometServlet.getCometSession(event.getSession());
-			cometSession.invalidate();
+			// FIXME
+			final HttpSession httpSession = event.getSession();
+			final CometSession cometSession = CometServlet.getCometSession(httpSession, false);
+			if (cometSession != null) cometSession.invalidate();
 
-			final String httpSessionId = event.getSession().getId();
+			final String httpSessionId = httpSession.getId();
 			removeCometConnectionFromMap(httpSessionId);
 			notifyListenersOnClientDisconnected(httpSessionId);
 		}
