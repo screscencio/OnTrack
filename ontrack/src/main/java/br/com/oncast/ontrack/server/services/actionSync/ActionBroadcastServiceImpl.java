@@ -1,58 +1,58 @@
 package br.com.oncast.ontrack.server.services.actionSync;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushClient;
+import org.apache.log4j.Logger;
+
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionListener;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushException;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 
 public class ActionBroadcastServiceImpl implements ActionBroadcastService {
 
+	private static final Logger LOGGER = Logger.getLogger(ActionBroadcastServiceImpl.class);
 	private final ServerPushServerService serverPushServerService;
-	protected Map<String, ServerPushClient> clientMap = new HashMap<String, ServerPushClient>();
+	protected Set<ServerPushConnection> connectionSet = new HashSet<ServerPushConnection>();
 
 	public ActionBroadcastServiceImpl(final ServerPushServerService serverPushServerService) {
 		this.serverPushServerService = serverPushServerService;
-		this.serverPushServerService.registerConnectionListener(createServerPushConnectionListener());
+		this.serverPushServerService.registerConnectionListener(new ServerPushConnectionListener() {
+
+			@Override
+			public void onClientConnected(final ServerPushConnection connection) {
+				LOGGER.debug("Putting a new client into the map.");
+				connectionSet.add(connection);
+			}
+
+			@Override
+			public void onClientDisconnected(final ServerPushConnection connection) {
+				LOGGER.debug("Removing a client from map.");
+				connectionSet.remove(connection);
+			}
+		});
 	}
 
 	@Override
 	public void broadcast(final ModelAction action) {
-		serverPushServerService.pushEvent(new ServerActionSyncEvent(action), getClientsWithout(serverPushServerService.getSender()));
+		final Set<ServerPushConnection> destinationClientSet = getBroadcastDestinationConnections();
+		LOGGER.debug("Broadcasting " + ModelAction.class.getSimpleName() + " to '" + destinationClientSet.toArray().toString() + "'.");
+		serverPushServerService.pushEvent(new ServerActionSyncEvent(action), destinationClientSet);
 	}
 
-	private Set<ServerPushClient> getClientsWithout(final ServerPushClient clientToBeRemoved) {
-		final Set<ServerPushClient> clients = new HashSet<ServerPushClient>();
-		for (final ServerPushClient client : clientMap.values()) {
-			if (client.getSessionId().equals(clientToBeRemoved.getSessionId())) continue;
-			clients.add(client);
+	private Set<ServerPushConnection> getBroadcastDestinationConnections() {
+		final Set<ServerPushConnection> returnSet = new HashSet<ServerPushConnection>(connectionSet);
+		try {
+			final ServerPushConnection currentClient = serverPushServerService.getCurrentClient();
+			returnSet.remove(currentClient);
 		}
-
-		return clients;
+		catch (final ServerPushException e) {
+			// Purposefully ignored exception. Ignoring this all registered clients will receive the broadcast.
+			LOGGER.error("The client that originated the action is not registered in the ServerPush service.", e);
+		}
+		return returnSet;
 	}
-
-	private ServerPushConnectionListener createServerPushConnectionListener() {
-		return new ServerPushConnectionListener() {
-			@Override
-			public void onClientConnected(final ServerPushClient client) {
-				// FIXME +++Implement a log service.
-				// TODO Remove SYSO
-				System.out.println("Putting a new client into the map.");
-				clientMap.put(client.getSessionId(), client);
-			}
-
-			@Override
-			public void onClientDisconnected(final ServerPushClient client) {
-				// TODO Remove SYSO
-				System.out.println("Removing a client from map.");
-				clientMap.remove(client.getSessionId());
-			}
-		};
-	}
-
 }
