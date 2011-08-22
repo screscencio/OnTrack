@@ -24,5 +24,4 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 	public Project loadProject() throws BusinessException {
 		return business.loadProject();
 	}
-
 }
