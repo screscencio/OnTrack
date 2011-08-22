@@ -35,7 +35,9 @@ public class ServerPushClientService {
 
 			@Override
 			public void onError(final Throwable exception) {
-				// TODO +++Notify Error threatment service.
+				// TODO +++Notify Error treatment service.
+				// FIXME Remove this stack trace.
+				exception.printStackTrace();
 				threatSyncingError("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
 			}
 		});
@@ -79,7 +81,7 @@ public class ServerPushClientService {
 	}
 
 	private void threatSyncingError(final String message) {
-		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
+		// TODO +++Delegate treatment to Error treatment service eliminating the need for this method.
 		Window.alert(message);
 		Window.Location.reload();
 	}

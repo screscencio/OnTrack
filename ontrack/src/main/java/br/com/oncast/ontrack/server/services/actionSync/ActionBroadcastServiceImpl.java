@@ -5,13 +5,14 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionListener;
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushException;
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionListener;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
+// TODO Analyze the possibility of merging this class with ServerPushServerServiceImpl.
 public class ActionBroadcastServiceImpl implements ActionBroadcastService {
 
 	private static final Logger LOGGER = Logger.getLogger(ActionBroadcastServiceImpl.class);
@@ -37,22 +38,9 @@ public class ActionBroadcastServiceImpl implements ActionBroadcastService {
 	}
 
 	@Override
-	public void broadcast(final ModelAction action) {
-		final Set<ServerPushConnection> destinationClientSet = getBroadcastDestinationConnections();
-		LOGGER.debug("Broadcasting " + ModelAction.class.getSimpleName() + " to '" + destinationClientSet.toArray().toString() + "'.");
-		serverPushServerService.pushEvent(new ServerActionSyncEvent(action), destinationClientSet);
+	public void broadcast(final ModelActionSyncRequest modelActionSyncRequest) {
+		LOGGER.debug("Broadcasting " + ModelAction.class.getSimpleName() + " to '" + connectionSet.toArray().toString() + "'.");
+		serverPushServerService.pushEvent(new ServerActionSyncEvent(modelActionSyncRequest), connectionSet);
 	}
 
-	private Set<ServerPushConnection> getBroadcastDestinationConnections() {
-		final Set<ServerPushConnection> returnSet = new HashSet<ServerPushConnection>(connectionSet);
-		try {
-			final ServerPushConnection currentClient = serverPushServerService.getCurrentClient();
-			returnSet.remove(currentClient);
-		}
-		catch (final ServerPushException e) {
-			// Purposefully ignored exception. Ignoring this all registered clients will receive the broadcast.
-			LOGGER.error("The client that originated the action is not registered in the ServerPush service.", e);
-		}
-		return returnSet;
-	}
 }

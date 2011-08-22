@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import br.com.oncast.ontrack.server.services.httpSessionProvider.HttpSessionProvider;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 // TODO Should this service be asynchronous? (Run in another thread so that it does not affect this client´s thread)
@@ -14,12 +13,9 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 	private static final Logger LOGGER = Logger.getLogger(ServerPushServerServiceImpl.class);
 
 	private final ServerPushApi serverPushServer;
-	private final HttpSessionProvider httpSessionProvider;
 	private final Set<ServerPushConnectionListener> serverPushConnectionListenerSet = new HashSet<ServerPushConnectionListener>();
 
-	public ServerPushServerServiceImpl(final HttpSessionProvider httpSessionProvider) {
-		this.httpSessionProvider = httpSessionProvider;
-
+	public ServerPushServerServiceImpl() {
 		this.serverPushServer = new GwtCometServlet();
 		this.serverPushServer.setServerPushConnectionListener(new ServerPushConnectionListener() {
 
@@ -50,8 +46,4 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 		serverPushConnectionListenerSet.add(listener);
 	}
 
-	@Override
-	public ServerPushConnection getCurrentClient() throws ServerPushException {
-		return serverPushServer.getCurrentClient(httpSessionProvider);
-	}
 }
