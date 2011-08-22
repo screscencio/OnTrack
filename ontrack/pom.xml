@@ -36,7 +36,7 @@
 			<artifactId>gwt-comet</artifactId>
 			<version>1.2.3</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/war/WEB-INF/lib/gwt-comet-1.2.3.jar</systemPath>
+			<systemPath>${basedir}/war/WEB-INF/lib/gwt-comet-1.2.3-patch.jar</systemPath>
 		</dependency>
 
 		<!-- Server Related Dependencies -->
