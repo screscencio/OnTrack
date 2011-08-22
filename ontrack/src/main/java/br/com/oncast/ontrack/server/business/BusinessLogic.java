@@ -9,7 +9,5 @@ public interface BusinessLogic {
 
 	public abstract void handleIncomingAction(final ModelAction action) throws UnableToHandleActionException;
 
-	// TODO Persist new snapshot after restoring the project correctly.
 	public abstract Project loadProject() throws UnableToLoadProjectException;
-
 }
