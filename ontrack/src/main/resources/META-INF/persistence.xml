@@ -12,14 +12,14 @@
 			<property name="javax.persistence.jdbc.password" value="" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:aname" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.max_fetch_depth" value="3" />
 			<property name="hibernate.archive.autodetection" value="class, hbm" />
-			<property name="hibernate.c3p0.min_size" value="5" />
-			<property name="hibernate.c3p0.max_size" value="20" />
-			<property name="hibernate.c3p0.timeout" value="0" />
-			<property name="hibernate.c3p0.idle_test_period" value="3600" />
-			<property name="hibernate.c3p0.max_statements" value="50" />
+            <property name="hibernate.c3p0.min_size" value="1" />
+            <property name="hibernate.c3p0.max_size" value="100" />
+            <property name="hibernate.c3p0.timeout" value="0" />
+            <property name="hibernate.c3p0.max_statements" value="0" />
+            <property name="hibernate.c3p0.idle_test_period" value="3600" />
 			<!-- /HSQLDB -->
 			
 			<!-- MySQL
@@ -30,16 +30,13 @@
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.max_fetch_depth" value="3" />
-			<property name="hibernate.c3p0.min_size" value="5" />
-			<property name="hibernate.c3p0.max_size" value="50" />
-			<property name="hibernate.c3p0.timeout" value="0" />
-			<property name="hibernate.c3p0.idle_test_period" value="3600" />
-			<property name="hibernate.c3p0.max_statements" value="0" />
+            <property name="hibernate.archive.autodetection" value="class, hbm" />
+            <property name="hibernate.c3p0.min_size" value="1" />
+            <property name="hibernate.c3p0.max_size" value="100" />
+            <property name="hibernate.c3p0.timeout" value="0" />
+            <property name="hibernate.c3p0.max_statements" value="0" />
+            <property name="hibernate.c3p0.idle_test_period" value="3600" />
 			/MySQL -->
-			
-			<!-- If c3p0 is not able to handle MySQL timeout yet, add this line and see if it works. 
-			<property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider" />
-			 -->
 		</properties>
 	</persistence-unit>
 </persistence>
