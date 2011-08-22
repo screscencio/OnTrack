@@ -17,15 +17,11 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public void transmitAction(final ModelAction action) throws BusinessException {
-		// TODO Remover SYSO
-		System.out.println("Action received: " + action.getClass().getSimpleName() + " for " + action.getReferenceId());
 		business.handleIncomingAction(action);
 	}
 
 	@Override
 	public Project loadProject() throws BusinessException {
-		// TODO Remover SYSO
-		System.out.println("Loading project...");
 		return business.loadProject();
 	}
 

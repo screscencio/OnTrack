@@ -74,7 +74,7 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	@Override
 	protected void doComet(final CometServletResponse cometResponse) throws ServletException, IOException {
 		final CometSession cometSession = cometResponse.getSession(false);
-		if (cometSession == null || !cometSession.isValid()) addCometSession(cometSession);
+		if (cometSession == null || !cometSession.isValid()) addCometSession(cometResponse.getSession(true));
 	}
 
 	public class GwtCometServerHttpSessionListener implements HttpSessionListener {
