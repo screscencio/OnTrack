@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.server.business;
 
 import br.com.oncast.ontrack.server.services.actionSync.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.actionSync.ActionBroadcastServiceImpl;
-import br.com.oncast.ontrack.server.services.httpSessionProvider.HttpSessionProvider;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
@@ -16,7 +15,6 @@ public class ServerBusinessLogicLocator {
 	private PersistenceService persistenceService;
 	private ActionBroadcastService actionBroadcastService;
 	private ServerPushServerService serverPushServerService;
-	private HttpSessionProvider httpSessionProvider;
 
 	public static ServerBusinessLogicLocator getInstance() {
 		if (instance != null) return instance;
@@ -28,11 +26,6 @@ public class ServerBusinessLogicLocator {
 	public BusinessLogic getBusinessLogic() {
 		if (businessLogic != null) return businessLogic;
 		return businessLogic = new BusinessLogicImpl(getPersistenceService(), getActionBroadcastService());
-	}
-
-	public HttpSessionProvider getHttpSessionProvider() {
-		if (httpSessionProvider != null) return httpSessionProvider;
-		return httpSessionProvider = new HttpSessionProvider();
 	}
 
 	private PersistenceService getPersistenceService() {
@@ -47,6 +40,6 @@ public class ServerBusinessLogicLocator {
 
 	private ServerPushServerService getServerPushServerService() {
 		if (serverPushServerService != null) return serverPushServerService;
-		return serverPushServerService = new ServerPushServerServiceImpl(getHttpSessionProvider());
+		return serverPushServerService = new ServerPushServerServiceImpl();
 	}
 }

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -22,6 +23,7 @@ public class ActionSyncService {
 
 	private boolean active;
 	private final RequestDispatchService requestDispatchService;
+	private final Set<ModelActionSyncRequest> requestsSentFromThisClient = new HashSet<ModelActionSyncRequest>();
 
 	public ActionSyncService(final RequestDispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
 			final ActionExecutionService actionExecutionService) {
@@ -31,7 +33,12 @@ public class ActionSyncService {
 
 			@Override
 			public void onEvent(final ServerActionSyncEvent event) {
-				final ModelAction action = event.getAction();
+				if (requestsSentFromThisClient.contains(event.getModelActionSyncRequest())) {
+					requestsSentFromThisClient.remove(event.getModelActionSyncRequest());
+					return;
+				}
+
+				final ModelAction action = event.getModelActionSyncRequest().getAction();
 				try {
 					actionExecutionService.executeNonUserAction(action);
 				}
@@ -60,7 +67,10 @@ public class ActionSyncService {
 
 	private void notifyClientActionExecutionToServer(final ModelAction action) {
 		// TODO Display 'loading' UI indicator.
-		requestDispatchService.dispatch(new ModelActionSyncRequest(action), new DispatchCallback<Void>() {
+
+		final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(action);
+		requestsSentFromThisClient.add(modelActionSyncRequest);
+		requestDispatchService.dispatch(modelActionSyncRequest, new DispatchCallback<Void>() {
 
 			@Override
 			public void onRequestCompletition(final Void response) {
@@ -70,13 +80,15 @@ public class ActionSyncService {
 			@Override
 			public void onFailure(final Throwable caught) {
 				// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
+
+				requestsSentFromThisClient.remove(modelActionSyncRequest);
 				if (caught instanceof InvalidIncomingAction) {
 					threatSyncingError();
 				}
 				else {
 					// TODO Hide 'loading' UI indicator.
 					// TODO +++Treat communication failure.
-					// TODO +++Notify Error threatment service.
+					// TODO +++Notify Error treatment service.
 					caught.printStackTrace();
 				}
 			}

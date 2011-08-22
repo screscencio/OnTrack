@@ -9,10 +9,4 @@ public interface ServerPushServerService {
 	void pushEvent(ServerPushEvent serverPushEvent, Set<ServerPushConnection> clients);
 
 	void registerConnectionListener(ServerPushConnectionListener listener);
-
-	/**
-	 * @return the client mapped to the current session.
-	 * @throws ServerPushException if the current session is not mapped to any connected client.
-	 */
-	ServerPushConnection getCurrentClient() throws ServerPushException;
 }

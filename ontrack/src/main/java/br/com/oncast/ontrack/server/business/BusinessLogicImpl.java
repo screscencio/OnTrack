@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
 class BusinessLogicImpl implements BusinessLogic {
 
@@ -34,11 +35,11 @@ class BusinessLogicImpl implements BusinessLogic {
 	 * @see br.com.oncast.ontrack.server.business.BusinessLogic#handleIncomingAction(br.com.oncast.ontrack.shared.model.actions.ModelAction)
 	 */
 	@Override
-	public void handleIncomingAction(final ModelAction action) throws UnableToHandleActionException {
-		LOGGER.debug("Processing incoming action '" + action.getClass().getSimpleName() + "'");
+	public void handleIncomingAction(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException {
+		LOGGER.debug("Processing incoming action '" + modelActionSyncRequest.getAction().getClass().getSimpleName() + "'");
 		try {
-			validateAndPersistIncomingAction(action);
-			actionBroadcastService.broadcast(action);
+			validateAndPersistIncomingAction(modelActionSyncRequest.getAction());
+			actionBroadcastService.broadcast(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";

@@ -28,6 +28,7 @@ import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class BusinessLogicTest {
@@ -47,7 +48,7 @@ public class BusinessLogicTest {
 	@Test(expected = InvalidIncomingAction.class)
 	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
 		final BusinessLogic business = new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock());
-		business.handleIncomingAction(new ScopeUpdateAction(new UUID("id"), "bllla"));
+		business.handleIncomingAction(new ModelActionSyncRequest(new ScopeUpdateAction(new UUID("id"), "bllla")));
 	}
 
 	@Test
@@ -67,7 +68,7 @@ public class BusinessLogicTest {
 		executeActions(ActionMock.getActions(), project);
 
 		for (final ModelAction action : ActionMock.getActions()) {
-			business.handleIncomingAction(action);
+			business.handleIncomingAction(new ModelActionSyncRequest(action));
 		}
 
 		final Scope projectScope = business.loadProject().getProjectScope();
@@ -110,9 +111,8 @@ public class BusinessLogicTest {
 
 	private ActionBroadcastService getBroadcastMock() {
 		return new ActionBroadcastService() {
-
 			@Override
-			public void broadcast(final ModelAction action) {}
+			public void broadcast(final ModelActionSyncRequest modelActionSyncRequest) {}
 		};
 	}
 }
