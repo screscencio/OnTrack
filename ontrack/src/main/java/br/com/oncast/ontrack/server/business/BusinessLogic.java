@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequ
 
 public interface BusinessLogic {
 
-	public abstract void handleIncomingAction(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException;
+	public abstract void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException;
 
 	public abstract Project loadProject() throws UnableToLoadProjectException;
 }

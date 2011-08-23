@@ -32,10 +32,10 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	/**
-	 * @see br.com.oncast.ontrack.server.business.BusinessLogic#handleIncomingAction(br.com.oncast.ontrack.shared.model.actions.ModelAction)
+	 * @see br.com.oncast.ontrack.server.business.BusinessLogic#handleIncomingActionSyncRequest(br.com.oncast.ontrack.shared.model.actions.ModelAction)
 	 */
 	@Override
-	public void handleIncomingAction(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException {
+	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException {
 		LOGGER.debug("Processing incoming action '" + modelActionSyncRequest.getAction().getClass().getSimpleName() + "'");
 		try {
 			validateAndPersistIncomingAction(modelActionSyncRequest.getAction());

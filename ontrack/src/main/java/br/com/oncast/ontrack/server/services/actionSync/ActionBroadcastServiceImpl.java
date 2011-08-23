@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
 // TODO Analyze the possibility of merging this class with ServerPushServerServiceImpl.
+// TODO Analyze removing the connection control of ServerPushClients.
 public class ActionBroadcastServiceImpl implements ActionBroadcastService {
 
 	private static final Logger LOGGER = Logger.getLogger(ActionBroadcastServiceImpl.class);

@@ -17,7 +17,7 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public void transmitAction(final ModelActionSyncRequest modelActionSyncRequest) throws BusinessException {
-		business.handleIncomingAction(modelActionSyncRequest);
+		business.handleIncomingActionSyncRequest(modelActionSyncRequest);
 	}
 
 	@Override
