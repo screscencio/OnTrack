@@ -48,7 +48,7 @@ public class BusinessLogicTest {
 	@Test(expected = InvalidIncomingAction.class)
 	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
 		final BusinessLogic business = new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock());
-		business.handleIncomingAction(new ModelActionSyncRequest(new ScopeUpdateAction(new UUID("id"), "bllla")));
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new ScopeUpdateAction(new UUID("id"), "bllla")));
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class BusinessLogicTest {
 		executeActions(ActionMock.getActions(), project);
 
 		for (final ModelAction action : ActionMock.getActions()) {
-			business.handleIncomingAction(new ModelActionSyncRequest(action));
+			business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(action));
 		}
 
 		final Scope projectScope = business.loadProject().getProjectScope();
