@@ -75,6 +75,11 @@ class BusinessLogicImpl implements BusinessLogic {
 			LOGGER.error(errorMessage, e);
 			throw new UnableToHandleActionException(errorMessage);
 		}
+		catch (final Exception e) {
+			final String errorMessage = "Unable to process action. An unknown problem occured.";
+			LOGGER.debug(errorMessage, e);
+			throw new InvalidIncomingAction(errorMessage);
+		}
 	}
 
 	// TODO Persist new snapshot after restoring the project correctly.
@@ -95,7 +100,12 @@ class BusinessLogicImpl implements BusinessLogic {
 			throw new UnableToLoadProjectException(errorMessage);
 		}
 		catch (final UnableToCompleteActionException e) {
-			final String errorMessage = "The server could not load the project: The project state could not be correctly restored.";
+			final String errorMessage = "The server could not load the project. The project state could not be correctly restored.";
+			LOGGER.error(errorMessage, e);
+			throw new UnableToLoadProjectException(errorMessage);
+		}
+		catch (final Exception e) {
+			final String errorMessage = "The server could not load the project. The project state could not be correctly restored because of an unknown problem.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
 		}
@@ -110,5 +120,4 @@ class BusinessLogicImpl implements BusinessLogic {
 
 		return project;
 	}
-
 }
