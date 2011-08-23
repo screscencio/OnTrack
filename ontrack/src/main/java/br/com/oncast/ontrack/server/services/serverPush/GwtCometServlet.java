@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.server.services.serverPush;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -80,11 +82,17 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 
 		@Override
 		public void sessionDestroyed(final HttpSessionEvent event) {
+			final List<CometSession> sessionsToBeRemoved = new ArrayList<CometSession>();
+
 			for (final CometSession cometSession : cometSessionMap.values()) {
 				if (cometSession.getHttpSession().getId().equals(event.getSession().getId())) {
 					cometSession.invalidate();
-					GwtCometServlet.removeCometSession(cometSession);
+					sessionsToBeRemoved.add(cometSession);
 				}
+			}
+
+			for (final CometSession cometSession : sessionsToBeRemoved) {
+				GwtCometServlet.removeCometSession(cometSession);
 			}
 		}
 	}
