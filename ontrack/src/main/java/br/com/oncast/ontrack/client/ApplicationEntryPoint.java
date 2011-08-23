@@ -18,13 +18,16 @@ public class ApplicationEntryPoint implements EntryPoint {
 
 	@Override
 	public void onModuleLoad() {
+		setUpClientServices();
+	}
+
+	private void setUpClientServices() {
 		final ApplicationUIPanel applicationUIPanel = new ApplicationUIPanel();
 		RootPanel.get().add(applicationUIPanel);
 
 		// TODO ++++Configure communication error handlers
 		final ClientServiceProvider serviceProvider = new ClientServiceProvider();
-
-		serviceProvider.getActionSyncService().setActive(true);
+		serviceProvider.getActionSyncService();
 		serviceProvider.getApplicationPlaceController().configure(applicationUIPanel, DEFAULT_APP_PLACE, new AppActivityMapper(serviceProvider),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
 	}

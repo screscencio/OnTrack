@@ -21,8 +21,8 @@ import com.google.gwt.user.client.Window;
 
 public class ActionSyncService {
 
-	private boolean active;
 	private final RequestDispatchService requestDispatchService;
+	// TODO Extract logic related to this set into methods (maybe into another class).
 	private final Set<ModelActionSyncRequest> requestsSentFromThisClient = new HashSet<ModelActionSyncRequest>();
 
 	public ActionSyncService(final RequestDispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
@@ -33,36 +33,33 @@ public class ActionSyncService {
 
 			@Override
 			public void onEvent(final ServerActionSyncEvent event) {
-				if (requestsSentFromThisClient.contains(event.getModelActionSyncRequest())) {
-					requestsSentFromThisClient.remove(event.getModelActionSyncRequest());
-					return;
-				}
-
-				final ModelAction action = event.getModelActionSyncRequest().getAction();
-				try {
-					actionExecutionService.executeNonUserAction(action);
-				}
-				catch (final UnableToCompleteActionException e) {
-					threatSyncingError();
-				}
+				processServerActionSyncEvent(actionExecutionService, event);
 			}
 		});
 		actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				if (!active) return;
-				if (!isUserAction) return;
-
-				notifyClientActionExecutionToServer(action);
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> scopeSet, final boolean isUserAction) {
+				handleActionExecution(action, isUserAction);
 			}
 		});
 	}
 
-	// TODO Review the necessity of this method, that was created only to make implicit when the service is active or not.
-	public void setActive(final boolean active) {
-		this.active = active;
+	private void processServerActionSyncEvent(final ActionExecutionService actionExecutionService, final ServerActionSyncEvent event) {
+		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
+		if (requestsSentFromThisClient.remove(modelActionSyncRequest)) return;
+
+		try {
+			actionExecutionService.executeNonUserAction(modelActionSyncRequest.getAction());
+		}
+		catch (final UnableToCompleteActionException e) {
+			threatSyncingError("The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.");
+		}
+	}
+
+	private void handleActionExecution(final ModelAction action, final boolean isUserAction) {
+		if (!isUserAction) return;
+		notifyClientActionExecutionToServer(action);
 	}
 
 	private void notifyClientActionExecutionToServer(final ModelAction action) {
@@ -79,25 +76,26 @@ public class ActionSyncService {
 
 			@Override
 			public void onFailure(final Throwable caught) {
-				// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
-
 				requestsSentFromThisClient.remove(modelActionSyncRequest);
+
+				// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
 				if (caught instanceof InvalidIncomingAction) {
-					threatSyncingError();
+					threatSyncingError("The application is out of sync with the server.\nA conflict between multiple client's states was detected.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.");
 				}
 				else {
 					// TODO Hide 'loading' UI indicator.
 					// TODO +++Treat communication failure.
 					// TODO +++Notify Error treatment service.
+					threatSyncingError("The application server is unreachable.\nCheck your internet connection.\n\nThe application will be briethly reloaded");
 					caught.printStackTrace();
 				}
 			}
 		});
 	}
 
-	private void threatSyncingError() {
+	private void threatSyncingError(final String message) {
 		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
-		Window.alert("The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.");
+		Window.alert(message);
 		Window.Location.reload();
 	}
 }
