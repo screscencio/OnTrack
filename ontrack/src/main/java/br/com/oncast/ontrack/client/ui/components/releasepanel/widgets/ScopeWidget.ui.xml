@@ -4,11 +4,8 @@
 	<ui:style>
 		.panel {
 			position: relative;
-			width: 100%;
 			height: 20px;
 			margin: 1px;
-			padding-left: 5px;
-			padding-top: 2px;
 
 			border: 1px solid transparent;
 			background: #cdcfda;
@@ -45,8 +42,8 @@
 
 	</ui:style>
 
-	<g:HorizontalPanel styleName="{style.panel}">
+	<g:FlowPanel styleName="{style.panel}">
 		<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 		<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
-	</g:HorizontalPanel>
+	</g:FlowPanel>
 </ui:UiBinder> 
