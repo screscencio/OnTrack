@@ -15,6 +15,8 @@ import org.junit.Test;
 import br.com.oncast.ontrack.mocks.actions.ActionMock;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 
+import com.ibm.icu.util.Calendar;
+
 public class PersistenceServiceJpaTest {
 
 	private PersistenceServiceJpaImpl persistenceService;
@@ -34,16 +36,21 @@ public class PersistenceServiceJpaTest {
 
 	@Test
 	public void shouldOnlyReturnActionsAfterAGivenDate() throws Exception {
+		final Calendar calendar = Calendar.getInstance();
+		int year = 1971;
+		calendar.set(year, 1, 1);
+
 		for (final ModelAction action : ActionMock.getActions()) {
-			persistenceService.persistAction(action, new Date(1));
+			persistenceService.persistAction(action, calendar.getTime());
+			calendar.set(++year, 1, 1);
 		}
 
-		final Date dateAfterSomeActionsWerePersisted = new Date(10);
+		final Date dateAfterSomeActionsWerePersisted = calendar.getTime();
 
 		final List<ModelAction> secondWaveOfActions = ActionMock.getActions2();
-		long k = 100;
 		for (final ModelAction action : secondWaveOfActions) {
-			persistenceService.persistAction(action, new Date(k++));
+			calendar.set(++year, 1, 1);
+			persistenceService.persistAction(action, calendar.getTime());
 		}
 
 		final List<ModelAction> actionsReceived = persistenceService.retrieveActionsSince(dateAfterSomeActionsWerePersisted);
