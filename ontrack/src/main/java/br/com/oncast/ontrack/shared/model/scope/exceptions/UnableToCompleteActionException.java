@@ -11,7 +11,7 @@ public class UnableToCompleteActionException extends Exception {
 		super(description, e);
 	}
 
-	public UnableToCompleteActionException(final ScopeNotFoundException e) {
+	public UnableToCompleteActionException(final Throwable e) {
 		super(e);
 	}
 }
