@@ -33,12 +33,21 @@ public class ServerPushClientService {
 				processIncommingEvent(event);
 			}
 
+			/**
+			 * @see br.com.oncast.ontrack.client.services.serverPush.ServerPushClientEventListener#onError(java.lang.Throwable)
+			 *      This method is implemented using a Timer so that errors are not treated instantly, avoiding errors messages thrown because of
+			 *      browser reload events (or when the user closes the window). When a user reloads the page the server push service crashes.
+			 */
 			@Override
 			public void onError(final Throwable exception) {
-				// TODO +++Notify Error treatment service.
-				// FIXME Remove this stack trace.
-				exception.printStackTrace();
-				threatSyncingError("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
+				// TODO +++Notify Error threatment service.
+				new Timer() {
+
+					@Override
+					public void run() {
+						threatSyncingError("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
+					}
+				}.schedule(500);
 			}
 		});
 		connectionHealthMonitorTimer = new Timer() {
