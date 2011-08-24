@@ -24,9 +24,7 @@ public class ServerPushClientService {
 			}
 
 			@Override
-			public void onDisconnected() {
-				connect();
-			}
+			public void onDisconnected() {}
 
 			@Override
 			public void onEvent(final ServerPushEvent event) {
@@ -41,13 +39,7 @@ public class ServerPushClientService {
 			@Override
 			public void onError(final Throwable exception) {
 				// TODO +++Notify Error threatment service.
-				new Timer() {
-
-					@Override
-					public void run() {
-						threatSyncingError("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
-					}
-				}.schedule(500);
+				threatSyncingError("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
 			}
 		});
 		connectionHealthMonitorTimer = new Timer() {
@@ -91,6 +83,7 @@ public class ServerPushClientService {
 
 	private void threatSyncingError(final String message) {
 		// TODO +++Delegate treatment to Error treatment service eliminating the need for this method.
+		serverPushClient.stop();
 		Window.alert(message);
 		Window.Location.reload();
 	}

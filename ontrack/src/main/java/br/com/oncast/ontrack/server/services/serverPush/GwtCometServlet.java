@@ -50,7 +50,7 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	}
 
 	private static void addCometSession(final CometSession cometSession) {
-		LOGGER.debug("A new commet session was added.");
+		LOGGER.debug("A new commet session was added (" + cometSession.getSessionID() + ").");
 		final String sessionId = cometSession.getSessionID();
 
 		cometSessionMap.put(sessionId, cometSession);
@@ -58,7 +58,7 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	}
 
 	private static void removeCometSession(final CometSession cometSession) {
-		LOGGER.debug("A commet session was removed.");
+		LOGGER.debug("A commet session was removed (" + cometSession.getSessionID() + ").");
 
 		cometSessionMap.remove(cometSession.getSessionID());
 		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientDisconnected(new GwtCometClientConnection(cometSession.getSessionID()));
