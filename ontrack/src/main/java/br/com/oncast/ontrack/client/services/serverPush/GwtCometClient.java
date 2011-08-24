@@ -65,4 +65,8 @@ class GwtCometClient implements ServerPushClient {
 		}
 	}
 
+	@Override
+	public void stop() {
+		client.stop();
+	}
 }

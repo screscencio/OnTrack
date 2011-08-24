@@ -1,9 +1,8 @@
-package br.com.oncast.ontrack.shared.model.scope.actions;
+package br.com.oncast.ontrack.shared.model.actions;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareEffortActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -36,13 +35,13 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
-		final boolean hadDeclared = selectedScope.getEffort().hasDeclared();
+		final boolean oldHasDeclared = selectedScope.getEffort().hasDeclared();
 		final int oldDeclaredEffort = selectedScope.getEffort().getDeclared();
 
 		if (hasDeclaredEffort) selectedScope.getEffort().setDeclared(newDeclaredEffort);
 		else selectedScope.getEffort().resetDeclared();
 
-		return new ScopeDeclareEffortAction(referenceId, hadDeclared, oldDeclaredEffort);
+		return new ScopeDeclareEffortAction(referenceId, oldHasDeclared, oldDeclaredEffort);
 	}
 
 	@Override

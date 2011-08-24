@@ -16,12 +16,12 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Ins
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingUpInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveDownAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveDownAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveRightAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveUpAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
 
 // TODO Refactor this class into a shortcut manager with better resposability division and better performance while mapping interactions.
 enum ScopeTreeShortcutMappings {

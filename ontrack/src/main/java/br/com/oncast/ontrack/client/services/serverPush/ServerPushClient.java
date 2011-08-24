@@ -5,4 +5,6 @@ interface ServerPushClient {
 	void start();
 
 	boolean isRunning();
+
+	void stop();
 }

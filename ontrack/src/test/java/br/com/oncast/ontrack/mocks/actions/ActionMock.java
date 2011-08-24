@@ -5,15 +5,15 @@ import java.util.List;
 
 import br.com.oncast.ontrack.mocks.models.ProjectMock;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertParentAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingDownAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertSiblingUpAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveDownAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveLeftAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveRightAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeMoveUpAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveDownAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 
 public class ActionMock {
 

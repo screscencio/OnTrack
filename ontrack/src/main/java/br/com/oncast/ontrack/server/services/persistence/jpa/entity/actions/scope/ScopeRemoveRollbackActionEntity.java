@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
 
 @Entity
 @ConvertTo(ScopeRemoveRollbackAction.class)

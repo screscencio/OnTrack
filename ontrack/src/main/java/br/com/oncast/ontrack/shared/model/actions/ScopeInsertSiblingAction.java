@@ -1,3 +1,3 @@
-package br.com.oncast.ontrack.shared.model.scope.actions;
+package br.com.oncast.ontrack.shared.model.actions;
 
 public interface ScopeInsertSiblingAction extends ScopeInsertAction {}

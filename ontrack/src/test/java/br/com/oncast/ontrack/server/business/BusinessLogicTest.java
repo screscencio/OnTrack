@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,10 +23,11 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJ
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
@@ -49,6 +52,12 @@ public class BusinessLogicTest {
 	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
 		final BusinessLogic business = new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock());
 		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new ScopeUpdateAction(new UUID("id"), "bllla")));
+	}
+
+	@Test(expected = InvalidIncomingAction.class)
+	public void shouldThrowExceptionAndNotPersistWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
+		final BusinessLogic business = new BusinessLogicImpl(getBadPersistenceMock(), getBroadcastMock());
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new ScopeMoveUpAction(new UUID("0"))));
 	}
 
 	@Test
@@ -105,6 +114,28 @@ public class BusinessLogicTest {
 			@Override
 			public void persistAction(final ModelAction action, final Date timestamp) throws PersistenceException {
 				actions.add(action);
+			}
+		};
+	}
+
+	private PersistenceService getBadPersistenceMock() {
+		return new PersistenceService() {
+
+			private final List<ModelAction> actions = new ArrayList<ModelAction>();
+
+			@Override
+			public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException {
+				return new ProjectSnapshot(ProjectMock.getProject(), new Date());
+			}
+
+			@Override
+			public List<ModelAction> retrieveActionsSince(final Date timestamp) throws PersistenceException {
+				return actions;
+			}
+
+			@Override
+			public void persistAction(final ModelAction action, final Date timestamp) throws PersistenceException {
+				Assert.fail("The persistence should not be accessed.");
 			}
 		};
 	}

@@ -1,28 +1,27 @@
-package br.com.oncast.ontrack.shared.model.scope.actions;
+package br.com.oncast.ontrack.shared.model.actions;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveUpActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveDownActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@ConvertTo(ScopeMoveUpActionEntity.class)
-public class ScopeMoveUpAction implements ScopeMoveAction {
+@ConvertTo(ScopeMoveDownActionEntity.class)
+public class ScopeMoveDownAction implements ScopeMoveAction {
 
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
 
-	public ScopeMoveUpAction(final UUID selectedScopeId) {
-		this.referenceId = selectedScopeId;
+	public ScopeMoveDownAction(final UUID referenceId) {
+		this.referenceId = referenceId;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeMoveUpAction() {}
+	protected ScopeMoveDownAction() {}
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
@@ -32,16 +31,16 @@ public class ScopeMoveUpAction implements ScopeMoveAction {
 		final Scope parent = selectedScope.getParent();
 		final int index = parent.getChildIndex(selectedScope);
 
-		if (isFirstNode(index)) throw new UnableToCompleteActionException("It is not possible to move up the first node.");
+		if (isLastNode(index, parent)) throw new UnableToCompleteActionException("It is not possible to move down the node when it is the last node.");
 
 		parent.remove(selectedScope);
-		parent.add(index - 1, selectedScope);
+		parent.add(index + 1, selectedScope);
 
-		return new ScopeMoveDownAction(referenceId);
+		return new ScopeMoveUpAction(referenceId);
 	}
 
-	private boolean isFirstNode(final int index) {
-		return index == 0;
+	private boolean isLastNode(final int index, final Scope parent) {
+		return parent.getChildren().size() - 1 == index;
 	}
 
 	@Override
