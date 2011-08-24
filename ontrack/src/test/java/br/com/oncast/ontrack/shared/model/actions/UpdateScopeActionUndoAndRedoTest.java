@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.scope.actions;
+package br.com.oncast.ontrack.shared.model.actions;
 
 import org.junit.Test;
 
