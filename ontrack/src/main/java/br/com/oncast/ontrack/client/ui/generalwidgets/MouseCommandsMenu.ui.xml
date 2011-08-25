@@ -14,17 +14,16 @@
 			}
 			
 			.menu {
-				position: absolute;
-				top: 15px;
-				right: 0px;
-				color: black;
-				background: white;
-				font-weight: normal;
-				font-size: 80%;
-				border: 1px solid gray;
-				box-shadow: 1px 1px 6px #d9dae1;
-				-moz-box-shadow: 1px 1px 6px #d9dae1;
-				-webkit-box-shadow: 1px 1px 6px #d9dae1;
+                position: absolute;
+                top: 3px;
+                right: -2px;
+                color: black;
+                background: white;
+
+                border: 1px solid gray;
+                box-shadow: 1px 1px 6px #d9dae1;
+                -moz-box-shadow: 1px 1px 6px #d9dae1;
+                -webkit-box-shadow: 1px 1px 6px #d9dae1;
 			}
 		</ui:style>
 
