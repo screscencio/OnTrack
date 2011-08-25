@@ -1,5 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -13,6 +18,8 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -35,8 +42,10 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private final Release release;
 
-	// Do not refresh the DOM if these variables don't change.
+	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentReleaseDescription;
+
+	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentReleaseProgressDescription;
 
 	@UiField
@@ -47,6 +56,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected Label progressLabel;
+
+	@UiField
+	protected MouseCommandsMenu mouseActionsMenu;
 
 	@UiField
 	protected ReleaseWidgetContainer releaseContainer;
@@ -78,6 +90,33 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiFactory
 	protected ScopeWidgetContainer createScopeContainer() {
 		return new ScopeWidgetContainer(ScopeWidgetFactory.getInstance(), containerUpdateListener);
+	}
+
+	@UiFactory
+	protected MouseCommandsMenu createMouseActionMenu() {
+		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
+		itens.add(new CommandMenuItem("blablabla", new Command() {
+
+			@Override
+			public void execute() {
+				Window.alert("há1");
+			}
+		}));
+		itens.add(new CommandMenuItem("blablabla2222", new Command() {
+
+			@Override
+			public void execute() {
+				Window.alert("há2");
+			}
+		}));
+		itens.add(new CommandMenuItem("blablabla223333332", new Command() {
+
+			@Override
+			public void execute() {
+				Window.alert("há3333");
+			}
+		}));
+		return new MouseCommandsMenu(itens);
 	}
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory) {

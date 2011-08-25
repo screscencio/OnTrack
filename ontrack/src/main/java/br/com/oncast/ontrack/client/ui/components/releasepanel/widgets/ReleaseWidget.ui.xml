@@ -1,7 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:ow="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets">
+	xmlns:ow="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets" 
+    xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
 	<ui:style
 		type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Style">
@@ -15,6 +16,7 @@
 			.header {
 				position: relative;
 				padding: 4px;
+				z-index: 10;
 
 				border: 1px solid #d9dae1;
 				background: #a5a5a5;
@@ -44,14 +46,27 @@
 				position: absolute;
 				top: 0px;
 				bottom: 0px;
-				right: 5px;
+				right: 20px;
 				
 				font-size: small;
 				opacity: 0.5;
-			}	
+			}
+			
+			.mouseActionsMenu {
+                position: absolute;
+                top: 0px;
+                bottom: 0px;
+                right: 5px;
+                width: 10px;
+			}
 			
 			.invisibleBodyContainer {
 				display: none;
+			}
+			
+			.body {
+				position: relative;
+				z-index: 1;
 			}
 			
 			.releaseContainer {
@@ -78,8 +93,9 @@
 				</tr>
 			</table>
 			<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
+			<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 		</div>
-		<div ui:field="bodyContainer">
+		<div class="{style.body}" ui:field="bodyContainer">
 			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
 			<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
 		</div>
