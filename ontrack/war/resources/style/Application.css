@@ -8,7 +8,7 @@ html,body {
     font-size: 14px;
 }
 
-<!-- Scope Tree -->
+<!-- Tree -->
 .gwt-Tree {
 	font-family: verdana, arial, monospace;
 	font-size: 14px;
@@ -32,3 +32,40 @@ html,body {
 	background-color: #fafafa;
 	border: 1px solid #f2f2f2;
 }
+
+<!-- MenuBar -->
+.gwt-MenuBar {}
+.gwt-MenuBar-horizontal {}
+.gwt-MenuBar-vertical {}
+.gwt-MenuBar .gwt-MenuItem {
+	padding: 8px;
+	font-size: 90%;
+	font-weight: normal;
+
+	color: #a5a5a5;
+	background-color: white;
+}
+.gwt-MenuBar .gwt-MenuItem-selected {
+	color: white;
+	background-color: #a5a5a5;
+}
+.gwt-MenuBar .gwt-MenuItemSeparator {}
+.gwt-MenuBar .gwt-MenuItemSeparator .menuSeparatorInner {}
+.gwt-MenuBarPopup .menuPopupTopLeft {}
+.gwt-MenuBarPopup .menuPopupTopLeftInner {}
+.gwt-MenuBarPopup .menuPopupTopCenter {}
+.gwt-MenuBarPopup .menuPopupTopCenterInner {}
+.gwt-MenuBarPopup .menuPopupTopRight {}
+.gwt-MenuBarPopup .menuPopupTopRightInner {}
+.gwt-MenuBarPopup .menuPopupMiddleLeft {}
+.gwt-MenuBarPopup .menuPopupMiddleLeftInner {}
+.gwt-MenuBarPopup .menuPopupMiddleCenter {}
+.gwt-MenuBarPopup .menuPopupMiddleCenterInner {}
+.gwt-MenuBarPopup .menuPopupMiddleRight {}
+.gwt-MenuBarPopup .menuPopupMiddleRightInner {}
+.gwt-MenuBarPopup .menuPopupBottomLeft {}
+.gwt-MenuBarPopup .menuPopupBottomLeftInner {}
+.gwt-MenuBarPopup .menuPopupBottomCenter {}
+.gwt-MenuBarPopup .menuPopupBottomCenterInner {}
+.gwt-MenuBarPopup .menuPopupBottomRight {}
+.gwt-MenuBarPopup .menuPopupBottomRightInner {}

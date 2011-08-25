@@ -36,7 +36,7 @@ public class MouseCommandsMenu extends Composite {
 	}
 
 	@UiHandler("button")
-	void onClick(final ClickEvent e) {
+	protected void onClick(final ClickEvent e) {
 		menu.show();
 	}
 }
