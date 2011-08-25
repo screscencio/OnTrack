@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -49,7 +51,10 @@ public class ActionExecuter {
 
 	protected static Scope getEffortInferenceBaseScope(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {
 		final Scope s = context.findScope(action.getReferenceId());
-		final Scope scope = s.isRoot() || (action instanceof ScopeInsertParentRollbackAction) ? s : s.getParent();
+		final Scope scope = s.isRoot()
+				|| (action instanceof ScopeInsertParentRollbackAction)
+				|| (action instanceof ScopeInsertChildAction)
+				|| (action instanceof ScopeRemoveRollbackAction) ? s : s.getParent();
 		return scope;
 	}
 }
