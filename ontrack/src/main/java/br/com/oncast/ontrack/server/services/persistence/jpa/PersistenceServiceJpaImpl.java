@@ -66,6 +66,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public List<ModelAction> retrieveActionsSince(final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
+			// TODO +++ Order by ID, not timestamp.
 			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
 					+ " as action where action.timestamp > :timestamp order by action.timestamp asc");
 
