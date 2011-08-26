@@ -87,7 +87,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	 * @see br.com.oncast.ontrack.server.business.BusinessLogic#loadProject()
 	 */
 	@Override
-	public Project loadProject() throws UnableToLoadProjectException {
+	public synchronized Project loadProject() throws UnableToLoadProjectException {
 		LOGGER.debug("Loading project current state.");
 		try {
 			final ProjectSnapshot snapshot = persistenceService.retrieveProjectSnapshot();
