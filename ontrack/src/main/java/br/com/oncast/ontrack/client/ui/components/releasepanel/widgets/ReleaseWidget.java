@@ -19,7 +19,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -82,6 +81,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private boolean isBodyContainerActive;
 
+	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
+
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
 		return new ReleaseWidgetContainer(releaseWidgetFactory, containerUpdateListener);
@@ -95,33 +96,22 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiFactory
 	protected MouseCommandsMenu createMouseActionMenu() {
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		itens.add(new CommandMenuItem("blablabla", new Command() {
+		itens.add(new CommandMenuItem("Delete Release", new Command() {
 
 			@Override
 			public void execute() {
-				Window.alert("há1");
-			}
-		}));
-		itens.add(new CommandMenuItem("blablabla2222", new Command() {
-
-			@Override
-			public void execute() {
-				Window.alert("há2");
-			}
-		}));
-		itens.add(new CommandMenuItem("blablabla223333332", new Command() {
-
-			@Override
-			public void execute() {
-				Window.alert("há3333");
+				releasePanelInteractionHandler.onReleaseDeletionRequest(release);
 			}
 		}));
 		return new MouseCommandsMenu(itens);
 	}
 
-	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory) {
-		this.releaseWidgetFactory = releaseWidgetFactory;
+	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
+			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this.release = release;
+		this.releaseWidgetFactory = releaseWidgetFactory;
+		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
+
 		this.containerUpdateListener = new ModelWidgetContainerListener() {
 
 			@Override

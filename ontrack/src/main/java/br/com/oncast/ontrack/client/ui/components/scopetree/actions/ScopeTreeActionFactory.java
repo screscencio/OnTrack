@@ -33,6 +33,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeInsertParentRollbackAction) return new ScopeTreeParentFatherRollbackAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveRollbackAction) return new ScopeTreeRemoveRollbackAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeUpdateAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
+		// FIXME Update tree when receiving ReleaseRemoveAction;
 
 		throw new ScopeNotFoundException("It was not possible to find the desired action.");
 	}
