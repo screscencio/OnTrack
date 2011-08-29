@@ -31,7 +31,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 	protected ScopeTree scopeTree;
 
 	@UiField
-	protected Anchor exportMap;
+	protected Anchor exportMapLink;
 
 	public PlanningPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -50,7 +50,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	@Override
 	public void setExporterPath(final String href) {
-		exportMap.setHref(href);
+		exportMapLink.setHref(href);
 	}
 
 	@Override
