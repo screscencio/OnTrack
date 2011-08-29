@@ -59,7 +59,7 @@
 		<g:SimplePanel styleName="{style.releasePanel}">
     		<rp:ReleasePanel ui:field="releasePanel" />
 		</g:SimplePanel>
-		<g:Anchor ui:field="exportMap" text="Export to mind map" styleName="{style.exportToMapLink}"/>
+		<g:Anchor ui:field="exportMapLink" text="Export to mind map" target="_blank" styleName="{style.exportToMapLink}"/>
 	</g:FlowPanel>
 
 </ui:UiBinder>
