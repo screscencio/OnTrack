@@ -125,7 +125,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		for (final Release childRelease : release.getChildReleases())
+		for (final Release childRelease : release.getChildren())
 			releaseContainer.createChildModelWidget(childRelease);
 
 		for (final Scope scope : release.getScopeList())
@@ -140,7 +140,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	public void update() {
 		updateDescription();
 		updateProgress();
-		releaseContainer.update(release.getChildReleases());
+		releaseContainer.update(release.getChildren());
 		scopeContainer.update(release.getScopeList());
 	}
 

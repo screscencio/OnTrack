@@ -37,6 +37,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
 		if (oldRelease != null) oldRelease.removeScope(selectedScope);
 
+		// FIXME Review this association. Do not use selectedScope.setRelease(), because release.addScope() already does bidirectional association.
 		final Release newRelease = context.loadRelease(newReleaseDescription);
 		selectedScope.setRelease(newRelease);
 		if (newRelease != null) newRelease.addScope(selectedScope);
@@ -55,7 +56,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	}
 
 	@Override
-	public boolean changesProcessInference() {
+	public boolean changesProgressInference() {
 		return false;
 	}
 }

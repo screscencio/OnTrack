@@ -76,7 +76,7 @@ public class ScopeUpdateAction implements ScopeAction {
 
 	// TODO Result should depend on its subActions.
 	@Override
-	public boolean changesProcessInference() {
+	public boolean changesProgressInference() {
 		return true;
 	}
 }

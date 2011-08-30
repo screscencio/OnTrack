@@ -85,7 +85,7 @@ public class ScopeRemoveAction implements ScopeAction {
 	}
 
 	@Override
-	public boolean changesProcessInference() {
+	public boolean changesProgressInference() {
 		return true;
 	}
 }

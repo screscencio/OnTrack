@@ -63,7 +63,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	}
 
 	@Override
-	public boolean changesProcessInference() {
+	public boolean changesProgressInference() {
 		return true;
 	}
 
