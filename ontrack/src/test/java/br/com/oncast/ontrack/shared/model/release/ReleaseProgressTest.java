@@ -19,7 +19,7 @@ public class ReleaseProgressTest {
 
 	@Before
 	public void setUp() {
-		r1 = ReleaseMock.getRelease().getChildReleases().get(0);
+		r1 = ReleaseMock.getRelease().getChildren().get(0);
 		scopeHierarchy = ScopeMock.getScopeWithEffort();
 
 		r1.addScope(scopeHierarchy.getChild(0));
@@ -100,7 +100,7 @@ public class ReleaseProgressTest {
 		scope.getProgress().setDescription("Done");
 		release.addScope(scope);
 
-		release.addRelease(new Release("Child release"));
+		release.addChild(new Release("Child release"));
 
 		assertFalse(release.isDone());
 	}
@@ -119,7 +119,7 @@ public class ReleaseProgressTest {
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
 		final Release it1 = new Release("It1");
-		r1.addRelease(it1);
+		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
 		scope2.getProgress().setDescription("Done");
@@ -142,7 +142,7 @@ public class ReleaseProgressTest {
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
 		final Release it1 = new Release("It1");
-		r1.addRelease(it1);
+		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
 		scope2.getProgress().setDescription("Done");
@@ -165,7 +165,7 @@ public class ReleaseProgressTest {
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
 		final Release it1 = new Release("It1");
-		r1.addRelease(it1);
+		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
 		scope2.getProgress().setDescription("Underwork");

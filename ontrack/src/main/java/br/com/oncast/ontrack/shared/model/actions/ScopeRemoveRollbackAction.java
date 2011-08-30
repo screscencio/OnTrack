@@ -88,7 +88,7 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 
 	// TODO Result should depend on its subActions.
 	@Override
-	public boolean changesProcessInference() {
+	public boolean changesProgressInference() {
 		return true;
 	}
 }

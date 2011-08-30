@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.project;
 
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -44,9 +45,9 @@ public class ProjectContext {
 		return project.getProjectRelease();
 	}
 
-	// TODO ++Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return? Take a look at
-	// "InternalInsertionActionUtils".
-	public Release findRelease(final UUID releaseId) {
-		return project.getProjectRelease().findRelease(releaseId);
+	public Release findRelease(final UUID releaseId) throws ReleaseNotFoundException {
+		final Release release = project.getProjectRelease().findRelease(releaseId);
+		if (release == null) throw new ReleaseNotFoundException("The release referenced by id " + releaseId + " was not found.");
+		return release;
 	}
 }

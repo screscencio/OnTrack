@@ -12,7 +12,4 @@ public interface ModelAction extends Serializable {
 
 	UUID getReferenceId();
 
-	boolean changesEffortInference();
-
-	boolean changesProcessInference();
 }

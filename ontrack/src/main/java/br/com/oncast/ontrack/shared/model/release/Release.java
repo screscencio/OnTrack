@@ -26,11 +26,16 @@ public class Release implements IsSerializable {
 
 	private List<Scope> scopeList;
 
+	// IMPORTANT The default constructor is used by GWT to construct new releases. Do not remove this.
 	protected Release() {}
 
 	public Release(final String description) {
-		this.id = new UUID();
+		this(description, new UUID());
+	}
+
+	public Release(final String description, final UUID id) {
 		this.description = description;
+		this.id = id;
 
 		childrenList = new ArrayList<Release>();
 		scopeList = new ArrayList<Scope>();
@@ -53,13 +58,57 @@ public class Release implements IsSerializable {
 		return parent == null;
 	}
 
-	public void addRelease(final Release release) {
+	public Release getParent() {
+		return parent;
+	}
+
+	/**
+	 * Returns the a list with children releases. If you want to add or remove a child release, use {@link Release#addChild(Release)} and
+	 * {@link Release#removeChild(Release)}. Don't manipulate this list directly.
+	 */
+	public List<Release> getChildren() {
+		return childrenList;
+	}
+
+	public Release getChild(final int index) {
+		return childrenList.get(index);
+	}
+
+	public int getChildIndex(final Release release) {
+		return childrenList.indexOf(release);
+	}
+
+	/**
+	 * Appends a release to the end of the children list. If the added release already has an association with other release, this association is removed before
+	 * the new association is made.
+	 */
+	public void addChild(final Release release) {
 		if (childrenList.contains(release)) return;
+		if (release.parent != null) release.parent.removeChild(release);
+
 		childrenList.add(release);
 		release.parent = this;
 	}
 
+	/**
+	 * Inserts a release at the specified position into the children list. If the added release already has an association with other release, this association
+	 * is removed before the new association is made.
+	 */
+	public void addChild(final int beforeIndex, final Release release) {
+		childrenList.add(beforeIndex, release);
+		release.parent = this;
+	}
+
+	/**
+	 * Removes a release from the children list. This method does the bidirectional dissociation between a parent release and its child.
+	 */
+	public void removeChild(final Release release) {
+		childrenList.remove(release);
+		release.parent = null;
+	}
+
 	// TODO +++Test this
+	// FIXME Don't create a new release if it doesn't exist. Throw an exception instead.
 	public Release loadRelease(final String releaseDescription) {
 		final String[] releaseDescriptionSegments = releaseDescription.split(SEPARATOR);
 
@@ -72,37 +121,53 @@ public class Release implements IsSerializable {
 		return childRelease.loadRelease(releaseDescription.substring(descriptionSegment.length() + SEPARATOR.length(), releaseDescription.length()));
 	}
 
-	private Release createNewSubRelease(final String descriptionSegment) {
-		final Release newRelease = new Release(descriptionSegment);
-		addRelease(newRelease);
-		return newRelease;
-	}
+	public Release findRelease(final UUID releaseId) {
+		if (this.id.equals(releaseId)) return this;
 
-	private Release findDirectChildRelease(final String releaseDescription) {
-		for (final Release release : childrenList)
-			if (release.getDescription().toLowerCase().equals(releaseDescription.trim().toLowerCase())) return release;
+		for (final Release release : childrenList) {
+			final Release releaseLoaded = release.findRelease(releaseId);
+			if (releaseLoaded != null) return releaseLoaded;
+		}
 
 		return null;
 	}
 
-	public List<Release> getChildReleases() {
-		return childrenList;
-	}
-
-	// TODO Review bidirectional linkage between Scope and Release: This method should then be removed.
+	/**
+	 * Returns the a list with associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope)} and
+	 * {@link Release#removeScope(Scope)}. Don't manipulate this list directly.
+	 */
 	public List<Scope> getScopeList() {
 		return scopeList;
 	}
 
-	// TODO Review bidirectional linkage between Scope and Release: Analyze bringing this logic to this method.
+	/**
+	 * Adds a scope to the scope list. If the added scope already has an association with other release, this association is removed before
+	 * the new association is made.
+	 */
 	public void addScope(final Scope scope) {
 		if (scopeList.contains(scope)) return;
+		if (scope.getRelease() != null) scope.getRelease().removeScope(scope);
+
 		scopeList.add(scope);
+		scope.setRelease(this);
 	}
 
-	// TODO Review bidirectional linkage between Scope and Release: Analyze bringing this logic to this method.
-	public void removeScope(final Scope selectedScope) {
-		scopeList.remove(selectedScope);
+	/**
+	 * Removes a scope from the scope list. This method does the bidirectional dissociation between release and scope.
+	 */
+	public void removeScope(final Scope scope) {
+		scopeList.remove(scope);
+		scope.setRelease(null);
+	}
+
+	/**
+	 * Removes all scopes from the scope list, doing the bidirectional dissociation between release and each scope in the list.
+	 */
+	public void removeAllScopes() {
+		for (final Scope scope : scopeList) {
+			scope.setRelease(null);
+		}
+		scopeList.clear();
 	}
 
 	public float getEffortSum() {
@@ -141,13 +206,15 @@ public class Release implements IsSerializable {
 		return true;
 	}
 
-	public Release findRelease(final UUID releaseId) {
-		if (this.id.equals(releaseId)) return this;
+	private Release createNewSubRelease(final String descriptionSegment) {
+		final Release newRelease = new Release(descriptionSegment);
+		addChild(newRelease);
+		return newRelease;
+	}
 
-		for (final Release release : childrenList) {
-			final Release releaseLoaded = release.findRelease(releaseId);
-			if (releaseLoaded != null) return releaseLoaded;
-		}
+	private Release findDirectChildRelease(final String releaseDescription) {
+		for (final Release release : childrenList)
+			if (release.getDescription().toLowerCase().equals(releaseDescription.trim().toLowerCase())) return release;
 
 		return null;
 	}

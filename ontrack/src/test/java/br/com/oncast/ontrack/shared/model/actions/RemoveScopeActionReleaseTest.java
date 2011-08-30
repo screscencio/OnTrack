@@ -31,7 +31,7 @@ public class RemoveScopeActionReleaseTest {
 	public void setUp() {
 		rootScope = ScopeMock.getScope();
 		final Release rootRelease = ReleaseMock.getRelease();
-		release = rootRelease.getChildReleases().get(0);
+		release = rootRelease.getChildren().get(0);
 		context = new ProjectContext(new Project(rootScope, rootRelease));
 	}
 

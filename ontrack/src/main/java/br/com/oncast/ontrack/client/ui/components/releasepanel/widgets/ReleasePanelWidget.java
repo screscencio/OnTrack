@@ -36,12 +36,12 @@ public class ReleasePanelWidget extends Composite {
 		this.rootRelease = rootRelease;
 		releaseContainer.clear();
 
-		for (final Release childRelease : rootRelease.getChildReleases())
+		for (final Release childRelease : rootRelease.getChildren())
 			releaseContainer.createChildModelWidget(childRelease);
 	}
 
 	public void update() {
-		releaseContainer.update(rootRelease.getChildReleases());
+		releaseContainer.update(rootRelease.getChildren());
 	}
 
 	@UiFactory

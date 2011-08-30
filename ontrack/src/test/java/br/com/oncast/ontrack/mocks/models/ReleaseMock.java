@@ -14,13 +14,13 @@ public class ReleaseMock {
 		final Release it3 = new Release("It3");
 		final Release it4 = new Release("It4");
 
-		projectRelease.addRelease(r1);
-		projectRelease.addRelease(r2);
-		projectRelease.addRelease(r3);
-		r1.addRelease(it1);
-		r1.addRelease(it2);
-		r1.addRelease(it3);
-		r2.addRelease(it4);
+		projectRelease.addChild(r1);
+		projectRelease.addChild(r2);
+		projectRelease.addChild(r3);
+		r1.addChild(it1);
+		r1.addChild(it2);
+		r1.addChild(it3);
+		r2.addChild(it4);
 
 		return projectRelease;
 	}
