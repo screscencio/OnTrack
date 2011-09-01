@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.shared.model.project;
 
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -19,7 +19,7 @@ public class ProjectContext {
 		return release.getFullDescription();
 	}
 
-	public Release loadRelease(final String releaseDescription) {
+	public Release loadRelease(final String releaseDescription) throws ReleaseNotFoundException {
 		if (releaseDescription == null || releaseDescription.isEmpty()) return null;
 
 		final String[] releaseDescriptionSegments = releaseDescription.split(Release.SEPARATOR);
@@ -37,17 +37,18 @@ public class ProjectContext {
 		return scope;
 	}
 
+	// TODO +++Cache results!!!! so that it can be faster (eg. some actions with subactions call this multiple times)
+	public Release findRelease(final UUID releaseId) throws ReleaseNotFoundException {
+		final Release release = project.getProjectRelease().findRelease(releaseId);
+		if (release == null) throw new ReleaseNotFoundException("The release referenced by id " + releaseId + " was not found.");
+		return release;
+	}
+
 	public Scope getProjectScope() {
 		return project.getProjectScope();
 	}
 
 	public Release getProjectRelease() {
 		return project.getProjectRelease();
-	}
-
-	public Release findRelease(final UUID releaseId) throws ReleaseNotFoundException {
-		final Release release = project.getProjectRelease().findRelease(releaseId);
-		if (release == null) throw new ReleaseNotFoundException("The release referenced by id " + releaseId + " was not found.");
-		return release;
 	}
 }

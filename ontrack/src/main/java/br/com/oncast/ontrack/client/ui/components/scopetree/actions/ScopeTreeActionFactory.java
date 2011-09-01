@@ -2,9 +2,11 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingAction;
@@ -25,15 +27,16 @@ public class ScopeTreeActionFactory {
 
 	public ScopeTreeAction createEquivalentActionFor(final ModelAction action) throws ScopeNotFoundException {
 
-		if (action instanceof ScopeRemoveAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
-		else if (action instanceof ScopeMoveAction) return new ScopeTreeMoveAction(tree, (ScopeAction) action);
+		if (action instanceof ScopeMoveAction) return new ScopeTreeMoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeInsertSiblingAction) return new ScopeTreeInsertSiblingAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeInsertChildAction) return new ScopeTreeInsertChildAction(tree, (ScopeInsertAction) action);
+		else if (action instanceof ScopeInsertChildRollbackAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeInsertParentAction) return new ScopeTreeInsertParentAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeInsertParentRollbackAction) return new ScopeTreeParentFatherRollbackAction(tree, (ScopeAction) action);
+		else if (action instanceof ScopeRemoveAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveRollbackAction) return new ScopeTreeRemoveRollbackAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeUpdateAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
-		// FIXME Update tree when receiving ReleaseRemoveAction;
+		else if (action instanceof ReleaseAction) return new ScopeTreeReleaseAction(tree);
 
 		throw new ScopeNotFoundException("It was not possible to find the desired action.");
 	}

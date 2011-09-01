@@ -69,6 +69,16 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
+	public void shouldMatchDescriptionAndReleaseWithSpacesBetweenReleases() {
+		test("descrição " + RELEASE_SYMBOL + "release /subrelease", "descrição", "release /subrelease", false, 0);
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndReleaseWithSpacesBetweenReleases2() {
+		test("descrição " + RELEASE_SYMBOL + "release / subrelease", "descrição", "release / subrelease", false, 0);
+	}
+
+	@Test
 	public void shouldMatchDescriptionContainingEmailAndRelease() {
 		test("descrição email@provedor.com.br " + RELEASE_SYMBOL + "release/subrelease", "descrição email@provedor.com.br", "release/subrelease", false, 0);
 	}

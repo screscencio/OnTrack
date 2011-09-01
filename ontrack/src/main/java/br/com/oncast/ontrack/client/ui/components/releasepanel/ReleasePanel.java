@@ -8,7 +8,10 @@ import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
@@ -41,9 +44,14 @@ public class ReleasePanel implements Component {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
-				// FIXME Add ReleaseRemoveAction to the update verification.
-				if (action instanceof ScopeUpdateAction || action instanceof ScopeRemoveAction || action instanceof ScopeInsertAction
-						|| action instanceof ScopeInsertParentRollbackAction || action instanceof ScopeRemoveRollbackAction) update();
+				if (action instanceof ScopeUpdateAction ||
+						action instanceof ScopeRemoveAction ||
+						action instanceof ScopeInsertAction ||
+						action instanceof ScopeInsertParentRollbackAction ||
+						action instanceof ScopeRemoveRollbackAction ||
+						action instanceof ReleaseRemoveAction ||
+						action instanceof ReleaseRemoveRollbackAction ||
+						action instanceof ScopeInsertChildRollbackAction) update();
 			}
 		};
 	}

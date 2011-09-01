@@ -8,11 +8,9 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
@@ -31,7 +29,7 @@ public class MoveRightScopeActionTest {
 		rootScope.add(firstChild);
 		rootScope.add(lastChild);
 
-		context = new ProjectContext(new Project(rootScope, new Release("")));
+		context = new ProjectContext(new Project(rootScope, ReleaseMockFactory.create("")));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)

@@ -6,9 +6,8 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 
 public class ReleaseActionExecuter implements ModelActionExecuter {
 
-	ReleaseActionExecuter() {
-		// Constructor must be package visible.
-	}
+	// Constructor must be package visible.
+	ReleaseActionExecuter() {}
 
 	@Override
 	public ActionExecutionContext executeAction(final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {

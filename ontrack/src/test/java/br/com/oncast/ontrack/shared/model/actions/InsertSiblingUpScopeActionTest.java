@@ -5,11 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
@@ -32,7 +30,7 @@ public class InsertSiblingUpScopeActionTest {
 
 		newScopeDescription = "description for new scope";
 
-		context = new ProjectContext(new Project(rootScope, new Release("")));
+		context = new ProjectContext(new Project(rootScope, ReleaseMockFactory.create("")));
 	}
 
 	@Test
