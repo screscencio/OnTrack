@@ -4,6 +4,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -15,8 +16,6 @@ import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
-import com.google.gwt.user.client.Window;
-
 public class ActionSyncService {
 
 	private final ClientIdentificationProvider clientIdentificationProvider;
@@ -25,11 +24,15 @@ public class ActionSyncService {
 
 	private final ActionExecutionService actionExecutionService;
 
+	private final ErrorTreatmentService errorTreatmentService;
+
 	public ActionSyncService(final RequestDispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
-			final ActionExecutionService actionExecutionService, final ClientIdentificationProvider clientIdentificationProvider) {
+			final ActionExecutionService actionExecutionService, final ClientIdentificationProvider clientIdentificationProvider,
+			final ErrorTreatmentService errorTreatmentService) {
+		this.errorTreatmentService = errorTreatmentService;
 		this.actionExecutionService = actionExecutionService;
 		this.clientIdentificationProvider = clientIdentificationProvider;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, clientIdentificationProvider);
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, clientIdentificationProvider, errorTreatmentService);
 
 		serverPushClientService.registerServerEventHandler(ServerActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
@@ -56,19 +59,14 @@ public class ActionSyncService {
 				actionExecutionService.executeNonUserAction(modelAction);
 		}
 		catch (final UnableToCompleteActionException e) {
-			threatSyncingError("The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.");
+			errorTreatmentService.threatFatalError(
+					"The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.", e);
 		}
 	}
 
 	private void handleActionExecution(final ModelAction action, final boolean isUserAction) {
 		if (!isUserAction) return;
 		actionQueuedDispatcher.dispatch(action);
-	}
-
-	private void threatSyncingError(final String message) {
-		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
-		Window.alert(message);
-		Window.Location.reload();
 	}
 
 	private boolean isClientOriginatedRequest(final ModelActionSyncRequest modelActionSyncRequest) {

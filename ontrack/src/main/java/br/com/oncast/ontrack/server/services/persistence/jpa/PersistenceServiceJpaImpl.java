@@ -44,8 +44,13 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.getTransaction().commit();
 		}
 		catch (final Exception e) {
-			em.getTransaction().rollback();
-			throw new PersistenceException("It was not possible to persist an action.", e);
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to neither persist a group of actions and to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist a group of actions.", e);
 		}
 		finally {
 			em.close();

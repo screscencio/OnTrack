@@ -5,6 +5,8 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentServiceImpl;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
@@ -26,6 +28,7 @@ public class ClientServiceProvider {
 	private ServerPushClientService serverPushClientService;
 	private ClientIdentificationProvider clientIdentificationProvider;
 	private ApplicationPlaceController placeController;
+	private ErrorTreatmentService errorTreatmentService;
 	private EventBus eventBus;
 
 	public ApplicationPlaceController getApplicationPlaceController() {
@@ -51,7 +54,12 @@ public class ClientServiceProvider {
 	public ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
-				getClientIdentificationProvider());
+				getClientIdentificationProvider(), getErrorTreatmentService());
+	}
+
+	private ErrorTreatmentService getErrorTreatmentService() {
+		if (errorTreatmentService != null) return errorTreatmentService;
+		return errorTreatmentService = new ErrorTreatmentServiceImpl();
 	}
 
 	private ClientIdentificationProvider getClientIdentificationProvider() {
@@ -61,7 +69,7 @@ public class ClientServiceProvider {
 
 	private ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientServiceImpl();
+		return serverPushClientService = new ServerPushClientServiceImpl(getErrorTreatmentService());
 	}
 
 	private EventBus getEventBus() {

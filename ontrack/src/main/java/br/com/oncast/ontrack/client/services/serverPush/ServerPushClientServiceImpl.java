@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 
 public class ServerPushClientServiceImpl implements ServerPushClientService {
 
@@ -16,7 +16,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	private final ServerPushClient serverPushClient;
 	private final Timer connectionHealthMonitorTimer;
 
-	public ServerPushClientServiceImpl() {
+	public ServerPushClientServiceImpl(final ErrorTreatmentService errorTreatmentService) {
 		serverPushClient = new GwtCometClient(new ServerPushClientEventListener() {
 			@Override
 			public void onConnected() {
@@ -38,15 +38,16 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			 */
 			@Override
 			public void onError(final Throwable exception) {
-				// TODO +++Notify Error threatment service.
-				threatSyncingError("The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.");
+				errorTreatmentService.threatFatalError(
+						"The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.", exception);
 			}
 		});
 		connectionHealthMonitorTimer = new Timer() {
 
 			@Override
 			public void run() {
-				if (!serverPushClient.isRunning()) threatSyncingError("The server connection is down.\n\nThe application will be briethly reloaded.");
+				if (!serverPushClient.isRunning()) errorTreatmentService
+						.threatFatalError("The server connection is down.\n\nThe application will be briethly reloaded.");
 				else scheduleConnectionHealthMonitor();
 			}
 		};
@@ -80,12 +81,5 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	private void connect() {
 		if (!serverPushClient.isRunning()) serverPushClient.start();
-	}
-
-	private void threatSyncingError(final String message) {
-		// TODO +++Delegate treatment to Error treatment service eliminating the need for this method.
-		serverPushClient.stop();
-		Window.alert(message);
-		Window.Location.reload();
 	}
 }
