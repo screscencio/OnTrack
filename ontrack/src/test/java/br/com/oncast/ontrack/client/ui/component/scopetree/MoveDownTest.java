@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.component.scopetree;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
@@ -27,7 +27,7 @@ public class MoveDownTest extends GwtTest {
 	private ScopeTree tree;
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
-	private ActionExecutionService actionExecutionService;
+	private ActionExecutionServiceImpl actionExecutionService;
 
 	@Before
 	public void setUp() {
@@ -37,7 +37,7 @@ public class MoveDownTest extends GwtTest {
 
 		projectContext = new ProjectContext((new Project(scope, new Release(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
-		actionExecutionService = new ActionExecutionService(contextService);
+		actionExecutionService = new ActionExecutionServiceImpl(contextService);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 

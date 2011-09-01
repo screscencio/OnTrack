@@ -32,17 +32,19 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 
 	@Override
-	public void persistAction(final ModelAction modelAction, final Date timestamp) throws PersistenceException {
-		final ModelActionEntity entity = convertActionToEntity(modelAction);
-		final UserActionEntity container = new UserActionEntity(entity, timestamp);
-
+	public void persistActions(final List<ModelAction> actionList, final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			em.persist(container);
+			for (final ModelAction modelAction : actionList) {
+				final ModelActionEntity entity = convertActionToEntity(modelAction);
+				final UserActionEntity container = new UserActionEntity(entity, timestamp);
+				em.persist(container);
+			}
 			em.getTransaction().commit();
 		}
 		catch (final Exception e) {
+			em.getTransaction().rollback();
 			throw new PersistenceException("It was not possible to persist an action.", e);
 		}
 		finally {
@@ -66,9 +68,8 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public List<ModelAction> retrieveActionsSince(final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			// TODO +++ Order by ID, not timestamp.
 			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
-					+ " as action where action.timestamp > :timestamp order by action.timestamp asc");
+					+ " as action where action.timestamp > :timestamp order by action.id asc");
 
 			query.setParameter("timestamp", timestamp, TemporalType.TIMESTAMP);
 			final List<UserActionEntity> actions = query.getResultList();

@@ -12,7 +12,7 @@
 			<property name="javax.persistence.jdbc.password" value="" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:aname" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.max_fetch_depth" value="3" />
 			<property name="hibernate.archive.autodetection" value="class, hbm" />
             <property name="hibernate.c3p0.min_size" value="1" />

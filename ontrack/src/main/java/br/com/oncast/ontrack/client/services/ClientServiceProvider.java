@@ -1,12 +1,16 @@
 package br.com.oncast.ontrack.client.services;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
+import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
+import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchServiceImpl;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
+import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -20,6 +24,7 @@ public class ClientServiceProvider {
 	private ContextProviderService contextProviderService;
 	private RequestDispatchService requestDispatchService;
 	private ServerPushClientService serverPushClientService;
+	private ClientIdentificationProvider clientIdentificationProvider;
 	private ApplicationPlaceController placeController;
 	private EventBus eventBus;
 
@@ -30,7 +35,7 @@ public class ClientServiceProvider {
 
 	public ActionExecutionService getActionExecutionService() {
 		if (actionExecutionService != null) return actionExecutionService;
-		return actionExecutionService = new ActionExecutionService(getContextProviderService());
+		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService());
 	}
 
 	public ContextProviderService getContextProviderService() {
@@ -40,17 +45,23 @@ public class ClientServiceProvider {
 
 	public RequestDispatchService getRequestDispatchService() {
 		if (requestDispatchService != null) return requestDispatchService;
-		return requestDispatchService = new RequestDispatchService();
+		return requestDispatchService = new RequestDispatchServiceImpl();
 	}
 
 	public ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
-		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService());
+		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
+				getClientIdentificationProvider());
+	}
+
+	private ClientIdentificationProvider getClientIdentificationProvider() {
+		if (clientIdentificationProvider != null) return clientIdentificationProvider;
+		return clientIdentificationProvider = new ClientIdentificationProvider();
 	}
 
 	private ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientService();
+		return serverPushClientService = new ServerPushClientServiceImpl();
 	}
 
 	private EventBus getEventBus() {

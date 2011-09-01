@@ -36,9 +36,9 @@ class BusinessLogicImpl implements BusinessLogic {
 	 */
 	@Override
 	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException {
-		LOGGER.debug("Processing incoming action '" + modelActionSyncRequest.getAction().getClass().getSimpleName() + "'");
+		LOGGER.debug("Processing incoming action batch.");
 		try {
-			validateAndPersistIncomingAction(modelActionSyncRequest.getAction());
+			validateAndPersistIncomingActions(modelActionSyncRequest.getActionList());
 			actionBroadcastService.broadcast(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
@@ -48,22 +48,23 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	private synchronized void validateAndPersistIncomingAction(final ModelAction action) throws UnableToHandleActionException, PersistenceException {
-		validateIncomingAction(action);
-		persistenceService.persistAction(action, new Date());
+	private synchronized void validateAndPersistIncomingActions(final List<ModelAction> actionList) throws UnableToHandleActionException, PersistenceException {
+		validateIncomingAction(actionList);
+		persistenceService.persistActions(actionList, new Date());
 	}
 
 	// TODO Report errors as feedback for development.
-	// TODO Re-think validations strategy as loading the project every time may be a performance bottleneck.
+	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.
 	// DECISION It is common sense that this validation is needed at this time (of development). Roberto thinks it should be a provisory solution, as it may be
 	// a major performance bottleneck, but that the solution is good to ensure that BetaTesters are safe while the application matures. Rodrigo thinks it should
 	// be permanent (but maybe passive of refactorings) to guarantee user safety in the long term.
-	private void validateIncomingAction(final ModelAction action) throws UnableToHandleActionException {
+	private void validateIncomingAction(final List<ModelAction> actionList) throws UnableToHandleActionException {
 		LOGGER.debug("Validating action upon the project current state.");
 		try {
 			final Project project = loadProject();
 			final ProjectContext context = new ProjectContext(project);
-			ActionExecuter.executeAction(context, action);
+			for (final ModelAction action : actionList)
+				ActionExecuter.executeAction(context, action);
 		}
 		catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";

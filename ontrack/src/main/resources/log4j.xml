@@ -8,6 +8,12 @@
     </layout> 
   </appender>  
   
+  <!-- GwtTest Related Log -->
+  <logger name="com.octo.gwt.test.internal">
+    <level value="ERROR" />
+    <appender-ref ref="consoleAppender"/>
+  </logger>  
+  
   <!-- Database Related Log - Logs c3p0 connection pool warnings -->
   <logger name="com.mchange">
     <level value="WARN" />

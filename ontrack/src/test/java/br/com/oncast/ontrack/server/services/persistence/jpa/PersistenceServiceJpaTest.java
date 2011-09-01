@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,9 @@ public class PersistenceServiceJpaTest {
 		calendar.set(year, 1, 1);
 
 		for (final ModelAction action : ActionMock.getActions()) {
-			persistenceService.persistAction(action, calendar.getTime());
+			final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
+			actionList.add(action);
+			persistenceService.persistActions(actionList, calendar.getTime());
 			calendar.set(++year, 1, 1);
 		}
 
@@ -50,7 +53,9 @@ public class PersistenceServiceJpaTest {
 		final List<ModelAction> secondWaveOfActions = ActionMock.getActions2();
 		for (final ModelAction action : secondWaveOfActions) {
 			calendar.set(++year, 1, 1);
-			persistenceService.persistAction(action, calendar.getTime());
+			final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
+			actionList.add(action);
+			persistenceService.persistActions(actionList, calendar.getTime());
 		}
 
 		final List<ModelAction> actionsReceived = persistenceService.retrieveActionsSince(dateAfterSomeActionsWerePersisted);
