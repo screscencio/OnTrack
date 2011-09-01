@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeBindReleaseAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeDeclareEffortAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeDeclareProgressAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeRemoveAction;
-import br.com.oncast.ontrack.shared.model.scope.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectActionsAssembler {
@@ -41,9 +40,6 @@ public class ProjectActionsAssembler {
 	}
 
 	private void visitScope() {
-		// Remove "Example Scope"
-		scopeDeclarationActions.add(new ScopeRemoveAction(new UUID("1")));
-
 		// Update project description on root scope
 		scopeDeclarationActions.add(new ScopeUpdateAction(new UUID("0"), project.getProjectScope().getDescription()));
 
