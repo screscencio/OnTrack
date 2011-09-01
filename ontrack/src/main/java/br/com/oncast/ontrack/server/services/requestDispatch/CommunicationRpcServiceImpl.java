@@ -13,15 +13,15 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 
 	private static final long serialVersionUID = 1L;
 
-	private final BusinessLogic business = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
+	private static final BusinessLogic BUSINESS = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
 
 	@Override
 	public void transmitAction(final ModelActionSyncRequest modelActionSyncRequest) throws BusinessException {
-		business.handleIncomingActionSyncRequest(modelActionSyncRequest);
+		BUSINESS.handleIncomingActionSyncRequest(modelActionSyncRequest);
 	}
 
 	@Override
 	public Project loadProject() throws BusinessException {
-		return business.loadProject();
+		return BUSINESS.loadProject();
 	}
 }
