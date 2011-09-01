@@ -31,7 +31,7 @@ public class ProjectPrinter {
 		out("-> "+release.getDescription());
 
 		level++;
-		for (final Release child : release.getChildReleases()) {
+		for (final Release child : release.getChildren()) {
 			printRelease(child);
 		}
 

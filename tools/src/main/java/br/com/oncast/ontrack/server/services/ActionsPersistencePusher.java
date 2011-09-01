@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ActionsPersistencePusher {
 
 		final PersistenceService p = new PersistenceServiceJpaImpl();
 		for (final ModelAction ma : actions) {
-			p.persistAction(ma, nextDate());
+			p.persistActions(Collections.singletonList(ma), nextDate());
 		}
 	}
 
