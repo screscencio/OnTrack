@@ -11,12 +11,10 @@ import org.mockito.Mockito;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.mocks.models.ScopeMock;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
@@ -29,7 +27,7 @@ public class RemoveScopeActionProgressTest {
 	@Before
 	public void setUp() {
 		rootScope = ScopeMock.getScope();
-		context = new ProjectContext(new Project(rootScope, new Release("")));
+		context = new ProjectContext(new Project(rootScope, ReleaseMockFactory.create("")));
 	}
 
 	@Test

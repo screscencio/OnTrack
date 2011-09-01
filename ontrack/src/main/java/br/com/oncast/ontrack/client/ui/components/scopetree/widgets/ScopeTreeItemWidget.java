@@ -84,10 +84,16 @@ public class ScopeTreeItemWidget extends Composite {
 	protected FocusPanel focusPanel;
 
 	@IgnoredByDeepEquality
-	private float currEffort;
+	private float currentEffort;
 
 	@IgnoredByDeepEquality
-	private float currEffortDifference;
+	private float currentEffortDifference;
+
+	@IgnoredByDeepEquality
+	private String currentProgress = "";
+
+	@IgnoredByDeepEquality
+	private Release currentRelease;
 
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
@@ -98,6 +104,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		initWidget(uiBinder.createAndBindUi(this));
 		effortPanel.setVisible(false);
+		releaseTag.setVisible(false);
 		setScope(scope);
 
 		this.editionHandler = editionHandler;
@@ -215,9 +222,9 @@ public class ScopeTreeItemWidget extends Composite {
 		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
 		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
 
-		if (currEffort == effortValue && currEffortDifference == effortDifferenceValue) return;
-		currEffort = effortValue;
-		currEffortDifference = effortDifferenceValue;
+		if (currentEffort == effortValue && currentEffortDifference == effortDifferenceValue) return;
+		currentEffort = effortValue;
+		currentEffortDifference = effortDifferenceValue;
 
 		effortPanel.setVisible(effortVisibility);
 		if (!effortVisibility) return;
@@ -234,9 +241,13 @@ public class ScopeTreeItemWidget extends Composite {
 		else effortDifferenceLabel.getElement().addClassName(style.effortLabelTranslucid());
 	}
 
-	private void updateReleaseDisplay() {
+	public void updateReleaseDisplay() {
 		final Release release = scope.getRelease();
-		final boolean isReleasePresent = release != null;
+
+		if ((currentRelease == null && release == null) || (currentRelease != null && currentRelease.equals(release))) return;
+		currentRelease = release;
+
+		final boolean isReleasePresent = (release != null);
 		releaseTag.setVisible(isReleasePresent);
 		releaseTag.setText(isReleasePresent ? release.getFullDescription() : "");
 	}
@@ -247,6 +258,10 @@ public class ScopeTreeItemWidget extends Composite {
 	 */
 	private void updateProgressDisplay() {
 		final String progress = scope.isLeaf() ? getProgressDescriptionForLeaf() : getProgressDescriptionForNonLeaf();
+
+		if (currentProgress.equals(progress)) return;
+		currentProgress = progress;
+
 		progressLabel.setText(progress);
 		progressLabel.setVisible(!progress.isEmpty());
 	}

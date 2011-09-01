@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.release;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
@@ -28,10 +29,6 @@ public class Release implements IsSerializable {
 
 	// IMPORTANT The default constructor is used by GWT to construct new releases. Do not remove this.
 	protected Release() {}
-
-	public Release(final String description) {
-		this(description, new UUID());
-	}
 
 	public Release(final String description, final UUID id) {
 		this.description = description;
@@ -108,14 +105,13 @@ public class Release implements IsSerializable {
 	}
 
 	// TODO +++Test this
-	// FIXME Don't create a new release if it doesn't exist. Throw an exception instead.
-	public Release loadRelease(final String releaseDescription) {
+	public Release loadRelease(final String releaseDescription) throws ReleaseNotFoundException {
 		final String[] releaseDescriptionSegments = releaseDescription.split(SEPARATOR);
-
 		final String descriptionSegment = releaseDescriptionSegments[0];
 
-		Release childRelease = findDirectChildRelease(descriptionSegment);
-		if (childRelease == null) childRelease = createNewSubRelease(descriptionSegment);
+		final Release childRelease = findDirectChildRelease(descriptionSegment);
+		if (childRelease == null) throw new ReleaseNotFoundException("Could not find the specified release.");
+
 		if (releaseDescriptionSegments.length == 1) return childRelease;
 
 		return childRelease.loadRelease(releaseDescription.substring(descriptionSegment.length() + SEPARATOR.length(), releaseDescription.length()));
@@ -133,7 +129,7 @@ public class Release implements IsSerializable {
 	}
 
 	/**
-	 * Returns the a list with associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope)} and
+	 * Returns a list with associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope)} and
 	 * {@link Release#removeScope(Scope)}. Don't manipulate this list directly.
 	 */
 	public List<Scope> getScopeList() {
@@ -204,12 +200,6 @@ public class Release implements IsSerializable {
 			if (!childRelease.isDone()) return false;
 
 		return true;
-	}
-
-	private Release createNewSubRelease(final String descriptionSegment) {
-		final Release newRelease = new Release(descriptionSegment);
-		addChild(newRelease);
-		return newRelease;
 	}
 
 	private Release findDirectChildRelease(final String releaseDescription) {

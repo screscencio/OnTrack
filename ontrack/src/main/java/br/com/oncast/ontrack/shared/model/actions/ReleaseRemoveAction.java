@@ -3,15 +3,24 @@ package br.com.oncast.ontrack.shared.model.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@ConvertTo(ReleaseRemoveActionEntity.class)
 public class ReleaseRemoveAction implements ReleaseAction {
 
 	private static final long serialVersionUID = 1L;
-	private final UUID referenceId;
+
+	@ConversionAlias("referenceId")
+	private UUID referenceId;
+
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ReleaseRemoveAction() {}
 
 	public ReleaseRemoveAction(final UUID selectedReleaseId) {
 		this.referenceId = selectedReleaseId;
@@ -34,6 +43,7 @@ public class ReleaseRemoveAction implements ReleaseAction {
 
 	private List<ReleaseRemoveRollbackAction> removeDescendantsReleases(final ProjectContext context, final Release selectedRelease)
 			throws UnableToCompleteActionException {
+
 		final List<ReleaseRemoveRollbackAction> childActionRollbackList = new ArrayList<ReleaseRemoveRollbackAction>();
 		for (final Release child : new ArrayList<Release>(selectedRelease.getChildren()))
 			childActionRollbackList.add(new ReleaseRemoveAction(child.getId()).execute(context));

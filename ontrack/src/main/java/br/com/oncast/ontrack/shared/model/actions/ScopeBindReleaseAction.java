@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -20,29 +21,68 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	@ConversionAlias("newReleaseDescription")
 	private String newReleaseDescription;
 
+	@ConversionAlias("subAction")
+	private ReleaseAction rollbackSubAction;
+
+	@ConversionAlias("releaseCreateAction")
+	private ReleaseCreateActionDefault releaseCreateAction;
+
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ScopeBindReleaseAction() {}
+
 	public ScopeBindReleaseAction(final UUID referenceId, final String newReleaseDescription) {
 		this.referenceId = referenceId;
 		this.newReleaseDescription = newReleaseDescription;
 	}
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeBindReleaseAction() {}
+	// Used by this action itself when creating a rollback action.
+	public ScopeBindReleaseAction(final UUID referenceId, final String releaseDescription, final ReleaseRemoveAction subAction) {
+		this(referenceId, releaseDescription);
+		this.rollbackSubAction = subAction;
+	}
 
 	// TODO Reference a release by its ID, not by its description. (Think about the consequences).
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
+		final Release oldRelease = dissociateCurrentRelease(selectedScope, context);
+		executeRollbackSubActions(context);
+
+		ReleaseRemoveAction newRollbackSubAction = null;
+		if (newReleaseDescription != null && !newReleaseDescription.isEmpty()) {
+			newRollbackSubAction = assureNewReleaseExistence(context);
+			associateNewRelease(context, selectedScope);
+		}
+
+		return new ScopeBindReleaseAction(referenceId, context.getReleaseDescriptionFor(oldRelease), newRollbackSubAction);
+	}
+
+	private void associateNewRelease(final ProjectContext context, final Scope selectedScope) throws UnableToCompleteActionException {
+		final Release newRelease = ReleaseActionHelper.loadRelease(newReleaseDescription, context);
+		newRelease.addScope(selectedScope);
+	}
+
+	private Release dissociateCurrentRelease(final Scope selectedScope, final ProjectContext context) throws UnableToCompleteActionException {
 		final Release oldRelease = selectedScope.getRelease();
-		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
 		if (oldRelease != null) oldRelease.removeScope(selectedScope);
+		return oldRelease;
+	}
 
-		// FIXME Review this association. Do not use selectedScope.setRelease(), because release.addScope() already does bidirectional association.
-		final Release newRelease = context.loadRelease(newReleaseDescription);
-		selectedScope.setRelease(newRelease);
-		if (newRelease != null) newRelease.addScope(selectedScope);
+	private void executeRollbackSubActions(final ProjectContext context) throws UnableToCompleteActionException {
+		if (rollbackSubAction != null) rollbackSubAction.execute(context);
+	}
 
-		return new ScopeBindReleaseAction(referenceId, oldReleaseDescription);
+	private ReleaseRemoveAction assureNewReleaseExistence(final ProjectContext context) throws UnableToCompleteActionException {
+		ReleaseRemoveAction newRollbackSubAction = null;
+		try {
+			context.loadRelease(newReleaseDescription);
+		}
+		catch (final ReleaseNotFoundException e) {
+			if (releaseCreateAction == null) releaseCreateAction = new ReleaseCreateActionDefault(newReleaseDescription);
+			newRollbackSubAction = releaseCreateAction.execute(context);
+		}
+		return newRollbackSubAction;
 	}
 
 	@Override

@@ -94,20 +94,20 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void aReleaseShouldNotBeDoneIfAtLeastOneOfItsChildReleasesAreNotDoneEvenIfAllItsScopeAreDone() {
-		final Release release = new Release("R1");
+		final Release release = ReleaseMockFactory.create("R1");
 
 		final Scope scope = new Scope("scope");
 		scope.getProgress().setDescription("Done");
 		release.addScope(scope);
 
-		release.addChild(new Release("Child release"));
+		release.addChild(ReleaseMockFactory.create("Child release"));
 
 		assertFalse(release.isDone());
 	}
 
 	@Test
 	public void aReleaseShouldNotBeDoneIfItHaveNoScopeAndNoChildRelease() {
-		final Release release = new Release("R1");
+		final Release release = ReleaseMockFactory.create("R1");
 		assertFalse(release.isDone());
 	}
 
@@ -118,7 +118,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		final Release it1 = new Release("It1");
+		final Release it1 = ReleaseMockFactory.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -141,7 +141,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		final Release it1 = new Release("It1");
+		final Release it1 = ReleaseMockFactory.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -164,7 +164,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(1).getProgress().setDescription("Underwork");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		final Release it1 = new Release("It1");
+		final Release it1 = ReleaseMockFactory.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -182,7 +182,7 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void progressPercentageShouldBe100IfAllItsChildrenAreDoneAndTheSumOfAllEstimatedEffortsIsZero() {
-		final Release release = new Release("Release");
+		final Release release = ReleaseMockFactory.create("Release");
 
 		final Scope rootScope = ScopeMock.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {

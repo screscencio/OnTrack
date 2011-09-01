@@ -90,7 +90,7 @@ public class ActionSyncServiceTestUtils {
 		if (actionExecutionService != null) return actionExecutionService;
 		return actionExecutionService = new ActionExecutionService() {
 
-			private final ProjectContext projectContext = new ProjectContext(new Project(new Scope("root", new UUID("0")), new Release("proj")));
+			private final ProjectContext projectContext = new ProjectContext(new Project(new Scope("root", new UUID("0")), new Release("proj", new UUID("r0"))));
 			private final List<ActionExecutionListener> actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 
 			@Override

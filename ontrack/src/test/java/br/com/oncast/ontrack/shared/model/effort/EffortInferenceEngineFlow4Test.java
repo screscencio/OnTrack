@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -26,7 +26,7 @@ public class EffortInferenceEngineFlow4Test {
 	@Before
 	public void setUp() {
 		rootScope = EffortInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX);
-		projectContext = new ProjectContext(new Project(rootScope, new Release("proj")));
+		projectContext = new ProjectContext(new Project(rootScope, ReleaseMockFactory.create("proj")));
 		DeepEqualityTestUtils.setRequiredFloatingPointPrecision(0.1);
 	}
 
