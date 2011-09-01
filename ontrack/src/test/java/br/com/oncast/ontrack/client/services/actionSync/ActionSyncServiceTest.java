@@ -57,7 +57,8 @@ public class ActionSyncServiceTest extends GwtTest {
 		new ActionSyncService(actionSyncServiceTestUtils.getRequestDispatchServiceMock(),
 				actionSyncServiceTestUtils.getServerPushClientServiceMock(),
 				actionSyncServiceTestUtils.getActionExecutionServiceMock(),
-				actionSyncServiceTestUtils.getClientIdentificationProviderMock());
+				actionSyncServiceTestUtils.getClientIdentificationProviderMock(),
+				actionSyncServiceTestUtils.getErrorTreatmentServiceMock());
 	}
 
 	@After

@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import junit.framework.Assert;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
@@ -62,6 +64,7 @@ public class ActionSyncServiceTestUtils {
 	private ActionExecutionService actionExecutionService;
 	private BusinessLogic businessLogic;
 	private ActionBroadcastService actionBroadcastService;
+	private ErrorTreatmentService errorTreatmentService;
 
 	public ActionExecutionService getActionExecutionServiceMock() {
 		if (actionExecutionService != null) return actionExecutionService;
@@ -139,44 +142,46 @@ public class ActionSyncServiceTestUtils {
 
 			@Override
 			public void dispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<Void> dispatchCallback) {
-				final Runnable runnable = new Runnable() {
-
-					@Override
-					public void run() {
-						try {
-							System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + modelActionSyncRequest.getActionList().size());
-							getBusinessLogicMock().handleIncomingActionSyncRequest(modelActionSyncRequest);
-							dispatchCallback.onRequestCompletition(null);
-						}
-						catch (final UnableToHandleActionException e) {
-							dispatchCallback.onFailure(e);
-						}
-					}
-				};
-				new Thread(runnable).start();
+				try {
+					getBusinessLogicMock().handleIncomingActionSyncRequest(modelActionSyncRequest);
+					dispatchCallback.onRequestCompletition(null);
+				}
+				catch (final UnableToHandleActionException e) {
+					dispatchCallback.onFailure(e);
+				}
 			}
 
 			@Override
 			public void dispatch(final ProjectContextRequest projectContextRequest, final DispatchCallback<ProjectContext> dispatchCallback) {
-				final Runnable runnable = new Runnable() {
-
-					@Override
-					public void run() {
-						try {
-							final Project project = getBusinessLogicMock().loadProject();
-							dispatchCallback.onRequestCompletition(new ProjectContext(project));
-						}
-						catch (final UnableToLoadProjectException e) {
-							dispatchCallback.onFailure(e);
-						}
-					}
-				};
-				new Thread(runnable).start();
+				try {
+					final Project project = getBusinessLogicMock().loadProject();
+					dispatchCallback.onRequestCompletition(new ProjectContext(project));
+				}
+				catch (final UnableToLoadProjectException e) {
+					dispatchCallback.onFailure(e);
+				}
 			}
 		};
 	}
 
 	public ClientIdentificationProvider getClientIdentificationProviderMock() {
 		return CLIENT_IDENTIFICATION_PROVIDER;
+	}
+
+	public ErrorTreatmentService getErrorTreatmentServiceMock() {
+		if (errorTreatmentService != null) return errorTreatmentService;
+		return errorTreatmentService = new ErrorTreatmentService() {
+
+			@Override
+			public void threatFatalError(final String errorDescriptionMessage) {
+				Assert.fail(errorDescriptionMessage);
+			}
+
+			@Override
+			public void threatFatalError(final String errorDescriptionMessage, final Throwable caught) {
+				caught.printStackTrace();
+				Assert.fail(errorDescriptionMessage);
+			}
+		};
 	}
 }

@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.services.actionSync;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
@@ -11,8 +12,6 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionExce
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
-import com.google.gwt.user.client.Window;
-
 class ActionQueuedDispatcher {
 
 	private final RequestDispatchService requestDispatchService;
@@ -20,8 +19,11 @@ class ActionQueuedDispatcher {
 
 	private final List<ModelAction> actionList;
 	private List<ModelAction> waitingServerAnswerActionList;
+	private final ErrorTreatmentService errorTreatmentService;
 
-	public ActionQueuedDispatcher(final RequestDispatchService requestDispatchService, final ClientIdentificationProvider clientIdentificationProvider) {
+	public ActionQueuedDispatcher(final RequestDispatchService requestDispatchService, final ClientIdentificationProvider clientIdentificationProvider,
+			final ErrorTreatmentService errorTreatmentService) {
+		this.errorTreatmentService = errorTreatmentService;
 		this.requestDispatchService = requestDispatchService;
 		this.clientIdentificationProvider = clientIdentificationProvider;
 
@@ -60,21 +62,19 @@ class ActionQueuedDispatcher {
 
 				// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
 				if (caught instanceof InvalidIncomingAction || caught instanceof UnableToHandleActionException) {
-					threatSyncingError("The application is out of sync with the server.\nA conflict between multiple client's states was detected.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.");
+					errorTreatmentService
+							.threatFatalError(
+									"The application is out of sync with the server.\nA conflict between multiple client's states was detected.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.",
+									caught);
 				}
 				else {
 					// TODO +++Treat communication failure.
 					// TODO +++Notify Error treatment service.
-					threatSyncingError("The application server is unreachable.\nCheck your internet connection.\n\nThe application will be briethly reloaded");
+					errorTreatmentService.threatFatalError(
+							"The application server is unreachable.\nCheck your internet connection.\n\nThe application will be briethly reloaded", caught);
 					caught.printStackTrace();
 				}
 			}
 		});
-	}
-
-	private void threatSyncingError(final String message) {
-		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
-		Window.alert(message);
-		Window.Location.reload();
 	}
 }
