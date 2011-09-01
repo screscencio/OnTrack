@@ -38,7 +38,11 @@ class BusinessLogicImpl implements BusinessLogic {
 	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException {
 		LOGGER.debug("Processing incoming action batch.");
 		try {
-			validateAndPersistIncomingActions(modelActionSyncRequest.getActionList());
+			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
+			synchronized (this) {
+				validateIncomingAction(actionList);
+				persistenceService.persistActions(actionList, new Date());
+			}
 			actionBroadcastService.broadcast(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
@@ -46,11 +50,6 @@ class BusinessLogicImpl implements BusinessLogic {
 			LOGGER.error(errorMessage, e);
 			throw new UnableToHandleActionException(errorMessage);
 		}
-	}
-
-	private synchronized void validateAndPersistIncomingActions(final List<ModelAction> actionList) throws UnableToHandleActionException, PersistenceException {
-		validateIncomingAction(actionList);
-		persistenceService.persistActions(actionList, new Date());
 	}
 
 	// TODO Report errors as feedback for development.
