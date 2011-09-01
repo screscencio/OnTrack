@@ -1,14 +1,12 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
+import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
-import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -21,19 +19,23 @@ import com.google.gwt.user.client.Window;
 
 public class ActionSyncService {
 
-	private final RequestDispatchService requestDispatchService;
-	// TODO Extract logic related to this set into methods (maybe into another class).
-	private final Set<ModelActionSyncRequest> requestsSentFromThisClient = new HashSet<ModelActionSyncRequest>();
+	private final ClientIdentificationProvider clientIdentificationProvider;
+
+	private final ActionQueuedDispatcher actionQueuedDispatcher;
+
+	private final ActionExecutionService actionExecutionService;
 
 	public ActionSyncService(final RequestDispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
-			final ActionExecutionService actionExecutionService) {
-		this.requestDispatchService = requestDispatchService;
+			final ActionExecutionService actionExecutionService, final ClientIdentificationProvider clientIdentificationProvider) {
+		this.actionExecutionService = actionExecutionService;
+		this.clientIdentificationProvider = clientIdentificationProvider;
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, clientIdentificationProvider);
 
 		serverPushClientService.registerServerEventHandler(ServerActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
 			@Override
 			public void onEvent(final ServerActionSyncEvent event) {
-				processServerActionSyncEvent(actionExecutionService, event);
+				processServerActionSyncEvent(event);
 			}
 		});
 		actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
@@ -45,12 +47,13 @@ public class ActionSyncService {
 		});
 	}
 
-	private void processServerActionSyncEvent(final ActionExecutionService actionExecutionService, final ServerActionSyncEvent event) {
+	private void processServerActionSyncEvent(final ServerActionSyncEvent event) {
 		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
-		if (requestsSentFromThisClient.remove(modelActionSyncRequest)) return;
+		if (isClientOriginatedRequest(modelActionSyncRequest)) return;
 
 		try {
-			actionExecutionService.executeNonUserAction(modelActionSyncRequest.getAction());
+			for (final ModelAction modelAction : modelActionSyncRequest.getActionList())
+				actionExecutionService.executeNonUserAction(modelAction);
 		}
 		catch (final UnableToCompleteActionException e) {
 			threatSyncingError("The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.");
@@ -59,43 +62,16 @@ public class ActionSyncService {
 
 	private void handleActionExecution(final ModelAction action, final boolean isUserAction) {
 		if (!isUserAction) return;
-		notifyClientActionExecutionToServer(action);
-	}
-
-	private void notifyClientActionExecutionToServer(final ModelAction action) {
-		// TODO Display 'loading' UI indicator.
-
-		final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(action);
-		requestsSentFromThisClient.add(modelActionSyncRequest);
-		requestDispatchService.dispatch(modelActionSyncRequest, new DispatchCallback<Void>() {
-
-			@Override
-			public void onRequestCompletition(final Void response) {
-				// TODO Hide 'loading' UI indicator.
-			}
-
-			@Override
-			public void onFailure(final Throwable caught) {
-				requestsSentFromThisClient.remove(modelActionSyncRequest);
-
-				// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
-				if (caught instanceof InvalidIncomingAction) {
-					threatSyncingError("The application is out of sync with the server.\nA conflict between multiple client's states was detected.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.");
-				}
-				else {
-					// TODO Hide 'loading' UI indicator.
-					// TODO +++Treat communication failure.
-					// TODO +++Notify Error treatment service.
-					threatSyncingError("The application server is unreachable.\nCheck your internet connection.\n\nThe application will be briethly reloaded");
-					caught.printStackTrace();
-				}
-			}
-		});
+		actionQueuedDispatcher.dispatch(action);
 	}
 
 	private void threatSyncingError(final String message) {
 		// TODO +++Delegate treatment to Error threatment service eliminating the need for this method.
 		Window.alert(message);
 		Window.Location.reload();
+	}
+
+	private boolean isClientOriginatedRequest(final ModelActionSyncRequest modelActionSyncRequest) {
+		return modelActionSyncRequest.getClientId().equals(clientIdentificationProvider.getClientId());
 	}
 }
