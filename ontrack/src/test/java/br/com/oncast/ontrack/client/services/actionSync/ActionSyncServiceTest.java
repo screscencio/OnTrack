@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ProjectContextLoadCallback;
+import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ValueHolder;
 import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
@@ -22,29 +24,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
-import com.octo.gwt.test.GwtTest;
-
-public class ActionSyncServiceTest extends GwtTest {
-
-	private interface ProjectContextLoadCallback {
-		void onProjectContextLoaded(ProjectContext context);
-	}
-
-	private class ValueHolder<T> {
-		T value;
-
-		public ValueHolder(final T initialValue) {
-			value = initialValue;
-		}
-
-		public T getValue() {
-			return value;
-		}
-
-		public void setValue(final T value) {
-			this.value = value;
-		}
-	}
+public class ActionSyncServiceTest {
 
 	private ActionSyncServiceTestUtils actionSyncServiceTestUtils;
 
@@ -64,32 +44,6 @@ public class ActionSyncServiceTest extends GwtTest {
 	@After
 	public void tearDown() {
 		entityManager.close();
-	}
-
-	@Test
-	public void test100ActionBeingExecutedReallyFast() {
-		final ValueHolder<Integer> count = new ValueHolder<Integer>(0);
-		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
-
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				count.setValue(count.getValue() + 1);
-				if (!isUserAction) Assert.fail("The client should not execute a action from the server that was originated from itself.");
-			}
-		});
-
-		loadProjectContext(new ProjectContextLoadCallback() {
-
-			@Override
-			public void onProjectContextLoaded(final ProjectContext context) {
-				for (int i = 0; i < 100; i++) {
-					actionSyncServiceTestUtils.getActionExecutionServiceMock().onUserActionExecutionRequest(
-							new ScopeInsertChildAction(context.getProjectScope().getId(), "filho"));
-				}
-				Assert.assertTrue("All actions should have been executed.", count.getValue() == 100);
-			}
-		});
 	}
 
 	@Test
@@ -115,7 +69,7 @@ public class ActionSyncServiceTest extends GwtTest {
 
 	@Test
 	public void testActionOriginatedInClientShouldOnlyBeExecutedOnceEvenAfterBeingReceivedFromServer() {
-		final ValueHolder<Integer> count = new ValueHolder<Integer>(0);
+		final ValueHolder<Integer> count = actionSyncServiceTestUtils.new ValueHolder<Integer>(0);
 		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
@@ -138,7 +92,7 @@ public class ActionSyncServiceTest extends GwtTest {
 
 	@Test
 	public void testActionNotOriginatedInClientShouldBeExecutedAfterBeingReceivedFromServer() {
-		final ValueHolder<Integer> count = new ValueHolder<Integer>(0);
+		final ValueHolder<Integer> count = actionSyncServiceTestUtils.new ValueHolder<Integer>(0);
 		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
@@ -222,10 +176,5 @@ public class ActionSyncServiceTest extends GwtTest {
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeInsertChildAction(context.getProjectScope().getId(), "filho"));
 		return actionList;
-	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
 	}
 }

@@ -35,6 +35,26 @@ import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class ActionSyncServiceTestUtils {
 
+	protected interface ProjectContextLoadCallback {
+		void onProjectContextLoaded(ProjectContext context);
+	}
+
+	protected class ValueHolder<T> {
+		T value;
+
+		public ValueHolder(final T initialValue) {
+			value = initialValue;
+		}
+
+		public T getValue() {
+			return value;
+		}
+
+		public void setValue(final T value) {
+			this.value = value;
+		}
+	}
+
 	protected final class ServerPushClientServiceMockImpl implements ServerPushClientService {
 		private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 
