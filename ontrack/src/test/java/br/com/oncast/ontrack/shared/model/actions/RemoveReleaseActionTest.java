@@ -252,6 +252,39 @@ public class RemoveReleaseActionTest {
 	}
 
 	@Test
+	public void rollbackShouldReassociateScopesToRemovedRelease() throws UnableToCompleteActionException, ReleaseNotFoundException {
+		Release removedRelease = rootRelease.getChild(2);
+		final Scope scope1 = rootScope.getChild(1);
+		final Scope scope2 = rootScope.getChild(2);
+
+		removedRelease.addScope(scope1);
+		removedRelease.addScope(scope2);
+
+		assertEquals(2, removedRelease.getScopeList().size());
+		assertEquals(removedRelease, scope1.getRelease());
+		assertEquals(removedRelease, scope2.getRelease());
+		assertTrue(removedRelease.getScopeList().contains(scope1));
+		assertTrue(removedRelease.getScopeList().contains(scope2));
+
+		final ReleaseRemoveRollbackAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context);
+
+		assertTrue(removedRelease.getScopeList().isEmpty());
+		assertFalse(removedRelease.getScopeList().contains(scope1));
+		assertFalse(removedRelease.getScopeList().contains(scope2));
+		assertNull(scope1.getRelease());
+		assertNull(scope2.getRelease());
+
+		rollbackAction.execute(context);
+
+		removedRelease = context.findRelease(removedRelease.getId());
+		assertEquals(2, removedRelease.getScopeList().size());
+		assertEquals(removedRelease, scope1.getRelease());
+		assertEquals(removedRelease, scope2.getRelease());
+		assertTrue(removedRelease.getScopeList().contains(scope1));
+		assertTrue(removedRelease.getScopeList().contains(scope2));
+	}
+
+	@Test
 	public void shouldHandleRemovalCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release removedRelease = rootRelease.getChild(0);
 		final Release childRelease0 = removedRelease.getChild(0);
