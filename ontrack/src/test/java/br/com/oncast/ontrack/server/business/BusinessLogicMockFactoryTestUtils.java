@@ -7,7 +7,7 @@ import java.util.List;
 import junit.framework.Assert;
 import br.com.oncast.ontrack.mocks.models.ProjectMock;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
-import br.com.oncast.ontrack.server.services.actionSync.ActionBroadcastService;
+import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;

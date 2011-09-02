@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseCreateActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
@@ -20,10 +22,12 @@ public class ScopeBindReleaseActionEntity extends ModelActionEntity {
 	private String newReleaseDescription;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	private ModelActionEntity subAction;
+	private ReleaseRemoveActionEntity subAction;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	private ModelActionEntity releaseCreateAction;
+	private ReleaseCreateActionEntity releaseCreateAction;
+
+	private int scopePriority;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -41,20 +45,23 @@ public class ScopeBindReleaseActionEntity extends ModelActionEntity {
 		this.newReleaseDescription = newReleaseDescription;
 	}
 
-	public ModelActionEntity getSubAction() {
+	public ReleaseRemoveActionEntity getSubAction() {
 		return subAction;
 	}
 
-	public void setSubAction(final ModelActionEntity subAction) {
+	public void setSubAction(final ReleaseRemoveActionEntity subAction) {
 		this.subAction = subAction;
 	}
 
-	public ModelActionEntity getReleaseCreateAction() {
+	public ReleaseCreateActionEntity getReleaseCreateAction() {
 		return releaseCreateAction;
 	}
 
-	public void setReleaseCreateAction(final ModelActionEntity releaseCreateAction) {
+	public void setReleaseCreateAction(final ReleaseCreateActionEntity releaseCreateAction) {
 		this.releaseCreateAction = releaseCreateAction;
 	}
 
+	public int getScopePriority() {
+		return scopePriority;
+	}
 }

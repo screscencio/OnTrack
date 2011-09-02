@@ -18,7 +18,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
-import br.com.oncast.ontrack.server.services.actionSync.ActionBroadcastService;
+import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;

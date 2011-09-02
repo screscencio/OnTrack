@@ -45,7 +45,7 @@ public class ReleaseRemoveAction implements ReleaseAction {
 			throws UnableToCompleteActionException {
 
 		final List<ReleaseRemoveRollbackAction> childActionRollbackList = new ArrayList<ReleaseRemoveRollbackAction>();
-		for (final Release child : new ArrayList<Release>(selectedRelease.getChildren()))
+		for (final Release child : selectedRelease.getChildren())
 			childActionRollbackList.add(new ReleaseRemoveAction(child.getId()).execute(context));
 
 		return childActionRollbackList;
