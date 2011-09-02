@@ -5,5 +5,4 @@ public interface ErrorTreatmentService {
 	void threatFatalError(String errorDescriptionMessage, Throwable caught);
 
 	void threatFatalError(String errorDescriptionMessage);
-
 }

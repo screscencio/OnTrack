@@ -45,7 +45,7 @@
   </logger>
   
   <!-- Application Server Log - ActionSync Services -->
-  <logger name="br.com.oncast.ontrack.server.services.actionSync">
+  <logger name="br.com.oncast.ontrack.server.services.actionBroadcast">
     <level value="DEBUG" />
     <appender-ref ref="consoleAppender"/>
   </logger>

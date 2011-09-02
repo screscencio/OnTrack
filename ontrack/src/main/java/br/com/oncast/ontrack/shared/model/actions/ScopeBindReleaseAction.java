@@ -22,10 +22,13 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	private String newReleaseDescription;
 
 	@ConversionAlias("subAction")
-	private ReleaseAction rollbackSubAction;
+	private ReleaseRemoveAction rollbackSubAction;
 
 	@ConversionAlias("releaseCreateAction")
 	private ReleaseCreateActionDefault releaseCreateAction;
+
+	@ConversionAlias("scopePriority")
+	private int scopePriority;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeBindReleaseAction() {}
@@ -33,11 +36,12 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	public ScopeBindReleaseAction(final UUID referenceId, final String newReleaseDescription) {
 		this.referenceId = referenceId;
 		this.newReleaseDescription = newReleaseDescription;
+		this.scopePriority = -1;
 	}
 
-	// Used by this action itself when creating a rollback action.
-	public ScopeBindReleaseAction(final UUID referenceId, final String releaseDescription, final ReleaseRemoveAction subAction) {
+	public ScopeBindReleaseAction(final UUID referenceId, final String releaseDescription, final int scopePriority, final ReleaseRemoveAction subAction) {
 		this(referenceId, releaseDescription);
+		this.scopePriority = scopePriority;
 		this.rollbackSubAction = subAction;
 	}
 
@@ -46,31 +50,22 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
-		final Release oldRelease = dissociateCurrentRelease(selectedScope, context);
-		executeRollbackSubActions(context);
+		final Release oldRelease = selectedScope.getRelease();
+		final int oldScopePriority = (oldRelease != null) ? oldRelease.removeScope(selectedScope) : -1;
+		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
+
+		if (rollbackSubAction != null) rollbackSubAction.execute(context);
 
 		ReleaseRemoveAction newRollbackSubAction = null;
 		if (newReleaseDescription != null && !newReleaseDescription.isEmpty()) {
 			newRollbackSubAction = assureNewReleaseExistence(context);
-			associateNewRelease(context, selectedScope);
+
+			final Release newRelease = ReleaseActionHelper.loadRelease(newReleaseDescription, context);
+			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
+			else newRelease.addScope(selectedScope, scopePriority);
 		}
 
-		return new ScopeBindReleaseAction(referenceId, context.getReleaseDescriptionFor(oldRelease), newRollbackSubAction);
-	}
-
-	private void associateNewRelease(final ProjectContext context, final Scope selectedScope) throws UnableToCompleteActionException {
-		final Release newRelease = ReleaseActionHelper.loadRelease(newReleaseDescription, context);
-		newRelease.addScope(selectedScope);
-	}
-
-	private Release dissociateCurrentRelease(final Scope selectedScope, final ProjectContext context) throws UnableToCompleteActionException {
-		final Release oldRelease = selectedScope.getRelease();
-		if (oldRelease != null) oldRelease.removeScope(selectedScope);
-		return oldRelease;
-	}
-
-	private void executeRollbackSubActions(final ProjectContext context) throws UnableToCompleteActionException {
-		if (rollbackSubAction != null) rollbackSubAction.execute(context);
+		return new ScopeBindReleaseAction(referenceId, oldReleaseDescription, oldScopePriority, newRollbackSubAction);
 	}
 
 	private ReleaseRemoveAction assureNewReleaseExistence(final ProjectContext context) throws UnableToCompleteActionException {

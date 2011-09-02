@@ -14,7 +14,6 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.server.utils.introspector.IntrospectionEngine;
 import br.com.oncast.ontrack.server.utils.introspector.IntrospectionException;
 import br.com.oncast.ontrack.server.utils.introspector.Introspector;
-import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
 import br.com.oncast.ontrack.utils.deepEquality.custom.ScopeTreeDeepEqualityComparator;
 import br.com.oncast.ontrack.utils.identedLogger.IdentedLogger;
@@ -35,7 +34,7 @@ public class DeepEqualityTestUtils {
 		customComparatorMap.put(targetClass, deepEqualityComparator);
 	}
 
-	public static void removeCustomDeepEqualityComparator(final Class<Effort> targetClass) {
+	public static <T> void removeCustomDeepEqualityComparator(final Class<T> targetClass) {
 		if (!customComparatorMap.containsKey(targetClass)) throw new DeepEqualityException(
 				"There was not possible to remove the custom comparator for the class " + targetClass
 						+ ". There is no custom comparator registered for this class");
@@ -65,7 +64,8 @@ public class DeepEqualityTestUtils {
 			Assert.assertTrue("Incompatible classes. Expected class '" + expected.getClass().getName() + "' cannot be assignable from '"
 					+ actual.getClass().getName() + "'.\n" + LOGGER.getCurrentLogHierarchy(), expected.getClass().isAssignableFrom(actual.getClass()));
 
-			if (expected instanceof Character) assertSimpleEquality(expected, actual);
+			if (hasCustomDeepEqualityComparator(expected.getClass())) assertCustomDeepEquality(expected, actual);
+			else if (expected instanceof Character) assertSimpleEquality(expected, actual);
 			else if (expected instanceof Byte) assertSimpleEquality(expected, actual);
 			else if (expected instanceof Short) assertSimpleEquality(expected, actual);
 			else if (expected instanceof Integer) assertSimpleEquality(expected, actual);
@@ -76,7 +76,6 @@ public class DeepEqualityTestUtils {
 			else if (expected instanceof String) assertSimpleEquality(expected, actual);
 			else if (expected instanceof Collection<?>) assertCollectionEquality((Collection<?>) expected, (Collection<?>) actual);
 			else if (expected instanceof Map<?, ?>) assertMapEquality((Map<?, ?>) expected, (Map<?, ?>) actual);
-			else if (hasCustomDeepEqualityComparator(expected.getClass())) assertCustomDeepEquality(expected, actual);
 			else assertComplexObjectEquality(expected, actual);
 		}
 		finally {

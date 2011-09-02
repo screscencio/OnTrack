@@ -56,7 +56,7 @@ public class ScopeRemoveAction implements ScopeAction {
 
 	private List<ScopeRemoveRollbackAction> executeChildActions(final ProjectContext context, final Scope selectedScope) throws UnableToCompleteActionException {
 		final List<ScopeRemoveRollbackAction> childActionRollbackList = new ArrayList<ScopeRemoveRollbackAction>();
-		for (final Scope child : new ArrayList<Scope>(selectedScope.getChildren()))
+		for (final Scope child : selectedScope.getChildren())
 			childActionRollbackList.add(new ScopeRemoveAction(child.getId()).execute(context));
 
 		return childActionRollbackList;

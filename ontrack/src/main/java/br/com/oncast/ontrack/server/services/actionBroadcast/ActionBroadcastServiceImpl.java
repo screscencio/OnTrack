@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.actionSync;
+package br.com.oncast.ontrack.server.services.actionBroadcast;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -128,7 +128,7 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		for (final Scope scope : scopeList) {
 			final float bottomUpValue = scope.getEffort().getBottomUpValue();
 			if (bottomUpValue > portion) {
-				final ArrayList<Scope> list = new ArrayList<Scope>(scopeList);
+				final List<Scope> list = scopeList;
 				list.remove(scope);
 				return getPortion(available - bottomUpValue, list);
 			}

@@ -59,8 +59,12 @@ public class Scope implements IsSerializable {
 		this.description = description;
 	}
 
+	/**
+	 * Returns a copy of the list of child scopes. If you want to add or remove a scope from this scope, use {@link Scope#add(Scope)} and
+	 * {@link Scope#remove(Scope)}. Do NOT manipulate this list directly.
+	 */
 	public List<Scope> getChildren() {
-		return childrenList;
+		return new ArrayList<Scope>(childrenList);
 	}
 
 	public int getChildCount() {
@@ -108,6 +112,7 @@ public class Scope implements IsSerializable {
 		this.childrenList.clear();
 	}
 
+	// TODO Think about making the association bidirectional
 	public void setRelease(final Release release) {
 		this.release = release;
 	}

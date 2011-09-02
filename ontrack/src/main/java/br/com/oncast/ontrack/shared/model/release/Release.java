@@ -60,11 +60,11 @@ public class Release implements IsSerializable {
 	}
 
 	/**
-	 * Returns the a list with children releases. If you want to add or remove a child release, use {@link Release#addChild(Release)} and
+	 * Returns a copy of the list of children releases. If you want to add or remove a child release, use {@link Release#addChild(Release)} and
 	 * {@link Release#removeChild(Release)}. Don't manipulate this list directly.
 	 */
 	public List<Release> getChildren() {
-		return childrenList;
+		return new ArrayList<Release>(childrenList);
 	}
 
 	public Release getChild(final int index) {
@@ -129,31 +129,52 @@ public class Release implements IsSerializable {
 	}
 
 	/**
-	 * Returns a list with associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope)} and
-	 * {@link Release#removeScope(Scope)}. Don't manipulate this list directly.
+	 * Returns a copy of the list of associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope, int)} and
+	 * {@link Release#removeScope(Scope)}. Do NOT manipulate this list directly.
 	 */
 	public List<Scope> getScopeList() {
-		return scopeList;
+		return new ArrayList<Scope>(scopeList);
 	}
 
 	/**
-	 * Adds a scope to the scope list. If the added scope already has an association with other release, this association is removed before
+	 * Adds a scope to the scope list. If the added scope already has an association with other release, the association is not removed before
 	 * the new association is made.
 	 */
+	// TODO Remove this method. Use the method below.
 	public void addScope(final Scope scope) {
-		if (scopeList.contains(scope)) return;
-		if (scope.getRelease() != null) scope.getRelease().removeScope(scope);
+		addScope(scope, -1);
+	}
 
-		scopeList.add(scope);
+	/**
+	 * Adds a scope to the scope list in a specific index. If the added scope already has an association with other release, the association is not removed
+	 * before
+	 * the new association is made.
+	 * 
+	 * If the index position is negative the scope will be added to the end of the list.
+	 */
+	public void addScope(final Scope scope, final int scopeIndex) {
+		if (scopeList.contains(scope) && scopeList.indexOf(scope) == scopeIndex) return;
+
+		// TODO Remove this 'defensive programming' conditional statement.
+		if (scope.getRelease() != null && !scope.getRelease().equals(this)) throw new RuntimeException(
+				"The scope should not have any release set to be added to this release");
+
+		scopeList.remove(scope);
+		if (scopeIndex < 0 || scopeIndex >= scopeList.size()) scopeList.add(scope);
+		else scopeList.add(scopeIndex, scope);
+
+		// TODO Analyze removing this. Or the scope-release becomes bidirectional or the action has to be responsible for both ways.
 		scope.setRelease(this);
 	}
 
 	/**
 	 * Removes a scope from the scope list. This method does the bidirectional dissociation between release and scope.
 	 */
-	public void removeScope(final Scope scope) {
+	public int removeScope(final Scope scope) {
+		final int index = scopeList.indexOf(scope);
 		scopeList.remove(scope);
 		scope.setRelease(null);
+		return index;
 	}
 
 	/**

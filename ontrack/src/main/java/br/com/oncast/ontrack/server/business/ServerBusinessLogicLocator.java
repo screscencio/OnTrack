@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.server.business;
 
-import br.com.oncast.ontrack.server.services.actionSync.ActionBroadcastService;
-import br.com.oncast.ontrack.server.services.actionSync.ActionBroadcastServiceImpl;
+import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
+import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastServiceImpl;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
