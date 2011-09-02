@@ -48,7 +48,6 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 		selectedScope.add(new Scope("", newScopeId));
 
 		subActionRollbackList.add(scopeUpdateAction.execute(context));
-		// TODO Check multiple undo and redo, starting from a ScopeInsertChildAction that acts upon a scope with 'Done' progress.
 		return new ScopeInsertChildRollbackAction(newScopeId, subActionRollbackList);
 	}
 

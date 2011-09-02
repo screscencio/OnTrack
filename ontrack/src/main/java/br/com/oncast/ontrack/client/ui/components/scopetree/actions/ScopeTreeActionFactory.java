@@ -10,6 +10,8 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownRollbackAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
@@ -29,10 +31,12 @@ public class ScopeTreeActionFactory {
 
 		if (action instanceof ScopeMoveAction) return new ScopeTreeMoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeInsertSiblingAction) return new ScopeTreeInsertSiblingAction(tree, (ScopeInsertAction) action);
+		else if (action instanceof ScopeInsertSiblingUpRollbackAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
+		else if (action instanceof ScopeInsertSiblingDownRollbackAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeInsertChildAction) return new ScopeTreeInsertChildAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeInsertChildRollbackAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeInsertParentAction) return new ScopeTreeInsertParentAction(tree, (ScopeInsertAction) action);
-		else if (action instanceof ScopeInsertParentRollbackAction) return new ScopeTreeParentFatherRollbackAction(tree, (ScopeAction) action);
+		else if (action instanceof ScopeInsertParentRollbackAction) return new ScopeTreeParentRollbackAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveRollbackAction) return new ScopeTreeRemoveRollbackAction(tree, (ScopeInsertAction) action);
 		else if (action instanceof ScopeUpdateAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);

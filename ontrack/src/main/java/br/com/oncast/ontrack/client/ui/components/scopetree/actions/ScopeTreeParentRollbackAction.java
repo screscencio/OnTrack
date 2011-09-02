@@ -7,12 +7,12 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
-public class ScopeTreeParentFatherRollbackAction implements ScopeTreeAction {
+public class ScopeTreeParentRollbackAction implements ScopeTreeAction {
 
 	private final ScopeTreeWidget tree;
 	private final ScopeAction action;
 
-	public ScopeTreeParentFatherRollbackAction(final ScopeTreeWidget tree, final ScopeAction action) {
+	public ScopeTreeParentRollbackAction(final ScopeTreeWidget tree, final ScopeAction action) {
 		this.tree = tree;
 		this.action = action;
 	}

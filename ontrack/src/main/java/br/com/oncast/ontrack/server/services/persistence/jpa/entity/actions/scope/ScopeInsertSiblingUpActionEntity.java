@@ -1,8 +1,11 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
@@ -18,7 +21,9 @@ public class ScopeInsertSiblingUpActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String newScopeId;
 
-	private String pattern;
+	@ConversionAlias("scopeUpdateAction")
+	@OneToOne(cascade = CascadeType.ALL)
+	private ScopeUpdateActionEntity scopeUpdateAction;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -36,11 +41,11 @@ public class ScopeInsertSiblingUpActionEntity extends ModelActionEntity {
 		this.newScopeId = newScopeId;
 	}
 
-	public String getPattern() {
-		return pattern;
+	public ScopeUpdateActionEntity getScopeUpdateAction() {
+		return scopeUpdateAction;
 	}
 
-	public void setPattern(final String pattern) {
-		this.pattern = pattern;
+	public void setScopeUpdateAction(final ScopeUpdateActionEntity scopeUpdateAction) {
+		this.scopeUpdateAction = scopeUpdateAction;
 	}
 }

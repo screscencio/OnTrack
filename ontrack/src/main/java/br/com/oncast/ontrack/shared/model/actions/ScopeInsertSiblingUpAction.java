@@ -19,17 +19,21 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 	@ConversionAlias("newScopeId")
 	private UUID newScopeId;
 
-	@ConversionAlias("pattern")
-	private String pattern;
-
-	public ScopeInsertSiblingUpAction(final UUID selectedScopeId, final String pattern) {
-		this.referenceId = selectedScopeId;
-		this.pattern = pattern;
-		this.newScopeId = new UUID();
-	}
+	@ConversionAlias("scopeUpdateAction")
+	private ScopeUpdateAction scopeUpdateAction;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeInsertSiblingUpAction() {}
+
+	public ScopeInsertSiblingUpAction(final UUID selectedScopeId, final String pattern) {
+		this(selectedScopeId, new UUID(), pattern);
+	}
+
+	public ScopeInsertSiblingUpAction(final UUID referenceId, final UUID newScopeId, final String pattern) {
+		this.referenceId = referenceId;
+		this.newScopeId = newScopeId;
+		scopeUpdateAction = new ScopeUpdateAction(newScopeId, pattern);
+	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
@@ -41,8 +45,8 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 		final Scope parent = selectedScope.getParent();
 		parent.add(parent.getChildIndex(selectedScope), newScope);
 
-		new ScopeUpdateAction(newScopeId, pattern).execute(context);
-		return new ScopeRemoveAction(newScopeId);
+		final ScopeUpdateAction updateRollbackAction = scopeUpdateAction.execute(context);
+		return new ScopeInsertSiblingUpRollbackAction(newScopeId, updateRollbackAction);
 	}
 
 	@Override

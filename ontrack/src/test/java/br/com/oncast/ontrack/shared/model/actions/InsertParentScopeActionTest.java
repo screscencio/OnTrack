@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class InsertFatherScopeActionTest {
+public class InsertParentScopeActionTest {
 
 	private Scope rootScope;
 	private Scope childScope;

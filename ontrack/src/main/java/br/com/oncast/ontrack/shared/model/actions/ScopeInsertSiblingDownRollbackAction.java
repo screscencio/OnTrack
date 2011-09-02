@@ -1,8 +1,6 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
-import java.util.List;
-
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertChildRollbackActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertSiblingDownRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -11,23 +9,23 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@ConvertTo(ScopeInsertChildRollbackActionEntity.class)
-public class ScopeInsertChildRollbackAction implements ScopeAction {
+@ConvertTo(ScopeInsertSiblingDownRollbackActionEntity.class)
+public class ScopeInsertSiblingDownRollbackAction implements ScopeAction {
 
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
 
-	@ConversionAlias("subActionList")
-	private List<ModelAction> subActionList;
+	@ConversionAlias("scopeUpdateRollbackAction")
+	private ScopeUpdateAction scopeUpdateRollbackAction;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeInsertChildRollbackAction() {}
+	protected ScopeInsertSiblingDownRollbackAction() {}
 
-	public ScopeInsertChildRollbackAction(final UUID newScopeId, final List<ModelAction> subActionList) {
+	public ScopeInsertSiblingDownRollbackAction(final UUID newScopeId, final ScopeUpdateAction scopeUpdateRollbackAction) {
 		this.referenceId = newScopeId;
-		this.subActionList = subActionList;
+		this.scopeUpdateRollbackAction = scopeUpdateRollbackAction;
 	}
 
 	@Override
@@ -36,18 +34,13 @@ public class ScopeInsertChildRollbackAction implements ScopeAction {
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("Unable to remove root level.");
 
 		final Scope parent = selectedScope.getParent();
-		final UUID parentScopeId = parent.getId();
 		final String pattern = new ScopeRepresentationBuilder(selectedScope).includeEverything().toString();
+		final UUID siblingId = parent.getChild(parent.getChildIndex(selectedScope) - 1).getId();
 
-		executeSubActions(context);
+		scopeUpdateRollbackAction.execute(context);
 		parent.remove(selectedScope);
 
-		return new ScopeInsertChildAction(parentScopeId, referenceId, pattern);
-	}
-
-	private void executeSubActions(final ProjectContext context) throws UnableToCompleteActionException {
-		for (final ModelAction subAction : subActionList)
-			subAction.execute(context);
+		return new ScopeInsertSiblingDownAction(siblingId, referenceId, pattern);
 	}
 
 	@Override
