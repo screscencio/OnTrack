@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeInsertParentRollbackActionEntity.class)
@@ -19,13 +20,13 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 	@ConversionAlias("newScopeId")
 	private UUID newScopeId;
 
-	@ConversionAlias("pattern")
-	private String pattern;
+	@ConversionAlias("scopeUpdateAction")
+	private ScopeUpdateAction scopeUpdateAction;
 
-	public ScopeInsertParentRollbackAction(final UUID newScopeId, final UUID selectedScopeId, final String pattern) {
+	public ScopeInsertParentRollbackAction(final UUID newScopeId, final UUID selectedScopeId, final ScopeUpdateAction updateAction) {
 		this.newScopeId = newScopeId;
 		this.referenceId = selectedScopeId;
-		this.pattern = pattern;
+		this.scopeUpdateAction = updateAction;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -37,7 +38,9 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove a root node.");
 		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException("It is not possible to rollback this action due to inconsistences.");
 
-		removeFromRelease(newScope);
+		final String pattern = new ScopeRepresentationBuilder(newScope).includeEverything().toString();
+
+		scopeUpdateAction.execute(context);
 
 		final Scope child = newScope.getChildren().get(0);
 		final Scope parent = newScope.getParent();
@@ -47,7 +50,7 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 		newScope.clearChildren();
 		parent.add(index, child);
 
-		return new ScopeInsertParentAction(referenceId, pattern);
+		return new ScopeInsertParentAction(referenceId, newScopeId, pattern);
 	}
 
 	@Override
@@ -63,12 +66,5 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 	@Override
 	public boolean changesProgressInference() {
 		return true;
-	}
-
-	private void removeFromRelease(final Scope newScope) {
-		if (newScope.getRelease() != null) {
-			newScope.getRelease().removeScope(newScope);
-			newScope.setRelease(null);
-		}
 	}
 }

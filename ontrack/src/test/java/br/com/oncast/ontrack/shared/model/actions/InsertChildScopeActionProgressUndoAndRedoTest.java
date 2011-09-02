@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -41,8 +40,6 @@ public class InsertChildScopeActionProgressUndoAndRedoTest {
 	}
 
 	@Test
-	@Ignore
-	// TODO Stop ignoring this test and fix the bug it demonstrates
 	public void shouldReturnToSameStateAfterMultipleUndosAndRedosInScopeInsertionWithDeclaredProgressInScopeWithProgress()
 			throws UnableToCompleteActionException {
 		final Scope currentScope = ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6);

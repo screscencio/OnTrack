@@ -9,21 +9,18 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownRollbackAction;
 
 @Entity
-@ConvertTo(ScopeInsertSiblingDownAction.class)
-public class ScopeInsertSiblingDownActionEntity extends ModelActionEntity {
+@ConvertTo(ScopeInsertSiblingDownRollbackAction.class)
+public class ScopeInsertSiblingDownRollbackActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
 	private String referenceId;
 
-	@ConvertUsing(StringToUuidConverter.class)
-	private String newScopeId;
-
-	@ConversionAlias("scopeUpdateAction")
+	@ConversionAlias("scopeUpdateRollbackAction")
 	@OneToOne(cascade = CascadeType.ALL)
-	private ScopeUpdateActionEntity scopeUpdateAction;
+	private ScopeUpdateActionEntity scopeUpdateRollbackAction;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -33,19 +30,11 @@ public class ScopeInsertSiblingDownActionEntity extends ModelActionEntity {
 		this.referenceId = referenceId;
 	}
 
-	public String getNewScopeId() {
-		return newScopeId;
+	public ScopeUpdateActionEntity getScopeUpdateRollbackAction() {
+		return scopeUpdateRollbackAction;
 	}
 
-	public void setNewScopeId(final String newScopeId) {
-		this.newScopeId = newScopeId;
-	}
-
-	public ScopeUpdateActionEntity getScopeUpdateAction() {
-		return scopeUpdateAction;
-	}
-
-	public void setScopeUpdateAction(final ScopeUpdateActionEntity scopeUpdateAction) {
-		this.scopeUpdateAction = scopeUpdateAction;
+	public void setScopeUpdateRollbackAction(final ScopeUpdateActionEntity scopeUpdateRollbackAction) {
+		this.scopeUpdateRollbackAction = scopeUpdateRollbackAction;
 	}
 }

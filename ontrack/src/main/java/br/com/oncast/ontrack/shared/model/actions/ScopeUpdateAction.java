@@ -49,7 +49,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	protected ScopeUpdateAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ScopeUpdateAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
