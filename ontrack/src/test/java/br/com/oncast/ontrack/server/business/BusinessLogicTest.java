@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.server.business;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -55,14 +57,11 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	public void goingToPersistence() throws Exception {
-		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceMockAndDumbBroadcastMock();
-		shouldConstructAScopeHierarchyFromActions(business);
-	}
-
-	private void shouldConstructAScopeHierarchyFromActions(final BusinessLogic business) throws Exception {
+	public void shouldConstructAScopeHierarchyFromActions() throws Exception {
+		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
 		final Project project = ProjectMock.getProject();
 		final ProjectContext context = new ProjectContext(project);
+
 		for (final ModelAction action : ActionMock.getActions()) {
 			ActionExecuter.executeAction(context, action);
 		}
@@ -71,5 +70,28 @@ public class BusinessLogicTest {
 		final Scope projectScope = business.loadProject().getProjectScope();
 
 		DeepEqualityTestUtils.assertObjectEquality(project.getProjectScope(), projectScope);
+	}
+
+	/**
+	 * The purpose of this test is to execute actions in both client and server sides. This test does not assert anything, but it is useful for checking actions
+	 * being executed one after another and the conversion of actions into entities and vice-versa.
+	 */
+	@Test
+	public void shouldPersistActionsAndTheirRollbacks() throws Exception {
+		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		final Project project = ProjectMock.getProject();
+		final ProjectContext context = new ProjectContext(project);
+
+		final List<ModelAction> rollbackActions = new ArrayList<ModelAction>();
+		final List<ModelAction> actions = ActionMock.getActions();
+		for (final ModelAction action : actions) {
+			rollbackActions.add(ActionExecuter.executeAction(context, action).getReverseAction());
+		}
+
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actions));
+
+		Collections.reverse(rollbackActions);
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), rollbackActions));
+
 	}
 }

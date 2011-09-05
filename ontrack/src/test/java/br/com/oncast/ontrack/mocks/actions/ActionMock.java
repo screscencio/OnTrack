@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 
 public class ActionMock {
 
@@ -38,6 +39,17 @@ public class ActionMock {
 		actions.add(new ScopeMoveDownAction(insertChild1.getNewScopeId()));
 		actions.add(new ScopeMoveUpAction(insertChild1.getNewScopeId()));
 		actions.add(new ScopeUpdateAction(insertChild1.getNewScopeId(), "new description"));
+
+		actions.add(new ScopeUpdateAction(insertChild2.getNewScopeId(), "new description " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1"));
+		final ScopeInsertChildAction insertChild31 = new ScopeInsertChildAction(insertChild3.getNewScopeId(),
+				"3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1/It1");
+		actions.add(insertChild31);
+		actions.add(new ScopeInsertSiblingUpAction(insertChild31.getNewScopeId(),
+				"Before 3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R2/It1"));
+		actions.add(new ScopeInsertSiblingDownAction(insertChild31.getNewScopeId(),
+				"After 3.1 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R2/It1"));
+		actions.add(new ScopeInsertParentAction(insertChild3.getNewScopeId(),
+				"Parent of 3 " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL + "R1"));
 
 		return actions;
 	}

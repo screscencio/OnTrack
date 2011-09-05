@@ -8,7 +8,6 @@ import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
@@ -31,7 +30,7 @@ public class ReleaseRemoveRollbackActionEntity extends ModelActionEntity {
 	private int pos;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<ScopeRemoveRollbackActionEntity> childActionList;
+	private List<ReleaseRemoveRollbackActionEntity> childActionList;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<ScopeBindReleaseActionEntity> subActionRollbackList;
@@ -68,11 +67,11 @@ public class ReleaseRemoveRollbackActionEntity extends ModelActionEntity {
 		this.pos = pos;
 	}
 
-	public List<ScopeRemoveRollbackActionEntity> getChildActionList() {
+	public List<ReleaseRemoveRollbackActionEntity> getChildActionList() {
 		return childActionList;
 	}
 
-	public void setChildActionList(final List<ScopeRemoveRollbackActionEntity> childActionList) {
+	public void setChildActionList(final List<ReleaseRemoveRollbackActionEntity> childActionList) {
 		this.childActionList = childActionList;
 	}
 

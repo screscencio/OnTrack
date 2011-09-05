@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -22,6 +23,9 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 	@ConversionAlias("releaseDescription")
 	private String releaseDescription;
 
+	@ConversionAlias("subReleaseCreateAction")
+	private ReleaseCreateActionDefault subReleaseCreateAction;
+
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ReleaseCreateActionDefault() {}
 
@@ -31,35 +35,46 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 		newReleaseId = new UUID();
 	}
 
-	public ReleaseCreateActionDefault(final UUID parentReleaseId, final String releaseDescription) {
-		this.parentReleaseId = parentReleaseId;
-		this.releaseDescription = releaseDescription;
-		newReleaseId = new UUID();
-	}
-
 	@Override
 	public ReleaseRemoveAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		Release parentRelease;
-		if (isParentReleaseSpecified()) parentRelease = ReleaseActionHelper.findRelease(parentReleaseId, context);
-		else parentRelease = context.getProjectRelease();
+		Release parentRelease = context.getProjectRelease();
 
+		Release newRelease = null;
 		final String[] releaseLevels = releaseDescription.split(Release.SEPARATOR);
-		final Release newRelease = new Release(releaseLevels[0], newReleaseId);
+
+		int i = 0;
+		while (i < releaseLevels.length) {
+			try {
+				parentRelease = context.loadRelease(getReleaseQuery(releaseLevels, i));
+			}
+			catch (final ReleaseNotFoundException e) {
+				newRelease = new Release(releaseLevels[i], newReleaseId);
+				break;
+			}
+			i++;
+		}
+
 		parentRelease.addChild(newRelease);
 
-		if (releaseLevels.length > 1) createSubRelease(newReleaseId, releaseLevels, context);
+		if (releaseLevels.length > i + 1) createSubRelease(context);
 
 		return new ReleaseRemoveAction(newReleaseId);
 	}
 
-	private void createSubRelease(final UUID parentId, final String[] releaseLevels, final ProjectContext context)
-			throws UnableToCompleteActionException {
-
-		new ReleaseCreateActionDefault(parentId, releaseDescription.substring(releaseLevels[0].length() + Release.SEPARATOR.length())).execute(context);
+	private void createSubRelease(final ProjectContext context) throws UnableToCompleteActionException {
+		if (subReleaseCreateAction == null) subReleaseCreateAction = new ReleaseCreateActionDefault(releaseDescription);
+		subReleaseCreateAction.execute(context);
 	}
 
-	private boolean isParentReleaseSpecified() {
-		return parentReleaseId != null;
+	private String getReleaseQuery(final String[] releaseLevels, final int index) {
+		final StringBuilder query = new StringBuilder();
+		query.append(releaseLevels[0]);
+
+		for (int i = 1; i <= index; i++) {
+			query.append(Release.SEPARATOR);
+			query.append(releaseLevels[i]);
+		}
+		return query.toString();
 	}
 
 	@Override
