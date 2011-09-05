@@ -99,7 +99,7 @@ public class ActionSyncServiceTestUtils {
 			}
 
 			@Override
-			public void executeNonUserAction(final ModelAction action) throws UnableToCompleteActionException {
+			public void onNonUserActionRequest(final ModelAction action) throws UnableToCompleteActionException {
 				notifyActionExecutionListeners(action, projectContext, new HashSet<UUID>(), false);
 			}
 
@@ -193,14 +193,19 @@ public class ActionSyncServiceTestUtils {
 		return errorTreatmentService = new ErrorTreatmentService() {
 
 			@Override
-			public void threatFatalError(final String errorDescriptionMessage) {
+			public void treatFatalError(final String errorDescriptionMessage) {
 				Assert.fail(errorDescriptionMessage);
 			}
 
 			@Override
-			public void threatFatalError(final String errorDescriptionMessage, final Throwable caught) {
+			public void treatFatalError(final String errorDescriptionMessage, final Throwable caught) {
 				caught.printStackTrace();
 				Assert.fail(errorDescriptionMessage);
+			}
+
+			@Override
+			public void treatUserWarning(final String string, final Exception e) {
+				// Purposefully ignored exception
 			}
 		};
 	}

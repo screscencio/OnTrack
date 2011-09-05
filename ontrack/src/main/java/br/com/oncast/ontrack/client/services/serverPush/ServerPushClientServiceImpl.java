@@ -38,7 +38,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			 */
 			@Override
 			public void onError(final Throwable exception) {
-				errorTreatmentService.threatFatalError(
+				errorTreatmentService.treatFatalError(
 						"The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.", exception);
 			}
 		});
@@ -47,7 +47,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			@Override
 			public void run() {
 				if (!serverPushClient.isRunning()) errorTreatmentService
-						.threatFatalError("The server connection is down.\n\nThe application will be briethly reloaded.");
+						.treatFatalError("The server connection is down.\n\nThe application will be briethly reloaded.");
 				else scheduleConnectionHealthMonitor();
 			}
 		};

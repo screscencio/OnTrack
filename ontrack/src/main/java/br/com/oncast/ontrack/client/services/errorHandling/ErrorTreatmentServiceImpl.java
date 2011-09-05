@@ -5,15 +5,17 @@ import com.google.gwt.user.client.Window;
 public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 
 	@Override
-	public void threatFatalError(final String errorDescriptionMessage, final Throwable caught) {
+	public void treatFatalError(final String errorDescriptionMessage, final Throwable caught) {
 		caught.printStackTrace();
-		threatFatalError(errorDescriptionMessage);
+		treatFatalError(errorDescriptionMessage);
 	}
 
 	@Override
-	public void threatFatalError(final String errorDescriptionMessage) {
+	public void treatFatalError(final String errorDescriptionMessage) {
 		Window.alert(errorDescriptionMessage);
 		Window.Location.reload();
 	}
 
+	@Override
+	public void treatUserWarning(final String message, final Exception e) {}
 }

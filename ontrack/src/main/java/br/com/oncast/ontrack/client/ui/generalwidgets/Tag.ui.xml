@@ -62,7 +62,7 @@
 					</td>
 					<td style="background-color: #ffe3e3" class="{style.separator}"></td>
 					<td class="{style.bgColor} {style.roundedRight} {style.clickable}">
-						<g:Label styleName="{style.closeLabel}" ui:field="closeLabel" />
+						<g:Label styleName="{style.closeLabel}" ui:field="closeLabel" text="X" />
 					</td>
 				</tr>
 			</tbody>

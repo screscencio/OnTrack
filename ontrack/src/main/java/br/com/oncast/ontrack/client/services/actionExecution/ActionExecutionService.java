@@ -6,7 +6,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 public interface ActionExecutionService extends ActionExecutionRequestHandler {
 
 	// TODO Analyze adding this method to ActionExecutionRequestHandler as 'onNonUserActionExecutionRequest'
-	public void executeNonUserAction(final ModelAction action) throws UnableToCompleteActionException;
+	public void onNonUserActionRequest(final ModelAction action) throws UnableToCompleteActionException;
 
 	@Override
 	public void onUserActionExecutionRequest(final ModelAction action);
