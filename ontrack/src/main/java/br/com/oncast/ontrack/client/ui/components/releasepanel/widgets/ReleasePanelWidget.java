@@ -28,7 +28,7 @@ public class ReleasePanelWidget extends Composite {
 	private ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory = null;
 
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
-		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler);
+		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(releasePanelInteractionHandler));
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 

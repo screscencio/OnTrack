@@ -1,10 +1,17 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -21,13 +28,40 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiField
 	Label progressLabel;
 
+	@UiField
+	protected MouseCommandsMenu mouseActionsMenu;
+
 	private final Scope scope;
 
 	private String currentScopeDescription;
 
 	private String currentScopeProgress;
 
-	public ScopeWidget(final Scope scope) {
+	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
+
+	@UiFactory
+	protected MouseCommandsMenu createMouseActionMenu() {
+		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
+		itens.add(new CommandMenuItem("Increase priority", new Command() {
+
+			@Override
+			public void execute() {
+				releasePanelInteractionHandler.onScopeIncreasePriorityRequest(scope);
+			}
+		}));
+		itens.add(new CommandMenuItem("Decrease priority", new Command() {
+
+			@Override
+			public void execute() {
+				releasePanelInteractionHandler.onScopeDecreasePriorityRequest(scope);
+			}
+		}));
+
+		return new MouseCommandsMenu(itens);
+	}
+
+	public ScopeWidget(final Scope scope, final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
