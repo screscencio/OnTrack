@@ -67,6 +67,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
 
+	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
+
 	private final ModelWidgetContainerListener containerUpdateListener;
 
 	@UiField
@@ -90,7 +92,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiFactory
 	protected ScopeWidgetContainer createScopeContainer() {
-		return new ScopeWidgetContainer(ScopeWidgetFactory.getInstance(), containerUpdateListener);
+		return new ScopeWidgetContainer(scopeWidgetFactory, containerUpdateListener);
 	}
 
 	@UiFactory
@@ -107,9 +109,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
+			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this.release = release;
 		this.releaseWidgetFactory = releaseWidgetFactory;
+		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
 
 		this.containerUpdateListener = new ModelWidgetContainerListener() {

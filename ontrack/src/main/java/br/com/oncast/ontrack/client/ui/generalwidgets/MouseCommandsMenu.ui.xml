@@ -2,21 +2,22 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-	<ui:style
-		type="br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu.Style">
+	<ui:style>
 			.panel {
 				position: relative;
 			}
 			
 			.menuButton {
-				width: 10px;
-				htight: 10px;
+				width: 20px;
+				height: 20px;
 			}
 			
 			.menu {
                 position: absolute;
                 top: 3px;
                 right: -2px;
+				width: 150px;
+
                 color: black;
                 background: white;
 

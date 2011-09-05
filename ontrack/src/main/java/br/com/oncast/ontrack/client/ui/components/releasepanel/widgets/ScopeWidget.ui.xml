@@ -1,12 +1,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+	
 	<ui:style>
 		.panel {
 			position: relative;
 			height: 20px;
 			margin: 1px;
-
 			border: 1px solid transparent;
 			background: #cdcfda;
 		}
@@ -24,7 +25,6 @@
 			right: 100px;
 			padding-right: 5px;
 			padding-left: 5px;
-			
 			overflow: hidden;
 		}
 		
@@ -36,14 +36,21 @@
 			width: 90px;
 			padding-right: 5px;
 			padding-left: 5px;
-			
 			color: #A5A5A5;
 		}
-
+		
+		.mouseActionsMenu {
+			position: absolute;
+			top: 0px;
+			bottom: 0px;
+			right: 5px;
+			width: 10px;
+		}
 	</ui:style>
 
 	<g:FlowPanel styleName="{style.panel}">
 		<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 		<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
+		<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 	</g:FlowPanel>
 </ui:UiBinder> 

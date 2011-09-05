@@ -4,17 +4,14 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ScopeWidget> {
 
-	private static ScopeWidgetFactory instance;
+	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
 
-	public static ScopeWidgetFactory getInstance() {
-		if (instance != null) return instance;
-		return instance = new ScopeWidgetFactory();
+	public ScopeWidgetFactory(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
 	}
-
-	private ScopeWidgetFactory() {}
 
 	@Override
 	public ScopeWidget createWidget(final Scope scope) {
-		return new ScopeWidget(scope);
+		return new ScopeWidget(scope, releasePanelInteractionHandler);
 	}
 }
