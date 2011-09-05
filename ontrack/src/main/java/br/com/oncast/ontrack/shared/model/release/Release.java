@@ -105,7 +105,7 @@ public class Release implements IsSerializable {
 	}
 
 	// TODO +++Test this
-	public Release loadRelease(final String releaseDescription) throws ReleaseNotFoundException {
+	public Release findRelease(final String releaseDescription) throws ReleaseNotFoundException {
 		final String[] releaseDescriptionSegments = releaseDescription.split(SEPARATOR);
 		final String descriptionSegment = releaseDescriptionSegments[0];
 
@@ -113,8 +113,14 @@ public class Release implements IsSerializable {
 		if (childRelease == null) throw new ReleaseNotFoundException("Could not find the specified release.");
 
 		if (releaseDescriptionSegments.length == 1) return childRelease;
+		return childRelease.findRelease(releaseDescription.substring(descriptionSegment.length() + SEPARATOR.length(), releaseDescription.length()));
+	}
 
-		return childRelease.loadRelease(releaseDescription.substring(descriptionSegment.length() + SEPARATOR.length(), releaseDescription.length()));
+	private Release findDirectChildRelease(final String releaseDescription) {
+		for (final Release release : childrenList)
+			if (release.getDescription().toLowerCase().equals(releaseDescription.trim().toLowerCase())) return release;
+
+		return null;
 	}
 
 	public Release findRelease(final UUID releaseId) {
@@ -221,13 +227,6 @@ public class Release implements IsSerializable {
 			if (!childRelease.isDone()) return false;
 
 		return true;
-	}
-
-	private Release findDirectChildRelease(final String releaseDescription) {
-		for (final Release release : childrenList)
-			if (release.getDescription().toLowerCase().equals(releaseDescription.trim().toLowerCase())) return release;
-
-		return null;
 	}
 
 	@Override

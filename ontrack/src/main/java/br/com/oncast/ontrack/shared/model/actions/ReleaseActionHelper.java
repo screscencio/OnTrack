@@ -17,9 +17,9 @@ class ReleaseActionHelper {
 		}
 	}
 
-	public static Release loadRelease(final String releaseDescription, final ProjectContext context) throws UnableToCompleteActionException {
+	public static Release findRelease(final String releaseDescription, final ProjectContext context) throws UnableToCompleteActionException {
 		try {
-			return context.loadRelease(releaseDescription);
+			return context.findRelease(releaseDescription);
 		}
 		catch (final ReleaseNotFoundException e) {
 			throw new UnableToCompleteActionException(e);

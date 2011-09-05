@@ -60,7 +60,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		if (newReleaseDescription != null && !newReleaseDescription.isEmpty()) {
 			newRollbackSubAction = assureNewReleaseExistence(context);
 
-			final Release newRelease = ReleaseActionHelper.loadRelease(newReleaseDescription, context);
+			final Release newRelease = ReleaseActionHelper.findRelease(newReleaseDescription, context);
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
 		}
@@ -71,7 +71,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	private ReleaseRemoveAction assureNewReleaseExistence(final ProjectContext context) throws UnableToCompleteActionException {
 		ReleaseRemoveAction newRollbackSubAction = null;
 		try {
-			context.loadRelease(newReleaseDescription);
+			context.findRelease(newReleaseDescription);
 		}
 		catch (final ReleaseNotFoundException e) {
 			if (releaseCreateAction == null) releaseCreateAction = new ReleaseCreateActionDefault(newReleaseDescription);
