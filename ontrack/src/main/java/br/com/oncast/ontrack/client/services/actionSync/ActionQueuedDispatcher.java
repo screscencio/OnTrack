@@ -63,14 +63,14 @@ class ActionQueuedDispatcher {
 				// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
 				if (caught instanceof InvalidIncomingAction || caught instanceof UnableToHandleActionException) {
 					errorTreatmentService
-							.threatFatalError(
+							.treatFatalError(
 									"The application is out of sync with the server.\nA conflict between multiple client's states was detected.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.",
 									caught);
 				}
 				else {
 					// TODO +++Treat communication failure.
 					// TODO +++Notify Error treatment service.
-					errorTreatmentService.threatFatalError(
+					errorTreatmentService.treatFatalError(
 							"The application server is unreachable.\nCheck your internet connection.\n\nThe application will be briethly reloaded", caught);
 					caught.printStackTrace();
 				}

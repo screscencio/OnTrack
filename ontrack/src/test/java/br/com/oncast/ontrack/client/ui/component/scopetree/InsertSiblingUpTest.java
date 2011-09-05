@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentMock;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
 import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
@@ -52,7 +53,7 @@ public class InsertSiblingUpTest extends GwtTest {
 
 		projectContext = new ProjectContext((new Project(scope, ReleaseMockFactory.create(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
-		actionExecutionService = new ActionExecutionServiceImpl(contextService);
+		actionExecutionService = new ActionExecutionServiceImpl(contextService, new ErrorTreatmentMock());
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 

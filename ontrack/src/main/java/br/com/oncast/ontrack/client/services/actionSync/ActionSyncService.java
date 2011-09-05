@@ -56,10 +56,10 @@ public class ActionSyncService {
 
 		try {
 			for (final ModelAction modelAction : modelActionSyncRequest.getActionList())
-				actionExecutionService.executeNonUserAction(modelAction);
+				actionExecutionService.onNonUserActionRequest(modelAction);
 		}
 		catch (final UnableToCompleteActionException e) {
-			errorTreatmentService.threatFatalError(
+			errorTreatmentService.treatFatalError(
 					"The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.", e);
 		}
 	}

@@ -38,7 +38,7 @@ public class ClientServiceProvider {
 
 	public ActionExecutionService getActionExecutionService() {
 		if (actionExecutionService != null) return actionExecutionService;
-		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService());
+		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getErrorTreatmentService());
 	}
 
 	public ContextProviderService getContextProviderService() {

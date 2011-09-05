@@ -26,7 +26,6 @@ public class Tag extends Composite implements HasText {
 
 	public Tag() {
 		initWidget(uiBinder.createAndBindUi(this));
-		closeLabel.setText("X");
 		closeLabel.addClickHandler(new ClickHandler() {
 
 			@Override
