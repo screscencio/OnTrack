@@ -28,7 +28,7 @@ public class BusinessLogicMockFactoryTestUtils {
 		return new BusinessLogicImpl(getNonWritablePersistenceMock(), getBroadcastMock());
 	}
 
-	public static BusinessLogic createWithJpaPersistenceMockAndDumbBroadcastMock() {
+	public static BusinessLogic createWithJpaPersistenceAndDumbBroadcastMock() {
 		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), getBroadcastMock());
 	}
 

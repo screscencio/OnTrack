@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -19,6 +21,9 @@ public class ReleaseCreateActionEntity extends ModelActionEntity {
 	private String newReleaseId;
 
 	private String releaseDescription;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private ReleaseCreateActionEntity subReleaseCreateAction;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -42,5 +47,13 @@ public class ReleaseCreateActionEntity extends ModelActionEntity {
 
 	public void setReleaseDescription(final String releaseDescription) {
 		this.releaseDescription = releaseDescription;
+	}
+
+	public ReleaseCreateActionEntity getSubReleaseCreateAction() {
+		return subReleaseCreateAction;
+	}
+
+	public void setSubReleaseCreateAction(final ReleaseCreateActionEntity subReleaseCreateAction) {
+		this.subReleaseCreateAction = subReleaseCreateAction;
 	}
 }
