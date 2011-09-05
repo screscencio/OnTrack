@@ -37,11 +37,17 @@ html,body {
 .gwt-MenuBar {}
 .gwt-MenuBar-horizontal {}
 .gwt-MenuBar-vertical {}
+
+.gwt-MenuBar-vertical > table {
+	width: 100%;
+}
+
 .gwt-MenuBar .gwt-MenuItem {
 	padding: 8px;
 	font-size: 90%;
 	font-weight: normal;
 
+	cursor: pointer;
 	color: #a5a5a5;
 	background-color: white;
 }

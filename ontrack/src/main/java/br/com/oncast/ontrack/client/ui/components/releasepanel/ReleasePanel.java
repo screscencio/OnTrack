@@ -10,6 +10,8 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePa
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeDecreasePriorityAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeIncreasePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
@@ -46,6 +48,7 @@ public class ReleasePanel implements Component {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
+
 				if (action instanceof ScopeUpdateAction ||
 						action instanceof ScopeRemoveAction ||
 						action instanceof ScopeInsertAction ||
@@ -55,7 +58,9 @@ public class ReleasePanel implements Component {
 						action instanceof ScopeInsertSiblingDownRollbackAction ||
 						action instanceof ScopeRemoveRollbackAction ||
 						action instanceof ReleaseRemoveAction ||
-						action instanceof ReleaseRemoveRollbackAction) update();
+						action instanceof ReleaseRemoveRollbackAction ||
+						action instanceof ScopeIncreasePriorityAction ||
+						action instanceof ScopeDecreasePriorityAction) update();
 			}
 		};
 	}

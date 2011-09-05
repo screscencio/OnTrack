@@ -75,6 +75,10 @@ public class Release implements IsSerializable {
 		return childrenList.indexOf(release);
 	}
 
+	public int getScopeIndex(final Scope scope) {
+		return scopeList.indexOf(scope);
+	}
+
 	/**
 	 * Appends a release to the end of the children list. If the added release already has an association with other release, this association is removed before
 	 * the new association is made.
