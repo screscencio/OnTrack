@@ -123,13 +123,13 @@ public class InsertSiblingUpScopeActionReleaseCreateTest {
 	}
 
 	private Release assertThatReleaseIsInContext(final String releaseDescription) throws ReleaseNotFoundException {
-		final Release newRelease = context.loadRelease(releaseDescription);
+		final Release newRelease = context.findRelease(releaseDescription);
 		return newRelease;
 	}
 
 	private void assertThatReleaseIsNotInContext(final String releaseDescription) {
 		try {
-			context.loadRelease(releaseDescription);
+			context.findRelease(releaseDescription);
 			fail("The release should not exist in project context.");
 		}
 		catch (final ReleaseNotFoundException e) {}

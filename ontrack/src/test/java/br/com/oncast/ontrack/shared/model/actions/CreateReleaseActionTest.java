@@ -108,9 +108,9 @@ public class CreateReleaseActionTest {
 		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R4/It1");
 		createAction.execute(context);
 
-		assertNotNull(context.loadRelease("R4"));
-		assertNotNull(context.loadRelease("R4/It1"));
-		assertEquals("It1", context.loadRelease("R4/It1").getDescription());
+		assertNotNull(context.findRelease("R4"));
+		assertNotNull(context.findRelease("R4/It1"));
+		assertEquals("It1", context.findRelease("R4/It1").getDescription());
 	}
 
 	@Test
@@ -124,7 +124,7 @@ public class CreateReleaseActionTest {
 		rollback.execute(context);
 		assertEquals(3, rootRelease.getChildren().size());
 		try {
-			context.loadRelease("R4");
+			context.findRelease("R4");
 			fail("A ReleaseNotFoundException should have been thrown.");
 		}
 		catch (final ReleaseNotFoundException e) {}
@@ -143,7 +143,7 @@ public class CreateReleaseActionTest {
 		rollback.execute(context);
 		assertEquals(3, rootRelease.getChildren().size());
 		try {
-			context.loadRelease("R4/It1");
+			context.findRelease("R4/It1");
 			fail("A ReleaseNotFoundException should have been thrown.");
 		}
 		catch (final ReleaseNotFoundException e) {}
@@ -158,8 +158,8 @@ public class CreateReleaseActionTest {
 		assertEquals("R4", rootRelease.getChild(3).getDescription());
 		assertEquals(1, rootRelease.getChild(3).getChildren().size());
 		assertEquals("It1", rootRelease.getChild(3).getChild(0).getDescription());
-		assertNotNull(context.loadRelease("R4"));
-		assertNotNull(context.loadRelease("R4/It1"));
+		assertNotNull(context.findRelease("R4"));
+		assertNotNull(context.findRelease("R4/It1"));
 
 		for (int i = 0; i < 20; i++) {
 			// Undo
@@ -167,12 +167,12 @@ public class CreateReleaseActionTest {
 
 			assertEquals(3, rootRelease.getChildren().size());
 			try {
-				context.loadRelease("R4");
+				context.findRelease("R4");
 				fail("A ReleaseNotFoundException should have been thrown.");
 			}
 			catch (final ReleaseNotFoundException e) {}
 			try {
-				context.loadRelease("R4/It1");
+				context.findRelease("R4/It1");
 				fail("A ReleaseNotFoundException should have been thrown.");
 			}
 			catch (final ReleaseNotFoundException e) {}
@@ -184,8 +184,8 @@ public class CreateReleaseActionTest {
 			assertEquals("R4", rootRelease.getChild(3).getDescription());
 			assertEquals(1, rootRelease.getChild(3).getChildren().size());
 			assertEquals("It1", rootRelease.getChild(3).getChild(0).getDescription());
-			assertNotNull(context.loadRelease("R4"));
-			assertNotNull(context.loadRelease("R4/It1"));
+			assertNotNull(context.findRelease("R4"));
+			assertNotNull(context.findRelease("R4/It1"));
 		}
 	}
 
@@ -205,8 +205,8 @@ public class CreateReleaseActionTest {
 		assertEquals(1, releaseR2.getChild(1).getChildren().size());
 		assertEquals("Week1", releaseR2.getChild(1).getChild(0).getDescription());
 
-		assertNotNull(context.loadRelease("R2/It5"));
-		assertNotNull(context.loadRelease("R2/It5/Week1"));
+		assertNotNull(context.findRelease("R2/It5"));
+		assertNotNull(context.findRelease("R2/It5/Week1"));
 
 		for (int i = 0; i < 20; i++) {
 			// Undo
@@ -217,12 +217,12 @@ public class CreateReleaseActionTest {
 
 			assertEquals(1, releaseR2.getChildren().size());
 			try {
-				context.loadRelease("R2/It5");
+				context.findRelease("R2/It5");
 				fail("A ReleaseNotFoundException should have been thrown.");
 			}
 			catch (final ReleaseNotFoundException e) {}
 			try {
-				context.loadRelease("R2/It5/Week1");
+				context.findRelease("R2/It5/Week1");
 				fail("A ReleaseNotFoundException should have been thrown.");
 			}
 			catch (final ReleaseNotFoundException e) {}
@@ -238,8 +238,8 @@ public class CreateReleaseActionTest {
 			assertEquals(1, releaseR2.getChild(1).getChildren().size());
 			assertEquals("Week1", releaseR2.getChild(1).getChild(0).getDescription());
 
-			assertNotNull(context.loadRelease("R2/It5"));
-			assertNotNull(context.loadRelease("R2/It5/Week1"));
+			assertNotNull(context.findRelease("R2/It5"));
+			assertNotNull(context.findRelease("R2/It5/Week1"));
 		}
 	}
 }

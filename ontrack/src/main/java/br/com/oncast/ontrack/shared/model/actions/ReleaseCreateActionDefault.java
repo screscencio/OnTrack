@@ -45,7 +45,7 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 		int i = 0;
 		while (i < releaseLevels.length) {
 			try {
-				parentRelease = context.loadRelease(getReleaseQuery(releaseLevels, i));
+				parentRelease = context.findRelease(getReleaseQuery(releaseLevels, i));
 			}
 			catch (final ReleaseNotFoundException e) {
 				newRelease = new Release(releaseLevels[i], newReleaseId);
