@@ -18,6 +18,11 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		this.setWidget(scopeItemWidget = new ScopeTreeItemWidget(scope, new ScopeTreeItemWidgetEditionHandler() {
 
 			@Override
+			public void onEditionStart() {
+				enterEditMode();
+			}
+
+			@Override
 			public void onEditionEnd(final String pattern) {
 				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionEndEvent(ScopeTreeItem.this, pattern));
 			}
@@ -26,6 +31,11 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			public void onEditionCancel() {
 				getTree().setSelectedItem(ScopeTreeItem.this);
 				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionCancelEvent());
+			}
+
+			@Override
+			public void ignoreClickEvent() {
+				getTree().setSelectedItem(null);
 			}
 		}));
 
