@@ -1,15 +1,23 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseUpdatePriorityActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO Change this action, so it receives the id of the target release, allowing this action to move a child release to another one.
+@ConvertTo(ReleaseUpdatePriorityActionEntity.class)
 public class ReleaseUpdatePriorityAction implements ReleaseAction {
 
 	private static final long serialVersionUID = 1L;
+
+	@ConversionAlias("referenceId")
 	private UUID releaseId;
+
+	@ConversionAlias("targetIndex")
 	private int targetIndex;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
