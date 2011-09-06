@@ -6,10 +6,13 @@ import java.util.logging.Logger;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.FreeMindMap;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseCreateActionDefault;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class FreeMindProjectLoader {
 	private static final Logger LOGGER = Logger.getLogger(FreeMindProjectLoader.class.getName());
@@ -17,7 +20,7 @@ public class FreeMindProjectLoader {
 	private final FreeMindMap mm;
 	private final Project project = new Project();
 	private final ProjectContext context = new ProjectContext(project);
-	private final Release rootRelease = new Release("project");
+	private final Release rootRelease = new Release("project", new UUID("0"));
 
 	private FreeMindProjectLoader(final FreeMindMap mm) {
 		this.mm = mm;
@@ -40,7 +43,7 @@ public class FreeMindProjectLoader {
 	private void visitScope(final Scope scope, final MindNode node) {
 		for (final MindNode child : node.getChildren()) {
 			if (child.hasIcon(Icon.CALENDAR)) {
-				final Release r = context.loadRelease(child.getText());
+				final Release r = findRelease(child);
 				scope.setRelease(r);
 				if (r!=null) r.addScope(scope);
 			}
@@ -60,6 +63,22 @@ public class FreeMindProjectLoader {
 				visitScope(s,child);
 				scope.add(s);
 			}
+		}
+	}
+
+	private Release findRelease(final MindNode child) {
+		try {
+			return context.findRelease(child.getText());
+		}
+		catch (final ReleaseNotFoundException e) {
+			// Ignore.
+		}
+		try {
+			new ReleaseCreateActionDefault(child.getText()).execute(context);
+			return context.findRelease(child.getText());
+		}
+		catch (final Exception e) {
+			throw new RuntimeException("Unable to load release '" + child.getText() + "'.",e);
 		}
 	}
 }

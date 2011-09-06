@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public class ProjectActionsAssembler {
 	private final Project project;
 	private final List<ModelAction> scopeDeclarationActions = new ArrayList<ModelAction>();
+	private final List<ModelAction> releaseCreationActions = new ArrayList<ModelAction>();
 	private final List<ModelAction> releaseBindingActions = new ArrayList<ModelAction>();
 	private final List<ModelAction> effortDeclarationActions = new ArrayList<ModelAction>();
 	private final List<ModelAction> progressDeclarationActions = new ArrayList<ModelAction>();
@@ -49,7 +50,8 @@ public class ProjectActionsAssembler {
 
 	private void visitScope(final UUID uuid, final Scope s) {
 		if (s.getRelease()!=null) {
-			releaseBindingActions.add(new ScopeBindReleaseAction(uuid, s.getRelease().getFullDescription()));
+			final String desc = s.getRelease().getFullDescription();
+			releaseBindingActions.add(new ScopeBindReleaseAction(uuid, desc));
 		}
 
 		if (s.getEffort().hasDeclared()) {
