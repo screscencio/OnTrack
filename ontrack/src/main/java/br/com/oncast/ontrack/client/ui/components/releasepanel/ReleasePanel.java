@@ -11,8 +11,7 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeDecreasePriorityAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeIncreasePriorityAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
@@ -61,8 +60,7 @@ public class ReleasePanel implements Component {
 						action instanceof ReleaseRemoveAction ||
 						action instanceof ReleaseRemoveRollbackAction ||
 						action instanceof ReleaseUpdatePriorityAction ||
-						action instanceof ScopeIncreasePriorityAction ||
-						action instanceof ScopeDecreasePriorityAction) update();
+						action instanceof ReleaseScopeUpdatePriorityAction) update();
 			}
 		};
 	}

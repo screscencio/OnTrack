@@ -7,11 +7,11 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.actions.ScopeDecreasePriorityAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
 
 @Entity
-@ConvertTo(ScopeDecreasePriorityAction.class)
-public class ScopeDecreasePriorityActionEntity extends ModelActionEntity {
+@ConvertTo(ReleaseScopeUpdatePriorityAction.class)
+public class ReleaseScopeUpdatePriorityActionEntity extends ModelActionEntity {
 
 	@ConversionAlias("releaseReferenceId")
 	@ConvertUsing(StringToUuidConverter.class)
@@ -20,6 +20,9 @@ public class ScopeDecreasePriorityActionEntity extends ModelActionEntity {
 	@ConversionAlias("scopeReferenceId")
 	@ConvertUsing(StringToUuidConverter.class)
 	private String scopeReferenceId;
+
+	@ConversionAlias("priority")
+	private int priority;
 
 	public String getReleaseReferenceId() {
 		return releaseReferenceId;
@@ -35,5 +38,13 @@ public class ScopeDecreasePriorityActionEntity extends ModelActionEntity {
 
 	public void setScopeReferenceId(final String scopeReferenceId) {
 		this.scopeReferenceId = scopeReferenceId;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	public int getPriority() {
+		return priority;
 	}
 }
