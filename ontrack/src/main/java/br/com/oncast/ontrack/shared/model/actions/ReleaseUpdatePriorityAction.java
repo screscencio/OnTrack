@@ -1,0 +1,47 @@
+package br.com.oncast.ontrack.shared.model.actions;
+
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+// TODO Change this action, so it receives the id of the target release, allowing this action to move a child release to another one.
+public class ReleaseUpdatePriorityAction implements ReleaseAction {
+
+	private static final long serialVersionUID = 1L;
+	private UUID releaseId;
+	private int targetIndex;
+
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ReleaseUpdatePriorityAction() {}
+
+	public ReleaseUpdatePriorityAction(final UUID releaseId, final int targetIndex) {
+		this.releaseId = releaseId;
+		this.targetIndex = targetIndex;
+	}
+
+	@Override
+	public ReleaseUpdatePriorityAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+		if (targetIndex < 0) throw new UnableToCompleteActionException("Unable to change release priority to a negative position.");
+
+		final Release selectedRelease = ReleaseActionHelper.findRelease(releaseId, context);
+		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException("Unable to change priority of a root level.");
+
+		final Release parentRelease = selectedRelease.getParent();
+		if (targetIndex >= parentRelease.getChildren().size()) throw new UnableToCompleteActionException(
+				"The release priority could not be updated because the target position is not within the allowed range. You are trying to update for position "
+						+ targetIndex + ", but there are only " + parentRelease.getChildren().size() + " itens in the parent release.");
+
+		final int currentIndex = parentRelease.getChildIndex(selectedRelease);
+		parentRelease.removeChild(selectedRelease);
+		parentRelease.addChild(targetIndex, selectedRelease);
+
+		return new ReleaseUpdatePriorityAction(releaseId, currentIndex);
+	}
+
+	@Override
+	public UUID getReferenceId() {
+		return releaseId;
+	}
+
+}
