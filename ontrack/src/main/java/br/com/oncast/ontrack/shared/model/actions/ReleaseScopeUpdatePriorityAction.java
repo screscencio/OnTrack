@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ScopeIncreasePriorityActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseScopeUpdatePriorityActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -9,8 +9,8 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@ConvertTo(ScopeIncreasePriorityActionEntity.class)
-public class ScopeIncreasePriorityAction implements ReleaseAction {
+@ConvertTo(ReleaseScopeUpdatePriorityActionEntity.class)
+public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,12 +20,16 @@ public class ScopeIncreasePriorityAction implements ReleaseAction {
 	@ConversionAlias("scopeReferenceId")
 	private UUID scopeReferenceId;
 
-	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected ScopeIncreasePriorityAction() {}
+	@ConversionAlias("priority")
+	private int priority;
 
-	public ScopeIncreasePriorityAction(final UUID releaseReferenceId, final UUID scopeReferenceId) {
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ReleaseScopeUpdatePriorityAction() {}
+
+	public ReleaseScopeUpdatePriorityAction(final UUID releaseReferenceId, final UUID scopeReferenceId, final int priority) {
 		this.releaseReferenceId = releaseReferenceId;
 		this.scopeReferenceId = scopeReferenceId;
+		this.priority = priority;
 	}
 
 	@Override
@@ -33,14 +37,18 @@ public class ScopeIncreasePriorityAction implements ReleaseAction {
 		final Release release = ReleaseActionHelper.findRelease(releaseReferenceId, context);
 		final Scope scope = ScopeActionHelper.findScope(scopeReferenceId, context);
 
-		final int index = release.getScopeIndex(scope);
-		if (index < 0) throw new UnableToCompleteActionException("The scope priority cannot be updated because it is not part of the referenced release.");
-		if (index == 0) throw new UnableToCompleteActionException(
-				"The scope priority cannot be increased because it already is the most prioritary in this release.");
-		release.removeScope(scope);
-		release.addScope(scope, index - 1);
+		if (!release.containsScope(scope)) throw new UnableToCompleteActionException(
+				"The scope priority cannot be updated because it is not part of the referenced release.");
+		if (priority < 0) throw new UnableToCompleteActionException(
+				"The scope priority cannot be decreased because it already is the most prioritary in this release.");
+		if (priority >= release.getScopeList().size()) throw new UnableToCompleteActionException(
+				"The scope priority cannot be decreased because it already is the least prioritary in this release.");
 
-		return new ScopeDecreasePriorityAction(releaseReferenceId, scopeReferenceId);
+		final int oldPriority = release.getScopeIndex(scope);
+		release.removeScope(scope);
+		release.addScope(scope, priority);
+
+		return new ReleaseScopeUpdatePriorityAction(releaseReferenceId, scopeReferenceId, oldPriority);
 	}
 
 	@Override

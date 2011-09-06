@@ -245,4 +245,8 @@ public class Release implements IsSerializable {
 		if (!(obj instanceof Release)) return false;
 		return this.id.equals(((Release) obj).getId());
 	}
+
+	public boolean containsScope(final Scope scope) {
+		return scopeList.contains(scope);
+	}
 }

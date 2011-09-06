@@ -76,13 +76,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiFactory
 	protected MouseCommandsMenu createMouseActionMenu() {
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		itens.add(new CommandMenuItem("Delete Release", new Command() {
-
-			@Override
-			public void execute() {
-				releasePanelInteractionHandler.onReleaseDeletionRequest(release);
-			}
-		}));
 		itens.add(new CommandMenuItem("Increase priority", new Command() {
 
 			@Override
@@ -95,6 +88,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			@Override
 			public void execute() {
 				releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
+			}
+		}));
+		itens.add(new CommandMenuItem("Delete Release", new Command() {
+
+			@Override
+			public void execute() {
+				releasePanelInteractionHandler.onReleaseDeletionRequest(release);
 			}
 		}));
 		return new MouseCommandsMenu(itens);

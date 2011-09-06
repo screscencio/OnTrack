@@ -4,8 +4,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequ
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeDecreasePriorityAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeIncreasePriorityAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -26,25 +25,17 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	@Override
 	public void onScopeIncreasePriorityRequest(final Scope scope) {
 		assureConfigured();
-		// FIXME Test action
-		// FIXME Refactor this action so that it is not relative (increases and decreases the priority to a specific index (priority)) Join this two actions
-		// into one.
 		final Release release = scope.getRelease();
-		// applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(),
-		// release.getScopeIndex(scope) - 1));
-		applicationActionHandler.onUserActionExecutionRequest(new ScopeIncreasePriorityAction(release.getId(), scope.getId()));
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(),
+				release.getScopeIndex(scope) - 1));
 	}
 
 	@Override
 	public void onScopeDecreasePriorityRequest(final Scope scope) {
 		assureConfigured();
-		// FIXME Test action
-		// FIXME Refactor this action so that it is not relative (increases and decreases the priority to a specific index (priority)) Join this two actions
-		// into one.
 		final Release release = scope.getRelease();
-		// applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(),
-		// release.getScopeIndex(scope) + 1));
-		applicationActionHandler.onUserActionExecutionRequest(new ScopeDecreasePriorityAction(release.getId(), scope.getId()));
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(),
+				release.getScopeIndex(scope) + 1));
 	}
 
 	private void assureConfigured() {
