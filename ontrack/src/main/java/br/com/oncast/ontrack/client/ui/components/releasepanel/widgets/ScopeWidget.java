@@ -33,8 +33,10 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	private final Scope scope;
 
+	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeDescription;
 
+	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeProgress;
 
 	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;

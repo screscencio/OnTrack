@@ -39,14 +39,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		String headerContainerStateImageClosed();
 	}
 
-	private final Release release;
-
-	// IMPORTANT Used to refresh DOM only when needed.
-	private String currentReleaseDescription;
-
-	// IMPORTANT Used to refresh DOM only when needed.
-	private String currentReleaseProgressDescription;
-
 	@UiField
 	protected Style style;
 
@@ -65,25 +57,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiField
 	protected ScopeWidgetContainer scopeContainer;
 
-	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
-
-	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
-
-	private final ModelWidgetContainerListener containerUpdateListener;
-
 	@UiField
 	protected DivElement bodyContainer;
 
 	@UiField
 	protected Image containerStateImage;
-
-	private HandlerRegistration containerStateImageClickHandlerRegistration;
-
-	private boolean isContainerStateOpen;
-
-	private boolean isBodyContainerActive;
-
-	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
 
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
@@ -105,8 +83,44 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				releasePanelInteractionHandler.onReleaseDeletionRequest(release);
 			}
 		}));
+		itens.add(new CommandMenuItem("Increase priority", new Command() {
+
+			@Override
+			public void execute() {
+				releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
+			}
+		}));
+		itens.add(new CommandMenuItem("Decrease priority", new Command() {
+
+			@Override
+			public void execute() {
+				releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
+			}
+		}));
 		return new MouseCommandsMenu(itens);
 	}
+
+	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
+
+	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
+
+	private final ModelWidgetContainerListener containerUpdateListener;
+
+	private HandlerRegistration containerStateImageClickHandlerRegistration;
+
+	private boolean isContainerStateOpen;
+
+	private boolean isBodyContainerActive;
+
+	// IMPORTANT Used to refresh DOM only when needed.
+	private String currentReleaseDescription;
+
+	// IMPORTANT Used to refresh DOM only when needed.
+	private String currentReleaseProgressDescription;
+
+	private final Release release;
+
+	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
 			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
