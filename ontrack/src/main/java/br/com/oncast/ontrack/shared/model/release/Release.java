@@ -84,19 +84,22 @@ public class Release implements IsSerializable {
 	 * the new association is made.
 	 */
 	public void addChild(final Release release) {
-		if (childrenList.contains(release)) return;
-		if (release.parent != null) release.parent.removeChild(release);
-
-		childrenList.add(release);
-		release.parent = this;
+		addChild(-1, release);
 	}
 
 	/**
 	 * Inserts a release at the specified position into the children list. If the added release already has an association with other release, this association
 	 * is removed before the new association is made.
+	 * 
+	 * If the index position is negative the scope will be added to the end of the list.
 	 */
-	public void addChild(final int beforeIndex, final Release release) {
-		childrenList.add(beforeIndex, release);
+	public void addChild(final int index, final Release release) {
+		if (childrenList.contains(release)) return;
+		if (release.parent != null) release.parent.removeChild(release);
+
+		if (index < 0 || index >= childrenList.size()) childrenList.add(release);
+		else childrenList.add(index, release);
+
 		release.parent = this;
 	}
 
@@ -157,8 +160,7 @@ public class Release implements IsSerializable {
 
 	/**
 	 * Adds a scope to the scope list in a specific index. If the added scope already has an association with other release, the association is not removed
-	 * before
-	 * the new association is made.
+	 * before the new association is made.
 	 * 
 	 * If the index position is negative the scope will be added to the end of the list.
 	 */
