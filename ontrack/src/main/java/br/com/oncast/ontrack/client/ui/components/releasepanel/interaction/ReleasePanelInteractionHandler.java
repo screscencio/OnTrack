@@ -50,4 +50,22 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 		if (applicationActionHandler == null) throw new RuntimeException("This class was not yet configured.");
 	}
 
+	@Override
+	public void onReleaseIncreasePriorityRequest(final Release release) {
+		assureConfigured();
+		// FIXME Test action
+		// FIXME Create a new action described below:
+		// applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
+		// release.getParent().getChildIndex(release) - 1));
+	}
+
+	@Override
+	public void onReleaseDecreasePriorityRequest(final Release release) {
+		assureConfigured();
+		// FIXME Test action
+		// FIXME Create a new action described below:
+		// applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
+		// release.getParent().getChildIndex(release) + 1));
+	}
+
 }

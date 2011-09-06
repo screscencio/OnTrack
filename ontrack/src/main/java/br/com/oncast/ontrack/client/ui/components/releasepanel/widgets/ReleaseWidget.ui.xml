@@ -7,6 +7,7 @@
 	<ui:style
 		type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Style">
 			.rootPanel {
+				position: relative;
 				margin-bottom: 5px;
 
 				border: 1px solid #a5a5a5;
@@ -54,10 +55,9 @@
 			
 			.mouseActionsMenu {
                 position: absolute;
-                top: 0px;
-                bottom: 0px;
+                top: 5px;
+                bottom: 5px;
                 right: 5px;
-                width: 10px;
 			}
 			
 			.invisibleBodyContainer {
