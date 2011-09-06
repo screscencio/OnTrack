@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.interaction;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeDecreasePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeIncreasePriorityAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -53,19 +54,15 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	@Override
 	public void onReleaseIncreasePriorityRequest(final Release release) {
 		assureConfigured();
-		// FIXME Test action
-		// FIXME Create a new action described below:
-		// applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
-		// release.getParent().getChildIndex(release) - 1));
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
+				release.getParent().getChildIndex(release) - 1));
 	}
 
 	@Override
 	public void onReleaseDecreasePriorityRequest(final Release release) {
 		assureConfigured();
-		// FIXME Test action
-		// FIXME Create a new action described below:
-		// applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
-		// release.getParent().getChildIndex(release) + 1));
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
+				release.getParent().getChildIndex(release) + 1));
 	}
 
 }
