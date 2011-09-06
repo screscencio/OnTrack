@@ -8,11 +8,14 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,6 +24,9 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	private static ScopeWidgetUiBinder uiBinder = GWT.create(ScopeWidgetUiBinder.class);
 
 	interface ScopeWidgetUiBinder extends UiBinder<Widget, ScopeWidget> {}
+
+	@UiField
+	FocusPanel panel;
 
 	@UiField
 	Label descriptionLabel;
@@ -101,5 +107,10 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@Override
 	public Scope getModelObject() {
 		return getScope();
+	}
+
+	@UiHandler("panel")
+	public void onScopeWidgetClick(final ClickEvent e) {
+		releasePanelInteractionHandler.onScopeSelectionRequest(scope);
 	}
 }

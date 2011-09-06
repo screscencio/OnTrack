@@ -1,19 +1,25 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.interaction;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
+import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
-import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInteractionHandler {
 
 	private ActionExecutionRequestHandler applicationActionHandler;
+	private ComponentInteractionHandler componentInteractionHandler;
 
-	public void configure(final ActionExecutionRequestHandler actionExecutionRequestHandler) {
+	public void configureActionExecutionRequestHandler(final ActionExecutionRequestHandler actionExecutionRequestHandler) {
 		this.applicationActionHandler = actionExecutionRequestHandler;
+	}
+
+	public void configureComponentInteractionHandler(final ComponentInteractionHandler componentInteractionHandler) {
+		this.componentInteractionHandler = componentInteractionHandler;
 	}
 
 	@Override
@@ -38,10 +44,6 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 				release.getScopeIndex(scope) + 1));
 	}
 
-	private void assureConfigured() {
-		if (applicationActionHandler == null) throw new RuntimeException("This class was not yet configured.");
-	}
-
 	@Override
 	public void onReleaseIncreasePriorityRequest(final Release release) {
 		assureConfigured();
@@ -56,4 +58,13 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 				release.getParent().getChildIndex(release) + 1));
 	}
 
+	@Override
+	public void onScopeSelectionRequest(final Scope scope) {
+		assureConfigured();
+		componentInteractionHandler.onScopeSelectionRequest(scope.getId());
+	}
+
+	private void assureConfigured() {
+		if (applicationActionHandler == null || componentInteractionHandler == null) throw new RuntimeException("This class was not yet configured.");
+	}
 }

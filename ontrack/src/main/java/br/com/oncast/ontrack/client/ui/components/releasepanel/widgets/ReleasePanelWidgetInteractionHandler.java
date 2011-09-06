@@ -15,4 +15,5 @@ public interface ReleasePanelWidgetInteractionHandler {
 
 	void onScopeDecreasePriorityRequest(Scope scope);
 
+	void onScopeSelectionRequest(Scope scope);
 }

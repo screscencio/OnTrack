@@ -5,13 +5,14 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
+import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction;
-import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
@@ -79,9 +80,13 @@ public class ReleasePanel implements Component {
 		return actionExecutionListener;
 	}
 
+	public void setComponentInteractionHandler(final ComponentInteractionHandler componentInteractionHandler) {
+		releasePanelInteractionHandler.configureComponentInteractionHandler(componentInteractionHandler);
+	}
+
 	@Override
 	public void setActionExecutionRequestHandler(final ActionExecutionRequestHandler actionHandler) {
-		releasePanelInteractionHandler.configure(actionHandler);
+		releasePanelInteractionHandler.configureActionExecutionRequestHandler(actionHandler);
 	}
 
 	@Override
