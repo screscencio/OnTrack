@@ -75,4 +75,10 @@ public class ScopeTree implements Component {
 	public void setFocus(final boolean focus) {
 		tree.setFocus(focus);
 	}
+
+	public void setSelectedScope(final UUID scopeId) throws ScopeNotFoundException {
+		final ScopeTreeItem scopeTreeItem = tree.findScopeTreeItem(scopeId);
+		scopeTreeItem.setHierarchicalState(true);
+		tree.setSelected(scopeTreeItem);
+	}
 }

@@ -113,7 +113,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				if (isEditing()) editionHandler.ignoreClickEvent();
+				if (isEditing()) editionHandler.onDeselectTreeItemRequest();
 			}
 		});
 

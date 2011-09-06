@@ -34,7 +34,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			}
 
 			@Override
-			public void ignoreClickEvent() {
+			public void onDeselectTreeItemRequest() {
 				getTree().setSelectedItem(null);
 			}
 		}));
