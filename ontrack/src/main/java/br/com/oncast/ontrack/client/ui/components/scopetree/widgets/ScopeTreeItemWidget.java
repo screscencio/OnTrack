@@ -109,10 +109,18 @@ public class ScopeTreeItemWidget extends Composite {
 
 		this.editionHandler = editionHandler;
 
+		focusPanel.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				if (isEditing()) editionHandler.ignoreClickEvent();
+			}
+		});
+
 		focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(final DoubleClickEvent event) {
-				switchToEditionMode();
+				editionHandler.onEditionStart();
 			}
 		});
 
