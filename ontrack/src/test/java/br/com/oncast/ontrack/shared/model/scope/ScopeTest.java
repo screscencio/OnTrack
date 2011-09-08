@@ -14,9 +14,9 @@ public class ScopeTest {
 	public void shouldNotChangeChildListWhenChangingListReturnedFromGetChildrenMethod1() {
 		final Scope scope = ScopeMock.getComplexScope();
 		final List<Scope> childrenList1 = scope.getChildren();
-		final List<Scope> childrenList2 = scope.getChildren();
-
 		childrenList1.clear();
+
+		final List<Scope> childrenList2 = scope.getChildren();
 
 		Assert.assertTrue(!childrenList2.equals(childrenList1));
 	}

@@ -111,7 +111,6 @@ public class Release implements IsSerializable {
 		release.parent = null;
 	}
 
-	// TODO +++Test this
 	public Release findRelease(final String releaseDescription) throws ReleaseNotFoundException {
 		final String[] releaseDescriptionSegments = releaseDescription.split(SEPARATOR);
 		final String descriptionSegment = releaseDescriptionSegments[0];
