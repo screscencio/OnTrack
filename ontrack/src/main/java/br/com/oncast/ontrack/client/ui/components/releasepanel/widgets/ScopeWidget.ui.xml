@@ -4,13 +4,6 @@
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
 	<ui:style>
-	    .flowPanel{
-	        position: absolute;
-            top: 0px;
-            bottom: 0px;
-            left: 0px;
-            right: 0px;
-	    }
 		.panel {
 			position: relative;
 			height: 20px;
@@ -23,6 +16,14 @@
 			border: 1px solid #acafc6;
 			background-color: #c3c6d5;
 		}
+
+	    .internalPanel {
+	        position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+	    }
 		
 		.descriptionLabel {
 			position: absolute;
@@ -56,7 +57,7 @@
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">
-	   <g:FlowPanel styleName="{style.flowPanel}">
+	   <g:FlowPanel styleName="{style.internalPanel}">
 		<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 		<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
 		<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
