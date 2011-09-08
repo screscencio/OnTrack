@@ -58,6 +58,9 @@ public class FreeMindProjectLoader {
 			else if (child.hasIcon(Icon.HOURGLASS) && !child.hasIcon(Icon.WIZARD)) {
 				scope.getProgress().setDescription(child.getText());
 			}
+			else if (child.hasIcons()) {
+				LOGGER.warning("Unknown icons on scope '" + scope.getDescription() + "' (" + child.getText() + "). Effort declaration ignored.");
+			}
 			else {
 				final Scope s = new Scope(child.getText());
 				visitScope(s,child);
