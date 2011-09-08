@@ -36,6 +36,11 @@ public class MindNode {
 		return icons.contains(icon);
 	}
 
+	public boolean hasIcons() {
+		if (icons == null) interpret();
+		return !icons.isEmpty();
+	}
+
 	public MindNode appendChild() {
 		if (children == null) interpret();
 
