@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
 
 public class ReleaseMock {
 
+	// IMPORTANT Doesn't change this scope without checking the tests that use it.
 	public static Release getRelease() {
 		final Release projectRelease = ReleaseMockFactory.create("project");
 		final Release r1 = ReleaseMockFactory.create("R1");
