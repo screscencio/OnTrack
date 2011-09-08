@@ -112,7 +112,7 @@ public class Scope implements IsSerializable {
 		this.childrenList.clear();
 	}
 
-	// TODO Think about making the association bidirectional
+	// TODO ++++Think about making the association bidirectional
 	public void setRelease(final Release release) {
 		this.release = release;
 	}
@@ -125,7 +125,6 @@ public class Scope implements IsSerializable {
 		return progress;
 	}
 
-	// TODO ++Should this method throw an exception if nothing is found or should all 'users' of this method verify for null return?
 	public Scope findScope(final UUID scopeId) {
 		if (this.id.equals(scopeId)) return this;
 
@@ -157,5 +156,4 @@ public class Scope implements IsSerializable {
 	public boolean isLeaf() {
 		return childrenList.size() == 0;
 	}
-
 }

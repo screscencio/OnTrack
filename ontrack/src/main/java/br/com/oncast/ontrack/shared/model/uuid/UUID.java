@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.uuid;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+// TODO Test this class
 public class UUID implements IsSerializable {
 
 	private String id = "";

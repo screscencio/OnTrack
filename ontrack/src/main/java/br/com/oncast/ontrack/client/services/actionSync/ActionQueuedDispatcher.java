@@ -68,8 +68,6 @@ class ActionQueuedDispatcher {
 									caught);
 				}
 				else {
-					// TODO +++Treat communication failure.
-					// TODO +++Notify Error treatment service.
 					errorTreatmentService.treatFatalError(
 							"The application server is unreachable.\nCheck your internet connection.\n\nThe application will be briethly reloaded", caught);
 					caught.printStackTrace();
