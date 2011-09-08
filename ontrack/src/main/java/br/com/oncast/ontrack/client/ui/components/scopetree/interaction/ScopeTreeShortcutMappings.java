@@ -7,8 +7,6 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_F2
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LEFT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_Y;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_Z;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertFatherInternalAction;
@@ -98,22 +96,6 @@ enum ScopeTreeShortcutMappings {
 		}
 	},
 
-	UNDO(KEY_Z, true, false, false) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
-			actionRequestHandler.onUserActionUndoRequest();
-		}
-	},
-
-	REDO(KEY_Y, true, false, false) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
-			actionRequestHandler.onUserActionRedoRequest();
-		}
-	},
-
 	DELETE_SCOPE(KEY_DELETE, false, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
@@ -122,13 +104,13 @@ enum ScopeTreeShortcutMappings {
 		}
 	};
 
-	private final int keyCode;
+	private final int keyUpCode;
 	private final boolean controlModifier;
 	private final boolean shiftModifier;
 	private final boolean altModifier;
 
 	private ScopeTreeShortcutMappings(final int keyCode, final boolean controlModifier, final boolean shiftModifier, final boolean hasAltModifier) {
-		this.keyCode = keyCode;
+		this.keyUpCode = keyCode;
 		this.controlModifier = controlModifier;
 		this.shiftModifier = shiftModifier;
 		this.altModifier = hasAltModifier;
@@ -146,6 +128,6 @@ enum ScopeTreeShortcutMappings {
 			final Scope scope);
 
 	private boolean accepts(final int keyCode, final boolean hasControlModifier, final boolean hasShiftModifier, final boolean hasAltModifier) {
-		return (this.keyCode == keyCode && this.controlModifier == hasControlModifier && this.shiftModifier == hasShiftModifier && this.altModifier == hasAltModifier);
+		return (this.keyUpCode == keyCode && this.controlModifier == hasControlModifier && this.shiftModifier == hasShiftModifier && this.altModifier == hasAltModifier);
 	}
 }

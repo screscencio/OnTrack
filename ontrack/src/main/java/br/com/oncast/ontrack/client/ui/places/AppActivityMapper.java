@@ -30,7 +30,7 @@ public class AppActivityMapper implements ActivityMapper {
 	}
 
 	private PlanningActivity createPlanningActivity() {
-		return new PlanningActivity(services.getActionExecutionService(), services.getContextProviderService());
+		return new PlanningActivity(services.getActionExecutionService(), services.getContextProviderService(), services.getNativeEventService());
 	}
 
 	private ContextLoadingActivity createContextLoadingActivity(final Place place) {
