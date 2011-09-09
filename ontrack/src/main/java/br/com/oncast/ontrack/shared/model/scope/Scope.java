@@ -11,7 +11,6 @@ import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO +++Test this class
 public class Scope implements IsSerializable {
 
 	@IgnoredByDeepEquality

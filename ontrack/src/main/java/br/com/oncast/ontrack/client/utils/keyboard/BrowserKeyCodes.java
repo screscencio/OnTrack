@@ -44,7 +44,9 @@ public class BrowserKeyCodes {
 
 	public static final int KEY_DOWN = 40;
 
-	// TODO Review this code so that it conforms MacOS arrow keys
+	/** @ Symbol */
+	public static final int KEY_AT = 50;
+
 	public static boolean isArrowKey(final int nativeKeyCode) {
 		if (nativeKeyCode == KEY_LEFT || nativeKeyCode == KEY_UP || nativeKeyCode == KEY_RIGHT || nativeKeyCode == KEY_DOWN) return true;
 		return false;

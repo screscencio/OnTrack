@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_AT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DELETE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
@@ -20,6 +21,8 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+
+import com.google.gwt.user.client.Window;
 
 // TODO Refactor this class into a shortcut manager with better resposability division and better performance while mapping interactions.
 enum ScopeTreeShortcutMappings {
@@ -101,6 +104,15 @@ enum ScopeTreeShortcutMappings {
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope) {
 			actionRequestHandler.onUserActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
+		}
+	},
+
+	SHOW_RELEASE_MENU(KEY_AT, false, true, false) {
+		@Override
+		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
+				final Scope scope) {
+			Window.alert("@");
+			// actionRequestHandler.onUserActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
 		}
 	};
 
