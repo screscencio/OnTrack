@@ -1,12 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import java.util.List;
-
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
-import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
@@ -39,6 +37,12 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			@Override
 			public void onDeselectTreeItemRequest() {
 				getTree().setSelectedItem(null);
+			}
+
+			@Override
+			public void bindRelease(final String releaseDescription) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemBindReleaseEvent(getReferencedScope().getId(), releaseDescription));
+				getTree().setSelectedItem(ScopeTreeItem.this);
 			}
 		}));
 
@@ -90,9 +94,5 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	public ScopeTreeItemWidget getScopeTreeItemWidget() {
 		return scopeItemWidget;
-	}
-
-	public void openBindReleaseMenu(final List<Release> releaseHierarchy) {
-		// FIXME Auto-generated catch block
 	}
 }

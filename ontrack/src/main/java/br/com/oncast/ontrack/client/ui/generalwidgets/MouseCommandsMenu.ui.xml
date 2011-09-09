@@ -18,14 +18,6 @@
                 right: -2px;
 				width: 150px;
 				z-index: 2;
-
-                color: black;
-                background: white;
-
-                border: 1px solid gray;
-                box-shadow: 1px 1px 6px #d9dae1;
-                -moz-box-shadow: 1px 1px 6px #d9dae1;
-                -webkit-box-shadow: 1px 1px 6px #d9dae1;
 			}
 		</ui:style>
 

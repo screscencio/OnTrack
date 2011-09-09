@@ -2,6 +2,12 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
@@ -22,6 +28,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
@@ -78,6 +85,10 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiField
 	@IgnoredByDeepEquality
 	protected Tag releaseTag;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected HTMLPanel releaseMenuPanel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -282,5 +293,33 @@ public class ScopeTreeItemWidget extends Composite {
 		if (scope.getProgress().isDone()) return "100%";
 		if (scope.getEffort().getInfered() == 0) return "";
 		return ClientDecimalFormat.roundFloat(scope.getEffort().getAccomplishedPercentual(), 1) + "%";
+	}
+
+	public void showBindReleaseMenu(final List<Release> releaseList) {
+		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
+		itens.add(new CommandMenuItem("None", new Command() {
+
+			@Override
+			public void execute() {
+				editionHandler.bindRelease("");
+			}
+		}));
+
+		for (final Release releaseItem : releaseList) {
+			itens.add(new CommandMenuItem(releaseItem.getFullDescription(), new Command() {
+
+				@Override
+				public void execute() {
+					editionHandler.bindRelease(releaseItem.getFullDescription());
+				}
+			}));
+		}
+		final CommandMenu commandsMenu = new CommandMenu();
+
+		releaseMenuPanel.clear();
+		releaseMenuPanel.add(commandsMenu);
+
+		commandsMenu.setItens(itens);
+		commandsMenu.show();
 	}
 }

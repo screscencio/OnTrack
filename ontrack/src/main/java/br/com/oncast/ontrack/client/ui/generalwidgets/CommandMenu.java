@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
@@ -38,6 +39,8 @@ public class CommandMenu extends Composite {
 
 	private final Timer hiddingTimer;
 
+	private MenuItem firstItem;
+
 	@UiFactory
 	protected MenuBar createMenuBar() {
 		return new MenuBar(true);
@@ -60,6 +63,7 @@ public class CommandMenu extends Composite {
 
 	public void setItens(final List<CommandMenuItem> itens) {
 		menu.clearItems();
+		final List<MenuItem> menuItemList = new ArrayList<MenuItem>();
 		for (final CommandMenuItem item : itens) {
 			final MenuItem menuItem = new MenuItem(item.getText(), true, new Command() {
 
@@ -69,12 +73,18 @@ public class CommandMenu extends Composite {
 					item.getCommand().execute();
 				}
 			});
-			menu.addItem(menuItem);
+			menuItemList.add(menuItem);
 		}
+
+		if (menuItemList.size() > 0) firstItem = menuItemList.get(0);
+		for (final MenuItem menuItem : menuItemList)
+			menu.addItem(menuItem);
 	}
 
 	public void show() {
 		this.setVisible(true);
+		if (firstItem != null) menu.selectItem(firstItem);
+		menu.focus();
 	}
 
 	public void hide() {
