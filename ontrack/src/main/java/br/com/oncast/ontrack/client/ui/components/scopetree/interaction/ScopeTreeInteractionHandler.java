@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidg
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -58,6 +59,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	private final InternalActionHandler internalActionHandler = new InternalActionHandler();
 	private ActionExecutionRequestHandler applicationActionHandler;
 	private ScopeTreeWidget tree;
+	private ProjectContext context;
 
 	@Override
 	public void onKeyUp(final KeyUpEvent event) {
@@ -67,7 +69,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		if (selected == null) return;
 
 		ScopeTreeShortcutMappings.interpretKeyboardCommand(applicationActionHandler, internalActionHandler, event.getNativeKeyCode(), event.isControlKeyDown(),
-				event.isShiftKeyDown(), event.isAltKeyDown(), selected.getReferencedScope());
+				event.isShiftKeyDown(), event.isAltKeyDown(), selected.getReferencedScope(), context);
 	}
 
 	@Override
@@ -91,11 +93,15 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	}
 
 	private void assureConfigured() {
-		if (applicationActionHandler == null || tree == null) throw new RuntimeException("This class was not yet configured.");
+		if (applicationActionHandler == null || tree == null || context == null) throw new RuntimeException("This class was not yet configured.");
 	}
 
 	public void configure(final ScopeTreeWidget tree, final ActionExecutionRequestHandler actionHandler) {
 		this.tree = tree;
 		this.applicationActionHandler = actionHandler;
+	}
+
+	public void setContext(final ProjectContext context) {
+		this.context = context;
 	}
 }

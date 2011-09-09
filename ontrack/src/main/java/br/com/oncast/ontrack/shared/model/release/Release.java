@@ -140,6 +140,15 @@ public class Release implements IsSerializable {
 		return null;
 	}
 
+	public List<Release> getDescendantReleases() {
+		final List<Release> descendatReleases = new ArrayList<Release>();
+		for (final Release childRelease : childrenList) {
+			descendatReleases.add(childRelease);
+			childRelease.getDescendantReleases();
+		}
+		return descendatReleases;
+	}
+
 	/**
 	 * Returns a copy of the list of associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope, int)} and
 	 * {@link Release#removeScope(Scope)}. Do NOT manipulate this list directly.

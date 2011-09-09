@@ -70,7 +70,7 @@ public class PlanningActivity extends AbstractActivity {
 			}
 		});
 
-		view.getScopeTree().setScope(contextProviderService.getProjectContext().getProjectScope());
+		view.getScopeTree().setContext(contextProviderService.getProjectContext());
 		view.getReleasePanel().setRelease(contextProviderService.getProjectContext().getProjectRelease());
 		view.setExporterPath(UriConfigurations.EXPORT_TO_MINDMAP_APPLICATION_SERVLET_URL);
 

@@ -46,7 +46,7 @@ public class UpdateTest extends GwtTest {
 	public void setUp() {
 		scope = getScope();
 		tree = new ScopeTree();
-		tree.setScope(scope);
+		tree.setContext(scope);
 
 		projectContext = new ProjectContext((new Project(scope, ReleaseMockFactory.create(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
@@ -89,19 +89,19 @@ public class UpdateTest extends GwtTest {
 
 	private ScopeTree getUnmodifiedTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setScope(getUnmodifiedScope());
+		treeAfterManipulation.setContext(getUnmodifiedScope());
 		return treeAfterManipulation;
 	}
 
 	private ScopeTree getModifiedTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setScope(getModifiedScope());
+		treeAfterManipulation.setContext(getModifiedScope());
 		return treeAfterManipulation;
 	}
 
 	private ScopeTree getModifiedRootTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setScope(getModifiedRootScope());
+		treeAfterManipulation.setContext(getModifiedRootScope());
 		return treeAfterManipulation;
 	}
 
