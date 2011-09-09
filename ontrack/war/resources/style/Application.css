@@ -40,6 +40,7 @@ html,body {
 
 .gwt-MenuBar-vertical > table {
 	width: 100%;
+	border-spacing: 2px;
 }
 
 .gwt-MenuBar .gwt-MenuItem {
