@@ -8,12 +8,8 @@
 			}
 			
 			.menuButton {
-				position : absolute;
-				top:0px;
-				bottom:0px;
-				left:0px;
-				right:0px;
-				margin: 0px;
+                width: 20px;
+                height: 20px;
 			}
 
 			.menu {
@@ -21,7 +17,7 @@
                 top: 3px;
                 right: -2px;
 				width: 150px;
-				z-index: 10;
+				z-index: 2;
 
                 color: black;
                 background: white;
