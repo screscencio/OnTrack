@@ -144,7 +144,7 @@ public class Release implements IsSerializable {
 		final List<Release> descendatReleases = new ArrayList<Release>();
 		for (final Release childRelease : childrenList) {
 			descendatReleases.add(childRelease);
-			childRelease.getDescendantReleases();
+			descendatReleases.addAll(childRelease.getDescendantReleases());
 		}
 		return descendatReleases;
 	}

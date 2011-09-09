@@ -101,4 +101,30 @@ public class ReleaseTest {
 		assertEquals(size, release.getChildren().size());
 	}
 
+	@Test
+	public void shouldReturnAllDescendants() throws Exception {
+		final Release release = ReleaseMock.getBigRelease();
+
+		assertEquals(13, release.getDescendantReleases().size());
+	}
+
+	@Test
+	public void shouldReturnAllDescendantsInOrder() throws Exception {
+		final Release rootRelease = ReleaseMock.getBigRelease();
+		final List<Release> descendantReleases = rootRelease.getDescendantReleases();
+
+		assertEquals(rootRelease.getChild(0), descendantReleases.get(0)); // R1
+		assertEquals(rootRelease.getChild(0).getChild(0), descendantReleases.get(1)); // R1/It1
+		assertEquals(rootRelease.getChild(0).getChild(1), descendantReleases.get(2)); // R1/It2
+		assertEquals(rootRelease.getChild(0).getChild(1).getChild(0), descendantReleases.get(3)); // R1/It2/w1
+		assertEquals(rootRelease.getChild(0).getChild(1).getChild(1), descendantReleases.get(4)); // R1/It2/w2
+		assertEquals(rootRelease.getChild(0).getChild(1).getChild(1).getChild(0), descendantReleases.get(5)); // R1/It2/w2/d1
+		assertEquals(rootRelease.getChild(0).getChild(1).getChild(1).getChild(1), descendantReleases.get(6)); // R1/It2/w2/d2
+		assertEquals(rootRelease.getChild(0).getChild(1).getChild(1).getChild(2), descendantReleases.get(7)); // R1/It2/w2/d3
+		assertEquals(rootRelease.getChild(0).getChild(1).getChild(2), descendantReleases.get(8)); // R1/It2/w3
+		assertEquals(rootRelease.getChild(0).getChild(2), descendantReleases.get(9)); // R1/It3
+		assertEquals(rootRelease.getChild(1), descendantReleases.get(10)); // R2
+		assertEquals(rootRelease.getChild(1).getChild(0), descendantReleases.get(11)); // R2/It4
+		assertEquals(rootRelease.getChild(2), descendantReleases.get(12)); // R3
+	}
 }
