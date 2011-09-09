@@ -56,12 +56,6 @@
     <appender-ref ref="consoleAppender"/>
   </logger>
   
-  <!-- Application Server Log - RequestDispatch Service -->
-  <logger name="br.com.oncast.ontrack.server.services.requestDispatch">
-    <level value="DEBUG" />
-    <appender-ref ref="consoleAppender"/>
-  </logger>
-  
   <root> 
     <!-- <level value="DEBUG" /> -->
     <priority value="DEBUG" />

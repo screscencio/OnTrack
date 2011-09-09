@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
@@ -39,7 +40,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeInsertParentRollbackAction) return new ScopeTreeParentRollbackAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveAction) return new ScopeTreeRemoveAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeRemoveRollbackAction) return new ScopeTreeRemoveRollbackAction(tree, (ScopeInsertAction) action);
-		else if (action instanceof ScopeUpdateAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
+		else if (action instanceof ScopeUpdateAction || action instanceof ScopeBindReleaseAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
 		else if (action instanceof ReleaseAction) return new ScopeTreeReleaseAction(tree);
 
 		throw new ScopeNotFoundException("It was not possible to find the desired action.");

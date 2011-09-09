@@ -42,7 +42,6 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			@Override
 			public void bindRelease(final String releaseDescription) {
 				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemBindReleaseEvent(getReferencedScope().getId(), releaseDescription));
-				getTree().setSelectedItem(ScopeTreeItem.this);
 			}
 		}));
 
