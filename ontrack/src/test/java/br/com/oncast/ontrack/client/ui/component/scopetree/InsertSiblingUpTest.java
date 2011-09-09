@@ -47,7 +47,7 @@ public class InsertSiblingUpTest extends GwtTest {
 	public void setUp() {
 		scope = getScope();
 		tree = new ScopeTree();
-		tree.setScope(scope);
+		tree.setContext(scope);
 
 		newScopeDescription = "description for new scope";
 
@@ -85,13 +85,13 @@ public class InsertSiblingUpTest extends GwtTest {
 
 	private ScopeTree getUnmodifiedTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setScope(getUnmodifiedScope());
+		treeAfterManipulation.setContext(getUnmodifiedScope());
 		return treeAfterManipulation;
 	}
 
 	private ScopeTree getModifiedTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setScope(getModifiedScope());
+		treeAfterManipulation.setContext(getModifiedScope());
 		return treeAfterManipulation;
 	}
 

@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.project;
 
+import java.util.List;
+
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -51,5 +53,9 @@ public class ProjectContext {
 
 	public Release getProjectRelease() {
 		return project.getProjectRelease();
+	}
+
+	public List<Release> getReleaseHierarchy() {
+		return project.getProjectRelease().getDescendantReleases();
 	}
 }

@@ -9,6 +9,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LE
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertFatherInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingDownInternalAction;
@@ -20,9 +21,8 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-
-import com.google.gwt.user.client.Window;
 
 // TODO Refactor this class into a shortcut manager with better resposability division and better performance while mapping interactions.
 enum ScopeTreeShortcutMappings {
@@ -30,7 +30,7 @@ enum ScopeTreeShortcutMappings {
 	UPDATE(KEY_F2, false, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			internalActionHandler.onInternalActionExecutionRequest(new NodeEditionInternalAction(scope));
 		}
 	},
@@ -38,7 +38,7 @@ enum ScopeTreeShortcutMappings {
 	INSERT_SIBLING_SCOPE_DOWN(KEY_ENTER, false, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingDownInternalAction(scope));
 		}
 	},
@@ -46,7 +46,7 @@ enum ScopeTreeShortcutMappings {
 	INSERT_SIBLING_SCOPE_UP(KEY_ENTER, false, true, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingUpInternalAction(scope));
 		}
 	},
@@ -54,7 +54,7 @@ enum ScopeTreeShortcutMappings {
 	INSERT_SCOPE_AS_CHILD(KEY_ENTER, true, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			internalActionHandler.onInternalActionExecutionRequest(new InsertChildInternalAction(scope));
 		}
 	},
@@ -62,7 +62,7 @@ enum ScopeTreeShortcutMappings {
 	INSERT_SCOPE_AS_PARENT(KEY_ENTER, true, true, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			internalActionHandler.onInternalActionExecutionRequest(new InsertFatherInternalAction(scope));
 		}
 	},
@@ -70,7 +70,7 @@ enum ScopeTreeShortcutMappings {
 	MOVE_SCOPE_UP(KEY_UP, true, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveUpAction(scope.getId()));
 		}
 	},
@@ -78,7 +78,7 @@ enum ScopeTreeShortcutMappings {
 	MOVE_SCOPE_DOWN(KEY_DOWN, true, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveDownAction(scope.getId()));
 		}
 	},
@@ -86,7 +86,7 @@ enum ScopeTreeShortcutMappings {
 	MOVE_SCOPE_RIGHT(KEY_RIGHT, true, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveRightAction(scope.getId()));
 		}
 	},
@@ -94,7 +94,7 @@ enum ScopeTreeShortcutMappings {
 	MOVE_SCOPE_LEFT(KEY_LEFT, true, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveLeftAction(scope.getId()));
 		}
 	},
@@ -102,17 +102,16 @@ enum ScopeTreeShortcutMappings {
 	DELETE_SCOPE(KEY_DELETE, false, false, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
+				final Scope scope, final ProjectContext context) {
 			actionRequestHandler.onUserActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
 		}
 	},
 
-	SHOW_RELEASE_MENU(KEY_AT, false, true, false) {
+	BIND_RELEASE(KEY_AT, false, true, false) {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope) {
-			Window.alert("@");
-			// actionRequestHandler.onUserActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
+				final Scope scope, final ProjectContext context) {
+			internalActionHandler.onInternalActionExecutionRequest(new BindReleaseInternalAction(context, scope));
 		}
 	};
 
@@ -130,14 +129,14 @@ enum ScopeTreeShortcutMappings {
 
 	public static void interpretKeyboardCommand(final ActionExecutionRequestHandler applicationActionHandler,
 			final InternalActionExecutionRequestHandler internalActionHandler, final int keyCode, final boolean hasControlModifier,
-			final boolean hasShiftModifier, final boolean hasAltModifier, final Scope scope) {
+			final boolean hasShiftModifier, final boolean hasAltModifier, final Scope scope, final ProjectContext context) {
 		for (final ScopeTreeShortcutMappings mapping : values())
 			if (mapping.accepts(keyCode, hasControlModifier, hasShiftModifier, hasAltModifier)) mapping.execute(applicationActionHandler,
-					internalActionHandler, scope);
+					internalActionHandler, scope, context);
 	}
 
 	protected abstract void execute(final ActionExecutionRequestHandler actionRequestHandler, InternalActionExecutionRequestHandler internalActionHandler,
-			final Scope scope);
+			final Scope scope, ProjectContext context);
 
 	private boolean accepts(final int keyCode, final boolean hasControlModifier, final boolean hasShiftModifier, final boolean hasAltModifier) {
 		return (this.keyUpCode == keyCode && this.controlModifier == hasControlModifier && this.shiftModifier == hasShiftModifier && this.altModifier == hasAltModifier);
