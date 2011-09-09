@@ -51,8 +51,7 @@ public class InsertChildTest extends GwtTest {
 		scope = getScope();
 
 		tree = new ScopeTree();
-		final ProjectContext context = new ProjectContext(new Project(scope, null));
-		tree.setContext(context);
+		tree.setContext(new ProjectContext(new Project(scope, null)));
 
 		newScopeDescription = "description for new scope";
 		projectContext = new ProjectContext((new Project(scope, ReleaseMockFactory.create(""))));

@@ -46,7 +46,7 @@ public class RemoveTest extends GwtTest {
 	public void setUp() {
 		scope = getScope();
 		tree = new ScopeTree();
-		tree.setContext(scope);
+		tree.setContext(new ProjectContext(new Project(scope, null)));
 
 		projectContext = new ProjectContext((new Project(scope, ReleaseMockFactory.create(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
@@ -64,30 +64,30 @@ public class RemoveTest extends GwtTest {
 		return rootScope;
 	}
 
-	private Scope getModifiedScope() {
+	private ProjectContext getModifiedContext() {
 		final Scope projectScope = new Scope("Project");
 		projectScope.add(new Scope("2"));
 
-		return projectScope;
+		return new ProjectContext(new Project(projectScope, null));
 	}
 
-	private Scope getUnmodifiedScope() {
+	private ProjectContext getUnmodifiedContext() {
 		final Scope unmodifiedScope = new Scope("Project");
 		unmodifiedScope.add(new Scope("1").add(new Scope("1.1")));
 		unmodifiedScope.add(new Scope("2"));
 
-		return unmodifiedScope;
+		return new ProjectContext(new Project(unmodifiedScope, null));
 	}
 
 	private ScopeTree getUnmodifiedTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setContext(getUnmodifiedScope());
+		treeAfterManipulation.setContext(getUnmodifiedContext());
 		return treeAfterManipulation;
 	}
 
 	private ScopeTree getModifiedTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setContext(getModifiedScope());
+		treeAfterManipulation.setContext(getModifiedContext());
 		return treeAfterManipulation;
 	}
 
@@ -96,7 +96,7 @@ public class RemoveTest extends GwtTest {
 		final ScopeRemoveAction removeAction = new ScopeRemoveAction(firstScope.getId());
 		actionExecutionService.onUserActionExecutionRequest(removeAction);
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedContext().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 	}
 
@@ -109,12 +109,12 @@ public class RemoveTest extends GwtTest {
 	public void shouldInsertRemovedItemAfterUndo() throws ActionNotFoundException {
 		actionExecutionService.onUserActionExecutionRequest(new ScopeRemoveAction(firstScope.getId()));
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedContext().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
 		actionExecutionService.onUserActionUndoRequest();
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedContext().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
 	}
 

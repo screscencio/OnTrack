@@ -46,7 +46,7 @@ public class UpdateTest extends GwtTest {
 	public void setUp() {
 		scope = getScope();
 		tree = new ScopeTree();
-		tree.setContext(scope);
+		tree.setContext(new ProjectContext(new Project(scope, null)));
 
 		projectContext = new ProjectContext((new Project(scope, ReleaseMockFactory.create(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
@@ -63,45 +63,45 @@ public class UpdateTest extends GwtTest {
 		return rootScope;
 	}
 
-	private Scope getModifiedScope() {
+	private ProjectContext getModifiedContext() {
 		final Scope projectScope = new Scope("Project");
 		projectScope.add(new Scope("3"));
 		projectScope.add(new Scope("2"));
 
-		return projectScope;
+		return new ProjectContext(new Project(projectScope, null));
 	}
 
-	private Scope getModifiedRootScope() {
+	private ProjectContext getModifiedRootContext() {
 		final Scope projectScope = new Scope("Root");
 		projectScope.add(new Scope("1"));
 		projectScope.add(new Scope("2"));
 
-		return projectScope;
+		return new ProjectContext(new Project(projectScope, null));
 	}
 
-	private Scope getUnmodifiedScope() {
+	private ProjectContext getUnmodifieldContext() {
 		final Scope unmodifiedScope = new Scope("Project");
 		unmodifiedScope.add(new Scope("1"));
 		unmodifiedScope.add(new Scope("2"));
 
-		return unmodifiedScope;
+		return new ProjectContext(new Project(unmodifiedScope, null));
 	}
 
 	private ScopeTree getUnmodifiedTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setContext(getUnmodifiedScope());
+		treeAfterManipulation.setContext(getUnmodifieldContext());
 		return treeAfterManipulation;
 	}
 
 	private ScopeTree getModifiedTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setContext(getModifiedScope());
+		treeAfterManipulation.setContext(getModifiedContext());
 		return treeAfterManipulation;
 	}
 
 	private ScopeTree getModifiedRootTree() {
 		treeAfterManipulation = new ScopeTree();
-		treeAfterManipulation.setContext(getModifiedRootScope());
+		treeAfterManipulation.setContext(getModifiedRootContext());
 		return treeAfterManipulation;
 	}
 
@@ -109,7 +109,7 @@ public class UpdateTest extends GwtTest {
 	public void shouldUpdateScopeWithNewValue() throws ActionNotFoundException {
 		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(firstScope.getId(), "3"));
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedContext().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 	}
 
@@ -117,7 +117,7 @@ public class UpdateTest extends GwtTest {
 	public void shouldUpdateRootScope() throws ActionNotFoundException {
 		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(rootScope.getId(), "Root"));
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedRootScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedRootContext().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedRootTree());
 	}
 
@@ -125,12 +125,12 @@ public class UpdateTest extends GwtTest {
 	public void shouldRollbackUpdatedScope() throws ActionNotFoundException {
 		actionExecutionService.onUserActionExecutionRequest(new ScopeUpdateAction(firstScope.getId(), "3"));
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedContext().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
 		actionExecutionService.onUserActionUndoRequest();
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifieldContext().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
 	}
 

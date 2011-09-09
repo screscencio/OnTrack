@@ -34,7 +34,7 @@ public class MoveDownTest extends GwtTest {
 	public void setUp() {
 		scope = getScope();
 		tree = new ScopeTree();
-		tree.setContext(scope);
+		tree.setContext(new ProjectContext(new Project(scope, null)));
 
 		projectContext = new ProjectContext((new Project(scope, ReleaseMockFactory.create(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
@@ -55,24 +55,24 @@ public class MoveDownTest extends GwtTest {
 		return rootScope;
 	}
 
-	private Scope getModifiedScope() {
+	private ProjectContext getModifiedScope() {
 		final Scope projectScope = new Scope("Project");
 		projectScope.add(new Scope("2"));
 		projectScope.add(new Scope("1"));
 		projectScope.add(new Scope("4"));
 		projectScope.add(new Scope("3"));
 
-		return projectScope;
+		return new ProjectContext(new Project(projectScope, null));
 	}
 
-	private Scope getUnmodifiedScope() {
+	private ProjectContext getUnmodifiedScope() {
 		final Scope unmodifiedScope = new Scope("Project");
 		unmodifiedScope.add(new Scope("1"));
 		unmodifiedScope.add(new Scope("2"));
 		unmodifiedScope.add(new Scope("3"));
 		unmodifiedScope.add(new Scope("4"));
 
-		return unmodifiedScope;
+		return new ProjectContext(new Project(unmodifiedScope, null));
 	}
 
 	private ScopeTree getUnmodifiedTree() {
@@ -92,7 +92,7 @@ public class MoveDownTest extends GwtTest {
 		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(firstScope.getId()));
 		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(thirdScope.getId()));
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 	}
 
@@ -111,13 +111,13 @@ public class MoveDownTest extends GwtTest {
 		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(firstScope.getId()));
 		actionExecutionService.onUserActionExecutionRequest(new ScopeMoveDownAction(thirdScope.getId()));
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getModifiedScope().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getModifiedTree());
 
 		actionExecutionService.onUserActionUndoRequest();
 		actionExecutionService.onUserActionUndoRequest();
 
-		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope());
+		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
 	}
 

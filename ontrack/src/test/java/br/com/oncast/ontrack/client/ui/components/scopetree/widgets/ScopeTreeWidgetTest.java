@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.octo.gwt.test.GwtTest;
@@ -33,6 +34,9 @@ public class ScopeTreeWidgetTest extends GwtTest {
 
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {}
+
+			@Override
+			public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {}
 		});
 		scopeA1 = new Scope("root");
 		scopeA11 = new Scope("A11");
