@@ -2,7 +2,19 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<g:FocusPanel ui:field="focusPanel">
+    <ui:style>
+            .menuPanel {
+                color: black;
+                background: white;
+
+                border: 1px solid gray;
+                box-shadow: 1px 1px 6px #d9dae1;
+                -moz-box-shadow: 1px 1px 6px #d9dae1;
+                -webkit-box-shadow: 1px 1px 6px #d9dae1;
+            }
+        </ui:style>
+
+	<g:FocusPanel ui:field="focusPanel" styleName="{style.menuPanel}">
 		<g:MenuBar ui:field="menu" />
 	</g:FocusPanel>
 

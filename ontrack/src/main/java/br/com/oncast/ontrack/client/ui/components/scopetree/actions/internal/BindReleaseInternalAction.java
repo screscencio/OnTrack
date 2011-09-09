@@ -21,19 +21,19 @@ public class BindReleaseInternalAction implements InternalAction {
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
-		selectedTreeItem.openBindReleaseMenu(context.getReleaseHierarchy());
+		tree.setSelected(null);
+		selectedTreeItem.getScopeTreeItemWidget().showBindReleaseMenu(context.getReleaseHierarchy());
 	}
 
 	@Override
 	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
-		// FIXME Auto-generated catch block
-
+		tree.setSelected(selectedTreeItem);
 	}
 
 	@Override
 	public ModelAction createEquivalentModelAction(final String value) {
-		// FIXME Auto-generated catch block
-		return null;
+		// FIXME This should be refactored.
+		throw new RuntimeException("This method should not be called for this action.");
 	}
 
 }

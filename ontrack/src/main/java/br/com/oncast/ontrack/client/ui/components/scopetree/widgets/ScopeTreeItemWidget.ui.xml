@@ -65,13 +65,22 @@
 			.scope {
 			}
 			
-			.tag {
+			.releasePanel {
                 position: absolute;
                 top: 0px;
                 bottom: 0px;
                 right: 160px;
                 
                 text-align: right;
+			}
+			
+			.tag {
+			}
+			
+			.releaseMenuPanel {
+                position: absolute;
+                top: 20px;
+                right: 0px;
 			}
 			
 			.progressLabel {
@@ -100,7 +109,10 @@
 						<g:Label ui:field="effortDifferenceLabel" styleName="{style.effortDifferenceLabel}" />
 					</g:HTMLPanel>
 				</g:HorizontalPanel>
-				<t:Tag ui:field="releaseTag" styleName="{style.tag}" />
+				<g:HTMLPanel styleName="{style.releasePanel}" >
+				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
+                    <g:HTMLPanel ui:field="releaseMenuPanel" styleName="{style.releaseMenuPanel}" />
+				</g:HTMLPanel>
 				<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
 			</g:FlowPanel>
 			<g:TextBox ui:field="editionBox" styleName="{style.editionBox}" />

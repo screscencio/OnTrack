@@ -7,9 +7,11 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Int
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 
@@ -90,6 +92,11 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 		if (!internalActionHandler.hasPendingAction()) return;
 		internalActionHandler.rollbackPendingAction();
+	}
+
+	@Override
+	public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {
+		applicationActionHandler.onUserActionExecutionRequest(new ScopeBindReleaseAction(scopeId, releaseDescription));
 	}
 
 	private void assureConfigured() {

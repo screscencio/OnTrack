@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
@@ -26,6 +28,14 @@ public class ScopeTreeWidget extends Composite {
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
 		initWidget(tree = new Tree());
 		tree.addKeyUpHandler(interactionHandler);
+
+		tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
+
+			@Override
+			public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {
+				interactionHandler.onBindReleaseRequest(scopeId, releaseDescription);
+			}
+		}, ScopeTreeItemBindReleaseEvent.getType());
 
 		tree.addHandler(new ScopeTreeItemEditionEndEventHandler() {
 

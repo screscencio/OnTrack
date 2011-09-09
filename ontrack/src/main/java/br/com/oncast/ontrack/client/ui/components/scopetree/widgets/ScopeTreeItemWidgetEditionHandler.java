@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
+
 public interface ScopeTreeItemWidgetEditionHandler {
 
 	void onEditionStart();
@@ -15,4 +16,6 @@ public interface ScopeTreeItemWidgetEditionHandler {
 	 * the user gets unable to use the arrow keys for navigating inside the edition box.
 	 */
 	void onDeselectTreeItemRequest();
+
+	void bindRelease(String releaseDescription);
 }
