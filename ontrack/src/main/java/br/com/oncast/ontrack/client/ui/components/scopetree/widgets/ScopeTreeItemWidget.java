@@ -6,6 +6,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
@@ -315,6 +316,13 @@ public class ScopeTreeItemWidget extends Composite {
 			}));
 		}
 		final CommandMenu commandsMenu = new CommandMenu();
+		commandsMenu.addCloseHandler(new CloseHandler() {
+
+			@Override
+			public void onClose() {
+				editionHandler.onReleaseEditionCancel();
+			}
+		});
 
 		releaseMenuPanel.clear();
 		releaseMenuPanel.add(commandsMenu);

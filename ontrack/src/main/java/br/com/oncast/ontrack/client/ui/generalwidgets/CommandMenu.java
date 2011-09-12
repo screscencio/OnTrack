@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 
 import java.util.List;
 
@@ -29,6 +29,8 @@ public class CommandMenu extends Composite {
 
 	@UiField
 	protected FocusPanel focusPanel;
+
+	private CloseHandler closeHandler;
 
 	@UiFactory
 	protected MenuBar createMenuBar() {
@@ -63,15 +65,22 @@ public class CommandMenu extends Composite {
 	}
 
 	public void hide() {
+		if (!this.isVisible()) return;
+
 		this.setVisible(false);
+		if (closeHandler != null) closeHandler.onClose();
 	}
 
 	@UiHandler("focusPanel")
 	protected void handleKeyUp(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() != KEY_ESCAPE && event.getNativeKeyCode() != KEY_ENTER) return;
+		if (event.getNativeKeyCode() != KEY_ESCAPE) return;
 
 		event.preventDefault();
 		event.stopPropagation();
 		hide();
+	}
+
+	public void addCloseHandler(final CloseHandler closeHandler) {
+		this.closeHandler = closeHandler;
 	}
 }

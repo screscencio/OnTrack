@@ -43,12 +43,21 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			public void bindRelease(final String releaseDescription) {
 				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemBindReleaseEvent(getReferencedScope().getId(), releaseDescription));
 			}
+
+			@Override
+			public void onReleaseEditionCancel() {
+				ScopeTreeItem.this.select();
+			}
 		}));
 
 		setReferencedScope(scope);
 		for (final Scope childScope : scope.getChildren()) {
 			addItem(new ScopeTreeItem(childScope));
 		}
+	}
+
+	protected void select() {
+		getTree().setSelectedItem(this);
 	}
 
 	public boolean isRoot() {

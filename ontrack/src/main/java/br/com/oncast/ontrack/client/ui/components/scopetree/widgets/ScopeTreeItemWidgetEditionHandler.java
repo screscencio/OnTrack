@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-
 public interface ScopeTreeItemWidgetEditionHandler {
 
 	void onEditionStart();
@@ -18,4 +17,6 @@ public interface ScopeTreeItemWidgetEditionHandler {
 	void onDeselectTreeItemRequest();
 
 	void bindRelease(String releaseDescription);
+
+	void onReleaseEditionCancel();
 }
