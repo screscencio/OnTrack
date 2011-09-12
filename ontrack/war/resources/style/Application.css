@@ -14,6 +14,10 @@ html,body {
 	font-size: 14px;
 }
 
+.gwt-Tree table {
+	border-spacing: 2px;
+}
+
 .gwt-Tree .gwt-TreeItem {
 	height: 20px;
 	border: 1px solid transparent;
@@ -36,7 +40,16 @@ html,body {
 <!-- MenuBar -->
 .gwt-MenuBar {}
 .gwt-MenuBar-horizontal {}
-.gwt-MenuBar-vertical {}
+
+.gwt-MenuBar-vertical {
+	color: black;
+	background: white;
+	border: 1px solid gray;
+	
+	box-shadow: 1px 1px 6px #d9dae1;
+	-moz-box-shadow: 1px 1px 6px #d9dae1;
+	-webkit-box-shadow: 1px 1px 6px #d9dae1;
+}
 
 .gwt-MenuBar-vertical > table {
 	width: 100%;

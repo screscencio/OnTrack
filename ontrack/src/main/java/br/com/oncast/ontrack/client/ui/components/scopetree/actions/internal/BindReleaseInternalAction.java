@@ -23,7 +23,7 @@ public class BindReleaseInternalAction implements InternalAction {
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 		tree.setSelected(null);
-		selectedTreeItem.getScopeTreeItemWidget().showBindReleaseMenu(context.getReleaseHierarchy());
+		selectedTreeItem.getScopeTreeItemWidget().showBindReleaseMenu(context.getDescendantReleases());
 	}
 
 	@Override

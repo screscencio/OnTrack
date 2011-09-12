@@ -3,19 +3,16 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <ui:style>
-            .menuPanel {
-                color: black;
-                background: white;
+        
+        .panel {
+        }
+    
+    </ui:style>
 
-                border: 1px solid gray;
-                box-shadow: 1px 1px 6px #d9dae1;
-                -moz-box-shadow: 1px 1px 6px #d9dae1;
-                -webkit-box-shadow: 1px 1px 6px #d9dae1;
-            }
-        </ui:style>
-
-	<g:FocusPanel ui:field="focusPanel" styleName="{style.menuPanel}">
-		<g:MenuBar ui:field="menu" />
-	</g:FocusPanel>
+    <g:HTMLPanel styleName="{style.panel}">
+		<g:FocusPanel ui:field="focusPanel">
+			<g:MenuBar ui:field="menu" />
+		</g:FocusPanel>
+	</g:HTMLPanel>
 
 </ui:UiBinder> 
