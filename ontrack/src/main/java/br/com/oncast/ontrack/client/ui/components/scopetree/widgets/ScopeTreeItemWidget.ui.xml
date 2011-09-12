@@ -81,6 +81,7 @@
                 position: absolute;
                 top: 20px;
                 right: 0px;
+                z-index: 2;
 			}
 			
 			.progressLabel {
@@ -110,8 +111,8 @@
 					</g:HTMLPanel>
 				</g:HorizontalPanel>
 				<g:HTMLPanel styleName="{style.releasePanel}" >
-				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
                     <g:HTMLPanel ui:field="releaseMenuPanel" styleName="{style.releaseMenuPanel}" />
+				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 				</g:HTMLPanel>
 				<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
 			</g:FlowPanel>

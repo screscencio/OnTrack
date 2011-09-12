@@ -55,7 +55,7 @@ public class ProjectContext {
 		return project.getProjectRelease();
 	}
 
-	public List<Release> getReleaseHierarchy() {
+	public List<Release> getDescendantReleases() {
 		return project.getProjectRelease().getDescendantReleases();
 	}
 }

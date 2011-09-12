@@ -197,6 +197,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		final boolean shouldBodyContainerBeActive = (scopeContainer.getWidgetCount() != 0 || releaseContainer.getWidgetCount() != 0);
 		if (isBodyContainerActive == shouldBodyContainerBeActive) return;
 
+		setContainerState(shouldBodyContainerBeActive);
+
 		if (shouldBodyContainerBeActive) {
 			containerStateImageClickHandlerRegistration = containerStateImage.addClickHandler(new ClickHandler() {
 
@@ -205,7 +207,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 					setContainerState(!isContainerStateOpen);
 				}
 			});
-			setContainerState(true);
 		}
 		else {
 			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageClosed());
