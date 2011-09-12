@@ -2,17 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <ui:style>
-        
-        .panel {
-        }
-    
-    </ui:style>
-
-    <g:HTMLPanel styleName="{style.panel}">
-		<g:FocusPanel ui:field="focusPanel">
-			<g:MenuBar ui:field="menu" />
-		</g:FocusPanel>
-	</g:HTMLPanel>
+	<g:FocusPanel ui:field="focusPanel">
+		<g:MenuBar ui:field="menu" />
+	</g:FocusPanel>
 
 </ui:UiBinder> 
