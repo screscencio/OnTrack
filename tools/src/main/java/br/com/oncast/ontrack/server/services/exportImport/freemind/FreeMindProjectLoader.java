@@ -20,7 +20,7 @@ public class FreeMindProjectLoader {
 	private final FreeMindMap mm;
 	private final Project project = new Project();
 	private final ProjectContext context = new ProjectContext(project);
-	private final Release rootRelease = new Release("project", new UUID("0"));
+	private final Release rootRelease = new Release("proj", new UUID("release0"));
 
 	private FreeMindProjectLoader(final FreeMindMap mm) {
 		this.mm = mm;

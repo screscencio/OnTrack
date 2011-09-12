@@ -20,6 +20,7 @@ public class ProjectActionsAssembler {
 	private final List<ModelAction> releaseBindingActions = new ArrayList<ModelAction>();
 	private final List<ModelAction> effortDeclarationActions = new ArrayList<ModelAction>();
 	private final List<ModelAction> progressDeclarationActions = new ArrayList<ModelAction>();
+	private ReleaseCreator releaseCreator = new ReleaseCreator();
 
 	private ProjectActionsAssembler(final Project project) {
 		this.project = project;
@@ -34,6 +35,7 @@ public class ProjectActionsAssembler {
 
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 		actions.addAll(scopeDeclarationActions);
+		actions.addAll(releaseCreationActions);
 		actions.addAll(releaseBindingActions);
 		actions.addAll(effortDeclarationActions);
 		actions.addAll(progressDeclarationActions);
@@ -51,6 +53,9 @@ public class ProjectActionsAssembler {
 	private void visitScope(final UUID uuid, final Scope s) {
 		if (s.getRelease()!=null) {
 			final String desc = s.getRelease().getFullDescription();
+			if (!releaseCreator.releaseAlreadyCreated(desc))
+				releaseCreationActions.addAll(releaseCreator.createNewReleaseHierarchy(desc));
+
 			releaseBindingActions.add(new ScopeBindReleaseAction(uuid, desc));
 		}
 
