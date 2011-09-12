@@ -44,18 +44,6 @@
     <appender-ref ref="consoleAppender"/>
   </logger>
   
-  <!-- Application Server Log - ActionSync Services -->
-  <logger name="br.com.oncast.ontrack.server.services.actionBroadcast">
-    <level value="DEBUG" />
-    <appender-ref ref="consoleAppender"/>
-  </logger>
-  
-  <!-- Application Server Log - ServerPush Service -->
-  <logger name="br.com.oncast.ontrack.server.services.serverPush">
-    <level value="DEBUG" />
-    <appender-ref ref="consoleAppender"/>
-  </logger>
-  
   <root> 
     <!-- <level value="DEBUG" /> -->
     <priority value="DEBUG" />

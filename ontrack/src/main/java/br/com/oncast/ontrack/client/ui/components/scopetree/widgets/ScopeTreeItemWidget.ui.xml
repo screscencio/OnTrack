@@ -4,6 +4,7 @@
 
 	<ui:style
 		type="br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget.Style">
+
 			.editableLabel {
 				position: relative;
 				height: 15px;
@@ -83,7 +84,7 @@
                 right: 0px;
                 z-index: 2;
 			}
-			
+
 			.progressLabel {
 				position: absolute;
 				top: 0px;
