@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
@@ -30,6 +31,7 @@ public class ReleaseRemoveRollbackActionEntity extends ModelActionEntity {
 	private int pos;
 
 	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "ReleaseRemoveRollbackActionEntity_ChildAction")
 	private List<ReleaseRemoveRollbackActionEntity> childActionList;
 
 	@OneToMany(cascade = CascadeType.ALL)
