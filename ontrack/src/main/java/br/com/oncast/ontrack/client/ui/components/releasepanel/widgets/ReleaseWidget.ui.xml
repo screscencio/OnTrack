@@ -45,11 +45,13 @@
 			.progressLabel {
 				position: absolute;
 				top: 5px;
-				bottom: 0px;
+				height: 20px;
 				right: 40px;
+				width: 70px;
 				
 				font-size: small;
 				opacity: 0.5;
+				text-align: center;
 			}
 			
 			.mouseActionsMenu {
