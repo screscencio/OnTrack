@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/appengine-api-1.0-sdk-1.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/appengine-api-labs-1.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/appengine-jsr107cache-1.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/datanucleus-appengine-1.0.9.final.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/datanucleus-core-1.1.5.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/datanucleus-jpa-1.1.5.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/geronimo-jpa_3.0_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/geronimo-jta_1.1_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/grizzly-comet.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/grizzly-http-servlet.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/grizzly-utils.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/gwt-servlet.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/jdo2-api-2.3-eb.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/jsr107cache-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-comet-libs/javax.servlet.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
