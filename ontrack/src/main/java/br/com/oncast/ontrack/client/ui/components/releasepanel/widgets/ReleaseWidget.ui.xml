@@ -44,9 +44,9 @@
 			
 			.progressLabel {
 				position: absolute;
-				top: 0px;
+				top: 5px;
 				bottom: 0px;
-				right: 30px;
+				right: 40px;
 				
 				font-size: small;
 				opacity: 0.5;
