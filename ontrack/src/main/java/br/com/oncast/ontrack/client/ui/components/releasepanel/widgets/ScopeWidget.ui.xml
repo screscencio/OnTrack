@@ -6,10 +6,12 @@
 	<ui:style>
 		.panel {
 			position: relative;
-			height: 20px;
+			min-height: 20px;
 			margin: 1px;
-			border: 1px solid transparent;
+			border: 1px solid #cfc2dc;
 			background: #cdcfda;
+			padding-top: 4px;
+			padding-bottom: 4px;
 		}
 		
 		.panel:hover {
@@ -18,7 +20,7 @@
 		}
 
 	    .internalPanel {
-	        position: absolute;
+	        position: relative;
             top: 0px;
             bottom: 0px;
             left: 0px;
@@ -26,25 +28,38 @@
 	    }
 		
 		.descriptionLabel {
-			position: absolute;
+			position: relative;
 			top: 0px;
 			bottom: 0px;
 			left: 0px;
-			right: 100px;
+			margin-right: 100px;
 			padding-right: 5px;
-			padding-left: 5px;
-			overflow: hidden;
+			padding-left: 8px;
+			overflow: visible;
+			overflow-x: visible;
+			overflow-y: hidden;
+			
+			font-size: 12px;
+			font-stretch: extra-expanded;
+			line-height: 120%;
+			color: #555;
 		}
 		
 		.progressLabel {
 			position: absolute;
 			top: 0px;
 			bottom: 0px;
-			right: 0px;
-			width: 90px;
+			right: 25px;
+			width: 70px;
 			padding-right: 5px;
 			padding-left: 5px;
 			color: #A5A5A5;
+            overflow: visible;
+            overflow-x: visible;
+            overflow-y: hidden;
+            
+            text-align: center;
+            font-size: 11px;
 		}
 		
 		.mouseActionsMenu {
