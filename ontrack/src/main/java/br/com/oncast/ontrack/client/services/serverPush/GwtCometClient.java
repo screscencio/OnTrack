@@ -1,3 +1,9 @@
+/*
+ * DECISION (14/09/2011) Rodrigo decided to keep this implementation, for now fixing only excessive Alerts (mainly in browser crashes apparently caused by
+ * session timeout), even though some workarounds are going to be needed. A ping will be implemented to keep the server session a live and all other errors will
+ * still show an alert.
+ */
+
 package br.com.oncast.ontrack.client.services.serverPush;
 
 import java.io.Serializable;
@@ -10,10 +16,16 @@ import br.com.oncast.ontrack.shared.config.UriConfigurations;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 class GwtCometClient implements ServerPushClient {
 
+	private static final int PING_TIMER_DELAY = 1000 * 60 * 10;
+
 	private final CometClient client;
+
+	private final GwtCometPingServiceAsync pingService = GWT.create(GwtCometPingService.class);
 
 	public GwtCometClient(final ServerPushClientEventListener serverPushClientEventListener) {
 		client = new CometClient(UriConfigurations.SERVER_PUSH_COMET_URL, GWT.<CometSerializer> create(ServerPushSerializer.class), new CometListener() {
@@ -36,7 +48,15 @@ class GwtCometClient implements ServerPushClient {
 
 			@Override
 			public void onError(final Throwable exception, final boolean connected) {
-				serverPushClientEventListener.onError(exception);
+				// IMPORTANT This is a workaround so that Alerts are not shown when manually reloading the application. This is done because there is no safe
+				// way to determine if a error was caused by the reload itself and the library errors throw only one type of exception.
+				new Timer() {
+
+					@Override
+					public void run() {
+						serverPushClientEventListener.onError(exception);
+					}
+				}.schedule(500);
 			}
 
 			@Override
@@ -44,6 +64,22 @@ class GwtCometClient implements ServerPushClient {
 				processIncomingMessages(serverPushClientEventListener, messages);
 			}
 		});
+
+		// IMPORTANT This timer is only used to keep the session alive. Should be removed when changing ServerPush implementation.
+		new Timer() {
+
+			@Override
+			public void run() {
+				pingService.ping(new AsyncCallback<Void>() {
+
+					@Override
+					public void onSuccess(final Void result) {}
+
+					@Override
+					public void onFailure(final Throwable caught) {}
+				});
+			}
+		}.scheduleRepeating(PING_TIMER_DELAY);
 	}
 
 	@Override
@@ -60,7 +96,7 @@ class GwtCometClient implements ServerPushClient {
 		for (final Serializable message : messages) {
 			if (message instanceof ServerPushEvent) serverPushClientEventListener.onEvent((ServerPushEvent) message);
 			else {
-				// TODO Threat unknown message received by the comet server push lib.
+				// TODO Threat unknown message received by the comet server push library.
 			}
 		}
 	}
