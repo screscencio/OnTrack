@@ -6,7 +6,6 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 
 	@Override
 	public void treatFatalError(final String errorDescriptionMessage, final Throwable caught) {
-		caught.printStackTrace();
 		treatFatalError(errorDescriptionMessage);
 	}
 

@@ -46,6 +46,7 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 			// TODO Remove this print stack trace.
 			e.printStackTrace();
 			// TODO Analyze if removing a comet session would be necessary here. This exception is thrown exclusively when the client is disconnected.
+			LOGGER.error("It was not possible to push event to client '" + client + "'.", e);
 		}
 	}
 

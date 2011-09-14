@@ -23,6 +23,14 @@
 		<servlet-name>serverPushComet</servlet-name>
 		<url-pattern>/application/comet</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>gwtCometPingService</servlet-name>
+		<servlet-class>br.com.oncast.ontrack.server.services.serverPush.GwtCometPingServiceServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>gwtCometPingService</servlet-name>
+		<url-pattern>/application/gwtCometPingService</url-pattern>
+	</servlet-mapping>
 
 	<!-- RequestDispatch Service Definitions and Mappings -->
 	<servlet>

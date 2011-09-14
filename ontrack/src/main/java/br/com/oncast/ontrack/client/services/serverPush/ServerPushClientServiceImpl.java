@@ -8,20 +8,16 @@ import java.util.Map;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
-import com.google.gwt.user.client.Timer;
-
 public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
-	private final Timer connectionHealthMonitorTimer;
 
 	public ServerPushClientServiceImpl(final ErrorTreatmentService errorTreatmentService) {
 		serverPushClient = new GwtCometClient(new ServerPushClientEventListener() {
+
 			@Override
-			public void onConnected() {
-				scheduleConnectionHealthMonitor();
-			}
+			public void onConnected() {}
 
 			@Override
 			public void onDisconnected() {}
@@ -39,18 +35,10 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			@Override
 			public void onError(final Throwable exception) {
 				errorTreatmentService.treatFatalError(
-						"The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.", exception);
+								"The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.",
+								exception);
 			}
 		});
-		connectionHealthMonitorTimer = new Timer() {
-
-			@Override
-			public void run() {
-				if (!serverPushClient.isRunning()) errorTreatmentService
-						.treatFatalError("The server connection is down.\n\nThe application will be briethly reloaded.");
-				else scheduleConnectionHealthMonitor();
-			}
-		};
 		connect();
 	}
 
@@ -71,12 +59,6 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void notifyEventHandler(final ServerPushEventHandler handler, final ServerPushEvent event) {
 		handler.onEvent(event);
-	}
-
-	// TODO Analyze the necessity of this method and timer. For now it is being used as a guarantee of service availability.
-	private void scheduleConnectionHealthMonitor() {
-		connectionHealthMonitorTimer.cancel();
-		connectionHealthMonitorTimer.schedule(5000);
 	}
 
 	private void connect() {
