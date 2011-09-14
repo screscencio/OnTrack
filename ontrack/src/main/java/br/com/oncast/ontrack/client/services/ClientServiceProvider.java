@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentServiceImpl;
-import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
@@ -76,9 +75,5 @@ public class ClientServiceProvider {
 	private EventBus getEventBus() {
 		if (eventBus != null) return eventBus;
 		return eventBus = new SimpleEventBus();
-	}
-
-	public GlobalNativeEventService getNativeEventService() {
-		return GlobalNativeEventService.getInstance();
 	}
 }
