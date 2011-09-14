@@ -60,7 +60,7 @@ public class ScopeRepresentationParser {
 	}
 
 	private String preparePattern(final String tagsRepresentation) {
-		return tagsRepresentation.replace("\"", "").replace("'", "");
+		return tagsRepresentation;
 	}
 
 	private void interpretFullMatch(final String scopeRepresentation, final String tagsRepresentation) {
