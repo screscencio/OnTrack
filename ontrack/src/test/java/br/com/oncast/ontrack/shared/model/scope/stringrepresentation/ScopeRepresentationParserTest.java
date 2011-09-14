@@ -49,13 +49,13 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
-	public void shouldMatchDescriptionAndIgnoreQuotes1() {
-		test("descrição\" bla", "descrição bla", "", false, 0);
+	public void shouldMatchDescriptionAndNotIgnoreQuotes1() {
+		test("descrição\" bla", "descrição\" bla", "", false, 0);
 	}
 
 	@Test
-	public void shouldMatchDescriptionAndIgnoreQuotes2() {
-		test("descrição' bla", "descrição bla", "", false, 0);
+	public void shouldMatchDescriptionAndNotIgnoreQuotes2() {
+		test("descrição' bla", "descrição' bla", "", false, 0);
 	}
 
 	@Test
@@ -119,23 +119,23 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
-	public void shouldMatchReleaseAndIgnoreQuotes1() {
-		test(RELEASE_SYMBOL + "re\"lease", "", "release", false, 0);
+	public void shouldMatchReleaseAndNotIgnoreQuotes1() {
+		test(RELEASE_SYMBOL + "re\"lease", "", "re\"lease", false, 0);
 	}
 
 	@Test
-	public void shouldMatchReleaseAndIgnoreQuotes2() {
-		test(RELEASE_SYMBOL + "re'lease", "", "release", false, 0);
+	public void shouldMatchReleaseAndNotIgnoreQuotes2() {
+		test(RELEASE_SYMBOL + "re'lease", "", "re'lease", false, 0);
 	}
 
 	@Test
-	public void shouldMatchReleaseWithSpacesAndIgnoreQuotes() {
-		test(RELEASE_SYMBOL + "rele'ase com es\"paços", "", "release com espaços", false, 0);
+	public void shouldMatchReleaseWithSpacesAndNotIgnoreQuotes() {
+		test(RELEASE_SYMBOL + "rele'ase com es\"paços", "", "rele'ase com es\"paços", false, 0);
 	}
 
 	@Test
-	public void shouldMatchDescriptionAndReleaseWithSpacesAndIgnoreQuotes() {
-		test("desc\"rição com espaços " + RELEASE_SYMBOL + "rele'ase com es\"paços", "descrição com espaços", "release com espaços", false, 0);
+	public void shouldMatchDescriptionAndReleaseWithSpacesAndNotIgnoreQuotes() {
+		test("desc\"rição com espaços " + RELEASE_SYMBOL + "rele'ase com es\"paços", "desc\"rição com espaços", "rele'ase com es\"paços", false, 0);
 	}
 
 	@Test
@@ -297,23 +297,23 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
-	public void shouldMatchProgressAndIgnoreQuotes1() {
-		test(PROGRESS_SYMBOL + "Under\" work", "", "Under work");
+	public void shouldMatchProgressAndNotIgnoreQuotes1() {
+		test(PROGRESS_SYMBOL + "Under\" work", "", "Under\" work");
 	}
 
 	@Test
-	public void shouldMatchProgressAndIgnoreQuotes2() {
-		test(PROGRESS_SYMBOL + "Under'work", "", "Underwork");
+	public void shouldMatchProgressAndNotIgnoreQuotes2() {
+		test(PROGRESS_SYMBOL + "Under'work", "", "Under'work");
 	}
 
 	@Test
-	public void shouldMatchProgressWithSpacesAndIgnoreQuotes() {
-		test(PROGRESS_SYMBOL + "I am 'design\"ing", "", "I am designing");
+	public void shouldMatchProgressWithSpacesAndNotIgnoreQuotes() {
+		test(PROGRESS_SYMBOL + "I am 'design\"ing", "", "I am 'design\"ing");
 	}
 
 	@Test
-	public void shouldMatchDescriptionAndProgressWithSpacesAndIgnoreQuotes() {
-		test("desc\"rição com espaços " + PROGRESS_SYMBOL + "I am 'design\"ing", "descrição com espaços", "I am designing");
+	public void shouldMatchDescriptionAndProgressWithSpacesAndNotIgnoreQuotes() {
+		test("desc\"rição com espaços " + PROGRESS_SYMBOL + "I am 'design\"ing", "desc\"rição com espaços", "I am 'design\"ing");
 	}
 
 	@Test
