@@ -22,17 +22,15 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class PlanningActivity extends AbstractActivity {
 
+	private final GlobalNativeEventService globalNativeEventService = GlobalNativeEventService.getInstance();
 	private final ContextProviderService contextProviderService;
 	private final ActionExecutionService actionExecutionService;
 	private final ActivityActionExecutionListener activityActionExecutionListener;
-	private final GlobalNativeEventService globalNativeEventService;
 	private final NativeEventListener globalKeyUpListener;
 
-	public PlanningActivity(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
-			final GlobalNativeEventService globalNativeEventService) {
+	public PlanningActivity(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService) {
 		this.contextProviderService = contextProviderService;
 		this.actionExecutionService = actionExecutionService;
-		this.globalNativeEventService = globalNativeEventService;
 
 		activityActionExecutionListener = new ActivityActionExecutionListener();
 		globalKeyUpListener = new NativeEventListener() {
