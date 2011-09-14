@@ -30,12 +30,12 @@
 			}
 			
 			.headerContainerStateImageOpened {
-                background: url("/resources/image/releasePanel/closeContainer.jpg") no-repeat center;
+                background: url("resources/image/releasePanel/closeContainer.jpg") no-repeat center;
 				cursor: pointer;
 			}
 			
 			.headerContainerStateImageClosed {
-				background: url("/resources/image/releasePanel/openContainer.jpg") no-repeat center;
+				background: url("resources/image/releasePanel/openContainer.jpg") no-repeat center;
 				cursor: pointer;
             }
 
