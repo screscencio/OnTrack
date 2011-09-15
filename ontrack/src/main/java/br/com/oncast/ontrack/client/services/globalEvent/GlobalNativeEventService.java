@@ -12,6 +12,7 @@ public class GlobalNativeEventService {
 
 	private static GlobalNativeEventService instance;
 	private final List<NativeEventListener> keyUpListeners = new ArrayList<NativeEventListener>();
+	private final List<NativeEventListener> keyDownListeners = new ArrayList<NativeEventListener>();
 	private final List<NativeEventListener> clickListeners = new ArrayList<NativeEventListener>();
 
 	public static GlobalNativeEventService getInstance() {
@@ -21,23 +22,30 @@ public class GlobalNativeEventService {
 
 	private GlobalNativeEventService() {
 		Event.addNativePreviewHandler(new NativePreviewHandler() {
+
 			@Override
 			public void onPreviewNativeEvent(final NativePreviewEvent event) {
 				final int eventType = event.getTypeInt();
 
 				switch (eventType) {
-					case Event.ONKEYUP: {
-						final NativeEvent nativeEvent = event.getNativeEvent();
-						for (final NativeEventListener listener : new ArrayList<NativeEventListener>(keyUpListeners))
-							listener.onNativeEvent(nativeEvent);
-					}
-						break;
-					case Event.ONCLICK: {
-						final NativeEvent nativeEvent = event.getNativeEvent();
-						for (final NativeEventListener listener : new ArrayList<NativeEventListener>(clickListeners))
-							listener.onNativeEvent(nativeEvent);
-					}
-						break;
+				case Event.ONKEYUP: {
+					final NativeEvent nativeEvent = event.getNativeEvent();
+					for (final NativeEventListener listener : new ArrayList<NativeEventListener>(keyUpListeners))
+						listener.onNativeEvent(nativeEvent);
+				}
+					break;
+				case Event.ONKEYDOWN: {
+					final NativeEvent nativeEvent = event.getNativeEvent();
+					for (final NativeEventListener listener : new ArrayList<NativeEventListener>(keyDownListeners))
+						listener.onNativeEvent(nativeEvent);
+				}
+					break;
+				case Event.ONCLICK: {
+					final NativeEvent nativeEvent = event.getNativeEvent();
+					for (final NativeEventListener listener : new ArrayList<NativeEventListener>(clickListeners))
+						listener.onNativeEvent(nativeEvent);
+				}
+					break;
 				}
 			}
 		});
@@ -57,6 +65,14 @@ public class GlobalNativeEventService {
 
 	public void removeKeyUpListener(final NativeEventListener listener) {
 		keyUpListeners.remove(listener);
+	}
+
+	public void addKeyDownListener(final NativeEventListener listener) {
+		keyDownListeners.add(listener);
+	}
+
+	public void removeKeyDownListener(final NativeEventListener listener) {
+		keyDownListeners.remove(listener);
 	}
 
 }

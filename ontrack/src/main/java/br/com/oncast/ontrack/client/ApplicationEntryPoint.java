@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.client;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.ui.ApplicationUIPanel;
+import br.com.oncast.ontrack.client.ui.nativeeventhandlers.BrowserEscapeKeyDefaultActionPreventer;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
 import br.com.oncast.ontrack.client.ui.places.planning.PlannnigPlace;
@@ -18,7 +20,12 @@ public class ApplicationEntryPoint implements EntryPoint {
 
 	@Override
 	public void onModuleLoad() {
+		ignoreBrowserDefaultActionForEscapeKey();
 		setUpClientServices();
+	}
+
+	private void ignoreBrowserDefaultActionForEscapeKey() {
+		GlobalNativeEventService.getInstance().addKeyDownListener(new BrowserEscapeKeyDefaultActionPreventer());
 	}
 
 	private void setUpClientServices() {
