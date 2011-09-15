@@ -21,9 +21,21 @@
 			
 			.descriptionLabel {
 				cursor: pointer;
+				text-align: left;
+				position: absolute;
+				right: 300px;
+				left: 0px;
+				height: 25px;
+				overflow: hidden;
+				text-overflow: ellipsis;
 			}
 			
 			.effort {
+				position: absolute;
+				right: 210px;
+				width: 80px;
+				height: 20px;
+				overflow: hidden;
 				margin-left: 4px;
 				margin-right: 4px;
 				padding-left: 3px;
@@ -70,18 +82,23 @@
                 position: absolute;
                 top: 0px;
                 bottom: 0px;
-                right: 160px;
-                
+                right: 90px;
+                width: 120px;
+				height: 20px;
+				overflow: hidden;           
                 text-align: right;
 			}
 			
 			.tag {
+				position: absolute;
+				right: 0px;
+				
 			}
 			
 			.releaseMenuPanel {
                 position: absolute;
                 top: 20px;
-                right: 0px;
+                right: 90px;
                 z-index: 2;
 			}
 
@@ -90,8 +107,8 @@
 				top: 0px;
 				bottom: 0px;
 				right: 5px;
-				width: 150px;
-
+				width: 80px;
+				overflow-x : hidden;
 				opacity: 0.2;
 				font-size: small;
 				font-stretch: expanded;
@@ -112,9 +129,9 @@
 					</g:HTMLPanel>
 				</g:HorizontalPanel>
 				<g:HTMLPanel styleName="{style.releasePanel}" >
-                    <g:HTMLPanel ui:field="releaseMenuPanel" styleName="{style.releaseMenuPanel}" />
 				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 				</g:HTMLPanel>
+                <g:HTMLPanel ui:field="releaseMenuPanel" styleName="{style.releaseMenuPanel}" />
 				<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
 			</g:FlowPanel>
 			<g:TextBox ui:field="editionBox" styleName="{style.editionBox}" />

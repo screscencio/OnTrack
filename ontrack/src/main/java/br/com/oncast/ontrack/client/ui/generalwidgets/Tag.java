@@ -39,6 +39,12 @@ public class Tag extends Composite implements HasText {
 	@Override
 	public void setText(final String text) {
 		tagLabel.setText(text);
+		tagLabel.setTitle(text);
+	}
+
+	@Override
+	public void setTitle(final String title) {
+		super.setTitle(title);
 	}
 
 	public void setCloseButtonClickHandler(final ClickHandler clickHandler) {

@@ -176,6 +176,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	public void setValue(final String value) {
 		descriptionLabel.setText(value);
+		descriptionLabel.setTitle(value);
 		editionBox.setText(value);
 	}
 
@@ -215,6 +216,7 @@ public class ScopeTreeItemWidget extends Composite {
 	public void setScope(final Scope scope) {
 		this.scope = scope;
 		descriptionLabel.setText(scope.getDescription());
+		descriptionLabel.setTitle(scope.getDescription());
 		editionBox.setText(scope.getDescription());
 		updateDisplay();
 	}
@@ -283,6 +285,7 @@ public class ScopeTreeItemWidget extends Composite {
 		currentProgress = progress;
 
 		progressLabel.setText(progress);
+		progressLabel.setTitle(progress);
 		progressLabel.setVisible(!progress.isEmpty());
 	}
 
