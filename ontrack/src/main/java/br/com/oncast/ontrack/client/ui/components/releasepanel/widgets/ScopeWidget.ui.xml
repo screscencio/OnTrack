@@ -6,12 +6,11 @@
 	<ui:style>
 		.panel {
 			position: relative;
-			min-height: 20px;
+			min-height: 16px;
 			margin: 1px;
 			border: 1px solid #cfc2dc;
 			background: #cdcfda;
-			padding-top: 4px;
-			padding-bottom: 4px;
+			padding: 0px;
 		}
 		
 		.panel:hover {
@@ -33,6 +32,8 @@
 			bottom: 0px;
 			left: 0px;
 			margin-right: 100px;
+			padding-top: 4px;
+			padding-bottom: 4px;
 			padding-right: 5px;
 			padding-left: 8px;
 			overflow: visible;
@@ -51,28 +52,30 @@
 			bottom: 0px;
 			right: 25px;
 			width: 70px;
+			padding-top: 5px;
+			padding-bottom: 4px;
 			padding-right: 5px;
 			padding-left: 5px;
 			color: #A5A5A5;
-            overflow: visible;
-            overflow-x: visible;
-            overflow-y: hidden;
-            
-            text-align: center;
+            overflow: hidden;
+           
+           	text-align: right;
             font-size: 11px;
 		}
 		
 		.mouseActionsMenu {
 			position: absolute;
 			top: 0px;
-			right: 5px;
+			right: 1px;
+			padding-top: 1px;
+			padding-bottom: 1px;
 		}
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">
 	   <g:FlowPanel styleName="{style.internalPanel}">
 		<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
-		<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
+		<g:Label ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
 		<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 		</g:FlowPanel>
 	</g:FocusPanel>
