@@ -10,11 +10,14 @@ import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -29,6 +32,13 @@ public class CommandMenu extends Composite {
 
 	interface CommandMenuUiBinder extends UiBinder<Widget, CommandMenu> {}
 
+	interface Style extends CssResource {
+
+		String menuShowingDown();
+
+		String menuShowingUp();
+	}
+
 	private final NativeEventListener nativeEventListener;
 
 	@UiField
@@ -36,6 +46,9 @@ public class CommandMenu extends Composite {
 
 	@UiField
 	protected FocusPanel focusPanel;
+
+	@UiField
+	protected Style style;
 
 	private CloseHandler closeHandler;
 
@@ -78,7 +91,20 @@ public class CommandMenu extends Composite {
 		GLOBAL_NATIVE_EVENT_SERVICE.addClickListener(nativeEventListener);
 
 		this.setVisible(true);
+		assureVisibility();
 		menu.focus();
+	}
+
+	private void assureVisibility() {
+		menu.removeStyleName(style.menuShowingUp());
+		menu.removeStyleName(style.menuShowingDown());
+
+		final int MARGIN = 35;
+		final Element element = menu.getElement();
+		final int deltaBottom = (element.getAbsoluteTop() + element.getClientHeight() + MARGIN) - Window.getClientHeight();
+		final int deltaTop = element.getAbsoluteTop() - element.getClientHeight() - MARGIN;
+
+		menu.addStyleName((deltaBottom > 0 && deltaTop > 0) ? style.menuShowingUp() : style.menuShowingDown());
 	}
 
 	public void hide() {
