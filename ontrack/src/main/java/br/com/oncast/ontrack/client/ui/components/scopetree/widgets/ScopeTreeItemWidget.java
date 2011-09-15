@@ -275,8 +275,7 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	/*
-	 * Decisions:
-	 * - [02/08/2011] It was decided to display a percentage result even if some child scope not been estimated (effort = 0) and it is not done.
+	 * Decisions: - [02/08/2011] It was decided to display a percentage result even if some child scope not been estimated (effort = 0) and it is not done.
 	 */
 	private void updateProgressDisplay() {
 		final String progress = scope.isLeaf() ? getProgressDescriptionForLeaf() : getProgressDescriptionForNonLeaf();

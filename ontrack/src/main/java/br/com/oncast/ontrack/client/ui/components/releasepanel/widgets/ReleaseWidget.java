@@ -123,8 +123,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
-			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
-			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory, final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this.release = release;
 		this.releaseWidgetFactory = releaseWidgetFactory;
 		this.scopeWidgetFactory = scopeWidgetFactory;

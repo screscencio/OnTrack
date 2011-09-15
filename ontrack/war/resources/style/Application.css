@@ -8,7 +8,18 @@ html,body {
     font-size: 14px;
 }
 
-<!-- Tree -->
+/* Cross browser CSS3-based text-overflow (ie6+, firefox, chrome, opera, safari, etc) */
+.v-ellip, v\:ellip {
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -moz-binding: url( 'bindings.xml#ellipsis' );
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 100%;
+}
+
+/* Tree */
 .gwt-Tree {
 	font-family: verdana, arial, monospace;
 	font-size: 14px;
@@ -37,7 +48,7 @@ html,body {
 	border: 1px solid #f2f2f2;
 }
 
-<!-- MenuBar -->
+/* MenuBar */
 .gwt-MenuBar {}
 .gwt-MenuBar-horizontal {}
 

@@ -65,7 +65,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 				DOM.setStyleAttribute(tdContent, "width", "100%");
 
 				// Undoes padding from table element.
-				// DOM.setStyleAttribute(item.getElement(), "padding", "0px"); // Changed because of the reset.css
+				DOM.setStyleAttribute(item.getElement(), "padding", "0px");
 				DOM.appendChild(tdContent, item.contentElem);
 				item.imageHolder = tdImg;
 			}

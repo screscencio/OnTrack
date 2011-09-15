@@ -25,9 +25,8 @@
 				position: absolute;
 				right: 300px;
 				left: 0px;
-				height: 25px;
-				overflow: hidden;
-				text-overflow: ellipsis;
+				top: 0px;
+				bottom: 0px;
 			}
 			
 			.effort {
@@ -84,21 +83,21 @@
                 bottom: 0px;
                 right: 90px;
                 width: 120px;
-				height: 20px;
-				overflow: hidden;           
+				overflow: hidden;				
                 text-align: right;
+                height: 20px;
 			}
 			
 			.tag {
 				position: absolute;
 				right: 0px;
-				
 			}
 			
 			.releaseMenuPanel {
                 position: absolute;
                 top: 20px;
                 right: 90px;
+                min-width: 200px;
                 z-index: 2;
 			}
 
@@ -108,7 +107,6 @@
 				bottom: 0px;
 				right: 5px;
 				width: 80px;
-				overflow-x : hidden;
 				opacity: 0.2;
 				font-size: small;
 				font-stretch: expanded;
@@ -122,7 +120,7 @@
 		<g:DeckPanel ui:field="deckPanel" styleName="{style.editableLabel}">
 			<g:FlowPanel styleName="{style.visualizationPanel}">
 				<g:HorizontalPanel styleName="{style.scope}" >
-					<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
+					<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip" />
 					<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
 						<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
 						<g:Label ui:field="effortDifferenceLabel" styleName="{style.effortDifferenceLabel}" />
@@ -132,7 +130,7 @@
 				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 				</g:HTMLPanel>
                 <g:HTMLPanel ui:field="releaseMenuPanel" styleName="{style.releaseMenuPanel}" />
-				<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
+				<g:Label ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
 			</g:FlowPanel>
 			<g:TextBox ui:field="editionBox" styleName="{style.editionBox}" />
 		</g:DeckPanel>
