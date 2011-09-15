@@ -2,33 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-	<ui:style
-		type="br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenu.Style">
-			.panel {
-				position: relative;
-				right: 0px;
-				left: 0px;
-			}
-			
-			.menuShowingDown {
-				position: absolute;
-				top: 0px;
-                right: 0px;
-                left: 0px;
-			}
-			
-			.menuShowingUp {
-				position: absolute;
-                right: 0px;
-                left: 0px;
-				bottom: 0px;
-			}
-		</ui:style>
-
-	<g:HTMLPanel styleName="{style.panel}">
-		<g:FocusPanel ui:field="focusPanel">
-			<g:MenuBar ui:field="menu" />
-		</g:FocusPanel>
-	</g:HTMLPanel>
+	<g:FocusPanel ui:field="focusPanel">
+		<g:MenuBar ui:field="menu" />
+	</g:FocusPanel>
 
 </ui:UiBinder> 
