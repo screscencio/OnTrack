@@ -7,9 +7,11 @@
 				position: relative;
 			}
 			
-			.menuButton {
-                width: 20px;
-                height: 20px;
+			.menuImage {
+				background: url("resources/image/releasePanel/arrow.png") no-repeat center;
+				cursor: pointer;
+                width: 18px;
+                height: 18px;
 			}
 
 			.menu {
@@ -22,7 +24,7 @@
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.panel}">
-		<g:Button styleName="{style.menuButton}" ui:field="button" />
+		<g:Image styleName="{style.menuImage}" ui:field="menuImage" />
 		<t:CommandMenu styleName="{style.menu}" ui:field="menu" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -7,8 +7,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MouseCommandsMenu extends Composite {
@@ -18,10 +18,10 @@ public class MouseCommandsMenu extends Composite {
 	interface MouseActionsMenuUiBinder extends UiBinder<Widget, MouseCommandsMenu> {}
 
 	@UiField
-	protected Button button;
+	protected CommandMenu menu;
 
 	@UiField
-	protected CommandMenu menu;
+	protected Image menuImage;
 
 	public MouseCommandsMenu(final List<CommandMenuItem> itens) {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -29,7 +29,7 @@ public class MouseCommandsMenu extends Composite {
 		menu.setItens(itens);
 	}
 
-	@UiHandler("button")
+	@UiHandler("menuImage")
 	protected void onClick(final ClickEvent e) {
 		menu.show();
 	}
