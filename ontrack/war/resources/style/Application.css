@@ -44,8 +44,8 @@ html,body {
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
-	background-color: #fafafa;
-	border: 1px solid #f2f2f2;
+	background-color: #E3E3E3;
+	border: 1px solid #CCCCCC;
 }
 
 /* MenuBar */
