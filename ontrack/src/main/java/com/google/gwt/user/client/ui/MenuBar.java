@@ -587,89 +587,89 @@ public class MenuBar extends Widget implements PopupListener, HasAnimation,
 	public void onBrowserEvent(final Event event) {
 		final MenuItem item = findItem(DOM.eventGetTarget(event));
 		switch (DOM.eventGetType(event)) {
-		case Event.ONCLICK: {
-			FocusPanel.impl.focus(getElement());
-			// Fire an item's command when the user clicks on it.
-			if (item != null) {
-				doItemAction(item, true, true);
+			case Event.ONCLICK: {
+				FocusPanel.impl.focus(getElement());
+				// Fire an item's command when the user clicks on it.
+				if (item != null) {
+					doItemAction(item, true, true);
+				}
+				break;
 			}
-			break;
-		}
 
-		case Event.ONMOUSEOVER: {
-			if (item != null) {
-				itemOver(item, true);
+			case Event.ONMOUSEOVER: {
+				if (item != null) {
+					itemOver(item, true);
+				}
+				break;
 			}
-			break;
-		}
 
-		case Event.ONMOUSEOUT: {
-			if (item != null) {
-				itemOver(null, true);
+			case Event.ONMOUSEOUT: {
+				if (item != null) {
+					itemOver(null, true);
+				}
+				break;
 			}
-			break;
-		}
 
-		case Event.ONFOCUS: {
-			selectFirstItemIfNoneSelected();
-			break;
-		}
+			case Event.ONFOCUS: {
+				selectFirstItemIfNoneSelected();
+				break;
+			}
 
-		case Event.ONKEYDOWN: {
-			final int keyCode = DOM.eventGetKeyCode(event);
-			switch (keyCode) {
-			case KeyCodes.KEY_LEFT:
-				if (LocaleInfo.getCurrentLocale().isRTL()) {
-					moveToNextItem();
-				}
-				else {
-					moveToPrevItem();
-				}
-				eatEvent(event);
-				break;
-			case KeyCodes.KEY_RIGHT:
-				if (LocaleInfo.getCurrentLocale().isRTL()) {
-					moveToPrevItem();
-				}
-				else {
-					moveToNextItem();
-				}
-				eatEvent(event);
-				break;
-			case KeyCodes.KEY_UP:
-				moveSelectionUp();
-				eatEvent(event);
-				break;
-			case KeyCodes.KEY_DOWN:
-				moveSelectionDown();
-				eatEvent(event);
-				break;
-			case KeyCodes.KEY_ESCAPE:
-				closeAllParentsAndChildren();
-				eatEvent(event);
-				break;
-			case KeyCodes.KEY_TAB:
-				closeAllParentsAndChildren();
-				break;
-			} // end switch(keyCode)
+			case Event.ONKEYDOWN: {
+				final int keyCode = DOM.eventGetKeyCode(event);
+				switch (keyCode) {
+					case KeyCodes.KEY_LEFT:
+						if (LocaleInfo.getCurrentLocale().isRTL()) {
+							moveToNextItem();
+						}
+						else {
+							moveToPrevItem();
+						}
+						eatEvent(event);
+						break;
+					case KeyCodes.KEY_RIGHT:
+						if (LocaleInfo.getCurrentLocale().isRTL()) {
+							moveToPrevItem();
+						}
+						else {
+							moveToNextItem();
+						}
+						eatEvent(event);
+						break;
+					case KeyCodes.KEY_UP:
+						moveSelectionUp();
+						eatEvent(event);
+						break;
+					case KeyCodes.KEY_DOWN:
+						moveSelectionDown();
+						eatEvent(event);
+						break;
+					case KeyCodes.KEY_ESCAPE:
+						closeAllParentsAndChildren();
+						eatEvent(event);
+						break;
+					case KeyCodes.KEY_TAB:
+						closeAllParentsAndChildren();
+						break;
+				} // end switch(keyCode)
 
-			break;
-		} // end case Event.ONKEYDOWN
-
-			// Changed because of the need of capturing the enter on the keyup event.
-		case Event.ONKEYUP: {
-			final int keyCode = DOM.eventGetKeyCode(event);
-			switch (keyCode) {
-			case KeyCodes.KEY_ENTER:
-				if (!selectFirstItemIfNoneSelected()) {
-					doItemAction(selectedItem, true, true);
-					eatEvent(event);
-				}
 				break;
-			} // end switch(keyCode)
+			} // end case Event.ONKEYDOWN
 
-			break;
-		} // end case Event.ONKEYUP
+				// Changed because of the need of capturing the enter on the keyup event.
+			case Event.ONKEYUP: {
+				final int keyCode = DOM.eventGetKeyCode(event);
+				switch (keyCode) {
+					case KeyCodes.KEY_ENTER:
+						if (!selectFirstItemIfNoneSelected()) {
+							doItemAction(selectedItem, true, true);
+							eatEvent(event);
+						}
+						break;
+				} // end switch(keyCode)
+
+				break;
+			} // end case Event.ONKEYUP
 		} // end switch (DOM.eventGetType(event))
 		super.onBrowserEvent(event);
 	}
@@ -812,7 +812,7 @@ public class MenuBar extends Widget implements PopupListener, HasAnimation,
 	 * 
 	 * @return the <code>MenuItem</code> that is currently selected, or <code>null</code> if no items are currently selected
 	 */
-	protected MenuItem getSelectedItem() {
+	public MenuItem getSelectedItem() {
 		return this.selectedItem;
 	}
 
@@ -1203,7 +1203,7 @@ public class MenuBar extends Widget implements PopupListener, HasAnimation,
 				if (!event.isCanceled()) {
 
 					switch (event.getTypeInt()) {
-					case Event.ONMOUSEDOWN:
+						case Event.ONMOUSEDOWN:
 				// If the event target is part of the parent menu, suppress the
 				// event altogether.
 				final EventTarget target = event.getNativeEvent().getEventTarget();
@@ -1217,10 +1217,10 @@ public class MenuBar extends Widget implements PopupListener, HasAnimation,
 					selectItem(null);
 				}
 				return;
-			}
 		}
-		super.onPreviewNativeEvent(event);
 	}
+	super.onPreviewNativeEvent(event);
+}
 		};
 		popup.setAnimationType(AnimationType.ONE_WAY_CORNER);
 		popup.setAnimationEnabled(isAnimationEnabled);

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ScrollableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
@@ -299,8 +299,8 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	public void showBindReleaseMenu(final List<Release> releaseList) {
-		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		itens.add(new CommandMenuItem("None", new Command() {
+		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+		items.add(new CommandMenuItem("None", new Command() {
 
 			@Override
 			public void execute() {
@@ -309,7 +309,7 @@ public class ScopeTreeItemWidget extends Composite {
 		}));
 
 		for (final Release releaseItem : releaseList) {
-			itens.add(new CommandMenuItem(releaseItem.getFullDescription(), new Command() {
+			items.add(new CommandMenuItem(releaseItem.getFullDescription(), new Command() {
 
 				@Override
 				public void execute() {
@@ -317,7 +317,7 @@ public class ScopeTreeItemWidget extends Composite {
 				}
 			}));
 		}
-		final CommandMenu commandsMenu = new CommandMenu();
+		final ScrollableCommandMenu commandsMenu = new ScrollableCommandMenu();
 		commandsMenu.addCloseHandler(new CloseHandler() {
 
 			@Override
@@ -329,7 +329,7 @@ public class ScopeTreeItemWidget extends Composite {
 		releaseMenuPanel.clear();
 		releaseMenuPanel.add(commandsMenu);
 
-		commandsMenu.setItens(itens);
+		commandsMenu.setItems(items);
 		commandsMenu.show();
 	}
 }
