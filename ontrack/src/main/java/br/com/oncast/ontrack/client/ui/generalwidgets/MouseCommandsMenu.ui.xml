@@ -14,6 +14,7 @@
                 width: 18px;
                 height: 18px;
                 opacity: 0.2;
+                display: block;
 			}
 
             .menuImage:hover {
