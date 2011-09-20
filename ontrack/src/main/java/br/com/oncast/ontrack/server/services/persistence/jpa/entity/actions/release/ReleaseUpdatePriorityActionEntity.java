@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
@@ -13,7 +14,10 @@ import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
 public class ReleaseUpdatePriorityActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "referenceId")
 	private String referenceId;
+
+	@Column(name = "pos")
 	private int targetIndex;
 
 	public String getReferenceId() {

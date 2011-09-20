@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
@@ -15,13 +16,16 @@ public class ReleaseScopeUpdatePriorityActionEntity extends ModelActionEntity {
 
 	@ConversionAlias("releaseReferenceId")
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "referenceId")
 	private String releaseReferenceId;
 
 	@ConversionAlias("scopeReferenceId")
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "secundaryReferenceId")
 	private String scopeReferenceId;
 
 	@ConversionAlias("priority")
+	@Column(name = "pos")
 	private int priority;
 
 	public String getReleaseReferenceId() {
@@ -40,7 +44,7 @@ public class ReleaseScopeUpdatePriorityActionEntity extends ModelActionEntity {
 		this.scopeReferenceId = scopeReferenceId;
 	}
 
-	public void setPriority(int priority) {
+	public void setPriority(final int priority) {
 		this.priority = priority;
 	}
 

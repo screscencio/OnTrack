@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -16,14 +17,16 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction;
 public class ScopeInsertSiblingDownActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "referenceId")
 	private String referenceId;
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "secundaryReferenceId")
 	private String newScopeId;
 
 	@ConversionAlias("scopeUpdateAction")
 	@OneToOne(cascade = CascadeType.ALL)
-	private ScopeUpdateActionEntity scopeUpdateAction;
+	private ModelActionEntity subAction;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -41,11 +44,11 @@ public class ScopeInsertSiblingDownActionEntity extends ModelActionEntity {
 		this.newScopeId = newScopeId;
 	}
 
-	public ScopeUpdateActionEntity getScopeUpdateAction() {
-		return scopeUpdateAction;
+	public ModelActionEntity getSubAction() {
+		return subAction;
 	}
 
-	public void setScopeUpdateAction(final ScopeUpdateActionEntity scopeUpdateAction) {
-		this.scopeUpdateAction = scopeUpdateAction;
+	public void setSubAction(final ModelActionEntity subAction) {
+		this.subAction = subAction;
 	}
 }

@@ -20,10 +20,10 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 	@ConversionAlias("newReleaseId")
 	private UUID newReleaseId;
 
-	@ConversionAlias("releaseDescription")
-	private String releaseDescription;
+	@ConversionAlias("description")
+	private String description;
 
-	@ConversionAlias("subReleaseCreateAction")
+	@ConversionAlias("subAction")
 	private ReleaseCreateActionDefault subReleaseCreateAction;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -31,7 +31,7 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 
 	// The new release id must be created in constructors. If it is not created here, the actions cannot be executed correctly in the server side.
 	public ReleaseCreateActionDefault(final String releaseDescription) {
-		this.releaseDescription = releaseDescription;
+		this.description = releaseDescription;
 		newReleaseId = new UUID();
 	}
 
@@ -40,7 +40,7 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 		Release parentRelease = context.getProjectRelease();
 
 		Release newRelease = null;
-		final String[] releaseLevels = releaseDescription.split(Release.SEPARATOR);
+		final String[] releaseLevels = description.split(Release.SEPARATOR);
 
 		int i = 0;
 		while (i < releaseLevels.length) {
@@ -62,7 +62,7 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 	}
 
 	private void createSubRelease(final ProjectContext context) throws UnableToCompleteActionException {
-		if (subReleaseCreateAction == null) subReleaseCreateAction = new ReleaseCreateActionDefault(releaseDescription);
+		if (subReleaseCreateAction == null) subReleaseCreateAction = new ReleaseCreateActionDefault(description);
 		subReleaseCreateAction.execute(context);
 	}
 

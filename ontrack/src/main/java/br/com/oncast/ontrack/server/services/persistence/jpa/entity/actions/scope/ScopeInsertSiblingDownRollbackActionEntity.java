@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -16,11 +17,12 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownRollback
 public class ScopeInsertSiblingDownRollbackActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "referenceId")
 	private String referenceId;
 
 	@ConversionAlias("scopeUpdateRollbackAction")
 	@OneToOne(cascade = CascadeType.ALL)
-	private ScopeUpdateActionEntity scopeUpdateRollbackAction;
+	private ModelActionEntity subAction;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -30,11 +32,11 @@ public class ScopeInsertSiblingDownRollbackActionEntity extends ModelActionEntit
 		this.referenceId = referenceId;
 	}
 
-	public ScopeUpdateActionEntity getScopeUpdateRollbackAction() {
-		return scopeUpdateRollbackAction;
+	public ModelActionEntity getSubAction() {
+		return subAction;
 	}
 
-	public void setScopeUpdateRollbackAction(final ScopeUpdateActionEntity scopeUpdateRollbackAction) {
-		this.scopeUpdateRollbackAction = scopeUpdateRollbackAction;
+	public void setSubAction(final ModelActionEntity subAction) {
+		this.subAction = subAction;
 	}
 }

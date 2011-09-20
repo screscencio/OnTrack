@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.rel
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -20,21 +21,31 @@ import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction;
 public class ReleaseRemoveRollbackActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@ConversionAlias("referenceId")
+	@Column(name = "referenceId")
 	private String referenceId;
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@ConversionAlias("parentReleaseId")
+	@Column(name = "secundaryReferenceId")
 	private String parentReleaseId;
 
+	@ConversionAlias("description")
+	@Column(name = "description")
 	private String description;
 
 	@ConversionAlias("index")
+	@Column(name = "pos")
 	private int pos;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@Column(name = "ReleaseRemoveRollbackActionEntity_childActionList")
 	@JoinTable(name = "ReleaseRemoveRollbackActionEntity_ChildAction")
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<ReleaseRemoveRollbackActionEntity> childActionList;
 
 	@OneToMany(cascade = CascadeType.ALL)
+	@Column(name = "ReleaseRemoveRollbackActionEntity_subActionRollbackList")
+	@JoinTable(name = "ReleaseRemoveRollbackActionEntity_SubActionRollbackList")
 	private List<ScopeBindReleaseActionEntity> subActionRollbackList;
 
 	public String getReferenceId() {

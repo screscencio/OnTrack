@@ -1,10 +1,12 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
@@ -15,15 +17,22 @@ import br.com.oncast.ontrack.shared.model.actions.ReleaseCreateActionDefault;
 public class ReleaseCreateActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@ConversionAlias("referenceId")
+	@Column(name = "referenceId")
 	private String referenceId;
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@ConversionAlias("newReleaseId")
+	@Column(name = "secundaryReferenceId")
 	private String newReleaseId;
 
-	private String releaseDescription;
+	@ConversionAlias("description")
+	@Column(name = "description")
+	private String description;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	private ReleaseCreateActionEntity subReleaseCreateAction;
+	@ConversionAlias("subAction")
+	private ModelActionEntity subAction;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -41,19 +50,19 @@ public class ReleaseCreateActionEntity extends ModelActionEntity {
 		this.newReleaseId = newReleaseId;
 	}
 
-	public String getReleaseDescription() {
-		return releaseDescription;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setReleaseDescription(final String releaseDescription) {
-		this.releaseDescription = releaseDescription;
+	public void setDescription(final String description) {
+		this.description = description;
 	}
 
-	public ReleaseCreateActionEntity getSubReleaseCreateAction() {
-		return subReleaseCreateAction;
+	public ModelActionEntity getSubAction() {
+		return subAction;
 	}
 
-	public void setSubReleaseCreateAction(final ReleaseCreateActionEntity subReleaseCreateAction) {
-		this.subReleaseCreateAction = subReleaseCreateAction;
+	public void setSubAction(final ModelActionEntity subAction) {
+		this.subAction = subAction;
 	}
 }
