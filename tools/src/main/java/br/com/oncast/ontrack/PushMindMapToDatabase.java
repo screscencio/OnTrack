@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindProje
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 
-public class ImportMindMap {
+public class PushMindMapToDatabase {
 	public static void main(final String... args) {
 		final File current = new File(".");
 		for (final File file : current.listFiles()) {
