@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
@@ -10,14 +11,12 @@ import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -42,6 +41,8 @@ public class CommandMenu extends Composite {
 
 	private CloseHandler closeHandler;
 
+	private final List<KeyUpHandler> keyUpHandlerList = new ArrayList<KeyUpHandler>();
+
 	@UiFactory
 	protected MenuBar createMenuBar() {
 		return new MenuBar(true);
@@ -62,9 +63,9 @@ public class CommandMenu extends Composite {
 		};
 	}
 
-	public void setItens(final List<CommandMenuItem> itens) {
+	public void setItems(final List<CommandMenuItem> items) {
 		menu.clearItems();
-		for (final CommandMenuItem item : itens) {
+		for (final CommandMenuItem item : items) {
 			final MenuItem menuItem = new MenuItem(item.getText(), true, new Command() {
 
 				@Override
@@ -81,19 +82,7 @@ public class CommandMenu extends Composite {
 		GLOBAL_NATIVE_EVENT_SERVICE.addClickListener(nativeEventListener);
 
 		this.setVisible(true);
-		assureVisibility();
 		menu.focus();
-	}
-
-	private void assureVisibility() {
-		final int MARGIN = 35;
-		final Element element = menu.getElement();
-		final int deltaBottom = (element.getAbsoluteTop() + element.getClientHeight() + MARGIN) - Window.getClientHeight();
-		final int deltaTop = element.getAbsoluteTop() - element.getClientHeight() - MARGIN;
-
-		if (!(deltaBottom > 0 && deltaTop > 0)) return;
-
-		DOM.setStyleAttribute(element, "marginTop", "-" + element.getClientHeight() + "px");
 	}
 
 	public void hide() {
@@ -106,6 +95,8 @@ public class CommandMenu extends Composite {
 
 	@UiHandler("focusPanel")
 	protected void handleKeyUp(final KeyUpEvent event) {
+		notifyKeyUpHandlers(event);
+
 		if (event.getNativeKeyCode() != KEY_ESCAPE) return;
 
 		event.preventDefault();
@@ -113,8 +104,17 @@ public class CommandMenu extends Composite {
 		hide();
 	}
 
+	private void notifyKeyUpHandlers(final KeyUpEvent event) {
+		for (final KeyUpHandler handler : keyUpHandlerList)
+			handler.onKeyUp(event);
+	}
+
 	public void addCloseHandler(final CloseHandler closeHandler) {
 		this.closeHandler = closeHandler;
+	}
+
+	public void addKeyUpHandler(final KeyUpHandler keyUpHandler) {
+		keyUpHandlerList.add(keyUpHandler);
 	}
 
 	@Override
@@ -122,4 +122,9 @@ public class CommandMenu extends Composite {
 		super.onDetach();
 		GLOBAL_NATIVE_EVENT_SERVICE.removeClickListener(nativeEventListener);
 	}
+
+	public MenuItem getSelectedItem() {
+		return menu.getSelectedItem();
+	}
+
 }

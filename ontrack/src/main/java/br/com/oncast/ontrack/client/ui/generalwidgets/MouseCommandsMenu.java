@@ -23,14 +23,22 @@ public class MouseCommandsMenu extends Composite {
 	@UiField
 	protected Image menuImage;
 
-	public MouseCommandsMenu(final List<CommandMenuItem> itens) {
+	private final WidgetVisibilityAssurer visibilityAssurer;
+
+	public MouseCommandsMenu(final List<CommandMenuItem> items) {
 		initWidget(uiBinder.createAndBindUi(this));
 		menu.hide();
-		menu.setItens(itens);
+		menu.setItems(items);
+		visibilityAssurer = new WidgetVisibilityAssurer(menu);
 	}
 
 	@UiHandler("menuImage")
 	protected void onClick(final ClickEvent e) {
+		showMenu();
+	}
+
+	private void showMenu() {
 		menu.show();
+		visibilityAssurer.assureVisibility();
 	}
 }
