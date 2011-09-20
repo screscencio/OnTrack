@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
@@ -13,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeMoveDownAction;
 public class ScopeMoveDownActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "referenceId")
 	private String referenceId;
 
 	public String getReferenceId() {

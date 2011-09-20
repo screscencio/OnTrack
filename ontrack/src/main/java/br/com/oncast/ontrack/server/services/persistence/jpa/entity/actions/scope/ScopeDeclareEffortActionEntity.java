@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
@@ -13,10 +14,13 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction;
 public class ScopeDeclareEffortActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "referenceId")
 	private String referenceId;
 
+	@Column(name = "boleano")
 	private boolean hasDeclaredEffort;
 
+	@Column(name = "pos")
 	private int newDeclaredEffort;
 
 	public String getReferenceId() {

@@ -3,7 +3,9 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
@@ -18,20 +20,28 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
 public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "referenceId")
 	private String referenceId;
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = "secundaryReferenceId")
 	private String parentScopeId;
 
+	@Column(name = "description")
 	private String description;
 
 	@ConversionAlias("index")
+	@Column(name = "pos")
 	private int pos;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<ScopeRemoveRollbackActionEntity> childActionList;
+	@Column(name = "modelActionEntity_secundarySubActionList")
+	@JoinTable(name = "modelActionEntity_secundarySubActionList")
+	private List<ModelActionEntity> childActionList;
 
 	@OneToMany(cascade = CascadeType.ALL)
+	@Column(name = "modelActionEntity_subActionList")
+	@JoinTable(name = "ScopeRemoveRollbackAction_subActionList")
 	private List<ModelActionEntity> subActionList;
 
 	public String getReferenceId() {
@@ -66,11 +76,11 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 		this.pos = pos;
 	}
 
-	public List<ScopeRemoveRollbackActionEntity> getChildActionList() {
+	public List<ModelActionEntity> getChildActionList() {
 		return childActionList;
 	}
 
-	public void setChildActionList(final List<ScopeRemoveRollbackActionEntity> childActionList) {
+	public void setChildActionList(final List<ModelActionEntity> childActionList) {
 		this.childActionList = childActionList;
 	}
 

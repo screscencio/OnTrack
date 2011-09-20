@@ -1,8 +1,10 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
@@ -13,6 +15,8 @@ import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
 public class ReleaseRemoveActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
+	@ConversionAlias("referenceId")
+	@Column(name = "referenceId")
 	private String referenceId;
 
 	public String getReferenceId() {
