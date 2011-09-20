@@ -20,6 +20,7 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,6 +63,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected Image containerStateImage;
+
+	@UiField
+	protected FocusPanel containerStateToogleClickableArea;
 
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
@@ -199,7 +203,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		setContainerState(shouldBodyContainerBeActive);
 
 		if (shouldBodyContainerBeActive) {
-			containerStateImageClickHandlerRegistration = containerStateImage.addClickHandler(new ClickHandler() {
+			containerStateImageClickHandlerRegistration = containerStateToogleClickableArea.addClickHandler(new ClickHandler() {
 
 				@Override
 				public void onClick(final ClickEvent event) {
