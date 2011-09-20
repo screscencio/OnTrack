@@ -8,7 +8,10 @@ import java.util.Properties;
 public enum Config {
 	DOWNLOAD_URL_PATTERN("download.url.pattern"),
 	BACKUP_FILENAME_PATTERN("backup.filename.pattern"),
-	ONTRACK_INSTANCES("ontrack.instances");
+	ONTRACK_INSTANCES("ontrack.instances"),
+	ORIGINAL_WAR_PACKAGE("original.war.package"),
+	ORIGINAL_PERSISTENCE_XML("original.persistence.xml"),
+	PRODUCTION_JDBC_URL_PATTERN("production.jdbc.url.pattern");
 
 	private static final Properties PROPERTIES = new Properties();
 
