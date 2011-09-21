@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction;
 
-@Entity
+@Entity(name = "ReleaseRemoveRollback")
 @ConvertTo(ReleaseRemoveRollbackAction.class)
 public class ReleaseRemoveRollbackActionEntity extends ModelActionEntity {
 

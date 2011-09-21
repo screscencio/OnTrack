@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 
-@Entity
+@Entity(name = "ScopeUpdate")
 @ConvertTo(ScopeUpdateAction.class)
 public class ScopeUpdateActionEntity extends ModelActionEntity {
 

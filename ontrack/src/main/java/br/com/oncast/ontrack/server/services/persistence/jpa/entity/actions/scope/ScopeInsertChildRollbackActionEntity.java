@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
 
-@Entity
+@Entity(name = "ScopeInsertChildRollback")
 @ConvertTo(ScopeInsertChildRollbackAction.class)
 public class ScopeInsertChildRollbackActionEntity extends ModelActionEntity {
 

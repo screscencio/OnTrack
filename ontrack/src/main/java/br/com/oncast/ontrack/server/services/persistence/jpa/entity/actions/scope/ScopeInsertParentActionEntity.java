@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction;
 
-@Entity
+@Entity(name = "ScopeInsertParent")
 @ConvertTo(ScopeInsertParentAction.class)
 public class ScopeInsertParentActionEntity extends ModelActionEntity {
 

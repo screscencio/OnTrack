@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
 
-@Entity
+@Entity(name = "ReleaseRemove")
 @ConvertTo(ReleaseRemoveAction.class)
 public class ReleaseRemoveActionEntity extends ModelActionEntity {
 
