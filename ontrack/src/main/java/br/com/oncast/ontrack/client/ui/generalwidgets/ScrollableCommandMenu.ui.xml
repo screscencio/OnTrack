@@ -3,13 +3,20 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-<ui:style>
+<ui:style type="br.com.oncast.ontrack.client.ui.generalwidgets.ScrollableCommandMenu.Style">
 	
 	.panel {
 		border: 1px solid gray;
-		background-color: #ddd;
+		background-color: #FFF;
 		padding: 1px;
 		max-height: 300px;
+	}
+	
+	.panelWithHorizontalScroll {
+		border: 1px solid gray;
+		background-color: #FFF;
+		padding: 1px;
+		max-height: 310px;
 	}
 		
 </ui:style>
