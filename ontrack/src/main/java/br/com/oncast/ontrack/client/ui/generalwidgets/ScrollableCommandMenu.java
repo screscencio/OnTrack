@@ -8,6 +8,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -19,6 +20,15 @@ public class ScrollableCommandMenu extends Composite {
 	private static ScrollableCommandMenuUiBinder uiBinder = GWT.create(ScrollableCommandMenuUiBinder.class);
 
 	interface ScrollableCommandMenuUiBinder extends UiBinder<Widget, ScrollableCommandMenu> {}
+
+	interface Style extends CssResource {
+		String panel();
+
+		String panelWithHorizontalScroll();
+	}
+
+	@UiField
+	protected Style style;
 
 	@UiField
 	protected ScrollPanel scrollPanel;
@@ -37,9 +47,10 @@ public class ScrollableCommandMenu extends Composite {
 
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_DOWN || event.getNativeKeyCode() == BrowserKeyCodes.KEY_UP)
-					scrollPanel.ensureVisible(menu.getSelectedItem());
+				if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_DOWN || event.getNativeKeyCode() == BrowserKeyCodes.KEY_UP) {
+					ensureSelectedItemIsVisible(event);
 				}
+			}
 		});
 		menu.addCloseHandler(new CloseHandler() {
 
@@ -61,14 +72,52 @@ public class ScrollableCommandMenu extends Composite {
 
 	public void show() {
 		scrollPanel.setVisible(true);
-		scrollPanel.setWidth(menu.getElement().getClientWidth() + 30 + "px");
+		ajustSize();
 		menu.show();
-
-		scrollPanel.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
 		visibilityAssurer.assureVisibility();
 	}
 
 	private void hide() {
 		scrollPanel.setVisible(false);
+	}
+
+	private void ensureSelectedItemIsVisible(final KeyUpEvent event) {
+		final int scrollAbsoluteTop = scrollPanel.getElement().getAbsoluteTop();
+		final int menuAbsoluteTop = menu.getElement().getAbsoluteTop();
+		final int scrollHeight = scrollPanel.getElement().getOffsetHeight();
+		final int itemTop = menu.getSelectedItem().getElement().getOffsetTop();
+		final int itemHeight = menu.getSelectedItem().getElement().getOffsetHeight();
+
+		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_DOWN) {
+			if (itemTop < 5) {
+				scrollPanel.scrollToTop();
+				return;
+			}
+			if ((scrollAbsoluteTop - menuAbsoluteTop + scrollHeight) <= (itemTop + itemHeight)) {
+				scrollPanel.setVerticalScrollPosition(scrollPanel.getVerticalScrollPosition() + itemHeight + 2);
+			}
+		}
+		else if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_UP) {
+			if ((itemTop + itemHeight) >= (menu.getOffsetHeight() - 5)) {
+				scrollPanel.scrollToBottom();
+				return;
+			}
+			if ((scrollAbsoluteTop - menuAbsoluteTop) > itemTop) {
+				scrollPanel.setVerticalScrollPosition(scrollPanel.getVerticalScrollPosition() - itemHeight - 2);
+			}
+		}
+	}
+
+	private void ajustSize() {
+		if (menu.getOffsetWidth() > 670) {
+			scrollPanel.setStyleName(style.panelWithHorizontalScroll());
+			scrollPanel.setWidth("675px");
+			scrollPanel.getElement().getStyle().setOverflowX(Overflow.SCROLL);
+		}
+		else {
+			scrollPanel.setStyleName(style.panel());
+			scrollPanel.setWidth(menu.getElement().getClientWidth() + 30 + "px");
+			scrollPanel.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
+		}
 	}
 }

@@ -55,11 +55,12 @@ html,body {
 .gwt-MenuBar-vertical {
 	color: black;
 	background: white;
-	border: 1px solid gray;
+	border: none;
 	
-	box-shadow: 1px 1px 6px #d9dae1;
-	-moz-box-shadow: 1px 1px 6px #d9dae1;
-	-webkit-box-shadow: 1px 1px 6px #d9dae1;
+	/* This is being removed because this is causing an unexpected effect when the menu item is bigger then menu bar.
+	  box-shadow: 1px 1px 6px #d9dae1;
+	 -moz-box-shadow: 1px 1px 6px #d9dae1;    
+	 -webkit-box-shadow: 1px 1px 6px #d9dae1; */
 }
 
 .gwt-MenuBar-vertical > table {
