@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
 
-@Entity
+@Entity(name = "ReleaseScopePriorityUp")
 @ConvertTo(ReleaseScopeUpdatePriorityAction.class)
 public class ReleaseScopeUpdatePriorityActionEntity extends ModelActionEntity {
 

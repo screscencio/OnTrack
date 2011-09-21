@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseCreateActionDefault;
 
-@Entity
+@Entity(name = "ReleaseCreate")
 @ConvertTo(ReleaseCreateActionDefault.class)
 public class ReleaseCreateActionEntity extends ModelActionEntity {
 

@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction;
 
-@Entity
+@Entity(name = "ScopeSiblingDown")
 @ConvertTo(ScopeInsertSiblingDownAction.class)
 public class ScopeInsertSiblingDownActionEntity extends ModelActionEntity {
 
