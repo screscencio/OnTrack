@@ -8,7 +8,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -20,15 +19,6 @@ public class ScrollableCommandMenu extends Composite {
 	private static ScrollableCommandMenuUiBinder uiBinder = GWT.create(ScrollableCommandMenuUiBinder.class);
 
 	interface ScrollableCommandMenuUiBinder extends UiBinder<Widget, ScrollableCommandMenu> {}
-
-	interface Style extends CssResource {
-		String panel();
-
-		String panelWithHorizontalScroll();
-	}
-
-	@UiField
-	protected Style style;
 
 	@UiField
 	protected ScrollPanel scrollPanel;
@@ -42,7 +32,7 @@ public class ScrollableCommandMenu extends Composite {
 
 	public ScrollableCommandMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
-		visibilityAssurer = new WidgetVisibilityAssurer(this);
+		visibilityAssurer = new WidgetVisibilityAssurer(scrollPanel);
 		menu.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
@@ -73,8 +63,8 @@ public class ScrollableCommandMenu extends Composite {
 
 	public void show() {
 		scrollPanel.setVisible(true);
-		ajustSize();
 		menu.show();
+		ajustSize();
 		visibilityAssurer.assureVisibility();
 	}
 
@@ -115,15 +105,23 @@ public class ScrollableCommandMenu extends Composite {
 	}
 
 	private void ajustSize() {
+		/*
+		 * IMPORTANT Do not use max_height CSS property directly in the ui.xml file, because the first time this ScrollabeCommandMenu is
+		 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
+		 */
+		int maxHeight;
+
 		if (menu.getOffsetWidth() > 670) {
-			scrollPanel.setStyleName(style.panelWithHorizontalScroll());
 			scrollPanel.setWidth("675px");
 			scrollPanel.getElement().getStyle().setOverflowX(Overflow.SCROLL);
+			maxHeight = 310;
 		}
 		else {
-			scrollPanel.setStyleName(style.panel());
 			scrollPanel.setWidth(menu.getElement().getClientWidth() + 30 + "px");
 			scrollPanel.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
+			maxHeight = 300;
 		}
+
+		if (scrollPanel.getOffsetHeight() > maxHeight) scrollPanel.setHeight(maxHeight + "px");
 	}
 }

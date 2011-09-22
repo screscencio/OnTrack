@@ -14,8 +14,10 @@ public class WidgetVisibilityAssurer {
 	}
 
 	public void assureVisibility() {
+		// IMPORTANT This margin must be at least 40px, because some HTML elements may have a horizontal scroll which impacts the visibility assurance.
+		final int MARGIN = 40;
 		final Element element = widget.getElement();
-		final int MARGIN = 35;
+
 		final int deltaBottom = (element.getAbsoluteTop() + element.getClientHeight() + MARGIN) - Window.getClientHeight();
 		final int deltaTop = element.getAbsoluteTop() - element.getClientHeight() - MARGIN;
 
