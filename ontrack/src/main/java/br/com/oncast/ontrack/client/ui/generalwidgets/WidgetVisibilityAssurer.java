@@ -7,15 +7,32 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class WidgetVisibilityAssurer {
 
+	// IMPORTANT This margin must be at least 40px, because some HTML elements may have a horizontal scroll which impacts the visibility assurance.
+	private static final int MARGIN = 40;
+
 	private final Widget widget;
 
 	public WidgetVisibilityAssurer(final Widget widget) {
 		this.widget = widget;
 	}
 
+	public void assureVisibilityAround(final Widget relativeWidget) {
+		final Element element = widget.getElement();
+		final Element relativeElement = relativeWidget.getElement();
+
+		final int deltaBottom = Window.getClientHeight()
+				- (relativeElement.getAbsoluteTop() + relativeElement.getClientHeight() + element.getClientHeight() + MARGIN);
+		final int deltaTop = relativeElement.getAbsoluteTop() - element.getClientHeight() - MARGIN;
+
+		final boolean shouldDisplayAbove = deltaBottom < 0 && deltaTop > 0;
+		final int margin = shouldDisplayAbove ?
+				(relativeElement.getAbsoluteTop() - element.getAbsoluteTop() - element.getClientHeight()) :
+				(relativeElement.getAbsoluteTop() - element.getAbsoluteTop() + relativeElement.getClientHeight());
+
+		DOM.setStyleAttribute(element, "marginTop", margin + "px");
+	}
+
 	public void assureVisibility() {
-		// IMPORTANT This margin must be at least 40px, because some HTML elements may have a horizontal scroll which impacts the visibility assurance.
-		final int MARGIN = 40;
 		final Element element = widget.getElement();
 
 		final int deltaBottom = (element.getAbsoluteTop() + element.getClientHeight() + MARGIN) - Window.getClientHeight();
