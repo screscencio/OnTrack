@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class ScopeProgressActionTest {
+public class DeclareProgressScopeActionTest {
 
 	private Scope scope;
 	private ProjectContext context;
