@@ -60,6 +60,7 @@ public class ScrollableCommandMenu extends Composite {
 				hide();
 			}
 		});
+
 	}
 
 	public void setItems(final List<CommandMenuItem> items) {
@@ -75,6 +76,11 @@ public class ScrollableCommandMenu extends Composite {
 		ajustSize();
 		menu.show();
 		visibilityAssurer.assureVisibility();
+	}
+
+	public boolean grewDown() {
+		if (this.getElement().getStyle().getMarginTop().isEmpty()) return true;
+		return false;
 	}
 
 	private void hide() {
