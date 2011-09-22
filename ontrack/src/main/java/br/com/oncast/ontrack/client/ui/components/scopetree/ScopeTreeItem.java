@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
@@ -45,7 +46,12 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			}
 
 			@Override
-			public void onReleaseEditionCancel() {
+			public void declareProgress(final String progressDescription) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemDeclareProgressEvent(getReferencedScope().getId(), progressDescription));
+			}
+
+			@Override
+			public void onMenuEditionCancel() {
 				ScopeTreeItem.this.select();
 			}
 		}));

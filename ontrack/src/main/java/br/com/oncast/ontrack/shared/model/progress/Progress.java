@@ -42,6 +42,9 @@ public class Progress implements IsSerializable {
 			return UNDER_WORK;
 		}
 
+		public String getDescription() {
+			return this.toString();
+		}
 	};
 
 	private String description;
@@ -54,7 +57,7 @@ public class Progress implements IsSerializable {
 	}
 
 	public String getDescription() {
-		return (!hasDeclared() || state == ProgressState.UNDER_WORK) ? description : state.toString();
+		return (!hasDeclared() || state == ProgressState.UNDER_WORK) ? description : state.getDescription();
 	}
 
 	public void setDescription(String newProgressDescription) {
@@ -70,6 +73,7 @@ public class Progress implements IsSerializable {
 
 	void setState(final ProgressState state) {
 		this.state = state;
+		ProgressDefinitionManager.getInstance().onProgressDefinition(getDescription());
 	}
 
 	public boolean hasDeclared() {
@@ -79,4 +83,5 @@ public class Progress implements IsSerializable {
 	public boolean isDone() {
 		return state == ProgressState.DONE;
 	}
+
 }

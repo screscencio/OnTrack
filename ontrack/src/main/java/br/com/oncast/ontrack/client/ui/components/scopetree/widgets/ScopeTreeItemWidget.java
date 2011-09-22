@@ -5,6 +5,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
@@ -50,6 +51,10 @@ public class ScopeTreeItemWidget extends Composite {
 		String effortLabelTranslucid();
 
 		String effortDifferenceLabelProblem();
+
+		String releaseMenuPanel();
+
+		String progressMenuPanel();
 	}
 
 	@UiField
@@ -90,7 +95,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected HTMLPanel releaseMenuPanel;
+	protected HTMLPanel menuPanel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -299,7 +304,7 @@ public class ScopeTreeItemWidget extends Composite {
 		return ClientDecimalFormat.roundFloat(scope.getEffort().getAccomplishedPercentual(), 1) + "%";
 	}
 
-	public void showBindReleaseMenu(final List<Release> releaseList) {
+	public void showReleaseMenu(final List<Release> releaseList) {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
 		items.add(new CommandMenuItem("None", new Command() {
 
@@ -318,22 +323,51 @@ public class ScopeTreeItemWidget extends Composite {
 				}
 			}));
 		}
+		showCommandMenu(items, style.releaseMenuPanel());
+	}
+
+	public void showProgressMenu(final Set<String> progressDefinitionSet) {
+		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+		items.add(new CommandMenuItem("None", new Command() {
+
+			@Override
+			public void execute() {
+				editionHandler.declareProgress("");
+			}
+		}));
+
+		for (final String progressDefinition : progressDefinitionSet) {
+			items.add(new CommandMenuItem(progressDefinition, new Command() {
+
+				@Override
+				public void execute() {
+					editionHandler.declareProgress(progressDefinition);
+				}
+			}));
+		}
+
+		showCommandMenu(items, style.progressMenuPanel());
+	}
+
+	private void showCommandMenu(final List<CommandMenuItem> items, final String menuPanelStylename) {
 		final ScrollableCommandMenu commandsMenu = new ScrollableCommandMenu();
 		commandsMenu.addCloseHandler(new CloseHandler() {
 
 			@Override
 			public void onClose() {
-				editionHandler.onReleaseEditionCancel();
+				editionHandler.onMenuEditionCancel();
 			}
 		});
 
-		releaseMenuPanel.clear();
-		releaseMenuPanel.add(commandsMenu);
+		menuPanel.clear();
+		menuPanel.add(commandsMenu);
+		menuPanel.setStyleName(menuPanelStylename);
 
 		commandsMenu.setItems(items);
 		commandsMenu.show();
 
-		if (commandsMenu.grewDown()) releaseMenuPanel.getElement().getStyle().setTop(20, Unit.PX);
-		else releaseMenuPanel.getElement().getStyle().setTop(-2, Unit.PX);
+		// FIXME ?!
+		if (commandsMenu.grewDown()) menuPanel.getElement().getStyle().setTop(20, Unit.PX);
+		else menuPanel.getElement().getStyle().setTop(-2, Unit.PX);
 	}
 }
