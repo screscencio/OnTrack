@@ -6,15 +6,24 @@ import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScrollableCommandMenu extends Composite {
+
+	private static final int MAX_HEIGHT = 300;
+
+	private static final int MAX_WIDTH = 670;
 
 	private static ScrollableCommandMenuUiBinder uiBinder = GWT.create(ScrollableCommandMenuUiBinder.class);
 
@@ -22,6 +31,9 @@ public class ScrollableCommandMenu extends Composite {
 
 	@UiField
 	protected ScrollPanel scrollPanel;
+
+	@UiField
+	protected FocusPanel focusPanel;
 
 	@UiField
 	protected CommandMenu menu;
@@ -33,13 +45,21 @@ public class ScrollableCommandMenu extends Composite {
 	public ScrollableCommandMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
 		visibilityAssurer = new WidgetVisibilityAssurer(scrollPanel);
+
+		menu.addKeyPressHandler(new KeyPressHandler() {
+
+			@Override
+			public void onKeyPress(final KeyPressEvent event) {
+				if (event.getNativeEvent().getKeyCode() != BrowserKeyCodes.KEY_DOWN && event.getNativeEvent().getKeyCode() != BrowserKeyCodes.KEY_UP) return;
+				ensureSelectedItemIsVisible();
+			}
+		});
 		menu.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_DOWN || event.getNativeKeyCode() == BrowserKeyCodes.KEY_UP) {
-					ensureSelectedItemIsVisible(event);
-				}
+				if (event.getNativeEvent().getKeyCode() != BrowserKeyCodes.KEY_DOWN && event.getNativeEvent().getKeyCode() != BrowserKeyCodes.KEY_UP) return;
+				ensureSelectedItemIsVisible();
 			}
 		});
 		menu.addCloseHandler(new CloseHandler() {
@@ -50,7 +70,6 @@ public class ScrollableCommandMenu extends Composite {
 				hide();
 			}
 		});
-
 	}
 
 	public void setItems(final List<CommandMenuItem> items) {
@@ -61,65 +80,51 @@ public class ScrollableCommandMenu extends Composite {
 		this.closeHandler = handler;
 	}
 
-	public void show(final Widget widget) {
+	public void show(final Widget relativeWidget) {
 		scrollPanel.setVisible(true);
 		menu.show();
-		ajustHorizontalSize();
-		visibilityAssurer.assureVisibilityAround(widget);
+		ajustDimentions();
+		visibilityAssurer.assureVisibilityAround(relativeWidget);
 	}
 
-	public boolean grewDown() {
-		if (this.getElement().getStyle().getMarginTop().isEmpty()) return true;
-		return false;
+	@UiHandler("focusPanel")
+	protected void handleMouseDown(final MouseDownEvent event) {
+		event.preventDefault();
+		event.stopPropagation();
 	}
 
 	private void hide() {
 		scrollPanel.setVisible(false);
 	}
 
-	private void ensureSelectedItemIsVisible(final KeyUpEvent event) {
-		final int scrollAbsoluteTop = scrollPanel.getElement().getAbsoluteTop();
-		final int menuAbsoluteTop = menu.getElement().getAbsoluteTop();
-		final int scrollHeight = scrollPanel.getElement().getOffsetHeight();
+	private void ensureSelectedItemIsVisible() {
+		final int menuTop = scrollPanel.getVerticalScrollPosition();
+		final int menuHeight = scrollPanel.getElement().getClientHeight();
+		final int menuBottom = menuTop + menuHeight;
+
 		final int itemTop = menu.getSelectedItem().getElement().getOffsetTop();
 		final int itemHeight = menu.getSelectedItem().getElement().getOffsetHeight();
+		final int itemBottom = menu.getSelectedItem().getElement().getOffsetTop() + itemHeight;
 
-		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_DOWN) {
-			if (itemTop < 5) {
-				scrollPanel.scrollToTop();
-				return;
-			}
-			if ((scrollAbsoluteTop - menuAbsoluteTop + scrollHeight) <= (itemTop + itemHeight)) {
-				scrollPanel.setVerticalScrollPosition(scrollPanel.getVerticalScrollPosition() + itemHeight + 2);
-			}
-		}
-		else if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_UP) {
-			if ((itemTop + itemHeight) >= (menu.getOffsetHeight() - 5)) {
-				scrollPanel.scrollToBottom();
-				return;
-			}
-			if ((scrollAbsoluteTop - menuAbsoluteTop) > itemTop) {
-				scrollPanel.setVerticalScrollPosition(scrollPanel.getVerticalScrollPosition() - itemHeight - 2);
-			}
-		}
+		if (itemTop < menuTop) scrollPanel.setVerticalScrollPosition(itemTop - 1);
+		else if (itemBottom > menuBottom) scrollPanel.setVerticalScrollPosition(itemTop - menuHeight + itemHeight + 3);
 	}
 
-	private void ajustHorizontalSize() {
+	private void ajustDimentions() {
 		/*
 		 * IMPORTANT Do not use max_height CSS property directly in the ui.xml file, because the first time this ScrollabeCommandMenu is
 		 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
 		 */
 		int maxHeight;
-
-		if (menu.getOffsetWidth() > 670) {
-			scrollPanel.setWidth("675px");
+		if (menu.getOffsetWidth() > MAX_WIDTH) {
+			scrollPanel.setWidth((MAX_WIDTH + 20) + "px");
 			scrollPanel.getElement().getStyle().setOverflowX(Overflow.SCROLL);
-			maxHeight = 310;
+			maxHeight = MAX_HEIGHT + 10;
 		}
 		else {
-			scrollPanel.setWidth(menu.getElement().getClientWidth() + 30 + "px");
+			scrollPanel.setWidth((menu.getElement().getClientWidth() + 20) + "px");
 			scrollPanel.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
-			maxHeight = 300;
+			maxHeight = MAX_HEIGHT;
 		}
 
 		if (scrollPanel.getOffsetHeight() > maxHeight) scrollPanel.setHeight(maxHeight + "px");

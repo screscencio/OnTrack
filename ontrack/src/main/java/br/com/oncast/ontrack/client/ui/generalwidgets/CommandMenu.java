@@ -10,6 +10,8 @@ import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -42,6 +44,8 @@ public class CommandMenu extends Composite {
 	private CloseHandler closeHandler;
 
 	private final List<KeyUpHandler> keyUpHandlerList = new ArrayList<KeyUpHandler>();
+
+	private final List<KeyPressHandler> keyPressHandlerList = new ArrayList<KeyPressHandler>();
 
 	@UiFactory
 	protected MenuBar createMenuBar() {
@@ -104,9 +108,25 @@ public class CommandMenu extends Composite {
 		hide();
 	}
 
+	@UiHandler("focusPanel")
+	protected void handleKeyPress(final KeyPressEvent event) {
+		notifyKeyPressHandlers(event);
+
+		if (event.getNativeEvent().getKeyCode() != KEY_ESCAPE) return;
+
+		event.preventDefault();
+		event.stopPropagation();
+		hide();
+	}
+
 	private void notifyKeyUpHandlers(final KeyUpEvent event) {
 		for (final KeyUpHandler handler : keyUpHandlerList)
 			handler.onKeyUp(event);
+	}
+
+	private void notifyKeyPressHandlers(final KeyPressEvent event) {
+		for (final KeyPressHandler handler : keyPressHandlerList)
+			handler.onKeyPress(event);
 	}
 
 	public void addCloseHandler(final CloseHandler closeHandler) {
@@ -117,6 +137,10 @@ public class CommandMenu extends Composite {
 		keyUpHandlerList.add(keyUpHandler);
 	}
 
+	public void addKeyPressHandler(final KeyPressHandler keyPressHandler) {
+		keyPressHandlerList.add(keyPressHandler);
+	}
+
 	@Override
 	protected void onDetach() {
 		super.onDetach();
@@ -125,6 +149,10 @@ public class CommandMenu extends Composite {
 
 	public MenuItem getSelectedItem() {
 		return menu.getSelectedItem();
+	}
+
+	public void focus() {
+		menu.focus();
 	}
 
 }

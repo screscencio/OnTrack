@@ -27,9 +27,7 @@ public class BindReleaseInternalAction implements InternalAction {
 	}
 
 	@Override
-	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
-		tree.setSelected(selectedTreeItem);
-	}
+	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {}
 
 	@Override
 	public ModelAction createEquivalentModelAction(final String value) {

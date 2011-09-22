@@ -20,20 +20,24 @@ public class WidgetVisibilityAssurer {
 		final Element element = widget.getElement();
 		final Element relativeElement = relativeWidget.getElement();
 
+		DOM.setStyleAttribute(element, "marginTop", "0px");
+
+		final int deltaTop = relativeElement.getAbsoluteTop() - element.getClientHeight() - MARGIN;
 		final int deltaBottom = Window.getClientHeight()
 				- (relativeElement.getAbsoluteTop() + relativeElement.getClientHeight() + element.getClientHeight() + MARGIN);
-		final int deltaTop = relativeElement.getAbsoluteTop() - element.getClientHeight() - MARGIN;
 
 		final boolean shouldDisplayAbove = deltaBottom < 0 && deltaTop > 0;
 		final int margin = shouldDisplayAbove ?
-				(relativeElement.getAbsoluteTop() - element.getAbsoluteTop() - element.getClientHeight()) :
-				(relativeElement.getAbsoluteTop() - element.getAbsoluteTop() + relativeElement.getClientHeight());
+				(relativeElement.getAbsoluteTop() - element.getClientHeight() - element.getAbsoluteTop()) :
+				(relativeElement.getAbsoluteTop() + relativeElement.getClientHeight() - element.getAbsoluteTop());
 
 		DOM.setStyleAttribute(element, "marginTop", margin + "px");
 	}
 
 	public void assureVisibility() {
 		final Element element = widget.getElement();
+
+		DOM.setStyleAttribute(element, "marginTop", "0px");
 
 		final int deltaBottom = (element.getAbsoluteTop() + element.getClientHeight() + MARGIN) - Window.getClientHeight();
 		final int deltaTop = element.getAbsoluteTop() - element.getClientHeight() - MARGIN;
