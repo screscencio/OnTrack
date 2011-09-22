@@ -37,6 +37,9 @@ public class ScopeTreeWidgetTest extends GwtTest {
 
 			@Override
 			public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {}
+
+			@Override
+			public void onDeclareProgressRequest(final UUID scopeId, final String progressDescription) {}
 		});
 		scopeA1 = new Scope("root");
 		scopeA11 = new Scope("A11");

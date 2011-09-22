@@ -103,6 +103,14 @@
                 min-width: 200px;
                 z-index: 2;
 			}
+						
+			.progressMenuPanel {
+                position: absolute;
+                top: 20px;
+                right: 5px;
+                min-width: 200px;
+                z-index: 2;
+			}
 
 			.progressLabel {
 				position: absolute;
@@ -132,7 +140,7 @@
 				<g:HTMLPanel styleName="{style.releasePanel}" >
 				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 				</g:HTMLPanel>
-                <g:HTMLPanel ui:field="releaseMenuPanel" styleName="{style.releaseMenuPanel}" />
+                <g:HTMLPanel ui:field="menuPanel" />
 				<g:Label ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
 			</g:FlowPanel>
 			<g:TextBox ui:field="editionBox" styleName="{style.editionBox}" />

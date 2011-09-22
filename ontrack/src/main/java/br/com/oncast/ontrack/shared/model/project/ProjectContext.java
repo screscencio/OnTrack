@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.shared.model.project;
 
 import java.util.List;
+import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -14,6 +16,7 @@ public class ProjectContext {
 
 	public ProjectContext(final Project project) {
 		this.project = project;
+		ProgressDefinitionManager.getInstance().populate(project);
 	}
 
 	public String getReleaseDescriptionFor(final Release release) {
@@ -58,4 +61,9 @@ public class ProjectContext {
 	public List<Release> getDescendantReleases() {
 		return project.getProjectRelease().getDescendantReleases();
 	}
+
+	public Set<String> getProgressDefinitions() {
+		return ProgressDefinitionManager.getInstance().getProgressDefinitions();
+	}
+
 }

@@ -18,5 +18,7 @@ public interface ScopeTreeItemWidgetEditionHandler {
 
 	void bindRelease(String releaseDescription);
 
-	void onReleaseEditionCancel();
+	void onMenuEditionCancel();
+
+	void declareProgress(String progressDescription);
 }
