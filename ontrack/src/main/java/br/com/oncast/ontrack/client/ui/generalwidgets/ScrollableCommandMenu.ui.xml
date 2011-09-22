@@ -12,8 +12,10 @@
 </ui:style>
 
 
-	<g:ScrollPanel ui:field="scrollPanel" styleName="{style.panel}">
-		<t:CommandMenu ui:field="menu" />
-	</g:ScrollPanel>
+	<g:FocusPanel ui:field="focusPanel">
+		<g:ScrollPanel ui:field="scrollPanel" styleName="{style.panel}">
+			<t:CommandMenu ui:field="menu" />
+		</g:ScrollPanel>
+	</g:FocusPanel>
 
 </ui:UiBinder> 
