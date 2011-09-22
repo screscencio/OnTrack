@@ -61,11 +61,11 @@ public class ScrollableCommandMenu extends Composite {
 		this.closeHandler = handler;
 	}
 
-	public void show() {
+	public void show(final Widget widget) {
 		scrollPanel.setVisible(true);
 		menu.show();
-		ajustSize();
-		visibilityAssurer.assureVisibility();
+		ajustHorizontalSize();
+		visibilityAssurer.assureVisibilityAround(widget);
 	}
 
 	public boolean grewDown() {
@@ -104,7 +104,7 @@ public class ScrollableCommandMenu extends Composite {
 		}
 	}
 
-	private void ajustSize() {
+	private void ajustHorizontalSize() {
 		/*
 		 * IMPORTANT Do not use max_height CSS property directly in the ui.xml file, because the first time this ScrollabeCommandMenu is
 		 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.

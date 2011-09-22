@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepres
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -364,10 +363,6 @@ public class ScopeTreeItemWidget extends Composite {
 		menuPanel.setStyleName(menuPanelStylename);
 
 		commandsMenu.setItems(items);
-		commandsMenu.show();
-
-		// FIXME ?!
-		if (commandsMenu.grewDown()) menuPanel.getElement().getStyle().setTop(20, Unit.PX);
-		else menuPanel.getElement().getStyle().setTop(-2, Unit.PX);
+		commandsMenu.show(this);
 	}
 }
