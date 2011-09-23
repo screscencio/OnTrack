@@ -19,7 +19,7 @@ public class FreeMindProjectLoader {
 
 	private final FreeMindMap mm;
 	private final Project project = new Project();
-	private final ProjectContext context = new ProjectContext(project);
+	private ProjectContext context;
 	private final Release rootRelease = new Release("proj", new UUID("release0"));
 
 	private FreeMindProjectLoader(final FreeMindMap mm) {
@@ -71,17 +71,23 @@ public class FreeMindProjectLoader {
 
 	private Release findRelease(final MindNode child) {
 		try {
-			return context.findRelease(child.getText());
+			return getContext().findRelease(child.getText());
 		}
 		catch (final ReleaseNotFoundException e) {
 			// Ignore.
 		}
 		try {
-			new ReleaseCreateActionDefault(child.getText()).execute(context);
-			return context.findRelease(child.getText());
+			new ReleaseCreateActionDefault(child.getText()).execute(getContext());
+			return getContext().findRelease(child.getText());
 		}
 		catch (final Exception e) {
 			throw new RuntimeException("Unable to load release '" + child.getText() + "'.",e);
 		}
 	}
+
+	private ProjectContext getContext() {
+		if(context == null) context = new ProjectContext(project);
+		return context;
+	}
+
 }
