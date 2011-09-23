@@ -86,7 +86,6 @@
 			
 			.body {
 				position: relative;
-				z-index: 1;
 			}
 			
 			.releaseContainer {
