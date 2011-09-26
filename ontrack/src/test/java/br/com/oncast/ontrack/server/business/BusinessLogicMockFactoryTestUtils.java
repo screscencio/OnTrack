@@ -51,7 +51,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public synchronized List<ModelAction> retrieveActionsSince(final Date timestamp) throws PersistenceException {
+			public synchronized List<ModelAction> retrieveActionsSince(final long actionId) throws PersistenceException {
 				return actions;
 			}
 
@@ -64,6 +64,11 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			@Override
 			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
+
+			@Override
+			public long getLastActionId() {
+				return 0;
+			}
 		};
 	}
 
@@ -85,7 +90,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public List<ModelAction> retrieveActionsSince(final Date timestamp) throws PersistenceException {
+			public List<ModelAction> retrieveActionsSince(final long actionId) throws PersistenceException {
 				return actions;
 			}
 
@@ -96,6 +101,11 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			@Override
 			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
+
+			@Override
+			public long getLastActionId() {
+				return 0;
+			}
 		};
 	}
 
