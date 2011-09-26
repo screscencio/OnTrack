@@ -9,7 +9,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -91,13 +90,13 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<ModelAction> retrieveActionsSince(final Date timestamp) throws PersistenceException {
+	public List<ModelAction> retrieveActionsSince(final long actionId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
-					+ " as action where action.timestamp > :timestamp order by action.id asc");
+					+ " as action where action.actionEntity.id > :lastActionId order by action.id asc");
 
-			query.setParameter("timestamp", timestamp, TemporalType.TIMESTAMP);
+			query.setParameter("lastActionId", actionId);
 			final List<UserActionEntity> actions = query.getResultList();
 
 			return (List<ModelAction>) TYPE_CONVERTER.convert(actions);
@@ -129,6 +128,24 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				throw new PersistenceException("It was not possible to persist the project snapshot and to rollback it.", f);
 			}
 			throw new PersistenceException("It was not possible to persist the project snapshot.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public long getLastActionId() throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select action.actionEntity.id from " + UserActionEntity.class.getSimpleName()
+					+ " as action order by action.id desc");
+
+			query.setMaxResults(1);
+			return (Long) query.getSingleResult();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project actions.", e);
 		}
 		finally {
 			em.close();

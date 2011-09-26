@@ -23,6 +23,8 @@ public class ProjectSnapshot {
 	@Lob
 	private byte[] serializedProject;
 
+	private long lastAppliedActionId;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
 
@@ -63,6 +65,14 @@ public class ProjectSnapshot {
 
 	public void setProject(final Project project) throws IOException {
 		this.serializedProject = Serializer.serialize(project);
+	}
+
+	public long getLastAppliedActionId() {
+		return lastAppliedActionId;
+	}
+
+	public void setLastAppliedActionId(final long lastAppliedActionId) {
+		this.lastAppliedActionId = lastAppliedActionId;
 	}
 
 }

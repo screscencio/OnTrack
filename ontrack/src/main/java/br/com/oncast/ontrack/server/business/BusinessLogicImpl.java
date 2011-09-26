@@ -42,7 +42,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
 			synchronized (this) {
 				validateIncomingAction(actionList);
-				// FIXME Use id instead date to identify last executed action.
+				// FIXME Use id instead of date to identify last executed action.
 				persistenceService.persistActions(actionList, new Date());
 			}
 			actionBroadcastService.broadcast(modelActionSyncRequest);
@@ -92,7 +92,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		LOGGER.debug("Loading project current state.");
 		try {
 			final ProjectSnapshot snapshot = persistenceService.retrieveProjectSnapshot();
-			final List<ModelAction> actionList = persistenceService.retrieveActionsSince(snapshot.getTimestamp());
+			final List<ModelAction> actionList = persistenceService.retrieveActionsSince(snapshot.getLastAppliedActionId());
 
 			Project project = snapshot.getProject();
 			if (actionList.isEmpty()) return project;
@@ -122,6 +122,8 @@ class BusinessLogicImpl implements BusinessLogic {
 	private void updateProjectSnapshot(final ProjectSnapshot snapshot, final Project project) throws IOException, PersistenceException {
 		snapshot.setProject(project);
 		snapshot.setTimestamp(new Date());
+		// FIXME Use the last action applied to snapshot, not the last persisted action.
+		snapshot.setLastAppliedActionId(persistenceService.getLastActionId());
 
 		persistenceService.persistProjectSnapshot(snapshot);
 	}
