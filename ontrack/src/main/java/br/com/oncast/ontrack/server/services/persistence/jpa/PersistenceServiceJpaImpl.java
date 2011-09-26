@@ -1,11 +1,12 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
-import java.util.Calendar;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
@@ -57,16 +58,35 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
-	// TODO Implement a query to obtain a real project snapshot instead of this mocked one.
-	// TODO Change the business logic test, because it assume the inclusion of the 'Example Scope' bellow.
+	// FIXME Make business create the blank project if NoResultException is thrown (create a new exception type).
 	@Override
-	public ProjectSnapshot retrieveProjectSnapshot() {
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(2011, 1, 1);
+	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select snapshot from " + ProjectSnapshot.class.getSimpleName() + " as snapshot");
+			return (ProjectSnapshot) query.getSingleResult();
+		}
+		catch (final NoResultException e) {
+			return createBlankProject();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project snapshot.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
 
+	private ProjectSnapshot createBlankProject() throws PersistenceException {
 		final Scope projectScope = new Scope("Project", new UUID("0"));
 		final Release projectRelease = new Release("proj", new UUID("release0"));
-		return new ProjectSnapshot(new Project(projectScope, projectRelease), calendar.getTime());
+
+		try {
+			return new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
+		}
+		catch (final IOException e) {
+			throw new PersistenceException("It was not possible to create a blank project.", e);
+		}
 	}
 
 	@Override
@@ -93,6 +113,28 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@Override
+	public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.merge(projectSnapshot);
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to persist the project snapshot and to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the project snapshot.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
 	private ModelActionEntity convertActionToEntity(final ModelAction modelAction) throws PersistenceException {
 		ModelActionEntity entity;
 		try {
@@ -103,4 +145,5 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		return entity;
 	}
+
 }

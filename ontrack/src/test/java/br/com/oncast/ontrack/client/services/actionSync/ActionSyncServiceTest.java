@@ -167,6 +167,7 @@ public class ActionSyncServiceTest {
 
 			@Override
 			public void onFailure(final Throwable caught) {
+				caught.printStackTrace();
 				Assert.fail("Unable to load project.");
 			}
 		});

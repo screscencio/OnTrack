@@ -14,7 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.mocks.actions.ActionMock;
+import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 import com.ibm.icu.util.Calendar;
 
@@ -64,5 +69,37 @@ public class PersistenceServiceJpaTest {
 		for (int i = 0; i < secondWaveOfActions.size(); i++) {
 			assertEquals(secondWaveOfActions.get(i).getReferenceId(), actionsReceived.get(i).getReferenceId());
 		}
+	}
+
+	@Test
+	public void shouldRetrieveSnapshotCorrectly() throws Exception {
+		final ProjectSnapshot snapshot1 = persistenceService.retrieveProjectSnapshot();
+		final Project project1 = snapshot1.getProject();
+
+		snapshot1.setProject(project1);
+		snapshot1.setTimestamp(new Date());
+		persistenceService.persistProjectSnapshot(snapshot1);
+
+		final ProjectSnapshot snapshot2 = persistenceService.retrieveProjectSnapshot();
+		final Project project2 = snapshot2.getProject();
+
+		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
+	}
+
+	@Test
+	public void shouldRetrieveSnapshotAfterExecutingActionAndPersistingIt() throws Exception {
+		final ProjectSnapshot snapshot1 = persistenceService.retrieveProjectSnapshot();
+		final Project project1 = snapshot1.getProject();
+
+		new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son").execute(new ProjectContext(project1));
+
+		snapshot1.setProject(project1);
+		snapshot1.setTimestamp(new Date());
+		persistenceService.persistProjectSnapshot(snapshot1);
+
+		final ProjectSnapshot snapshot2 = persistenceService.retrieveProjectSnapshot();
+		final Project project2 = snapshot2.getProject();
+
+		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
 	}
 }

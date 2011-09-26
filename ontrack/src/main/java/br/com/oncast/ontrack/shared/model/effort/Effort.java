@@ -1,10 +1,12 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
+import java.io.Serializable;
+
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+public class Effort implements Serializable {
 
-public class Effort implements IsSerializable {
+	private static final long serialVersionUID = 1L;
 
 	private int declared;
 	private float topDownValue;

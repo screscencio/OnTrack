@@ -1,10 +1,12 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
+import java.io.Serializable;
+
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+public class Progress implements Serializable {
 
-public class Progress implements IsSerializable {
+	private static final long serialVersionUID = 1L;
 
 	public enum ProgressState {
 		NOT_STARTED {

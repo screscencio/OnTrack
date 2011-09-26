@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.scope;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,9 +10,9 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+public class Scope implements Serializable {
 
-public class Scope implements IsSerializable {
+	private static final long serialVersionUID = 1L;
 
 	@IgnoredByDeepEquality
 	private UUID id;

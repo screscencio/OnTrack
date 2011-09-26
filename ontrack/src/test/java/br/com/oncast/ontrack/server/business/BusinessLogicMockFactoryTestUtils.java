@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.business;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,9 +38,16 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			private final List<ModelAction> actions = new ArrayList<ModelAction>();
 
+			final Date snapshotTimestamp = new Date();
+
 			@Override
 			public synchronized ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException {
-				return new ProjectSnapshot(ProjectMock.getProject(), new Date());
+				try {
+					return new ProjectSnapshot(ProjectMock.getProject(), snapshotTimestamp);
+				}
+				catch (final IOException e) {
+					throw new PersistenceException(e);
+				}
 			}
 
 			@Override
@@ -53,6 +61,9 @@ public class BusinessLogicMockFactoryTestUtils {
 					actions.add(modelAction);
 				}
 			}
+
+			@Override
+			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
 		};
 	}
 
@@ -61,9 +72,16 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			private final List<ModelAction> actions = new ArrayList<ModelAction>();
 
+			final Date snapshotTimestamp = new Date();
+
 			@Override
 			public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException {
-				return new ProjectSnapshot(ProjectMock.getProject(), new Date());
+				try {
+					return new ProjectSnapshot(ProjectMock.getProject(), snapshotTimestamp);
+				}
+				catch (final IOException e) {
+					throw new PersistenceException(e);
+				}
 			}
 
 			@Override
@@ -75,6 +93,9 @@ public class BusinessLogicMockFactoryTestUtils {
 			public void persistActions(final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
 				Assert.fail("The persistence should not be accessed.");
 			}
+
+			@Override
+			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
 		};
 	}
 
