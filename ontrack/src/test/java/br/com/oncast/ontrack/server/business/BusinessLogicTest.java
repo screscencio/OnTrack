@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.mocks.models.ProjectMock;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -92,6 +93,96 @@ public class BusinessLogicTest {
 
 		Collections.reverse(rollbackActions);
 		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), rollbackActions));
+	}
 
+	@Test
+	public void shouldLoadProjectBuiltUponDefaultSnapshotAndOneAction() throws Exception {
+		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		final Project project1 = business.loadProject();
+
+		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
+		action.execute(new ProjectContext(project1));
+
+		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+		actionList.add(action);
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+
+		final Project project2 = business.loadProject();
+
+		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
+	}
+
+	@Test
+	public void shouldLoadProjectBuiltUponDefaultSnapshotAndTwoActions() throws Exception {
+		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		final Project project1 = business.loadProject();
+
+		final ModelAction action1 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
+		final ProjectContext context = new ProjectContext(project1);
+		action1.execute(context);
+
+		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+		actionList.add(action1);
+
+		final ModelAction action2 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "small sister");
+		action2.execute(context);
+		actionList.add(action2);
+
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+
+		final Project project2 = business.loadProject();
+
+		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
+	}
+
+	@Test
+	public void shouldLoadProjectBuiltUponDefaultSnapshotAndManyActions() throws Exception {
+		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		final Project project1 = business.loadProject();
+
+		final ProjectContext context = new ProjectContext(project1);
+		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+		actionList.addAll(ActionMock.getActions());
+
+		for (final ModelAction action : actionList)
+			action.execute(context);
+
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+
+		final Project project2 = business.loadProject();
+
+		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
+	}
+
+	@Test
+	public void shouldLoadProjectBuiltUponDefaultSnapshotAndManyActions2() throws Exception {
+		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		final Project project1 = business.loadProject();
+
+		final ProjectContext context = new ProjectContext(project1);
+		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+
+		for (final ModelAction action : ActionMock.getActions()) {
+			actionList.clear();
+			actionList.add(action);
+
+			action.execute(context);
+			business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+		}
+
+		final Project project2 = business.loadProject();
+
+		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
+
+		actionList.clear();
+		actionList.addAll(ActionMock.getActions2());
+		for (final ModelAction action : actionList)
+			action.execute(context);
+
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+
+		final Project project3 = business.loadProject();
+
+		DeepEqualityTestUtils.assertObjectEquality(project1, project3);
 	}
 }

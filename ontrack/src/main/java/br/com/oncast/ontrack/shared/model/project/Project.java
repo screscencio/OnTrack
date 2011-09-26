@@ -1,11 +1,13 @@
 package br.com.oncast.ontrack.shared.model.project;
 
+import java.io.Serializable;
+
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+public class Project implements Serializable {
 
-public class Project implements IsSerializable {
+	private static final long serialVersionUID = 1L;
 
 	private Scope projectScope;
 	private Release projectRelease;

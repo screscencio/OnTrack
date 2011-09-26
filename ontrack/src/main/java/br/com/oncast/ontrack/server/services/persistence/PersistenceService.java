@@ -14,4 +14,6 @@ public interface PersistenceService {
 	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException;
 
 	public List<ModelAction> retrieveActionsSince(Date timestamp) throws PersistenceException;
+
+	public void persistProjectSnapshot(ProjectSnapshot projectSnapshot) throws PersistenceException;
 }

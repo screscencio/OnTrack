@@ -1,9 +1,11 @@
 package br.com.oncast.ontrack.shared.model.uuid;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 // TODO Test this class
-public class UUID implements IsSerializable {
+public class UUID implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private String id = "";
 

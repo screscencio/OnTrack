@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.business;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
 			synchronized (this) {
 				validateIncomingAction(actionList);
+				// FIXME Use id instead date to identify last executed action.
 				persistenceService.persistActions(actionList, new Date());
 			}
 			actionBroadcastService.broadcast(modelActionSyncRequest);
@@ -82,7 +84,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	// TODO Persist new snapshot after restoring the project correctly.
 	/**
 	 * @see br.com.oncast.ontrack.server.business.BusinessLogic#loadProject()
 	 */
@@ -92,7 +93,14 @@ class BusinessLogicImpl implements BusinessLogic {
 		try {
 			final ProjectSnapshot snapshot = persistenceService.retrieveProjectSnapshot();
 			final List<ModelAction> actionList = persistenceService.retrieveActionsSince(snapshot.getTimestamp());
-			return applyActionsToProjectSnapshot(snapshot, actionList);
+
+			Project project = snapshot.getProject();
+			if (actionList.isEmpty()) return project;
+
+			project = applyActionsToProject(project, actionList);
+			updateProjectSnapshot(snapshot, project);
+
+			return project;
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not load the project: A persistence exception occured.";
@@ -111,8 +119,14 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	private Project applyActionsToProjectSnapshot(final ProjectSnapshot snapshot, final List<ModelAction> actionList) throws UnableToCompleteActionException {
-		final Project project = snapshot.getProject();
+	private void updateProjectSnapshot(final ProjectSnapshot snapshot, final Project project) throws IOException, PersistenceException {
+		snapshot.setProject(project);
+		snapshot.setTimestamp(new Date());
+
+		persistenceService.persistProjectSnapshot(snapshot);
+	}
+
+	private Project applyActionsToProject(final Project project, final List<ModelAction> actionList) throws UnableToCompleteActionException {
 		final ProjectContext context = new ProjectContext(project);
 
 		for (final ModelAction action : actionList)
