@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
@@ -16,7 +17,10 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectExcep
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
@@ -91,14 +95,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	public synchronized Project loadProject() throws UnableToLoadProjectException {
 		LOGGER.debug("Loading project current state.");
 		try {
-			final ProjectSnapshot snapshot = persistenceService.retrieveProjectSnapshot();
-			final List<ModelAction> actionList = persistenceService.retrieveActionsSince(snapshot.getLastAppliedActionId());
+			final ProjectSnapshot snapshot = loadProjectSnapshot();
+			final List<UserAction> actionList = persistenceService.retrieveActionsSince(snapshot.getLastAppliedActionId());
 
 			Project project = snapshot.getProject();
 			if (actionList.isEmpty()) return project;
 
 			project = applyActionsToProject(project, actionList);
-			updateProjectSnapshot(snapshot, project);
+			updateProjectSnapshot(snapshot, project, actionList.get(actionList.size() - 1).getId());
 
 			return project;
 		}
@@ -119,20 +123,44 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	private void updateProjectSnapshot(final ProjectSnapshot snapshot, final Project project) throws IOException, PersistenceException {
+	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException {
+		ProjectSnapshot snapshot;
+		try {
+			snapshot = persistenceService.retrieveProjectSnapshot();
+		}
+		catch (final NoResultFoundException e) {
+			snapshot = createBlankProject();
+		}
+		return snapshot;
+	}
+
+	private ProjectSnapshot createBlankProject() throws UnableToLoadProjectException {
+		final Scope projectScope = new Scope("Project", new UUID("0"));
+		final Release projectRelease = new Release("proj", new UUID("release0"));
+
+		try {
+			return new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
+		}
+		catch (final IOException e) {
+			throw new UnableToLoadProjectException("It was not possible to create a blank project.");
+		}
+	}
+
+	private void updateProjectSnapshot(final ProjectSnapshot snapshot, final Project project, final long lastAppliedActionId) throws IOException,
+			PersistenceException {
 		snapshot.setProject(project);
 		snapshot.setTimestamp(new Date());
 		// FIXME Use the last action applied to snapshot, not the last persisted action.
-		snapshot.setLastAppliedActionId(persistenceService.getLastActionId());
+		snapshot.setLastAppliedActionId(lastAppliedActionId);
 
 		persistenceService.persistProjectSnapshot(snapshot);
 	}
 
-	private Project applyActionsToProject(final Project project, final List<ModelAction> actionList) throws UnableToCompleteActionException {
+	private Project applyActionsToProject(final Project project, final List<UserAction> actionList) throws UnableToCompleteActionException {
 		final ProjectContext context = new ProjectContext(project);
 
-		for (final ModelAction action : actionList)
-			ActionExecuter.executeAction(context, action);
+		for (final UserAction action : actionList)
+			ActionExecuter.executeAction(context, action.getModelAction());
 
 		return project;
 	}

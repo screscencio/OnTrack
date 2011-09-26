@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -10,18 +9,16 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import br.com.oncast.ontrack.server.business.UserAction;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.project.Project;
-import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 // TODO Analise using CriteriaApi instead of HQL.
@@ -57,16 +54,15 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
-	// FIXME Make business create the blank project if NoResultException is thrown (create a new exception type).
 	@Override
-	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException {
+	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException, NoResultFoundException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select snapshot from " + ProjectSnapshot.class.getSimpleName() + " as snapshot");
 			return (ProjectSnapshot) query.getSingleResult();
 		}
 		catch (final NoResultException e) {
-			return createBlankProject();
+			throw new NoResultFoundException("No snapshot found.", e);
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve the project snapshot.", e);
@@ -76,30 +72,18 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
-	private ProjectSnapshot createBlankProject() throws PersistenceException {
-		final Scope projectScope = new Scope("Project", new UUID("0"));
-		final Release projectRelease = new Release("proj", new UUID("release0"));
-
-		try {
-			return new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
-		}
-		catch (final IOException e) {
-			throw new PersistenceException("It was not possible to create a blank project.", e);
-		}
-	}
-
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<ModelAction> retrieveActionsSince(final long actionId) throws PersistenceException {
+	public List<UserAction> retrieveActionsSince(final long actionId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
-					+ " as action where action.actionEntity.id > :lastActionId order by action.id asc");
+					+ " as action where action.id > :lastActionId order by action.id asc");
 
 			query.setParameter("lastActionId", actionId);
 			final List<UserActionEntity> actions = query.getResultList();
 
-			return (List<ModelAction>) TYPE_CONVERTER.convert(actions);
+			return (List<UserAction>) TYPE_CONVERTER.convert(actions);
 		}
 		catch (final TypeConverterException e) {
 			throw new PersistenceException("It was not possible to convert actions.", e);
@@ -128,24 +112,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				throw new PersistenceException("It was not possible to persist the project snapshot and to rollback it.", f);
 			}
 			throw new PersistenceException("It was not possible to persist the project snapshot.", e);
-		}
-		finally {
-			em.close();
-		}
-	}
-
-	@Override
-	public long getLastActionId() throws PersistenceException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-			final Query query = em.createQuery("select action.actionEntity.id from " + UserActionEntity.class.getSimpleName()
-					+ " as action order by action.id desc");
-
-			query.setMaxResults(1);
-			return (Long) query.getSingleResult();
-		}
-		catch (final Exception e) {
-			throw new PersistenceException("It was not possible to retrieve the project actions.", e);
 		}
 		finally {
 			em.close();
