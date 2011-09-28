@@ -4,14 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -46,6 +48,14 @@ public class ScopeTreeWidget extends Composite {
 				interactionHandler.onDeclareProgressRequest(scopeId, progressDescription);
 			}
 		}, ScopeTreeItemDeclareProgressEvent.getType());
+
+		tree.addHandler(new ScopeTreeItemEditionStartEventHandler() {
+
+			@Override
+			public void onItemEditionStart(final ScopeTreeItem item) {
+				interactionHandler.onItemEditionStart(item);
+			}
+		}, ScopeTreeItemEditionStartEvent.getType());
 
 		tree.addHandler(new ScopeTreeItemEditionEndEventHandler() {
 

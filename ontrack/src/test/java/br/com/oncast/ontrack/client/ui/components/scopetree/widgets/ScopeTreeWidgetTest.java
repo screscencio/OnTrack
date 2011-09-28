@@ -40,6 +40,9 @@ public class ScopeTreeWidgetTest extends GwtTest {
 
 			@Override
 			public void onDeclareProgressRequest(final UUID scopeId, final String progressDescription) {}
+
+			@Override
+			public void onItemEditionStart(final ScopeTreeItem item) {}
 		});
 		scopeA1 = new Scope("root");
 		scopeA11 = new Scope("A11");
