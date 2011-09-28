@@ -31,7 +31,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 				this.pendingAction = null;
 				// TODO ++Implement an adequate exception treatment.
 				// TODO ++Display error to the user
-				throw new RuntimeException();
+				throw new RuntimeException(e);
 			}
 		}
 

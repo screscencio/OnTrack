@@ -33,7 +33,7 @@ public class DeclareProgressScopeActionTest {
 	public void shouldSetProgressToAScope() throws UnableToCompleteActionException {
 		new ScopeDeclareProgressAction(scope.getId(), "Not started").execute(context);
 
-		assertEquals("NOT_STARTED", scope.getProgress().getDescription());
+		assertEquals(ProgressState.NOT_STARTED.getDescription(), scope.getProgress().getDescription());
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class DeclareProgressScopeActionTest {
 	public void shouldSetProgressOfScopeToDone() throws UnableToCompleteActionException {
 		new ScopeDeclareProgressAction(scope.getId(), "Done").execute(context);
 
-		assertEquals("DONE", scope.getProgress().getDescription());
+		assertEquals(ProgressState.DONE.getDescription(), scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.DONE);
 	}
 
@@ -101,7 +101,7 @@ public class DeclareProgressScopeActionTest {
 	@Test
 	public void shouldRevertChangesAfterARollback() throws UnableToCompleteActionException {
 		scope.getProgress().setDescription("Done");
-		assertEquals("DONE", scope.getProgress().getDescription());
+		assertEquals(ProgressState.DONE.getDescription(), scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.DONE);
 
 		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
@@ -112,7 +112,7 @@ public class DeclareProgressScopeActionTest {
 
 		rollbackAction.execute(context);
 
-		assertEquals("DONE", scope.getProgress().getDescription());
+		assertEquals(ProgressState.DONE.getDescription(), scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.DONE);
 	}
 
