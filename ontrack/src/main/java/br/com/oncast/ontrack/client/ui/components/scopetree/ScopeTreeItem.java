@@ -1,9 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -21,7 +22,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 			@Override
 			public void onEditionStart() {
-				enterEditMode();
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionStartEvent(ScopeTreeItem.this));
 			}
 
 			@Override
@@ -52,7 +53,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 			@Override
 			public void onMenuEditionCancel() {
-				ScopeTreeItem.this.select();
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionCancelEvent());
 			}
 		}));
 

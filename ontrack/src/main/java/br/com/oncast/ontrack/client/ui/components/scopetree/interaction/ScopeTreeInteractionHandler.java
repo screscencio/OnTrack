@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequ
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -74,6 +75,11 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	}
 
 	@Override
+	public void onItemEditionStart(final ScopeTreeItem item) {
+		internalActionHandler.onInternalActionExecutionRequest(new NodeEditionInternalAction(item.getReferencedScope()));
+	}
+
+	@Override
 	public void onItemEditionEnd(final ScopeTreeItem item, final String value) {
 		assureConfigured();
 
@@ -119,4 +125,5 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	public void setContext(final ProjectContext context) {
 		this.context = context;
 	}
+
 }
