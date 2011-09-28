@@ -59,7 +59,7 @@ public class ProgressDefinitionManagerTest {
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.NOT_STARTED.getDescription()));
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.UNDER_WORK.getDescription()));
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.DONE.getDescription()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress.toUpperCase()));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress));
 		assertEquals(4, progressDefinitionManager.getProgressDefinitions().size());
 	}
 
@@ -83,10 +83,10 @@ public class ProgressDefinitionManagerTest {
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.UNDER_WORK.getDescription()));
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.DONE.getDescription()));
 
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress1.toUpperCase()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress2.toUpperCase()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress3.toUpperCase()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress4.toUpperCase()));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress1));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress2));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress3));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress4));
 
 		assertEquals(7, progressDefinitionManager.getProgressDefinitions().size());
 	}
@@ -111,15 +111,15 @@ public class ProgressDefinitionManagerTest {
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.UNDER_WORK.getDescription()));
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.DONE.getDescription()));
 
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress1.toUpperCase()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress2.toUpperCase()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress3.toUpperCase()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress4.toUpperCase()));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress1));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress2));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress3));
+		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress4));
 
-		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Anything".toUpperCase()));
-		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Other thing".toUpperCase()));
-		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Another state not defined".toUpperCase()));
-		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Anything".toUpperCase()));
+		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Anything"));
+		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Other thing"));
+		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Another state not defined"));
+		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Anything"));
 
 		assertEquals(7, progressDefinitionManager.getProgressDefinitions().size());
 	}

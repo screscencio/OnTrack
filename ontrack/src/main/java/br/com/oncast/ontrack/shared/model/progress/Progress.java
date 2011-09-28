@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.progress;
 
 import java.io.Serializable;
 
+import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityByGetter;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 public class Progress implements Serializable {
@@ -9,7 +10,7 @@ public class Progress implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum ProgressState {
-		NOT_STARTED {
+		NOT_STARTED("Not started") {
 			@Override
 			protected boolean matches(final String description) {
 				final String[] acceptableDescriptions = { "not started", "notstarted", "not_started", "ns", "n", "" };
@@ -19,13 +20,13 @@ public class Progress implements Serializable {
 				return false;
 			}
 		},
-		UNDER_WORK {
+		UNDER_WORK("Under work") {
 			@Override
 			protected boolean matches(final String description) {
 				return (!NOT_STARTED.matches(description) && !DONE.matches(description));
 			}
 		},
-		DONE {
+		DONE("Done") {
 			@Override
 			protected boolean matches(final String description) {
 				final String[] acceptableDescriptions = { "done", "dn", "d" };
@@ -36,7 +37,7 @@ public class Progress implements Serializable {
 			}
 		};
 
-		protected abstract boolean matches(String description);
+		private final String description;
 
 		public static ProgressState getStateForDescription(final String description) {
 			for (final ProgressState item : ProgressState.values())
@@ -44,11 +45,23 @@ public class Progress implements Serializable {
 			return UNDER_WORK;
 		}
 
-		public String getDescription() {
-			return this.toString();
+		private ProgressState(final String description) {
+			this.description = description;
 		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		@Override
+		public String toString() {
+			return getDescription();
+		}
+
+		protected abstract boolean matches(String description);
 	};
 
+	@DeepEqualityByGetter
 	private String description;
 
 	@IgnoredByDeepEquality

@@ -135,6 +135,11 @@ public class DeepEqualityTestUtils {
 						LOGGER.log("Ignoring field: '" + field.getName() + "'");
 						return;
 					}
+					if (field.isAnnotationPresent(DeepEqualityByGetter.class)) {
+						LOGGER.log("Using getter method to assert: '" + field.getName() + "'");
+						assertUsingGetter(expected, actual, field);
+						return;
+					}
 					LOGGER.log("Asserting '" + field.getName() + "'");
 					LOGGER.indent();
 
@@ -150,6 +155,20 @@ public class DeepEqualityTestUtils {
 		catch (final IntrospectionException e) {
 			throw new DeepEqualityException("A problem while checking the 'deep equality' was found.", e);
 		}
+	}
+
+	private static void assertUsingGetter(final Object expected, final Object actual, final Field field) throws IntrospectionException {
+		final String methodName = IntrospectionEngine.getEquivalentGetterMethodName(field);
+
+		LOGGER.log("Asserting method '" + methodName + "'");
+		LOGGER.indent();
+
+		final Object expectedValue = IntrospectionEngine.getMethodValue(expected, methodName);
+		final Object actualValue = IntrospectionEngine.getMethodValue(actual, methodName);
+
+		Assert.assertSame("Incompatible classes.\n" + LOGGER.getCurrentLogHierarchy(), expected.getClass(), actual.getClass());
+		assertObjectEquality(expectedValue, actualValue);
+		LOGGER.outdent();
 	}
 
 	private static boolean hasCustomDeepEqualityComparator(final Class<? extends Object> clazz) {

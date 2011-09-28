@@ -21,7 +21,10 @@ public class ProgressDefinitionManager {
 
 	public void onProgressDefinition(final String description) {
 		if (description == null || description.isEmpty()) return;
-		progressDefinitionSet.add(description.toUpperCase());
+		for (final String definition : progressDefinitionSet)
+			if (definition.equalsIgnoreCase(description)) return;
+
+		progressDefinitionSet.add(description);
 	}
 
 	public Set<String> getProgressDefinitions() {

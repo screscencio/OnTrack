@@ -22,6 +22,8 @@ public class DeclareProgressInternalAction implements InternalAction {
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
+		if (selectedTreeItem.getChildCount() > 0) throw new UnableToCompleteActionException("Progress can only be assigned to leaf scope items.");
+
 		tree.setSelected(null);
 		selectedTreeItem.getScopeTreeItemWidget().showProgressMenu(context.getProgressDefinitions());
 	}
