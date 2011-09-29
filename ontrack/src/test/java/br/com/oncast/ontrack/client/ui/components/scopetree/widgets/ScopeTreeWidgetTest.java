@@ -43,6 +43,11 @@ public class ScopeTreeWidgetTest extends GwtTest {
 
 			@Override
 			public void onItemEditionStart(final ScopeTreeItem item) {}
+
+			@Override
+			public void onDeclareEffortRequest(final UUID scopeId, final String effortDescription) {
+
+			}
 		});
 		scopeA1 = new Scope("root");
 		scopeA11 = new Scope("A11");

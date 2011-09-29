@@ -54,6 +54,8 @@ public class ScopeTreeItemWidget extends Composite {
 		String releaseMenuPanel();
 
 		String progressMenuPanel();
+
+		String effortMenuPanel();
 	}
 
 	@UiField
@@ -111,6 +113,9 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@IgnoredByDeepEquality
 	private Release currentRelease;
+
+	@IgnoredByDeepEquality
+	private boolean currentHasDeclaredEffort;
 
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
@@ -245,12 +250,14 @@ public class ScopeTreeItemWidget extends Composite {
 		final boolean effortDifferenceVisibility = (effortErrorDifference > 0 || effortPositiveDifference > 0);
 		final float effortValue = effort.getInfered();
 		final int effortDifferenceValue = ((int) ((effortErrorDifference > 0) ? effortErrorDifference : effortPositiveDifference));
+		final boolean hasDeclaredEffort = effort.hasDeclared();
 
-		if (effort.hasDeclared()) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
+		if (hasDeclaredEffort) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
 		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
 
-		if (currentEffort == effortValue && currentEffortDifference == effortDifferenceValue) return;
+		if (currentEffort == effortValue && currentEffortDifference == effortDifferenceValue && currentHasDeclaredEffort == hasDeclaredEffort) return;
 		currentEffort = effortValue;
+		currentHasDeclaredEffort = hasDeclaredEffort;
 		currentEffortDifference = effortDifferenceValue;
 
 		effortPanel.setVisible(effortVisibility);
@@ -348,13 +355,37 @@ public class ScopeTreeItemWidget extends Composite {
 		showCommandMenu(items, style.progressMenuPanel());
 	}
 
+	public void showEffortMenu(final List<String> fibonacciScaleForEffort) {
+		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+
+		items.add(new CommandMenuItem("None", new Command() {
+
+			@Override
+			public void execute() {
+				editionHandler.declareEffort("");
+			}
+		}));
+
+		for (final String effort : fibonacciScaleForEffort) {
+			items.add(new CommandMenuItem(effort, new Command() {
+
+				@Override
+				public void execute() {
+					editionHandler.declareEffort(effort);
+				}
+			}));
+		}
+
+		showCommandMenu(items, style.effortMenuPanel());
+	}
+
 	private void showCommandMenu(final List<CommandMenuItem> items, final String menuPanelStylename) {
 		final ScrollableCommandMenu commandsMenu = new ScrollableCommandMenu();
 		commandsMenu.addCloseHandler(new CloseHandler() {
 
 			@Override
 			public void onClose() {
-				editionHandler.onMenuEditionCancel();
+				editionHandler.onEditionMenuClose();
 			}
 		});
 
@@ -365,4 +396,5 @@ public class ScopeTreeItemWidget extends Composite {
 		commandsMenu.setItems(items);
 		commandsMenu.show(this);
 	}
+
 }
