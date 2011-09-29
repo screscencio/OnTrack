@@ -6,6 +6,8 @@ import java.util.Map;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
@@ -40,6 +42,15 @@ public class ScopeTreeWidget extends Composite {
 				interactionHandler.onBindReleaseRequest(scopeId, releaseDescription);
 			}
 		}, ScopeTreeItemBindReleaseEvent.getType());
+
+		tree.addHandler(new ScopeTreeItemDeclareEffortEventHandler() {
+
+			@Override
+			public void onDeclareEffortRequest(final UUID scopeId, final String effortDescription) {
+				interactionHandler.onDeclareEffortRequest(scopeId, effortDescription);
+			}
+
+		}, ScopeTreeItemDeclareEffortEvent.getType());
 
 		tree.addHandler(new ScopeTreeItemDeclareProgressEventHandler() {
 

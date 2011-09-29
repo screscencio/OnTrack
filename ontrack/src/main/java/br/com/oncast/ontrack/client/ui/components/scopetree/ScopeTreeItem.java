@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
@@ -52,8 +53,14 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			}
 
 			@Override
-			public void onMenuEditionCancel() {
-				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemEditionCancelEvent());
+			public void declareEffort(final String effortDescription) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemDeclareEffortEvent(getReferencedScope().getId(), effortDescription));
+			}
+
+			@Override
+			public void onEditionMenuClose() {
+				if (ScopeTreeItem.this.getTree().getSelectedItem() != null) return;
+				ScopeTreeItem.this.select();
 			}
 		}));
 

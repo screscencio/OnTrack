@@ -7,4 +7,5 @@ public interface ScopeTreeWidgetInteractionHandler extends KeyUpHandler,
 		ScopeTreeItemEditionEndEventHandler,
 		ScopeTreeItemEditionCancelEventHandler,
 		ScopeTreeItemBindReleaseEventHandler,
-		ScopeTreeItemDeclareProgressEventHandler {}
+		ScopeTreeItemDeclareProgressEventHandler,
+		ScopeTreeItemDeclareEffortEventHandler {}

@@ -113,6 +113,13 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		applicationActionHandler.onUserActionExecutionRequest(action);
 	}
 
+	@Override
+	public void onDeclareEffortRequest(final UUID scopeId, final String effortDescription) {
+		final ModelAction action = internalActionHandler.getPendingActionEquivalentModelActionFor(effortDescription);
+		internalActionHandler.rollbackPendingAction();
+		applicationActionHandler.onUserActionExecutionRequest(action);
+	}
+
 	private void assureConfigured() {
 		if (applicationActionHandler == null || tree == null || context == null) throw new RuntimeException("This class was not yet configured.");
 	}

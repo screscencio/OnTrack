@@ -98,7 +98,7 @@
 			
 			.releaseMenuPanel {
                 position: absolute;
-                top: 20px;
+                top: 21px;
                 right: 90px;
                 min-width: 200px;
                 z-index: 2;
@@ -106,10 +106,18 @@
 						
 			.progressMenuPanel {
                 position: absolute;
-                top: 20px;
+                top: 21px;
                 right: 5px;
                 min-width: 200px;
                 z-index: 2;
+			}
+			
+			.effortMenuPanel {
+				position: absolute;
+                top: 21px;
+                right: 230px;
+                min-width: 45px;
+                z-index: 2;	
 			}
 
 			.progressLabel {

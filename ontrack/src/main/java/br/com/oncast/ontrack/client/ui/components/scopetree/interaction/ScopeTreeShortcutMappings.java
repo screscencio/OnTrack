@@ -8,10 +8,12 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_F2
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LEFT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_PERCENT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_SHARP;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertFatherInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingDownInternalAction;
@@ -122,6 +124,14 @@ enum ScopeTreeShortcutMappings {
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
 			internalActionHandler.onInternalActionExecutionRequest(new DeclareProgressInternalAction(context, scope));
+		}
+	},
+
+	BIND_EFFORT(KEY_SHARP, false, true, false) {
+		@Override
+		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
+				final Scope scope, final ProjectContext context) {
+			internalActionHandler.onInternalActionExecutionRequest(new DeclareEffortInternalAction(scope, context));
 		}
 	};
 

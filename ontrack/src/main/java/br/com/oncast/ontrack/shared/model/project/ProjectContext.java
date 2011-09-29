@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.project;
 import java.util.List;
 import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
@@ -66,4 +67,7 @@ public class ProjectContext {
 		return ProgressDefinitionManager.getInstance().getProgressDefinitions();
 	}
 
+	public List<String> getFibonacciScaleForEffort() {
+		return FibonacciScale.getFibonacciScaleList();
+	}
 }
