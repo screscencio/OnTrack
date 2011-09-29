@@ -18,6 +18,8 @@ package com.google.gwt.user.client.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.ItemSelectionHandler;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.EventTarget;
@@ -195,6 +197,8 @@ public class MenuBar extends Widget implements PopupListener, HasAnimation,
 	private MenuBar shownChildMenu;
 	private boolean vertical, autoOpen;
 	private boolean focusOnHover = true;
+
+	private ItemSelectionHandler selectionHandler;
 
 	/**
 	 * Creates an empty horizontal menu bar.
@@ -767,6 +771,7 @@ public class MenuBar extends Widget implements PopupListener, HasAnimation,
 		}
 
 		selectedItem = item;
+		if (selectedItem != null) notifyItemSelectionHandlers();
 	}
 
 	@Override
@@ -1386,5 +1391,14 @@ public class MenuBar extends Widget implements PopupListener, HasAnimation,
 	 */
 	private void setItemColSpan(final UIObject item, final int colspan) {
 		DOM.setElementPropertyInt(item.getElement(), "colSpan", colspan);
+	}
+
+	public void setItemSelectionHandler(final ItemSelectionHandler selectionHandler) {
+		this.selectionHandler = selectionHandler;
+	}
+
+	private void notifyItemSelectionHandlers() {
+		if (selectionHandler == null) return;
+		selectionHandler.onItemSelected();
 	}
 }
