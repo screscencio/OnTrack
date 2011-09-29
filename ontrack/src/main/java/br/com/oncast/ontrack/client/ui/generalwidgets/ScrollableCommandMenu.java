@@ -2,20 +2,15 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,19 +41,10 @@ public class ScrollableCommandMenu extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		visibilityAssurer = new WidgetVisibilityAssurer(scrollPanel);
 
-		menu.addKeyPressHandler(new KeyPressHandler() {
+		menu.setItemSelectionHandler(new ItemSelectionHandler() {
 
 			@Override
-			public void onKeyPress(final KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() != BrowserKeyCodes.KEY_DOWN && event.getNativeEvent().getKeyCode() != BrowserKeyCodes.KEY_UP) return;
-				ensureSelectedItemIsVisible();
-			}
-		});
-		menu.addKeyUpHandler(new KeyUpHandler() {
-
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-				if (event.getNativeEvent().getKeyCode() != BrowserKeyCodes.KEY_DOWN && event.getNativeEvent().getKeyCode() != BrowserKeyCodes.KEY_UP) return;
+			public void onItemSelected() {
 				ensureSelectedItemIsVisible();
 			}
 		});
@@ -98,13 +84,16 @@ public class ScrollableCommandMenu extends Composite {
 	}
 
 	private void ensureSelectedItemIsVisible() {
+		final MenuItem selectedItem = menu.getSelectedItem();
+		if (selectedItem == null) return;
+
 		final int menuTop = scrollPanel.getVerticalScrollPosition();
 		final int menuHeight = scrollPanel.getElement().getClientHeight();
 		final int menuBottom = menuTop + menuHeight;
 
-		final int itemTop = menu.getSelectedItem().getElement().getOffsetTop();
-		final int itemHeight = menu.getSelectedItem().getElement().getOffsetHeight();
-		final int itemBottom = menu.getSelectedItem().getElement().getOffsetTop() + itemHeight;
+		final int itemTop = selectedItem.getElement().getOffsetTop();
+		final int itemHeight = selectedItem.getElement().getOffsetHeight();
+		final int itemBottom = selectedItem.getElement().getOffsetTop() + itemHeight;
 
 		if (itemTop < menuTop) scrollPanel.setVerticalScrollPosition(itemTop - 1);
 		else if (itemBottom > menuBottom) scrollPanel.setVerticalScrollPosition(itemTop - menuHeight + itemHeight + 3);
