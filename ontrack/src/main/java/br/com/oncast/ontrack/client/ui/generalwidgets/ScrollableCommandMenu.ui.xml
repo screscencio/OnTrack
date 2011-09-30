@@ -5,9 +5,13 @@
 
 <ui:style>
 	.panel {
-		border: 1px solid gray;
 		background-color: #FFF;
 		padding: 1px;
+		
+        border: 1px solid gray;
+        -moz-box-shadow: 2px 2px 4px #888;
+        -webkit-box-shadow: 2px 2px 4px #888;
+        box-shadow: 2px 2px 4px #888;
 	}
 </ui:style>
 
