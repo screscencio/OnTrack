@@ -21,7 +21,6 @@
                 height: 30px;
 
 				border: 1px solid #d9dae1;
-				background: #a5a5a5;
 				color: #fff;
 			}
 			
@@ -86,6 +85,7 @@
 			
 			.body {
 				position: relative;
+				background-color: #e3e4e8;
 			}
 			
 			.releaseContainer {
@@ -100,7 +100,7 @@
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
-		<div class="{style.header}">
+		<div class="{style.header} gradReleaseWidgetHeader">
 			<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
 			<g:Label ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
 			<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />

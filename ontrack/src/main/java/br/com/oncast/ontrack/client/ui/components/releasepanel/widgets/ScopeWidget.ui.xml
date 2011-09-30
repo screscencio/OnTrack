@@ -8,14 +8,14 @@
 			position: relative;
 			min-height: 16px;
 			margin: 1px;
-			border: 1px solid #cfc2dc;
-			background: #cdcfda;
+			border: 1px solid #d8d8db;
+			background: #dfe0e3;
 			padding: 0px;
 		}
 		
 		.panel:hover {
-			border: 1px solid #acafc6;
-			background-color: #c3c6d5;
+			border: 1px solid #d3d4d6;
+			background-color: #d4d5d9;
 		}
 
 	    .internalPanel {

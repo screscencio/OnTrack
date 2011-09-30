@@ -11,15 +11,27 @@
 			left: 0px;
 			right: 0px;
 			bottom: 0px;
-			background-color: #d9dae1;
+			background-color: #dbdce1;
+		}
+		
+		.appMenu {
+			position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            height: 35px;
+            border-bottom: 1px solid #333;
+            -moz-box-shadow: 0px 0px 5px #a5a5a5;
+            -webkit-box-shadow: 0px 0px 5px #a5a5a5;
+            box-shadow: 0px 0px 5px #a5a5a5;
 		}
 		
 		.scopeTree {
 			position: absolute;
-			top: 10px;
+			top: 50px;
 			left: 10px;
 			right: 420px;
-			bottom: 25px;
+			bottom: 20px;
 			padding: 5px;
 			overflow: auto;
 			overflow-x: hidden;
@@ -32,7 +44,7 @@
 		
 		.releasePanel {
 			position: absolute;
-			top: 0px;
+			top: 40px;
 			right: 0px;
 			bottom: 0px;
 			width: 400px;
@@ -48,10 +60,12 @@
 			left: 10px;
 			width: 200px;
 			padding: 5px;
+		    font-size: 11px;
 		}
 	</ui:style>
 
 	<g:FlowPanel styleName="{style.rootPanel}">
+        <g:SimplePanel styleName="{style.appMenu} gradAppHeader" />
 		<g:SimplePanel styleName="{style.scopeTree}">
 			<st:ScopeTree ui:field="scopeTree" />
 		</g:SimplePanel>

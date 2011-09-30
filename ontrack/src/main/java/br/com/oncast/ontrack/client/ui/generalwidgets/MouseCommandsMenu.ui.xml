@@ -5,19 +5,23 @@
 	<ui:style>
 			.panel {
 				position: relative;
+				border: 0px;
 			}
 			
 			.menuImage {
-				background: #c5c5c5 url("resources/image/releasePanel/arrow.png") no-repeat center;
-				border: 1px solid #999;
+				background: #dfe0e3 url("resources/image/releasePanel/arrow.png") no-repeat center;
 				cursor: pointer;
                 width: 18px;
                 height: 18px;
                 opacity: 0.2;
                 display: block;
+                
+                -moz-border-radius: 2px;
+                border-radius: 2px;
 			}
 
             .menuImage:hover {
+                background: #d4d5d9 url("resources/image/releasePanel/arrow.png") no-repeat center;
             	opacity: 1;
             }
             
@@ -27,8 +31,11 @@
                 right: 0px;
                 width: 150px;
 				z-index: 2;
-				
-				border: 1px solid gray;
+
+                border: 1px solid gray;
+                -moz-box-shadow: 2px 2px 4px #888;
+				-webkit-box-shadow: 2px 2px 4px #888;
+				box-shadow: 2px 2px 4px #888;
 			}
 		</ui:style>
 
