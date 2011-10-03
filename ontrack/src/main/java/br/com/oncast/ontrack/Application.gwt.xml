@@ -10,6 +10,7 @@
 
 	<!-- Other module inherits -->
 	<inherits name="net.zschech.gwt.comet.Comet" />
+	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 
 	<!-- Specify the app entry point class. -->
 	<entry-point class='br.com.oncast.ontrack.client.ApplicationEntryPoint' />

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import br.com.oncast.ontrack.client.ui.components.releasepanel.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
@@ -7,6 +8,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,6 +23,9 @@ public class ReleasePanelWidget extends Composite {
 	@IgnoredByDeepEquality
 	protected VerticalModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
 
+	@UiField
+	protected AbsolutePanel boundaryPanel;
+
 	private Release rootRelease;
 
 	// IMPORTANT: This field cannot be 'final' because some tests need to set it to a new value through reflection. Do not remove the 'null' attribution.
@@ -28,8 +33,12 @@ public class ReleasePanelWidget extends Composite {
 	private ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory = null;
 
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
-		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(releasePanelInteractionHandler));
+		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
+		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(releasePanelInteractionHandler,
+				dragAndDropManager.getDraggableItemListener()), dragAndDropManager.getDropTargetCreationListener());
+
 		initWidget(uiBinder.createAndBindUi(this));
+		dragAndDropManager.configureBoundaryPanel(boundaryPanel);
 	}
 
 	public void setRelease(final Release rootRelease) {

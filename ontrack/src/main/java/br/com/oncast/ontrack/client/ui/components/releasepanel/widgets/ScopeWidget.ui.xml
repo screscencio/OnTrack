@@ -30,7 +30,7 @@
 			position: relative;
 			top: 0px;
 			bottom: 0px;
-			left: 0px;
+			left: 10px;
 			margin-right: 100px;
 			padding-top: 4px;
 			padding-bottom: 4px;
@@ -70,12 +70,24 @@
 			padding-top: 1px;
 			padding-bottom: 1px;
 		}
+		
+		.draggable {
+			background: url("resources/image/releasePanel/draggable.png") no-repeat center;
+			cursor: move;
+			
+			position: absolute;
+			top: 2px;
+			left: 0px;
+			width: 8px;
+			height: 17px;
+		}
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">
 	   <g:FlowPanel styleName="{style.internalPanel}">
 		<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 		<g:Label ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
+		<g:Image ui:field="dragImage" styleName="{style.draggable}" />
 		<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 		</g:FlowPanel>
 	</g:FocusPanel>

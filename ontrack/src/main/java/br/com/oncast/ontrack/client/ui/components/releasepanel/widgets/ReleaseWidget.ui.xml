@@ -108,9 +108,11 @@
 			<t:MouseCommandsMenu ui:field="mouseActionsMenu"
 				styleName="{style.mouseActionsMenu}" />
 		</div>
-		<div class="{style.body}" ui:field="bodyContainer">
-			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
-			<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
+		<div ui:field="bodyContainer" class="{style.body}" >
+			<g:VerticalPanel ui:field="bodyPanel">
+				<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
+				<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
+			</g:VerticalPanel>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 
