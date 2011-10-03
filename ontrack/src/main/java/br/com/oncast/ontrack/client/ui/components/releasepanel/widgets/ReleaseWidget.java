@@ -63,9 +63,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected DivElement bodyContainer;
 
 	@UiField
-	protected VerticalPanel bodyPanel;
-
-	@UiField
 	protected Image containerStateImage;
 
 	@UiField
@@ -263,6 +260,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	public VerticalPanel getDroppableArea() {
-		return bodyPanel;
+		return scopeContainer.getInternalPanel();
 	}
 }

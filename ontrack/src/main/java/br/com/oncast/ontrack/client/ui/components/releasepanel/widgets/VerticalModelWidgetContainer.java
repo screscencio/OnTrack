@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.VerticalPanelWithSpacer;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -19,7 +22,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	interface VerticalModelWidgetContainerUiBinder extends UiBinder<Widget, VerticalModelWidgetContainer> {}
 
 	@UiField
-	VerticalPanel verticalContainer;
+	VerticalPanelWithSpacer verticalContainer;
 
 	private final Map<T, E> widgetMap;
 
@@ -81,6 +84,10 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 
 	public int getWidgetCount() {
 		return verticalContainer.getWidgetCount();
+	}
+
+	public VerticalPanel getInternalPanel() {
+		return verticalContainer;
 	}
 
 	@Override

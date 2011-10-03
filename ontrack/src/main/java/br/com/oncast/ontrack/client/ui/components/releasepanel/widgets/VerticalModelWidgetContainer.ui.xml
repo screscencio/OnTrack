@@ -1,11 +1,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:i="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd">
 	<ui:style>
 		.verticalContainer {
 			width: 100%;
+			min-height: 10px;
 		}
 	</ui:style>
 
-	<g:VerticalPanel ui:field="verticalContainer" styleName="{style.verticalContainer}" />
+	<i:VerticalPanelWithSpacer ui:field="verticalContainer" styleName="{style.verticalContainer}" />
 </ui:UiBinder> 
