@@ -16,6 +16,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -33,6 +34,9 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	@UiField
 	Label progressLabel;
+
+	@UiField
+	Image dragImage;
 
 	@UiField
 	protected MouseCommandsMenu mouseActionsMenu;
@@ -109,8 +113,13 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		return getScope();
 	}
 
+	public Image getDraggableArea() {
+		return dragImage;
+	}
+
 	@UiHandler("panel")
 	public void onScopeWidgetClick(final ClickEvent e) {
 		releasePanelInteractionHandler.onScopeSelectionRequest(scope);
 	}
+
 }

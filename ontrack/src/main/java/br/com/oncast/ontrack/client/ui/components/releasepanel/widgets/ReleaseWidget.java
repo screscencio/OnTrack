@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO Refactor dividing visualization logic from business logic
@@ -60,6 +61,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected DivElement bodyContainer;
+
+	@UiField
+	protected VerticalPanel bodyPanel;
 
 	@UiField
 	protected Image containerStateImage;
@@ -256,5 +260,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@Override
 	public Release getModelObject() {
 		return getRelease();
+	}
+
+	public VerticalPanel getDroppableArea() {
+		return bodyPanel;
 	}
 }
