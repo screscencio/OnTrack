@@ -11,6 +11,7 @@
 				margin-bottom: 5px;
 				border: 1px solid #a5a5a5;
 				font-size: 13px;
+				width: 100%;
 			}
 			
 			.header {
@@ -109,10 +110,8 @@
 				styleName="{style.mouseActionsMenu}" />
 		</div>
 		<div ui:field="bodyContainer" class="{style.body}" >
-			<g:VerticalPanel ui:field="bodyPanel">
-				<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
-				<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
-			</g:VerticalPanel>
+			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
+			<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

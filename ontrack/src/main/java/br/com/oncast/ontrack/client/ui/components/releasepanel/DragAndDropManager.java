@@ -1,9 +1,13 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.DraggableItemCreationListener;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.DropTargetCreationListener;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DraggableItemCreationListener;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DropTargetCreationListener;
 
+import com.allen_sauer.gwt.dnd.client.DragEndEvent;
+import com.allen_sauer.gwt.dnd.client.DragHandler;
+import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
@@ -14,6 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DragAndDropManager {
 
 	private PickupDragController dragController;
+
 	private DropTargetCreationListener dropTargetCreationHandler;
 	private DraggableItemCreationListener draggableItemHandler;
 
@@ -22,6 +27,31 @@ public class DragAndDropManager {
 		dragController = new PickupDragController(boundaryPanel, false);
 		dragController.setBehaviorConstrainedToBoundaryPanel(true);
 		dragController.setBehaviorMultipleSelection(false);
+		dragController.addDragHandler(new DragHandler() {
+
+			@Override
+			public void onPreviewDragStart(final DragStartEvent event) throws VetoDragException {
+				// FIXME Auto-generated catch block
+
+			}
+
+			@Override
+			public void onPreviewDragEnd(final DragEndEvent event) throws VetoDragException {
+				// FIXME Auto-generated catch block
+
+			}
+
+			@Override
+			public void onDragStart(final DragStartEvent event) {
+				// FIXME Auto-generated catch block
+
+			}
+
+			@Override
+			public void onDragEnd(final DragEndEvent event) {
+				// FIXME Auto-generated catch block
+			}
+		});
 	}
 
 	public DropTargetCreationListener getDropTargetCreationListener() {
@@ -32,8 +62,7 @@ public class DragAndDropManager {
 				public void onDropTargetCreated(final VerticalPanel dropTarget) {
 					assureConfigured();
 
-					final VerticalPanelDropController dropController = new VerticalPanelDropController(dropTarget);
-					dragController.registerDropController(dropController);
+					dragController.registerDropController(new VerticalPanelDropController(dropTarget));
 				}
 			};
 		}
