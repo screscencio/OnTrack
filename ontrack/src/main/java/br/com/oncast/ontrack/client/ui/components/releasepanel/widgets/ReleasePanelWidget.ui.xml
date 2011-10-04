@@ -17,9 +17,7 @@
 	   	}
 	</ui:style>
 	
-	<g:AbsolutePanel ui:field="boundaryPanel" >
-		<g:HTMLPanel styleName="{style.rootPanel}" >
-			<ow:VerticalModelWidgetContainer ui:field="releaseContainer" styleName="{style.releases}" />
-		</g:HTMLPanel>
-	</g:AbsolutePanel>
+	<g:HTMLPanel styleName="{style.rootPanel}" >
+		<ow:VerticalModelWidgetContainer ui:field="releaseContainer" styleName="{style.releases}" />
+	</g:HTMLPanel>
 </ui:UiBinder> 

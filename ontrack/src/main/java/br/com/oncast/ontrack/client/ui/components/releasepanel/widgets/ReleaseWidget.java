@@ -153,6 +153,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		for (final Scope scope : release.getScopeList())
 			scopeContainer.createChildModelWidget(scope);
 
+		scopeContainer.setOwnerRelease(release);
+
 		updateDescription();
 		updateProgress();
 		reviewContainersState();

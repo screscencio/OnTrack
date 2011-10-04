@@ -1,20 +1,17 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel;
+package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DraggableItemCreationListener;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DropTargetCreationListener;
-
-import com.allen_sauer.gwt.dnd.client.DragEndEvent;
-import com.allen_sauer.gwt.dnd.client.DragHandler;
-import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-// FIXME Add comments, explaining how to configure this class.
+/**
+ * Configure draggable items and the target place to where these items can be dropped.
+ * The {@link DragAndDropManager#configureBoundaryPanel(AbsolutePanel)} method have to be called before
+ * executing the provided listeners.
+ */
 public class DragAndDropManager {
 
 	private PickupDragController dragController;
@@ -22,38 +19,24 @@ public class DragAndDropManager {
 	private DropTargetCreationListener dropTargetCreationHandler;
 	private DraggableItemCreationListener draggableItemHandler;
 
-	// FIXME Add comments
+	/**
+	 * Configure a draggable area (boundaryPanel) on which the draggable items can be moved over.
+	 */
 	public void configureBoundaryPanel(final AbsolutePanel boundaryPanel) {
 		dragController = new PickupDragController(boundaryPanel, false);
 		dragController.setBehaviorConstrainedToBoundaryPanel(true);
 		dragController.setBehaviorMultipleSelection(false);
-		dragController.addDragHandler(new DragHandler() {
 
-			@Override
-			public void onPreviewDragStart(final DragStartEvent event) throws VetoDragException {
-				// FIXME Auto-generated catch block
-
-			}
-
-			@Override
-			public void onPreviewDragEnd(final DragEndEvent event) throws VetoDragException {
-				// FIXME Auto-generated catch block
-
-			}
-
-			@Override
-			public void onDragStart(final DragStartEvent event) {
-				// FIXME Auto-generated catch block
-
-			}
-
-			@Override
-			public void onDragEnd(final DragEndEvent event) {
-				// FIXME Auto-generated catch block
-			}
-		});
 	}
 
+	public void setDragHandler(final ScopeItemDragHandler scopeItemDragHandler) {
+		dragController.addDragHandler(scopeItemDragHandler);
+	}
+
+	/**
+	 * Returns a listener that have to be notified when a new drop target is created, so this manager can
+	 * configure it to receive (by drop) draggable items.
+	 */
 	public DropTargetCreationListener getDropTargetCreationListener() {
 		if (dropTargetCreationHandler == null) {
 			dropTargetCreationHandler = new DropTargetCreationListener() {
@@ -61,7 +44,6 @@ public class DragAndDropManager {
 				@Override
 				public void onDropTargetCreated(final VerticalPanel dropTarget) {
 					assureConfigured();
-
 					dragController.registerDropController(new VerticalPanelDropController(dropTarget));
 				}
 			};
@@ -70,7 +52,12 @@ public class DragAndDropManager {
 		return dropTargetCreationHandler;
 	}
 
-	public DraggableItemCreationListener getDraggableItemListener() {
+	/**
+	 * Returns a listener that have to be notified when a new draggable item is created, so this manager can
+	 * configure it and allow it to be dropped in a previously defined droppable area,
+	 * using {@link DragAndDropManager#getDropTargetCreationListener()} method.
+	 */
+	public DraggableItemCreationListener getDraggableItemCreationListener() {
 		if (draggableItemHandler == null) {
 			draggableItemHandler = new DraggableItemCreationListener() {
 				@Override
@@ -87,5 +74,4 @@ public class DragAndDropManager {
 	private void assureConfigured() {
 		if (dragController == null) throw new RuntimeException("The drag and drop manager must be configured before handling widget creation.");
 	}
-
 }

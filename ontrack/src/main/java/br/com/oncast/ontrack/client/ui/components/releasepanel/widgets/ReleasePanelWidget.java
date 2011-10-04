@@ -1,15 +1,18 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ItemDroppedListener;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ScopeItemDragHandler;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ReleasePanelWidget extends Composite {
@@ -23,9 +26,6 @@ public class ReleasePanelWidget extends Composite {
 	@IgnoredByDeepEquality
 	protected VerticalModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
 
-	@UiField
-	protected AbsolutePanel boundaryPanel;
-
 	private Release rootRelease;
 
 	// IMPORTANT: This field cannot be 'final' because some tests need to set it to a new value through reflection. Do not remove the 'null' attribution.
@@ -35,10 +35,11 @@ public class ReleasePanelWidget extends Composite {
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
 		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(releasePanelInteractionHandler,
-				dragAndDropManager.getDraggableItemListener()), dragAndDropManager.getDropTargetCreationListener());
+				dragAndDropManager.getDraggableItemCreationListener()), dragAndDropManager.getDropTargetCreationListener());
 
 		initWidget(uiBinder.createAndBindUi(this));
-		dragAndDropManager.configureBoundaryPanel(boundaryPanel);
+		dragAndDropManager.configureBoundaryPanel(RootPanel.get());
+		dragAndDropManager.setDragHandler(createScopeItemDragHandler(releasePanelInteractionHandler));
 	}
 
 	public void setRelease(final Release rootRelease) {
@@ -60,5 +61,18 @@ public class ReleasePanelWidget extends Composite {
 			@Override
 			public void onUpdateComplete(final boolean hasChanged, final boolean hasNewWidgets) {}
 		});
+	}
+
+	private ScopeItemDragHandler createScopeItemDragHandler(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+		return new ScopeItemDragHandler(createItemDroppedListener(releasePanelInteractionHandler));
+	}
+
+	private ItemDroppedListener createItemDroppedListener(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+		return new ItemDroppedListener() {
+			@Override
+			public void onItemDropped(final Scope droppedScope, final Release targetRelease, final int newScopePosition) {
+				releasePanelInteractionHandler.onScopeChangePriorityRequest(droppedScope, targetRelease, newScopePosition);
+			}
+		};
 	}
 }
