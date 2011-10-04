@@ -33,15 +33,19 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ScopeBindReleaseAction() {}
 
-	public ScopeBindReleaseAction(final UUID referenceId, final String newReleaseDescription) {
-		this.referenceId = referenceId;
+	public ScopeBindReleaseAction(final UUID scopeId, final String newReleaseDescription) {
+		this.referenceId = scopeId;
 		this.newReleaseDescription = newReleaseDescription;
 		this.scopePriority = -1;
 	}
 
-	public ScopeBindReleaseAction(final UUID referenceId, final String releaseDescription, final int scopePriority, final ReleaseRemoveAction subAction) {
-		this(referenceId, releaseDescription);
+	public ScopeBindReleaseAction(final UUID scopeId, final String releaseDescription, final int scopePriority) {
+		this(scopeId, releaseDescription);
 		this.scopePriority = scopePriority;
+	}
+
+	public ScopeBindReleaseAction(final UUID scopeId, final String releaseDescription, final int scopePriority, final ReleaseRemoveAction subAction) {
+		this(scopeId, releaseDescription, scopePriority);
 		this.rollbackSubAction = subAction;
 	}
 
