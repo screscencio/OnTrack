@@ -16,7 +16,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -36,7 +35,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	Label progressLabel;
 
 	@UiField
-	Image dragImage;
+	FocusPanel dragImage;
 
 	@UiField
 	protected MouseCommandsMenu mouseActionsMenu;
@@ -82,26 +81,35 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	}
 
 	@Override
-	public void update() {
-		updateDescription();
-		updateProgress();
+	public boolean update() {
+		return updateDescription() | updateProgress();
 	}
 
-	private void updateDescription() {
+	/**
+	 * @return if the description was updated.
+	 */
+	private boolean updateDescription() {
 		final String description = scope.getDescription();
-		if (description.equals(currentScopeDescription)) return;
+		if (description.equals(currentScopeDescription)) return false;
 		currentScopeDescription = description;
 
 		descriptionLabel.setText(currentScopeDescription);
+
+		return true;
 	}
 
-	private void updateProgress() {
+	/**
+	 * @return if the progress was updated.
+	 */
+	private boolean updateProgress() {
 		final String description = scope.getProgress().getDescription();
-		if (description.equals(currentScopeProgress)) return;
+		if (description.equals(currentScopeProgress)) return false;
 		currentScopeProgress = description;
 
 		progressLabel.setText(currentScopeProgress);
 		progressLabel.setVisible(!currentScopeProgress.isEmpty());
+
+		return true;
 	}
 
 	public Scope getScope() {
@@ -113,7 +121,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		return getScope();
 	}
 
-	public Image getDraggableArea() {
+	public Widget getDraggableArea() {
 		return dragImage;
 	}
 

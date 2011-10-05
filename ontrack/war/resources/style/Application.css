@@ -73,6 +73,21 @@ background-image: -webkit-gradient(
 	border: 1px solid #CFCFCF;
 }
 
+/* Drag n Drop */
+.dragdrop-positioner {
+	width: 380px;
+	border: 0px;
+}
+
+.dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {
+	filter: alpha(opacity \= 70);
+	opacity: 0.7;
+}
+
+.dragdrop-draggable {
+	zoom: normal;
+}
+
 /* MenuBar */
 .gwt-MenuBar {}
 .gwt-MenuBar-horizontal {}

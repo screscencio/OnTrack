@@ -13,7 +13,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -34,8 +33,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	interface ReleasePanelItemWidgetUiBinder extends UiBinder<Widget, ReleaseWidget> {}
 
 	interface Style extends CssResource {
-		String invisibleBodyContainer();
-
 		String headerContainerStateImageOpened();
 
 		String headerContainerStateImageClosed();
@@ -66,7 +63,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Image containerStateImage;
 
 	@UiField
-	protected FocusPanel containerStateToogleClickableArea;
+	protected FocusPanel containerToogleClickableArea;
 
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
@@ -111,11 +108,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private final ModelWidgetContainerListener containerUpdateListener;
 
-	private HandlerRegistration containerStateImageClickHandlerRegistration;
-
 	private boolean isContainerStateOpen;
-
-	private boolean isBodyContainerActive;
 
 	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentReleaseDescription;
@@ -137,11 +130,10 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		this.containerUpdateListener = new ModelWidgetContainerListener() {
 
 			@Override
-			public void onUpdateComplete(final boolean hasChanged, final boolean hasNewWidgets) {
+			public void onUpdateComplete(final boolean hasChanged) {
 				if (!hasChanged) return;
 
-				reviewContainersState();
-				if (hasNewWidgets) setContainerState(true);
+				setContainerState(true);
 			}
 		};
 
@@ -155,17 +147,24 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		scopeContainer.setOwnerRelease(release);
 
+		containerToogleClickableArea.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				setContainerState(!isContainerStateOpen);
+			}
+		});
+
 		updateDescription();
 		updateProgress();
-		reviewContainersState();
+		setContainerState(true);
 	}
 
 	@Override
-	public void update() {
+	public boolean update() {
 		updateDescription();
 		updateProgress();
-		releaseContainer.update(release.getChildren());
-		scopeContainer.update(release.getScopeList());
+
+		return releaseContainer.update(release.getChildren()) | scopeContainer.update(release.getScopeList());
 	}
 
 	private void updateDescription() {
@@ -193,59 +192,20 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		return ClientDecimalFormat.roundFloat(percentage, 1) + "%";
 	}
 
-	private void reviewContainersState() {
-		reviewBodyContainerState();
-		reviewReleaseContainerVisibility();
-		reviewScopeContainerVisibility();
-	}
-
-	private void reviewBodyContainerState() {
-		final boolean shouldBodyContainerBeActive = (scopeContainer.getWidgetCount() != 0 || releaseContainer.getWidgetCount() != 0);
-		if (isBodyContainerActive == shouldBodyContainerBeActive) return;
-
-		setContainerState(shouldBodyContainerBeActive);
-
-		if (shouldBodyContainerBeActive) {
-			containerStateImageClickHandlerRegistration = containerStateToogleClickableArea.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(final ClickEvent event) {
-					setContainerState(!isContainerStateOpen);
-				}
-			});
-		}
-		else {
-			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageClosed());
-			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageOpened());
-			if (containerStateImageClickHandlerRegistration != null) containerStateImageClickHandlerRegistration.removeHandler();
-		}
-
-		isBodyContainerActive = shouldBodyContainerBeActive;
-	}
-
 	public void setContainerState(final boolean shouldOpen) {
-		if (!isBodyContainerActive) return;
-		if (isContainerStateOpen == shouldOpen) return;
-
 		if (shouldOpen) {
-			bodyContainer.removeClassName(getStyle().invisibleBodyContainer());
 			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageClosed());
 			containerStateImage.getElement().addClassName(getStyle().headerContainerStateImageOpened());
 		}
 		else {
-			bodyContainer.addClassName(getStyle().invisibleBodyContainer());
 			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageOpened());
 			containerStateImage.getElement().addClassName(getStyle().headerContainerStateImageClosed());
 		}
+
+		scopeContainer.setVisible(shouldOpen);
+		releaseContainer.setVisible(releaseContainer.getWidgetCount() != 0 && shouldOpen);
+
 		isContainerStateOpen = shouldOpen;
-	}
-
-	private void reviewScopeContainerVisibility() {
-		scopeContainer.setVisible(scopeContainer.getWidgetCount() != 0);
-	}
-
-	private void reviewReleaseContainerVisibility() {
-		releaseContainer.setVisible(releaseContainer.getWidgetCount() != 0);
 	}
 
 	public Release getRelease() {

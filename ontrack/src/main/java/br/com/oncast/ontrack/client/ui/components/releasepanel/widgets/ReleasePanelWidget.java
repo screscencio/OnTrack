@@ -59,7 +59,7 @@ public class ReleasePanelWidget extends Composite {
 		return new VerticalModelWidgetContainer<Release, ReleaseWidget>(releaseWidgetFactory, new ModelWidgetContainerListener() {
 
 			@Override
-			public void onUpdateComplete(final boolean hasChanged, final boolean hasNewWidgets) {}
+			public void onUpdateComplete(final boolean hasChanged) {}
 		});
 	}
 

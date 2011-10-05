@@ -80,13 +80,10 @@
 				right: 5px;
 			}
 			
-			.invisibleBodyContainer {
-				display: none;
-			}
-			
 			.body {
 				position: relative;
 				background-color: #e3e4e8;
+				width: 100%;
 			}
 			
 			.releaseContainer {
@@ -105,7 +102,7 @@
 			<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
 			<g:Label ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
 			<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
-			<g:FocusPanel ui:field="containerStateToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" />
+			<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" />
 			<t:MouseCommandsMenu ui:field="mouseActionsMenu"
 				styleName="{style.mouseActionsMenu}" />
 		</div>
