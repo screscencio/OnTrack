@@ -81,11 +81,19 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		return modelWidget;
 	}
 
+	/**
+	 * Inserts a widget into internal widget map. This have to be done when some external agent, e.g., drag and drop,
+	 * inserts a new child widget for this panel directly at DOM.
+	 */
+	public void addToWidgetMapping(final T modelBean, final E widget) {
+		widgetMap.put(modelBean, widget);
+	}
+
 	public int getWidgetCount() {
 		return verticalContainer.getWidgetCount();
 	}
 
-	public VerticalPanel getInternalPanel() {
+	public VerticalPanel getVerticalContainer() {
 		return verticalContainer;
 	}
 

@@ -88,7 +88,7 @@
 	   <g:FlowPanel styleName="{style.internalPanel}">
 		<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 		<g:Label ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
-		<g:FocusPanel ui:field="dragImage" styleName="{style.draggable}" />
+		<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
 		<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 		</g:FlowPanel>
 	</g:FocusPanel>

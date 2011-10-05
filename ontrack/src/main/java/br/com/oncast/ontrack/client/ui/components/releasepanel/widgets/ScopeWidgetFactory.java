@@ -1,24 +1,25 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DraggableItemCreationListener;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ScopeWidget> {
 
 	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
-	private final DraggableItemCreationListener draggableItemCreationListener;
+	private final DragAndDropManager dragAndDropManager;
 
 	public ScopeWidgetFactory(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler,
-			final DraggableItemCreationListener draggableItemCreationListener) {
+			final DragAndDropManager dragAndDropManager) {
 
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
-		this.draggableItemCreationListener = draggableItemCreationListener;
+		this.dragAndDropManager = dragAndDropManager;
 	}
 
 	@Override
 	public ScopeWidget createWidget(final Scope scope) {
 		final ScopeWidget newScopeWidget = new ScopeWidget(scope, releasePanelInteractionHandler);
-		draggableItemCreationListener.onDraggableItemCreated(newScopeWidget, newScopeWidget.getDraggableArea());
+
+		dragAndDropManager.monitorNewDraggableItem(newScopeWidget, newScopeWidget.getDraggableAnchor());
 
 		return newScopeWidget;
 	}

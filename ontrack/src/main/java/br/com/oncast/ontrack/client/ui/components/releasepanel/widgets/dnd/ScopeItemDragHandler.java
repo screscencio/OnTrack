@@ -22,10 +22,13 @@ public class ScopeItemDragHandler extends DragHandlerAdapter {
 		if (isDropTargetInvalid(dropTargetController)) return;
 
 		final VerticalPanel targetReleaseArea = (VerticalPanel) dropTargetController.getDropTarget();
-		final ScopeWidgetContainer scopeContainer = (ScopeWidgetContainer) targetReleaseArea.getParent();
+		final ScopeWidgetContainer targetScopeContainer = (ScopeWidgetContainer) targetReleaseArea.getParent();
 
-		itemDroppedListener.onItemDropped(draggedScopeWidget.getModelObject(), scopeContainer.getOwnerRelease(),
+		targetScopeContainer.addToWidgetMapping(draggedScopeWidget.getScope(), draggedScopeWidget);
+
+		itemDroppedListener.onItemDropped(draggedScopeWidget.getModelObject(), targetScopeContainer.getOwnerRelease(),
 				targetReleaseArea.getWidgetIndex(draggedScopeWidget));
+
 	}
 
 	private boolean isDropTargetInvalid(final DropController dropController) {
