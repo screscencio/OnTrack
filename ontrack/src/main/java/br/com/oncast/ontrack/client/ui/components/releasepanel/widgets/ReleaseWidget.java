@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO Refactor dividing visualization logic from business logic
@@ -121,13 +120,31 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
-			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory, final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
+			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this.release = release;
 		this.releaseWidgetFactory = releaseWidgetFactory;
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
 
-		this.containerUpdateListener = new ModelWidgetContainerListener() {
+		this.containerUpdateListener = createContainerUpdateListener();
+
+		initWidget(uiBinder.createAndBindUi(this));
+
+		scopeContainer.setOwnerRelease(release);
+
+		populateChildScopeWidgets();
+		populateChildReleaseWidgets();
+
+		addToogleClickableAreaHandler();
+
+		updateDescription();
+		updateProgress();
+		setContainerState(true);
+	}
+
+	private ModelWidgetContainerListener createContainerUpdateListener() {
+		return new ModelWidgetContainerListener() {
 
 			@Override
 			public void onUpdateComplete(final boolean hasChanged) {
@@ -136,27 +153,25 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				setContainerState(true);
 			}
 		};
+	}
 
-		initWidget(uiBinder.createAndBindUi(this));
-
-		for (final Release childRelease : release.getChildren())
-			releaseContainer.createChildModelWidget(childRelease);
-
+	private void populateChildReleaseWidgets() {
 		for (final Scope scope : release.getScopeList())
 			scopeContainer.createChildModelWidget(scope);
+	}
 
-		scopeContainer.setOwnerRelease(release);
+	private void populateChildScopeWidgets() {
+		for (final Release childRelease : release.getChildren())
+			releaseContainer.createChildModelWidget(childRelease);
+	}
 
+	private void addToogleClickableAreaHandler() {
 		containerToogleClickableArea.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				setContainerState(!isContainerStateOpen);
 			}
 		});
-
-		updateDescription();
-		updateProgress();
-		setContainerState(true);
 	}
 
 	@Override
@@ -221,7 +236,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		return getRelease();
 	}
 
-	public VerticalPanel getDroppableArea() {
-		return scopeContainer.getInternalPanel();
+	public ScopeWidgetContainer getScopeContainer() {
+		return scopeContainer;
 	}
 }

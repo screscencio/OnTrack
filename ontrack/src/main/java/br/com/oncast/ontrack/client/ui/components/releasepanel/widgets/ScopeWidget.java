@@ -35,7 +35,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	Label progressLabel;
 
 	@UiField
-	FocusPanel dragImage;
+	FocusPanel draggableAnchor;
 
 	@UiField
 	protected MouseCommandsMenu mouseActionsMenu;
@@ -121,8 +121,8 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		return getScope();
 	}
 
-	public Widget getDraggableArea() {
-		return dragImage;
+	public Widget getDraggableAnchor() {
+		return draggableAnchor;
 	}
 
 	@UiHandler("panel")
