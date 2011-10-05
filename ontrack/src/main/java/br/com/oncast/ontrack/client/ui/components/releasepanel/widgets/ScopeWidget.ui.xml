@@ -11,6 +11,7 @@
 			border: 1px solid #d8d8db;
 			background: #dfe0e3;
 			padding: 0px;
+			width: 100%;
 		}
 		
 		.panel:hover {
@@ -65,7 +66,7 @@
 		
 		.mouseActionsMenu {
 			position: absolute;
-			top: 0px;
+			top: 1px;
 			right: 1px;
 			padding-top: 1px;
 			padding-bottom: 1px;
@@ -87,7 +88,7 @@
 	   <g:FlowPanel styleName="{style.internalPanel}">
 		<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 		<g:Label ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
-		<g:Image ui:field="dragImage" styleName="{style.draggable}" />
+		<g:FocusPanel ui:field="dragImage" styleName="{style.draggable}" />
 		<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 		</g:FlowPanel>
 	</g:FocusPanel>

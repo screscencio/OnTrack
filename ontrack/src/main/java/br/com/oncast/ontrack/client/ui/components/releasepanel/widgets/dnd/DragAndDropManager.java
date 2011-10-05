@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -61,9 +60,9 @@ public class DragAndDropManager {
 		if (draggableItemHandler == null) {
 			draggableItemHandler = new DraggableItemCreationListener() {
 				@Override
-				public void onDraggableItemCreated(final Widget widget, final Image draggableArea) {
+				public void onDraggableItemCreated(final Widget draggableWidget, final Widget draggableAreaWidget) {
 					assureConfigured();
-					dragController.makeDraggable(widget, draggableArea);
+					dragController.makeDraggable(draggableWidget, draggableAreaWidget);
 				}
 			};
 		}

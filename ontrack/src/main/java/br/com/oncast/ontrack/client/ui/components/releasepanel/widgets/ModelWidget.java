@@ -4,7 +4,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface ModelWidget<T> extends IsWidget {
 
-	void update();
+	/**
+	 * @return if this widget was updated.
+	 */
+	boolean update();
 
 	T getModelObject();
 }

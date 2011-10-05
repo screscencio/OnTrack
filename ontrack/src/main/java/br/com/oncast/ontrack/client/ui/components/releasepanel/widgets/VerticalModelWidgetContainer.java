@@ -35,9 +35,8 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public void update(final List<T> modelBeanList) {
+	public boolean update(final List<T> modelBeanList) {
 		boolean hasChanged = false;
-		boolean hasNewWidgets = false;
 
 		for (int i = 0; i < modelBeanList.size(); i++) {
 			final T modelBean = modelBeanList.get(i);
@@ -45,7 +44,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 			final E modelWidget = widgetMap.get(modelBean);
 			if (modelWidget == null) {
 				createChildModelWidgetAt(modelBean, i);
-				hasChanged = hasNewWidgets = true;
+				hasChanged = true;
 				continue;
 			}
 
@@ -55,7 +54,8 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 				hasChanged = true;
 			}
 
-			modelWidget.update();
+			final boolean wasChildUpdated = modelWidget.update();
+			if (wasChildUpdated) hasChanged = true;
 		}
 		for (int i = modelBeanList.size(); i < verticalContainer.getWidgetCount(); i++) {
 			@SuppressWarnings("unchecked") final E modelWidget = (E) verticalContainer.getWidget(i);
@@ -64,7 +64,9 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 			hasChanged = true;
 		}
 
-		listener.onUpdateComplete(hasChanged, hasNewWidgets);
+		listener.onUpdateComplete(hasChanged);
+
+		return hasChanged;
 	}
 
 	public E createChildModelWidget(final T modelBean) {
