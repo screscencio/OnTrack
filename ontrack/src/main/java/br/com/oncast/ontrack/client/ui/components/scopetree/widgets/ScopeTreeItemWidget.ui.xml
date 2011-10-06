@@ -59,25 +59,11 @@
 				opacity: 0.2;
 			}
 			
-			.effortDifferenceLabel {
-				position: relative;
-				padding: 1px;
-				padding-left: 2px;
-				padding-right: 2px;
-				font-weight: bold;
-				vertical-align: super;
-				font-size: xx-small;
-				display: inline;
-				background-color: blue;
-				color: #fff;
-				border-radius: 35%;
+			.effortLabelStriped {
+				text-decoration: line-through;
 			}
 			
-			.effortDifferenceLabelProblem {
-				background-color: red;
-			}
-			
-			.scope {
+			.scope { 
 			}
 			
 			.releasePanel {
@@ -141,8 +127,8 @@
 				<g:HorizontalPanel styleName="{style.scope}" >
 					<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip" />
 					<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
-						<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
-						<g:Label ui:field="effortDifferenceLabel" styleName="{style.effortDifferenceLabel}" />
+						<g:Label ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.effortLabelTranslucid}" />
+						<g:Label ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
 					</g:HTMLPanel>
 				</g:HorizontalPanel>
 				<g:HTMLPanel styleName="{style.releasePanel}" >

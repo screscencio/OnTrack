@@ -4,15 +4,14 @@ import java.text.DecimalFormat;
 
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 
-import com.octo.gwt.test.patchers.AutomaticPatcher;
 import com.octo.gwt.test.patchers.PatchClass;
 import com.octo.gwt.test.patchers.PatchMethod;
 
 @PatchClass(ClientDecimalFormat.class)
-public class ClientDecimalFormatPatcher extends AutomaticPatcher {
+public class ClientDecimalFormatPatcher {
 
 	@PatchMethod
-	public static String roundFloat(final float number, final int decimalDigits) {
+	static String roundFloat(final float number, final int decimalDigits) {
 		final DecimalFormat formatter = new DecimalFormat();
 		formatter.setMaximumFractionDigits(decimalDigits);
 
