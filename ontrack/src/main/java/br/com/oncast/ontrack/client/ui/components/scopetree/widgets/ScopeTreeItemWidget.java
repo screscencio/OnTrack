@@ -49,7 +49,7 @@ public class ScopeTreeItemWidget extends Composite {
 	interface Style extends CssResource {
 		String effortLabelTranslucid();
 
-		String effortDifferenceLabelProblem();
+		String effortLabelStriped();
 
 		String releaseMenuPanel();
 
@@ -76,11 +76,11 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected Label effortLabel;
+	protected Label inferedEffortLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected Label effortDifferenceLabel;
+	protected Label declaredEffortLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -103,19 +103,22 @@ public class ScopeTreeItemWidget extends Composite {
 	protected FocusPanel focusPanel;
 
 	@IgnoredByDeepEquality
-	private float currentEffort;
+	private float currentInferedEffort;
 
 	@IgnoredByDeepEquality
-	private float currentEffortDifference;
+	private boolean currentInferedEffortLabelVisibility;
+
+	@IgnoredByDeepEquality
+	private float currentDeclaredEffort;
+
+	@IgnoredByDeepEquality
+	private boolean currentDeclaredEffortLabelVisibility;
 
 	@IgnoredByDeepEquality
 	private String currentProgress = "";
 
 	@IgnoredByDeepEquality
 	private Release currentRelease;
-
-	@IgnoredByDeepEquality
-	private boolean currentHasDeclaredEffort;
 
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
@@ -125,6 +128,12 @@ public class ScopeTreeItemWidget extends Composite {
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
+		currentDeclaredEffort = -1;
+		currentInferedEffort = -1;
+		currentDeclaredEffortLabelVisibility = false;
+		currentInferedEffortLabelVisibility = false;
+		inferedEffortLabel.setVisible(false);
+		declaredEffortLabel.setVisible(false);
 		effortPanel.setVisible(false);
 		releaseTag.setVisible(false);
 		setScope(scope);
@@ -244,35 +253,38 @@ public class ScopeTreeItemWidget extends Composite {
 	private void updateEffortDisplay() {
 		final Effort effort = scope.getEffort();
 
-		final float effortErrorDifference = effort.hasDeclared() ? effort.getInfered() - effort.getDeclared() : 0;
-		final float effortPositiveDifference = effort.getBottomUpValue() != 0 ? effort.getInfered() - effort.getBottomUpValue() : 0;
-		final boolean effortVisibility = effort.hasInfered();
-		final boolean effortDifferenceVisibility = (effortErrorDifference > 0 || effortPositiveDifference > 0);
-		final float effortValue = effort.getInfered();
-		final int effortDifferenceValue = ((int) ((effortErrorDifference > 0) ? effortErrorDifference : effortPositiveDifference));
-		final boolean hasDeclaredEffort = effort.hasDeclared();
+		final float declaredEffort = effort.getDeclared();
+		final float inferedEffort = effort.getInfered();
 
-		if (hasDeclaredEffort) effortLabel.getElement().removeClassName(style.effortLabelTranslucid());
-		else effortLabel.getElement().addClassName(style.effortLabelTranslucid());
+		final boolean inferedEffortVisibility = declaredEffort != inferedEffort;
+		final boolean declaredEffortLabelVisibility = effort.hasDeclared();
 
-		if (currentEffort == effortValue && currentEffortDifference == effortDifferenceValue && currentHasDeclaredEffort == hasDeclaredEffort) return;
-		currentEffort = effortValue;
-		currentHasDeclaredEffort = hasDeclaredEffort;
-		currentEffortDifference = effortDifferenceValue;
-
-		effortPanel.setVisible(effortVisibility);
-		if (!effortVisibility) return;
-
-		effortLabel.setText(ClientDecimalFormat.roundFloat(effortValue, 1) + "ep");
-
-		effortDifferenceLabel.setVisible(effortDifferenceVisibility);
-		if (!effortDifferenceVisibility) return;
-
-		effortDifferenceLabel.setText(effortDifferenceValue + "");
-		if (effortErrorDifference > 0) effortDifferenceLabel.getElement().addClassName(style.effortDifferenceLabelProblem());
-		else effortDifferenceLabel.getElement().removeClassName(style.effortDifferenceLabelProblem());
-		if (effort.hasDeclared()) effortDifferenceLabel.getElement().removeClassName(style.effortLabelTranslucid());
-		else effortDifferenceLabel.getElement().addClassName(style.effortLabelTranslucid());
+		// TODO: +++ Create a wrapper class for widgets that checks before updating DOM elements with same value
+		final boolean hasAnyVisibleEffort = declaredEffortLabelVisibility || inferedEffortVisibility;
+		if ((currentDeclaredEffortLabelVisibility || currentInferedEffortLabelVisibility) != hasAnyVisibleEffort) {
+			effortPanel.setVisible(hasAnyVisibleEffort);
+		}
+		final boolean hasEffortDifference = inferedEffortVisibility && declaredEffortLabelVisibility;
+		if ((currentDeclaredEffortLabelVisibility && currentInferedEffortLabelVisibility) != hasEffortDifference) {
+			if (hasEffortDifference) declaredEffortLabel.getElement().addClassName(style.effortLabelStriped());
+			else declaredEffortLabel.getElement().removeClassName(style.effortLabelStriped());
+		}
+		if (currentDeclaredEffort != declaredEffort) {
+			currentDeclaredEffort = declaredEffort;
+			declaredEffortLabel.setText(ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep");
+		}
+		if (currentDeclaredEffortLabelVisibility != declaredEffortLabelVisibility) {
+			currentDeclaredEffortLabelVisibility = declaredEffortLabelVisibility;
+			declaredEffortLabel.setVisible(declaredEffortLabelVisibility);
+		}
+		if (currentInferedEffort != inferedEffort) {
+			currentInferedEffort = inferedEffort;
+			inferedEffortLabel.setText(ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep");
+		}
+		if (currentInferedEffortLabelVisibility != inferedEffortVisibility) {
+			currentInferedEffortLabelVisibility = inferedEffortVisibility;
+			inferedEffortLabel.setVisible(inferedEffortVisibility);
+		}
 	}
 
 	public void updateReleaseDisplay() {
