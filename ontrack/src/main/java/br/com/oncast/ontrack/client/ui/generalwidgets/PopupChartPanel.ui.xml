@@ -1,0 +1,44 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+
+	<ui:style>
+			.panel {
+				position: relative;
+				border: 0px;
+			}
+			
+			.progressLabel {
+                width: 18px;
+                height: 18px;
+                display: block;
+                
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+			}
+
+            .progressLabel:hover {
+				cursor: pointer;
+            }
+            
+			.chartPanel {
+				position: absolute;
+                top: 20px;
+                left: -310px;
+                width: 350px;
+                height: 210px;
+                z-index: 2;
+			}
+			
+			.chartPanel:FOCUS {
+				outline: 0px;
+			}
+			
+		</ui:style>
+
+	<g:HTMLPanel styleName="{style.panel}">
+		<g:Label styleName="{style.progressLabel}" ui:field="progressLabel" />
+			<t:ChartPanel styleName="{style.chartPanel}" ui:field="chartPanel" />
+	</g:HTMLPanel>
+</ui:UiBinder> 

@@ -89,6 +89,13 @@ background-image: -webkit-gradient(
 	zoom: normal;
 }
 
+.gwt-PopupPanel {
+	border: 1px solid gray;
+	-moz-box-shadow: 2px 2px 4px #888;
+	-webkit-box-shadow: 2px 2px 4px #888;
+	box-shadow: 2px 2px 4px #888;
+}
+
 /* MenuBar */
 .gwt-MenuBar {}
 .gwt-MenuBar-horizontal {}

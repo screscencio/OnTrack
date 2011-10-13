@@ -70,7 +70,6 @@
 				right: 35px;
 				width: 40px;
 				font-size: small;
-				opacity: 0.5;
 				text-align: center;
 			}
 			
@@ -78,6 +77,12 @@
 				position: absolute;
 				top: 5px;
 				right: 5px;
+			}
+			
+			.burnUpChartPanel {
+				position: absolute;
+				top: 5px;
+				right: 25px;
 			}
 			
 			.body {
@@ -101,10 +106,9 @@
 		<div class="{style.header} gradReleaseWidgetHeader">
 			<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
 			<g:Label ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
-			<g:Label ui:field="progressLabel" styleName="{style.progressLabel}" />
 			<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" />
-			<t:MouseCommandsMenu ui:field="mouseActionsMenu"
-				styleName="{style.mouseActionsMenu}" />
+			<t:PopupChartPanel ui:field="progressChartPanel" styleName="{style.progressLabel}" />
+			<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 		</div>
 		<div ui:field="bodyContainer" class="{style.body}" >
 			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />

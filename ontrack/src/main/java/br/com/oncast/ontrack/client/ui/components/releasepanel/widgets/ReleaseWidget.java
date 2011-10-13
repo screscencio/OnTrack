@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupChartPanel;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -35,6 +36,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		String headerContainerStateImageOpened();
 
 		String headerContainerStateImageClosed();
+
+		String burnUpChartPanel();
 	}
 
 	@UiField
@@ -44,7 +47,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Label descriptionLabel;
 
 	@UiField
-	protected Label progressLabel;
+	protected PopupChartPanel progressChartPanel;
 
 	@UiField
 	protected MouseCommandsMenu mouseActionsMenu;
@@ -123,6 +126,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this.release = release;
+
 		this.releaseWidgetFactory = releaseWidgetFactory;
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
@@ -194,7 +198,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (progress.equals(currentReleaseProgressDescription)) return;
 		currentReleaseProgressDescription = progress;
 
-		progressLabel.setText(currentReleaseProgressDescription);
+		progressChartPanel.setProgress(currentReleaseProgressDescription);
 	}
 
 	private String getProcessDescription() {

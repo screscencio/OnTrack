@@ -1,0 +1,37 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:t="urn:import:org.moxieapps.gwt.highcharts.client">
+	
+	<ui:style>
+			.chart {
+                position: relative;
+                top: 0px;
+                right: 0px;
+                width: 350px;
+				z-index: 2;
+
+                -moz-box-shadow: 2px 2px 4px #888;
+				-webkit-box-shadow: 2px 2px 4px #888;
+				box-shadow: 2px 2px 4px #888;
+			}
+			
+			.focusPanel {
+                position: absolute;
+                top: 20px;
+                right: -350px;
+                width: 300px;
+                height: 210px;
+                z-index: 2;
+                
+                -moz-box-shadow: 2px 2px 4px #888;
+				-webkit-box-shadow: 2px 2px 4px #888;
+				box-shadow: 2px 2px 4px #888;
+			}
+				
+		</ui:style>
+		<g:FocusPanel styleName="{style.focusPanel}" ui:field="clickableChartPanel" >
+			<t:Chart ui:field="chart" styleName="{style.chart}" />
+		</g:FocusPanel>
+
+</ui:UiBinder> 
