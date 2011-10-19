@@ -10,8 +10,11 @@ import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.PasswordChangeRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
 public class ActionQueuedDispatcherTest {
@@ -36,6 +39,26 @@ public class ActionQueuedDispatcherTest {
 
 		public void registerDispatchListener(final DispatchListener listener) {
 			this.listener = listener;
+		}
+
+		@Override
+		public void dispatch(final AuthenticationRequest authenticationRequest, final DispatchCallback<User> dispatchCallback) {
+
+		}
+
+		@Override
+		public void dispatch(final PasswordChangeRequest passwordChangeRequest, final DispatchCallback<Void> dispatchCallback) {
+
+		}
+
+		@Override
+		public void dispatch(final DispatchCallback<Void> dispatchCallback) {
+
+		}
+
+		@Override
+		public void isCurrentUserAuthenticated(final DispatchCallback<Boolean> dispatchCallback) {
+
 		}
 	}
 

@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.user.User;
 
 public interface PersistenceService {
 
@@ -18,4 +19,8 @@ public interface PersistenceService {
 	public List<UserAction> retrieveActionsSince(long actionId) throws PersistenceException;
 
 	public void persistProjectSnapshot(ProjectSnapshot projectSnapshot) throws PersistenceException;
+
+	public User findUserByEmail(String email) throws NoResultFoundException, PersistenceException;
+
+	void persistOrUpdateUser(User user) throws NoResultFoundException, PersistenceException;
 }

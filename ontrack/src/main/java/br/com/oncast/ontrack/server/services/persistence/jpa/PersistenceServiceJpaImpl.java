@@ -16,9 +16,11 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.UserEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.user.User;
 
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 // TODO Analise using CriteriaApi instead of HQL.
@@ -118,6 +120,49 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@Override
+	public User findUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where user.email = :email");
+			query.setParameter("email", email);
+
+			return (User) TYPE_CONVERTER.convert(query.getSingleResult());
+		}
+		catch (final NoResultException e) {
+			throw new NoResultFoundException("No user found with email: " + email, e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the user.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public void persistOrUpdateUser(final User user) throws NoResultFoundException, PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		final UserEntity userEntity = convertUserToEntity(user);
+		try {
+			em.getTransaction().begin();
+			em.merge(userEntity);
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to persist the project snapshot and to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the project snapshot.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
 	private ModelActionEntity convertActionToEntity(final ModelAction modelAction) throws PersistenceException {
 		ModelActionEntity entity;
 		try {
@@ -129,4 +174,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		return entity;
 	}
 
+	private UserEntity convertUserToEntity(final User user) throws PersistenceException {
+		UserEntity entity;
+		try {
+			entity = (UserEntity) TYPE_CONVERTER.convert(user);
+		}
+		catch (final TypeConverterException e) {
+			throw new PersistenceException("It was not possible to convert the user to its entity", e);
+		}
+		return entity;
+	}
 }

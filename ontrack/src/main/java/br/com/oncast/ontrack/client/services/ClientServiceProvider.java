@@ -3,6 +3,9 @@ package br.com.oncast.ontrack.client.services;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
+import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
+import br.com.oncast.ontrack.client.services.authentication.AuthenticationServiceImpl;
+import br.com.oncast.ontrack.client.services.authentication.UserProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
@@ -21,6 +24,8 @@ import com.google.gwt.event.shared.SimpleEventBus;
 // reference the interfaces, making the code more testable).
 public class ClientServiceProvider {
 
+	private AuthenticationService authenticationService;
+	private UserProviderService userProviderService;
 	private ActionSyncService actionSyncService;
 	private ActionExecutionService actionExecutionService;
 	private ContextProviderService contextProviderService;
@@ -30,6 +35,16 @@ public class ClientServiceProvider {
 	private ApplicationPlaceController placeController;
 	private ErrorTreatmentService errorTreatmentService;
 	private EventBus eventBus;
+
+	public AuthenticationService getAuthenticationService() {
+		if (authenticationService != null) return authenticationService;
+		return authenticationService = new AuthenticationServiceImpl(requestDispatchService, getUserProviderService());
+	}
+
+	private UserProviderService getUserProviderService() {
+		if (userProviderService != null) return userProviderService;
+		return userProviderService = new UserProviderService();
+	}
 
 	public ApplicationPlaceController getApplicationPlaceController() {
 		if (placeController != null) return placeController;

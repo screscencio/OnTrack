@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.planning;
 
+import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 
@@ -12,4 +13,6 @@ public interface PlanningView extends IsWidget {
 	ScopeTree getScopeTree();
 
 	ReleasePanel getReleasePanel();
+
+	ApplicationMenu getApplicationMenu();
 }

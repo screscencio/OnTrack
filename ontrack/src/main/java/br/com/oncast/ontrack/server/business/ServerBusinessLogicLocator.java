@@ -1,48 +1,28 @@
 package br.com.oncast.ontrack.server.business;
 
-import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
-import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastServiceImpl;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
-import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerServiceImpl;
+import br.com.oncast.ontrack.server.services.ServerServiceProvider;
 
 public class ServerBusinessLogicLocator {
 
 	private static ServerBusinessLogicLocator instance;
-
 	private BusinessLogic businessLogic;
-	private PersistenceService persistenceService;
-	private ActionBroadcastService actionBroadcastService;
-	private ServerPushServerService serverPushServerService;
+	private final ServerServiceProvider serviceProvider;
 
 	public static ServerBusinessLogicLocator getInstance() {
 		if (instance != null) return instance;
 		return instance = new ServerBusinessLogicLocator();
 	}
 
-	private ServerBusinessLogicLocator() {}
+	private ServerBusinessLogicLocator() {
+		serviceProvider = ServerServiceProvider.getInstance();
+	}
 
 	public BusinessLogic getBusinessLogic() {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getActionBroadcastService());
+			return businessLogic = new BusinessLogicImpl(serviceProvider.getPersistenceService(), serviceProvider.getActionBroadcastService());
 		}
 	}
 
-	private PersistenceService getPersistenceService() {
-		if (persistenceService != null) return persistenceService;
-		return persistenceService = new PersistenceServiceJpaImpl();
-	}
-
-	private ActionBroadcastService getActionBroadcastService() {
-		if (actionBroadcastService != null) return actionBroadcastService;
-		return actionBroadcastService = new ActionBroadcastServiceImpl(getServerPushServerService());
-	}
-
-	private ServerPushServerService getServerPushServerService() {
-		if (serverPushServerService != null) return serverPushServerService;
-		return serverPushServerService = new ServerPushServerServiceImpl();
-	}
 }
