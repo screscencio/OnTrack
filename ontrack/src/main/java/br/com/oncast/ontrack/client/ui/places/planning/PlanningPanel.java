@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.planning;
 
+import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 
@@ -23,6 +24,9 @@ public class PlanningPanel extends Composite implements PlanningView {
 	protected ScopeTree scopeTree;
 
 	@UiField
+	protected ApplicationMenu applicationMenu;
+
+	@UiField
 	protected Anchor exportMapLink;
 
 	public PlanningPanel() {
@@ -43,4 +47,10 @@ public class PlanningPanel extends Composite implements PlanningView {
 	public ReleasePanel getReleasePanel() {
 		return releasePanel;
 	}
+
+	@Override
+	public ApplicationMenu getApplicationMenu() {
+		return applicationMenu;
+	}
+
 }

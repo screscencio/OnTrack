@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.places;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingPlace;
+import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlannnigPlace;
 
@@ -21,6 +22,8 @@ public class AppActivityMapper implements ActivityMapper {
 	// TODO Potentially lazy load and store activity instances. (ContextLoadingPlace should have the destination place set or should always have a new instance)
 	@Override
 	public Activity getActivity(final Place place) {
+		if (!services.getAuthenticationService().isUserLoggedIn()) return createLoginActivity(place);
+
 		if (place instanceof ContextLoadingPlace) return createContextLoadingActivity(((ContextLoadingPlace) place).getDestinationPlace());
 		if (!services.getContextProviderService().isContextAvailable()) return createContextLoadingActivity(place);
 
@@ -29,13 +32,16 @@ public class AppActivityMapper implements ActivityMapper {
 		return null;
 	}
 
+	private Activity createLoginActivity(final Place place) {
+		return new LoginActivity(services.getAuthenticationService(), services.getApplicationPlaceController(), place);
+	}
+
 	private PlanningActivity createPlanningActivity() {
-		return new PlanningActivity(services.getActionExecutionService(), services.getContextProviderService());
+		return new PlanningActivity(services.getActionExecutionService(), services.getContextProviderService(), services.getAuthenticationService());
 	}
 
 	private ContextLoadingActivity createContextLoadingActivity(final Place place) {
 		return new ContextLoadingActivity(services.getContextProviderService(), services.getApplicationPlaceController(), services.getRequestDispatchService(),
 				place);
 	}
-
 }

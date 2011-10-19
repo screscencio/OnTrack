@@ -27,9 +27,12 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.PasswordChangeRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
@@ -181,6 +184,18 @@ public class ActionSyncServiceTestUtils {
 					dispatchCallback.onFailure(e);
 				}
 			}
+
+			@Override
+			public void dispatch(final AuthenticationRequest authenticationRequest, final DispatchCallback<User> dispatchCallback) {}
+
+			@Override
+			public void dispatch(final PasswordChangeRequest passwordChangeRequest, final DispatchCallback<Void> dispatchCallback) {}
+
+			@Override
+			public void dispatch(final DispatchCallback<Void> dispatchCallback) {}
+
+			@Override
+			public void isCurrentUserAuthenticated(final DispatchCallback<Boolean> dispatchCallback) {}
 		};
 	}
 

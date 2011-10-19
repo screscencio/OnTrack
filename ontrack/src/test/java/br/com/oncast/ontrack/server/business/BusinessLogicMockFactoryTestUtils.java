@@ -10,9 +10,11 @@ import br.com.oncast.ontrack.mocks.models.ProjectMock;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
 public class BusinessLogicMockFactoryTestUtils {
@@ -65,6 +67,14 @@ public class BusinessLogicMockFactoryTestUtils {
 			@Override
 			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
 
+			@Override
+			public User findUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
+				return null;
+			}
+
+			@Override
+			public void persistOrUpdateUser(final User user) throws NoResultFoundException, PersistenceException {}
+
 		};
 	}
 
@@ -97,6 +107,14 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			@Override
 			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
+
+			@Override
+			public User findUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
+				return null;
+			}
+
+			@Override
+			public void persistOrUpdateUser(final User user) throws NoResultFoundException, PersistenceException {}
 
 		};
 	}

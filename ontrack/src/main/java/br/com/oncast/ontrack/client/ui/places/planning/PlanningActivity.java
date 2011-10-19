@@ -5,11 +5,14 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
+import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningActivityListener;
+import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningAuthenticationRequestHandler;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.shared.config.UriConfigurations;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -18,6 +21,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class PlanningActivity extends AbstractActivity {
@@ -27,10 +31,19 @@ public class PlanningActivity extends AbstractActivity {
 	private final ActionExecutionService actionExecutionService;
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private final NativeEventListener globalKeyUpListener;
+	private final PlanningAuthenticationRequestHandler authenticationRequestHandler;
 
-	public PlanningActivity(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService) {
+	public PlanningActivity(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
+			final AuthenticationService authenticationService) {
 		this.contextProviderService = contextProviderService;
 		this.actionExecutionService = actionExecutionService;
+		this.authenticationRequestHandler = new PlanningAuthenticationRequestHandler(authenticationService, new PlanningActivityListener() {
+			@Override
+			public void onLoggedOut() {
+				// FIXME Should this reload be here or should we notify activity mapper?
+				Window.Location.reload();
+			}
+		});
 
 		activityActionExecutionListener = new ActivityActionExecutionListener();
 		globalKeyUpListener = new NativeEventListener() {
@@ -50,6 +63,8 @@ public class PlanningActivity extends AbstractActivity {
 
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
+
+		view.getApplicationMenu().setAuthenticationRequestHandler(authenticationRequestHandler);
 
 		view.getScopeTree().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setActionExecutionRequestHandler(actionExecutionService);

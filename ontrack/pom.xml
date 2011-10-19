@@ -36,6 +36,13 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/war/WEB-INF/lib/gwt-dnd-3.1.1.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>highcharts</groupId>
+			<artifactId>highcharts</artifactId>
+			<version>1.1.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.1.1.jar</systemPath>
+		</dependency>
 
 		<!-- Communication Related Dependencies. -->
 		<dependency>
