@@ -79,16 +79,16 @@ public class Effort implements Serializable {
 		this.accomplishedEffort = accomplishedEffort;
 	}
 
-	@Override
-	public String toString() {
-		return "Declared: " + declared + ", TopDownValue: " + topDownValue + ", BottomUpValue: " + bottomUpValue + ", Infered: " + getInfered();
-	}
-
 	public float getAccomplishedPercentual() {
 		final float inferedEffort = getInfered();
 		if (inferedEffort == 0) return 0;
 
 		return 100 * getAccomplishedEffort() / inferedEffort;
+	}
+
+	@Override
+	public String toString() {
+		return "Declared: " + declared + ", TopDownValue: " + topDownValue + ", BottomUpValue: " + bottomUpValue + ", Infered: " + getInfered();
 	}
 
 }
