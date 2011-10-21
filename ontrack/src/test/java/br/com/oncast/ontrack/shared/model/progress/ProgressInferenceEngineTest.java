@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -16,7 +16,7 @@ public class ProgressInferenceEngineTest {
 
 	@Test
 	public void aScopeProgressPercentageShouldBeZeroIfAllItsChildrenAreDone() {
-		final Scope rootScope = ScopeMock.getSimpleScope();
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
 			child.getProgress().setDescription("DONE");
 			PROGRESS_INFERENCE_ENGINE.process(rootScope);
@@ -27,7 +27,7 @@ public class ProgressInferenceEngineTest {
 
 	@Test
 	public void aScopeShouldBeDoneIfAllItsChildrenAreDone() {
-		final Scope rootScope = ScopeMock.getSimpleScope();
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
 			child.getProgress().setDescription("DONE");
 			PROGRESS_INFERENCE_ENGINE.process(rootScope);
@@ -38,7 +38,7 @@ public class ProgressInferenceEngineTest {
 
 	@Test
 	public void aScopeProgressPercentageShouldBeZeroIfAtLeastOneOfItsChildrenIsNotDoneAndTheSumOfAllEstimatedEffortsIsZero() {
-		final Scope rootScope = ScopeMock.getSimpleScope();
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 		rootScope.getChild(0).getProgress().setDescription("DONE");
 		PROGRESS_INFERENCE_ENGINE.process(rootScope);
 		rootScope.getChild(1).getProgress().setDescription("DONE");
@@ -49,7 +49,7 @@ public class ProgressInferenceEngineTest {
 
 	@Test
 	public void aScopeProgressPercentageShouldBeDefinedConsideringItsChildrenEffortsEstimatedAndTheirAccomplishedEffort() {
-		final Scope rootScope = ScopeMock.getSimpleScope();
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 
 		// Declare and mark as done some scopes
 		rootScope.getChild(0).getEffort().setDeclared(5);
@@ -71,7 +71,7 @@ public class ProgressInferenceEngineTest {
 
 	@Test
 	public void aScopeProgressPercentageShouldBeDefinedConsideringAllItsChildrenHierarchy() {
-		final Scope rootScope = ScopeMock.getScope();
+		final Scope rootScope = ScopeTestUtils.getScope();
 
 		// Declare and mark as done some scopes
 		rootScope.getChild(0).getChild(0).getChild(0).getEffort().setDeclared(5);

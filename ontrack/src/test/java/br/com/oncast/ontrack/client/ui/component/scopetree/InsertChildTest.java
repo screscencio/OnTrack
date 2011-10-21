@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
+import br.com.oncast.ontrack.shared.model.release.TestReleaseFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityException;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
@@ -54,7 +54,7 @@ public class InsertChildTest extends GwtTest {
 		tree.setContext(new ProjectContext(new Project(scope, null)));
 
 		newScopeDescription = "description for new scope";
-		projectContext = new ProjectContext((new Project(scope, ReleaseMockFactory.create(""))));
+		projectContext = new ProjectContext((new Project(scope, TestReleaseFactory.create(""))));
 
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
 

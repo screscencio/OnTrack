@@ -14,8 +14,8 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
-import br.com.oncast.ontrack.mocks.models.ReleaseMock;
-import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -31,8 +31,8 @@ public class RemoveReleaseActionTest {
 
 	@Before
 	public void setUp() {
-		rootScope = ScopeMock.getScope();
-		rootRelease = ReleaseMock.getRelease();
+		rootScope = ScopeTestUtils.getScope();
+		rootRelease = ReleaseTestUtils.getRelease();
 		context = new ProjectContext(new Project(rootScope, rootRelease));
 
 		assertEquals(3, rootRelease.getChildren().size());

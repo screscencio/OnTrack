@@ -99,8 +99,9 @@ public class ChartPanel extends Composite {
 								.setSymbol(Symbol.CIRCLE)
 								.setRadius(3)));
 
-		for (final Float value : yAxisLineValues) {
-			newSerie.addPoint(value);
+		newSerie.addPoint(0, 0);
+		for (int i = 0; i < yAxisLineValues.size(); i++) {
+			newSerie.addPoint(i, yAxisLineValues.get(i));
 		}
 		chart.addSeries(newSerie);
 	}
@@ -119,7 +120,10 @@ public class ChartPanel extends Composite {
 				.setPlotOptions(new LinePlotOptions()
 						.setLineWidth(1)
 						.setDashStyle(PlotLine.DashStyle.SHORT_DASH)
-						.setColor("#r4r44r"))
+						.setColor("#r4r44r")
+						.setMarker(new Marker()
+								.setSymbol(Symbol.CIRCLE)
+								.setRadius(1)))
 				.addPoint(0, 0)
 				.addPoint(xAxisLineValues.size() - 1, maxValue);
 
@@ -141,7 +145,7 @@ public class ChartPanel extends Composite {
 						.setDataLabels(new DataLabels().setEnabled(true))
 						.setColor("#535153"));
 
-		chart.getXAxis().setStartOnTick(true).setOffset(0).setTickmarkPlacement(null).setTickWidth(2);
+		chart.getXAxis().setOffset(0).setTickmarkPlacement(null).setTickWidth(2);
 
 		chart.getYAxis().setAxisTitle(null).setMin(0);
 		chart.getYAxis().setShowFirstLabel(false);

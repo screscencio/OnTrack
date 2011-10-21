@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
@@ -60,12 +61,13 @@ public class ReleasePanel implements Component {
 						action instanceof ScopeInsertSiblingUpRollbackAction ||
 						action instanceof ScopeInsertSiblingDownRollbackAction ||
 						action instanceof ScopeRemoveRollbackAction ||
+						action instanceof ScopeDeclareProgressAction ||
+						action instanceof ScopeDeclareEffortAction ||
 						action instanceof ScopeBindReleaseAction ||
 						action instanceof ReleaseRemoveAction ||
 						action instanceof ReleaseRemoveRollbackAction ||
 						action instanceof ReleaseUpdatePriorityAction ||
-						action instanceof ReleaseScopeUpdatePriorityAction ||
-						action instanceof ScopeDeclareProgressAction) update();
+						action instanceof ReleaseScopeUpdatePriorityAction) update();
 			}
 		};
 	}
@@ -76,6 +78,8 @@ public class ReleasePanel implements Component {
 
 	public void setRelease(final Release release) {
 		this.rootRelease = release;
+
+		releasePanelInteractionHandler.setRootRelease(rootRelease);
 		releasePanelWidget.setRelease(rootRelease);
 	}
 

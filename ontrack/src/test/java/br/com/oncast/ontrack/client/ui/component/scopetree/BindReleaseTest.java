@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeIte
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
-import br.com.oncast.ontrack.mocks.models.ReleaseMock;
+import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -52,7 +52,7 @@ public class BindReleaseTest extends GwtTest {
 
 	@Before
 	public void setUp() {
-		projectContext = new ProjectContext(new Project(getScope(), ReleaseMock.getRelease()));
+		projectContext = new ProjectContext(new Project(getScope(), ReleaseTestUtils.getRelease()));
 		tree = new ScopeTree();
 		tree.setContext(projectContext);
 

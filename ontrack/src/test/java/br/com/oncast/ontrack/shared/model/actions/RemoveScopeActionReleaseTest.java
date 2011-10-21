@@ -11,8 +11,8 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
-import br.com.oncast.ontrack.mocks.models.ReleaseMock;
-import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -29,8 +29,8 @@ public class RemoveScopeActionReleaseTest {
 
 	@Before
 	public void setUp() {
-		rootScope = ScopeMock.getScope();
-		final Release rootRelease = ReleaseMock.getRelease();
+		rootScope = ScopeTestUtils.getScope();
+		final Release rootRelease = ReleaseTestUtils.getRelease();
 		release = rootRelease.getChildren().get(0);
 		context = new ProjectContext(new Project(rootScope, rootRelease));
 	}

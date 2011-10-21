@@ -7,6 +7,7 @@ import java.util.List;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 public class Release implements Serializable {
@@ -158,6 +159,15 @@ public class Release implements Serializable {
 		return new ArrayList<Scope>(scopeList);
 	}
 
+	public List<Scope> getAllScopesIncludingChildrenReleases() {
+		final List<Scope> scopes = new ArrayList<Scope>();
+		scopes.addAll(scopeList);
+		for (final Release release : childrenList) {
+			scopes.addAll(release.getAllScopesIncludingChildrenReleases());
+		}
+		return scopes;
+	}
+
 	/**
 	 * Adds a scope to the scope list. If the added scope already has an association with other release, the association is not removed before
 	 * the new association is made.
@@ -208,13 +218,36 @@ public class Release implements Serializable {
 		scopeList.clear();
 	}
 
+	public boolean containsScope(final Scope scope) {
+		return scopeList.contains(scope);
+	}
+
+	public WorkingDay getStartDay() {
+		WorkingDay startDay = null;
+		for (final Scope scope : getAllScopesIncludingChildrenReleases()) {
+			final WorkingDay scopeStartDay = scope.getProgress().getStartDay();
+			if (startDay == null || scopeStartDay != null && scopeStartDay.isBefore(startDay)) {
+				startDay = scopeStartDay;
+			}
+		}
+		return startDay;
+	}
+
+	public WorkingDay getEndDay() {
+		WorkingDay endDay = null;
+		for (final Scope scope : getAllScopesIncludingChildrenReleases()) {
+			final WorkingDay scopeEndDay = scope.getProgress().getEndDay();
+			if (endDay == null || (scopeEndDay != null && scopeEndDay.isAfter(endDay))) {
+				endDay = scopeEndDay;
+			}
+		}
+		return endDay;
+	}
+
 	public float getEffortSum() {
 		float effortSum = 0;
 
-		for (final Release childRelease : childrenList)
-			effortSum += childRelease.getEffortSum();
-
-		for (final Scope scope : scopeList)
+		for (final Scope scope : getAllScopesIncludingChildrenReleases())
 			effortSum += scope.getEffort().getInfered();
 
 		return effortSum;
@@ -223,10 +256,7 @@ public class Release implements Serializable {
 	public float getAccomplishedEffortSum() {
 		float accomplishedEffortSum = 0;
 
-		for (final Release childRelease : childrenList)
-			accomplishedEffortSum += childRelease.getAccomplishedEffortSum();
-
-		for (final Scope scope : scopeList)
+		for (final Scope scope : getAllScopesIncludingChildrenReleases())
 			accomplishedEffortSum += scope.getEffort().getAccomplishedEffort();
 
 		return accomplishedEffortSum;
@@ -253,9 +283,5 @@ public class Release implements Serializable {
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Release)) return false;
 		return this.id.equals(((Release) obj).getId());
-	}
-
-	public boolean containsScope(final Scope scope) {
-		return scopeList.contains(scope);
 	}
 }

@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
+import br.com.oncast.ontrack.shared.model.release.TestReleaseFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
@@ -24,7 +24,7 @@ public class ProgressInferenceEngineFlow1Test {
 	@Before
 	public void setUp() {
 		rootScope = ProgressInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX);
-		projectContext = new ProjectContext(new Project(rootScope, ReleaseMockFactory.create("proj")));
+		projectContext = new ProjectContext(new Project(rootScope, TestReleaseFactory.create("proj")));
 	}
 
 	@Test
