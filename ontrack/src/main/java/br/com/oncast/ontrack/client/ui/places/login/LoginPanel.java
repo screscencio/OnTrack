@@ -1,9 +1,11 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import br.com.oncast.ontrack.client.ui.places.login.interaction.LoginRequestHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -28,6 +30,9 @@ public class LoginPanel extends Composite {
 	protected HTMLPanel rootPanel;
 
 	@UiField
+	protected HTMLPanel informationPanel;
+
+	@UiField
 	protected Label messageLabel;
 
 	@UiField
@@ -45,9 +50,25 @@ public class LoginPanel extends Composite {
 
 	@UiHandler("loginButton")
 	protected void onClick(final ClickEvent event) {
-		if (!isEmailProvided()) return;
+		submitLogin();
+	}
 
-		authenticationRequestHandler.authenticateUser(this, emailArea.getText(), passwordArea.getText());
+	@UiHandler("passwordArea")
+	protected void passwordAreaOnKeyUp(final KeyUpEvent event) {
+		if (event.getNativeKeyCode() != KEY_ENTER) return;
+
+		submitLogin();
+	}
+
+	@UiHandler("emailArea")
+	protected void emailAreaOnKeyUp(final KeyUpEvent event) {
+		if (event.getNativeKeyCode() != KEY_ENTER) return;
+
+		submitLogin();
+	}
+
+	public void setErrorMessage(final String message) {
+		messageLabel.setText(message);
 	}
 
 	private boolean isEmailProvided() {
@@ -58,7 +79,9 @@ public class LoginPanel extends Composite {
 		return true;
 	}
 
-	public void setErrorMessage(final String message) {
-		messageLabel.setText(message);
+	private void submitLogin() {
+		if (!isEmailProvided()) return;
+
+		authenticationRequestHandler.authenticateUser(this, emailArea.getText(), passwordArea.getText());
 	}
 }

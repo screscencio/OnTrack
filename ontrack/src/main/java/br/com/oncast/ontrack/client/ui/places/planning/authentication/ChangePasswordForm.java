@@ -1,9 +1,12 @@
 package br.com.oncast.ontrack.client.ui.places.planning.authentication;
 
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningAuthenticationRequestHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -54,6 +57,7 @@ public class ChangePasswordForm extends Composite {
 	}
 
 	public void show() {
+		clearFields();
 		this.setVisible(true);
 	}
 
@@ -66,19 +70,33 @@ public class ChangePasswordForm extends Composite {
 		this.hide();
 	}
 
+	@UiHandler("oldPasswordArea")
+	protected void oldPasswordAreaOnKeyUp(final KeyUpEvent event) {
+		submitOrHideForm(event);
+	}
+
+	@UiHandler("newPasswordArea")
+	protected void newPasswordAreaOnKeyUp(final KeyUpEvent event) {
+		submitOrHideForm(event);
+	}
+
+	@UiHandler("retypePasswordArea")
+	protected void retypePasswordAreaOnKeyUp(final KeyUpEvent event) {
+		submitOrHideForm(event);
+	}
+
 	@UiHandler("changePasswordButton")
 	protected void changePasswordButtonOnClick(final ClickEvent e) {
-		if (!areTypedPasswordsEqual()) return;
+		submitChangePassword();
+	}
 
-		authenticationRequestHandler.changeUserPassword(this, oldPasswordArea.getText(), newPasswordArea.getText());
+	private void submitChangePassword() {
+		if (!areTypedPasswordsEqual()) messageLabel.setText("The two typed passwords are different.");
+		else authenticationRequestHandler.changeUserPassword(this, oldPasswordArea.getText(), newPasswordArea.getText());
 	}
 
 	private boolean areTypedPasswordsEqual() {
-		if (!newPasswordArea.getText().equals(retypePasswordArea.getText())) {
-			messageLabel.setText("The two typed passwords are different.");
-			return false;
-		}
-		return true;
+		return newPasswordArea.getText().equals(retypePasswordArea.getText());
 	}
 
 	public void setAuthenticationRequestHandler(final PlanningAuthenticationRequestHandler authenticationRequestHandler) {
@@ -95,4 +113,15 @@ public class ChangePasswordForm extends Composite {
 		// FIXME Change css for this label
 	}
 
+	private void clearFields() {
+		oldPasswordArea.setText("");
+		newPasswordArea.setText("");
+		retypePasswordArea.setText("");
+		messageLabel.setText("");
+	}
+
+	private void submitOrHideForm(final KeyUpEvent event) {
+		if (event.getNativeKeyCode() == KEY_ENTER) submitChangePassword();
+		if (event.getNativeKeyCode() == KEY_ESCAPE) this.hide();
+	}
 }
