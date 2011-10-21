@@ -18,7 +18,7 @@ class ScopeTreeUpdateAction implements ScopeTreeAction {
 
 	@Override
 	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ScopeNotFoundException {
-		// TODO ++ Use treeItem.update(scope) instead of treeItem.setReferencedScope(scope).
+		// TODO ++Use treeItem.update(scope) instead of treeItem.setReferencedScope(scope).
 		final ScopeTreeItem treeItem = tree.findScopeTreeItem(action.getReferenceId());
 		treeItem.setReferencedScope(context.findScope(action.getReferenceId()));
 
