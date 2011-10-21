@@ -2,10 +2,12 @@ package br.com.oncast.ontrack.client.ui.places.planning.authentication;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningAuthenticationRequestHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -73,6 +75,15 @@ public class ChangePasswordForm extends Composite {
 	@UiHandler("oldPasswordArea")
 	protected void oldPasswordAreaOnKeyUp(final KeyUpEvent event) {
 		submitOrHideForm(event);
+	}
+
+	@UiHandler("closeButton")
+	protected void closeButtonOnKeyDown(final KeyDownEvent event) {
+		if (event.getNativeKeyCode() == KEY_TAB) {
+			event.stopPropagation();
+			event.preventDefault();
+			oldPasswordArea.setFocus(true);
+		}
 	}
 
 	@UiHandler("newPasswordArea")
