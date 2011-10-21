@@ -8,7 +8,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -22,7 +22,7 @@ public class EffortInferenceEngineScopeInfluenceTest {
 
 	@Before
 	public void setUp() {
-		scope = ScopeMock.getComplexScope();
+		scope = ScopeTestUtils.getComplexScope();
 	}
 
 	@Test

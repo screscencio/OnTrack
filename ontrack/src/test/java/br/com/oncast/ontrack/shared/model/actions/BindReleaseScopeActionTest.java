@@ -8,8 +8,8 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ReleaseMock;
-import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -25,8 +25,8 @@ public class BindReleaseScopeActionTest {
 
 	@Before
 	public void setUp() {
-		rootScope = ScopeMock.getScope();
-		rootRelease = ReleaseMock.getRelease();
+		rootScope = ScopeTestUtils.getScope();
+		rootRelease = ReleaseTestUtils.getRelease();
 		context = new ProjectContext(new Project(rootScope, rootRelease));
 	}
 

@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.interaction;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseChartPanel;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
@@ -9,12 +10,14 @@ import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityActi
 import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInteractionHandler {
 
 	private ActionExecutionRequestHandler applicationActionHandler;
 	private ComponentInteractionHandler componentInteractionHandler;
+	private ReleaseEstimator releaseEstimator;
 
 	public void configureActionExecutionRequestHandler(final ActionExecutionRequestHandler actionExecutionRequestHandler) {
 		this.applicationActionHandler = actionExecutionRequestHandler;
@@ -22,6 +25,10 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 
 	public void configureComponentInteractionHandler(final ComponentInteractionHandler componentInteractionHandler) {
 		this.componentInteractionHandler = componentInteractionHandler;
+	}
+
+	public void setRootRelease(final Release rootRelease) {
+		releaseEstimator = new ReleaseEstimator(rootRelease);
 	}
 
 	@Override
@@ -79,7 +86,14 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 		componentInteractionHandler.onScopeSelectionRequest(scope.getId());
 	}
 
+	@Override
+	public void onOpenReleaseBurnUpChart(final ReleaseChartPanel releaseChartPanel) {
+		assureConfigured();
+		releaseChartPanel.showBurnUpChart(releaseEstimator);
+	}
+
 	private void assureConfigured() {
-		if (applicationActionHandler == null || componentInteractionHandler == null) throw new RuntimeException("This class was not yet configured.");
+		if (applicationActionHandler == null || componentInteractionHandler == null || releaseEstimator == null) throw new RuntimeException(
+				"This class was not yet configured.");
 	}
 }

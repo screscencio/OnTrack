@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.shared.model.progress;
 
 import java.io.Serializable;
 
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityByGetter;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
@@ -19,11 +21,22 @@ public class Progress implements Serializable {
 				}
 				return false;
 			}
+
+			@Override
+			protected void handleStateChange(final Progress progress) {
+				progress.resetEndDate();
+			}
 		},
 		UNDER_WORK("Under work") {
 			@Override
 			protected boolean matches(final String description) {
 				return (!NOT_STARTED.matches(description) && !DONE.matches(description));
+			}
+
+			@Override
+			protected void handleStateChange(final Progress progress) {
+				progress.start();
+				progress.resetEndDate();
 			}
 		},
 		DONE("Done") {
@@ -34,6 +47,12 @@ public class Progress implements Serializable {
 					if (acceptable.equalsIgnoreCase(description)) return true;
 				}
 				return false;
+			}
+
+			@Override
+			protected void handleStateChange(final Progress progress) {
+				progress.start();
+				progress.end();
 			}
 		};
 
@@ -59,13 +78,22 @@ public class Progress implements Serializable {
 		}
 
 		protected abstract boolean matches(String description);
+
+		protected abstract void handleStateChange(Progress progress);
+
 	};
 
 	@DeepEqualityByGetter
 	private String description;
 
 	@IgnoredByDeepEquality
-	private ProgressState state;
+	private ProgressState state = ProgressState.NOT_STARTED;
+
+	@IgnoredByDeepEquality
+	private WorkingDay startDate;
+
+	@IgnoredByDeepEquality
+	private WorkingDay endDate;
 
 	public Progress() {
 		setDescription("");
@@ -80,15 +108,11 @@ public class Progress implements Serializable {
 
 		description = newProgressDescription;
 		setState(ProgressState.getStateForDescription(description));
+		ProgressDefinitionManager.getInstance().onProgressDefinition(getDescription());
 	}
 
 	public ProgressState getState() {
 		return state;
-	}
-
-	void setState(final ProgressState state) {
-		this.state = state;
-		ProgressDefinitionManager.getInstance().onProgressDefinition(getDescription());
 	}
 
 	public boolean hasDeclared() {
@@ -99,4 +123,28 @@ public class Progress implements Serializable {
 		return state == ProgressState.DONE;
 	}
 
+	public WorkingDay getStartDay() {
+		return startDate != null ? startDate.copy() : null;
+	}
+
+	public WorkingDay getEndDay() {
+		return endDate != null ? endDate.copy() : null;
+	}
+
+	void setState(final ProgressState newState) {
+		state = newState;
+		state.handleStateChange(this);
+	}
+
+	private void start() {
+		if (startDate == null) startDate = WorkingDayFactory.create();
+	}
+
+	private void end() {
+		endDate = WorkingDayFactory.create();
+	}
+
+	private void resetEndDate() {
+		endDate = null;
+	}
 }

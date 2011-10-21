@@ -11,7 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindExporter;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.FreeMindMap;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
@@ -26,7 +26,7 @@ public class FreeMindExporterTest {
 
 	@Before
 	public void setUp() {
-		scope = ScopeMock.getScope();
+		scope = ScopeTestUtils.getScope();
 	}
 
 	@After

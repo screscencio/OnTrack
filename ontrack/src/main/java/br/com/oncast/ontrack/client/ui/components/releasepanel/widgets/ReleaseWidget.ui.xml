@@ -63,7 +63,7 @@
 				overflow: hidden;
 			}
 			
-			.progressLabel {
+			.releaseChartPanel {
 				position: absolute;
 				top: 8px;
 				height: 20px;
@@ -80,13 +80,13 @@
 			}
 			
 			.burnUpChartPanel {
-				position: absolute;
+				position: absolute;r
 				top: 5px;
 				right: 25px;
 			}
 			
 			.body {
-				position: relative;
+				position: relative;r
 				background-color: #e3e4e8;
 				width: 100%;
 			}
@@ -107,7 +107,7 @@
 			<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
 			<g:Label ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
 			<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" />
-			<t:PopupChartPanel ui:field="progressChartPanel" styleName="{style.progressLabel}" />
+			<ow:ReleaseChartPanel ui:field="releaseChartPanel" styleName="{style.releaseChartPanel}" />
 			<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 		</div>
 		<div ui:field="bodyContainer" class="{style.body}" >

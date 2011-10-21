@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -12,9 +13,11 @@ import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.mocks.actions.ActionMock;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.server.business.UserAction;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -22,11 +25,14 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class PersistenceServiceJpaTest {
@@ -86,6 +92,41 @@ public class PersistenceServiceJpaTest {
 		final Project project2 = snapshot2.getProject();
 
 		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
+	}
+
+	@Test
+	public void shouldRetrieveSnapshotWithCorrectProgressStartDateAndEndDate() throws Exception {
+		final ProjectSnapshot snapshot1 = loadProjectSnapshot();
+		final Project project1 = snapshot1.getProject();
+
+		final WorkingDay startDate = WorkingDayFactory.create(2011, Calendar.OCTOBER, 3);
+		final WorkingDay endDate = WorkingDayFactory.create(2011, Calendar.OCTOBER, 5);
+
+		ScopeTestUtils.setStartDate(project1.getProjectScope(), startDate);
+		ScopeTestUtils.setEndDate(project1.getProjectScope(), endDate);
+
+		snapshot1.setProject(project1);
+		snapshot1.setTimestamp(new Date());
+		persistenceService.persistProjectSnapshot(snapshot1);
+
+		final ProjectSnapshot snapshot2 = loadProjectSnapshot();
+		final Project project2 = snapshot2.getProject();
+		final Progress progress = project2.getProjectScope().getProgress();
+
+		assertEquals(startDate, progress.getStartDay());
+		assertEquals(endDate, progress.getEndDay());
+	}
+
+	@Test
+	@Ignore("Run only when you want to generate data to test release burn up chart")
+	public void testname() throws Exception {
+		final ProjectSnapshot snapshot1 = loadProjectSnapshot();
+		final Project project1 = snapshot1.getProject();
+		ScopeTestUtils.populateWithTestData(project1);
+
+		snapshot1.setProject(project1);
+		snapshot1.setTimestamp(new Date());
+		persistenceService.persistProjectSnapshot(snapshot1);
 	}
 
 	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException {

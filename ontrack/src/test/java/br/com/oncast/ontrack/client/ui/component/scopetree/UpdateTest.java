@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
+import br.com.oncast.ontrack.shared.model.release.TestReleaseFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityComparator;
@@ -48,7 +48,7 @@ public class UpdateTest extends GwtTest {
 		tree = new ScopeTree();
 		tree.setContext(new ProjectContext(new Project(scope, null)));
 
-		projectContext = new ProjectContext((new Project(scope, ReleaseMockFactory.create(""))));
+		projectContext = new ProjectContext((new Project(scope, TestReleaseFactory.create(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
 		actionExecutionService = new ActionExecutionServiceImpl(contextService, new ErrorTreatmentMock());
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());

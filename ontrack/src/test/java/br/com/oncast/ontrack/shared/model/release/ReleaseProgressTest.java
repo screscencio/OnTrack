@@ -6,8 +6,9 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ReleaseMock;
-import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -19,8 +20,8 @@ public class ReleaseProgressTest {
 
 	@Before
 	public void setUp() {
-		r1 = ReleaseMock.getRelease().getChildren().get(0);
-		scopeHierarchy = ScopeMock.getScopeWithEffort();
+		r1 = ReleaseTestUtils.getRelease().getChildren().get(0);
+		scopeHierarchy = ScopeTestUtils.getScopeWithEffort();
 
 		r1.addScope(scopeHierarchy.getChild(0));
 		r1.addScope(scopeHierarchy.getChild(1));
@@ -94,20 +95,20 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void aReleaseShouldNotBeDoneIfAtLeastOneOfItsChildReleasesAreNotDoneEvenIfAllItsScopeAreDone() {
-		final Release release = ReleaseMockFactory.create("R1");
+		final Release release = TestReleaseFactory.create("R1");
 
 		final Scope scope = new Scope("scope");
-		scope.getProgress().setDescription("Done");
+		ScopeTestUtils.setProgress(scope, ProgressState.DONE);
 		release.addScope(scope);
 
-		release.addChild(ReleaseMockFactory.create("Child release"));
+		release.addChild(TestReleaseFactory.create("Child release"));
 
 		assertFalse(release.isDone());
 	}
 
 	@Test
 	public void aReleaseShouldNotBeDoneIfItHaveNoScopeAndNoChildRelease() {
-		final Release release = ReleaseMockFactory.create("R1");
+		final Release release = TestReleaseFactory.create("R1");
 		assertFalse(release.isDone());
 	}
 
@@ -118,7 +119,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		final Release it1 = ReleaseMockFactory.create("It1");
+		final Release it1 = TestReleaseFactory.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -141,7 +142,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		final Release it1 = ReleaseMockFactory.create("It1");
+		final Release it1 = TestReleaseFactory.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -164,7 +165,7 @@ public class ReleaseProgressTest {
 		scopeHierarchy.getChild(1).getProgress().setDescription("Underwork");
 		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
 
-		final Release it1 = ReleaseMockFactory.create("It1");
+		final Release it1 = TestReleaseFactory.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
@@ -182,9 +183,9 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void progressPercentageShouldBe100IfAllItsChildrenAreDoneAndTheSumOfAllEstimatedEffortsIsZero() {
-		final Release release = ReleaseMockFactory.create("Release");
+		final Release release = TestReleaseFactory.create("Release");
 
-		final Scope rootScope = ScopeMock.getSimpleScope();
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
 			child.getProgress().setDescription("DONE");
 			PROGRESS_INFERENCE_ENGINE.process(rootScope);

@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.mocks.models.ProjectMock;
-import br.com.oncast.ontrack.mocks.models.ScopeMock;
+import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -50,7 +50,7 @@ public class ProgressDefinitionManagerTest {
 	public void shouldContainTheUserDefinedProgress() {
 		final String userDefinedProgress = "in design";
 
-		final Scope scope = ScopeMock.getScope();
+		final Scope scope = ScopeTestUtils.getScope();
 		scope.getChild(0).getProgress().setDescription(userDefinedProgress);
 
 		final Project project = new Project(scope, null);
@@ -70,7 +70,7 @@ public class ProgressDefinitionManagerTest {
 		final String userDefinedProgress3 = "homologation";
 		final String userDefinedProgress4 = "for PO checking";
 
-		final Scope scope = ScopeMock.getScope();
+		final Scope scope = ScopeTestUtils.getScope();
 		scope.getChild(0).getProgress().setDescription(userDefinedProgress1);
 		scope.getChild(0).getChild(0).getProgress().setDescription(userDefinedProgress2);
 		scope.getChild(1).getProgress().setDescription(userDefinedProgress3);
@@ -98,7 +98,7 @@ public class ProgressDefinitionManagerTest {
 		final String userDefinedProgress3 = "homologation";
 		final String userDefinedProgress4 = "for PO checking";
 
-		final Scope scope = ScopeMock.getScope();
+		final Scope scope = ScopeTestUtils.getScope();
 		scope.getChild(0).getProgress().setDescription(userDefinedProgress1);
 		scope.getChild(0).getChild(0).getProgress().setDescription(userDefinedProgress2);
 		scope.getChild(1).getProgress().setDescription(userDefinedProgress3);

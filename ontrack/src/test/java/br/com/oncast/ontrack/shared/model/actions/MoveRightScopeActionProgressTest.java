@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionMana
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.ReleaseMockFactory;
+import br.com.oncast.ontrack.shared.model.release.TestReleaseFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
@@ -33,7 +33,7 @@ public class MoveRightScopeActionProgressTest {
 		rootScope.add(firstChild);
 		rootScope.add(lastChild);
 
-		context = new ProjectContext(new Project(rootScope, ReleaseMockFactory.create("")));
+		context = new ProjectContext(new Project(rootScope, TestReleaseFactory.create("")));
 	}
 
 	@Test

@@ -5,7 +5,6 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupChartPanel;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -18,6 +17,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -47,7 +47,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Label descriptionLabel;
 
 	@UiField
-	protected PopupChartPanel progressChartPanel;
+	protected ReleaseChartPanel releaseChartPanel;
 
 	@UiField
 	protected MouseCommandsMenu mouseActionsMenu;
@@ -78,6 +78,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	@UiFactory
+	protected ReleaseChartPanel createProgressChartPanel() {
+		return new ReleaseChartPanel(release);
+	}
+
+	@UiFactory
 	protected MouseCommandsMenu createMouseActionMenu() {
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 		itens.add(new CommandMenuItem("Increase priority", new Command() {
@@ -102,6 +107,14 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			}
 		}));
 		return new MouseCommandsMenu(itens);
+	}
+
+	@UiHandler("releaseChartPanel")
+	protected void onClick(final ClickEvent e) {
+		releasePanelInteractionHandler.onOpenReleaseBurnUpChart(releaseChartPanel);
+
+		e.preventDefault();
+		e.stopPropagation();
 	}
 
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
@@ -194,11 +207,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void updateProgress() {
-		final String progress = getProcessDescription();
-		if (progress.equals(currentReleaseProgressDescription)) return;
-		currentReleaseProgressDescription = progress;
+		final String newProgress = getProcessDescription();
 
-		progressChartPanel.setProgress(currentReleaseProgressDescription);
+		if (newProgress.equals(currentReleaseProgressDescription)) return;
+		currentReleaseProgressDescription = newProgress;
+
+		updateReleaseChartPanel(newProgress);
 	}
 
 	private String getProcessDescription() {
@@ -209,6 +223,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		final float concludedEffortSum = release.getAccomplishedEffortSum();
 		final float percentage = 100 * concludedEffortSum / effortSum;
 		return ClientDecimalFormat.roundFloat(percentage, 1) + "%";
+	}
+
+	private void updateReleaseChartPanel(final String newProgress) {
+		if (newProgress.isEmpty()) releaseChartPanel.setVisible(false);
+		else releaseChartPanel.setVisible(true);
+		releaseChartPanel.setProgress(currentReleaseProgressDescription);
 	}
 
 	public void setContainerState(final boolean shouldOpen) {
