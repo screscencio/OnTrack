@@ -136,6 +136,10 @@ public class Scope implements Serializable {
 		return null;
 	}
 
+	public boolean isLeaf() {
+		return childrenList.size() == 0;
+	}
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();
@@ -151,9 +155,5 @@ public class Scope implements Serializable {
 	@Override
 	public String toString() {
 		return description;
-	}
-
-	public boolean isLeaf() {
-		return childrenList.size() == 0;
 	}
 }
