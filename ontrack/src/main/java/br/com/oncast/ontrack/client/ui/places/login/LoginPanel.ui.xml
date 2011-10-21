@@ -14,8 +14,8 @@
 		
 		.loginPanel {
 			position: absolute;
-			top: 40%;
-			height: 180px;
+			top: 200px;
+			height: 160px;
 			right: 50%;
 			margin-right: -175px;
 			margin-top: -90px;
@@ -27,40 +27,35 @@
 		    -moz-box-shadow: 0px 0px 5px #a5a5a5;
 		    -webkit-box-shadow: 0px 0px 5px #a5a5a5;
 		    box-shadow: 0px 0px 5px #a5a5a5;
-		    text-align: center;
-		    font-size: 20px;
+
+			color: #F5F5F7;
+			font-size: small;
 		    font-weight: bold;
    		}
 		
 		.loginLabel {
-			font-size: small;
+			display: inline;
 			margin-top: 6px;
-			color: #F5F5F7;
 		}
 		
 		.welcomeLabel {
-			margin-left: 45px;
 			color: #F5F5F7;
+			text-align: center;
+		    font-size: 20px;
+		    font-weight: bold;
+		    height: 35px;
 		}
 		
 		.loginButton {
-			position: absolute;
-			width: 70px;
-			right: 50%;
-			margin-right: -35px;
-			top: 90%;
-			margin-top: -10px;
-			
-			-moz-border-radius: 5px;
-    		-webkit-border-radius: 5px;
-   			-khtml-border-radius: 5px;
-    		border-radius: 5px;
+			position: relative;
+			display: inline;
+			width: 90px;
+			margin-left: 110px;
 		}
 		
 		.textArea {
+			width: 220px;
 			position: absolute;
-			right: 10px;
-			width: 200px;
 			outline: none;
 			padding-left: 7px; 
 			
@@ -69,22 +64,48 @@
    			-khtml-border-radius: 20px;
     		border-radius: 20px;
 		}
+		
+		.emailTextArea {
+			margin-left: 54px;
+		}
+		
+		.passwordTextArea {
+			margin-left: 28px;
+		}
+		
+		.textAreaPanel {
+			height: 30px;
+			display: block;
+			margin-top: 2px;
+			margin-bottom: 2px;
+		}
+		
+		.horizontalPanel {
+			height: 22px;
+			display: block;
+			margin-top: 2px;
+			margin-bottom: 2px;
+		}
 	</ui:style>
 		
 	<g:HTMLPanel ui:field="rootPanel" styleName="{style.rootPanel}" >
-		<g:VerticalPanel ui:field="verticalPanel" styleName="{style.loginPanel} gradAppHeader" >
+		<g:HTMLPanel ui:field="verticalPanel" styleName="{style.loginPanel} gradAppHeader" >
 			<g:Label text="Welcome to OnTrack" ui:field="welcomeLabel" styleName="{style.welcomeLabel}" />
-			<g:HorizontalPanel>
+			<g:HTMLPanel styleName="{style.textAreaPanel}">
 				<g:Label text="E-mail:" ui:field="emailLabel" styleName="{style.loginLabel}" />
-				<g:TextBox ui:field="emailArea" styleName="{style.textArea}" />
-			</g:HorizontalPanel>
-			<g:HorizontalPanel>
+				<g:TextBox ui:field="emailArea" addStyleNames="{style.emailTextArea} {style.textArea}" />
+			</g:HTMLPanel>
+			<g:HTMLPanel styleName="{style.textAreaPanel}">
 				<g:Label text="Password:" ui:field="passwordLabel" styleName="{style.loginLabel}" />
-				<g:PasswordTextBox ui:field="passwordArea" styleName="{style.textArea}" />
-			</g:HorizontalPanel>
-			<g:Label ui:field="messageLabel" styleName="{style.loginLabel}" />
-			<g:Button text="Login" ui:field="loginButton" styleName="{style.loginButton}" />
-		</g:VerticalPanel>
+				<g:PasswordTextBox ui:field="passwordArea" addStyleNames="{style.passwordTextArea} {style.textArea}" />
+			</g:HTMLPanel>
+			<g:HTMLPanel ui:field="informationPanel" styleName="{style.horizontalPanel}">
+				<g:Label ui:field="messageLabel" styleName="{style.loginLabel}" />
+			</g:HTMLPanel>
+			<g:HTMLPanel styleName="{style.horizontalPanel}">
+				<g:Button text="Login" ui:field="loginButton" styleName="{style.loginButton}" />
+			</g:HTMLPanel>
+		</g:HTMLPanel>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
