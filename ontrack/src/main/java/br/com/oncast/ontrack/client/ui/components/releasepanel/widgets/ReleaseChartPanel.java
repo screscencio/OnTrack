@@ -5,7 +5,6 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -37,7 +36,7 @@ public class ReleaseChartPanel extends Composite implements HasClickHandlers {
 
 	@Override
 	public HandlerRegistration addClickHandler(final ClickHandler handler) {
-		return addDomHandler(handler, ClickEvent.getType());
+		return progressLabel.addClickHandler(handler);
 	}
 
 	public void setProgress(final String text) {

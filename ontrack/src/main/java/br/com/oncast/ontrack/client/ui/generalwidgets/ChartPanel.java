@@ -16,8 +16,8 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.Marker.Symbol;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -46,8 +46,20 @@ public class ChartPanel extends Composite {
 
 	private List<String> xAxisLineValues;
 
+	private final MaskPanel maskPanel;
+
 	public ChartPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
+
+		maskPanel = new MaskPanel();
+
+		maskPanel.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				hide();
+			}
+		});
 
 		visibilityAssurer = new WidgetVisibilityAssurer(clickableChartPanel);
 
@@ -72,13 +84,14 @@ public class ChartPanel extends Composite {
 	}
 
 	public void show(final Widget relativeWidget) {
-		configureYAxis();
+		this.setVisible(true);
+		maskPanel.show();
+
 		configureXAxis();
 
 		createIdealLine();
 		createBurnUpLine();
 
-		this.setVisible(true);
 		clickableChartPanel.setFocus(true);
 		visibilityAssurer.assureVisibilityAround(relativeWidget);
 	}
@@ -88,6 +101,7 @@ public class ChartPanel extends Composite {
 
 		this.setVisible(false);
 		chart.removeAllSeries();
+		maskPanel.hide();
 	}
 
 	private void createBurnUpLine() {
@@ -104,10 +118,6 @@ public class ChartPanel extends Composite {
 			newSerie.addPoint(i, yAxisLineValues.get(i));
 		}
 		chart.addSeries(newSerie);
-	}
-
-	private void configureYAxis() {
-		chart.getYAxis().setMax(27.0f);
 	}
 
 	private void configureXAxis() {
@@ -149,20 +159,6 @@ public class ChartPanel extends Composite {
 
 		chart.getYAxis().setAxisTitle(null).setMin(0);
 		chart.getYAxis().setShowFirstLabel(false);
-	}
-
-	@UiHandler("clickableChartPanel")
-	protected void onBlur(final BlurEvent event) {
-		event.preventDefault();
-		event.stopPropagation();
-
-		hide();
-	}
-
-	@UiHandler("clickableChartPanel")
-	protected void onClick(final ClickEvent e) {
-		e.preventDefault();
-		e.stopPropagation();
 	}
 
 	@UiHandler("clickableChartPanel")
