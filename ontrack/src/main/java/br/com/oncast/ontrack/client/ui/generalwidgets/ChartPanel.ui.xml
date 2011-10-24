@@ -5,7 +5,7 @@
 	
 	<ui:style>
 			.chart {
-                position: relative;
+                position: absolute;
                 top: 0px;
                 right: 0px;
                 width: 350px;
@@ -18,15 +18,22 @@
 			
 			.focusPanel {
                 position: absolute;
-                top: 20px;
-                right: -350px;
-                width: 300px;
-                height: 210px;
-                z-index: 2;
-                
-                -moz-box-shadow: 2px 2px 4px #888;
-				-webkit-box-shadow: 2px 2px 4px #888;
-				box-shadow: 2px 2px 4px #888;
+				top: 23px;
+				height: 184px;
+				right: -10px;
+				width: 350px;
+				padding-top: 5px;
+				padding-left: 10px;
+			
+            	border: 1px solid #a5a5a5;
+		    	-moz-box-shadow: 0px 0px 5px #a5a5a5;
+		    	-webkit-box-shadow: 0px 0px 5px #a5a5a5;
+		    	box-shadow: 0px 0px 5px #a5a5a5;
+		    
+		   		color: #F5F5F7;
+				font-size: small;
+		    	font-weight: bold;
+		    	z-index: 5
 			}
 				
 		</ui:style>
