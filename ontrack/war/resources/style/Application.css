@@ -8,6 +8,15 @@ html,body {
     font-size: 14px;
 }
 
+.maskPanel {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	z-index: 0;
+}
+		
 .gradAppHeader {
 	background-image: linear-gradient(bottom, rgb(82,80,82) 21%, rgb(94,93,94) 73%);
 	background-image: -o-linear-gradient(bottom, rgb(82,80,82) 21%, rgb(94,93,94) 73%);

@@ -3,10 +3,12 @@ package br.com.oncast.ontrack.client.ui.places.planning.authentication;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
+import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningAuthenticationRequestHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -14,7 +16,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -38,38 +39,40 @@ public class ChangePasswordForm extends Composite {
 	protected Label messageLabel;
 
 	@UiField
-	protected FocusPanel rootPanel;
-
-	@UiField
 	protected Button changePasswordButton;
 
-	@UiField
-	protected Button closeButton;
+	private final MaskPanel maskPanel;
 
 	private PlanningAuthenticationRequestHandler authenticationRequestHandler;
 
 	public ChangePasswordForm() {
 		initWidget(uiBinder.createAndBindUi(this));
+
+		maskPanel = new MaskPanel();
+		maskPanel.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				hide();
+			}
+		});
 	}
 
 	public void hide() {
 		if (!this.isVisible()) return;
 
 		this.setVisible(false);
+		maskPanel.hide();
 	}
 
 	public void show() {
 		clearFields();
 		this.setVisible(true);
+		maskPanel.show();
 	}
 
 	public void focus() {
 		oldPasswordArea.setFocus(true);
-	}
-
-	@UiHandler("closeButton")
-	protected void closeButtonOnClick(final ClickEvent e) {
-		this.hide();
 	}
 
 	@UiHandler("oldPasswordArea")
@@ -77,8 +80,8 @@ public class ChangePasswordForm extends Composite {
 		submitOrHideForm(event);
 	}
 
-	@UiHandler("closeButton")
-	protected void closeButtonOnKeyDown(final KeyDownEvent event) {
+	@UiHandler("changePasswordButton")
+	protected void changePasswordButtonOnKeyDown(final KeyDownEvent event) {
 		if (event.getNativeKeyCode() == KEY_TAB) {
 			event.stopPropagation();
 			event.preventDefault();
@@ -88,6 +91,11 @@ public class ChangePasswordForm extends Composite {
 
 	@UiHandler("newPasswordArea")
 	protected void newPasswordAreaOnKeyUp(final KeyUpEvent event) {
+		submitOrHideForm(event);
+	}
+
+	@UiHandler("changePasswordButton")
+	protected void changePasswordButtonOnKeyUp(final KeyUpEvent event) {
 		submitOrHideForm(event);
 	}
 
