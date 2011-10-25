@@ -10,7 +10,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.TestReleaseFactory;
+import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
@@ -31,7 +31,7 @@ public class InsertParentScopeActionTest {
 		newScopeDescription = "description for new scope";
 		newReleaseDescription = "Release1";
 
-		context = new ProjectContext(new Project(rootScope, TestReleaseFactory.create("")));
+		context = new ProjectContext(new Project(rootScope, ReleaseFactoryTestUtil.create("")));
 	}
 
 	@Test
