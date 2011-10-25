@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.TestReleaseFactory;
+import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
@@ -36,7 +36,7 @@ public class MoveDownTest extends GwtTest {
 		tree = new ScopeTree();
 		tree.setContext(new ProjectContext(new Project(scope, null)));
 
-		projectContext = new ProjectContext((new Project(scope, TestReleaseFactory.create(""))));
+		projectContext = new ProjectContext((new Project(scope, ReleaseFactoryTestUtil.create(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
 		actionExecutionService = new ActionExecutionServiceImpl(contextService, new ErrorTreatmentMock());
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());

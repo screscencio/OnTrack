@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.TestReleaseFactory;
+import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityComparator;
@@ -51,7 +51,7 @@ public class InsertSiblingDownTest extends GwtTest {
 
 		newScopeDescription = "description for new scope";
 
-		projectContext = new ProjectContext((new Project(scope, TestReleaseFactory.create(""))));
+		projectContext = new ProjectContext((new Project(scope, ReleaseFactoryTestUtil.create(""))));
 		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
 		actionExecutionService = new ActionExecutionServiceImpl(contextService, new ErrorTreatmentMock());
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());

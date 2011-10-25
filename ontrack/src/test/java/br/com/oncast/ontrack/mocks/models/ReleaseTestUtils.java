@@ -1,26 +1,26 @@
 package br.com.oncast.ontrack.mocks.models;
 
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.TestReleaseFactory;
+import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ReleaseTestUtils {
 
 	// IMPORTANT Doesn't change this scope without checking the tests that use it.
 	public static Release getEmptyRelease() {
-		return TestReleaseFactory.create("release");
+		return ReleaseFactoryTestUtil.create("release");
 	}
 
 	// IMPORTANT Doesn't change this scope without checking the tests that use it.
 	public static Release getRelease() {
-		final Release projectRelease = TestReleaseFactory.create("project");
-		final Release r1 = TestReleaseFactory.create("R1");
-		final Release r2 = TestReleaseFactory.create("R2");
-		final Release r3 = TestReleaseFactory.create("R3");
-		final Release it1 = TestReleaseFactory.create("It1");
-		final Release it2 = TestReleaseFactory.create("It2");
-		final Release it3 = TestReleaseFactory.create("It3");
-		final Release it4 = TestReleaseFactory.create("It4");
+		final Release projectRelease = ReleaseFactoryTestUtil.create("project");
+		final Release r1 = ReleaseFactoryTestUtil.create("R1");
+		final Release r2 = ReleaseFactoryTestUtil.create("R2");
+		final Release r3 = ReleaseFactoryTestUtil.create("R3");
+		final Release it1 = ReleaseFactoryTestUtil.create("It1");
+		final Release it2 = ReleaseFactoryTestUtil.create("It2");
+		final Release it3 = ReleaseFactoryTestUtil.create("It3");
+		final Release it4 = ReleaseFactoryTestUtil.create("It4");
 
 		projectRelease.addChild(r1);
 		projectRelease.addChild(r2);
@@ -35,23 +35,23 @@ public class ReleaseTestUtils {
 
 	// IMPORTANT Doesn't change this scope without checking the tests that use it.
 	public static Release getBigRelease() {
-		final Release projectRelease = TestReleaseFactory.create("project");
-		final Release r1 = TestReleaseFactory.create("R1");
-		final Release r2 = TestReleaseFactory.create("R2");
-		final Release r3 = TestReleaseFactory.create("R3");
+		final Release projectRelease = ReleaseFactoryTestUtil.create("project");
+		final Release r1 = ReleaseFactoryTestUtil.create("R1");
+		final Release r2 = ReleaseFactoryTestUtil.create("R2");
+		final Release r3 = ReleaseFactoryTestUtil.create("R3");
 
-		final Release it1 = TestReleaseFactory.create("It1");
-		final Release it2 = TestReleaseFactory.create("It2");
-		final Release it3 = TestReleaseFactory.create("It3");
-		final Release it4 = TestReleaseFactory.create("It4");
+		final Release it1 = ReleaseFactoryTestUtil.create("It1");
+		final Release it2 = ReleaseFactoryTestUtil.create("It2");
+		final Release it3 = ReleaseFactoryTestUtil.create("It3");
+		final Release it4 = ReleaseFactoryTestUtil.create("It4");
 
-		final Release w1 = TestReleaseFactory.create("w1");
-		final Release w2 = TestReleaseFactory.create("w2");
-		final Release w3 = TestReleaseFactory.create("w3");
+		final Release w1 = ReleaseFactoryTestUtil.create("w1");
+		final Release w2 = ReleaseFactoryTestUtil.create("w2");
+		final Release w3 = ReleaseFactoryTestUtil.create("w3");
 
-		final Release d1 = TestReleaseFactory.create("d1");
-		final Release d2 = TestReleaseFactory.create("d2");
-		final Release d3 = TestReleaseFactory.create("d3");
+		final Release d1 = ReleaseFactoryTestUtil.create("d1");
+		final Release d2 = ReleaseFactoryTestUtil.create("d2");
+		final Release d3 = ReleaseFactoryTestUtil.create("d3");
 
 		projectRelease.addChild(r1);
 		projectRelease.addChild(r2);

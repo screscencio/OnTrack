@@ -106,7 +106,7 @@ public class ReleaseEstimatorTest {
 
 	@Test
 	public void estimatedEndDateShouldBeSameDayOfReleaseStartDateWhenThereIsNoScopeOnRelease() throws Exception {
-		final Release emptyRelease = TestReleaseFactory.create("Release");
+		final Release emptyRelease = ReleaseFactoryTestUtil.create("Release");
 
 		populateSampleScopesWithOneDaySpentAndArithmeticSequenceForEffortAndStartDay(13);
 
@@ -117,7 +117,7 @@ public class ReleaseEstimatorTest {
 	public void estimatedEndDateShouldBeSameDayOfReleaseStartDateWhenTheEffortSumOfTheReleaseIsZero() throws Exception {
 		populateSampleScopesWithOneDaySpentAndArithmeticSequenceForEffortAndStartDay(16);
 
-		final Release release = TestReleaseFactory.create("Release");
+		final Release release = ReleaseFactoryTestUtil.create("Release");
 		for (int i = 0; i < 10; i++)
 			release.addScope(createDoneScopeWithEffort(0));
 
