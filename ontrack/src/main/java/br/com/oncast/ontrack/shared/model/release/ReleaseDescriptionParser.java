@@ -35,10 +35,6 @@ public class ReleaseDescriptionParser {
 		return tail.trim();
 	}
 
-	public boolean hasHeadRelease() {
-		return getHeadRelease() != "";
-	}
-
 	public boolean next() {
 		if (lastSeparatorIndex == NOT_FOUND_INDEX) return false;
 		dirty = true;
