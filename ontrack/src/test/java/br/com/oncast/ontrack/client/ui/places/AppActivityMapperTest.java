@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -78,6 +79,13 @@ public class AppActivityMapperTest extends GwtTest {
 		isContextAvailable = true;
 
 		assertTrue(appActivityMapper.getActivity(new PlannnigPlace("")) instanceof PlanningActivity);
+	}
+
+	@Test
+	public void whenUserLoggedInAndPlaceNotInstanceOfPlanningPlaceNorContextLoadingPlaceAndContextAvailableShouldBeNull() {
+		isLoggedIn = true;
+		isContextAvailable = true;
+		assertNull(appActivityMapper.getActivity(null));
 	}
 
 	@Override
