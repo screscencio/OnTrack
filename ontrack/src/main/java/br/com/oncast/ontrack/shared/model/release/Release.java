@@ -114,20 +114,19 @@ public class Release implements Serializable {
 	}
 
 	public Release findRelease(final String releaseDescription) throws ReleaseNotFoundException {
-		final String[] releaseDescriptionSegments = releaseDescription.split(SEPARATOR);
-		final String descriptionSegment = releaseDescriptionSegments[0];
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(releaseDescription);
 
-		final Release childRelease = findDirectChildRelease(descriptionSegment);
+		final Release childRelease = findDirectChildRelease(parser.getHeadRelease());
 		if (childRelease == null) throw new ReleaseNotFoundException("Could not find the specified release.");
 
-		if (releaseDescriptionSegments.length == 1) return childRelease;
-		return childRelease.findRelease(releaseDescription.substring(descriptionSegment.length() + SEPARATOR.length(), releaseDescription.length()));
+		if (!parser.next()) return childRelease;
+		return childRelease.findRelease(parser.getHeadRelease());
 	}
 
 	private Release findDirectChildRelease(final String releaseDescription) {
+		if (releaseDescription.isEmpty()) return null;
 		for (final Release release : childrenList)
 			if (release.getDescription().toLowerCase().equals(releaseDescription.trim().toLowerCase())) return release;
-
 		return null;
 	}
 
