@@ -259,7 +259,7 @@ public class ScopeTreeItemWidget extends Composite {
 		final boolean inferedEffortVisibility = declaredEffort != inferedEffort;
 		final boolean declaredEffortLabelVisibility = effort.hasDeclared();
 
-		// TODO: +++ Create a wrapper class for widgets that checks before updating DOM elements with same value
+		// TODO +++Create a wrapper class for widgets that checks before updating DOM elements with same value
 		final boolean hasAnyVisibleEffort = declaredEffortLabelVisibility || inferedEffortVisibility;
 		if ((currentDeclaredEffortLabelVisibility || currentInferedEffortLabelVisibility) != hasAnyVisibleEffort) {
 			effortPanel.setVisible(hasAnyVisibleEffort);
