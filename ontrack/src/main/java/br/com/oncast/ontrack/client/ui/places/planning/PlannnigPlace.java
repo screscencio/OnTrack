@@ -15,11 +15,6 @@ public class PlannnigPlace extends Place {
 		return token;
 	}
 
-	@Override
-	public boolean equals(final Object obj) {
-		return false;
-	}
-
 	public static class Tokenizer implements PlaceTokenizer<PlannnigPlace> {
 
 		@Override
