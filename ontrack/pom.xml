@@ -13,6 +13,11 @@
 		<gwtVersion>2.3.0</gwtVersion>
 		<webappDirectory>${basedir}/war</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<coverage.reports.dir>${basedir}/target/coverage-reports</coverage.reports.dir>
+		<sonar.jacoco.reportPath>${coverage.reports.dir}/jacoco-unit.exec</sonar.jacoco.reportPath>
+		<sonar.jacoco.itReportPath>${coverage.reports.dir}/jacoco-it.exec</sonar.jacoco.itReportPath>
+		<sonar.jacoco.jar>${basedir}/war/WEB-INF/lib/jacocoagent.jar</sonar.jacoco.jar>
 	</properties>
 
 	<dependencies>
@@ -252,18 +257,19 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<argLine>-Xmx512M -XX:MaxPermSize=128M</argLine>
+					<argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
 					<excludes>
 						<exclude>**/TestUtils.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
-
+<!--
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.5.3.201107060350</version>
 			</plugin>
-
+-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
