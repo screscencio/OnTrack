@@ -7,45 +7,37 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ReleaseCreateActionDefault;
-import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 
+//TODO analyze if parsing is needed on both methods
 public class ReleaseCreator {
 
 	private Set<String> createdReleases = new HashSet<String>();
 
 	public boolean releaseAlreadyCreated(final String releaseDescription) {
-		final String[] releaseLevels = releaseDescription.split(Release.SEPARATOR);
 
-		for (int i = 0; i < releaseLevels.length; i++) {
-			if (!createdReleases.contains(getReleaseDescriptionUntilLevel(releaseLevels, i))) return false;
-		}
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(releaseDescription);
+
+		do {
+			if (!createdReleases.contains(parser.getFullDescriptionOfHeadRelease())) return false;
+		} while (parser.next());
+
 		return true;
 	}
 
 	public List<? extends ModelAction> createNewReleaseHierarchy(final String releaseDescription) {
 		final List<ModelAction> newActions = new ArrayList<ModelAction>();
 
-		final String[] releaseLevels = releaseDescription.split(Release.SEPARATOR);
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(releaseDescription);
 
-		for (int level = 0; level < releaseLevels.length; level++) {
-			final String releaseLevelDescription = getReleaseDescriptionUntilLevel(releaseLevels, level);
-			if (!createdReleases.contains(releaseLevelDescription)) {
-				newActions.add(new ReleaseCreateActionDefault(releaseLevelDescription));
-				createdReleases.add(releaseLevelDescription);
+		do {
+			if (!createdReleases.contains(parser.getFullDescriptionOfHeadRelease())) {
+				newActions.add(new ReleaseCreateActionDefault(parser.getFullDescriptionOfHeadRelease()));
+				createdReleases.add(parser.getFullDescriptionOfHeadRelease());
 			}
-		}
+		} while (parser.next());
 
 		return newActions;
 	}
 
-	private String getReleaseDescriptionUntilLevel(final String[] releaseLevels, final int index) {
-		final StringBuilder query = new StringBuilder();
-		query.append(releaseLevels[0]);
-
-		for (int i = 1; i <= index; i++) {
-			query.append(Release.SEPARATOR);
-			query.append(releaseLevels[i]);
-		}
-		return query.toString();
-	}
 }
