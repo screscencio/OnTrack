@@ -12,7 +12,6 @@ public class User implements Serializable {
 
 	private long id;
 	private String email;
-	private String password;
 
 	public long getId() {
 		return id;
@@ -28,17 +27,5 @@ public class User implements Serializable {
 
 	public void setEmail(final String email) {
 		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(final String password) {
-		this.password = password;
-	}
-
-	public boolean authenticate(final String password) {
-		return this.password.equals(password);
 	}
 }

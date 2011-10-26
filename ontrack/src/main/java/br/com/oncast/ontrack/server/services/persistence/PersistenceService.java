@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.business.UserAction;
+import br.com.oncast.ontrack.server.model.Password;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -22,5 +23,9 @@ public interface PersistenceService {
 
 	public User findUserByEmail(String email) throws NoResultFoundException, PersistenceException;
 
-	void persistOrUpdateUser(User user) throws NoResultFoundException, PersistenceException;
+	public void persistOrUpdateUser(User user) throws PersistenceException;
+
+	public Password findPasswordForUserId(long userId) throws NoResultFoundException, PersistenceException;
+
+	public void persistPassword(Password passwordForUser) throws PersistenceException;
 }

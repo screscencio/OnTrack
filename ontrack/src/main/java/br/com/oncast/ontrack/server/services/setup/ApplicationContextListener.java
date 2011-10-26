@@ -13,6 +13,7 @@ public class ApplicationContextListener implements ServletContextListener {
 	public void contextInitialized(final ServletContextEvent event) {
 		setupBusinessLogic(event);
 		setupServerPush(event);
+		assureDefaultUserIsPresent();
 	}
 
 	@Override
@@ -29,6 +30,13 @@ public class ApplicationContextListener implements ServletContextListener {
 	 */
 	private void setupBusinessLogic(final ServletContextEvent event) {
 		ServerBusinessLogicLocator.getInstance().getBusinessLogic();
+	}
+
+	/**
+	 * Assure the default user is present when the application starts.
+	 */
+	private void assureDefaultUserIsPresent() {
+		DefaultUserExistenceAssurer.verify();
 	}
 
 	/**
