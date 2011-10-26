@@ -55,7 +55,7 @@ public class DefaultUserExistenceAssurer {
 	private static void verifyPasswordIfExists(final PersistenceService persistenceService, final Password password) throws PersistenceException {
 		if (!password.authenticate(DEFAULT_PASSWORD)) {
 			password.setPassword(DEFAULT_PASSWORD);
-			persistenceService.persistPassword(password);
+			persistenceService.persistOrUpdatePassword(password);
 		}
 	}
 
@@ -64,6 +64,6 @@ public class DefaultUserExistenceAssurer {
 		password = new Password();
 		password.setUserId(user.getId());
 		password.setPassword(DEFAULT_PASSWORD);
-		persistenceService.persistPassword(password);
+		persistenceService.persistOrUpdatePassword(password);
 	}
 }

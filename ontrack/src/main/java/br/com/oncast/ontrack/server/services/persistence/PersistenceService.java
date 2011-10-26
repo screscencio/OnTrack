@@ -27,5 +27,5 @@ public interface PersistenceService {
 
 	public Password findPasswordForUserId(long userId) throws NoResultFoundException, PersistenceException;
 
-	public void persistPassword(Password passwordForUser) throws PersistenceException;
+	public void persistOrUpdatePassword(Password passwordForUser) throws PersistenceException;
 }

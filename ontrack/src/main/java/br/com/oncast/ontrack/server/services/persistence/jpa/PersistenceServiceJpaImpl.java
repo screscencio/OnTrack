@@ -167,10 +167,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public void persistPassword(final Password passwordForUser) throws PersistenceException {
+	public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-
 			final PasswordEntity passwordEntity = (PasswordEntity) TYPE_CONVERTER.convert(passwordForUser);
 			em.getTransaction().begin();
 			em.merge(passwordEntity);
