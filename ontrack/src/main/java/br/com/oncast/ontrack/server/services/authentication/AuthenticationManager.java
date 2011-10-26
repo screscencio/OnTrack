@@ -21,7 +21,7 @@ public class AuthenticationManager {
 		final User user = findUserByEmail(email);
 		final Password passwordForUser = findPasswordForUser(user);
 
-		if (!passwordForUser.authenticate(password)) throw new IncorrectPasswordException("Password incorreto!");
+		if (!passwordForUser.authenticate(password)) throw new IncorrectPasswordException("Incorrect password for user with e-mail " + email);
 
 		setAuthenticatedUser(user);
 		return user;
@@ -83,7 +83,7 @@ public class AuthenticationManager {
 			passwordForUser = findPasswordForUserId(user.getId());
 		}
 		catch (final NoResultFoundException e) {
-			// TODO Creating a new empty password if the user don't have one...
+			// TODO Creating a new empty password if the user doesn't have one...
 			// TODO When the user account is implemented this logic must be removed.
 			passwordForUser = createAnEmptyPassword(user.getId());
 		}
