@@ -53,7 +53,7 @@ public class AuthenticationManager {
 		if (passwordForUser.authenticate(oldPassword)) {
 			try {
 				passwordForUser.setPassword(newPassword);
-				persistenceService.persistPassword(passwordForUser);
+				persistenceService.persistOrUpdatePassword(passwordForUser);
 			}
 			catch (final PersistenceException e) {
 				throw new RuntimeException(e);
@@ -96,7 +96,7 @@ public class AuthenticationManager {
 		try {
 			final Password passwordForUser = new Password();
 			passwordForUser.setUserId(userId);
-			persistenceService.persistPassword(passwordForUser);
+			persistenceService.persistOrUpdatePassword(passwordForUser);
 
 			newPassword = findPasswordForUserId(userId);
 		}

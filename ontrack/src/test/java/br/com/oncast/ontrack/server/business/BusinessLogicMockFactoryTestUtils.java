@@ -80,7 +80,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistPassword(final Password passwordForUser) throws PersistenceException {
+			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {
 				// FIXME Auto-generated catch block
 
 			}
@@ -136,7 +136,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistPassword(final Password passwordForUser) throws PersistenceException {
+			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {
 				// FIXME Auto-generated catch block
 
 			}

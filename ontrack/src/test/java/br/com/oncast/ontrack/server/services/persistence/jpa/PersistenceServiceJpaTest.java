@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.mocks.actions.ActionMock;
 import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.server.business.UserAction;
+import br.com.oncast.ontrack.server.model.Password;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -30,6 +33,7 @@ import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
@@ -115,6 +119,98 @@ public class PersistenceServiceJpaTest {
 
 		assertEquals(startDate, progress.getStartDay());
 		assertEquals(endDate, progress.getEndDay());
+	}
+
+	@Test
+	public void shouldPersistUser() throws PersistenceException, NoResultFoundException {
+		final User user = new User();
+		final String email = "user1@email.com";
+		user.setEmail(email);
+		persistenceService.persistOrUpdateUser(user);
+
+		final User newUser = persistenceService.findUserByEmail(email);
+		assertEquals(user.getEmail(), newUser.getEmail());
+	}
+
+	@Test
+	public void shouldUpdateUser() throws PersistenceException, NoResultFoundException {
+		final User user = new User();
+		final String email = "user1@email.com";
+		user.setEmail(email);
+		persistenceService.persistOrUpdateUser(user);
+
+		final User newUser = persistenceService.findUserByEmail(email);
+		assertEquals(user.getEmail(), newUser.getEmail());
+
+		final String newEmail = "newEmail@email.com";
+		newUser.setEmail(newEmail);
+		persistenceService.persistOrUpdateUser(newUser);
+		final User updatedUser = persistenceService.findUserByEmail(newEmail);
+		assertEquals(newEmail, updatedUser.getEmail());
+		assertEquals(newUser.getId(), updatedUser.getId());
+	}
+
+	@Test
+	public void shouldPersistPasswordForAnExistentUser() throws PersistenceException, NoResultFoundException {
+		User user = new User();
+		final String email = "user1@email.com";
+		user.setEmail(email);
+		persistenceService.persistOrUpdateUser(user);
+
+		user = persistenceService.findUserByEmail(email);
+		final Password password = new Password();
+		password.setUserId(user.getId());
+		final String passwordText = "password";
+		password.setPassword(passwordText);
+		persistenceService.persistOrUpdatePassword(password);
+		final Password newPassword = persistenceService.findPasswordForUserId(user.getId());
+		assertTrue(newPassword.authenticate(passwordText));
+	}
+
+	@Test
+	public void shouldUpdateAndExistentPassword() throws PersistenceException, NoResultFoundException {
+		User user = new User();
+		final String email = "user1@email.com";
+		user.setEmail(email);
+		persistenceService.persistOrUpdateUser(user);
+
+		user = persistenceService.findUserByEmail(email);
+		final Password password = new Password();
+		password.setUserId(user.getId());
+		final String passwordText = "password";
+		password.setPassword(passwordText);
+		persistenceService.persistOrUpdatePassword(password);
+		final Password firstPassword = persistenceService.findPasswordForUserId(user.getId());
+		assertTrue(firstPassword.authenticate(passwordText));
+
+		final String newPassword = "newPassword";
+		firstPassword.setPassword(newPassword);
+		persistenceService.persistOrUpdatePassword(firstPassword);
+
+		final Password secondPassword = persistenceService.findPasswordForUserId(user.getId());
+		assertFalse(secondPassword.authenticate(passwordText));
+		assertTrue(secondPassword.authenticate(newPassword));
+	}
+
+	@Test(expected = NoResultFoundException.class)
+	public void shouldThrowNoResultFoundExceptionWhenUserDontHaveAPassword() throws PersistenceException, NoResultFoundException {
+		User user = new User();
+		final String email = "user1@email.com";
+		user.setEmail(email);
+		persistenceService.persistOrUpdateUser(user);
+
+		user = persistenceService.findUserByEmail(email);
+		persistenceService.findPasswordForUserId(user.getId());
+	}
+
+	@Test(expected = NoResultFoundException.class)
+	public void shouldThrowNoResultFoundExceptionWhenUserNotExist() throws PersistenceException, NoResultFoundException {
+		persistenceService.findPasswordForUserId(213);
+	}
+
+	@Test(expected = NoResultFoundException.class)
+	public void shouldThrowNotResultFoundExceptionWhenUserNotFound() throws NoResultFoundException, PersistenceException {
+		persistenceService.findUserByEmail("inexistant@email.com");
 	}
 
 	@Test
