@@ -10,12 +10,14 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import br.com.oncast.ontrack.server.business.UserAction;
+import br.com.oncast.ontrack.server.model.Password;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.UserEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
@@ -127,7 +129,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where user.email = :email");
 			query.setParameter("email", email);
 
-			return (User) TYPE_CONVERTER.convert(query.getSingleResult());
+			return convertEntityToUser((UserEntity) query.getSingleResult());
 		}
 		catch (final NoResultException e) {
 			throw new NoResultFoundException("No user found with email: " + email, e);
@@ -141,10 +143,11 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public void persistOrUpdateUser(final User user) throws NoResultFoundException, PersistenceException {
+	public void persistOrUpdateUser(final User user) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
-		final UserEntity userEntity = convertUserToEntity(user);
 		try {
+
+			final UserEntity userEntity = (UserEntity) TYPE_CONVERTER.convert(user);
 			em.getTransaction().begin();
 			em.merge(userEntity);
 			em.getTransaction().commit();
@@ -154,13 +157,62 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				em.getTransaction().rollback();
 			}
 			catch (final Exception f) {
-				throw new PersistenceException("It was not possible to persist the project snapshot and to rollback it.", f);
+				throw new PersistenceException("It was not possible to persist the user and to rollback it.", f);
 			}
-			throw new PersistenceException("It was not possible to persist the project snapshot.", e);
+			throw new PersistenceException("It was not possible to persist the user.", e);
 		}
 		finally {
 			em.close();
 		}
+	}
+
+	@Override
+	public void persistPassword(final Password passwordForUser) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+
+			final PasswordEntity passwordEntity = (PasswordEntity) TYPE_CONVERTER.convert(passwordForUser);
+			em.getTransaction().begin();
+			em.merge(passwordEntity);
+			em.getTransaction().commit();
+		}
+		catch (final Exception f) {
+			throw new PersistenceException("It was not possible to persist the user and to rollback it.", f);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public Password findPasswordForUserId(final long userId) throws NoResultFoundException, PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password where password.userId = :userId");
+			query.setParameter("userId", userId);
+
+			return convertEntityToPassword((PasswordEntity) query.getSingleResult());
+		}
+		catch (final NoResultException e) {
+			throw new NoResultFoundException("No password found for userId: " + userId, e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the password for userId: " + userId, e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	private Password convertEntityToPassword(final PasswordEntity passwordEntity) throws PersistenceException {
+		final Password password;
+		try {
+			password = (Password) TYPE_CONVERTER.convert(passwordEntity);
+		}
+		catch (final TypeConverterException e) {
+			throw new PersistenceException("It was not possible to convert the passwordEntity to its model", e);
+		}
+		return password;
 	}
 
 	private ModelActionEntity convertActionToEntity(final ModelAction modelAction) throws PersistenceException {
@@ -174,14 +226,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		return entity;
 	}
 
-	private UserEntity convertUserToEntity(final User user) throws PersistenceException {
-		UserEntity entity;
+	private User convertEntityToUser(final UserEntity userEntity) throws PersistenceException {
+		final User user;
 		try {
-			entity = (UserEntity) TYPE_CONVERTER.convert(user);
+			user = (User) TYPE_CONVERTER.convert(userEntity);
 		}
 		catch (final TypeConverterException e) {
 			throw new PersistenceException("It was not possible to convert the user to its entity", e);
 		}
-		return entity;
+		return user;
 	}
 }

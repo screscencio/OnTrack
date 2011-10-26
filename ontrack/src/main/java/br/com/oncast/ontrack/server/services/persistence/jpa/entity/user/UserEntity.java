@@ -17,7 +17,6 @@ public class UserEntity {
 	@ConversionAlias("id")
 	private long id;
 	private String email;
-	private String password;
 
 	public UserEntity() {}
 
@@ -36,13 +35,4 @@ public class UserEntity {
 	public void setEmail(final String email) {
 		this.email = email;
 	}
-
-	public void setPassword(final String password) {
-		this.password = password;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
 }

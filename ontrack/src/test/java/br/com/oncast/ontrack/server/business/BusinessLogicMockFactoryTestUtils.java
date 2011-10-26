@@ -7,6 +7,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 import br.com.oncast.ontrack.mocks.models.ProjectMock;
+import br.com.oncast.ontrack.server.model.Password;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -73,7 +74,22 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistOrUpdateUser(final User user) throws NoResultFoundException, PersistenceException {}
+			public Password findPasswordForUserId(final long userId) throws NoResultFoundException, PersistenceException {
+				// FIXME Auto-generated catch block
+				return null;
+			}
+
+			@Override
+			public void persistPassword(final Password passwordForUser) throws PersistenceException {
+				// FIXME Auto-generated catch block
+
+			}
+
+			@Override
+			public void persistOrUpdateUser(final User user) throws PersistenceException {
+				// FIXME Auto-generated catch block
+
+			}
 
 		};
 	}
@@ -114,7 +130,22 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistOrUpdateUser(final User user) throws NoResultFoundException, PersistenceException {}
+			public Password findPasswordForUserId(final long userId) throws NoResultFoundException, PersistenceException {
+				// FIXME Auto-generated catch block
+				return null;
+			}
+
+			@Override
+			public void persistPassword(final Password passwordForUser) throws PersistenceException {
+				// FIXME Auto-generated catch block
+
+			}
+
+			@Override
+			public void persistOrUpdateUser(final User user) throws PersistenceException {
+				// FIXME Auto-generated catch block
+
+			}
 
 		};
 	}
