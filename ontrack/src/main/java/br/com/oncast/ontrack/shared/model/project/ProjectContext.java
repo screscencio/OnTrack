@@ -6,6 +6,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -43,10 +44,7 @@ public class ProjectContext {
 	public Release findRelease(final String releaseDescription) throws ReleaseNotFoundException {
 		if (releaseDescription == null || releaseDescription.isEmpty()) return null;
 
-		final String[] releaseDescriptionSegments = releaseDescription.split(Release.SEPARATOR);
-		final String descriptionSegment = releaseDescriptionSegments[0];
-		final String releaseLoadQuery = !descriptionSegment.equals(project.getProjectRelease().getDescription()) ? releaseDescription : releaseDescription
-				.substring(descriptionSegment.length() + Release.SEPARATOR.length(), releaseDescription.length());
+		final String releaseLoadQuery = removeProjectReleaseDescription(releaseDescription);
 
 		return project.getProjectRelease().findRelease(releaseLoadQuery);
 	}
@@ -69,5 +67,13 @@ public class ProjectContext {
 
 	public List<String> getFibonacciScaleForEffort() {
 		return FibonacciScale.getFibonacciScaleList();
+	}
+
+	private String removeProjectReleaseDescription(final String releaseDescription) {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(releaseDescription);
+		final String releaseLoadQuery = !parser.getHeadRelease().equals(project.getProjectRelease().getDescription()) ? releaseDescription
+				: parser
+						.getTailReleases();
+		return releaseLoadQuery;
 	}
 }

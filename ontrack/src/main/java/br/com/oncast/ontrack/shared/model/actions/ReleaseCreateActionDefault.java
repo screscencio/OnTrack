@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -40,23 +41,21 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 		Release parentRelease = context.getProjectRelease();
 
 		Release newRelease = null;
-		final String[] releaseLevels = description.split(Release.SEPARATOR);
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(description);
 
-		int i = 0;
-		while (i < releaseLevels.length) {
+		do {
 			try {
-				parentRelease = context.findRelease(getReleaseQuery(releaseLevels, i));
+				parentRelease = parentRelease.findRelease(parser.getHeadRelease());
 			}
 			catch (final ReleaseNotFoundException e) {
-				newRelease = new Release(releaseLevels[i], newReleaseId);
+				newRelease = new Release(parser.getHeadRelease(), newReleaseId);
 				break;
 			}
-			i++;
-		}
+		} while (parser.next());
 
 		parentRelease.addChild(newRelease);
 
-		if (releaseLevels.length > i + 1) createSubRelease(context);
+		if (parser.next()) createSubRelease(context);
 
 		return new ReleaseRemoveAction(newReleaseId);
 	}
@@ -64,17 +63,6 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 	private void createSubRelease(final ProjectContext context) throws UnableToCompleteActionException {
 		if (subReleaseCreateAction == null) subReleaseCreateAction = new ReleaseCreateActionDefault(description);
 		subReleaseCreateAction.execute(context);
-	}
-
-	private String getReleaseQuery(final String[] releaseLevels, final int index) {
-		final StringBuilder query = new StringBuilder();
-		query.append(releaseLevels[0]);
-
-		for (int i = 1; i <= index; i++) {
-			query.append(Release.SEPARATOR);
-			query.append(releaseLevels[i]);
-		}
-		return query.toString();
 	}
 
 	@Override
