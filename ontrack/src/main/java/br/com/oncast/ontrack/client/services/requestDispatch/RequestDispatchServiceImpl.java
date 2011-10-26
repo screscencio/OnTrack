@@ -15,6 +15,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 // TODO Provide a centralized exception handling mechanism in which you can register exception handlers.
 public class RequestDispatchServiceImpl implements RequestDispatchService {
 
+	// TODO Should this variable be private?
 	final CommunicationRpcServiceAsync rpcServiceAsync = GWT.create(CommunicationRpcService.class);
 
 	@Override
