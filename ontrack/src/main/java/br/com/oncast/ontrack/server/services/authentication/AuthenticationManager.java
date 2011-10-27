@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
+import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -19,7 +20,7 @@ public class AuthenticationManager {
 
 	public User authenticate(final String email, final String password) throws UserNotFoundException, IncorrectPasswordException {
 		final User user = findUserByEmail(email);
-		final Password passwordForUser = findPasswordForUser(user);
+		final Password passwordForUser = findPasswordForUserOrCreateANewOne(user);
 
 		if (!passwordForUser.authenticate(password)) throw new IncorrectPasswordException("Incorrect password for user with e-mail " + email);
 
@@ -31,7 +32,7 @@ public class AuthenticationManager {
 		setAuthenticatedUser(null);
 	}
 
-	public void setAuthenticatedUser(final User user) {
+	private void setAuthenticatedUser(final User user) {
 		SessionManager.getCurrentSession().setAuthenticatedUser(user);
 	}
 
@@ -39,26 +40,13 @@ public class AuthenticationManager {
 		return SessionManager.getCurrentSession().getAuthenticatedUser() != null;
 	}
 
-	public void changePasswordForUser(final String email, final String oldPassword, final String newPassword) throws UserNotFoundException,
-			IncorrectPasswordException {
-		final User user = findUserByEmail(email);
-		Password passwordForUser;
-		try {
-			passwordForUser = findPasswordForUserId(user.getId());
-		}
-		catch (final NoResultFoundException e1) {
-			throw new RuntimeException("Unable to find the password for user: " + email, e1);
-		}
+	public void changePasswordForUser(final String email, final String oldPassword, final String newPassword)
+			throws UserNotFoundException, IncorrectPasswordException {
 
-		if (passwordForUser.authenticate(oldPassword)) {
-			try {
-				passwordForUser.setPassword(newPassword);
-				persistenceService.persistOrUpdatePassword(passwordForUser);
-			}
-			catch (final PersistenceException e) {
-				throw new RuntimeException(e);
-			}
-		}
+		final User user = findUserByEmail(email);
+		final Password userPassword = findPasswordForUser(user);
+
+		if (userPassword.authenticate(oldPassword)) persistNewPassword(newPassword, userPassword);
 		else throw new IncorrectPasswordException("Could not change the password for the user " + email + ", because the old password is incorrect.");
 	}
 
@@ -69,55 +57,69 @@ public class AuthenticationManager {
 			user = persistenceService.findUserByEmail(email);
 		}
 		catch (final NoResultFoundException e) {
-			throw new UserNotFoundException("User not found.", e);
+			throw new UserNotFoundException("No user found with e-mail " + email + ".", e);
 		}
 		catch (final PersistenceException e) {
-			throw new RuntimeException(e);
+			throw new AuthenticationException(e);
 		}
 		return user;
 	}
 
-	private Password findPasswordForUser(final User user) throws UserNotFoundException {
+	private Password findPasswordForUserOrCreateANewOne(final User user) throws UserNotFoundException {
 		Password passwordForUser;
 		try {
-			passwordForUser = findPasswordForUserId(user.getId());
+			passwordForUser = persistenceService.findPasswordForUser(user.getId());
 		}
 		catch (final NoResultFoundException e) {
 			// TODO Creating a new empty password if the user doesn't have one...
-			// TODO When the user account is implemented this logic must be removed.
-			passwordForUser = createAnEmptyPassword(user.getId());
+			// TODO When the user account creation is implemented this logic must be removed.
+			passwordForUser = createEmptyPassword(user);
+		}
+		catch (final PersistenceException e) {
+			throw new AuthenticationException(e);
 		}
 		return passwordForUser;
 	}
 
-	private Password createAnEmptyPassword(final long userId) {
+	private Password createEmptyPassword(final User user) {
 		Password newPassword = null;
 
 		try {
 			final Password passwordForUser = new Password();
-			passwordForUser.setUserId(userId);
+			passwordForUser.setUserId(user.getId());
 			persistenceService.persistOrUpdatePassword(passwordForUser);
 
-			newPassword = findPasswordForUserId(userId);
+			newPassword = findPasswordForUser(user);
 		}
-		catch (final PersistenceException e1) {
-			e1.printStackTrace();
-		}
-		catch (final NoResultFoundException e) {
-			e.printStackTrace();
+		catch (final PersistenceException e) {
+			throw new AuthenticationException("Could not create an empty password for the user with e-mail " + user.getEmail(), e);
 		}
 		return newPassword;
 	}
 
-	private Password findPasswordForUserId(final long userId) throws NoResultFoundException {
+	private Password findPasswordForUser(final User user) {
 		Password password = null;
 
 		try {
-			password = persistenceService.findPasswordForUserId(userId);
+			password = persistenceService.findPasswordForUser(user.getId());
+		}
+		catch (final NoResultFoundException e) {
+			throw new AuthenticationException("Unable to find the password for user " + user.getEmail(), e);
 		}
 		catch (final PersistenceException e) {
-			throw new RuntimeException(e);
+			throw new AuthenticationException(e);
 		}
 		return password;
 	}
+
+	private void persistNewPassword(final String newPassword, final Password userPassword) {
+		try {
+			userPassword.setPassword(newPassword);
+			persistenceService.persistOrUpdatePassword(userPassword);
+		}
+		catch (final PersistenceException e) {
+			throw new AuthenticationException(e);
+		}
+	}
+
 }

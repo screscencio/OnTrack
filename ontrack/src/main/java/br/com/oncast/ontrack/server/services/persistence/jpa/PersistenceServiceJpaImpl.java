@@ -132,7 +132,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			return convertEntityToUser((UserEntity) query.getSingleResult());
 		}
 		catch (final NoResultException e) {
-			throw new NoResultFoundException("No user found with email: " + email, e);
+			throw new NoResultFoundException("No user found with e-mail: " + email, e);
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve the user.", e);
@@ -184,7 +184,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public Password findPasswordForUserId(final long userId) throws NoResultFoundException, PersistenceException {
+	public Password findPasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password where password.userId = :userId");

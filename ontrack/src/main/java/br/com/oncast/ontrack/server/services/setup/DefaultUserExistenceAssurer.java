@@ -44,7 +44,7 @@ public class DefaultUserExistenceAssurer {
 	private static void verifyUserPassword(final PersistenceService persistenceService, final User user) throws PersistenceException {
 		Password password;
 		try {
-			password = persistenceService.findPasswordForUserId(user.getId());
+			password = persistenceService.findPasswordForUser(user.getId());
 			verifyPasswordIfExists(persistenceService, password);
 		}
 		catch (final NoResultFoundException e) {
