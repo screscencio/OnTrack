@@ -16,6 +16,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -28,6 +29,9 @@ public class ChangePasswordForm extends Composite {
 
 	@UiField
 	protected PasswordTextBox oldPasswordArea;
+
+	@UiField
+	protected FocusPanel clickableRootPanel;
 
 	@UiField
 	protected PasswordTextBox newPasswordArea;
@@ -96,6 +100,11 @@ public class ChangePasswordForm extends Composite {
 
 	@UiHandler("changePasswordButton")
 	protected void changePasswordButtonOnKeyUp(final KeyUpEvent event) {
+		submitOrHideForm(event);
+	}
+
+	@UiHandler("clickableRootPanel")
+	protected void rootPanelOnKeyUp(final KeyUpEvent event) {
 		submitOrHideForm(event);
 	}
 
