@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -70,10 +72,34 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	@Test
-	public void releaseDaysShouldEndOnEstimatedEndDay() throws Exception {
+	public void releaseDaysShouldEndOnEstimatedEndDayWhenReleaseEndDayIsNull() throws Exception {
 		final List<String> releaseDays = getProvider().getReleaseDays();
 		final int lastIndex = releaseDays.size() - 1;
+		assertNull(releaseMock.getEndDay());
 		assertEquals(estimatedEndDay.getDayAndMonthString(), releaseDays.get(lastIndex));
+	}
+
+	@Test
+	public void releaseDaysShouldEndOnEstimatedEndDayWhenEstimatedEndDayIsAfterTheReleaseEndDay() throws Exception {
+		Accomplish.effortPoints(1).on(estimatedEndDay.copy().add(-1));
+
+		final List<String> releaseDays = getProvider().getReleaseDays();
+		final int lastIndex = releaseDays.size() - 1;
+
+		assertTrue(estimatedEndDay.isAfter(releaseMock.getEndDay()));
+		assertEquals(estimatedEndDay.getDayAndMonthString(), releaseDays.get(lastIndex));
+	}
+
+	@Test
+	public void releaseDaysShouldEndOnReleaseEndDayWhenTheReleaseEndDayIsAfterEstimatedEndDay() throws Exception {
+		Accomplish.effortPoints(1).on(estimatedEndDay.copy().add(1));
+
+		final List<String> releaseDays = getProvider().getReleaseDays();
+		final int lastIndex = releaseDays.size() - 1;
+
+		final WorkingDay releaseEndDay = releaseMock.getEndDay();
+		assertTrue(releaseEndDay.isAfter(estimatedEndDay));
+		assertEquals(releaseEndDay.getDayAndMonthString(), releaseDays.get(lastIndex));
 	}
 
 	@Test
@@ -93,11 +119,20 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	@Test
-	public void accomplishedEffortByDateShouldHaveOnlyZeroWhenReleaseEffortSumIsZero() throws Exception {
+	public void getEstimatedEndDayReturnTheReleaseEstimatorsEstimatedEndDay() throws Exception {
+		for (int i = 0; i < 20; i++) {
+			estimatedEndDay.add(i);
+			assertEquals(estimatedEndDay.getDayAndMonthString(), getProvider().getEstimatedEndDay());
+		}
+		Mockito.verify(estimatorMock, Mockito.atLeast(20)).getEstimatedEndDayFor(releaseMock);
+	}
+
+	@Test
+	public void accomplishedEffortByDateShouldHaveOnlyOneZeroWhenReleaseEffortSumIsZero() throws Exception {
 		assertAccomplishedEffortsByDate(0);
 		estimatedStartDay = WorkingDayFactory.create(2011, Calendar.JANUARY, 3);
 		setReleaseDuration(3);
-		assertAccomplishedEffortsByDate(0, 0, 0);
+		assertAccomplishedEffortsByDate(0);
 	}
 
 	@Test
@@ -107,6 +142,18 @@ public class ReleaseChartDataProviderTest {
 		Accomplish.effortPoints(13).on(WorkingDayFactory.create().add(1));
 
 		assertAccomplishedEffortsByDate(5);
+	}
+
+	@Test
+	public void shouldNotReplicateAccomplishedEffortAfterReachingTheReleaseEffortSum() throws Exception {
+		releaseEffortSum = 10f;
+		final WorkingDay startDay = WorkingDayFactory.create().add(-10);
+		estimatedStartDay = startDay.copy();
+		setReleaseDuration(5);
+		Accomplish.effortPoints(5).on(startDay);
+		Accomplish.effortPoints(5).on(startDay.copy().add(1));
+
+		assertAccomplishedEffortsByDate(5, 10);
 	}
 
 	private void setReleaseDuration(final int nDays) {
@@ -171,6 +218,7 @@ public class ReleaseChartDataProviderTest {
 				return releaseScopes;
 			}
 		});
+		Mockito.when(releaseMock.getEndDay()).thenCallRealMethod();
 	}
 
 	private ReleaseChartDataProvider getProvider() {

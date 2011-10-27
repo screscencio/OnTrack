@@ -48,6 +48,8 @@ public class ChartPanel extends Composite {
 
 	private final MaskPanel maskPanel;
 
+	private Number idealEnDay;
+
 	public ChartPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -80,6 +82,11 @@ public class ChartPanel extends Composite {
 
 	public ChartPanel setXAxisLineValues(final List<String> xAxisLineValues) {
 		this.xAxisLineValues = xAxisLineValues;
+		return this;
+	}
+
+	public ChartPanel setIdealEndDay(final String idealEndDay) {
+		this.idealEnDay = xAxisLineValues.indexOf(idealEndDay);
 		return this;
 	}
 
@@ -135,7 +142,7 @@ public class ChartPanel extends Composite {
 								.setSymbol(Symbol.CIRCLE)
 								.setRadius(1)))
 				.addPoint(0, 0)
-				.addPoint(xAxisLineValues.size() - 1, maxValue);
+				.addPoint(idealEnDay, maxValue);
 
 		chart.addSeries(idealLine);
 	}

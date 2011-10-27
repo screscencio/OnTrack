@@ -47,8 +47,9 @@ public class ReleaseChartPanel extends Composite implements HasClickHandlers {
 		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, releaseEstimator);
 
 		chartPanel.setMaxValue(dataProvider.getEffortSum())
-					.setXAxisLineValues(dataProvider.getReleaseDays())
-					.setYAxisLineValues(dataProvider.getAccomplishedEffortsByDate())
-					.show(progressLabel);
+				.setXAxisLineValues(dataProvider.getReleaseDays())
+				.setYAxisLineValues(dataProvider.getAccomplishedEffortsByDate())
+				.setIdealEndDay(dataProvider.getEstimatedEndDay())
+				.show(progressLabel);
 	}
 }

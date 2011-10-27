@@ -32,6 +32,7 @@ public class ReleaseChartDataProvider {
 		for (final String data : accomplishedEffortByDate.keySet()) {
 			final Float effortInThisDate = accomplishedEffortByDate.get(data);
 			if (effortInThisDate != null) accomplishedEffortsByDate.add(effortInThisDate);
+			if (effortInThisDate >= getEffortSum()) break;
 		}
 		return accomplishedEffortsByDate;
 	}
@@ -64,14 +65,23 @@ public class ReleaseChartDataProvider {
 	private List<WorkingDay> calculateReleaseDays() {
 		final List<WorkingDay> releaseDays = new ArrayList<WorkingDay>();
 		final WorkingDay rollingDay = releaseEstimator.getEstimatedStartDayFor(release);
-		final WorkingDay estimatedEndDate = releaseEstimator.getEstimatedEndDayFor(release);
+		final WorkingDay lastReleaseDay = getLatestDay(releaseEstimator.getEstimatedEndDayFor(release), release.getEndDay());
 
 		do {
 			releaseDays.add(rollingDay.copy());
 			rollingDay.add(1);
-		} while (rollingDay.isBeforeOrSameDayOf(estimatedEndDate));
+		} while (rollingDay.isBeforeOrSameDayOf(lastReleaseDay));
 
 		return releaseDays;
+	}
+
+	private WorkingDay getLatestDay(final WorkingDay estimatedEndDay, final WorkingDay releaseEndDay) {
+		if (releaseEndDay == null) return estimatedEndDay;
+		return estimatedEndDay.isAfter(releaseEndDay) ? estimatedEndDay : releaseEndDay;
+	}
+
+	public String getEstimatedEndDay() {
+		return releaseEstimator.getEstimatedEndDayFor(release).getDayAndMonthString();
 	}
 
 }
