@@ -163,7 +163,7 @@ public class PersistenceServiceJpaTest {
 		final String passwordText = "password";
 		password.setPassword(passwordText);
 		persistenceService.persistOrUpdatePassword(password);
-		final Password newPassword = persistenceService.findPasswordForUserId(user.getId());
+		final Password newPassword = persistenceService.findPasswordForUser(user.getId());
 		assertTrue(newPassword.authenticate(passwordText));
 	}
 
@@ -180,14 +180,14 @@ public class PersistenceServiceJpaTest {
 		final String passwordText = "password";
 		password.setPassword(passwordText);
 		persistenceService.persistOrUpdatePassword(password);
-		final Password firstPassword = persistenceService.findPasswordForUserId(user.getId());
+		final Password firstPassword = persistenceService.findPasswordForUser(user.getId());
 		assertTrue(firstPassword.authenticate(passwordText));
 
 		final String newPassword = "newPassword";
 		firstPassword.setPassword(newPassword);
 		persistenceService.persistOrUpdatePassword(firstPassword);
 
-		final Password secondPassword = persistenceService.findPasswordForUserId(user.getId());
+		final Password secondPassword = persistenceService.findPasswordForUser(user.getId());
 		assertFalse(secondPassword.authenticate(passwordText));
 		assertTrue(secondPassword.authenticate(newPassword));
 	}
@@ -200,12 +200,12 @@ public class PersistenceServiceJpaTest {
 		persistenceService.persistOrUpdateUser(user);
 
 		user = persistenceService.findUserByEmail(email);
-		persistenceService.findPasswordForUserId(user.getId());
+		persistenceService.findPasswordForUser(user.getId());
 	}
 
 	@Test(expected = NoResultFoundException.class)
 	public void shouldThrowNoResultFoundExceptionWhenUserNotExist() throws PersistenceException, NoResultFoundException {
-		persistenceService.findPasswordForUserId(213);
+		persistenceService.findPasswordForUser(213);
 	}
 
 	@Test(expected = NoResultFoundException.class)

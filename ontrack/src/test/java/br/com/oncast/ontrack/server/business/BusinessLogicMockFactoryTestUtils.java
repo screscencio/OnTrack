@@ -74,7 +74,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public Password findPasswordForUserId(final long userId) throws NoResultFoundException, PersistenceException {
+			public Password findPasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
 				// FIXME Auto-generated catch block
 				return null;
 			}
@@ -130,7 +130,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public Password findPasswordForUserId(final long userId) throws NoResultFoundException, PersistenceException {
+			public Password findPasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
 				// FIXME Auto-generated catch block
 				return null;
 			}
