@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +20,8 @@ public class PasswordEntity {
 
 	private String passwordHash;
 	private String passwordSalt;
+
+	@Column(name = "userId", unique = true, nullable = false)
 	private long userId;
 
 	public long getId() {
