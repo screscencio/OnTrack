@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,6 +17,8 @@ public class UserEntity {
 	@GeneratedValue
 	@ConversionAlias("id")
 	private long id;
+
+	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
 	public UserEntity() {}
