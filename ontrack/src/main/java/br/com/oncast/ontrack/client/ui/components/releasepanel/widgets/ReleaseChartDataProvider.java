@@ -31,8 +31,10 @@ public class ReleaseChartDataProvider {
 		final ArrayList<Float> accomplishedEffortsByDate = new ArrayList<Float>();
 		for (final String data : accomplishedEffortByDate.keySet()) {
 			final Float effortInThisDate = accomplishedEffortByDate.get(data);
-			if (effortInThisDate != null) accomplishedEffortsByDate.add(effortInThisDate);
-			if (effortInThisDate >= getEffortSum()) break;
+			if (effortInThisDate != null) {
+				accomplishedEffortsByDate.add(effortInThisDate);
+				if (effortInThisDate >= getEffortSum()) break;
+			}
 		}
 		return accomplishedEffortsByDate;
 	}
