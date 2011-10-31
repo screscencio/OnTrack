@@ -37,15 +37,15 @@ public class ReleaseChartDataProviderTest {
 	private static List<Scope> releaseScopes;
 
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		releaseMock = Mockito.mock(Release.class);
-		releaseEffortSum = 0f;
+		releaseEffortSum = 10f;
 		releaseScopes = new ArrayList<Scope>();
 		setupReleaseMock();
 
 		estimatorMock = Mockito.mock(ReleaseEstimator.class);
 		estimatedStartDay = WorkingDayFactory.create();
-		estimatedEndDay = WorkingDayFactory.create();
+		estimatedEndDay = WorkingDayFactory.create().add(5);
 		setupEstimatorMock();
 	}
 
@@ -58,6 +58,7 @@ public class ReleaseChartDataProviderTest {
 
 	@Test
 	public void releaseDaysShouldHaveOnlyTheEstimatedDayWhenEstimatedStartDayAndEstimatedEndDayAreEqual() throws Exception {
+		estimatedEndDay = estimatedStartDay.copy();
 		for (int i = 0; i < 10; i++) {
 			estimatedStartDay.add(i);
 			estimatedEndDay.add(i);
@@ -119,7 +120,7 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	@Test
-	public void getEstimatedEndDayReturnTheReleaseEstimatorsEstimatedEndDay() throws Exception {
+	public void getEstimatedEndDayShouldReturnTheReleaseEstimatorsEstimatedEndDay() throws Exception {
 		for (int i = 0; i < 20; i++) {
 			estimatedEndDay.add(i);
 			assertEquals(estimatedEndDay.getDayAndMonthString(), getProvider().getEstimatedEndDay());
@@ -129,6 +130,7 @@ public class ReleaseChartDataProviderTest {
 
 	@Test
 	public void accomplishedEffortByDateShouldHaveOnlyOneZeroWhenReleaseEffortSumIsZero() throws Exception {
+		releaseEffortSum = 0f;
 		assertAccomplishedEffortsByDate(0);
 		estimatedStartDay = WorkingDayFactory.create(2011, Calendar.JANUARY, 3);
 		setReleaseDuration(3);
@@ -139,7 +141,7 @@ public class ReleaseChartDataProviderTest {
 	public void shouldNotHaveAccomplishedEffortAfterToday() throws Exception {
 		setReleaseDuration(20);
 		Accomplish.effortPoints(5).today();
-		Accomplish.effortPoints(13).on(WorkingDayFactory.create().add(1));
+		Accomplish.effortPoints(13).on(WorkingDayFactory.create().add(5));
 
 		assertAccomplishedEffortsByDate(5);
 	}
@@ -151,9 +153,9 @@ public class ReleaseChartDataProviderTest {
 		estimatedStartDay = startDay.copy();
 		setReleaseDuration(5);
 		Accomplish.effortPoints(5).on(startDay);
-		Accomplish.effortPoints(5).on(startDay.copy().add(1));
+		Accomplish.effortPoints(5).on(startDay.copy().add(2));
 
-		assertAccomplishedEffortsByDate(5, 10);
+		assertAccomplishedEffortsByDate(5, 5, 10);
 	}
 
 	private void setReleaseDuration(final int nDays) {
