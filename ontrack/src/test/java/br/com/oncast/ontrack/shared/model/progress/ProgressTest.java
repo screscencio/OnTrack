@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
+import java.lang.reflect.Field;
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -93,6 +96,7 @@ public class ProgressTest {
 		progress.setState(ProgressState.DONE);
 		final WorkingDay startDay = progress.getStartDay();
 		assertNotSame(startDay, progress.getStartDay());
+
 		startDay.add(5);
 		assertFalse(startDay.equals(progress.getStartDay()));
 	}
@@ -102,8 +106,34 @@ public class ProgressTest {
 		progress.setState(ProgressState.DONE);
 		final WorkingDay endDay = progress.getEndDay();
 		assertNotSame(endDay, progress.getEndDay());
+
 		endDay.add(12);
 		assertFalse(endDay.equals(progress.getEndDay()));
 	}
 
+	@Test
+	public void shouldUseTheLastUpdateTimestampToSetTheStartDay() throws Exception {
+		final Date timestamp = new Date(12345);
+		setLastUpdateTimstamp(timestamp);
+		progress.setState(ProgressState.UNDER_WORK);
+
+		final WorkingDay expectedStartDay = WorkingDayFactory.create(timestamp);
+		assertEquals(expectedStartDay, progress.getStartDay());
+	}
+
+	@Test
+	public void shouldUseTheLastUpdateTimestampToSetTheEndDay() throws Exception {
+		final Date timestamp = new Date(12345);
+		setLastUpdateTimstamp(timestamp);
+		progress.setState(ProgressState.DONE);
+
+		final WorkingDay expectedEndDay = WorkingDayFactory.create(timestamp);
+		assertEquals(expectedEndDay, progress.getEndDay());
+	}
+
+	private void setLastUpdateTimstamp(final Date timestamp) throws Exception {
+		final Field field = progress.getClass().getDeclaredField("lastUpdateTimestamp");
+		field.setAccessible(true);
+		field.set(progress, timestamp);
+	}
 }
