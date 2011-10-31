@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.utils.typeConverter;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.custom.IntegerConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.ListConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.LongConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.TimestampConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -27,9 +29,10 @@ public class GeneralTypeConverter implements TypeConverter {
 
 	static {
 		addCustomConverter(Boolean.class, new BooleanConverter());
+		addCustomConverter(Integer.class, new IntegerConverter());
 		addCustomConverter(Long.class, new LongConverter());
 		addCustomConverter(String.class, new StringConverter());
-		addCustomConverter(Integer.class, new IntegerConverter());
+		addCustomConverter(Timestamp.class, new TimestampConverter());
 		addCustomConverter(ArrayList.class, new ListConverter<ArrayList>(ArrayList.class));
 
 		// TODO +Externalize this so that specific application converters are registered by the application itself.

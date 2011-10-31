@@ -1,8 +1,12 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
+import java.util.Date;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareProgressActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.ServerTimeConverter;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -19,6 +23,10 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	@ConversionAlias("newProgressDescription")
 	private String newProgressDescription;
 
+	@ConversionAlias("timestamp")
+	@ConvertUsing(ServerTimeConverter.class)
+	private Date timestamp;
+
 	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription) {
 		this.referenceId = referenceId;
 		this.newProgressDescription = newProgressDescription == null ? "" : newProgressDescription;
@@ -32,7 +40,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
-		selectedScope.getProgress().setDescription(newProgressDescription);
+		selectedScope.getProgress().setDescription(newProgressDescription, timestamp);
 
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription);
 	}
@@ -50,5 +58,13 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	@Override
 	public boolean changesProgressInference() {
 		return true;
+	}
+
+	public void setTimestamp(final Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
 	}
 }

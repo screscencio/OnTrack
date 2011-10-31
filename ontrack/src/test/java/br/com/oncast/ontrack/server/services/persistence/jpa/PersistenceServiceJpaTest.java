@@ -27,6 +27,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -79,6 +80,29 @@ public class PersistenceServiceJpaTest {
 		for (int i = 0; i < secondWaveOfActions.size(); i++) {
 			assertEquals(secondWaveOfActions.get(i).getReferenceId(), actionsReceived.get(i).getModelAction().getReferenceId());
 		}
+	}
+
+	@Test
+	public void timestampShouldBeUpdatedByTheServerTimeWhenScopeDeclareProgressActionIsPersisted() throws Exception {
+		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+		final ScopeDeclareProgressAction action = new ScopeDeclareProgressAction(new UUID(), "progressDescription");
+		actionList.add(action);
+
+		final Date clientTimestamp = new Date(12334);
+		action.setTimestamp(clientTimestamp);
+
+		final Date timestampOfPersistingAction = new Date();
+		persistenceService.persistActions(actionList, timestampOfPersistingAction);
+
+		final List<UserAction> retrieveActionsSince = persistenceService.retrieveActionsSince(0);
+		final ScopeDeclareProgressAction retrievedAction = (ScopeDeclareProgressAction) retrieveActionsSince.get(0).getModelAction();
+
+		assertThatUpdatedTimestampIsAfterOrSameThan(clientTimestamp, retrievedAction.getTimestamp());
+		assertThatUpdatedTimestampIsAfterOrSameThan(timestampOfPersistingAction, retrievedAction.getTimestamp());
+	}
+
+	private void assertThatUpdatedTimestampIsAfterOrSameThan(final Date otherTimestamp, final Date updatedTimestamp) {
+		assertTrue(updatedTimestamp.compareTo(otherTimestamp) >= 0);
 	}
 
 	@Test

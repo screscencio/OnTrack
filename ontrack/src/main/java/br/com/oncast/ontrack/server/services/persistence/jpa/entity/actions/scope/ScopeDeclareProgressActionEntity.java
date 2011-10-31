@@ -1,7 +1,11 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -20,6 +24,10 @@ public class ScopeDeclareProgressActionEntity extends ModelActionEntity {
 	@Column(name = "description")
 	private String newProgressDescription;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "timestamp")
+	private Date timestamp;
+
 	public String getReferenceId() {
 		return referenceId;
 	}
@@ -34,6 +42,14 @@ public class ScopeDeclareProgressActionEntity extends ModelActionEntity {
 
 	public void setNewProgressDescription(final String newProgressDescription) {
 		this.newProgressDescription = newProgressDescription;
+	}
+
+	public void setTimestamp(final Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
 }

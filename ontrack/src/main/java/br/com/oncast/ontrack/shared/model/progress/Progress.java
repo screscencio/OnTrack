@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
@@ -95,6 +96,9 @@ public class Progress implements Serializable {
 	@IgnoredByDeepEquality
 	private WorkingDay endDate;
 
+	@IgnoredByDeepEquality
+	private Date lastUpdateTimestamp;
+
 	public Progress() {
 		setDescription("");
 	}
@@ -103,10 +107,16 @@ public class Progress implements Serializable {
 		return (!hasDeclared() || state == ProgressState.UNDER_WORK) ? description : state.getDescription();
 	}
 
-	public void setDescription(String newProgressDescription) {
+	public void setDescription(final String newProgressDescription) {
+		setDescription(newProgressDescription, null);
+	}
+
+	public void setDescription(String newProgressDescription, Date timestamp) {
+		if (timestamp == null) timestamp = new Date();
 		if (newProgressDescription == null) newProgressDescription = "";
 
 		description = newProgressDescription;
+		lastUpdateTimestamp = timestamp;
 		setState(ProgressState.getStateForDescription(description));
 		ProgressDefinitionManager.getInstance().onProgressDefinition(getDescription());
 	}
@@ -137,11 +147,11 @@ public class Progress implements Serializable {
 	}
 
 	private void start() {
-		if (startDate == null) startDate = WorkingDayFactory.create();
+		if (startDate == null) startDate = WorkingDayFactory.create(lastUpdateTimestamp);
 	}
 
 	private void end() {
-		endDate = WorkingDayFactory.create();
+		endDate = WorkingDayFactory.create(lastUpdateTimestamp);
 	}
 
 	private void resetEndDate() {
