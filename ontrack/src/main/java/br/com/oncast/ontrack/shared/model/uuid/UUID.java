@@ -2,11 +2,14 @@ package br.com.oncast.ontrack.shared.model.uuid;
 
 import java.io.Serializable;
 
+import org.simpleframework.xml.Attribute;
+
 // TODO Test this class
 public class UUID implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Attribute
 	private String id = "";
 
 	// TODO +++Verify the algorithm use of the CHARS constant bellow. UUIDs should be represented by Hexadecimal characters only, but our own unique id could

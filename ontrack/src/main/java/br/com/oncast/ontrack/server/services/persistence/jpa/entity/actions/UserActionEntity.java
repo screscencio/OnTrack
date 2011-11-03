@@ -14,7 +14,6 @@ import br.com.oncast.ontrack.server.business.UserAction;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.IgnoreByConversion;
 
 @Entity
 @ConvertTo(UserAction.class)
@@ -26,7 +25,7 @@ public class UserActionEntity {
 	private long id;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@IgnoreByConversion
+	@ConversionAlias("timestamp")
 	private Date timestamp;
 
 	@OneToOne(cascade = CascadeType.ALL)

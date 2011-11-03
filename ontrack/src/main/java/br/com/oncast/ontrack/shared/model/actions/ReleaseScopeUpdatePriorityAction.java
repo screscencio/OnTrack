@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseScopeUpdatePriorityActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -15,12 +18,15 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("releaseReferenceId")
+	@Element
 	private UUID releaseReferenceId;
 
 	@ConversionAlias("scopeReferenceId")
+	@Element
 	private UUID scopeReferenceId;
 
 	@ConversionAlias("priority")
+	@Attribute
 	private int priority;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.

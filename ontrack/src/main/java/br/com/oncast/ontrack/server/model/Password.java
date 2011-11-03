@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.server.model;
 
+import org.simpleframework.xml.Attribute;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.PasswordHash;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -7,10 +9,16 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 @ConvertTo(PasswordEntity.class)
 public class Password {
 
+	@Attribute
 	private long id;
 
+	@Attribute
 	private long userId;
+
+	@Attribute
 	private String passwordHash;
+
+	@Attribute
 	private String passwordSalt;
 
 	public Password() {}
@@ -55,4 +63,24 @@ public class Password {
 			}
 		}
 	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final Password other = (Password) obj;
+		if (id != other.id) return false;
+		if (passwordHash == null) {
+			if (other.passwordHash != null) return false;
+		}
+		else if (!passwordHash.equals(other.passwordHash)) return false;
+		if (passwordSalt == null) {
+			if (other.passwordSalt != null) return false;
+		}
+		else if (!passwordSalt.equals(other.passwordSalt)) return false;
+		if (userId != other.userId) return false;
+		return true;
+	}
+
 }

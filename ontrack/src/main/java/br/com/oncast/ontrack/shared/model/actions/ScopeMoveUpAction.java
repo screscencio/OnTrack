@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveUpActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -14,6 +16,7 @@ public class ScopeMoveUpAction implements ScopeMoveAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	public ScopeMoveUpAction(final UUID selectedScopeId) {

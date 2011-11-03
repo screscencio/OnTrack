@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -9,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(ScopeBindReleaseActionEntity.class)
 public class ScopeBindReleaseAction implements ScopeAction {
@@ -16,18 +20,25 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	@ConversionAlias("newReleaseDescription")
+	@Attribute
 	private String newReleaseDescription;
 
 	@ConversionAlias("subAction")
+	@Element(required = false)
+	@IgnoredByDeepEquality
 	private ReleaseRemoveAction rollbackSubAction;
 
 	@ConversionAlias("releaseCreateAction")
+	@Element(required = false)
+	@IgnoredByDeepEquality
 	private ReleaseCreateActionDefault releaseCreateAction;
 
 	@ConversionAlias("scopePriority")
+	@Attribute
 	private int scopePriority;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.

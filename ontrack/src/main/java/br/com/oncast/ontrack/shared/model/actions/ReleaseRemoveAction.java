@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -19,6 +21,7 @@ public class ReleaseRemoveAction implements ReleaseAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.

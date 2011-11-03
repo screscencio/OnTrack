@@ -28,4 +28,8 @@ public interface PersistenceService {
 	public Password findPasswordForUser(long userId) throws NoResultFoundException, PersistenceException;
 
 	public void persistOrUpdatePassword(Password passwordForUser) throws PersistenceException;
+
+	public List<User> findAllUsers() throws PersistenceException;
+
+	List<Password> findAllPasswords() throws PersistenceException;
 }

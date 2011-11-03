@@ -2,6 +2,9 @@ package br.com.oncast.ontrack.shared.model.actions;
 
 import java.util.Date;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareProgressActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -11,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(ScopeDeclareProgressActionEntity.class)
 public class ScopeDeclareProgressAction implements ScopeAction {
@@ -18,13 +22,17 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	@ConversionAlias("newProgressDescription")
+	@Attribute
 	private String newProgressDescription;
 
 	@ConversionAlias("timestamp")
 	@ConvertUsing(ServerTimeConverter.class)
+	@Attribute(required = false)
+	@IgnoredByDeepEquality
 	private Date timestamp;
 
 	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription) {
