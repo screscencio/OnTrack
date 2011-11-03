@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.shared.model.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertChildActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -17,12 +19,15 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	@ConversionAlias("newScopeId")
+	@Element
 	private UUID newScopeId;
 
 	@ConversionAlias("scopeUpdateAction")
+	@Element
 	private ScopeUpdateAction scopeUpdateAction;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.

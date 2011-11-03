@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareEffortActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -14,12 +17,15 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	@ConversionAlias("hasDeclaredEffort")
+	@Attribute
 	private boolean hasDeclaredEffort;
 
 	@ConversionAlias("newDeclaredEffort")
+	@Attribute
 	private int newDeclaredEffort;
 
 	public ScopeDeclareEffortAction(final UUID referenceId, final boolean hasDeclaredEffort, final int newDeclaredEffort) {

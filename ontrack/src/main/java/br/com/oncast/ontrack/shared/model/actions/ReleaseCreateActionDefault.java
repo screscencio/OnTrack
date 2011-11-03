@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -9,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(ReleaseCreateActionEntity.class)
 public class ReleaseCreateActionDefault implements ReleaseCreateAction {
@@ -16,15 +20,20 @@ public class ReleaseCreateActionDefault implements ReleaseCreateAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element(required = false)
 	private UUID parentReleaseId;
 
 	@ConversionAlias("newReleaseId")
+	@Element
 	private UUID newReleaseId;
 
 	@ConversionAlias("description")
+	@Attribute
 	private String description;
 
 	@ConversionAlias("subAction")
+	@Element(required = false)
+	@IgnoredByDeepEquality
 	private ReleaseCreateActionDefault subReleaseCreateAction;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.

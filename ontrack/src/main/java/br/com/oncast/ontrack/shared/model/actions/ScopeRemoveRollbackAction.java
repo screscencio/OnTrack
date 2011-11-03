@@ -2,6 +2,10 @@ package br.com.oncast.ontrack.shared.model.actions;
 
 import java.util.List;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -16,21 +20,27 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	@ConversionAlias("parentScopeId")
+	@Element
 	private UUID parentScopeId;
 
 	@ConversionAlias("index")
+	@Attribute
 	private int index;
 
 	@ConversionAlias("description")
+	@Attribute
 	private String description;
 
 	@ConversionAlias("childActionList")
+	@ElementList
 	private List<ScopeRemoveRollbackAction> childActionList;
 
 	@ConversionAlias("subActionList")
+	@ElementList
 	private List<ModelAction> subActionList;
 
 	public ScopeRemoveRollbackAction(final UUID parentScopeId, final UUID selectedScopeId, final String description, final int index,

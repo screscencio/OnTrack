@@ -238,6 +238,26 @@ public class PersistenceServiceJpaTest {
 	}
 
 	@Test
+	public void shouldRetrieveAllUsers() throws Exception {
+		final User user1 = new User();
+		user1.setEmail("user@user1");
+		persistenceService.persistOrUpdateUser(user1);
+		final User user2 = new User();
+		user2.setEmail("user@user2");
+		persistenceService.persistOrUpdateUser(user2);
+		final User user3 = new User();
+		user3.setEmail("user@user3");
+		persistenceService.persistOrUpdateUser(user3);
+		final User user4 = new User();
+		user4.setEmail("user@user4");
+		persistenceService.persistOrUpdateUser(user4);
+
+		final List<User> userList = persistenceService.findAllUsers();
+		assertEquals(4, userList.size());
+
+	}
+
+	@Test
 	@Ignore("Run only when you want to generate data to test release burn up chart")
 	public void testname() throws Exception {
 		final ProjectSnapshot snapshot1 = loadProjectSnapshot();

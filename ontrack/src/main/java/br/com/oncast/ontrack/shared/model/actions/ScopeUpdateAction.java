@@ -3,6 +3,10 @@ package br.com.oncast.ontrack.shared.model.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeUpdateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -18,12 +22,15 @@ public class ScopeUpdateAction implements ScopeAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	@ConversionAlias("newDescription")
+	@Attribute
 	private String newDescription;
 
 	@ConversionAlias("subActionList")
+	@ElementList
 	private List<ModelAction> subActionList;
 
 	// TODO +Only create necessary subActions

@@ -2,6 +2,10 @@ package br.com.oncast.ontrack.shared.model.actions;
 
 import java.util.List;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -16,21 +20,27 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID newReleaseId;
 
 	@ConversionAlias("parentReleaseId")
+	@Element
 	private UUID parentReleaseId;
 
 	@ConversionAlias("description")
+	@Attribute
 	private String description;
 
 	@ConversionAlias("index")
+	@Attribute
 	private int index;
 
 	@ConversionAlias("childActionList")
+	@ElementList
 	private List<ReleaseRemoveRollbackAction> childActionList;
 
 	@ConversionAlias("subActionRollbackList")
+	@ElementList
 	private List<ScopeBindReleaseAction> subActionRollbackList;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.

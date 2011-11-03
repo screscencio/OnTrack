@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -15,12 +17,15 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	@ConversionAlias("newScopeId")
+	@Element
 	private UUID newScopeId;
 
 	@ConversionAlias("scopeUpdateAction")
+	@Element
 	private ScopeUpdateAction scopeUpdateAction;
 
 	public ScopeInsertParentRollbackAction(final UUID newScopeId, final UUID selectedScopeId, final ScopeUpdateAction updateAction) {

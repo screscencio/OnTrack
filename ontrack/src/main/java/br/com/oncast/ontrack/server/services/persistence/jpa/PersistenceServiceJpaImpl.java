@@ -142,6 +142,44 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> findAllUsers() throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user");
+
+			final List<UserEntity> users = query.getResultList();
+
+			return (List<User>) TYPE_CONVERTER.convert(users);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve users.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Password> findAllPasswords() throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password");
+
+			final List<PasswordEntity> passwords = query.getResultList();
+
+			return (List<Password>) TYPE_CONVERTER.convert(passwords);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve passwords.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
 	@Override
 	public void persistOrUpdateUser(final User user) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();

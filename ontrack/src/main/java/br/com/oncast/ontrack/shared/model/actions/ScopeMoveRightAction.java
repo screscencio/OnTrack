@@ -3,6 +3,10 @@ package br.com.oncast.ontrack.shared.model.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveRightActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -17,15 +21,19 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("referenceId")
+	@Element
 	private UUID referenceId;
 
 	@ConversionAlias("position")
+	@Attribute
 	private int position;
 
 	@ConversionAlias("wasIndexSet")
+	@Attribute
 	private boolean wasIndexSet;
 
 	@ConversionAlias("subActionList")
+	@ElementList
 	private List<ModelAction> subActionList;
 
 	public ScopeMoveRightAction(final UUID selectedScopeId) {

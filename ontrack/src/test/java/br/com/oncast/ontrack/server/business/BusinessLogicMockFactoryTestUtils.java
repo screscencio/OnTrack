@@ -91,6 +91,18 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			}
 
+			@Override
+			public List<User> findAllUsers() throws PersistenceException {
+				// FIXME Auto-generated catch block
+				return null;
+			}
+
+			@Override
+			public List<Password> findAllPasswords() throws PersistenceException {
+				// FIXME Auto-generated catch block
+				return null;
+			}
+
 		};
 	}
 
@@ -145,6 +157,18 @@ public class BusinessLogicMockFactoryTestUtils {
 			public void persistOrUpdateUser(final User user) throws PersistenceException {
 				// FIXME Auto-generated catch block
 
+			}
+
+			@Override
+			public List<User> findAllUsers() throws PersistenceException {
+				// FIXME Auto-generated catch block
+				return null;
+			}
+
+			@Override
+			public List<Password> findAllPasswords() throws PersistenceException {
+				// FIXME Auto-generated catch block
+				return null;
 			}
 
 		};
