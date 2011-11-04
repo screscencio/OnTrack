@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,9 +20,11 @@ public class XMLExporter {
 	// This should be the last migration time stamp executed.
 	private final Date version;
 	private boolean isConfigured;
+	private final OutputStream outputStream;
 
-	public XMLExporter(final PersistenceService persistanceService) {
+	public XMLExporter(final PersistenceService persistanceService, final OutputStream outputStream) {
 		this.persistanceService = persistanceService;
+		this.outputStream = outputStream;
 		exporter = new XMLWriter();
 		version = new Date();
 		isConfigured = false;
@@ -35,7 +38,7 @@ public class XMLExporter {
 
 	public void export() {
 		if (!assureIsConfigured()) throw new RuntimeException("You must mount xml using mountXML method before use this method.");
-		exporter.export();
+		exporter.export(outputStream);
 	}
 
 	private boolean assureIsConfigured() {

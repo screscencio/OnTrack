@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.exportImport.xml;
+package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
 import java.util.List;
 

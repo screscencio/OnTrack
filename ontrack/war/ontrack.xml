@@ -1,0 +1,66 @@
+<ontrackXML version="1320349250899">
+   <users class="java.util.ArrayList">
+      <user id="1" email="admin@ontrack.com"/>
+   </users>
+   <passwords class="java.util.ArrayList">
+      <password id="1" userId="1" passwordHash="Z7sTiYI_dfPKQVBIDifg1Ja$3tc=" passwordSalt="TR01_m2LhDE="/>
+   </passwords>
+   <userActions class="java.util.ArrayList">
+      <userAction id="1" timestamp="2011-11-03 17:40:24.723 BRST">
+         <action class="br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction" newDescription="ontrack">
+            <referenceId id="0"/>
+            <subActionList class="java.util.ArrayList">
+               <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                  <referenceId id="0"/>
+               </modelAction>
+               <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                  <referenceId id="0"/>
+               </modelAction>
+               <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                  <referenceId id="0"/>
+               </modelAction>
+            </subActionList>
+         </action>
+      </userAction>
+      <userAction id="2" timestamp="2011-11-03 17:40:36.711 BRST">
+         <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction">
+            <referenceId id="0"/>
+            <newScopeId id="45E81604-CB8C-4702-985E-A2B7C334D0DB"/>
+            <scopeUpdateAction newDescription="text 1">
+               <referenceId id="45E81604-CB8C-4702-985E-A2B7C334D0DB"/>
+               <subActionList class="java.util.ArrayList">
+                  <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                     <referenceId id="45E81604-CB8C-4702-985E-A2B7C334D0DB"/>
+                  </modelAction>
+                  <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                     <referenceId id="45E81604-CB8C-4702-985E-A2B7C334D0DB"/>
+                  </modelAction>
+                  <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                     <referenceId id="45E81604-CB8C-4702-985E-A2B7C334D0DB"/>
+                  </modelAction>
+               </subActionList>
+            </scopeUpdateAction>
+         </action>
+      </userAction>
+      <userAction id="3" timestamp="2011-11-03 17:40:40.422 BRST">
+         <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction">
+            <referenceId id="45E81604-CB8C-4702-985E-A2B7C334D0DB"/>
+            <newScopeId id="FBA871D3-EE90-43AF-8DEE-0541E0157316"/>
+            <scopeUpdateAction newDescription="text 2">
+               <referenceId id="FBA871D3-EE90-43AF-8DEE-0541E0157316"/>
+               <subActionList class="java.util.ArrayList">
+                  <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                     <referenceId id="FBA871D3-EE90-43AF-8DEE-0541E0157316"/>
+                  </modelAction>
+                  <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                     <referenceId id="FBA871D3-EE90-43AF-8DEE-0541E0157316"/>
+                  </modelAction>
+                  <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                     <referenceId id="FBA871D3-EE90-43AF-8DEE-0541E0157316"/>
+                  </modelAction>
+               </subActionList>
+            </scopeUpdateAction>
+         </action>
+      </userAction>
+   </userActions>
+</ontrackXML>
