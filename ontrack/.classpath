@@ -38,5 +38,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dnd-3.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.1.1.jar" sourcepath="war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.1.1-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/simple-xml-2.6.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

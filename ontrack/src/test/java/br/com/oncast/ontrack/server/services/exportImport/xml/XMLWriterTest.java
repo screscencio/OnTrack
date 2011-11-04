@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.simpleframework.xml.core.Persister;
 
 import br.com.oncast.ontrack.server.business.UserAction;
 import br.com.oncast.ontrack.server.model.Password;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
@@ -171,8 +173,10 @@ public class XMLWriterTest {
 	}
 
 	private OntrackXML generateXMLAndRead(final List<UserAction> actionList) throws Exception {
+		final File ontrackFile = new File("ontrack.xml");
+
 		xmlExporter.setUserList(userList).setPasswordList(passwordList).setActionList(actionList).setVersion(version)
-				.export();
+				.export(new FileOutputStream(ontrackFile));
 
 		final Serializer serializer = new Persister();
 		final File source = new File("ontrack.xml");
