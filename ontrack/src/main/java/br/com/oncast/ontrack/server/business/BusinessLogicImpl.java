@@ -49,6 +49,7 @@ class BusinessLogicImpl implements BusinessLogic {
 				// TODO ++++Use id instead of date to identify last executed action.
 				persistenceService.persistActions(actionList, new Date());
 			}
+			// TODO +++++Broadcast the actions with updated timestamp: retrieve the persisted actions and send them to other clients.
 			actionBroadcastService.broadcast(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
