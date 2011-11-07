@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
 import br.com.oncast.ontrack.server.services.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.authentication.basic.BasicAutheticator;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporter;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 
@@ -17,10 +18,10 @@ public class XMLExporterServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	// TODO +++Authenticate user before accept this post.
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		try {
+			BasicAutheticator.authenticate(request);
 			doReply(request, response);
 		}
 		catch (final Exception e) {
@@ -40,7 +41,7 @@ public class XMLExporterServlet extends HttpServlet {
 		response.getOutputStream().flush();
 	}
 
-	// TODO +++Display an user-friendly error message.
+	// TODO Display an user-friendly error message.
 	private void doHandleError(final HttpServletRequest request, final HttpServletResponse response, final Exception e) throws ServletException {
 		throw new ServletException(e);
 	}
