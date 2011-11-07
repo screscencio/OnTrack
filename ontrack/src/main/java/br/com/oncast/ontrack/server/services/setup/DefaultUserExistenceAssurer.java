@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.setup;
 
 import br.com.oncast.ontrack.server.model.Password;
 import br.com.oncast.ontrack.server.services.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -9,8 +10,8 @@ import br.com.oncast.ontrack.shared.model.user.User;
 
 public class DefaultUserExistenceAssurer {
 
-	private static final String DEFAULT_USER = "admin@ontrack.com";
-	private static final String DEFAULT_PASSWORD = "ontrackpoulain";
+	private static final String DEFAULT_USER = DefaultAuthenticationCredentials.USER;
+	private static final String DEFAULT_PASSWORD = DefaultAuthenticationCredentials.PASSWORD;
 
 	public static void verify() {
 		final PersistenceService persistenceService = ServerServiceProvider.getInstance().getPersistenceService();
