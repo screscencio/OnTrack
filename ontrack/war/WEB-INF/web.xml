@@ -7,7 +7,6 @@
 		<filter-name>sessionFilter</filter-name>
 		<filter-class>br.com.oncast.ontrack.server.services.session.SessionFilter</filter-class>
 	</filter>
-
 	<filter-mapping>
 		<filter-name>sessionFilter</filter-name>
 		<url-pattern>/application/*</url-pattern>
