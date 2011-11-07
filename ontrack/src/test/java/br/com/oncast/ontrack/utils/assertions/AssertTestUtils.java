@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.utils.assertions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import junit.framework.Assert;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -28,5 +29,10 @@ public class AssertTestUtils {
 
 	public static void assertEquality(final Effort original, final Effort other) {
 		assertEquality("Checking equality of effort.", original, other);
+	}
+
+	public static void assertNotEquals(final Object expected, final Object actual) {
+		// TODO Invert the order of arguments of other methods of this class.
+		Assert.assertFalse(expected.equals(actual));
 	}
 }

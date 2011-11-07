@@ -119,6 +119,36 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
+	public void shouldMatchReleaseWithNoText() {
+		test(" " + RELEASE_SYMBOL + "", "", "", false, 0);
+	}
+	
+	@Test
+	public void shouldMatchReleaseWithNoTextAndWithOnlyWhiteSpaces() {
+		test(" " + RELEASE_SYMBOL + "        ", "", "", false, 0);
+	}
+
+	@Test
+	public void shouldMatchReleaseWithSeparatorAtStart() {
+		test(" " + RELEASE_SYMBOL + "/release", "", "/release", false, 0);
+	}
+
+	@Test
+	public void shouldMatchReleaseWithSeparatorAtTheEnd() {
+		test(" " + RELEASE_SYMBOL + "release/", "", "release/", false, 0);
+	}
+
+	@Test
+	public void shouldMatchReleaseWithSeparatorsDisposedInAnyWay() {
+		test(" " + RELEASE_SYMBOL + "release//another release", "", "release//another release", false, 0);
+	}
+
+	@Test
+	public void shouldMatchReleaseWithSeparatorsDisposedInAnyWay2() {
+		test(" " + RELEASE_SYMBOL + "/release/ //another release//", "", "/release/ //another release//", false, 0);
+	}
+
+	@Test
 	public void shouldMatchReleaseAndNotIgnoreQuotes1() {
 		test(RELEASE_SYMBOL + "re\"lease", "", "re\"lease", false, 0);
 	}

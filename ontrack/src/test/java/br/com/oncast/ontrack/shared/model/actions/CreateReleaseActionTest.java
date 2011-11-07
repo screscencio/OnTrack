@@ -45,13 +45,17 @@ public class CreateReleaseActionTest {
 
 	@Test
 	public void shouldCreateEntireReleaseHierarchy() throws UnableToCompleteActionException {
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R4/It1");
+		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R4/It1/w1/d1");
 		createAction.execute(context);
 
 		assertEquals(4, rootRelease.getChildren().size());
 		assertEquals("R4", rootRelease.getChild(3).getDescription());
 		assertEquals(1, rootRelease.getChild(3).getChildren().size());
 		assertEquals("It1", rootRelease.getChild(3).getChild(0).getDescription());
+		assertEquals(1, rootRelease.getChild(3).getChild(0).getChildren().size());
+		assertEquals("w1", rootRelease.getChild(3).getChild(0).getChild(0).getDescription());
+		assertEquals(1, rootRelease.getChild(3).getChild(0).getChild(0).getChildren().size());
+		assertEquals("d1", rootRelease.getChild(3).getChild(0).getChild(0).getChild(0).getDescription());
 	}
 
 	@Test

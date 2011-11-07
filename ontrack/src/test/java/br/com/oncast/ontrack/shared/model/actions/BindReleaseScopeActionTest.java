@@ -63,7 +63,7 @@ public class BindReleaseScopeActionTest {
 	}
 
 	@Test
-	public void shouldNotCreateNewReleaseIfItAlreadyExist() throws UnableToCompleteActionException, ReleaseNotFoundException {
+	public void shouldNotCreateNewReleaseIfItAlreadyExists() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0);
 		assertThatReleaseIsInContext(release.getDescription());
 

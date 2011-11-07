@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.release;
 
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertNotEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +32,14 @@ public class ReleaseDescriptionParserTest {
 	}
 
 	@Test
+	public void emptyStringShouldBeTheHeadOfADescriptionContainningManySeparatorsAndWhiteSpaces() throws Exception {
+		final String[] descriptionWithSeparators = { " /  / ", "//", " // ", " / / ", " //////", "//     //" };
+		for (final String description : descriptionWithSeparators) {
+			assertEquals("", getHeadOfDescription(description));
+		}
+	}
+
+	@Test
 	public void theTrimOfTheReleaseShouldBeTheHeadOfADescriptionWithSingleRelease() {
 		for (final String description : getWhiteSpaceConcatenationVariationsOf("R1")) {
 			assertEquals("R1", getHeadOfDescription(description));
@@ -45,7 +54,7 @@ public class ReleaseDescriptionParserTest {
 	}
 
 	@Test
-	public void theTrimOfTheSecoundReleaseShouldBeTheHeadWhenTheFirstReleaseIsInvalid() throws Exception {
+	public void theTrimOfTheSecondReleaseShouldBeTheHeadWhenTheFirstReleaseIsInvalid() throws Exception {
 		for (final String invalidFirstRelease : getWhiteSpaceConcatenationVariationsOf("")) {
 			for (final String description : getWhiteSpaceConcatenationVariationsOf(invalidFirstRelease + SEPARATOR + "R2")) {
 				assertEquals("R2", getHeadOfDescription(description));
@@ -54,7 +63,34 @@ public class ReleaseDescriptionParserTest {
 	}
 
 	@Test
-	public void theFirstAndSecoundReleaseSeparatedByTheSeparatorShouldBeTheHeadWhenTheDescriptionHasTwoLevelsAndNextIsCalled() throws Exception {
+	public void firstReleaseShouldHasNextWhenItHasAChildRelease() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR + "R2");
+		assertTrue(parser.hasNext());
+	}
+
+	@Test
+	public void firstReleaseShouldNotHasNextWhenItDoesNotHaveAChildRelease() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1");
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void hasNextIsFalseAfterCallingNextInAReleaseHierarchyWith2Levels() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR + "R2");
+		assertTrue(parser.next());
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void theFirstReleaseShouldBeTheHeadBeforeNextIsCalledWhenTheDescriptionHasTwoLevels() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR + "R2");
+		assertEquals("R1", parser.getHeadRelease());
+		assertTrue(parser.next());
+		assertNotEquals("R1", parser.getHeadRelease());
+	}
+
+	@Test
+	public void theSecondReleaseShouldBeTheHeadAfterNextIsCalledAndTheDescriptionHasTwoLevels() throws Exception {
 		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR + "R2");
 		assertEquals("R1", parser.getHeadRelease());
 		assertTrue(parser.next());
@@ -67,7 +103,16 @@ public class ReleaseDescriptionParserTest {
 	}
 
 	@Test
-	public void headShoudIgnoreInvalidReleases() throws Exception {
+	public void fullDescriptionOfSubReleaseShouldBeTheEntireReleaseHierarchyUntilTheActualRelease() throws Exception {
+		final String fullReleaseDescription = "R1" + SEPARATOR + "It1" + SEPARATOR + "W1";
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(fullReleaseDescription);
+		assertTrue(parser.next());
+		assertTrue(parser.next());
+		assertEquals(fullReleaseDescription, parser.getFullDescriptionOfHeadRelease());
+	}
+
+	@Test
+	public void headShoudIgnoreTwoSeparatorWithOnlySpacesBetween() throws Exception {
 		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR + " " + SEPARATOR + "R2");
 		assertEquals("R1", parser.getHeadRelease());
 		assertTrue(parser.next());
@@ -90,6 +135,122 @@ public class ReleaseDescriptionParserTest {
 			assertFalse(parser.next());
 			assertEquals("", parser.getHeadRelease());
 		}
+	}
+
+	@Test
+	public void headShoudIgnoreSeparatorAtTheBeginning() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(SEPARATOR + "R1");
+
+		assertEquals("R1", parser.getHeadRelease());
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void headShoudIgnoreSeparatorsAtTheBeginning() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(SEPARATOR + SEPARATOR + "R1");
+
+		assertEquals("R1", parser.getHeadRelease());
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void headShoudIgnoreManySeparatorsAtTheBeginning() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(SEPARATOR + SEPARATOR + SEPARATOR + "R1" + SEPARATOR + "R2");
+
+		assertEquals("R1", parser.getHeadRelease());
+		assertTrue(parser.hasNext());
+	}
+
+	@Test
+	public void headShoudIgnoreManySeparatorsAtTheBeginningWithTwoReleasesInHierarchy() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(SEPARATOR + SEPARATOR + SEPARATOR + "R1" + SEPARATOR + "R2");
+
+		assertEquals("R1", parser.getHeadRelease());
+		assertTrue(parser.hasNext());
+
+		parser.next();
+
+		assertEquals("R2", parser.getHeadRelease());
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void headShoudIgnoreManySeparatorsAtTheBeginningAndAtTheEndWithTwoReleasesInHierarchy() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(
+				SEPARATOR + SEPARATOR + SEPARATOR + "R1" + SEPARATOR + "R2" + SEPARATOR + SEPARATOR);
+
+		assertEquals("R1", parser.getHeadRelease());
+		assertTrue(parser.hasNext());
+
+		parser.next();
+
+		assertEquals("R2", parser.getHeadRelease());
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void headShoudIgnoreManySeparatorsAtTheBeginningAndInMiddleAndAtTheEndWithTwoReleasesInHierarchy() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(
+				SEPARATOR + SEPARATOR + SEPARATOR + "R1" + SEPARATOR + SEPARATOR + SEPARATOR + "R2" + SEPARATOR + SEPARATOR);
+
+		assertEquals("R1", parser.getHeadRelease());
+		assertTrue(parser.hasNext());
+
+		parser.next();
+
+		assertEquals("R2", parser.getHeadRelease());
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void headShoudIgnoreManySeparatorsWithSpacesBetweenAtTheBeginningAndInMiddleAndAtTheEndWithTwoReleasesInHierarchy() throws Exception {
+		final String threeSeparatorsWithSpaces = "   " + SEPARATOR + " " + SEPARATOR + " " + SEPARATOR + "     ";
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(
+				threeSeparatorsWithSpaces + "R1" + threeSeparatorsWithSpaces + "R2" + threeSeparatorsWithSpaces);
+
+		assertEquals("R1", parser.getHeadRelease());
+		assertTrue(parser.hasNext());
+
+		parser.next();
+
+		assertEquals("R2", parser.getHeadRelease());
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void headShoudIgnoreSeparatorAtTheEnd() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR);
+		assertEquals("R1", parser.getHeadRelease());
+	}
+
+	@Test
+	public void headShoudIgnoreSeparatorsAtTheEnd() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR + SEPARATOR);
+		assertEquals("R1", parser.getHeadRelease());
+	}
+
+	@Test
+	public void separatorAtTheEndShouldNotBeConsideredAsNext() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR);
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void separatorsAtTheEndShouldNotBeConsideredAsNext() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR + SEPARATOR);
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void threeSeparatorsAtTheEndShouldNotBeConsideredAsNext() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1" + SEPARATOR + SEPARATOR + SEPARATOR);
+		assertFalse(parser.hasNext());
+	}
+
+	@Test
+	public void threeSeparatorsAtTheEndShouldNotBeConsideredAsNext_WithSpacesBetweenThen() throws Exception {
+		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser("R1 " + SEPARATOR + " " + SEPARATOR + " " + SEPARATOR);
+		assertFalse(parser.hasNext());
 	}
 
 	@Test
@@ -135,7 +296,7 @@ public class ReleaseDescriptionParserTest {
 	}
 
 	@Test
-	public void theNextTailOfADescriptionWithMoreThanOneLevelOfReleasesShouldBeATrimOfTheStringWithAllReleasesAfterTheSecoundRelease() throws Exception {
+	public void theNextTailOfADescriptionWithMoreThanOneLevelOfReleasesShouldBeATrimOfTheStringWithAllReleasesAfterTheSecondRelease() throws Exception {
 		for (final String description : getWhiteSpaceConcatenationVariationsOf("R1/R2/R3")) {
 			final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(description);
 			assertEquals("R2/R3", parser.getTailReleases());

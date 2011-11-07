@@ -36,13 +36,63 @@ public class ReleaseTest {
 	}
 
 	@Test
-	public void shouldFindAReleaseDeepInHierarchyByDescription() throws ReleaseNotFoundException {
-		final Release rootRelease = ReleaseTestUtils.getRelease();
+	public void shouldFindReleaseThatIsInTheFirstSubLevel() throws ReleaseNotFoundException {
+		final Release rootRelease = ReleaseTestUtils.getBigRelease();
+		final Release releaseIt2 = rootRelease.getChild(0);
+		final Release foundRelease = rootRelease.findRelease("R1");
+
+		assertNotNull(foundRelease);
+		assertEquals(releaseIt2, foundRelease);
+	}
+
+	@Test
+	public void shouldFindReleaseThatIsInTheSecondSubLevel() throws ReleaseNotFoundException {
+		final Release rootRelease = ReleaseTestUtils.getBigRelease();
 		final Release releaseIt2 = rootRelease.getChild(0).getChild(1);
 		final Release foundRelease = rootRelease.findRelease("R1/It2");
 
 		assertNotNull(foundRelease);
 		assertEquals(releaseIt2, foundRelease);
+	}
+
+	@Test
+	public void shouldFindReleaseThatIsInTheThirdSubLevel() throws ReleaseNotFoundException {
+		final Release rootRelease = ReleaseTestUtils.getBigRelease();
+		final Release releaseIt2 = rootRelease.getChild(0).getChild(1).getChild(0);
+		final Release foundRelease = rootRelease.findRelease("R1/It2/w1");
+
+		assertNotNull(foundRelease);
+		assertEquals(releaseIt2, foundRelease);
+	}
+
+	@Test
+	public void shouldIgnoreMalformedSeparatorsInReleaseDescriptionWhenFindingRelease() throws ReleaseNotFoundException {
+		final Release rootRelease = ReleaseTestUtils.getBigRelease();
+		final Release releaseIt2 = rootRelease.getChild(0).getChild(1);
+		final String[] malformedReleaseDescriptions = { "R1//It2", "/R1/It2", "R1/It2/", "/R1//It2", "R1//It2/", "/R1//It2/", "//R1//It2//",
+				"   / / / R1 / / / It2 / / / " };
+
+		for (final String releaseDescription : malformedReleaseDescriptions) {
+			final Release foundRelease = rootRelease.findRelease(releaseDescription);
+
+			assertNotNull(foundRelease);
+			assertEquals(releaseIt2, foundRelease);
+		}
+	}
+
+	@Test
+	public void findReleaseShouldThrow() throws ReleaseNotFoundException {
+		final Release rootRelease = ReleaseTestUtils.getBigRelease();
+		final Release releaseIt2 = rootRelease.getChild(0).getChild(1);
+		final String[] malformedReleaseDescriptions = { "R1//It2", "/R1/It2", "R1/It2/", "/R1//It2", "R1//It2/", "/R1//It2/", "//R1//It2//",
+				"   / / / R1 / / / It2 / / / " };
+
+		for (final String releaseDescription : malformedReleaseDescriptions) {
+			final Release foundRelease = rootRelease.findRelease(releaseDescription);
+
+			assertNotNull(foundRelease);
+			assertEquals(releaseIt2, foundRelease);
+		}
 	}
 
 	@Test(expected = ReleaseNotFoundException.class)
@@ -61,6 +111,18 @@ public class ReleaseTest {
 	public void shouldThrowAnExceptionWhenAReleaseIsNotFound2() throws Exception {
 		final Release rootRelease = ReleaseTestUtils.getRelease();
 		rootRelease.findRelease("R1/NotFound");
+	}
+
+	@Test(expected = ReleaseNotFoundException.class)
+	public void shouldNotFindReleaseWithEmptyDescription() throws Exception {
+		final Release rootRelease = ReleaseTestUtils.getRelease();
+		rootRelease.findRelease("");
+	}
+
+	@Test(expected = ReleaseNotFoundException.class)
+	public void shouldNotFindReleaseWithInvalidDescription() throws Exception {
+		final Release rootRelease = ReleaseTestUtils.getRelease();
+		rootRelease.findRelease(" / ");
 	}
 
 	@Test
