@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 
-public class InsertSiblingUpScopeActionReleaseCreateTest {
+public class ScopeInsertChildAction_ReleaseCreationTest {
 
 	private static final String SCOPE_DESCRIPTION = "new description " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL;
 
@@ -37,10 +37,10 @@ public class InsertSiblingUpScopeActionReleaseCreateTest {
 
 	@Test
 	public void shouldBindScopeToRelease() throws UnableToCompleteActionException {
-		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + "R1").execute(context);
+		final Scope scope = rootScope.getChild(1);
+		new ScopeInsertChildAction(scope.getId(), SCOPE_DESCRIPTION + "R1").execute(context);
 
-		assertTrue(rootRelease.getChild(0).getScopeList().contains(rootScope.getChild(2)));
+		assertTrue(rootRelease.getChild(0).getScopeList().contains(scope.getChild(0)));
 	}
 
 	@Test
@@ -48,11 +48,11 @@ public class InsertSiblingUpScopeActionReleaseCreateTest {
 		final String releaseDescription = "R4";
 		assertThatReleaseIsNotInContext(releaseDescription);
 
-		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
+		final Scope scope = rootScope.getChild(1);
+		new ScopeInsertChildAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
-		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
+		assertTrue(newRelease.getScopeList().contains(scope.getChild(0)));
 	}
 
 	@Test
@@ -60,11 +60,11 @@ public class InsertSiblingUpScopeActionReleaseCreateTest {
 		final Release release = rootRelease.getChild(0);
 		assertThatReleaseIsInContext(release.getDescription());
 
-		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + release.getDescription()).execute(context);
+		final Scope scope = rootScope.getChild(1);
+		new ScopeInsertChildAction(scope.getId(), SCOPE_DESCRIPTION + release.getDescription()).execute(context);
 
 		final Release loadedRelease = assertThatReleaseIsInContext(release.getDescription());
-		assertTrue(loadedRelease.getScopeList().contains(rootScope.getChild(2)));
+		assertTrue(loadedRelease.getScopeList().contains(scope.getChild(0)));
 		assertEquals(release, loadedRelease);
 	}
 
@@ -73,11 +73,11 @@ public class InsertSiblingUpScopeActionReleaseCreateTest {
 		final String releaseDescription = "R4";
 		assertThatReleaseIsNotInContext(releaseDescription);
 
-		final Scope scope = rootScope.getChild(2);
-		final ModelAction rollbackAction = new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
+		final Scope scope = rootScope.getChild(1);
+		final ModelAction rollbackAction = new ScopeInsertChildAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
-		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
+		assertTrue(newRelease.getScopeList().contains(scope.getChild(0)));
 
 		rollbackAction.execute(context);
 		assertThatReleaseIsNotInContext(releaseDescription);
@@ -88,11 +88,11 @@ public class InsertSiblingUpScopeActionReleaseCreateTest {
 		final String releaseDescription = "R1";
 		assertThatReleaseIsInContext(releaseDescription);
 
-		final Scope scope = rootScope.getChild(2);
-		final ModelAction rollbackAction = new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
+		final Scope scope = rootScope.getChild(1);
+		final ModelAction rollbackAction = new ScopeInsertChildAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
-		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
+		assertTrue(newRelease.getScopeList().contains(scope.getChild(0)));
 
 		rollbackAction.execute(context);
 
@@ -104,13 +104,13 @@ public class InsertSiblingUpScopeActionReleaseCreateTest {
 		final String releaseDescription = "R4";
 		assertThatReleaseIsNotInContext(releaseDescription);
 
-		final Scope scope = rootScope.getChild(2);
+		final Scope scope = rootScope.getChild(1);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription), context);
+		actionExecutionManager.doUserAction(new ScopeInsertChildAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription), context);
 
 		Release newRelease = assertThatReleaseIsInContext(releaseDescription);
-		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
+		assertTrue(newRelease.getScopeList().contains(scope.getChild(0)));
 
 		for (int i = 0; i < 20; i++) {
 			actionExecutionManager.undoUserAction(context);
@@ -118,7 +118,7 @@ public class InsertSiblingUpScopeActionReleaseCreateTest {
 
 			actionExecutionManager.redoUserAction(context);
 			newRelease = assertThatReleaseIsInContext(releaseDescription);
-			assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
+			assertTrue(newRelease.getScopeList().contains(scope.getChild(0)));
 		}
 	}
 

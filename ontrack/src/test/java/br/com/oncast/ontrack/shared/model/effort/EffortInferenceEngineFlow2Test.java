@@ -50,7 +50,7 @@ public class EffortInferenceEngineFlow2Test {
 		original.getEffort().setDeclared(30);
 		effortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenParentEffortDeclared() {
@@ -58,14 +58,14 @@ public class EffortInferenceEngineFlow2Test {
 		a2.getEffort().setDeclared(10);
 		effortInferenceEngine.process(a2.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 2));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}
 
 	private void shouldRedistribuiteEffortWhenRootEffortIsChanged() {
 		original.getEffort().setDeclared(60);
 		effortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 3));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 3), original);
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneChangesItsEffort() {
@@ -73,7 +73,7 @@ public class EffortInferenceEngineFlow2Test {
 		a21.getEffort().setDeclared(7);
 		effortInferenceEngine.process(a21.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 4));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 4), original);
 
 	}
 

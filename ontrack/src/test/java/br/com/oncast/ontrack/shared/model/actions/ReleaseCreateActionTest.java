@@ -19,7 +19,7 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class CreateReleaseActionTest {
+public class ReleaseCreateActionTest {
 
 	private ProjectContext context;
 	private Scope rootScope;

@@ -18,7 +18,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 
-public class MoveRightScopeActionProgressTest {
+public class ScopeMoveRightAction_ProgressRemovalTest {
 
 	private Scope rootScope;
 	private Scope firstChild;

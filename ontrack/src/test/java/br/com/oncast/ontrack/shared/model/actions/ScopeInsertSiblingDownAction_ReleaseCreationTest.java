@@ -1,13 +1,15 @@
 package br.com.oncast.ontrack.shared.model.actions;
 
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -16,8 +18,11 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 
-public class BindReleaseScopeActionTest {
+public class ScopeInsertSiblingDownAction_ReleaseCreationTest {
+
+	private static final String SCOPE_DESCRIPTION = "new description " + StringRepresentationSymbolsProvider.RELEASE_SYMBOL;
 
 	private ProjectContext context;
 	private Scope rootScope;
@@ -32,22 +37,10 @@ public class BindReleaseScopeActionTest {
 
 	@Test
 	public void shouldBindScopeToRelease() throws UnableToCompleteActionException {
-		final Scope scope = rootScope.getChild(0);
-		assertFalse(rootRelease.getChild(0).getScopeList().contains(scope));
+		final Scope scope = rootScope.getChild(2);
+		new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + "R1").execute(context);
 
-		new ScopeBindReleaseAction(scope.getId(), "R1").execute(context);
-		assertTrue(rootRelease.getChild(0).getScopeList().contains(scope));
-	}
-
-	@Test
-	public void shouldUnbindScopeFromRelease() throws UnableToCompleteActionException {
-		final Scope scope = rootScope.getChild(0);
-		final Release release = rootRelease.getChild(0);
-		release.addScope(scope);
-		assertTrue(rootRelease.getChild(0).getScopeList().contains(scope));
-
-		new ScopeBindReleaseAction(scope.getId(), "").execute(context);
-		assertFalse(rootRelease.getChild(0).getScopeList().contains(scope));
+		assertTrue(rootRelease.getChild(0).getScopeList().contains(rootScope.getChild(3)));
 	}
 
 	@Test
@@ -55,23 +48,23 @@ public class BindReleaseScopeActionTest {
 		final String releaseDescription = "R4";
 		assertThatReleaseIsNotInContext(releaseDescription);
 
-		final Scope scope = rootScope.getChild(0);
-		new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context);
+		final Scope scope = rootScope.getChild(2);
+		new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
-		assertTrue(newRelease.getScopeList().contains(scope));
+		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
 	}
 
 	@Test
-	public void shouldNotCreateNewReleaseIfItAlreadyExists() throws UnableToCompleteActionException, ReleaseNotFoundException {
+	public void shouldNotCreateNewReleaseIfItAlreadyExist() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release release = rootRelease.getChild(0);
 		assertThatReleaseIsInContext(release.getDescription());
 
-		final Scope scope = rootScope.getChild(0);
-		new ScopeBindReleaseAction(scope.getId(), release.getDescription()).execute(context);
+		final Scope scope = rootScope.getChild(2);
+		new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + release.getDescription()).execute(context);
 
 		final Release loadedRelease = assertThatReleaseIsInContext(release.getDescription());
-		assertTrue(loadedRelease.getScopeList().contains(scope));
+		assertTrue(loadedRelease.getScopeList().contains(rootScope.getChild(3)));
 		assertEquals(release, loadedRelease);
 	}
 
@@ -80,14 +73,13 @@ public class BindReleaseScopeActionTest {
 		final String releaseDescription = "R4";
 		assertThatReleaseIsNotInContext(releaseDescription);
 
-		final Scope scope = rootScope.getChild(0);
-		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context);
+		final Scope scope = rootScope.getChild(2);
+		final ModelAction rollbackAction = new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
-		assertTrue(newRelease.getScopeList().contains(scope));
+		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
 
 		rollbackAction.execute(context);
-
 		assertThatReleaseIsNotInContext(releaseDescription);
 	}
 
@@ -96,15 +88,38 @@ public class BindReleaseScopeActionTest {
 		final String releaseDescription = "R1";
 		assertThatReleaseIsInContext(releaseDescription);
 
-		final Scope scope = rootScope.getChild(0);
-		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context);
+		final Scope scope = rootScope.getChild(2);
+		final ModelAction rollbackAction = new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
-		assertTrue(newRelease.getScopeList().contains(scope));
+		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
 
 		rollbackAction.execute(context);
 
 		assertThatReleaseIsInContext(releaseDescription);
+	}
+
+	@Test
+	public void shouldDeletePreviouslyCreatedReleaseAndRecreateItAfterMultiplesUndoAndRedo() throws UnableToCompleteActionException, ReleaseNotFoundException {
+		final String releaseDescription = "R4";
+		assertThatReleaseIsNotInContext(releaseDescription);
+
+		final Scope scope = rootScope.getChild(2);
+
+		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
+		actionExecutionManager.doUserAction(new ScopeInsertSiblingDownAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription), context);
+
+		Release newRelease = assertThatReleaseIsInContext(releaseDescription);
+		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
+
+		for (int i = 0; i < 20; i++) {
+			actionExecutionManager.undoUserAction(context);
+			assertThatReleaseIsNotInContext(releaseDescription);
+
+			actionExecutionManager.redoUserAction(context);
+			newRelease = assertThatReleaseIsInContext(releaseDescription);
+			assertTrue(newRelease.getScopeList().contains(rootScope.getChild(3)));
+		}
 	}
 
 	private Release assertThatReleaseIsInContext(final String releaseDescription) throws ReleaseNotFoundException {

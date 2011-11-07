@@ -26,7 +26,7 @@ public class EffortInferenceEngineMoveLeftTest {
 		moveLeftAction.execute(new ProjectContext(new Project(original, null)));
 		new EffortInferenceEngine().process(scope.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
 
 }

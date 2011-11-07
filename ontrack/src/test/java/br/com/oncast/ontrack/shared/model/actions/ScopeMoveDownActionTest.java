@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class MoveDownScopeActionTest {
+public class ScopeMoveDownActionTest {
 
 	private Scope rootScope;
 	private Scope firstChild;
