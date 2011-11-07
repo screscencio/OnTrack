@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
-public class InsertChildScopeActionProgressUndoAndRedoTest {
+public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 
 	private final String FILE_NAME_PREFIX = "Flow1";
 

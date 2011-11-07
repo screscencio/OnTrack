@@ -43,7 +43,7 @@ public class EffortInferenceEngineFlow3Test {
 		original.getChild(0).getEffort().setDeclared(12);
 		effortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
 
 	private void shouldRedistributeInferencesWhenChildrenReceiveEffortDeclarations() {
@@ -53,7 +53,7 @@ public class EffortInferenceEngineFlow3Test {
 		scope.getChild(1).getEffort().setDeclared(8);
 		effortInferenceEngine.process(scope);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 2));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}
 
 	private void shouldRedistributeInferencesWhenSiblingReceiveEffortDeclarations() {
@@ -61,6 +61,6 @@ public class EffortInferenceEngineFlow3Test {
 		scope.getChild(1).getEffort().setDeclared(20);
 		effortInferenceEngine.process(scope);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 3));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 3), original);
 	}
 }

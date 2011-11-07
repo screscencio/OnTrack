@@ -21,7 +21,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
-public class RemoveScopeActionReleaseTest {
+public class ScopeRemoveAction_ReleaseUnbindingTest {
 
 	private Scope rootScope;
 	private ProjectContext context;

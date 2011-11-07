@@ -19,7 +19,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 
-public class RemoveScopeActionProgressTest {
+public class ScopeRemoveAction_ProgressRemovalTest {
 
 	private Scope rootScope;
 	private ProjectContext context;

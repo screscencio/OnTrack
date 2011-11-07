@@ -135,7 +135,7 @@ public class EffortInferenceEngineFlow1Test {
 		original.getEffort().setDeclared(1000);
 		effortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 1));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded() {
@@ -143,7 +143,7 @@ public class EffortInferenceEngineFlow1Test {
 		original.getChild(1).add(newScope);
 		effortInferenceEngine.process(newScope.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 2));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}
 
 	private void shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared() {
@@ -155,7 +155,7 @@ public class EffortInferenceEngineFlow1Test {
 			assertEquals(87.5, child.getEffort().getInfered(), 0.09);
 		}
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 3));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 3), original);
 	}
 
 	private void shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared() {
@@ -167,7 +167,7 @@ public class EffortInferenceEngineFlow1Test {
 		assertEquals(66.6, original.getChild(1).getChild(2).getEffort().getInfered(), 0.09);
 		assertEquals(66.6, original.getChild(1).getChild(3).getEffort().getInfered(), 0.09);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 4));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 4), original);
 	}
 
 	private void shouldRedistributeEffortBetweenSiblingWhenInferedChanges() {
@@ -187,7 +187,7 @@ public class EffortInferenceEngineFlow1Test {
 		assertEquals(133.3, original.getChild(2).getEffort().getInfered(), 0.09);
 		assertEquals(133.3, original.getChild(3).getEffort().getInfered(), 0.09);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 5));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 5), original);
 	}
 
 	private void shouldRemoveUnusedInference() {
@@ -195,7 +195,7 @@ public class EffortInferenceEngineFlow1Test {
 		scopeWithChangedEffort.getEffort().resetDeclared();
 		effortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 6));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 6), original);
 	}
 
 	private void shouldRedistributeEffortBetweenSiblingWhenOneIsChanged() {
@@ -203,7 +203,7 @@ public class EffortInferenceEngineFlow1Test {
 		scopeWithChangedEffort.getEffort().setDeclared(30);
 		effortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 7));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 7), original);
 	}
 
 	private void shouldNotDistributeEffortForStronglyDeclaredEfforts() {
@@ -211,21 +211,21 @@ public class EffortInferenceEngineFlow1Test {
 		scopeWithChangedEffort.getEffort().setDeclared(60);
 		effortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 8));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 8), original);
 	}
 
 	private void shouldRemoveUnusedInferenceForChildrenIfThereIsNoMoreEffortAvaliable() {
 		original.getEffort().resetDeclared();
 		effortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 9));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 9), original);
 	}
 
 	private void shouldUpdateRootEffortWhenSomeChildIsChanged() {
 		original.getChild(2).getEffort().setDeclared(350);
 		effortInferenceEngine.process(original);
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 10));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 10), original);
 	}
 
 	private void shouldUpdateRootEffortWhenSomeChildIsChanged2() {
@@ -233,7 +233,7 @@ public class EffortInferenceEngineFlow1Test {
 		scopeWithChangedEffort.getEffort().setDeclared(150);
 		effortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
-		assertDeepEquals(original, getModifiedScope(FILE_NAME_PREFIX, 11));
+		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 11), original);
 	}
 
 }

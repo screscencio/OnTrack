@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 
-public class InsertChildScopeActionTest {
+public class ScopeInsertChildActionTest {
 
 	private Scope selectedScope;
 	private ProjectContext context;
