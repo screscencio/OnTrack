@@ -46,7 +46,6 @@ class BusinessLogicImpl implements BusinessLogic {
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
 			synchronized (this) {
 				validateIncomingAction(actionList);
-				// TODO ++++Use id instead of date to identify last executed action.
 				persistenceService.persistActions(actionList, new Date());
 			}
 			// TODO +++++Broadcast the actions with updated timestamp: retrieve the persisted actions and send them to other clients.
@@ -151,7 +150,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			PersistenceException {
 		snapshot.setProject(project);
 		snapshot.setTimestamp(new Date());
-		// TODO ++++Use the last action applied to snapshot, not the last persisted action.
+		// FIXME Use the last action applied to snapshot, not the last persisted action.
 		snapshot.setLastAppliedActionId(lastAppliedActionId);
 
 		persistenceService.persistProjectSnapshot(snapshot);
