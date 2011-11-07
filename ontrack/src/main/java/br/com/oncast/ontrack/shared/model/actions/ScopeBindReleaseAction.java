@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -72,7 +73,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		if (rollbackSubAction != null) rollbackSubAction.execute(context);
 
 		ReleaseRemoveAction newRollbackSubAction = null;
-		if (newReleaseDescription != null && !newReleaseDescription.isEmpty()) {
+		if (shouldBindToNewRelease()) {
 			newRollbackSubAction = assureNewReleaseExistence(context);
 
 			final Release newRelease = ReleaseActionHelper.findRelease(newReleaseDescription, context);
@@ -81,6 +82,10 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		}
 
 		return new ScopeBindReleaseAction(referenceId, oldReleaseDescription, oldScopePriority, newRollbackSubAction);
+	}
+
+	private boolean shouldBindToNewRelease() {
+		return newReleaseDescription != null && !new ReleaseDescriptionParser(newReleaseDescription).getHeadRelease().isEmpty();
 	}
 
 	private ReleaseRemoveAction assureNewReleaseExistence(final ProjectContext context) throws UnableToCompleteActionException {

@@ -117,10 +117,12 @@ public class Release implements Serializable {
 		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(releaseDescription);
 
 		final Release childRelease = findDirectChildRelease(parser.getHeadRelease());
-		if (childRelease == null) throw new ReleaseNotFoundException("Could not find the specified release.");
+		if (childRelease == null) throw new ReleaseNotFoundException("Could not find the release with description '" + releaseDescription + "'.");
 
-		if (!parser.next()) return childRelease;
-		return childRelease.findRelease(parser.getHeadRelease());
+		final String tailReleases = parser.getTailReleases();
+		if (!parser.hasNext()) return childRelease;
+
+		return childRelease.findRelease(tailReleases);
 	}
 
 	private Release findDirectChildRelease(final String releaseDescription) {
@@ -282,5 +284,10 @@ public class Release implements Serializable {
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Release)) return false;
 		return this.id.equals(((Release) obj).getId());
+	}
+
+	@Override
+	public String toString() {
+		return getFullDescription();
 	}
 }
