@@ -21,13 +21,13 @@ public class MigrationExecuterTest {
 	@Test
 	public void shouldFindThreeNeededMigrationsAfterThisDate() throws Exception {
 		MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
-		assertEquals(3, executer.findNeededMigrations("2011_10_01_14_32_10").size());
+		assertEquals(3, executer.findMigrationsAfter("2011_10_01_14_32_10").size());
 	}
 
 	@Test
 	public void shouldFindTheRightThreeNeededMigrationsAfterAGivenDate() throws Exception {
 		MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
-		List<Migration> neededMigrations = executer.findNeededMigrations("2011_10_01_14_32_10");
+		List<Migration> neededMigrations = executer.findMigrationsAfter("2011_10_01_14_32_10");
 		
 		assertEquals(3, neededMigrations.size());
 		
@@ -39,7 +39,7 @@ public class MigrationExecuterTest {
 	@Test
 	public void shouldFindTheRightTwoNeededMigrationsAfterAGivenDate() throws Exception {
 		MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
-		List<Migration> neededMigrations = executer.findNeededMigrations("2011_10_02_14_00_00");
+		List<Migration> neededMigrations = executer.findMigrationsAfter("2011_10_02_14_00_00");
 		
 		assertEquals(2, neededMigrations.size());
 		
@@ -50,7 +50,7 @@ public class MigrationExecuterTest {
 	@Test
 	public void theMigrationWithSameDateOfTheGivenDateShouldNotBeNeeded() throws Exception {
 		MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
-		List<Migration> neededMigrations = executer.findNeededMigrations("2011_10_05_18_00_00");
+		List<Migration> neededMigrations = executer.findMigrationsAfter("2011_10_05_18_00_00");
 		
 		assertEquals(1, neededMigrations.size());
 		
@@ -62,7 +62,7 @@ public class MigrationExecuterTest {
 	@Test
 	public void shouldFindNeededMigrationsInOrder() throws Exception {
 		MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
-		List<Migration> neededMigrations = executer.findNeededMigrations("2011_10_01_14_32_10");
+		List<Migration> neededMigrations = executer.findMigrationsAfter("2011_10_01_14_32_10");
 
 		assertEquals(3, neededMigrations.size());
 		
@@ -74,7 +74,7 @@ public class MigrationExecuterTest {
 	@Test
 	public void shouldNotFindNeededMigrationsOfOtherPackages() throws Exception {
 		MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
-		List<Migration> neededMigrations = executer.findNeededMigrations("2011_10_01_14_32_10");
+		List<Migration> neededMigrations = executer.findMigrationsAfter("2011_10_01_14_32_10");
 		
 		assertEquals(3, neededMigrations.size());
 		
@@ -91,7 +91,7 @@ public class MigrationExecuterTest {
 	public void shouldFindNeededMigrationsOfTheGivenPackageAndSubPackages() throws Exception {
 		final String packageName = "br.com.oncast.migration.test.migrations2";
 		MigrationExecuter executer = new MigrationExecuter(packageName);
-		List<Migration> neededMigrations = executer.findNeededMigrations("2011_08_03_03_20_01");
+		List<Migration> neededMigrations = executer.findMigrationsAfter("2011_08_03_03_20_01");
 		
 		assertEquals(4, neededMigrations.size());
 		
