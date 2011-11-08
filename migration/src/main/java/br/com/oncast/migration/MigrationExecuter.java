@@ -1,6 +1,7 @@
 package br.com.oncast.migration;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,15 +28,25 @@ public class MigrationExecuter {
 
 	public void executeMigrations(String sourceXMLName) throws Exception {
 		Document document = read(sourceXMLName);
-		String date  = getDateFrom(document);
-		for (Migration migration : findNeededMigrations(date)) {
+		String date  = getVersionFrom(document);
+		for (Migration migration : findMigrationsAfter(date)) {
 			migration.apply(document);
 		}
 		write(document, getMigratedName(document));
 		
 	}
 	
-	private String getDateFrom(Document document) {
+	public List<Migration> findMigrationsAfter(String version) {
+		ArrayList<Migration> migrations = new ArrayList<Migration>();
+		
+		for (Migration migration : getAllMigrations()) {
+			if (isMigrationBefore(migration, version))
+			migrations.add(migration);
+		}
+		return migrations;
+	}
+	
+	private String getVersionFrom(Document document) {
 		Attribute version = (Attribute) document.selectObject("/ontrackXML/@version");
 		return version.getValue();
 	}
@@ -52,27 +63,22 @@ public class MigrationExecuter {
 	}
 	
 	private void write(Document document, String outPutName) throws IOException {
-	    // lets write to a file
-	    XMLWriter writer = new XMLWriter(new FileWriter(outPutName));
-	    writer.write( document );
-	    writer.close();
+		writeToFile(document, outPutName);
 	
-	    // Pretty print the document to System.out
-	    OutputFormat format = OutputFormat.createPrettyPrint();
-	    writer = new XMLWriter( System.out, format );
-	    writer.write( document );
-	}
-	
-	public List<Migration> findNeededMigrations(String date) {
-		ArrayList<Migration> migrations = new ArrayList<Migration>();
-		
-		for (Migration migration : getAllMigrations()) {
-			if (isMigrationBefore(migration, date))
-			migrations.add(migration);
-		}
-		return migrations;
+	    printOnConsole(document);
 	}
 
+	private void printOnConsole(Document document) throws UnsupportedEncodingException, IOException {
+		OutputFormat format = OutputFormat.createPrettyPrint();
+		new XMLWriter( System.out, format ).write( document );
+	}
+
+	private void writeToFile(Document document, String outPutName) throws IOException {
+		XMLWriter writer = new XMLWriter(new FileWriter(outPutName));
+	    writer.write( document );
+	    writer.close();
+	}
+	
 	private boolean isMigrationBefore(Migration migration, String date) {
 		return migration.getVersion().compareTo(date) > 0;
 	}
@@ -84,10 +90,8 @@ public class MigrationExecuter {
 		for (Class<? extends Migration> clazz : subTypes) {
 			try {
 				migrations.add(clazz.newInstance());
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
 		}
 		
