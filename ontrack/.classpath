@@ -40,5 +40,8 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/simple-xml-2.6.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Migration"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-codec-1.5.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang3-3.0.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/Migration-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

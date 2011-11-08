@@ -60,13 +60,38 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>Migration</groupId>
+			<artifactId>Migration</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/war/WEB-INF/lib/Migration-0.0.1-SNAPSHOT.jar</systemPath>
+		</dependency>
+		
+		
+		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/war/WEB-INF/lib/commons-fileupload-1.2.2.jar</systemPath>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>commons-lang3</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/war/WEB-INF/lib/commons-lang3-3.0.1.jar</systemPath>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.5</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/war/WEB-INF/lib/commons-codec-1.5.jar</systemPath>
+		</dependency>
+		
 		<!-- Communication Related Dependencies. -->
 		<dependency>
 			<groupId>gwt-comet</groupId>
