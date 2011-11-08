@@ -18,7 +18,7 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 	private static final long serialVersionUID = 1L;
 
 	@ConversionAlias("releaseReferenceId")
-	@Element
+	@Element(required = false)
 	private UUID releaseReferenceId;
 
 	@ConversionAlias("scopeReferenceId")

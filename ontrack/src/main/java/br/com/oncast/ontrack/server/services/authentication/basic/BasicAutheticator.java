@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.server.services.authentication.basic;
 
+import java.nio.charset.Charset;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
-
-import com.google.gwt.thirdparty.guava.common.base.Charsets;
 
 public class BasicAutheticator {
 
@@ -26,7 +26,7 @@ public class BasicAutheticator {
 	}
 
 	private static String[] parseCredentials(final String auth) {
-		return StringUtils.split(new String(Base64.decodeBase64(auth.substring(auth.indexOf(' ')).getBytes()), Charsets.UTF_8), ':');
+		return StringUtils.split(new String(Base64.decodeBase64(auth.substring(auth.indexOf(' ')).getBytes()), Charset.forName("UTF-8")), ':');
 	}
 
 	private static boolean verifyUser(final String user) {
