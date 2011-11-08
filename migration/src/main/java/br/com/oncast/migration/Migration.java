@@ -1,6 +1,7 @@
 package br.com.oncast.migration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -10,26 +11,45 @@ public abstract class Migration implements Comparable<Migration>{
 	private static final String VERSION = "version";
 	private static final String CLASS = "class";
 	private static final char SEPARATOR = '_';
+	private Document document;
+	private Element root;
 
 	public void apply(Document document) throws Exception {
-		if (shouldBeMigrated(document)) execute(document);
+		if (shouldBeMigrated(document)) {
+			this.document = document;
+			root = null;
+			execute();
+		}
 	}
 	
-	public String getDateString() {
+	public String getVersion() {
 		String name = this.getClass().getSimpleName();
 		return name.substring(name.indexOf(SEPARATOR) + 1);
 	}
 	
-	protected abstract void execute(Document document) throws Exception;
+	protected abstract void execute() throws Exception;
 	
-	protected Element addList(Element parent, String name) {
-		return add(parent, name, ArrayList.class);
+	protected Element getRootElement(){
+		return root == null ? root = document.getRootElement() : root;
 	}
 	
-	protected Element add(Element parent, String name, Class<?> javaClass){
+	protected Element addList(Element parent, String name) {
+		return addElementOfType(parent, name, ArrayList.class);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<Element> getAllElementsOfType(Class<?> javaClass) {
+		return document.selectNodes("//*[@" + CLASS + "='" + javaClass.getName() + "']");
+	}
+	
+	protected Element addElementOfType(Element parent, String name, Class<?> javaClass){
 		Element element = parent.addElement(name);
 		element.addAttribute(CLASS, javaClass.getName());
 		return element;
+	}
+	
+	protected Document getDocument() {
+		return document;
 	}
 	
 	@Override
@@ -45,15 +65,15 @@ public abstract class Migration implements Comparable<Migration>{
 	
 	@Override
 	public String toString() {
-		return getDateString();
+		return getVersion();
 	}
 
 	public int compareTo(Migration o) {
-		return this.getDateString().compareTo(o.getDateString());
+		return this.getVersion().compareTo(o.getVersion());
 	}
 
 	private boolean shouldBeMigrated(Document document) {
-		return getDateString().compareTo(document.getRootElement().attributeValue(VERSION)) > 0;
+		return getVersion().compareTo(document.getRootElement().attributeValue(VERSION)) > 0;
 	}
 
 }

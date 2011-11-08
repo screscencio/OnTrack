@@ -29,7 +29,7 @@ public class MigrationExecuter {
 		Document document = read(sourceXMLName);
 		String date  = getDateFrom(document);
 		for (Migration migration : findNeededMigrations(date)) {
-			migration.execute(document);
+			migration.apply(document);
 		}
 		write(document, getMigratedName(document));
 		
@@ -74,11 +74,11 @@ public class MigrationExecuter {
 	}
 
 	private boolean isMigrationBefore(Migration migration, String date) {
-		return migration.getDateString().compareTo(date) > 0;
+		return migration.getVersion().compareTo(date) > 0;
 	}
 
 	private ArrayList<Migration> getAllMigrations() {
-		Set<Class<? extends Migration>> subTypes = new Reflections(packageName).getSubTypesOf(Migration.class);
+		Set<Class<? extends Migration>> subTypes = new Reflections(packageName+".").getSubTypesOf(Migration.class);
 
 		ArrayList<Migration> migrations = new ArrayList<Migration>();
 		for (Class<? extends Migration> clazz : subTypes) {
