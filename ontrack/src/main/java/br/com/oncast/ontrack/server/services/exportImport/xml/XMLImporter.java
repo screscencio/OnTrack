@@ -9,36 +9,38 @@ import org.simpleframework.xml.core.Persister;
 
 import br.com.oncast.ontrack.server.business.UserAction;
 import br.com.oncast.ontrack.server.model.Password;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 public class XMLImporter {
-	
+
 	private OntrackXML ontrackXML;
 	private final PersistenceService persistanceService;
-	
-	public XMLImporter(PersistenceService persistanceService){
+
+	public XMLImporter(final PersistenceService persistanceService) {
 		this.persistanceService = persistanceService;
 	}
-	
-	public XMLImporter loadXML(String xmlPath){
+
+	public XMLImporter loadXML(final String xmlPath) {
 		final Serializer serializer = new Persister();
 		final File source = new File(xmlPath);
-		
+
 		try {
 			ontrackXML = serializer.read(OntrackXML.class, source);
-		} catch (Exception e) {
+		}
+		catch (final Exception e) {
 			throw new RuntimeException("Unable to deserialize xml file");
 		}
 		return this;
 	}
-	
+
 	// TODO Verify error treatment
-	public void persistObjects() throws PersistenceException{
-		if(ontrackXML == null) throw new RuntimeException("You must use loadXML method to load xml before use this method.");
-		
+	public void persistObjects() throws PersistenceException {
+		if (ontrackXML == null) throw new RuntimeException("You must use loadXML method to load xml before use this method.");
+
 		persistActions(ontrackXML.getUserActions());
 		persistUser(ontrackXML.getUsers());
 		persistPasswords(ontrackXML.getPasswords());
@@ -63,5 +65,5 @@ public class XMLImporter {
 			persistanceService.persistOrUpdatePassword(pass);
 		}
 	}
-	
+
 }
