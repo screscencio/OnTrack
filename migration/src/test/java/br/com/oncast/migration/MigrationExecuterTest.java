@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import br.com.oncast.migration.test.migrations.Migration_2011_10_01_14_32_11;
-import br.com.oncast.migration.test.migrations.Migration_2011_10_05_18_00_00;
-import br.com.oncast.migration.test.migrations.Migration_2011_10_10_08_15_39;
-import br.com.oncast.migration.test.migrations2.Migration2_2011_08_01_14_32_11;
-import br.com.oncast.migration.test.migrations2.Migration2_2011_08_05_18_00_00;
-import br.com.oncast.migration.test.migrations2.subPackage.Migration2_2011_08_10_08_15_39;
+import br.com.oncast.migration.test.migrations.Migration_2011_10_01;
+import br.com.oncast.migration.test.migrations.Migration_2011_10_05;
+import br.com.oncast.migration.test.migrations.Migration_2011_10_10;
+import br.com.oncast.migration.test.migrations2.Migration2_2011_08_01;
+import br.com.oncast.migration.test.migrations2.Migration2_2011_08_05;
+import br.com.oncast.migration.test.migrations2.subPackage.Migration2_2011_08_10;
 
 
 public class MigrationExecuterTest {
@@ -31,9 +31,9 @@ public class MigrationExecuterTest {
 		
 		assertEquals(3, neededMigrations.size());
 		
-		assertTrue(neededMigrations.contains(new Migration_2011_10_01_14_32_11()));
-		assertTrue(neededMigrations.contains(new Migration_2011_10_05_18_00_00()));
-		assertTrue(neededMigrations.contains(new Migration_2011_10_10_08_15_39()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_01()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_05()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_10()));
 	}
 	
 	@Test
@@ -43,9 +43,9 @@ public class MigrationExecuterTest {
 		
 		assertEquals(2, neededMigrations.size());
 		
-		assertFalse(neededMigrations.contains(new Migration_2011_10_01_14_32_11()));
-		assertTrue(neededMigrations.contains(new Migration_2011_10_05_18_00_00()));
-		assertTrue(neededMigrations.contains(new Migration_2011_10_10_08_15_39()));
+		assertFalse(neededMigrations.contains(new Migration_2011_10_01()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_05()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_10()));
 	}
 	@Test
 	public void theMigrationWithSameDateOfTheGivenDateShouldNotBeNeeded() throws Exception {
@@ -54,9 +54,9 @@ public class MigrationExecuterTest {
 		
 		assertEquals(1, neededMigrations.size());
 		
-		assertFalse(neededMigrations.contains(new Migration_2011_10_01_14_32_11()));
-		assertFalse(neededMigrations.contains(new Migration_2011_10_05_18_00_00()));
-		assertTrue(neededMigrations.contains(new Migration_2011_10_10_08_15_39()));
+		assertFalse(neededMigrations.contains(new Migration_2011_10_01()));
+		assertFalse(neededMigrations.contains(new Migration_2011_10_05()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_10()));
 	}
 	
 	@Test
@@ -66,9 +66,9 @@ public class MigrationExecuterTest {
 
 		assertEquals(3, neededMigrations.size());
 		
-		assertEquals(new Migration_2011_10_01_14_32_11(), neededMigrations.get(0));
-		assertEquals(new Migration_2011_10_05_18_00_00(), neededMigrations.get(1));
-		assertEquals(new Migration_2011_10_10_08_15_39(), neededMigrations.get(2));
+		assertEquals(new Migration_2011_10_01(), neededMigrations.get(0));
+		assertEquals(new Migration_2011_10_05(), neededMigrations.get(1));
+		assertEquals(new Migration_2011_10_10(), neededMigrations.get(2));
 	}
 	
 	@Test
@@ -78,13 +78,13 @@ public class MigrationExecuterTest {
 		
 		assertEquals(3, neededMigrations.size());
 		
-		assertTrue(neededMigrations.contains(new Migration_2011_10_01_14_32_11()));
-		assertTrue(neededMigrations.contains(new Migration_2011_10_05_18_00_00()));
-		assertTrue(neededMigrations.contains(new Migration_2011_10_10_08_15_39()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_01()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_05()));
+		assertTrue(neededMigrations.contains(new Migration_2011_10_10()));
 		
-		assertFalse(neededMigrations.contains(new Migration2_2011_08_05_18_00_00()));
-		assertFalse(neededMigrations.contains(new Migration2_2011_08_10_08_15_39()));
-		assertFalse(neededMigrations.contains(new Migration2_2011_08_01_14_32_11()));
+		assertFalse(neededMigrations.contains(new Migration2_2011_08_05()));
+		assertFalse(neededMigrations.contains(new Migration2_2011_08_10()));
+		assertFalse(neededMigrations.contains(new Migration2_2011_08_01()));
 	}
 	
 	@Test
@@ -93,10 +93,12 @@ public class MigrationExecuterTest {
 		MigrationExecuter executer = new MigrationExecuter(packageName);
 		List<Migration> neededMigrations = executer.findNeededMigrations("2011_08_03_03_20_01");
 		
-		assertEquals(2, neededMigrations.size());
+		assertEquals(4, neededMigrations.size());
 		
-		assertEquals(new Migration2_2011_08_05_18_00_00(), neededMigrations.get(0));
-		assertEquals(new Migration2_2011_08_10_08_15_39(), neededMigrations.get(1));
+		assertEquals(new Migration2_2011_08_05(), neededMigrations.get(0));
+		assertEquals(new Migration2_2011_08_10(), neededMigrations.get(1));
 	}
+	
+	//TODO++: test the excetuion of the migrations 
 
 }

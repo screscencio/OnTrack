@@ -1,23 +1,31 @@
 package br.com.oncast.migration;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import br.com.oncast.migration.test.migrations.Migration_2011_10_01_14_32_11;
-import br.com.oncast.migration.test.migrations2.Migration2_2011_08_01_14_32_11;
-import br.com.oncast.migration.test.migrations2.Migration2_2011_10_01_14_32_11;
-import br.com.oncast.migration.test.migrations2.subPackage.Migration2_2011_11_10_08_15_39;
+import br.com.oncast.migration.test.migrations.Migration_2011_10_01;
+import br.com.oncast.migration.test.migrations2.Migration2_2011_08_01;
+import br.com.oncast.migration.test.migrations2.Migration2_2011_10_01;
+import br.com.oncast.migration.test.migrations2.subPackage.Migration2_2011_11_10;
 
 public class MigrationTest {
 	
 	private static final String testXML = 
 			"<?xml version=\"1.0\" ?>" +
-			"<ontrackXML version=\"1320175697999\">" +
+			"<root version=\"1320175697999\">" +
 			"	<users class=\"java.util.ArrayList\">" +
 			"		<user id=\"1\" email=\"user1@email\"/>" +
 			"		<user id=\"2\" email=\"user2@email\"/>" +
@@ -28,47 +36,62 @@ public class MigrationTest {
 			"	</passwords>" + 
 			"	<userActions class=\"java.util.ArrayList\">" +
 			"		<userAction id=\"1\" timestamp=\"2011-11-01 17:28:17.999 BRST\">" +
-			"			<action class=\"br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction\">" +
+			"			<action class=\"java.lang.Object\">" +
             "				<referenceId id=\"3A63F0EF-D5E9-4C9C-9AFC-010033D36BF6\"/>" +
          	"			</action>"+
          	"		</userAction>" +
          	"		<userAction id=\"1\" timestamp=\"2011-11-01 17:28:17.999 BRST\">" +
-         	"			<action class=\"br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction\" newDescription=\"descricao\">" +
+         	"			<action class=\"java.lang.String\" newDescription=\"descricao\">" +
          	"				<referenceId id=\"8DB3AC7B-E5A2-44A5-8507-EC0ACB389038\"/>" +
          	"   			<subActionList class=\"java.util.ArrayList\">" +
-         	"      				<modelAction class=\"br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction\" newReleaseDescription=\"release\" scopePriority=\"-1\">" +
+         	"      				<modelAction class=\"java.lang.String\" newDescription=\"release\">" +
          	"         				<referenceId id=\"8DB3AC7B-E5A2-44A5-8507-EC0ACB389038\"/>" +
          	"      				</modelAction>" +
-         	"      				<modelAction class=\"br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction\" hasDeclaredEffort=\"true\" newDeclaredEffort=\"3\">" +
+         	"      				<modelAction class=\"java.util.ArrayList\" newReleaseDescription=\"release\" scopePriority=\"-1\">" +
          	"         				<referenceId id=\"8DB3AC7B-E5A2-44A5-8507-EC0ACB389038\"/>" +
          	"      				</modelAction>" +
-         	"      				<modelAction class=\"br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction\" newProgressDescription=\"d\">" +
+         	"      				<modelAction class=\"java.util.Date\" hasDeclaredEffort=\"true\" newDeclaredEffort=\"3\">" +
+         	"         				<referenceId id=\"8DB3AC7B-E5A2-44A5-8507-EC0ACB389038\"/>" +
+         	"      				</modelAction>" +
+         	"      				<modelAction class=\"java.lang.Integer\" newProgressDescription=\"d\">" +
          	"         				<referenceId id=\"8DB3AC7B-E5A2-44A5-8507-EC0ACB389038\"/>" +
          	"      				</modelAction>" +
          	"   			</subActionList>" +
          	"			</action>" +
          	"		</userAction>" +
 			"	</userActions>" +
-			"</ontrackXML>"; 
+			"</root>"; 
 
 	@Test
 	public void allInstancesOfSameMigrationIsEqual() {
-		assertEquals(new Migration_2011_10_01_14_32_11(), new Migration_2011_10_01_14_32_11());
-		assertEquals(new Migration2_2011_08_01_14_32_11(), new Migration2_2011_08_01_14_32_11());
-		assertFalse(new Migration2_2011_08_01_14_32_11().equals(new Migration_2011_10_01_14_32_11()));
+		assertEquals(new Migration_2011_10_01(), new Migration_2011_10_01());
+		assertEquals(new Migration2_2011_08_01(), new Migration2_2011_08_01());
 	}
 	
 	@Test
-	public void migrationDateShouldBeTheDateOnHisName() throws Exception {
-		assertEquals("2011_10_01_14_32_11", new Migration_2011_10_01_14_32_11().getDateString());
-		assertEquals("2011_08_01_14_32_11", new Migration2_2011_08_01_14_32_11().getDateString());
+	public void instancesOfDifferentMigrationsAreDifferentEvenWhenHasSameVersion() {
+		assertFalse(new Migration2_2011_08_01().equals(new Migration_2011_10_01()));
+		assertFalse(new Migration2_2011_10_01().equals(new Migration_2011_10_01()));
 	}
 	
 	@Test
-	public void migrationsIsOrderedByTheDateOnHisName() throws Exception {
-		assertTrue(new Migration2_2011_08_01_14_32_11().compareTo(new Migration_2011_10_01_14_32_11()) < 0);
-		assertTrue(new Migration2_2011_11_10_08_15_39().compareTo(new Migration_2011_10_01_14_32_11()) > 0);
-		assertTrue(new Migration2_2011_10_01_14_32_11().compareTo(new Migration_2011_10_01_14_32_11()) == 0);
+	public void theHashOfAMigrationShouldBeTheHashOfHisClassName() {
+		assertEquals("br.com.oncast.migration.test.migrations.Migration_2011_10_01_14_32_11".hashCode(), new Migration_2011_10_01().hashCode());
+		assertEquals("br.com.oncast.migration.test.migrations2.Migration2_2011_08_01_14_32_11".hashCode(), new Migration2_2011_08_01().hashCode());
+		assertEquals(new Migration2_2011_08_01().hashCode(), new Migration2_2011_08_01().hashCode());
+	}
+	
+	@Test
+	public void migrationVersionShouldBeTheDateOnHisName() throws Exception {
+		assertEquals("2011_10_01_14_32_11", new Migration_2011_10_01().getVersion());
+		assertEquals("2011_08_01_14_32_11", new Migration2_2011_08_01().getVersion());
+	}
+	
+	@Test
+	public void migrationsIsOrderedByTheVersionOnHisName() throws Exception {
+		assertTrue(new Migration2_2011_08_01().compareTo(new Migration_2011_10_01()) < 0);
+		assertTrue(new Migration2_2011_11_10().compareTo(new Migration_2011_10_01()) > 0);
+		assertTrue(new Migration2_2011_10_01().compareTo(new Migration_2011_10_01()) == 0);
 	}
 	
 	@Test
@@ -78,12 +101,87 @@ public class MigrationTest {
 		assertTrue(documentVersion.compareTo(migrationVersion) > 0);
 		
 		Document document = DocumentHelper.parseText(testXML);
-		Migration spy = Mockito.spy(new Migration2_2011_08_01_14_32_11());
-		Mockito.when(spy.getDateString()).thenReturn(migrationVersion);
+		Migration spy = Mockito.spy(new Migration2_2011_08_01());
+		Mockito.when(spy.getVersion()).thenReturn(migrationVersion);
 		
 		spy.apply(document);
 		
-		Mockito.verify(spy, Mockito.never()).execute(document);
+		Mockito.verify(spy, Mockito.never()).execute();
+	}
+	
+	@Test
+	public void shouldBeAbleToAddAElementOnAGivenParent() throws Exception {
+		Document document = DocumentHelper.parseText(testXML);
+		Element parent = document.getRootElement();
+		int previousNodeCount = parent.nodeCount();
+		assertNull(parent.element("AnyElement"));
+		Element addedElement = new Migration2_2011_08_01().addElementOfType(parent, "AnyElement", Object.class);
+		int currentNodeCount = parent.nodeCount();
+		assertEquals(previousNodeCount + 1, currentNodeCount);
+		Element element = parent.element("AnyElement");
+		assertNotNull(element);
+		assertEquals(addedElement, element);
+	}
+	
+	@Test
+	public void addedElementShouldBeReturnedByTheMethod() throws Exception {
+		Document document = DocumentHelper.parseText(testXML);
+		Element parent = document.getRootElement();
+		Element addedElement = new Migration2_2011_08_01().addElementOfType(parent, "AnyElement", Object.class);
+		assertNotNull(addedElement);
+		assertEquals(addedElement, parent.element("AnyElement"));
+	}
+	
+	@Test
+	public void addedElementsShouldHaveAAttributeNamedClassAndHisValueShouldBeTheElementsJavaTypeName() throws Exception {
+		Document document = DocumentHelper.parseText(testXML);
+		Element parent = document.getRootElement();
+		Element addedElement = new Migration2_2011_08_01().addElementOfType(parent, "AnyElement", Object.class);
+		assertEquals("AnyElement", addedElement.getName());
+		assertEquals(1, addedElement.attributeCount());
+		Attribute classAttribute = addedElement.attribute(0);
+		assertNotNull(classAttribute);
+		assertEquals("class", classAttribute.getName());
+		assertEquals("java.lang.Object", classAttribute.getValue());
+	}
+	
+	@Test
+	public void addListShouldAddJavaArrayListTypeElement() throws Exception {
+		Document document = DocumentHelper.parseText(testXML);
+		Element parent = document.getRootElement();
+		Element addedList = new Migration2_2011_08_01().addList(parent, "users");
+		assertEquals("users", addedList.getName());
+		assertEquals("java.util.ArrayList", addedList.attributeValue("class"));
+	}
+	
+	@Test
+	public void getAllElementsOfAGivenJavaTypeShouldReturnAllElementsWithSameClassAttributeAsTheGivenType() throws Exception{
+		Document document = DocumentHelper.parseText(testXML);
+		Migration migration = new Migration2_2011_08_01();
+		migration.apply(document);
+		List<Element> list = migration.getAllElementsOfType(String.class);
+		assertEquals(2, list.size());
+		assertEquals("action", list.get(0).getName());
+		assertEquals("modelAction", list.get(1).getName());
+		
+	}
+	
+	@Test
+	public void getRootElementShouldReturnTheDocumentsRootElement() throws Exception {
+		Document document = DocumentHelper.parseText(testXML);
+		Migration migration = new Migration2_2011_08_01();
+		migration.apply(document);
+		assertEquals("root", migration.getRootElement().getName());
+		assertEquals("1320175697999", migration.getRootElement().attributeValue("version"));
+		
+	}
+	
+	@Test
+	public void theDocumentGivenInApplyMethodShouldBeStored() throws Exception {
+		Document document = DocumentHelper.parseText(testXML);
+		Migration migration = new Migration2_2011_08_01();
+		migration.apply(document);
+		assertSame(document, migration.getDocument());
 	}
 
 }
