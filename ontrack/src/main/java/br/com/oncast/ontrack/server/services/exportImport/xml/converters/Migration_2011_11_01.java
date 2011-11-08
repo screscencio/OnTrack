@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.converters;
 
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,7 +24,8 @@ public class Migration_2011_11_01 extends Migration {
 		final Iterator<Element> it = actions.iterator();
 		while (it.hasNext()) {
 			final Element action = it.next();
-			action.addAttribute("timestamp", new Date().toString());
+			final Element userAction = (Element) action.selectObject("ancestor::userAction");
+			action.addAttribute("timestamp", userAction.attributeValue("timestamp"));
 
 		}
 	}
@@ -35,7 +35,7 @@ public class Migration_2011_11_01 extends Migration {
 
 		final Element defaultUser = users.addElement("user");
 		defaultUser.addAttribute("id", "1");
-		defaultUser.addAttribute("email", "admin@ontrack.com.br");
+		defaultUser.addAttribute("email", "admin@ontrack.com");
 	}
 
 }
