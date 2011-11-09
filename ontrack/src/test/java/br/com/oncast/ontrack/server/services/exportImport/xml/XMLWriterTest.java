@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.simpleframework.xml.Serializer;
@@ -22,6 +23,7 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class XMLWriterTest {
 
+	private static final String ONTRACK_XML = "ontrack.xml";
 	private XMLWriter xmlExporter;
 	private List<User> userList;
 	private List<Password> passwordList;
@@ -33,6 +35,12 @@ public class XMLWriterTest {
 		userList = UserActionFactoryMock.createUserList();
 		passwordList = UserActionFactoryMock.createPasswordList();
 		version = new Date().getTime();
+	}
+
+	@After
+	public void deleteGeneratedXMLFile() {
+		final File generatedXML = new File(ONTRACK_XML);
+		if (generatedXML.exists()) generatedXML.delete();
 	}
 
 	@Test
@@ -173,13 +181,13 @@ public class XMLWriterTest {
 	}
 
 	private OntrackXML generateXMLAndRead(final List<UserAction> actionList) throws Exception {
-		final File ontrackFile = new File("ontrack.xml");
+		final File ontrackFile = new File(ONTRACK_XML);
 
 		xmlExporter.setUserList(userList).setPasswordList(passwordList).setActionList(actionList).setVersion(version)
 				.export(new FileOutputStream(ontrackFile));
 
 		final Serializer serializer = new Persister();
-		final File source = new File("ontrack.xml");
+		final File source = new File(ONTRACK_XML);
 
 		final OntrackXML ontrackXML = serializer.read(OntrackXML.class, source);
 		return ontrackXML;
