@@ -1,4 +1,4 @@
-package br.com.oncast.migration.test.migrations2;
+package br.com.oncast.migration.sample.migrations2;
 
 import br.com.oncast.migration.Migration;
 
