@@ -16,10 +16,10 @@ import org.dom4j.Element;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import br.com.oncast.migration.test.migrations.Migration_2011_10_01;
-import br.com.oncast.migration.test.migrations2.Migration2_2011_08_01;
-import br.com.oncast.migration.test.migrations2.Migration2_2011_10_01;
-import br.com.oncast.migration.test.migrations2.subPackage.Migration2_2011_11_10;
+import br.com.oncast.migration.sample.migrations.Migration_2011_10_01;
+import br.com.oncast.migration.sample.migrations2.Migration2_2011_08_01;
+import br.com.oncast.migration.sample.migrations2.Migration2_2011_10_01;
+import br.com.oncast.migration.sample.migrations2.subPackage.Migration2_2011_11_10;
 
 public class MigrationTest {
 	
@@ -76,15 +76,15 @@ public class MigrationTest {
 	
 	@Test
 	public void theHashOfAMigrationShouldBeTheHashOfHisClassName() {
-		assertEquals("br.com.oncast.migration.test.migrations.Migration_2011_10_01_14_32_11".hashCode(), new Migration_2011_10_01().hashCode());
-		assertEquals("br.com.oncast.migration.test.migrations2.Migration2_2011_08_01_14_32_11".hashCode(), new Migration2_2011_08_01().hashCode());
+		assertEquals("br.com.oncast.migration.sample.migrations.Migration_2011_10_01".hashCode(), new Migration_2011_10_01().hashCode());
+		assertEquals("br.com.oncast.migration.sample.migrations2.Migration2_2011_08_01".hashCode(), new Migration2_2011_08_01().hashCode());
 		assertEquals(new Migration2_2011_08_01().hashCode(), new Migration2_2011_08_01().hashCode());
 	}
 	
 	@Test
 	public void migrationVersionShouldBeTheDateOnHisName() throws Exception {
-		assertEquals("2011_10_01_14_32_11", new Migration_2011_10_01().getVersion());
-		assertEquals("2011_08_01_14_32_11", new Migration2_2011_08_01().getVersion());
+		assertEquals("2011_10_01", new Migration_2011_10_01().getVersion());
+		assertEquals("2011_08_01", new Migration2_2011_08_01().getVersion());
 	}
 	
 	@Test
@@ -149,7 +149,7 @@ public class MigrationTest {
 	public void addListShouldAddJavaArrayListTypeElement() throws Exception {
 		Document document = DocumentHelper.parseText(testXML);
 		Element parent = document.getRootElement();
-		Element addedList = new Migration2_2011_08_01().addList(parent, "users");
+		Element addedList = new Migration2_2011_08_01().addListElementTo(parent, "users");
 		assertEquals("users", addedList.getName());
 		assertEquals("java.util.ArrayList", addedList.attributeValue("class"));
 	}
