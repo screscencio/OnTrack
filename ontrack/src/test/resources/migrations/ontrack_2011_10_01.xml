@@ -1,4 +1,4 @@
-	<ontrackXML version="1320175697999">
+<ontrackXML version="1320175697999">
    <userActions class="java.util.ArrayList">
       <userAction id="1" timestamp="2011-11-01 17:28:17.999 BRST">
          <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction">
