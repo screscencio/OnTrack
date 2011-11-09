@@ -258,8 +258,8 @@ public class PersistenceServiceJpaTest {
 	}
 
 	@Test
-	@Ignore("Run only when you want to generate data to test release burn up chart")
-	public void testname() throws Exception {
+	@Ignore("Run only when you want to generate data to test the release burn up chart")
+	public void generateDataForBurnUp() throws Exception {
 		final ProjectSnapshot snapshot1 = loadProjectSnapshot();
 		final Project project1 = snapshot1.getProject();
 		ScopeTestUtils.populateWithTestData(project1);
