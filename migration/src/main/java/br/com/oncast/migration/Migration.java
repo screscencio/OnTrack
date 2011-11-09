@@ -33,8 +33,8 @@ public abstract class Migration implements Comparable<Migration>{
 		return root == null ? root = document.getRootElement() : root;
 	}
 	
-	protected Element addList(Element parent, String name) {
-		return addElementOfType(parent, name, ArrayList.class);
+	protected Element addListElementTo(Element parent, String listElementName) {
+		return addElementOfType(parent, listElementName, ArrayList.class);
 	}
 	
 	@SuppressWarnings("unchecked")
