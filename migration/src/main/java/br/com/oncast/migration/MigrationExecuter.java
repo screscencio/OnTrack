@@ -15,8 +15,6 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.reflections.Reflections;
 
-
-
 public class MigrationExecuter {
 
 	private static final String MIGRATED = "migrated";
