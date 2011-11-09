@@ -21,7 +21,7 @@ import org.dom4j.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.migration.Migration;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 
 @SuppressWarnings("rawtypes")
 public class Migration_2011_11_01_Test {
