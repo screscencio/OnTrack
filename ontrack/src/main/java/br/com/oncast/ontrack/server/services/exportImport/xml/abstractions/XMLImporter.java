@@ -31,7 +31,7 @@ public class XMLImporter {
 			ontrackXML = serializer.read(OntrackXML.class, file);
 		}
 		catch (final Exception e) {
-			throw new RuntimeException("Unable to deserialize xml file", e);
+			throw new RuntimeException("Unable to deserialize xml file.", e);
 		}
 		return this;
 	}
@@ -47,9 +47,9 @@ public class XMLImporter {
 
 	private void persistActions(final List<UserAction> userActions) throws PersistenceException {
 		for (final UserAction userAction : userActions) {
-			final ArrayList<ModelAction> arrayList = new ArrayList<ModelAction>();
-			arrayList.add(userAction.getModelAction());
-			persistanceService.persistActions(arrayList, userAction.getTimestamp());
+			final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
+			actions.add(userAction.getModelAction());
+			persistanceService.persistActions(actions, userAction.getTimestamp());
 		}
 	}
 
