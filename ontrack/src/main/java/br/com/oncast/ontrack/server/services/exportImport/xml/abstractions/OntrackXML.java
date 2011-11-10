@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 public class OntrackXML {
 
 	@Attribute
-	private long version;
+	private String version;
 
 	@ElementList
 	private List<User> users;
@@ -37,11 +37,11 @@ public class OntrackXML {
 		return passwords;
 	}
 
-	public long getVersion() {
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(final long version) {
+	public void setVersion(final String version) {
 		this.version = version;
 	}
 

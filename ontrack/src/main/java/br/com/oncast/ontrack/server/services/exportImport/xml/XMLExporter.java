@@ -2,11 +2,11 @@ package br.com.oncast.ontrack.server.services.exportImport.xml;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -18,7 +18,7 @@ public class XMLExporter {
 
 	// FIXME Verify where we can save the current version of xml.
 	// This should be the last migration time stamp executed.
-	private final Date version;
+	private final String version;
 	private boolean isConfigured;
 	private final OutputStream outputStream;
 
@@ -26,12 +26,12 @@ public class XMLExporter {
 		this.persistanceService = persistanceService;
 		this.outputStream = outputStream;
 		exporter = new XMLWriter();
-		version = new Date();
+		version = OntrackMigrationManager.getCurrentVersion();
 		isConfigured = false;
 	}
 
 	public XMLExporter mountXML() {
-		exporter.setUserList(findAllUsers()).setPasswordList(findAllPasswords()).setActionList(findAllActions()).setVersion(version.getTime());
+		exporter.setUserList(findAllUsers()).setPasswordList(findAllPasswords()).setActionList(findAllActions()).setVersion(version);
 		isConfigured = true;
 		return this;
 	}

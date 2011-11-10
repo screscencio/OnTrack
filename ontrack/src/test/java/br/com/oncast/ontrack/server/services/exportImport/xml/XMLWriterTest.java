@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.After;
@@ -27,14 +26,14 @@ public class XMLWriterTest {
 	private XMLWriter xmlExporter;
 	private List<User> userList;
 	private List<Password> passwordList;
-	private long version;
+	private String version;
 
 	@Before
 	public void setUp() {
 		xmlExporter = new XMLWriter();
 		userList = UserActionFactoryMock.createUserList();
 		passwordList = UserActionFactoryMock.createPasswordList();
-		version = new Date().getTime();
+		version = "2011_10_01";
 	}
 
 	@After

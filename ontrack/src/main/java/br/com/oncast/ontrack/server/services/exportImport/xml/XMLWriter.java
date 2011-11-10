@@ -29,7 +29,7 @@ public class XMLWriter {
 		return this;
 	}
 
-	public XMLWriter setVersion(final long version) {
+	public XMLWriter setVersion(final String version) {
 		ontrackXML.setVersion(version);
 		return this;
 	}
