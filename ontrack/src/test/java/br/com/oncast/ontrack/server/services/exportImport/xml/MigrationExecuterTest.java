@@ -8,7 +8,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.junit.Test;
 
-public class MigrationExecuterTest2 {
+public class MigrationExecuterTest {
 
 	private static final String MIGRATIONS_PACKAGE_NAME = "br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations";
 
