@@ -133,12 +133,12 @@ public class ChangePasswordForm extends Composite {
 
 	public void setErrorMessage(final String message) {
 		messageLabel.setText(message);
-		// FIXME Change css for this label
+		// TODO Change css for this label
 	}
 
 	public void setInfoMessage(final String message) {
 		messageLabel.setText(message);
-		// FIXME Change css for this label
+		// TODO Change css for this label
 	}
 
 	private void clearFields() {

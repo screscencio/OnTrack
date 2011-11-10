@@ -150,7 +150,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			PersistenceException {
 		snapshot.setProject(project);
 		snapshot.setTimestamp(new Date());
-		// FIXME Use the last action applied to snapshot, not the last persisted action.
+		// TODO ++++Use the last action applied to snapshot, not the last persisted action.
 		snapshot.setLastAppliedActionId(lastAppliedActionId);
 
 		persistenceService.persistProjectSnapshot(snapshot);
