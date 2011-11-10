@@ -4,7 +4,9 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migra
 
 public class Migration_2011_10_10 extends Migration {
 
+	@Override
 	public void execute() {
+		getRootElement().addElement(this.getClass().getSimpleName());
 	}
 
 }
