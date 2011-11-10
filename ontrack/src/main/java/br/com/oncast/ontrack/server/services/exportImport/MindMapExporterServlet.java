@@ -31,12 +31,16 @@ public class MindMapExporterServlet extends HttpServlet {
 		final BusinessLogic business = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
 		final Project project = business.loadProject();
 
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/xml");
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + project.getProjectScope().getDescription() + ".mm\"");
+		configureResponse(response, project);
 
 		FreeMindExporter.export(project, response.getOutputStream());
 		response.getOutputStream().flush();
+	}
+
+	private void configureResponse(final HttpServletResponse response, final Project project) {
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/xml");
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + project.getProjectScope().getDescription() + ".mm\"");
 	}
 
 	// TODO +++Display an user-friendly error message.

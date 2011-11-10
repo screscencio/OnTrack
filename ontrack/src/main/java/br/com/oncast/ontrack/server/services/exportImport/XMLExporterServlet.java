@@ -25,25 +25,27 @@ public class XMLExporterServlet extends HttpServlet {
 			doReply(request, response);
 		}
 		catch (final Exception e) {
-			doHandleError(request, response, e);
+			// TODO Display an user-friendly error message.
+			throw new ServletException(e);
 		}
 	}
 
-	private void doReply(final HttpServletRequest request, final HttpServletResponse response)
-			throws UnableToLoadProjectException, IOException {
+	private void doReply(final HttpServletRequest request, final HttpServletResponse response) throws UnableToLoadProjectException, IOException {
+		configureResponse(response);
+		generateAndWriteXMLTo(response);
+
+		response.getOutputStream().flush();
+	}
+
+	private void generateAndWriteXMLTo(final HttpServletResponse response) throws IOException {
+		new XMLExporter(ServerServiceProvider.getInstance().getPersistenceService(), response.getOutputStream()).mountXML().export();
+	}
+
+	private void configureResponse(final HttpServletResponse response) throws UnableToLoadProjectException {
 		final BusinessLogic business = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
 
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/xml");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + business.loadProject().getProjectScope().getDescription() + ".xml\"");
-
-		new XMLExporter(ServerServiceProvider.getInstance().getPersistenceService(), response.getOutputStream()).mountXML().export();
-		response.getOutputStream().flush();
 	}
-
-	// TODO Display an user-friendly error message.
-	private void doHandleError(final HttpServletRequest request, final HttpServletResponse response, final Exception e) throws ServletException {
-		throw new ServletException(e);
-	}
-
 }
