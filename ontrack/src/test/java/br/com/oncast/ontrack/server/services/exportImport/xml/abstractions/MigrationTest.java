@@ -76,8 +76,10 @@ public class MigrationTest {
 
 	@Test
 	public void theHashOfAMigrationShouldBeTheHashOfHisClassName() {
-		assertEquals("br.com.oncast.migration.sample.migrations.Migration_2011_10_01".hashCode(), new Migration_2011_10_01().hashCode());
-		assertEquals("br.com.oncast.migration.sample.migrations2.Migration2_2011_08_01".hashCode(), new Migration2_2011_08_01().hashCode());
+		assertEquals("br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations.Migration_2011_10_01".hashCode(),
+				new Migration_2011_10_01().hashCode());
+		assertEquals("br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.Migration2_2011_08_01".hashCode(),
+				new Migration2_2011_08_01().hashCode());
 		assertEquals(new Migration2_2011_08_01().hashCode(), new Migration2_2011_08_01().hashCode());
 	}
 
