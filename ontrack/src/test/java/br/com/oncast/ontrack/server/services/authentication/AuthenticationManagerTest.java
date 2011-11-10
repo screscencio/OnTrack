@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.model.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -38,12 +37,15 @@ public class AuthenticationManagerTest {
 
 	private User user;
 
+	private SessionManager sessionManager;
+
 	@Before
 	public void before() throws NoResultFoundException, PersistenceException {
 		MockitoAnnotations.initMocks(this);
 
-		SessionManager.setCurrentHttpSession(mock(HttpSession.class));
-		authenticationManager = new AuthenticationManager(persistenceServiceMock);
+		sessionManager = new SessionManager();
+		sessionManager.configureCurrentHttpSession(mock(HttpSession.class));
+		authenticationManager = new AuthenticationManager(persistenceServiceMock, sessionManager);
 
 		configureUser();
 		setDefaultMockBehavior();
@@ -151,15 +153,15 @@ public class AuthenticationManagerTest {
 	}
 
 	private void changePassword() throws UserNotFoundException, IncorrectPasswordException {
-		authenticationManager.changePasswordForUser(user.getEmail(), "password", "new password");
+		authenticationManager.updateUserPassword("password", "new password");
 	}
 
 	private void assertUserIsNotLoggedIn() {
-		assertFalse(authenticationManager.isCurrentUserLoggedIn());
+		assertFalse(authenticationManager.isUserAuthenticated());
 	}
 
 	private void assertUserIsLoggedIn() {
-		assertTrue(authenticationManager.isCurrentUserLoggedIn());
+		assertTrue(authenticationManager.isUserAuthenticated());
 	}
 
 	private void assertPasswordWasChanged() {

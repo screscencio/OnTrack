@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.persistence.jpa;
+package br.com.oncast.ontrack.server.services.authentication;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

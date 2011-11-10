@@ -6,8 +6,8 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-import br.com.oncast.ontrack.server.business.UserAction;
-import br.com.oncast.ontrack.server.model.Password;
+import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 @Root

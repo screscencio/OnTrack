@@ -10,12 +10,17 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import br.com.oncast.ontrack.server.services.ServerServiceProvider;
+
 public class SessionFilter implements Filter {
+
+	private static final ServerServiceProvider SERVER_SERVICE_PROVIDER = ServerServiceProvider.getInstance();
+	private static final SessionManager SESSION_MANAGER = SERVER_SERVICE_PROVIDER.getSessionManager();
 
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
-		SessionManager.setCurrentHttpSession(httpRequest.getSession());
+		SESSION_MANAGER.configureCurrentHttpSession(httpRequest.getSession());
 
 		chain.doFilter(request, response);
 	}

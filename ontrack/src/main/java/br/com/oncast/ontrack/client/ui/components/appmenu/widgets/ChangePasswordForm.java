@@ -1,10 +1,10 @@
-package br.com.oncast.ontrack.client.ui.places.planning.authentication;
+package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
+import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
-import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningAuthenticationRequestHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -133,12 +133,10 @@ public class ChangePasswordForm extends Composite {
 
 	public void setErrorMessage(final String message) {
 		messageLabel.setText(message);
-		// TODO Change css for this label
 	}
 
 	public void setInfoMessage(final String message) {
 		messageLabel.setText(message);
-		// TODO Change css for this label
 	}
 
 	private void clearFields() {

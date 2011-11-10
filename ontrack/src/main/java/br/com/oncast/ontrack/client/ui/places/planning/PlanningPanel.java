@@ -52,5 +52,4 @@ public class PlanningPanel extends Composite implements PlanningView {
 	public ApplicationMenu getApplicationMenu() {
 		return applicationMenu;
 	}
-
 }

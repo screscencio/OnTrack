@@ -52,6 +52,16 @@
 		<url-pattern>/application/requestDispatchService</url-pattern>
 	</servlet-mapping>
 
+	<!-- Authentication Service Definitions and Mappings -->
+	<servlet>
+		<servlet-name>authenticationService</servlet-name>
+		<servlet-class>br.com.oncast.ontrack.server.services.authentication.AuthenticationRpcServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>authenticationService</servlet-name>
+		<url-pattern>/application/authenticationService</url-pattern>
+	</servlet-mapping>
+
 	<!-- MindMapExporter Service Definitions and Mappings -->
 	<servlet>
 		<servlet-name>mindMapExporterServlet</servlet-name>

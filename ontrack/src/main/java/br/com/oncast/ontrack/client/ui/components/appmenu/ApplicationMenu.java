@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
-import br.com.oncast.ontrack.client.ui.places.planning.authentication.ChangePasswordWidget;
-import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningAuthenticationRequestHandler;
+import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ChangePasswordWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,11 +12,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO +++This widget and its subwidgets should be refactored, dividing logic and ui in better ways.
 public class ApplicationMenu extends Composite {
 
-	private static ApplicationMenuUiBinder uiBinder = GWT.create(ApplicationMenuUiBinder.class);
+	private static ApplicationMenuWidgetUiBinder uiBinder = GWT.create(ApplicationMenuWidgetUiBinder.class);
 
-	interface ApplicationMenuUiBinder extends UiBinder<Widget, ApplicationMenu> {}
+	interface ApplicationMenuWidgetUiBinder extends UiBinder<Widget, ApplicationMenu> {}
 
 	@UiField
 	protected Label logoutLabel;
@@ -32,7 +33,7 @@ public class ApplicationMenu extends Composite {
 
 	@UiHandler("logoutLabel")
 	protected void logoutLabelOnClick(final ClickEvent event) {
-		authenticationRequestHandler.logoutCurrentUser();
+		authenticationRequestHandler.logoutUser();
 	}
 
 	public void setAuthenticationRequestHandler(final PlanningAuthenticationRequestHandler authenticationRequestHandler) {

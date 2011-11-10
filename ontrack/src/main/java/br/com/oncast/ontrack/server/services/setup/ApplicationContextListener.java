@@ -5,6 +5,7 @@ import javax.servlet.ServletContextListener;
 
 import net.zschech.gwt.comet.server.impl.AsyncServlet;
 import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
+import br.com.oncast.ontrack.server.services.authentication.basic.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 
 public class ApplicationContextListener implements ServletContextListener {

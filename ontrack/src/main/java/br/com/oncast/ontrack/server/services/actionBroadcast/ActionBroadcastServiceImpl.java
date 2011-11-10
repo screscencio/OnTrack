@@ -18,8 +18,7 @@ public class ActionBroadcastServiceImpl implements ActionBroadcastService {
 
 	private static final Logger LOGGER = Logger.getLogger(ActionBroadcastServiceImpl.class);
 	private final ServerPushServerService serverPushServerService;
-	// TODO Why is this variable protected?
-	protected Set<ServerPushConnection> connectionSet = new HashSet<ServerPushConnection>();
+	private final Set<ServerPushConnection> connectionSet = new HashSet<ServerPushConnection>();
 
 	public ActionBroadcastServiceImpl(final ServerPushServerService serverPushServerService) {
 		this.serverPushServerService = serverPushServerService;

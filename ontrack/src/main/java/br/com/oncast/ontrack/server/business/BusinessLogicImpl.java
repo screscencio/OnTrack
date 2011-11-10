@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
+import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -15,6 +16,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -45,10 +47,10 @@ class BusinessLogicImpl implements BusinessLogic {
 		try {
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
 			synchronized (this) {
-				validateIncomingAction(actionList);
+				validateIncomingActions(actionList);
+				postProcessIncomingActions(actionList);
 				persistenceService.persistActions(actionList, new Date());
 			}
-			// TODO +++++Broadcast the actions with updated timestamp: retrieve the persisted actions and send them to other clients.
 			actionBroadcastService.broadcast(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
@@ -63,7 +65,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	// DECISION It is common sense that this validation is needed at this time (of development). Roberto thinks it should be a provisory solution, as it may be
 	// a major performance bottleneck, but that the solution is good to ensure that BetaTesters are safe while the application matures. Rodrigo thinks it should
 	// be permanent (but maybe passive of refactorings) to guarantee user safety in the long term.
-	private void validateIncomingAction(final List<ModelAction> actionList) throws UnableToHandleActionException {
+	private void validateIncomingActions(final List<ModelAction> actionList) throws UnableToHandleActionException {
 		LOGGER.debug("Validating action upon the project current state.");
 		try {
 			final Project project = loadProject();
@@ -85,6 +87,15 @@ class BusinessLogicImpl implements BusinessLogic {
 			final String errorMessage = "Unable to process action. An unknown problem occured.";
 			LOGGER.debug(errorMessage, e);
 			throw new InvalidIncomingAction(errorMessage);
+		}
+	}
+
+	// TODO Find a better way to post process actions. (Eg. ScopeDeclareProgressAction come from clients with its own time definitions, and this time stamps
+	// should be standardized using the server time).
+	private void postProcessIncomingActions(final List<ModelAction> actionList) {
+		LOGGER.debug("Post-Processing actions.");
+		for (final ModelAction action : actionList) {
+			if (action instanceof ScopeDeclareProgressAction) ((ScopeDeclareProgressAction) action).setTimestamp(new Date());
 		}
 	}
 
@@ -148,9 +159,9 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private void updateProjectSnapshot(final ProjectSnapshot snapshot, final Project project, final long lastAppliedActionId) throws IOException,
 			PersistenceException {
+
 		snapshot.setProject(project);
 		snapshot.setTimestamp(new Date());
-		// TODO ++++Use the last action applied to snapshot, not the last persisted action.
 		snapshot.setLastAppliedActionId(lastAppliedActionId);
 
 		persistenceService.persistProjectSnapshot(snapshot);

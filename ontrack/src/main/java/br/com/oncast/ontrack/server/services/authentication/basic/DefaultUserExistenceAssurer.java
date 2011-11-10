@@ -1,7 +1,7 @@
-package br.com.oncast.ontrack.server.services.setup;
+package br.com.oncast.ontrack.server.services.authentication.basic;
 
-import br.com.oncast.ontrack.server.model.Password;
 import br.com.oncast.ontrack.server.services.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -22,6 +22,7 @@ public class DefaultUserExistenceAssurer {
 			createNewUser(persistenceService);
 		}
 		catch (final PersistenceException e) {
+			// TODO Threat this exception, which indicates there was a problem while verifying if the default user is persisted.
 			e.printStackTrace();
 		}
 	}
