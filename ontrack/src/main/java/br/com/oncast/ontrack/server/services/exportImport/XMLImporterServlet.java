@@ -16,8 +16,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.dom4j.Document;
 
 import br.com.oncast.ontrack.server.services.authentication.basic.BasicAutheticator;
-import br.com.oncast.ontrack.server.services.exportImport.xml.MigrationExecuter;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLUtils;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.XMLImporter;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 
@@ -27,7 +27,6 @@ public class XMLImporterServlet extends HttpServlet {
 
 	private static final String SOURCE_XML_FILE_NAME = "ontrack.xml";
 	private static final String MIGRATED_XML_FILE_NAME = "migrated.xml";
-	private static final String MIGRATIONS_PACKAGE = "br.com.oncast.ontrack.server.services.exportImport.xml.migrations";
 
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
@@ -68,10 +67,9 @@ public class XMLImporterServlet extends HttpServlet {
 	}
 
 	private File migrate(final File sourceXML) throws Exception {
-		final MigrationExecuter migrationExecuter = new MigrationExecuter(MIGRATIONS_PACKAGE);
 		final Document document = XMLUtils.read(sourceXML);
 
-		migrationExecuter.executeMigrations(document);
+		OntrackMigrationManager.applyMigrationsOn(document);
 
 		final File migratedXML = new File(MIGRATED_XML_FILE_NAME);
 		XMLUtils.write(document, migratedXML);
