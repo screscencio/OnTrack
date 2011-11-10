@@ -6,6 +6,7 @@ public class Migration_2011_10_01 extends Migration {
 
 	@Override
 	public void execute() {
+		getRootElement().addElement(this.getClass().getSimpleName());
 	}
-	
+
 }

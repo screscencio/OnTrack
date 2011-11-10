@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
@@ -17,7 +20,6 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2
 import br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations2.subPackage.Migration2_2011_08_10;
 import br.com.oncast.ontrack.utils.TestUtils;
 
-// TODO++: test the execution of the migrations , now it is testing only the search mechanism
 public class MigrationExecuterTest {
 
 	private static final String MIGRATIONS_PACKAGE_NAME = "br.com.oncast.ontrack.server.services.exportImport.xml.sample.migrations";
@@ -108,19 +110,43 @@ public class MigrationExecuterTest {
 	@Test
 	public void theLastVersionOfTheMigrationsShouldBeZeroWhenNoMigrationWasFoundOnTheGivenPackage() throws Exception {
 		final MigrationExecuter executer = new MigrationExecuter("package.without.migrations");
-		final String version = executer.getLatestVersion();
+		final String version = executer.getLatestMigrationVersion();
 		assertEquals("0", version);
 	}
 
 	@Test
 	public void theLastVersionOfTheMigrationsShouldBeTheLatestMigrationDateOnAGivenPackage() throws Exception {
 		final MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
-		final String version = executer.getLatestVersion();
+		final String version = executer.getLatestMigrationVersion();
 		assertEquals("2011_10_10", version);
+	}
+
+	@Test
+	public void theVersionAttributeValueOfRootElementShouldBeTheDocumentVersion() throws Exception {
+		final MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
+		final Document document = DocumentHelper.parseText("<root version=\"2011_10_10\"></root>");
+		assertEquals("2011_10_10", getVersionFrom(executer, document));
+	}
+
+	@Test
+	public void shouldExecuteCorrectMigrations() throws Exception {
+		final Document document = DocumentHelper.parseText("<root version=\"2011_10_01\"></root>");
+		final MigrationExecuter executer = new MigrationExecuter(MIGRATIONS_PACKAGE_NAME);
+		executer.executeMigrations(document);
+
+		assertEquals(0, document.selectNodes("root/Migration_2011_10_01").size());
+		assertEquals(1, document.selectNodes("root/Migration_2011_10_05").size());
+		assertEquals(1, document.selectNodes("root/Migration_2011_10_10").size());
+	}
+
+	private String getVersionFrom(final MigrationExecuter executer, final Document document) throws Exception {
+		final Method method = MigrationExecuter.class.getDeclaredMethod("getVersionFrom", Document.class);
+		method.setAccessible(true);
+		return (String) method.invoke(executer, document);
 	}
 
 	@SuppressWarnings("unchecked")
 	private List<Migration> findMigrationsAfter(final MigrationExecuter executer, final String version) throws Exception {
-		return (List<Migration>) TestUtils.call(executer, "findMigrationsAfter", version);
+		return (List<Migration>) TestUtils.callPrivateMethod(executer, "findMigrationsAfter", version);
 	}
 }
