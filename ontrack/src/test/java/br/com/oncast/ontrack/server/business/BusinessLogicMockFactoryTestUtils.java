@@ -75,31 +75,22 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			@Override
 			public Password findPasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
-				// FIXME Auto-generated catch block
 				return null;
 			}
 
 			@Override
-			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {
-				// FIXME Auto-generated catch block
-
-			}
+			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {}
 
 			@Override
-			public void persistOrUpdateUser(final User user) throws PersistenceException {
-				// FIXME Auto-generated catch block
-
-			}
+			public void persistOrUpdateUser(final User user) throws PersistenceException {}
 
 			@Override
 			public List<User> findAllUsers() throws PersistenceException {
-				// FIXME Auto-generated catch block
 				return null;
 			}
 
 			@Override
 			public List<Password> findAllPasswords() throws PersistenceException {
-				// FIXME Auto-generated catch block
 				return null;
 			}
 
@@ -143,31 +134,22 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			@Override
 			public Password findPasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
-				// FIXME Auto-generated catch block
 				return null;
 			}
 
 			@Override
-			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {
-				// FIXME Auto-generated catch block
-
-			}
+			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {}
 
 			@Override
-			public void persistOrUpdateUser(final User user) throws PersistenceException {
-				// FIXME Auto-generated catch block
-
-			}
+			public void persistOrUpdateUser(final User user) throws PersistenceException {}
 
 			@Override
 			public List<User> findAllUsers() throws PersistenceException {
-				// FIXME Auto-generated catch block
 				return null;
 			}
 
 			@Override
 			public List<Password> findAllPasswords() throws PersistenceException {
-				// FIXME Auto-generated catch block
 				return null;
 			}
 
