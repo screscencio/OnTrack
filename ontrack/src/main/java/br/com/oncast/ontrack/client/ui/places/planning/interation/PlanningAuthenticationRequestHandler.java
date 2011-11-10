@@ -25,7 +25,7 @@ public class PlanningAuthenticationRequestHandler {
 
 			@Override
 			public void onFailure(final Throwable caught) {
-				// FIXME Threat this error.
+				// TODO+++ Threat this error.
 			}
 		});
 	}

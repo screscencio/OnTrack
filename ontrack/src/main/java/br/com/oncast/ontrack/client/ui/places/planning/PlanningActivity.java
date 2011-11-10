@@ -40,7 +40,7 @@ public class PlanningActivity extends AbstractActivity {
 		this.authenticationRequestHandler = new PlanningAuthenticationRequestHandler(authenticationService, new PlanningActivityListener() {
 			@Override
 			public void onLoggedOut() {
-				// FIXME Should this reload be here or should we notify activity mapper?
+				// TODO ++Should this reload be here or should we notify activity mapper?
 				Window.Location.reload();
 			}
 		});
