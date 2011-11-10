@@ -1,8 +1,7 @@
-package br.com.oncast.ontrack.server.model;
+package br.com.oncast.ontrack.server.services.authentication;
 
 import org.simpleframework.xml.Attribute;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.PasswordHash;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 

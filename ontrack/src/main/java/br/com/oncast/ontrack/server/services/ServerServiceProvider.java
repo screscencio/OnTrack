@@ -7,13 +7,17 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerServiceImpl;
+import br.com.oncast.ontrack.server.services.session.SessionManager;
 
+// TODO Review the use of this as a singleton. It is not entirely wrong to do this, but it should only be accessed directly on application entry points such as
+// Servlets. In other words, its singleton access should not be used indiscriminately.
 public class ServerServiceProvider {
 
 	private AuthenticationManager authenticationManager;
 	private PersistenceService persistenceService;
 	private ActionBroadcastService actionBroadcastService;
 	private ServerPushServerService serverPushServerService;
+	private SessionManager sessionManager;
 
 	private static ServerServiceProvider instance;
 
@@ -28,7 +32,7 @@ public class ServerServiceProvider {
 		if (authenticationManager != null) return authenticationManager;
 		synchronized (this) {
 			if (authenticationManager != null) return authenticationManager;
-			return authenticationManager = new AuthenticationManager(getPersistenceService());
+			return authenticationManager = new AuthenticationManager(getPersistenceService(), getSessionManager());
 		}
 	}
 
@@ -40,6 +44,11 @@ public class ServerServiceProvider {
 	public ActionBroadcastService getActionBroadcastService() {
 		if (actionBroadcastService != null) return actionBroadcastService;
 		return actionBroadcastService = new ActionBroadcastServiceImpl(getServerPushServerService());
+	}
+
+	public SessionManager getSessionManager() {
+		if (sessionManager != null) return sessionManager;
+		return sessionManager = new SessionManager();
 	}
 
 	private ServerPushServerService getServerPushServerService() {

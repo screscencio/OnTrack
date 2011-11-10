@@ -185,4 +185,6 @@ public class BusinessLogicTest {
 
 		DeepEqualityTestUtils.assertObjectEquality(project1, project3);
 	}
+
+	// FIXME Test that incoming actions should be post-processed. Eg. SDPA TIMESTAMP should be re-set.
 }

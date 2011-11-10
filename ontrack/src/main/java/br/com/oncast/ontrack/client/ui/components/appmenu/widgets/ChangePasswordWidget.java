@@ -1,6 +1,6 @@
-package br.com.oncast.ontrack.client.ui.places.planning.authentication;
+package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningAuthenticationRequestHandler;
+import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

@@ -7,9 +7,10 @@ import java.util.List;
 
 import junit.framework.Assert;
 import br.com.oncast.ontrack.mocks.models.ProjectMock;
-import br.com.oncast.ontrack.server.model.Password;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
+import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
+import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -152,7 +153,6 @@ public class BusinessLogicMockFactoryTestUtils {
 			public List<Password> findAllPasswords() throws PersistenceException {
 				return null;
 			}
-
 		};
 	}
 

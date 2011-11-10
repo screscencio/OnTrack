@@ -1,34 +1,62 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
-import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
+import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordException;
+import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.PasswordChangeRequest;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-	private final RequestDispatchService requestService;
+	private final AuthenticationRpcServiceAsync rpcServiceAsync = GWT.create(AuthenticationRpcService.class);
+
+	// XXX Auth; Remove this service and delete it.
 	private final UserProviderService userProviderService;
 
-	public AuthenticationServiceImpl(final RequestDispatchService requestService, final UserProviderService userProviderService) {
-		this.requestService = requestService;
-		this.userProviderService = userProviderService;
+	public AuthenticationServiceImpl(final RequestDispatchService requestService) {
+		this.userProviderService = new UserProviderService();
 	}
 
 	@Override
+	// XXX Auth; Remove this method. No client method should need to ask for this.
 	public boolean isUserLoggedIn() {
 		return userProviderService.isCurrentUserAuthenticated();
 	}
 
 	@Override
-	public void authenticateUser(final String login, final String password, final DispatchCallback<User> callback) {
-		requestService.dispatch(new AuthenticationRequest(login, password), new DispatchCallback<User>() {
+	public void authenticate(final String login, final String password, final UserAuthenticationCallback callback) {
+		rpcServiceAsync.autheticateUser(login, password, new AsyncCallback<User>() {
 
 			@Override
-			public void onRequestCompletition(final User response) {
-				userProviderService.setAuthenticatedUser(response);
-				callback.onRequestCompletition(response);
+			public void onSuccess(final User user) {
+				userProviderService.setAuthenticatedUser(user);
+				callback.onUserAuthenticatedSuccessfully(user);
+			}
+
+			@Override
+			public void onFailure(final Throwable caught) {
+				// XXX Auth; For a secure environment, the user should not be informed about which was incorrect: the user or password.
+				if (caught instanceof UserNotFoundException) {
+					callback.onIncorrectUserEmail();
+				}
+				else if (caught instanceof IncorrectPasswordException) {
+					callback.onIncorrectUserPasswordFailure();
+				}
+				else callback.onUnexpectedFailure(caught);
+			}
+		});
+	}
+
+	@Override
+	public void logout(final UserLogoutCallback callback) {
+		rpcServiceAsync.logoutUser(new AsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(final Void result) {
+				userProviderService.logoutCurrentUser();
+				callback.onUserLogout();
 			}
 
 			@Override
@@ -36,39 +64,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				callback.onFailure(caught);
 			}
 		});
+
 	}
 
 	@Override
-	public void logoutCurrentUser(final DispatchCallback<Void> dispatchCallback) {
-		requestService.dispatch(new DispatchCallback<Void>() {
+	public void changePassword(final String currentPassword, final String newPassword, final UserPasswordChangeCallback callback) {
+		rpcServiceAsync.changeUserPassword(currentPassword, newPassword, new AsyncCallback<Void>() {
 
 			@Override
-			public void onRequestCompletition(final Void response) {
-				userProviderService.logoutCurrentUser();
-				dispatchCallback.onRequestCompletition(response);
+			public void onSuccess(final Void result) {
+				callback.onUserPasswordChangedSuccessfully();
 			}
 
 			@Override
 			public void onFailure(final Throwable caught) {
-				dispatchCallback.onFailure(caught);
+				if (caught instanceof IncorrectPasswordException) {
+					callback.onIncorrectUserPasswordFailure();
+				}
+				else callback.onUnexpectedFailure(caught);
 			}
 		});
-	}
-
-	@Override
-	public void changeCurrentUserPassword(final String oldPassword, final String newPassword, final DispatchCallback<Void> dispatchCallback) {
-		requestService.dispatch(new PasswordChangeRequest(userProviderService.getCurrentUserId(), oldPassword, newPassword), new DispatchCallback<Void>() {
-
-			@Override
-			public void onRequestCompletition(final Void response) {
-				dispatchCallback.onRequestCompletition(response);
-			}
-
-			@Override
-			public void onFailure(final Throwable caught) {
-				dispatchCallback.onFailure(caught);
-			}
-		});
-
 	}
 }

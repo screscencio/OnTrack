@@ -17,6 +17,9 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 
 	private ActionExecutionRequestHandler applicationActionHandler;
 	private ComponentInteractionHandler componentInteractionHandler;
+
+	// XXX BurnUp; ReleaseEstimator should not be here. Re-think where to place it: it is here only to be able to receive the app context, but maybe the brunUp
+	// should be the only one to know it (as it is only a data processor / provider for it).
 	private ReleaseEstimator releaseEstimator;
 
 	public void configureActionExecutionRequestHandler(final ActionExecutionRequestHandler actionExecutionRequestHandler) {
@@ -54,7 +57,7 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	}
 
 	@Override
-	public void onScopeChangePriorityRequest(final Scope scope, final Release targetRelease, final int newPriority) {
+	public void onScopeDragAndDropRequest(final Scope scope, final Release targetRelease, final int newPriority) {
 		assureConfigured();
 
 		ModelAction action;
@@ -87,6 +90,7 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	}
 
 	@Override
+	// XXX BurnUp; Should NOT receive an panel, ONLY model objects.
 	public void onOpenReleaseBurnUpChart(final ReleaseChartPanel releaseChartPanel) {
 		assureConfigured();
 		releaseChartPanel.showBurnUpChart(releaseEstimator);

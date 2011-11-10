@@ -36,8 +36,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		String headerContainerStateImageOpened();
 
 		String headerContainerStateImageClosed();
-
-		String burnUpChartPanel();
 	}
 
 	@UiField
@@ -233,12 +231,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	public void setContainerState(final boolean shouldOpen) {
 		if (shouldOpen) {
-			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageClosed());
-			containerStateImage.getElement().addClassName(getStyle().headerContainerStateImageOpened());
+			containerStateImage.getElement().removeClassName(style.headerContainerStateImageClosed());
+			containerStateImage.getElement().addClassName(style.headerContainerStateImageOpened());
 		}
 		else {
-			containerStateImage.getElement().removeClassName(getStyle().headerContainerStateImageOpened());
-			containerStateImage.getElement().addClassName(getStyle().headerContainerStateImageClosed());
+			containerStateImage.getElement().removeClassName(style.headerContainerStateImageOpened());
+			containerStateImage.getElement().addClassName(style.headerContainerStateImageClosed());
 		}
 
 		scopeContainer.setVisible(shouldOpen);
@@ -249,10 +247,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	public Release getRelease() {
 		return release;
-	}
-
-	protected Style getStyle() {
-		return style;
 	}
 
 	@Override

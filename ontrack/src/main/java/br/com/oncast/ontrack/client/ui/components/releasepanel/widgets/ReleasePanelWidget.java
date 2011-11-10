@@ -71,7 +71,7 @@ public class ReleasePanelWidget extends Composite {
 		return new ItemDroppedListener() {
 			@Override
 			public void onItemDropped(final Scope droppedScope, final Release targetRelease, final int newScopePosition) {
-				releasePanelInteractionHandler.onScopeChangePriorityRequest(droppedScope, targetRelease, newScopePosition);
+				releasePanelInteractionHandler.onScopeDragAndDropRequest(droppedScope, targetRelease, newScopePosition);
 			}
 		};
 	}

@@ -7,9 +7,9 @@ import java.util.List;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import br.com.oncast.ontrack.server.business.UserAction;
-import br.com.oncast.ontrack.server.model.Password;
+import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -17,11 +17,12 @@ import br.com.oncast.ontrack.shared.model.user.User;
 
 public class XMLImporter {
 
-	private OntrackXML ontrackXML;
+	private static final ServerServiceProvider SERVER_SERVICE_PROVIDER = ServerServiceProvider.getInstance();
 	private final PersistenceService persistanceService;
+	private OntrackXML ontrackXML;
 
 	public XMLImporter() {
-		this.persistanceService = ServerServiceProvider.getInstance().getPersistenceService();
+		this.persistanceService = SERVER_SERVICE_PROVIDER.getPersistenceService();
 	}
 
 	public XMLImporter loadXML(final File file) {

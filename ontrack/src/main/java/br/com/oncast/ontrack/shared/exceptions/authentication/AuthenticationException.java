@@ -10,15 +10,7 @@ public class AuthenticationException extends RuntimeException implements Seriali
 		super();
 	}
 
-	public AuthenticationException(final Exception e) {
-		super(e);
-	}
-
 	public AuthenticationException(final String message) {
 		super(message);
-	}
-
-	public AuthenticationException(final String message, final Exception e) {
-		super(message, e);
 	}
 }

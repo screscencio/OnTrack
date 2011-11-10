@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.business;
+package br.com.oncast.ontrack.server.model.project;
 
 import java.util.Date;
 

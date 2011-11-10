@@ -6,13 +6,13 @@ import java.util.List;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
+import br.com.oncast.ontrack.client.services.authentication.PlanningActivityListener;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
-import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningActivityListener;
-import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningAuthenticationRequestHandler;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.shared.config.UriConfigurations;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -37,10 +37,13 @@ public class PlanningActivity extends AbstractActivity {
 			final AuthenticationService authenticationService) {
 		this.contextProviderService = contextProviderService;
 		this.actionExecutionService = actionExecutionService;
+
 		this.authenticationRequestHandler = new PlanningAuthenticationRequestHandler(authenticationService, new PlanningActivityListener() {
 			@Override
+			// XXX Auth; Remove/Move this method. It should be set somewhere else: This is an app responsibility, not something specially related to this
+			// activity. The Authentication service could allow observers to know when a user logged in or out.
 			public void onLoggedOut() {
-				// TODO ++Should this reload be here or should we notify activity mapper?
+				// TODO Launch a login place instead of reloading the page.
 				Window.Location.reload();
 			}
 		});

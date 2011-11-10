@@ -5,7 +5,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationServiceImpl;
-import br.com.oncast.ontrack.client.services.authentication.UserProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
@@ -25,7 +24,6 @@ import com.google.gwt.event.shared.SimpleEventBus;
 public class ClientServiceProvider {
 
 	private AuthenticationService authenticationService;
-	private UserProviderService userProviderService;
 	private ActionSyncService actionSyncService;
 	private ActionExecutionService actionExecutionService;
 	private ContextProviderService contextProviderService;
@@ -38,12 +36,7 @@ public class ClientServiceProvider {
 
 	public AuthenticationService getAuthenticationService() {
 		if (authenticationService != null) return authenticationService;
-		return authenticationService = new AuthenticationServiceImpl(requestDispatchService, getUserProviderService());
-	}
-
-	private UserProviderService getUserProviderService() {
-		if (userProviderService != null) return userProviderService;
-		return userProviderService = new UserProviderService();
+		return authenticationService = new AuthenticationServiceImpl(requestDispatchService);
 	}
 
 	public ApplicationPlaceController getApplicationPlaceController() {

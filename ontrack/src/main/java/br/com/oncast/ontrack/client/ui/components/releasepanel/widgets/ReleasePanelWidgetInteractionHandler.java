@@ -11,7 +11,7 @@ public interface ReleasePanelWidgetInteractionHandler {
 
 	void onReleaseDecreasePriorityRequest(Release release);
 
-	void onScopeChangePriorityRequest(Scope scope, Release targetRelease, int newPriority);
+	void onScopeDragAndDropRequest(Scope scope, Release targetRelease, int newPriority);
 
 	void onScopeIncreasePriorityRequest(Scope scope);
 
