@@ -17,7 +17,7 @@ public class TestUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T call(final Object instance, final String methodName, final Object... args) throws Exception {
+	public static <T> T callPrivateMethod(final Object instance, final String methodName, final Object... args) throws Exception {
 		final Method method = instance.getClass().getDeclaredMethod(methodName, getClassesFrom(args));
 		method.setAccessible(true);
 		return (T) method.invoke(instance, args);
