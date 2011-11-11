@@ -25,6 +25,8 @@ public class XMLImporterServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	private final String TEMP_DIR = System.getProperty("java.io.tmpdir");
+
 	private static final String SOURCE_XML_FILE_NAME = "ontrack.xml";
 	private static final String MIGRATED_XML_FILE_NAME = "migrated.xml";
 
@@ -60,7 +62,7 @@ public class XMLImporterServlet extends HttpServlet {
 	}
 
 	private File toFile(final FileItem item) throws Exception {
-		final File xmlFile = new File(SOURCE_XML_FILE_NAME);
+		final File xmlFile = new File(TEMP_DIR, SOURCE_XML_FILE_NAME);
 		item.write(xmlFile);
 
 		return xmlFile;
@@ -71,7 +73,7 @@ public class XMLImporterServlet extends HttpServlet {
 
 		OntrackMigrationManager.applyMigrationsOn(document);
 
-		final File migratedXML = new File(MIGRATED_XML_FILE_NAME);
+		final File migratedXML = new File(TEMP_DIR, MIGRATED_XML_FILE_NAME);
 		XMLUtils.write(document, migratedXML);
 
 		return migratedXML;

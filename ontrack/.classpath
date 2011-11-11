@@ -43,5 +43,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-r08.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dnd-3.1.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
