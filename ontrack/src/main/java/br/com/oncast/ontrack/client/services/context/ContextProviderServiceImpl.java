@@ -7,8 +7,8 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	private ProjectContext projectContext;
 
 	@Override
-	public ProjectContext getProjectContext() {
-		if (projectContext != null) return projectContext;
+	public ProjectContext getProjectContext(final long projectId) {
+		if (isContextAvailable(projectId)) return projectContext;
 		throw new RuntimeException();
 	}
 
@@ -19,7 +19,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	@Override
-	public boolean isContextAvailable() {
-		return (projectContext != null);
+	public boolean isContextAvailable(final long projectId) {
+		return (projectContext != null) && projectContext.getProjectRepresentation().getId() == projectId;
 	}
 }

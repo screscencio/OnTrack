@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationServiceImpl;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentServiceImpl;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
@@ -32,6 +33,7 @@ public class ClientServiceProvider {
 	private ClientIdentificationProvider clientIdentificationProvider;
 	private ApplicationPlaceController placeController;
 	private ErrorTreatmentService errorTreatmentService;
+	private ProjectRepresentationProvider projectRepresentationProvider;
 	private EventBus eventBus;
 
 	public AuthenticationService getAuthenticationService() {
@@ -44,9 +46,15 @@ public class ClientServiceProvider {
 		return placeController = new ApplicationPlaceController(getEventBus());
 	}
 
+	public ProjectRepresentationProvider getProjectRepresentationProvider() {
+		if (projectRepresentationProvider != null) return projectRepresentationProvider;
+		return projectRepresentationProvider = new ProjectRepresentationProvider();
+	}
+
 	public ActionExecutionService getActionExecutionService() {
 		if (actionExecutionService != null) return actionExecutionService;
-		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getErrorTreatmentService());
+		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getErrorTreatmentService(),
+				getProjectRepresentationProvider());
 	}
 
 	public ContextProviderService getContextProviderService() {
@@ -62,7 +70,7 @@ public class ClientServiceProvider {
 	public ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
-				getClientIdentificationProvider(), getErrorTreatmentService());
+				getClientIdentificationProvider(), getProjectRepresentationProvider(), getErrorTreatmentService());
 	}
 
 	private ErrorTreatmentService getErrorTreatmentService() {

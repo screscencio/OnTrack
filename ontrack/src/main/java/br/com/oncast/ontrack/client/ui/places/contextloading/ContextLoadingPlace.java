@@ -1,16 +1,18 @@
 package br.com.oncast.ontrack.client.ui.places.contextloading;
 
+import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
+
 import com.google.gwt.place.shared.Place;
 
 public class ContextLoadingPlace extends Place {
 
-	private final Place destinationPlace;
+	private final ProjectDependentPlace destinationPlace;
 
-	public ContextLoadingPlace(final Place destinationPlace) {
+	public ContextLoadingPlace(final ProjectDependentPlace destinationPlace) {
 		this.destinationPlace = destinationPlace;
 	}
 
-	public Place getDestinationPlace() {
+	public ProjectDependentPlace getDestinationPlace() {
 		return destinationPlace;
 	}
 }

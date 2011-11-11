@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -17,9 +18,12 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	private final ContextProviderService contextService;
 	private final List<ActionExecutionListener> actionExecutionListeners;
 	private final ErrorTreatmentService errorTreatmentService;
+	private final ProjectRepresentationProvider projectRepresentationProvider;
 
-	public ActionExecutionServiceImpl(final ContextProviderService contextService, final ErrorTreatmentService errorTreatmentService) {
+	public ActionExecutionServiceImpl(final ContextProviderService contextService, final ErrorTreatmentService errorTreatmentService,
+			final ProjectRepresentationProvider projectRepresentationProvider) {
 		this.errorTreatmentService = errorTreatmentService;
+		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 		this.contextService = contextService;
 		this.actionManager = new ActionExecutionManager(new ActionExecutionListener() {
@@ -34,13 +38,13 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 
 	@Override
 	public void onNonUserActionRequest(final ModelAction action) throws UnableToCompleteActionException {
-		actionManager.doNonUserAction(action, contextService.getProjectContext());
+		actionManager.doNonUserAction(action, contextService.getProjectContext(projectRepresentationProvider.getCurrentProjectRepresentation().getId()));
 	}
 
 	@Override
 	public void onUserActionExecutionRequest(final ModelAction action) {
 		try {
-			actionManager.doUserAction(action, contextService.getProjectContext());
+			actionManager.doUserAction(action, contextService.getProjectContext(projectRepresentationProvider.getCurrentProjectRepresentation().getId()));
 		}
 		catch (final UnableToCompleteActionException e) {
 			errorTreatmentService.treatUserWarning("It was not possible to execute the requested user action.", e);
@@ -50,7 +54,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	@Override
 	public void onUserActionUndoRequest() {
 		try {
-			actionManager.undoUserAction(contextService.getProjectContext());
+			actionManager.undoUserAction(contextService.getProjectContext(projectRepresentationProvider.getCurrentProjectRepresentation().getId()));
 		}
 		catch (final UnableToCompleteActionException e) {
 			errorTreatmentService.treatUserWarning("It was not possible to undo the requested user action.", e);
@@ -60,7 +64,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	@Override
 	public void onUserActionRedoRequest() {
 		try {
-			actionManager.redoUserAction(contextService.getProjectContext());
+			actionManager.redoUserAction(contextService.getProjectContext(projectRepresentationProvider.getCurrentProjectRepresentation().getId()));
 		}
 		catch (final UnableToCompleteActionException e) {
 			errorTreatmentService.treatUserWarning("It was not possible to redo the requested user action.", e);

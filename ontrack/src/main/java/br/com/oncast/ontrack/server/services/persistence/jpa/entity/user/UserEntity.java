@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.user.User;
 
+// TODO +++++Merge this entity with the User class, as it can be persisted directly.
 @Entity
 @ConvertTo(User.class)
 public class UserEntity {

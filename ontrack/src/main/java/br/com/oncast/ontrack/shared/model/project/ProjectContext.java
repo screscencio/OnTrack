@@ -21,6 +21,10 @@ public class ProjectContext {
 		ProgressDefinitionManager.getInstance().populate(project);
 	}
 
+	public ProjectRepresentation getProjectRepresentation() {
+		return project.getProjectRepresentation();
+	}
+
 	public String getReleaseDescriptionFor(final Release release) {
 		if (release == null) return "";
 		return release.getFullDescription();
@@ -76,4 +80,5 @@ public class ProjectContext {
 						.getTailReleases();
 		return releaseLoadQuery;
 	}
+
 }
