@@ -60,24 +60,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException, NoResultFoundException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-			final Query query = em.createQuery("select snapshot from " + ProjectSnapshot.class.getSimpleName() + " as snapshot");
-			return (ProjectSnapshot) query.getSingleResult();
-		}
-		catch (final NoResultException e) {
-			throw new NoResultFoundException("No snapshot found.", e);
-		}
-		catch (final Exception e) {
-			throw new PersistenceException("It was not possible to retrieve the project snapshot.", e);
-		}
-		finally {
-			em.close();
-		}
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<UserAction> retrieveActionsSince(final long actionId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
@@ -95,6 +77,24 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve the project actions.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException, NoResultFoundException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select snapshot from " + ProjectSnapshot.class.getSimpleName() + " as snapshot");
+			return (ProjectSnapshot) query.getSingleResult();
+		}
+		catch (final NoResultException e) {
+			throw new NoResultFoundException("No snapshot found.", e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project snapshot.", e);
 		}
 		finally {
 			em.close();

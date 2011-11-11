@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.PlanningActivityListener;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
@@ -32,11 +33,13 @@ public class PlanningActivity extends AbstractActivity {
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private final NativeEventListener globalKeyUpListener;
 	private final PlanningAuthenticationRequestHandler authenticationRequestHandler;
+	private final ProjectRepresentationProvider projectRepresentationProvider;
 
 	public PlanningActivity(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
-			final AuthenticationService authenticationService) {
+			final AuthenticationService authenticationService, final ProjectRepresentationProvider projectRepresentationProvider) {
 		this.contextProviderService = contextProviderService;
 		this.actionExecutionService = actionExecutionService;
+		this.projectRepresentationProvider = projectRepresentationProvider;
 
 		this.authenticationRequestHandler = new PlanningAuthenticationRequestHandler(authenticationService, new PlanningActivityListener() {
 			@Override
@@ -86,8 +89,10 @@ public class PlanningActivity extends AbstractActivity {
 			}
 		});
 
-		view.getScopeTree().setContext(contextProviderService.getProjectContext());
-		view.getReleasePanel().setRelease(contextProviderService.getProjectContext().getProjectRelease());
+		final long currentProjectId = projectRepresentationProvider.getCurrentProjectRepresentation().getId();
+		view.getScopeTree().setContext(contextProviderService.getProjectContext(currentProjectId));
+		view.getReleasePanel().setRelease(contextProviderService.getProjectContext(currentProjectId).getProjectRelease());
+
 		view.setExporterPath(UriConfigurations.EXPORT_TO_MINDMAP_APPLICATION_SERVLET_URL);
 
 		panel.setWidget(view);

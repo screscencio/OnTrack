@@ -4,6 +4,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
@@ -26,13 +27,17 @@ public class ActionSyncService {
 
 	private final ErrorTreatmentService errorTreatmentService;
 
+	private final ProjectRepresentationProvider projectRepresentationProvider;
+
 	public ActionSyncService(final RequestDispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
 			final ActionExecutionService actionExecutionService, final ClientIdentificationProvider clientIdentificationProvider,
-			final ErrorTreatmentService errorTreatmentService) {
+			final ProjectRepresentationProvider projectRepresentationProvider, final ErrorTreatmentService errorTreatmentService) {
+		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.errorTreatmentService = errorTreatmentService;
 		this.actionExecutionService = actionExecutionService;
 		this.clientIdentificationProvider = clientIdentificationProvider;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, clientIdentificationProvider, errorTreatmentService);
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, clientIdentificationProvider, projectRepresentationProvider,
+				errorTreatmentService);
 
 		serverPushClientService.registerServerEventHandler(ServerActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
@@ -53,6 +58,7 @@ public class ActionSyncService {
 	private void processServerActionSyncEvent(final ServerActionSyncEvent event) {
 		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
 		if (isClientOriginatedRequest(modelActionSyncRequest)) return;
+		if (!isPertinent_isThisClientProjectAction(modelActionSyncRequest)) return;
 
 		try {
 			for (final ModelAction modelAction : modelActionSyncRequest.getActionList())
@@ -62,6 +68,11 @@ public class ActionSyncService {
 			errorTreatmentService.treatFatalError(
 					"The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.", e);
 		}
+	}
+
+	// FIXME Review this method and its name
+	private boolean isPertinent_isThisClientProjectAction(final ModelActionSyncRequest modelActionSyncRequest) {
+		return projectRepresentationProvider.getCurrentProjectRepresentation().equals(modelActionSyncRequest.getProjectRepresentation());
 	}
 
 	private void handleActionExecution(final ModelAction action, final boolean isUserAction) {

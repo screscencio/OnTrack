@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActiv
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingPlace;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
-import br.com.oncast.ontrack.client.ui.places.planning.PlannnigPlace;
+import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -40,7 +40,7 @@ public class AppActivityMapperTest extends GwtTest {
 		Mockito.when(clientServiceProvider.getAuthenticationService()).thenReturn(authenticationService);
 
 		final ContextProviderService contextProvider = Mockito.mock(ContextProviderService.class);
-		Mockito.when(contextProvider.isContextAvailable()).thenAnswer(new Answer<Boolean>() {
+		Mockito.when(contextProvider.isContextAvailable(1)).thenAnswer(new Answer<Boolean>() {
 
 			@Override
 			public Boolean answer(final InvocationOnMock invocation) throws Throwable {
@@ -70,7 +70,7 @@ public class AppActivityMapperTest extends GwtTest {
 		isLoggedIn = true;
 		isContextAvailable = false;
 
-		assertTrue(appActivityMapper.getActivity(new PlannnigPlace("")) instanceof ContextLoadingActivity);
+		assertTrue(appActivityMapper.getActivity(new PlanningPlace(1)) instanceof ContextLoadingActivity);
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class AppActivityMapperTest extends GwtTest {
 		isLoggedIn = true;
 		isContextAvailable = true;
 
-		assertTrue(appActivityMapper.getActivity(new PlannnigPlace("")) instanceof PlanningActivity);
+		assertTrue(appActivityMapper.getActivity(new PlanningPlace(1)) instanceof PlanningActivity);
 	}
 
 	@Test
