@@ -30,6 +30,8 @@ public class XMLWriterTest {
 
 	@Before
 	public void setUp() {
+		deleteGeneratedXMLFile();
+
 		xmlExporter = new XMLWriter();
 		userList = UserActionFactoryMock.createUserList();
 		passwordList = UserActionFactoryMock.createPasswordList();
@@ -37,6 +39,10 @@ public class XMLWriterTest {
 	}
 
 	@After
+	public void tearDown() {
+		deleteGeneratedXMLFile();
+	}
+
 	public void deleteGeneratedXMLFile() {
 		final File generatedXML = new File(ONTRACK_XML);
 		if (generatedXML.exists()) generatedXML.delete();

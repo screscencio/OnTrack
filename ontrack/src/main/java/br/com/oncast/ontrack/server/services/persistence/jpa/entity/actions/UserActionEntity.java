@@ -34,14 +34,15 @@ public class UserActionEntity {
 	@ConversionAlias("action")
 	private ModelActionEntity actionEntity;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@ConversionAlias("project")
+	@ManyToOne(optional = false)
+	@ConversionAlias("projectRepresentation")
 	private ProjectRepresentation projectRepresentation;
 
 	public UserActionEntity() {}
 
-	public UserActionEntity(final ModelActionEntity actionEntity, final Date timestamp) {
+	public UserActionEntity(final ModelActionEntity actionEntity, final ProjectRepresentation projectRepresentation, final Date timestamp) {
 		this.actionEntity = actionEntity;
+		this.projectRepresentation = projectRepresentation;
 		this.timestamp = timestamp;
 	}
 
@@ -73,7 +74,7 @@ public class UserActionEntity {
 		return projectRepresentation;
 	}
 
-	public void setProjectRepresentation(ProjectRepresentation projectRepresentation) {
+	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
 		this.projectRepresentation = projectRepresentation;
 	}
 }

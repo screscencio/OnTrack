@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
@@ -45,7 +46,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			final Date snapshotTimestamp = new Date();
 
 			@Override
-			public synchronized ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException {
+			public synchronized ProjectSnapshot retrieveProjectSnapshot(final long projectId) throws PersistenceException {
 				try {
 					return new ProjectSnapshot(ProjectMock.getProject(), snapshotTimestamp);
 				}
@@ -60,7 +61,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public synchronized void persistActions(final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
+			public synchronized void persistActions(final long projectId, final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
 				for (final ModelAction modelAction : new ArrayList<ModelAction>(actions)) {
 					actions.add(modelAction);
 				}
@@ -95,6 +96,14 @@ public class BusinessLogicMockFactoryTestUtils {
 				return null;
 			}
 
+			@Override
+			public void persistProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {}
+
+			@Override
+			public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
+				return null;
+			}
+
 		};
 	}
 
@@ -106,7 +115,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			final Date snapshotTimestamp = new Date();
 
 			@Override
-			public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException {
+			public ProjectSnapshot retrieveProjectSnapshot(final long projectId) throws PersistenceException {
 				try {
 					return new ProjectSnapshot(ProjectMock.getProject(), snapshotTimestamp);
 				}
@@ -121,7 +130,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistActions(final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
+			public void persistActions(final long projectId, final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
 				Assert.fail("The persistence should not be accessed.");
 			}
 
@@ -151,6 +160,14 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			@Override
 			public List<Password> findAllPasswords() throws PersistenceException {
+				return null;
+			}
+
+			@Override
+			public void persistProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {}
+
+			@Override
+			public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
 				return null;
 			}
 		};

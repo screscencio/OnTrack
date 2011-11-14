@@ -17,7 +17,7 @@ public interface PersistenceService {
 	public void persistActions(final long projectId, final List<ModelAction> actionList, final Date timestamp)
 			throws PersistenceException;
 
-	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException, NoResultFoundException;
+	public ProjectSnapshot retrieveProjectSnapshot(long projectId) throws PersistenceException, NoResultFoundException;
 
 	public List<UserAction> retrieveActionsSince(long actionId) throws PersistenceException;
 
@@ -36,4 +36,6 @@ public interface PersistenceService {
 	List<Password> findAllPasswords() throws PersistenceException;
 
 	public void persistProjectRepresentation(ProjectRepresentation project) throws PersistenceException;
+
+	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException;
 }

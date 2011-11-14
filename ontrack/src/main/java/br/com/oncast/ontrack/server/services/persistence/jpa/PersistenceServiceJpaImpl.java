@@ -34,6 +34,11 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 
+	static {
+		// FIXME Remove this after project selection page is created.
+		createDefaultProjectRepresentation();
+	}
+
 	@Override
 	public void persistActions(final long projectId, final List<ModelAction> actionList, final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
@@ -41,7 +46,8 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.getTransaction().begin();
 			for (final ModelAction modelAction : actionList) {
 				final ModelActionEntity entity = convertActionToEntity(modelAction);
-				final UserActionEntity container = new UserActionEntity(entity, timestamp);
+				final ProjectRepresentation projectRepresentation = findProjectRepresentation(projectId);
+				final UserActionEntity container = new UserActionEntity(entity, projectRepresentation, timestamp);
 				em.persist(container);
 			}
 			em.getTransaction().commit();
@@ -54,6 +60,24 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				throw new PersistenceException("It was not possible to neither persist a group of actions and to rollback it.", f);
 			}
 			throw new PersistenceException("It was not possible to persist a group of actions.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select projectRepresentation from " + ProjectRepresentation.class.getSimpleName()
+					+ " as projectRepresentation where projectRepresentation.id = :projectId");
+
+			query.setParameter("projectId", projectId);
+			return (ProjectRepresentation) query.getSingleResult();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project representation with id '" + projectId + "'.", e);
 		}
 		finally {
 			em.close();
@@ -85,10 +109,12 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException, NoResultFoundException {
+	public ProjectSnapshot retrieveProjectSnapshot(final long projectId) throws PersistenceException, NoResultFoundException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select snapshot from " + ProjectSnapshot.class.getSimpleName() + " as snapshot");
+			final Query query = em.createQuery("select snapshot from " + ProjectSnapshot.class.getSimpleName()
+					+ " as snapshot where snapshot.projectRepresentation.id = :projectId");
+			query.setParameter("projectId", projectId);
 			return (ProjectSnapshot) query.getSingleResult();
 		}
 		catch (final NoResultException e) {
@@ -244,9 +270,29 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public void persistProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {
-		// FIXME Auto-generated catch block
+	public void persistProjectRepresentation(final ProjectRepresentation projectRepresentation) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.merge(projectRepresentation);
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to persist the project representation and to rollback it.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
 
+	private static void createDefaultProjectRepresentation() {
+		try {
+			new PersistenceServiceJpaImpl().persistProjectRepresentation(new ProjectRepresentation(1, "Default project"));
+		}
+		catch (final PersistenceException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Could not create default project representation.", e);
+		}
 	}
 
 	private Password convertEntityToPassword(final PasswordEntity passwordEntity) throws PersistenceException {

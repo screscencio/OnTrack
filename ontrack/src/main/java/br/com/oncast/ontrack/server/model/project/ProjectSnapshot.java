@@ -7,11 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.utils.serializer.Serializer;
 import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 @Entity
 public class ProjectSnapshot {
@@ -24,6 +26,9 @@ public class ProjectSnapshot {
 	private byte[] serializedProject;
 
 	private long lastAppliedActionId;
+
+	@OneToOne
+	private ProjectRepresentation projectRepresentation;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
@@ -60,7 +65,10 @@ public class ProjectSnapshot {
 	}
 
 	public Project getProject() throws IOException, ClassNotFoundException {
-		return (Project) Serializer.deserialize(serializedProject);
+		final Project project = (Project) Serializer.deserialize(serializedProject);
+		// FIXME Should this be moved to other place?
+		project.setProjectRepresentation(projectRepresentation);
+		return project;
 	}
 
 	public void setProject(final Project project) throws IOException {
@@ -73,6 +81,14 @@ public class ProjectSnapshot {
 
 	public void setLastAppliedActionId(final long lastAppliedActionId) {
 		this.lastAppliedActionId = lastAppliedActionId;
+	}
+
+	public ProjectRepresentation getProjectRepresentation() {
+		return projectRepresentation;
+	}
+
+	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
+		this.projectRepresentation = projectRepresentation;
 	}
 
 }

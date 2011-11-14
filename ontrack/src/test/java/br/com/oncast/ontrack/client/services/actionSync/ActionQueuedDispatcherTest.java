@@ -40,9 +40,7 @@ public class ActionQueuedDispatcherTest {
 	}
 
 	private ActionSyncServiceTestUtils actionSyncServiceTestUtils;
-
 	private RequestDispatchServiceTestImplementation requestDispatchServiceMock;
-
 	private ActionQueuedDispatcher actionQueuedDispatcher;
 
 	@Before
@@ -51,7 +49,7 @@ public class ActionQueuedDispatcherTest {
 		requestDispatchServiceMock = new RequestDispatchServiceTestImplementation();
 		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock,
 				actionSyncServiceTestUtils.getClientIdentificationProviderMock(),
-				actionSyncServiceTestUtils.getErrorTreatmentServiceMock());
+				actionSyncServiceTestUtils.getProjectRepresentationProvider(), actionSyncServiceTestUtils.getErrorTreatmentServiceMock());
 	}
 
 	@Test

@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.server.business;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,20 +18,24 @@ import br.com.oncast.ontrack.mocks.actions.ActionMock;
 import br.com.oncast.ontrack.mocks.models.ProjectMock;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class BusinessLogicTest {
 
+	private static final int DEFAULT_PROJECT_ID = 1;
 	private EntityManager entityManager;
 
 	@Before
@@ -46,7 +53,7 @@ public class BusinessLogicTest {
 		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithDumbPersistenceMockAndDumbBroadcastMock();
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeUpdateAction(new UUID("id"), "bllla"));
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(actionList));
 	}
 
 	@Test(expected = InvalidIncomingAction.class)
@@ -54,7 +61,7 @@ public class BusinessLogicTest {
 		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithDumbNonWritablePersistenceMockAndDumbBroadcastMock();
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(new UUID("0")));
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(actionList));
 	}
 
 	@Test
@@ -67,8 +74,8 @@ public class BusinessLogicTest {
 			ActionExecuter.executeAction(context, action);
 		}
 
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), ActionMock.getActions()));
-		final Scope projectScope = business.loadProject().getProjectScope();
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(ActionMock.getActions()));
+		final Scope projectScope = loadDefaultProject(business).getProjectScope();
 
 		DeepEqualityTestUtils.assertObjectEquality(project.getProjectScope(), projectScope);
 	}
@@ -89,25 +96,25 @@ public class BusinessLogicTest {
 			rollbackActions.add(ActionExecuter.executeAction(context, action).getReverseAction());
 		}
 
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actions));
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(actions));
 
 		Collections.reverse(rollbackActions);
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), rollbackActions));
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(rollbackActions));
 	}
 
 	@Test
 	public void shouldLoadProjectBuiltUponDefaultSnapshotAndOneAction() throws Exception {
 		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
-		final Project project1 = business.loadProject();
+		final Project project1 = loadDefaultProject(business);
 
 		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		action.execute(new ProjectContext(project1));
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(action);
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(actionList));
 
-		final Project project2 = business.loadProject();
+		final Project project2 = loadDefaultProject(business);
 
 		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
 	}
@@ -115,7 +122,7 @@ public class BusinessLogicTest {
 	@Test
 	public void shouldLoadProjectBuiltUponDefaultSnapshotAndTwoActions() throws Exception {
 		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
-		final Project project1 = business.loadProject();
+		final Project project1 = loadDefaultProject(business);
 
 		final ModelAction action1 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
@@ -128,9 +135,9 @@ public class BusinessLogicTest {
 		action2.execute(context);
 		actionList.add(action2);
 
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(actionList));
 
-		final Project project2 = business.loadProject();
+		final Project project2 = loadDefaultProject(business);
 
 		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
 	}
@@ -138,7 +145,7 @@ public class BusinessLogicTest {
 	@Test
 	public void shouldLoadProjectBuiltUponDefaultSnapshotAndManyActions() throws Exception {
 		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
-		final Project project1 = business.loadProject();
+		final Project project1 = loadDefaultProject(business);
 
 		final ProjectContext context = new ProjectContext(project1);
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
@@ -147,9 +154,9 @@ public class BusinessLogicTest {
 		for (final ModelAction action : actionList)
 			action.execute(context);
 
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(actionList));
 
-		final Project project2 = business.loadProject();
+		final Project project2 = loadDefaultProject(business);
 
 		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
 	}
@@ -157,7 +164,7 @@ public class BusinessLogicTest {
 	@Test
 	public void shouldLoadProjectBuiltUponDefaultSnapshotAndManyActions2() throws Exception {
 		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
-		final Project project1 = business.loadProject();
+		final Project project1 = loadDefaultProject(business);
 
 		final ProjectContext context = new ProjectContext(project1);
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
@@ -167,10 +174,10 @@ public class BusinessLogicTest {
 			actionList.add(action);
 
 			action.execute(context);
-			business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+			business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(actionList));
 		}
 
-		final Project project2 = business.loadProject();
+		final Project project2 = loadDefaultProject(business);
 
 		DeepEqualityTestUtils.assertObjectEquality(project1, project2);
 
@@ -179,12 +186,31 @@ public class BusinessLogicTest {
 		for (final ModelAction action : actionList)
 			action.execute(context);
 
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), actionList));
+		business.handleIncomingActionSyncRequest(ModelActionSyncRequestFactory.create(actionList));
 
-		final Project project3 = business.loadProject();
+		final Project project3 = loadDefaultProject(business);
 
 		DeepEqualityTestUtils.assertObjectEquality(project1, project3);
 	}
 
+	private Project loadDefaultProject(final BusinessLogic business) throws UnableToLoadProjectException {
+		return business.loadProject(new ProjectContextRequest(DEFAULT_PROJECT_ID));
+	}
+
+	private static class ModelActionSyncRequestFactory {
+
+		final static ProjectRepresentation projectRepresentation;
+
+		static {
+			projectRepresentation = mock(ProjectRepresentation.class);
+			when(projectRepresentation.getId()).thenReturn(0L);
+			when(projectRepresentation.getName()).thenReturn("Project Name");
+		}
+
+		public static ModelActionSyncRequest create(final List<ModelAction> actionList) {
+			return new ModelActionSyncRequest(new UUID(), projectRepresentation, actionList);
+		}
+
+	}
 	// FIXME Test that incoming actions should be post-processed. Eg. SDPA TIMESTAMP should be re-set.
 }

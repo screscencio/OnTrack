@@ -46,6 +46,7 @@ public class XMLExporterServlet extends HttpServlet {
 
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/xml");
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + business.loadProject().getProjectScope().getDescription() + ".xml\"");
+		// FIXME Use a correct projetId
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + business.loadProject(null).getProjectScope().getDescription() + ".xml\"");
 	}
 }

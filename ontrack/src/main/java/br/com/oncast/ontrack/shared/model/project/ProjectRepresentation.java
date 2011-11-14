@@ -9,7 +9,11 @@ import javax.persistence.Id;
 
 import org.simpleframework.xml.Attribute;
 
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+
 @Entity
+// Should we create another annotation that represents that a class must no be converted?
+@ConvertTo(ProjectRepresentation.class)
 public class ProjectRepresentation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -30,6 +34,11 @@ public class ProjectRepresentation implements Serializable {
 		this.id = id;
 	}
 
+	public ProjectRepresentation(final long id, final String name) {
+		this.id = id;
+		this.name = name;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -44,6 +53,14 @@ public class ProjectRepresentation implements Serializable {
 
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
 	}
 
 	@Override

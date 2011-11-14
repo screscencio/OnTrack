@@ -57,8 +57,9 @@ public class ActionSyncService {
 
 	private void processServerActionSyncEvent(final ServerActionSyncEvent event) {
 		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
-		if (isClientOriginatedRequest(modelActionSyncRequest)) return;
-		if (!isPertinent_isThisClientProjectAction(modelActionSyncRequest)) return;
+		if (isRequestOriginatedByThisClient(modelActionSyncRequest)) return;
+		// FIXME Test that a client ignores other projects actions
+		if (!isThisClientProjectAction(modelActionSyncRequest)) return;
 
 		try {
 			for (final ModelAction modelAction : modelActionSyncRequest.getActionList())
@@ -70,17 +71,16 @@ public class ActionSyncService {
 		}
 	}
 
-	// FIXME Review this method and its name
-	private boolean isPertinent_isThisClientProjectAction(final ModelActionSyncRequest modelActionSyncRequest) {
-		return projectRepresentationProvider.getCurrentProjectRepresentation().equals(modelActionSyncRequest.getProjectRepresentation());
-	}
-
 	private void handleActionExecution(final ModelAction action, final boolean isUserAction) {
 		if (!isUserAction) return;
 		actionQueuedDispatcher.dispatch(action);
 	}
 
-	private boolean isClientOriginatedRequest(final ModelActionSyncRequest modelActionSyncRequest) {
+	private boolean isRequestOriginatedByThisClient(final ModelActionSyncRequest modelActionSyncRequest) {
 		return modelActionSyncRequest.getClientId().equals(clientIdentificationProvider.getClientId());
+	}
+
+	private boolean isThisClientProjectAction(final ModelActionSyncRequest modelActionSyncRequest) {
+		return projectRepresentationProvider.getCurrentProjectRepresentation().getId() == modelActionSyncRequest.getRequestedProjectId();
 	}
 }

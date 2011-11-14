@@ -6,11 +6,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
-import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentMock;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
-import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
+import br.com.oncast.ontrack.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -54,8 +52,7 @@ public class InsertFatherTest extends GwtTest {
 
 		projectContext = new ProjectContext((new Project(scope, ReleaseFactoryTestUtil.create(""))));
 
-		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
-		actionExecutionService = new ActionExecutionServiceImpl(contextService, new ErrorTreatmentMock());
+		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 

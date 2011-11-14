@@ -9,7 +9,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	@Override
 	public ProjectContext getProjectContext(final long projectId) {
 		if (isContextAvailable(projectId)) return projectContext;
-		throw new RuntimeException();
+		throw new RuntimeException("There is no project context avaliable.");
 	}
 
 	// TODO +Verify: Throw an event on the eventBus when the context is set so that UI and other services can update theirselfs.
@@ -20,6 +20,6 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	@Override
 	public boolean isContextAvailable(final long projectId) {
-		return (projectContext != null) && projectContext.getProjectRepresentation().getId() == projectId;
+		return (projectContext != null) && (projectContext.getProjectRepresentation().getId() == projectId);
 	}
 }

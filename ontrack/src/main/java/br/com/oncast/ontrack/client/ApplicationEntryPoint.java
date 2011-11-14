@@ -17,7 +17,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class ApplicationEntryPoint implements EntryPoint {
 
 	// FIXME Change to ProjectSelectionPlace
-	private static final Place DEFAULT_APP_PLACE = new PlanningPlace(0);
+	private static final long DEFAULT_PROJECT_ID = 1;
+	private static final Place DEFAULT_APP_PLACE = new PlanningPlace(DEFAULT_PROJECT_ID);
 
 	@Override
 	public void onModuleLoad() {

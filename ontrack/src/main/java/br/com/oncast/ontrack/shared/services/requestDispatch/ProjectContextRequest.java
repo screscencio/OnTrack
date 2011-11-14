@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.shared.services.requestDispatch;
 
 import java.io.Serializable;
 
-// FIXME Go all the way to the server carrying the requested project id, so that business logic can know what to search in persistence.
 public class ProjectContextRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;

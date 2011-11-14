@@ -12,14 +12,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
-import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentMock;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
-import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
+import br.com.oncast.ontrack.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
@@ -56,8 +54,7 @@ public class BindReleaseTest extends GwtTest {
 		tree = new ScopeTree();
 		tree.setContext(projectContext);
 
-		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
-		actionExecutionService = new ActionExecutionServiceImpl(contextService, new ErrorTreatmentMock());
+		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 

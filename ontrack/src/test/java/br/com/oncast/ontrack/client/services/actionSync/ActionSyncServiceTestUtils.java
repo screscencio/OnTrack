@@ -10,6 +10,7 @@ import java.util.Set;
 import junit.framework.Assert;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
@@ -24,6 +25,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectExcep
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -34,6 +36,8 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextReque
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class ActionSyncServiceTestUtils {
+
+	private static final int DEFAULT_PROJECT_ID = 1;
 
 	protected interface ProjectContextLoadCallback {
 		void onProjectContextLoaded(ProjectContext context);
@@ -174,7 +178,7 @@ public class ActionSyncServiceTestUtils {
 			@Override
 			public void dispatch(final ProjectContextRequest projectContextRequest, final DispatchCallback<ProjectContext> dispatchCallback) {
 				try {
-					final Project project = getBusinessLogicMock().loadProject();
+					final Project project = getBusinessLogicMock().loadProject(new ProjectContextRequest(DEFAULT_PROJECT_ID));
 					dispatchCallback.onRequestCompletition(new ProjectContext(project));
 				}
 				catch (final UnableToLoadProjectException e) {
@@ -208,5 +212,11 @@ public class ActionSyncServiceTestUtils {
 				// Purposefully ignored exception
 			}
 		};
+	}
+
+	public ProjectRepresentationProvider getProjectRepresentationProvider() {
+		final ProjectRepresentationProvider projectRepresentationProvider = new ProjectRepresentationProvider();
+		projectRepresentationProvider.setProjectRepresentation(new ProjectRepresentation(DEFAULT_PROJECT_ID, "Default project"));
+		return projectRepresentationProvider;
 	}
 }
