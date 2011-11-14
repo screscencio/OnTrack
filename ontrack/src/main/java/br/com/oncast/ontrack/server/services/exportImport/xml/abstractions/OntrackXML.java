@@ -8,6 +8,7 @@ import org.simpleframework.xml.Root;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 @Root
@@ -15,6 +16,9 @@ public class OntrackXML {
 
 	@Attribute
 	private String version;
+
+	@ElementList
+	private List<ProjectRepresentation> projectRepresentations;
 
 	@ElementList
 	private List<User> users;
@@ -56,4 +60,13 @@ public class OntrackXML {
 	public List<UserAction> getUserActions() {
 		return userActions;
 	}
+
+	public List<ProjectRepresentation> getProjectRepresentations() {
+		return projectRepresentations;
+	}
+
+	public void setProjectRepresentations(List<ProjectRepresentation> projectRepresentations) {
+		this.projectRepresentations = projectRepresentations;
+	}
+
 }

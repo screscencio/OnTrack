@@ -6,6 +6,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 public class UserAction {
@@ -20,6 +21,9 @@ public class UserAction {
 	@IgnoredByDeepEquality
 	private Date timestamp;
 
+	@Element
+	private ProjectRepresentation projectRepresentation;
+
 	public UserAction() {}
 
 	public long getId() {
@@ -32,5 +36,9 @@ public class UserAction {
 
 	public Date getTimestamp() {
 		return timestamp;
+	}
+
+	public ProjectRepresentation getProjectRepresentation() {
+		return projectRepresentation;
 	}
 }

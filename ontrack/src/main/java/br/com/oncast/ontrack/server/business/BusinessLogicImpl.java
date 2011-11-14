@@ -26,6 +26,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
+// FIXME: Update Verify and LoadProject Methods for multi project
 class BusinessLogicImpl implements BusinessLogic {
 
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
@@ -46,10 +47,11 @@ class BusinessLogicImpl implements BusinessLogic {
 		LOGGER.debug("Processing incoming action batch.");
 		try {
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
+			final long projectId = modelActionSyncRequest.getRequestedProjectId();
 			synchronized (this) {
 				validateIncomingActions(actionList);
 				postProcessIncomingActions(actionList);
-				persistenceService.persistActions(actionList, new Date());
+				persistenceService.persistActions(projectId, actionList, new Date());
 			}
 			actionBroadcastService.broadcast(modelActionSyncRequest);
 		}

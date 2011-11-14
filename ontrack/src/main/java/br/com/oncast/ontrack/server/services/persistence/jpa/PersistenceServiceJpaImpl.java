@@ -22,19 +22,20 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.UserEnt
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 // TODO Analise using CriteriaApi instead of HQL.
 // TODO Implement better exception handling for JPA exceptions
-// TODO Separate authentication/authorization peristence methods from business related methods.
+// TODO Separate authentication/authorization persistence methods from business related methods.
 public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 
 	@Override
-	public void persistActions(final List<ModelAction> actionList, final Date timestamp) throws PersistenceException {
+	public void persistActions(final long projectId, final List<ModelAction> actionList, final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
@@ -242,6 +243,12 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@Override
+	public void persistProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {
+		// FIXME Auto-generated catch block
+
+	}
+
 	private Password convertEntityToPassword(final PasswordEntity passwordEntity) throws PersistenceException {
 		final Password password;
 		try {
@@ -274,4 +281,5 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		return user;
 	}
+
 }

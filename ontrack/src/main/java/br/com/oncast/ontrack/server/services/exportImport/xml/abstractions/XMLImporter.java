@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 public class XMLImporter {
@@ -41,16 +42,23 @@ public class XMLImporter {
 	public void persistObjects() throws PersistenceException {
 		if (ontrackXML == null) throw new RuntimeException("You must use loadXML method to load xml before use this method.");
 
+		persistProjectRepresentations(ontrackXML.getProjectRepresentations());
 		persistActions(ontrackXML.getUserActions());
 		persistUser(ontrackXML.getUsers());
 		persistPasswords(ontrackXML.getPasswords());
+	}
+
+	private void persistProjectRepresentations(final List<ProjectRepresentation> projectRepresentations) throws PersistenceException {
+		for (final ProjectRepresentation project : projectRepresentations) {
+			persistanceService.persistProjectRepresentation(project);
+		}
 	}
 
 	private void persistActions(final List<UserAction> userActions) throws PersistenceException {
 		for (final UserAction userAction : userActions) {
 			final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
 			actions.add(userAction.getModelAction());
-			persistanceService.persistActions(actions, userAction.getTimestamp());
+			persistanceService.persistActions(userAction.getProjectRepresentation().getId(), actions, userAction.getTimestamp());
 		}
 	}
 
