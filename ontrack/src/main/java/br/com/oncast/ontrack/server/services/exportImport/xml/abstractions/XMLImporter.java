@@ -42,7 +42,8 @@ public class XMLImporter {
 	public void persistObjects() throws PersistenceException {
 		if (ontrackXML == null) throw new RuntimeException("You must use loadXML method to load xml before use this method.");
 
-		persistProjectRepresentations(ontrackXML.getProjectRepresentations());
+		// FIXME Persist projects. Discuss how this will be done with Rodrigo Machado.
+		// persistProjectRepresentations(ontrackXML.getProjectRepresentations());
 		persistActions(ontrackXML.getUserActions());
 		persistUser(ontrackXML.getUsers());
 		persistPasswords(ontrackXML.getPasswords());
@@ -50,7 +51,7 @@ public class XMLImporter {
 
 	private void persistProjectRepresentations(final List<ProjectRepresentation> projectRepresentations) throws PersistenceException {
 		for (final ProjectRepresentation project : projectRepresentations) {
-			persistanceService.persistProjectRepresentation(project);
+			persistanceService.persistOrUpdateProjectRepresentation(project);
 		}
 	}
 

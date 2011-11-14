@@ -97,7 +97,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {}
+			public void persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {}
 
 			@Override
 			public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
@@ -164,7 +164,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {}
+			public void persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {}
 
 			@Override
 			public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
