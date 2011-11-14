@@ -26,8 +26,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectRepresentationRequest;
 
-// FIXME: Update Verify and LoadProject Methods for multi project
 class BusinessLogicImpl implements BusinessLogic {
 
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
@@ -40,9 +40,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.actionBroadcastService = actionBroadcastService;
 	}
 
-	/**
-	 * @see br.com.oncast.ontrack.server.business.BusinessLogic#handleIncomingActionSyncRequest(br.com.oncast.ontrack.shared.model.actions.ModelAction)
-	 */
 	@Override
 	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException {
 		LOGGER.debug("Processing incoming action batch.");
@@ -102,9 +99,17 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	/**
-	 * @see br.com.oncast.ontrack.server.business.BusinessLogic#loadProject()
-	 */
+	// FIXME Test this method.
+	@Override
+	public void persistProjectRepresentation(final ProjectRepresentationRequest projectRepresentationRequest) throws UnableToPersistProjectRepresentation {
+		try {
+			persistenceService.persistOrUpdateProjectRepresentation(projectRepresentationRequest.getProjectRepresentation());
+		}
+		catch (final PersistenceException e) {
+			throw new UnableToPersistProjectRepresentation(e);
+		}
+	}
+
 	@Override
 	public synchronized Project loadProject(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException {
 		return loadProject(projectContextRequest.getRequestedProjectId());
@@ -185,4 +190,5 @@ class BusinessLogicImpl implements BusinessLogic {
 
 		return project;
 	}
+
 }

@@ -8,7 +8,6 @@ import org.simpleframework.xml.Root;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 @Root
@@ -18,13 +17,14 @@ public class OntrackXML {
 	private String version;
 
 	@ElementList
-	private List<ProjectRepresentation> projectRepresentations;
-
-	@ElementList
 	private List<User> users;
 
 	@ElementList
 	private List<Password> passwords;
+
+	// FIXME Include projects in xml. Discuss how this will be done with Rodrigo Machado.
+	// @ElementList
+	// private List<ProjectRepresentation> projectRepresentations;
 
 	@ElementList
 	private List<UserAction> userActions;
@@ -60,13 +60,4 @@ public class OntrackXML {
 	public List<UserAction> getUserActions() {
 		return userActions;
 	}
-
-	public List<ProjectRepresentation> getProjectRepresentations() {
-		return projectRepresentations;
-	}
-
-	public void setProjectRepresentations(List<ProjectRepresentation> projectRepresentations) {
-		this.projectRepresentations = projectRepresentations;
-	}
-
 }

@@ -21,7 +21,10 @@ public class UserAction {
 	@IgnoredByDeepEquality
 	private Date timestamp;
 
-	@Element
+	// FIXME Include this in xml generation. Probably this element cannot be null. Maybe remove @IgnoredByDeepEquality. Discuss how this will be done with
+	// Rodrigo Machado.
+	@Element(required = false)
+	@IgnoredByDeepEquality
 	private ProjectRepresentation projectRepresentation;
 
 	public UserAction() {}

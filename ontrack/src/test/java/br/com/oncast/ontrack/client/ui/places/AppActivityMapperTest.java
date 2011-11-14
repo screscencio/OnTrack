@@ -13,7 +13,6 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
-import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingPlace;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
@@ -57,12 +56,6 @@ public class AppActivityMapperTest extends GwtTest {
 		isLoggedIn = false;
 
 		assertTrue(appActivityMapper.getActivity(null) instanceof LoginActivity);
-	}
-
-	@Test
-	public void whenUserLoggedInAndPlaceInstanceOfContextLoadingPlaceShouldCreateContextLoadingActivity() {
-		isLoggedIn = true;
-		assertTrue(appActivityMapper.getActivity(new ContextLoadingPlace(null)) instanceof ContextLoadingActivity);
 	}
 
 	@Test

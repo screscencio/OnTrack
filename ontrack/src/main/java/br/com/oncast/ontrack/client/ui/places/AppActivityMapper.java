@@ -26,9 +26,6 @@ public class AppActivityMapper implements ActivityMapper {
 		// XXX Auth; Lazy load login activity when login place is received.
 		if (!services.getAuthenticationService().isUserLoggedIn()) return createLoginActivity(place);
 
-		// FIXME Needed?
-		// if (place instanceof ContextLoadingPlace) return createContextLoadingActivity(((ContextLoadingPlace) place).getDestinationPlace());
-
 		if (place instanceof ProjectDependentPlace) {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
 			final long requestedProjectId = projectDependentPlace.getRequestedProjectId();

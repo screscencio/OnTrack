@@ -35,7 +35,7 @@ public interface PersistenceService {
 
 	List<Password> findAllPasswords() throws PersistenceException;
 
-	public void persistProjectRepresentation(ProjectRepresentation project) throws PersistenceException;
+	public void persistOrUpdateProjectRepresentation(ProjectRepresentation project) throws PersistenceException;
 
 	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException;
 }

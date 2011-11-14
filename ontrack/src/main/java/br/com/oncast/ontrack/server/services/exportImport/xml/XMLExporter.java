@@ -16,8 +16,6 @@ public class XMLExporter {
 	private final PersistenceService persistanceService;
 	private final XMLWriter exporter;
 
-	// FIXME Verify where we can save the current version of xml.
-	// This should be the last migration time stamp executed.
 	private final String version;
 	private boolean isConfigured;
 	private final OutputStream outputStream;

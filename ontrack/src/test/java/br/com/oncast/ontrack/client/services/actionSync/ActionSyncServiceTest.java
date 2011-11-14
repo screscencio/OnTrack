@@ -1,8 +1,5 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,14 +12,13 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ValueHolder;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
+import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -30,31 +26,30 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectRepresentationRequest;
 
 public class ActionSyncServiceTest {
 
 	private ActionSyncServiceTestUtils actionSyncServiceTestUtils;
 	private EntityManager entityManager;
 
-	@Mock
-	private ProjectRepresentationProvider projectRepresentationProvider;
+	private ProjectRepresentation projectRepresentation;
 
 	@Before
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-
-		final ProjectRepresentation projectRepresentation = mock(ProjectRepresentation.class);
-		when(projectRepresentationProvider.getCurrentProjectRepresentation()).thenReturn(projectRepresentation);
-		when(projectRepresentation.getId()).thenReturn(0L);
-
+	public void setUp() throws Exception {
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 		actionSyncServiceTestUtils = new ActionSyncServiceTestUtils();
+
+		final ProjectRepresentationProvider projectRepresentationProvider = actionSyncServiceTestUtils.getProjectRepresentationProviderMock();
+		projectRepresentation = projectRepresentationProvider.getCurrentProjectRepresentation();
 		new ActionSyncService(actionSyncServiceTestUtils.getRequestDispatchServiceMock(),
 				actionSyncServiceTestUtils.getServerPushClientServiceMock(),
 				actionSyncServiceTestUtils.getActionExecutionServiceMock(),
 				actionSyncServiceTestUtils.getClientIdentificationProviderMock(),
 				projectRepresentationProvider,
 				actionSyncServiceTestUtils.getErrorTreatmentServiceMock());
+
+		assureDefaultProjectRepresentationExistance();
 	}
 
 	@After
@@ -123,7 +118,7 @@ public class ActionSyncServiceTest {
 			@Override
 			public void onProjectContextLoaded(final ProjectContext context) {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
-						projectRepresentationProvider.getCurrentProjectRepresentation(),
+						projectRepresentation,
 						createValidOneActionActionList(context));
 				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
 				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
@@ -148,7 +143,7 @@ public class ActionSyncServiceTest {
 			@Override
 			public void onProjectContextLoaded(final ProjectContext context) {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
-						projectRepresentationProvider.getCurrentProjectRepresentation(), createValidOneActionActionList(context));
+						projectRepresentation, createValidOneActionActionList(context));
 				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
 			}
 		});
@@ -170,7 +165,7 @@ public class ActionSyncServiceTest {
 			@Override
 			public void onProjectContextLoaded(final ProjectContext context) {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(actionSyncServiceTestUtils
-						.getClientIdentificationProviderMock().getClientId(), projectRepresentationProvider.getCurrentProjectRepresentation(),
+						.getClientIdentificationProviderMock().getClientId(), projectRepresentation,
 						createValidOneActionActionList(context));
 				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
 			}
@@ -179,7 +174,7 @@ public class ActionSyncServiceTest {
 
 	private void loadProjectContext(final ProjectContextLoadCallback projectContextLoadCallback) {
 		actionSyncServiceTestUtils.getRequestDispatchServiceMock().dispatch(
-				new ProjectContextRequest(projectRepresentationProvider.getCurrentProjectRepresentation().getId()), new DispatchCallback<ProjectContext>() {
+				new ProjectContextRequest(projectRepresentation.getId()), new DispatchCallback<ProjectContext>() {
 
 					@Override
 					public void onRequestCompletition(final ProjectContext context) {
@@ -198,5 +193,10 @@ public class ActionSyncServiceTest {
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeInsertChildAction(context.getProjectScope().getId(), "filho"));
 		return actionList;
+	}
+
+	private void assureDefaultProjectRepresentationExistance() throws Exception {
+		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().persistProjectRepresentation(
+				new ProjectRepresentationRequest(projectRepresentation));
 	}
 }

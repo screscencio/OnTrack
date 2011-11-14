@@ -269,8 +269,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	// FIXME Test this method.
 	@Override
-	public void persistProjectRepresentation(final ProjectRepresentation projectRepresentation) throws PersistenceException {
+	public void persistOrUpdateProjectRepresentation(final ProjectRepresentation projectRepresentation) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
@@ -285,9 +286,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	// FIXME Remove this method after project selection is done.
 	private static void createDefaultProjectRepresentation() {
 		try {
-			new PersistenceServiceJpaImpl().persistProjectRepresentation(new ProjectRepresentation(1, "Default project"));
+			new PersistenceServiceJpaImpl().persistOrUpdateProjectRepresentation(new ProjectRepresentation(1, "Default project"));
 		}
 		catch (final PersistenceException e) {
 			e.printStackTrace();

@@ -55,10 +55,6 @@ public class PersistenceServiceJpaTest {
 		assureDefaultProjectRepresentationExistance();
 	}
 
-	private void assureDefaultProjectRepresentationExistance() throws Exception {
-		persistenceService.persistProjectRepresentation(new ProjectRepresentation(DEFAULT_PROJECT_ID, "Default project"));
-	}
-
 	@After
 	public void tearDown() {
 		entityManager.close();
@@ -280,6 +276,10 @@ public class PersistenceServiceJpaTest {
 			throw new UnableToLoadProjectException("It was not possible to create a blank project, because the project with id '" + DEFAULT_PROJECT_ID
 					+ "' was not found.");
 		}
+	}
+
+	private void assureDefaultProjectRepresentationExistance() throws Exception {
+		persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(DEFAULT_PROJECT_ID, "Default project"));
 	}
 
 }

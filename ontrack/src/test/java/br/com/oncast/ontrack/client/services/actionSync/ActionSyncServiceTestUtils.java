@@ -214,7 +214,7 @@ public class ActionSyncServiceTestUtils {
 		};
 	}
 
-	public ProjectRepresentationProvider getProjectRepresentationProvider() {
+	public ProjectRepresentationProvider getProjectRepresentationProviderMock() {
 		final ProjectRepresentationProvider projectRepresentationProvider = new ProjectRepresentationProvider();
 		projectRepresentationProvider.setProjectRepresentation(new ProjectRepresentation(DEFAULT_PROJECT_ID, "Default project"));
 		return projectRepresentationProvider;
