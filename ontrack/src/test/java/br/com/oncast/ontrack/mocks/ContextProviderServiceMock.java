@@ -12,7 +12,7 @@ public class ContextProviderServiceMock implements ContextProviderService {
 	}
 
 	@Override
-	public ProjectContext getProjectContext() {
+	public ProjectContext getProjectContext(final long projectId) {
 		if (projectContext != null) return projectContext;
 		throw new RuntimeException();
 	}
@@ -23,7 +23,7 @@ public class ContextProviderServiceMock implements ContextProviderService {
 	}
 
 	@Override
-	public boolean isContextAvailable() {
+	public boolean isContextAvailable(final long projectId) {
 		return (projectContext != null);
 	}
 }

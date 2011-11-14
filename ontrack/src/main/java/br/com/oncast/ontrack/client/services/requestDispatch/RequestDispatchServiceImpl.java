@@ -16,7 +16,7 @@ public class RequestDispatchServiceImpl implements RequestDispatchService {
 
 	@Override
 	public void dispatch(final ProjectContextRequest projectContextRequest, final DispatchCallback<ProjectContext> dispatchCallback) {
-		rpcServiceAsync.loadProject(new AsyncCallback<Project>() {
+		rpcServiceAsync.loadProject(projectContextRequest, new AsyncCallback<Project>() {
 
 			@Override
 			public void onSuccess(final Project project) {

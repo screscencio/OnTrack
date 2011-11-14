@@ -25,6 +25,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
 // FIXME: Update Verify and LoadProject Methods for multi project
 class BusinessLogicImpl implements BusinessLogic {
@@ -49,7 +50,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
 			final long projectId = modelActionSyncRequest.getRequestedProjectId();
 			synchronized (this) {
-				validateIncomingActions(actionList);
+				validateIncomingActions(projectId, actionList);
 				postProcessIncomingActions(actionList);
 				persistenceService.persistActions(projectId, actionList, new Date());
 			}
@@ -67,10 +68,10 @@ class BusinessLogicImpl implements BusinessLogic {
 	// DECISION It is common sense that this validation is needed at this time (of development). Roberto thinks it should be a provisory solution, as it may be
 	// a major performance bottleneck, but that the solution is good to ensure that BetaTesters are safe while the application matures. Rodrigo thinks it should
 	// be permanent (but maybe passive of refactorings) to guarantee user safety in the long term.
-	private void validateIncomingActions(final List<ModelAction> actionList) throws UnableToHandleActionException {
+	private void validateIncomingActions(final long projectId, final List<ModelAction> actionList) throws UnableToHandleActionException {
 		LOGGER.debug("Validating action upon the project current state.");
 		try {
-			final Project project = loadProject();
+			final Project project = loadProject(projectId);
 			final ProjectContext context = new ProjectContext(project);
 			for (final ModelAction action : actionList)
 				ActionExecuter.executeAction(context, action);
@@ -105,10 +106,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	 * @see br.com.oncast.ontrack.server.business.BusinessLogic#loadProject()
 	 */
 	@Override
-	public synchronized Project loadProject() throws UnableToLoadProjectException {
-		LOGGER.debug("Loading project current state.");
+	public synchronized Project loadProject(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException {
+		return loadProject(projectContextRequest.getRequestedProjectId());
+	}
+
+	private Project loadProject(final long projectId) throws UnableToLoadProjectException {
+		LOGGER.debug("Loading current state for project id '" + projectId + "'.");
 		try {
-			final ProjectSnapshot snapshot = loadProjectSnapshot();
+			final ProjectSnapshot snapshot = loadProjectSnapshot(projectId);
 			final List<UserAction> actionList = persistenceService.retrieveActionsSince(snapshot.getLastAppliedActionId());
 
 			Project project = snapshot.getProject();
@@ -136,26 +141,29 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException {
+	private ProjectSnapshot loadProjectSnapshot(final long projectId) throws PersistenceException, UnableToLoadProjectException {
 		ProjectSnapshot snapshot;
 		try {
-			snapshot = persistenceService.retrieveProjectSnapshot();
+			snapshot = persistenceService.retrieveProjectSnapshot(projectId);
 		}
 		catch (final NoResultFoundException e) {
-			snapshot = createBlankProject();
+			snapshot = createBlankProject(projectId);
 		}
 		return snapshot;
 	}
 
-	private ProjectSnapshot createBlankProject() throws UnableToLoadProjectException {
+	// FIXME Possible remove this method. The creation of project representation and snapshot should be done in another method, called by RPC.
+	private ProjectSnapshot createBlankProject(final long projectId) throws UnableToLoadProjectException {
 		final Scope projectScope = new Scope("Project", new UUID("0"));
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {
-			return new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
+			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
+			projectSnapshot.setProjectRepresentation(persistenceService.findProjectRepresentation(projectId));
+			return projectSnapshot;
 		}
-		catch (final IOException e) {
-			throw new UnableToLoadProjectException("It was not possible to create a blank project.");
+		catch (final Exception e) {
+			throw new UnableToLoadProjectException("It was not possible to create a blank project.", e);
 		}
 	}
 

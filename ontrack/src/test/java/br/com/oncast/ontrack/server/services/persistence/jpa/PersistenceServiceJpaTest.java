@@ -31,6 +31,7 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -41,14 +42,21 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class PersistenceServiceJpaTest {
 
+	private static final int DEFAULT_PROJECT_ID = 1;
+
 	private PersistenceServiceJpaImpl persistenceService;
 
 	private EntityManager entityManager;
 
 	@Before
-	public void before() {
+	public void before() throws Exception {
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 		persistenceService = new PersistenceServiceJpaImpl();
+		assureDefaultProjectRepresentationExistance();
+	}
+
+	private void assureDefaultProjectRepresentationExistance() throws Exception {
+		persistenceService.persistProjectRepresentation(new ProjectRepresentation(DEFAULT_PROJECT_ID, "Default project"));
 	}
 
 	@After
@@ -61,7 +69,7 @@ public class PersistenceServiceJpaTest {
 		for (final ModelAction action : ActionMock.getActions()) {
 			final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 			actionList.add(action);
-			persistenceService.persistActions(actionList, new Date());
+			persistenceService.persistActions(DEFAULT_PROJECT_ID, actionList, new Date());
 		}
 
 		final List<UserAction> userActions = persistenceService.retrieveActionsSince(0);
@@ -70,7 +78,7 @@ public class PersistenceServiceJpaTest {
 		for (final ModelAction action : secondWaveOfActions) {
 			final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 			actionList.add(action);
-			persistenceService.persistActions(actionList, new Date());
+			persistenceService.persistActions(DEFAULT_PROJECT_ID, actionList, new Date());
 		}
 
 		final List<UserAction> actionsReceived = persistenceService.retrieveActionsSince(userActions.get(userActions.size() - 1).getId());
@@ -248,7 +256,7 @@ public class PersistenceServiceJpaTest {
 	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException {
 		ProjectSnapshot snapshot;
 		try {
-			snapshot = persistenceService.retrieveProjectSnapshot();
+			snapshot = persistenceService.retrieveProjectSnapshot(DEFAULT_PROJECT_ID);
 		}
 		catch (final NoResultFoundException e) {
 			snapshot = createBlankProject();
@@ -261,10 +269,16 @@ public class PersistenceServiceJpaTest {
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {
-			return new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
+			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
+			projectSnapshot.setProjectRepresentation(persistenceService.findProjectRepresentation(DEFAULT_PROJECT_ID));
+			return projectSnapshot;
 		}
 		catch (final IOException e) {
 			throw new UnableToLoadProjectException("It was not possible to create a blank project.");
+		}
+		catch (final PersistenceException e) {
+			throw new UnableToLoadProjectException("It was not possible to create a blank project, because the project with id '" + DEFAULT_PROJECT_ID
+					+ "' was not found.");
 		}
 	}
 

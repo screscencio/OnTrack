@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
 import br.com.oncast.ontrack.shared.exceptions.business.BusinessException;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -21,7 +22,7 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Project loadProject() throws BusinessException {
-		return BUSINESS.loadProject();
+	public Project loadProject(final ProjectContextRequest projectContextRequest) throws BusinessException {
+		return BUSINESS.loadProject(projectContextRequest);
 	}
 }

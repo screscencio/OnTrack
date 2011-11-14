@@ -26,9 +26,7 @@ public class ScopeMoveUpActionTest {
 		rootScope.add(firstChild);
 		rootScope.add(lastChild);
 
-		project = new Project();
-		project.setProjectScope(rootScope);
-		project.setProjectRelease(ReleaseFactoryTestUtil.create("Project"));
+		project = new Project(rootScope, ReleaseFactoryTestUtil.create("Project"));
 
 		context = new ProjectContext(project);
 	}

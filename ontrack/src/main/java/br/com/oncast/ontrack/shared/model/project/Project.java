@@ -29,7 +29,7 @@ public class Project implements Serializable {
 		return projectScope;
 	}
 
-	// FIXME Remove this method.
+	// FIXME Remove this method?
 	public void setProjectScope(final Scope scope) {
 		this.projectScope = scope;
 	}
@@ -38,7 +38,7 @@ public class Project implements Serializable {
 		return projectRelease;
 	}
 
-	// FIXME Remove this method.
+	// FIXME Remove this method?
 	public void setProjectRelease(final Release projectRelease) {
 		this.projectRelease = projectRelease;
 	}
@@ -47,7 +47,6 @@ public class Project implements Serializable {
 		return projectRepresentation;
 	}
 
-	// FIXME Remove this method.
 	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
 		this.projectRepresentation = projectRepresentation;
 	}
