@@ -9,11 +9,12 @@ import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 public interface PersistenceService {
 
-	public void persistActions(final List<ModelAction> actionList, final Date timestamp)
+	public void persistActions(final long projectId, final List<ModelAction> actionList, final Date timestamp)
 			throws PersistenceException;
 
 	public ProjectSnapshot retrieveProjectSnapshot() throws PersistenceException, NoResultFoundException;
@@ -33,4 +34,6 @@ public interface PersistenceService {
 	public List<User> findAllUsers() throws PersistenceException;
 
 	List<Password> findAllPasswords() throws PersistenceException;
+
+	public void persistProjectRepresentation(ProjectRepresentation project) throws PersistenceException;
 }
