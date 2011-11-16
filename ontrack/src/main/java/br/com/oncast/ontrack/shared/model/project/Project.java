@@ -47,6 +47,7 @@ public class Project implements Serializable {
 		return projectRepresentation;
 	}
 
+	// FIXME Remove this method?
 	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
 		this.projectRepresentation = projectRepresentation;
 	}

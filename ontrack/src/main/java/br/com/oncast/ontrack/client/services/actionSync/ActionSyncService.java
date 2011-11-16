@@ -59,7 +59,7 @@ public class ActionSyncService {
 		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
 		if (isRequestOriginatedByThisClient(modelActionSyncRequest)) return;
 		// FIXME Test that a client ignores other projects actions
-		if (!isThisClientProjectAction(modelActionSyncRequest)) return;
+		if (!isRequestPertinentToCurrentProject(modelActionSyncRequest)) return;
 
 		try {
 			for (final ModelAction modelAction : modelActionSyncRequest.getActionList())
@@ -80,7 +80,7 @@ public class ActionSyncService {
 		return modelActionSyncRequest.getClientId().equals(clientIdentificationProvider.getClientId());
 	}
 
-	private boolean isThisClientProjectAction(final ModelActionSyncRequest modelActionSyncRequest) {
+	private boolean isRequestPertinentToCurrentProject(final ModelActionSyncRequest modelActionSyncRequest) {
 		return projectRepresentationProvider.getCurrentProjectRepresentation().getId() == modelActionSyncRequest.getRequestedProjectId();
 	}
 }
