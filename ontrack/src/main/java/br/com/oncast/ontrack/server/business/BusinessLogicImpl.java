@@ -159,11 +159,14 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	// FIXME Possible remove this method. The creation of project representation and snapshot should be done in another method, called by RPC.
 	private ProjectSnapshot createBlankProject(final long projectId) throws UnableToLoadProjectException {
+		// FIXME Discuss uniqueness of both the project's scope and release id.
 		final Scope projectScope = new Scope("Project", new UUID("0"));
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {
+			// FIXME Snapshots should be saved with the current date.
 			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
+			// FIXME ProjectSnapshot when created receiving the project representation should set this internally.
 			projectSnapshot.setProjectRepresentation(persistenceService.findProjectRepresentation(projectId));
 			return projectSnapshot;
 		}
