@@ -14,9 +14,9 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -50,7 +50,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		rootScope = new Scope("root");
 		newScopeDescription = "description for new scope";
 
-		context = new ProjectContext(new Project(rootScope, ReleaseFactoryTestUtil.create("")));
+		context = ProjectTestUtils.createProjectContext(rootScope, ReleaseFactoryTestUtil.create(""));
 
 		final ScopeTreeAction widgetActionMock = mock(ScopeTreeAction.class);
 		normalAction = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);

@@ -8,9 +8,9 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
-import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
@@ -27,7 +27,7 @@ public class ReleaseUpdatePriorityActionTest {
 	public void setUp() {
 		rootScope = ScopeTestUtils.getScope();
 		rootRelease = ReleaseTestUtils.getRelease();
-		context = new ProjectContext(new Project(rootScope, rootRelease));
+		context = ProjectTestUtils.createProjectContext(rootScope, rootRelease);
 
 		assertEquals(3, rootRelease.getChildren().size());
 	}

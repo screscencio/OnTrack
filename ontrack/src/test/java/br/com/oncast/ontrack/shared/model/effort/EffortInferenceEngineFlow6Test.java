@@ -8,11 +8,11 @@ import java.util.Stack;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction;
-import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -32,7 +32,7 @@ public class EffortInferenceEngineFlow6Test {
 	@Before
 	public void setUp() throws UnableToCompleteActionException, ScopeNotFoundException {
 		original = getOriginalScope(FILE_NAME_PREFIX);
-		projectContext = new ProjectContext(new Project(original, ReleaseFactoryTestUtil.create("proj")));
+		projectContext = ProjectTestUtils.createProjectContext(original, ReleaseFactoryTestUtil.create("proj"));
 		DeepEqualityTestUtils.setRequiredFloatingPointPrecision(0.1);
 
 		executeAction(new ScopeDeclareEffortAction(original.getChild(0).getId(), true, 30));

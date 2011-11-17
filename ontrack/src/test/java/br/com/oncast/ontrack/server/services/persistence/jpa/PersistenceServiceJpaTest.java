@@ -25,6 +25,7 @@ import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
@@ -42,7 +43,7 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class PersistenceServiceJpaTest {
 
-	private static final int DEFAULT_PROJECT_ID = 1;
+	private static final int PROJECT_ID = 1;
 
 	private PersistenceServiceJpaImpl persistenceService;
 
@@ -52,7 +53,7 @@ public class PersistenceServiceJpaTest {
 	public void before() throws Exception {
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 		persistenceService = new PersistenceServiceJpaImpl();
-		assureDefaultProjectRepresentationExistance();
+		assureProjectRepresentationExistance();
 	}
 
 	@After
@@ -62,22 +63,14 @@ public class PersistenceServiceJpaTest {
 
 	@Test
 	public void shouldOnlyReturnActionsAfterAGivenId() throws Exception {
-		for (final ModelAction action : ActionMock.getActions()) {
-			final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
-			actionList.add(action);
-			persistenceService.persistActions(DEFAULT_PROJECT_ID, actionList, new Date());
-		}
+		persistenceService.persistActions(PROJECT_ID, ActionMock.getActions(), new Date());
 
-		final List<UserAction> userActions = persistenceService.retrieveActionsSince(0);
+		final List<UserAction> userActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
 
 		final List<ModelAction> secondWaveOfActions = ActionMock.getActions2();
-		for (final ModelAction action : secondWaveOfActions) {
-			final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
-			actionList.add(action);
-			persistenceService.persistActions(DEFAULT_PROJECT_ID, actionList, new Date());
-		}
+		persistenceService.persistActions(PROJECT_ID, secondWaveOfActions, new Date());
 
-		final List<UserAction> actionsReceived = persistenceService.retrieveActionsSince(userActions.get(userActions.size() - 1).getId());
+		final List<UserAction> actionsReceived = persistenceService.retrieveActionsSince(PROJECT_ID, userActions.get(userActions.size() - 1).getId());
 		assertEquals(secondWaveOfActions.size(), actionsReceived.size());
 
 		for (int i = 0; i < secondWaveOfActions.size(); i++) {
@@ -238,6 +231,39 @@ public class PersistenceServiceJpaTest {
 	}
 
 	@Test
+	public void shouldPersistProjectRepresentation() throws Exception {
+		persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation("Name"));
+		final ProjectRepresentation foundProjectRepresentation = persistenceService.findProjectRepresentation(2);
+		assertEquals("Name", foundProjectRepresentation.getName());
+	}
+
+	@Test
+	public void thePersistedProjectRepresentationShouldHaveItsGeneratedIdSet() throws Exception {
+		final ProjectRepresentation projectRepresentation = new ProjectRepresentation("Name");
+		assertEquals(0, projectRepresentation.getId());
+
+		final ProjectRepresentation persisted = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
+		assertEquals(2, persisted.getId());
+
+		final ProjectRepresentation foundProjectRepresentation = persistenceService.findProjectRepresentation(persisted.getId());
+		assertEquals("Name", foundProjectRepresentation.getName());
+	}
+
+	@Test
+	public void shouldBeHableToFindAllProjectRepresentations() throws Exception {
+		assertEquals(1, persistenceService.findAllProjectRepresentations().size());
+
+		final ArrayList<ProjectRepresentation> projectRepresentations = new ArrayList<ProjectRepresentation>();
+		for (int i = 2; i <= 11; i++) {
+			final ProjectRepresentation projectRepresentation = new ProjectRepresentation("Name" + i);
+			final ProjectRepresentation persisted = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
+			projectRepresentations.add(persisted);
+			assertEquals(i, persistenceService.findAllProjectRepresentations().size());
+		}
+		assertTrue(persistenceService.findAllProjectRepresentations().containsAll(projectRepresentations));
+	}
+
+	@Test
 	@Ignore("Run only when you want to generate data to test the release burn up chart")
 	public void generateDataForBurnUp() throws Exception {
 		final ProjectSnapshot snapshot1 = loadProjectSnapshot();
@@ -252,7 +278,7 @@ public class PersistenceServiceJpaTest {
 	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException {
 		ProjectSnapshot snapshot;
 		try {
-			snapshot = persistenceService.retrieveProjectSnapshot(DEFAULT_PROJECT_ID);
+			snapshot = persistenceService.retrieveProjectSnapshot(PROJECT_ID);
 		}
 		catch (final NoResultFoundException e) {
 			snapshot = createBlankProject();
@@ -265,21 +291,25 @@ public class PersistenceServiceJpaTest {
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {
-			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
-			projectSnapshot.setProjectRepresentation(persistenceService.findProjectRepresentation(DEFAULT_PROJECT_ID));
+			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(persistenceService.findProjectRepresentation(PROJECT_ID), projectScope,
+					projectRelease), new Date(0));
 			return projectSnapshot;
 		}
 		catch (final IOException e) {
 			throw new UnableToLoadProjectException("It was not possible to create a blank project.");
 		}
 		catch (final PersistenceException e) {
-			throw new UnableToLoadProjectException("It was not possible to create a blank project, because the project with id '" + DEFAULT_PROJECT_ID
+			throw new UnableToLoadProjectException("It was not possible to create a blank project, because the project with id '" + PROJECT_ID
 					+ "' was not found.");
+		}
+		catch (final NoResultFoundException e) {
+			throw new ProjectNotFoundException("It was not possible to create a blank project, because the project representation with id '" + PROJECT_ID
+					+ "' was not found.", e);
 		}
 	}
 
-	private void assureDefaultProjectRepresentationExistance() throws Exception {
-		persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(DEFAULT_PROJECT_ID, "Default project"));
+	private void assureProjectRepresentationExistance() throws Exception {
+		persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(PROJECT_ID, "Default project"));
 	}
 
 }

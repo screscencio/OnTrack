@@ -2,8 +2,8 @@ package br.com.oncast.ontrack.shared.model.actions;
 
 import org.junit.Test;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceTestUtils;
-import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -64,7 +64,7 @@ public class UpdateScopeActionUndoAndRedoTest {
 
 		final Scope parent = currentScope.getChild(1);
 		final Scope scope = parent.getChild(0);
-		final ProjectContext context = new ProjectContext(new Project(currentScope, ReleaseFactoryTestUtil.create("r")));
+		final ProjectContext context = ProjectTestUtils.createProjectContext(currentScope, ReleaseFactoryTestUtil.create("r"));
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), currentScope);
 
@@ -91,7 +91,8 @@ public class UpdateScopeActionUndoAndRedoTest {
 
 		final Scope parent = scope.getChild(1);
 		final Scope child = parent.getChild(0);
-		executeAction(parent, new ScopeUpdateAction(child.getId(), updatePattern), new ProjectContext(new Project(scope, ReleaseFactoryTestUtil.create(""))));
+		executeAction(parent, new ScopeUpdateAction(child.getId(), updatePattern),
+				ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create("")));
 
 		return scope;
 	}

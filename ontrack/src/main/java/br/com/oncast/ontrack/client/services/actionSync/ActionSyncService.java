@@ -58,7 +58,6 @@ public class ActionSyncService {
 	private void processServerActionSyncEvent(final ServerActionSyncEvent event) {
 		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
 		if (isRequestOriginatedByThisClient(modelActionSyncRequest)) return;
-		// FIXME Test that a client ignores other projects actions
 		if (!isRequestPertinentToCurrentProject(modelActionSyncRequest)) return;
 
 		try {

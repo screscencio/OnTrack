@@ -11,13 +11,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindExporter;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.FreeMindMap;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
-import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class FreeMindExporterTest {
@@ -144,6 +144,6 @@ public class FreeMindExporterTest {
 	}
 
 	private FreeMindMap exportToMindMap(final Scope scopeToBeExported) throws FileNotFoundException {
-		return FreeMindExporter.export(new Project(scopeToBeExported, null), new FileOutputStream(PROJECT_MM_FILE));
+		return FreeMindExporter.export(ProjectTestUtils.createProject(scopeToBeExported, null), new FileOutputStream(PROJECT_MM_FILE));
 	}
 }

@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
-import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -21,7 +21,7 @@ public class ScopeDeclareProgressActionTest {
 	@Before
 	public void setUp() {
 		scope = new Scope("scope description");
-		context = new ProjectContext(new Project(scope, ReleaseFactoryTestUtil.create("")));
+		context = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
 	}
 
 	@Test

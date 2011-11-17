@@ -5,14 +5,13 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
 public class ScopeMoveUpActionTest {
-	private Project project;
 	private Scope rootScope;
 	private Scope firstChild;
 	private Scope lastChild;
@@ -26,9 +25,7 @@ public class ScopeMoveUpActionTest {
 		rootScope.add(firstChild);
 		rootScope.add(lastChild);
 
-		project = new Project(rootScope, ReleaseFactoryTestUtil.create("Project"));
-
-		context = new ProjectContext(project);
+		context = ProjectTestUtils.createProjectContext(rootScope, ReleaseFactoryTestUtil.create("Project"));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)

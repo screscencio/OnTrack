@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ProjectMock;
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -38,7 +38,7 @@ public class ProgressDefinitionManagerTest {
 
 	@Test
 	public void shouldContainTheAppDefinedProgress() {
-		progressDefinitionManager.populate(ProjectMock.getProject());
+		progressDefinitionManager.populate(ProjectTestUtils.createProject());
 
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.NOT_STARTED.getDescription()));
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.UNDER_WORK.getDescription()));
@@ -53,7 +53,7 @@ public class ProgressDefinitionManagerTest {
 		final Scope scope = ScopeTestUtils.getScope();
 		scope.getChild(0).getProgress().setDescription(userDefinedProgress);
 
-		final Project project = new Project(scope, null);
+		final Project project = ProjectTestUtils.createProject(scope, null);
 		progressDefinitionManager.populate(project);
 
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.NOT_STARTED.getDescription()));
@@ -76,7 +76,7 @@ public class ProgressDefinitionManagerTest {
 		scope.getChild(1).getProgress().setDescription(userDefinedProgress3);
 		scope.getChild(2).getProgress().setDescription(userDefinedProgress4);
 
-		final Project project = new Project(scope, null);
+		final Project project = ProjectTestUtils.createProject(scope, null);
 		progressDefinitionManager.populate(project);
 
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.NOT_STARTED.getDescription()));
@@ -104,7 +104,7 @@ public class ProgressDefinitionManagerTest {
 		scope.getChild(1).getProgress().setDescription(userDefinedProgress3);
 		scope.getChild(2).getProgress().setDescription(userDefinedProgress4);
 
-		final Project project = new Project(scope, null);
+		final Project project = ProjectTestUtils.createProject(scope, null);
 		progressDefinitionManager.populate(project);
 
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.NOT_STARTED.getDescription()));

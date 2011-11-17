@@ -19,7 +19,7 @@ public interface PersistenceService {
 
 	public ProjectSnapshot retrieveProjectSnapshot(long projectId) throws PersistenceException, NoResultFoundException;
 
-	public List<UserAction> retrieveActionsSince(long actionId) throws PersistenceException;
+	public List<UserAction> retrieveActionsSince(long projectId, long actionId) throws PersistenceException;
 
 	public void persistProjectSnapshot(ProjectSnapshot projectSnapshot) throws PersistenceException;
 
@@ -27,15 +27,17 @@ public interface PersistenceService {
 
 	public void persistOrUpdateUser(User user) throws PersistenceException;
 
+	public List<User> findAllUsers() throws PersistenceException;
+
 	public Password findPasswordForUser(long userId) throws NoResultFoundException, PersistenceException;
 
 	public void persistOrUpdatePassword(Password passwordForUser) throws PersistenceException;
 
-	public List<User> findAllUsers() throws PersistenceException;
+	public List<Password> findAllPasswords() throws PersistenceException;
 
-	List<Password> findAllPasswords() throws PersistenceException;
+	public ProjectRepresentation persistOrUpdateProjectRepresentation(ProjectRepresentation project) throws PersistenceException;
 
-	public void persistOrUpdateProjectRepresentation(ProjectRepresentation project) throws PersistenceException;
+	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException, NoResultFoundException;
 
-	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException;
+	public List<ProjectRepresentation> findAllProjectRepresentations() throws PersistenceException;
 }

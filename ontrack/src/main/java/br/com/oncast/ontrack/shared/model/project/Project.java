@@ -16,11 +16,10 @@ public class Project implements Serializable {
 	private Release projectRelease;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
-	// FIXME Make this constructor protected.
-	public Project() {}
+	protected Project() {}
 
-	// FIXME Change constructor so ProjectRepresentation is also always set together with the rest.
-	public Project(final Scope projectScope, final Release projectRelease) {
+	public Project(final ProjectRepresentation projectRepresentation, final Scope projectScope, final Release projectRelease) {
+		this.projectRepresentation = projectRepresentation;
 		this.projectScope = projectScope;
 		this.projectRelease = projectRelease;
 	}
@@ -29,26 +28,11 @@ public class Project implements Serializable {
 		return projectScope;
 	}
 
-	// FIXME Remove this method?
-	public void setProjectScope(final Scope scope) {
-		this.projectScope = scope;
-	}
-
 	public Release getProjectRelease() {
 		return projectRelease;
 	}
 
-	// FIXME Remove this method?
-	public void setProjectRelease(final Release projectRelease) {
-		this.projectRelease = projectRelease;
-	}
-
 	public ProjectRepresentation getProjectRepresentation() {
 		return projectRepresentation;
-	}
-
-	// FIXME Remove this method?
-	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
-		this.projectRepresentation = projectRepresentation;
 	}
 }
