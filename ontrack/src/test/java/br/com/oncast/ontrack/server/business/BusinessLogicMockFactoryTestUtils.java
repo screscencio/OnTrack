@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
-import br.com.oncast.ontrack.mocks.models.ProjectMock;
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
@@ -48,7 +48,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			@Override
 			public synchronized ProjectSnapshot retrieveProjectSnapshot(final long projectId) throws PersistenceException {
 				try {
-					return new ProjectSnapshot(ProjectMock.getProject(), snapshotTimestamp);
+					return new ProjectSnapshot(ProjectTestUtils.createProject(), snapshotTimestamp);
 				}
 				catch (final IOException e) {
 					throw new PersistenceException(e);
@@ -56,7 +56,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public synchronized List<UserAction> retrieveActionsSince(final long actionId) throws PersistenceException {
+			public synchronized List<UserAction> retrieveActionsSince(final long projectId, final long actionId) throws PersistenceException {
 				return actions;
 			}
 
@@ -97,10 +97,17 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {}
+			public ProjectRepresentation persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {
+				return null;
+			}
 
 			@Override
 			public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
+				return null;
+			}
+
+			@Override
+			public List<ProjectRepresentation> findAllProjectRepresentations() throws PersistenceException {
 				return null;
 			}
 
@@ -117,7 +124,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			@Override
 			public ProjectSnapshot retrieveProjectSnapshot(final long projectId) throws PersistenceException {
 				try {
-					return new ProjectSnapshot(ProjectMock.getProject(), snapshotTimestamp);
+					return new ProjectSnapshot(ProjectTestUtils.createProject(), snapshotTimestamp);
 				}
 				catch (final IOException e) {
 					throw new PersistenceException(e);
@@ -125,7 +132,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public List<UserAction> retrieveActionsSince(final long actionId) throws PersistenceException {
+			public List<UserAction> retrieveActionsSince(final long projectId, final long actionId) throws PersistenceException {
 				return actions;
 			}
 
@@ -164,10 +171,17 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public void persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {}
+			public ProjectRepresentation persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {
+				return null;
+			}
 
 			@Override
 			public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
+				return null;
+			}
+
+			@Override
+			public List<ProjectRepresentation> findAllProjectRepresentations() throws PersistenceException {
 				return null;
 			}
 		};

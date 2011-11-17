@@ -44,9 +44,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
+			final ProjectRepresentation projectRepresentation = findProjectRepresentation(projectId);
 			for (final ModelAction modelAction : actionList) {
 				final ModelActionEntity entity = convertActionToEntity(modelAction);
-				final ProjectRepresentation projectRepresentation = findProjectRepresentation(projectId);
 				final UserActionEntity container = new UserActionEntity(entity, projectRepresentation, timestamp);
 				em.persist(container);
 			}
@@ -67,31 +67,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-			final Query query = em.createQuery("select projectRepresentation from " + ProjectRepresentation.class.getSimpleName()
-					+ " as projectRepresentation where projectRepresentation.id = :projectId");
-
-			query.setParameter("projectId", projectId);
-			return (ProjectRepresentation) query.getSingleResult();
-		}
-		catch (final Exception e) {
-			throw new PersistenceException("It was not possible to retrieve the project representation with id '" + projectId + "'.", e);
-		}
-		finally {
-			em.close();
-		}
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
-	public List<UserAction> retrieveActionsSince(final long actionId) throws PersistenceException {
+	public List<UserAction> retrieveActionsSince(final long projectId, final long actionId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
-					+ " as action where action.id > :lastActionId order by action.id asc");
+					+ " as action where action.projectRepresentation.id = :projectId and action.id > :lastActionId order by action.id asc");
 
+			query.setParameter("projectId", projectId);
 			query.setParameter("lastActionId", actionId);
 			final List<UserActionEntity> actions = query.getResultList();
 
@@ -102,6 +85,28 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve the project actions.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.merge(projectSnapshot);
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to persist the project snapshot and to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the project snapshot.", e);
 		}
 		finally {
 			em.close();
@@ -129,11 +134,13 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {
+	public void persistOrUpdateUser(final User user) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
+
+			final UserEntity userEntity = (UserEntity) TYPE_CONVERTER.convert(user);
 			em.getTransaction().begin();
-			em.merge(projectSnapshot);
+			em.merge(userEntity);
 			em.getTransaction().commit();
 		}
 		catch (final Exception e) {
@@ -141,9 +148,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				em.getTransaction().rollback();
 			}
 			catch (final Exception f) {
-				throw new PersistenceException("It was not possible to persist the project snapshot and to rollback it.", f);
+				throw new PersistenceException("It was not possible to persist the user and to rollback it.", f);
 			}
-			throw new PersistenceException("It was not possible to persist the project snapshot.", e);
+			throw new PersistenceException("It was not possible to persist the user.", e);
 		}
 		finally {
 			em.close();
@@ -189,49 +196,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Password> findAllPasswords() throws PersistenceException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password");
-
-			final List<PasswordEntity> passwords = query.getResultList();
-
-			return (List<Password>) TYPE_CONVERTER.convert(passwords);
-		}
-		catch (final Exception e) {
-			throw new PersistenceException("It was not possible to retrieve passwords.", e);
-		}
-		finally {
-			em.close();
-		}
-	}
-
-	@Override
-	public void persistOrUpdateUser(final User user) throws PersistenceException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-
-			final UserEntity userEntity = (UserEntity) TYPE_CONVERTER.convert(user);
-			em.getTransaction().begin();
-			em.merge(userEntity);
-			em.getTransaction().commit();
-		}
-		catch (final Exception e) {
-			try {
-				em.getTransaction().rollback();
-			}
-			catch (final Exception f) {
-				throw new PersistenceException("It was not possible to persist the user and to rollback it.", f);
-			}
-			throw new PersistenceException("It was not possible to persist the user.", e);
-		}
-		finally {
-			em.close();
-		}
-	}
-
 	@Override
 	public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
@@ -269,17 +233,75 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
-	// FIXME Test this method.
+	@SuppressWarnings("unchecked")
 	@Override
-	public void persistOrUpdateProjectRepresentation(final ProjectRepresentation projectRepresentation) throws PersistenceException {
+	public List<Password> findAllPasswords() throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password");
+
+			final List<PasswordEntity> passwords = query.getResultList();
+
+			return (List<Password>) TYPE_CONVERTER.convert(passwords);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve passwords.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public ProjectRepresentation persistOrUpdateProjectRepresentation(final ProjectRepresentation projectRepresentation) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			em.merge(projectRepresentation);
+			final ProjectRepresentation mergedProjectRepresentation = em.merge(projectRepresentation);
 			em.getTransaction().commit();
+			return mergedProjectRepresentation;
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to persist the project representation and to rollback it.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException, NoResultFoundException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select projectRepresentation from " + ProjectRepresentation.class.getSimpleName()
+					+ " as projectRepresentation where projectRepresentation.id = :projectId");
+
+			query.setParameter("projectId", projectId);
+			return (ProjectRepresentation) query.getSingleResult();
+		}
+		catch (final NoResultException e) {
+			throw new NoResultFoundException("No project representation with id '" + projectId + "' was found.", e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project representation with id '" + projectId + "'.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProjectRepresentation> findAllProjectRepresentations() throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select projectRepresentation from " + ProjectRepresentation.class.getSimpleName()
+					+ " as projectRepresentation");
+
+			return query.getResultList();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project representations", e);
 		}
 		finally {
 			em.close();

@@ -36,6 +36,7 @@ public class ProjectSnapshot {
 	public ProjectSnapshot() {}
 
 	public ProjectSnapshot(final Project project, final Date timestamp) throws IOException {
+		projectRepresentation = project.getProjectRepresentation();
 		setProject(project);
 		setTimestamp(timestamp);
 	}
@@ -65,10 +66,7 @@ public class ProjectSnapshot {
 	}
 
 	public Project getProject() throws IOException, ClassNotFoundException {
-		final Project project = (Project) Serializer.deserialize(serializedProject);
-		// FIXME Should this be moved to other place?
-		project.setProjectRepresentation(projectRepresentation);
-		return project;
+		return (Project) Serializer.deserialize(serializedProject);
 	}
 
 	public void setProject(final Project project) throws IOException {
@@ -85,10 +83,6 @@ public class ProjectSnapshot {
 
 	public ProjectRepresentation getProjectRepresentation() {
 		return projectRepresentation;
-	}
-
-	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
-		this.projectRepresentation = projectRepresentation;
 	}
 
 }

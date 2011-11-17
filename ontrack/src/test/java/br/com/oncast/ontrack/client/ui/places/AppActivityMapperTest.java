@@ -2,10 +2,16 @@ package br.com.oncast.ontrack.client.ui.places;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -13,7 +19,9 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
+import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingPlace;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
+import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 
@@ -21,38 +29,46 @@ import com.octo.gwt.test.GwtTest;
 
 public class AppActivityMapperTest extends GwtTest {
 
+	private static final int PROJECT_ID = 1;
 	private Boolean isLoggedIn;
 	private AppActivityMapper appActivityMapper;
 	private Boolean isContextAvailable;
 
+	@Mock
+	private ContextProviderService contextProvider;
+	@Mock
+	private ClientServiceProvider clientServiceProvider;
+	@Mock
+	private AuthenticationService authenticationService;
+
 	@Before
 	public void setUp() {
-		final ClientServiceProvider clientServiceProvider = Mockito.mock(ClientServiceProvider.class);
-		final AuthenticationService authenticationService = Mockito.mock(AuthenticationService.class);
-		Mockito.when(authenticationService.isUserLoggedIn()).thenAnswer(new Answer<Boolean>() {
+		MockitoAnnotations.initMocks(this);
+
+		when(clientServiceProvider.getAuthenticationService()).thenReturn(authenticationService);
+		when(clientServiceProvider.getContextProviderService()).thenReturn(contextProvider);
+
+		when(authenticationService.isUserLoggedIn()).thenAnswer(new Answer<Boolean>() {
 
 			@Override
 			public Boolean answer(final InvocationOnMock invocation) throws Throwable {
 				return isLoggedIn;
 			}
 		});
-		Mockito.when(clientServiceProvider.getAuthenticationService()).thenReturn(authenticationService);
 
-		final ContextProviderService contextProvider = Mockito.mock(ContextProviderService.class);
-		Mockito.when(contextProvider.isContextAvailable(1)).thenAnswer(new Answer<Boolean>() {
+		when(contextProvider.isContextAvailable(PROJECT_ID)).thenAnswer(new Answer<Boolean>() {
 
 			@Override
 			public Boolean answer(final InvocationOnMock invocation) throws Throwable {
 				return isContextAvailable;
 			}
 		});
-		Mockito.when(clientServiceProvider.getContextProviderService()).thenReturn(contextProvider);
 
 		appActivityMapper = new AppActivityMapper(clientServiceProvider);
 	}
 
 	@Test
-	public void whenUserNotLoggedInShouldRedirectToLoginActivity() {
+	public void whenUserIsNotLoggedInItShouldRedirectToLoginActivity() {
 		isLoggedIn = false;
 
 		assertTrue(appActivityMapper.getActivity(null) instanceof LoginActivity);
@@ -63,7 +79,7 @@ public class AppActivityMapperTest extends GwtTest {
 		isLoggedIn = true;
 		isContextAvailable = false;
 
-		assertTrue(appActivityMapper.getActivity(new PlanningPlace(1)) instanceof ContextLoadingActivity);
+		assertTrue(appActivityMapper.getActivity(new PlanningPlace(PROJECT_ID)) instanceof ContextLoadingActivity);
 	}
 
 	@Test
@@ -71,14 +87,48 @@ public class AppActivityMapperTest extends GwtTest {
 		isLoggedIn = true;
 		isContextAvailable = true;
 
-		assertTrue(appActivityMapper.getActivity(new PlanningPlace(1)) instanceof PlanningActivity);
+		assertTrue(appActivityMapper.getActivity(new PlanningPlace(PROJECT_ID)) instanceof PlanningActivity);
 	}
 
 	@Test
-	public void whenUserLoggedInAndPlaceNotInstanceOfPlanningPlaceNorContextLoadingPlaceAndContextAvailableShouldBeNull() {
+	public void activityShouldBeNullWhenUserLoggedInAndPlaceNotInstanceOfPlanningPlaceNorContextLoadingPlaceAndContextAvailable() {
 		isLoggedIn = true;
 		isContextAvailable = true;
 		assertNull(appActivityMapper.getActivity(null));
+	}
+
+	@Test
+	public void contextAvaliabilityShouldBeCheckedWhenProjectDependentPlaceIsPassed() {
+		isLoggedIn = true;
+		isContextAvailable = true;
+
+		final ProjectDependentPlace projectDependentPlace = mock(ProjectDependentPlace.class);
+		appActivityMapper.getActivity(projectDependentPlace);
+
+		verify(contextProvider).isContextAvailable(Mockito.anyInt());
+	}
+
+	@Test
+	public void contextAvaliabilityShouldNotBeCheckedWhenPassedPlaceIsNotAProjectDependentPlace() {
+		isLoggedIn = true;
+
+		final ContextLoadingPlace projectIndependentPlace = mock(ContextLoadingPlace.class);
+		final LoginPlace projectIndependentPlace2 = mock(LoginPlace.class);
+
+		appActivityMapper.getActivity(projectIndependentPlace);
+		appActivityMapper.getActivity(projectIndependentPlace2);
+
+		verify(contextProvider, times(0)).isContextAvailable(Mockito.anyInt());
+	}
+
+	@Test
+	public void contextShouldBeLoadedForProjectDependentPlaces() {
+		isLoggedIn = true;
+		isContextAvailable = false;
+
+		final ProjectDependentPlace projectDependentPlace = mock(ProjectDependentPlace.class);
+
+		assertTrue(appActivityMapper.getActivity(projectDependentPlace) instanceof ContextLoadingActivity);
 	}
 
 	@Override

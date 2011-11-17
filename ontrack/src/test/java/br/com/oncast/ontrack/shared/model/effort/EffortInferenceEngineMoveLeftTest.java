@@ -6,9 +6,8 @@ import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepE
 
 import org.junit.Test;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
-import br.com.oncast.ontrack.shared.model.project.Project;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 
@@ -23,7 +22,7 @@ public class EffortInferenceEngineMoveLeftTest {
 		final Scope scope = original.getChild(0).getChild(1);
 		final ScopeMoveLeftAction moveLeftAction = new ScopeMoveLeftAction(scope.getId());
 
-		moveLeftAction.execute(new ProjectContext(new Project(original, null)));
+		moveLeftAction.execute(ProjectTestUtils.createProjectContext(original, null));
 		new EffortInferenceEngine().process(scope.getParent());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);

@@ -14,5 +14,5 @@ public interface BusinessLogic {
 
 	public abstract Project loadProject(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException;
 
-	public abstract void persistProjectRepresentation(ProjectRepresentationRequest projectRepresentationRequest) throws UnableToPersistProjectRepresentation;
+	public abstract void createOrUpdateProject(ProjectRepresentationRequest projectRepresentationRequest) throws UnableToPersistProjectRepresentation;
 }

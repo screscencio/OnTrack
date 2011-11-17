@@ -12,7 +12,7 @@ import org.simpleframework.xml.Attribute;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 
 @Entity
-// Should we create another annotation that represents that a class must not be converted?
+// TODO ++ Should we create another annotation that represents that a class must not be converted?
 @ConvertTo(ProjectRepresentation.class)
 public class ProjectRepresentation implements Serializable {
 

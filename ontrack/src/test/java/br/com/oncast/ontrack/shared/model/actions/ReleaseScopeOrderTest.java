@@ -6,6 +6,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -385,7 +386,7 @@ public class ReleaseScopeOrderTest {
 		final Scope scope431 = createScope("s431", release1, scope43);
 		final Scope scope432 = createScope("s432", null, scope43);
 		final Scope scope5 = createScope("s5", release2, scope0);
-		return new Project(scope0, release0);
+		return ProjectTestUtils.createProject(scope0, release0);
 	}
 
 	private Release createRelease(final String id, final Release parent) {

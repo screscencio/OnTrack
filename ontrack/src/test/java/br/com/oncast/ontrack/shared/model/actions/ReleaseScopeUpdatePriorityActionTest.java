@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -34,7 +34,7 @@ public class ReleaseScopeUpdatePriorityActionTest {
 		release.addScope(secondChild);
 		release.addScope(thirdChild);
 
-		context = new ProjectContext(new Project(rootScope, release));
+		context = ProjectTestUtils.createProjectContext(rootScope, release);
 	}
 
 	@Test

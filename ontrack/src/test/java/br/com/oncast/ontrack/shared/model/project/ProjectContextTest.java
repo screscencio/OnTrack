@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
@@ -32,7 +33,7 @@ public class ProjectContextTest {
 		MockitoAnnotations.initMocks(this);
 		final Scope scopeMock = createAndConfigureScopeMock();
 
-		context = new ProjectContext(new Project(scopeMock, releaseMock));
+		context = ProjectTestUtils.createProjectContext(scopeMock, releaseMock);
 	}
 
 	private Scope createAndConfigureScopeMock() {

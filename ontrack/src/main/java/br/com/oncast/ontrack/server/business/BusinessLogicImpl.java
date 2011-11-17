@@ -13,12 +13,14 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
+import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
@@ -99,19 +101,20 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	// FIXME Test this method.
 	@Override
-	public void persistProjectRepresentation(final ProjectRepresentationRequest projectRepresentationRequest) throws UnableToPersistProjectRepresentation {
+	public void createOrUpdateProject(final ProjectRepresentationRequest projectRepresentationRequest) throws UnableToPersistProjectRepresentation {
+		LOGGER.debug("Creating or updating a project representation.");
 		try {
 			persistenceService.persistOrUpdateProjectRepresentation(projectRepresentationRequest.getProjectRepresentation());
 		}
 		catch (final PersistenceException e) {
+			LOGGER.debug(e);
 			throw new UnableToPersistProjectRepresentation(e);
 		}
 	}
 
 	@Override
-	public synchronized Project loadProject(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException {
+	public synchronized Project loadProject(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException, ProjectNotFoundException {
 		return loadProject(projectContextRequest.getRequestedProjectId());
 	}
 
@@ -119,7 +122,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		LOGGER.debug("Loading current state for project id '" + projectId + "'.");
 		try {
 			final ProjectSnapshot snapshot = loadProjectSnapshot(projectId);
-			final List<UserAction> actionList = persistenceService.retrieveActionsSince(snapshot.getLastAppliedActionId());
+			final List<UserAction> actionList = persistenceService.retrieveActionsSince(projectId, snapshot.getLastAppliedActionId());
 
 			Project project = snapshot.getProject();
 			if (actionList.isEmpty()) return project;
@@ -128,6 +131,11 @@ class BusinessLogicImpl implements BusinessLogic {
 			updateProjectSnapshot(snapshot, project, actionList.get(actionList.size() - 1).getId());
 
 			return project;
+		}
+		catch (final NoResultFoundException e) {
+			final String errorMessage = "The server could not load the project: The project is inexistent.";
+			LOGGER.error(errorMessage, e);
+			throw new ProjectNotFoundException(errorMessage, e);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not load the project: A persistence exception occured.";
@@ -146,7 +154,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	private ProjectSnapshot loadProjectSnapshot(final long projectId) throws PersistenceException, UnableToLoadProjectException {
+	private ProjectSnapshot loadProjectSnapshot(final long projectId) throws PersistenceException, UnableToLoadProjectException, NoResultFoundException {
 		ProjectSnapshot snapshot;
 		try {
 			snapshot = persistenceService.retrieveProjectSnapshot(projectId);
@@ -157,20 +165,17 @@ class BusinessLogicImpl implements BusinessLogic {
 		return snapshot;
 	}
 
-	// FIXME Possible remove this method. The creation of project representation and snapshot should be done in another method, called by RPC.
-	private ProjectSnapshot createBlankProject(final long projectId) throws UnableToLoadProjectException {
-		// FIXME Discuss uniqueness of both the project's scope and release id.
+	private ProjectSnapshot createBlankProject(final long projectId) throws UnableToLoadProjectException, NoResultFoundException, PersistenceException {
 		final Scope projectScope = new Scope("Project", new UUID("0"));
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {
-			// FIXME Snapshots should be saved with the current date.
-			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectScope, projectRelease), new Date(0));
-			// FIXME ProjectSnapshot when created receiving the project representation should set this internally.
-			projectSnapshot.setProjectRepresentation(persistenceService.findProjectRepresentation(projectId));
+			final ProjectRepresentation projectRepresentation = persistenceService.findProjectRepresentation(projectId);
+			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectRepresentation, projectScope,
+					projectRelease), new Date());
 			return projectSnapshot;
 		}
-		catch (final Exception e) {
+		catch (final IOException e) {
 			throw new UnableToLoadProjectException("It was not possible to create a blank project.", e);
 		}
 	}

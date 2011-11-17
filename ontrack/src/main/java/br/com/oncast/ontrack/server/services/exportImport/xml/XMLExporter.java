@@ -48,6 +48,7 @@ public class XMLExporter {
 		final List<UserAction> actionList = new ArrayList<UserAction>();
 
 		try {
+			// FIXME Use a correct project id.
 			actionList.addAll(persistanceService.retrieveActionsSince(0));
 		}
 		catch (final PersistenceException e) {

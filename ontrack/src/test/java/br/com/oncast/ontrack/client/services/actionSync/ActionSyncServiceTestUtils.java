@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
 import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
@@ -94,7 +95,8 @@ public class ActionSyncServiceTestUtils {
 		if (actionExecutionService != null) return actionExecutionService;
 		return actionExecutionService = new ActionExecutionService() {
 
-			private final ProjectContext projectContext = new ProjectContext(new Project(new Scope("root", new UUID("0")), new Release("proj", new UUID("r0"))));
+			private final ProjectContext projectContext = ProjectTestUtils.createProjectContext(new Scope("root", new UUID("0")), new Release("proj", new UUID(
+					"r0")));
 			private final List<ActionExecutionListener> actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 
 			@Override

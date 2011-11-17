@@ -9,9 +9,9 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
 import br.com.oncast.ontrack.mocks.actions.ActionExecutionFactoryTestUtil;
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
-import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -44,9 +44,9 @@ public class RemoveTest extends GwtTest {
 	public void setUp() {
 		scope = getScope();
 		tree = new ScopeTree();
-		tree.setContext(new ProjectContext(new Project(scope, null)));
+		tree.setContext(ProjectTestUtils.createProjectContext(scope, null));
 
-		projectContext = new ProjectContext((new Project(scope, ReleaseFactoryTestUtil.create(""))));
+		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
 		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
@@ -65,7 +65,7 @@ public class RemoveTest extends GwtTest {
 		final Scope projectScope = new Scope("Project");
 		projectScope.add(new Scope("2"));
 
-		return new ProjectContext(new Project(projectScope, null));
+		return ProjectTestUtils.createProjectContext(projectScope, null);
 	}
 
 	private ProjectContext getUnmodifiedContext() {
@@ -73,7 +73,7 @@ public class RemoveTest extends GwtTest {
 		unmodifiedScope.add(new Scope("1").add(new Scope("1.1")));
 		unmodifiedScope.add(new Scope("2"));
 
-		return new ProjectContext(new Project(unmodifiedScope, null));
+		return ProjectTestUtils.createProjectContext(unmodifiedScope, null);
 	}
 
 	private ScopeTree getUnmodifiedTree() {

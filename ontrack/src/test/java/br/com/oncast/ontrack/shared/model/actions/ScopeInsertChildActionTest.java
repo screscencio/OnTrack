@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
-import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
@@ -31,7 +31,7 @@ public class ScopeInsertChildActionTest {
 		newScopeDescription = "description for new scope";
 		newReleaseDescription = "Release1";
 
-		context = new ProjectContext(new Project(selectedScope, ReleaseFactoryTestUtil.create("")));
+		context = ProjectTestUtils.createProjectContext(selectedScope, ReleaseFactoryTestUtil.create(""));
 	}
 
 	@Test

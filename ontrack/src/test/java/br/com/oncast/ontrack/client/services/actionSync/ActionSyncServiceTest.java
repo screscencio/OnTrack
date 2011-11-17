@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +60,7 @@ public class ActionSyncServiceTest {
 	}
 
 	@Test
-	public void testActionOriginatedInClientShouldNotBeExecutedAfterBeingReceivedFromServer() {
+	public void anActionOriginatedInClientShouldNotBeExecutedAfterBeingReceivedFromServer() {
 		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
@@ -79,7 +81,7 @@ public class ActionSyncServiceTest {
 	}
 
 	@Test
-	public void testActionOriginatedInClientShouldOnlyBeExecutedOnceEvenAfterBeingReceivedFromServer() {
+	public void anActionOriginatedInClientShouldOnlyBeExecutedOnceEvenAfterBeingReceivedFromServer() {
 		final ValueHolder<Integer> count = actionSyncServiceTestUtils.new ValueHolder<Integer>(0);
 		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
 
@@ -102,7 +104,7 @@ public class ActionSyncServiceTest {
 	}
 
 	@Test
-	public void testActionNotOriginatedInClientShouldBeExecutedAfterBeingReceivedFromServer() {
+	public void anActionNotOriginatedInClientShouldBeExecutedAfterBeingReceivedFromServer() {
 		final ValueHolder<Integer> count = actionSyncServiceTestUtils.new ValueHolder<Integer>(0);
 		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
 
@@ -127,7 +129,7 @@ public class ActionSyncServiceTest {
 	}
 
 	@Test
-	public void testActionNotOriginatedInClientShouldNotBeExecutedAsClientActionAfterBeingReceivedFromServer() {
+	public void anActionNotOriginatedInClientShouldNotBeExecutedAsClientActionAfterBeingReceivedFromServer() {
 		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
@@ -150,13 +152,13 @@ public class ActionSyncServiceTest {
 	}
 
 	@Test
-	public void testActionReceivedFromServerWithClientIdShouldNotBeExecutedInClient() {
+	public void anActionReceivedFromServerWithClientIdShouldNotBeExecutedInClient() {
 		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
-				Assert.fail("The client should not execute a action from the server (that was not originated from itself) as if it was a client action.");
+				Assert.fail("The client should not execute an action from the server (that was not originated from itself) as if it was a client action.");
 			}
 		});
 
@@ -168,6 +170,57 @@ public class ActionSyncServiceTest {
 						.getClientIdentificationProviderMock().getClientId(), projectRepresentation,
 						createValidOneActionActionList(context));
 				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
+			}
+		});
+	}
+
+	@Test
+	public void anActionReceivedFromServerThatBelongsToAProjectDifferentFromClientCurrentProjectShouldNotBeExecuted() {
+		final ProjectRepresentation otherProjectRepresentation = new ProjectRepresentation(2, "other project");
+
+		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
+
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isUserAction) {
+				fail("The client should not execute an action received from the server (that was not originated from itself) if the action project is different than the current client project.");
+			}
+		});
+
+		loadProjectContext(new ProjectContextLoadCallback() {
+
+			@Override
+			public void onProjectContextLoaded(final ProjectContext context) {
+				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
+						otherProjectRepresentation,
+						createValidOneActionActionList(context));
+				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
+			}
+		});
+	}
+
+	@Test
+	public void anActionReceivedFromServerThatBelongsToTheSameProjectAsClientCurrentProjectShouldBeExecuted() {
+		final ValueHolder<Integer> count = actionSyncServiceTestUtils.new ValueHolder<Integer>(0);
+
+		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
+
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isUserAction) {
+				count.setValue(count.getValue() + 1);
+			}
+		});
+
+		loadProjectContext(new ProjectContextLoadCallback() {
+
+			@Override
+			public void onProjectContextLoaded(final ProjectContext context) {
+				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
+						projectRepresentation,
+						createValidOneActionActionList(context));
+				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
+				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
 			}
 		});
 	}
@@ -196,7 +249,7 @@ public class ActionSyncServiceTest {
 	}
 
 	private void assureDefaultProjectRepresentationExistance() throws Exception {
-		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().persistProjectRepresentation(
+		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createOrUpdateProject(
 				new ProjectRepresentationRequest(projectRepresentation));
 	}
 }
