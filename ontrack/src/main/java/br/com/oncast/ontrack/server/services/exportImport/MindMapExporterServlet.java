@@ -29,7 +29,7 @@ public class MindMapExporterServlet extends HttpServlet {
 
 	private void doReply(final HttpServletRequest request, final HttpServletResponse response) throws UnableToLoadProjectException, IOException {
 		final BusinessLogic business = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
-		// FIXME Use a correct projetId
+		// FIXME Use the project id for generate mm.
 		final Project project = business.loadProject(null);
 
 		configureResponse(response, project);

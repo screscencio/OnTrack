@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import org.simpleframework.xml.Attribute;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @Entity
 // TODO ++ Should we create another annotation that represents that a class must not be converted?
@@ -18,9 +19,9 @@ public class ProjectRepresentation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Attribute
 	@Id
 	@GeneratedValue
+	@IgnoredByDeepEquality
 	private long id;
 
 	@Attribute

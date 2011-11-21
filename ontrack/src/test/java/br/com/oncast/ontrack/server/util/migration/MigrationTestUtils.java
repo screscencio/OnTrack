@@ -15,9 +15,11 @@ import org.dom4j.io.SAXReader;
 
 public class MigrationTestUtils {
 
+	public static final String MIGRATION_XML_FILES_PACKAGE = "src/test/resources/migrations/";
+
 	public static Document readXMLFromFile(final String fileName) throws Exception {
 		final SAXReader reader = new SAXReader();
-		return reader.read("src/test/resources/migrations/" + fileName);
+		return reader.read(MIGRATION_XML_FILES_PACKAGE + fileName);
 	}
 
 	public static Document readXMLFromString(final String xml) throws Exception {

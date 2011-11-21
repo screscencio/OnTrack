@@ -4,11 +4,14 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.exceptions.UnableToExportXMLException;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 public class XMLExporter {
@@ -29,9 +32,14 @@ public class XMLExporter {
 	}
 
 	public XMLExporter mountXML() {
-		exporter.setUserList(findAllUsers()).setPasswordList(findAllPasswords()).setActionList(findAllActions()).setVersion(version);
-		isConfigured = true;
-		return this;
+		try {
+			exporter.setUserList(findAllUsers()).setProjectList(findAllProjectsWithActions()).setVersion(version);
+			isConfigured = true;
+			return this;
+		}
+		catch (final PersistenceException e) {
+			throw new UnableToExportXMLException("Could not mount xml.", e);
+		}
 	}
 
 	public void export() {
@@ -43,47 +51,37 @@ public class XMLExporter {
 		return isConfigured;
 	}
 
-	// TODO Verify error treatment
-	private List<UserAction> findAllActions() {
-		final List<UserAction> actionList = new ArrayList<UserAction>();
+	private List<ProjectXMLNode> findAllProjectsWithActions() throws PersistenceException {
+		final List<ProjectXMLNode> projectList = new ArrayList<ProjectXMLNode>();
 
-		try {
-			// FIXME Use a correct project id.
-			actionList.addAll(persistanceService.retrieveActionsSince(0, 0));
-		}
-		catch (final PersistenceException e) {
-			e.printStackTrace();
+		final List<ProjectRepresentation> allProjectRepresentations = persistanceService.findAllProjectRepresentations();
+		for (final ProjectRepresentation projectRepresentation : allProjectRepresentations) {
+			projectList.add(new ProjectXMLNode(projectRepresentation, persistanceService.retrieveActionsSince(projectRepresentation.getId(), 0)));
 		}
 
-		return actionList;
+		return projectList;
 	}
 
-	// TODO Verify error treatment
-	private List<Password> findAllPasswords() {
-		final List<Password> passwordList = new ArrayList<Password>();
+	private List<UserXMLNode> findAllUsers() throws PersistenceException {
+		final List<UserXMLNode> userXMLNodeList = new ArrayList<UserXMLNode>();
 
-		try {
-			passwordList.addAll(persistanceService.findAllPasswords());
-		}
-		catch (final PersistenceException e) {
-			e.printStackTrace();
+		final List<User> users = persistanceService.findAllUsers();
+		for (final User user : users) {
+			userXMLNodeList.add(associatePasswordTo(user));
 		}
 
-		return passwordList;
+		return userXMLNodeList;
 	}
 
-	// TODO Verify error treatment
-	private List<User> findAllUsers() {
-		final List<User> userList = new ArrayList<User>();
-
+	private UserXMLNode associatePasswordTo(final User user) throws PersistenceException {
+		final UserXMLNode userXMLNode = new UserXMLNode(user);
 		try {
-			userList.addAll(persistanceService.findAllUsers());
+			userXMLNode.setPassword(persistanceService.findPasswordForUser(user.getId()));
 		}
-		catch (final PersistenceException e) {
-			e.printStackTrace();
+		catch (final NoResultFoundException e) {
+			// This user doesn't have a password.
 		}
-
-		return userList;
+		return userXMLNode;
 	}
 
 }

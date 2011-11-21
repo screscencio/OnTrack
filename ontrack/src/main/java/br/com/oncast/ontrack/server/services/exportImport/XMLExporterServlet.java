@@ -1,14 +1,14 @@
 package br.com.oncast.ontrack.server.services.exportImport;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
 import br.com.oncast.ontrack.server.services.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.basic.BasicAutheticator;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporter;
@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectExcep
 public class XMLExporterServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy_MM_dd");
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
@@ -42,11 +43,12 @@ public class XMLExporterServlet extends HttpServlet {
 	}
 
 	private void configureResponse(final HttpServletResponse response) throws UnableToLoadProjectException {
-		final BusinessLogic business = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
-
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/xml");
-		// FIXME Use a correct projetId
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + business.loadProject(null).getProjectScope().getDescription() + ".xml\"");
+		response.setHeader("Content-Disposition", "attachment; filename=\"ontrack_instance_" + getFormatedDate() + ".xml\"");
+	}
+
+	private String getFormatedDate() {
+		return DATE_FORMATTER.format(new Date());
 	}
 }

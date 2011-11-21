@@ -15,18 +15,20 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.dom4j.Document;
 
+import br.com.oncast.ontrack.server.services.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.basic.BasicAutheticator;
+import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporter;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLUtils;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.XMLImporter;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 
 public class XMLImporterServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String TEMP_DIR = System.getProperty("java.io.tmpdir");
+	private static final ServerServiceProvider SERVER_SERVICE_PROVIDER = ServerServiceProvider.getInstance();
 
+	private final String TEMP_DIR = System.getProperty("java.io.tmpdir");
 	private static final String SOURCE_XML_FILE_NAME = "ontrack.xml";
 	private static final String MIGRATED_XML_FILE_NAME = "migrated.xml";
 
@@ -80,7 +82,7 @@ public class XMLImporterServlet extends HttpServlet {
 	}
 
 	private void updateDatabase(final File xmlFile) throws PersistenceException {
-		final XMLImporter xmlImporter = new XMLImporter();
+		final XMLImporter xmlImporter = new XMLImporter(SERVER_SERVICE_PROVIDER.getPersistenceService());
 		xmlImporter.loadXML(xmlFile).persistObjects();
 	}
 

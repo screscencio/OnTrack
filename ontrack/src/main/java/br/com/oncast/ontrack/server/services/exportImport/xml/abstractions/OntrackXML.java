@@ -6,10 +6,6 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.Password;
-import br.com.oncast.ontrack.shared.model.user.User;
-
 @Root
 public class OntrackXML {
 
@@ -17,28 +13,17 @@ public class OntrackXML {
 	private String version;
 
 	@ElementList
-	private List<User> users;
+	private List<UserXMLNode> users;
 
 	@ElementList
-	private List<Password> passwords;
+	private List<ProjectXMLNode> projects;
 
-	// FIXME Include projects in xml. Discuss how this will be done with Rodrigo Machado.
-	// @ElementList
-	// private List<ProjectRepresentation> projectRepresentations;
-
-	@ElementList
-	private List<UserAction> userActions;
-
-	public void setUsers(final List<User> users) {
+	public void setUsers(final List<UserXMLNode> users) {
 		this.users = users;
 	}
 
-	public List<User> getUsers() {
+	public List<UserXMLNode> getUsers() {
 		return users;
-	}
-
-	public List<Password> getPasswords() {
-		return passwords;
 	}
 
 	public String getVersion() {
@@ -49,15 +34,11 @@ public class OntrackXML {
 		this.version = version;
 	}
 
-	public void setPasswords(final List<Password> passwords) {
-		this.passwords = passwords;
+	public List<ProjectXMLNode> getProjects() {
+		return projects;
 	}
 
-	public void setUserActions(final List<UserAction> userActions) {
-		this.userActions = userActions;
-	}
-
-	public List<UserAction> getUserActions() {
-		return userActions;
+	public void setProjects(final List<ProjectXMLNode> projects) {
+		this.projects = projects;
 	}
 }

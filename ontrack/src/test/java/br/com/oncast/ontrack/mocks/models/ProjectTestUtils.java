@@ -8,17 +8,13 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectTestUtils {
-	private static final ProjectRepresentation DEFAULT_PROJECT_REPRESENTATION = new ProjectRepresentation(1,
-			"Default Project");
-	private static Release DEFAULT_RELEASE = new Release("proj", new UUID("release0"));
-	private static Scope DEFAULT_SCOPE = new Scope("Project", new UUID("0"));
 
 	public static Project createProject() {
-		return createProject(DEFAULT_PROJECT_REPRESENTATION, DEFAULT_SCOPE, DEFAULT_RELEASE);
+		return createProject(getDefaultProjectRepresentation(), getDefaultScope(), getDefaultRelease());
 	}
 
 	public static Project createProject(final Scope scope, final Release release) {
-		return createProject(DEFAULT_PROJECT_REPRESENTATION, scope, release);
+		return createProject(getDefaultProjectRepresentation(), scope, release);
 	}
 
 	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release) {
@@ -33,4 +29,29 @@ public class ProjectTestUtils {
 	public static ProjectContext createProjectContext(final Scope scope, final Release release) {
 		return new ProjectContext(createProject(scope, release));
 	}
+
+	public static ProjectRepresentation createProjectRepresentation() {
+		return getDefaultProjectRepresentation();
+	}
+
+	public static ProjectRepresentation createProjectRepresentation(final long projectId) {
+		return createProjectRepresentation(projectId, "Default Project");
+	}
+
+	public static ProjectRepresentation createProjectRepresentation(final long projectId, final String projectName) {
+		return new ProjectRepresentation(projectId, projectName);
+	}
+
+	private static ProjectRepresentation getDefaultProjectRepresentation() {
+		return createProjectRepresentation(1);
+	}
+
+	private static Scope getDefaultScope() {
+		return new Scope("Project", new UUID("0"));
+	}
+
+	private static Release getDefaultRelease() {
+		return new Release("proj", new UUID("release0"));
+	}
+
 }

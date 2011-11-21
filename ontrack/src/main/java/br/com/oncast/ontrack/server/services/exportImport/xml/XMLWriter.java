@@ -6,10 +6,9 @@ import java.util.List;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
 
 public class XMLWriter {
 
@@ -19,13 +18,8 @@ public class XMLWriter {
 		ontrackXML = new OntrackXML();
 	}
 
-	public XMLWriter setUserList(final List<User> userList) {
+	public XMLWriter setUserList(final List<UserXMLNode> userList) {
 		ontrackXML.setUsers(userList);
-		return this;
-	}
-
-	public XMLWriter setPasswordList(final List<Password> passwordList) {
-		ontrackXML.setPasswords(passwordList);
 		return this;
 	}
 
@@ -34,8 +28,8 @@ public class XMLWriter {
 		return this;
 	}
 
-	public XMLWriter setActionList(final List<UserAction> userActionList) {
-		ontrackXML.setUserActions(userActionList);
+	public XMLWriter setProjectList(final List<ProjectXMLNode> projectList) {
+		ontrackXML.setProjects(projectList);
 		return this;
 	}
 

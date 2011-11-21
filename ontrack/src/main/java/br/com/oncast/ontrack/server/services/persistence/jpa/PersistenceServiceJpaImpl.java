@@ -134,14 +134,15 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public void persistOrUpdateUser(final User user) throws PersistenceException {
+	public User persistOrUpdateUser(final User user) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 
 			final UserEntity userEntity = (UserEntity) TYPE_CONVERTER.convert(user);
 			em.getTransaction().begin();
-			em.merge(userEntity);
+			final UserEntity mergedUser = em.merge(userEntity);
 			em.getTransaction().commit();
+			return (User) TYPE_CONVERTER.convert(mergedUser);
 		}
 		catch (final Exception e) {
 			try {
