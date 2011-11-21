@@ -1,7 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
 import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ChangePasswordWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ChangePasswordForm;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,15 +21,19 @@ public class ApplicationMenu extends Composite {
 	interface ApplicationMenuWidgetUiBinder extends UiBinder<Widget, ApplicationMenu> {}
 
 	@UiField
-	protected Label logoutLabel;
+	protected Label changePasswordLabel;
 
 	@UiField
-	protected ChangePasswordWidget changePasswordWidget;
+	protected Label logoutLabel;
+
+	// @UiField
+	// protected ChangePasswordWidget changePasswordWidget;
 
 	private PlanningAuthenticationRequestHandler authenticationRequestHandler;
 
 	public ApplicationMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
+		PopupConfig.link(changePasswordLabel).popup(new ChangePasswordForm()).alignPopupRight(changePasswordLabel).alignBelow(this);
 	}
 
 	@UiHandler("logoutLabel")
@@ -38,6 +43,6 @@ public class ApplicationMenu extends Composite {
 
 	public void setAuthenticationRequestHandler(final PlanningAuthenticationRequestHandler authenticationRequestHandler) {
 		this.authenticationRequestHandler = authenticationRequestHandler;
-		changePasswordWidget.setAuthenticationRequestHandler(authenticationRequestHandler);
+		// changePasswordWidget.setAuthenticationRequestHandler(authenticationRequestHandler);
 	}
 }

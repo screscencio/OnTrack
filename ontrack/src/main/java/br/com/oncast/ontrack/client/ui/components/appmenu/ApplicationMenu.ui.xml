@@ -4,6 +4,14 @@
 	xmlns:cp="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
 
 	<ui:style>
+		.rootPanel {
+			position: absolute;
+			left: 0px;
+			right: 0px;
+			top: 0px;
+			bottom: 0px;
+		}
+	
 		.logoutLabel {
 			position: absolute;
 			top: 10px;
@@ -15,16 +23,20 @@
 			cursor: pointer;
 		}
 		
-		.changePasswordWidget {
+		.changePasswordLabel {
 			position: absolute;
 			top: 10px;
 			right: 80px;
 			color: #ffffff;
 		}
+		
+		.changePasswordLabel:HOVER {
+				cursor: pointer;
+		}
 	</ui:style>
 
-	<g:HTMLPanel>
-		<cp:ChangePasswordWidget ui:field="changePasswordWidget" styleName="{style.changePasswordWidget}" />
+	<g:HTMLPanel styleName="{style.rootPanel}">
+		<g:Label ui:field="changePasswordLabel" text="Change Password" styleName="{style.changePasswordLabel}"  />
 		<g:Label ui:field="logoutLabel" text="Logout" styleName="{style.logoutLabel}" />
 	</g:HTMLPanel>
 </ui:UiBinder>
