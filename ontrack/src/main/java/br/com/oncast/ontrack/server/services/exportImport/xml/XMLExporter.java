@@ -49,7 +49,7 @@ public class XMLExporter {
 
 		try {
 			// FIXME Use a correct project id.
-			actionList.addAll(persistanceService.retrieveActionsSince(0));
+			actionList.addAll(persistanceService.retrieveActionsSince(0, 0));
 		}
 		catch (final PersistenceException e) {
 			e.printStackTrace();
