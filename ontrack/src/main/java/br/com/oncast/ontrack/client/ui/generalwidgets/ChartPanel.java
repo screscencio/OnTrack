@@ -16,8 +16,6 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.Marker.Symbol;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -46,19 +44,14 @@ public class ChartPanel extends Composite {
 
 	private List<String> xAxisLineValues;
 
-	private final MaskPanel maskPanel;
-
 	private Number idealEnDay;
 
 	public ChartPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		maskPanel = new MaskPanel();
-
-		maskPanel.addClickHandler(new ClickHandler() {
-
+		MaskPanel.show(new HideHandler() {
 			@Override
-			public void onClick(final ClickEvent event) {
+			public void onWillHide() {
 				hide();
 			}
 		});
@@ -92,7 +85,12 @@ public class ChartPanel extends Composite {
 
 	public void show(final Widget relativeWidget) {
 		this.setVisible(true);
-		maskPanel.show();
+		MaskPanel.show(new HideHandler() {
+			@Override
+			public void onWillHide() {
+				hide();
+			}
+		});
 
 		configureXAxis();
 
@@ -108,7 +106,6 @@ public class ChartPanel extends Composite {
 
 		this.setVisible(false);
 		chart.removeAllSeries();
-		maskPanel.hide();
 	}
 
 	private void createBurnUpLine() {

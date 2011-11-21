@@ -4,11 +4,11 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_EN
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.HideHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -45,34 +45,27 @@ public class ChangePasswordForm extends Composite {
 	@UiField
 	protected Button changePasswordButton;
 
-	private final MaskPanel maskPanel;
-
 	private PlanningAuthenticationRequestHandler authenticationRequestHandler;
 
 	public ChangePasswordForm() {
 		initWidget(uiBinder.createAndBindUi(this));
-
-		maskPanel = new MaskPanel();
-		maskPanel.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				hide();
-			}
-		});
 	}
 
 	public void hide() {
 		if (!this.isVisible()) return;
-
 		this.setVisible(false);
-		maskPanel.hide();
 	}
 
 	public void show() {
 		clearFields();
 		this.setVisible(true);
-		maskPanel.show();
+
+		MaskPanel.show(new HideHandler() {
+			@Override
+			public void onWillHide() {
+				hide();
+			}
+		});
 	}
 
 	public void focus() {
