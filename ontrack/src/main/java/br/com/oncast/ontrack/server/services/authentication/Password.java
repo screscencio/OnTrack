@@ -1,23 +1,17 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
-import org.simpleframework.xml.Attribute;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 
 @ConvertTo(PasswordEntity.class)
 public class Password {
 
-	@Attribute
 	private long id;
 
-	@Attribute
 	private long userId;
 
-	@Attribute
 	private String passwordHash;
 
-	@Attribute
 	private String passwordSalt;
 
 	public Password() {}
@@ -36,6 +30,22 @@ public class Password {
 
 	public long getUserId() {
 		return userId;
+	}
+
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+
+	public void setPasswordHash(final String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+
+	public String getPasswordSalt() {
+		return passwordSalt;
+	}
+
+	public void setPasswordSalt(final String passwordSalt) {
+		this.passwordSalt = passwordSalt;
 	}
 
 	public void setPassword(final String password) {

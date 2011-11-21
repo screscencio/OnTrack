@@ -33,7 +33,6 @@ public class Migration_2011_11_01_Test {
 	public void setUp() throws Exception {
 		sourceDocument = readXMLFromFile("ontrack_2011_10_01.xml");
 		migration = new Migration_2011_11_01();
-
 	}
 
 	@Test

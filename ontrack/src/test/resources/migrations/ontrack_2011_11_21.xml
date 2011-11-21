@@ -1,0 +1,650 @@
+<ontrackXML version="2011_10_01">
+   <users class="java.util.ArrayList">
+      <user email="user1@email" passwordHash="HbIXkYgJbxfgT5cGCqyw_FoX49U=" passwordSalt="7TvKquT1VNo="/>
+      <user email="user2@email" passwordHash="EaLcEksxff9$54RNOVbwSrTqJsU=" passwordSalt="2me94_L9Sfs="/>
+   </users>
+   <projects class="java.util.ArrayList">
+      <project>
+         <projectRepresentation name="Project 3"/>
+         <actions class="java.util.ArrayList">
+            <userAction timestamp="1969-12-31 21:05:22.510 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpRollbackAction">
+                  <referenceId id="F87000B1-A32B-48CE-9483-F1E2FBAD04F1"/>
+                  <scopeUpdateRollbackAction newDescription="descricao">
+                     <referenceId id="92A94373-F16D-418E-89D1-F452CB57720A"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="92A94373-F16D-418E-89D1-F452CB57720A"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                           <referenceId id="92A94373-F16D-418E-89D1-F452CB57720A"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="92A94373-F16D-418E-89D1-F452CB57720A"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateRollbackAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:11:26.388 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction">
+                  <referenceId id="CB9AAE91-55E3-4CF9-BF85-1C22CE65437E"/>
+                  <newScopeId id="E7C595F6-1916-4ABA-A6AD-44A51665604F"/>
+                  <scopeUpdateAction newDescription="descricao">
+                     <referenceId id="18D50218-3212-4149-9D2A-1A19A3310A4F"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="18D50218-3212-4149-9D2A-1A19A3310A4F"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                           <referenceId id="18D50218-3212-4149-9D2A-1A19A3310A4F"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="18D50218-3212-4149-9D2A-1A19A3310A4F"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:10:08.522 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction" priority="1">
+                  <releaseReferenceId id="EE013800-5FFA-437F-9A2C-DF1408C43C33"/>
+                  <scopeReferenceId id="B954CD07-F10C-4B7B-896F-27867E229E3C"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:04:20.264 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction">
+                  <referenceId id="60C4D716-8C13-42BD-A1B5-FB5B95D869D0"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:13:09.993 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction">
+                  <referenceId id="AE4F3BD8-0216-469B-8346-924BFB2922D5"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:04:20.322 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction" targetIndex="1">
+                  <releaseId id="B2CD0162-E4A7-4B19-9260-470EBE3D691C"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:09:18.385 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction">
+                  <referenceId id="492B0BA4-D151-46F2-B474-32BC4D977BE4"/>
+                  <newScopeId id="D484A708-456C-46AE-B21A-DA749E150333"/>
+                  <scopeUpdateAction newDescription="text">
+                     <referenceId id="D484A708-456C-46AE-B21A-DA749E150333"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="D484A708-456C-46AE-B21A-DA749E150333"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="D484A708-456C-46AE-B21A-DA749E150333"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="D484A708-456C-46AE-B21A-DA749E150333"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:04:56.929 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownRollbackAction">
+                  <referenceId id="A04AE960-AFB2-4210-99E9-38178FB8C33D"/>
+                  <scopeUpdateRollbackAction newDescription="descricao">
+                     <referenceId id="901963A0-185E-46D5-B550-3D157D24C1FE"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="901963A0-185E-46D5-B550-3D157D24C1FE"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                           <referenceId id="901963A0-185E-46D5-B550-3D157D24C1FE"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="901963A0-185E-46D5-B550-3D157D24C1FE"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateRollbackAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:12:33.227 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction">
+                  <referenceId id="7F6092F8-1CBC-4141-99B2-B6559D9253DC"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:01:56.853 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction">
+                  <referenceId id="4993345F-FA92-40E5-A323-E7D211586F9D"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:12:14.31 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction">
+                  <referenceId id="986EC158-860C-4D32-88FB-029FD55C773B"/>
+                  <newScopeId id="F0BC0BA7-284F-4EEE-A51A-56419F720DFD"/>
+                  <scopeUpdateAction newDescription="text">
+                     <referenceId id="F0BC0BA7-284F-4EEE-A51A-56419F720DFD"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="F0BC0BA7-284F-4EEE-A51A-56419F720DFD"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="F0BC0BA7-284F-4EEE-A51A-56419F720DFD"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="F0BC0BA7-284F-4EEE-A51A-56419F720DFD"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:07:39.714 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction" index="1" description="text">
+                  <referenceId id="24751DB6-D1A1-4317-A9EF-7E6777F16AAD"/>
+                  <parentScopeId id="AF0A2BC0-AED9-4724-914A-025B8E68FB0F"/>
+                  <childActionList class="java.util.ArrayList"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:12:15.269 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="1">
+                  <referenceId id="60271CAF-53B7-495C-A885-CBFD5F206CC1"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:11:35.835 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="text" timestamp="2011-11-21 10:54:06.795 BRST">
+                  <referenceId id="D7EE2363-CA88-4256-9BDC-41CE7F13EB5D"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:05:43.49 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpAction">
+                  <referenceId id="1CE2A7B8-5D86-4878-9FA1-F812E0E8D45E"/>
+                  <newScopeId id="1E536613-483D-4D1E-AF66-36FBCC89F016"/>
+                  <scopeUpdateAction newDescription="pattern">
+                     <referenceId id="1E536613-483D-4D1E-AF66-36FBCC89F016"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="1E536613-483D-4D1E-AF66-36FBCC89F016"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="1E536613-483D-4D1E-AF66-36FBCC89F016"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="1E536613-483D-4D1E-AF66-36FBCC89F016"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:16:22.43 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction" newDescription="descricao">
+                  <referenceId id="FD35AC29-05CB-406F-B4DC-2B3FF84686A9"/>
+                  <subActionList class="java.util.ArrayList">
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                        <referenceId id="FD35AC29-05CB-406F-B4DC-2B3FF84686A9"/>
+                     </modelAction>
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                        <referenceId id="FD35AC29-05CB-406F-B4DC-2B3FF84686A9"/>
+                     </modelAction>
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                        <referenceId id="FD35AC29-05CB-406F-B4DC-2B3FF84686A9"/>
+                     </modelAction>
+                  </subActionList>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:09:22.675 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseCreateActionDefault" description="description">
+                  <parentReleaseId id="E177A56F-4BEF-4135-A80F-18A3290557D2"/>
+                  <newReleaseId id="80D54C88-E9C3-4582-A2A1-D4E3B0E3CECC"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:07:22.279 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction" description="" index="1">
+                  <newReleaseId id="27D236DD-0F99-4744-99C5-4F5C929FC559"/>
+                  <parentReleaseId id="AC6FE47B-EC5B-47CF-A107-92A55AFF4248"/>
+                  <childActionList class="java.util.ArrayList"/>
+                  <subActionRollbackList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:10:33.938 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                  <referenceId id="4ACBF38E-0C9B-4F6A-8378-923F4DF28872"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:14:14.934 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction">
+                  <referenceId id="C53D59E2-62FA-4237-81B7-7A4B65C4E56A"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:05:41.15 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction" position="1" wasIndexSet="true">
+                  <referenceId id="09A1D0E7-A932-45D8-BC9D-D17250DFB14A"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+         </actions>
+      </project>
+      <project>
+         <projectRepresentation name="Project 1"/>
+         <actions class="java.util.ArrayList">
+            <userAction timestamp="1969-12-31 21:02:23.774 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction" priority="1">
+                  <releaseReferenceId id="5A7FE257-6BAC-4365-BC28-1EF3E743EEE1"/>
+                  <scopeReferenceId id="435DF52E-E595-4560-A089-AF3A0F26245D"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:16:18.650 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="text" timestamp="2011-11-21 10:54:06.688 BRST">
+                  <referenceId id="3D059AB7-9E51-43CB-9B0A-3111BDAF12EA"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:14:20.108 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="1">
+                  <referenceId id="3D8DDB6C-D745-4B00-AD07-34C76046988C"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:15:38.796 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction">
+                  <referenceId id="32C37D65-9705-43C9-A7E6-E69085309B16"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:08:43.758 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseCreateActionDefault" description="description">
+                  <parentReleaseId id="9329D66D-33FB-4C22-A803-D3A314031C98"/>
+                  <newReleaseId id="BB226910-6734-482D-8A22-4F1D44150103"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:13:22.128 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction" description="" index="1">
+                  <newReleaseId id="72DB709B-2B5C-46F9-AE96-C76ACD707897"/>
+                  <parentReleaseId id="3AC682F2-A289-40B1-B312-1B43CBD1CF74"/>
+                  <childActionList class="java.util.ArrayList"/>
+                  <subActionRollbackList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:01:38.689 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                  <referenceId id="C486169B-E825-4478-AD63-F69B11BDCA1B"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:13:15.495 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction" newDescription="descricao">
+                  <referenceId id="E8E021FF-F4AB-4D1E-93DA-F276BBC56265"/>
+                  <subActionList class="java.util.ArrayList">
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                        <referenceId id="E8E021FF-F4AB-4D1E-93DA-F276BBC56265"/>
+                     </modelAction>
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                        <referenceId id="E8E021FF-F4AB-4D1E-93DA-F276BBC56265"/>
+                     </modelAction>
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                        <referenceId id="E8E021FF-F4AB-4D1E-93DA-F276BBC56265"/>
+                     </modelAction>
+                  </subActionList>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:01:10.486 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction">
+                  <referenceId id="2187B3E9-3209-41C3-B4CB-189D4B689B77"/>
+                  <newScopeId id="78564DE1-D39F-4AEA-83C3-86926008A5F4"/>
+                  <scopeUpdateAction newDescription="descricao">
+                     <referenceId id="EB19D51B-1D91-411F-969D-7EA782308E58"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="EB19D51B-1D91-411F-969D-7EA782308E58"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                           <referenceId id="EB19D51B-1D91-411F-969D-7EA782308E58"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="EB19D51B-1D91-411F-969D-7EA782308E58"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:00:33.215 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownRollbackAction">
+                  <referenceId id="C85AFA22-C551-41EE-894B-F7A455F1590F"/>
+                  <scopeUpdateRollbackAction newDescription="descricao">
+                     <referenceId id="4187EBF6-4EA1-4E89-B13E-EAD45106A93F"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="4187EBF6-4EA1-4E89-B13E-EAD45106A93F"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                           <referenceId id="4187EBF6-4EA1-4E89-B13E-EAD45106A93F"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="4187EBF6-4EA1-4E89-B13E-EAD45106A93F"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateRollbackAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:08:06.567 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction">
+                  <referenceId id="CA135AB9-E6FF-473C-A9AC-21B4CAC4A3F5"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:00:11.127 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction">
+                  <referenceId id="08FE1C3A-8B7D-4B55-AEF1-5A901F80077F"/>
+                  <newScopeId id="285F7705-81B7-4858-8E82-685F0DFA33A3"/>
+                  <scopeUpdateAction newDescription="text">
+                     <referenceId id="285F7705-81B7-4858-8E82-685F0DFA33A3"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="285F7705-81B7-4858-8E82-685F0DFA33A3"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="285F7705-81B7-4858-8E82-685F0DFA33A3"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="285F7705-81B7-4858-8E82-685F0DFA33A3"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:06:43.640 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction" position="1" wasIndexSet="true">
+                  <referenceId id="C3FF8A8A-36D1-43B2-93CA-0C9C5B02672E"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:15:41.757 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction">
+                  <referenceId id="FA510664-298D-4223-97FB-D0C91FDE8B88"/>
+                  <newScopeId id="8C7A1F5A-BF2E-42BC-A142-B9FA065CC1DC"/>
+                  <scopeUpdateAction newDescription="text">
+                     <referenceId id="8C7A1F5A-BF2E-42BC-A142-B9FA065CC1DC"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="8C7A1F5A-BF2E-42BC-A142-B9FA065CC1DC"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="8C7A1F5A-BF2E-42BC-A142-B9FA065CC1DC"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="8C7A1F5A-BF2E-42BC-A142-B9FA065CC1DC"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:13:38.538 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction" index="1" description="text">
+                  <referenceId id="CBE71746-B44A-4027-AD10-7D025250C805"/>
+                  <parentScopeId id="65D8FFFA-DF5D-4D81-86CC-E17883155D08"/>
+                  <childActionList class="java.util.ArrayList"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:12:13.572 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction">
+                  <referenceId id="35BD7324-E1A5-43CD-A54C-0A486AE60A07"/>
+                  <newScopeId id="0CB35F83-6E86-4539-BC75-DFA4121BE8D0"/>
+                  <scopeUpdateAction newDescription="pattern">
+                     <referenceId id="0CB35F83-6E86-4539-BC75-DFA4121BE8D0"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="0CB35F83-6E86-4539-BC75-DFA4121BE8D0"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="0CB35F83-6E86-4539-BC75-DFA4121BE8D0"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="0CB35F83-6E86-4539-BC75-DFA4121BE8D0"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:05:30.704 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction">
+                  <referenceId id="04097AA9-0505-4DD5-A13D-AE3D49CE8B17"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:05:57.348 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpAction">
+                  <referenceId id="8020C615-EA64-4FEF-9878-F498B883D560"/>
+                  <newScopeId id="DD9B1D7D-862B-4D6E-A30A-3DCDF522C8F1"/>
+                  <scopeUpdateAction newDescription="pattern">
+                     <referenceId id="DD9B1D7D-862B-4D6E-A30A-3DCDF522C8F1"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="DD9B1D7D-862B-4D6E-A30A-3DCDF522C8F1"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="DD9B1D7D-862B-4D6E-A30A-3DCDF522C8F1"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="DD9B1D7D-862B-4D6E-A30A-3DCDF522C8F1"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+         </actions>
+      </project>
+      <project>
+         <projectRepresentation name="Project 2"/>
+         <actions class="java.util.ArrayList">
+            <userAction timestamp="1969-12-31 21:01:35.819 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction">
+                  <referenceId id="E23103C4-EC93-4F70-9005-84ED2F5E438F"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:14:32.274 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction" targetIndex="1">
+                  <releaseId id="F447A091-9AFF-4B0E-9001-07CE912C919E"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:11:08.841 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="1">
+                  <referenceId id="243246CA-A460-48E2-A857-29D67DD77430"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:09:13.766 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveRollbackAction" description="" index="1">
+                  <newReleaseId id="1CCB3869-5B93-4EF4-A76F-9EA2C09B6883"/>
+                  <parentReleaseId id="2ECBF3CB-F196-41B5-9229-639B49027174"/>
+                  <childActionList class="java.util.ArrayList"/>
+                  <subActionRollbackList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:08:46.230 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction">
+                  <referenceId id="040BA106-4CB7-4F73-B865-23A7A92A6413"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:14:48.0 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ReleaseCreateActionDefault" description="description">
+                  <parentReleaseId id="46A82072-8D2D-49DF-9C5B-7551A923586F"/>
+                  <newReleaseId id="3E7119FA-FFEB-43E3-BD0D-C305F811B9F4"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:01:49.358 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveDownAction">
+                  <referenceId id="11ABB4E2-373E-4FAD-82AD-FDB57FFBDF67"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:09:31.604 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                  <referenceId id="64CCE50A-3980-4542-A8BA-757A708A7D91"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:03:15.159 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction" newDescription="descricao">
+                  <referenceId id="22FB9940-0E6B-425A-99BF-F2FBA7044E40"/>
+                  <subActionList class="java.util.ArrayList">
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                        <referenceId id="22FB9940-0E6B-425A-99BF-F2FBA7044E40"/>
+                     </modelAction>
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                        <referenceId id="22FB9940-0E6B-425A-99BF-F2FBA7044E40"/>
+                     </modelAction>
+                     <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                        <referenceId id="22FB9940-0E6B-425A-99BF-F2FBA7044E40"/>
+                     </modelAction>
+                  </subActionList>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:04:13.661 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpRollbackAction">
+                  <referenceId id="B7083B0B-6FFF-4524-AE8E-650ED3DD7991"/>
+                  <scopeUpdateRollbackAction newDescription="descricao">
+                     <referenceId id="84659BC4-D7D0-4CEF-93D4-05DF0CC50D30"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="84659BC4-D7D0-4CEF-93D4-05DF0CC50D30"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                           <referenceId id="84659BC4-D7D0-4CEF-93D4-05DF0CC50D30"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="84659BC4-D7D0-4CEF-93D4-05DF0CC50D30"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateRollbackAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:13:52.353 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownRollbackAction">
+                  <referenceId id="3CF40F17-21E4-4470-A5A9-EF6CF98801FE"/>
+                  <scopeUpdateRollbackAction newDescription="descricao">
+                     <referenceId id="C3AC789A-3E5E-44D0-A81F-C1884395C212"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="C3AC789A-3E5E-44D0-A81F-C1884395C212"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                           <referenceId id="C3AC789A-3E5E-44D0-A81F-C1884395C212"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="C3AC789A-3E5E-44D0-A81F-C1884395C212"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateRollbackAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:01:52.326 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction">
+                  <referenceId id="C0D7E6BA-0EB1-4F0E-94F6-BC5E7F1DE64F"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:08:15.662 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction">
+                  <referenceId id="AF0ACA52-53DB-44DC-BEDE-11C8B5600EB3"/>
+                  <newScopeId id="DE2F3678-9D52-4CAE-9B16-2E88D3A86A9A"/>
+                  <scopeUpdateAction newDescription="descricao">
+                     <referenceId id="7EF55EF2-5263-476F-962D-54E6F5691B5B"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="release" scopePriority="-1">
+                           <referenceId id="7EF55EF2-5263-476F-962D-54E6F5691B5B"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="true" newDeclaredEffort="3">
+                           <referenceId id="7EF55EF2-5263-476F-962D-54E6F5691B5B"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="d">
+                           <referenceId id="7EF55EF2-5263-476F-962D-54E6F5691B5B"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:02:26.178 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction">
+                  <referenceId id="12F8E442-3AB7-4C3B-9A11-DACDCEFC94DB"/>
+                  <newScopeId id="F7A54078-55A4-4C84-95CA-6083FF3F2762"/>
+                  <scopeUpdateAction newDescription="text">
+                     <referenceId id="F7A54078-55A4-4C84-95CA-6083FF3F2762"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="F7A54078-55A4-4C84-95CA-6083FF3F2762"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="F7A54078-55A4-4C84-95CA-6083FF3F2762"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="F7A54078-55A4-4C84-95CA-6083FF3F2762"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:10:46.382 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction">
+                  <referenceId id="77F7E447-F9D7-4E38-BFF7-574261E0BED6"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:01:21.8 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction">
+                  <referenceId id="5C0A0CBB-0516-49E4-8465-79935B7C77EA"/>
+                  <newScopeId id="6E3C4363-ED26-45CE-A83D-8CB4917E3984"/>
+                  <scopeUpdateAction newDescription="pattern">
+                     <referenceId id="6E3C4363-ED26-45CE-A83D-8CB4917E3984"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="6E3C4363-ED26-45CE-A83D-8CB4917E3984"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="6E3C4363-ED26-45CE-A83D-8CB4917E3984"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="6E3C4363-ED26-45CE-A83D-8CB4917E3984"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:03:41.47 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction">
+                  <referenceId id="FDB246E4-61FF-4BA7-BD4C-5EB79540E835"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:00:53.212 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction">
+                  <referenceId id="D34133FD-D31B-480C-94EE-B8E60949C04F"/>
+                  <newScopeId id="7FCA6BAB-9240-47DF-9BF2-AE944E127B0A"/>
+                  <scopeUpdateAction newDescription="text">
+                     <referenceId id="7FCA6BAB-9240-47DF-9BF2-AE944E127B0A"/>
+                     <subActionList class="java.util.ArrayList">
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction" newReleaseDescription="" scopePriority="-1">
+                           <referenceId id="7FCA6BAB-9240-47DF-9BF2-AE944E127B0A"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction" hasDeclaredEffort="false" newDeclaredEffort="0">
+                           <referenceId id="7FCA6BAB-9240-47DF-9BF2-AE944E127B0A"/>
+                        </modelAction>
+                        <modelAction class="br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction" newProgressDescription="">
+                           <referenceId id="7FCA6BAB-9240-47DF-9BF2-AE944E127B0A"/>
+                        </modelAction>
+                     </subActionList>
+                  </scopeUpdateAction>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:11:36.389 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction" position="1" wasIndexSet="true">
+                  <referenceId id="674B2E02-6837-484A-8B18-674D8EADB73C"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+            <userAction timestamp="1969-12-31 21:05:38.164 BRT">
+               <action class="br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction" index="1" description="text">
+                  <referenceId id="D0CA04BE-8178-4834-96AE-43F36C955187"/>
+                  <parentScopeId id="ADCBEC0B-76DF-4DF5-8337-525A49DB8F47"/>
+                  <childActionList class="java.util.ArrayList"/>
+                  <subActionList class="java.util.ArrayList"/>
+               </action>
+            </userAction>
+         </actions>
+      </project>
+   </projects>
+</ontrackXML>

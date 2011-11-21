@@ -381,5 +381,4 @@ public class ReleaseTest {
 		startDateField.setAccessible(true);
 		startDateField.set(scope.getProgress(), date.copy());
 	}
-
 }

@@ -61,6 +61,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
+			@SuppressWarnings("hiding")
 			public synchronized void persistActions(final long projectId, final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
 				for (final ModelAction modelAction : new ArrayList<ModelAction>(actions)) {
 					actions.add(modelAction);
@@ -84,7 +85,9 @@ public class BusinessLogicMockFactoryTestUtils {
 			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {}
 
 			@Override
-			public void persistOrUpdateUser(final User user) throws PersistenceException {}
+			public User persistOrUpdateUser(final User user) throws PersistenceException {
+				return null;
+			}
 
 			@Override
 			public List<User> findAllUsers() throws PersistenceException {
@@ -137,6 +140,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
+			@SuppressWarnings("hiding")
 			public void persistActions(final long projectId, final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
 				Assert.fail("The persistence should not be accessed.");
 			}
@@ -158,7 +162,9 @@ public class BusinessLogicMockFactoryTestUtils {
 			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {}
 
 			@Override
-			public void persistOrUpdateUser(final User user) throws PersistenceException {}
+			public User persistOrUpdateUser(final User user) throws PersistenceException {
+				return null;
+			}
 
 			@Override
 			public List<User> findAllUsers() throws PersistenceException {

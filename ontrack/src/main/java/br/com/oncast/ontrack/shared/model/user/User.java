@@ -2,8 +2,6 @@ package br.com.oncast.ontrack.shared.model.user;
 
 import java.io.Serializable;
 
-import org.simpleframework.xml.Attribute;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.UserEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 
@@ -12,11 +10,15 @@ public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Attribute
 	private long id;
 
-	@Attribute
 	private String email;
+
+	public User() {}
+
+	public User(final String email) {
+		this.email = email;
+	}
 
 	public long getId() {
 		return id;

@@ -1,10 +1,15 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import java.lang.reflect.Field;
+import static br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils.set;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
+import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -35,6 +40,12 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class UserActionFactoryMock {
+
+	private static final int DEFAULT_PROJECT_ID = 1;
+	private static final String DEFAULT_PROJECT_NAME = "Default project";
+
+	private static long projectId = DEFAULT_PROJECT_ID;
+	private static String projectName = DEFAULT_PROJECT_NAME;
 
 	public static List<User> createUserList() {
 		final List<User> users = new ArrayList<User>();
@@ -70,6 +81,14 @@ public class UserActionFactoryMock {
 		return passwords;
 	}
 
+	public static List<UserAction> createCompleteUserActionList(final int projectId) throws Exception {
+		UserActionFactoryMock.projectId = projectId;
+		final List<UserAction> actionList = createCompleteUserActionList();
+
+		resetProjectId();
+		return actionList;
+	}
+
 	public static List<UserAction> createCompleteUserActionList() throws Exception {
 		final List<UserAction> userActions = new ArrayList<UserAction>();
 		userActions.add(createReleaseRemoveAction());
@@ -96,6 +115,53 @@ public class UserActionFactoryMock {
 		userActions.add(createScopeMoveLeftAction());
 		userActions.add(createScopeMoveRightAction());
 		return userActions;
+	}
+
+	public static List<UserAction> createCompleteUserActionListOrderedById() throws Exception {
+		final List<UserAction> actionList = createCompleteUserActionList();
+		changeEachActionIdToItsIndex(actionList);
+		return actionList;
+	}
+
+	private static void changeEachActionIdToItsIndex(final List<UserAction> actionList) throws Exception {
+		for (int i = 0; i < actionList.size(); i++) {
+			final UserAction userAction = actionList.get(i);
+			set(userAction, "id", i);
+		}
+	}
+
+	public static List<UserAction> createRandomUserActionList() throws Exception {
+		final List<UserAction> actionList = createCompleteUserActionList();
+		sort(actionList);
+		return actionList;
+	}
+
+	public static List<UserAction> createRandomUserActionList(final int projectId, final String projectName) throws Exception {
+		setProjectName(projectName);
+
+		final List<UserAction> actionList = createCompleteUserActionList(projectId);
+		sort(actionList);
+
+		resetProjectName();
+		return actionList;
+	}
+
+	private static void setProjectName(final String projectName) {
+		UserActionFactoryMock.projectName = projectName;
+	}
+
+	private static void sort(final List<UserAction> actionList) {
+		Collections.sort(actionList, new Comparator<UserAction>() {
+
+			@Override
+			public int compare(final UserAction action1, final UserAction action2) {
+				return new Random().nextInt();
+			}
+		});
+
+		for (int i = 0; i < new Random().nextInt(10); i++) {
+			actionList.remove(new Random().nextInt(actionList.size() - 1));
+		}
 	}
 
 	public static UserAction createScopeMoveRightAction() throws Exception {
@@ -163,13 +229,6 @@ public class UserActionFactoryMock {
 		return createUserAction(insertParentRollback);
 	}
 
-	public static UserAction createUserAction(final ModelAction action) throws Exception {
-		final UserAction userAction = new UserAction();
-		set(userAction, "id", 1);
-		set(userAction, "timestamp", new Date());
-		return set(userAction, "action", action);
-	}
-
 	public static UserAction createScopeInsertChildRollbackAction() throws Exception {
 		final ScopeInsertChildRollbackAction insertChildRollback = new ScopeInsertChildRollbackAction(new UUID(), new ArrayList<ModelAction>());
 		return createUserAction(insertChildRollback);
@@ -233,12 +292,21 @@ public class UserActionFactoryMock {
 		return createUserAction(scopeMoveUpAction);
 	}
 
-	@SuppressWarnings("unchecked")
-	private static <T> T set(final Object subject, final String fieldName, final Object value) throws Exception {
-		final Field field = subject.getClass().getDeclaredField(fieldName);
-		field.setAccessible(true);
-		field.set(subject, value);
-		field.setAccessible(false);
-		return (T) subject;
+	public static UserAction createUserAction(final ModelAction action) throws Exception {
+		final UserAction userAction = new UserAction();
+		set(userAction, "projectRepresentation", ProjectTestUtils.createProjectRepresentation(projectId, projectName));
+		set(userAction, "id", 1);
+		// Generate a different time stamp so it is like an id, so time stamp equality is like action equality.
+		set(userAction, "timestamp", new Date(new Random().nextInt(1000000)));
+		return set(userAction, "action", action);
 	}
+
+	private static void resetProjectId() {
+		UserActionFactoryMock.projectId = DEFAULT_PROJECT_ID;
+	}
+
+	private static void resetProjectName() {
+		UserActionFactoryMock.projectName = DEFAULT_PROJECT_NAME;
+	}
+
 }

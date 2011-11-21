@@ -6,7 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +19,10 @@ import org.simpleframework.xml.core.Persister;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
@@ -173,22 +179,90 @@ public class XMLWriterTest {
 		testWithActionList(UserActionFactoryMock.createCompleteUserActionList());
 	}
 
+	@Test
+	public void shouldWriteActionsSeparatedByProjectsToXML() throws Exception {
+		final ArrayList<UserAction> actionList = new ArrayList<UserAction>();
+
+		actionList.addAll(UserActionFactoryMock.createRandomUserActionList(1, "Project 1"));
+		actionList.addAll(UserActionFactoryMock.createRandomUserActionList(2, "Project 2"));
+		actionList.addAll(UserActionFactoryMock.createRandomUserActionList(3, "Project 3"));
+
+		assertEquality(actionList, generateXMLAndRead(actionList));
+	}
+
+	@Test
+	public void shouldWriteActionsToXMLInTheSameOrderTheyArePassed() throws Exception {
+		final ArrayList<UserAction> actionList = new ArrayList<UserAction>();
+		actionList.addAll(UserActionFactoryMock.createCompleteUserActionListOrderedById());
+
+		final OntrackXML xml = generateXMLAndRead(actionList);
+
+		final ProjectXMLNode project = xml.getProjects().get(0);
+		for (int i = 0; i < project.getActions().size(); i++) {
+			assertEquals(actionList.get(i).getTimestamp(), project.getActions().get(i).getTimestamp());
+		}
+	}
+
+	private List<ProjectXMLNode> separateByProject(final List<UserAction> userActions) {
+		final Map<ProjectRepresentation, List<UserAction>> map = new HashMap<ProjectRepresentation, List<UserAction>>();
+		for (final UserAction userAction : userActions) {
+			final ProjectRepresentation projectRepresentation = userAction.getProjectRepresentation();
+			if (!map.containsKey(projectRepresentation)) map.put(projectRepresentation, new ArrayList<UserAction>());
+			map.get(projectRepresentation).add(userAction);
+		}
+		final List<ProjectXMLNode> list = new ArrayList<ProjectXMLNode>();
+		for (final ProjectRepresentation projectRepresentation : map.keySet()) {
+			list.add(new ProjectXMLNode(projectRepresentation, map.get(projectRepresentation)));
+		}
+		return list;
+	}
+
 	private void testWithActionList(final List<UserAction> actionList) throws Exception {
 		final OntrackXML ontrackXML = generateXMLAndRead(actionList);
 		assertEquality(actionList, ontrackXML);
 	}
 
 	private void assertEquality(final List<UserAction> actionList, final OntrackXML ontrackXML) {
-		assertTrue(ontrackXML.getUsers().containsAll(userList));
-		assertTrue(ontrackXML.getPasswords().containsAll(passwordList));
 		assertEquals(version, ontrackXML.getVersion());
-		DeepEqualityTestUtils.assertObjectEquality(actionList, ontrackXML.getUserActions());
+		final List<UserXMLNode> userXMLNodes = ontrackXML.getUsers();
+		assertEquals(userList.size(), userXMLNodes.size());
+		for (final UserXMLNode userXMLNode : userXMLNodes) {
+			assertContainsUser(userXMLNode.getUser());
+			assertContainsPassword(userXMLNode.getPassword());
+		}
+
+		final List<ProjectXMLNode> projects = separateByProject(actionList);
+		DeepEqualityTestUtils.assertObjectEquality(projects, ontrackXML.getProjects());
+	}
+
+	private void assertContainsUser(final User user) {
+		boolean contains = false;
+		for (final User userFromList : userList) {
+			if (userFromList.getEmail().equals(user.getEmail())) {
+				contains = true;
+				break;
+			}
+		}
+		assertTrue(contains);
+	}
+
+	private void assertContainsPassword(final Password password) {
+		boolean contains = false;
+		for (final Password passwordFromList : passwordList) {
+			if (passwordFromList.getPasswordHash().equals(password.getPasswordHash()) &&
+					passwordFromList.getPasswordSalt().equals(password.getPasswordSalt())) {
+				contains = true;
+				break;
+			}
+		}
+		assertTrue(contains);
 	}
 
 	private OntrackXML generateXMLAndRead(final List<UserAction> actionList) throws Exception {
 		final File ontrackFile = new File(ONTRACK_XML);
 
-		xmlExporter.setUserList(userList).setPasswordList(passwordList).setActionList(actionList).setVersion(version)
+		xmlExporter.setUserList(getAllUsersWithPassword())
+				.setProjectList(separateByProject(actionList)).setVersion(version)
 				.export(new FileOutputStream(ontrackFile));
 
 		final Serializer serializer = new Persister();
@@ -196,6 +270,35 @@ public class XMLWriterTest {
 
 		final OntrackXML ontrackXML = serializer.read(OntrackXML.class, source);
 		return ontrackXML;
+	}
+
+	private List<UserXMLNode> getAllUsersWithPassword() {
+		final List<UserXMLNode> userXMLNodeList = new ArrayList<UserXMLNode>();
+
+		try {
+			final List<User> users = userList;
+			for (final User user : users) {
+				userXMLNodeList.add(associatePasswordTo(user));
+			}
+		}
+		catch (final PersistenceException e) {
+			e.printStackTrace();
+		}
+
+		return userXMLNodeList;
+	}
+
+	private UserXMLNode associatePasswordTo(final User user) throws PersistenceException {
+		final UserXMLNode userXMLNode = new UserXMLNode(user);
+		userXMLNode.setPassword(getPasswordFor(user));
+		return userXMLNode;
+	}
+
+	private Password getPasswordFor(final User user) {
+		for (final Password password : passwordList) {
+			if (password.getUserId() == user.getId()) return password;
+		}
+		return null;
 	}
 
 	private List<UserAction> asList(final UserAction userAction) throws Exception {

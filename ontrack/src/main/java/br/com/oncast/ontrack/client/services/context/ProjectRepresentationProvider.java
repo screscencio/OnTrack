@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.services.context;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
-// FIXME Is this class necessary? Can we use only ProjectContextProvider everywhere?
 public class ProjectRepresentationProvider {
 
 	ProjectRepresentation projectRepresentation;
