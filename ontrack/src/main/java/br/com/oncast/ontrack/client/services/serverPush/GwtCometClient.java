@@ -12,8 +12,8 @@ import java.util.List;
 import net.zschech.gwt.comet.client.CometClient;
 import net.zschech.gwt.comet.client.CometListener;
 import net.zschech.gwt.comet.client.CometSerializer;
-import br.com.oncast.ontrack.shared.config.UriConfigurations;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
@@ -28,7 +28,7 @@ class GwtCometClient implements ServerPushClient {
 	private final GwtCometPingServiceAsync pingService = GWT.create(GwtCometPingService.class);
 
 	public GwtCometClient(final ServerPushClientEventListener serverPushClientEventListener) {
-		client = new CometClient(UriConfigurations.SERVER_PUSH_COMET_URL, GWT.<CometSerializer> create(ServerPushSerializer.class), new CometListener() {
+		client = new CometClient(URLBuilder.SERVER_PUSH_COMET_URL, GWT.<CometSerializer> create(ServerPushSerializer.class), new CometListener() {
 
 			@Override
 			public void onConnected(final int heartbeat) {
