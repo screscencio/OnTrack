@@ -38,17 +38,11 @@ public class XMLImporterTest {
 
 	@Mock
 	private PersistenceService persistenceService;
-
 	@Mock
 	private OntrackXML ontrackXML;
-
-	@Mock
-	private UserXMLNode userXML;
-
-	private XMLImporter importer;
-
 	private List<ProjectXMLNode> projects;
 	private List<UserXMLNode> users;
+	private XMLImporter importer;
 
 	@Before
 	public void setUp() throws Exception {

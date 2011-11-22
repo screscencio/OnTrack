@@ -32,6 +32,11 @@ public class MigrationTestUtils {
 		return (Element) document.selectObject(xPath);
 	}
 
+	@SuppressWarnings("unchecked")
+	public static List<Element> getElements(final Document document, final String xPath) {
+		return document.selectNodes(xPath);
+	}
+
 	public static boolean hasXPathObject(final Document document, final String xPath) {
 		return !(document.selectNodes(xPath)).isEmpty();
 	}
@@ -42,7 +47,7 @@ public class MigrationTestUtils {
 
 	public static void assertElementHasTheseAttributesAndNothingElse(final Element element, final String... attributeNames) {
 		final List attributes = element.attributes();
-		assertEquals(attributeNames.length, attributes.size());
+		assertEquals("Elements doesn't have the same number of attributes.", attributeNames.length, attributes.size());
 
 		for (final String attributeName : attributeNames) {
 			assertElementHasAttribute(element, attributeName);
