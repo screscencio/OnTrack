@@ -43,7 +43,7 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
-		<cp:ChangeProjectWidget ui:field="changeProjectWidget" styleName="{style.changeProjectWidget}" />
+		<cp:ProjectSelectionWidget ui:field="changeProjectWidget" styleName="{style.changeProjectWidget}" />
 		<g:Label ui:field="changePasswordLabel" text="Change Password" styleName="{style.changePasswordLabel}"  />
 		<g:Label ui:field="logoutLabel" text="Logout" styleName="{style.logoutLabel}" />
 	</g:HTMLPanel>

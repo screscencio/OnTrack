@@ -101,6 +101,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
+	// FIXME Test this method
 	@Override
 	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
 		LOGGER.debug("Creating new project '" + projectName + "'.");

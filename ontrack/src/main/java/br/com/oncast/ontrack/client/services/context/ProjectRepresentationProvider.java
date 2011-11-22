@@ -10,4 +10,6 @@ public interface ProjectRepresentationProvider {
 
 	public abstract void createNewProject(final String projectName, final ProjectCreationListener projectCreationListener);
 
+	public abstract void unregisterProjectListChangeListener(ProjectListChangeListener projectListChangeListener);
+
 }

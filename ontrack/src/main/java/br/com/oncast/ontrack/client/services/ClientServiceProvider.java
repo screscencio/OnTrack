@@ -27,9 +27,15 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-// TODO Create interfaces for each service and return them instead of the direct reference of its implementations (so that the rest of the application only
-// reference the interfaces, making the code more testable).
-// FIXME Use location at the UI and hide infra services, such as ActionSyncService and etc.
+/**
+ * The {@link ClientServiceProvider} is programmed in such a way that only business services are publicly available.
+ * Both infrastructure and "glue" services should be private.
+ * 
+ * "DEPENDENCY INJECTION vs LOCALIZATION" POLICY
+ * - Services should be injected when in other services, in order to favor testing;
+ * - Services should be located through the singleton usage when needed at the UI, if only used carefully, so that DI cascading is evicted.
+ * DI cascading produces a lot of "dirty code" with "delegators" and also has implies in the need of lots of custom factories in UIBinder objects.
+ */
 public class ClientServiceProvider {
 
 	private ActionExecutionService actionExecutionService;
