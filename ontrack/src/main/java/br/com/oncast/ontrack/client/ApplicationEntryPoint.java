@@ -6,7 +6,7 @@ import br.com.oncast.ontrack.client.ui.ApplicationUIPanel;
 import br.com.oncast.ontrack.client.ui.nativeeventhandlers.BrowserEscapeKeyDefaultActionPreventer;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
-import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -16,9 +16,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class ApplicationEntryPoint implements EntryPoint {
 
-	// FIXME Change to ProjectSelectionPlace
-	private static final long DEFAULT_PROJECT_ID = 1;
-	private static final Place DEFAULT_APP_PLACE = new PlanningPlace(DEFAULT_PROJECT_ID);
+	private static final Place DEFAULT_APP_PLACE = new ProjectSelectionPlace();
 
 	@Override
 	public void onModuleLoad() {
