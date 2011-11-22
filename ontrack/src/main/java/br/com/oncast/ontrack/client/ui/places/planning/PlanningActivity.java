@@ -3,18 +3,15 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
-import br.com.oncast.ontrack.client.services.authentication.PlanningActivityListener;
-import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
 import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
-import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.url.URLBuilder;
@@ -22,41 +19,26 @@ import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class PlanningActivity extends AbstractActivity {
 
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private final GlobalNativeEventService globalNativeEventService = GlobalNativeEventService.getInstance();
-	private final ContextProviderService contextProviderService;
-	private final ActionExecutionService actionExecutionService;
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private final NativeEventListener globalKeyUpListener;
-	private final PlanningAuthenticationRequestHandler authenticationRequestHandler;
-	private final ProjectRepresentationProvider projectRepresentationProvider;
 
-	public PlanningActivity(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
-			final AuthenticationService authenticationService, final ProjectRepresentationProvider projectRepresentationProvider) {
-		this.contextProviderService = contextProviderService;
-		this.actionExecutionService = actionExecutionService;
-		this.projectRepresentationProvider = projectRepresentationProvider;
-
-		this.authenticationRequestHandler = new PlanningAuthenticationRequestHandler(authenticationService, new PlanningActivityListener() {
-			@Override
-			// XXX Auth; Remove/Move this method. It should be set somewhere else: This is an app responsibility, not something specially related to this
-			// activity. The Authentication service could allow observers to know when a user logged in or out.
-			public void onLoggedOut() {
-				// TODO Launch a login place instead of reloading the page.
-				Window.Location.reload();
-			}
-		});
+	public PlanningActivity() {
 
 		activityActionExecutionListener = new ActivityActionExecutionListener();
 		globalKeyUpListener = new NativeEventListener() {
 
 			@Override
 			public void onNativeEvent(final NativeEvent nativeEvent) {
-				PlanningShortcutMappings.interpretKeyboardCommand(actionExecutionService, nativeEvent.getKeyCode(), nativeEvent.getCtrlKey(),
+				PlanningShortcutMappings.interpretKeyboardCommand(
+						SERVICE_PROVIDER.getActionExecutionService(),
+						nativeEvent.getKeyCode(),
+						nativeEvent.getCtrlKey(),
 						nativeEvent.getShiftKey(),
 						nativeEvent.getAltKey());
 			}
@@ -67,11 +49,12 @@ public class PlanningActivity extends AbstractActivity {
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		final PlanningView view = new PlanningPanel();
 
+		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
+		final long currentProjectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId();
+		final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(currentProjectId);
+
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
-
-		view.getApplicationMenu().setAuthenticationRequestHandler(authenticationRequestHandler);
-
 		view.getScopeTree().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setComponentInteractionHandler(new ComponentInteractionHandler() {
@@ -89,10 +72,8 @@ public class PlanningActivity extends AbstractActivity {
 			}
 		});
 
-		final long currentProjectId = projectRepresentationProvider.getCurrentProjectRepresentation().getId();
-		view.getScopeTree().setContext(contextProviderService.getProjectContext(currentProjectId));
-		view.getReleasePanel().setRelease(contextProviderService.getProjectContext(currentProjectId).getProjectRelease());
-
+		view.getScopeTree().setContext(projectContext);
+		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
 		view.setExporterPath(URLBuilder.buildMindMapExportURL(currentProjectId));
 
 		panel.setWidget(view);
@@ -102,7 +83,7 @@ public class PlanningActivity extends AbstractActivity {
 	@Override
 	public void onStop() {
 		globalNativeEventService.removeKeyUpListener(globalKeyUpListener);
-		actionExecutionService.removeActionExecutionListener(activityActionExecutionListener);
+		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
 	}
 
 	private List<ActionExecutionListener> getActionExecutionSuccessListeners(final PlanningView view) {

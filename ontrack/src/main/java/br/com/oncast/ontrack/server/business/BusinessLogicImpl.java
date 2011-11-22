@@ -121,7 +121,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	public List<ProjectRepresentation> retrieveProjectList() throws UnableToRetrieveProjectListException {
 		LOGGER.debug("Retrieving project list.");
 		try {
-			return persistenceService.findAllProjectRepresentations();
+			return persistenceService.retrieveAllProjectRepresentations();
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "Unable to retrieve the project list.";
@@ -180,7 +180,7 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private ProjectSnapshot createBlankProjectSnapshot(final long projectId) throws UnableToLoadProjectException, NoResultFoundException, PersistenceException {
 		try {
-			final ProjectRepresentation projectRepresentation = persistenceService.findProjectRepresentation(projectId);
+			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
 
 			final Scope projectScope = new Scope(projectRepresentation.getName(), new UUID("0"));
 			final Release projectRelease = new Release(projectRepresentation.getName(), new UUID("release0"));

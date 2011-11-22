@@ -6,6 +6,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -80,6 +81,7 @@ public class FiltrableCommandMenu extends Composite {
 	}
 
 	public void setItems(final List<CommandMenuItem> itens) {
+		Collections.sort(itens);
 		this.itens = itens;
 		menu.setItems(itens);
 	}
@@ -93,6 +95,7 @@ public class FiltrableCommandMenu extends Composite {
 
 		this.setVisible(true);
 		MaskPanel.show(new HideHandler() {
+
 			@Override
 			public void onWillHide() {
 				hide();
@@ -178,9 +181,11 @@ public class FiltrableCommandMenu extends Composite {
 	private List<CommandMenuItem> filterItens(final String filterText) {
 		if (filterText.isEmpty()) return new ArrayList<CommandMenuItem>(itens);
 
+		final String lowerCaseFIlterText = filterText.toLowerCase();
+
 		final List<CommandMenuItem> filteredItens = new ArrayList<CommandMenuItem>();
 		for (final CommandMenuItem item : itens)
-			if (item.getText().startsWith(filterText)) filteredItens.add(item);
+			if (item.getText().toLowerCase().startsWith(lowerCaseFIlterText)) filteredItens.add(item);
 
 		return filteredItens;
 	}

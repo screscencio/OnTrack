@@ -67,7 +67,7 @@ public class AuthenticationManager {
 		User user;
 
 		try {
-			user = persistenceService.findUserByEmail(email);
+			user = persistenceService.retrieveUserByEmail(email);
 		}
 		catch (final NoResultFoundException e) {
 			throw new UserNotFoundException("No user found with e-mail " + email + ".", e);
@@ -82,7 +82,7 @@ public class AuthenticationManager {
 	private Password findPasswordForUserOrCreateANewOne(final User user) throws UserNotFoundException {
 		Password passwordForUser;
 		try {
-			passwordForUser = persistenceService.findPasswordForUser(user.getId());
+			passwordForUser = persistenceService.retrievePasswordForUser(user.getId());
 		}
 		catch (final NoResultFoundException e) {
 			// TODO Creating a new empty password if the user doesn't have one...
@@ -117,7 +117,7 @@ public class AuthenticationManager {
 		Password password = null;
 
 		try {
-			password = persistenceService.findPasswordForUser(user.getId());
+			password = persistenceService.retrievePasswordForUser(user.getId());
 		}
 		catch (final NoResultFoundException e) {
 			LOGGER.error("No password found for user " + user.getEmail(), e);

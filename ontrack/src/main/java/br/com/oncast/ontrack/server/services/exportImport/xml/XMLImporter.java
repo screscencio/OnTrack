@@ -56,7 +56,7 @@ public class XMLImporter {
 	private void persistUsers(final List<UserXMLNode> userList) throws PersistenceException {
 		for (final UserXMLNode user : userList) {
 			try {
-				persistanceService.findUserByEmail(user.getUser().getEmail());
+				persistanceService.retrieveUserByEmail(user.getUser().getEmail());
 			}
 			catch (final NoResultFoundException e) {
 				final User persistedUser = persistanceService.persistOrUpdateUser(user.getUser());

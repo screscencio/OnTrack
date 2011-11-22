@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.mocks;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
 public class ContextProviderServiceMock implements ContextProviderService {
@@ -18,12 +19,12 @@ public class ContextProviderServiceMock implements ContextProviderService {
 	}
 
 	@Override
-	public void setProjectContext(final ProjectContext projectContext) {
-		this.projectContext = projectContext;
+	public boolean isContextAvailable(final long projectId) {
+		return (projectContext != null);
 	}
 
 	@Override
-	public boolean isContextAvailable(final long projectId) {
-		return (projectContext != null);
+	public void loadProjectContext(final long requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
+		throw new RuntimeException("Should not be called.");
 	}
 }

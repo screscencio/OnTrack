@@ -3,7 +3,8 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
-import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.HideHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
 
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+// FIXME Refactor widget name
 public class ChangePasswordForm extends Composite {
 
 	private static ChangePasswordFormUiBinder uiBinder = GWT.create(ChangePasswordFormUiBinder.class);
@@ -44,8 +46,6 @@ public class ChangePasswordForm extends Composite {
 
 	@UiField
 	protected Button changePasswordButton;
-
-	private PlanningAuthenticationRequestHandler authenticationRequestHandler;
 
 	public ChangePasswordForm() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -113,15 +113,38 @@ public class ChangePasswordForm extends Composite {
 
 	private void submitChangePassword() {
 		if (!areTypedPasswordsEqual()) messageLabel.setText("The two typed passwords are different.");
-		else authenticationRequestHandler.changeUserPassword(this, oldPasswordArea.getText(), newPasswordArea.getText());
+		else changeUserPassword();
+	}
+
+	// XXX Auth; Pre-process password (trim, etc) ?
+	private void changeUserPassword() {
+		ClientServiceProvider.getInstance().getAuthenticationService()
+				.changePassword(oldPasswordArea.getText(), newPasswordArea.getText(), new UserPasswordChangeCallback() {
+
+					@Override
+					public void onUserPasswordChangedSuccessfully() {
+						// TODO Improve feedback message.
+						setInfoMessage("Password changed succefully.");
+					}
+
+					@Override
+					public void onUnexpectedFailure(final Throwable caught) {
+						// TODO Improve feedback message.
+						setErrorMessage("Unexpected error.");
+
+					}
+
+					@Override
+					public void onIncorrectUserPasswordFailure() {
+						// TODO Improve feedback message.
+						setErrorMessage("Incorrect old password.");
+					}
+				});
+
 	}
 
 	private boolean areTypedPasswordsEqual() {
 		return newPasswordArea.getText().equals(retypePasswordArea.getText());
-	}
-
-	public void setAuthenticationRequestHandler(final PlanningAuthenticationRequestHandler authenticationRequestHandler) {
-		this.authenticationRequestHandler = authenticationRequestHandler;
 	}
 
 	public void setErrorMessage(final String message) {

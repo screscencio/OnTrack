@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import com.google.gwt.user.client.Command;
 
-public class CommandMenuItem {
+public class CommandMenuItem implements Comparable<CommandMenuItem> {
 
 	private final Command command;
 	private final String text;
@@ -18,5 +18,10 @@ public class CommandMenuItem {
 
 	public String getText() {
 		return text;
+	}
+
+	@Override
+	public int compareTo(final CommandMenuItem obj) {
+		return this.text.compareTo(obj.text);
 	}
 }

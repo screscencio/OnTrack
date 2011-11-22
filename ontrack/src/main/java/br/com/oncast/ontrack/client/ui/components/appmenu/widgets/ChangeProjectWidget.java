@@ -24,12 +24,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+// FIXME Refactor widget name
 public class ChangeProjectWidget extends Composite {
 
 	private static ChangeProjectWidgetUiBinder uiBinder = GWT.create(ChangeProjectWidgetUiBinder.class);
 
 	interface ChangeProjectWidgetUiBinder extends UiBinder<Widget, ChangeProjectWidget> {}
 
+	// FIXME Extract this menu button and pop up behavior into 2 different components.
 	@UiField
 	protected Label projectSwitchingMenuButton;
 

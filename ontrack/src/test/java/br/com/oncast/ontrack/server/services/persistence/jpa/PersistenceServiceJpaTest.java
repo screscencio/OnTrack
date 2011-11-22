@@ -125,7 +125,7 @@ public class PersistenceServiceJpaTest {
 		user.setEmail(email);
 		persistenceService.persistOrUpdateUser(user);
 
-		final User newUser = persistenceService.findUserByEmail(email);
+		final User newUser = persistenceService.retrieveUserByEmail(email);
 		assertEquals(user.getEmail(), newUser.getEmail());
 	}
 
@@ -136,13 +136,13 @@ public class PersistenceServiceJpaTest {
 		user.setEmail(email);
 		persistenceService.persistOrUpdateUser(user);
 
-		final User newUser = persistenceService.findUserByEmail(email);
+		final User newUser = persistenceService.retrieveUserByEmail(email);
 		assertEquals(user.getEmail(), newUser.getEmail());
 
 		final String newEmail = "newEmail@email.com";
 		newUser.setEmail(newEmail);
 		persistenceService.persistOrUpdateUser(newUser);
-		final User updatedUser = persistenceService.findUserByEmail(newEmail);
+		final User updatedUser = persistenceService.retrieveUserByEmail(newEmail);
 		assertEquals(newEmail, updatedUser.getEmail());
 		assertEquals(newUser.getId(), updatedUser.getId());
 	}
@@ -154,13 +154,13 @@ public class PersistenceServiceJpaTest {
 		user.setEmail(email);
 		persistenceService.persistOrUpdateUser(user);
 
-		user = persistenceService.findUserByEmail(email);
+		user = persistenceService.retrieveUserByEmail(email);
 		final Password password = new Password();
 		password.setUserId(user.getId());
 		final String passwordText = "password";
 		password.setPassword(passwordText);
 		persistenceService.persistOrUpdatePassword(password);
-		final Password newPassword = persistenceService.findPasswordForUser(user.getId());
+		final Password newPassword = persistenceService.retrievePasswordForUser(user.getId());
 		assertTrue(newPassword.authenticate(passwordText));
 	}
 
@@ -171,20 +171,20 @@ public class PersistenceServiceJpaTest {
 		user.setEmail(email);
 		persistenceService.persistOrUpdateUser(user);
 
-		user = persistenceService.findUserByEmail(email);
+		user = persistenceService.retrieveUserByEmail(email);
 		final Password password = new Password();
 		password.setUserId(user.getId());
 		final String passwordText = "password";
 		password.setPassword(passwordText);
 		persistenceService.persistOrUpdatePassword(password);
-		final Password firstPassword = persistenceService.findPasswordForUser(user.getId());
+		final Password firstPassword = persistenceService.retrievePasswordForUser(user.getId());
 		assertTrue(firstPassword.authenticate(passwordText));
 
 		final String newPassword = "newPassword";
 		firstPassword.setPassword(newPassword);
 		persistenceService.persistOrUpdatePassword(firstPassword);
 
-		final Password secondPassword = persistenceService.findPasswordForUser(user.getId());
+		final Password secondPassword = persistenceService.retrievePasswordForUser(user.getId());
 		assertFalse(secondPassword.authenticate(passwordText));
 		assertTrue(secondPassword.authenticate(newPassword));
 	}
@@ -196,18 +196,18 @@ public class PersistenceServiceJpaTest {
 		user.setEmail(email);
 		persistenceService.persistOrUpdateUser(user);
 
-		user = persistenceService.findUserByEmail(email);
-		persistenceService.findPasswordForUser(user.getId());
+		user = persistenceService.retrieveUserByEmail(email);
+		persistenceService.retrievePasswordForUser(user.getId());
 	}
 
 	@Test(expected = NoResultFoundException.class)
 	public void shouldThrowNoResultFoundExceptionWhenUserNotExist() throws PersistenceException, NoResultFoundException {
-		persistenceService.findPasswordForUser(213);
+		persistenceService.retrievePasswordForUser(213);
 	}
 
 	@Test(expected = NoResultFoundException.class)
 	public void shouldThrowNotResultFoundExceptionWhenUserNotFound() throws NoResultFoundException, PersistenceException {
-		persistenceService.findUserByEmail("inexistant@email.com");
+		persistenceService.retrieveUserByEmail("inexistant@email.com");
 	}
 
 	@Test
@@ -225,7 +225,7 @@ public class PersistenceServiceJpaTest {
 		user4.setEmail("user@user4");
 		persistenceService.persistOrUpdateUser(user4);
 
-		final List<User> userList = persistenceService.findAllUsers();
+		final List<User> userList = persistenceService.retrieveAllUsers();
 		assertEquals(4, userList.size());
 
 	}
@@ -233,7 +233,7 @@ public class PersistenceServiceJpaTest {
 	@Test
 	public void shouldPersistProjectRepresentation() throws Exception {
 		persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation("Name"));
-		final ProjectRepresentation foundProjectRepresentation = persistenceService.findProjectRepresentation(2);
+		final ProjectRepresentation foundProjectRepresentation = persistenceService.retrieveProjectRepresentation(2);
 		assertEquals("Name", foundProjectRepresentation.getName());
 	}
 
@@ -245,22 +245,22 @@ public class PersistenceServiceJpaTest {
 		persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
 		assertEquals(2, projectRepresentation.getId());
 
-		final ProjectRepresentation foundProjectRepresentation = persistenceService.findProjectRepresentation(2);
+		final ProjectRepresentation foundProjectRepresentation = persistenceService.retrieveProjectRepresentation(2);
 		assertEquals("Name", foundProjectRepresentation.getName());
 	}
 
 	@Test
 	public void shouldBeAbleToFindAllProjectRepresentations() throws Exception {
-		assertEquals(1, persistenceService.findAllProjectRepresentations().size());
+		assertEquals(1, persistenceService.retrieveAllProjectRepresentations().size());
 
 		final ArrayList<ProjectRepresentation> projectRepresentations = new ArrayList<ProjectRepresentation>();
 		for (int i = 2; i <= 11; i++) {
 			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(i, "Name" + i);
 			persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
 			projectRepresentations.add(projectRepresentation);
-			assertEquals(i, persistenceService.findAllProjectRepresentations().size());
+			assertEquals(i, persistenceService.retrieveAllProjectRepresentations().size());
 		}
-		assertTrue(persistenceService.findAllProjectRepresentations().containsAll(projectRepresentations));
+		assertTrue(persistenceService.retrieveAllProjectRepresentations().containsAll(projectRepresentations));
 	}
 
 	@Test
@@ -291,7 +291,7 @@ public class PersistenceServiceJpaTest {
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {
-			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(persistenceService.findProjectRepresentation(PROJECT_ID), projectScope,
+			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(persistenceService.retrieveProjectRepresentation(PROJECT_ID), projectScope,
 					projectRelease), new Date(0));
 			return projectSnapshot;
 		}

@@ -17,25 +17,34 @@ import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchServ
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchServiceImpl;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
+import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
+import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 // TODO Create interfaces for each service and return them instead of the direct reference of its implementations (so that the rest of the application only
 // reference the interfaces, making the code more testable).
 // FIXME Use location at the UI and hide infra services, such as ActionSyncService and etc.
 public class ClientServiceProvider {
 
-	private AuthenticationService authenticationService;
-	private ActionSyncService actionSyncService;
 	private ActionExecutionService actionExecutionService;
 	private ContextProviderService contextProviderService;
+	private ProjectRepresentationProvider projectRepresentationProvider;
+
+	private AuthenticationService authenticationService;
+	private ApplicationPlaceController placeController;
+
+	private ClientIdentificationProvider clientIdentificationProvider;
+	private ActionSyncService actionSyncService;
+
 	private RequestDispatchService requestDispatchService;
 	private ServerPushClientService serverPushClientService;
-	private ClientIdentificationProvider clientIdentificationProvider;
-	private ApplicationPlaceController placeController;
 	private ErrorTreatmentService errorTreatmentService;
-	private ProjectRepresentationProvider projectRepresentationProvider;
 	private EventBus eventBus;
 
 	private static ClientServiceProvider instance;
@@ -45,8 +54,21 @@ public class ClientServiceProvider {
 		return instance = new ClientServiceProvider();
 	}
 
-	private ClientServiceProvider() {
+	private ClientServiceProvider() {}
+
+	/**
+	 * Configures the necessary services for application full usage.
+	 * - Initiates the {@link ActionSyncService}, which starts a server-push connection with the server;
+	 * - Initiates the {@link ApplicationPlaceController} setting the default place and panel in which the application navigation will occur.
+	 * 
+	 * @param panel the panel that will be used by the application "navigation" through the {@link ApplicationPlaceController}.
+	 * @param defaultAppPlace the default place used by the {@link ApplicationPlaceController} "navigation".
+	 */
+	public void configure(final AcceptsOneWidget panel, final Place defaultAppPlace) {
 		getActionSyncService();
+
+		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
+				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
 	}
 
 	public AuthenticationService getAuthenticationService() {
@@ -72,15 +94,16 @@ public class ClientServiceProvider {
 
 	public ContextProviderService getContextProviderService() {
 		if (contextProviderService != null) return contextProviderService;
-		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) getProjectRepresentationProvider());
+		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) getProjectRepresentationProvider(),
+				getRequestDispatchService());
 	}
 
-	public RequestDispatchService getRequestDispatchService() {
+	private RequestDispatchService getRequestDispatchService() {
 		if (requestDispatchService != null) return requestDispatchService;
 		return requestDispatchService = new RequestDispatchServiceImpl();
 	}
 
-	public ActionSyncService getActionSyncService() {
+	private ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
 				getClientIdentificationProvider(), getProjectRepresentationProvider(), getErrorTreatmentService());

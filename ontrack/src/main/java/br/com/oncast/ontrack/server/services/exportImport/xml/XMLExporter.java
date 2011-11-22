@@ -54,7 +54,7 @@ public class XMLExporter {
 	private List<ProjectXMLNode> findAllProjectsWithActions() throws PersistenceException {
 		final List<ProjectXMLNode> projectList = new ArrayList<ProjectXMLNode>();
 
-		final List<ProjectRepresentation> allProjectRepresentations = persistanceService.findAllProjectRepresentations();
+		final List<ProjectRepresentation> allProjectRepresentations = persistanceService.retrieveAllProjectRepresentations();
 		for (final ProjectRepresentation projectRepresentation : allProjectRepresentations) {
 			projectList.add(new ProjectXMLNode(projectRepresentation, persistanceService.retrieveActionsSince(projectRepresentation.getId(), 0)));
 		}
@@ -65,7 +65,7 @@ public class XMLExporter {
 	private List<UserXMLNode> findAllUsers() throws PersistenceException {
 		final List<UserXMLNode> userXMLNodeList = new ArrayList<UserXMLNode>();
 
-		final List<User> users = persistanceService.findAllUsers();
+		final List<User> users = persistanceService.retrieveAllUsers();
 		for (final User user : users) {
 			userXMLNodeList.add(associatePasswordTo(user));
 		}
@@ -76,7 +76,7 @@ public class XMLExporter {
 	private UserXMLNode associatePasswordTo(final User user) throws PersistenceException {
 		final UserXMLNode userXMLNode = new UserXMLNode(user);
 		try {
-			userXMLNode.setPassword(persistanceService.findPasswordForUser(user.getId()));
+			userXMLNode.setPassword(persistanceService.retrievePasswordForUser(user.getId()));
 		}
 		catch (final NoResultFoundException e) {
 			// This user doesn't have a password.

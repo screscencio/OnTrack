@@ -40,7 +40,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			final ProjectRepresentation projectRepresentation = findProjectRepresentation(projectId);
+			final ProjectRepresentation projectRepresentation = retrieveProjectRepresentation(projectId);
 			for (final ModelAction modelAction : actionList) {
 				final ModelActionEntity entity = convertActionToEntity(modelAction);
 				final UserActionEntity container = new UserActionEntity(entity, projectRepresentation, timestamp);
@@ -155,7 +155,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public User findUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
+	public User retrieveUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where user.email = :email");
@@ -176,7 +176,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User> findAllUsers() throws PersistenceException {
+	public List<User> retrieveAllUsers() throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user");
@@ -217,7 +217,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public Password findPasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
+	public Password retrievePasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password where password.userId = :userId");
@@ -238,7 +238,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Password> findAllPasswords() throws PersistenceException {
+	public List<Password> retrieveAllPasswords() throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password");
@@ -280,7 +280,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException, NoResultFoundException {
+	public ProjectRepresentation retrieveProjectRepresentation(final long projectId) throws PersistenceException, NoResultFoundException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select projectRepresentation from " + ProjectRepresentation.class.getSimpleName()
@@ -302,7 +302,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProjectRepresentation> findAllProjectRepresentations() throws PersistenceException {
+	public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select projectRepresentation from " + ProjectRepresentation.class.getSimpleName()

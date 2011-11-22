@@ -58,8 +58,8 @@ public class AuthenticationManagerTest {
 	}
 
 	private void setDefaultMockBehavior() throws NoResultFoundException, PersistenceException {
-		when(persistenceServiceMock.findUserByEmail(anyString())).thenReturn(user);
-		when(persistenceServiceMock.findPasswordForUser(anyInt())).thenReturn(passwordMock);
+		when(persistenceServiceMock.retrieveUserByEmail(anyString())).thenReturn(user);
+		when(persistenceServiceMock.retrievePasswordForUser(anyInt())).thenReturn(passwordMock);
 		when(passwordMock.authenticate(anyString())).thenReturn(true);
 	}
 
@@ -132,12 +132,12 @@ public class AuthenticationManagerTest {
 	}
 
 	private void forcePersistenceToDoNotFindUser() throws NoResultFoundException, PersistenceException {
-		when(persistenceServiceMock.findUserByEmail(anyString())).thenThrow(new NoResultFoundException(null, null));
+		when(persistenceServiceMock.retrieveUserByEmail(anyString())).thenThrow(new NoResultFoundException(null, null));
 	}
 
 	private void forcePersistenceToFail() throws Exception {
-		when(persistenceServiceMock.findUserByEmail(anyString())).thenThrow(new AuthenticationException());
-		when(persistenceServiceMock.findPasswordForUser(anyInt())).thenThrow(new AuthenticationException());
+		when(persistenceServiceMock.retrieveUserByEmail(anyString())).thenThrow(new AuthenticationException());
+		when(persistenceServiceMock.retrievePasswordForUser(anyInt())).thenThrow(new AuthenticationException());
 	}
 
 	private void forcePasswordToBeIncorrect() {
