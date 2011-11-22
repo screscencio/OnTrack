@@ -36,7 +36,7 @@ public class Migration_2011_11_01 extends Migration {
 	}
 
 	private void addTimeStampForAllDeclareProgressActions() {
-		final List<Element> actions = getAllElementsOfType(ScopeDeclareProgressAction.class);
+		final List<Element> actions = getElementsOfType(ScopeDeclareProgressAction.class);
 		final Iterator<Element> it = actions.iterator();
 		while (it.hasNext()) {
 			final Element action = it.next();
