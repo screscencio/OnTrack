@@ -93,7 +93,6 @@ public class FiltrableCommandMenu extends Composite {
 
 		this.setVisible(true);
 		MaskPanel.show(new HideHandler() {
-
 			@Override
 			public void onWillHide() {
 				hide();
@@ -111,6 +110,7 @@ public class FiltrableCommandMenu extends Composite {
 	public void hide() {
 		if (!this.isVisible()) return;
 		this.setVisible(false);
+		MaskPanel.assureHidden();
 		if (closeHandler != null) closeHandler.onClose();
 	}
 
