@@ -69,11 +69,22 @@ public class CommandMenu extends Composite {
 
 	public void show() {
 		this.setVisible(true);
+
+		MaskPanel.show(new HideHandler() {
+
+			@Override
+			public void onWillHide() {
+				hide();
+			}
+		});
 	}
 
 	public void hide() {
 		if (!this.isVisible()) return;
 		this.setVisible(false);
+
+		// FIXME Rodrigo: maskPanel.hide();
+
 		if (closeHandler != null) closeHandler.onClose();
 	}
 
