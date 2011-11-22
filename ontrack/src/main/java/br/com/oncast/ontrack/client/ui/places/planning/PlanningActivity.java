@@ -15,9 +15,9 @@ import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
-import br.com.oncast.ontrack.shared.config.UriConfigurations;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.dom.client.NativeEvent;
@@ -93,7 +93,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.getScopeTree().setContext(contextProviderService.getProjectContext(currentProjectId));
 		view.getReleasePanel().setRelease(contextProviderService.getProjectContext(currentProjectId).getProjectRelease());
 
-		view.setExporterPath(UriConfigurations.EXPORT_TO_MINDMAP_APPLICATION_SERVLET_URL);
+		view.setExporterPath(URLBuilder.buildMindMapExportURL(currentProjectId));
 
 		panel.setWidget(view);
 		globalNativeEventService.addKeyUpListener(globalKeyUpListener);
