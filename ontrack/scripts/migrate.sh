@@ -12,6 +12,12 @@ VerifyBackupDirPresence(){
     fi
 }
 
+UpdateWarFile(){
+	echo 'Updating war file'
+	java -cp ../scripts/migration-tools.jar br.com.oncast.ontrack.SingleReleasePackageGenerator $WAR_INSTANCE
+	echo 'War updated...'
+}
+
 RetrieveXML() {
     echo 'Retrieve old xml'
     curl --basic --user $APP_USER:$APP_PASS $APP_URL/application/xml/download > $BACKUP_PATH/xml/ontrack-$CURRENT_DATE.xml
@@ -60,7 +66,7 @@ UploadXML(){
 }
 
 PrintHelp(){
-    echo 'Usage: sh migrate.sh http://url /path/to/tomcat file.war'
+    echo 'Usage: sh migrate.sh http://url /path/to/tomcat instance'
     echo 'The file.war must be in this same path'
 }
 
@@ -70,21 +76,24 @@ then
 else
     APP_URL="$1"
     TOMCAT_PATH="$2"
-    WAR_NAME="$3"
+    WAR_INSTANCE="$3"
+    WAR_NAME=$WAR_INSTANCE.war
 
     APP_USER="admin@ontrack.com"
     APP_PASS="ontrackpoulain"
     
     BACKUP_PATH="/backup"
-    DB_USER="ontrack"
-    DB_PASSWORD="ontrack"
-    DB_URL="192.168.2.95:3306"
-    DB_SCHEMA="staging"
+    DB_USER="root"
+    DB_PASSWORD=""
+    DB_URL="localhost:3306"
+    DB_SCHEMA="migTest"
     CURRENT_DATE=`date +%d-%m-%Y_%H:%M:%S`
     
     VerifyBackupDirPresence
     
     echo 'Starting migration process...'
+	UpdateWarFile
+	echo ""
     RetrieveXML
     echo ""
     StopTomcat

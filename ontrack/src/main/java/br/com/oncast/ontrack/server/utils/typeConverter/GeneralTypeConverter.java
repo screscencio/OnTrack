@@ -9,6 +9,7 @@ import java.util.Map;
 import org.hibernate.collection.PersistentBag;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.BooleanConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.DateConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.IntegerConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.ListConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.LongConverter;

@@ -2,17 +2,12 @@ package br.com.oncast.ontrack.client.services.context;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
-public class ProjectRepresentationProvider {
+public interface ProjectRepresentationProvider {
 
-	ProjectRepresentation projectRepresentation;
+	public abstract ProjectRepresentation getCurrentProjectRepresentation();
 
-	public ProjectRepresentation getCurrentProjectRepresentation() {
-		// FIXME Analyze if it is better to throw a new exception or to create a representation of a non existing / non persisted project (id = 0).
-		if (projectRepresentation == null) return new ProjectRepresentation(0, "null");
-		return projectRepresentation;
-	}
+	public abstract void registerProjectListChangeListener(final ProjectListChangeListener projectListChangeListener);
 
-	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
-		this.projectRepresentation = projectRepresentation;
-	}
+	public abstract void createNewProject(final String projectName, final ProjectCreationListener projectCreationListener);
+
 }

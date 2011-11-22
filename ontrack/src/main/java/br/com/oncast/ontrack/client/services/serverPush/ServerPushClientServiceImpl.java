@@ -34,6 +34,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			 */
 			@Override
 			public void onError(final Throwable exception) {
+				exception.printStackTrace();
 				errorTreatmentService.treatFatalError(
 								"The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.",
 								exception);

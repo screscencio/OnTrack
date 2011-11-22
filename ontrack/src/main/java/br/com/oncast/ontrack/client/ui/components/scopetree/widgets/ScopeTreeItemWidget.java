@@ -7,9 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ScrollableCommandMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
@@ -30,7 +34,6 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
@@ -125,6 +128,15 @@ public class ScopeTreeItemWidget extends Composite {
 
 	private Scope scope;
 
+	@IgnoredByDeepEquality
+	private ScopeTreeItemWidgetReleaseCommandMenuItemFactory releaseCommandMenuItemFactory;
+
+	@IgnoredByDeepEquality
+	private ScopeTreeItemWidgetEffortCommandMenuItemFactory effortCommandMenuItemFactory;
+
+	@IgnoredByDeepEquality
+	private ScopeTreeItemWidgetProgressCommandMenuItemFactory progressCommandMenuItemFactory;
+
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -139,6 +151,9 @@ public class ScopeTreeItemWidget extends Composite {
 		setScope(scope);
 
 		this.editionHandler = editionHandler;
+		this.releaseCommandMenuItemFactory = new ScopeTreeItemWidgetReleaseCommandMenuItemFactory(editionHandler);
+		this.effortCommandMenuItemFactory = new ScopeTreeItemWidgetEffortCommandMenuItemFactory(editionHandler);
+		this.progressCommandMenuItemFactory = new ScopeTreeItemWidgetProgressCommandMenuItemFactory(editionHandler);
 
 		focusPanel.addClickHandler(new ClickHandler() {
 
@@ -324,75 +339,37 @@ public class ScopeTreeItemWidget extends Composite {
 
 	public void showReleaseMenu(final List<Release> releaseList) {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
-		items.add(new CommandMenuItem("None", new Command() {
 
-			@Override
-			public void execute() {
-				editionHandler.bindRelease("");
-			}
-		}));
+		items.add(releaseCommandMenuItemFactory.createItem("None", ""));
+		for (final Release releaseItem : releaseList)
+			items.add(releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription()));
 
-		for (final Release releaseItem : releaseList) {
-			items.add(new CommandMenuItem(releaseItem.getFullDescription(), new Command() {
-
-				@Override
-				public void execute() {
-					editionHandler.bindRelease(releaseItem.getFullDescription());
-				}
-			}));
-		}
-		showCommandMenu(items, style.releaseMenuPanel());
+		showCommandMenu(items, releaseCommandMenuItemFactory, style.releaseMenuPanel(), 670, 300);
 	}
 
 	public void showProgressMenu(final Set<String> progressDefinitionSet) {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
-		items.add(new CommandMenuItem("None", new Command() {
 
-			@Override
-			public void execute() {
-				editionHandler.declareProgress("");
-			}
-		}));
+		items.add(progressCommandMenuItemFactory.createItem("None", ""));
+		for (final String progressDefinition : progressDefinitionSet)
+			items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
-		for (final String progressDefinition : progressDefinitionSet) {
-			items.add(new CommandMenuItem(progressDefinition, new Command() {
-
-				@Override
-				public void execute() {
-					editionHandler.declareProgress(progressDefinition);
-				}
-			}));
-		}
-
-		showCommandMenu(items, style.progressMenuPanel());
+		showCommandMenu(items, progressCommandMenuItemFactory, style.progressMenuPanel(), 400, 300);
 	}
 
 	public void showEffortMenu(final List<String> fibonacciScaleForEffort) {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
 
-		items.add(new CommandMenuItem("None", new Command() {
+		items.add(effortCommandMenuItemFactory.createItem("None", ""));
+		for (final String effort : fibonacciScaleForEffort)
+			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
-			@Override
-			public void execute() {
-				editionHandler.declareEffort("");
-			}
-		}));
-
-		for (final String effort : fibonacciScaleForEffort) {
-			items.add(new CommandMenuItem(effort, new Command() {
-
-				@Override
-				public void execute() {
-					editionHandler.declareEffort(effort);
-				}
-			}));
-		}
-
-		showCommandMenu(items, style.effortMenuPanel());
+		showCommandMenu(items, effortCommandMenuItemFactory, style.effortMenuPanel(), 100, 300);
 	}
 
-	private void showCommandMenu(final List<CommandMenuItem> items, final String menuPanelStylename) {
-		final ScrollableCommandMenu commandsMenu = new ScrollableCommandMenu();
+	private void showCommandMenu(final List<CommandMenuItem> items, final CustomCommandMenuItemFactory customItemFactory, final String menuPanelStylename,
+			final int maxWidth, final int maxHeight) {
+		final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(customItemFactory, maxWidth, maxHeight);
 		commandsMenu.addCloseHandler(new CloseHandler() {
 
 			@Override

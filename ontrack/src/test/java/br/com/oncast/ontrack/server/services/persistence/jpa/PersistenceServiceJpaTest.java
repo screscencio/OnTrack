@@ -242,22 +242,22 @@ public class PersistenceServiceJpaTest {
 		final ProjectRepresentation projectRepresentation = new ProjectRepresentation("Name");
 		assertEquals(0, projectRepresentation.getId());
 
-		final ProjectRepresentation persisted = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
-		assertEquals(2, persisted.getId());
+		persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
+		assertEquals(2, projectRepresentation.getId());
 
-		final ProjectRepresentation foundProjectRepresentation = persistenceService.findProjectRepresentation(persisted.getId());
+		final ProjectRepresentation foundProjectRepresentation = persistenceService.findProjectRepresentation(2);
 		assertEquals("Name", foundProjectRepresentation.getName());
 	}
 
 	@Test
-	public void shouldBeHableToFindAllProjectRepresentations() throws Exception {
+	public void shouldBeAbleToFindAllProjectRepresentations() throws Exception {
 		assertEquals(1, persistenceService.findAllProjectRepresentations().size());
 
 		final ArrayList<ProjectRepresentation> projectRepresentations = new ArrayList<ProjectRepresentation>();
 		for (int i = 2; i <= 11; i++) {
-			final ProjectRepresentation projectRepresentation = new ProjectRepresentation("Name" + i);
-			final ProjectRepresentation persisted = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
-			projectRepresentations.add(persisted);
+			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(i, "Name" + i);
+			persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
+			projectRepresentations.add(projectRepresentation);
 			assertEquals(i, persistenceService.findAllProjectRepresentations().size());
 		}
 		assertTrue(persistenceService.findAllProjectRepresentations().containsAll(projectRepresentations));
@@ -275,7 +275,7 @@ public class PersistenceServiceJpaTest {
 		persistenceService.persistProjectSnapshot(snapshot1);
 	}
 
-	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException {
+	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException, ProjectNotFoundException {
 		ProjectSnapshot snapshot;
 		try {
 			snapshot = persistenceService.retrieveProjectSnapshot(PROJECT_ID);
@@ -286,7 +286,7 @@ public class PersistenceServiceJpaTest {
 		return snapshot;
 	}
 
-	private ProjectSnapshot createBlankProject() throws UnableToLoadProjectException {
+	private ProjectSnapshot createBlankProject() throws UnableToLoadProjectException, ProjectNotFoundException {
 		final Scope projectScope = new Scope("Project", new UUID("0"));
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
@@ -304,7 +304,7 @@ public class PersistenceServiceJpaTest {
 		}
 		catch (final NoResultFoundException e) {
 			throw new ProjectNotFoundException("It was not possible to create a blank project, because the project representation with id '" + PROJECT_ID
-					+ "' was not found.", e);
+					+ "' was not found.");
 		}
 	}
 

@@ -1,0 +1,25 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cp='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
+
+	<ui:style>
+	.projectSwitchingMenuButton:HOVER {
+			cursor: pointer;
+	}
+	
+	.projectSwitchingMenu {
+                position: absolute;
+                top: 33px;
+                left: 0px;
+                min-width: 200px;
+                z-index: 2;
+			}
+	
+	</ui:style>
+	
+	<g:HTMLPanel ui:field="rootPanel" >
+		<g:Label ui:field="projectSwitchingMenuButton" text="Change Project" styleName="{style.projectSwitchingMenuButton}"  />
+		<cp:FiltrableCommandMenu ui:field="projectSwitchingMenu" styleName="{style.projectSwitchingMenu}" />
+	</g:HTMLPanel>
+</ui:UiBinder>

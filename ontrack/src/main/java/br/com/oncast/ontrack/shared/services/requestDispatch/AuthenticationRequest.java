@@ -9,7 +9,8 @@ public class AuthenticationRequest implements Serializable {
 	private String email;
 	private String password;
 
-	public AuthenticationRequest() {}
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected AuthenticationRequest() {}
 
 	public AuthenticationRequest(final String email, final String password) {
 		this.email = email;

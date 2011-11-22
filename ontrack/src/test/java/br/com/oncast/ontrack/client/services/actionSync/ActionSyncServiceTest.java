@@ -28,7 +28,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectRepresentationRequest;
 
 public class ActionSyncServiceTest {
 
@@ -122,7 +121,7 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						projectRepresentation,
 						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
 				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
 			}
 		});
@@ -146,7 +145,7 @@ public class ActionSyncServiceTest {
 			public void onProjectContextLoaded(final ProjectContext context) {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						projectRepresentation, createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
 			}
 		});
 	}
@@ -169,7 +168,7 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(actionSyncServiceTestUtils
 						.getClientIdentificationProviderMock().getClientId(), projectRepresentation,
 						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
 			}
 		});
 	}
@@ -194,7 +193,7 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						otherProjectRepresentation,
 						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
 			}
 		});
 	}
@@ -219,7 +218,7 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						projectRepresentation,
 						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getActionBroadcastMock().broadcast(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
 				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
 			}
 		});
@@ -249,7 +248,7 @@ public class ActionSyncServiceTest {
 	}
 
 	private void assureDefaultProjectRepresentationExistance() throws Exception {
-		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createOrUpdateProject(
-				new ProjectRepresentationRequest(projectRepresentation));
+		final ProjectRepresentation representation = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createProject(
+				projectRepresentation.getName());
 	}
 }

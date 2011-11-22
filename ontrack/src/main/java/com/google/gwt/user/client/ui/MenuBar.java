@@ -871,6 +871,15 @@ public class MenuBar extends Widget implements PopupListener, HasAnimation,
 		}
 	}
 
+	public void selectFirstItem() {
+		for (final MenuItem nextItem : items) {
+			if (nextItem.isEnabled()) {
+				selectItem(nextItem);
+				break;
+			}
+		}
+	}
+
 	/*
 	 * Performs the action associated with the given menu item. If the item has a
 	 * popup associated with it, the popup will be shown. If it has a command

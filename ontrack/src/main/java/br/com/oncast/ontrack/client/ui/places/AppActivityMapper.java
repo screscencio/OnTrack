@@ -5,6 +5,8 @@ import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActiv
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -29,14 +31,18 @@ public class AppActivityMapper implements ActivityMapper {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
 			final long requestedProjectId = projectDependentPlace.getRequestedProjectId();
 
-			// FIXME To be implemented in this story.
-			// if (requestedProjectId == 0) return createProjectSelectionActivity();
+			if (requestedProjectId == 0) return createProjectSelectionActivity();
 			if (!services.getContextProviderService().isContextAvailable(requestedProjectId)) return createContextLoadingActivity(projectDependentPlace);
 		}
 
 		if (place instanceof PlanningPlace) return createPlanningActivity((PlanningPlace) place);
+		if (place instanceof ProjectSelectionPlace) return createProjectSelectionActivity();
 
 		return null;
+	}
+
+	private Activity createProjectSelectionActivity() {
+		return new ProjectSelectionActivity();
 	}
 
 	private Activity createLoginActivity(final Place place) {
@@ -50,7 +56,6 @@ public class AppActivityMapper implements ActivityMapper {
 
 	private ContextLoadingActivity createContextLoadingActivity(final ProjectDependentPlace projectDependentPlace) {
 		return new ContextLoadingActivity(services.getContextProviderService(), services.getApplicationPlaceController(), services.getRequestDispatchService(),
-				services.getProjectRepresentationProvider(),
 				projectDependentPlace);
 	}
 }

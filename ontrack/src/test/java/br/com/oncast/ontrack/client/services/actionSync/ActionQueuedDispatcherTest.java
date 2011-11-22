@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -10,9 +12,12 @@ import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 
 public class ActionQueuedDispatcherTest {
 
@@ -34,8 +39,18 @@ public class ActionQueuedDispatcherTest {
 			throw new RuntimeException("The test should not use this method.");
 		}
 
+		@Override
+		public void dispatch(final ProjectCreationRequest projectCreationRequest, final DispatchCallback<ProjectRepresentation> dispatchCallback) {
+			throw new RuntimeException("The test should not use this method.");
+		}
+
 		public void registerDispatchListener(final DispatchListener listener) {
 			this.listener = listener;
+		}
+
+		@Override
+		public void dispatch(final ProjectListRequest projectListRequest, final DispatchCallback<List<ProjectRepresentation>> dispatchCallback) {
+			throw new RuntimeException("The test should not use this method.");
 		}
 	}
 

@@ -9,6 +9,7 @@ public class ServerActionSyncEvent implements ServerPushEvent {
 
 	private ModelActionSyncRequest modelActionSyncRequest;
 
+	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected ServerActionSyncEvent() {}
 
 	public ServerActionSyncEvent(final ModelActionSyncRequest modelActionSyncRequest) {

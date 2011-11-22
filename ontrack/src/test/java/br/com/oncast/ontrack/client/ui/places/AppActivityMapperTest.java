@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
-import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingPlace;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
@@ -103,6 +102,7 @@ public class AppActivityMapperTest extends GwtTest {
 		isContextAvailable = true;
 
 		final ProjectDependentPlace projectDependentPlace = mock(ProjectDependentPlace.class);
+		when(projectDependentPlace.getRequestedProjectId()).thenReturn(1L);
 		appActivityMapper.getActivity(projectDependentPlace);
 
 		verify(contextProvider).isContextAvailable(Mockito.anyInt());
@@ -112,11 +112,9 @@ public class AppActivityMapperTest extends GwtTest {
 	public void contextAvaliabilityShouldNotBeCheckedWhenPassedPlaceIsNotAProjectDependentPlace() {
 		isLoggedIn = true;
 
-		final ContextLoadingPlace projectIndependentPlace = mock(ContextLoadingPlace.class);
-		final LoginPlace projectIndependentPlace2 = mock(LoginPlace.class);
+		final LoginPlace projectIndependentPlace = mock(LoginPlace.class);
 
 		appActivityMapper.getActivity(projectIndependentPlace);
-		appActivityMapper.getActivity(projectIndependentPlace2);
 
 		verify(contextProvider, times(0)).isContextAvailable(Mockito.anyInt());
 	}
@@ -127,6 +125,7 @@ public class AppActivityMapperTest extends GwtTest {
 		isContextAvailable = false;
 
 		final ProjectDependentPlace projectDependentPlace = mock(ProjectDependentPlace.class);
+		when(projectDependentPlace.getRequestedProjectId()).thenReturn(1L);
 
 		assertTrue(appActivityMapper.getActivity(projectDependentPlace) instanceof ContextLoadingActivity);
 	}

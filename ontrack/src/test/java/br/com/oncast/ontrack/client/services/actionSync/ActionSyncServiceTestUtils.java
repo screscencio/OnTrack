@@ -20,9 +20,8 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
-import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
+import br.com.oncast.ontrack.server.services.broadcast.BroadcastService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -32,8 +31,11 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class ActionSyncServiceTestUtils {
@@ -88,7 +90,7 @@ public class ActionSyncServiceTestUtils {
 	private ServerPushClientServiceMockImpl serverPushClientService;
 	private ActionExecutionService actionExecutionService;
 	private BusinessLogic businessLogic;
-	private ActionBroadcastService actionBroadcastService;
+	private BroadcastService broadcastService;
 	private ErrorTreatmentService errorTreatmentService;
 
 	public ActionExecutionService getActionExecutionServiceMock() {
@@ -146,18 +148,23 @@ public class ActionSyncServiceTestUtils {
 
 	public BusinessLogic getBusinessLogicMock() {
 		if (businessLogic != null) return businessLogic;
-		return businessLogic = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndCustomBroadcastMock(getActionBroadcastMock());
+		return businessLogic = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndCustomBroadcastMock(getBroadcastServiceMock());
 	}
 
-	public ActionBroadcastService getActionBroadcastMock() {
-		if (actionBroadcastService != null) return actionBroadcastService;
+	public BroadcastService getBroadcastServiceMock() {
+		if (broadcastService != null) return broadcastService;
 
 		final ServerPushClientServiceMockImpl serverPushClientServiceMock = getServerPushClientServiceMock();
-		return actionBroadcastService = new ActionBroadcastService() {
+		return broadcastService = new BroadcastService() {
 
 			@Override
-			public void broadcast(final ModelActionSyncRequest modelActionSyncRequest) {
+			public void broadcastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {
 				serverPushClientServiceMock.processIncommingEvent(new ServerActionSyncEvent(modelActionSyncRequest));
+			}
+
+			@Override
+			public void broadcastProjectCreation(final ProjectRepresentation projectRepresentation) {
+				serverPushClientServiceMock.processIncommingEvent(new ProjectCreatedEvent(projectRepresentation));
 			}
 		};
 	}
@@ -180,10 +187,32 @@ public class ActionSyncServiceTestUtils {
 			@Override
 			public void dispatch(final ProjectContextRequest projectContextRequest, final DispatchCallback<ProjectContext> dispatchCallback) {
 				try {
-					final Project project = getBusinessLogicMock().loadProject(new ProjectContextRequest(DEFAULT_PROJECT_ID));
+					final Project project = getBusinessLogicMock().loadProject(projectContextRequest.getRequestedProjectId());
 					dispatchCallback.onRequestCompletition(new ProjectContext(project));
 				}
-				catch (final UnableToLoadProjectException e) {
+				catch (final Exception e) {
+					dispatchCallback.onFailure(e);
+				}
+			}
+
+			@Override
+			public void dispatch(final ProjectCreationRequest projectCreationRequest, final DispatchCallback<ProjectRepresentation> dispatchCallback) {
+				try {
+					final ProjectRepresentation projectRepresentation = getBusinessLogicMock().createProject(projectCreationRequest.getProjectName());
+					dispatchCallback.onRequestCompletition(projectRepresentation);
+				}
+				catch (final Exception e) {
+					dispatchCallback.onFailure(e);
+				}
+			}
+
+			@Override
+			public void dispatch(final ProjectListRequest projectListRequest, final DispatchCallback<List<ProjectRepresentation>> dispatchCallback) {
+				try {
+					final List<ProjectRepresentation> projectList = getBusinessLogicMock().retrieveProjectList();
+					dispatchCallback.onRequestCompletition(projectList);
+				}
+				catch (final Exception e) {
 					dispatchCallback.onFailure(e);
 				}
 			}
@@ -217,7 +246,7 @@ public class ActionSyncServiceTestUtils {
 	}
 
 	public ProjectRepresentationProvider getProjectRepresentationProviderMock() {
-		final ProjectRepresentationProvider projectRepresentationProvider = new ProjectRepresentationProvider();
+		final ProjectRepresentationProviderMock projectRepresentationProvider = new ProjectRepresentationProviderMock();
 		projectRepresentationProvider.setProjectRepresentation(new ProjectRepresentation(DEFAULT_PROJECT_ID, "Default project"));
 		return projectRepresentationProvider;
 	}
