@@ -28,24 +28,50 @@ public class PopupConfig {
 			if (alignBelow == null) return;
 
 			final int desiredTop = alignBelow.getAbsoluteTop() + alignBelow.getOffsetHeight();
+			if (newTopFits(desiredTop)) {
+				DOM.setStyleAttribute(widgetToPopup.getElement(), "top", desiredTop + "px");
+				return;
+			}
+
+			final int acceptedTop = alignBelow.getAbsoluteTop() - widgetToPopup.getOffsetHeight();
+			if (newTopFits(acceptedTop)) {
+				DOM.setStyleAttribute(widgetToPopup.getElement(), "top", acceptedTop + "px");
+				return;
+			}
+
 			final int constrainedTop = Math.max(0, Math.min(Window.getClientHeight() - widgetToPopup.getOffsetHeight(), desiredTop));
-
-			// FIXME Rodrigo: Auto-align above in case there is no space to align below.
-			// FIXME Rodrigo: Auto-align the closest possible to first desiredTop in case none of the two vertical alignment rules fit.
-
 			DOM.setStyleAttribute(widgetToPopup.getElement(), "top", constrainedTop + "px");
+		}
+
+		private boolean newTopFits(final int newTop) {
+			if (newTop < 0) return false;
+			if (newTop + widgetToPopup.getOffsetHeight() > Window.getClientHeight()) return false;
+			return true;
 		}
 
 		private void evalHorizontalPosition() {
 			if (alignRight == null) return;
 
 			final int desiredLeft = alignRight.getAbsoluteLeft() + alignRight.getOffsetWidth() - widgetToPopup.getOffsetWidth();
+			if (newLeftFits(desiredLeft)) {
+				DOM.setStyleAttribute(widgetToPopup.getElement(), "left", desiredLeft + "px");
+				return;
+			}
+
+			final int acceptedLeft = alignRight.getAbsoluteLeft();
+			if (newLeftFits(acceptedLeft)) {
+				DOM.setStyleAttribute(widgetToPopup.getElement(), "left", acceptedLeft + "px");
+				return;
+			}
+
 			final int constrainedLeft = Math.max(0, Math.min(Window.getClientWidth() - widgetToPopup.getOffsetWidth(), desiredLeft));
-
-			// FIXME Rodrigo: Auto-align from left in case there is no space from right.
-			// FIXME Rodrigo: Auto-align closer to first desiredLeft in case none of the two horizontal alignment rules fit.
-
 			DOM.setStyleAttribute(widgetToPopup.getElement(), "left", constrainedLeft + "px");
+		}
+
+		private boolean newLeftFits(final int newLeft) {
+			if (newLeft < 0) return false;
+			if (newLeft + widgetToPopup.getOffsetWidth() > Window.getClientWidth()) return false;
+			return true;
 		}
 
 		private HideHandler createPanelHider() {
@@ -71,7 +97,10 @@ public class PopupConfig {
 	}
 
 	public PopupConfig popup(final Widget widgetToPopup) {
-		if (!widgetToPopup.isAttached()) RootPanel.get().add(widgetToPopup);
+		if (!widgetToPopup.isAttached()) {
+			widgetToPopup.setVisible(false);
+			RootPanel.get().add(widgetToPopup);
+		}
 		activatorClickHandler.widgetToPopup = widgetToPopup;
 		DOM.setStyleAttribute(widgetToPopup.getElement(), "position", "absolute");
 		return this;
