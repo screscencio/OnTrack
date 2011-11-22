@@ -12,10 +12,10 @@ public class UserXMLNode {
 	@Attribute
 	private String email;
 
-	@Attribute
+	@Attribute(required = false)
 	private String passwordHash;
 
-	@Attribute
+	@Attribute(required = false)
 	private String passwordSalt;
 
 	// IMPORTANT The Simple Framework needs a default constructor for instantiate classes.
