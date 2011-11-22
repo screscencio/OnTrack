@@ -26,9 +26,6 @@ public class ApplicationMenu extends Composite {
 	@UiField
 	protected Label logoutLabel;
 
-	// @UiField
-	// protected ChangePasswordWidget changePasswordWidget;
-
 	private PlanningAuthenticationRequestHandler authenticationRequestHandler;
 
 	public ApplicationMenu() {
@@ -43,6 +40,5 @@ public class ApplicationMenu extends Composite {
 
 	public void setAuthenticationRequestHandler(final PlanningAuthenticationRequestHandler authenticationRequestHandler) {
 		this.authenticationRequestHandler = authenticationRequestHandler;
-		// changePasswordWidget.setAuthenticationRequestHandler(authenticationRequestHandler);
 	}
 }
