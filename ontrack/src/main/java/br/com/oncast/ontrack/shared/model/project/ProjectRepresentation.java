@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @Entity
-// TODO ++ Should we create another annotation that represents that a class must not be converted?
+// TODO ++Should we create another annotation that represents that a class must not be converted?
 @ConvertTo(ProjectRepresentation.class)
 public class ProjectRepresentation implements Serializable {
 
@@ -29,11 +29,7 @@ public class ProjectRepresentation implements Serializable {
 	private String name;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
-	public ProjectRepresentation() {}
-
-	public ProjectRepresentation(final long id) {
-		this.id = id;
-	}
+	protected ProjectRepresentation() {}
 
 	public ProjectRepresentation(final long id, final String name) {
 		this.id = id;
@@ -48,24 +44,13 @@ public class ProjectRepresentation implements Serializable {
 		return id;
 	}
 
-	public void setId(final long id) {
-		this.id = id;
-	}
-
 	public String getName() {
 		return name;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
-		return result;
+		return (id == 0) ? super.hashCode() : (int) id;
 	}
 
 	@Override
@@ -80,5 +65,9 @@ public class ProjectRepresentation implements Serializable {
 		if (id != other.id) return false;
 
 		return true;
+	}
+
+	public void setId(final long id) {
+		this.id = id;
 	}
 }

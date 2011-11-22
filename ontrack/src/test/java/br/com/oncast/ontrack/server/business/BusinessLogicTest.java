@@ -37,8 +37,6 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectRepresentationRequest;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class BusinessLogicTest {
@@ -206,8 +204,8 @@ public class BusinessLogicTest {
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
-		final Project updatedProject = business.loadProject(new ProjectContextRequest(PROJECT_ID));
-		final Project notUpdatedProject = business.loadProject(new ProjectContextRequest(OTHER_PROJECT_ID));
+		final Project updatedProject = business.loadProject(PROJECT_ID);
+		final Project notUpdatedProject = business.loadProject(OTHER_PROJECT_ID);
 
 		assertEquals(updatedProject.getProjectScope().getChild(0).getId(), action.getNewScopeId());
 		assertTrue(notUpdatedProject.getProjectScope().getChildren().isEmpty());
@@ -224,12 +222,12 @@ public class BusinessLogicTest {
 		final long OTHER_PROJECT_ID = 2;
 		final ProjectRepresentation projectRepresentation2 = assureProjectRepresentationExistance(OTHER_PROJECT_ID);
 
-		final Project project2 = business.loadProject(new ProjectContextRequest(OTHER_PROJECT_ID));
+		final Project project2 = business.loadProject(OTHER_PROJECT_ID);
 		final List<ModelAction> actionList2 = executeActionsToProject(project2, ActionMock.getActions2());
 		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), projectRepresentation2, actionList2));
 
 		final Project loadedProject1 = loadProject(business);
-		final Project loadedProject2 = business.loadProject(new ProjectContextRequest(OTHER_PROJECT_ID));
+		final Project loadedProject2 = business.loadProject(OTHER_PROJECT_ID);
 		DeepEqualityTestUtils.assertObjectEquality(project1, loadedProject1);
 		DeepEqualityTestUtils.assertObjectEquality(project2, loadedProject2);
 	}
@@ -241,7 +239,7 @@ public class BusinessLogicTest {
 		assureProjectRepresentationExistance(3);
 
 		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
-		final Project loadedProject = business.loadProject(new ProjectContextRequest(2));
+		final Project loadedProject = business.loadProject(2);
 
 		assertEquals(2, loadedProject.getProjectRepresentation().getId());
 		assertEquals("Default project", loadedProject.getProjectRepresentation().getName());
@@ -251,7 +249,7 @@ public class BusinessLogicTest {
 	public void shouldNotLoadProjectIfInexistentIdIsGiven() throws Exception {
 		final BusinessLogic business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
 		final long inexistentProjectId = 123;
-		business.loadProject(new ProjectContextRequest(inexistentProjectId));
+		business.loadProject(inexistentProjectId);
 	}
 
 	@Test
@@ -261,8 +259,8 @@ public class BusinessLogicTest {
 
 		assertProjectDoesNotExists(business, newProjectId);
 
-		business.createOrUpdateProject(new ProjectRepresentationRequest(new ProjectRepresentation("Name")));
-		final Project loadedProject = business.loadProject(new ProjectContextRequest(newProjectId));
+		business.createProject("Name");
+		final Project loadedProject = business.loadProject(newProjectId);
 
 		assertEquals("Name", loadedProject.getProjectRepresentation().getName());
 		assertEquals(newProjectId, loadedProject.getProjectRepresentation().getId());
@@ -279,11 +277,11 @@ public class BusinessLogicTest {
 		assertProjectDoesNotExists(business, sequenciallyGeneratedId);
 		assertProjectDoesNotExists(business, givenId);
 
-		business.createOrUpdateProject(new ProjectRepresentationRequest(new ProjectRepresentation(givenId, projectRepresentationName)));
+		business.createProject(projectRepresentationName);
 
 		assertProjectDoesNotExists(business, givenId);
 
-		final Project loadedProject = business.loadProject(new ProjectContextRequest(sequenciallyGeneratedId));
+		final Project loadedProject = business.loadProject(sequenciallyGeneratedId);
 		assertEquals(projectRepresentationName, loadedProject.getProjectRepresentation().getName());
 		assertEquals(sequenciallyGeneratedId, loadedProject.getProjectRepresentation().getId());
 	}
@@ -309,7 +307,7 @@ public class BusinessLogicTest {
 
 	private void assertProjectDoesNotExists(final BusinessLogic business, final long newProjectId) throws UnableToLoadProjectException {
 		try {
-			business.loadProject(new ProjectContextRequest(newProjectId));
+			business.loadProject(newProjectId);
 			fail();
 		}
 		catch (final ProjectNotFoundException e) {}
@@ -330,14 +328,13 @@ public class BusinessLogicTest {
 		return new ModelActionSyncRequest(new UUID(), projectRepresentation, actionList);
 	}
 
-	private Project loadProject(final BusinessLogic business) throws UnableToLoadProjectException {
-		return business.loadProject(new ProjectContextRequest(PROJECT_ID));
+	private Project loadProject(final BusinessLogic business) throws UnableToLoadProjectException, ProjectNotFoundException {
+		return business.loadProject(PROJECT_ID);
 	}
 
 	private ProjectRepresentation assureProjectRepresentationExistance(final long projectId) throws Exception {
 		final ProjectRepresentation newProjectRepresentation = new ProjectRepresentation(projectId, "Default project");
-		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createOrUpdateProject(
-				new ProjectRepresentationRequest(newProjectRepresentation));
+		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createProject(newProjectRepresentation.getName());
 		return newProjectRepresentation;
 	}
 

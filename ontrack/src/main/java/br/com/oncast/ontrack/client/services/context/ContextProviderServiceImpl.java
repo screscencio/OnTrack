@@ -4,7 +4,12 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
 public class ContextProviderServiceImpl implements ContextProviderService {
 
+	private final ProjectRepresentationProviderImpl projectRepresentationProvider;
 	private ProjectContext projectContext;
+
+	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider) {
+		this.projectRepresentationProvider = projectRepresentationProvider;
+	}
 
 	@Override
 	public ProjectContext getProjectContext(final long projectId) {
@@ -16,6 +21,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	@Override
 	public void setProjectContext(final ProjectContext projectContext) {
 		this.projectContext = projectContext;
+		projectRepresentationProvider.setProjectRepresentation(projectContext.getProjectRepresentation());
 	}
 
 	@Override

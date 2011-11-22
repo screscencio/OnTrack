@@ -29,6 +29,7 @@ public class MouseCommandsMenu extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		menu.hide();
 		menu.setItems(items);
+		menu.setFocusWhenMouseOver(true);
 		visibilityAssurer = new WidgetVisibilityAssurer(menu);
 	}
 
@@ -39,6 +40,7 @@ public class MouseCommandsMenu extends Composite {
 
 	private void showMenu() {
 		menu.show();
+		menu.selectFirstItem();
 		visibilityAssurer.assureVisibility();
 	}
 }

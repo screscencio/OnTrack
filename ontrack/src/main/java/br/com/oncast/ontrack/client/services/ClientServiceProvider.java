@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentServiceImpl;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
@@ -22,6 +23,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 
 // TODO Create interfaces for each service and return them instead of the direct reference of its implementations (so that the rest of the application only
 // reference the interfaces, making the code more testable).
+// FIXME Use location at the UI and hide infra services, such as ActionSyncService and etc.
 public class ClientServiceProvider {
 
 	private AuthenticationService authenticationService;
@@ -36,6 +38,17 @@ public class ClientServiceProvider {
 	private ProjectRepresentationProvider projectRepresentationProvider;
 	private EventBus eventBus;
 
+	private static ClientServiceProvider instance;
+
+	public static ClientServiceProvider getInstance() {
+		if (instance != null) return instance;
+		return instance = new ClientServiceProvider();
+	}
+
+	private ClientServiceProvider() {
+		getActionSyncService();
+	}
+
 	public AuthenticationService getAuthenticationService() {
 		if (authenticationService != null) return authenticationService;
 		return authenticationService = new AuthenticationServiceImpl(requestDispatchService);
@@ -48,7 +61,7 @@ public class ClientServiceProvider {
 
 	public ProjectRepresentationProvider getProjectRepresentationProvider() {
 		if (projectRepresentationProvider != null) return projectRepresentationProvider;
-		return projectRepresentationProvider = new ProjectRepresentationProvider();
+		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(getRequestDispatchService(), getServerPushClientService());
 	}
 
 	public ActionExecutionService getActionExecutionService() {
@@ -59,7 +72,7 @@ public class ClientServiceProvider {
 
 	public ContextProviderService getContextProviderService() {
 		if (contextProviderService != null) return contextProviderService;
-		return contextProviderService = new ContextProviderServiceImpl();
+		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) getProjectRepresentationProvider());
 	}
 
 	public RequestDispatchService getRequestDispatchService() {

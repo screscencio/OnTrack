@@ -1,14 +1,18 @@
 package br.com.oncast.ontrack.server.services.authentication.basic;
 
+import org.apache.log4j.Logger;
+
 import br.com.oncast.ontrack.server.services.ServerServiceProvider;
-import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 public class DefaultUserExistenceAssurer {
+
+	private static final Logger LOGGER = Logger.getLogger(DefaultUserExistenceAssurer.class);
 
 	private static final String DEFAULT_USER = DefaultAuthenticationCredentials.USER;
 	private static final String DEFAULT_PASSWORD = DefaultAuthenticationCredentials.PASSWORD;
@@ -22,8 +26,8 @@ public class DefaultUserExistenceAssurer {
 			createNewUser(persistenceService);
 		}
 		catch (final PersistenceException e) {
-			// TODO Threat this exception, which indicates there was a problem while verifying if the default user is persisted.
-			e.printStackTrace();
+			LOGGER.error("An exception was found while trying to verify the presence of the default user.", e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -36,10 +40,12 @@ public class DefaultUserExistenceAssurer {
 			verifyUserPassword(persistenceService, persistedUser);
 		}
 		catch (final PersistenceException e) {
-			e.printStackTrace();
+			LOGGER.error("An exception was found while trying to create a new user.", e);
+			throw new RuntimeException(e);
 		}
 		catch (final NoResultFoundException e) {
-			e.printStackTrace();
+			LOGGER.error("An exception was found while trying to retrieve the newly created user.", e);
+			throw new RuntimeException(e);
 		}
 	}
 

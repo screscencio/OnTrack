@@ -4,9 +4,11 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import net.zschech.gwt.comet.server.impl.AsyncServlet;
+import br.com.oncast.ontrack.server.business.DefaultProjectExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
 import br.com.oncast.ontrack.server.services.authentication.basic.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 
 public class ApplicationContextListener implements ServletContextListener {
 
@@ -15,6 +17,7 @@ public class ApplicationContextListener implements ServletContextListener {
 		setupBusinessLogic(event);
 		setupServerPush(event);
 		assureDefaultUserIsPresent();
+		assureDefaultProjectIsPresent();
 	}
 
 	@Override
@@ -38,6 +41,14 @@ public class ApplicationContextListener implements ServletContextListener {
 	 */
 	private void assureDefaultUserIsPresent() {
 		DefaultUserExistenceAssurer.verify();
+	}
+
+	/**
+	 * Assure the default project is present when the application starts.
+	 * @throws UnableToCreateProjectRepresentation
+	 */
+	private void assureDefaultProjectIsPresent() {
+		DefaultProjectExistenceAssurer.verify();
 	}
 
 	/**

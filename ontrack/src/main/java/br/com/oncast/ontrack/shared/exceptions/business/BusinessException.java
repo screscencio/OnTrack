@@ -6,19 +6,12 @@ public abstract class BusinessException extends Exception implements IsSerializa
 
 	private static final long serialVersionUID = 1L;
 
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	public BusinessException() {
 		super();
 	}
 
-	public BusinessException(final Exception e) {
-		super(e);
-	}
-
 	public BusinessException(final String message) {
 		super(message);
-	}
-
-	public BusinessException(final String message, final Exception e) {
-		super(message, e);
 	}
 }

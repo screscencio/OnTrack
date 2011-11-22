@@ -1,11 +1,13 @@
 package br.com.oncast.ontrack.shared.exceptions.business;
 
-public class ProjectNotFoundException extends UnableToLoadProjectException {
+public class ProjectNotFoundException extends BusinessException {
 
-	private static final long serialVersionUID = -4466451770388653802L;
+	private static final long serialVersionUID = 1L;
 
-	public ProjectNotFoundException(final String errorMessage, final Exception e) {
-		super(errorMessage, e);
+	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
+	protected ProjectNotFoundException() {}
+
+	public ProjectNotFoundException(final String errorMessage) {
+		super(errorMessage);
 	}
-
 }

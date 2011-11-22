@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.contextloading;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
@@ -20,16 +19,13 @@ public class ContextLoadingActivity extends AbstractActivity {
 	private final RequestDispatchService requestDispatchService;
 	private final ContextProviderService contextProviderService;
 	private final ProjectDependentPlace projectDependentPlace;
-	private final ProjectRepresentationProvider projectRepresentationProvider;
 
 	public ContextLoadingActivity(final ContextProviderService contextProviderService, final ApplicationPlaceController placeController,
-			final RequestDispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ProjectDependentPlace destinationPlace) {
+			final RequestDispatchService requestDispatchService, final ProjectDependentPlace destinationPlace) {
 
 		this.contextProviderService = contextProviderService;
 		this.placeController = placeController;
 		this.requestDispatchService = requestDispatchService;
-		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.projectDependentPlace = destinationPlace;
 	}
 
@@ -41,6 +37,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 		final ContextLoadingView view = new ContextLoadingPanel();
 		panel.setWidget(view);
 
+		// FIXME Delegate this to a business service such as the contextProvider itself.
 		// TODO Display 'loading' UI indicator.
 		requestDispatchService.dispatch(new ProjectContextRequest(projectDependentPlace.getRequestedProjectId()), new DispatchCallback<ProjectContext>() {
 
@@ -48,6 +45,8 @@ public class ContextLoadingActivity extends AbstractActivity {
 			public void onFailure(final Throwable cause) {
 				// TODO Hide 'loading' UI indicator.
 				// TODO +++Treat communication failure.
+				// FIXME Treat ProjectNotFoundException
+				// FIXME Call the error treatment exception.
 				Window.alert("Error! Could not load project: " + cause.toString());
 				cause.printStackTrace();
 			}
@@ -56,7 +55,6 @@ public class ContextLoadingActivity extends AbstractActivity {
 			public void onRequestCompletition(final ProjectContext projectContext) {
 				// TODO Hide 'loading' UI indicator.
 				contextProviderService.setProjectContext(projectContext);
-				projectRepresentationProvider.setProjectRepresentation(projectContext.getProjectRepresentation());
 				placeController.goTo(projectDependentPlace);
 			}
 		});

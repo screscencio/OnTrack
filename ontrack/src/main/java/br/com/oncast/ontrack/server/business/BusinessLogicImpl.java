@@ -8,14 +8,16 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
+import br.com.oncast.ontrack.server.services.broadcast.BroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -27,19 +29,17 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectRepresentationRequest;
 
 class BusinessLogicImpl implements BusinessLogic {
 
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
 	private final PersistenceService persistenceService;
-	private final ActionBroadcastService actionBroadcastService;
+	private final BroadcastService broadcastService;
 
-	protected BusinessLogicImpl(final PersistenceService persistenceService, final ActionBroadcastService actionBroadcastService) {
+	protected BusinessLogicImpl(final PersistenceService persistenceService, final BroadcastService actionBroadcastService) {
 		this.persistenceService = persistenceService;
-		this.actionBroadcastService = actionBroadcastService;
+		this.broadcastService = actionBroadcastService;
 	}
 
 	@Override
@@ -47,13 +47,13 @@ class BusinessLogicImpl implements BusinessLogic {
 		LOGGER.debug("Processing incoming action batch.");
 		try {
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
-			final long projectId = modelActionSyncRequest.getRequestedProjectId();
+			final long projectId = modelActionSyncRequest.getProjectId();
 			synchronized (this) {
 				validateIncomingActions(projectId, actionList);
 				postProcessIncomingActions(actionList);
 				persistenceService.persistActions(projectId, actionList, new Date());
 			}
-			actionBroadcastService.broadcast(modelActionSyncRequest);
+			broadcastService.broadcastActionSyncRequest(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -102,23 +102,36 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public void createOrUpdateProject(final ProjectRepresentationRequest projectRepresentationRequest) throws UnableToPersistProjectRepresentation {
-		LOGGER.debug("Creating or updating a project representation.");
+	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
+		LOGGER.debug("Creating new project '" + projectName + "'.");
 		try {
-			persistenceService.persistOrUpdateProjectRepresentation(projectRepresentationRequest.getProjectRepresentation());
+			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(projectName);
+			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
+			broadcastService.broadcastProjectCreation(persistedProjectRepresentation);
+			return persistedProjectRepresentation;
 		}
 		catch (final PersistenceException e) {
-			LOGGER.debug(e);
-			throw new UnableToPersistProjectRepresentation(e);
+			final String errorMessage = "Unable to create project '" + projectName + "'.";
+			LOGGER.debug(errorMessage, e);
+			throw new UnableToCreateProjectRepresentation(errorMessage);
 		}
 	}
 
 	@Override
-	public synchronized Project loadProject(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException, ProjectNotFoundException {
-		return loadProject(projectContextRequest.getRequestedProjectId());
+	public List<ProjectRepresentation> retrieveProjectList() throws UnableToRetrieveProjectListException {
+		LOGGER.debug("Retrieving project list.");
+		try {
+			return persistenceService.findAllProjectRepresentations();
+		}
+		catch (final PersistenceException e) {
+			final String errorMessage = "Unable to retrieve the project list.";
+			LOGGER.debug(errorMessage, e);
+			throw new UnableToRetrieveProjectListException(errorMessage);
+		}
 	}
 
-	private Project loadProject(final long projectId) throws UnableToLoadProjectException {
+	@Override
+	public synchronized Project loadProject(final long projectId) throws UnableToLoadProjectException, ProjectNotFoundException {
 		LOGGER.debug("Loading current state for project id '" + projectId + "'.");
 		try {
 			final ProjectSnapshot snapshot = loadProjectSnapshot(projectId);
@@ -135,7 +148,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		catch (final NoResultFoundException e) {
 			final String errorMessage = "The server could not load the project: The project is inexistent.";
 			LOGGER.error(errorMessage, e);
-			throw new ProjectNotFoundException(errorMessage, e);
+			throw new ProjectNotFoundException(errorMessage);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not load the project: A persistence exception occured.";
@@ -160,12 +173,12 @@ class BusinessLogicImpl implements BusinessLogic {
 			snapshot = persistenceService.retrieveProjectSnapshot(projectId);
 		}
 		catch (final NoResultFoundException e) {
-			snapshot = createBlankProject(projectId);
+			snapshot = createBlankProjectSnapshot(projectId);
 		}
 		return snapshot;
 	}
 
-	private ProjectSnapshot createBlankProject(final long projectId) throws UnableToLoadProjectException, NoResultFoundException, PersistenceException {
+	private ProjectSnapshot createBlankProjectSnapshot(final long projectId) throws UnableToLoadProjectException, NoResultFoundException, PersistenceException {
 		final Scope projectScope = new Scope("Project", new UUID("0"));
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
@@ -176,7 +189,9 @@ class BusinessLogicImpl implements BusinessLogic {
 			return projectSnapshot;
 		}
 		catch (final IOException e) {
-			throw new UnableToLoadProjectException("It was not possible to create a blank project.", e);
+			final String errorMessage = "It was not possible to create a blank project snapshot.";
+			LOGGER.error(errorMessage, e);
+			throw new UnableToLoadProjectException(errorMessage);
 		}
 	}
 
@@ -198,5 +213,4 @@ class BusinessLogicImpl implements BusinessLogic {
 
 		return project;
 	}
-
 }

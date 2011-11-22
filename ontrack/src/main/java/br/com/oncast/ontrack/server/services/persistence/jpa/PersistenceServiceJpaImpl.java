@@ -29,15 +29,11 @@ import br.com.oncast.ontrack.shared.model.user.User;
 // TODO Analise using CriteriaApi instead of HQL.
 // TODO Implement better exception handling for JPA exceptions
 // TODO Separate authentication/authorization persistence methods from business related methods.
+// TODO Extract rollback treatment to a method in all the persist methods.
 public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
-
-	static {
-		// FIXME Remove this after project selection page is created.
-		createDefaultProjectRepresentation();
-	}
 
 	@Override
 	public void persistActions(final long projectId, final List<ModelAction> actionList, final Date timestamp) throws PersistenceException {
@@ -57,7 +53,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				em.getTransaction().rollback();
 			}
 			catch (final Exception f) {
-				throw new PersistenceException("It was not possible to neither persist a group of actions and to rollback it.", f);
+				throw new PersistenceException("It was not possible to neither persist a group of actions nor to rollback it.", f);
 			}
 			throw new PersistenceException("It was not possible to persist a group of actions.", e);
 		}
@@ -104,7 +100,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				em.getTransaction().rollback();
 			}
 			catch (final Exception f) {
-				throw new PersistenceException("It was not possible to persist the project snapshot and to rollback it.", f);
+				throw new PersistenceException("It was not possible to persist the project snapshot nor to rollback it.", f);
 			}
 			throw new PersistenceException("It was not possible to persist the project snapshot.", e);
 		}
@@ -149,7 +145,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				em.getTransaction().rollback();
 			}
 			catch (final Exception f) {
-				throw new PersistenceException("It was not possible to persist the user and to rollback it.", f);
+				throw new PersistenceException("It was not possible to persist the user nor to rollback it.", f);
 			}
 			throw new PersistenceException("It was not possible to persist the user.", e);
 		}
@@ -206,8 +202,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.merge(passwordEntity);
 			em.getTransaction().commit();
 		}
-		catch (final Exception f) {
-			throw new PersistenceException("It was not possible to persist the user and to rollback it.", f);
+		catch (final Exception e) {
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to persist the password nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the password.", e);
 		}
 		finally {
 			em.close();
@@ -260,10 +262,17 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.getTransaction().begin();
 			final ProjectRepresentation mergedProjectRepresentation = em.merge(projectRepresentation);
 			em.getTransaction().commit();
+			projectRepresentation.setId(mergedProjectRepresentation.getId());
 			return mergedProjectRepresentation;
 		}
 		catch (final Exception e) {
-			throw new PersistenceException("It was not possible to persist the project representation and to rollback it.", e);
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to persist the project representation nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the project representation.", e);
 		}
 		finally {
 			em.close();
@@ -306,17 +315,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		finally {
 			em.close();
-		}
-	}
-
-	// FIXME Remove this method after project selection is done.
-	private static void createDefaultProjectRepresentation() {
-		try {
-			new PersistenceServiceJpaImpl().persistOrUpdateProjectRepresentation(new ProjectRepresentation(1, "Default project"));
-		}
-		catch (final PersistenceException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Could not create default project representation.", e);
 		}
 	}
 

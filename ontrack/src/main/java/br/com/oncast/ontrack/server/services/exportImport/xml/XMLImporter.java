@@ -72,8 +72,9 @@ public class XMLImporter {
 
 	private void persistProjects(final List<ProjectXMLNode> projects) throws PersistenceException {
 		for (final ProjectXMLNode project : projects) {
-			final ProjectRepresentation persisted = persistanceService.persistOrUpdateProjectRepresentation(project.getProjectRepresentation());
-			persistActions(persisted.getId(), project.getActions());
+			final ProjectRepresentation persistedProjectRepresentation = persistanceService.persistOrUpdateProjectRepresentation(project
+					.getProjectRepresentation());
+			persistActions(persistedProjectRepresentation.getId(), project.getActions());
 		}
 	}
 

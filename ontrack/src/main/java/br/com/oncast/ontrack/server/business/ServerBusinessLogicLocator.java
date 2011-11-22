@@ -19,7 +19,7 @@ public class ServerBusinessLogicLocator {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(serviceProvider.getPersistenceService(), serviceProvider.getActionBroadcastService());
+			return businessLogic = new BusinessLogicImpl(serviceProvider.getPersistenceService(), serviceProvider.getBroadcastService());
 		}
 	}
 }

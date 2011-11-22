@@ -80,6 +80,6 @@ public class ActionSyncService {
 	}
 
 	private boolean isRequestPertinentToCurrentProject(final ModelActionSyncRequest modelActionSyncRequest) {
-		return projectRepresentationProvider.getCurrentProjectRepresentation().getId() == modelActionSyncRequest.getRequestedProjectId();
+		return projectRepresentationProvider.getCurrentProjectRepresentation().getId() == modelActionSyncRequest.getProjectId();
 	}
 }

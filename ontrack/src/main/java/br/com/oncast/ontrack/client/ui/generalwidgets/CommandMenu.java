@@ -4,11 +4,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
-import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -23,13 +19,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class CommandMenu extends Composite {
 
-	private static final GlobalNativeEventService GLOBAL_NATIVE_EVENT_SERVICE = GlobalNativeEventService.getInstance();
-
 	private static CommandMenuUiBinder uiBinder = GWT.create(CommandMenuUiBinder.class);
 
 	interface CommandMenuUiBinder extends UiBinder<Widget, CommandMenu> {}
-
-	private final NativeEventListener nativeEventListener;
 
 	@UiField
 	protected MenuBar menu;
@@ -48,17 +40,9 @@ public class CommandMenu extends Composite {
 
 	public CommandMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
-		menu.setFocusOnHoverEnabled(true);
 		menu.setAnimationEnabled(true);
 		menu.setAutoOpen(true);
 
-		nativeEventListener = new NativeEventListener() {
-
-			@Override
-			public void onNativeEvent(final NativeEvent nativeEvent) {
-				hide();
-			}
-		};
 		menu.setItemSelectionHandler(new ItemSelectionHandler() {
 
 			@Override
@@ -84,24 +68,24 @@ public class CommandMenu extends Composite {
 	}
 
 	public void show() {
-		GLOBAL_NATIVE_EVENT_SERVICE.addClickListener(nativeEventListener);
-
 		this.setVisible(true);
-		menu.focus();
+
+		MaskPanel.show(new HideHandler() {
+
+			@Override
+			public void onWillHide() {
+				hide();
+			}
+		});
 	}
 
 	public void hide() {
-		GLOBAL_NATIVE_EVENT_SERVICE.removeClickListener(nativeEventListener);
 		if (!this.isVisible()) return;
-
 		this.setVisible(false);
-		if (closeHandler != null) closeHandler.onClose();
-	}
 
-	@Override
-	protected void onDetach() {
-		super.onDetach();
-		GLOBAL_NATIVE_EVENT_SERVICE.removeClickListener(nativeEventListener);
+		// FIXME Rodrigo: maskPanel.hide();
+
+		if (closeHandler != null) closeHandler.onClose();
 	}
 
 	@UiHandler("focusPanel")
@@ -125,12 +109,33 @@ public class CommandMenu extends Composite {
 		return menu.getSelectedItem();
 	}
 
-	public void focus() {
-		menu.focus();
-	}
-
 	private void notifyItemSelectionHandler() {
 		if (selectionHandler == null) return;
 		selectionHandler.onItemSelected();
 	}
+
+	public void setSelectedItem(final MenuItem selectedItem) {
+		menu.selectItem(selectedItem);
+	}
+
+	public void selectItemDown() {
+		menu.moveSelectionDown();
+	}
+
+	public void selectItemUp() {
+		menu.moveSelectionUp();
+	}
+
+	public void selectFirstItem() {
+		menu.selectFirstItem();
+	}
+
+	public void setFocusWhenMouseOver(final boolean bool) {
+		menu.setFocusOnHoverEnabled(bool);
+	}
+
+	public void clearItems() {
+		menu.clearItems();
+	}
+
 }

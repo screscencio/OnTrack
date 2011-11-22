@@ -9,8 +9,8 @@ import junit.framework.Assert;
 import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.actionBroadcast.ActionBroadcastService;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.server.services.broadcast.BroadcastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -22,7 +22,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequ
 
 public class BusinessLogicMockFactoryTestUtils {
 
-	public static BusinessLogic createWithJpaPersistenceAndCustomBroadcastMock(final ActionBroadcastService broadcastMock) {
+	public static BusinessLogic createWithJpaPersistenceAndCustomBroadcastMock(final BroadcastService broadcastMock) {
 		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), broadcastMock);
 	}
 
@@ -193,10 +193,13 @@ public class BusinessLogicMockFactoryTestUtils {
 		};
 	}
 
-	private static ActionBroadcastService getBroadcastMock() {
-		return new ActionBroadcastService() {
+	private static BroadcastService getBroadcastMock() {
+		return new BroadcastService() {
 			@Override
-			public void broadcast(final ModelActionSyncRequest modelActionSyncRequest) {}
+			public void broadcastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {}
+
+			@Override
+			public void broadcastProjectCreation(final ProjectRepresentation projectRepresentation) {}
 		};
 	}
 }

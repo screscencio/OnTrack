@@ -26,6 +26,9 @@ public class ApplicationEntryPoint implements EntryPoint {
 		setUpClientServices();
 	}
 
+	/**
+	 * Ignores the default browser action for the ESC key down event, that in some cases closes all current HTTP requests (AJAX requests as well).
+	 */
 	private void ignoreBrowserDefaultActionForEscapeKey() {
 		GlobalNativeEventService.getInstance().addKeyDownListener(new BrowserEscapeKeyDefaultActionPreventer());
 	}
@@ -35,8 +38,7 @@ public class ApplicationEntryPoint implements EntryPoint {
 		RootPanel.get().add(applicationUIPanel);
 
 		// TODO ++++Configure communication error handlers
-		final ClientServiceProvider serviceProvider = new ClientServiceProvider();
-		serviceProvider.getActionSyncService();
+		final ClientServiceProvider serviceProvider = ClientServiceProvider.getInstance();
 		serviceProvider.getApplicationPlaceController().configure(applicationUIPanel, DEFAULT_APP_PLACE, new AppActivityMapper(serviceProvider),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
 	}
