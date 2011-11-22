@@ -4,7 +4,7 @@ import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.ass
 import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementDoesntExist;
 import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementExists;
 import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementHasTheseAttributesAndNothingElse;
-import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementTypeIs;
+import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.assertElementsType;
 import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.getElement;
 import static br.com.oncast.ontrack.server.util.migration.MigrationTestUtils.readXMLFromFile;
 import static org.junit.Assert.assertEquals;
@@ -41,7 +41,7 @@ public class Migration_2011_11_01_Test {
 		migration.apply(sourceDocument);
 
 		assertElementExists(sourceDocument, "//users");
-		assertElementTypeIs(sourceDocument, ArrayList.class, "//users");
+		assertElementsType(sourceDocument, ArrayList.class, "//users");
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class Migration_2011_11_01_Test {
 		migration.apply(sourceDocument);
 
 		assertElementExists(sourceDocument, "//passwords");
-		assertElementTypeIs(sourceDocument, ArrayList.class, "//passwords");
+		assertElementsType(sourceDocument, ArrayList.class, "//passwords");
 	}
 
 	@Test

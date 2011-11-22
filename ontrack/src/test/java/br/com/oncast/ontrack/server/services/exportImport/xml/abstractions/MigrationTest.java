@@ -117,7 +117,7 @@ public class MigrationTest {
 		final Element parent = document.getRootElement();
 		final int previousNodeCount = parent.nodeCount();
 		assertNull(parent.element("AnyElement"));
-		final Element addedElement = new Migration2_2011_08_01().addElementOfType(parent, "AnyElement", Object.class);
+		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", Object.class);
 		final int currentNodeCount = parent.nodeCount();
 		assertEquals(previousNodeCount + 1, currentNodeCount);
 		final Element element = parent.element("AnyElement");
@@ -129,7 +129,7 @@ public class MigrationTest {
 	public void addedElementShouldBeReturnedByTheMethod() throws Exception {
 		final Document document = DocumentHelper.parseText(testXML);
 		final Element parent = document.getRootElement();
-		final Element addedElement = new Migration2_2011_08_01().addElementOfType(parent, "AnyElement", Object.class);
+		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", Object.class);
 		assertNotNull(addedElement);
 		assertEquals(addedElement, parent.element("AnyElement"));
 	}
@@ -138,7 +138,7 @@ public class MigrationTest {
 	public void addedElementsShouldHaveAAttributeNamedClassAndHisValueShouldBeTheElementsJavaTypeName() throws Exception {
 		final Document document = DocumentHelper.parseText(testXML);
 		final Element parent = document.getRootElement();
-		final Element addedElement = new Migration2_2011_08_01().addElementOfType(parent, "AnyElement", Object.class);
+		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", Object.class);
 		assertEquals("AnyElement", addedElement.getName());
 		assertEquals(1, addedElement.attributeCount());
 		final Attribute classAttribute = addedElement.attribute(0);
@@ -161,7 +161,7 @@ public class MigrationTest {
 		final Document document = DocumentHelper.parseText(testXML);
 		final Migration migration = new Migration2_2011_08_01();
 		migration.apply(document);
-		final List<Element> list = migration.getAllElementsOfType(String.class);
+		final List<Element> list = migration.getElementsOfType(String.class);
 		assertEquals(2, list.size());
 		assertEquals("action", list.get(0).getName());
 		assertEquals("modelAction", list.get(1).getName());
