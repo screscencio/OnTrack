@@ -179,11 +179,12 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	private ProjectSnapshot createBlankProjectSnapshot(final long projectId) throws UnableToLoadProjectException, NoResultFoundException, PersistenceException {
-		final Scope projectScope = new Scope("Project", new UUID("0"));
-		final Release projectRelease = new Release("proj", new UUID("release0"));
-
 		try {
 			final ProjectRepresentation projectRepresentation = persistenceService.findProjectRepresentation(projectId);
+
+			final Scope projectScope = new Scope(projectRepresentation.getName(), new UUID("0"));
+			final Release projectRelease = new Release(projectRepresentation.getName(), new UUID("release0"));
+
 			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectRepresentation, projectScope,
 					projectRelease), new Date());
 			return projectSnapshot;

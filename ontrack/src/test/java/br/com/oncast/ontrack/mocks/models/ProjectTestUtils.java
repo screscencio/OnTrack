@@ -9,6 +9,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectTestUtils {
 
+	public static final String DEFAULT_PROJECT_NAME = "Default project";
+
 	public static Project createProject() {
 		return createProject(getDefaultProjectRepresentation(), getDefaultScope(), getDefaultRelease());
 	}
@@ -35,7 +37,7 @@ public class ProjectTestUtils {
 	}
 
 	public static ProjectRepresentation createProjectRepresentation(final long projectId) {
-		return createProjectRepresentation(projectId, "Default Project");
+		return createProjectRepresentation(projectId, DEFAULT_PROJECT_NAME);
 	}
 
 	public static ProjectRepresentation createProjectRepresentation(final long projectId, final String projectName) {
@@ -47,11 +49,11 @@ public class ProjectTestUtils {
 	}
 
 	private static Scope getDefaultScope() {
-		return new Scope("Project", new UUID("0"));
+		return new Scope(getDefaultProjectRepresentation().getName(), new UUID("0"));
 	}
 
 	private static Release getDefaultRelease() {
-		return new Release("proj", new UUID("release0"));
+		return new Release(getDefaultProjectRepresentation().getName(), new UUID("release0"));
 	}
 
 }
