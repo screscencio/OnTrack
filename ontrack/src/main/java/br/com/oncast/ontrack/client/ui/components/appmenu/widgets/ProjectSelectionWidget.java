@@ -9,24 +9,27 @@ import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 // FIXME Make the pop up behavior optional.
-public class ProjectSelectionWidget extends Composite {
+public class ProjectSelectionWidget extends Composite implements HasCloseHandlers<ProjectSelectionWidget>, PopupAware {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
@@ -34,14 +37,12 @@ public class ProjectSelectionWidget extends Composite {
 
 	interface ProjectSelectionWidgetUiBinder extends UiBinder<Widget, ProjectSelectionWidget> {}
 
-	// FIXME Rodrigo: Extract this label from the component itself just as the PasswordChangeWidget, placing it in the ApplicationMenu.
-	@UiField
-	protected Label projectSwitchingMenuButton;
-
 	@UiField
 	protected FiltrableCommandMenu projectSwitchingMenu;
 
 	private final ProjectListChangeListener projectListChangeListener;
+
+	private final boolean isPopUp;
 
 	@UiFactory
 	protected FiltrableCommandMenu createProjectSwitchCommandMenu() {
@@ -57,10 +58,12 @@ public class ProjectSelectionWidget extends Composite {
 					}
 				});
 			}
-		}, 700, 400);
+		}, 700, 400, isPopUp);
 	}
 
-	public ProjectSelectionWidget() {
+	// FIXME Remove this argument; It is only used to configure FiltrableCommandMenu and should be removed from there.
+	public ProjectSelectionWidget(final boolean isPopUp) {
+		this.isPopUp = isPopUp;
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.projectListChangeListener = new ProjectListChangeListener() {
@@ -70,18 +73,18 @@ public class ProjectSelectionWidget extends Composite {
 				updateProjectMenuItens(projectRepresentations);
 			}
 		};
-
-		projectSwitchingMenu.hide();
 		registerProjectListChangeListener();
+		registerCloseHandler();
 	}
 
-	@UiHandler("projectSwitchingMenuButton")
-	protected void onClick(final ClickEvent e) {
-		showChangeProjectMenu();
-	}
+	private void registerCloseHandler() {
+		projectSwitchingMenu.setCloseHandler(new br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler() {
 
-	private void showChangeProjectMenu() {
-		projectSwitchingMenu.show(projectSwitchingMenuButton);
+			@Override
+			public void onClose() {
+				hide();
+			}
+		});
 	}
 
 	private void updateProjectMenuItens(final Set<ProjectRepresentation> projectRepresentations) {
@@ -129,5 +132,21 @@ public class ProjectSelectionWidget extends Composite {
 
 	private void unregisterProjectListChangeListener() {
 		SERVICE_PROVIDER.getProjectRepresentationProvider().unregisterProjectListChangeListener(projectListChangeListener);
+	}
+
+	@Override
+	public HandlerRegistration addCloseHandler(final CloseHandler<ProjectSelectionWidget> handler) {
+		return addHandler(handler, CloseEvent.getType());
+	}
+
+	@Override
+	public void show() {
+		projectSwitchingMenu.show();
+	}
+
+	@Override
+	public void hide() {
+		projectSwitchingMenu.hide();
+		CloseEvent.fire(this, this);
 	}
 }

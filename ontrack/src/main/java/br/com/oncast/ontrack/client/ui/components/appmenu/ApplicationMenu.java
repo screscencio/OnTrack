@@ -4,6 +4,7 @@ import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configP
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectSelectionWidget;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 
 import com.google.gwt.core.client.GWT;
@@ -25,6 +26,9 @@ public class ApplicationMenu extends Composite {
 	interface ApplicationMenuWidgetUiBinder extends UiBinder<Widget, ApplicationMenu> {}
 
 	@UiField
+	protected Label projectSwitchingMenuLabel;
+
+	@UiField
 	protected Label changePasswordLabel;
 
 	@UiField
@@ -33,6 +37,7 @@ public class ApplicationMenu extends Composite {
 	public ApplicationMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
 		configPopup().link(changePasswordLabel).popup(new PasswordChangeWidget()).alignRight(changePasswordLabel).alignBelow(this);
+		configPopup().link(projectSwitchingMenuLabel).popup(new ProjectSelectionWidget(true)).alignRight(projectSwitchingMenuLabel).alignBelow(this);
 	}
 
 	@UiHandler("logoutLabel")

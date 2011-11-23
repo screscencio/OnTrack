@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -54,9 +54,6 @@ public class FiltrableCommandMenu extends Composite {
 
 	private CloseHandler closeHandler;
 
-	// TODO Refactory this. Maybe extract this to a container "pop-up" widget.
-	private final WidgetVisibilityAssurer visibilityAssurer;
-
 	private List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 
 	private final CustomCommandMenuItemFactory customItemFactory;
@@ -69,15 +66,24 @@ public class FiltrableCommandMenu extends Composite {
 		}
 	};
 
+	private final boolean isPopup;
+
+	// FIXME Remove this constructor and the argument isPopup.
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
+		this(customItemFactory, maxWidth, maxHeight, true);
+	}
+
+	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight, final boolean isPopup) {
+		this.isPopup = isPopup;
 		initWidget(uiBinder.createAndBindUi(this));
-		this.visibilityAssurer = new WidgetVisibilityAssurer(rootPanel);
 		this.customItemFactory = customItemFactory;
 		this.maxHeight = maxHeight;
 		this.maxWidth = maxWidth;
 
 		configureMenu();
-		hide();
+
+		if (isPopup) hide();
+		else show();
 	}
 
 	public void setItems(final List<CommandMenuItem> itens) {
@@ -86,40 +92,25 @@ public class FiltrableCommandMenu extends Composite {
 		menu.setItems(itens);
 	}
 
-	public void addCloseHandler(final CloseHandler handler) {
+	public void setCloseHandler(final CloseHandler handler) {
 		this.closeHandler = handler;
 	}
 
-	public void show(final Widget relativeWidget) {
-		if (this.isVisible()) return;
-
+	public void show() {
 		this.setVisible(true);
-		MaskPanel.show(new HideHandler() {
-
-			@Override
-			public void onWillHide() {
-				hide();
-			}
-		});
 
 		menu.show();
 		menu.selectFirstItem();
 		ajustDimentions();
-		visibilityAssurer.assureVisibilityAround(relativeWidget);
-
 		filterArea.setFocus(true);
 	}
 
 	public void hide() {
+		if (!isPopup) return;
 		if (!this.isVisible()) return;
 		this.setVisible(false);
-		MaskPanel.assureHidden();
-		if (closeHandler != null) closeHandler.onClose();
-	}
 
-	@UiHandler("focusPanel")
-	protected void handleMouseDown(final MouseDownEvent event) {
-		eatEvent(event);
+		if (closeHandler != null) closeHandler.onClose();
 	}
 
 	@UiHandler("filterArea")
@@ -148,6 +139,9 @@ public class FiltrableCommandMenu extends Composite {
 
 		else if (event.getNativeKeyCode() == KEY_UP) {
 			menu.selectItemUp();
+			eatEvent(event);
+		}
+		else if (event.getNativeKeyCode() == KEY_TAB) {
 			eatEvent(event);
 		}
 	}

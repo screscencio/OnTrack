@@ -22,13 +22,6 @@
 		.logoutLabel:HOVER {
 			cursor: pointer;
 		}
-				
-		.changeProjectWidget{
-			position: absolute;
-			top: 10px;
-			left: 10px;
-			color: #ffffff;
-		}
 		
 		.changePasswordLabel {
 			position: absolute;
@@ -40,10 +33,21 @@
 		.changePasswordLabel:HOVER {
 				cursor: pointer;
 		}
+		
+		.projectSwitchingMenuLabel {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			color: #ffffff;
+		}
+		
+		.projectSwitchingMenuButton:HOVER {
+			cursor: pointer;
+		}
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
-		<cp:ProjectSelectionWidget ui:field="changeProjectWidget" styleName="{style.changeProjectWidget}" />
+		<g:Label ui:field="projectSwitchingMenuLabel" text="Change Project" styleName="{style.projectSwitchingMenuLabel}"  />
 		<g:Label ui:field="changePasswordLabel" text="Change Password" styleName="{style.changePasswordLabel}"  />
 		<g:Label ui:field="logoutLabel" text="Logout" styleName="{style.logoutLabel}" />
 	</g:HTMLPanel>
