@@ -27,6 +27,8 @@ public class AppActivityMapper implements ActivityMapper {
 	// the destination place set or should always have a new instance)
 	@Override
 	public Activity getActivity(final Place place) {
+		// FIXME Test this
+
 		if (place instanceof LoginPlace) return createLoginActivity(((LoginPlace) place).getDestinationPlace());
 		// XXX Auth; Lazy load login activity when login place is received. Remove this.
 		if (!services.getAuthenticationService().isUserLoggedIn()) return createLoginActivity(place);
