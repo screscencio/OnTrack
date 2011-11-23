@@ -84,6 +84,11 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 		notifyListenerForCurrentProjectListChange(projectListChangeListener);
 	}
 
+	@Override
+	public void unregisterProjectListChangeListener(final ProjectListChangeListener projectListChangeListener) {
+		projectListChangeListeners.remove(projectListChangeListener);
+	}
+
 	private void notifyListenersForCurrentProjectListChange() {
 		for (final ProjectListChangeListener listener : projectListChangeListeners)
 			notifyListenerForCurrentProjectListChange(listener);

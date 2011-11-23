@@ -1,8 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
-import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationCallback;
-import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -12,21 +11,18 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class LoginActivity extends AbstractActivity implements LoginView.Presenter {
 
-	private final AuthenticationService authenticationService;
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private final UserAuthenticationCallback authenticationCallback;
 	private final LoginView view;
 
-	public LoginActivity(final AuthenticationService authenticationService,
-			final ApplicationPlaceController placeController,
-			final Place destinationPlace) {
-
+	public LoginActivity(final Place destinationPlace) {
 		this.view = new LoginPanel(this);
-		this.authenticationService = authenticationService;
+
 		this.authenticationCallback = new UserAuthenticationCallback() {
 
 			@Override
 			public void onUserAuthenticatedSuccessfully(final User user) {
-				placeController.goTo(destinationPlace);
+				SERVICE_PROVIDER.getApplicationPlaceController().goTo(destinationPlace);
 			}
 
 			@Override
@@ -65,7 +61,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 		}
 
 		// XXX Auth; Verify if the server formats (trims and lowercases, ...) the auth inputs.
-		authenticationService.authenticate(username, password, authenticationCallback);
+		SERVICE_PROVIDER.getAuthenticationService().authenticate(username, password, authenticationCallback);
 	}
 
 	// XXX Auth; Validate the e-mail using a regex.

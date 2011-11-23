@@ -3,10 +3,55 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
 	<ui:style>
+		.rootPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			background-color: #dbdce1;
+		}
+		
+		.mainPanel {
+			position: absolute;
+			top: 200px;
+			height: 300px;
+			right: 50%;
+			margin-right: -175px;
+			margin-top: -90px;
+			width: 350px;
+			padding-top: 5px;
+			padding-left: 10px;
+			
+            border: none;
+
+			font-size: small;
+		    font-weight: bold;
+   		}
+		
+		.welcomeLabel {
+			color: black;
+			text-align: center;
+		    font-size: 28px;
+		    font-weight: lighter;
+		    height: 35px;
+		    text-shadow: 2px 2px 5px #a5a5a5;
+		}
+	
+		.projectSelectionPanel {
+			height: 22px;
+			display: block;
+			margin-top: 2px;
+			margin-bottom: 2px;
+		}
 	</ui:style>
 		
-	<g:HTMLPanel ui:field="rootPanel" >
-	<p>blablabla</p>
+	<g:HTMLPanel ui:field="rootPanel" styleName="{style.rootPanel}" >
+		<g:HTMLPanel ui:field="verticalPanel" styleName="{style.mainPanel}" >
+			<g:Label text="Choose a project" styleName="{style.welcomeLabel}" />
+			<g:HTMLPanel styleName="{style.projectSelectionPanel}">
+			</g:HTMLPanel>
+		</g:HTMLPanel>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 

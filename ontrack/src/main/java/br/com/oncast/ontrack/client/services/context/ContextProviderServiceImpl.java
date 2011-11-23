@@ -1,14 +1,21 @@
 package br.com.oncast.ontrack.client.services.context;
 
+import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
+import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
+import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
 public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private final ProjectRepresentationProviderImpl projectRepresentationProvider;
+	private final RequestDispatchService requestDispatchService;
+
 	private ProjectContext projectContext;
 
-	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider) {
+	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider, final RequestDispatchService requestDispatchService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
+		this.requestDispatchService = requestDispatchService;
 	}
 
 	@Override
@@ -17,9 +24,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 		throw new RuntimeException("There is no project context avaliable.");
 	}
 
-	// TODO +Verify: Throw an event on the eventBus when the context is set so that UI and other services can update theirselfs.
-	@Override
-	public void setProjectContext(final ProjectContext projectContext) {
+	private void setProjectContext(final ProjectContext projectContext) {
 		this.projectContext = projectContext;
 		projectRepresentationProvider.setProjectRepresentation(projectContext.getProjectRepresentation());
 	}
@@ -27,5 +32,24 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	@Override
 	public boolean isContextAvailable(final long projectId) {
 		return (projectContext != null) && (projectContext.getProjectRepresentation().getId() == projectId);
+	}
+
+	@Override
+	public void loadProjectContext(final long requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
+		requestDispatchService.dispatch(new ProjectContextRequest(requestedProjectId), new DispatchCallback<ProjectContext>() {
+
+			@Override
+			public void onRequestCompletition(final ProjectContext projectContext) {
+				setProjectContext(projectContext);
+				projectContextLoadCallback.onProjectContextLoaded();
+			}
+
+			@Override
+			public void onFailure(final Throwable cause) {
+				// TODO +++Treat communication failure.
+				if (cause instanceof ProjectNotFoundException) projectContextLoadCallback.onProjectNotFound();
+				else projectContextLoadCallback.onUnexpectedFailure(cause);
+			}
+		});
 	}
 }

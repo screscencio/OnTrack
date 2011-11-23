@@ -3,7 +3,8 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
-import br.com.oncast.ontrack.client.ui.components.appmenu.interaction.PlanningAuthenticationRequestHandler;
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.HideHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
 
@@ -11,6 +12,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -21,11 +26,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ChangePasswordForm extends Composite {
+public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget> {
 
-	private static ChangePasswordFormUiBinder uiBinder = GWT.create(ChangePasswordFormUiBinder.class);
+	private static PasswordChangeWidgetUiBinder uiBinder = GWT.create(PasswordChangeWidgetUiBinder.class);
 
-	interface ChangePasswordFormUiBinder extends UiBinder<Widget, ChangePasswordForm> {}
+	interface PasswordChangeWidgetUiBinder extends UiBinder<Widget, PasswordChangeWidget> {}
 
 	@UiField
 	protected PasswordTextBox oldPasswordArea;
@@ -45,15 +50,14 @@ public class ChangePasswordForm extends Composite {
 	@UiField
 	protected Button changePasswordButton;
 
-	private PlanningAuthenticationRequestHandler authenticationRequestHandler;
-
-	public ChangePasswordForm() {
+	public PasswordChangeWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
 	public void hide() {
 		if (!this.isVisible()) return;
 		this.setVisible(false);
+		CloseEvent.fire(this, this);
 	}
 
 	public void show() {
@@ -113,15 +117,38 @@ public class ChangePasswordForm extends Composite {
 
 	private void submitChangePassword() {
 		if (!areTypedPasswordsEqual()) messageLabel.setText("The two typed passwords are different.");
-		else authenticationRequestHandler.changeUserPassword(this, oldPasswordArea.getText(), newPasswordArea.getText());
+		else changeUserPassword();
+	}
+
+	// XXX Auth; Pre-process password (trim, etc) ?
+	private void changeUserPassword() {
+		ClientServiceProvider.getInstance().getAuthenticationService()
+				.changePassword(oldPasswordArea.getText(), newPasswordArea.getText(), new UserPasswordChangeCallback() {
+
+					@Override
+					public void onUserPasswordChangedSuccessfully() {
+						// TODO Improve feedback message.
+						setInfoMessage("Password changed succefully.");
+					}
+
+					@Override
+					public void onUnexpectedFailure(final Throwable caught) {
+						// TODO Improve feedback message.
+						setErrorMessage("Unexpected error.");
+
+					}
+
+					@Override
+					public void onIncorrectUserPasswordFailure() {
+						// TODO Improve feedback message.
+						setErrorMessage("Incorrect old password.");
+					}
+				});
+
 	}
 
 	private boolean areTypedPasswordsEqual() {
 		return newPasswordArea.getText().equals(retypePasswordArea.getText());
-	}
-
-	public void setAuthenticationRequestHandler(final PlanningAuthenticationRequestHandler authenticationRequestHandler) {
-		this.authenticationRequestHandler = authenticationRequestHandler;
 	}
 
 	public void setErrorMessage(final String message) {
@@ -142,5 +169,10 @@ public class ChangePasswordForm extends Composite {
 	private void submitOrHideForm(final KeyUpEvent event) {
 		if (event.getNativeKeyCode() == KEY_ENTER) submitChangePassword();
 		if (event.getNativeKeyCode() == KEY_ESCAPE) this.hide();
+	}
+
+	@Override
+	public HandlerRegistration addCloseHandler(final CloseHandler<PasswordChangeWidget> handler) {
+		return addHandler(handler, CloseEvent.getType());
 	}
 }

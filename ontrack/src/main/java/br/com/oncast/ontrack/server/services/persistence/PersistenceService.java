@@ -23,21 +23,21 @@ public interface PersistenceService {
 
 	public void persistProjectSnapshot(ProjectSnapshot projectSnapshot) throws PersistenceException;
 
-	public User findUserByEmail(String email) throws NoResultFoundException, PersistenceException;
+	public User retrieveUserByEmail(String email) throws NoResultFoundException, PersistenceException;
 
 	public User persistOrUpdateUser(User user) throws PersistenceException;
 
-	public List<User> findAllUsers() throws PersistenceException;
+	public List<User> retrieveAllUsers() throws PersistenceException;
 
-	public Password findPasswordForUser(long userId) throws NoResultFoundException, PersistenceException;
+	public Password retrievePasswordForUser(long userId) throws NoResultFoundException, PersistenceException;
 
 	public void persistOrUpdatePassword(Password passwordForUser) throws PersistenceException;
 
-	public List<Password> findAllPasswords() throws PersistenceException;
+	public List<Password> retrieveAllPasswords() throws PersistenceException;
 
 	public ProjectRepresentation persistOrUpdateProjectRepresentation(final ProjectRepresentation projectRepresentation) throws PersistenceException;
 
-	public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException, NoResultFoundException;
+	public ProjectRepresentation retrieveProjectRepresentation(final long projectId) throws PersistenceException, NoResultFoundException;
 
-	public List<ProjectRepresentation> findAllProjectRepresentations() throws PersistenceException;
+	public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException;
 }

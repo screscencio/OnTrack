@@ -72,12 +72,12 @@ public class BusinessLogicMockFactoryTestUtils {
 			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
 
 			@Override
-			public User findUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
+			public User retrieveUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
 				return null;
 			}
 
 			@Override
-			public Password findPasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
+			public Password retrievePasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
 				return null;
 			}
 
@@ -90,12 +90,12 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public List<User> findAllUsers() throws PersistenceException {
+			public List<User> retrieveAllUsers() throws PersistenceException {
 				return null;
 			}
 
 			@Override
-			public List<Password> findAllPasswords() throws PersistenceException {
+			public List<Password> retrieveAllPasswords() throws PersistenceException {
 				return null;
 			}
 
@@ -105,12 +105,12 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
+			public ProjectRepresentation retrieveProjectRepresentation(final long projectId) throws PersistenceException {
 				return null;
 			}
 
 			@Override
-			public List<ProjectRepresentation> findAllProjectRepresentations() throws PersistenceException {
+			public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException {
 				return null;
 			}
 
@@ -149,12 +149,12 @@ public class BusinessLogicMockFactoryTestUtils {
 			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
 
 			@Override
-			public User findUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
+			public User retrieveUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
 				return null;
 			}
 
 			@Override
-			public Password findPasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
+			public Password retrievePasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
 				return null;
 			}
 
@@ -167,12 +167,12 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public List<User> findAllUsers() throws PersistenceException {
+			public List<User> retrieveAllUsers() throws PersistenceException {
 				return null;
 			}
 
 			@Override
-			public List<Password> findAllPasswords() throws PersistenceException {
+			public List<Password> retrieveAllPasswords() throws PersistenceException {
 				return null;
 			}
 
@@ -182,12 +182,12 @@ public class BusinessLogicMockFactoryTestUtils {
 			}
 
 			@Override
-			public ProjectRepresentation findProjectRepresentation(final long projectId) throws PersistenceException {
+			public ProjectRepresentation retrieveProjectRepresentation(final long projectId) throws PersistenceException {
 				return null;
 			}
 
 			@Override
-			public List<ProjectRepresentation> findAllProjectRepresentations() throws PersistenceException {
+			public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException {
 				return null;
 			}
 		};

@@ -20,7 +20,7 @@ public class DefaultUserExistenceAssurer {
 	public static void verify() {
 		final PersistenceService persistenceService = ServerServiceProvider.getInstance().getPersistenceService();
 		try {
-			persistenceService.findUserByEmail(DEFAULT_USER);
+			persistenceService.retrieveUserByEmail(DEFAULT_USER);
 		}
 		catch (final NoResultFoundException e) {
 			createNewUser(persistenceService);
@@ -36,7 +36,7 @@ public class DefaultUserExistenceAssurer {
 		newUser.setEmail(DEFAULT_USER);
 		try {
 			persistenceService.persistOrUpdateUser(newUser);
-			final User persistedUser = persistenceService.findUserByEmail(newUser.getEmail());
+			final User persistedUser = persistenceService.retrieveUserByEmail(newUser.getEmail());
 			verifyUserPassword(persistenceService, persistedUser);
 		}
 		catch (final PersistenceException e) {
@@ -52,7 +52,7 @@ public class DefaultUserExistenceAssurer {
 	private static void verifyUserPassword(final PersistenceService persistenceService, final User user) throws PersistenceException {
 		Password password;
 		try {
-			password = persistenceService.findPasswordForUser(user.getId());
+			password = persistenceService.retrievePasswordForUser(user.getId());
 			verifyPasswordIfExists(persistenceService, password);
 		}
 		catch (final NoResultFoundException e) {

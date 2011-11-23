@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
-import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
@@ -64,13 +63,6 @@ public class AppActivityMapperTest extends GwtTest {
 		});
 
 		appActivityMapper = new AppActivityMapper(clientServiceProvider);
-	}
-
-	@Test
-	public void whenUserIsNotLoggedInItShouldRedirectToLoginActivity() {
-		isLoggedIn = false;
-
-		assertTrue(appActivityMapper.getActivity(null) instanceof LoginActivity);
 	}
 
 	@Test

@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -24,12 +25,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ChangeProjectWidget extends Composite {
+// FIXME Make the pop up behavior optional.
+public class ProjectSelectionWidget extends Composite {
 
-	private static ChangeProjectWidgetUiBinder uiBinder = GWT.create(ChangeProjectWidgetUiBinder.class);
+	private static ProjectSelectionWidgetUiBinder uiBinder = GWT.create(ProjectSelectionWidgetUiBinder.class);
 
-	interface ChangeProjectWidgetUiBinder extends UiBinder<Widget, ChangeProjectWidget> {}
+	interface ProjectSelectionWidgetUiBinder extends UiBinder<Widget, ProjectSelectionWidget> {}
 
+	// FIXME Rodrigo: Extract this label from the component itself just as the PasswordChangeWidget, placing it in the ApplicationMenu.
 	@UiField
 	protected Label projectSwitchingMenuButton;
 
@@ -55,7 +58,7 @@ public class ChangeProjectWidget extends Composite {
 		}, 700, 400);
 	}
 
-	public ChangeProjectWidget() {
+	public ProjectSelectionWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.projectListChangeListener = new ProjectListChangeListener() {
@@ -132,7 +135,17 @@ public class ChangeProjectWidget extends Composite {
 				});
 	}
 
+	@UiHandler("projectSwitchingMenu")
+	protected void onAttachOrDetach(final AttachEvent event) {
+		if (event.isAttached()) registerProjectListChangeListener();
+		else unregisterProjectListChangeListener();
+	}
+
 	private void registerProjectListChangeListener() {
 		ClientServiceProvider.getInstance().getProjectRepresentationProvider().registerProjectListChangeListener(projectListChangeListener);
+	}
+
+	private void unregisterProjectListChangeListener() {
+		ClientServiceProvider.getInstance().getProjectRepresentationProvider().unregisterProjectListChangeListener(projectListChangeListener);
 	}
 }

@@ -106,7 +106,7 @@ public class XMLImporterTest {
 	public void shouldPersistUsersBeforePersistingPasswords() throws Exception {
 		final User user = createUserWithPassword();
 
-		when(persistenceService.findUserByEmail(user.getEmail())).thenThrow(new NoResultFoundException("", null));
+		when(persistenceService.retrieveUserByEmail(user.getEmail())).thenThrow(new NoResultFoundException("", null));
 		when(persistenceService.persistOrUpdateUser(Mockito.any(User.class))).thenReturn(user);
 
 		importer.persistObjects();
@@ -120,7 +120,7 @@ public class XMLImporterTest {
 	public void shouldPersistPasswordsWithRelatedUserId() throws Exception {
 		final User user = createUserWithPassword();
 
-		when(persistenceService.findUserByEmail(user.getEmail())).thenThrow(new NoResultFoundException("", null));
+		when(persistenceService.retrieveUserByEmail(user.getEmail())).thenThrow(new NoResultFoundException("", null));
 		when(persistenceService.persistOrUpdateUser(Mockito.any(User.class))).thenReturn(user);
 
 		importer.persistObjects();
@@ -135,7 +135,7 @@ public class XMLImporterTest {
 	public void shouldNotPersistPasswordForAUserIdWhenItDoesntHaveAPassword() throws Exception {
 		final User user = createUserWithoutPassword();
 
-		when(persistenceService.findUserByEmail(user.getEmail())).thenThrow(new NoResultFoundException("", null));
+		when(persistenceService.retrieveUserByEmail(user.getEmail())).thenThrow(new NoResultFoundException("", null));
 		when(persistenceService.persistOrUpdateUser(Mockito.any(User.class))).thenReturn(user);
 
 		importer.persistObjects();
@@ -146,7 +146,7 @@ public class XMLImporterTest {
 	@Test
 	public void shouldNotPersistAUserWhenThereIsAPersistedUserWithSameEmail() throws Exception {
 		final User user = createUserWithoutPassword();
-		when(persistenceService.findUserByEmail(user.getEmail())).thenReturn(user);
+		when(persistenceService.retrieveUserByEmail(user.getEmail())).thenReturn(user);
 
 		importer.persistObjects();
 
@@ -156,7 +156,7 @@ public class XMLImporterTest {
 	@Test
 	public void shouldNotUpdateUserPasswordWhenThereIsAPersistedUserWithSameEmail() throws Exception {
 		final User user = createUserWithoutPassword();
-		when(persistenceService.findUserByEmail(user.getEmail())).thenReturn(user);
+		when(persistenceService.retrieveUserByEmail(user.getEmail())).thenReturn(user);
 
 		importer.persistObjects();
 

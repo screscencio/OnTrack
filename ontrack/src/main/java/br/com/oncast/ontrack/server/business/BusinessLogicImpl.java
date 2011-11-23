@@ -101,6 +101,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
+	// FIXME Test this method
 	@Override
 	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
 		LOGGER.debug("Creating new project '" + projectName + "'.");
@@ -121,7 +122,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	public List<ProjectRepresentation> retrieveProjectList() throws UnableToRetrieveProjectListException {
 		LOGGER.debug("Retrieving project list.");
 		try {
-			return persistenceService.findAllProjectRepresentations();
+			return persistenceService.retrieveAllProjectRepresentations();
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "Unable to retrieve the project list.";
@@ -179,11 +180,12 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	private ProjectSnapshot createBlankProjectSnapshot(final long projectId) throws UnableToLoadProjectException, NoResultFoundException, PersistenceException {
-		final Scope projectScope = new Scope("Project", new UUID("0"));
-		final Release projectRelease = new Release("proj", new UUID("release0"));
-
 		try {
-			final ProjectRepresentation projectRepresentation = persistenceService.findProjectRepresentation(projectId);
+			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
+
+			final Scope projectScope = new Scope(projectRepresentation.getName(), new UUID("0"));
+			final Release projectRelease = new Release(projectRepresentation.getName(), new UUID("release0"));
+
 			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectRepresentation, projectScope,
 					projectRelease), new Date());
 			return projectSnapshot;

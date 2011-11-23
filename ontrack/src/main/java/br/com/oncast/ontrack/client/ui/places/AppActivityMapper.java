@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.places;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
+import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
@@ -24,7 +25,10 @@ public class AppActivityMapper implements ActivityMapper {
 	// the destination place set or should always have a new instance)
 	@Override
 	public Activity getActivity(final Place place) {
-		// XXX Auth; Lazy load login activity when login place is received.
+		// FIXME Test this
+
+		if (place instanceof LoginPlace) return createLoginActivity(((LoginPlace) place).getDestinationPlace());
+		// XXX Auth; Lazy load login activity when login place is received. Remove this.
 		if (!services.getAuthenticationService().isUserLoggedIn()) return createLoginActivity(place);
 
 		if (place instanceof ProjectDependentPlace) {
@@ -45,17 +49,16 @@ public class AppActivityMapper implements ActivityMapper {
 		return new ProjectSelectionActivity();
 	}
 
-	private Activity createLoginActivity(final Place place) {
-		return new LoginActivity(services.getAuthenticationService(), services.getApplicationPlaceController(), place);
+	// TODO Receive a LoginPlace
+	private Activity createLoginActivity(final Place destinationPlace) {
+		return new LoginActivity(destinationPlace);
 	}
 
 	private PlanningActivity createPlanningActivity(final ProjectDependentPlace place) {
-		return new PlanningActivity(services.getActionExecutionService(), services.getContextProviderService(), services.getAuthenticationService(),
-				services.getProjectRepresentationProvider());
+		return new PlanningActivity();
 	}
 
 	private ContextLoadingActivity createContextLoadingActivity(final ProjectDependentPlace projectDependentPlace) {
-		return new ContextLoadingActivity(services.getContextProviderService(), services.getApplicationPlaceController(), services.getRequestDispatchService(),
-				projectDependentPlace);
+		return new ContextLoadingActivity(projectDependentPlace);
 	}
 }

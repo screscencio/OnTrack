@@ -60,7 +60,7 @@ public class DefaultUserExistenceAssurerTest {
 	private Password findPassword(final long userId) {
 		Password p = null;
 		try {
-			p = persistanceService.findPasswordForUser(userId);
+			p = persistanceService.retrievePasswordForUser(userId);
 		}
 		catch (final NoResultFoundException e) {
 			fail();
@@ -74,7 +74,7 @@ public class DefaultUserExistenceAssurerTest {
 	private User findUser(final String email) {
 		User user = null;
 		try {
-			user = persistanceService.findUserByEmail(email);
+			user = persistanceService.retrieveUserByEmail(email);
 		}
 		catch (final NoResultFoundException e) {
 			fail();
