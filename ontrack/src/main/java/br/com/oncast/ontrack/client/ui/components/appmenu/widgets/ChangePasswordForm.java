@@ -12,6 +12,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -23,7 +27,7 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 // FIXME Refactor widget name
-public class ChangePasswordForm extends Composite {
+public class ChangePasswordForm extends Composite implements HasCloseHandlers<ChangePasswordForm> {
 
 	private static ChangePasswordFormUiBinder uiBinder = GWT.create(ChangePasswordFormUiBinder.class);
 
@@ -54,6 +58,7 @@ public class ChangePasswordForm extends Composite {
 	public void hide() {
 		if (!this.isVisible()) return;
 		this.setVisible(false);
+		CloseEvent.fire(this, this);
 	}
 
 	public void show() {
@@ -165,5 +170,10 @@ public class ChangePasswordForm extends Composite {
 	private void submitOrHideForm(final KeyUpEvent event) {
 		if (event.getNativeKeyCode() == KEY_ENTER) submitChangePassword();
 		if (event.getNativeKeyCode() == KEY_ESCAPE) this.hide();
+	}
+
+	@Override
+	public HandlerRegistration addCloseHandler(final CloseHandler<ChangePasswordForm> handler) {
+		return addHandler(handler, CloseEvent.getType());
 	}
 }

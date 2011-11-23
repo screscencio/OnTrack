@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
+import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ChangePasswordForm;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 
 import com.google.gwt.core.client.GWT;
@@ -33,7 +33,7 @@ public class ApplicationMenu extends Composite {
 
 	public ApplicationMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
-		PopupConfig.link(changePasswordLabel).popup(new ChangePasswordForm()).alignPopupRight(changePasswordLabel).alignBelow(this);
+		configPopup().link(changePasswordLabel).popup(new ChangePasswordForm()).alignRight(changePasswordLabel).alignBelow(this);
 	}
 
 	@UiHandler("logoutLabel")
