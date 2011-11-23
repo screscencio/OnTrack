@@ -22,6 +22,8 @@ import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActiv
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import com.octo.gwt.test.GwtTest;
 
@@ -79,6 +81,22 @@ public class AppActivityMapperTest extends GwtTest {
 		isContextAvailable = true;
 
 		assertTrue(appActivityMapper.getActivity(new PlanningPlace(PROJECT_ID)) instanceof PlanningActivity);
+	}
+
+	@Test
+	public void whenUserLoggedInAndContextProviderIsAvailableAndProjectIdIsZeroShouldCreateAProjectSelectionActivity() {
+		isLoggedIn = true;
+		isContextAvailable = true;
+
+		assertTrue(appActivityMapper.getActivity(new PlanningPlace(0)) instanceof ProjectSelectionActivity);
+	}
+
+	@Test
+	public void whenUserLoggedInAndContextProviderIsAvailableAndProjectSelectionPlaceRequestedShouldCreateAProjectSelectionActivity() {
+		isLoggedIn = true;
+		isContextAvailable = true;
+
+		assertTrue(appActivityMapper.getActivity(new ProjectSelectionPlace()) instanceof ProjectSelectionActivity);
 	}
 
 	@Test

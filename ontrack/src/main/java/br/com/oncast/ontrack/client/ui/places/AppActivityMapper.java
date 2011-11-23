@@ -36,7 +36,7 @@ public class AppActivityMapper implements ActivityMapper {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
 			final long requestedProjectId = projectDependentPlace.getRequestedProjectId();
 
-			if (requestedProjectId == 0) return createProjectSelectionActivity();
+			if (requestedProjectId <= 0) return createProjectSelectionActivity();
 			if (!services.getContextProviderService().isContextAvailable(requestedProjectId)) return createContextLoadingActivity(projectDependentPlace);
 		}
 

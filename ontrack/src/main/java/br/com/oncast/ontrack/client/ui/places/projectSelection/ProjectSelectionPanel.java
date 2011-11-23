@@ -11,6 +11,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ProjectSelectionPanel extends Composite implements ProjectSelectionView {
 
+	private static ProjectSelectionPanelUiBinder uiBinder = GWT.create(ProjectSelectionPanelUiBinder.class);
+
+	interface ProjectSelectionPanelUiBinder extends UiBinder<Widget, ProjectSelectionPanel> {}
+
 	@UiField
 	protected ProjectSelectionWidget selectionProject;
 
@@ -19,11 +23,7 @@ public class ProjectSelectionPanel extends Composite implements ProjectSelection
 		return new ProjectSelectionWidget(false);
 	}
 
-	private static ProjectSelectionPanelUiBinder uiBinder = GWT.create(ProjectSelectionPanelUiBinder.class);
-
-	interface ProjectSelectionPanelUiBinder extends UiBinder<Widget, ProjectSelectionPanel> {}
-
-	public ProjectSelectionPanel(final ProjectSelectionActivity projectSelectionActivity) {
+	public ProjectSelectionPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 }
