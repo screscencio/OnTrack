@@ -4,6 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,8 +23,12 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.mocks.actions.ActionMock;
 import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.server.services.broadcast.BroadcastService;
+import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -303,6 +311,20 @@ public class BusinessLogicTest {
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
 		assertFalse(givenTimestamp.equals(action.getTimestamp()));
+	}
+
+	@Test
+	public void createProjectShouldBroadcastAProjectCreationEvent() throws UnableToCreateProjectRepresentation, PersistenceException {
+		final ProjectRepresentation projectRepresentation = new ProjectRepresentation("bla");
+
+		final BroadcastService broadcastService = mock(BroadcastService.class);
+		final PersistenceService persistenceService = mock(PersistenceService.class);
+		when(persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
+
+		final BusinessLogic business = new BusinessLogicImpl(persistenceService, broadcastService);
+		final ProjectRepresentation representation = business.createProject("bla");
+
+		verify(broadcastService, times(1)).broadcastProjectCreation(representation);
 	}
 
 	private void assertProjectDoesNotExists(final BusinessLogic business, final long newProjectId) throws UnableToLoadProjectException {
