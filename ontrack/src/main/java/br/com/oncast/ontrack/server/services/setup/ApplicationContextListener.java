@@ -5,8 +5,8 @@ import javax.servlet.ServletContextListener;
 
 import net.zschech.gwt.comet.server.impl.AsyncServlet;
 import br.com.oncast.ontrack.server.business.DefaultProjectExistenceAssurer;
-import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
-import br.com.oncast.ontrack.server.services.authentication.basic.DefaultUserExistenceAssurer;
+import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 
@@ -33,7 +33,7 @@ public class ApplicationContextListener implements ServletContextListener {
 	 * @param event the servlet context event.
 	 */
 	private void setupBusinessLogic(final ServletContextEvent event) {
-		ServerBusinessLogicLocator.getInstance().getBusinessLogic();
+		ServerServiceProvider.getInstance().getBusinessLogic();
 	}
 
 	/**

@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationRpcService;
-import br.com.oncast.ontrack.server.services.ServerServiceProvider;
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;

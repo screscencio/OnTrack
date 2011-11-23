@@ -14,41 +14,25 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
-public class XMLExporter {
+public class XMLExporterService {
 
 	private final PersistenceService persistanceService;
-	private final XMLWriter exporter;
-
 	private final String version;
-	private boolean isConfigured;
-	private final OutputStream outputStream;
 
-	public XMLExporter(final PersistenceService persistanceService, final OutputStream outputStream) {
+	public XMLExporterService(final PersistenceService persistanceService) {
 		this.persistanceService = persistanceService;
-		this.outputStream = outputStream;
-		exporter = new XMLWriter();
 		version = OntrackMigrationManager.getCurrentVersion();
-		isConfigured = false;
 	}
 
-	public XMLExporter mountXML() {
+	public void export(final OutputStream outputStream) {
 		try {
-			exporter.setUserList(findAllUsers()).setProjectList(findAllProjectsWithActions()).setVersion(version);
-			isConfigured = true;
-			return this;
+			final XMLWriter exporter = new XMLWriter();
+			exporter.setUserList(retrieveAllUsers()).setProjectList(findAllProjectsWithActions()).setVersion(version);
+			exporter.export(outputStream);
 		}
 		catch (final PersistenceException e) {
 			throw new UnableToExportXMLException("Could not mount xml.", e);
 		}
-	}
-
-	public void export() {
-		if (!assureIsConfigured()) throw new RuntimeException("You must mount xml using mountXML method before use this method.");
-		exporter.export(outputStream);
-	}
-
-	private boolean assureIsConfigured() {
-		return isConfigured;
 	}
 
 	private List<ProjectXMLNode> findAllProjectsWithActions() throws PersistenceException {
@@ -62,7 +46,7 @@ public class XMLExporter {
 		return projectList;
 	}
 
-	private List<UserXMLNode> findAllUsers() throws PersistenceException {
+	private List<UserXMLNode> retrieveAllUsers() throws PersistenceException {
 		final List<UserXMLNode> userXMLNodeList = new ArrayList<UserXMLNode>();
 
 		final List<User> users = persistanceService.retrieveAllUsers();

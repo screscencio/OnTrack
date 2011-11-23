@@ -13,7 +13,7 @@ public class DefaultProjectExistenceAssurer {
 	private static final Logger LOGGER = Logger.getLogger(DefaultProjectExistenceAssurer.class);
 
 	public static void verify() {
-		final BusinessLogic businessLogic = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
+		final BusinessLogic businessLogic = ServerServiceProvider.getInstance().getBusinessLogic();
 
 		try {
 			final List<ProjectRepresentation> projectList = businessLogic.retrieveProjectList();
@@ -31,7 +31,7 @@ public class DefaultProjectExistenceAssurer {
 	}
 
 	private static void createDefaultProject() throws UnableToCreateProjectRepresentation {
-		ServerBusinessLogicLocator.getInstance().getBusinessLogic().createProject("Default Project");
+		ServerServiceProvider.getInstance().getBusinessLogic().createProject("Default Project");
 	}
 
 }

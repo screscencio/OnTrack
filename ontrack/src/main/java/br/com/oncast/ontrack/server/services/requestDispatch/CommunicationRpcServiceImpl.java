@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.services.requestDispatch.CommunicationRpcService;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.shared.exceptions.business.BusinessException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
@@ -20,7 +20,7 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 
 	private static final long serialVersionUID = 1L;
 
-	private static final BusinessLogic BUSINESS = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
+	private static final BusinessLogic BUSINESS = ServerServiceProvider.getInstance().getBusinessLogic();
 
 	@Override
 	public void transmitAction(final ModelActionSyncRequest modelActionSyncRequest) throws BusinessException {

@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.oncast.ontrack.server.services.ServerServiceProvider;
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.basic.BasicAutheticator;
-import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporter;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 
 public class XMLExporterServlet extends HttpServlet {
 
+	private static final ServerServiceProvider SERVICE_PROVIDER = ServerServiceProvider.getInstance();
 	private static final long serialVersionUID = 1L;
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy_MM_dd");
 
@@ -39,7 +39,7 @@ public class XMLExporterServlet extends HttpServlet {
 	}
 
 	private void generateAndWriteXMLTo(final HttpServletResponse response) throws IOException {
-		new XMLExporter(ServerServiceProvider.getInstance().getPersistenceService(), response.getOutputStream()).mountXML().export();
+		SERVICE_PROVIDER.getXmlExporterService().export(response.getOutputStream());
 	}
 
 	private void configureResponse(final HttpServletResponse response) throws UnableToLoadProjectException {

@@ -10,7 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import br.com.oncast.ontrack.server.services.ServerServiceProvider;
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 
 public class SessionFilter implements Filter {
 

@@ -1,8 +1,7 @@
-package br.com.oncast.ontrack.server.services.authentication.basic;
+package br.com.oncast.ontrack.server.business;
 
 import org.apache.log4j.Logger;
 
-import br.com.oncast.ontrack.server.services.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;

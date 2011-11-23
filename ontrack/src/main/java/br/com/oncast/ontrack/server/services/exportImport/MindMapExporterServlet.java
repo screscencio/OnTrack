@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.business.ServerBusinessLogicLocator;
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindExporter;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
@@ -19,7 +19,7 @@ public class MindMapExporterServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final BusinessLogic BUSINESS = ServerBusinessLogicLocator.getInstance().getBusinessLogic();
+	private static final BusinessLogic BUSINESS = ServerServiceProvider.getInstance().getBusinessLogic();
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
