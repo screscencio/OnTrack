@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cp='urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets'>
-	
+
 	<ui:style>
 		.rootPanel {
 			position: absolute;
@@ -24,26 +24,31 @@
 			width: 350px;
 			padding-top: 5px;
 			padding-left: 10px;
-			
-            border: none;
-
+			border: none;
 			font-size: small;
-		    font-weight: bold;
-   		}
-   		
-   		.projectSelectionWidget{
-   			margin-top: 50px;
-   		}
+			font-weight: bold;
+		}
+		
+		.projectSelectionWidget {
+			margin-top: 50px;
+		}
 		
 		.welcomeLabel {
 			color: black;
 			text-align: center;
-		    font-size: 28px;
-		    font-weight: lighter;
-		    height: 35px;
-		    text-shadow: 2px 2px 5px #a5a5a5;
+			font-size: 28px;
+			font-weight: lighter;
+			height: 35px;
+			text-shadow: 2px 2px 5px #a5a5a5;
+			
+			cursor: default;
+			user-select: none;
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			-webkit-user-select: none;
+			-o-user-select: none;
 		}
-	
+		
 		.projectSelectionPanel {
 			height: 22px;
 			display: block;
@@ -53,11 +58,12 @@
 		}
 	</ui:style>
 
-	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}" >
-		<g:HTMLPanel ui:field="verticalPanel" styleName="{style.mainPanel}" >
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
+		<g:HTMLPanel ui:field="verticalPanel" styleName="{style.mainPanel}">
 			<g:Label text="Choose a project" styleName="{style.welcomeLabel}" />
 			<g:HTMLPanel styleName="{style.projectSelectionPanel}">
-				<cp:ProjectSelectionWidget ui:field="selectionProject" styleName="{style.projectSelectionWidget}" />
+				<cp:ProjectSelectionWidget ui:field="selectionProject"
+					styleName="{style.projectSelectionWidget}" />
 			</g:HTMLPanel>
 		</g:HTMLPanel>
 	</g:FocusPanel>
