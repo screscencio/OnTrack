@@ -40,7 +40,6 @@ public class ContextLoadingActivity extends AbstractActivity {
 			@Override
 			public void onProjectNotFound() {
 				// TODO Hide 'loading' UI indicator.
-				// FIXME Treat ProjectNotFoundException
 				Window.alert("Error! Could not load project: The requested project was not found.");
 			}
 
@@ -48,7 +47,6 @@ public class ContextLoadingActivity extends AbstractActivity {
 			public void onUnexpectedFailure(final Throwable cause) {
 				// TODO Hide 'loading' UI indicator.
 				// TODO +++Treat communication failure.
-				// FIXME Call the error treatment exception.
 				Window.alert("Error! Could not load project: " + cause.toString());
 				cause.printStackTrace();
 			}

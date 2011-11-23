@@ -26,12 +26,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-// FIXME Refactor widget name
-public class ChangePasswordForm extends Composite implements HasCloseHandlers<ChangePasswordForm> {
+public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget> {
 
-	private static ChangePasswordFormUiBinder uiBinder = GWT.create(ChangePasswordFormUiBinder.class);
+	private static PasswordChangeWidgetUiBinder uiBinder = GWT.create(PasswordChangeWidgetUiBinder.class);
 
-	interface ChangePasswordFormUiBinder extends UiBinder<Widget, ChangePasswordForm> {}
+	interface PasswordChangeWidgetUiBinder extends UiBinder<Widget, PasswordChangeWidget> {}
 
 	@UiField
 	protected PasswordTextBox oldPasswordArea;
@@ -51,7 +50,7 @@ public class ChangePasswordForm extends Composite implements HasCloseHandlers<Ch
 	@UiField
 	protected Button changePasswordButton;
 
-	public ChangePasswordForm() {
+	public PasswordChangeWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -173,7 +172,7 @@ public class ChangePasswordForm extends Composite implements HasCloseHandlers<Ch
 	}
 
 	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<ChangePasswordForm> handler) {
+	public HandlerRegistration addCloseHandler(final CloseHandler<PasswordChangeWidget> handler) {
 		return addHandler(handler, CloseEvent.getType());
 	}
 }

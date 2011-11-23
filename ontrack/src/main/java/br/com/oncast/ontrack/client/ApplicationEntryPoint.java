@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class ApplicationEntryPoint implements EntryPoint {
 
-	// FIXME Extract the default place to somewhere convenient.
 	public static final Place DEFAULT_APP_PLACE = new ProjectSelectionPlace();
 
 	@Override

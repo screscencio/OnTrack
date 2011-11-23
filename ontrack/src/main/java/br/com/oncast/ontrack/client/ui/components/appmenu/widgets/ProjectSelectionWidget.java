@@ -25,13 +25,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+// FIXME Make the pop up behavior optional.
 public class ProjectSelectionWidget extends Composite {
 
 	private static ProjectSelectionWidgetUiBinder uiBinder = GWT.create(ProjectSelectionWidgetUiBinder.class);
 
 	interface ProjectSelectionWidgetUiBinder extends UiBinder<Widget, ProjectSelectionWidget> {}
 
-	// FIXME Extract this menu button and pop up behavior into 2 different components.
+	// FIXME Rodrigo: Extract this label from the component itself just as the PasswordChangeWidget, placing it in the ApplicationMenu.
 	@UiField
 	protected Label projectSwitchingMenuButton;
 

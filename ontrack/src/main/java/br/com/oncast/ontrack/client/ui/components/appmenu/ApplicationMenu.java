@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ChangePasswordForm;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 
 import com.google.gwt.core.client.GWT;
@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-// FIXME Bring the ChangeProjectWidget to this class
 public class ApplicationMenu extends Composite {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
@@ -33,7 +32,7 @@ public class ApplicationMenu extends Composite {
 
 	public ApplicationMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
-		configPopup().link(changePasswordLabel).popup(new ChangePasswordForm()).alignRight(changePasswordLabel).alignBelow(this);
+		configPopup().link(changePasswordLabel).popup(new PasswordChangeWidget()).alignRight(changePasswordLabel).alignBelow(this);
 	}
 
 	@UiHandler("logoutLabel")
