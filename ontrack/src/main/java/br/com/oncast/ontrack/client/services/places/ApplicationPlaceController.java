@@ -29,6 +29,7 @@ public class ApplicationPlaceController {
 
 	public void configure(final AcceptsOneWidget container, final Place defaultAppPlace, final ActivityMapper activityMapper,
 			final PlaceHistoryMapper placeHistoryMapper) {
+
 		if (configured) throw new RuntimeException("The placeController is already configured.");
 		configured = true;
 

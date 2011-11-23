@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.context.ProjectCreationListener;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 import com.google.gwt.core.client.GWT;
@@ -27,6 +27,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 // FIXME Make the pop up behavior optional.
 public class ProjectSelectionWidget extends Composite {
+
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
 	private static ProjectSelectionWidgetUiBinder uiBinder = GWT.create(ProjectSelectionWidgetUiBinder.class);
 
@@ -107,32 +109,12 @@ public class ProjectSelectionWidget extends Composite {
 
 	private void openProject(final ProjectRepresentation projectRepresentation) {
 		final PlanningPlace projectPlanningPlace = new PlanningPlace(projectRepresentation);
-		ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(projectPlanningPlace);
+		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectPlanningPlace);
 	}
 
 	private void createNewProject(final String inputText) {
-		// FIXME Show loading feedback
-		ClientServiceProvider.getInstance().getProjectRepresentationProvider()
-				.createNewProject(inputText, new ProjectCreationListener() {
-
-					@Override
-					public void onProjectCreated(final ProjectRepresentation projectRepresentation) {
-						// FIXME Hide loading feedback
-						openProject(projectRepresentation);
-					}
-
-					@Override
-					public void onProjectCreationFailure() {
-						// FIXME Hide loading feedback
-						// FIXME Treat failure
-					}
-
-					@Override
-					public void onUnexpectedFailure() {
-						// FIXME Hide loading feedback
-						// FIXME Treat failure
-					}
-				});
+		final ProjectCreationPlace projectCreationPlace = new ProjectCreationPlace(inputText);
+		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectCreationPlace);
 	}
 
 	@UiHandler("projectSwitchingMenu")
@@ -142,10 +124,10 @@ public class ProjectSelectionWidget extends Composite {
 	}
 
 	private void registerProjectListChangeListener() {
-		ClientServiceProvider.getInstance().getProjectRepresentationProvider().registerProjectListChangeListener(projectListChangeListener);
+		SERVICE_PROVIDER.getProjectRepresentationProvider().registerProjectListChangeListener(projectListChangeListener);
 	}
 
 	private void unregisterProjectListChangeListener() {
-		ClientServiceProvider.getInstance().getProjectRepresentationProvider().unregisterProjectListChangeListener(projectListChangeListener);
+		SERVICE_PROVIDER.getProjectRepresentationProvider().unregisterProjectListChangeListener(projectListChangeListener);
 	}
 }
