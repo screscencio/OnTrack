@@ -78,8 +78,6 @@ public class ReleasePanel implements Component {
 
 	public void setRelease(final Release release) {
 		this.rootRelease = release;
-
-		releasePanelInteractionHandler.setRootRelease(rootRelease);
 		releasePanelWidget.setRelease(rootRelease);
 	}
 

@@ -1,12 +1,17 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.ChartPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupOpenListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -17,7 +22,6 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -36,6 +40,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		String headerContainerStateImageOpened();
 
 		String headerContainerStateImageClosed();
+
+		String chartPanel();
 	}
 
 	@UiField
@@ -45,7 +51,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Label descriptionLabel;
 
 	@UiField
-	protected ReleaseChartPanel releaseChartPanel;
+	protected Label progressLabel;
 
 	@UiField
 	protected MouseCommandsMenu mouseActionsMenu;
@@ -76,11 +82,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	@UiFactory
-	protected ReleaseChartPanel createProgressChartPanel() {
-		return new ReleaseChartPanel(release);
-	}
-
-	@UiFactory
 	protected MouseCommandsMenu createMouseActionMenu() {
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 		itens.add(new CommandMenuItem("Increase priority", new Command() {
@@ -107,14 +108,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		return new MouseCommandsMenu(itens);
 	}
 
-	@UiHandler("releaseChartPanel")
-	protected void onClick(final ClickEvent e) {
-		releasePanelInteractionHandler.onOpenReleaseBurnUpChart(releaseChartPanel);
-
-		e.preventDefault();
-		e.stopPropagation();
-	}
-
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
 
 	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
@@ -132,6 +125,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private final Release release;
 
 	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
+
+	private ChartPanel chartPanel;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
 			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
@@ -156,6 +151,21 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		updateDescription();
 		updateProgress();
 		setContainerState(true);
+
+		configPopup().link(progressLabel).popup(getChartPanel()).alignRight(progressLabel).alignBelow(progressLabel).onOpen(new PopupOpenListener() {
+			@Override
+			public void onWillOpen() {
+				updateBurnUpChart();
+			}
+		});
+
+	}
+
+	private ChartPanel getChartPanel() {
+		if (chartPanel != null) return chartPanel;
+		chartPanel = new ChartPanel();
+		chartPanel.setStyleName(style.chartPanel());
+		return chartPanel;
 	}
 
 	private ModelWidgetContainerListener createContainerUpdateListener() {
@@ -224,9 +234,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void updateReleaseChartPanel(final String newProgress) {
-		if (newProgress.isEmpty()) releaseChartPanel.setVisible(false);
-		else releaseChartPanel.setVisible(true);
-		releaseChartPanel.setProgress(currentReleaseProgressDescription);
+		if (newProgress.isEmpty()) getChartPanel().hide();
+		progressLabel.setText(currentReleaseProgressDescription);
 	}
 
 	public void setContainerState(final boolean shouldOpen) {
@@ -243,6 +252,25 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		releaseContainer.setVisible(releaseContainer.getWidgetCount() != 0 && shouldOpen);
 
 		isContainerStateOpen = shouldOpen;
+	}
+
+	private void updateBurnUpChart() {
+		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, getReleaseEstimator());
+
+		getChartPanel().setMaxValue(dataProvider.getEffortSum())
+				.setXAxisLineValues(dataProvider.getReleaseDays())
+				.setYAxisLineValues(dataProvider.getAccomplishedEffortsByDate())
+				.setIdealEndDay(dataProvider.getEstimatedEndDay());
+	}
+
+	private ReleaseEstimator getReleaseEstimator() {
+		// XXX Burnup: Locate the root Release in a more direct fashion.
+
+		Release r = getRelease();
+		while (r.getParent() != null)
+			r = r.getParent();
+
+		return new ReleaseEstimator(r);
 	}
 
 	public Release getRelease() {

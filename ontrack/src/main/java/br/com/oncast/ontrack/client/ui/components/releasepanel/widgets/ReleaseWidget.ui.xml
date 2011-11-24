@@ -63,6 +63,23 @@
 				overflow: hidden;
 			}
 			
+			.progressLabel {
+				position: absolute;
+	
+                width: 18px;
+                height: 18px;
+                display: block;
+                right: 50px;
+                top: 6px;
+                
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+			}
+
+            .progressLabel:hover {
+				cursor: pointer;
+            }
+            
 			.releaseChartPanel {
 				position: absolute;
 				top: 8px;
@@ -100,6 +117,16 @@
 				padding: 8px;
 				width: 100%;
 			}
+			
+			.chartPanel {
+                width: 350px;
+                height: 210px;
+                z-index: 2;
+			}
+			
+			.chartPanel:FOCUS {
+				outline: 0px;
+			}
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
@@ -107,7 +134,7 @@
 			<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
 			<g:Label ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
 			<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" />
-			<ow:ReleaseChartPanel ui:field="releaseChartPanel" styleName="{style.releaseChartPanel}" />
+			<g:Label styleName="{style.progressLabel}" ui:field="progressLabel" />
 			<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
 		</div>
 		<div ui:field="bodyContainer" class="{style.body}" >

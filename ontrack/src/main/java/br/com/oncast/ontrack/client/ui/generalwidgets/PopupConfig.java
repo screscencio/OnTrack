@@ -28,9 +28,19 @@ public class PopupConfig {
 		public abstract void hide();
 	}
 
+	public interface PopupOpenListener {
+		public abstract void onWillOpen();
+	}
+
+	public interface PopupCloseListener {
+		public abstract void onHasClosed();
+	}
+
 	private Widget widgetToPopup;
 	private Widget alignRight;
 	private Widget alignBelow;
+	private PopupOpenListener openListener;
+	private PopupCloseListener closeListener;
 
 	private PopupConfig() {}
 
@@ -138,6 +148,32 @@ public class PopupConfig {
 		return this;
 	}
 
+	/**
+	 * Defines a listener that will be notified when the popup opens.<br />
+	 * Each popup configuration allows just one open listener.
+	 * @param openListener the open listener to be notified.
+	 * @return the self assistant for in-line call convenience.
+	 * @throws IllegalStateException in case there is already a listener set.
+	 */
+	public PopupConfig onOpen(final PopupOpenListener openListener) {
+		if (this.openListener != null) throw new IllegalStateException("Another open listener already set.");
+		this.openListener = openListener;
+		return this;
+	}
+
+	/**
+	 * Defines a listener that will be notified when the popup closes.<br />
+	 * Each popup configuration allows just one close listener.
+	 * @param closeListener the close listener to be notified.
+	 * @return the self assistant for in-line call convenience.
+	 * @throws IllegalStateException in case there is already a listener set.
+	 */
+	public PopupConfig onClose(final PopupCloseListener closeListener) {
+		if (this.closeListener != null) throw new IllegalStateException("Another close listener already set.");
+		this.closeListener = closeListener;
+		return this;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void addCloseHandlerToPopupWidget(final Widget widgetToPopup) {
 		((HasCloseHandlers) widgetToPopup).addCloseHandler(new CloseHandler() {
@@ -159,9 +195,11 @@ public class PopupConfig {
 			public void onWillHide() {
 				if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).hide();
 				else widgetToPopup.setVisible(false);
+				if (closeListener != null) closeListener.onHasClosed();
 			}
 		});
 
+		if (openListener != null) openListener.onWillOpen();
 		if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).show();
 		else widgetToPopup.setVisible(true);
 
