@@ -254,7 +254,7 @@ public class ScopeTreeItemWidget extends Composite {
 		final boolean declaredEffortLabelVisible = effort.hasDeclared();
 		final boolean hasEffortDifference = inferedEffortVisible && declaredEffortLabelVisible;
 
-		// TODO +++Create a wrapper class for widgets that check before updating DOM elements with same value
+		// FIXME Rodrigo: Create a wrapper class for widgets that check before updating DOM elements with same value
 
 		if (declaredEffortLabel.getStyleName().contains(style.effortLabelStriped()) != hasEffortDifference) {
 			if (hasEffortDifference) declaredEffortLabel.getElement().addClassName(style.effortLabelStriped());
@@ -341,6 +341,7 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 300);
+		// FIXME Rodrigo: Make the popup align with the effort, independently of wether its empty or not.
 		configPopup().alignBelow(declaredEffortLabel).alignRight(declaredEffortLabel).popup(commandsMenu).pop();
 	}
 
