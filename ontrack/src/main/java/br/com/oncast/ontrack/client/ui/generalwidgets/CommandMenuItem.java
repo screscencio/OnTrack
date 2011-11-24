@@ -22,6 +22,13 @@ public class CommandMenuItem implements Comparable<CommandMenuItem> {
 
 	@Override
 	public int compareTo(final CommandMenuItem obj) {
-		return this.text.toLowerCase().compareTo(obj.text.toLowerCase());
+		try {
+			final Integer thisText = new Integer(text);
+			final Integer objText = new Integer(obj.getText());
+			return thisText.compareTo(objText);
+		}
+		catch (final NumberFormatException e) {
+			return this.text.toLowerCase().compareTo(obj.text.toLowerCase());
+		}
 	}
 }
