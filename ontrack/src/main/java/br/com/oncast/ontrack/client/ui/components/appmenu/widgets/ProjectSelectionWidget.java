@@ -78,10 +78,9 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private void registerCloseHandler() {
-		projectSwitchingMenu.setCloseHandler(new br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler() {
-
+		projectSwitchingMenu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
 			@Override
-			public void onClose() {
+			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
 				hide();
 			}
 		});

@@ -10,12 +10,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -28,7 +33,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FiltrableCommandMenu extends Composite {
+public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<FiltrableCommandMenu>, PopupAware {
 
 	private final int maxHeight;
 
@@ -52,8 +57,6 @@ public class FiltrableCommandMenu extends Composite {
 
 	@UiField
 	protected TextBox filterArea;
-
-	private CloseHandler closeHandler;
 
 	private List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 
@@ -95,10 +98,7 @@ public class FiltrableCommandMenu extends Composite {
 		else menu.setItemsAndKeepSelectedItem(itens, "");
 	}
 
-	public void setCloseHandler(final CloseHandler handler) {
-		this.closeHandler = handler;
-	}
-
+	@Override
 	public void show() {
 		this.setVisible(true);
 
@@ -108,6 +108,7 @@ public class FiltrableCommandMenu extends Composite {
 		focus();
 	}
 
+	@Override
 	public void hide() {
 		if (!isPopup) return;
 		if (!this.isVisible()) return;
@@ -115,7 +116,7 @@ public class FiltrableCommandMenu extends Composite {
 		this.setVisible(false);
 		filterArea.setText("");
 
-		if (closeHandler != null) closeHandler.onClose();
+		CloseEvent.fire(this, this);
 	}
 
 	public void focus() {
@@ -261,5 +262,10 @@ public class FiltrableCommandMenu extends Composite {
 
 	public void selectFirstItem() {
 		menu.selectFirstItem();
+	}
+
+	@Override
+	public HandlerRegistration addCloseHandler(final com.google.gwt.event.logical.shared.CloseHandler<FiltrableCommandMenu> handler) {
+		return addHandler(handler, CloseEvent.getType());
 	}
 }

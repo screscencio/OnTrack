@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -22,16 +23,38 @@ import com.google.gwt.user.client.ui.Widget;
  * </pre>
  */
 public class PopupConfig {
+	/**
+	 * Popups that implement this interface are <i>popup-aware</i>. This means that they know how to show and hide themselves.<br />
+	 * The {@link PopupConfig} won't change the popup widget visibility, instead it will ask them to show or hide when appropriate.<br />
+	 * Being <i>popup-aware</i> is particularly interesting if the popup widget is interested on being notified when it must show or hide, sometimes it needs to
+	 * do something on this occasions. Note that if the controller wants to add extra functionality he may use the {@link PopupConfig#onOpen(PopupOpenListener)}
+	 * and {@link PopupConfig#onClose(PopupCloseListener)} instead of making the popup widget <i>popup-aware</i>.
+	 */
 	public interface PopupAware {
+		/**
+		 * Called when the popup config wants the popup widget to show.
+		 */
 		public abstract void show();
 
+		/**
+		 * Called when the popup config wants the popup widget to hide.
+		 */
 		public abstract void hide();
 	}
 
+	/**
+	 * Listener to popup open events. It is designed to be used by the view controller. If you want to let the popup widget itself get notified of such events,
+	 * make it implement the {@link PopupAware} interface.
+	 */
 	public interface PopupOpenListener {
 		public abstract void onWillOpen();
 	}
 
+	/**
+	 * Listener to popup close (hide) events. It is designed to be used by the view controller. If you want to let the popup widget itself get notified of such
+	 * events,
+	 * make it implement the {@link PopupAware} interface.
+	 */
 	public interface PopupCloseListener {
 		public abstract void onHasClosed();
 	}
@@ -41,6 +64,10 @@ public class PopupConfig {
 	private Widget alignBelow;
 	private PopupOpenListener openListener;
 	private PopupCloseListener closeListener;
+
+	private boolean leaveWidgetInDomOnClose = true;
+	private HandlerRegistration closeHandler;
+	private boolean shown;
 
 	private PopupConfig() {}
 
@@ -54,9 +81,7 @@ public class PopupConfig {
 	}
 
 	/**
-	 * Defines the link to the popup. Currently popup may only be triggered by something the user may click on, in the future programatically dispatching popups
-	 * may also be provided.
-	 * TODO+ Allow programatically dispatching popups.
+	 * Defines the link to the popup. Note that there is another way to trigger a popup, take a look at the {@link #pop()} method.
 	 * @param popupLink the widget that will trigger the popup upon click.
 	 * @return the self assistant for in-line call convenience.
 	 * @throws IllegalArgumentException in case the link widget does not implement {@link HasClickHandlers}.
@@ -67,7 +92,7 @@ public class PopupConfig {
 		((HasClickHandlers) popupLink).addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				linkClicked();
+				engagePopup();
 			}
 		});
 
@@ -101,13 +126,6 @@ public class PopupConfig {
 
 		if (!(widgetToPopup instanceof HasCloseHandlers)) throw new IllegalArgumentException(
 				"The popup widget must implement HasCloseHandlers interface.");
-
-		if (!widgetToPopup.isAttached()) {
-			widgetToPopup.setVisible(false);
-			RootPanel.get().add(widgetToPopup);
-		}
-
-		addCloseHandlerToPopupWidget(widgetToPopup);
 
 		this.widgetToPopup = widgetToPopup;
 		DOM.setStyleAttribute(widgetToPopup.getElement(), "position", "absolute");
@@ -174,37 +192,63 @@ public class PopupConfig {
 		return this;
 	}
 
+	/**
+	 * Makes the popup pop up, i.e., shows the popup to the user. Note that you may link the popup to a click event of a widget, take a look at
+	 * {@link #link(Widget)}.
+	 */
+	public void pop() {
+		engagePopup();
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void addCloseHandlerToPopupWidget(final Widget widgetToPopup) {
-		((HasCloseHandlers) widgetToPopup).addCloseHandler(new CloseHandler() {
+	private void addCloseHandlerToPopupWidget() {
+		closeHandler = ((HasCloseHandlers) widgetToPopup).addCloseHandler(new CloseHandler() {
 			@Override
 			public void onClose(final CloseEvent event) {
-				popupWidgetClosed();
+				shown = false;
+				MaskPanel.assureHidden();
 			}
 		});
 	}
 
-	private void popupWidgetClosed() {
-		MaskPanel.assureHidden();
-	}
-
-	private void linkClicked() {
+	private void engagePopup() {
 		if (widgetToPopup == null) throw new IllegalStateException("No popup panel attached to link. Did you forget to call the PopupConfig#popup() method?");
 		MaskPanel.show(new HideHandler() {
 			@Override
 			public void onWillHide() {
-				if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).hide();
-				else widgetToPopup.setVisible(false);
-				if (closeListener != null) closeListener.onHasClosed();
+				disengagePopup();
 			}
 		});
+
+		if (!widgetToPopup.isAttached()) {
+			widgetToPopup.setVisible(false);
+			RootPanel.get().add(widgetToPopup);
+			leaveWidgetInDomOnClose = false;
+		}
+		addCloseHandlerToPopupWidget();
 
 		if (openListener != null) openListener.onWillOpen();
 		if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).show();
 		else widgetToPopup.setVisible(true);
+		shown = true;
 
 		evalHorizontalPosition();
 		evalVerticalPosition();
+	}
+
+	private void disengagePopup() {
+		if (shown) {
+			if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).hide();
+			else widgetToPopup.setVisible(false);
+			shown = false;
+		}
+		if (closeListener != null) closeListener.onHasClosed();
+
+		closeHandler.removeHandler();
+
+		if (!leaveWidgetInDomOnClose) {
+			widgetToPopup.removeFromParent();
+		}
 	}
 
 	private void evalVerticalPosition() {
