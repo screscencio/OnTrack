@@ -342,7 +342,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 300);
 		// FIXME Rodrigo: Make the popup align with the effort, independently of wether its empty or not.
-		configPopup().alignBelow(declaredEffortLabel).alignRight(declaredEffortLabel).popup(commandsMenu).pop();
+		configPopup().alignBelow(effortPanel).alignRight(effortPanel).popup(commandsMenu).pop();
 	}
 
 	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> items, final CustomCommandMenuItemFactory customItemFactory,
