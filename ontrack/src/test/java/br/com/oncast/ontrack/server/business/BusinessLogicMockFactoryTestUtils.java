@@ -101,7 +101,7 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			@Override
 			public ProjectRepresentation persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {
-				return null;
+				return project;
 			}
 
 			@Override

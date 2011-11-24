@@ -18,8 +18,6 @@
 	
 	</ui:style>
 	
-	<g:HTMLPanel ui:field="rootPanel" >
-		<g:Label ui:field="projectSwitchingMenuButton" text="Change Project" styleName="{style.projectSwitchingMenuButton}"  />
-		<cp:FiltrableCommandMenu ui:field="projectSwitchingMenu" styleName="{style.projectSwitchingMenu}" />
-	</g:HTMLPanel>
+	<cp:FiltrableCommandMenu ui:field="projectSwitchingMenu" styleName="{style.projectSwitchingMenu}" />
+
 </ui:UiBinder>

@@ -2,7 +2,10 @@ package br.com.oncast.ontrack.client.ui.places.contextloading;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -18,37 +21,36 @@ public class ContextLoadingActivity extends AbstractActivity {
 		this.projectDependentPlace = destinationPlace;
 	}
 
-	// TODO +Show animations and change the view according to the communication state.
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		if (SERVICE_PROVIDER.getContextProviderService().isContextAvailable(projectDependentPlace.getRequestedProjectId())) {
 			SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectDependentPlace);
 		}
 
-		final ContextLoadingView view = new ContextLoadingPanel();
+		final ProjectMessageView view = new ProjectMessagePanel();
 		panel.setWidget(view);
 
-		// TODO Display 'loading' UI indicator.
+		view.setMainMessage("Syncing...");
 		SERVICE_PROVIDER.getContextProviderService().loadProjectContext(projectDependentPlace.getRequestedProjectId(), new ProjectContextLoadCallback() {
 
 			@Override
 			public void onProjectContextLoaded() {
-				// TODO Hide 'loading' UI indicator.
 				SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectDependentPlace);
 			}
 
 			@Override
 			public void onProjectNotFound() {
-				// TODO Hide 'loading' UI indicator.
+				// TODO +++Treat communication failure.
 				Window.alert("Error! Could not load project: The requested project was not found.");
+				SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace());
 			}
 
 			@Override
 			public void onUnexpectedFailure(final Throwable cause) {
-				// TODO Hide 'loading' UI indicator.
 				// TODO +++Treat communication failure.
-				Window.alert("Error! Could not load project: " + cause.toString());
 				cause.printStackTrace();
+				Window.alert("Error! Could not load project: " + cause.toString());
+				Window.Location.reload();
 			}
 		});
 	}

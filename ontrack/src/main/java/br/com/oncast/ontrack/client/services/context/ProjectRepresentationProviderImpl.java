@@ -14,6 +14,8 @@ import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 
+import com.google.gwt.user.client.Window;
+
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
 	private final RequestDispatchService dispatchService;
@@ -45,7 +47,8 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 			@Override
 			public void onFailure(final Throwable caught) {
-				// FIXME Treat fatal error. COuld not load project list...
+				// TODO +++Treat fatal error. COuld not load project list...
+				Window.alert("It was not possible to load the project list.\n Verify your internet connection and try again later.");
 			}
 		});
 	}

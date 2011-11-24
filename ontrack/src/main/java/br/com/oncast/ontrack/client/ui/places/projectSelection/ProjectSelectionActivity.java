@@ -6,14 +6,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ProjectSelectionActivity extends AbstractActivity {
 
-	private final ProjectSelectionView view;
-
-	public ProjectSelectionActivity() {
-		this.view = new ProjectSelectionPanel(this);
-	}
+	public ProjectSelectionActivity() {}
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		final ProjectSelectionView view = new ProjectSelectionPanel();
 		panel.setWidget(view.asWidget());
 	}
 

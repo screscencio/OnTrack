@@ -22,9 +22,25 @@ import com.google.gwt.user.client.ui.Widget;
  * </pre>
  */
 public class PopupConfig {
+	public interface PopupAware {
+		public abstract void show();
+
+		public abstract void hide();
+	}
+
+	public interface PopupOpenListener {
+		public abstract void onWillOpen();
+	}
+
+	public interface PopupCloseListener {
+		public abstract void onHasClosed();
+	}
+
 	private Widget widgetToPopup;
 	private Widget alignRight;
 	private Widget alignBelow;
+	private PopupOpenListener openListener;
+	private PopupCloseListener closeListener;
 
 	private PopupConfig() {}
 
@@ -67,20 +83,24 @@ public class PopupConfig {
 
 	/**
 	 * Defines the widget to popup, i.e., the popup widget itself. The popup widget may be any widget that accepts {@link CloseHandler CloseHandlers} (i.e.,
-	 * implements {@link HasCloseHandlers}). {@link CloseHandler CloseHandlers} are needed to hide the mask panel blocking user input in the main UI. <br />
+	 * implements {@link HasCloseHandlers}). This implementation is needed to hide the mask panel blocking user input in the
+	 * main UI. <br />
+	 * The widget may also implement the {@link PopupAware} interface. In this case the popup widget will be asked to show and hide, instead of simply setting
+	 * the visible property to true. This gives the widget the advantage to do actions during show (like cleaning it up) and hiding (like aborting an operation
+	 * that is under process).<br />
 	 * <b>Important:</b> Note that the same instance of the widget will be reused every time, so be sure to prepare it for the next call when it gets closed.<br />
 	 * In the future a factory to popup widgets may be passed instead of a sole instance, therefore removing the need to prepare the widget for the next call.
 	 * TODO+ Make PopupConfig accept popup widget factories, not just single instances.
 	 * @param widgetToPopup the instance of the widget to popup.
 	 * @return the self assistant for in-line call convenience.
 	 * @throws IllegalStateException in case the popup widget was set more than once.
-	 * @throws IllegalArgumentException in case the provided widget does not implement {@link HasCloseHandlers}.
+	 * @throws IllegalArgumentException in case the provided widget does not implement {@link HasCloseHandlers} nor {@link PopupAware}.
 	 */
 	public PopupConfig popup(final Widget widgetToPopup) {
 		if (this.widgetToPopup != null) throw new IllegalStateException("You cannot set the popup widget twice in a popup configuration.");
 
 		if (!(widgetToPopup instanceof HasCloseHandlers)) throw new IllegalArgumentException(
-				"The popup widget must be able to notify close event (Implement HasCloseHandlers interface).");
+				"The popup widget must implement HasCloseHandlers interface.");
 
 		if (!widgetToPopup.isAttached()) {
 			widgetToPopup.setVisible(false);
@@ -128,6 +148,32 @@ public class PopupConfig {
 		return this;
 	}
 
+	/**
+	 * Defines a listener that will be notified when the popup opens.<br />
+	 * Each popup configuration allows just one open listener.
+	 * @param openListener the open listener to be notified.
+	 * @return the self assistant for in-line call convenience.
+	 * @throws IllegalStateException in case there is already a listener set.
+	 */
+	public PopupConfig onOpen(final PopupOpenListener openListener) {
+		if (this.openListener != null) throw new IllegalStateException("Another open listener already set.");
+		this.openListener = openListener;
+		return this;
+	}
+
+	/**
+	 * Defines a listener that will be notified when the popup closes.<br />
+	 * Each popup configuration allows just one close listener.
+	 * @param closeListener the close listener to be notified.
+	 * @return the self assistant for in-line call convenience.
+	 * @throws IllegalStateException in case there is already a listener set.
+	 */
+	public PopupConfig onClose(final PopupCloseListener closeListener) {
+		if (this.closeListener != null) throw new IllegalStateException("Another close listener already set.");
+		this.closeListener = closeListener;
+		return this;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void addCloseHandlerToPopupWidget(final Widget widgetToPopup) {
 		((HasCloseHandlers) widgetToPopup).addCloseHandler(new CloseHandler() {
@@ -147,10 +193,15 @@ public class PopupConfig {
 		MaskPanel.show(new HideHandler() {
 			@Override
 			public void onWillHide() {
-				widgetToPopup.setVisible(false);
+				if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).hide();
+				else widgetToPopup.setVisible(false);
+				if (closeListener != null) closeListener.onHasClosed();
 			}
 		});
-		widgetToPopup.setVisible(true);
+
+		if (openListener != null) openListener.onWillOpen();
+		if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).show();
+		else widgetToPopup.setVisible(true);
 
 		evalHorizontalPosition();
 		evalVerticalPosition();

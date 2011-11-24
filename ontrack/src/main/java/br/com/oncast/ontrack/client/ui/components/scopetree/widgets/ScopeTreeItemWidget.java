@@ -370,7 +370,7 @@ public class ScopeTreeItemWidget extends Composite {
 	private void showCommandMenu(final List<CommandMenuItem> items, final CustomCommandMenuItemFactory customItemFactory, final String menuPanelStylename,
 			final int maxWidth, final int maxHeight) {
 		final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(customItemFactory, maxWidth, maxHeight);
-		commandsMenu.addCloseHandler(new CloseHandler() {
+		commandsMenu.setCloseHandler(new CloseHandler() {
 
 			@Override
 			public void onClose() {
@@ -383,7 +383,9 @@ public class ScopeTreeItemWidget extends Composite {
 		menuPanel.setStyleName(menuPanelStylename);
 
 		commandsMenu.setItems(items);
-		commandsMenu.show(this);
+		
+		// FIXME Use pop-up infrastructure to show this menu.
+		commandsMenu.show();
 	}
 
 }

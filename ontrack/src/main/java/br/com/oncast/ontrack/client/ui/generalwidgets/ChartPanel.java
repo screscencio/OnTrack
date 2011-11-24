@@ -13,10 +13,15 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.LinePlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker.Symbol;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -24,7 +29,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ChartPanel extends Composite {
+public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel>, PopupAware {
 
 	private static ChartPanelUiBinder uiBinder = GWT.create(ChartPanelUiBinder.class);
 
@@ -36,8 +41,6 @@ public class ChartPanel extends Composite {
 	@UiField
 	protected FocusPanel clickableChartPanel;
 
-	private final WidgetVisibilityAssurer visibilityAssurer;
-
 	private Number maxValue;
 
 	private List<Float> yAxisLineValues;
@@ -48,15 +51,6 @@ public class ChartPanel extends Composite {
 
 	public ChartPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
-
-		MaskPanel.show(new HideHandler() {
-			@Override
-			public void onWillHide() {
-				hide();
-			}
-		});
-
-		visibilityAssurer = new WidgetVisibilityAssurer(clickableChartPanel);
 
 		configureBasicsChart();
 
@@ -83,14 +77,9 @@ public class ChartPanel extends Composite {
 		return this;
 	}
 
-	public void show(final Widget relativeWidget) {
+	@Override
+	public void show() {
 		this.setVisible(true);
-		MaskPanel.show(new HideHandler() {
-			@Override
-			public void onWillHide() {
-				hide();
-			}
-		});
 
 		configureXAxis();
 
@@ -98,14 +87,20 @@ public class ChartPanel extends Composite {
 		createBurnUpLine();
 
 		clickableChartPanel.setFocus(true);
-		visibilityAssurer.assureVisibilityAround(relativeWidget);
 	}
 
+	@Override
+	public HandlerRegistration addCloseHandler(final CloseHandler<ChartPanel> handler) {
+		return addHandler(handler, CloseEvent.getType());
+	}
+
+	@Override
 	public void hide() {
 		if (!this.isVisible()) return;
 
 		this.setVisible(false);
 		chart.removeAllSeries();
+		CloseEvent.fire(this, this);
 	}
 
 	private void createBurnUpLine() {

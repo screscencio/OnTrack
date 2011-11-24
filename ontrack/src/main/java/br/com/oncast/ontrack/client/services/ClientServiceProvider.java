@@ -72,7 +72,6 @@ public class ClientServiceProvider {
 	 */
 	public void configure(final AcceptsOneWidget panel, final Place defaultAppPlace) {
 		getActionSyncService();
-
 		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
 	}

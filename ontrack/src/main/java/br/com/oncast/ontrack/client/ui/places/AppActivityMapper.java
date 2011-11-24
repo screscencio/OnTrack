@@ -6,6 +6,8 @@ import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationActivity;
+import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
@@ -25,7 +27,6 @@ public class AppActivityMapper implements ActivityMapper {
 	// the destination place set or should always have a new instance)
 	@Override
 	public Activity getActivity(final Place place) {
-		// FIXME Test this
 
 		if (place instanceof LoginPlace) return createLoginActivity(((LoginPlace) place).getDestinationPlace());
 		// XXX Auth; Lazy load login activity when login place is received. Remove this.
@@ -35,21 +36,25 @@ public class AppActivityMapper implements ActivityMapper {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
 			final long requestedProjectId = projectDependentPlace.getRequestedProjectId();
 
-			if (requestedProjectId == 0) return createProjectSelectionActivity();
+			if (requestedProjectId <= 0) return createProjectSelectionActivity();
 			if (!services.getContextProviderService().isContextAvailable(requestedProjectId)) return createContextLoadingActivity(projectDependentPlace);
 		}
 
 		if (place instanceof PlanningPlace) return createPlanningActivity((PlanningPlace) place);
 		if (place instanceof ProjectSelectionPlace) return createProjectSelectionActivity();
+		if (place instanceof ProjectCreationPlace) return createProjectCreationPlace((ProjectCreationPlace) place);
 
 		return null;
+	}
+
+	private Activity createProjectCreationPlace(final ProjectCreationPlace place) {
+		return new ProjectCreationActivity(place);
 	}
 
 	private Activity createProjectSelectionActivity() {
 		return new ProjectSelectionActivity();
 	}
 
-	// TODO Receive a LoginPlace
 	private Activity createLoginActivity(final Place destinationPlace) {
 		return new LoginActivity(destinationPlace);
 	}
