@@ -89,6 +89,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	private void updateProjectMenuItens(final Set<ProjectRepresentation> projectRepresentations) {
 		projectSwitchingMenu.setItems(buildUpdateProjectCommandMenuItemList(projectRepresentations));
+		projectSwitchingMenu.focus();
 	}
 
 	private List<CommandMenuItem> buildUpdateProjectCommandMenuItemList(final Set<ProjectRepresentation> projectRepresentations) {
@@ -148,5 +149,9 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	public void hide() {
 		projectSwitchingMenu.hide();
 		CloseEvent.fire(this, this);
+	}
+
+	public void focus() {
+		projectSwitchingMenu.focus();
 	}
 }
