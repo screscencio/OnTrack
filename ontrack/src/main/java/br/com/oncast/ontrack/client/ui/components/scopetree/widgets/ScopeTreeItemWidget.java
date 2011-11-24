@@ -383,8 +383,8 @@ public class ScopeTreeItemWidget extends Composite {
 		menuPanel.setStyleName(menuPanelStylename);
 
 		commandsMenu.setItems(items);
-		
-		// FIXME Use pop-up infrastructure to show this menu.
+
+		// FIXME Rodrigo: Use pop-up infrastructure to show this menu.
 		commandsMenu.show();
 	}
 

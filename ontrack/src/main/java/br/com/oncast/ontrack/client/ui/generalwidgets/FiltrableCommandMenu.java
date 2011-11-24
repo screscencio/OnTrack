@@ -68,7 +68,7 @@ public class FiltrableCommandMenu extends Composite {
 
 	private final boolean isPopup;
 
-	// FIXME Remove this constructor and the argument isPopup.
+	// FIXME Rodrigo: Remove this constructor and the argument isPopup.
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
 		this(customItemFactory, maxWidth, maxHeight, true);
 	}

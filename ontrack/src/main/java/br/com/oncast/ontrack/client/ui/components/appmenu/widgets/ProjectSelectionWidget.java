@@ -61,7 +61,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		}, 700, 400, isPopUp);
 	}
 
-	// FIXME Remove this argument; It is only used to configure FiltrableCommandMenu and should be removed from there.
+	// FIXME Rodrigo: Remove this argument; It is only used to configure FiltrableCommandMenu and should be removed from there.
 	public ProjectSelectionWidget(final boolean isPopUp) {
 		this.isPopUp = isPopUp;
 		initWidget(uiBinder.createAndBindUi(this));
