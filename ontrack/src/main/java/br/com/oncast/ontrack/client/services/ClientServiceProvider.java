@@ -100,7 +100,7 @@ public class ClientServiceProvider {
 	public ContextProviderService getContextProviderService() {
 		if (contextProviderService != null) return contextProviderService;
 		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) getProjectRepresentationProvider(),
-				getRequestDispatchService());
+				getClientIdentificationProvider(), getRequestDispatchService());
 	}
 
 	private RequestDispatchService getRequestDispatchService() {
@@ -126,7 +126,7 @@ public class ClientServiceProvider {
 
 	private ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientServiceImpl(getErrorTreatmentService());
+		return serverPushClientService = new ServerPushClientServiceImpl(getClientIdentificationProvider(), getErrorTreatmentService());
 	}
 
 	private EventBus getEventBus() {
