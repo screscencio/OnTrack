@@ -8,7 +8,6 @@ import java.util.Stack;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
@@ -20,6 +19,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundExceptio
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class EffortInferenceEngineFlow6Test {
 

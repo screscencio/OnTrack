@@ -10,15 +10,18 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectL
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
 // TODO Analyze dividing this class into multiple classes, each doing a specific job.
 public interface BusinessLogic {
 
 	public abstract void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException;
 
-	public abstract Project loadProject(final long projectId) throws UnableToLoadProjectException, ProjectNotFoundException;
+	public abstract Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException, ProjectNotFoundException;
 
 	public abstract ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation;
 
 	public abstract List<ProjectRepresentation> retrieveProjectList() throws UnableToRetrieveProjectListException;
+
+	public Project loadProject(long projectId) throws ProjectNotFoundException, UnableToLoadProjectException;
 }

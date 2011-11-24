@@ -3,6 +3,9 @@ package br.com.oncast.ontrack.utils.assertions;
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -29,5 +32,20 @@ public class AssertTestUtils {
 
 	public static void assertNotEquals(final Object expected, final Object actual) {
 		assertFalse(expected.equals(actual));
+	}
+
+	public static <T> void assertNotContains(final T unexpected, final Collection<T> actual) {
+		assertFalse(actual.contains(unexpected));
+	}
+
+	public static <T> void assertContainsNone(final Collection<T> unexpected, final Collection<T> actual) {
+		for (final T t : unexpected) {
+			assertFalse(actual.contains(t));
+		}
+	}
+
+	public static <T> void assertCollectionEquality(final Collection<T> expected, final Collection<T> actual) {
+		assertEquals(expected.size(), actual.size());
+		assertTrue(actual.containsAll(expected));
 	}
 }

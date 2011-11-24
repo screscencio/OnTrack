@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.mocks;
+package br.com.oncast.ontrack.utils.mocks;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;

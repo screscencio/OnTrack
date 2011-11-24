@@ -1,11 +1,12 @@
-package br.com.oncast.ontrack.server.services.broadcast;
+package br.com.oncast.ontrack.server.services.multicast;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
-public interface BroadcastService {
+public interface MulticastService {
 
-	void broadcastActionSyncRequest(ModelActionSyncRequest modelActionSyncRequest);
+	void multicastActionSyncRequest(ModelActionSyncRequest modelActionSyncRequest);
 
 	void broadcastProjectCreation(ProjectRepresentation projectRepresentation);
+
 }

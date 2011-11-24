@@ -59,7 +59,7 @@ public class ActionSyncServiceTest {
 	}
 
 	@Test
-	public void anActionOriginatedInClientShouldNotBeExecutedAfterBeingReceivedFromServer() {
+	public void anActionOriginatedInClientShouldNotBeExecutedEvenIfReceivedFromServer() {
 		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
@@ -121,7 +121,7 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						projectRepresentation,
 						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
 				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
 			}
 		});
@@ -145,7 +145,7 @@ public class ActionSyncServiceTest {
 			public void onProjectContextLoaded(final ProjectContext context) {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						projectRepresentation, createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
 			}
 		});
 	}
@@ -168,7 +168,7 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(actionSyncServiceTestUtils
 						.getClientIdentificationProviderMock().getClientId(), projectRepresentation,
 						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
 			}
 		});
 	}
@@ -193,7 +193,7 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						otherProjectRepresentation,
 						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
 			}
 		});
 	}
@@ -218,7 +218,7 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						projectRepresentation,
 						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getBroadcastServiceMock().broadcastActionSyncRequest(modelActionSyncRequest);
+				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
 				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
 			}
 		});
@@ -226,7 +226,7 @@ public class ActionSyncServiceTest {
 
 	private void loadProjectContext(final ProjectContextLoadCallback projectContextLoadCallback) {
 		actionSyncServiceTestUtils.getRequestDispatchServiceMock().dispatch(
-				new ProjectContextRequest(projectRepresentation.getId()), new DispatchCallback<ProjectContext>() {
+				new ProjectContextRequest(new UUID(), projectRepresentation.getId()), new DispatchCallback<ProjectContext>() {
 
 					@Override
 					public void onRequestCompletition(final ProjectContext context) {

@@ -5,8 +5,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ScopeTest {
 

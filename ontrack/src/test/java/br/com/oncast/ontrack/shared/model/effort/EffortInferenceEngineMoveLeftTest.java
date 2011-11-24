@@ -6,10 +6,10 @@ import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepE
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class EffortInferenceEngineMoveLeftTest {
 

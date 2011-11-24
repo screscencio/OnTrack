@@ -15,6 +15,7 @@
  */
 package net.zschech.gwt.comet.client.impl;
 
+import net.zschech.gwt.comet.client.ClientIdentification;
 import net.zschech.gwt.comet.client.CometClient;
 import net.zschech.gwt.comet.client.CometListener;
 import net.zschech.gwt.comet.client.SerialMode;
@@ -29,7 +30,7 @@ import com.google.gwt.core.client.GWT;
  */
 public abstract class CometTransport {
 	
-	private static final String CLIENT_ID = "id" + System.currentTimeMillis() + "-" + (Math.random() * 1000000);
+	private static final String CLIENT_ID = ClientIdentification.getClientId();
 	public static final String MODULE_BASE_PARAMETER = "b";
 	public static final String STRONG_NAME_PARAMETER = "p";
 	

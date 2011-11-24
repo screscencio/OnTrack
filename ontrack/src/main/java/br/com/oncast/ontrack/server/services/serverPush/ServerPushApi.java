@@ -6,5 +6,5 @@ interface ServerPushApi {
 
 	void pushEvent(ServerPushEvent serverPushEvent, GwtCometClientConnection client);
 
-	void setServerPushConnectionListener(ServerPushConnectionListener serverPushConnectionListener);
+	void setConnectionListener(InternalConnectionListener connectionListener);
 }

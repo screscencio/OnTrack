@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.utils;
 
-import java.lang.reflect.Method;
 
 public class TestUtils {
 
@@ -16,21 +15,4 @@ public class TestUtils {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T callPrivateMethod(final Object instance, final String methodName, final Object... args) throws Exception {
-		final Method method = instance.getClass().getDeclaredMethod(methodName, getClassesFrom(args));
-		method.setAccessible(true);
-		return (T) method.invoke(instance, args);
-	}
-
-	private static Class<?>[] getClassesFrom(final Object[] args) {
-		if (args.length == 0) return null;
-
-		final Class<?>[] classes = new Class<?>[args.length];
-		for (int i = 0; i < args.length; i++) {
-			classes[i] = args[i].getClass();
-		}
-
-		return classes;
-	}
 }

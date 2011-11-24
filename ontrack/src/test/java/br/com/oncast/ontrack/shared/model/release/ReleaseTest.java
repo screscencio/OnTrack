@@ -12,8 +12,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
-import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
@@ -22,6 +20,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.TestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ReleaseTest {
 

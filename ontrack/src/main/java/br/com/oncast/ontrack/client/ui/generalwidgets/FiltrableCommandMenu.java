@@ -10,11 +10,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -27,7 +33,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FiltrableCommandMenu extends Composite {
+public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<FiltrableCommandMenu>, PopupAware {
 
 	private final int maxHeight;
 
@@ -52,8 +58,6 @@ public class FiltrableCommandMenu extends Composite {
 	@UiField
 	protected TextBox filterArea;
 
-	private CloseHandler closeHandler;
-
 	private List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 
 	private final CustomCommandMenuItemFactory customItemFactory;
@@ -62,7 +66,7 @@ public class FiltrableCommandMenu extends Composite {
 
 		@Override
 		public void run() {
-			updateMenuItens();
+			filterMenuItens();
 		}
 	};
 
@@ -89,28 +93,34 @@ public class FiltrableCommandMenu extends Composite {
 	public void setItems(final List<CommandMenuItem> itens) {
 		Collections.sort(itens);
 		this.itens = itens;
-		menu.setItems(itens);
+		final MenuItem selectedItem = menu.getSelectedItem();
+		if (selectedItem != null) menu.setItemsAndKeepSelectedItem(itens, selectedItem.getText());
+		else menu.setItemsAndKeepSelectedItem(itens, "");
 	}
 
-	public void setCloseHandler(final CloseHandler handler) {
-		this.closeHandler = handler;
-	}
-
+	@Override
 	public void show() {
 		this.setVisible(true);
 
 		menu.show();
 		menu.selectFirstItem();
 		ajustDimentions();
-		filterArea.setFocus(true);
+		focus();
 	}
 
+	@Override
 	public void hide() {
 		if (!isPopup) return;
 		if (!this.isVisible()) return;
-		this.setVisible(false);
 
-		if (closeHandler != null) closeHandler.onClose();
+		this.setVisible(false);
+		filterArea.setText("");
+
+		CloseEvent.fire(this, this);
+	}
+
+	public void focus() {
+		filterArea.setFocus(true);
 	}
 
 	@UiHandler("filterArea")
@@ -146,6 +156,11 @@ public class FiltrableCommandMenu extends Composite {
 		}
 	}
 
+	@UiHandler("focusPanel")
+	protected void handleMouseUpfocusPanel(final MouseUpEvent event) {
+		filterArea.setFocus(true);
+	}
+
 	private void executeSelectedItemCommand() {
 		final MenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return;
@@ -153,16 +168,17 @@ public class FiltrableCommandMenu extends Composite {
 		selectedItem.getCommand().execute();
 	}
 
-	private void updateMenuItens() {
+	private void filterMenuItens() {
 		final String filterText = filterArea.getText().trim();
 
-		final List<CommandMenuItem> filteredItens = filterItens(filterText);
+		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
 		if (!filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText)) filteredItens.add(customItemFactory.createCustomItem(filterText));
 
-		menu.clearItems();
-		menu.setItems(filteredItens);
+		final String oldSelectedItemText = menu.getSelectedItem().getText();
+
+		menu.setItemsAndKeepSelectedItem(filteredItens, oldSelectedItemText);
+
 		ajustDimentions();
-		menu.selectFirstItem();
 	}
 
 	private boolean hasTextMatchInItemList(final List<CommandMenuItem> itens, final String text) {
@@ -172,7 +188,7 @@ public class FiltrableCommandMenu extends Composite {
 	}
 
 	// TODO Cache filtering results and clean them when a new list is set.
-	private List<CommandMenuItem> filterItens(final String filterText) {
+	private List<CommandMenuItem> getFilteredItens(final String filterText) {
 		if (filterText.isEmpty()) return new ArrayList<CommandMenuItem>(itens);
 
 		final String lowerCaseFIlterText = filterText.toLowerCase();
@@ -242,5 +258,14 @@ public class FiltrableCommandMenu extends Composite {
 				hide();
 			}
 		});
+	}
+
+	public void selectFirstItem() {
+		menu.selectFirstItem();
+	}
+
+	@Override
+	public HandlerRegistration addCloseHandler(final com.google.gwt.event.logical.shared.CloseHandler<FiltrableCommandMenu> handler) {
+		return addHandler(handler, CloseEvent.getType());
 	}
 }

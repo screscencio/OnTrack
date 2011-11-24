@@ -18,8 +18,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.actions.ActionMock;
-import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
@@ -40,6 +38,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class PersistenceServiceJpaTest {
 
@@ -63,11 +63,11 @@ public class PersistenceServiceJpaTest {
 
 	@Test
 	public void shouldOnlyReturnActionsAfterAGivenId() throws Exception {
-		persistenceService.persistActions(PROJECT_ID, ActionMock.getActions(), new Date());
+		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.getSomeActions(), new Date());
 
 		final List<UserAction> userActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
 
-		final List<ModelAction> secondWaveOfActions = ActionMock.getActions2();
+		final List<ModelAction> secondWaveOfActions = ActionTestUtils.getActions2();
 		persistenceService.persistActions(PROJECT_ID, secondWaveOfActions, new Date());
 
 		final List<UserAction> actionsReceived = persistenceService.retrieveActionsSince(PROJECT_ID, userActions.get(userActions.size() - 1).getId());

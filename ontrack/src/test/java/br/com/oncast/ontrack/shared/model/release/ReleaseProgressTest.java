@@ -6,11 +6,11 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
-import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ReleaseProgressTest {
 

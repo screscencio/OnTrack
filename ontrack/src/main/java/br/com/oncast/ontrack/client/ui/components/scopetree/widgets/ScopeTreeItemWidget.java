@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
+import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
@@ -10,7 +11,6 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
@@ -31,6 +31,8 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -99,23 +101,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected HTMLPanel menuPanel;
-
-	@UiField
-	@IgnoredByDeepEquality
 	protected FocusPanel focusPanel;
-
-	@IgnoredByDeepEquality
-	private float currentInferedEffort;
-
-	@IgnoredByDeepEquality
-	private boolean currentInferedEffortLabelVisibility;
-
-	@IgnoredByDeepEquality
-	private float currentDeclaredEffort;
-
-	@IgnoredByDeepEquality
-	private boolean currentDeclaredEffortLabelVisibility;
 
 	@IgnoredByDeepEquality
 	private String currentProgress = "";
@@ -140,13 +126,6 @@ public class ScopeTreeItemWidget extends Composite {
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
-		currentDeclaredEffort = -1;
-		currentInferedEffort = -1;
-		currentDeclaredEffortLabelVisibility = false;
-		currentInferedEffortLabelVisibility = false;
-		inferedEffortLabel.setVisible(false);
-		declaredEffortLabel.setVisible(false);
-		effortPanel.setVisible(false);
 		releaseTag.setVisible(false);
 		setScope(scope);
 
@@ -271,34 +250,25 @@ public class ScopeTreeItemWidget extends Composite {
 		final float declaredEffort = effort.getDeclared();
 		final float inferedEffort = effort.getInfered();
 
-		final boolean inferedEffortVisibility = declaredEffort != inferedEffort;
-		final boolean declaredEffortLabelVisibility = effort.hasDeclared();
+		final boolean inferedEffortVisible = declaredEffort != inferedEffort;
+		final boolean declaredEffortLabelVisible = effort.hasDeclared();
+		final boolean hasEffortDifference = inferedEffortVisible && declaredEffortLabelVisible;
 
-		// TODO +++Create a wrapper class for widgets that checks before updating DOM elements with same value
-		final boolean hasAnyVisibleEffort = declaredEffortLabelVisibility || inferedEffortVisibility;
-		if ((currentDeclaredEffortLabelVisibility || currentInferedEffortLabelVisibility) != hasAnyVisibleEffort) {
-			effortPanel.setVisible(hasAnyVisibleEffort);
-		}
-		final boolean hasEffortDifference = inferedEffortVisibility && declaredEffortLabelVisibility;
-		if ((currentDeclaredEffortLabelVisibility && currentInferedEffortLabelVisibility) != hasEffortDifference) {
+		// TODO +++Create a wrapper class for widgets that check before updating DOM elements with same value
+
+		if (declaredEffortLabel.getStyleName().contains(style.effortLabelStriped()) != hasEffortDifference) {
 			if (hasEffortDifference) declaredEffortLabel.getElement().addClassName(style.effortLabelStriped());
 			else declaredEffortLabel.getElement().removeClassName(style.effortLabelStriped());
 		}
-		if (currentDeclaredEffort != declaredEffort) {
-			currentDeclaredEffort = declaredEffort;
-			declaredEffortLabel.setText(ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep");
+
+		final String newDeclaredEffortLabel = declaredEffortLabelVisible ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "";
+		if (!declaredEffortLabel.getText().equals(newDeclaredEffortLabel)) {
+			declaredEffortLabel.setText(newDeclaredEffortLabel);
 		}
-		if (currentDeclaredEffortLabelVisibility != declaredEffortLabelVisibility) {
-			currentDeclaredEffortLabelVisibility = declaredEffortLabelVisibility;
-			declaredEffortLabel.setVisible(declaredEffortLabelVisibility);
-		}
-		if (currentInferedEffort != inferedEffort) {
-			currentInferedEffort = inferedEffort;
-			inferedEffortLabel.setText(ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep");
-		}
-		if (currentInferedEffortLabelVisibility != inferedEffortVisibility) {
-			currentInferedEffortLabelVisibility = inferedEffortVisibility;
-			inferedEffortLabel.setVisible(inferedEffortVisibility);
+
+		final String newInferedEffortLabel = inferedEffortVisible ? ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep" : "";
+		if (!inferedEffortLabel.getText().equals(newInferedEffortLabel)) {
+			inferedEffortLabel.setText(newInferedEffortLabel);
 		}
 	}
 
@@ -344,7 +314,10 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final Release releaseItem : releaseList)
 			items.add(releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription()));
 
-		showCommandMenu(items, releaseCommandMenuItemFactory, style.releaseMenuPanel(), 670, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 670, 300);
+
+		// FIXME Rodrigo: Use pop-up infrastructure to show this menu.
+		commandsMenu.show();
 	}
 
 	public void showProgressMenu(final Set<String> progressDefinitionSet) {
@@ -354,7 +327,10 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String progressDefinition : progressDefinitionSet)
 			items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
-		showCommandMenu(items, progressCommandMenuItemFactory, style.progressMenuPanel(), 400, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 300);
+
+		// FIXME Rodrigo: Use pop-up infrastructure to show this menu.
+		commandsMenu.show();
 	}
 
 	public void showEffortMenu(final List<String> fibonacciScaleForEffort) {
@@ -364,28 +340,22 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String effort : fibonacciScaleForEffort)
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
-		showCommandMenu(items, effortCommandMenuItemFactory, style.effortMenuPanel(), 100, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 300);
+		configPopup().alignBelow(declaredEffortLabel).alignRight(declaredEffortLabel).popup(commandsMenu).pop();
 	}
 
-	private void showCommandMenu(final List<CommandMenuItem> items, final CustomCommandMenuItemFactory customItemFactory, final String menuPanelStylename,
+	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> items, final CustomCommandMenuItemFactory customItemFactory,
 			final int maxWidth, final int maxHeight) {
-		final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(customItemFactory, maxWidth, maxHeight);
-		commandsMenu.setCloseHandler(new CloseHandler() {
-
+		final FiltrableCommandMenu menu = new FiltrableCommandMenu(customItemFactory, maxWidth, maxHeight);
+		menu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
 			@Override
-			public void onClose() {
+			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
 				editionHandler.onEditionMenuClose();
 			}
 		});
 
-		menuPanel.clear();
-		menuPanel.add(commandsMenu);
-		menuPanel.setStyleName(menuPanelStylename);
-
-		commandsMenu.setItems(items);
-		
-		// FIXME Use pop-up infrastructure to show this menu.
-		commandsMenu.show();
+		menu.setItems(items);
+		return menu;
 	}
 
 }

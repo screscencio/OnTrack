@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.mocks.actions;
+package br.com.oncast.ontrack.utils.mocks.actions;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -7,9 +7,9 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentMock;
-import br.com.oncast.ontrack.mocks.ContextProviderServiceMock;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.utils.mocks.ContextProviderServiceMock;
 
 public class ActionExecutionFactoryTestUtil {
 

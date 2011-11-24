@@ -61,7 +61,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		}, 700, 400, isPopUp);
 	}
 
-	// FIXME Remove this argument; It is only used to configure FiltrableCommandMenu and should be removed from there.
+	// FIXME Rodrigo: Remove this argument; It is only used to configure FiltrableCommandMenu and should be removed from there.
 	public ProjectSelectionWidget(final boolean isPopUp) {
 		this.isPopUp = isPopUp;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -78,10 +78,9 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private void registerCloseHandler() {
-		projectSwitchingMenu.setCloseHandler(new br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler() {
-
+		projectSwitchingMenu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
 			@Override
-			public void onClose() {
+			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
 				hide();
 			}
 		});
@@ -89,6 +88,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	private void updateProjectMenuItens(final Set<ProjectRepresentation> projectRepresentations) {
 		projectSwitchingMenu.setItems(buildUpdateProjectCommandMenuItemList(projectRepresentations));
+		projectSwitchingMenu.focus();
 	}
 
 	private List<CommandMenuItem> buildUpdateProjectCommandMenuItemList(final Set<ProjectRepresentation> projectRepresentations) {
@@ -148,5 +148,9 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	public void hide() {
 		projectSwitchingMenu.hide();
 		CloseEvent.fire(this, this);
+	}
+
+	public void focus() {
+		projectSwitchingMenu.focus();
 	}
 }

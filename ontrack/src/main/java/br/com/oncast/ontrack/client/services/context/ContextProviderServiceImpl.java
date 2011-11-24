@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.services.context;
 
+import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
@@ -9,12 +10,15 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextReque
 public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private final ProjectRepresentationProviderImpl projectRepresentationProvider;
+	private final ClientIdentificationProvider clientIdentificationProvider;
 	private final RequestDispatchService requestDispatchService;
 
 	private ProjectContext projectContext;
 
-	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider, final RequestDispatchService requestDispatchService) {
+	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider,
+			final ClientIdentificationProvider clientIdentificationProvider, final RequestDispatchService requestDispatchService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
+		this.clientIdentificationProvider = clientIdentificationProvider;
 		this.requestDispatchService = requestDispatchService;
 	}
 
@@ -36,20 +40,21 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	@Override
 	public void loadProjectContext(final long requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
-		requestDispatchService.dispatch(new ProjectContextRequest(requestedProjectId), new DispatchCallback<ProjectContext>() {
+		requestDispatchService.dispatch(new ProjectContextRequest(clientIdentificationProvider.getClientId(), requestedProjectId),
+				new DispatchCallback<ProjectContext>() {
 
-			@Override
-			public void onRequestCompletition(final ProjectContext projectContext) {
-				setProjectContext(projectContext);
-				projectContextLoadCallback.onProjectContextLoaded();
-			}
+					@Override
+					public void onRequestCompletition(final ProjectContext projectContext) {
+						setProjectContext(projectContext);
+						projectContextLoadCallback.onProjectContextLoaded();
+					}
 
-			@Override
-			public void onFailure(final Throwable cause) {
-				// TODO +++Treat communication failure.
-				if (cause instanceof ProjectNotFoundException) projectContextLoadCallback.onProjectNotFound();
-				else projectContextLoadCallback.onUnexpectedFailure(cause);
-			}
-		});
+					@Override
+					public void onFailure(final Throwable cause) {
+						// TODO +++Treat communication failure.
+						if (cause instanceof ProjectNotFoundException) projectContextLoadCallback.onProjectNotFound();
+						else projectContextLoadCallback.onUnexpectedFailure(cause);
+					}
+				});
 	}
 }

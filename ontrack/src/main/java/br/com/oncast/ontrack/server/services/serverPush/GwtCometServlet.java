@@ -27,19 +27,19 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	private static final long serialVersionUID = 1L;
 
 	private static final Map<String, CometSession> cometSessionMap = new HashMap<String, CometSession>();
-	private static ServerPushConnectionListener serverPushConnectionListener;
+	private static InternalConnectionListener serverPushConnectionListener;
 
 	public GwtCometServlet() {}
 
 	@Override
-	public void setServerPushConnectionListener(final ServerPushConnectionListener serverPushConnectionListener) {
+	public void setConnectionListener(final InternalConnectionListener serverPushConnectionListener) {
 		GwtCometServlet.serverPushConnectionListener = serverPushConnectionListener;
 	}
 
 	@Override
 	public void pushEvent(final ServerPushEvent serverPushEvent, final GwtCometClientConnection client) {
 		try {
-			cometSessionMap.get(client.getSessionId()).enqueue(serverPushEvent);
+			cometSessionMap.get(client.getClientId()).enqueue(serverPushEvent);
 		}
 		catch (final IllegalStateException e) {
 			// Purposefully ignored exception.

@@ -20,7 +20,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
@@ -32,6 +31,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 public class XMLImporterTest {

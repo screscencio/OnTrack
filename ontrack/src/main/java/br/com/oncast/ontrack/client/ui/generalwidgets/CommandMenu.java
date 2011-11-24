@@ -67,6 +67,30 @@ public class CommandMenu extends Composite {
 		}
 	}
 
+	public void setItemsAndKeepSelectedItem(final List<CommandMenuItem> filteredItens, final String oldSelectedItemText) {
+		menu.clearItems();
+		boolean oldItemIsPresent = false;
+
+		for (final CommandMenuItem item : filteredItens) {
+			final MenuItem menuItem = new MenuItem(item.getText(), true, new Command() {
+
+				@Override
+				public void execute() {
+					hide();
+					item.getCommand().execute();
+				}
+			});
+			menu.addItem(menuItem);
+
+			if (oldSelectedItemText.toLowerCase().equals(item.getText().toLowerCase())) {
+				menu.selectItem(menuItem);
+				oldItemIsPresent = true;
+			}
+		}
+
+		if (!oldItemIsPresent) menu.selectFirstItem();
+	}
+
 	public void show() {
 		this.setVisible(true);
 
@@ -114,10 +138,6 @@ public class CommandMenu extends Composite {
 		selectionHandler.onItemSelected();
 	}
 
-	public void setSelectedItem(final MenuItem selectedItem) {
-		menu.selectItem(selectedItem);
-	}
-
 	public void selectItemDown() {
 		menu.moveSelectionDown();
 	}
@@ -137,5 +157,4 @@ public class CommandMenu extends Composite {
 	public void clearItems() {
 		menu.clearItems();
 	}
-
 }

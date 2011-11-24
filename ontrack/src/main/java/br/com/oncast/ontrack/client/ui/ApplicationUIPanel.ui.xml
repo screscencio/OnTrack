@@ -7,6 +7,9 @@
 			height: 100%;
 			margin: 0px auto;
 			padding: 0px;
+
+            background: #dbdce1 url("resources/image/background.jpg") no-repeat center;
+            background-size: 100% 100%;
 		}
 	</ui:style>
 
