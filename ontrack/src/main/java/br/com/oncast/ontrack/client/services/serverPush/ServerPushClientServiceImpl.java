@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
+import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class ServerPushClientServiceImpl implements ServerPushClientService {
@@ -13,8 +14,8 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
 
-	public ServerPushClientServiceImpl(final ErrorTreatmentService errorTreatmentService) {
-		serverPushClient = new GwtCometClient(new ServerPushClientEventListener() {
+	public ServerPushClientServiceImpl(final ClientIdentificationProvider clientIdentificationProvider, final ErrorTreatmentService errorTreatmentService) {
+		serverPushClient = new GwtCometClient(clientIdentificationProvider, new ServerPushClientEventListener() {
 
 			@Override
 			public void onConnected() {}
