@@ -1,3 +1,5 @@
 package br.com.oncast.ontrack.server.services.serverPush;
 
-public interface ServerPushConnection {}
+public interface ServerPushConnection {
+	String getClientId();
+}

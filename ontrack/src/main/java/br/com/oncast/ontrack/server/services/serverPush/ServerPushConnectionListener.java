@@ -1,8 +1,10 @@
 package br.com.oncast.ontrack.server.services.serverPush;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 public interface ServerPushConnectionListener {
 
-	void onClientConnected(ServerPushConnection connection);
+	void onClientConnected(UUID clientId);
 
-	void onClientDisconnected(ServerPushConnection connection);
+	void onClientDisconnected(UUID clientId);
 }

@@ -2,11 +2,19 @@ package br.com.oncast.ontrack.server.services.serverPush;
 
 import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public interface ServerPushServerService {
 
-	void pushEvent(ServerPushEvent serverPushEvent, Set<ServerPushConnection> clients);
+	/**
+	 * Pushes an event to a set of clients, referenced by their clientIds.
+	 * If a clientId does not reference any client connection (ant therefore is invalid) it is ignored.
+	 * 
+	 * @param serverPushEvent the event to be sent.
+	 * @param clients the set of clientIds of the event recipients.
+	 */
+	void pushEvent(ServerPushEvent serverPushEvent, Set<UUID> clients);
 
 	void registerConnectionListener(ServerPushConnectionListener listener);
 }

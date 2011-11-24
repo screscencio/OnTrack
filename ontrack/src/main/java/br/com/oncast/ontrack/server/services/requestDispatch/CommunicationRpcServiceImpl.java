@@ -28,8 +28,8 @@ public class CommunicationRpcServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Project loadProject(final ProjectContextRequest projectContextRequest) throws BusinessException {
-		return BUSINESS.loadProject(projectContextRequest.getRequestedProjectId());
+	public Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws BusinessException {
+		return BUSINESS.loadProjectForClient(projectContextRequest);
 	}
 
 	@Override

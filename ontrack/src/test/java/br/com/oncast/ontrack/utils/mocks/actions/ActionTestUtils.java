@@ -1,9 +1,8 @@
-package br.com.oncast.ontrack.mocks.actions;
+package br.com.oncast.ontrack.utils.mocks.actions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction;
@@ -15,10 +14,11 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class ActionMock {
+public class ActionTestUtils {
 
-	public static List<ModelAction> getActions() {
+	public static List<ModelAction> getSomeActions() {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
 		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(ProjectTestUtils.createProject().getProjectScope().getId(), "1");

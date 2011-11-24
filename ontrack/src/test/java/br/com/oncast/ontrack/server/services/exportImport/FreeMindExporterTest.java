@@ -11,14 +11,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindExporter;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.FreeMindMap;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class FreeMindExporterTest {
 	private static final File PROJECT_MM_FILE = new File("src/test/java/br/com/oncast/ontrack/server/services/exportImport/ProjetoTeste.mm");

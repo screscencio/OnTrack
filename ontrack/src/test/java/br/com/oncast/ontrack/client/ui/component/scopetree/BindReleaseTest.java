@@ -17,9 +17,6 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
-import br.com.oncast.ontrack.mocks.actions.ActionExecutionFactoryTestUtil;
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -28,6 +25,9 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityComparator;
+import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 
 import com.octo.gwt.test.GwtTest;
 

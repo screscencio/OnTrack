@@ -18,7 +18,7 @@ public interface CommunicationRpcService extends RemoteService {
 
 	void transmitAction(ModelActionSyncRequest modelActionSyncRequest) throws BusinessException;
 
-	Project loadProject(ProjectContextRequest projectContextRequest) throws BusinessException;
+	Project loadProjectForClient(ProjectContextRequest projectContextRequest) throws BusinessException;
 
 	ProjectRepresentation createProject(ProjectCreationRequest projectCreationRequest) throws BusinessException;
 

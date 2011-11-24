@@ -6,7 +6,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -18,6 +17,7 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionCont
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityException;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class ReleaseScopeOrderTest {
 

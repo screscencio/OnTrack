@@ -14,7 +14,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -22,6 +21,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class ScopeTreeWidgetActionManagerTest {
 

@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.mocks.models;
+package br.com.oncast.ontrack.utils.mocks.models;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

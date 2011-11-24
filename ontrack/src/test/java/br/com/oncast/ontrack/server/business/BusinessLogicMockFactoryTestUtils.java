@@ -6,11 +6,14 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
+
+import org.mockito.Mockito;
+
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
-import br.com.oncast.ontrack.server.services.broadcast.BroadcastService;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -19,23 +22,24 @@ import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class BusinessLogicMockFactoryTestUtils {
 
-	public static BusinessLogic createWithJpaPersistenceAndCustomBroadcastMock(final BroadcastService broadcastMock) {
-		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), broadcastMock);
+	public static BusinessLogic createWithJpaPersistenceAndCustomBroadcastMock(final MulticastService broadcastMock) {
+		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), broadcastMock, getClientManagerMock());
 	}
 
 	public static BusinessLogic createWithDumbPersistenceMockAndDumbBroadcastMock() {
-		return new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock());
+		return new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock(), getClientManagerMock());
 	}
 
 	public static BusinessLogic createWithDumbNonWritablePersistenceMockAndDumbBroadcastMock() {
-		return new BusinessLogicImpl(getNonWritablePersistenceMock(), getBroadcastMock());
+		return new BusinessLogicImpl(getNonWritablePersistenceMock(), getBroadcastMock(), getClientManagerMock());
 	}
 
 	public static BusinessLogic createWithJpaPersistenceAndDumbBroadcastMock() {
-		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), getBroadcastMock());
+		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), getBroadcastMock(), getClientManagerMock());
 	}
 
 	private static PersistenceService getPersistenceMock() {
@@ -193,13 +197,18 @@ public class BusinessLogicMockFactoryTestUtils {
 		};
 	}
 
-	private static BroadcastService getBroadcastMock() {
-		return new BroadcastService() {
+	private static MulticastService getBroadcastMock() {
+		return new MulticastService() {
 			@Override
-			public void broadcastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {}
+			public void multicastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {}
 
 			@Override
 			public void broadcastProjectCreation(final ProjectRepresentation projectRepresentation) {}
 		};
 	}
+
+	private static ClientManager getClientManagerMock() {
+		return Mockito.mock(ClientManager.class);
+	}
+
 }

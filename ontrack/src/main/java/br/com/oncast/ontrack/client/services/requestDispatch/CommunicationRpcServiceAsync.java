@@ -14,7 +14,7 @@ public interface CommunicationRpcServiceAsync {
 
 	void transmitAction(ModelActionSyncRequest modelActionSyncRequest, AsyncCallback<Void> callback);
 
-	void loadProject(final ProjectContextRequest projectContextRequest, AsyncCallback<Project> callback);
+	void loadProjectForClient(final ProjectContextRequest projectContextRequest, AsyncCallback<Project> callback);
 
 	void createProject(ProjectCreationRequest projectCreationRequest, AsyncCallback<ProjectRepresentation> asyncCallback);
 

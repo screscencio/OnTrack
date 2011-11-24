@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -38,6 +37,7 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class UserActionFactoryMock {
 

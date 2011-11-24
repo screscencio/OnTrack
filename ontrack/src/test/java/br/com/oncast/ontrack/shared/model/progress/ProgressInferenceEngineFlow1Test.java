@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.shared.model.progress;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
@@ -14,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActio
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class ProgressInferenceEngineFlow1Test {
 

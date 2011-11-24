@@ -1,10 +1,11 @@
 package br.com.oncast.ontrack.server.business;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.broadcast.BroadcastService;
-import br.com.oncast.ontrack.server.services.broadcast.BroadcastServiceImpl;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.server.services.multicast.MulticastServiceImpl;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
@@ -20,7 +21,8 @@ public class ServerServiceProvider {
 	private XMLImporterService xmlImporter;
 
 	private AuthenticationManager authenticationManager;
-	private BroadcastService broadcastService;
+	private MulticastService broadcastService;
+	private ClientManager clientManagerService;
 
 	private SessionManager sessionManager;
 	private ServerPushServerService serverPushServerService;
@@ -37,7 +39,7 @@ public class ServerServiceProvider {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getBroadcastService());
+			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getBroadcastService(), getClientManagerService());
 		}
 	}
 
@@ -66,9 +68,14 @@ public class ServerServiceProvider {
 		}
 	}
 
-	private BroadcastService getBroadcastService() {
+	private MulticastService getBroadcastService() {
 		if (broadcastService != null) return broadcastService;
-		return broadcastService = new BroadcastServiceImpl(getServerPushServerService());
+		return broadcastService = new MulticastServiceImpl(getServerPushServerService(), getClientManagerService());
+	}
+
+	private ClientManager getClientManagerService() {
+		if (clientManagerService != null) return clientManagerService;
+		return clientManagerService = new ClientManager();
 	}
 
 	protected PersistenceService getPersistenceService() {

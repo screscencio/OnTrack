@@ -6,13 +6,13 @@ import org.junit.Test;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
-import br.com.oncast.ontrack.mocks.actions.ActionExecutionFactoryTestUtil;
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 import com.octo.gwt.test.GwtTest;
 

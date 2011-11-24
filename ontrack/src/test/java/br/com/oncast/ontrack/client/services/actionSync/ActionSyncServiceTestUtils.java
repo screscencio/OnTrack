@@ -17,10 +17,9 @@ import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
-import br.com.oncast.ontrack.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
-import br.com.oncast.ontrack.server.services.broadcast.BroadcastService;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -37,6 +36,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class ActionSyncServiceTestUtils {
 
@@ -90,7 +90,7 @@ public class ActionSyncServiceTestUtils {
 	private ServerPushClientServiceMockImpl serverPushClientService;
 	private ActionExecutionService actionExecutionService;
 	private BusinessLogic businessLogic;
-	private BroadcastService broadcastService;
+	private MulticastService multicastService;
 	private ErrorTreatmentService errorTreatmentService;
 
 	public ActionExecutionService getActionExecutionServiceMock() {
@@ -148,17 +148,17 @@ public class ActionSyncServiceTestUtils {
 
 	public BusinessLogic getBusinessLogicMock() {
 		if (businessLogic != null) return businessLogic;
-		return businessLogic = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndCustomBroadcastMock(getBroadcastServiceMock());
+		return businessLogic = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndCustomBroadcastMock(getMulticastServiceMock());
 	}
 
-	public BroadcastService getBroadcastServiceMock() {
-		if (broadcastService != null) return broadcastService;
+	public MulticastService getMulticastServiceMock() {
+		if (multicastService != null) return multicastService;
 
 		final ServerPushClientServiceMockImpl serverPushClientServiceMock = getServerPushClientServiceMock();
-		return broadcastService = new BroadcastService() {
+		return multicastService = new MulticastService() {
 
 			@Override
-			public void broadcastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {
+			public void multicastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {
 				serverPushClientServiceMock.processIncommingEvent(new ServerActionSyncEvent(modelActionSyncRequest));
 			}
 
@@ -187,7 +187,7 @@ public class ActionSyncServiceTestUtils {
 			@Override
 			public void dispatch(final ProjectContextRequest projectContextRequest, final DispatchCallback<ProjectContext> dispatchCallback) {
 				try {
-					final Project project = getBusinessLogicMock().loadProject(projectContextRequest.getRequestedProjectId());
+					final Project project = getBusinessLogicMock().loadProjectForClient(projectContextRequest);
 					dispatchCallback.onRequestCompletition(new ProjectContext(project));
 				}
 				catch (final Exception e) {
