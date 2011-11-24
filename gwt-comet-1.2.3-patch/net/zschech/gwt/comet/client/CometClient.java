@@ -69,11 +69,12 @@ public class CometClient {
 	private int connectionTimeout = 10000;
 	private int reconnectionTimout = 1000;
 	
-	public CometClient(String url, CometListener listener) {
-		this(url, null, listener);
+	public CometClient(String url, String clientId, CometListener listener) {
+		this(url, clientId, null, listener);
 	}
 	
-	public CometClient(String url, CometSerializer serializer, CometListener listener) {
+	public CometClient(String url, String clientId, CometSerializer serializer, CometListener listener) {
+		ClientIdentification.setClientId(clientId);
 		this.url = url;
 		this.serializer = serializer;
 		this.listener = listener;
