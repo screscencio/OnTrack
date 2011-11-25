@@ -158,3 +158,59 @@ background-image: -webkit-gradient(
 .gwt-MenuBarPopup .menuPopupBottomCenterInner {}
 .gwt-MenuBarPopup .menuPopupBottomRight {}
 .gwt-MenuBarPopup .menuPopupBottomRightInner {}
+
+/* Button */
+button {
+    height: 29px;
+    line-height: 29px;
+    margin: 0;
+    vertical-align: bottom;
+}
+
+button {
+    -moz-transition: all 0.218s ease 0s;
+    -moz-user-select: none;
+    border-radius: 2px 2px 2px 2px;
+    cursor: default;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: bold;
+    height: 27px;
+    line-height: 27px;
+    min-width: 46px;
+    padding: 0 8px;
+    text-align: center;
+    
+    background-color: #4D90FE;
+    background-image: -moz-linear-gradient(center top , #4D90FE, #4787ED);
+    border: 1px solid #3079ED;
+    color: #FFFFFF;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+}
+
+button input.[type="submit"] {
+    height: 29px;
+    line-height: 29px;
+    margin: 0;
+    vertical-align: bottom;
+}
+
+button:hover {
+    -moz-transition: all 0s ease 0s;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    
+    background-color: #357AE8;
+    background-image: -moz-linear-gradient(center top , #4D90FE, #357AE8);
+    border: 1px solid #2F5BB7;
+    color: #FFFFFF;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+}
+button:active {
+    box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) inset;
+    border: 1px solid #000;
+}
+
+button:visited {
+    color: #666666;
+}

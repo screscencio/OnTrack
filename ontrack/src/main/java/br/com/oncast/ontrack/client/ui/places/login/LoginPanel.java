@@ -10,7 +10,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -25,12 +24,6 @@ public class LoginPanel extends Composite implements LoginView {
 
 	@UiField
 	protected TextBox emailArea;
-
-	@UiField
-	protected HTMLPanel rootPanel;
-
-	@UiField
-	protected HTMLPanel informationPanel;
 
 	@UiField
 	protected Label messageLabel;
@@ -68,6 +61,7 @@ public class LoginPanel extends Composite implements LoginView {
 	@Override
 	public void setErrorMessage(final String message) {
 		messageLabel.setText(message);
+		messageLabel.setVisible(true);
 	}
 
 	private void doAuthenticate() {

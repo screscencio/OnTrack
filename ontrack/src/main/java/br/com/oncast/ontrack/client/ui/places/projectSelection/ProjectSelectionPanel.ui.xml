@@ -1,7 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:cp='urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets'>
+	xmlns:cp='urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets'
+xmlns:o="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
 	<ui:style>
 		.rootPanel {
@@ -13,43 +14,13 @@
 			z-index: 0;
 		}
 		
-		.mainPanel {
-			position: absolute;
-			top: 200px;
-			height: 400px;
-			right: 50%;
-			margin-right: -175px;
-			margin-top: -90px;
-			width: 350px;
-			padding-top: 5px;
-			padding-left: 10px;
-			border: none;
-			font-size: small;
-			font-weight: bold;
-		}
-		
 		.projectSelectionWidget {
-			margin-top: 50px;
-		}
-		
-		.welcomeLabel {
-			color: black;
-			text-align: center;
-			font-size: 28px;
-			font-weight: lighter;
-			height: 35px;
-			text-shadow: 2px 2px 5px #a5a5a5;
-			
-			cursor: default;
-			user-select: none;
-			-moz-user-select: none;
-			-khtml-user-select: none;
-			-webkit-user-select: none;
-			-o-user-select: none;
 		}
 		
 		.projectSelectionPanel {
 			height: 22px;
+			width: 600px;
+			margin: 0px auto;
 			display: block;
 			margin-top: 2px;
 			margin-bottom: 2px;
@@ -58,13 +29,12 @@
 	</ui:style>
 
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
-		<g:HTMLPanel ui:field="verticalPanel" styleName="{style.mainPanel}">
-			<g:Label text="Choose a project" styleName="{style.welcomeLabel}" />
-			<g:HTMLPanel styleName="{style.projectSelectionPanel}">
-				<cp:ProjectSelectionWidget ui:field="selectionProject"
-					styleName="{style.projectSelectionWidget}" />
-			</g:HTMLPanel>
-		</g:HTMLPanel>
+	   <o:ApplicationWidgetContainer text="Choose a project">
+            <g:HTMLPanel styleName="{style.projectSelectionPanel}">
+                <cp:ProjectSelectionWidget ui:field="selectionProject"
+                    styleName="{style.projectSelectionWidget}" />
+            </g:HTMLPanel>
+	   </o:ApplicationWidgetContainer>
 	</g:FocusPanel>
 
 </ui:UiBinder> 

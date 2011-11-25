@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProjectMessagePanel extends Composite implements ProjectMessageView {
@@ -14,7 +13,7 @@ public class ProjectMessagePanel extends Composite implements ProjectMessageView
 	interface ProjectMessagePanelUiBinder extends UiBinder<Widget, ProjectMessagePanel> {}
 
 	@UiField
-	Label mainMessage;
+	ApplicationWidgetContainer container;
 
 	public ProjectMessagePanel() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -22,6 +21,6 @@ public class ProjectMessagePanel extends Composite implements ProjectMessageView
 
 	@Override
 	public void setMainMessage(final String message) {
-		mainMessage.setText(message);
+		container.setText(message);
 	}
 }

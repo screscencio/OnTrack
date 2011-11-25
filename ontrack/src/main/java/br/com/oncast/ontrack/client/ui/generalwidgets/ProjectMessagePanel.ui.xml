@@ -1,44 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:o="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-	<ui:style>
-		.rootPanel {
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			bottom: 0px;
-		}
-		
-		.centeringPanel {
-			min-width: 100px;
-			max-width: 400px;
-            margin: 0px auto;
-		}
-		
-		.loadingPanel {
-			position: relative;
-			margin-top: 40%;
-			
-			padding: 50px;
-            border: 1px solid #a5a5a5;
-		    -moz-box-shadow: 0px 0px 5px #a5a5a5;
-		    -webkit-box-shadow: 0px 0px 5px #a5a5a5;
-		    box-shadow: 0px 0px 5px #a5a5a5;
-		    background: #fff;
-		    text-align: center;
-		    font-size: 20px;
-		    font-weight: bold;
-   		}
-	</ui:style>
-
-	<g:HTMLPanel styleName="{style.rootPanel}">
-		<g:SimplePanel styleName="{style.centeringPanel}">
-			<g:SimplePanel styleName="{style.loadingPanel}">
-				<g:Label ui:field="mainMessage" />
-			</g:SimplePanel>
-		</g:SimplePanel>
-	</g:HTMLPanel>
-
+    <o:ApplicationWidgetContainer ui:field="container" />
+    
 </ui:UiBinder>

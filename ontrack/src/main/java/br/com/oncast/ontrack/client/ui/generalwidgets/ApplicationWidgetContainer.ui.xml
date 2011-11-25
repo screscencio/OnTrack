@@ -1,0 +1,55 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:style>
+        .rootPanel {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+        }
+        
+        .positioningPanel {
+            position: absolute;
+            top: 120px;
+            left: 0px;
+            right: 0px;
+        }
+        
+        .explanatoryLabel {
+            text-align: center;
+            font-size: 28px;
+            font-weight: lighter;
+            height: 35px;
+            margin-bottom: 30px;
+            max-width: 100%;
+            
+            color: black;
+            text-shadow: 2px 2px 5px #a5a5a5;
+            cursor: default;
+            user-select: none;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -o-user-select: none;
+        }
+        
+        .contentPanel {
+            position: relative;
+            min-width: 100px;
+            max-width: 100%;
+            margin: 0px auto;
+        }
+
+    </ui:style>
+
+    <g:HTMLPanel styleName="{style.rootPanel}">
+        <g:HTMLPanel styleName="{style.positioningPanel}">
+            <g:Label ui:field="messageLabel" styleName="{style.explanatoryLabel}" />
+            <g:FlowPanel ui:field="widgetContainer" styleName="{style.contentPanel}" />
+        </g:HTMLPanel>
+    </g:HTMLPanel>
+
+</ui:UiBinder> 
