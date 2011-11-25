@@ -1,11 +1,13 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.MenuItem;
 
 public class CommandMenuItem implements Comparable<CommandMenuItem> {
 
 	private final Command command;
 	private final String text;
+	private MenuItem menuItem;
 
 	public CommandMenuItem(final String text, final Command command) {
 		this.text = text;
@@ -20,15 +22,13 @@ public class CommandMenuItem implements Comparable<CommandMenuItem> {
 		return text;
 	}
 
+	public MenuItem getMenuItem() {
+		if (menuItem != null) return menuItem;
+		return menuItem = new MenuItem(text, true, command);
+	}
+
 	@Override
 	public int compareTo(final CommandMenuItem obj) {
-		try {
-			final Integer thisText = new Integer(text);
-			final Integer objText = new Integer(obj.getText());
-			return thisText.compareTo(objText);
-		}
-		catch (final NumberFormatException e) {
-			return this.text.toLowerCase().compareTo(obj.text.toLowerCase());
-		}
+		return this.text.toLowerCase().compareTo(obj.text.toLowerCase());
 	}
 }

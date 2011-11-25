@@ -2,15 +2,18 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -33,6 +36,8 @@ public class CommandMenu extends Composite {
 
 	private ItemSelectionHandler selectionHandler;
 
+	private final Map<MenuItem, CommandMenuItem> itensMap;
+
 	@UiFactory
 	protected MenuBar createMenuBar() {
 		return new MenuBar(true);
@@ -40,6 +45,7 @@ public class CommandMenu extends Composite {
 
 	public CommandMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
+		itensMap = new HashMap<MenuItem, CommandMenuItem>();
 		menu.setAnimationEnabled(true);
 		menu.setAutoOpen(true);
 
@@ -52,43 +58,13 @@ public class CommandMenu extends Composite {
 		});
 	}
 
-	public void setItems(final List<CommandMenuItem> items) {
+	public void setItens(final List<CommandMenuItem> items) {
 		menu.clearItems();
+		itensMap.clear();
 		for (final CommandMenuItem item : items) {
-			final MenuItem menuItem = new MenuItem(item.getText(), true, new Command() {
-
-				@Override
-				public void execute() {
-					hide();
-					item.getCommand().execute();
-				}
-			});
-			menu.addItem(menuItem);
+			itensMap.put(item.getMenuItem(), item);
+			menu.addItem(item.getMenuItem());
 		}
-	}
-
-	public void setItemsAndKeepSelectedItem(final List<CommandMenuItem> filteredItens, final String oldSelectedItemText) {
-		menu.clearItems();
-		boolean oldItemIsPresent = false;
-
-		for (final CommandMenuItem item : filteredItens) {
-			final MenuItem menuItem = new MenuItem(item.getText(), true, new Command() {
-
-				@Override
-				public void execute() {
-					hide();
-					item.getCommand().execute();
-				}
-			});
-			menu.addItem(menuItem);
-
-			if (oldSelectedItemText.toLowerCase().equals(item.getText().toLowerCase())) {
-				menu.selectItem(menuItem);
-				oldItemIsPresent = true;
-			}
-		}
-
-		if (!oldItemIsPresent) menu.selectFirstItem();
 	}
 
 	public void show() {
@@ -110,6 +86,20 @@ public class CommandMenu extends Composite {
 		hide();
 	}
 
+	@UiHandler("focusPanel")
+	protected void handleClick(final ClickEvent event) {
+		event.preventDefault();
+		event.stopPropagation();
+		hide();
+	}
+
+	@UiHandler("focusPanel")
+	protected void handleDoubleClick(final DoubleClickEvent event) {
+		event.preventDefault();
+		event.stopPropagation();
+		hide();
+	}
+
 	public void addCloseHandler(final CloseHandler closeHandler) {
 		this.closeHandler = closeHandler;
 	}
@@ -118,8 +108,8 @@ public class CommandMenu extends Composite {
 		this.selectionHandler = selectionHandler;
 	}
 
-	public MenuItem getSelectedItem() {
-		return menu.getSelectedItem();
+	public CommandMenuItem getSelectedItem() {
+		return itensMap.get(menu.getSelectedItem());
 	}
 
 	private void notifyItemSelectionHandler() {
@@ -143,7 +133,8 @@ public class CommandMenu extends Composite {
 		menu.setFocusOnHoverEnabled(bool);
 	}
 
-	public void clearItems() {
-		menu.clearItems();
+	public void setSelected(final CommandMenuItem item) {
+		menu.selectItem(item.getMenuItem());
+
 	}
 }

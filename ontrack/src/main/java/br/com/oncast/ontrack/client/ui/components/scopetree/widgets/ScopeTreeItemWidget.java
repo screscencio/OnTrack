@@ -337,7 +337,7 @@ public class ScopeTreeItemWidget extends Composite {
 		configPopup().alignBelow(effortPanel).alignRight(effortPanel).popup(commandsMenu).pop();
 	}
 
-	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> items, final CustomCommandMenuItemFactory customItemFactory,
+	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,
 			final int maxWidth, final int maxHeight) {
 		final FiltrableCommandMenu menu = new FiltrableCommandMenu(customItemFactory, maxWidth, maxHeight);
 		menu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
@@ -347,7 +347,7 @@ public class ScopeTreeItemWidget extends Composite {
 			}
 		});
 
-		menu.setItems(items);
+		menu.setOrderedItens(itens);
 		return menu;
 	}
 
