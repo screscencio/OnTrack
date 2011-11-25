@@ -5,8 +5,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
-import br.com.oncast.ontrack.client.ui.generalwidgets.HideHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,8 +25,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget> {
-
+public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget>, PopupAware {
 	private static PasswordChangeWidgetUiBinder uiBinder = GWT.create(PasswordChangeWidgetUiBinder.class);
 
 	interface PasswordChangeWidgetUiBinder extends UiBinder<Widget, PasswordChangeWidget> {}
@@ -54,22 +52,18 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
+	@Override
 	public void hide() {
 		if (!this.isVisible()) return;
 		this.setVisible(false);
 		CloseEvent.fire(this, this);
 	}
 
+	@Override
 	public void show() {
 		clearFields();
 		this.setVisible(true);
-
-		MaskPanel.show(new HideHandler() {
-			@Override
-			public void onWillHide() {
-				hide();
-			}
-		});
+		oldPasswordArea.setFocus(true);
 	}
 
 	public void focus() {
