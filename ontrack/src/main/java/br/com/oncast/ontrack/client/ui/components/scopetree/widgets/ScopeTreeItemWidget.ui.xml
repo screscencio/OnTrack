@@ -127,8 +127,8 @@
 				<g:HorizontalPanel styleName="{style.scope}" >
 					<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip" />
 					<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
-						<g:Label ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.effortLabelTranslucid}" />
-						<g:Label ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
+						<t:FastLabel ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.effortLabelTranslucid}" />
+						<t:FastLabel ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
 					</g:HTMLPanel>
 				</g:HorizontalPanel>
 				<g:HTMLPanel styleName="{style.releasePanel}" >

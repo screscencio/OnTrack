@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.Sc
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
@@ -81,11 +82,11 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected Label inferedEffortLabel;
+	protected FastLabel inferedEffortLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected Label declaredEffortLabel;
+	protected FastLabel declaredEffortLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -250,29 +251,19 @@ public class ScopeTreeItemWidget extends Composite {
 		final float declaredEffort = effort.getDeclared();
 		final float inferedEffort = effort.getInfered();
 
-		final boolean inferedEffortVisible = declaredEffort != inferedEffort;
-		final boolean declaredEffortLabelVisible = effort.hasDeclared();
-		final boolean hasEffortDifference = inferedEffortVisible && declaredEffortLabelVisible;
+		final boolean inferedEffortDefined = declaredEffort != inferedEffort;
+		final boolean declaredEffortLabelDefined = effort.hasDeclared();
+		final boolean hasEffortDifference = inferedEffortDefined && declaredEffortLabelDefined;
 
-		// FIXME Rodrigo: Create a wrapper class for widgets that check before updating DOM elements with same value
+		if (hasEffortDifference) declaredEffortLabel.addStyleName(style.effortLabelStriped());
+		else declaredEffortLabel.removeStyleName(style.effortLabelStriped());
 
-		if (declaredEffortLabel.getStyleName().contains(style.effortLabelStriped()) != hasEffortDifference) {
-			if (hasEffortDifference) declaredEffortLabel.getElement().addClassName(style.effortLabelStriped());
-			else declaredEffortLabel.getElement().removeClassName(style.effortLabelStriped());
-		}
-
-		final String newDeclaredEffortLabel = declaredEffortLabelVisible ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "";
-		if (!declaredEffortLabel.getText().equals(newDeclaredEffortLabel)) {
-			declaredEffortLabel.setText(newDeclaredEffortLabel);
-		}
-
-		final String newInferedEffortLabel = inferedEffortVisible ? ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep" : "";
-		if (!inferedEffortLabel.getText().equals(newInferedEffortLabel)) {
-			inferedEffortLabel.setText(newInferedEffortLabel);
-		}
+		declaredEffortLabel.setText(declaredEffortLabelDefined ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "");
+		inferedEffortLabel.setText(inferedEffortDefined ? ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep" : "");
 	}
 
 	public void updateReleaseDisplay() {
+		// TODO+++ Consider using FastLabel and other fast components to increase cache encapsulation.
 		final Release release = scope.getRelease();
 
 		if ((currentRelease == null && release == null) || (currentRelease != null && currentRelease.equals(release))) return;
@@ -287,6 +278,7 @@ public class ScopeTreeItemWidget extends Composite {
 	 * Decisions: - [02/08/2011] It was decided to display a percentage result even if some child scope not been estimated (effort = 0) and it is not done.
 	 */
 	private void updateProgressDisplay() {
+		// TODO+++ Consider using FastLabel and other fast components to increase cache encapsulation.
 		final String progress = scope.isLeaf() ? getProgressDescriptionForLeaf() : getProgressDescriptionForNonLeaf();
 
 		if (currentProgress.equals(progress)) return;
