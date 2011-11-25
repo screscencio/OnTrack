@@ -11,4 +11,8 @@ public interface LoginView {
 	public interface Presenter {
 		void onAuthenticationRequest(String username, String password);
 	}
+
+	void disable();
+
+	void enable();
 }

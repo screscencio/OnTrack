@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-// XXX Auth; Review CSS.
 public class LoginPanel extends Composite implements LoginView {
 
 	private static LoginPanelUiBinder uiBinder = GWT.create(LoginPanelUiBinder.class);
@@ -72,6 +71,21 @@ public class LoginPanel extends Composite implements LoginView {
 	}
 
 	private void doAuthenticate() {
+		messageLabel.setVisible(false);
 		presenter.onAuthenticationRequest(emailArea.getText(), passwordArea.getText());
+	}
+
+	@Override
+	public void disable() {
+		emailArea.setEnabled(false);
+		passwordArea.setEnabled(false);
+		loginButton.setEnabled(false);
+	}
+
+	@Override
+	public void enable() {
+		emailArea.setEnabled(true);
+		passwordArea.setEnabled(true);
+		loginButton.setEnabled(true);
 	}
 }
