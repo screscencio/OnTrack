@@ -14,6 +14,8 @@ import com.google.gwt.user.client.ui.Label;
  * </ul>
  */
 public class FastLabel extends Label {
+	// FIXME Rodrigo: Write some unit tests.
+
 	private String text;
 	private final Set<String> styleNames = new HashSet<String>();
 
@@ -45,7 +47,7 @@ public class FastLabel extends Label {
 
 	@Override
 	public void setText(final String text) {
-		if (getText().equals(this.text)) return;
+		if (getText().equals(text)) return;
 		this.text = text;
 		super.setText(text);
 	}
