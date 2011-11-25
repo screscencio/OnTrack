@@ -98,17 +98,15 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
+	protected HTMLPanel releasePanel;
+
+	@UiField
+	@IgnoredByDeepEquality
 	protected Tag releaseTag;
 
 	@UiField
 	@IgnoredByDeepEquality
 	protected FocusPanel focusPanel;
-
-	@IgnoredByDeepEquality
-	private final String currentProgress = "";
-
-	@IgnoredByDeepEquality
-	private Release currentRelease;
 
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
@@ -266,9 +264,6 @@ public class ScopeTreeItemWidget extends Composite {
 		// TODO+++ Consider using FastLabel and other fast components to increase cache encapsulation.
 		final Release release = scope.getRelease();
 
-		if ((currentRelease == null && release == null) || (currentRelease != null && currentRelease.equals(release))) return;
-		currentRelease = release;
-
 		final boolean isReleasePresent = (release != null);
 		releaseTag.setVisible(isReleasePresent);
 		releaseTag.setText(isReleasePresent ? release.getFullDescription() : "");
@@ -302,8 +297,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 670, 300);
 
-		// FIXME Rodrigo: Use pop-up infrastructure to show this menu.
-		commandsMenu.show();
+		configPopup().alignBelow(descriptionLabel).alignRight(releasePanel).popup(commandsMenu).pop();
 	}
 
 	public void showProgressMenu(final Set<String> progressDefinitionSet) {
@@ -315,7 +309,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 300);
 
-		configPopup().alignBelow(effortPanel).alignRight(progressLabel).popup(commandsMenu).pop();
+		configPopup().alignBelow(descriptionLabel).alignRight(progressLabel).popup(commandsMenu).pop();
 	}
 
 	public void showEffortMenu(final List<String> fibonacciScaleForEffort) {
@@ -326,8 +320,7 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 300);
-		configPopup().alignBelow(effortPanel).alignRight(effortPanel).popup(commandsMenu).pop();
-		// FIXME Rodrigo: Make the popup menu alight right with the effort being displayed.
+		configPopup().alignBelow(descriptionLabel).alignRight(effortPanel).popup(commandsMenu).pop();
 	}
 
 	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,

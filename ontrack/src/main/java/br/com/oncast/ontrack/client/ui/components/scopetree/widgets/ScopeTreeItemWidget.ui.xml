@@ -131,7 +131,7 @@
 						<t:FastLabel ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
 					</g:HTMLPanel>
 				</g:HorizontalPanel>
-				<g:HTMLPanel styleName="{style.releasePanel}" >
+				<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}" >
 				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 				</g:HTMLPanel>
 				<t:FastLabel ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />

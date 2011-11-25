@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
 	<ui:style>
 		.tag {
@@ -58,7 +59,7 @@
 			<tbody>
 				<tr>
 					<td class="{style.bgColor} {style.roundedLeft}">
-						<g:Label styleName="{style.tagLabel}" ui:field="tagLabel" />
+						<t:FastLabel styleName="{style.tagLabel}" ui:field="tagLabel" />
 					</td>
 					<td style="background-color: #ffe3e3" class="{style.separator}"></td>
 					<td class="{style.bgColor} {style.roundedRight} {style.clickable}">
