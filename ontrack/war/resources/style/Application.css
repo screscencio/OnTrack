@@ -3,9 +3,8 @@ html,body {
 	height: 100%;
 	margin: 0px auto;
 	padding: 0px;
-	
 	font-family: tahoma, verdana, arial, serif;
-    font-size: 14px;
+	font-size: 14px;
 }
 
 .maskPanel {
@@ -16,41 +15,46 @@ html,body {
 	bottom: 0px;
 	z-index: 0;
 }
-		
+
 .gradAppHeader {
-	background-image: linear-gradient(bottom, rgb(82,80,82) 21%, rgb(94,93,94) 73%);
-	background-image: -o-linear-gradient(bottom, rgb(82,80,82) 21%, rgb(94,93,94) 73%);
-	background-image: -moz-linear-gradient(bottom, rgb(82,80,82) 21%, rgb(94,93,94) 73%);
-	background-image: -webkit-linear-gradient(bottom, rgb(82,80,82) 21%, rgb(94,93,94) 73%);
-	background-image: -ms-linear-gradient(bottom, rgb(82,80,82) 21%, rgb(94,93,94) 73%);
-	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.21, rgb(82,80,82)), color-stop(0.73, rgb(94,93,94)));
+	background-image: linear-gradient(bottom, rgb(82, 80, 82) 21%,
+		rgb(94, 93, 94) 73% );
+	background-image: -o-linear-gradient(bottom, rgb(82, 80, 82) 21%,
+		rgb(94, 93, 94) 73% );
+	background-image: -moz-linear-gradient(bottom, rgb(82, 80, 82) 21%,
+		rgb(94, 93, 94) 73% );
+	background-image: -webkit-linear-gradient(bottom, rgb(82, 80, 82) 21%,
+		rgb(94, 93, 94) 73% );
+	background-image: -ms-linear-gradient(bottom, rgb(82, 80, 82) 21%,
+		rgb(94, 93, 94) 73% );
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.21, rgb(82,
+		80, 82) ), color-stop(0.73, rgb(94, 93, 94) ) );
 }
 
 .gradReleaseWidgetHeader {
-background-image: linear-gradient(bottom, rgb(97,95,97) 21%, rgb(110,110,110) 73%);
-background-image: -o-linear-gradient(bottom, rgb(97,95,97) 21%, rgb(110,110,110) 73%);
-background-image: -moz-linear-gradient(bottom, rgb(97,95,97) 21%, rgb(110,110,110) 73%);
-background-image: -webkit-linear-gradient(bottom, rgb(97,95,97) 21%, rgb(110,110,110) 73%);
-background-image: -ms-linear-gradient(bottom, rgb(97,95,97) 21%, rgb(110,110,110) 73%);
-
-background-image: -webkit-gradient(
-    linear,
-    left bottom,
-    left top,
-    color-stop(0.21, rgb(97,95,97)),
-    color-stop(0.73, rgb(110,110,110))
-);
+	background-image: linear-gradient(bottom, rgb(97, 95, 97) 21%,
+		rgb(110, 110, 110) 73% );
+	background-image: -o-linear-gradient(bottom, rgb(97, 95, 97) 21%,
+		rgb(110, 110, 110) 73% );
+	background-image: -moz-linear-gradient(bottom, rgb(97, 95, 97) 21%,
+		rgb(110, 110, 110) 73% );
+	background-image: -webkit-linear-gradient(bottom, rgb(97, 95, 97) 21%,
+		rgb(110, 110, 110) 73% );
+	background-image: -ms-linear-gradient(bottom, rgb(97, 95, 97) 21%,
+		rgb(110, 110, 110) 73% );
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.21, rgb(97,
+		95, 97) ), color-stop(0.73, rgb(110, 110, 110) ) );
 }
 
 /* Cross browser CSS3-based text-overflow (ie6+, firefox, chrome, opera, safari, etc) */
-.v-ellip, v\:ellip {
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    -moz-binding: url( 'bindings.xml#ellipsis' );
-    white-space: nowrap;
-    overflow: hidden;
-    display: inline-block;
-    max-width: 100%;
+.v-ellip,v\:ellip {
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	-moz-binding: url( 'bindings.xml#ellipsis' );
+	white-space: nowrap;
+	overflow: hidden;
+	display: inline-block;
+	max-width: 100%;
 }
 
 /* Tree */
@@ -106,21 +110,26 @@ background-image: -webkit-gradient(
 }
 
 /* MenuBar */
-.gwt-MenuBar {}
-.gwt-MenuBar-horizontal {}
+.gwt-MenuBar {
+	
+}
+
+.gwt-MenuBar-horizontal {
+	
+}
 
 .gwt-MenuBar-vertical {
 	color: black;
 	background: white;
+	background-color: white;
 	border: none;
-	
 	/* This is being removed because this is causing an unexpected effect when the menu item is bigger then menu bar.
 	  box-shadow: 1px 1px 6px #d9dae1;
 	 -moz-box-shadow: 1px 1px 6px #d9dae1;    
 	 -webkit-box-shadow: 1px 1px 6px #d9dae1; */
 }
 
-.gwt-MenuBar-vertical > table {
+.gwt-MenuBar-vertical>table {
 	width: 100%;
 	border-spacing: 2px;
 }
@@ -129,88 +138,125 @@ background-image: -webkit-gradient(
 	padding: 4px;
 	font-size: 90%;
 	font-weight: normal;
-
 	cursor: pointer;
 	color: #a5a5a5;
+	background: white;
 	background-color: white;
 }
+
 .gwt-MenuBar .gwt-MenuItem-selected {
 	color: white;
 	background-color: #a5a5a5;
 }
-.gwt-MenuBar .gwt-MenuItemSeparator {}
-.gwt-MenuBar .gwt-MenuItemSeparator .menuSeparatorInner {}
-.gwt-MenuBarPopup .menuPopupTopLeft {}
-.gwt-MenuBarPopup .menuPopupTopLeftInner {}
-.gwt-MenuBarPopup .menuPopupTopCenter {}
-.gwt-MenuBarPopup .menuPopupTopCenterInner {}
-.gwt-MenuBarPopup .menuPopupTopRight {}
-.gwt-MenuBarPopup .menuPopupTopRightInner {}
-.gwt-MenuBarPopup .menuPopupMiddleLeft {}
-.gwt-MenuBarPopup .menuPopupMiddleLeftInner {}
-.gwt-MenuBarPopup .menuPopupMiddleCenter {}
-.gwt-MenuBarPopup .menuPopupMiddleCenterInner {}
-.gwt-MenuBarPopup .menuPopupMiddleRight {}
-.gwt-MenuBarPopup .menuPopupMiddleRightInner {}
-.gwt-MenuBarPopup .menuPopupBottomLeft {}
-.gwt-MenuBarPopup .menuPopupBottomLeftInner {}
-.gwt-MenuBarPopup .menuPopupBottomCenter {}
-.gwt-MenuBarPopup .menuPopupBottomCenterInner {}
-.gwt-MenuBarPopup .menuPopupBottomRight {}
-.gwt-MenuBarPopup .menuPopupBottomRightInner {}
+
+.gwt-MenuBar .gwt-MenuItemSeparator {
+	
+}
+
+.gwt-MenuBar .gwt-MenuItemSeparator .menuSeparatorInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupTopLeft {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupTopLeftInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupTopCenter {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupTopCenterInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupTopRight {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupTopRightInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupMiddleLeft {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupMiddleLeftInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupMiddleCenter {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupMiddleCenterInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupMiddleRight {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupMiddleRightInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupBottomLeft {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupBottomLeftInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupBottomCenter {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupBottomCenterInner {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupBottomRight {
+	
+}
+
+.gwt-MenuBarPopup .menuPopupBottomRightInner {
+	
+}
 
 /* Button */
 button {
-    height: 29px;
-    line-height: 29px;
-    margin: 0;
-    vertical-align: bottom;
-}
-
-button {
-    -moz-transition: all 0.218s ease 0s;
-    -moz-user-select: none;
-    border-radius: 2px 2px 2px 2px;
-    cursor: default;
-    display: inline-block;
-    font-size: 11px;
-    font-weight: bold;
-    height: 27px;
-    line-height: 27px;
-    min-width: 46px;
-    padding: 0 8px;
-    text-align: center;
-    
-    background-color: #4D90FE;
-    background-image: -moz-linear-gradient(center top , #4D90FE, #4787ED);
-    border: 1px solid #3079ED;
-    color: #FFFFFF;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
-}
-
-button input.[type="submit"] {
-    height: 29px;
-    line-height: 29px;
-    margin: 0;
-    vertical-align: bottom;
+	margin: 1px;
+	height: 27px;
+	padding: 0 20px;
+	min-width: 60px;
+	text-align: center;
+	font-size: 13px;
+	font-weight: bold;
+	line-height: 27px;
+	font-stretch: ultra-expanded;
+	color: #FFFFFF;
+	border: 1px solid #585e76;
+	background-color: #7d839a;
+	border-radius: 2px 2px 2px 2px;
+	cursor: default;
+	display: inline-block;
 }
 
 button:hover {
-    -moz-transition: all 0s ease 0s;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
-    
-    background-color: #357AE8;
-    background-image: -moz-linear-gradient(center top , #4D90FE, #357AE8);
-    border: 1px solid #2F5BB7;
-    color: #FFFFFF;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-}
-button:active {
-    box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) inset;
-    border: 1px solid #000;
+	background-color: #585e76;
+
+	-moz-box-shadow: 0px 0px 5px #a5a5a5;
+	-webkit-box-shadow: 0px 0px 5px #a5a5a5;
+	box-shadow: 0px 0px 5px #a5a5a5;
+	border: 2px solid #ffffff;
 }
 
-button:visited {
-    color: #666666;
+button:active, button:focus {
+	border: 2px solid #ffffff;
 }

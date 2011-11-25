@@ -6,9 +6,9 @@
 	<ui:style>
 		.contentPanel {
 			position: relative;
-			width: 350px;
+			width: 325px;
 			margin: 0px auto;
-			padding: 40px;
+			padding: 45px;
 			text-align: center;
 			background: #fff;
 			border: 1px solid #a5a5a5;
@@ -18,20 +18,23 @@
 		}
 		
 		.loginLabel {
+			color: gray;
+			
 			text-align: left;
-			margin: 3px;
+			margin-bottom: 4px;
 			font-family: arial, helvetica, sans-serif;
-			font-size: 13px;
+			font-size: 12px;
 			font-style: normal;
 			font-variant: normal;
-			font-weight: bold;
-			height: 13px;
+			font-weight: lighter;
+			height: 12px;
 			line-height: 13px;
 		}
 		
 		.messageLabel {
 			width: 100%;
-			margin: 5px;
+			margin-top: 20px;
+			margin-bottom: -10px;
 
 			color: #cc3c29;
 			text-shadow: 1px 1px 2px #red;
@@ -46,7 +49,9 @@
 		
 		.textArea {
 			width: 100%;
-			padding: 3px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			margin-left: -1px;
 
 			font-weight: normal;
 			outline: none;
@@ -70,7 +75,7 @@
 		.loginButton {
 			width: 100%;
 			height: 35px;
-			margin-top: 5px;
+			margin-top: 10px;
 		}
 		
 		 .loginButton:hover {
