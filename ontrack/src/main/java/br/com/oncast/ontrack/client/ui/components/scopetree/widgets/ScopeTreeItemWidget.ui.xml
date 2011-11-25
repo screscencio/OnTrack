@@ -134,7 +134,7 @@
 				<g:HTMLPanel styleName="{style.releasePanel}" >
 				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
 				</g:HTMLPanel>
-				<g:Label ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
+				<t:FastLabel ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
 			</g:FlowPanel>
 			<g:TextBox ui:field="editionBox" styleName="{style.editionBox}" />
 		</g:DeckPanel>

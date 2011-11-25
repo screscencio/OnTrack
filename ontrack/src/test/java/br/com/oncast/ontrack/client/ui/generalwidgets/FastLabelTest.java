@@ -10,13 +10,13 @@ import com.octo.gwt.test.GwtTest;
 
 public class FastLabelTest extends GwtTest {
 	@Test
-	public void shouldReturnEmptyStringIfNeverSet() {
+	public void shouldReturnEmptyStringIfTextNeverSet() {
 		final FastLabel l = new FastLabel();
 		assertEquals("", l.getText());
 	}
 
 	@Test
-	public void shouldReturnSameSetString() throws Exception {
+	public void shouldReturnSameSetStringToText() throws Exception {
 		final FastLabel l = new FastLabel();
 		l.setText("test text");
 		assertEquals("test text", l.getText());
@@ -28,6 +28,27 @@ public class FastLabelTest extends GwtTest {
 		l.setText("previous test text");
 		l.setText("test text");
 		assertEquals("test text", l.getText());
+	}
+
+	@Test
+	public void shouldReturnEmptyStringIfTitleNeverSet() {
+		final FastLabel l = new FastLabel();
+		assertEquals("", l.getTitle());
+	}
+
+	@Test
+	public void shouldReturnSameSetStringToTitle() throws Exception {
+		final FastLabel l = new FastLabel();
+		l.setTitle("test title");
+		assertEquals("test title", l.getTitle());
+	}
+
+	@Test
+	public void shouldAllowResetingTheTitle() throws Exception {
+		final FastLabel l = new FastLabel();
+		l.setText("previous test title");
+		l.setText("test title");
+		assertEquals("test title", l.getText());
 	}
 
 	@Test

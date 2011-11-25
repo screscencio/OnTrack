@@ -124,6 +124,8 @@ public class PopupConfig {
 	 * @throws IllegalArgumentException in case the provided widget does not implement {@link HasCloseHandlers} nor {@link PopupAware}.
 	 */
 	public PopupConfig popup(final Widget widgetToPopup) {
+		// FIXME Rodrigo: Rename method to 'widget'.
+
 		if (this.widgetToPopup != null) throw new IllegalStateException("You cannot set the popup widget twice in a popup configuration.");
 
 		if (!(widgetToPopup instanceof HasCloseHandlers)) throw new IllegalArgumentException(

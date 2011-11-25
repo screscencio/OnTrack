@@ -10,11 +10,13 @@ import com.google.gwt.user.client.ui.Label;
  * The cached properties currently are:
  * <ul>
  * <li>text</li>
+ * <li>title</li>
  * <li>style name</li>
  * </ul>
  */
 public class FastLabel extends Label {
 	private String text;
+	private String title;
 	private final Set<String> styleNames = new HashSet<String>();
 
 	/**
@@ -55,6 +57,21 @@ public class FastLabel extends Label {
 		if (getText().equals(this.text)) return;
 		this.text = text;
 		super.setText(text, dir);
+	}
+
+	@Override
+	public String getTitle() {
+		if (title != null) return title;
+		String superTitle = super.getTitle();
+		if (superTitle == null) super.setTitle(superTitle = "");
+		return superTitle;
+	}
+
+	@Override
+	public void setTitle(final String title) {
+		if (getText().equals(title)) return;
+		this.title = title;
+		super.setTitle(title);
 	}
 
 	/**

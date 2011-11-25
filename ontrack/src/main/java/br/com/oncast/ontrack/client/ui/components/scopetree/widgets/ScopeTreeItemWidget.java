@@ -90,7 +90,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected Label progressLabel;
+	protected FastLabel progressLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -105,7 +105,7 @@ public class ScopeTreeItemWidget extends Composite {
 	protected FocusPanel focusPanel;
 
 	@IgnoredByDeepEquality
-	private String currentProgress = "";
+	private final String currentProgress = "";
 
 	@IgnoredByDeepEquality
 	private Release currentRelease;
@@ -278,15 +278,9 @@ public class ScopeTreeItemWidget extends Composite {
 	 * Decisions: - [02/08/2011] It was decided to display a percentage result even if some child scope not been estimated (effort = 0) and it is not done.
 	 */
 	private void updateProgressDisplay() {
-		// TODO+++ Consider using FastLabel and other fast components to increase cache encapsulation.
 		final String progress = scope.isLeaf() ? getProgressDescriptionForLeaf() : getProgressDescriptionForNonLeaf();
-
-		if (currentProgress.equals(progress)) return;
-		currentProgress = progress;
-
 		progressLabel.setText(progress);
 		progressLabel.setTitle(progress);
-		progressLabel.setVisible(!progress.isEmpty());
 	}
 
 	private String getProgressDescriptionForLeaf() {
@@ -321,8 +315,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 300);
 
-		// FIXME Rodrigo: Use pop-up infrastructure to show this menu.
-		commandsMenu.show();
+		configPopup().alignBelow(effortPanel).alignRight(progressLabel).popup(commandsMenu).pop();
 	}
 
 	public void showEffortMenu(final List<String> fibonacciScaleForEffort) {
@@ -333,8 +326,8 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 300);
-		// FIXME Rodrigo: Make the popup align with the effort, independently of wether its empty or not.
 		configPopup().alignBelow(effortPanel).alignRight(effortPanel).popup(commandsMenu).pop();
+		// FIXME Rodrigo: Make the popup menu alight right with the effort being displayed.
 	}
 
 	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,
