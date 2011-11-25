@@ -64,6 +64,7 @@ public class PopupConfig {
 	private Widget widgetToPopup;
 	private Widget alignRight;
 	private Widget alignBelow;
+	private int belowOffset;
 	private PopupOpenListener openListener;
 	private PopupCloseListener closeListener;
 
@@ -161,11 +162,27 @@ public class PopupConfig {
 	 * <li>Put popup widget immediately above the reference widget, in case the first rule does not apply;</li>
 	 * <li>Use the closes possible placement to the first rule in case none of the two first apply.</li>
 	 * </ol>
+	 * There are times you want to offset the popup widget a little up or down. In such cases, use the {@link #alignBelow(Widget, int)} method.
 	 * @param widget the reference widget.
 	 * @return the self assistant for in-line call convenience.
 	 */
 	public PopupConfig alignBelow(final Widget widget) {
+		alignBelow(widget, 0);
+		return this;
+	}
+
+	/**
+	 * Defines that the popup widget must be placed below a reference widget with some offset.<br />
+	 * This method follows the same rules of the {@link #alignBelow(Widget)}, only applying some offset to it. Note that the offset will only be applied to the
+	 * first and third rules, the second rule is not affected.
+	 * @param widget the reference widget.
+	 * @param offset the offset to the widget. Use positive numbers to put the popup widget farther from the reference widget and negative to make it closer (in
+	 *            fact, overlapping it).
+	 * @return the self assistant for in-line call convenience.
+	 */
+	public PopupConfig alignBelow(final Widget widget, final int offset) {
 		this.alignBelow = widget;
+		this.belowOffset = offset;
 		return this;
 	}
 
@@ -236,6 +253,7 @@ public class PopupConfig {
 		else widgetToPopup.setVisible(true);
 		shown = true;
 
+		// FIXME Rodrigo: Support the window resize.
 		evalHorizontalPosition();
 		evalVerticalPosition();
 	}
@@ -259,7 +277,7 @@ public class PopupConfig {
 	private void evalVerticalPosition() {
 		if (alignBelow == null) return;
 
-		final int desiredTop = alignBelow.getAbsoluteTop() + alignBelow.getOffsetHeight();
+		final int desiredTop = alignBelow.getAbsoluteTop() + alignBelow.getOffsetHeight() + belowOffset;
 		if (newTopFits(desiredTop)) {
 			DOM.setStyleAttribute(widgetToPopup.getElement(), "top", desiredTop + "px");
 			return;
