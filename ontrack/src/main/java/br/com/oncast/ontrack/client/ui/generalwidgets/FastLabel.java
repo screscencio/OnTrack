@@ -14,8 +14,6 @@ import com.google.gwt.user.client.ui.Label;
  * </ul>
  */
 public class FastLabel extends Label {
-	// FIXME Rodrigo: Write some unit tests.
-
 	private String text;
 	private final Set<String> styleNames = new HashSet<String>();
 
