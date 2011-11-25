@@ -132,7 +132,6 @@ public class PopupConfig {
 				"The popup widget must implement HasCloseHandlers interface.");
 
 		this.widgetToPopup = widgetToPopup;
-		DOM.setStyleAttribute(widgetToPopup.getElement(), "position", "absolute");
 		return this;
 	}
 
@@ -227,6 +226,7 @@ public class PopupConfig {
 		if (!widgetToPopup.isAttached()) {
 			widgetToPopup.setVisible(false);
 			RootPanel.get().add(widgetToPopup);
+			DOM.setStyleAttribute(widgetToPopup.getElement(), "position", "absolute");
 			leaveWidgetInDomOnClose = false;
 		}
 		addCloseHandlerToPopupWidget();
@@ -252,6 +252,7 @@ public class PopupConfig {
 
 		if (!leaveWidgetInDomOnClose) {
 			widgetToPopup.removeFromParent();
+			DOM.setStyleAttribute(widgetToPopup.getElement(), "position", null);
 		}
 	}
 
