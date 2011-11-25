@@ -17,7 +17,7 @@
 			box-shadow: 0px 0px 5px #a5a5a5;
 		}
 		
-		.loginLabel {
+		.descriptionLabel {
 			color: gray;
 			
 			text-align: left;
@@ -31,7 +31,7 @@
 			line-height: 13px;
 		}
 		
-		.messageLabel {
+		.errorLabel {
 			width: 100%;
 			margin-top: 20px;
 			margin-bottom: -10px;
@@ -49,27 +49,9 @@
 		
 		.textArea {
 			width: 100%;
-			padding-top: 3px;
-			padding-bottom: 3px;
 			margin-left: -1px;
-
-			font-weight: normal;
-			outline: none;
-			height: 21px;
+			
 			font-size: 15px;
-            border: 1px solid #a5a5a5;
-
-			-moz-border-radius: 1px;
-			-webkit-border-radius: 1px;
-			-khtml-border-radius: 1px;
-			border-radius: 1px;
-		}
-		
-		.textArea:focus {
-			border: 1px solid gray;
-            -moz-box-shadow: 0px 0px 5px #a5a5a5;
-            -webkit-box-shadow: 0px 0px 5px #a5a5a5;
-            box-shadow: 0px 0px 5px #a5a5a5;
 		}
 		
 		.loginButton {
@@ -77,13 +59,6 @@
 			height: 35px;
 			margin-top: 10px;
 		}
-		
-		 .loginButton:hover {
-            border: 1px solid gray;
-            -moz-box-shadow: 0px 0px 5px #a5a5a5;
-            -webkit-box-shadow: 0px 0px 5px #a5a5a5;
-            box-shadow: 0px 0px 5px #a5a5a5;
-        }
 		
 		.separator {
 			margin-top: 25px;
@@ -93,12 +68,16 @@
 
 	<o:ApplicationWidgetContainer text="Sign in">
 		<g:HTMLPanel styleName="{style.contentPanel}">
-			<g:Label text="E-mail" ui:field="emailLabel" styleName="{style.loginLabel}" />
+			<g:Label text="E-mail" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
 			<g:TextBox ui:field="emailArea" addStyleNames="{style.textArea}" />
+			
 			<div class="{style.separator}" />
-			<g:Label text="Password" ui:field="passwordLabel" styleName="{style.loginLabel}" />
+			
+			<g:Label text="Password" ui:field="passwordLabel" styleName="{style.descriptionLabel}" />
 			<g:PasswordTextBox ui:field="passwordArea" addStyleNames="{style.textArea}" />
-			<g:Label ui:field="messageLabel" styleName="{style.messageLabel}" visible="false" />
+			
+			<g:Label ui:field="messageLabel" styleName="{style.errorLabel}" visible="false" />
+			
 			<div class="{style.separator}" />
 			<g:Button text="LOGIN" ui:field="loginButton" styleName="{style.loginButton}" />
 		</g:HTMLPanel>

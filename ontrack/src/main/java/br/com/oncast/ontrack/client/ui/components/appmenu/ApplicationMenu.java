@@ -36,8 +36,9 @@ public class ApplicationMenu extends Composite {
 
 	public ApplicationMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
-		configPopup().link(changePasswordLabel).popup(new PasswordChangeWidget()).alignRight(changePasswordLabel).alignBelow(this);
-		configPopup().link(projectSwitchingMenuLabel).popup(new ProjectSelectionWidget(true)).alignRight(projectSwitchingMenuLabel).alignBelow(this);
+		configPopup().link(changePasswordLabel).popup(new PasswordChangeWidget()).alignRight(changePasswordLabel).alignBelow(changePasswordLabel);
+		configPopup().link(projectSwitchingMenuLabel).popup(new ProjectSelectionWidget(true)).alignRight(projectSwitchingMenuLabel)
+				.alignBelow(projectSwitchingMenuLabel);
 	}
 
 	@UiHandler("logoutLabel")

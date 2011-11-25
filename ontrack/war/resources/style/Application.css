@@ -254,26 +254,29 @@ button:hover {
 	-moz-box-shadow: 0px 0px 5px #a5a5a5;
 	-webkit-box-shadow: 0px 0px 5px #a5a5a5;
 	box-shadow: 0px 0px 5px #a5a5a5;
-	border: 2px solid #ffffff;
+	border: 1px solid #7d839a;
 }
 
 button:active, button:focus {
-	border: 2px solid #ffffff;
+	border: 1px solid #ffffff;
 }
 
-button[disabled] {
+button[disabled], button[disabled]:hover, input[disabled], input[disabled]:hover {
 	opacity: 0.3;
-	background-color: #7d839a;
+	background-color: gray;
 	box-shadow: 0px 0px 0px;
 }
 
 /* TextArea */
 .gwt-TextBox, .gwt-PasswordTextBox  {
+	height: 21px;
+
 	padding-top: 3px;
     padding-bottom: 3px;
 	font-weight: normal;
 	font-size: 13px;
-
+	
+	outline: none;
 	border: 1px solid #a5a5a5;
 	border-radius: 1px;
 	-moz-border-radius: 1px;
