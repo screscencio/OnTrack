@@ -12,6 +12,6 @@ public class ProjectSelectionActivity extends AbstractActivity {
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		final ProjectSelectionView view = new ProjectSelectionPanel();
 		panel.setWidget(view.asWidget());
+		view.focus();
 	}
-
 }
