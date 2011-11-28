@@ -22,24 +22,28 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 
 			@Override
 			public void onUserAuthenticatedSuccessfully(final User user) {
+				view.enable();
 				SERVICE_PROVIDER.getApplicationPlaceController().goTo(destinationPlace);
 			}
 
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
 				// TODO Improve feedback message.
+				view.enable();
 				view.setErrorMessage("Unexpected error.");
 			}
 
 			@Override
 			public void onIncorrectUserPasswordFailure() {
 				// TODO Improve feedback message.
+				view.enable();
 				view.setErrorMessage("Incorrect password for this user.");
 			}
 
 			@Override
 			public void onIncorrectUserEmail() {
 				// TODO Improve feedback message.
+				view.enable();
 				view.setErrorMessage("No user was not found with this e-mail.");
 			}
 		};
@@ -60,6 +64,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			return;
 		}
 
+		view.disable();
 		// XXX Auth; Verify if the server formats (trims and lowercases, ...) the auth inputs.
 		SERVICE_PROVIDER.getAuthenticationService().authenticate(username, password, authenticationCallback);
 	}

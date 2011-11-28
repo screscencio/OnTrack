@@ -28,7 +28,7 @@ public class MouseCommandsMenu extends Composite {
 	public MouseCommandsMenu(final List<CommandMenuItem> items) {
 		initWidget(uiBinder.createAndBindUi(this));
 		menu.hide();
-		menu.setItems(items);
+		menu.setItens(items);
 		menu.setFocusWhenMouseOver(true);
 		visibilityAssurer = new WidgetVisibilityAssurer(menu);
 	}

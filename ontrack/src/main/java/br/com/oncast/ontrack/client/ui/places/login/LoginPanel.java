@@ -5,18 +5,17 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_EN
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-// XXX Auth; Review CSS.
 public class LoginPanel extends Composite implements LoginView {
 
 	private static LoginPanelUiBinder uiBinder = GWT.create(LoginPanelUiBinder.class);
@@ -25,12 +24,6 @@ public class LoginPanel extends Composite implements LoginView {
 
 	@UiField
 	protected TextBox emailArea;
-
-	@UiField
-	protected HTMLPanel rootPanel;
-
-	@UiField
-	protected HTMLPanel informationPanel;
 
 	@UiField
 	protected Label messageLabel;
@@ -60,6 +53,12 @@ public class LoginPanel extends Composite implements LoginView {
 	}
 
 	@UiHandler("emailArea")
+	protected void onAttach(final AttachEvent event) {
+		if (!event.isAttached()) return;
+		emailArea.setFocus(true);
+	}
+
+	@UiHandler("emailArea")
 	protected void emailAreaOnKeyUp(final KeyUpEvent event) {
 		if (event.getNativeKeyCode() != KEY_ENTER) return;
 		doAuthenticate();
@@ -68,9 +67,25 @@ public class LoginPanel extends Composite implements LoginView {
 	@Override
 	public void setErrorMessage(final String message) {
 		messageLabel.setText(message);
+		messageLabel.setVisible(true);
 	}
 
 	private void doAuthenticate() {
+		messageLabel.setVisible(false);
 		presenter.onAuthenticationRequest(emailArea.getText(), passwordArea.getText());
+	}
+
+	@Override
+	public void disable() {
+		emailArea.setEnabled(false);
+		passwordArea.setEnabled(false);
+		loginButton.setEnabled(false);
+	}
+
+	@Override
+	public void enable() {
+		emailArea.setEnabled(true);
+		passwordArea.setEnabled(true);
+		loginButton.setEnabled(true);
 	}
 }

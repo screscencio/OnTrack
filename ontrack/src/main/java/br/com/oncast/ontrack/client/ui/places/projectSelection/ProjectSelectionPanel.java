@@ -37,4 +37,9 @@ public class ProjectSelectionPanel extends Composite implements ProjectSelection
 	protected void handleMouseUpEvent(final MouseUpEvent event) {
 		selectionProject.focus();
 	}
+
+	@Override
+	public void focus() {
+		selectionProject.focus();
+	}
 }

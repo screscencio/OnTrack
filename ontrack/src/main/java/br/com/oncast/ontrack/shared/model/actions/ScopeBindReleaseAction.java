@@ -25,7 +25,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	private UUID referenceId;
 
 	@ConversionAlias("newReleaseDescription")
-	@Attribute
+	@Attribute(required = false)
 	private String newReleaseDescription;
 
 	@ConversionAlias("subAction")

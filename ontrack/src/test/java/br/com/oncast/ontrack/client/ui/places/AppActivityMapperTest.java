@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
-import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
@@ -122,7 +121,7 @@ public class AppActivityMapperTest extends GwtTest {
 	public void contextAvaliabilityShouldNotBeCheckedWhenPassedPlaceIsNotAProjectDependentPlace() {
 		isLoggedIn = true;
 
-		final LoginPlace projectIndependentPlace = mock(LoginPlace.class);
+		final ProjectSelectionPlace projectIndependentPlace = mock(ProjectSelectionPlace.class);
 
 		appActivityMapper.getActivity(projectIndependentPlace);
 

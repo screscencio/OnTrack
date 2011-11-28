@@ -16,7 +16,6 @@ import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
 import com.octo.gwt.test.GwtTest;
 
 public class ScopeTreeItemWidgetTest extends GwtTest {
@@ -57,79 +56,79 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 	}
 
 	@Test
-	public void noLabelShoudBeVisibleWhenEffortIsNotDefinedNorInfered() {
+	public void noLabelShoudBeDefinedWhenEffortIsNotDefinedNorInfered() {
 		updateDisplays();
 
-		assertNotVisibleDeclaredEffortLabel(parentWidget);
-		assertNotVisibleDeclaredEffortLabel(childAWidget);
-		assertNotVisibleDeclaredEffortLabel(childBWidget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA1Widget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA2Widget);
+		assertNotDefinedDeclaredEffortLabel(parentWidget);
+		assertNotDefinedDeclaredEffortLabel(childAWidget);
+		assertNotDefinedDeclaredEffortLabel(childBWidget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA1Widget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA2Widget);
 
-		assertNotVisibleInferedEffortLabel(parentWidget);
-		assertNotVisibleInferedEffortLabel(childAWidget);
-		assertNotVisibleInferedEffortLabel(childBWidget);
-		assertNotVisibleInferedEffortLabel(grandChildA1Widget);
-		assertNotVisibleInferedEffortLabel(grandChildA2Widget);
+		assertNotDefinedInferedEffortLabel(parentWidget);
+		assertNotDefinedInferedEffortLabel(childAWidget);
+		assertNotDefinedInferedEffortLabel(childBWidget);
+		assertNotDefinedInferedEffortLabel(grandChildA1Widget);
+		assertNotDefinedInferedEffortLabel(grandChildA2Widget);
 	}
 
 	@Test
-	public void declaredEffortLabelShoudBeVisibleAndNotStripedWhenHasDeclaredEffortOnly() {
+	public void declaredEffortLabelShoudBeDefinedAndNotStripedWhenHasDeclaredEffortOnly() {
 		final int effortValue = anyEffortValue();
 		declareEffort(childA, effortValue);
 		updateEfforts();
 		updateDisplays();
 
-		assertNotVisibleDeclaredEffortLabel(parentWidget);
-		assertVisibleDeclaredEffortLabel(childAWidget);
-		assertNotVisibleDeclaredEffortLabel(childBWidget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA1Widget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA2Widget);
+		assertNotDefinedDeclaredEffortLabel(parentWidget);
+		assertDefinedDeclaredEffortLabel(childAWidget);
+		assertNotDefinedDeclaredEffortLabel(childBWidget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA1Widget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA2Widget);
 
 		assertEffortLabelValue(childAWidget.declaredEffortLabel, effortValue);
 		assertNotStriped(childAWidget);
 	}
 
 	@Test
-	public void inferedEffortLabelShouldBeVisibleAndTranslucidWhenAnyParentHasDeclaredEffort() {
+	public void inferedEffortLabelShouldBeDefinedAndTranslucidWhenAnyParentHasDeclaredEffort() {
 		declareEffort(parent, anyEffortValue());
 		updateEfforts();
 		updateDisplays();
 
-		assertNotVisibleInferedEffortLabel(parentWidget);
-		assertVisibleAndTranslucidInferedEffortLabel(childAWidget);
-		assertVisibleAndTranslucidInferedEffortLabel(childBWidget);
-		assertVisibleAndTranslucidInferedEffortLabel(grandChildA1Widget);
-		assertVisibleAndTranslucidInferedEffortLabel(grandChildA2Widget);
+		assertNotDefinedInferedEffortLabel(parentWidget);
+		assertDefinedAndTranslucidInferedEffortLabel(childAWidget);
+		assertDefinedAndTranslucidInferedEffortLabel(childBWidget);
+		assertDefinedAndTranslucidInferedEffortLabel(grandChildA1Widget);
+		assertDefinedAndTranslucidInferedEffortLabel(grandChildA2Widget);
 
-		assertVisibleDeclaredEffortLabel(parentWidget);
-		assertNotVisibleDeclaredEffortLabel(childAWidget);
-		assertNotVisibleDeclaredEffortLabel(childBWidget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA1Widget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA2Widget);
+		assertDefinedDeclaredEffortLabel(parentWidget);
+		assertNotDefinedDeclaredEffortLabel(childAWidget);
+		assertNotDefinedDeclaredEffortLabel(childBWidget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA1Widget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA2Widget);
 	}
 
 	@Test
-	public void inferedEffortLabelShouldBeVisibleAndTranslucidWhenAnyChildHasDeclaredEffort() {
+	public void inferedEffortLabelShouldBeDefinedAndTranslucidWhenAnyChildHasDeclaredEffort() {
 		declareEffort(grandChildA2, anyEffortValue());
 		updateEfforts();
 		updateDisplays();
 
-		assertVisibleAndTranslucidInferedEffortLabel(parentWidget);
-		assertVisibleAndTranslucidInferedEffortLabel(childAWidget);
-		assertNotVisibleInferedEffortLabel(childBWidget);
-		assertNotVisibleInferedEffortLabel(grandChildA1Widget);
-		assertNotVisibleInferedEffortLabel(grandChildA2Widget);
+		assertDefinedAndTranslucidInferedEffortLabel(parentWidget);
+		assertDefinedAndTranslucidInferedEffortLabel(childAWidget);
+		assertNotDefinedInferedEffortLabel(childBWidget);
+		assertNotDefinedInferedEffortLabel(grandChildA1Widget);
+		assertNotDefinedInferedEffortLabel(grandChildA2Widget);
 
-		assertNotVisibleDeclaredEffortLabel(parentWidget);
-		assertNotVisibleDeclaredEffortLabel(childAWidget);
-		assertNotVisibleDeclaredEffortLabel(childBWidget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA1Widget);
-		assertVisibleDeclaredEffortLabel(grandChildA2Widget);
+		assertNotDefinedDeclaredEffortLabel(parentWidget);
+		assertNotDefinedDeclaredEffortLabel(childAWidget);
+		assertNotDefinedDeclaredEffortLabel(childBWidget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA1Widget);
+		assertDefinedDeclaredEffortLabel(grandChildA2Widget);
 	}
 
 	@Test
-	public void inferedEffortLabelShouldNotBeVisibleWhenDeclaredValueHasSameValueOfBottomUpEffort() {
+	public void inferedEffortLabelShouldNotBeDefinedWhenDeclaredValueHasSameValueOfBottomUpEffort() {
 		final float childAEffort = 5;
 		final float childBEffort = 8;
 		final float parentEffort = childAEffort + childBEffort;
@@ -139,21 +138,21 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		updateEfforts();
 		updateDisplays();
 
-		assertNotVisibleInferedEffortLabel(parentWidget);
-		assertNotVisibleInferedEffortLabel(childAWidget);
-		assertNotVisibleInferedEffortLabel(childBWidget);
-		assertVisibleAndTranslucidInferedEffortLabel(grandChildA1Widget);
-		assertVisibleAndTranslucidInferedEffortLabel(grandChildA2Widget);
+		assertNotDefinedInferedEffortLabel(parentWidget);
+		assertNotDefinedInferedEffortLabel(childAWidget);
+		assertNotDefinedInferedEffortLabel(childBWidget);
+		assertDefinedAndTranslucidInferedEffortLabel(grandChildA1Widget);
+		assertDefinedAndTranslucidInferedEffortLabel(grandChildA2Widget);
 
-		assertVisibleDeclaredEffortLabel(parentWidget);
-		assertVisibleDeclaredEffortLabel(childAWidget);
-		assertVisibleDeclaredEffortLabel(childBWidget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA1Widget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA2Widget);
+		assertDefinedDeclaredEffortLabel(parentWidget);
+		assertDefinedDeclaredEffortLabel(childAWidget);
+		assertDefinedDeclaredEffortLabel(childBWidget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA1Widget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA2Widget);
 	}
 
 	@Test
-	public void inferedEffortLabelShouldBeNotVisibleWhenHasDeclaredValueGreaterThanInferedValue() {
+	public void inferedEffortLabelShouldBeNotDefinedWhenHasDeclaredValueGreaterThanInferedValue() {
 		final float childAEffort = 5;
 		final float childBEffort = 8;
 		final float parentDeclaredEffort = childAEffort + childBEffort + 3;
@@ -164,17 +163,17 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		updateEfforts();
 		updateDisplays();
 
-		assertNotVisibleInferedEffortLabel(parentWidget);
-		assertNotVisibleInferedEffortLabel(childAWidget);
-		assertNotVisibleInferedEffortLabel(childBWidget);
-		assertVisibleAndTranslucidInferedEffortLabel(grandChildA1Widget);
-		assertVisibleAndTranslucidInferedEffortLabel(grandChildA2Widget);
+		assertNotDefinedInferedEffortLabel(parentWidget);
+		assertNotDefinedInferedEffortLabel(childAWidget);
+		assertNotDefinedInferedEffortLabel(childBWidget);
+		assertDefinedAndTranslucidInferedEffortLabel(grandChildA1Widget);
+		assertDefinedAndTranslucidInferedEffortLabel(grandChildA2Widget);
 
-		assertVisibleDeclaredEffortLabel(parentWidget);
-		assertVisibleDeclaredEffortLabel(childAWidget);
-		assertVisibleDeclaredEffortLabel(childBWidget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA1Widget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA2Widget);
+		assertDefinedDeclaredEffortLabel(parentWidget);
+		assertDefinedDeclaredEffortLabel(childAWidget);
+		assertDefinedDeclaredEffortLabel(childBWidget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA1Widget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA2Widget);
 
 		assertEffortLabelValue(parentWidget.declaredEffortLabel, parentDeclaredEffort);
 
@@ -182,7 +181,7 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 	}
 
 	@Test
-	public void declaredEffortLabelShouldBeVisibleAndStripedWhenHasDeclaredValueLessThanInferedValue() {
+	public void declaredEffortLabelShouldBeDefinedAndStripedWhenHasDeclaredValueLessThanInferedValue() {
 		final float childAEffort = 5;
 		final float childBEffort = 8;
 		final float parentInferedEffort = childAEffort + childBEffort;
@@ -194,17 +193,17 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		updateEfforts();
 		updateDisplays();
 
-		assertVisibleAndTranslucidInferedEffortLabel(parentWidget);
-		assertNotVisibleInferedEffortLabel(childAWidget);
-		assertNotVisibleInferedEffortLabel(childBWidget);
-		assertVisibleAndTranslucidInferedEffortLabel(grandChildA1Widget);
-		assertVisibleAndTranslucidInferedEffortLabel(grandChildA2Widget);
+		assertDefinedAndTranslucidInferedEffortLabel(parentWidget);
+		assertNotDefinedInferedEffortLabel(childAWidget);
+		assertNotDefinedInferedEffortLabel(childBWidget);
+		assertDefinedAndTranslucidInferedEffortLabel(grandChildA1Widget);
+		assertDefinedAndTranslucidInferedEffortLabel(grandChildA2Widget);
 
-		assertVisibleDeclaredEffortLabel(parentWidget);
-		assertVisibleDeclaredEffortLabel(childAWidget);
-		assertVisibleDeclaredEffortLabel(childBWidget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA1Widget);
-		assertNotVisibleDeclaredEffortLabel(grandChildA2Widget);
+		assertDefinedDeclaredEffortLabel(parentWidget);
+		assertDefinedDeclaredEffortLabel(childAWidget);
+		assertDefinedDeclaredEffortLabel(childBWidget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA1Widget);
+		assertNotDefinedDeclaredEffortLabel(grandChildA2Widget);
 
 		assertEffortLabelValue(parentWidget.declaredEffortLabel, parentDeclaredEffort);
 		assertEffortLabelValue(parentWidget.inferedEffortLabel, parentInferedEffort);
@@ -232,29 +231,29 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		EFFORT_INFERENCE_ENGINE.process(parent);
 	}
 
-	private void assertNotVisibleDeclaredEffortLabel(final ScopeTreeItemWidget widget) {
-		assertNotVisible(widget.declaredEffortLabel);
+	private void assertNotDefinedDeclaredEffortLabel(final ScopeTreeItemWidget widget) {
+		assertNotDefined(widget.declaredEffortLabel);
 	}
 
-	private void assertVisibleDeclaredEffortLabel(final ScopeTreeItemWidget widget) {
-		assertVisible(widget.declaredEffortLabel);
+	private void assertDefinedDeclaredEffortLabel(final ScopeTreeItemWidget widget) {
+		assertDefined(widget.declaredEffortLabel);
 	}
 
-	private void assertVisibleAndTranslucidInferedEffortLabel(final ScopeTreeItemWidget widget) {
-		assertVisible(widget.inferedEffortLabel);
+	private void assertDefinedAndTranslucidInferedEffortLabel(final ScopeTreeItemWidget widget) {
+		assertDefined(widget.inferedEffortLabel);
 		assertTrue(widget.inferedEffortLabel.getElement().getClassName().contains(TRANSLUCID_CLASS_NAME));
 	}
 
-	private void assertNotVisibleInferedEffortLabel(final ScopeTreeItemWidget widget) {
-		assertNotVisible(widget.inferedEffortLabel);
+	private void assertNotDefinedInferedEffortLabel(final ScopeTreeItemWidget widget) {
+		assertNotDefined(widget.inferedEffortLabel);
 	}
 
-	private void assertVisible(final Widget widget) {
-		assertTrue(widget.isVisible());
+	private void assertDefined(final Label label) {
+		assertFalse("".equals(label.getText()));
 	}
 
-	private void assertNotVisible(final Widget widget) {
-		assertFalse(widget.isVisible());
+	private void assertNotDefined(final Label label) {
+		assertEquals("", label.getText());
 	}
 
 	private void assertEffortLabelValue(final Label label, final float effortValue) {

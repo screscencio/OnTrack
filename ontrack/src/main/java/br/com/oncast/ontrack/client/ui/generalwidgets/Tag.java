@@ -18,7 +18,7 @@ public class Tag extends Composite implements HasText {
 	interface ReleaseTagUiBinder extends UiBinder<Widget, Tag> {}
 
 	@UiField
-	protected Label tagLabel;
+	protected FastLabel tagLabel;
 
 	@UiField
 	protected Label closeLabel;
@@ -27,8 +27,23 @@ public class Tag extends Composite implements HasText {
 
 	private ClickHandler clickHandler;
 
+	private Boolean visible;
+
 	public Tag() {
 		initWidget(uiBinder.createAndBindUi(this));
+	}
+
+	@Override
+	public boolean isVisible() {
+		if (visible != null) return visible;
+		return visible = super.isVisible();
+	}
+
+	@Override
+	public void setVisible(final boolean visible) {
+		if (isVisible() == visible) return;
+		this.visible = visible;
+		super.setVisible(visible);
 	}
 
 	@Override
@@ -36,12 +51,20 @@ public class Tag extends Composite implements HasText {
 		return tagLabel.getText();
 	}
 
+	/**
+	 * It is safe to use the {@link #setText(String)} repeatedly. {@link Tag} makes use of the {@link FastLabel} component.
+	 * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+	 */
 	@Override
 	public void setText(final String text) {
 		tagLabel.setText(text);
 		tagLabel.setTitle(text);
 	}
 
+	/**
+	 * It is safe to use the {@link #setTitle(String)} repeatedly. {@link Tag} makes use of the {@link FastLabel} component.
+	 * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
+	 */
 	@Override
 	public void setTitle(final String title) {
 		super.setTitle(title);

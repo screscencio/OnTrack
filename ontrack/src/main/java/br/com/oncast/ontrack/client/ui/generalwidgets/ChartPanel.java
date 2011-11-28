@@ -80,9 +80,7 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 	@Override
 	public void show() {
 		this.setVisible(true);
-
 		configureXAxis();
-
 		createIdealLine();
 		createBurnUpLine();
 

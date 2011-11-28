@@ -28,7 +28,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -90,12 +89,14 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		else show();
 	}
 
-	public void setItems(final List<CommandMenuItem> itens) {
+	public void setItens(final List<CommandMenuItem> itens) {
 		Collections.sort(itens);
+		setOrderedItens(itens);
+	}
+
+	public void setOrderedItens(final List<CommandMenuItem> itens) {
 		this.itens = itens;
-		final MenuItem selectedItem = menu.getSelectedItem();
-		if (selectedItem != null) menu.setItemsAndKeepSelectedItem(itens, selectedItem.getText());
-		else menu.setItemsAndKeepSelectedItem(itens, "");
+		menu.setItens(itens);
 	}
 
 	@Override
@@ -130,6 +131,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		else if (event.getNativeKeyCode() == KEY_ENTER) {
 			filteringTimer.run();
 			executeSelectedItemCommand();
+			hide();
 		}
 		else if (event.getNativeKeyCode() == KEY_DOWN || event.getNativeKeyCode() == KEY_UP) eatEvent(event);
 		else {
@@ -162,7 +164,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	}
 
 	private void executeSelectedItemCommand() {
-		final MenuItem selectedItem = menu.getSelectedItem();
+		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return;
 
 		selectedItem.getCommand().execute();
@@ -174,9 +176,11 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
 		if (!filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText)) filteredItens.add(customItemFactory.createCustomItem(filterText));
 
-		final String oldSelectedItemText = menu.getSelectedItem().getText();
+		final CommandMenuItem selectedItem = menu.getSelectedItem();
+		menu.setItens(filteredItens);
 
-		menu.setItemsAndKeepSelectedItem(filteredItens, oldSelectedItemText);
+		if (filteredItens.contains(selectedItem)) menu.setSelected(selectedItem);
+		else menu.selectFirstItem();
 
 		ajustDimentions();
 	}
@@ -201,16 +205,16 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	}
 
 	private void ensureSelectedItemIsVisible() {
-		final MenuItem selectedItem = menu.getSelectedItem();
+		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return;
 
 		final int menuTop = scrollPanel.getVerticalScrollPosition();
 		final int menuHeight = scrollPanel.getElement().getClientHeight();
 		final int menuBottom = menuTop + menuHeight;
 
-		final int itemTop = selectedItem.getElement().getOffsetTop();
-		final int itemHeight = selectedItem.getElement().getOffsetHeight();
-		final int itemBottom = selectedItem.getElement().getOffsetTop() + itemHeight;
+		final int itemTop = selectedItem.getMenuItem().getElement().getOffsetTop();
+		final int itemHeight = selectedItem.getMenuItem().getElement().getOffsetHeight();
+		final int itemBottom = selectedItem.getMenuItem().getElement().getOffsetTop() + itemHeight;
 
 		if (itemTop < menuTop) scrollPanel.setVerticalScrollPosition(itemTop - 1);
 		else if (itemBottom > menuBottom) scrollPanel.setVerticalScrollPosition(itemTop - menuHeight + itemHeight + 3);

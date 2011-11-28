@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.Sc
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
@@ -81,19 +82,23 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected Label inferedEffortLabel;
+	protected FastLabel inferedEffortLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected Label declaredEffortLabel;
+	protected FastLabel declaredEffortLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected Label progressLabel;
+	protected FastLabel progressLabel;
 
 	@UiField
 	@IgnoredByDeepEquality
 	protected TextBox editionBox;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected HTMLPanel releasePanel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -102,12 +107,6 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiField
 	@IgnoredByDeepEquality
 	protected FocusPanel focusPanel;
-
-	@IgnoredByDeepEquality
-	private String currentProgress = "";
-
-	@IgnoredByDeepEquality
-	private Release currentRelease;
 
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
@@ -250,33 +249,20 @@ public class ScopeTreeItemWidget extends Composite {
 		final float declaredEffort = effort.getDeclared();
 		final float inferedEffort = effort.getInfered();
 
-		final boolean inferedEffortVisible = declaredEffort != inferedEffort;
-		final boolean declaredEffortLabelVisible = effort.hasDeclared();
-		final boolean hasEffortDifference = inferedEffortVisible && declaredEffortLabelVisible;
+		final boolean inferedEffortDefined = declaredEffort != inferedEffort;
+		final boolean declaredEffortLabelDefined = effort.hasDeclared();
+		final boolean hasEffortDifference = inferedEffortDefined && declaredEffortLabelDefined;
 
-		// TODO +++Create a wrapper class for widgets that check before updating DOM elements with same value
+		if (hasEffortDifference) declaredEffortLabel.addStyleName(style.effortLabelStriped());
+		else declaredEffortLabel.removeStyleName(style.effortLabelStriped());
 
-		if (declaredEffortLabel.getStyleName().contains(style.effortLabelStriped()) != hasEffortDifference) {
-			if (hasEffortDifference) declaredEffortLabel.getElement().addClassName(style.effortLabelStriped());
-			else declaredEffortLabel.getElement().removeClassName(style.effortLabelStriped());
-		}
-
-		final String newDeclaredEffortLabel = declaredEffortLabelVisible ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "";
-		if (!declaredEffortLabel.getText().equals(newDeclaredEffortLabel)) {
-			declaredEffortLabel.setText(newDeclaredEffortLabel);
-		}
-
-		final String newInferedEffortLabel = inferedEffortVisible ? ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep" : "";
-		if (!inferedEffortLabel.getText().equals(newInferedEffortLabel)) {
-			inferedEffortLabel.setText(newInferedEffortLabel);
-		}
+		declaredEffortLabel.setText(declaredEffortLabelDefined ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "");
+		inferedEffortLabel.setText(inferedEffortDefined ? ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep" : "");
 	}
 
 	public void updateReleaseDisplay() {
+		// TODO+++ Consider using FastLabel and other fast components to increase cache encapsulation.
 		final Release release = scope.getRelease();
-
-		if ((currentRelease == null && release == null) || (currentRelease != null && currentRelease.equals(release))) return;
-		currentRelease = release;
 
 		final boolean isReleasePresent = (release != null);
 		releaseTag.setVisible(isReleasePresent);
@@ -288,13 +274,8 @@ public class ScopeTreeItemWidget extends Composite {
 	 */
 	private void updateProgressDisplay() {
 		final String progress = scope.isLeaf() ? getProgressDescriptionForLeaf() : getProgressDescriptionForNonLeaf();
-
-		if (currentProgress.equals(progress)) return;
-		currentProgress = progress;
-
 		progressLabel.setText(progress);
 		progressLabel.setTitle(progress);
-		progressLabel.setVisible(!progress.isEmpty());
 	}
 
 	private String getProgressDescriptionForLeaf() {
@@ -316,8 +297,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 670, 300);
 
-		// FIXME Rodrigo: Use pop-up infrastructure to show this menu.
-		commandsMenu.show();
+		configPopup().alignBelow(descriptionLabel).alignRight(releasePanel).popup(commandsMenu).pop();
 	}
 
 	public void showProgressMenu(final Set<String> progressDefinitionSet) {
@@ -329,8 +309,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 300);
 
-		// FIXME Rodrigo: Use pop-up infrastructure to show this menu.
-		commandsMenu.show();
+		configPopup().alignBelow(descriptionLabel).alignRight(progressLabel).popup(commandsMenu).pop();
 	}
 
 	public void showEffortMenu(final List<String> fibonacciScaleForEffort) {
@@ -341,10 +320,10 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 300);
-		configPopup().alignBelow(declaredEffortLabel).alignRight(declaredEffortLabel).popup(commandsMenu).pop();
+		configPopup().alignBelow(descriptionLabel).alignRight(effortPanel).popup(commandsMenu).pop();
 	}
 
-	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> items, final CustomCommandMenuItemFactory customItemFactory,
+	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,
 			final int maxWidth, final int maxHeight) {
 		final FiltrableCommandMenu menu = new FiltrableCommandMenu(customItemFactory, maxWidth, maxHeight);
 		menu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
@@ -354,7 +333,7 @@ public class ScopeTreeItemWidget extends Composite {
 			}
 		});
 
-		menu.setItems(items);
+		menu.setOrderedItens(itens);
 		return menu;
 	}
 

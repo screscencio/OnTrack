@@ -5,8 +5,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
-import br.com.oncast.ontrack.client.ui.generalwidgets.HideHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,8 +25,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget> {
-
+public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget>, PopupAware {
 	private static PasswordChangeWidgetUiBinder uiBinder = GWT.create(PasswordChangeWidgetUiBinder.class);
 
 	interface PasswordChangeWidgetUiBinder extends UiBinder<Widget, PasswordChangeWidget> {}
@@ -54,22 +52,18 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
+	@Override
 	public void hide() {
 		if (!this.isVisible()) return;
 		this.setVisible(false);
 		CloseEvent.fire(this, this);
 	}
 
+	@Override
 	public void show() {
 		clearFields();
 		this.setVisible(true);
-
-		MaskPanel.show(new HideHandler() {
-			@Override
-			public void onWillHide() {
-				hide();
-			}
-		});
+		oldPasswordArea.setFocus(true);
 	}
 
 	public void focus() {
@@ -112,36 +106,52 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 
 	@UiHandler("changePasswordButton")
 	protected void changePasswordButtonOnClick(final ClickEvent e) {
-		submitChangePassword();
+		changePassword();
 	}
 
-	private void submitChangePassword() {
-		if (!areTypedPasswordsEqual()) messageLabel.setText("The two typed passwords are different.");
-		else changeUserPassword();
+	private void changePassword() {
+		if (newPasswordArea.getText().isEmpty() || retypePasswordArea.getText().isEmpty()) showErrorMessage("The new password cannot be empty.");
+		else if (!areTypedPasswordsEqual()) showErrorMessage("The two typed passwords are different.");
+		else submitUserPasswordChange();
+	}
+
+	private void showErrorMessage(final String message) {
+		messageLabel.setText(message);
+		messageLabel.setVisible(true);
+	}
+
+	private void hideErrorMessage() {
+		messageLabel.setText("");
+		messageLabel.setVisible(false);
 	}
 
 	// XXX Auth; Pre-process password (trim, etc) ?
-	private void changeUserPassword() {
+	private void submitUserPasswordChange() {
+		hideErrorMessage();
+		disable();
 		ClientServiceProvider.getInstance().getAuthenticationService()
 				.changePassword(oldPasswordArea.getText(), newPasswordArea.getText(), new UserPasswordChangeCallback() {
 
 					@Override
 					public void onUserPasswordChangedSuccessfully() {
 						// TODO Improve feedback message.
-						setInfoMessage("Password changed succefully.");
+						enable();
+						hide();
 					}
 
 					@Override
 					public void onUnexpectedFailure(final Throwable caught) {
 						// TODO Improve feedback message.
-						setErrorMessage("Unexpected error.");
+						enable();
+						showErrorMessage("Unexpected error.");
 
 					}
 
 					@Override
 					public void onIncorrectUserPasswordFailure() {
 						// TODO Improve feedback message.
-						setErrorMessage("Incorrect old password.");
+						enable();
+						showErrorMessage("Incorrect old password.");
 					}
 				});
 
@@ -151,28 +161,34 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 		return newPasswordArea.getText().equals(retypePasswordArea.getText());
 	}
 
-	public void setErrorMessage(final String message) {
-		messageLabel.setText(message);
-	}
-
-	public void setInfoMessage(final String message) {
-		messageLabel.setText(message);
-	}
-
 	private void clearFields() {
 		oldPasswordArea.setText("");
 		newPasswordArea.setText("");
 		retypePasswordArea.setText("");
-		messageLabel.setText("");
+		hideErrorMessage();
 	}
 
 	private void submitOrHideForm(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() == KEY_ENTER) submitChangePassword();
+		if (event.getNativeKeyCode() == KEY_ENTER) changePassword();
 		if (event.getNativeKeyCode() == KEY_ESCAPE) this.hide();
 	}
 
 	@Override
 	public HandlerRegistration addCloseHandler(final CloseHandler<PasswordChangeWidget> handler) {
 		return addHandler(handler, CloseEvent.getType());
+	}
+
+	protected void disable() {
+		oldPasswordArea.setEnabled(false);
+		newPasswordArea.setEnabled(false);
+		retypePasswordArea.setEnabled(false);
+		changePasswordButton.setEnabled(false);
+	}
+
+	protected void enable() {
+		oldPasswordArea.setEnabled(true);
+		newPasswordArea.setEnabled(true);
+		retypePasswordArea.setEnabled(true);
+		changePasswordButton.setEnabled(true);
 	}
 }

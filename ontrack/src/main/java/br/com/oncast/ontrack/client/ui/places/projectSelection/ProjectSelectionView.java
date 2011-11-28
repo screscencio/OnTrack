@@ -6,4 +6,6 @@ public interface ProjectSelectionView {
 
 	IsWidget asWidget();
 
+	void focus();
+
 }
