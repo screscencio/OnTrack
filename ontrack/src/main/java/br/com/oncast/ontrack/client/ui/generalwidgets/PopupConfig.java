@@ -6,6 +6,8 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -70,6 +72,7 @@ public class PopupConfig {
 
 	private boolean leaveWidgetInDomOnClose = true;
 	private HandlerRegistration closeHandler;
+	private HandlerRegistration resizeHandler;
 	private boolean shown;
 
 	private PopupConfig() {}
@@ -231,6 +234,16 @@ public class PopupConfig {
 		});
 	}
 
+	private void addResizeWindowListener() {
+		resizeHandler = Window.addResizeHandler(new ResizeHandler() {
+			@Override
+			public void onResize(final ResizeEvent event) {
+				evalHorizontalPosition();
+				evalVerticalPosition();
+			}
+		});
+	}
+
 	private void engagePopup() {
 		if (widgetToPopup == null) throw new IllegalStateException("No popup panel attached to link. Did you forget to call the PopupConfig#popup() method?");
 		MaskPanel.show(new HideHandler() {
@@ -247,6 +260,7 @@ public class PopupConfig {
 			leaveWidgetInDomOnClose = false;
 		}
 		addCloseHandlerToPopupWidget();
+		addResizeWindowListener();
 
 		if (openListener != null) openListener.onWillOpen();
 		if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).show();
@@ -267,6 +281,7 @@ public class PopupConfig {
 		if (closeListener != null) closeListener.onHasClosed();
 
 		closeHandler.removeHandler();
+		resizeHandler.removeHandler();
 
 		if (!leaveWidgetInDomOnClose) {
 			widgetToPopup.removeFromParent();
