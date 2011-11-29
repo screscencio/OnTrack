@@ -7,7 +7,10 @@ import br.com.oncast.ontrack.client.ui.nativeeventhandlers.BrowserEscapeKeyDefau
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class ApplicationEntryPoint implements EntryPoint {
@@ -17,6 +20,7 @@ public class ApplicationEntryPoint implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		ignoreBrowserDefaultActionForEscapeKey();
+		setUpGlobalExceptionHandler();
 		setUpClientServices();
 	}
 
@@ -25,6 +29,17 @@ public class ApplicationEntryPoint implements EntryPoint {
 	 */
 	private void ignoreBrowserDefaultActionForEscapeKey() {
 		GlobalNativeEventService.getInstance().addKeyDownListener(new BrowserEscapeKeyDefaultActionPreventer());
+	}
+
+	private void setUpGlobalExceptionHandler() {
+		// TODO Use the centralized exception handler.
+		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			@Override
+			public void onUncaughtException(final Throwable e) {
+				Window.alert(e.getMessage());
+			}
+		});
+
 	}
 
 	private void setUpClientServices() {

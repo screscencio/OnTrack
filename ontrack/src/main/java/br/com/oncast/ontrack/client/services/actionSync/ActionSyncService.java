@@ -57,8 +57,9 @@ public class ActionSyncService {
 
 	private void processServerActionSyncEvent(final ServerActionSyncEvent event) {
 		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
-		if (isRequestOriginatedByThisClient(modelActionSyncRequest)) return;
-		if (!isRequestPertinentToCurrentProject(modelActionSyncRequest)) return;
+
+		checkIfRequestWasOriginatedByThisClient(modelActionSyncRequest);
+		checkIfRequestIsPertinentToCurrentProject(modelActionSyncRequest);
 
 		try {
 			for (final ModelAction modelAction : modelActionSyncRequest.getActionList())
@@ -75,11 +76,16 @@ public class ActionSyncService {
 		actionQueuedDispatcher.dispatch(action);
 	}
 
-	private boolean isRequestOriginatedByThisClient(final ModelActionSyncRequest modelActionSyncRequest) {
-		return modelActionSyncRequest.getClientId().equals(clientIdentificationProvider.getClientId());
+	private void checkIfRequestWasOriginatedByThisClient(final ModelActionSyncRequest modelActionSyncRequest) {
+		if (modelActionSyncRequest.getClientId().equals(clientIdentificationProvider.getClientId())) throw new RuntimeException(
+				"This client received the same action it sent to server. Please notify OnTrack team.");
 	}
 
-	private boolean isRequestPertinentToCurrentProject(final ModelActionSyncRequest modelActionSyncRequest) {
-		return projectRepresentationProvider.getCurrentProjectRepresentation().getId() == modelActionSyncRequest.getProjectId();
+	private void checkIfRequestIsPertinentToCurrentProject(final ModelActionSyncRequest modelActionSyncRequest) {
+		final long requestedProjectId = modelActionSyncRequest.getProjectId();
+		final long currentProjectId = projectRepresentationProvider.getCurrentProjectRepresentation().getId();
+		if (requestedProjectId != currentProjectId) throw new RuntimeException(
+				"This client received an action for project '" + requestedProjectId + "' but it is currently on project '" + currentProjectId
+						+ "'. Please notify OnTrack team.");
 	}
 }

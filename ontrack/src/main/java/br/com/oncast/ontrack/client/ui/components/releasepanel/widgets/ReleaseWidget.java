@@ -48,9 +48,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected ReleaseChartPanel releaseChartPanel;
 
 	@UiField
-	protected MouseCommandsMenu mouseActionsMenu;
-
-	@UiField
 	protected ReleaseWidgetContainer releaseContainer;
 
 	@UiField
@@ -65,6 +62,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiField
 	protected FocusPanel containerToogleClickableArea;
 
+	@UiField
+	protected Image menuLink;
+
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
 		return new ReleaseWidgetContainer(releaseWidgetFactory, containerUpdateListener);
@@ -73,46 +73,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiFactory
 	protected ScopeWidgetContainer createScopeContainer() {
 		return new ScopeWidgetContainer(scopeWidgetFactory, containerUpdateListener);
-	}
-
-	@UiFactory
-	protected ReleaseChartPanel createProgressChartPanel() {
-		return new ReleaseChartPanel(release);
-	}
-
-	@UiFactory
-	protected MouseCommandsMenu createMouseActionMenu() {
-		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		itens.add(new CommandMenuItem("Increase priority", new Command() {
-
-			@Override
-			public void execute() {
-				releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
-			}
-		}));
-		itens.add(new CommandMenuItem("Decrease priority", new Command() {
-
-			@Override
-			public void execute() {
-				releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
-			}
-		}));
-		itens.add(new CommandMenuItem("Delete Release", new Command() {
-
-			@Override
-			public void execute() {
-				releasePanelInteractionHandler.onReleaseDeletionRequest(release);
-			}
-		}));
-		return new MouseCommandsMenu(itens);
-	}
-
-	@UiHandler("releaseChartPanel")
-	protected void onClick(final ClickEvent e) {
-		releasePanelInteractionHandler.onOpenReleaseBurnUpChart(releaseChartPanel);
-
-		e.preventDefault();
-		e.stopPropagation();
 	}
 
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
@@ -132,6 +92,10 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private final Release release;
 
 	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
+
+	private MouseCommandsMenu mouseCommandsMenu;
+
+	private ChartPanel chartPanel;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
 			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
@@ -156,6 +120,43 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		updateDescription();
 		updateProgress();
 		setContainerState(true);
+
+		configPopup().link(progressLabel).popup(getChartPanel()).alignRight(progressLabel).alignBelow(progressLabel).onOpen(new PopupOpenListener() {
+			@Override
+			public void onWillOpen() {
+				updateBurnUpChart();
+			}
+		});
+		configPopup().link(menuLink).popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2);
+	}
+
+	private MouseCommandsMenu getMouseActionMenu() {
+		if (mouseCommandsMenu != null) return mouseCommandsMenu;
+
+		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
+		itens.add(new CommandMenuItem("Increase priority", new Command() {
+
+			@Override
+			public void execute() {
+				releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
+			}
+		}));
+		itens.add(new CommandMenuItem("Decrease priority", new Command() {
+
+			@Override
+			public void execute() {
+				releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
+			}
+		}));
+		itens.add(new CommandMenuItem("Delete Release", new Command() {
+
+			@Override
+			public void execute() {
+				releasePanelInteractionHandler.onReleaseDeletionRequest(release);
+			}
+		}));
+		mouseCommandsMenu = new MouseCommandsMenu(itens);
+		return mouseCommandsMenu;
 	}
 
 	private ModelWidgetContainerListener createContainerUpdateListener() {
