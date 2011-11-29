@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextReque
 
 public class ActionSyncServiceTest {
 
+	private static final String SAME_CLIENT_EXCEPTION_MESSAGE = "This client received the same action it sent to server. Please notify OnTrack team.";
 	private ActionSyncServiceTestUtils actionSyncServiceTestUtils;
 	private EntityManager entityManager;
 
@@ -64,9 +67,7 @@ public class ActionSyncServiceTest {
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				if (!isUserAction) Assert.fail("The client should not execute a action from the server that was originated from itself.");
-			}
+					final boolean isUserAction) {}
 		});
 
 		loadProjectContext(new ProjectContextLoadCallback() {
@@ -75,6 +76,11 @@ public class ActionSyncServiceTest {
 			public void onProjectContextLoaded(final ProjectContext context) {
 				actionSyncServiceTestUtils.getActionExecutionServiceMock().onUserActionExecutionRequest(
 						new ScopeInsertChildAction(context.getProjectScope().getId(), "filho"));
+			}
+
+			@Override
+			public void onProjectContextFailed(final Throwable caught) {
+				assertEquals(SAME_CLIENT_EXCEPTION_MESSAGE, caught.getMessage());
 			}
 		});
 	}
@@ -97,8 +103,11 @@ public class ActionSyncServiceTest {
 			public void onProjectContextLoaded(final ProjectContext context) {
 				actionSyncServiceTestUtils.getActionExecutionServiceMock().onUserActionExecutionRequest(
 						new ScopeInsertChildAction(context.getProjectScope().getId(), "filho"));
-				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
+				assertTrue("The action should be executed once.", count.getValue() == 1);
 			}
+
+			@Override
+			public void onProjectContextFailed(final Throwable caught) {}
 		});
 	}
 
@@ -124,6 +133,11 @@ public class ActionSyncServiceTest {
 				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
 				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
 			}
+
+			@Override
+			public void onProjectContextFailed(final Throwable caught) {
+				fail();
+			}
 		});
 	}
 
@@ -135,8 +149,8 @@ public class ActionSyncServiceTest {
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
 				if (isUserAction)
-					Assert.fail("The client should not execute a action from the server (that was not originated from itself) as if it was a client action.");
-				}
+				Assert.fail("The client should not execute a action from the server (that was not originated from itself) as if it was a client action.");
+			}
 		});
 
 		loadProjectContext(new ProjectContextLoadCallback() {
@@ -146,6 +160,11 @@ public class ActionSyncServiceTest {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						projectRepresentation, createValidOneActionActionList(context));
 				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
+			}
+
+			@Override
+			public void onProjectContextFailed(final Throwable caught) {
+				fail();
 			}
 		});
 	}
@@ -170,6 +189,11 @@ public class ActionSyncServiceTest {
 						createValidOneActionActionList(context));
 				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
 			}
+
+			@Override
+			public void onProjectContextFailed(final Throwable caught) {
+				assertEquals(SAME_CLIENT_EXCEPTION_MESSAGE, caught.getMessage());
+			}
 		});
 	}
 
@@ -188,12 +212,19 @@ public class ActionSyncServiceTest {
 
 		loadProjectContext(new ProjectContextLoadCallback() {
 
+			private final String DIFFERENT_PROJECT_EXCEPTION_MESSAGE = "This client received an action for project '2' but it is currently on project '1'. Please notify OnTrack team.";
+
 			@Override
 			public void onProjectContextLoaded(final ProjectContext context) {
 				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
 						otherProjectRepresentation,
 						createValidOneActionActionList(context));
 				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
+			}
+
+			@Override
+			public void onProjectContextFailed(final Throwable caught) {
+				assertEquals(DIFFERENT_PROJECT_EXCEPTION_MESSAGE, caught.getMessage());
 			}
 		});
 	}
@@ -221,6 +252,11 @@ public class ActionSyncServiceTest {
 				actionSyncServiceTestUtils.getMulticastServiceMock().multicastActionSyncRequest(modelActionSyncRequest);
 				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
 			}
+
+			@Override
+			public void onProjectContextFailed(final Throwable caught) {
+				fail();
+			}
 		});
 	}
 
@@ -235,8 +271,7 @@ public class ActionSyncServiceTest {
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						caught.printStackTrace();
-						Assert.fail("Unable to load project.");
+						projectContextLoadCallback.onProjectContextFailed(caught);
 					}
 				});
 	}

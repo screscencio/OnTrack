@@ -252,7 +252,7 @@ public class BusinessLogicTest {
 		final Project loadedProject = loadProject(2);
 
 		assertEquals(2, loadedProject.getProjectRepresentation().getId());
-		assertEquals("Default project", loadedProject.getProjectRepresentation().getName());
+		assertEquals(ProjectTestUtils.DEFAULT_PROJECT_NAME, loadedProject.getProjectRepresentation().getName());
 	}
 
 	@Test(expected = ProjectNotFoundException.class)
@@ -362,7 +362,7 @@ public class BusinessLogicTest {
 	}
 
 	private ProjectRepresentation assureProjectRepresentationExistance(final long projectId) throws Exception {
-		final ProjectRepresentation newProjectRepresentation = new ProjectRepresentation(projectId, "Default project");
+		final ProjectRepresentation newProjectRepresentation = ProjectTestUtils.createProjectRepresentation(projectId);
 		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createProject(newProjectRepresentation.getName());
 		return newProjectRepresentation;
 	}
