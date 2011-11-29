@@ -90,11 +90,26 @@
 				text-align: center;
 			}
 			
-			.mouseActionsMenu {
+			.menuLink {
 				position: absolute;
 				top: 5px;
 				right: 5px;
+				
+				background: #dfe0e3 url("resources/image/releasePanel/arrow.png") no-repeat center;
+				cursor: pointer;
+                width: 18px;
+                height: 18px;
+                opacity: 0.2;
+                display: block;
+                
+                -moz-border-radius: 2px;
+                border-radius: 2px;
 			}
+			
+            .menuLink:hover {
+                background: #d4d5d9 url("resources/image/releasePanel/arrow.png") no-repeat center;
+            	opacity: 1;
+            }
 			
 			.burnUpChartPanel {
 				position: absolute;
@@ -135,7 +150,7 @@
 			<g:Label ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
 			<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" />
 			<g:Label styleName="{style.progressLabel}" ui:field="progressLabel" />
-			<t:MouseCommandsMenu ui:field="mouseActionsMenu" styleName="{style.mouseActionsMenu}" />
+			<g:Image styleName="{style.menuLink}" ui:field="menuLink" />
 		</div>
 		<div ui:field="bodyContainer" class="{style.body}" >
 			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
