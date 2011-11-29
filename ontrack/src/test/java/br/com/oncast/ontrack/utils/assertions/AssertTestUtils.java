@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -45,7 +46,11 @@ public class AssertTestUtils {
 	}
 
 	public static <T> void assertCollectionEquality(final Collection<T> expected, final Collection<T> actual) {
-		assertEquals(expected.size(), actual.size());
-		assertTrue(actual.containsAll(expected));
+		assertEquals("The size of the given collections are different.", expected.size(), actual.size());
+		final Iterator<T> expectedIterator = expected.iterator();
+		final Iterator<T> actualIterator = actual.iterator();
+		while (expectedIterator.hasNext()) {
+			assertEquals(expectedIterator.next(), actualIterator.next());
+		}
 	}
 }

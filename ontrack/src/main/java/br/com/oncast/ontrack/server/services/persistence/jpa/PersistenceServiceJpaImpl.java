@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
@@ -138,6 +139,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.getTransaction().begin();
 			final UserEntity mergedUser = em.merge(userEntity);
 			em.getTransaction().commit();
+			// FIXME Make this method void and change the incoming object with id.
 			return (User) TYPE_CONVERTER.convert(mergedUser);
 		}
 		catch (final Exception e) {
@@ -201,6 +203,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.getTransaction().begin();
 			em.merge(passwordEntity);
 			em.getTransaction().commit();
+			// FIXME Change the incoming object with id.
 		}
 		catch (final Exception e) {
 			try {
@@ -263,6 +266,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final ProjectRepresentation mergedProjectRepresentation = em.merge(projectRepresentation);
 			em.getTransaction().commit();
 			projectRepresentation.setId(mergedProjectRepresentation.getId());
+			// FIXME Make this method void, because it is already changing the incoming object with generated id.
 			return mergedProjectRepresentation;
 		}
 		catch (final Exception e) {
@@ -308,6 +312,49 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final Query query = em.createQuery("select projectRepresentation from " + ProjectRepresentation.class.getSimpleName()
 					+ " as projectRepresentation");
 
+			return query.getResultList();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project representations", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			final ProjectAuthorizationEntity authorization = new ProjectAuthorizationEntity(em.find(UserEntity.class, user.getId()), em.find(
+					ProjectRepresentation.class, project.getId()));
+			em.persist(authorization);
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to persist the project authorization nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the project authorization.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	// FIXME Rodrigo use this method to get the project list for an user.
+	public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select authorization.project from " + ProjectAuthorizationEntity.class.getSimpleName()
+					+ " as authorization where authorization.user.id = :userId");
+			query.setParameter("userId", userId);
 			return query.getResultList();
 		}
 		catch (final Exception e) {

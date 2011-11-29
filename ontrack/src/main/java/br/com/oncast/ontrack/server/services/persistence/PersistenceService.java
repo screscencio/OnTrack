@@ -40,4 +40,8 @@ public interface PersistenceService {
 	public ProjectRepresentation retrieveProjectRepresentation(final long projectId) throws PersistenceException, NoResultFoundException;
 
 	public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException;
+
+	public void authorize(User user, ProjectRepresentation project) throws PersistenceException;
+
+	public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException;
 }
