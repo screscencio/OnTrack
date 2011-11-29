@@ -19,6 +19,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -243,10 +244,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 				ensureSelectedItemIsVisible();
 			}
 		});
-		menu.addCloseHandler(new CloseHandler() {
-
+		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
 			@Override
-			public void onClose() {
+			public void onClose(final CloseEvent<CommandMenu> event) {
 				hide();
 			}
 		});
