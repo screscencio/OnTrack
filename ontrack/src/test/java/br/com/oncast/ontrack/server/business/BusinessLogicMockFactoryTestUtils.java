@@ -118,6 +118,14 @@ public class BusinessLogicMockFactoryTestUtils {
 				return null;
 			}
 
+			@Override
+			public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {}
+
+			@Override
+			public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException {
+				return null;
+			}
+
 		};
 	}
 
@@ -192,6 +200,14 @@ public class BusinessLogicMockFactoryTestUtils {
 
 			@Override
 			public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException {
+				return null;
+			}
+
+			@Override
+			public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {}
+
+			@Override
+			public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException {
 				return null;
 			}
 		};
