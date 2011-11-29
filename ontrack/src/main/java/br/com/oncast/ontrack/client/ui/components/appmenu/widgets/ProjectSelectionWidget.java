@@ -28,7 +28,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-// FIXME Rodrigo: Make the pop up behavior optional.
 public class ProjectSelectionWidget extends Composite implements HasCloseHandlers<ProjectSelectionWidget>, PopupAware {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
@@ -41,8 +40,6 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	protected FiltrableCommandMenu projectSwitchingMenu;
 
 	private final ProjectListChangeListener projectListChangeListener;
-
-	private final boolean isPopUp;
 
 	@UiFactory
 	protected FiltrableCommandMenu createProjectSwitchCommandMenu() {
@@ -58,12 +55,10 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 					}
 				});
 			}
-		}, 700, 400, isPopUp);
+		}, 700, 400);
 	}
 
-	// FIXME Rodrigo: Remove this argument; It is only used to configure FiltrableCommandMenu and should be removed from there.
-	public ProjectSelectionWidget(final boolean isPopUp) {
-		this.isPopUp = isPopUp;
+	public ProjectSelectionWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.projectListChangeListener = new ProjectListChangeListener() {

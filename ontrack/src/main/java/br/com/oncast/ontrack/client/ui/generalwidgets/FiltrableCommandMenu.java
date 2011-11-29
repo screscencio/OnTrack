@@ -69,24 +69,13 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		}
 	};
 
-	private final boolean isPopup;
-
-	// FIXME Remove this constructor and the argument isPopup.
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
-		this(customItemFactory, maxWidth, maxHeight, true);
-	}
-
-	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight, final boolean isPopup) {
-		this.isPopup = isPopup;
 		initWidget(uiBinder.createAndBindUi(this));
 		this.customItemFactory = customItemFactory;
 		this.maxHeight = maxHeight;
 		this.maxWidth = maxWidth;
 
 		configureMenu();
-
-		if (isPopup) hide();
-		else show();
 	}
 
 	public void setItens(final List<CommandMenuItem> itens) {
@@ -111,7 +100,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@Override
 	public void hide() {
-		if (!isPopup) return;
 		if (!this.isVisible()) return;
 
 		this.setVisible(false);
