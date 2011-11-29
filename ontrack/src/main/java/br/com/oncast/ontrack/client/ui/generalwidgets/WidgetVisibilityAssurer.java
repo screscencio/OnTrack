@@ -6,7 +6,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class WidgetVisibilityAssurer {
-	// FIXME Rodrigo: Delete this class.
 
 	// IMPORTANT This margin must be at least 40px, because some HTML elements may have a horizontal scroll which impacts the visibility assurance.
 	private static final int MARGIN = 0;

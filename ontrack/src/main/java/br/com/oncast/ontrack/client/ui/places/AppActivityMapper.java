@@ -28,9 +28,9 @@ public class AppActivityMapper implements ActivityMapper {
 	@Override
 	public Activity getActivity(final Place place) {
 
-		if (place instanceof LoginPlace) return createLoginActivity((LoginPlace) place);
+		if (place instanceof LoginPlace) return createLoginActivity(((LoginPlace) place).getDestinationPlace());
 		// XXX Auth; Lazy load login activity when login place is received. Remove this.
-		if (!services.getAuthenticationService().isUserLoggedIn()) return createLoginActivity(new LoginPlace());
+		if (!services.getAuthenticationService().isUserLoggedIn()) return createLoginActivity(place);
 
 		if (place instanceof ProjectDependentPlace) {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
@@ -55,8 +55,8 @@ public class AppActivityMapper implements ActivityMapper {
 		return new ProjectSelectionActivity();
 	}
 
-	private Activity createLoginActivity(final LoginPlace loginPlace) {
-		return new LoginActivity(loginPlace.getDestinationPlace());
+	private Activity createLoginActivity(final Place destinationPlace) {
+		return new LoginActivity(destinationPlace);
 	}
 
 	private PlanningActivity createPlanningActivity(final ProjectDependentPlace place) {

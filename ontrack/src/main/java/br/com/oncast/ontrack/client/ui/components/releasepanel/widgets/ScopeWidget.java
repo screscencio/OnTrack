@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,7 +38,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	FocusPanel draggableAnchor;
 
 	@UiField
-	protected Image menuLink;
+	protected MouseCommandsMenu mouseActionsMenu;
 
 	private final Scope scope;
 
@@ -53,11 +50,8 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
 
-	private MouseCommandsMenu mouseCommandsMenu;
-
-	private MouseCommandsMenu getMouseActionMenu() {
-		if (mouseCommandsMenu != null) return mouseCommandsMenu;
-
+	@UiFactory
+	protected MouseCommandsMenu createMouseActionMenu() {
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 		itens.add(new CommandMenuItem("Increase priority", new Command() {
 
@@ -74,8 +68,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 			}
 		}));
 
-		mouseCommandsMenu = new MouseCommandsMenu(itens);
-		return mouseCommandsMenu;
+		return new MouseCommandsMenu(itens);
 	}
 
 	public ScopeWidget(final Scope scope, final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
@@ -85,8 +78,6 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		this.scope = scope;
 		updateDescription();
 		updateProgress();
-
-		configPopup().link(menuLink).popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2);
 	}
 
 	@Override

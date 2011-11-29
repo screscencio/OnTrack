@@ -44,8 +44,6 @@ public class ActionSyncServiceTestUtils {
 
 	protected interface ProjectContextLoadCallback {
 		void onProjectContextLoaded(ProjectContext context);
-
-		void onProjectContextFailed(Throwable caught);
 	}
 
 	protected class ValueHolder<T> {

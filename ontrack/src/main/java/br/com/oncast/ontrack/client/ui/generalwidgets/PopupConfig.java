@@ -99,7 +99,6 @@ public class PopupConfig {
 			@Override
 			public void onClick(final ClickEvent event) {
 				engagePopup();
-				event.stopPropagation();
 			}
 		});
 

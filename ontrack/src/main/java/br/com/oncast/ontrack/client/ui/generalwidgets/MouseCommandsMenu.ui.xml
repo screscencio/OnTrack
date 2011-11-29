@@ -4,12 +4,30 @@
 
 	<ui:style>
 			.panel {
+				position: relative;
 				border: 0px;
 			}
 			
+			.menuImage {
+				background: #dfe0e3 url("resources/image/releasePanel/arrow.png") no-repeat center;
+				cursor: pointer;
+                width: 18px;
+                height: 18px;
+                opacity: 0.2;
+                display: block;
+                
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+			}
+
+            .menuImage:hover {
+                background: #d4d5d9 url("resources/image/releasePanel/arrow.png") no-repeat center;
+            	opacity: 1;
+            }
+            
 			.menu {
                 position: absolute;
-                top: 0px;
+                top: 10px;
                 right: 0px;
                 width: 150px;
 				z-index: 2;
@@ -22,6 +40,7 @@
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.panel}">
+		<g:Image styleName="{style.menuImage}" ui:field="menuImage" />
 		<t:CommandMenu styleName="{style.menu}" ui:field="menu" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

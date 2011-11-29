@@ -148,8 +148,4 @@ public class CommandMenu extends Composite {
 		menu.selectItem(item.getMenuItem());
 
 	}
-
-	public void focus() {
-		menu.focus();
-	}
 }

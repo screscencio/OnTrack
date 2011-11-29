@@ -2,19 +2,16 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MouseCommandsMenu extends Composite implements HasCloseHandlers<MouseCommandsMenu>, PopupAware {
+public class MouseCommandsMenu extends Composite {
 
 	private static MouseActionsMenuUiBinder uiBinder = GWT.create(MouseActionsMenuUiBinder.class);
 
@@ -23,38 +20,27 @@ public class MouseCommandsMenu extends Composite implements HasCloseHandlers<Mou
 	@UiField
 	protected CommandMenu menu;
 
+	@UiField
+	protected Image menuImage;
+
+	private final WidgetVisibilityAssurer visibilityAssurer;
+
 	public MouseCommandsMenu(final List<CommandMenuItem> items) {
 		initWidget(uiBinder.createAndBindUi(this));
 		menu.hide();
 		menu.setItens(items);
 		menu.setFocusWhenMouseOver(true);
-		menu.addCloseHandler(new br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler() {
-			@Override
-			public void onClose() {
-				hide();
-			}
-		});
+		visibilityAssurer = new WidgetVisibilityAssurer(menu);
 	}
 
-	@Override
-	public void show() {
-		if (isVisible()) return;
-		setVisible(true);
+	@UiHandler("menuImage")
+	protected void onClick(final ClickEvent e) {
+		showMenu();
+	}
+
+	private void showMenu() {
 		menu.show();
-		menu.focus();
 		menu.selectFirstItem();
-	}
-
-	@Override
-	public void hide() {
-		if (!isVisible()) return;
-		setVisible(false);
-		menu.hide();
-		CloseEvent.fire(this, this);
-	}
-
-	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<MouseCommandsMenu> handler) {
-		return addHandler(handler, CloseEvent.getType());
+		visibilityAssurer.assureVisibility();
 	}
 }
