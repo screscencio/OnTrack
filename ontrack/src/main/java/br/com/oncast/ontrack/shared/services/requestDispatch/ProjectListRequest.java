@@ -1,10 +1,8 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch;
 
-import java.io.Serializable;
+import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 
-public class ProjectListRequest implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class ProjectListRequest implements DispatchRequest<ProjectListResponse> {
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	public ProjectListRequest() {}

@@ -44,6 +44,10 @@ public class ProjectTestUtils {
 		return new ProjectRepresentation(projectId, projectName);
 	}
 
+	public static ProjectRepresentation createProjectRepresentation(final String projectName) {
+		return new ProjectRepresentation(projectName);
+	}
+
 	private static ProjectRepresentation getDefaultProjectRepresentation() {
 		return createProjectRepresentation(1);
 	}

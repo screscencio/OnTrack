@@ -1,29 +1,30 @@
 package br.com.oncast.ontrack.client.services.context;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.context.NewProjectCreatedEventHandler;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 
 import com.google.gwt.user.client.Window;
 
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
-	private final RequestDispatchService dispatchService;
+	private final DispatchService dispatchService;
 	private final Set<ProjectListChangeListener> projectListChangeListeners = new HashSet<ProjectListChangeListener>();
 	private final Set<ProjectRepresentation> availableProjectRepresentations = new HashSet<ProjectRepresentation>();
 	private ProjectRepresentation currentProjectRepresentation;
 
-	public ProjectRepresentationProviderImpl(final RequestDispatchService dispatchService, final ServerPushClientService serverPushClientService) {
+	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService) {
 		this.dispatchService = dispatchService;
 
 		serverPushClientService.registerServerEventHandler(ProjectCreatedEvent.class, new NewProjectCreatedEventHandler() {
@@ -37,11 +38,11 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			}
 		});
 
-		dispatchService.dispatch(new ProjectListRequest(), new DispatchCallback<List<ProjectRepresentation>>() {
+		dispatchService.dispatch(new ProjectListRequest(), new DispatchCallback<ProjectListResponse>() {
 
 			@Override
-			public void onRequestCompletition(final List<ProjectRepresentation> response) {
-				availableProjectRepresentations.addAll(response);
+			public void onSuccess(final ProjectListResponse response) {
+				availableProjectRepresentations.addAll(response.getProjectList());
 				notifyListenersForCurrentProjectListChange();
 			}
 
@@ -65,11 +66,11 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 	@Override
 	public void createNewProject(final String projectName, final ProjectCreationListener projectCreationListener) {
-		dispatchService.dispatch(new ProjectCreationRequest(projectName), new DispatchCallback<ProjectRepresentation>() {
+		dispatchService.dispatch(new ProjectCreationRequest(projectName), new DispatchCallback<ProjectCreationResponse>() {
 
 			@Override
-			public void onRequestCompletition(final ProjectRepresentation projectRepresentation) {
-				projectCreationListener.onProjectCreated(projectRepresentation);
+			public void onSuccess(final ProjectCreationResponse response) {
+				projectCreationListener.onProjectCreated(response.getProjectRepresentation());
 			}
 
 			@Override

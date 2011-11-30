@@ -25,8 +25,6 @@ import com.google.gwt.user.client.ui.Widget;
  * </pre>
  */
 public class PopupConfig {
-	// FIXME Rodrigo: Create some unit tests.
-
 	/**
 	 * Popups that implement this interface are <i>popup-aware</i>. This means that they know how to show and hide themselves.<br />
 	 * The {@link PopupConfig} won't change the popup widget visibility, instead it will ask them to show or hide when appropriate.<br />
@@ -129,14 +127,13 @@ public class PopupConfig {
 	 * @throws IllegalArgumentException in case the provided widget does not implement {@link HasCloseHandlers} nor {@link PopupAware}.
 	 */
 	public PopupConfig popup(final Widget widgetToPopup) {
-		// FIXME Rodrigo: Rename method to 'widget'.
-
 		if (this.widgetToPopup != null) throw new IllegalStateException("You cannot set the popup widget twice in a popup configuration.");
 
 		if (!(widgetToPopup instanceof HasCloseHandlers)) throw new IllegalArgumentException(
 				"The popup widget must implement HasCloseHandlers interface.");
 
 		this.widgetToPopup = widgetToPopup;
+
 		return this;
 	}
 
@@ -268,7 +265,6 @@ public class PopupConfig {
 		else widgetToPopup.setVisible(true);
 		shown = true;
 
-		// FIXME Rodrigo: Support the window resize.
 		evalHorizontalPosition();
 		evalVerticalPosition();
 	}

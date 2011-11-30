@@ -1,11 +1,14 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
+import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +24,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
@@ -39,13 +43,14 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
-public class PersistenceServiceJpaTest {
+public class PersistenceServiceTest {
 
 	private static final int PROJECT_ID = 1;
 
-	private PersistenceServiceJpaImpl persistenceService;
+	private PersistenceService persistenceService;
 
 	private EntityManager entityManager;
 
@@ -264,6 +269,49 @@ public class PersistenceServiceJpaTest {
 	}
 
 	@Test
+	public void shouldBeAbleToFindAllProjectRepresentationsThatAGivenUserIsRelatedTo() throws Exception {
+		final User user = createAndPersistUser();
+		final ProjectRepresentation project1 = createProjectRepresentation("project1");
+		createProjectRepresentation("project2");
+		final ProjectRepresentation project3 = createProjectRepresentation("project3");
+
+		authorize(user, project1, project3);
+
+		final List<ProjectRepresentation> userProjects = persistenceService.retrieveAuthorizedProjects(user.getId());
+
+		assertCollectionEquality(Arrays.asList(project1, project3), userProjects);
+	}
+
+	@Test(expected = PersistenceException.class)
+	public void inexistentUserCannotBeAuthorized() throws Exception {
+		persistenceService.authorize(new User("inexistent@email.com"), persistenceService.retrieveProjectRepresentation(PROJECT_ID));
+	}
+
+	@Test(expected = PersistenceException.class)
+	public void inexistentProjectCannotBeAuthorized() throws Exception {
+		final User user = createAndPersistUser();
+		persistenceService.authorize(user, ProjectTestUtils.createProjectRepresentation(404, "inexistent project name"));
+	}
+
+	@Test
+	public void cannotAuthorizeAUserToProjectTwice() throws Exception {
+		final User user = createAndPersistUser();
+		final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(PROJECT_ID);
+
+		boolean reached = false;
+		try {
+			persistenceService.authorize(user, project);
+			reached = true;
+			persistenceService.authorize(user, project);
+			fail();
+		}
+		catch (final PersistenceException e) {
+			assertTrue(reached);
+		}
+
+	}
+
+	@Test
 	@Ignore("Run only when you want to generate data to test the release burn up chart")
 	public void generateDataForBurnUp() throws Exception {
 		final ProjectSnapshot snapshot1 = loadProjectSnapshot();
@@ -273,6 +321,21 @@ public class PersistenceServiceJpaTest {
 		snapshot1.setProject(project1);
 		snapshot1.setTimestamp(new Date());
 		persistenceService.persistProjectSnapshot(snapshot1);
+	}
+
+	private User createAndPersistUser() throws PersistenceException {
+		final User user = persistenceService.persistOrUpdateUser(new User("email@provider.com"));
+		return user;
+	}
+
+	private void authorize(final User user, final ProjectRepresentation... projects) throws PersistenceException {
+		for (final ProjectRepresentation project : projects) {
+			persistenceService.authorize(user, project);
+		}
+	}
+
+	private ProjectRepresentation createProjectRepresentation(final String projectName) throws PersistenceException {
+		return persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createProjectRepresentation(projectName));
 	}
 
 	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException, ProjectNotFoundException {
@@ -309,7 +372,7 @@ public class PersistenceServiceJpaTest {
 	}
 
 	private void assureProjectRepresentationExistance() throws Exception {
-		persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(PROJECT_ID, "Default project"));
+		persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createProjectRepresentation(PROJECT_ID));
 	}
 
 }

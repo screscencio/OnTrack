@@ -8,13 +8,16 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
+import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
+import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
-import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
@@ -33,8 +36,11 @@ import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
@@ -88,7 +94,7 @@ public class ActionSyncServiceTestUtils {
 	}
 
 	private static final ClientIdentificationProvider CLIENT_IDENTIFICATION_PROVIDER = new ClientIdentificationProvider();
-	private RequestDispatchService requestDispatchService;
+	private DispatchService DispatchRequestService;
 	private ServerPushClientServiceMockImpl serverPushClientService;
 	private ActionExecutionService actionExecutionService;
 	private BusinessLogic businessLogic;
@@ -171,51 +177,58 @@ public class ActionSyncServiceTestUtils {
 		};
 	}
 
-	public RequestDispatchService getRequestDispatchServiceMock() {
-		if (requestDispatchService != null) return requestDispatchService;
-		return requestDispatchService = new RequestDispatchService() {
+	public DispatchService getRequestDispatchServiceMock() {
+		if (DispatchRequestService != null) return DispatchRequestService;
+		return DispatchRequestService = new DispatchService() {
 
 			@Override
-			public void dispatch(final ModelActionSyncRequest modelActionSyncRequest, final DispatchCallback<Void> dispatchCallback) {
-				try {
-					getBusinessLogicMock().handleIncomingActionSyncRequest(modelActionSyncRequest);
-					dispatchCallback.onRequestCompletition(null);
-				}
-				catch (final UnableToHandleActionException e) {
-					dispatchCallback.onFailure(e);
-				}
+			public <T extends FailureHandler<R>, R extends Throwable> void addFailureHandler(final Class<R> throwableClass, final T handler) {
+				throw new RuntimeException("The test should not use this method.");
 			}
 
 			@Override
-			public void dispatch(final ProjectContextRequest projectContextRequest, final DispatchCallback<ProjectContext> dispatchCallback) {
-				try {
-					final Project project = getBusinessLogicMock().loadProjectForClient(projectContextRequest);
-					dispatchCallback.onRequestCompletition(new ProjectContext(project));
-				}
-				catch (final Exception e) {
-					dispatchCallback.onFailure(e);
-				}
+			public <T extends DispatchRequest<R>, R extends DispatchResponse> void dispatch(final T request, final DispatchCallback<R> dispatchCallback) {
+				answer(request, dispatchCallback);
 			}
 
-			@Override
-			public void dispatch(final ProjectCreationRequest projectCreationRequest, final DispatchCallback<ProjectRepresentation> dispatchCallback) {
-				try {
-					final ProjectRepresentation projectRepresentation = getBusinessLogicMock().createProject(projectCreationRequest.getProjectName());
-					dispatchCallback.onRequestCompletition(projectRepresentation);
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			private void answer(final DispatchRequest request, final DispatchCallback dispatchCallback) {
+				if (request instanceof ModelActionSyncRequest) {
+					try {
+						getBusinessLogicMock().handleIncomingActionSyncRequest((ModelActionSyncRequest) request);
+						dispatchCallback.onSuccess(null);
+					}
+					catch (final UnableToHandleActionException e) {
+						dispatchCallback.onFailure(e);
+					}
 				}
-				catch (final Exception e) {
-					dispatchCallback.onFailure(e);
+				else if (request instanceof ProjectListRequest) {
+					try {
+						final List<ProjectRepresentation> projectList = getBusinessLogicMock().retrieveProjectList();
+						dispatchCallback.onSuccess(new ProjectListResponse(projectList));
+					}
+					catch (final Exception e) {
+						dispatchCallback.onFailure(e);
+					}
 				}
-			}
-
-			@Override
-			public void dispatch(final ProjectListRequest projectListRequest, final DispatchCallback<List<ProjectRepresentation>> dispatchCallback) {
-				try {
-					final List<ProjectRepresentation> projectList = getBusinessLogicMock().retrieveProjectList();
-					dispatchCallback.onRequestCompletition(projectList);
+				else if (request instanceof ProjectCreationRequest) {
+					try {
+						final ProjectRepresentation projectRepresentation = getBusinessLogicMock().createProject(
+								((ProjectCreationRequest) request).getProjectName());
+						dispatchCallback.onSuccess(new ProjectCreationResponse(projectRepresentation));
+					}
+					catch (final Exception e) {
+						dispatchCallback.onFailure(e);
+					}
 				}
-				catch (final Exception e) {
-					dispatchCallback.onFailure(e);
+				else if (request instanceof ProjectContextRequest) {
+					try {
+						final Project project = getBusinessLogicMock().loadProjectForClient((ProjectContextRequest) request);
+						dispatchCallback.onSuccess(new ProjectContextResponse(project));
+					}
+					catch (final Exception e) {
+						dispatchCallback.onFailure(e);
+					}
 				}
 			}
 		};

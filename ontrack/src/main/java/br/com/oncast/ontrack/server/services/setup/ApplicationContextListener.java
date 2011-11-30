@@ -4,20 +4,43 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import net.zschech.gwt.comet.server.impl.AsyncServlet;
+import br.com.drycode.api.web.gwt.dispatchService.server.DispatchServiceServlet;
+import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchServiceException;
 import br.com.oncast.ontrack.server.business.DefaultProjectExistenceAssurer;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 
 public class ApplicationContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(final ServletContextEvent event) {
+		setupDispatchHandlers();
 		setupBusinessLogic(event);
 		setupServerPush(event);
 		assureDefaultUserIsPresent();
 		assureDefaultProjectIsPresent();
+	}
+
+	private void setupDispatchHandlers() {
+		try {
+			DispatchServiceServlet.registerRequestHandler(ModelActionSyncRequest.class, new ModelActionSyncRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(ProjectContextRequest.class, new ProjectContextRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(ProjectCreationRequest.class, new ProjectCreationRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(ProjectListRequest.class, new ProjectListRequestHandler());
+		}
+		catch (final DispatchServiceException e) {
+			throw new RuntimeException("The application is misconfigured.", e);
+		}
 	}
 
 	@Override

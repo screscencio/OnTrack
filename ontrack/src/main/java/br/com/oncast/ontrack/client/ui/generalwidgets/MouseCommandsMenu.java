@@ -28,9 +28,9 @@ public class MouseCommandsMenu extends Composite implements HasCloseHandlers<Mou
 		menu.hide();
 		menu.setItens(items);
 		menu.setFocusWhenMouseOver(true);
-		menu.addCloseHandler(new br.com.oncast.ontrack.client.ui.generalwidgets.CloseHandler() {
+		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
 			@Override
-			public void onClose() {
+			public void onClose(final CloseEvent<CommandMenu> event) {
 				hide();
 			}
 		});

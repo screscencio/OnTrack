@@ -26,7 +26,7 @@ public class ProjectSelectionPanel extends Composite implements ProjectSelection
 
 	@UiFactory
 	protected ProjectSelectionWidget createProjectSwitchCommandMenu() {
-		return new ProjectSelectionWidget(false);
+		return new ProjectSelectionWidget();
 	}
 
 	public ProjectSelectionPanel() {

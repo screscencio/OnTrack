@@ -29,7 +29,6 @@ import com.octo.gwt.test.GwtTest;
 public class AppActivityMapperTest extends GwtTest {
 
 	private static final int PROJECT_ID = 1;
-	private Boolean isLoggedIn;
 	private AppActivityMapper appActivityMapper;
 	private Boolean isContextAvailable;
 
@@ -46,15 +45,6 @@ public class AppActivityMapperTest extends GwtTest {
 
 		when(clientServiceProvider.getAuthenticationService()).thenReturn(authenticationService);
 		when(clientServiceProvider.getContextProviderService()).thenReturn(contextProvider);
-
-		when(authenticationService.isUserLoggedIn()).thenAnswer(new Answer<Boolean>() {
-
-			@Override
-			public Boolean answer(final InvocationOnMock invocation) throws Throwable {
-				return isLoggedIn;
-			}
-		});
-
 		when(contextProvider.isContextAvailable(PROJECT_ID)).thenAnswer(new Answer<Boolean>() {
 
 			@Override
@@ -67,47 +57,41 @@ public class AppActivityMapperTest extends GwtTest {
 	}
 
 	@Test
-	public void whenUserLoggedInAndContextProviderNotAvailableShouldCreateContextLoadingActivity() {
-		isLoggedIn = true;
+	public void whenContextProviderNotAvailableShouldCreateContextLoadingActivity() {
 		isContextAvailable = false;
 
 		assertTrue(appActivityMapper.getActivity(new PlanningPlace(PROJECT_ID)) instanceof ContextLoadingActivity);
 	}
 
 	@Test
-	public void whenUserLoggedInAndContextProviderIsAvailableShouldCreatePlanningPlaceActivity() {
-		isLoggedIn = true;
+	public void whenContextProviderIsAvailableShouldCreatePlanningPlaceActivity() {
 		isContextAvailable = true;
 
 		assertTrue(appActivityMapper.getActivity(new PlanningPlace(PROJECT_ID)) instanceof PlanningActivity);
 	}
 
 	@Test
-	public void whenUserLoggedInAndContextProviderIsAvailableAndProjectIdIsZeroShouldCreateAProjectSelectionActivity() {
-		isLoggedIn = true;
+	public void whenContextProviderIsAvailableAndProjectIdIsZeroShouldCreateAProjectSelectionActivity() {
 		isContextAvailable = true;
 
 		assertTrue(appActivityMapper.getActivity(new PlanningPlace(0)) instanceof ProjectSelectionActivity);
 	}
 
 	@Test
-	public void whenUserLoggedInAndContextProviderIsAvailableAndProjectSelectionPlaceRequestedShouldCreateAProjectSelectionActivity() {
-		isLoggedIn = true;
+	public void whenContextProviderIsAvailableAndProjectSelectionPlaceRequestedShouldCreateAProjectSelectionActivity() {
 		isContextAvailable = true;
 
 		assertTrue(appActivityMapper.getActivity(new ProjectSelectionPlace()) instanceof ProjectSelectionActivity);
 	}
 
 	@Test
-	public void activityShouldBeNullWhenUserLoggedInAndPlaceNotInstanceOfPlanningPlaceNorContextLoadingPlaceAndContextAvailable() {
-		isLoggedIn = true;
+	public void activityShouldBeNullWhenPlaceNotInstanceOfPlanningPlaceNorContextLoadingPlaceAndContextAvailable() {
 		isContextAvailable = true;
 		assertNull(appActivityMapper.getActivity(null));
 	}
 
 	@Test
 	public void contextAvaliabilityShouldBeCheckedWhenProjectDependentPlaceIsPassed() {
-		isLoggedIn = true;
 		isContextAvailable = true;
 
 		final ProjectDependentPlace projectDependentPlace = mock(ProjectDependentPlace.class);
@@ -119,8 +103,6 @@ public class AppActivityMapperTest extends GwtTest {
 
 	@Test
 	public void contextAvaliabilityShouldNotBeCheckedWhenPassedPlaceIsNotAProjectDependentPlace() {
-		isLoggedIn = true;
-
 		final ProjectSelectionPlace projectIndependentPlace = mock(ProjectSelectionPlace.class);
 
 		appActivityMapper.getActivity(projectIndependentPlace);
@@ -130,7 +112,6 @@ public class AppActivityMapperTest extends GwtTest {
 
 	@Test
 	public void contextShouldBeLoadedForProjectDependentPlaces() {
-		isLoggedIn = true;
 		isContextAvailable = false;
 
 		final ProjectDependentPlace projectDependentPlace = mock(ProjectDependentPlace.class);

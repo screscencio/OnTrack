@@ -17,11 +17,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ValueHolder;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
 import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
@@ -30,6 +30,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
 
 public class ActionSyncServiceTest {
 
@@ -262,11 +263,11 @@ public class ActionSyncServiceTest {
 
 	private void loadProjectContext(final ProjectContextLoadCallback projectContextLoadCallback) {
 		actionSyncServiceTestUtils.getRequestDispatchServiceMock().dispatch(
-				new ProjectContextRequest(new UUID(), projectRepresentation.getId()), new DispatchCallback<ProjectContext>() {
+				new ProjectContextRequest(new UUID(), projectRepresentation.getId()), new DispatchCallback<ProjectContextResponse>() {
 
 					@Override
-					public void onRequestCompletition(final ProjectContext context) {
-						projectContextLoadCallback.onProjectContextLoaded(context);
+					public void onSuccess(final ProjectContextResponse response) {
+						projectContextLoadCallback.onProjectContextLoaded(new ProjectContext(response.getProject()));
 					}
 
 					@Override
@@ -283,7 +284,7 @@ public class ActionSyncServiceTest {
 	}
 
 	private void assureDefaultProjectRepresentationExistance() throws Exception {
-		final ProjectRepresentation representation = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createProject(
+		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createProject(
 				projectRepresentation.getName());
 	}
 }

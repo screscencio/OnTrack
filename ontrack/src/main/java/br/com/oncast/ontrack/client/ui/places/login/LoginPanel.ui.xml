@@ -37,7 +37,7 @@
 			margin-bottom: -10px;
 
 			color: #cc3c29;
-			text-shadow: 1px 1px 2px #red;
+			text-shadow: 1px 1px 2px red;
             font-family: arial, helvetica, sans-serif;
             font-size: 13px;
             font-style: normal;

@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -12,26 +11,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final AuthenticationRpcServiceAsync rpcServiceAsync = GWT.create(AuthenticationRpcService.class);
 
-	// XXX Auth; Remove this service and delete it.
-	private final UserProviderService userProviderService;
-
-	public AuthenticationServiceImpl(final RequestDispatchService requestService) {
-		this.userProviderService = new UserProviderService();
-	}
-
-	@Override
-	// XXX Auth; Remove this method. No client method should need to ask for this.
-	public boolean isUserLoggedIn() {
-		return userProviderService.isCurrentUserAuthenticated();
-	}
-
 	@Override
 	public void authenticate(final String login, final String password, final UserAuthenticationCallback callback) {
 		rpcServiceAsync.autheticateUser(login, password, new AsyncCallback<User>() {
 
 			@Override
 			public void onSuccess(final User user) {
-				userProviderService.setAuthenticatedUser(user);
 				callback.onUserAuthenticatedSuccessfully(user);
 			}
 
@@ -55,7 +40,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 			@Override
 			public void onSuccess(final Void result) {
-				userProviderService.logoutCurrentUser();
 				callback.onUserLogout();
 			}
 

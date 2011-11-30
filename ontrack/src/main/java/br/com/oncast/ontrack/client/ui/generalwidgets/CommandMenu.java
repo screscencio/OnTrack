@@ -10,6 +10,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -20,7 +24,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CommandMenu extends Composite {
+public class CommandMenu extends Composite implements HasCloseHandlers<CommandMenu> {
 
 	private static CommandMenuUiBinder uiBinder = GWT.create(CommandMenuUiBinder.class);
 
@@ -31,8 +35,6 @@ public class CommandMenu extends Composite {
 
 	@UiField
 	protected FocusPanel focusPanel;
-
-	private CloseHandler closeHandler;
 
 	private ItemSelectionHandler selectionHandler;
 
@@ -74,7 +76,7 @@ public class CommandMenu extends Composite {
 	public void hide() {
 		if (!this.isVisible()) return;
 		this.setVisible(false);
-		if (closeHandler != null) closeHandler.onClose();
+		CloseEvent.fire(this, this);
 	}
 
 	@UiHandler("focusPanel")
@@ -100,8 +102,9 @@ public class CommandMenu extends Composite {
 		hide();
 	}
 
-	public void addCloseHandler(final CloseHandler closeHandler) {
-		this.closeHandler = closeHandler;
+	@Override
+	public HandlerRegistration addCloseHandler(final CloseHandler<CommandMenu> handler) {
+		return addHandler(handler, CloseEvent.getType());
 	}
 
 	public void setItemSelectionHandler(final ItemSelectionHandler selectionHandler) {

@@ -1,10 +1,9 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch;
 
-import java.io.Serializable;
+import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 
-public class ProjectCreationRequest implements Serializable {
+public class ProjectCreationRequest implements DispatchRequest<ProjectCreationResponse> {
 
-	private static final long serialVersionUID = 1L;
 	private String projectName;
 
 	// IMPORTANT The default constructor is used by GWT. Do not remove this.

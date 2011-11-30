@@ -19,6 +19,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -69,24 +70,13 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		}
 	};
 
-	private final boolean isPopup;
-
-	// FIXME Remove this constructor and the argument isPopup.
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
-		this(customItemFactory, maxWidth, maxHeight, true);
-	}
-
-	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight, final boolean isPopup) {
-		this.isPopup = isPopup;
 		initWidget(uiBinder.createAndBindUi(this));
 		this.customItemFactory = customItemFactory;
 		this.maxHeight = maxHeight;
 		this.maxWidth = maxWidth;
 
 		configureMenu();
-
-		if (isPopup) hide();
-		else show();
 	}
 
 	public void setItens(final List<CommandMenuItem> itens) {
@@ -111,7 +101,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@Override
 	public void hide() {
-		if (!isPopup) return;
 		if (!this.isVisible()) return;
 
 		this.setVisible(false);
@@ -255,10 +244,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 				ensureSelectedItemIsVisible();
 			}
 		});
-		menu.addCloseHandler(new CloseHandler() {
-
+		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
 			@Override
-			public void onClose() {
+			public void onClose(final CloseEvent<CommandMenu> event) {
 				hide();
 			}
 		});
