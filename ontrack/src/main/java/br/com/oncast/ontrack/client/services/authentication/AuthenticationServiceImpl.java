@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -15,7 +14,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	// XXX Auth; Remove this service and delete it.
 	private final UserProviderService userProviderService;
 
-	public AuthenticationServiceImpl(final RequestDispatchService requestService) {
+	public AuthenticationServiceImpl() {
 		this.userProviderService = new UserProviderService();
 	}
 

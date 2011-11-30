@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.services;
 
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchServiceDefault;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
@@ -13,8 +15,6 @@ import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentServiceImpl;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchServiceImpl;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
@@ -48,7 +48,7 @@ public class ClientServiceProvider {
 	private ClientIdentificationProvider clientIdentificationProvider;
 	private ActionSyncService actionSyncService;
 
-	private RequestDispatchService requestDispatchService;
+	private DispatchService requestDispatchService;
 	private ServerPushClientService serverPushClientService;
 	private ErrorTreatmentService errorTreatmentService;
 	private EventBus eventBus;
@@ -78,7 +78,7 @@ public class ClientServiceProvider {
 
 	public AuthenticationService getAuthenticationService() {
 		if (authenticationService != null) return authenticationService;
-		return authenticationService = new AuthenticationServiceImpl(requestDispatchService);
+		return authenticationService = new AuthenticationServiceImpl();
 	}
 
 	public ApplicationPlaceController getApplicationPlaceController() {
@@ -103,9 +103,9 @@ public class ClientServiceProvider {
 				getClientIdentificationProvider(), getRequestDispatchService());
 	}
 
-	private RequestDispatchService getRequestDispatchService() {
+	private DispatchService getRequestDispatchService() {
 		if (requestDispatchService != null) return requestDispatchService;
-		return requestDispatchService = new RequestDispatchServiceImpl();
+		return requestDispatchService = new DispatchServiceDefault();
 	}
 
 	private ActionSyncService getActionSyncService() {

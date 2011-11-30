@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch;
 
-import java.io.Serializable;
 import java.util.List;
 
+import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class ModelActionSyncRequest implements Serializable {
+public class ModelActionSyncRequest implements DispatchRequest<VoidResult> {
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,22 +1,23 @@
 package br.com.oncast.ontrack.client.services.context;
 
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
-import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
 
 public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private final ProjectRepresentationProviderImpl projectRepresentationProvider;
 	private final ClientIdentificationProvider clientIdentificationProvider;
-	private final RequestDispatchService requestDispatchService;
+	private final DispatchService requestDispatchService;
 
 	private ProjectContext projectContext;
 
 	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider,
-			final ClientIdentificationProvider clientIdentificationProvider, final RequestDispatchService requestDispatchService) {
+			final ClientIdentificationProvider clientIdentificationProvider, final DispatchService requestDispatchService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.clientIdentificationProvider = clientIdentificationProvider;
 		this.requestDispatchService = requestDispatchService;
@@ -41,11 +42,11 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	@Override
 	public void loadProjectContext(final long requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
 		requestDispatchService.dispatch(new ProjectContextRequest(clientIdentificationProvider.getClientId(), requestedProjectId),
-				new DispatchCallback<ProjectContext>() {
+				new DispatchCallback<ProjectContextResponse>() {
 
 					@Override
-					public void onRequestCompletition(final ProjectContext projectContext) {
-						setProjectContext(projectContext);
+					public void onSuccess(final ProjectContextResponse response) {
+						setProjectContext(new ProjectContext(response.getProject()));
 						projectContextLoadCallback.onProjectContextLoaded();
 					}
 

@@ -3,19 +3,20 @@ package br.com.oncast.ontrack.client.services.actionSync;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
-import br.com.oncast.ontrack.client.services.requestDispatch.DispatchCallback;
-import br.com.oncast.ontrack.client.services.requestDispatch.RequestDispatchService;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.VoidResult;
 
 class ActionQueuedDispatcher {
 
-	private final RequestDispatchService requestDispatchService;
+	private final DispatchService requestDispatchService;
 	private final ClientIdentificationProvider clientIdentificationProvider;
 
 	private final List<ModelAction> actionList;
@@ -23,7 +24,7 @@ class ActionQueuedDispatcher {
 	private final ErrorTreatmentService errorTreatmentService;
 	private final ProjectRepresentationProvider projectRepresentationProvider;
 
-	public ActionQueuedDispatcher(final RequestDispatchService requestDispatchService, final ClientIdentificationProvider clientIdentificationProvider,
+	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ClientIdentificationProvider clientIdentificationProvider,
 			final ProjectRepresentationProvider projectRepresentationProvider, final ErrorTreatmentService errorTreatmentService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.errorTreatmentService = errorTreatmentService;
@@ -49,10 +50,10 @@ class ActionQueuedDispatcher {
 		// TODO Display 'loading' UI indicator.
 		requestDispatchService.dispatch(
 				new ModelActionSyncRequest(clientIdentificationProvider.getClientId(), projectRepresentationProvider.getCurrentProjectRepresentation(),
-						waitingServerAnswerActionList), new DispatchCallback<Void>() {
+						waitingServerAnswerActionList), new DispatchCallback<VoidResult>() {
 
 					@Override
-					public void onRequestCompletition(final Void response) {
+					public void onSuccess(final VoidResult response) {
 						// TODO Hide 'loading' UI indicator.
 						waitingServerAnswerActionList.clear();
 						sync();
