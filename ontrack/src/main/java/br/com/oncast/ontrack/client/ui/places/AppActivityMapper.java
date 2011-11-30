@@ -29,8 +29,6 @@ public class AppActivityMapper implements ActivityMapper {
 	public Activity getActivity(final Place place) {
 
 		if (place instanceof LoginPlace) return createLoginActivity((LoginPlace) place);
-		// XXX Auth; Lazy load login activity when login place is received. Remove this.
-		if (!services.getAuthenticationService().isUserLoggedIn()) return createLoginActivity(new LoginPlace());
 
 		if (place instanceof ProjectDependentPlace) {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;

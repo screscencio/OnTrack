@@ -65,6 +65,7 @@ public class ClientServiceProvider {
 	/**
 	 * Configures the necessary services for application full usage.
 	 * - Initiates the {@link ActionSyncService}, which starts a server-push connection with the server;
+	 * - Initiates the {@link ActionSyncService}, which starts an global error handler;
 	 * - Initiates the {@link ApplicationPlaceController} setting the default place and panel in which the application navigation will occur.
 	 * 
 	 * @param panel the panel that will be used by the application "navigation" through the {@link ApplicationPlaceController}.
@@ -72,6 +73,7 @@ public class ClientServiceProvider {
 	 */
 	public void configure(final AcceptsOneWidget panel, final Place defaultAppPlace) {
 		getActionSyncService();
+		getErrorTreatmentService();
 		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
 	}
