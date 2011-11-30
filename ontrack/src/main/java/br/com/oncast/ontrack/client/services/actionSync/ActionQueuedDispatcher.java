@@ -60,11 +60,12 @@ class ActionQueuedDispatcher {
 					}
 
 					@Override
-					public void onFailure(final Throwable caught) {
+					public void onTreatedFailure(final Throwable caught) {}
+
+					@Override
+					public void onUntreatedFailure(final Throwable caught) {
 						// TODO Hide 'loading' UI indicator.
-
 						// TODO When "Broswer-Reload" is removed, this method should fix "sync lists" according to the error returned.
-
 						// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
 						if (caught instanceof InvalidIncomingAction || caught instanceof UnableToHandleActionException) {
 							errorTreatmentService

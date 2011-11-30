@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
+import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -64,14 +65,16 @@ public class ClientServiceProvider {
 
 	/**
 	 * Configures the necessary services for application full usage.
+	 * - Initiates the {@link AuthenticationService}, which register a communication failure handler for {@link NotAuthenticatedException};
 	 * - Initiates the {@link ActionSyncService}, which starts a server-push connection with the server;
-	 * - Initiates the {@link ActionSyncService}, which starts an global error handler;
+	 * - Initiates the {@link ErrorTreatmentService}, which starts an global error handler;
 	 * - Initiates the {@link ApplicationPlaceController} setting the default place and panel in which the application navigation will occur.
 	 * 
 	 * @param panel the panel that will be used by the application "navigation" through the {@link ApplicationPlaceController}.
 	 * @param defaultAppPlace the default place used by the {@link ApplicationPlaceController} "navigation".
 	 */
 	public void configure(final AcceptsOneWidget panel, final Place defaultAppPlace) {
+		getAuthenticationService();
 		getActionSyncService();
 		getErrorTreatmentService();
 		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
@@ -80,7 +83,7 @@ public class ClientServiceProvider {
 
 	public AuthenticationService getAuthenticationService() {
 		if (authenticationService != null) return authenticationService;
-		return authenticationService = new AuthenticationServiceImpl();
+		return authenticationService = new AuthenticationServiceImpl(getRequestDispatchService(), getApplicationPlaceController());
 	}
 
 	public ApplicationPlaceController getApplicationPlaceController() {

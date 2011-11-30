@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse
 
 import com.google.gwt.user.client.Window;
 
+// FIXME Listen for auth changes, clean on logout and reload on login.
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
 	private final DispatchService dispatchService;
@@ -47,7 +48,10 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			}
 
 			@Override
-			public void onFailure(final Throwable caught) {
+			public void onTreatedFailure(final Throwable caught) {}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
 				// TODO +++Treat fatal error. COuld not load project list...
 				Window.alert("It was not possible to load the project list.\n Verify your internet connection and try again later.");
 			}
@@ -74,7 +78,10 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			}
 
 			@Override
-			public void onFailure(final Throwable caught) {
+			public void onTreatedFailure(final Throwable caught) {}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
 				if (caught instanceof UnableToCreateProjectRepresentation) projectCreationListener.onProjectCreationFailure();
 				else projectCreationListener.onUnexpectedFailure();
 			}
