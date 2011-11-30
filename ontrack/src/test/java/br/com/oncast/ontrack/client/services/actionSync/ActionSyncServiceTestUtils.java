@@ -199,7 +199,7 @@ public class ActionSyncServiceTestUtils {
 						dispatchCallback.onSuccess(null);
 					}
 					catch (final UnableToHandleActionException e) {
-						dispatchCallback.onFailure(e);
+						dispatchCallback.onUntreatedFailure(e);
 					}
 				}
 				else if (request instanceof ProjectListRequest) {
@@ -208,7 +208,7 @@ public class ActionSyncServiceTestUtils {
 						dispatchCallback.onSuccess(new ProjectListResponse(projectList));
 					}
 					catch (final Exception e) {
-						dispatchCallback.onFailure(e);
+						dispatchCallback.onUntreatedFailure(e);
 					}
 				}
 				else if (request instanceof ProjectCreationRequest) {
@@ -218,7 +218,7 @@ public class ActionSyncServiceTestUtils {
 						dispatchCallback.onSuccess(new ProjectCreationResponse(projectRepresentation));
 					}
 					catch (final Exception e) {
-						dispatchCallback.onFailure(e);
+						dispatchCallback.onUntreatedFailure(e);
 					}
 				}
 				else if (request instanceof ProjectContextRequest) {
@@ -227,7 +227,7 @@ public class ActionSyncServiceTestUtils {
 						dispatchCallback.onSuccess(new ProjectContextResponse(project));
 					}
 					catch (final Exception e) {
-						dispatchCallback.onFailure(e);
+						dispatchCallback.onUntreatedFailure(e);
 					}
 				}
 			}

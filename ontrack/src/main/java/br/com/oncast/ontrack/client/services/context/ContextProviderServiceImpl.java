@@ -51,10 +51,13 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 					}
 
 					@Override
-					public void onFailure(final Throwable cause) {
+					public void onTreatedFailure(final Throwable caught) {}
+
+					@Override
+					public void onUntreatedFailure(final Throwable caught) {
 						// TODO +++Treat communication failure.
-						if (cause instanceof ProjectNotFoundException) projectContextLoadCallback.onProjectNotFound();
-						else projectContextLoadCallback.onUnexpectedFailure(cause);
+						if (caught instanceof ProjectNotFoundException) projectContextLoadCallback.onProjectNotFound();
+						else projectContextLoadCallback.onUnexpectedFailure(caught);
 					}
 				});
 	}

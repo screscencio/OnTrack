@@ -1,6 +1,11 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
+import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
+import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordException;
+import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -10,6 +15,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final AuthenticationRpcServiceAsync rpcServiceAsync = GWT.create(AuthenticationRpcService.class);
+
+	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController) {
+		dispatchService.addFailureHandler(NotAuthenticatedException.class, new FailureHandler<NotAuthenticatedException>() {
+
+			@Override
+			public void handle(final NotAuthenticatedException caught) {
+				applicationPlaceController.goTo(new LoginPlace(applicationPlaceController.getCurrentPlace()));
+			}
+		});
+	}
 
 	@Override
 	public void authenticate(final String login, final String password, final UserAuthenticationCallback callback) {
@@ -35,6 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
+	// FIXME Not working.
 	public void logout(final UserLogoutCallback callback) {
 		rpcServiceAsync.logoutUser(new AsyncCallback<Void>() {
 

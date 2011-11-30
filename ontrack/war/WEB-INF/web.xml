@@ -93,7 +93,7 @@
 
 	<!-- SESSION CONFIGURATION -->
 	<session-config>
-		<session-timeout>30</session-timeout>
+		<session-timeout>20160</session-timeout>
 	</session-config>
 
 	<!-- DEFAULT PAGE -->

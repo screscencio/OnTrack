@@ -271,7 +271,10 @@ public class ActionSyncServiceTest {
 					}
 
 					@Override
-					public void onFailure(final Throwable caught) {
+					public void onTreatedFailure(final Throwable caught) {}
+
+					@Override
+					public void onUntreatedFailure(final Throwable caught) {
 						projectContextLoadCallback.onProjectContextFailed(caught);
 					}
 				});

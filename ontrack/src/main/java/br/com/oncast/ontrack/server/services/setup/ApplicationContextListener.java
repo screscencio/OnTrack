@@ -9,6 +9,7 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchServiceExceptio
 import br.com.oncast.ontrack.server.business.DefaultProjectExistenceAssurer;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationVerificationAspectFilter;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequestHandler;
@@ -22,13 +23,20 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 
 public class ApplicationContextListener implements ServletContextListener {
 
+	private static final ServerServiceProvider SERVICE_PROVIDER = ServerServiceProvider.getInstance();
+
 	@Override
 	public void contextInitialized(final ServletContextEvent event) {
 		setupDispatchHandlers();
+		setupAuthenticationAspectIntoDispatchService();
 		setupBusinessLogic(event);
 		setupServerPush(event);
 		assureDefaultUserIsPresent();
 		assureDefaultProjectIsPresent();
+	}
+
+	private void setupAuthenticationAspectIntoDispatchService() {
+		DispatchServiceServlet.registerRequestFilter(new AuthenticationVerificationAspectFilter(SERVICE_PROVIDER.getAuthenticationManager()));
 	}
 
 	private void setupDispatchHandlers() {
@@ -56,7 +64,7 @@ public class ApplicationContextListener implements ServletContextListener {
 	 * @param event the servlet context event.
 	 */
 	private void setupBusinessLogic(final ServletContextEvent event) {
-		ServerServiceProvider.getInstance().getBusinessLogic();
+		SERVICE_PROVIDER.getBusinessLogic();
 	}
 
 	/**
