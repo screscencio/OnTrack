@@ -175,7 +175,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private boolean hasTextMatchInItemList(final List<CommandMenuItem> itens, final String text) {
 		for (final CommandMenuItem item : itens)
-			if (item.getText().equals(text)) return true;
+			if (item.getText().toLowerCase().equals(text.toLowerCase())) return true;
 		return false;
 	}
 
