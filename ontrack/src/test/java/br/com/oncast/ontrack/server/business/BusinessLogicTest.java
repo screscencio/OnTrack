@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.server.business;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -351,14 +350,6 @@ public class BusinessLogicTest {
 
 		business.createProject("new Project");
 		verify(persistence).authorize(authenticatedUser, createdProject);
-	}
-
-	private void assertProjectDoesNotExists(final long newProjectId) throws UnableToLoadProjectException {
-		try {
-			loadProject(newProjectId);
-			fail();
-		}
-		catch (final ProjectNotFoundException e) {}
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {
