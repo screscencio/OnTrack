@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+// XXX Auth : Verify Css for error messages.
 public class LoginPanel extends Composite implements LoginView {
 
 	private static LoginPanelUiBinder uiBinder = GWT.create(LoginPanelUiBinder.class);
