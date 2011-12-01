@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
@@ -16,6 +19,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final AuthenticationRpcServiceAsync rpcServiceAsync = GWT.create(AuthenticationRpcService.class);
 
+	private final Set<UserAuthenticationListener> userAuthenticatedListeners;
+
 	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController) {
 		dispatchService.addFailureHandler(NotAuthenticatedException.class, new FailureHandler<NotAuthenticatedException>() {
 
@@ -24,6 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				applicationPlaceController.goTo(new LoginPlace(applicationPlaceController.getCurrentPlace()));
 			}
 		});
+		userAuthenticatedListeners = new HashSet<UserAuthenticationListener>();
 	}
 
 	@Override
@@ -33,6 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 			@Override
 			public void onSuccess(final User user) {
+				notifyUserAuthenticatedListeners();
 				callback.onUserAuthenticatedSuccessfully(user);
 			}
 
@@ -84,5 +91,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				else callback.onUnexpectedFailure(caught);
 			}
 		});
+	}
+
+	@Override
+	public void registerUserAuthenticationListener(final UserAuthenticationListener listener) {
+		userAuthenticatedListeners.add(listener);
+	}
+
+	@Override
+	public void unregisterUserAuthenticatedListener(final UserAuthenticationListener listener) {
+		userAuthenticatedListeners.remove(listener);
+	}
+
+	private void notifyUserAuthenticatedListeners() {
+		for (final UserAuthenticationListener listener : userAuthenticatedListeners) {
+			listener.onUserLoggedIn();
+		}
 	}
 }

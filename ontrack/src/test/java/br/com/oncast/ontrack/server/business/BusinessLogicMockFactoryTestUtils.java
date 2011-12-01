@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
@@ -27,19 +28,24 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 public class BusinessLogicMockFactoryTestUtils {
 
 	public static BusinessLogic createWithJpaPersistenceAndCustomBroadcastMock(final MulticastService broadcastMock) {
-		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), broadcastMock, getClientManagerMock());
+		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), broadcastMock, getClientManagerMock(), getAuthManagerMock());
 	}
 
 	public static BusinessLogic createWithDumbPersistenceMockAndDumbBroadcastMock() {
-		return new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock(), getClientManagerMock());
+		return new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
 	}
 
 	public static BusinessLogic createWithDumbNonWritablePersistenceMockAndDumbBroadcastMock() {
-		return new BusinessLogicImpl(getNonWritablePersistenceMock(), getBroadcastMock(), getClientManagerMock());
+		return new BusinessLogicImpl(getNonWritablePersistenceMock(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
 	}
 
 	public static BusinessLogic createWithJpaPersistenceAndDumbBroadcastMock() {
-		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), getBroadcastMock(), getClientManagerMock());
+		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
+	}
+
+	public static BusinessLogic createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(final PersistenceService persistenceService,
+			final AuthenticationManager authManager) {
+		return new BusinessLogicImpl(persistenceService, getBroadcastMock(), getClientManagerMock(), authManager);
 	}
 
 	private static PersistenceService getPersistenceMock() {
@@ -225,6 +231,10 @@ public class BusinessLogicMockFactoryTestUtils {
 
 	private static ClientManager getClientManagerMock() {
 		return Mockito.mock(ClientManager.class);
+	}
+
+	private static AuthenticationManager getAuthManagerMock() {
+		return Mockito.mock(AuthenticationManager.class);
 	}
 
 }

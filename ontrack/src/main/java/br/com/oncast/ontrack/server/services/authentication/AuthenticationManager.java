@@ -46,6 +46,10 @@ public class AuthenticationManager {
 		return sessionManager.getCurrentSession().getAuthenticatedUser() != null;
 	}
 
+	public User getAuthenticatedUser() {
+		return sessionManager.getCurrentSession().getAuthenticatedUser();
+	}
+
 	// XXX Auth; Review update password logic. While authentication is not refactored this might fail if the user is not truly authenticated on the server.
 	public void updateUserPassword(final String currentPassword, final String newPassword) throws IncorrectPasswordException {
 		final String email = sessionManager.getCurrentSession().getAuthenticatedUser().getEmail();

@@ -12,7 +12,7 @@ public class ProjectListRequestHandler implements RequestHandler<ProjectListRequ
 
 	@Override
 	public ProjectListResponse handle(final ProjectListRequest request) throws Exception {
-		return new ProjectListResponse(BUSINESS.retrieveProjectList());
+		return new ProjectListResponse(BUSINESS.retrieveCurrentUserProjectList());
 	}
 
 }

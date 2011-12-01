@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -27,6 +28,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
@@ -39,11 +41,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final PersistenceService persistenceService;
 	private final MulticastService broadcastService;
 	private final ClientManager clientManager;
+	private final AuthenticationManager authenticationManager;
 
-	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService actionBroadcastService, final ClientManager clientManager) {
+	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService actionBroadcastService, final ClientManager clientManager,
+			final AuthenticationManager authenticationManager) {
 		this.persistenceService = persistenceService;
 		this.broadcastService = actionBroadcastService;
 		this.clientManager = clientManager;
+		this.authenticationManager = authenticationManager;
 	}
 
 	@Override
@@ -106,11 +111,13 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
+	// TODO make this method transactional.
 	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		try {
 			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(projectName);
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
+			persistenceService.authorize(authenticationManager.getAuthenticatedUser(), persistedProjectRepresentation);
 			broadcastService.broadcastProjectCreation(persistedProjectRepresentation);
 			return persistedProjectRepresentation;
 		}
@@ -129,6 +136,21 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "Unable to retrieve the project list.";
+			LOGGER.debug(errorMessage, e);
+			throw new UnableToRetrieveProjectListException(errorMessage);
+		}
+	}
+
+	@Override
+	public List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException {
+		final User user = authenticationManager.getAuthenticatedUser();
+		LOGGER.debug("Retrieving authorized project list for user '" + user + "'.");
+		try {
+			// FIXME Remove business login from persistence (persistence returns only project authorizations)
+			return persistenceService.retrieveAuthorizedProjects(user.getId());
+		}
+		catch (final PersistenceException e) {
+			final String errorMessage = "Unable to retrieve the current user project list.";
 			LOGGER.debug(errorMessage, e);
 			throw new UnableToRetrieveProjectListException(errorMessage);
 		}

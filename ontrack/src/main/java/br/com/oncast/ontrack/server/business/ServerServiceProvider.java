@@ -39,7 +39,7 @@ public class ServerServiceProvider {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getBroadcastService(), getClientManagerService());
+			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getBroadcastService(), getClientManagerService(), getAuthenticationManager());
 		}
 	}
 

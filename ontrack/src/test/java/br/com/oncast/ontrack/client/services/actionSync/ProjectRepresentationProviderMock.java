@@ -2,10 +2,13 @@ package br.com.oncast.ontrack.client.services.actionSync;
 
 import java.util.ArrayList;
 
+import org.mockito.Mockito;
+
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
+import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
@@ -40,7 +43,7 @@ public class ProjectRepresentationProviderMock extends ProjectRepresentationProv
 					@Override
 					public <T extends ServerPushEvent> void registerServerEventHandler(final Class<T> eventClass,
 							final ServerPushEventHandler<T> serverPushEventHandler) {}
-				});
+				}, Mockito.mock(AuthenticationService.class));
 	}
 
 	@Override

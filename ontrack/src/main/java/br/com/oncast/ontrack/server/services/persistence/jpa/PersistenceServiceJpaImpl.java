@@ -348,7 +348,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	// FIXME Rodrigo use this method to get the project list for an user.
+	// FIXME Remove business login from persistence (persistence returns only project authorizations)
 	public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {

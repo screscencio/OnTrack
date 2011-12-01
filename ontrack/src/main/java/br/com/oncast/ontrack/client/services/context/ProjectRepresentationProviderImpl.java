@@ -5,6 +5,8 @@ import java.util.Set;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
+import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -25,8 +27,23 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	private final Set<ProjectRepresentation> availableProjectRepresentations = new HashSet<ProjectRepresentation>();
 	private ProjectRepresentation currentProjectRepresentation;
 
-	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService) {
+	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
+			final AuthenticationService authenticationService) {
+
 		this.dispatchService = dispatchService;
+
+		authenticationService.registerUserAuthenticationListener(new UserAuthenticationListener() {
+			@Override
+			public void onUserLoggedIn() {
+				updateAvailableProjectRepresentations();
+			}
+
+			@Override
+			public void onUserLoggedOut() {
+				availableProjectRepresentations.clear();
+				notifyListenersForCurrentProjectListChange();
+			}
+		});
 
 		serverPushClientService.registerServerEventHandler(ProjectCreatedEvent.class, new NewProjectCreatedEventHandler() {
 
@@ -39,23 +56,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			}
 		});
 
-		dispatchService.dispatch(new ProjectListRequest(), new DispatchCallback<ProjectListResponse>() {
-
-			@Override
-			public void onSuccess(final ProjectListResponse response) {
-				availableProjectRepresentations.addAll(response.getProjectList());
-				notifyListenersForCurrentProjectListChange();
-			}
-
-			@Override
-			public void onTreatedFailure(final Throwable caught) {}
-
-			@Override
-			public void onUntreatedFailure(final Throwable caught) {
-				// TODO +++Treat fatal error. COuld not load project list...
-				Window.alert("It was not possible to load the project list.\n Verify your internet connection and try again later.");
-			}
-		});
+		updateAvailableProjectRepresentations();
 	}
 
 	@Override
@@ -98,6 +99,27 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	@Override
 	public void unregisterProjectListChangeListener(final ProjectListChangeListener projectListChangeListener) {
 		projectListChangeListeners.remove(projectListChangeListener);
+	}
+
+	private void updateAvailableProjectRepresentations() {
+		dispatchService.dispatch(new ProjectListRequest(), new DispatchCallback<ProjectListResponse>() {
+
+			@Override
+			public void onSuccess(final ProjectListResponse response) {
+				availableProjectRepresentations.clear();
+				availableProjectRepresentations.addAll(response.getProjectList());
+				notifyListenersForCurrentProjectListChange();
+			}
+
+			@Override
+			public void onTreatedFailure(final Throwable caught) {}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				// TODO +++Treat fatal error. COuld not load project list...
+				Window.alert("It was not possible to load the project list.\n Verify your internet connection and try again later.");
+			}
+		});
 	}
 
 	private void notifyListenersForCurrentProjectListChange() {

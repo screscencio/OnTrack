@@ -93,7 +93,8 @@ public class ClientServiceProvider {
 
 	public ProjectRepresentationProvider getProjectRepresentationProvider() {
 		if (projectRepresentationProvider != null) return projectRepresentationProvider;
-		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(getRequestDispatchService(), getServerPushClientService());
+		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(getRequestDispatchService(), getServerPushClientService(),
+				getAuthenticationService());
 	}
 
 	public ActionExecutionService getActionExecutionService() {
