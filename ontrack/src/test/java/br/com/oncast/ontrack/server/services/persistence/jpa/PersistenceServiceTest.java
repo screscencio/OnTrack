@@ -27,6 +27,7 @@ import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -269,7 +270,7 @@ public class PersistenceServiceTest {
 	}
 
 	@Test
-	public void shouldBeAbleToFindAllProjectRepresentationsThatAGivenUserIsRelatedTo() throws Exception {
+	public void shouldBeAbleToFindAllProjectAuthorizationsThatAGivenUserIsRelatedTo() throws Exception {
 		final User user = createAndPersistUser();
 		final ProjectRepresentation project1 = createProjectRepresentation("project1");
 		createProjectRepresentation("project2");
@@ -277,9 +278,17 @@ public class PersistenceServiceTest {
 
 		authorize(user, project1, project3);
 
-		final List<ProjectRepresentation> userProjects = persistenceService.retrieveAuthorizedProjects(user.getId());
+		final List<ProjectAuthorizationEntity> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
 
-		assertCollectionEquality(Arrays.asList(project1, project3), userProjects);
+		assertCollectionEquality(Arrays.asList(project1, project3), extractProjectsFromAuthorization(authorizations));
+	}
+
+	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorizationEntity> authorizations) {
+		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
+		for (final ProjectAuthorizationEntity authorization : authorizations) {
+			projects.add(authorization.getProject());
+		}
+		return projects;
 	}
 
 	@Test(expected = PersistenceException.class)

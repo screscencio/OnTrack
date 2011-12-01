@@ -332,7 +332,7 @@ public class BusinessLogicTest {
 		business.retrieveCurrentUserProjectList();
 
 		verify(authManager).getAuthenticatedUser();
-		verify(persistence).retrieveAuthorizedProjects(user.getId());
+		verify(persistence).retrieveProjectAuthorizations(user.getId());
 	}
 
 	@Test

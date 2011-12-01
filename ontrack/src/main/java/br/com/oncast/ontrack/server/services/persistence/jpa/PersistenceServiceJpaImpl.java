@@ -348,11 +348,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	// FIXME Remove business login from persistence (persistence returns only project authorizations)
-	public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException {
+	public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select authorization.project from " + ProjectAuthorizationEntity.class.getSimpleName()
+			final Query query = em.createQuery("select authorization from " + ProjectAuthorizationEntity.class.getSimpleName()
 					+ " as authorization where authorization.user.id = :userId");
 			query.setParameter("userId", userId);
 			return query.getResultList();

@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.business;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -146,14 +148,22 @@ class BusinessLogicImpl implements BusinessLogic {
 		final User user = authenticationManager.getAuthenticatedUser();
 		LOGGER.debug("Retrieving authorized project list for user '" + user + "'.");
 		try {
-			// FIXME Remove business login from persistence (persistence returns only project authorizations)
-			return persistenceService.retrieveAuthorizedProjects(user.getId());
+			final List<ProjectAuthorizationEntity> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
+			return extractProjectsFromAuthorization(authorizations);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "Unable to retrieve the current user project list.";
 			LOGGER.debug(errorMessage, e);
 			throw new UnableToRetrieveProjectListException(errorMessage);
 		}
+	}
+
+	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorizationEntity> authorizations) {
+		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
+		for (final ProjectAuthorizationEntity authorization : authorizations) {
+			projects.add(authorization.getProject());
+		}
+		return projects;
 	}
 
 	@Override

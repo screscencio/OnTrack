@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -128,7 +129,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {}
 
 			@Override
-			public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException {
+			public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
 				return null;
 			}
 
@@ -213,7 +214,7 @@ public class BusinessLogicMockFactoryTestUtils {
 			public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {}
 
 			@Override
-			public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException {
+			public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
 				return null;
 			}
 		};
