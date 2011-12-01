@@ -125,7 +125,6 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 		messageLabel.setVisible(false);
 	}
 
-	// XXX Auth; Pre-process password (trim, etc) ?
 	private void submitUserPasswordChange() {
 		hideErrorMessage();
 		disable();

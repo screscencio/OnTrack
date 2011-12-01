@@ -27,8 +27,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public void authenticate(final String login, final String password, final UserAuthenticationCallback callback) {
-		rpcServiceAsync.autheticateUser(login, password, new AsyncCallback<User>() {
+	// XXX Auth; preformat user (lower-case, trim)
+	public void authenticate(final String user, final String password, final UserAuthenticationCallback callback) {
+		rpcServiceAsync.autheticateUser(user, password, new AsyncCallback<User>() {
 
 			@Override
 			public void onSuccess(final User user) {
@@ -50,7 +51,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	// FIXME Not working.
 	public void logout(final UserLogoutCallback callback) {
 		rpcServiceAsync.logoutUser(new AsyncCallback<Void>() {
 

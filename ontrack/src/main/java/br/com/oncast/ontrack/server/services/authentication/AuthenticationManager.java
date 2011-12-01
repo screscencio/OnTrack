@@ -11,6 +11,8 @@ import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordE
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 
+// XXX Auth; Verify password before saving it (extract logic to use in the client "Change Pass" as well); RULEZ: Minimal char = 6;
+// TODO Increment password strengh validation, reflecting it on the UI as well so the user can create it without getting bored/angry.
 public class AuthenticationManager {
 
 	private static final Logger LOGGER = Logger.getLogger(AuthenticationManager.class);
@@ -44,7 +46,7 @@ public class AuthenticationManager {
 		return sessionManager.getCurrentSession().getAuthenticatedUser() != null;
 	}
 
-	// XXX Auth; Rewrite update password logic. While authentication is not refactored this might fail if the user is not truly authenticated on the server.
+	// XXX Auth; Review update password logic. While authentication is not refactored this might fail if the user is not truly authenticated on the server.
 	public void updateUserPassword(final String currentPassword, final String newPassword) throws IncorrectPasswordException {
 		final String email = sessionManager.getCurrentSession().getAuthenticatedUser().getEmail();
 

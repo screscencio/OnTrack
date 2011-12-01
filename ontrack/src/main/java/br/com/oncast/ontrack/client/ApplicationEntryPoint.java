@@ -31,7 +31,6 @@ public class ApplicationEntryPoint implements EntryPoint {
 		final ApplicationUIPanel applicationUIPanel = new ApplicationUIPanel();
 		RootPanel.get().add(applicationUIPanel);
 
-		// TODO ++++Configure communication error handlers
 		ClientServiceProvider.getInstance().configure(applicationUIPanel, DEFAULT_APP_PLACE);
 	}
 }

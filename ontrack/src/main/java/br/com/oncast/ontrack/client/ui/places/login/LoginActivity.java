@@ -9,6 +9,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
+// XXX Auth; Fix login not working
 public class LoginActivity extends AbstractActivity implements LoginView.Presenter {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
@@ -65,11 +66,10 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 		}
 
 		view.disable();
-		// XXX Auth; Verify if the server formats (trims and lowercases, ...) the auth inputs.
+		// XXX Auth; Verify if the server formats (trims and lowercases, ...) the auth user. REFERENCED BY ANOTHER XXXtask
 		SERVICE_PROVIDER.getAuthenticationService().authenticate(username, password, authenticationCallback);
 	}
 
-	// XXX Auth; Validate the e-mail using a regex.
 	private boolean isValidEmail(final String email) {
 		if (email.trim().equals("")) return false;
 		return true;

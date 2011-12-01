@@ -16,6 +16,7 @@ public class DefaultUserExistenceAssurer {
 	private static final String DEFAULT_USER = DefaultAuthenticationCredentials.USER;
 	private static final String DEFAULT_PASSWORD = DefaultAuthenticationCredentials.PASSWORD;
 
+	// XXX Auth; Use Authentication Manager.
 	public static void verify() {
 		final PersistenceService persistenceService = ServerServiceProvider.getInstance().getPersistenceService();
 		try {
@@ -30,6 +31,7 @@ public class DefaultUserExistenceAssurer {
 		}
 	}
 
+	// XXX Auth; preformat user email in the method for creating a new user
 	private static void createNewUser(final PersistenceService persistenceService) {
 		final User newUser = new User();
 		newUser.setEmail(DEFAULT_USER);

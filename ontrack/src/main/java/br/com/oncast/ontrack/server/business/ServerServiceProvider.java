@@ -43,7 +43,6 @@ public class ServerServiceProvider {
 		}
 	}
 
-	// XXX Auth; Think about this method visibility.
 	public AuthenticationManager getAuthenticationManager() {
 		if (authenticationManager != null) return authenticationManager;
 		synchronized (this) {

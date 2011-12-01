@@ -16,6 +16,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private ProjectContext projectContext;
 
+	// XXX Auth; Receive the authService and register login/logout listener that onlogout cleans the context.
 	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider,
 			final ClientIdentificationProvider clientIdentificationProvider, final DispatchService requestDispatchService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;

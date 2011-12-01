@@ -46,7 +46,7 @@ public class ApplicationMenu extends Composite {
 		logUserOut();
 	}
 
-	// // XXX Auth; The Authentication service could allow observers to know when a user logged in or out.
+	// XXX Auth; The Authentication service could allow observers to know when a user logged in or out. REFERENCED BY ANOTHER 2 XXXs
 	private void logUserOut() {
 		SERVICE_PROVIDER.getAuthenticationService().logout(new UserLogoutCallback() {
 

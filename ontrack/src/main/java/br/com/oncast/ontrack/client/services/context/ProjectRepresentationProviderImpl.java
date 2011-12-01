@@ -17,7 +17,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse
 
 import com.google.gwt.user.client.Window;
 
-// FIXME Listen for auth changes, clean on logout and reload on login.
+// XXX Auth; Receive the authService and register login/logout listener that: onlogout cleans the project list and that onlogin retrieves the list from server.
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
 	private final DispatchService dispatchService;

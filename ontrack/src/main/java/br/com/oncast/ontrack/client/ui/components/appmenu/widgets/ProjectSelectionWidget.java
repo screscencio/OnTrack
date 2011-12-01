@@ -61,6 +61,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	public ProjectSelectionWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 
+		// XXX Auth; create method "onProjectListUnavailable" that is informed when the list is unavailable.
 		this.projectListChangeListener = new ProjectListChangeListener() {
 
 			@Override

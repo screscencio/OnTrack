@@ -23,8 +23,6 @@ public class AppActivityMapper implements ActivityMapper {
 		this.services = serviceProvider;
 	}
 
-	// TODO +++++Potentially lazy load and store activity instances. (ContextLoadingActivity/LoginActivity should have
-	// the destination place set or should always have a new instance)
 	@Override
 	public Activity getActivity(final Place place) {
 
