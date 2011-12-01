@@ -7,4 +7,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 public interface ProjectListChangeListener {
 
 	void onProjectListChanged(Set<ProjectRepresentation> projectRepresentations);
+
+	void onProjectListAvailabilityChange(boolean availability);
 }

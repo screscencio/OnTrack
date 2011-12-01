@@ -19,12 +19,13 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse
 
 import com.google.gwt.user.client.Window;
 
-// XXX Auth; Receive the authService and register login/logout listener that: onlogout cleans the project list and that onlogin retrieves the list from server.
+// XXX Auth; Test this class interaction with the auth service;
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
 	private final DispatchService dispatchService;
 	private final Set<ProjectListChangeListener> projectListChangeListeners = new HashSet<ProjectListChangeListener>();
 	private final Set<ProjectRepresentation> availableProjectRepresentations = new HashSet<ProjectRepresentation>();
+	private boolean projectListAvailability;
 	private ProjectRepresentation currentProjectRepresentation;
 
 	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
@@ -41,7 +42,10 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			@Override
 			public void onUserLoggedOut() {
 				availableProjectRepresentations.clear();
+				projectListAvailability = false;
+
 				notifyListenersForCurrentProjectListChange();
+				notifyListenersForCurrentProjectListAvailabilityChange();
 			}
 		});
 
@@ -57,6 +61,30 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 		});
 
 		updateAvailableProjectRepresentations();
+	}
+
+	private void updateAvailableProjectRepresentations() {
+		dispatchService.dispatch(new ProjectListRequest(), new DispatchCallback<ProjectListResponse>() {
+
+			@Override
+			public void onSuccess(final ProjectListResponse response) {
+				availableProjectRepresentations.clear();
+				availableProjectRepresentations.addAll(response.getProjectList());
+				projectListAvailability = true;
+
+				notifyListenersForCurrentProjectListChange();
+				notifyListenersForCurrentProjectListAvailabilityChange();
+			}
+
+			@Override
+			public void onTreatedFailure(final Throwable caught) {}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				// TODO +++Treat fatal error. COuld not load project list...
+				Window.alert("It was not possible to load the project list.\n Verify your internet connection and reload the application.");
+			}
+		});
 	}
 
 	@Override
@@ -94,32 +122,12 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 		if (projectListChangeListeners.contains(projectListChangeListener)) return;
 		projectListChangeListeners.add(projectListChangeListener);
 		notifyListenerForCurrentProjectListChange(projectListChangeListener);
+		notifyListenerForCurrentProjectListAvailabilityChange(projectListChangeListener);
 	}
 
 	@Override
 	public void unregisterProjectListChangeListener(final ProjectListChangeListener projectListChangeListener) {
 		projectListChangeListeners.remove(projectListChangeListener);
-	}
-
-	private void updateAvailableProjectRepresentations() {
-		dispatchService.dispatch(new ProjectListRequest(), new DispatchCallback<ProjectListResponse>() {
-
-			@Override
-			public void onSuccess(final ProjectListResponse response) {
-				availableProjectRepresentations.clear();
-				availableProjectRepresentations.addAll(response.getProjectList());
-				notifyListenersForCurrentProjectListChange();
-			}
-
-			@Override
-			public void onTreatedFailure(final Throwable caught) {}
-
-			@Override
-			public void onUntreatedFailure(final Throwable caught) {
-				// TODO +++Treat fatal error. COuld not load project list...
-				Window.alert("It was not possible to load the project list.\n Verify your internet connection and try again later.");
-			}
-		});
 	}
 
 	private void notifyListenersForCurrentProjectListChange() {
@@ -129,5 +137,14 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 	private void notifyListenerForCurrentProjectListChange(final ProjectListChangeListener projectListChangeListener) {
 		projectListChangeListener.onProjectListChanged(availableProjectRepresentations);
+	}
+
+	protected void notifyListenersForCurrentProjectListAvailabilityChange() {
+		for (final ProjectListChangeListener listener : projectListChangeListeners)
+			notifyListenerForCurrentProjectListAvailabilityChange(listener);
+	}
+
+	protected void notifyListenerForCurrentProjectListAvailabilityChange(final ProjectListChangeListener projectListChangeListener) {
+		projectListChangeListener.onProjectListAvailabilityChange(projectListAvailability);
 	}
 }

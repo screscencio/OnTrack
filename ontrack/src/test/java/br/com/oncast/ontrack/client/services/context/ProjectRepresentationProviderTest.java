@@ -90,6 +90,11 @@ public class ProjectRepresentationProviderTest {
 				projectList.clear();
 				projectList.addAll(projectRepresentations);
 			}
+
+			@Override
+			public void onProjectListAvailabilityChange(final boolean availability) {
+				// FIXME Lobo
+			}
 		});
 
 		assertEquals(1, projectList.size());

@@ -201,9 +201,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final PasswordEntity passwordEntity = (PasswordEntity) TYPE_CONVERTER.convert(passwordForUser);
 			em.getTransaction().begin();
-			em.merge(passwordEntity);
+			final PasswordEntity mergedEntity = em.merge(passwordEntity);
 			em.getTransaction().commit();
-			// FIXME Change the incoming object with id.
+			passwordForUser.setId(mergedEntity.getId());
 		}
 		catch (final Exception e) {
 			try {
@@ -396,5 +396,4 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		return user;
 	}
-
 }

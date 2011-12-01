@@ -144,6 +144,7 @@ public class ScopeTreeWidget extends Composite {
 
 	public void setFocus(final boolean focus) {
 		tree.setFocus(focus);
+		if (getItemCount() > 0) setSelectedItem(getItem(0));
 	}
 
 	public ScopeTreeItem getItem(final int index) {

@@ -6,9 +6,7 @@ public interface UserAuthenticationCallback {
 
 	void onUserAuthenticatedSuccessfully(User user);
 
-	void onIncorrectUserEmail();
-
-	void onIncorrectUserPasswordFailure();
+	void onIncorrectCredentialsFailure();
 
 	void onUnexpectedFailure(Throwable caught);
 

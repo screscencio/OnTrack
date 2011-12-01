@@ -4,20 +4,36 @@
 	xmlns:cp='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
 
 	<ui:style>
-	.projectSwitchingMenuButton:HOVER {
-			cursor: pointer;
-	}
-	
-	.projectSwitchingMenu {
-                position: absolute;
-                top: 33px;
-                left: 0px;
-                min-width: 200px;
-                z-index: 2;
-			}
-	
+		.projectSwitchingMenu {
+			position: absolute;
+			top: 33px;
+			left: 0px;
+			min-width: 200px;
+			z-index: 2;
+		}
+		
+		.loadingIndicatorPanel {
+            width: 100px;
+            height: 100px;		
+            margin: 0px auto;
+            margin-top: 50px;
+		}
+		
+		.loadingIndicator {
+            margin: 0px auto;
+            padding: 15px;
+            
+            background: white;
+            border: 2px solid #888;
+            border-radius: 50%;
+		}
 	</ui:style>
-	
-	<cp:FiltrableCommandMenu ui:field="projectSwitchingMenu" styleName="{style.projectSwitchingMenu}" />
+
+    <g:FlowPanel styleName="{style.projectSwitchingMenu}">
+        <g:SimplePanel ui:field="loadingPanel" styleName="{style.loadingIndicatorPanel}" >
+        	<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
+        </g:SimplePanel>
+    	<cp:FiltrableCommandMenu ui:field="projectSwitchingMenu" />
+    </g:FlowPanel>	
 
 </ui:UiBinder>

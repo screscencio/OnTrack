@@ -26,6 +26,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProjectSelectionWidget extends Composite implements HasCloseHandlers<ProjectSelectionWidget>, PopupAware {
@@ -38,6 +39,9 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	@UiField
 	protected FiltrableCommandMenu projectSwitchingMenu;
+
+	@UiField
+	protected SimplePanel loadingPanel;
 
 	private final ProjectListChangeListener projectListChangeListener;
 
@@ -61,16 +65,33 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	public ProjectSelectionWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		// XXX Auth; create method "onProjectListUnavailable" that is informed when the list is unavailable.
 		this.projectListChangeListener = new ProjectListChangeListener() {
 
 			@Override
 			public void onProjectListChanged(final Set<ProjectRepresentation> projectRepresentations) {
 				updateProjectMenuItens(projectRepresentations);
 			}
+
+			@Override
+			public void onProjectListAvailabilityChange(final boolean availability) {
+				if (availability) hideLoadingIndicator();
+				else showLoadingIndicator();
+			}
 		};
 		registerProjectListChangeListener();
 		registerCloseHandler();
+	}
+
+	protected void hideLoadingIndicator() {
+		loadingPanel.setVisible(false);
+		projectSwitchingMenu.setVisible(true);
+		projectSwitchingMenu.focus();
+		projectSwitchingMenu.selectFirstItem();
+	}
+
+	protected void showLoadingIndicator() {
+		loadingPanel.setVisible(true);
+		projectSwitchingMenu.setVisible(false);
 	}
 
 	private void registerCloseHandler() {

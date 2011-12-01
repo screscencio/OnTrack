@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-// XXX Auth : Verify Css for error messages.
 public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget>, PopupAware {
 	private static PasswordChangeWidgetUiBinder uiBinder = GWT.create(PasswordChangeWidgetUiBinder.class);
 
@@ -114,7 +113,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	private void changePassword() {
 		if (newPasswordArea.getText().isEmpty() || retypePasswordArea.getText().isEmpty()) showErrorMessage("The new password cannot be empty.");
 		else if (!areTypedPasswordsEqual()) showErrorMessage("The two typed passwords are different.");
-		else if (!PasswordValidator.isValid(newPasswordArea.getText())) showErrorMessage("Your new password must be 6 characters or more.");
+		else if (!PasswordValidator.isValid(newPasswordArea.getText())) showErrorMessage("The new password must have at least 6 characters.");
 		else submitUserPasswordChange();
 	}
 

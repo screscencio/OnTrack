@@ -333,8 +333,7 @@ public class PersistenceServiceTest {
 	}
 
 	private User createAndPersistUser() throws PersistenceException {
-		final User user = persistenceService.persistOrUpdateUser(new User("email@provider.com"));
-		return user;
+		return persistenceService.persistOrUpdateUser(new User("email@provider.com"));
 	}
 
 	private void authorize(final User user, final ProjectRepresentation... projects) throws PersistenceException {

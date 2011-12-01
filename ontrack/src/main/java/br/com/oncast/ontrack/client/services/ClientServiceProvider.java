@@ -106,7 +106,7 @@ public class ClientServiceProvider {
 	public ContextProviderService getContextProviderService() {
 		if (contextProviderService != null) return contextProviderService;
 		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) getProjectRepresentationProvider(),
-				getClientIdentificationProvider(), getRequestDispatchService());
+				getClientIdentificationProvider(), getRequestDispatchService(), getAuthenticationService());
 	}
 
 	private DispatchService getRequestDispatchService() {
