@@ -118,14 +118,13 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		if (event.getNativeKeyCode() == KEY_ESCAPE) hide();
 
 		else if (event.getNativeKeyCode() == KEY_ENTER) {
-			filteringTimer.run();
 			executeSelectedItemCommand();
 			hide();
 		}
 		else if (event.getNativeKeyCode() == KEY_DOWN || event.getNativeKeyCode() == KEY_UP) eatEvent(event);
 		else {
 			filteringTimer.cancel();
-			filteringTimer.schedule(400);
+			filteringTimer.schedule(300);
 		}
 
 		eatEvent(event);
