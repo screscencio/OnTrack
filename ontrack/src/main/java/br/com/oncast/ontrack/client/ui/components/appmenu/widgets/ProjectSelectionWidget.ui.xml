@@ -17,6 +17,7 @@
             height: 100px;		
             margin: 0px auto;
             margin-top: 50px;
+            padding-left: -1px;
 		}
 		
 		.loadingIndicator {
@@ -24,12 +25,12 @@
             padding: 15px;
             
             background: white;
-            border: 2px solid #888;
+            border: 2px solid #eaeaea;
             border-radius: 50%;
 		}
 	</ui:style>
 
-    <g:FlowPanel styleName="{style.projectSwitchingMenu}">
+    <g:FlowPanel ui:field="rootPanel" styleName="{style.projectSwitchingMenu}">
         <g:SimplePanel ui:field="loadingPanel" styleName="{style.loadingIndicatorPanel}" >
         	<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
         </g:SimplePanel>

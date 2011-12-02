@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse
 
 import com.google.gwt.user.client.Window;
 
-// XXX Auth; Test this class interaction with the auth service;
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
 	private final DispatchService dispatchService;
