@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.business;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,11 +9,13 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -27,6 +30,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
@@ -39,11 +43,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final PersistenceService persistenceService;
 	private final MulticastService broadcastService;
 	private final ClientManager clientManager;
+	private final AuthenticationManager authenticationManager;
 
-	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService actionBroadcastService, final ClientManager clientManager) {
+	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService actionBroadcastService, final ClientManager clientManager,
+			final AuthenticationManager authenticationManager) {
 		this.persistenceService = persistenceService;
 		this.broadcastService = actionBroadcastService;
 		this.clientManager = clientManager;
+		this.authenticationManager = authenticationManager;
 	}
 
 	@Override
@@ -106,11 +113,13 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
+	// TODO make this method transactional.
 	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		try {
 			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(projectName);
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
+			persistenceService.authorize(authenticationManager.getAuthenticatedUser(), persistedProjectRepresentation);
 			broadcastService.broadcastProjectCreation(persistedProjectRepresentation);
 			return persistedProjectRepresentation;
 		}
@@ -132,6 +141,29 @@ class BusinessLogicImpl implements BusinessLogic {
 			LOGGER.debug(errorMessage, e);
 			throw new UnableToRetrieveProjectListException(errorMessage);
 		}
+	}
+
+	@Override
+	public List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException {
+		final User user = authenticationManager.getAuthenticatedUser();
+		LOGGER.debug("Retrieving authorized project list for user '" + user + "'.");
+		try {
+			final List<ProjectAuthorizationEntity> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
+			return extractProjectsFromAuthorization(authorizations);
+		}
+		catch (final PersistenceException e) {
+			final String errorMessage = "Unable to retrieve the current user project list.";
+			LOGGER.debug(errorMessage, e);
+			throw new UnableToRetrieveProjectListException(errorMessage);
+		}
+	}
+
+	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorizationEntity> authorizations) {
+		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
+		for (final ProjectAuthorizationEntity authorization : authorizations) {
+			projects.add(authorization.getProject());
+		}
+		return projects;
 	}
 
 	@Override

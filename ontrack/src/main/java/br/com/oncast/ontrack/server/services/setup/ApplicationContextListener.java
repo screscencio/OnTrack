@@ -6,7 +6,6 @@ import javax.servlet.ServletContextListener;
 import net.zschech.gwt.comet.server.impl.AsyncServlet;
 import br.com.drycode.api.web.gwt.dispatchService.server.DispatchServiceServlet;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchServiceException;
-import br.com.oncast.ontrack.server.business.DefaultProjectExistenceAssurer;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationVerificationAspectFilter;
@@ -15,7 +14,6 @@ import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextReque
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
@@ -32,7 +30,6 @@ public class ApplicationContextListener implements ServletContextListener {
 		setupBusinessLogic(event);
 		setupServerPush(event);
 		assureDefaultUserIsPresent();
-		assureDefaultProjectIsPresent();
 	}
 
 	private void setupAuthenticationAspectIntoDispatchService() {
@@ -72,14 +69,6 @@ public class ApplicationContextListener implements ServletContextListener {
 	 */
 	private void assureDefaultUserIsPresent() {
 		DefaultUserExistenceAssurer.verify();
-	}
-
-	/**
-	 * Assure the default project is present when the application starts.
-	 * @throws UnableToCreateProjectRepresentation
-	 */
-	private void assureDefaultProjectIsPresent() {
-		DefaultProjectExistenceAssurer.verify();
 	}
 
 	/**

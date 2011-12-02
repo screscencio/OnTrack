@@ -6,6 +6,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TA
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -112,6 +113,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	private void changePassword() {
 		if (newPasswordArea.getText().isEmpty() || retypePasswordArea.getText().isEmpty()) showErrorMessage("The new password cannot be empty.");
 		else if (!areTypedPasswordsEqual()) showErrorMessage("The two typed passwords are different.");
+		else if (!PasswordValidator.isValid(newPasswordArea.getText())) showErrorMessage("The new password must have at least 6 characters.");
 		else submitUserPasswordChange();
 	}
 
@@ -125,7 +127,6 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 		messageLabel.setVisible(false);
 	}
 
-	// XXX Auth; Pre-process password (trim, etc) ?
 	private void submitUserPasswordChange() {
 		hideErrorMessage();
 		disable();

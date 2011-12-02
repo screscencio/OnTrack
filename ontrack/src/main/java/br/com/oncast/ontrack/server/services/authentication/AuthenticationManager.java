@@ -7,13 +7,19 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
-import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordException;
+import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 
+// TODO ++++Increment password strength validation, reflecting it on the UI as well so the user can create it without getting bored/angry.
+// TODO ++++Review this class method separation.
 public class AuthenticationManager {
 
 	private static final Logger LOGGER = Logger.getLogger(AuthenticationManager.class);
+
+	private static final String DEFAULT_NEW_USER_PASSWORD = "";
+
 	private final PersistenceService persistenceService;
 	private final SessionManager sessionManager;
 
@@ -22,95 +28,64 @@ public class AuthenticationManager {
 		this.sessionManager = sessionManager;
 	}
 
-	public User authenticate(final String email, final String password) throws UserNotFoundException, IncorrectPasswordException {
-		final User user = findUserByEmail(email);
+	public User authenticate(final String email, final String password) throws UserNotFoundException, InvalidAuthenticationCredentialsException {
+		final String formattedUserEmail = formatUserEmail(email);
+		final User user = findUserByEmail(formattedUserEmail);
 		final Password passwordForUser = findPasswordForUserOrCreateANewOne(user);
 
-		if (!passwordForUser.authenticate(password)) throw new IncorrectPasswordException("Incorrect password for user with e-mail " + email);
+		if (!passwordForUser.authenticate(password)) throw new InvalidAuthenticationCredentialsException("Incorrect password for user with e-mail "
+				+ formattedUserEmail);
 
-		setAuthenticatedUser(user);
+		sessionManager.getCurrentSession().setAuthenticatedUser(user);
 		return user;
 	}
 
 	public void logout() {
-		setAuthenticatedUser(null);
-	}
-
-	private void setAuthenticatedUser(final User user) {
-		sessionManager.getCurrentSession().setAuthenticatedUser(user);
+		sessionManager.getCurrentSession().setAuthenticatedUser(null);
 	}
 
 	public Boolean isUserAuthenticated() {
 		return sessionManager.getCurrentSession().getAuthenticatedUser() != null;
 	}
 
-	// XXX Auth; Rewrite update password logic. While authentication is not refactored this might fail if the user is not truly authenticated on the server.
-	public void updateUserPassword(final String currentPassword, final String newPassword) throws IncorrectPasswordException {
-		final String email = sessionManager.getCurrentSession().getAuthenticatedUser().getEmail();
-
-		User user;
-		try {
-			user = findUserByEmail(email);
-		}
-		catch (final UserNotFoundException e) {
-			// TODO Rewrite method logic.
-			throw new RuntimeException(e);
-		}
-
-		final Password userPassword = findPasswordForUser(user);
-
-		if (userPassword.authenticate(currentPassword)) persistNewPassword(newPassword, userPassword);
-		else throw new IncorrectPasswordException("Could not change the password for the user " + email + ", because the current password is incorrect.");
+	public User getAuthenticatedUser() {
+		return sessionManager.getCurrentSession().getAuthenticatedUser();
 	}
 
-	private User findUserByEmail(final String email) throws UserNotFoundException {
-		User user;
-
+	public boolean hasUserByEmail(final String email) {
 		try {
-			user = persistenceService.retrieveUserByEmail(email);
+			if (findUserByEmail(email) != null) return true;
 		}
-		catch (final NoResultFoundException e) {
-			throw new UserNotFoundException("No user found with e-mail " + email + ".", e);
-		}
-		catch (final PersistenceException e) {
-			LOGGER.error("Unable to find user by email.", e);
-			throw new AuthenticationException();
-		}
-		return user;
+		catch (final UserNotFoundException e) {}
+		return false;
 	}
 
-	private Password findPasswordForUserOrCreateANewOne(final User user) throws UserNotFoundException {
-		Password passwordForUser;
+	public void createNewUser(final String email, final String password) {
+		final String formattedUserEmail = formatUserEmail(email);
+
 		try {
-			passwordForUser = persistenceService.retrievePasswordForUser(user.getId());
-		}
-		catch (final NoResultFoundException e) {
-			// TODO Creating a new empty password if the user doesn't have one...
-			// TODO When the user account creation is implemented this logic must be removed.
-			passwordForUser = createEmptyPassword(user);
+			final User user = new User(formattedUserEmail);
+			final User newUser = persistenceService.persistOrUpdateUser(user);
+			createPasswordForUser(newUser, password);
 		}
 		catch (final PersistenceException e) {
-			LOGGER.error("Unable to find passowrd for user.", e);
-			throw new AuthenticationException();
+			final String message = "Could not create a new user with e-mail '" + formattedUserEmail + "'";
+			LOGGER.error(message, e);
+			throw new AuthenticationException(message);
 		}
-		return passwordForUser;
 	}
 
-	private Password createEmptyPassword(final User user) {
-		Password newPassword = null;
-
+	private Password createPasswordForUser(final User user, final String password) {
 		try {
-			final Password passwordForUser = new Password();
-			passwordForUser.setUserId(user.getId());
-			persistenceService.persistOrUpdatePassword(passwordForUser);
-
-			newPassword = findPasswordForUser(user);
+			final Password newPassword = new Password(user.getId(), password);
+			persistenceService.persistOrUpdatePassword(newPassword);
+			return newPassword;
 		}
 		catch (final PersistenceException e) {
-			LOGGER.error("Could not create an empty password for the user with e-mail " + user.getEmail(), e);
-			throw new AuthenticationException("Could not create an empty password for the user with e-mail " + user.getEmail());
+			final String message = "Could not create an empty password for the user with e-mail " + user.getEmail();
+			LOGGER.error(message, e);
+			throw new AuthenticationException(message);
 		}
-		return newPassword;
 	}
 
 	private Password findPasswordForUser(final User user) {
@@ -130,15 +105,69 @@ public class AuthenticationManager {
 		return password;
 	}
 
-	private void persistNewPassword(final String newPassword, final Password userPassword) {
+	public void updateUserPassword(final String currentPassword, final String newPassword) throws InvalidAuthenticationCredentialsException {
+		final String email = sessionManager.getCurrentSession().getAuthenticatedUser().getEmail();
+		if (!PasswordValidator.isValid(newPassword)) throw new InvalidAuthenticationCredentialsException("The new given password is invalid.");
+
 		try {
+			final User user = findUserByEmail(email);
+			final Password userPassword = findPasswordForUser(user);
+
+			if (!userPassword.authenticate(currentPassword)) throw new InvalidAuthenticationCredentialsException(
+					"Could not change the password for the user " + email
+							+ ", because the current password is incorrect.");
+
 			userPassword.setPassword(newPassword);
 			persistenceService.persistOrUpdatePassword(userPassword);
 		}
+		catch (final UserNotFoundException e) {
+			final String message = "Unable to update the user '" + email + "'s password: no user was found for this email.";
+			LOGGER.error(message, e);
+			throw new AuthenticationException(message);
+		}
 		catch (final PersistenceException e) {
-			LOGGER.error("Unable to persist the new password for  a user.", e);
-			throw new AuthenticationException();
+			final String message = "Unable to update the user '" + email + "'s password: it was not possible to persist it.";
+			LOGGER.error(message, e);
+			throw new AuthenticationException(message);
 		}
 	}
 
+	private User findUserByEmail(final String email) throws UserNotFoundException {
+		User user;
+
+		try {
+			user = persistenceService.retrieveUserByEmail(email);
+		}
+		catch (final NoResultFoundException e) {
+			throw new UserNotFoundException("No user found with e-mail " + email + ".", e);
+		}
+		catch (final PersistenceException e) {
+			LOGGER.error("Unable to find user by email.", e);
+			throw new AuthenticationException();
+		}
+		return user;
+	}
+
+	// TODO Fix - creating a new empty password if the user doesn't have one...
+	// TODO Review this method when user account creation is implemented.
+	private Password findPasswordForUserOrCreateANewOne(final User user) throws UserNotFoundException {
+		Password passwordForUser;
+		try {
+			passwordForUser = persistenceService.retrievePasswordForUser(user.getId());
+		}
+		catch (final NoResultFoundException e) {
+			passwordForUser = createPasswordForUser(user, DEFAULT_NEW_USER_PASSWORD);
+		}
+		catch (final PersistenceException e) {
+			LOGGER.error("Unable to find passowrd for user.", e);
+			throw new AuthenticationException();
+		}
+		return passwordForUser;
+	}
+
+	// TODO ++Extract this method to a external class, responsible for formatting the user email, which can then be used both in client and server.
+	private String formatUserEmail(final String email) {
+		final String formattedUserEmail = email.toLowerCase().trim();
+		return formattedUserEmail;
+	}
 }

@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -43,5 +44,5 @@ public interface PersistenceService {
 
 	public void authorize(User user, ProjectRepresentation project) throws PersistenceException;
 
-	public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException;
+	public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException;
 }

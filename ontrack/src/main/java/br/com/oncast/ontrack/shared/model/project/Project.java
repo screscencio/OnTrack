@@ -5,8 +5,6 @@ import java.io.Serializable;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-// TODO ++++Think about merging this class with the "project context" class. ProjectSnapshot use of it and the RPC mechanisms are the main things that would be
-// impacted.
 public class Project implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -2,12 +2,15 @@ package br.com.oncast.ontrack.client.services.context;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
+import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
 
+// XXX Auth; Test this class interaction with the auth service;
 public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private final ProjectRepresentationProviderImpl projectRepresentationProvider;
@@ -17,10 +20,23 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	private ProjectContext projectContext;
 
 	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider,
-			final ClientIdentificationProvider clientIdentificationProvider, final DispatchService requestDispatchService) {
+			final ClientIdentificationProvider clientIdentificationProvider, final DispatchService requestDispatchService,
+			final AuthenticationService authenticationService) {
+
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.clientIdentificationProvider = clientIdentificationProvider;
 		this.requestDispatchService = requestDispatchService;
+
+		authenticationService.registerUserAuthenticationListener(new UserAuthenticationListener() {
+
+			@Override
+			public void onUserLoggedOut() {
+				projectContext = null;
+			}
+
+			@Override
+			public void onUserLoggedIn() {}
+		});
 	}
 
 	@Override

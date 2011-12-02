@@ -21,7 +21,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
-import br.com.oncast.ontrack.shared.exceptions.authentication.IncorrectPasswordException;
+import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -87,7 +87,7 @@ public class AuthenticationManagerTest {
 		authenticateUser();
 	}
 
-	@Test(expected = IncorrectPasswordException.class)
+	@Test(expected = InvalidAuthenticationCredentialsException.class)
 	public void shouldNotAuthenticateUserIfPassedPasswordIsIncorrect() throws Exception {
 		assertUserIsNotLoggedIn();
 		forcePasswordToBeIncorrect();
@@ -124,7 +124,7 @@ public class AuthenticationManagerTest {
 		assertPasswordWasChanged();
 	}
 
-	@Test(expected = IncorrectPasswordException.class)
+	@Test(expected = InvalidAuthenticationCredentialsException.class)
 	public void shouldNotChangeUserPasswordIfOldPasswordIsIncorrect() throws Exception {
 		authenticateUser();
 		forcePasswordToBeIncorrect();
@@ -144,7 +144,7 @@ public class AuthenticationManagerTest {
 		when(passwordMock.authenticate(anyString())).thenReturn(false);
 	}
 
-	private User authenticateUser() throws UserNotFoundException, IncorrectPasswordException {
+	private User authenticateUser() throws UserNotFoundException, InvalidAuthenticationCredentialsException {
 		return authenticationManager.authenticate(user.getEmail(), "password");
 	}
 
@@ -152,7 +152,7 @@ public class AuthenticationManagerTest {
 		authenticationManager.logout();
 	}
 
-	private void changePassword() throws UserNotFoundException, IncorrectPasswordException {
+	private void changePassword() throws UserNotFoundException, InvalidAuthenticationCredentialsException {
 		authenticationManager.updateUserPassword("password", "new password");
 	}
 

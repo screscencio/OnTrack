@@ -16,6 +16,11 @@ public class Password {
 
 	public Password() {}
 
+	public Password(final long userId, final String password) {
+		setUserId(userId);
+		setPassword(password);
+	}
+
 	public void setId(final long id) {
 		this.id = id;
 	}

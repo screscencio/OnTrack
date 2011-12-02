@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.client.services.actionSync;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
@@ -23,10 +26,13 @@ import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUti
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ValueHolder;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
@@ -287,7 +293,10 @@ public class ActionSyncServiceTest {
 	}
 
 	private void assureDefaultProjectRepresentationExistance() throws Exception {
-		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createProject(
-				projectRepresentation.getName());
+		final PersistenceServiceJpaImpl persistenceService = spy(new PersistenceServiceJpaImpl());
+		doNothing().when(persistenceService).authorize(Mockito.any(User.class), Mockito.any(ProjectRepresentation.class));
+		BusinessLogicMockFactoryTestUtils
+				.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(persistenceService, Mockito.mock(AuthenticationManager.class))
+				.createProject(projectRepresentation.getName());
 	}
 }

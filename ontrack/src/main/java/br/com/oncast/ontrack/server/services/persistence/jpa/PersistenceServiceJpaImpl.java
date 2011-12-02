@@ -201,9 +201,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final PasswordEntity passwordEntity = (PasswordEntity) TYPE_CONVERTER.convert(passwordForUser);
 			em.getTransaction().begin();
-			em.merge(passwordEntity);
+			final PasswordEntity mergedEntity = em.merge(passwordEntity);
 			em.getTransaction().commit();
-			// FIXME Change the incoming object with id.
+			passwordForUser.setId(mergedEntity.getId());
 		}
 		catch (final Exception e) {
 			try {
@@ -348,11 +348,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	// FIXME Rodrigo use this method to get the project list for an user.
-	public List<ProjectRepresentation> retrieveAuthorizedProjects(final long userId) throws PersistenceException {
+	public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select authorization.project from " + ProjectAuthorizationEntity.class.getSimpleName()
+			final Query query = em.createQuery("select authorization from " + ProjectAuthorizationEntity.class.getSimpleName()
 					+ " as authorization where authorization.user.id = :userId");
 			query.setParameter("userId", userId);
 			return query.getResultList();
@@ -397,5 +396,4 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		return user;
 	}
-
 }

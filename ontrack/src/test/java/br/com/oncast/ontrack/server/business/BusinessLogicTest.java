@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.server.business;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,11 +19,15 @@ import javax.persistence.Persistence;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -41,6 +44,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
@@ -264,36 +268,20 @@ public class BusinessLogicTest {
 
 	@Test
 	public void shouldCreateANewProjectRepresentation() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
-		final long newProjectId = 2;
+		final AuthenticationManager authManager = mock(AuthenticationManager.class);
+		final PersistenceService persistence = mock(PersistenceService.class);
 
-		assertProjectDoesNotExists(newProjectId);
+		when(authManager.getAuthenticatedUser()).thenReturn(new User());
+
+		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(persistence, authManager);
 
 		business.createProject("Name");
-		final Project loadedProject = loadProject(newProjectId);
 
-		assertEquals("Name", loadedProject.getProjectRepresentation().getName());
-		assertEquals(newProjectId, loadedProject.getProjectRepresentation().getId());
+		final ArgumentCaptor<ProjectRepresentation> captor = ArgumentCaptor.forClass(ProjectRepresentation.class);
+		verify(persistence).persistOrUpdateProjectRepresentation(captor.capture());
 
-	}
-
-	@Test
-	public void theGivenIdIsIgnoredOnCreation() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
-		final int givenId = 5;
-		final int sequenciallyGeneratedId = PROJECT_ID + 1;
-		final String projectRepresentationName = "Name";
-
-		assertProjectDoesNotExists(sequenciallyGeneratedId);
-		assertProjectDoesNotExists(givenId);
-
-		business.createProject(projectRepresentationName);
-
-		assertProjectDoesNotExists(givenId);
-
-		final Project loadedProject = loadProject(sequenciallyGeneratedId);
-		assertEquals(projectRepresentationName, loadedProject.getProjectRepresentation().getName());
-		assertEquals(sequenciallyGeneratedId, loadedProject.getProjectRepresentation().getId());
+		final ProjectRepresentation createdProject = captor.getValue();
+		assertEquals("Name", createdProject.getName());
 	}
 
 	@Test
@@ -322,20 +310,46 @@ public class BusinessLogicTest {
 		final MulticastService broadcastService = mock(MulticastService.class);
 		final PersistenceService persistenceService = mock(PersistenceService.class);
 		final ClientManager clientManager = mock(ClientManager.class);
+		final AuthenticationManager authManager = mock(AuthenticationManager.class);
 		when(persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
 
-		business = new BusinessLogicImpl(persistenceService, broadcastService, clientManager);
+		business = new BusinessLogicImpl(persistenceService, broadcastService, clientManager, authManager);
 		final ProjectRepresentation representation = business.createProject("bla");
 
 		verify(broadcastService, times(1)).broadcastProjectCreation(representation);
 	}
 
-	private void assertProjectDoesNotExists(final long newProjectId) throws UnableToLoadProjectException {
-		try {
-			loadProject(newProjectId);
-			fail();
-		}
-		catch (final ProjectNotFoundException e) {}
+	@Test
+	public void shouldSearchOnlyForProjectsThatAUserIsAuthorizedToAccess() throws Exception {
+		final AuthenticationManager authManager = mock(AuthenticationManager.class);
+		final PersistenceService persistence = mock(PersistenceService.class);
+
+		final User user = new User();
+		user.setId(1);
+		when(authManager.getAuthenticatedUser()).thenReturn(user);
+
+		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(persistence, authManager);
+		business.retrieveCurrentUserProjectList();
+
+		verify(authManager).getAuthenticatedUser();
+		verify(persistence).retrieveProjectAuthorizations(user.getId());
+	}
+
+	@Test
+	public void shouldAuthorizeUserAfterProjectCreation() throws Exception {
+		final AuthenticationManager authManager = mock(AuthenticationManager.class);
+		final PersistenceService persistence = mock(PersistenceService.class);
+		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(
+				persistence, authManager);
+
+		final User authenticatedUser = new User("authenticated.user@domain.com");
+		final ProjectRepresentation createdProject = ProjectTestUtils.createProjectRepresentation();
+
+		when(authManager.getAuthenticatedUser()).thenReturn(authenticatedUser);
+		when(persistence.persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class))).thenReturn(createdProject);
+
+		business.createProject("new Project");
+		verify(persistence).authorize(authenticatedUser, createdProject);
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {
@@ -363,7 +377,7 @@ public class BusinessLogicTest {
 
 	private ProjectRepresentation assureProjectRepresentationExistance(final long projectId) throws Exception {
 		final ProjectRepresentation newProjectRepresentation = ProjectTestUtils.createProjectRepresentation(projectId);
-		BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock().createProject(newProjectRepresentation.getName());
+		new PersistenceServiceJpaImpl().persistOrUpdateProjectRepresentation(newProjectRepresentation);
 		return newProjectRepresentation;
 	}
 

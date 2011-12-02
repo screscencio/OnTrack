@@ -78,6 +78,7 @@ public class PlanningActivity extends AbstractActivity {
 
 		panel.setWidget(view);
 		globalNativeEventService.addKeyUpListener(globalKeyUpListener);
+		view.getScopeTree().setFocus(true);
 	}
 
 	@Override

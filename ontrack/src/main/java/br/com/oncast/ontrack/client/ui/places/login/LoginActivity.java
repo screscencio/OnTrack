@@ -34,17 +34,10 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			}
 
 			@Override
-			public void onIncorrectUserPasswordFailure() {
+			public void onIncorrectCredentialsFailure() {
 				// TODO Improve feedback message.
 				view.enable();
-				view.setErrorMessage("Incorrect password for this user.");
-			}
-
-			@Override
-			public void onIncorrectUserEmail() {
-				// TODO Improve feedback message.
-				view.enable();
-				view.setErrorMessage("No user was not found with this e-mail.");
+				view.setErrorMessage("Incorrect user or password.");
 			}
 		};
 	}
@@ -65,11 +58,9 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 		}
 
 		view.disable();
-		// XXX Auth; Verify if the server formats (trims and lowercases, ...) the auth inputs.
 		SERVICE_PROVIDER.getAuthenticationService().authenticate(username, password, authenticationCallback);
 	}
 
-	// XXX Auth; Validate the e-mail using a regex.
 	private boolean isValidEmail(final String email) {
 		if (email.trim().equals("")) return false;
 		return true;

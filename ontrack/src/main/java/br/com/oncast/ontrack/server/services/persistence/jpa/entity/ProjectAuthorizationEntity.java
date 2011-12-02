@@ -21,11 +21,14 @@ public class ProjectAuthorizationEntity {
 
 	@OneToOne
 	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private final UserEntity user;
+	private UserEntity user;
 
 	@OneToOne
 	@JoinColumn(name = "project", nullable = false, updatable = false)
-	private final ProjectRepresentation project;
+	private ProjectRepresentation project;
+
+	// IMPORTANT A package-visible default constructor is necessary for JPA. Do not remove this.
+	private ProjectAuthorizationEntity() {}
 
 	public ProjectAuthorizationEntity(final UserEntity user, final ProjectRepresentation project) {
 		this.user = user;

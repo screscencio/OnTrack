@@ -39,11 +39,10 @@ public class ServerServiceProvider {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getBroadcastService(), getClientManagerService());
+			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getBroadcastService(), getClientManagerService(), getAuthenticationManager());
 		}
 	}
 
-	// XXX Auth; Think about this method visibility.
 	public AuthenticationManager getAuthenticationManager() {
 		if (authenticationManager != null) return authenticationManager;
 		synchronized (this) {

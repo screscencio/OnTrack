@@ -23,5 +23,7 @@ public interface BusinessLogic {
 
 	public abstract List<ProjectRepresentation> retrieveProjectList() throws UnableToRetrieveProjectListException;
 
+	public abstract List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException;
+
 	public Project loadProject(long projectId) throws ProjectNotFoundException, UnableToLoadProjectException;
 }
