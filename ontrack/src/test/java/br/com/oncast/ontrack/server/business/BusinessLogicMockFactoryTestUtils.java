@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.UserEntity;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -29,7 +30,7 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 public class BusinessLogicMockFactoryTestUtils {
 
 	public static BusinessLogic createWithJpaPersistenceAndCustomBroadcastMock(final MulticastService broadcastMock) {
-		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), broadcastMock, getClientManagerMock(), getAuthManagerMock());
+		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), broadcastMock, getClientManagerMock(), getAuthManagerMock());
 	}
 
 	public static BusinessLogic createWithDumbPersistenceMockAndDumbBroadcastMock() {
@@ -41,7 +42,16 @@ public class BusinessLogicMockFactoryTestUtils {
 	}
 
 	public static BusinessLogic createWithJpaPersistenceAndDumbBroadcastMock() {
-		return new BusinessLogicImpl(new PersistenceServiceJpaImpl(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
+		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
+	}
+
+	private static PersistenceServiceJpaImpl getPersistenceServiceJpaImplMockingAuthorization() {
+		return new PersistenceServiceJpaImpl() {
+			@Override
+			public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
+				return new ProjectAuthorizationEntity(null, null);
+			}
+		};
 	}
 
 	public static BusinessLogic createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(final PersistenceService persistenceService,
@@ -133,6 +143,11 @@ public class BusinessLogicMockFactoryTestUtils {
 				return null;
 			}
 
+			@Override
+			public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
+				return new ProjectAuthorizationEntity(new UserEntity(), new ProjectRepresentation("test project"));
+			}
+
 		};
 	}
 
@@ -217,6 +232,11 @@ public class BusinessLogicMockFactoryTestUtils {
 			public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
 				return null;
 			}
+
+			@Override
+			public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
+				return new ProjectAuthorizationEntity(new UserEntity(), new ProjectRepresentation("test project"));
+			}
 		};
 	}
 
@@ -235,7 +255,11 @@ public class BusinessLogicMockFactoryTestUtils {
 	}
 
 	private static AuthenticationManager getAuthManagerMock() {
-		return Mockito.mock(AuthenticationManager.class);
+		final AuthenticationManager auth = Mockito.mock(AuthenticationManager.class);
+		final User user = new User("user@domain.com");
+		user.setId(1);
+		Mockito.when(auth.getAuthenticatedUser()).thenReturn(user);
+		return auth;
 	}
 
 }

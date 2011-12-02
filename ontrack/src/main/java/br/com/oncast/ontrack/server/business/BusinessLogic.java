@@ -17,10 +17,12 @@ public interface BusinessLogic {
 
 	public abstract void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException;
 
-	public abstract Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException, ProjectNotFoundException;
+	public abstract Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
+			ProjectNotFoundException;
 
 	public abstract ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation;
 
+	// FIXME Rodrigo: Delete the following method.
 	public abstract List<ProjectRepresentation> retrieveProjectList() throws UnableToRetrieveProjectListException;
 
 	public abstract List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException;

@@ -45,4 +45,13 @@ public interface PersistenceService {
 	public void authorize(User user, ProjectRepresentation project) throws PersistenceException;
 
 	public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException;
+
+	/**
+	 * Returns a project authorization between an user and a project.
+	 * @param userId the user id.
+	 * @param projectId the project id.
+	 * @return the project authorization if found, <tt>null</tt> otherwise.
+	 * @throws PersistenceException in case persistence layer fails.
+	 */
+	public ProjectAuthorizationEntity retrieveProjectAuthorization(long userId, long projectId) throws PersistenceException;
 }

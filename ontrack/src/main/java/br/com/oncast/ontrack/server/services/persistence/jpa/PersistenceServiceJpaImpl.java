@@ -364,6 +364,27 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@Override
+	public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select authorization from " + ProjectAuthorizationEntity.class.getSimpleName()
+					+ " as authorization where authorization.user.id = :userId and authorization.project.id = :projectId");
+			query.setParameter("userId", userId);
+			query.setParameter("projectId", projectId);
+			return (ProjectAuthorizationEntity) query.getSingleResult();
+		}
+		catch (final NoResultException e) {
+			return null;
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project representations", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
 	private Password convertEntityToPassword(final PasswordEntity passwordEntity) throws PersistenceException {
 		final Password password;
 		try {
