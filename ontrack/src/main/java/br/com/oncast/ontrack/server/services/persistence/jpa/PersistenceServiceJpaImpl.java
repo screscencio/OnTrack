@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
@@ -325,7 +325,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			final ProjectAuthorizationEntity authorization = new ProjectAuthorizationEntity(em.find(User.class, user.getId()), em.find(
+			final ProjectAuthorization authorization = new ProjectAuthorization(em.find(User.class, user.getId()), em.find(
 					ProjectRepresentation.class, project.getId()));
 			em.persist(authorization);
 			em.getTransaction().commit();
@@ -346,10 +346,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
+	public List<ProjectAuthorization> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select authorization from " + ProjectAuthorizationEntity.class.getSimpleName()
+			final Query query = em.createQuery("select authorization from " + ProjectAuthorization.class.getSimpleName()
 					+ " as authorization where authorization.user.id = :userId");
 			query.setParameter("userId", userId);
 			return query.getResultList();
@@ -364,10 +364,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProjectAuthorizationEntity> retrieveAllProjectAuthorizations() throws PersistenceException {
+	public List<ProjectAuthorization> retrieveAllProjectAuthorizations() throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select authorization from " + ProjectAuthorizationEntity.class.getSimpleName() + " as authorization");
+			final Query query = em.createQuery("select authorization from " + ProjectAuthorization.class.getSimpleName() + " as authorization");
 			return query.getResultList();
 		}
 		catch (final Exception e) {
@@ -379,14 +379,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
+	public ProjectAuthorization retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select authorization from " + ProjectAuthorizationEntity.class.getSimpleName()
+			final Query query = em.createQuery("select authorization from " + ProjectAuthorization.class.getSimpleName()
 					+ " as authorization where authorization.user.id = :userId and authorization.project.id = :projectId");
 			query.setParameter("userId", userId);
 			query.setParameter("projectId", projectId);
-			return (ProjectAuthorizationEntity) query.getSingleResult();
+			return (ProjectAuthorization) query.getSingleResult();
 		}
 		catch (final NoResultException e) {
 			return null;

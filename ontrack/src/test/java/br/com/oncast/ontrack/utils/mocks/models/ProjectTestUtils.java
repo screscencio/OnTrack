@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.utils.mocks.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -69,8 +69,8 @@ public class ProjectTestUtils {
 		return list;
 	}
 
-	public static ProjectAuthorizationEntity createAuthorization() {
-		return new ProjectAuthorizationEntity(UserTestUtils.createUser(), createProjectRepresentation());
+	public static ProjectAuthorization createAuthorization() {
+		return new ProjectAuthorization(UserTestUtils.createUser(), createProjectRepresentation());
 	}
 
 }

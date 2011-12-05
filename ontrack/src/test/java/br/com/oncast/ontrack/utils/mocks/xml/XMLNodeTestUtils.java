@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
@@ -24,7 +24,7 @@ public class XMLNodeTestUtils {
 	}
 
 	public static ProjectAuthorizationXMLNode createProjectAuthorizationNode(final User user, final ProjectRepresentation project) {
-		return new ProjectAuthorizationXMLNode(new ProjectAuthorizationEntity(user, project));
+		return new ProjectAuthorizationXMLNode(new ProjectAuthorization(user, project));
 	}
 
 	public static List<UserXMLNode> createUserNodes(final int size) throws Exception {

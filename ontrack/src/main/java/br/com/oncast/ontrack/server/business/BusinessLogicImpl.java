@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
@@ -258,15 +258,15 @@ class BusinessLogicImpl implements BusinessLogic {
 	// TODO ++ Extract authorization responsibility to another class.
 	private void assureProjectAccessAuthorization(final long projectId) throws PersistenceException {
 		final long currentUserId = authenticationManager.getAuthenticatedUser().getId();
-		final ProjectAuthorizationEntity retrieveProjectAuthorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
+		final ProjectAuthorization retrieveProjectAuthorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
 		if (retrieveProjectAuthorization == null) throw new AuthenticationException("Not authorized to access project '" + projectId + "'.");
 	}
 
 	// TODO ++ Extract authorization responsibility to another class.
 	private List<ProjectRepresentation> listAuthorizedProjects(final User user) throws PersistenceException {
-		final List<ProjectAuthorizationEntity> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
+		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
 		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
-		for (final ProjectAuthorizationEntity authorization : authorizations) {
+		for (final ProjectAuthorization authorization : authorizations) {
 			projects.add(authorization.getProject());
 		}
 		return projects;

@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.exceptions.UnableT
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -75,7 +75,7 @@ public class XMLExporterService {
 
 	private List<ProjectAuthorizationXMLNode> retrieveAllProjectAuthorizations() throws PersistenceException {
 		final List<ProjectAuthorizationXMLNode> authNodes = new ArrayList<ProjectAuthorizationXMLNode>();
-		for (final ProjectAuthorizationEntity authorization : persistanceService.retrieveAllProjectAuthorizations()) {
+		for (final ProjectAuthorization authorization : persistanceService.retrieveAllProjectAuthorizations()) {
 			authNodes.add(new ProjectAuthorizationXMLNode(authorization));
 		}
 		return authNodes;

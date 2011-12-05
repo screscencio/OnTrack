@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -44,9 +44,9 @@ public interface PersistenceService {
 
 	public void authorize(User user, ProjectRepresentation project) throws PersistenceException;
 
-	public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException;
+	public List<ProjectAuthorization> retrieveProjectAuthorizations(final long userId) throws PersistenceException;
 
-	public List<ProjectAuthorizationEntity> retrieveAllProjectAuthorizations() throws PersistenceException;
+	public List<ProjectAuthorization> retrieveAllProjectAuthorizations() throws PersistenceException;
 
 	/**
 	 * Returns a project authorization between an user and a project.
@@ -55,5 +55,5 @@ public interface PersistenceService {
 	 * @return the project authorization if found, <tt>null</tt> otherwise.
 	 * @throws PersistenceException in case persistence layer fails.
 	 */
-	public ProjectAuthorizationEntity retrieveProjectAuthorization(long userId, long projectId) throws PersistenceException;
+	public ProjectAuthorization retrieveProjectAuthorization(long userId, long projectId) throws PersistenceException;
 }

@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 
 @Root(name = "projectAuthorization")
 public class ProjectAuthorizationXMLNode {
@@ -18,7 +18,7 @@ public class ProjectAuthorizationXMLNode {
 	// IMPORTANT The Simple Framework needs a default constructor for instantiate classes.
 	private ProjectAuthorizationXMLNode() {}
 
-	public ProjectAuthorizationXMLNode(final ProjectAuthorizationEntity authorization) {
+	public ProjectAuthorizationXMLNode(final ProjectAuthorization authorization) {
 		userId = authorization.getUser().getId();
 		projectId = authorization.getProject().getId();
 	}

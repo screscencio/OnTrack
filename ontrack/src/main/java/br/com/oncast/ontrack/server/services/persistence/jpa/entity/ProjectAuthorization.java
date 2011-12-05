@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "user", "project" }))
-public class ProjectAuthorizationEntity {
+public class ProjectAuthorization {
 
 	@Id
 	@GeneratedValue
@@ -29,9 +29,9 @@ public class ProjectAuthorizationEntity {
 
 	@SuppressWarnings("unused")
 	// IMPORTANT A package-visible default constructor is necessary for JPA. Do not remove this.
-	private ProjectAuthorizationEntity() {}
+	private ProjectAuthorization() {}
 
-	public ProjectAuthorizationEntity(final User user, final ProjectRepresentation project) {
+	public ProjectAuthorization(final User user, final ProjectRepresentation project) {
 		this.user = user;
 		this.project = project;
 	}

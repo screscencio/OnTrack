@@ -21,7 +21,7 @@ import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -54,8 +54,8 @@ public class BusinessLogicMockFactoryTestUtils {
 	private static PersistenceServiceJpaImpl getPersistenceServiceJpaImplMockingAuthorization() {
 		return new PersistenceServiceJpaImpl() {
 			@Override
-			public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
-				return new ProjectAuthorizationEntity(null, null);
+			public ProjectAuthorization retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
+				return new ProjectAuthorization(null, null);
 			}
 		};
 	}

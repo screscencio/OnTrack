@@ -27,7 +27,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Proje
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
@@ -318,7 +318,7 @@ public class XMLWriterTest {
 			for (final UserXMLNode user : users) {
 				final User entity = new User(user.getUser().getEmail());
 				entity.setId(user.getId());
-				auth.add(new ProjectAuthorizationXMLNode(new ProjectAuthorizationEntity(entity, project.getProjectRepresentation())));
+				auth.add(new ProjectAuthorizationXMLNode(new ProjectAuthorization(entity, project.getProjectRepresentation())));
 			}
 		}
 		return auth;
