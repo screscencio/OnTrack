@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.server.business;
 
-import java.io.IOException;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,19 +10,18 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.UserEntity;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -33,16 +34,21 @@ public class BusinessLogicMockFactoryTestUtils {
 		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), broadcastMock, getClientManagerMock(), getAuthManagerMock());
 	}
 
-	public static BusinessLogic createWithDumbPersistenceMockAndDumbBroadcastMock() {
+	public static BusinessLogic createWithDumbPersistenceMockAndDumbBroadcastMock() throws Exception {
 		return new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
 	}
 
-	public static BusinessLogic createWithDumbNonWritablePersistenceMockAndDumbBroadcastMock() {
+	public static BusinessLogic createWithDumbNonWritablePersistenceMockAndDumbBroadcastMock() throws Exception {
 		return new BusinessLogicImpl(getNonWritablePersistenceMock(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
 	}
 
 	public static BusinessLogic createWithJpaPersistenceAndDumbBroadcastMock() {
 		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
+	}
+
+	public static BusinessLogic createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(final PersistenceService persistenceService,
+			final AuthenticationManager authManager) {
+		return new BusinessLogicImpl(persistenceService, getBroadcastMock(), getClientManagerMock(), authManager);
 	}
 
 	private static PersistenceServiceJpaImpl getPersistenceServiceJpaImplMockingAuthorization() {
@@ -54,190 +60,70 @@ public class BusinessLogicMockFactoryTestUtils {
 		};
 	}
 
-	public static BusinessLogic createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(final PersistenceService persistenceService,
-			final AuthenticationManager authManager) {
-		return new BusinessLogicImpl(persistenceService, getBroadcastMock(), getClientManagerMock(), authManager);
-	}
+	@SuppressWarnings({ "rawtypes", "unchecked", "hiding" })
+	private static PersistenceService getPersistenceMock() throws Exception {
+		final List<UserAction> actions = new ArrayList<UserAction>();
+		final Date snapshotTimestamp = new Date();
 
-	private static PersistenceService getPersistenceMock() {
-		return new PersistenceService() {
+		final PersistenceService mock = Mockito.mock(PersistenceService.class);
 
-			private final List<UserAction> actions = new ArrayList<UserAction>();
+		when(mock.retrieveProjectSnapshot(Mockito.anyLong())).thenReturn(new ProjectSnapshot(ProjectTestUtils.createProject(), snapshotTimestamp));
+		when(mock.retrieveActionsSince(Mockito.anyLong(), Mockito.anyLong())).thenReturn(actions);
 
-			final Date snapshotTimestamp = new Date();
-
+		doAnswer(new Answer() {
 			@Override
-			public synchronized ProjectSnapshot retrieveProjectSnapshot(final long projectId) throws PersistenceException {
-				try {
-					return new ProjectSnapshot(ProjectTestUtils.createProject(), snapshotTimestamp);
-				}
-				catch (final IOException e) {
-					throw new PersistenceException(e);
-				}
-			}
-
-			@Override
-			public synchronized List<UserAction> retrieveActionsSince(final long projectId, final long actionId) throws PersistenceException {
-				return actions;
-			}
-
-			@Override
-			@SuppressWarnings("hiding")
-			public synchronized void persistActions(final long projectId, final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
+			public Object answer(final InvocationOnMock invocation) throws Throwable {
+				final List<ModelAction> actions = (List<ModelAction>) invocation.getArguments()[1];
 				for (final ModelAction modelAction : new ArrayList<ModelAction>(actions)) {
 					actions.add(modelAction);
 				}
-			}
-
-			@Override
-			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
-
-			@Override
-			public User retrieveUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
 				return null;
 			}
+		}).when(mock).persistActions(Mockito.anyLong(), Mockito.anyList(), Mockito.any(Date.class));
+
+		when(mock.persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class))).thenAnswer(new Answer<ProjectRepresentation>() {
 
 			@Override
-			public Password retrievePasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
-				return null;
+			public ProjectRepresentation answer(final InvocationOnMock invocation) throws Throwable {
+				return (ProjectRepresentation) invocation.getArguments()[0];
 			}
+		});
 
-			@Override
-			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {}
+		when(mock.retrieveProjectAuthorization(Mockito.anyLong(), Mockito.anyLong())).thenReturn(ProjectTestUtils.createAuthorization());
 
-			@Override
-			public User persistOrUpdateUser(final User user) throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public List<User> retrieveAllUsers() throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public List<Password> retrieveAllPasswords() throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public ProjectRepresentation persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {
-				return project;
-			}
-
-			@Override
-			public ProjectRepresentation retrieveProjectRepresentation(final long projectId) throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {}
-
-			@Override
-			public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
-				return new ProjectAuthorizationEntity(new UserEntity(), new ProjectRepresentation("test project"));
-			}
-
-		};
+		return mock;
 	}
 
-	private static PersistenceService getNonWritablePersistenceMock() {
-		return new PersistenceService() {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static PersistenceService getNonWritablePersistenceMock() throws Exception {
+		final List<UserAction> actions = new ArrayList<UserAction>();
+		final Date snapshotTimestamp = new Date();
 
-			private final List<UserAction> actions = new ArrayList<UserAction>();
+		final PersistenceService mock = Mockito.mock(PersistenceService.class);
 
-			final Date snapshotTimestamp = new Date();
+		when(mock.retrieveProjectSnapshot(Mockito.anyLong())).thenReturn(new ProjectSnapshot(ProjectTestUtils.createProject(), snapshotTimestamp));
+		when(mock.retrieveActionsSince(Mockito.anyLong(), Mockito.anyLong())).thenReturn(actions);
 
+		doAnswer(new Answer() {
 			@Override
-			public ProjectSnapshot retrieveProjectSnapshot(final long projectId) throws PersistenceException {
-				try {
-					return new ProjectSnapshot(ProjectTestUtils.createProject(), snapshotTimestamp);
-				}
-				catch (final IOException e) {
-					throw new PersistenceException(e);
-				}
-			}
-
-			@Override
-			public List<UserAction> retrieveActionsSince(final long projectId, final long actionId) throws PersistenceException {
-				return actions;
-			}
-
-			@Override
-			@SuppressWarnings("hiding")
-			public void persistActions(final long projectId, final List<ModelAction> actions, final Date timestamp) throws PersistenceException {
+			public Object answer(final InvocationOnMock invocation) throws Throwable {
 				Assert.fail("The persistence should not be accessed.");
-			}
-
-			@Override
-			public void persistProjectSnapshot(final ProjectSnapshot projectSnapshot) throws PersistenceException {}
-
-			@Override
-			public User retrieveUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
 				return null;
 			}
+		}).when(mock).persistActions(Mockito.anyLong(), Mockito.anyList(), Mockito.any(Date.class));
+
+		when(mock.persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class))).thenAnswer(new Answer<ProjectRepresentation>() {
 
 			@Override
-			public Password retrievePasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
-				return null;
+			public ProjectRepresentation answer(final InvocationOnMock invocation) throws Throwable {
+				return (ProjectRepresentation) invocation.getArguments()[0];
 			}
+		});
 
-			@Override
-			public void persistOrUpdatePassword(final Password passwordForUser) throws PersistenceException {}
+		when(mock.retrieveProjectAuthorization(Mockito.anyLong(), Mockito.anyLong())).thenReturn(ProjectTestUtils.createAuthorization());
 
-			@Override
-			public User persistOrUpdateUser(final User user) throws PersistenceException {
-				return null;
-			}
+		return mock;
 
-			@Override
-			public List<User> retrieveAllUsers() throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public List<Password> retrieveAllPasswords() throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public ProjectRepresentation persistOrUpdateProjectRepresentation(final ProjectRepresentation project) throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public ProjectRepresentation retrieveProjectRepresentation(final long projectId) throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {}
-
-			@Override
-			public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
-				return null;
-			}
-
-			@Override
-			public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
-				return new ProjectAuthorizationEntity(new UserEntity(), new ProjectRepresentation("test project"));
-			}
-		};
 	}
 
 	private static MulticastService getBroadcastMock() {

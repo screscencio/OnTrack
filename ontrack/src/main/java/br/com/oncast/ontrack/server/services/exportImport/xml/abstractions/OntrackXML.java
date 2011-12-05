@@ -7,6 +7,7 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 @Root
+// FIXME Matsumoto/Jaime: Make all XMLNodes classes dumb.
 public class OntrackXML {
 
 	@Attribute
@@ -17,6 +18,9 @@ public class OntrackXML {
 
 	@ElementList
 	private List<ProjectXMLNode> projects;
+
+	@ElementList
+	private List<ProjectAuthorizationXMLNode> projectAuthorizations;
 
 	public void setUsers(final List<UserXMLNode> users) {
 		this.users = users;
@@ -40,5 +44,13 @@ public class OntrackXML {
 
 	public void setProjects(final List<ProjectXMLNode> projects) {
 		this.projects = projects;
+	}
+
+	public void setProjectAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizations) {
+		this.projectAuthorizations = projectAuthorizations;
+	}
+
+	public List<ProjectAuthorizationXMLNode> getProjectAuthorizations() {
+		return projectAuthorizations;
 	}
 }

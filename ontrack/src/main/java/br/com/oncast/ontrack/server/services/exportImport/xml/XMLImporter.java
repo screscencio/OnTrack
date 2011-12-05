@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.exportImport.xml;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.simpleframework.xml.Serializer;
@@ -10,6 +11,7 @@ import org.simpleframework.xml.core.Persister;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.exceptions.UnableToImportXMLException;
@@ -24,6 +26,8 @@ public class XMLImporter {
 
 	private final PersistenceService persistanceService;
 	private OntrackXML ontrackXML;
+	private final HashMap<Long, User> userIdMap = new HashMap<Long, User>();
+	private final HashMap<Long, ProjectRepresentation> projectIdMap = new HashMap<Long, ProjectRepresentation>();
 
 	public XMLImporter(final PersistenceService persistenceService) {
 		this.persistanceService = persistenceService;
@@ -47,21 +51,24 @@ public class XMLImporter {
 		try {
 			persistUsers(ontrackXML.getUsers());
 			persistProjects(ontrackXML.getProjects());
+			persistAuthorizations(ontrackXML.getProjectAuthorizations());
 		}
 		catch (final PersistenceException e) {
 			throw new UnableToImportXMLException("The xml import was not concluded. Some operations may be changed the database, but was not rolledback. ", e);
 		}
 	}
 
-	private void persistUsers(final List<UserXMLNode> userList) throws PersistenceException {
-		for (final UserXMLNode user : userList) {
+	private void persistUsers(final List<UserXMLNode> userNodes) throws PersistenceException {
+		for (final UserXMLNode userNode : userNodes) {
+			User persistedUser;
 			try {
-				persistanceService.retrieveUserByEmail(user.getUser().getEmail());
+				persistedUser = persistanceService.retrieveUserByEmail(userNode.getUser().getEmail());
 			}
 			catch (final NoResultFoundException e) {
-				final User persistedUser = persistanceService.persistOrUpdateUser(user.getUser());
-				if (user.hasPassword()) persistPassword(persistedUser.getId(), user.getPassword());
+				persistedUser = persistanceService.persistOrUpdateUser(userNode.getUser());
+				if (userNode.hasPassword()) persistPassword(persistedUser.getId(), userNode.getPassword());
 			}
+			userIdMap.put(userNode.getId(), persistedUser);
 		}
 	}
 
@@ -70,11 +77,12 @@ public class XMLImporter {
 		persistanceService.persistOrUpdatePassword(password);
 	}
 
-	private void persistProjects(final List<ProjectXMLNode> projects) throws PersistenceException {
-		for (final ProjectXMLNode project : projects) {
-			final ProjectRepresentation persistedProjectRepresentation = persistanceService.persistOrUpdateProjectRepresentation(project
+	private void persistProjects(final List<ProjectXMLNode> projectNodes) throws PersistenceException {
+		for (final ProjectXMLNode projectNode : projectNodes) {
+			final ProjectRepresentation persistedRepresentation = persistanceService.persistOrUpdateProjectRepresentation(projectNode
 					.getProjectRepresentation());
-			persistActions(persistedProjectRepresentation.getId(), project.getActions());
+			persistActions(persistedRepresentation.getId(), projectNode.getActions());
+			projectIdMap.put(projectNode.getId(), persistedRepresentation);
 		}
 	}
 
@@ -85,4 +93,12 @@ public class XMLImporter {
 			persistanceService.persistActions(projectId, actions, userAction.getTimestamp());
 		}
 	}
+
+	private void persistAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizationNodes) throws PersistenceException {
+		for (final ProjectAuthorizationXMLNode authNode : projectAuthorizationNodes) {
+			persistanceService.authorize(userIdMap.get(authNode.getUserId()), projectIdMap.get(authNode.getProjectId()));
+		}
+
+	}
+
 }

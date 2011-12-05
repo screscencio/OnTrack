@@ -7,6 +7,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
 
@@ -30,6 +31,11 @@ public class XMLWriter {
 
 	public XMLWriter setProjectList(final List<ProjectXMLNode> projectList) {
 		ontrackXML.setProjects(projectList);
+		return this;
+	}
+
+	public XMLWriter setProjectAuthorizationList(final List<ProjectAuthorizationXMLNode> projectAuthorizations) {
+		ontrackXML.setProjectAuthorizations(projectAuthorizations);
 		return this;
 	}
 

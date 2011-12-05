@@ -10,6 +10,9 @@ import br.com.oncast.ontrack.shared.model.user.User;
 public class UserXMLNode {
 
 	@Attribute
+	private long id;
+
+	@Attribute
 	private String email;
 
 	@Attribute(required = false)
@@ -22,8 +25,23 @@ public class UserXMLNode {
 	@SuppressWarnings("unused")
 	private UserXMLNode() {}
 
+	// FIXME Jaime / Matsumoto: Remove
 	public UserXMLNode(final User user) {
+		id = user.getId();
 		email = user.getEmail();
+	}
+
+	public UserXMLNode(final long id, final String email) {
+		this.id = id;
+		this.email = email;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	public User getUser() {

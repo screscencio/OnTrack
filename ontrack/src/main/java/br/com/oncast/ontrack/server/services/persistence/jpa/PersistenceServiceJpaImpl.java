@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAutho
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.UserEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -135,12 +134,11 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 
-			final UserEntity userEntity = (UserEntity) TYPE_CONVERTER.convert(user);
 			em.getTransaction().begin();
-			final UserEntity mergedUser = em.merge(userEntity);
+			final User mergedUser = em.merge(user);
 			em.getTransaction().commit();
 			// FIXME Make this method void and change the incoming object with id.
-			return (User) TYPE_CONVERTER.convert(mergedUser);
+			return mergedUser;
 		}
 		catch (final Exception e) {
 			try {
@@ -160,10 +158,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public User retrieveUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where user.email = :email");
+			final Query query = em.createQuery("select user from " + User.class.getSimpleName() + " as user where user.email = :email");
 			query.setParameter("email", email);
 
-			return convertEntityToUser((UserEntity) query.getSingleResult());
+			return (User) query.getSingleResult();
 		}
 		catch (final NoResultException e) {
 			throw new NoResultFoundException("No user found with e-mail: " + email, e);
@@ -181,11 +179,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public List<User> retrieveAllUsers() throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user");
+			final Query query = em.createQuery("select user from " + User.class.getSimpleName() + " as user");
 
-			final List<UserEntity> users = query.getResultList();
-
-			return (List<User>) TYPE_CONVERTER.convert(users);
+			return query.getResultList();
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve users.", e);
@@ -323,11 +319,13 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
+	// FIXME Rename this to persistProjectAuthorization
+	// FIXME Receive userId and projectId only;
 	public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			final ProjectAuthorizationEntity authorization = new ProjectAuthorizationEntity(em.find(UserEntity.class, user.getId()), em.find(
+			final ProjectAuthorizationEntity authorization = new ProjectAuthorizationEntity(em.find(User.class, user.getId()), em.find(
 					ProjectRepresentation.class, project.getId()));
 			em.persist(authorization);
 			em.getTransaction().commit();
@@ -364,6 +362,22 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProjectAuthorizationEntity> retrieveAllProjectAuthorizations() throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select authorization from " + ProjectAuthorizationEntity.class.getSimpleName() + " as authorization");
+			return query.getResultList();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the project representations", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
 	@Override
 	public ProjectAuthorizationEntity retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
@@ -384,7 +398,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.close();
 		}
 	}
-
+	
 	private Password convertEntityToPassword(final PasswordEntity passwordEntity) throws PersistenceException {
 		final Password password;
 		try {
@@ -405,16 +419,5 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			throw new PersistenceException("It was not possible to convert the action to its entity", e);
 		}
 		return entity;
-	}
-
-	private User convertEntityToUser(final UserEntity userEntity) throws PersistenceException {
-		final User user;
-		try {
-			user = (User) TYPE_CONVERTER.convert(userEntity);
-		}
-		catch (final TypeConverterException e) {
-			throw new PersistenceException("It was not possible to convert the user to its entity", e);
-		}
-		return user;
 	}
 }

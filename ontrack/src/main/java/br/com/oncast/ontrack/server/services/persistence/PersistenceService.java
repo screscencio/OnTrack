@@ -46,6 +46,8 @@ public interface PersistenceService {
 
 	public List<ProjectAuthorizationEntity> retrieveProjectAuthorizations(final long userId) throws PersistenceException;
 
+	public List<ProjectAuthorizationEntity> retrieveAllProjectAuthorizations() throws PersistenceException;
+
 	/**
 	 * Returns a project authorization between an user and a project.
 	 * @param userId the user id.

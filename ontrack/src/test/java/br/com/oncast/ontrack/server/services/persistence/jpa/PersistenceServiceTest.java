@@ -380,7 +380,7 @@ public class PersistenceServiceTest {
 	}
 
 	private void assureProjectRepresentationExistance() throws Exception {
-		persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createProjectRepresentation(PROJECT_ID));
+		persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createRepresentation(PROJECT_ID));
 	}
 
 }

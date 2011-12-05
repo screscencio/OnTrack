@@ -40,6 +40,10 @@ public class ProjectRepresentation implements Serializable {
 		this.name = name;
 	}
 
+	public void setId(final long id) {
+		this.id = id;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -67,7 +71,8 @@ public class ProjectRepresentation implements Serializable {
 		return true;
 	}
 
-	public void setId(final long id) {
-		this.id = id;
+	@Override
+	public String toString() {
+		return id + " " + name;
 	}
 }

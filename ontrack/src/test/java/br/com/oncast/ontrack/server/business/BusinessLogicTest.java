@@ -31,7 +31,6 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJ
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
-import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
@@ -72,7 +71,7 @@ public class BusinessLogicTest {
 	}
 
 	@Test(expected = InvalidIncomingAction.class)
-	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
+	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws Exception {
 		business = BusinessLogicMockFactoryTestUtils.createWithDumbPersistenceMockAndDumbBroadcastMock();
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeUpdateAction(new UUID("id"), "bllla"));
@@ -80,7 +79,7 @@ public class BusinessLogicTest {
 	}
 
 	@Test(expected = InvalidIncomingAction.class)
-	public void shouldThrowExceptionAndNotPersistWhenAnInvalidActionIsExecuted() throws UnableToHandleActionException {
+	public void shouldThrowExceptionAndNotPersistWhenAnInvalidActionIsExecuted() throws Exception {
 		business = BusinessLogicMockFactoryTestUtils.createWithDumbNonWritablePersistenceMockAndDumbBroadcastMock();
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(new UUID("0")));
@@ -377,7 +376,7 @@ public class BusinessLogicTest {
 	}
 
 	private ProjectRepresentation assureProjectRepresentationExistance(final long projectId) throws Exception {
-		final ProjectRepresentation newProjectRepresentation = ProjectTestUtils.createProjectRepresentation(projectId);
+		final ProjectRepresentation newProjectRepresentation = ProjectTestUtils.createRepresentation(projectId);
 		new PersistenceServiceJpaImpl().persistOrUpdateProjectRepresentation(newProjectRepresentation);
 		return newProjectRepresentation;
 	}
