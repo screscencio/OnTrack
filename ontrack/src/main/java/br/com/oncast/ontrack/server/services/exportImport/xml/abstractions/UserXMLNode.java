@@ -25,15 +25,9 @@ public class UserXMLNode {
 	@SuppressWarnings("unused")
 	private UserXMLNode() {}
 
-	// FIXME Jaime / Matsumoto: Remove
 	public UserXMLNode(final User user) {
 		id = user.getId();
 		email = user.getEmail();
-	}
-
-	public UserXMLNode(final long id, final String email) {
-		this.id = id;
-		this.email = email;
 	}
 
 	public long getId() {
@@ -65,5 +59,4 @@ public class UserXMLNode {
 		passwordHash = password.getPasswordHash();
 		passwordSalt = password.getPasswordSalt();
 	}
-
 }

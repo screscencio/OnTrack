@@ -7,7 +7,6 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 @Root
-// FIXME Matsumoto/Jaime: Make all XMLNodes classes dumb.
 public class OntrackXML {
 
 	@Attribute

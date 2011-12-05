@@ -11,9 +11,13 @@ public class PasswordTestUtils {
 	public static List<Password> createPasswordsFor(final List<User> users) {
 		final List<Password> passwords = new ArrayList<Password>();
 		for (final User user : users) {
-			// passwords.add(createPassword);
+			passwords.add(createPasswordFor(user));
 		}
 		return passwords;
+	}
+
+	private static Password createPasswordFor(final User user) {
+		return new Password(user.getId(), "password");
 	}
 
 }
