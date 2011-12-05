@@ -1,11 +1,9 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.simpleframework.xml.Root;
 
 public abstract class Migration implements Comparable<Migration> {
 
@@ -34,34 +32,28 @@ public abstract class Migration implements Comparable<Migration> {
 		return root == null ? root = document.getRootElement() : root;
 	}
 
+	@SuppressWarnings("unchecked")
+	protected List<Element> getElements(final String xPath) {
+		return getDocument().selectNodes(xPath);
+	}
+
 	protected Element addListElementTo(final Element parent, final String listElementName) {
-		return addElementWithClassAttribute(parent, listElementName, ArrayList.class);
-	}
-
-	protected List<Element> getElementsOfType(final Class<?> javaClass) {
-		List<Element> elements = getElementsWithClassAttribute(javaClass);
-		if (elements.isEmpty()) elements = getElementsWithName(javaClass);
-		return elements;
+		return addElementWithClassAttribute(parent, listElementName, "java.util.ArrayList");
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<Element> getElementsWithClassAttribute(final Class<?> javaClass) {
-		return getDocument().selectNodes("//*[@" + CLASS + "='" + javaClass.getName() + "']");
+	protected List<Element> getElementsWithClassAttribute(final String className) {
+		return getDocument().selectNodes("//*[@" + CLASS + "='" + className + "']");
 	}
 
-	@SuppressWarnings("unchecked")
-	protected List<Element> getElementsWithName(final Class<?> javaClass) {
-		return getDocument().selectNodes("//" + getElementName(javaClass));
-	}
-
-	protected Element addElementWithName(final Element parent, final Class<?> javaClass) {
-		final Element element = parent.addElement(getElementName(javaClass));
+	protected Element addElementWithName(final Element parent, final String name) {
+		final Element element = parent.addElement(name);
 		return element;
 	}
 
-	protected Element addElementWithClassAttribute(final Element parent, final String name, final Class<?> javaClass) {
+	protected Element addElementWithClassAttribute(final Element parent, final String name, final String className) {
 		final Element element = parent.addElement(name);
-		element.addAttribute(CLASS, javaClass.getName());
+		element.addAttribute(CLASS, className);
 		return element;
 	}
 
@@ -92,15 +84,5 @@ public abstract class Migration implements Comparable<Migration> {
 
 	private boolean shouldBeMigrated(final Document document) {
 		return getVersion().compareTo(document.getRootElement().attributeValue(VERSION)) > 0;
-	}
-
-	private String getElementName(final Class<?> javaClass) {
-		final Root rootAnnotation = javaClass.getAnnotation(Root.class);
-		if (rootAnnotation == null || rootAnnotation.name().isEmpty()) return lowerCaseTheCharAt(javaClass.getSimpleName(), 0);
-		return rootAnnotation.name();
-	}
-
-	private String lowerCaseTheCharAt(final String name, final int index) {
-		return name.substring(index, index + 1).toLowerCase() + name.substring(index + 1);
 	}
 }

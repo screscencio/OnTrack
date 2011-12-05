@@ -7,8 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -117,7 +115,7 @@ public class MigrationTest {
 		final Element parent = document.getRootElement();
 		final int previousNodeCount = parent.nodeCount();
 		assertNull(parent.element("AnyElement"));
-		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", Object.class);
+		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", "java.lang.Object");
 		final int currentNodeCount = parent.nodeCount();
 		assertEquals(previousNodeCount + 1, currentNodeCount);
 		final Element element = parent.element("AnyElement");
@@ -129,7 +127,7 @@ public class MigrationTest {
 	public void addedElementShouldBeReturnedByTheMethod() throws Exception {
 		final Document document = DocumentHelper.parseText(testXML);
 		final Element parent = document.getRootElement();
-		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", Object.class);
+		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", "java.lang.Object");
 		assertNotNull(addedElement);
 		assertEquals(addedElement, parent.element("AnyElement"));
 	}
@@ -138,7 +136,7 @@ public class MigrationTest {
 	public void addedElementsShouldHaveAAttributeNamedClassAndHisValueShouldBeTheElementsJavaTypeName() throws Exception {
 		final Document document = DocumentHelper.parseText(testXML);
 		final Element parent = document.getRootElement();
-		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", Object.class);
+		final Element addedElement = new Migration2_2011_08_01().addElementWithClassAttribute(parent, "AnyElement", "java.lang.Object");
 		assertEquals("AnyElement", addedElement.getName());
 		assertEquals(1, addedElement.attributeCount());
 		final Attribute classAttribute = addedElement.attribute(0);
@@ -154,18 +152,6 @@ public class MigrationTest {
 		final Element addedList = new Migration2_2011_08_01().addListElementTo(parent, "users");
 		assertEquals("users", addedList.getName());
 		assertEquals("java.util.ArrayList", addedList.attributeValue("class"));
-	}
-
-	@Test
-	public void getAllElementsOfAGivenJavaTypeShouldReturnAllElementsWithSameClassAttributeAsTheGivenType() throws Exception {
-		final Document document = DocumentHelper.parseText(testXML);
-		final Migration migration = new Migration2_2011_08_01();
-		migration.apply(document);
-		final List<Element> list = migration.getElementsOfType(String.class);
-		assertEquals(2, list.size());
-		assertEquals("action", list.get(0).getName());
-		assertEquals("modelAction", list.get(1).getName());
-
 	}
 
 	@Test
