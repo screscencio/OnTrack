@@ -319,8 +319,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	// FIXME Rename this to persistProjectAuthorization
-	// FIXME Receive userId and projectId only;
+	// TODO Consider renaming this to persistProjectAuthorization and change its parameter to receive a ProjectAuthorization.
 	public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
@@ -398,7 +397,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.close();
 		}
 	}
-	
+
 	private Password convertEntityToPassword(final PasswordEntity passwordEntity) throws PersistenceException {
 		final Password password;
 		try {
