@@ -1,10 +1,13 @@
 package br.com.oncast.ontrack.client.services.context;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +24,8 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.services.context.NewProjectCreatedEventHandler;
+import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 import br.com.oncast.ontrack.utils.mocks.callback.DispatchCallbackMock;
@@ -44,143 +49,132 @@ public class ProjectRepresentationProviderTest {
 
 	@Test
 	public void updateAvaliableProjectsOnInitialization() throws Exception {
-		new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
+		createProvider();
 		assureProjectsWereRequested();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void nothingHappensIfSearchForAvaliableProjectsFails() throws Exception {
-		DispatchCallbackMock.callOnFailureWith(new RuntimeException()).when(dispatch)
-				.dispatch(Mockito.any(ProjectListRequest.class), Mockito.any(DispatchCallback.class));
+		failWhenProjectsListWereRequested();
 
-		new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
+		createProvider();
 		assureProjectsWereRequested();
 	}
 
 	@Test
 	public void updateAvaliableProjectsWhenAUserLogsIn() throws Exception {
-		new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
-
-		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
-		verify(auth).registerUserAuthenticationListener(captor.capture());
-		captor.getValue().onUserLoggedIn();
-
+		createProvider();
+		logIn();
 		assureProjectsWereRequested(2);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void cleanAvaliableProjectsWhenAUserLogsOut() throws Exception {
-		final List<ProjectRepresentation> projectList = new ArrayList<ProjectRepresentation>();
+		respondOneProjectWhenProjectsListWereRequested();
 
-		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
-		projects.add(ProjectTestUtils.createProjectRepresentation());
+		final TestProjectListChangeListener listener = registerAndGetProjectListChangeListener(createProvider());
+		assertEquals(1, listener.projectRepresentations.size());
 
-		DispatchCallbackMock.callOnSuccessWith(new ProjectListResponse(projects)).when(dispatch)
-				.dispatch(Mockito.any(ProjectListRequest.class), Mockito.any(DispatchCallback.class));
-
-		final ProjectRepresentationProviderImpl provider = new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
-		provider.registerProjectListChangeListener(new ProjectListChangeListener() {
-
-			@Override
-			public void onProjectListChanged(final Set<ProjectRepresentation> projectRepresentations) {
-				projectList.clear();
-				projectList.addAll(projectRepresentations);
-			}
-
-			@Override
-			public void onProjectListAvailabilityChange(final boolean availability) {}
-		});
-
-		assertEquals(1, projectList.size());
-
-		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
-		verify(auth).registerUserAuthenticationListener(captor.capture());
-
-		captor.getValue().onUserLoggedOut();
-
-		assertEquals(0, projectList.size());
+		logOut();
+		assertEquals(0, listener.projectRepresentations.size());
 	}
 
 	@Test
 	public void projectsListAvailabilityIsNotifiedWhenListenerIsRegistered() throws Exception {
-		final ProjectRepresentationProviderImpl provider = new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
-
 		final ProjectListChangeListener projectListChangeListener = Mockito.mock(ProjectListChangeListener.class);
-		provider.registerProjectListChangeListener(projectListChangeListener);
-
-		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
-		verify(auth).registerUserAuthenticationListener(captor.capture());
+		createProvider().registerProjectListChangeListener(projectListChangeListener);
 
 		verify(projectListChangeListener, times(1)).onProjectListAvailabilityChange(Mockito.anyBoolean());
 	}
 
 	@Test
 	public void projectsListAvailabilityIsNotifiedNegativelyWhenListenerIsRegisteredAndListIsNotAvailable() throws Exception {
-		final ProjectRepresentationProviderImpl provider = new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
-
 		final ProjectListChangeListener projectListChangeListener = Mockito.mock(ProjectListChangeListener.class);
-		provider.registerProjectListChangeListener(projectListChangeListener);
-
-		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
-		verify(auth).registerUserAuthenticationListener(captor.capture());
+		createProvider().registerProjectListChangeListener(projectListChangeListener);
 
 		verify(projectListChangeListener, times(1)).onProjectListAvailabilityChange(false);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void projectsListAvailabilityIsNotifiedPositivelyWhenListenerIsRegisteredAndListIsAvailable() throws Exception {
-		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
-		projects.add(ProjectTestUtils.createProjectRepresentation());
-
-		DispatchCallbackMock.callOnSuccessWith(new ProjectListResponse(projects)).when(dispatch)
-				.dispatch(Mockito.any(ProjectListRequest.class), Mockito.any(DispatchCallback.class));
-
-		final ProjectRepresentationProviderImpl provider = new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
+		respondOneProjectWhenProjectsListWereRequested();
 
 		final ProjectListChangeListener projectListChangeListener = Mockito.mock(ProjectListChangeListener.class);
-		provider.registerProjectListChangeListener(projectListChangeListener);
-
-		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
-		verify(auth).registerUserAuthenticationListener(captor.capture());
+		createProvider().registerProjectListChangeListener(projectListChangeListener);
 
 		verify(projectListChangeListener, times(1)).onProjectListAvailabilityChange(true);
 	}
 
 	@Test
 	public void projectsListAvailabilityIsNotifiedWhenAUserLogsOut() throws Exception {
-		final ProjectRepresentationProviderImpl provider = new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
-
 		final ProjectListChangeListener projectListChangeListener = Mockito.mock(ProjectListChangeListener.class);
-		provider.registerProjectListChangeListener(projectListChangeListener);
+		createProvider().registerProjectListChangeListener(projectListChangeListener);
 
-		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
-		verify(auth).registerUserAuthenticationListener(captor.capture());
-
-		captor.getValue().onUserLoggedOut();
-
+		logOut();
 		verify(projectListChangeListener, times(2)).onProjectListAvailabilityChange(Mockito.anyBoolean());
 	}
 
 	@Test
 	public void projectsListAvailabilityIsNotifiedNegativelyWhenAUserLogsOut() throws Exception {
-		final ProjectRepresentationProviderImpl provider = new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
-
 		final ProjectListChangeListener projectListChangeListener = Mockito.mock(ProjectListChangeListener.class);
-		provider.registerProjectListChangeListener(projectListChangeListener);
+		createProvider().registerProjectListChangeListener(projectListChangeListener);
 
-		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
-		verify(auth).registerUserAuthenticationListener(captor.capture());
-
-		captor.getValue().onUserLoggedOut();
+		logOut();
 
 		final ArgumentCaptor<Boolean> availability = ArgumentCaptor.forClass(Boolean.class);
 		verify(projectListChangeListener, times(2)).onProjectListAvailabilityChange(availability.capture());
 
 		assertEquals(false, availability.getAllValues().get(0));
 		assertEquals(false, availability.getAllValues().get(1));
+	}
+
+	@Test
+	public void projectsListChangeIsNotifiedWhenProjectCreationEventIsNotified() throws Exception {
+		final ArgumentCaptor<NewProjectCreatedEventHandler> captor = ArgumentCaptor.forClass(NewProjectCreatedEventHandler.class);
+		doNothing().when(serverPush).registerServerEventHandler(Mockito.same(ProjectCreatedEvent.class), captor.capture());
+
+		final TestProjectListChangeListener listener = registerAndGetProjectListChangeListener(createProvider());
+		assertEquals(0, listener.projectRepresentations.size());
+
+		final NewProjectCreatedEventHandler event = captor.getValue();
+		final ProjectRepresentation representation = ProjectTestUtils.createProjectRepresentation();
+		event.onEvent(new ProjectCreatedEvent(representation));
+
+		assertEquals(1, listener.projectRepresentations.size());
+		assertTrue(listener.projectRepresentations.contains(representation));
+	}
+
+	private ProjectRepresentationProviderImpl createProvider() {
+		return new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void respondOneProjectWhenProjectsListWereRequested() {
+		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
+		projects.add(ProjectTestUtils.createProjectRepresentation());
+
+		DispatchCallbackMock.callOnSuccessWith(new ProjectListResponse(projects)).when(dispatch)
+				.dispatch(Mockito.any(ProjectListRequest.class), Mockito.any(DispatchCallback.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	private void failWhenProjectsListWereRequested() {
+		DispatchCallbackMock.callOnFailureWith(new RuntimeException()).when(dispatch)
+				.dispatch(Mockito.any(ProjectListRequest.class), Mockito.any(DispatchCallback.class));
+	}
+
+	private void logIn() {
+		registerAndGetAuthenticationListener().onUserLoggedIn();
+	}
+
+	private void logOut() {
+		registerAndGetAuthenticationListener().onUserLoggedOut();
+	}
+
+	private UserAuthenticationListener registerAndGetAuthenticationListener() {
+		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
+		verify(auth).registerUserAuthenticationListener(captor.capture());
+		return captor.getValue();
 	}
 
 	private void assureProjectsWereRequested() {
@@ -190,6 +184,32 @@ public class ProjectRepresentationProviderTest {
 	@SuppressWarnings("unchecked")
 	private void assureProjectsWereRequested(final int expectedTimes) {
 		verify(dispatch, times(expectedTimes)).dispatch(Mockito.any(ProjectListRequest.class), Mockito.any(DispatchCallback.class));
+	}
+
+	private TestProjectListChangeListener registerAndGetProjectListChangeListener(final ProjectRepresentationProviderImpl provider) {
+		final TestProjectListChangeListener listener = new TestProjectListChangeListener();
+		provider.registerProjectListChangeListener(listener);
+		return listener;
+	}
+
+	private class TestProjectListChangeListener implements ProjectListChangeListener {
+
+		private final Set<ProjectRepresentation> projectRepresentations = new HashSet<ProjectRepresentation>();
+
+		@SuppressWarnings("unused")
+		private boolean availability;
+
+		@Override
+		public void onProjectListChanged(final Set<ProjectRepresentation> representations) {
+			this.projectRepresentations.clear();
+			this.projectRepresentations.addAll(representations);
+		}
+
+		@Override
+		public void onProjectListAvailabilityChange(final boolean isAvailable) {
+			this.availability = isAvailable;
+		}
+
 	}
 
 }
