@@ -7,6 +7,7 @@ public class DefaultUserExistenceAssurer {
 
 	private static final AuthenticationManager AUTHENTICATION_MANAGER = ServerServiceProvider.getInstance().getAuthenticationManager();
 
+	// TODO Analyze if the default user/password should be admin/admin to be more intuitive. (then the administrator sets his own password after first access)
 	private static final String DEFAULT_USER = DefaultAuthenticationCredentials.USER;
 	private static final String DEFAULT_PASSWORD = DefaultAuthenticationCredentials.PASSWORD;
 
