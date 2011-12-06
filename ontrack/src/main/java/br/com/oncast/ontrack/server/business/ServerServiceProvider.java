@@ -74,7 +74,7 @@ public class ServerServiceProvider {
 
 	private ClientManager getClientManagerService() {
 		if (clientManagerService != null) return clientManagerService;
-		return clientManagerService = new ClientManager();
+		return clientManagerService = new ClientManager(getAuthenticationManager());
 	}
 
 	protected PersistenceService getPersistenceService() {

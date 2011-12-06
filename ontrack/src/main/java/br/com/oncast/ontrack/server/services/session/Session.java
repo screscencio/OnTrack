@@ -16,6 +16,16 @@ public class Session implements Serializable {
 
 	private transient User authenticatedUser;
 
+	private final String sessionId;
+
+	public Session(final String sessionId) {
+		this.sessionId = sessionId;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
 	public User getAuthenticatedUser() {
 		return authenticatedUser;
 	}

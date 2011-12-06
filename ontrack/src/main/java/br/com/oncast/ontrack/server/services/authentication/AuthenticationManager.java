@@ -1,10 +1,14 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.session.Session;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
@@ -23,6 +27,8 @@ public class AuthenticationManager {
 	private final PersistenceService persistenceService;
 	private final SessionManager sessionManager;
 
+	private final Set<AuthenticationListener> authenticationListeners = new HashSet<AuthenticationListener>();
+
 	public AuthenticationManager(final PersistenceService persistenceService, final SessionManager sessionManager) {
 		this.persistenceService = persistenceService;
 		this.sessionManager = sessionManager;
@@ -37,11 +43,16 @@ public class AuthenticationManager {
 				+ formattedUserEmail);
 
 		sessionManager.getCurrentSession().setAuthenticatedUser(user);
+		notifyUserLoggedIn(user);
 		return user;
 	}
 
 	public void logout() {
-		sessionManager.getCurrentSession().setAuthenticatedUser(null);
+		final Session session = sessionManager.getCurrentSession();
+		final User user = session.getAuthenticatedUser();
+
+		session.setAuthenticatedUser(null);
+		notifyUserLoggedOut(user);
 	}
 
 	public Boolean isUserAuthenticated() {
@@ -52,7 +63,7 @@ public class AuthenticationManager {
 		return sessionManager.getCurrentSession().getAuthenticatedUser();
 	}
 
-	public boolean hasUserByEmail(final String email) {
+	public boolean hasUser(final String email) {
 		try {
 			if (findUserByEmail(email) != null) return true;
 		}
@@ -73,6 +84,57 @@ public class AuthenticationManager {
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
 		}
+	}
+
+	public void updateUserPassword(final String currentPassword, final String newPassword) throws InvalidAuthenticationCredentialsException {
+		final String email = sessionManager.getCurrentSession().getAuthenticatedUser().getEmail();
+		if (!PasswordValidator.isValid(newPassword)) throw new InvalidAuthenticationCredentialsException("The new given password is invalid.");
+
+		try {
+			final User user = findUserByEmail(email);
+			final Password userPassword = findPasswordForUser(user);
+
+			if (!userPassword.authenticate(currentPassword)) throw new InvalidAuthenticationCredentialsException(
+					"Could not change the password for the user " + email
+							+ ", because the current password is incorrect.");
+
+			userPassword.setPassword(newPassword);
+			persistenceService.persistOrUpdatePassword(userPassword);
+		}
+		catch (final UserNotFoundException e) {
+			final String message = "Unable to update the user '" + email + "'s password: no user was found for this email.";
+			LOGGER.error(message, e);
+			throw new AuthenticationException(message);
+		}
+		catch (final PersistenceException e) {
+			final String message = "Unable to update the user '" + email + "'s password: it was not possible to persist it.";
+			LOGGER.error(message, e);
+			throw new AuthenticationException(message);
+		}
+	}
+
+	public void register(final AuthenticationListener authenticationListener) {
+		authenticationListeners.add(authenticationListener);
+	}
+
+	public void unregister(final AuthenticationListener authenticationListener) {
+		authenticationListeners.remove(authenticationListener);
+	}
+
+	private User findUserByEmail(final String email) throws UserNotFoundException {
+		User user;
+
+		try {
+			user = persistenceService.retrieveUserByEmail(email);
+		}
+		catch (final NoResultFoundException e) {
+			throw new UserNotFoundException("No user found with e-mail " + email + ".", e);
+		}
+		catch (final PersistenceException e) {
+			LOGGER.error("Unable to find user by email.", e);
+			throw new AuthenticationException();
+		}
+		return user;
 	}
 
 	private Password createPasswordForUser(final User user, final String password) {
@@ -105,49 +167,6 @@ public class AuthenticationManager {
 		return password;
 	}
 
-	public void updateUserPassword(final String currentPassword, final String newPassword) throws InvalidAuthenticationCredentialsException {
-		final String email = sessionManager.getCurrentSession().getAuthenticatedUser().getEmail();
-		if (!PasswordValidator.isValid(newPassword)) throw new InvalidAuthenticationCredentialsException("The new given password is invalid.");
-
-		try {
-			final User user = findUserByEmail(email);
-			final Password userPassword = findPasswordForUser(user);
-
-			if (!userPassword.authenticate(currentPassword)) throw new InvalidAuthenticationCredentialsException(
-					"Could not change the password for the user " + email
-							+ ", because the current password is incorrect.");
-
-			userPassword.setPassword(newPassword);
-			persistenceService.persistOrUpdatePassword(userPassword);
-		}
-		catch (final UserNotFoundException e) {
-			final String message = "Unable to update the user '" + email + "'s password: no user was found for this email.";
-			LOGGER.error(message, e);
-			throw new AuthenticationException(message);
-		}
-		catch (final PersistenceException e) {
-			final String message = "Unable to update the user '" + email + "'s password: it was not possible to persist it.";
-			LOGGER.error(message, e);
-			throw new AuthenticationException(message);
-		}
-	}
-
-	private User findUserByEmail(final String email) throws UserNotFoundException {
-		User user;
-
-		try {
-			user = persistenceService.retrieveUserByEmail(email);
-		}
-		catch (final NoResultFoundException e) {
-			throw new UserNotFoundException("No user found with e-mail " + email + ".", e);
-		}
-		catch (final PersistenceException e) {
-			LOGGER.error("Unable to find user by email.", e);
-			throw new AuthenticationException();
-		}
-		return user;
-	}
-
 	// TODO Fix - creating a new empty password if the user doesn't have one...
 	// TODO Review this method when user account creation is implemented.
 	private Password findPasswordForUserOrCreateANewOne(final User user) throws UserNotFoundException {
@@ -170,4 +189,17 @@ public class AuthenticationManager {
 		final String formattedUserEmail = email.toLowerCase().trim();
 		return formattedUserEmail;
 	}
+
+	private void notifyUserLoggedIn(final User user) {
+		final String sessionId = sessionManager.getCurrentSession().getSessionId();
+		for (final AuthenticationListener listener : authenticationListeners)
+			listener.onUserLoggedIn(user, sessionId);
+	}
+
+	private void notifyUserLoggedOut(final User user) {
+		final String sessionId = sessionManager.getCurrentSession().getSessionId();
+		for (final AuthenticationListener listener : authenticationListeners)
+			listener.onUserLoggedOut(user, sessionId);
+	}
+
 }

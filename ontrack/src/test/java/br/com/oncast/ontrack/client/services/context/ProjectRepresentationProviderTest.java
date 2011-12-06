@@ -56,7 +56,6 @@ public class ProjectRepresentationProviderTest {
 	@Test
 	public void nothingHappensIfSearchForAvaliableProjectsFails() throws Exception {
 		failWhenProjectsListWereRequested();
-
 		createProvider();
 		assureProjectsWereRequested();
 	}

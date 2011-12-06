@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.business;
 
+import static br.com.oncast.ontrack.utils.mocks.models.UserTestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -50,6 +51,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequ
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 // TODO+++Refactor this test mocking infra.
 public class BusinessLogicTest {
@@ -271,7 +273,7 @@ public class BusinessLogicTest {
 		final AuthenticationManager authManager = mock(AuthenticationManager.class);
 		final PersistenceService persistence = mock(PersistenceService.class);
 
-		when(authManager.getAuthenticatedUser()).thenReturn(new User());
+		when(authManager.getAuthenticatedUser()).thenReturn(createUser());
 
 		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(persistence, authManager);
 
@@ -304,27 +306,11 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	public void createProjectShouldBroadcastAProjectCreationEvent() throws UnableToCreateProjectRepresentation, PersistenceException {
-		projectRepresentation = new ProjectRepresentation("bla");
-
-		final MulticastService broadcastService = mock(MulticastService.class);
-		final PersistenceService persistenceService = mock(PersistenceService.class);
-		final ClientManager clientManager = mock(ClientManager.class);
-		final AuthenticationManager authManager = mock(AuthenticationManager.class);
-		when(persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
-
-		business = new BusinessLogicImpl(persistenceService, broadcastService, clientManager, authManager);
-		final ProjectRepresentation representation = business.createProject("bla");
-
-		verify(broadcastService, times(1)).broadcastProjectCreation(representation);
-	}
-
-	@Test
 	public void shouldSearchOnlyForProjectsThatAUserIsAuthorizedToAccess() throws Exception {
 		final AuthenticationManager authManager = mock(AuthenticationManager.class);
 		final PersistenceService persistence = mock(PersistenceService.class);
 
-		final User user = new User();
+		final User user = createUser();
 		user.setId(1);
 		when(authManager.getAuthenticatedUser()).thenReturn(user);
 
@@ -342,7 +328,7 @@ public class BusinessLogicTest {
 		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(
 				persistence, authManager);
 
-		final User authenticatedUser = new User("authenticated.user@domain.com");
+		final User authenticatedUser = UserTestUtils.createUser("authenticated.user@domain.com");
 		final ProjectRepresentation createdProject = ProjectTestUtils.createProjectRepresentation();
 
 		when(authManager.getAuthenticatedUser()).thenReturn(authenticatedUser);
@@ -350,6 +336,26 @@ public class BusinessLogicTest {
 
 		business.createProject("new Project");
 		verify(persistence).authorize(authenticatedUser, createdProject);
+	}
+
+	@Test
+	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException {
+		projectRepresentation = ProjectTestUtils.createProjectRepresentation();
+		final User user = createUser();
+
+		final MulticastService multicast = mock(MulticastService.class);
+		final PersistenceService persistence = mock(PersistenceService.class);
+		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
+
+		final ClientManager clientManager = mock(ClientManager.class);
+
+		final AuthenticationManager authManager = mock(AuthenticationManager.class);
+		when(authManager.getAuthenticatedUser()).thenReturn(user);
+
+		business = new BusinessLogicImpl(persistence, multicast, clientManager, authManager);
+		final ProjectRepresentation representation = business.createProject("bla");
+
+		verify(multicast, times(1)).multicastProjectCreation(user.getId(), representation);
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {

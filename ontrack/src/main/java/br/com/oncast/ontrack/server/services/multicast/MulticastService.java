@@ -7,6 +7,6 @@ public interface MulticastService {
 
 	void multicastActionSyncRequest(ModelActionSyncRequest modelActionSyncRequest);
 
-	void broadcastProjectCreation(ProjectRepresentation projectRepresentation);
+	void multicastProjectCreation(long userId, ProjectRepresentation projectRepresentation);
 
 }

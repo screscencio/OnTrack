@@ -33,7 +33,6 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
-import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
@@ -163,6 +162,7 @@ public class ActionSyncServiceTestUtils {
 		if (multicastService != null) return multicastService;
 
 		final ServerPushClientServiceMockImpl serverPushClientServiceMock = getServerPushClientServiceMock();
+		// FIXME Jaime / Matsumoto : Refactor this to a Mockito's Mock
 		return multicastService = new MulticastService() {
 
 			@Override
@@ -171,9 +171,8 @@ public class ActionSyncServiceTestUtils {
 			}
 
 			@Override
-			public void broadcastProjectCreation(final ProjectRepresentation projectRepresentation) {
-				serverPushClientServiceMock.processIncommingEvent(new ProjectCreatedEvent(projectRepresentation));
-			}
+			public void multicastProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {
+				}
 		};
 	}
 

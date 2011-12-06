@@ -46,7 +46,7 @@ public class MulticastServiceTest {
 		client1 = new UUID("1");
 		client2 = new UUID("2");
 
-		when(clientManager.getClientsFor(Mockito.anyLong())).thenReturn(clientsToBeReturnedByTheManager);
+		when(clientManager.getClientsAtProject(Mockito.anyLong())).thenReturn(clientsToBeReturnedByTheManager);
 	}
 
 	@Test

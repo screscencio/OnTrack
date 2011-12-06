@@ -127,12 +127,13 @@ public class BusinessLogicMockFactoryTestUtils {
 	}
 
 	private static MulticastService getBroadcastMock() {
+		// FIXME Jaime / Matsumoto : Refactor this to a Mockito's Mock
 		return new MulticastService() {
 			@Override
 			public void multicastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {}
 
 			@Override
-			public void broadcastProjectCreation(final ProjectRepresentation projectRepresentation) {}
+			public void multicastProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {}
 		};
 	}
 

@@ -11,6 +11,6 @@ public class DefaultUserExistenceAssurer {
 	private static final String DEFAULT_PASSWORD = DefaultAuthenticationCredentials.PASSWORD;
 
 	public static void verify() {
-		if (!AUTHENTICATION_MANAGER.hasUserByEmail(DEFAULT_USER)) AUTHENTICATION_MANAGER.createNewUser(DEFAULT_USER, DEFAULT_PASSWORD);
+		if (!AUTHENTICATION_MANAGER.hasUser(DEFAULT_USER)) AUTHENTICATION_MANAGER.createNewUser(DEFAULT_USER, DEFAULT_PASSWORD);
 	}
 }

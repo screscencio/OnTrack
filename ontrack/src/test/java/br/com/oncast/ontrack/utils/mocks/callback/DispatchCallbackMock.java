@@ -11,6 +11,9 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
 @SuppressWarnings("rawtypes")
 public class DispatchCallbackMock {
 
+	/**
+	 * Use this with caution. It appears that you can only mock one callback at a time.
+	 */
 	public static <T extends DispatchResponse> Stubber callOnSuccessWith(final T t) {
 		return Mockito.doAnswer(new Answer<T>() {
 			@SuppressWarnings("unchecked")

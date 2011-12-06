@@ -42,14 +42,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
 	private final PersistenceService persistenceService;
-	private final MulticastService broadcastService;
+	private final MulticastService multicastService;
 	private final ClientManager clientManager;
 	private final AuthenticationManager authenticationManager;
 
-	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService actionBroadcastService, final ClientManager clientManager,
+	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService multicastService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager) {
 		this.persistenceService = persistenceService;
-		this.broadcastService = actionBroadcastService;
+		this.multicastService = multicastService;
 		this.clientManager = clientManager;
 		this.authenticationManager = authenticationManager;
 	}
@@ -67,7 +67,7 @@ class BusinessLogicImpl implements BusinessLogic {
 				postProcessIncomingActions(actionList);
 				persistenceService.persistActions(projectId, actionList, new Date());
 			}
-			broadcastService.multicastActionSyncRequest(modelActionSyncRequest);
+			multicastService.multicastActionSyncRequest(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -120,10 +120,12 @@ class BusinessLogicImpl implements BusinessLogic {
 	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		try {
-			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(projectName);
-			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
-			persistenceService.authorize(authenticationManager.getAuthenticatedUser(), persistedProjectRepresentation);
-			broadcastService.broadcastProjectCreation(persistedProjectRepresentation);
+			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(projectName));
+			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
+
+			persistenceService.authorize(authenticatedUser, persistedProjectRepresentation);
+			multicastService.multicastProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
+
 			return persistedProjectRepresentation;
 		}
 		catch (final PersistenceException e) {

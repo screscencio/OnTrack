@@ -3,14 +3,21 @@ package br.com.oncast.ontrack.server.services.serverPush;
 class GwtCometClientConnection implements ServerPushConnection {
 
 	private final String clientId;
+	private final String sessionId;
 
-	public GwtCometClientConnection(final String clientId) {
+	public GwtCometClientConnection(final String clientId, final String sessionId) {
 		this.clientId = clientId;
+		this.sessionId = sessionId;
 	}
 
 	@Override
 	public String getClientId() {
 		return clientId;
+	}
+
+	@Override
+	public String getSessionId() {
+		return sessionId;
 	}
 
 	@Override
@@ -22,17 +29,13 @@ class GwtCometClientConnection implements ServerPushConnection {
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
+		if (!(obj instanceof GwtCometClientConnection)) return false;
 		final GwtCometClientConnection other = (GwtCometClientConnection) obj;
-		if (clientId == null) {
-			if (other.clientId != null) return false;
-		}
-		else if (!clientId.equals(other.clientId)) return false;
-		return true;
+		return clientId.equals(other.clientId);
 	}
 
 	@Override
 	public String toString() {
-		return clientId;
+		return "(cliendId='" + clientId + "', sessionId='" + sessionId + "')";
 	}
 }

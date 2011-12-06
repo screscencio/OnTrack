@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpSession;
@@ -129,6 +131,53 @@ public class AuthenticationManagerTest {
 		authenticateUser();
 		forcePasswordToBeIncorrect();
 		changePassword();
+	}
+
+	@Test
+	public void notifyListenersAfterLogin() throws Exception {
+		final AuthenticationListener listener = mock(AuthenticationListener.class);
+		authenticationManager.register(listener);
+		authenticationManager.authenticate("email", "password");
+
+		verify(listener).onUserLoggedIn(Mockito.same(user), (String) Mockito.any());
+	}
+
+	@Test
+	public void notifyListenersAfterLogout() throws Exception {
+		authenticationManager.authenticate("email", "password");
+
+		final AuthenticationListener listener = mock(AuthenticationListener.class);
+		authenticationManager.register(listener);
+		authenticationManager.logout();
+
+		verify(listener).onUserLoggedOut(Mockito.same(user), (String) Mockito.any());
+	}
+
+	@Test
+	public void unregisteredListenersShouldNotBeNotifiedAfterLogin() throws Exception {
+		final AuthenticationListener listener = mock(AuthenticationListener.class);
+
+		authenticationManager.register(listener);
+		authenticationManager.authenticate("email", "password");
+
+		authenticationManager.unregister(listener);
+		authenticationManager.authenticate("email", "password");
+
+		verify(listener, times(1)).onUserLoggedIn(Mockito.same(user), (String) Mockito.any());
+	}
+
+	@Test
+	public void unregisteredListenersShouldNotBeNotifiedAfterLogout() throws Exception {
+		authenticationManager.authenticate("email", "password");
+
+		final AuthenticationListener listener = mock(AuthenticationListener.class);
+		authenticationManager.register(listener);
+		authenticationManager.logout();
+
+		authenticationManager.unregister(listener);
+		authenticationManager.logout();
+
+		verify(listener, times(1)).onUserLoggedOut(Mockito.same(user), (String) Mockito.any());
 	}
 
 	private void forcePersistenceToDoNotFindUser() throws NoResultFoundException, PersistenceException {

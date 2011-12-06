@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ActionSyncServiceTest {
 
@@ -295,8 +297,10 @@ public class ActionSyncServiceTest {
 	private void assureDefaultProjectRepresentationExistance() throws Exception {
 		final PersistenceServiceJpaImpl persistenceService = spy(new PersistenceServiceJpaImpl());
 		doNothing().when(persistenceService).authorize(Mockito.any(User.class), Mockito.any(ProjectRepresentation.class));
+		final AuthenticationManager authManager = Mockito.mock(AuthenticationManager.class);
+		when(authManager.getAuthenticatedUser()).thenReturn(UserTestUtils.createUser());
 		BusinessLogicMockFactoryTestUtils
-				.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(persistenceService, Mockito.mock(AuthenticationManager.class))
+				.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(persistenceService, authManager)
 				.createProject(projectRepresentation.getName());
 	}
 }
