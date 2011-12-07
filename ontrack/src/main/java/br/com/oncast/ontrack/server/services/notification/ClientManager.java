@@ -47,6 +47,7 @@ public class ClientManager {
 
 	public void unregisterClient(final UUID clientId, final String sessionId) {
 		remove(clientId, clientsByProject);
+		remove(clientId, clientsBySession);
 	}
 
 	public Set<UUID> getClientsAtProject(final long projectId) {

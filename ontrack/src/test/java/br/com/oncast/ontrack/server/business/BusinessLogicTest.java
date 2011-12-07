@@ -23,12 +23,15 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -48,6 +51,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
@@ -356,6 +360,31 @@ public class BusinessLogicTest {
 		final ProjectRepresentation representation = business.createProject("bla");
 
 		verify(notification, times(1)).notifyProjectCreation(user.getId(), representation);
+	}
+
+	@Test
+	public void bindClientToProjectAfterLoad() throws Exception {
+		projectRepresentation = ProjectTestUtils.createProjectRepresentation();
+		final User user = createUser();
+
+		final NotificationService notification = mock(NotificationService.class);
+		final PersistenceService persistence = mock(PersistenceService.class);
+		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
+		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
+		when(persistence.retrieveProjectAuthorization(Mockito.anyLong(), Mockito.anyLong())).thenReturn(authorization);
+		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
+		when(persistence.retrieveProjectSnapshot(projectRepresentation.getId())).thenReturn(snapshot);
+
+		final ClientManager clientManager = mock(ClientManager.class);
+
+		final AuthenticationManager authManager = mock(AuthenticationManager.class);
+		when(authManager.getAuthenticatedUser()).thenReturn(user);
+
+		business = new BusinessLogicImpl(persistence, notification, clientManager, authManager);
+		final ProjectContextRequest request = new ProjectContextRequest(new UUID("123"), projectRepresentation.getId());
+		business.loadProjectForClient(request);
+
+		verify(clientManager, times(1)).bindClientToProject(request.getClientId(), request.getRequestedProjectId());
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {

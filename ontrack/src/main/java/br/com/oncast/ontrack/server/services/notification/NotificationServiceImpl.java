@@ -21,7 +21,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public NotificationServiceImpl(final ServerPushServerService serverPushServerService, final ClientManager clientManager) {
 		this.serverPushServerService = serverPushServerService;
 		this.clientManager = clientManager;
-		// FIXME Jaime / Matsumoto: Move this registration logic to ClientManager
+		// TODO Maybe move this registration logic to ClientManager
 		this.serverPushServerService.registerConnectionListener(new ServerPushConnectionListener() {
 
 			@Override
