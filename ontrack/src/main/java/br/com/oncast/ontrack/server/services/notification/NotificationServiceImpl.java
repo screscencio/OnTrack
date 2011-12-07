@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.multicast;
+package br.com.oncast.ontrack.server.services.notification;
 
 import java.util.Set;
 
@@ -12,34 +12,35 @@ import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
-public class MulticastServiceImpl implements MulticastService {
+public class NotificationServiceImpl implements NotificationService {
 
-	private static final Logger LOGGER = Logger.getLogger(MulticastServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(NotificationServiceImpl.class);
 	private final ServerPushServerService serverPushServerService;
 	private final ClientManager clientManager;
 
-	public MulticastServiceImpl(final ServerPushServerService serverPushServerService, final ClientManager clientManager) {
+	public NotificationServiceImpl(final ServerPushServerService serverPushServerService, final ClientManager clientManager) {
 		this.serverPushServerService = serverPushServerService;
 		this.clientManager = clientManager;
+		// FIXME Jaime / Matsumoto: Move this registration logic to ClientManager
 		this.serverPushServerService.registerConnectionListener(new ServerPushConnectionListener() {
 
 			@Override
-			public void onClientConnected(final UUID clientId) {
+			public void onClientConnected(final UUID clientId, final String sessionId) {
 				LOGGER.debug("Registering client '" + clientId + "' to server push service.");
-				clientManager.registerClient(clientId);
+				clientManager.registerClient(clientId, sessionId);
 			}
 
 			@Override
-			public void onClientDisconnected(final UUID clientId) {
+			public void onClientDisconnected(final UUID clientId, final String sessionId) {
 				LOGGER.debug("Unregistering client '" + clientId + "' from server push service.");
-				clientManager.unregisterClient(clientId);
+				clientManager.unregisterClient(clientId, sessionId);
 			}
 		});
 	}
 
 	@Override
-	public void multicastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {
-		final Set<UUID> connectionSet = clientManager.getClientsFor(modelActionSyncRequest.getProjectId());
+	public void notifyActions(final ModelActionSyncRequest modelActionSyncRequest) {
+		final Set<UUID> connectionSet = clientManager.getClientsAtProject(modelActionSyncRequest.getProjectId());
 		connectionSet.remove(modelActionSyncRequest.getClientId());
 
 		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + modelActionSyncRequest.getProjectId()
@@ -48,10 +49,13 @@ public class MulticastServiceImpl implements MulticastService {
 	}
 
 	@Override
-	public void broadcastProjectCreation(final ProjectRepresentation projectRepresentation) {
-		final Set<UUID> connectionSet = clientManager.getAllClients();
-		LOGGER.debug("Broadcasting " + ProjectRepresentation.class.getSimpleName() + " to '" + connectionSet.toArray().toString() + "'.");
+	public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {
+		final Set<UUID> connectionSet = clientManager.getClientsOfUser(userId);
+
+		LOGGER.debug("Multicasting " + ProjectRepresentation.class.getSimpleName() + " with name '" + projectRepresentation.getName()
+				+ "' to '" + connectionSet.toArray().toString() + "'.");
 		serverPushServerService.pushEvent(new ProjectCreatedEvent(projectRepresentation), connectionSet);
+
 	}
 
 }

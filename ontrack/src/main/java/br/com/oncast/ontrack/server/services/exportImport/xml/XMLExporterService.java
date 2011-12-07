@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
+import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.exceptions.UnableToExportXMLException;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -19,16 +21,19 @@ public class XMLExporterService {
 	private final PersistenceService persistanceService;
 	private final String version;
 
-	public XMLExporterService(final PersistenceService persistanceService) {
-		this.persistanceService = persistanceService;
+	public XMLExporterService(final PersistenceService persistenceService) {
+		this.persistanceService = persistenceService;
 		version = OntrackMigrationManager.getCurrentVersion();
 	}
 
 	public void export(final OutputStream outputStream) {
 		try {
-			final XMLWriter exporter = new XMLWriter();
-			exporter.setUserList(retrieveAllUsers()).setProjectList(findAllProjectsWithActions()).setVersion(version);
-			exporter.export(outputStream);
+			new XMLWriter()
+					.setVersion(version)
+					.setUserList(retrieveAllUsers())
+					.setProjectList(findAllProjectsWithActions())
+					.setProjectAuthorizationList(retrieveAllProjectAuthorizations())
+					.export(outputStream);
 		}
 		catch (final PersistenceException e) {
 			throw new UnableToExportXMLException("Could not mount xml.", e);
@@ -66,6 +71,14 @@ public class XMLExporterService {
 			// This user doesn't have a password.
 		}
 		return userXMLNode;
+	}
+
+	private List<ProjectAuthorizationXMLNode> retrieveAllProjectAuthorizations() throws PersistenceException {
+		final List<ProjectAuthorizationXMLNode> authNodes = new ArrayList<ProjectAuthorizationXMLNode>();
+		for (final ProjectAuthorization authorization : persistanceService.retrieveAllProjectAuthorizations()) {
+			authNodes.add(new ProjectAuthorizationXMLNode(authorization));
+		}
+		return authNodes;
 	}
 
 }

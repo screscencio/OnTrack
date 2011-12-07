@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.multicast;
+package br.com.oncast.ontrack.server.services.notification;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertNotContains;
@@ -15,12 +15,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.server.services.notification.ClientManager;
+import br.com.oncast.ontrack.server.services.notification.NotificationServiceImpl;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 import br.com.oncast.ontrack.utils.mocks.requests.RequestTestUtils;
 
-public class MulticastServiceTest {
+public class NotificationServiceTest {
 
 	@Mock
 	private ClientManager clientManager;
@@ -28,7 +30,7 @@ public class MulticastServiceTest {
 	@Mock
 	private ServerPushServerService serverPushServerService;
 
-	private MulticastServiceImpl service;
+	private NotificationServiceImpl service;
 
 	private UUID client1;
 
@@ -39,26 +41,26 @@ public class MulticastServiceTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		service = new MulticastServiceImpl(serverPushServerService, clientManager);
+		service = new NotificationServiceImpl(serverPushServerService, clientManager);
 
 		clientsToBeReturnedByTheManager = new HashSet<UUID>();
 
 		client1 = new UUID("1");
 		client2 = new UUID("2");
 
-		when(clientManager.getClientsFor(Mockito.anyLong())).thenReturn(clientsToBeReturnedByTheManager);
+		when(clientManager.getClientsAtProject(Mockito.anyLong())).thenReturn(clientsToBeReturnedByTheManager);
 	}
 
 	@Test
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void multicastActionShouldNotBeSentToTheClientThatOriginatedTheRequest() throws Exception {
+	public void actionNotificationShouldNotBeSentToTheClientThatOriginatedTheRequest() throws Exception {
 		final UUID originator = new UUID();
 
 		clientsToBeReturnedByTheManager.add(originator);
 		clientsToBeReturnedByTheManager.add(client1);
 		clientsToBeReturnedByTheManager.add(client2);
 
-		service.multicastActionSyncRequest(RequestTestUtils.createModelActionSyncRequest(originator));
+		service.notifyActions(RequestTestUtils.createModelActionSyncRequest(originator));
 
 		final HashSet<UUID> expectedClients = new HashSet<UUID>();
 		expectedClients.add(client1);

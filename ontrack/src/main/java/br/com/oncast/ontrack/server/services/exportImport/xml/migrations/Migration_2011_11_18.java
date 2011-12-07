@@ -4,11 +4,7 @@ import java.util.List;
 
 import org.dom4j.Element;
 
-import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
-import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
 
 public class Migration_2011_11_18 extends Migration {
 
@@ -21,7 +17,7 @@ public class Migration_2011_11_18 extends Migration {
 
 	@SuppressWarnings("unchecked")
 	private void mergePasswordsIntoTheirRelatedUser() {
-		final List<Element> users = getElementsOfType(User.class);
+		final List<Element> users = getElements("ontrackXML/users/user");
 
 		for (final Element user : users) {
 			final String userId = user.attributeValue("id");
@@ -46,15 +42,15 @@ public class Migration_2011_11_18 extends Migration {
 
 	private Element createDefaultProject() {
 		final Element projects = addListElementTo(getRootElement(), "projects");
-		final Element project = addElementWithName(projects, ProjectXMLNode.class);
-		final Element representation = addElementWithName(project, ProjectRepresentation.class);
+		final Element project = addElementWithName(projects, "project");
+		final Element representation = addElementWithName(project, "projectRepresentation");
 		representation.addAttribute("name", "Project");
 		return project;
 	}
 
 	private void moveActionsToProjectAndRemoveActionId(final Element defaultProjectElement) {
 		final Element actions = addListElementTo(defaultProjectElement, "actions");
-		final List<Element> userActions = getElementsOfType(UserAction.class);
+		final List<Element> userActions = getElements("/ontrackXML/userActions/userAction");
 		for (final Element userAction : userActions) {
 			userAction.detach();
 			removeIdAttributeFrom(userAction);

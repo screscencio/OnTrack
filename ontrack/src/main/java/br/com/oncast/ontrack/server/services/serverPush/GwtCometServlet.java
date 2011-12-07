@@ -51,18 +51,19 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	}
 
 	private static void addCometSession(final CometSession cometSession) {
-		LOGGER.debug("A new commet session was added (" + cometSession.getSessionID() + ").");
-		final String sessionId = cometSession.getSessionID();
+		LOGGER.debug("A new commet session was added (clientId='" + cometSession.getSessionID() + "', sessionId='" + cometSession.getHttpSession().getId()
+				+ "').");
 
-		cometSessionMap.put(sessionId, cometSession);
-		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientConnected(new GwtCometClientConnection(sessionId));
+		cometSessionMap.put(cometSession.getSessionID(), cometSession);
+		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientConnected(createGwtCometClientConnection(cometSession));
 	}
 
 	private static void removeCometSession(final CometSession cometSession) {
-		LOGGER.debug("A commet session was removed (" + cometSession.getSessionID() + ").");
+		LOGGER.debug("A commet session was removed (clientId='" + cometSession.getSessionID() + "', sessionId='" + cometSession.getHttpSession().getId()
+				+ "').");
 
 		cometSessionMap.remove(cometSession.getSessionID());
-		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientDisconnected(new GwtCometClientConnection(cometSession.getSessionID()));
+		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientDisconnected(createGwtCometClientConnection(cometSession));
 	}
 
 	@Override
@@ -98,5 +99,9 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 				GwtCometServlet.removeCometSession(cometSession);
 			}
 		}
+	}
+
+	private static GwtCometClientConnection createGwtCometClientConnection(final CometSession cometSession) {
+		return new GwtCometClientConnection(cometSession.getSessionID(), cometSession.getHttpSession().getId());
 	}
 }

@@ -10,6 +10,9 @@ import br.com.oncast.ontrack.shared.model.user.User;
 public class UserXMLNode {
 
 	@Attribute
+	private long id;
+
+	@Attribute
 	private String email;
 
 	@Attribute(required = false)
@@ -23,7 +26,16 @@ public class UserXMLNode {
 	private UserXMLNode() {}
 
 	public UserXMLNode(final User user) {
+		id = user.getId();
 		email = user.getEmail();
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	public User getUser() {
@@ -47,5 +59,4 @@ public class UserXMLNode {
 		passwordHash = password.getPasswordHash();
 		passwordSalt = password.getPasswordSalt();
 	}
-
 }

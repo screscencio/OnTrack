@@ -21,7 +21,7 @@ public class SessionManager {
 		final String attributeName = Session.class.getName();
 
 		Session session = (Session) httpSession.getAttribute(attributeName);
-		if (session == null) session = new Session();
+		if (session == null) session = new Session(httpSession.getId());
 		httpSession.setAttribute(attributeName, session);
 
 		return session;

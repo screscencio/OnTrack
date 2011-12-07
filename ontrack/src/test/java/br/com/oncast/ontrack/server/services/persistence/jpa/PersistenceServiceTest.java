@@ -27,7 +27,7 @@ import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -278,14 +278,14 @@ public class PersistenceServiceTest {
 
 		authorize(user, project1, project3);
 
-		final List<ProjectAuthorizationEntity> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
+		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
 
 		assertCollectionEquality(Arrays.asList(project1, project3), extractProjectsFromAuthorization(authorizations));
 	}
 
-	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorizationEntity> authorizations) {
+	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorization> authorizations) {
 		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
-		for (final ProjectAuthorizationEntity authorization : authorizations) {
+		for (final ProjectAuthorization authorization : authorizations) {
 			projects.add(authorization.getProject());
 		}
 		return projects;
@@ -380,7 +380,7 @@ public class PersistenceServiceTest {
 	}
 
 	private void assureProjectRepresentationExistance() throws Exception {
-		persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createProjectRepresentation(PROJECT_ID));
+		persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createRepresentation(PROJECT_ID));
 	}
 
 }

@@ -5,13 +5,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.simpleframework.xml.Root;
 
 @SuppressWarnings("rawtypes")
@@ -84,6 +87,12 @@ public class MigrationTestUtils {
 			if (attribute != null) assertEquals(clazz.getName(), attribute.getValue());
 			else assertEquals(getElementName(clazz), element.getName());
 		}
+	}
+
+	public static void print(final Document document) throws IOException {
+		final OutputFormat format = OutputFormat.createPrettyPrint();
+		final XMLWriter writer = new XMLWriter(System.out, format);
+		writer.write(document);
 	}
 
 	private static String getElementName(final Class<?> javaClass) {

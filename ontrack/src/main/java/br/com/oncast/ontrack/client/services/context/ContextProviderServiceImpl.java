@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
 
-// XXX Auth; Test this class interaction with the auth service;
 public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private final ProjectRepresentationProviderImpl projectRepresentationProvider;

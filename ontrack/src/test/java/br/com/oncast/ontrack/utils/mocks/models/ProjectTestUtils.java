@@ -1,5 +1,9 @@
 package br.com.oncast.ontrack.utils.mocks.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -36,7 +40,7 @@ public class ProjectTestUtils {
 		return getDefaultProjectRepresentation();
 	}
 
-	public static ProjectRepresentation createProjectRepresentation(final long projectId) {
+	public static ProjectRepresentation createRepresentation(final long projectId) {
 		return createProjectRepresentation(projectId, DEFAULT_PROJECT_NAME);
 	}
 
@@ -49,7 +53,7 @@ public class ProjectTestUtils {
 	}
 
 	private static ProjectRepresentation getDefaultProjectRepresentation() {
-		return createProjectRepresentation(1);
+		return createRepresentation(1);
 	}
 
 	private static Scope getDefaultScope() {
@@ -58,6 +62,15 @@ public class ProjectTestUtils {
 
 	private static Release getDefaultRelease() {
 		return new Release(getDefaultProjectRepresentation().getName(), new UUID("release0"));
+	}
+
+	public static List<ProjectRepresentation> createProjectRepresentationList(final int size) {
+		final List<ProjectRepresentation> list = new ArrayList<ProjectRepresentation>();
+		return list;
+	}
+
+	public static ProjectAuthorization createAuthorization() {
+		return new ProjectAuthorization(UserTestUtils.createUser(), createProjectRepresentation());
 	}
 
 }

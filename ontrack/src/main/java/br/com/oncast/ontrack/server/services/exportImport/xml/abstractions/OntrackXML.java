@@ -18,6 +18,9 @@ public class OntrackXML {
 	@ElementList
 	private List<ProjectXMLNode> projects;
 
+	@ElementList
+	private List<ProjectAuthorizationXMLNode> projectAuthorizations;
+
 	public void setUsers(final List<UserXMLNode> users) {
 		this.users = users;
 	}
@@ -40,5 +43,13 @@ public class OntrackXML {
 
 	public void setProjects(final List<ProjectXMLNode> projects) {
 		this.projects = projects;
+	}
+
+	public void setProjectAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizations) {
+		this.projectAuthorizations = projectAuthorizations;
+	}
+
+	public List<ProjectAuthorizationXMLNode> getProjectAuthorizations() {
+		return projectAuthorizations;
 	}
 }

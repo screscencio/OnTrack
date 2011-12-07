@@ -26,6 +26,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -42,6 +43,9 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	@UiField
 	protected SimplePanel loadingPanel;
+
+	@UiField
+	protected FlowPanel rootPanel;
 
 	private final ProjectListChangeListener projectListChangeListener;
 
@@ -158,11 +162,13 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	@Override
 	public void show() {
+		rootPanel.setVisible(true);
 		projectSwitchingMenu.show();
 	}
 
 	@Override
 	public void hide() {
+		rootPanel.setVisible(false);
 		projectSwitchingMenu.hide();
 		CloseEvent.fire(this, this);
 	}

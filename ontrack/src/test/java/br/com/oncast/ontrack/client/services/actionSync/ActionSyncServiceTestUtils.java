@@ -22,7 +22,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
-import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -33,7 +33,6 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
-import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
@@ -98,7 +97,7 @@ public class ActionSyncServiceTestUtils {
 	private ServerPushClientServiceMockImpl serverPushClientService;
 	private ActionExecutionService actionExecutionService;
 	private BusinessLogic businessLogic;
-	private MulticastService multicastService;
+	private NotificationService notificationService;
 	private ErrorTreatmentService errorTreatmentService;
 
 	public ActionExecutionService getActionExecutionServiceMock() {
@@ -156,24 +155,24 @@ public class ActionSyncServiceTestUtils {
 
 	public BusinessLogic getBusinessLogicMock() {
 		if (businessLogic != null) return businessLogic;
-		return businessLogic = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndCustomBroadcastMock(getMulticastServiceMock());
+		return businessLogic = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndCustomNotificationMock(getNotificationServiceMock());
 	}
 
-	public MulticastService getMulticastServiceMock() {
-		if (multicastService != null) return multicastService;
+	public NotificationService getNotificationServiceMock() {
+		if (notificationService != null) return notificationService;
 
 		final ServerPushClientServiceMockImpl serverPushClientServiceMock = getServerPushClientServiceMock();
-		return multicastService = new MulticastService() {
+		// FIXME Jaime / Matsumoto : Refactor this to a Mockito's Mock
+		return notificationService = new NotificationService() {
 
 			@Override
-			public void multicastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {
+			public void notifyActions(final ModelActionSyncRequest modelActionSyncRequest) {
 				serverPushClientServiceMock.processIncommingEvent(new ServerActionSyncEvent(modelActionSyncRequest));
 			}
 
 			@Override
-			public void broadcastProjectCreation(final ProjectRepresentation projectRepresentation) {
-				serverPushClientServiceMock.processIncommingEvent(new ProjectCreatedEvent(projectRepresentation));
-			}
+			public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {
+				}
 		};
 	}
 

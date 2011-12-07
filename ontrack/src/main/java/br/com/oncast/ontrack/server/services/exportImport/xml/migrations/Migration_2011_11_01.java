@@ -6,7 +6,6 @@ import java.util.List;
 import org.dom4j.Element;
 
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
-import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
 
 public class Migration_2011_11_01 extends Migration {
 
@@ -36,7 +35,7 @@ public class Migration_2011_11_01 extends Migration {
 	}
 
 	private void addTimeStampForAllDeclareProgressActions() {
-		final List<Element> actions = getElementsOfType(ScopeDeclareProgressAction.class);
+		final List<Element> actions = getElements("//*[@class='br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction']");
 		final Iterator<Element> it = actions.iterator();
 		while (it.hasNext()) {
 			final Element action = it.next();

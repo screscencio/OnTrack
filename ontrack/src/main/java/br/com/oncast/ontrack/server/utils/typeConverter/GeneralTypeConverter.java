@@ -14,7 +14,6 @@ import br.com.oncast.ontrack.server.utils.typeConverter.custom.IntegerConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.ListConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.LongConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringConverter;
-import br.com.oncast.ontrack.server.utils.typeConverter.custom.DateConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;

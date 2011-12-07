@@ -32,7 +32,7 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 
 				clientConnectionMap.put(clientId, connection);
 				for (final ServerPushConnectionListener listener : serverPushConnectionListenerSet)
-					listener.onClientConnected(clientId);
+					listener.onClientConnected(clientId, connection.getSessionId());
 			}
 
 			@Override
@@ -41,7 +41,7 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 
 				clientConnectionMap.remove(clientId);
 				for (final ServerPushConnectionListener listener : serverPushConnectionListenerSet)
-					listener.onClientDisconnected(clientId);
+					listener.onClientDisconnected(clientId, connection.getSessionId());
 			}
 		});
 	}

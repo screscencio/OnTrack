@@ -8,12 +8,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.UserEntity;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "user", "project" }))
-public class ProjectAuthorizationEntity {
+public class ProjectAuthorization {
 
 	@Id
 	@GeneratedValue
@@ -21,16 +21,17 @@ public class ProjectAuthorizationEntity {
 
 	@OneToOne
 	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private UserEntity user;
+	private User user;
 
 	@OneToOne
 	@JoinColumn(name = "project", nullable = false, updatable = false)
 	private ProjectRepresentation project;
 
+	@SuppressWarnings("unused")
 	// IMPORTANT A package-visible default constructor is necessary for JPA. Do not remove this.
-	private ProjectAuthorizationEntity() {}
+	private ProjectAuthorization() {}
 
-	public ProjectAuthorizationEntity(final UserEntity user, final ProjectRepresentation project) {
+	public ProjectAuthorization(final User user, final ProjectRepresentation project) {
 		this.user = user;
 		this.project = project;
 	}
@@ -39,7 +40,7 @@ public class ProjectAuthorizationEntity {
 		return id;
 	}
 
-	public UserEntity getUser() {
+	public User getUser() {
 		return user;
 	}
 

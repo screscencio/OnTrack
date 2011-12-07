@@ -38,8 +38,9 @@ import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
-public class UserActionFactoryMock {
+public class UserActionTestUtils {
 
 	private static final int DEFAULT_PROJECT_ID = 1;
 	private static final String DEFAULT_PROJECT_NAME = "Default project";
@@ -47,21 +48,8 @@ public class UserActionFactoryMock {
 	private static long projectId = DEFAULT_PROJECT_ID;
 	private static String projectName = DEFAULT_PROJECT_NAME;
 
-	public static List<User> createUserList() {
-		final List<User> users = new ArrayList<User>();
-
-		final User user1 = new User();
-		user1.setEmail("user1@email");
-		user1.setId(1);
-
-		final User user2 = new User();
-		user2.setEmail("user2@email");
-		user2.setId(2);
-
-		users.add(user1);
-		users.add(user2);
-
-		return users;
+	public static List<User> createUserList() throws Exception {
+		return UserTestUtils.createList(2);
 	}
 
 	public static List<Password> createPasswordList() {
@@ -82,7 +70,7 @@ public class UserActionFactoryMock {
 	}
 
 	public static List<UserAction> createCompleteUserActionList(final int projectId) throws Exception {
-		UserActionFactoryMock.projectId = projectId;
+		UserActionTestUtils.projectId = projectId;
 		final List<UserAction> actionList = createCompleteUserActionList();
 
 		resetProjectId();
@@ -147,7 +135,7 @@ public class UserActionFactoryMock {
 	}
 
 	private static void setProjectName(final String projectName) {
-		UserActionFactoryMock.projectName = projectName;
+		UserActionTestUtils.projectName = projectName;
 	}
 
 	private static void sort(final List<UserAction> actionList) {
@@ -302,11 +290,11 @@ public class UserActionFactoryMock {
 	}
 
 	private static void resetProjectId() {
-		UserActionFactoryMock.projectId = DEFAULT_PROJECT_ID;
+		UserActionTestUtils.projectId = DEFAULT_PROJECT_ID;
 	}
 
 	private static void resetProjectName() {
-		UserActionFactoryMock.projectName = DEFAULT_PROJECT_NAME;
+		UserActionTestUtils.projectName = DEFAULT_PROJECT_NAME;
 	}
 
 }

@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse
 
 import com.google.gwt.user.client.Window;
 
-// XXX Auth; Test this class interaction with the auth service;
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
 	private final DispatchService dispatchService;
@@ -44,8 +43,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 				availableProjectRepresentations.clear();
 				projectListAvailability = false;
 
-				notifyListenersForCurrentProjectListChange();
-				notifyListenersForCurrentProjectListAvailabilityChange();
+				notifyProjectListChange();
 			}
 		});
 
@@ -56,7 +54,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 				final ProjectRepresentation newProjectRepresentation = event.getProjectRepresentation();
 				if (availableProjectRepresentations.contains(newProjectRepresentation)) return;
 				availableProjectRepresentations.add(newProjectRepresentation);
-				notifyListenersForCurrentProjectListChange();
+				notifyProjectListContentChange();
 			}
 		});
 
@@ -72,8 +70,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 				availableProjectRepresentations.addAll(response.getProjectList());
 				projectListAvailability = true;
 
-				notifyListenersForCurrentProjectListChange();
-				notifyListenersForCurrentProjectListAvailabilityChange();
+				notifyProjectListChange();
 			}
 
 			@Override
@@ -121,8 +118,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	public void registerProjectListChangeListener(final ProjectListChangeListener projectListChangeListener) {
 		if (projectListChangeListeners.contains(projectListChangeListener)) return;
 		projectListChangeListeners.add(projectListChangeListener);
-		notifyListenerForCurrentProjectListChange(projectListChangeListener);
-		notifyListenerForCurrentProjectListAvailabilityChange(projectListChangeListener);
+		notifyProjectListChange(projectListChangeListener);
 	}
 
 	@Override
@@ -130,21 +126,28 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 		projectListChangeListeners.remove(projectListChangeListener);
 	}
 
-	private void notifyListenersForCurrentProjectListChange() {
-		for (final ProjectListChangeListener listener : projectListChangeListeners)
-			notifyListenerForCurrentProjectListChange(listener);
+	private void notifyProjectListChange() {
+		for (final ProjectListChangeListener listener : projectListChangeListeners) {
+			notifyProjectListContentChange(listener);
+			notifyProjectListAvailabilityChange(listener);
+		}
 	}
 
-	private void notifyListenerForCurrentProjectListChange(final ProjectListChangeListener projectListChangeListener) {
+	private void notifyProjectListChange(final ProjectListChangeListener listener) {
+		notifyProjectListContentChange(listener);
+		notifyProjectListAvailabilityChange(listener);
+	}
+
+	private void notifyProjectListContentChange() {
+		for (final ProjectListChangeListener listener : projectListChangeListeners)
+			notifyProjectListContentChange(listener);
+	}
+
+	private void notifyProjectListContentChange(final ProjectListChangeListener projectListChangeListener) {
 		projectListChangeListener.onProjectListChanged(availableProjectRepresentations);
 	}
 
-	protected void notifyListenersForCurrentProjectListAvailabilityChange() {
-		for (final ProjectListChangeListener listener : projectListChangeListeners)
-			notifyListenerForCurrentProjectListAvailabilityChange(listener);
-	}
-
-	protected void notifyListenerForCurrentProjectListAvailabilityChange(final ProjectListChangeListener projectListChangeListener) {
+	protected void notifyProjectListAvailabilityChange(final ProjectListChangeListener projectListChangeListener) {
 		projectListChangeListener.onProjectListAvailabilityChange(projectListAvailability);
 	}
 }

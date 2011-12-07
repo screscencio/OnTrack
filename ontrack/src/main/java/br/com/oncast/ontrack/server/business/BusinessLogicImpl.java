@@ -10,12 +10,13 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.multicast.ClientManager;
-import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.server.services.notification.ClientManager;
+import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorizationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -41,14 +42,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
 	private final PersistenceService persistenceService;
-	private final MulticastService broadcastService;
+	private final NotificationService notificationService;
 	private final ClientManager clientManager;
 	private final AuthenticationManager authenticationManager;
 
-	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService actionBroadcastService, final ClientManager clientManager,
+	protected BusinessLogicImpl(final PersistenceService persistenceService, final NotificationService notificationService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager) {
 		this.persistenceService = persistenceService;
-		this.broadcastService = actionBroadcastService;
+		this.notificationService = notificationService;
 		this.clientManager = clientManager;
 		this.authenticationManager = authenticationManager;
 	}
@@ -57,6 +58,8 @@ class BusinessLogicImpl implements BusinessLogic {
 	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException {
 		LOGGER.debug("Processing incoming action batch.");
 		try {
+			assureProjectAccessAuthorization(modelActionSyncRequest.getProjectId());
+
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
 			final long projectId = modelActionSyncRequest.getProjectId();
 			synchronized (this) {
@@ -64,7 +67,7 @@ class BusinessLogicImpl implements BusinessLogic {
 				postProcessIncomingActions(actionList);
 				persistenceService.persistActions(projectId, actionList, new Date());
 			}
-			broadcastService.multicastActionSyncRequest(modelActionSyncRequest);
+			notificationService.notifyActions(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -117,10 +120,13 @@ class BusinessLogicImpl implements BusinessLogic {
 	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		try {
-			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(projectName);
-			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
-			persistenceService.authorize(authenticationManager.getAuthenticatedUser(), persistedProjectRepresentation);
-			broadcastService.broadcastProjectCreation(persistedProjectRepresentation);
+			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(
+					projectName));
+			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
+
+			persistenceService.authorize(authenticatedUser, persistedProjectRepresentation);
+			notificationService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
+
 			return persistedProjectRepresentation;
 		}
 		catch (final PersistenceException e) {
@@ -148,22 +154,13 @@ class BusinessLogicImpl implements BusinessLogic {
 		final User user = authenticationManager.getAuthenticatedUser();
 		LOGGER.debug("Retrieving authorized project list for user '" + user + "'.");
 		try {
-			final List<ProjectAuthorizationEntity> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
-			return extractProjectsFromAuthorization(authorizations);
+			return listAuthorizedProjects(user);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "Unable to retrieve the current user project list.";
 			LOGGER.debug(errorMessage, e);
 			throw new UnableToRetrieveProjectListException(errorMessage);
 		}
-	}
-
-	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorizationEntity> authorizations) {
-		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
-		for (final ProjectAuthorizationEntity authorization : authorizations) {
-			projects.add(authorization.getProject());
-		}
-		return projects;
 	}
 
 	@Override
@@ -178,6 +175,8 @@ class BusinessLogicImpl implements BusinessLogic {
 	public Project loadProject(final long projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
 		LOGGER.debug("Loading current state for project id '" + projectId + "'.");
 		try {
+			assureProjectAccessAuthorization(projectId);
+
 			final ProjectSnapshot snapshot = loadProjectSnapshot(projectId);
 			final List<UserAction> actionList = persistenceService.retrieveActionsSince(projectId, snapshot.getLastAppliedActionId());
 
@@ -257,5 +256,22 @@ class BusinessLogicImpl implements BusinessLogic {
 			ActionExecuter.executeAction(context, action.getModelAction());
 
 		return project;
+	}
+
+	// TODO ++ Extract authorization responsibility to another class.
+	private void assureProjectAccessAuthorization(final long projectId) throws PersistenceException {
+		final long currentUserId = authenticationManager.getAuthenticatedUser().getId();
+		final ProjectAuthorization retrieveProjectAuthorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
+		if (retrieveProjectAuthorization == null) throw new AuthenticationException("Not authorized to access project '" + projectId + "'.");
+	}
+
+	// TODO ++ Extract authorization responsibility to another class.
+	private List<ProjectRepresentation> listAuthorizedProjects(final User user) throws PersistenceException {
+		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
+		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
+		for (final ProjectAuthorization authorization : authorizations) {
+			projects.add(authorization.getProject());
+		}
+		return projects;
 	}
 }
