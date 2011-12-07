@@ -16,8 +16,8 @@ import org.mockito.stubbing.Answer;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.multicast.ClientManager;
-import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.server.services.notification.ClientManager;
+import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
@@ -30,25 +30,25 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class BusinessLogicMockFactoryTestUtils {
 
-	public static BusinessLogic createWithJpaPersistenceAndCustomBroadcastMock(final MulticastService broadcastMock) {
-		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), broadcastMock, getClientManagerMock(), getAuthManagerMock());
+	public static BusinessLogic createWithJpaPersistenceAndCustomNotificationMock(final NotificationService notificationMock) {
+		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, getClientManagerMock(), getAuthManagerMock());
 	}
 
-	public static BusinessLogic createWithDumbPersistenceMockAndDumbBroadcastMock() throws Exception {
-		return new BusinessLogicImpl(getPersistenceMock(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
+	public static BusinessLogic createWithDumbPersistenceMockAndDumbNotificationMock() throws Exception {
+		return new BusinessLogicImpl(getPersistenceMock(), getNotificationMock(), getClientManagerMock(), getAuthManagerMock());
 	}
 
-	public static BusinessLogic createWithDumbNonWritablePersistenceMockAndDumbBroadcastMock() throws Exception {
-		return new BusinessLogicImpl(getNonWritablePersistenceMock(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
+	public static BusinessLogic createWithDumbNonWritablePersistenceMockAndDumbNotificationMock() throws Exception {
+		return new BusinessLogicImpl(getNonWritablePersistenceMock(), getNotificationMock(), getClientManagerMock(), getAuthManagerMock());
 	}
 
-	public static BusinessLogic createWithJpaPersistenceAndDumbBroadcastMock() {
-		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), getBroadcastMock(), getClientManagerMock(), getAuthManagerMock());
+	public static BusinessLogic createWithJpaPersistenceAndDumbNotificationMock() {
+		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), getNotificationMock(), getClientManagerMock(), getAuthManagerMock());
 	}
 
-	public static BusinessLogic createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(final PersistenceService persistenceService,
+	public static BusinessLogic createWithCustomPersistenceMockAndDumbNotificationMockAndCustomAuthManagerMock(final PersistenceService persistenceService,
 			final AuthenticationManager authManager) {
-		return new BusinessLogicImpl(persistenceService, getBroadcastMock(), getClientManagerMock(), authManager);
+		return new BusinessLogicImpl(persistenceService, getNotificationMock(), getClientManagerMock(), authManager);
 	}
 
 	private static PersistenceServiceJpaImpl getPersistenceServiceJpaImplMockingAuthorization() {
@@ -126,14 +126,14 @@ public class BusinessLogicMockFactoryTestUtils {
 
 	}
 
-	private static MulticastService getBroadcastMock() {
+	private static NotificationService getNotificationMock() {
 		// FIXME Jaime / Matsumoto : Refactor this to a Mockito's Mock
-		return new MulticastService() {
+		return new NotificationService() {
 			@Override
-			public void multicastActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) {}
+			public void notifyActions(final ModelActionSyncRequest modelActionSyncRequest) {}
 
 			@Override
-			public void multicastProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {}
+			public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {}
 		};
 	}
 

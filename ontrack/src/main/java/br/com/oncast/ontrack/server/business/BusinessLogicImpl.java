@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.multicast.ClientManager;
-import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.server.services.notification.ClientManager;
+import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -42,14 +42,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
 	private final PersistenceService persistenceService;
-	private final MulticastService multicastService;
+	private final NotificationService notificationService;
 	private final ClientManager clientManager;
 	private final AuthenticationManager authenticationManager;
 
-	protected BusinessLogicImpl(final PersistenceService persistenceService, final MulticastService multicastService, final ClientManager clientManager,
+	protected BusinessLogicImpl(final PersistenceService persistenceService, final NotificationService notificationService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager) {
 		this.persistenceService = persistenceService;
-		this.multicastService = multicastService;
+		this.notificationService = notificationService;
 		this.clientManager = clientManager;
 		this.authenticationManager = authenticationManager;
 	}
@@ -67,7 +67,7 @@ class BusinessLogicImpl implements BusinessLogic {
 				postProcessIncomingActions(actionList);
 				persistenceService.persistActions(projectId, actionList, new Date());
 			}
-			multicastService.multicastActionSyncRequest(modelActionSyncRequest);
+			notificationService.notifyActions(modelActionSyncRequest);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -120,11 +120,12 @@ class BusinessLogicImpl implements BusinessLogic {
 	public ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation {
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		try {
-			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(projectName));
+			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(
+					projectName));
 			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 
 			persistenceService.authorize(authenticatedUser, persistedProjectRepresentation);
-			multicastService.multicastProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
+			notificationService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
 
 			return persistedProjectRepresentation;
 		}

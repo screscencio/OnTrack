@@ -24,8 +24,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.multicast.ClientManager;
-import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.server.services.notification.ClientManager;
+import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
@@ -74,7 +74,7 @@ public class BusinessLogicTest {
 
 	@Test(expected = InvalidIncomingAction.class)
 	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithDumbPersistenceMockAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithDumbPersistenceMockAndDumbNotificationMock();
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeUpdateAction(new UUID("id"), "bllla"));
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
@@ -82,7 +82,7 @@ public class BusinessLogicTest {
 
 	@Test(expected = InvalidIncomingAction.class)
 	public void shouldThrowExceptionAndNotPersistWhenAnInvalidActionIsExecuted() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithDumbNonWritablePersistenceMockAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithDumbNonWritablePersistenceMockAndDumbNotificationMock();
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(new UUID("0")));
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
@@ -90,7 +90,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void shouldConstructAScopeHierarchyFromActions() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext context = new ProjectContext(project);
 
@@ -110,7 +110,7 @@ public class BusinessLogicTest {
 	 */
 	@Test
 	public void shouldPersistActionsAndTheirRollbacks() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext context = new ProjectContext(project);
 
@@ -128,7 +128,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteOnePendentAction() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final Project project1 = loadProject();
 
 		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
@@ -145,7 +145,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteTwoPendentActions() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final Project project1 = loadProject();
 
 		final ModelAction action1 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
@@ -168,7 +168,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteManyPendentActions() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final Project project1 = loadProject();
 
 		final ProjectContext context = new ProjectContext(project1);
@@ -187,7 +187,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteManyPendentActions2() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final Project project1 = loadProject();
 
 		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.getSomeActions());
@@ -210,7 +210,7 @@ public class BusinessLogicTest {
 		final long OTHER_PROJECT_ID = 2;
 		assureProjectRepresentationExistance(OTHER_PROJECT_ID);
 
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final Project project1 = loadProject();
 
 		final ScopeInsertChildAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
@@ -229,7 +229,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void actionShouldOnlyUpdateRelatedProject() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 
 		final Project project1 = loadProject();
 		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.getSomeActions());
@@ -254,7 +254,7 @@ public class BusinessLogicTest {
 		assureProjectRepresentationExistance(2);
 		assureProjectRepresentationExistance(3);
 
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final Project loadedProject = loadProject(2);
 
 		assertEquals(2, loadedProject.getProjectRepresentation().getId());
@@ -263,7 +263,7 @@ public class BusinessLogicTest {
 
 	@Test(expected = ProjectNotFoundException.class)
 	public void shouldNotLoadProjectIfInexistentIdIsGiven() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final long inexistentProjectId = 123;
 		loadProject(inexistentProjectId);
 	}
@@ -275,7 +275,7 @@ public class BusinessLogicTest {
 
 		when(authManager.getAuthenticatedUser()).thenReturn(createUser());
 
-		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(persistence, authManager);
+		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbNotificationMockAndCustomAuthManagerMock(persistence, authManager);
 
 		business.createProject("Name");
 
@@ -288,7 +288,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void scopeDeclareProgressActionShouldHaveHisTimestampRessetedByTheServer() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbBroadcastMock();
+		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 
 		final Project project1 = loadProject();
@@ -314,7 +314,7 @@ public class BusinessLogicTest {
 		user.setId(1);
 		when(authManager.getAuthenticatedUser()).thenReturn(user);
 
-		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(persistence, authManager);
+		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbNotificationMockAndCustomAuthManagerMock(persistence, authManager);
 		business.retrieveCurrentUserProjectList();
 
 		verify(authManager).getAuthenticatedUser();
@@ -325,7 +325,7 @@ public class BusinessLogicTest {
 	public void shouldAuthorizeUserAfterProjectCreation() throws Exception {
 		final AuthenticationManager authManager = mock(AuthenticationManager.class);
 		final PersistenceService persistence = mock(PersistenceService.class);
-		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbBroadcastMockAndCustomAuthManagerMock(
+		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbNotificationMockAndCustomAuthManagerMock(
 				persistence, authManager);
 
 		final User authenticatedUser = UserTestUtils.createUser("authenticated.user@domain.com");
@@ -343,7 +343,7 @@ public class BusinessLogicTest {
 		projectRepresentation = ProjectTestUtils.createProjectRepresentation();
 		final User user = createUser();
 
-		final MulticastService multicast = mock(MulticastService.class);
+		final NotificationService notification = mock(NotificationService.class);
 		final PersistenceService persistence = mock(PersistenceService.class);
 		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
 
@@ -352,10 +352,10 @@ public class BusinessLogicTest {
 		final AuthenticationManager authManager = mock(AuthenticationManager.class);
 		when(authManager.getAuthenticatedUser()).thenReturn(user);
 
-		business = new BusinessLogicImpl(persistence, multicast, clientManager, authManager);
+		business = new BusinessLogicImpl(persistence, notification, clientManager, authManager);
 		final ProjectRepresentation representation = business.createProject("bla");
 
-		verify(multicast, times(1)).multicastProjectCreation(user.getId(), representation);
+		verify(notification, times(1)).notifyProjectCreation(user.getId(), representation);
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {

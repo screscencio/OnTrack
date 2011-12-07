@@ -7,8 +7,6 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
-import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
