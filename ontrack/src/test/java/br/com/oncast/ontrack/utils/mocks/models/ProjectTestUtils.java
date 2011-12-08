@@ -73,4 +73,12 @@ public class ProjectTestUtils {
 		return new ProjectAuthorization(UserTestUtils.createUser(), createProjectRepresentation());
 	}
 
+	public static List<ProjectAuthorization> createAuthorizations(final int numberOfAuthorizations) {
+		final List<ProjectAuthorization> auths = new ArrayList<ProjectAuthorization>();
+		for (int i = 0; i < numberOfAuthorizations; i++) {
+			auths.add(createAuthorization());
+		}
+		return auths;
+	}
+
 }

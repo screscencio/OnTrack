@@ -26,7 +26,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ValueHolder;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
+import br.com.oncast.ontrack.server.business.BusinessLogicTestUtils;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -299,8 +299,8 @@ public class ActionSyncServiceTest {
 		doNothing().when(persistence).authorize(Mockito.any(User.class), Mockito.any(ProjectRepresentation.class));
 		final AuthenticationManager authManager = Mockito.mock(AuthenticationManager.class);
 		when(authManager.getAuthenticatedUser()).thenReturn(UserTestUtils.createUser());
-		BusinessLogicMockFactoryTestUtils
-				.createWithCustomPersistenceMockAndDumbNotificationMockAndCustomAuthManagerMock(persistence, authManager)
+		BusinessLogicTestUtils
+				.create(persistence, authManager)
 				.createProject(projectRepresentation.getName());
 	}
 }

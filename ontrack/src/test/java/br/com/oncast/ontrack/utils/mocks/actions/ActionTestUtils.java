@@ -18,7 +18,7 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class ActionTestUtils {
 
-	public static List<ModelAction> getSomeActions() {
+	public static List<ModelAction> createSomeActions() {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
 		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(ProjectTestUtils.createProject().getProjectScope().getId(), "1");
@@ -76,6 +76,12 @@ public class ActionTestUtils {
 		actions.add(new ScopeMoveRightAction(insertChild3.getNewScopeId()));
 		actions.add(new ScopeMoveLeftAction(insertChild3.getNewScopeId()));
 
+		return actions;
+	}
+
+	public static List<ModelAction> createOneValidAction() {
+		final List<ModelAction> actions = new ArrayList<ModelAction>();
+		actions.add(new ScopeInsertChildAction(ProjectTestUtils.createProject().getProjectScope().getId(), "a"));
 		return actions;
 	}
 }

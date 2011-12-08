@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
-import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
+import br.com.oncast.ontrack.shared.exceptions.authentication.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -262,7 +262,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	private void assureProjectAccessAuthorization(final long projectId) throws PersistenceException {
 		final long currentUserId = authenticationManager.getAuthenticatedUser().getId();
 		final ProjectAuthorization retrieveProjectAuthorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
-		if (retrieveProjectAuthorization == null) throw new AuthenticationException("Not authorized to access project '" + projectId + "'.");
+		if (retrieveProjectAuthorization == null) throw new AuthorizationException("Not authorized to access project '" + projectId + "'.");
 	}
 
 	// TODO ++ Extract authorization responsibility to another class.

@@ -21,7 +21,7 @@ import br.com.oncast.ontrack.client.services.identification.ClientIdentification
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.server.business.BusinessLogic;
-import br.com.oncast.ontrack.server.business.BusinessLogicMockFactoryTestUtils;
+import br.com.oncast.ontrack.server.business.BusinessLogicTestUtils;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
@@ -155,7 +155,7 @@ public class ActionSyncServiceTestUtils {
 
 	public BusinessLogic getBusinessLogicMock() {
 		if (businessLogic != null) return businessLogic;
-		return businessLogic = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndCustomNotificationMock(getNotificationServiceMock());
+		return businessLogic = BusinessLogicTestUtils.createWithJpaPersistence(getNotificationServiceMock());
 	}
 
 	public NotificationService getNotificationServiceMock() {

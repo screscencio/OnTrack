@@ -69,7 +69,7 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldOnlyReturnActionsAfterAGivenId() throws Exception {
-		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.getSomeActions(), new Date());
+		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.createSomeActions(), new Date());
 
 		final List<UserAction> userActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
 
