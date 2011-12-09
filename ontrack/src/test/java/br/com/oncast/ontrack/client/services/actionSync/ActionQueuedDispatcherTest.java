@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
@@ -11,6 +12,7 @@ import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ValueHolder;
+import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
@@ -53,9 +55,11 @@ public class ActionQueuedDispatcherTest {
 	public void setUp() {
 		actionSyncServiceTestUtils = new ActionSyncServiceTestUtils();
 		requestDispatchServiceMock = new DispatchRequestServiceTestImplementation();
+		final ClientIdentificationProvider clientIdentificationProvider = Mockito.mock(ClientIdentificationProvider.class);
 		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock,
-				actionSyncServiceTestUtils.getClientIdentificationProviderMock(),
-				actionSyncServiceTestUtils.getProjectRepresentationProviderMock(), actionSyncServiceTestUtils.getErrorTreatmentServiceMock());
+					clientIdentificationProvider,
+					actionSyncServiceTestUtils.getProjectRepresentationProviderMock(),
+					actionSyncServiceTestUtils.getErrorTreatmentServiceMock());
 	}
 
 	@Test
@@ -70,7 +74,7 @@ public class ActionQueuedDispatcherTest {
 				callbackHolder.setValue(callback);
 			}
 		});
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 100; i++)
 			actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""));
 	}
 
