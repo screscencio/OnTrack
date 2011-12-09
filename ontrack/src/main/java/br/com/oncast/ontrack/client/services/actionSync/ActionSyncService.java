@@ -46,7 +46,7 @@ public class ActionSyncService {
 				processServerActionSyncEvent(event);
 			}
 		});
-		actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
+		this.actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> scopeSet, final boolean isUserAction) {

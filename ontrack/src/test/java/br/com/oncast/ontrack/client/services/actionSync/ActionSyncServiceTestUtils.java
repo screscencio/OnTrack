@@ -43,6 +43,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
+// FIXME Remove after refactoring ActionQueuedDispatcherTest
 public class ActionSyncServiceTestUtils {
 
 	private static final int DEFAULT_PROJECT_ID = 1;

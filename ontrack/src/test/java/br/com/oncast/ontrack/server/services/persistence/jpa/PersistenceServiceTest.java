@@ -299,7 +299,7 @@ public class PersistenceServiceTest {
 	@Test(expected = PersistenceException.class)
 	public void inexistentProjectCannotBeAuthorized() throws Exception {
 		final User user = createAndPersistUser();
-		persistenceService.authorize(user, ProjectTestUtils.createProjectRepresentation(404, "inexistent project name"));
+		persistenceService.authorize(user, ProjectTestUtils.createRepresentation(404, "inexistent project name"));
 	}
 
 	@Test
@@ -343,7 +343,7 @@ public class PersistenceServiceTest {
 	}
 
 	private ProjectRepresentation createProjectRepresentation(final String projectName) throws PersistenceException {
-		return persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createProjectRepresentation(projectName));
+		return persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createRepresentation(projectName));
 	}
 
 	private ProjectSnapshot loadProjectSnapshot() throws PersistenceException, UnableToLoadProjectException, ProjectNotFoundException {

@@ -16,11 +16,11 @@ public class ProjectTestUtils {
 	public static final String DEFAULT_PROJECT_NAME = "Default project";
 
 	public static Project createProject() {
-		return createProject(getDefaultProjectRepresentation(), getDefaultScope(), getDefaultRelease());
+		return createProject(getDefaultRepresentation(), getDefaultScope(), getDefaultRelease());
 	}
 
 	public static Project createProject(final Scope scope, final Release release) {
-		return createProject(getDefaultProjectRepresentation(), scope, release);
+		return createProject(getDefaultRepresentation(), scope, release);
 	}
 
 	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release) {
@@ -36,41 +36,41 @@ public class ProjectTestUtils {
 		return new ProjectContext(createProject(scope, release));
 	}
 
-	public static ProjectRepresentation createProjectRepresentation() {
-		return getDefaultProjectRepresentation();
+	public static ProjectRepresentation createRepresentation() {
+		return getDefaultRepresentation();
 	}
 
 	public static ProjectRepresentation createRepresentation(final long projectId) {
-		return createProjectRepresentation(projectId, DEFAULT_PROJECT_NAME);
+		return createRepresentation(projectId, DEFAULT_PROJECT_NAME);
 	}
 
-	public static ProjectRepresentation createProjectRepresentation(final long projectId, final String projectName) {
+	public static ProjectRepresentation createRepresentation(final long projectId, final String projectName) {
 		return new ProjectRepresentation(projectId, projectName);
 	}
 
-	public static ProjectRepresentation createProjectRepresentation(final String projectName) {
+	public static ProjectRepresentation createRepresentation(final String projectName) {
 		return new ProjectRepresentation(projectName);
 	}
 
-	private static ProjectRepresentation getDefaultProjectRepresentation() {
+	private static ProjectRepresentation getDefaultRepresentation() {
 		return createRepresentation(1);
 	}
 
 	private static Scope getDefaultScope() {
-		return new Scope(getDefaultProjectRepresentation().getName(), new UUID("0"));
+		return new Scope(getDefaultRepresentation().getName(), new UUID("0"));
 	}
 
 	private static Release getDefaultRelease() {
-		return new Release(getDefaultProjectRepresentation().getName(), new UUID("release0"));
+		return new Release(getDefaultRepresentation().getName(), new UUID("release0"));
 	}
 
-	public static List<ProjectRepresentation> createProjectRepresentationList(final int size) {
+	public static List<ProjectRepresentation> createRepresentationList(final int size) {
 		final List<ProjectRepresentation> list = new ArrayList<ProjectRepresentation>();
 		return list;
 	}
 
 	public static ProjectAuthorization createAuthorization() {
-		return new ProjectAuthorization(UserTestUtils.createUser(), createProjectRepresentation());
+		return new ProjectAuthorization(UserTestUtils.createUser(), createRepresentation());
 	}
 
 	public static List<ProjectAuthorization> createAuthorizations(final int numberOfAuthorizations) {

@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.VoidResult;
 
+// FIXME Refactor to use mockito mocks
 public class ActionQueuedDispatcherTest {
 
 	private interface DispatchListener {

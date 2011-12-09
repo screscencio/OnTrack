@@ -1,306 +1,200 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
-import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
-import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ProjectContextLoadCallback;
-import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ValueHolder;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.server.business.BusinessLogicTestUtils;
-import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
+import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
+import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.requests.RequestTestUtils;
 
 public class ActionSyncServiceTest {
 
-	private static final String SAME_CLIENT_EXCEPTION_MESSAGE = "This client received the same action it sent to server. Please notify OnTrack team.";
-	private ActionSyncServiceTestUtils actionSyncServiceTestUtils;
-	private EntityManager entityManager;
+	@Mock
+	private DispatchService requestDispatch;
+	@Mock
+	private ServerPushClientService serverPush;
+	@Mock
+	private ActionExecutionService actionExecution;
+	@Mock
+	private ClientIdentificationProvider clientIdentificationProvider;
+	@Mock
+	private ProjectRepresentationProvider projectRepresentationProvider;
+	@Mock
+	private ErrorTreatmentService errorTreatmentService;
 
-	private ProjectRepresentation projectRepresentation;
+	private ActionSyncService ASS;
+
+	private ModelActionSyncRequest request;
 
 	@Before
 	public void setUp() throws Exception {
-		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
-		actionSyncServiceTestUtils = new ActionSyncServiceTestUtils();
-
-		final ProjectRepresentationProvider projectRepresentationProvider = actionSyncServiceTestUtils.getProjectRepresentationProviderMock();
-		projectRepresentation = projectRepresentationProvider.getCurrentProjectRepresentation();
-		new ActionSyncService(actionSyncServiceTestUtils.getRequestDispatchServiceMock(),
-				actionSyncServiceTestUtils.getServerPushClientServiceMock(),
-				actionSyncServiceTestUtils.getActionExecutionServiceMock(),
-				actionSyncServiceTestUtils.getClientIdentificationProviderMock(),
-				projectRepresentationProvider,
-				actionSyncServiceTestUtils.getErrorTreatmentServiceMock());
-
-		assureDefaultProjectRepresentationExistance();
-	}
-
-	@After
-	public void tearDown() {
-		entityManager.close();
+		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
-	public void anActionOriginatedInClientShouldNotBeExecutedEvenIfReceivedFromServer() {
-		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
-
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {}
-		});
-
-		loadProjectContext(new ProjectContextLoadCallback() {
-
-			@Override
-			public void onProjectContextLoaded(final ProjectContext context) {
-				actionSyncServiceTestUtils.getActionExecutionServiceMock().onUserActionExecutionRequest(
-						new ScopeInsertChildAction(context.getProjectScope().getId(), "filho"));
-			}
-
-			@Override
-			public void onProjectContextFailed(final Throwable caught) {
-				assertEquals(SAME_CLIENT_EXCEPTION_MESSAGE, caught.getMessage());
-			}
-		});
+	public void anActionOriginatedInClientShouldNotBeExecutedEvenIfReceivedFromServer() throws Exception {
+		final String clientId = "123";
+		given().aClientWithId(clientId);
+		when().aRequestArriveFrom(clientId);
+		verifyThat().noActionWasExecutedInClient();
 	}
 
 	@Test
-	public void anActionOriginatedInClientShouldOnlyBeExecutedOnceEvenAfterBeingReceivedFromServer() {
-		final ValueHolder<Integer> count = actionSyncServiceTestUtils.new ValueHolder<Integer>(0);
-		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
-
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				count.setValue(count.getValue() + 1);
-			}
-		});
-
-		loadProjectContext(new ProjectContextLoadCallback() {
-
-			@Override
-			public void onProjectContextLoaded(final ProjectContext context) {
-				actionSyncServiceTestUtils.getActionExecutionServiceMock().onUserActionExecutionRequest(
-						new ScopeInsertChildAction(context.getProjectScope().getId(), "filho"));
-				assertTrue("The action should be executed once.", count.getValue() == 1);
-			}
-
-			@Override
-			public void onProjectContextFailed(final Throwable caught) {}
-		});
+	public void anActionOriginatedInClientShouldBeExecutedOnce() throws Exception {
+		final int nTimes = 1;
+		when().anActionWasExecutedInClient();
+		verifyThat().userActionsWereExecutedInClient(nTimes);
 	}
 
 	@Test
-	public void anActionNotOriginatedInClientShouldBeExecutedAfterBeingReceivedFromServer() {
-		final ValueHolder<Integer> count = actionSyncServiceTestUtils.new ValueHolder<Integer>(0);
-		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
-
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				count.setValue(count.getValue() + 1);
-			}
-		});
-
-		loadProjectContext(new ProjectContextLoadCallback() {
-
-			@Override
-			public void onProjectContextLoaded(final ProjectContext context) {
-				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
-						projectRepresentation,
-						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getNotificationServiceMock().notifyActions(modelActionSyncRequest);
-				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
-			}
-
-			@Override
-			public void onProjectContextFailed(final Throwable caught) {
-				fail();
-			}
-		});
+	public void actionsNotOriginatedInClientShouldBeExecutedAfterBeingReceivedFromServer() throws Exception {
+		final short projectId = 1;
+		given().aClientWithId("client being tested").ignoringProjectCheck(projectId);
+		when().aRequestArriveFrom("other client");
+		verifyThat().nonUserActionsWereExecutedInClient();
 	}
 
 	@Test
-	public void anActionNotOriginatedInClientShouldNotBeExecutedAsClientActionAfterBeingReceivedFromServer() {
-		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
-
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				if (isUserAction)
-				Assert.fail("The client should not execute a action from the server (that was not originated from itself) as if it was a client action.");
-			}
-		});
-
-		loadProjectContext(new ProjectContextLoadCallback() {
-
-			@Override
-			public void onProjectContextLoaded(final ProjectContext context) {
-				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
-						projectRepresentation, createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getNotificationServiceMock().notifyActions(modelActionSyncRequest);
-			}
-
-			@Override
-			public void onProjectContextFailed(final Throwable caught) {
-				fail();
-			}
-		});
+	public void anActionNotOriginatedInClientShouldNotBeExecutedAsClientActionAfterBeingReceivedFromServer() throws Exception {
+		final short projectId = 1;
+		given().aClientWithId("client being tested").ignoringProjectCheck(projectId);
+		when().aRequestArriveFrom("other client");
+		verifyThat().nonUserActionsWereExecutedInClient();
 	}
 
 	@Test
-	public void anActionReceivedFromServerWithClientIdShouldNotBeExecutedInClient() {
-		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
-
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				Assert.fail("The client should not execute an action from the server (that was not originated from itself) as if it was a client action.");
-			}
-		});
-
-		loadProjectContext(new ProjectContextLoadCallback() {
-
-			@Override
-			public void onProjectContextLoaded(final ProjectContext context) {
-				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(actionSyncServiceTestUtils
-						.getClientIdentificationProviderMock().getClientId(), projectRepresentation,
-						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getNotificationServiceMock().notifyActions(modelActionSyncRequest);
-			}
-
-			@Override
-			public void onProjectContextFailed(final Throwable caught) {
-				assertEquals(SAME_CLIENT_EXCEPTION_MESSAGE, caught.getMessage());
-			}
-		});
+	public void anActionReceivedFromServerThatBelongsToAProjectDifferentFromClientCurrentProjectShouldNotBeExecuted() throws Exception {
+		final int currentProject = 1;
+		final int otherProject = 2;
+		given().aClientWithId("client").aClientWithCurrentProject(currentProject);
+		when().aRequestArrivedFrom("other client", otherProject);
+		verifyThat().noActionWasExecutedInClient();
 	}
 
 	@Test
-	public void anActionReceivedFromServerThatBelongsToAProjectDifferentFromClientCurrentProjectShouldNotBeExecuted() {
-		final ProjectRepresentation otherProjectRepresentation = new ProjectRepresentation(2, "other project");
-
-		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
-
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				fail("The client should not execute an action received from the server (that was not originated from itself) if the action project is different than the current client project.");
-			}
-		});
-
-		loadProjectContext(new ProjectContextLoadCallback() {
-
-			private final String DIFFERENT_PROJECT_EXCEPTION_MESSAGE = "This client received an action for project '2' but it is currently on project '1'. Please notify OnTrack team.";
-
-			@Override
-			public void onProjectContextLoaded(final ProjectContext context) {
-				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
-						otherProjectRepresentation,
-						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getNotificationServiceMock().notifyActions(modelActionSyncRequest);
-			}
-
-			@Override
-			public void onProjectContextFailed(final Throwable caught) {
-				assertEquals(DIFFERENT_PROJECT_EXCEPTION_MESSAGE, caught.getMessage());
-			}
-		});
+	public void anActionReceivedFromServerThatBelongsToTheSameProjectOfClientCurrentProjectShouldBeExecuted() throws Exception {
+		final short project = 1;
+		given().aClientWithId("client").aClientWithCurrentProject(project);
+		when().aRequestArrivedFrom("other client", project);
+		verifyThat().nonUserActionsWereExecutedInClient();
 	}
 
-	@Test
-	public void anActionReceivedFromServerThatBelongsToTheSameProjectAsClientCurrentProjectShouldBeExecuted() {
-		final ValueHolder<Integer> count = actionSyncServiceTestUtils.new ValueHolder<Integer>(0);
-
-		actionSyncServiceTestUtils.getActionExecutionServiceMock().addActionExecutionListener(new ActionExecutionListener() {
-
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				count.setValue(count.getValue() + 1);
-			}
-		});
-
-		loadProjectContext(new ProjectContextLoadCallback() {
-
-			@Override
-			public void onProjectContextLoaded(final ProjectContext context) {
-				final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(new UUID(),
-						projectRepresentation,
-						createValidOneActionActionList(context));
-				actionSyncServiceTestUtils.getNotificationServiceMock().notifyActions(modelActionSyncRequest);
-				Assert.assertTrue("The action should be executed once.", count.getValue() == 1);
-			}
-
-			@Override
-			public void onProjectContextFailed(final Throwable caught) {
-				fail();
-			}
-		});
+	private Given given() {
+		return new Given();
 	}
 
-	private void loadProjectContext(final ProjectContextLoadCallback projectContextLoadCallback) {
-		actionSyncServiceTestUtils.getRequestDispatchServiceMock().dispatch(
-				new ProjectContextRequest(new UUID(), projectRepresentation.getId()), new DispatchCallback<ProjectContextResponse>() {
-
-					@Override
-					public void onSuccess(final ProjectContextResponse response) {
-						projectContextLoadCallback.onProjectContextLoaded(new ProjectContext(response.getProject()));
-					}
-
-					@Override
-					public void onTreatedFailure(final Throwable caught) {}
-
-					@Override
-					public void onUntreatedFailure(final Throwable caught) {
-						projectContextLoadCallback.onProjectContextFailed(caught);
-					}
-				});
+	private When when() {
+		return new When();
 	}
 
-	private List<ModelAction> createValidOneActionActionList(final ProjectContext context) {
-		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new ScopeInsertChildAction(context.getProjectScope().getId(), "filho"));
-		return actionList;
+	private VerifyThat verifyThat() {
+		return new VerifyThat();
 	}
 
-	private void assureDefaultProjectRepresentationExistance() throws Exception {
-		final PersistenceServiceJpaImpl persistence = spy(new PersistenceServiceJpaImpl());
-		doNothing().when(persistence).authorize(Mockito.any(User.class), Mockito.any(ProjectRepresentation.class));
-		final AuthenticationManager authManager = Mockito.mock(AuthenticationManager.class);
-		when(authManager.getAuthenticatedUser()).thenReturn(UserTestUtils.createUser());
-		BusinessLogicTestUtils
-				.create(persistence, authManager)
-				.createProject(projectRepresentation.getName());
+	private class Given {
+		private Given aClientWithId(final String clientId) {
+			Mockito.when(clientIdentificationProvider.getClientId()).thenReturn(new UUID(clientId));
+			return this;
+		}
+
+		private Given aClientWithCurrentProject(final int projectId) {
+			Mockito.when(projectRepresentationProvider.getCurrentProjectRepresentation()).thenReturn(ProjectTestUtils.createRepresentation(projectId));
+			return this;
+		}
+
+		private Given ignoringProjectCheck(final int projectId) {
+			Mockito.when(projectRepresentationProvider.getCurrentProjectRepresentation()).thenReturn(ProjectTestUtils.createRepresentation(projectId));
+			return this;
+		}
+	}
+
+	private class When {
+		private void aRequestArriveFrom(final String clientId) {
+			request = RequestTestUtils.createModelActionSyncRequest(new UUID(clientId));
+			fireEvent();
+		}
+
+		private void aRequestArrivedFrom(final String clientId, final int projectId) {
+			request = RequestTestUtils.createModelActionSyncRequest(new UUID(clientId), projectId);
+			fireEvent();
+		}
+
+		private void anActionWasExecutedInClient() {
+			createInstance();
+			final ModelAction action = mock(ModelAction.class);
+			actionExecution.onUserActionExecutionRequest(action);
+		}
+
+		private void fireEvent() {
+			final ArgumentCaptor<ServerActionSyncEventHandler> eventHandlerCaptor = getEventHandlerCaptor();
+			createInstance();
+
+			try {
+				fireActionSynEvent(request, eventHandlerCaptor);
+			}
+			catch (final RuntimeException e) {}
+		}
+
+		private void createInstance() {
+			ASS = new ActionSyncService(requestDispatch, serverPush, actionExecution, clientIdentificationProvider,
+					projectRepresentationProvider, errorTreatmentService);
+		}
+
+		private ArgumentCaptor<ServerActionSyncEventHandler> getEventHandlerCaptor() {
+			final ArgumentCaptor<ServerActionSyncEventHandler> eventHandlerCaptor = ArgumentCaptor.forClass(ServerActionSyncEventHandler.class);
+			doNothing().when(serverPush).registerServerEventHandler(eq(ServerActionSyncEvent.class), eventHandlerCaptor.capture());
+			return eventHandlerCaptor;
+		}
+
+		private void fireActionSynEvent(final ModelActionSyncRequest request, final ArgumentCaptor<ServerActionSyncEventHandler> eventHandlerCaptor) {
+			final ServerActionSyncEventHandler eventHandler = eventHandlerCaptor.getValue();
+			eventHandler.onEvent(new ServerActionSyncEvent(request));
+		}
+	}
+
+	private class VerifyThat {
+		private void nonUserActionsWereExecutedInClient() throws Exception {
+			final int nTimes = request.getActionList().size();
+			verify(actionExecution, never()).onUserActionExecutionRequest(any(ModelAction.class));
+			verify(actionExecution, times(nTimes)).onNonUserActionRequest(any(ModelAction.class));
+			verify(actionExecution, never()).onUserActionRedoRequest();
+			verify(actionExecution, never()).onUserActionUndoRequest();
+		}
+
+		private void noActionWasExecutedInClient() throws Exception {
+			verify(actionExecution, never()).onUserActionExecutionRequest(any(ModelAction.class));
+			verify(actionExecution, never()).onNonUserActionRequest(any(ModelAction.class));
+			verify(actionExecution, never()).onUserActionRedoRequest();
+			verify(actionExecution, never()).onUserActionUndoRequest();
+		}
+
+		private void userActionsWereExecutedInClient(final int nTimes) throws Exception {
+			verify(actionExecution, never()).onNonUserActionRequest(any(ModelAction.class));
+			verify(actionExecution, times(nTimes)).onUserActionExecutionRequest(any(ModelAction.class));
+			verify(actionExecution, never()).onUserActionRedoRequest();
+			verify(actionExecution, never()).onUserActionUndoRequest();
+		}
 	}
 }

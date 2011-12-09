@@ -357,7 +357,7 @@ public class BusinessLogicTest {
 	public void shouldAuthorizeUserAfterProjectCreation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 
-		final ProjectRepresentation createdProject = ProjectTestUtils.createProjectRepresentation();
+		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation();
 		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
 
 		business.createProject("new Project");
@@ -366,7 +366,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException {
-		projectRepresentation = ProjectTestUtils.createProjectRepresentation();
+		projectRepresentation = ProjectTestUtils.createRepresentation();
 		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
 
 		business = BusinessLogicTestUtils.create(persistence, notification, authenticationManager);
@@ -377,7 +377,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void bindClientToProjectAfterLoad() throws Exception {
-		projectRepresentation = ProjectTestUtils.createProjectRepresentation();
+		projectRepresentation = ProjectTestUtils.createRepresentation();
 		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
 
 		business = BusinessLogicTestUtils.create(persistence, notification, clientManager, authenticationManager);
