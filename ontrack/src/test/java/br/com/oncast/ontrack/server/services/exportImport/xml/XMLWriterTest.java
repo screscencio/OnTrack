@@ -53,7 +53,7 @@ public class XMLWriterTest {
 
 	@After
 	public void tearDown() {
-		// deleteGeneratedXMLFile();
+		deleteGeneratedXMLFile();
 	}
 
 	public void deleteGeneratedXMLFile() {
