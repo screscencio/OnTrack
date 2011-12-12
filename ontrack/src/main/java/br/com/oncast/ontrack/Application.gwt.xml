@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='application'>
 
-	<!-- Inherit the core Web Toolkit stuff. -->
+	<!-- Inherit the core Web Toolkit stuff -->
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.google.gwt.i18n.I18N" />
 	<inherits name='com.google.gwt.place.Place' />
 	<inherits name='com.google.gwt.activity.Activity' />
 	<inherits name="com.google.gwt.user.theme.standard.StandardResources" />
+
+	<!-- Configurations (should be after core Web Toolkit stuff) -->
+	<set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true" />
 
 	<!-- Other module inherits -->
 	<inherits name="net.zschech.gwt.comet.Comet" />
@@ -14,7 +17,7 @@
 	<inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
 	<inherits name="br.com.drycode.api.web.gwt.dispatchService.DispatchService"/>
 
-	<!-- Specify the app entry point class. -->
+	<!-- Specify the app entry point class -->
 	<entry-point class='br.com.oncast.ontrack.client.ApplicationEntryPoint' />
 
 	<!-- Specify the paths for translatable code -->
