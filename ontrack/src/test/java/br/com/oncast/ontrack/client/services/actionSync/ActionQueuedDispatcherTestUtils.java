@@ -10,13 +10,13 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
+import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.VoidResult;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class ActionQueuedDispatcherTestUtils {

@@ -15,9 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.services.notification.ClientManager;
-import br.com.oncast.ontrack.server.services.notification.NotificationServiceImpl;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
+import br.com.oncast.ontrack.server.services.session.Session;
+import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 import br.com.oncast.ontrack.utils.mocks.requests.RequestTestUtils;
@@ -30,6 +30,9 @@ public class NotificationServiceTest {
 	@Mock
 	private ServerPushServerService serverPushServerService;
 
+	@Mock
+	private SessionManager sessionManager;
+
 	private NotificationServiceImpl service;
 
 	private UUID client1;
@@ -41,7 +44,7 @@ public class NotificationServiceTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		service = new NotificationServiceImpl(serverPushServerService, clientManager);
+		service = new NotificationServiceImpl(serverPushServerService, clientManager, sessionManager);
 
 		clientsToBeReturnedByTheManager = new HashSet<UUID>();
 
@@ -60,7 +63,11 @@ public class NotificationServiceTest {
 		clientsToBeReturnedByTheManager.add(client1);
 		clientsToBeReturnedByTheManager.add(client2);
 
-		service.notifyActions(RequestTestUtils.createModelActionSyncRequest(originator));
+		final Session sessionMock = Mockito.mock(Session.class);
+		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
+		when(sessionMock.getThreadLocalClientId()).thenReturn(originator);
+
+		service.notifyActions(RequestTestUtils.createModelActionSyncRequest());
 
 		final HashSet<UUID> expectedClients = new HashSet<UUID>();
 		expectedClients.add(client1);

@@ -4,7 +4,6 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
-import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
@@ -13,17 +12,15 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRespo
 public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private final ProjectRepresentationProviderImpl projectRepresentationProvider;
-	private final ClientIdentificationProvider clientIdentificationProvider;
 	private final DispatchService requestDispatchService;
 
 	private ProjectContext projectContext;
 
 	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider,
-			final ClientIdentificationProvider clientIdentificationProvider, final DispatchService requestDispatchService,
+			final DispatchService requestDispatchService,
 			final AuthenticationService authenticationService) {
 
 		this.projectRepresentationProvider = projectRepresentationProvider;
-		this.clientIdentificationProvider = clientIdentificationProvider;
 		this.requestDispatchService = requestDispatchService;
 
 		authenticationService.registerUserAuthenticationListener(new UserAuthenticationListener() {
@@ -56,7 +53,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	@Override
 	public void loadProjectContext(final long requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
-		requestDispatchService.dispatch(new ProjectContextRequest(clientIdentificationProvider.getClientId(), requestedProjectId),
+		requestDispatchService.dispatch(new ProjectContextRequest(requestedProjectId),
 				new DispatchCallback<ProjectContextResponse>() {
 
 					@Override

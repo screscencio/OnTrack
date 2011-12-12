@@ -109,7 +109,7 @@ public class ClientServiceProvider {
 	public ContextProviderService getContextProviderService() {
 		if (contextProviderService != null) return contextProviderService;
 		return contextProviderService = new ContextProviderServiceImpl((ProjectRepresentationProviderImpl) getProjectRepresentationProvider(),
-				getClientIdentificationProvider(), getRequestDispatchService(), getAuthenticationService());
+				getRequestDispatchService(), getAuthenticationService());
 	}
 
 	private DispatchService getRequestDispatchService() {
@@ -126,7 +126,7 @@ public class ClientServiceProvider {
 	private ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
-				getClientIdentificationProvider(), getProjectRepresentationProvider(), getErrorTreatmentService());
+				getProjectRepresentationProvider(), getErrorTreatmentService());
 	}
 
 	private ErrorTreatmentService getErrorTreatmentService() {

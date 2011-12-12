@@ -1,10 +1,8 @@
 package br.com.oncast.ontrack.shared.services.requestDispatch;
 
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
-import br.com.drycode.api.web.gwt.dispatchService.shared.responses.DispatchResponseObjectContainer;
-import br.com.oncast.ontrack.shared.model.user.User;
 
-public class AuthenticationRequest implements DispatchRequest<DispatchResponseObjectContainer<User>> {
+public class AuthenticationRequest implements DispatchRequest<AuthenticationResponse> {
 
 	private String email;
 	private String password;

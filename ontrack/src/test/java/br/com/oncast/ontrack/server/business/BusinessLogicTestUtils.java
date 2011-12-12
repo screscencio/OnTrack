@@ -23,6 +23,7 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -33,41 +34,55 @@ public class BusinessLogicTestUtils {
 	private static AuthenticationManager authenticationMock;
 	private static NotificationService notificationMock;
 	private static ClientManager clientManagerMock;
+	private static SessionManager sessionManager;
 
 	static {
 		configureAuthenticationManager();
 		notificationMock = mock(NotificationService.class);
 		clientManagerMock = mock(ClientManager.class);
+		sessionManager = mock(SessionManager.class);
 	}
 
 	public static BusinessLogic create() throws Exception {
-		return new BusinessLogicImpl(getPersistenceMock(), notificationMock, clientManagerMock, authenticationMock);
+		return new BusinessLogicImpl(getPersistenceMock(), notificationMock, clientManagerMock, authenticationMock, sessionManager);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence) {
-		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationMock);
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationMock, sessionManager);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager) {
-		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationManager);
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationManager, sessionManager);
+	}
+
+	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager,
+			final SessionManager sessionManager) {
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationManager, sessionManager);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final NotificationService notification, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager) {
-		return new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager);
+		return new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, sessionManager);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final NotificationService notification,
 			final AuthenticationManager authenticationManager) {
-		return new BusinessLogicImpl(persistence, notification, clientManagerMock, authenticationManager);
+		return new BusinessLogicImpl(persistence, notification, clientManagerMock, authenticationManager, sessionManager);
 	}
 
 	public static BusinessLogic createWithJpaPersistence() {
-		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock, authenticationMock);
+		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock, authenticationMock,
+				sessionManager);
+	}
+
+	public static BusinessLogic create(final PersistenceService persistence, final NotificationService notification, final ClientManager clientManager,
+			final AuthenticationManager authenticationManager, final SessionManager sessionManager) {
+		return new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, sessionManager);
 	}
 
 	public static BusinessLogic createWithJpaPersistence(final NotificationService notificationMock) {
-		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock, authenticationMock);
+		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock, authenticationMock,
+				sessionManager);
 	}
 
 	// TODO Use Mockito.mock instead, after authorization is separated from BusinessLogic.
@@ -120,4 +135,5 @@ public class BusinessLogicTestUtils {
 		when(authenticationMock.getAuthenticatedUser()).thenReturn(user);
 		return authenticationMock;
 	}
+
 }

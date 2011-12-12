@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
@@ -36,6 +37,8 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.server.services.session.Session;
+import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
@@ -74,6 +77,7 @@ public class BusinessLogicTest {
 	private ClientManager clientManager;
 	private AuthenticationManager authenticationManager;
 	private NotificationService notification;
+	private SessionManager sessionManager;
 	private User authenticatedUser;
 	private User admin;
 
@@ -90,6 +94,7 @@ public class BusinessLogicTest {
 		persistence = mock(PersistenceService.class);
 		clientManager = mock(ClientManager.class);
 		notification = mock(NotificationService.class);
+		sessionManager = mock(SessionManager.class);
 
 		admin = UserTestUtils.createUser(999);
 		authenticatedUser = UserTestUtils.createUser(100);
@@ -132,7 +137,7 @@ public class BusinessLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
-		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager);
+		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, sessionManager);
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(new UUID("0")));
@@ -294,7 +299,7 @@ public class BusinessLogicTest {
 
 		final Project project2 = loadProject(OTHER_PROJECT_ID);
 		final List<ModelAction> actionList2 = executeActionsToProject(project2, ActionTestUtils.getActions2());
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), projectRepresentation2, actionList2));
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectRepresentation2, actionList2));
 
 		final Project loadedProject1 = loadProject();
 		final Project loadedProject2 = loadProject(OTHER_PROJECT_ID);
@@ -398,15 +403,21 @@ public class BusinessLogicTest {
 
 	@Test
 	public void bindClientToProjectAfterLoad() throws Exception {
+		final UUID clientId = new UUID("123");
+
 		projectRepresentation = ProjectTestUtils.createRepresentation();
 		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
 
-		business = BusinessLogicTestUtils.create(persistence, notification, clientManager, authenticationManager);
+		final Session sessionMock = Mockito.mock(Session.class);
+		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
+		when(sessionMock.getThreadLocalClientId()).thenReturn(clientId);
 
-		final ProjectContextRequest request = new ProjectContextRequest(new UUID("123"), projectRepresentation.getId());
+		business = BusinessLogicTestUtils.create(persistence, notification, clientManager, authenticationManager, sessionManager);
+
+		final ProjectContextRequest request = new ProjectContextRequest(projectRepresentation.getId());
 		business.loadProjectForClient(request);
 
-		verify(clientManager, times(1)).bindClientToProject(request.getClientId(), request.getRequestedProjectId());
+		verify(clientManager, times(1)).bindClientToProject(clientId, request.getRequestedProjectId());
 	}
 
 	@Test(expected = AuthorizationException.class)
@@ -448,8 +459,12 @@ public class BusinessLogicTest {
 
 	@Test
 	public void onlyAuthorizedUserCanLoadProjectForClient() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, sessionManager);
 		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest();
+
+		final Session sessionMock = Mockito.mock(Session.class);
+		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
+		when(sessionMock.getThreadLocalClientId()).thenReturn(new UUID());
 
 		business.loadProjectForClient(request);
 
@@ -478,7 +493,7 @@ public class BusinessLogicTest {
 	}
 
 	private ModelActionSyncRequest createModelActionSyncRequest(final List<ModelAction> actionList) {
-		return new ModelActionSyncRequest(new UUID(), projectRepresentation, actionList);
+		return new ModelActionSyncRequest(projectRepresentation, actionList);
 	}
 
 	private Project loadProject() throws UnableToLoadProjectException, ProjectNotFoundException {

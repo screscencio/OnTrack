@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
@@ -46,13 +47,15 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final NotificationService notificationService;
 	private final ClientManager clientManager;
 	private final AuthenticationManager authenticationManager;
+	private final SessionManager sessionManager;
 
 	protected BusinessLogicImpl(final PersistenceService persistenceService, final NotificationService notificationService, final ClientManager clientManager,
-			final AuthenticationManager authenticationManager) {
+			final AuthenticationManager authenticationManager, final SessionManager sessionManager) {
 		this.persistenceService = persistenceService;
 		this.notificationService = notificationService;
 		this.clientManager = clientManager;
 		this.authenticationManager = authenticationManager;
+		this.sessionManager = sessionManager;
 	}
 
 	@Override
@@ -183,7 +186,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	public synchronized Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
 			ProjectNotFoundException {
 		final Project loadedProject = loadProject(projectContextRequest.getRequestedProjectId());
-		clientManager.bindClientToProject(projectContextRequest.getClientId(), projectContextRequest.getRequestedProjectId());
+		clientManager.bindClientToProject(sessionManager.getCurrentSession().getThreadLocalClientId(), projectContextRequest.getRequestedProjectId());
 		return loadedProject;
 	}
 
