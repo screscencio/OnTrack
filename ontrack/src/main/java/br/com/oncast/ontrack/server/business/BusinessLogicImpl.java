@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -124,7 +125,7 @@ class BusinessLogicImpl implements BusinessLogic {
 					projectName));
 			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 
-			persistenceService.authorize(authenticatedUser, persistedProjectRepresentation);
+			autorize(persistedProjectRepresentation, authenticatedUser);
 			notificationService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
 
 			return persistedProjectRepresentation;
@@ -133,6 +134,21 @@ class BusinessLogicImpl implements BusinessLogic {
 			final String errorMessage = "Unable to create project '" + projectName + "'.";
 			LOGGER.debug(errorMessage, e);
 			throw new UnableToCreateProjectRepresentation(errorMessage);
+		}
+	}
+
+	private void autorize(final ProjectRepresentation projectRepresentation, final User user) throws PersistenceException {
+		User admin;
+		try {
+			admin = persistenceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL);
+			if (user.getId() != admin.getId()) {
+				persistenceService.authorize(admin, projectRepresentation);
+			}
+			persistenceService.authorize(user, projectRepresentation);
+		}
+		catch (final NoResultFoundException e) {
+			throw new PersistenceException("Unable to autorize admin user for the newly created project '" + projectRepresentation.getName()
+					+ "': admin was not found.", e);
 		}
 	}
 

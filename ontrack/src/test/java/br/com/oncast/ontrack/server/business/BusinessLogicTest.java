@@ -28,9 +28,11 @@ import org.mockito.ArgumentCaptor;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
@@ -73,6 +75,7 @@ public class BusinessLogicTest {
 	private AuthenticationManager authenticationManager;
 	private NotificationService notification;
 	private User authenticatedUser;
+	private User admin;
 
 	@Before
 	public void setUp() throws Exception {
@@ -88,9 +91,15 @@ public class BusinessLogicTest {
 		clientManager = mock(ClientManager.class);
 		notification = mock(NotificationService.class);
 
+		admin = UserTestUtils.createUser(999);
 		authenticatedUser = UserTestUtils.createUser(100);
+		configureToRetrieveAdmin();
 		authorizeUser(authenticatedUser, PROJECT_ID);
-		retrieveSnapshot(PROJECT_ID);
+		configureToRetrieveSnapshot(PROJECT_ID);
+	}
+
+	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException {
+		when(persistence.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(admin);
 	}
 
 	private void authorizeUser(final User user, final long projectId) throws PersistenceException {
@@ -99,7 +108,7 @@ public class BusinessLogicTest {
 		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
 	}
 
-	private void retrieveSnapshot(final int projectId) throws Exception {
+	private void configureToRetrieveSnapshot(final int projectId) throws Exception {
 		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
 		when(persistence.retrieveProjectSnapshot(projectId)).thenReturn(snapshot);
 		when(snapshot.getProject()).thenReturn(ProjectTestUtils.createProject());
@@ -354,7 +363,7 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	public void shouldAuthorizeUserAfterProjectCreation() throws Exception {
+	public void shouldAuthorizeCurrentUserAfterProjectCreation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 
 		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation();
@@ -362,6 +371,18 @@ public class BusinessLogicTest {
 
 		business.createProject("new Project");
 		verify(persistence).authorize(authenticatedUser, createdProject);
+	}
+
+	@Test
+	public void shouldAuthorizeAdminUserAfterProjectCreation() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
+
+		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation();
+		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
+
+		business.createProject("new Project");
+		verify(persistence).authorize(authenticatedUser, createdProject);
+		verify(persistence).authorize(admin, createdProject);
 	}
 
 	@Test

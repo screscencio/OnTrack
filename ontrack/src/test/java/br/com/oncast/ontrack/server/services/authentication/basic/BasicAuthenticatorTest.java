@@ -19,8 +19,8 @@ public class BasicAuthenticatorTest {
 	@Mock
 	private HttpServletRequest request;
 
-	private final String USER = DefaultAuthenticationCredentials.USER;
-	private final String PASSWORD = DefaultAuthenticationCredentials.PASSWORD;
+	private final String USER = DefaultAuthenticationCredentials.USER_EMAIL;
+	private final String PASSWORD = DefaultAuthenticationCredentials.USER_PASSWORD;
 
 	@Before
 	public void setUp() {
