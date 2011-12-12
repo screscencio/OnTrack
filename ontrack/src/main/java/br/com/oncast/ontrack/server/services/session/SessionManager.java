@@ -1,8 +1,11 @@
 package br.com.oncast.ontrack.server.services.session;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import br.com.oncast.ontrack.server.services.session.exceptions.SessionUnavailableException;
+import br.com.oncast.ontrack.shared.config.RequestConfigurations;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 /**
  * Manager for {@link Session} localization and persistence.<br />
@@ -12,8 +15,9 @@ public class SessionManager {
 
 	private final static ThreadLocal<Session> LOCAL_SESSION = new ThreadLocal<Session>();
 
-	public void configureCurrentHttpSession(final HttpSession httpSession) {
-		final Session session = getOrCreateSession(httpSession);
+	public void configureCurrentHttpSession(final HttpServletRequest request) {
+		final Session session = getOrCreateSession(request.getSession());
+		session.setThreadLocalClientId(new UUID(request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_HEADER)));
 		LOCAL_SESSION.set(session);
 	}
 

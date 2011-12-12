@@ -3,27 +3,32 @@ package br.com.oncast.ontrack.client.services.authentication;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
+import br.com.drycode.api.web.gwt.dispatchService.shared.responses.DispatchResponseObjectContainer;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 import br.com.oncast.ontrack.shared.model.user.User;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.VoidResult;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
-
-	private final AuthenticationRpcServiceAsync rpcServiceAsync = GWT.create(AuthenticationRpcService.class);
 
 	private final Set<UserAuthenticationListener> userAuthenticatedListeners;
 
 	private final ApplicationPlaceController applicationPlaceController;
 
+	private final DispatchService dispatchService;
+
 	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController) {
+		this.dispatchService = dispatchService;
 		this.applicationPlaceController = applicationPlaceController;
+		userAuthenticatedListeners = new HashSet<UserAuthenticationListener>();
 
 		dispatchService.addFailureHandler(NotAuthenticatedException.class, new FailureHandler<NotAuthenticatedException>() {
 
@@ -32,21 +37,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				applicationPlaceController.goTo(new LoginPlace(applicationPlaceController.getCurrentPlace()));
 			}
 		});
-		userAuthenticatedListeners = new HashSet<UserAuthenticationListener>();
 	}
 
 	@Override
 	public void authenticate(final String user, final String password, final UserAuthenticationCallback callback) {
-		rpcServiceAsync.autheticateUser(user, password, new AsyncCallback<User>() {
+		dispatchService.dispatch(new AuthenticationRequest(user, password), new DispatchCallback<DispatchResponseObjectContainer<User>>() {
 
 			@Override
-			public void onSuccess(final User user) {
-				callback.onUserAuthenticatedSuccessfully(user);
+			public void onSuccess(final DispatchResponseObjectContainer<User> result) {
+				callback.onUserAuthenticatedSuccessfully(result.getTransportedObject());
 				notifyLoginToUserAuthenticationListeners();
 			}
 
 			@Override
-			public void onFailure(final Throwable caught) {
+			public void onTreatedFailure(final Throwable caught) {
+				callback.onUnexpectedFailure(caught);
+			}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
 				if (caught instanceof InvalidAuthenticationCredentialsException) callback.onIncorrectCredentialsFailure();
 				else callback.onUnexpectedFailure(caught);
 			}
@@ -55,34 +64,47 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public void logout(final UserLogoutCallback callback) {
-		rpcServiceAsync.logoutUser(new AsyncCallback<Void>() {
+		dispatchService.dispatch(new DeAuthenticationRequest(), new DispatchCallback<VoidResult>() {
 
 			@Override
-			public void onSuccess(final Void result) {
+			public void onSuccess(final VoidResult result) {
+				onUserLogout();
+			}
+
+			@Override
+			public void onTreatedFailure(final Throwable caught) {
+				onUserLogout();
+			}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				callback.onFailure(caught);
+			}
+
+			private void onUserLogout() {
 				callback.onUserLogout();
 				notifyLogoutToUserAuthenticationListeners();
 				applicationPlaceController.goTo(new LoginPlace());
 			}
-
-			@Override
-			public void onFailure(final Throwable caught) {
-				callback.onFailure(caught);
-			}
 		});
-
 	}
 
 	@Override
 	public void changePassword(final String currentPassword, final String newPassword, final UserPasswordChangeCallback callback) {
-		rpcServiceAsync.changeUserPassword(currentPassword, newPassword, new AsyncCallback<Void>() {
+		dispatchService.dispatch(new ChangePasswordRequest(currentPassword, newPassword), new DispatchCallback<VoidResult>() {
 
 			@Override
-			public void onSuccess(final Void result) {
+			public void onSuccess(final VoidResult result) {
 				callback.onUserPasswordChangedSuccessfully();
 			}
 
 			@Override
-			public void onFailure(final Throwable caught) {
+			public void onTreatedFailure(final Throwable caught) {
+				callback.onUnexpectedFailure(caught);
+			}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
 				if (caught instanceof InvalidAuthenticationCredentialsException) {
 					callback.onIncorrectUserPasswordFailure();
 				}

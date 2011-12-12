@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
@@ -22,6 +23,7 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
+import br.com.oncast.ontrack.shared.config.RequestConfigurations;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
@@ -46,7 +48,13 @@ public class AuthenticationManagerTest {
 		MockitoAnnotations.initMocks(this);
 
 		sessionManager = new SessionManager();
-		sessionManager.configureCurrentHttpSession(mock(HttpSession.class));
+
+		final HttpSession httpSessionMock = mock(HttpSession.class);
+		final HttpServletRequest requestMock = mock(HttpServletRequest.class);
+		when(requestMock.getSession()).thenReturn(httpSessionMock);
+		when(requestMock.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_HEADER)).thenReturn("fakeClientId");
+
+		sessionManager.configureCurrentHttpSession(requestMock);
 		authenticationManager = new AuthenticationManager(persistenceServiceMock, sessionManager);
 
 		configureUser();

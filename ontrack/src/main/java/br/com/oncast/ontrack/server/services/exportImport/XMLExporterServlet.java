@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
-import br.com.oncast.ontrack.server.services.authentication.basic.BasicAutheticator;
+import br.com.oncast.ontrack.server.services.authentication.BasicAutheticator;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 
 public class XMLExporterServlet extends HttpServlet {

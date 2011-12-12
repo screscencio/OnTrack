@@ -9,11 +9,17 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchServiceExceptio
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationVerificationAspectFilter;
+import br.com.oncast.ontrack.server.services.requestDispatch.AuthenticationRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.DeAuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
+import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
@@ -42,6 +48,9 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(ProjectContextRequest.class, new ProjectContextRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ProjectCreationRequest.class, new ProjectCreationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ProjectListRequest.class, new ProjectListRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(AuthenticationRequest.class, new AuthenticationRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(DeAuthenticationRequest.class, new DeAuthenticationRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(ChangePasswordRequest.class, new ChangePasswordRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

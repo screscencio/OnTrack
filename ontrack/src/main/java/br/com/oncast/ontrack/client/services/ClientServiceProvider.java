@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.services;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchServiceDefault;
+import br.com.drycode.api.web.gwt.dispatchService.client.RequestBuilderConfigurator;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
@@ -19,11 +20,13 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
+import br.com.oncast.ontrack.shared.config.RequestConfigurations;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -111,7 +114,13 @@ public class ClientServiceProvider {
 
 	private DispatchService getRequestDispatchService() {
 		if (requestDispatchService != null) return requestDispatchService;
-		return requestDispatchService = new DispatchServiceDefault();
+		return requestDispatchService = new DispatchServiceDefault(new RequestBuilderConfigurator() {
+
+			@Override
+			public void configureRequestBuilder(final RequestBuilder requestBuilder) {
+				requestBuilder.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_HEADER, getClientIdentificationProvider().getClientId().toString());
+			}
+		});
 	}
 
 	private ActionSyncService getActionSyncService() {
