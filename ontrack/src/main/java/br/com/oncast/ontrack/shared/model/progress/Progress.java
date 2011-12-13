@@ -1,3 +1,6 @@
+// DECISION Lobo, does not agree with the approach taken to keep the dates relative to progress changes, having BurnUp specific logic invading the model, as
+// seen below. This implementation will be kept for now anyway according to business decisions and Rodrigo's opinion on how this should be implemented.
+
 package br.com.oncast.ontrack.shared.model.progress;
 
 import java.io.Serializable;

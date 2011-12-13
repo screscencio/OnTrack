@@ -34,17 +34,22 @@ public class AuthenticationManager {
 		this.sessionManager = sessionManager;
 	}
 
-	public User authenticate(final String email, final String password) throws UserNotFoundException, InvalidAuthenticationCredentialsException {
+	public User authenticate(final String email, final String password) throws InvalidAuthenticationCredentialsException {
 		final String formattedUserEmail = formatUserEmail(email);
-		final User user = findUserByEmail(formattedUserEmail);
-		final Password passwordForUser = findPasswordForUserOrCreateANewOne(user);
+		try {
+			final User user = findUserByEmail(formattedUserEmail);
+			final Password passwordForUser = findPasswordForUserOrCreateANewOne(user);
 
-		if (!passwordForUser.authenticate(password)) throw new InvalidAuthenticationCredentialsException("Incorrect password for user with e-mail "
-				+ formattedUserEmail);
+			if (!passwordForUser.authenticate(password)) throw new InvalidAuthenticationCredentialsException("Incorrect password for user with e-mail "
+					+ formattedUserEmail);
 
-		sessionManager.getCurrentSession().setAuthenticatedUser(user);
-		notifyUserLoggedIn(user);
-		return user;
+			sessionManager.getCurrentSession().setAuthenticatedUser(user);
+			notifyUserLoggedIn(user);
+			return user;
+		}
+		catch (final UserNotFoundException e) {
+			throw new InvalidAuthenticationCredentialsException(e);
+		}
 	}
 
 	public void logout() {
@@ -128,11 +133,14 @@ public class AuthenticationManager {
 			user = persistenceService.retrieveUserByEmail(email);
 		}
 		catch (final NoResultFoundException e) {
-			throw new UserNotFoundException("No user found with e-mail " + email + ".", e);
+			final String message = "No user found with e-mail '" + email + "'.";
+			LOGGER.error(message, e);
+			throw new UserNotFoundException(message);
 		}
 		catch (final PersistenceException e) {
-			LOGGER.error("Unable to find user by email.", e);
-			throw new AuthenticationException();
+			final String message = "Unable to find user by email '" + email + "'.";
+			LOGGER.error(message, e);
+			throw new AuthenticationException(message);
 		}
 		return user;
 	}
