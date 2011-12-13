@@ -112,6 +112,11 @@ public class ClientServiceProvider {
 				getRequestDispatchService(), getAuthenticationService());
 	}
 
+	public ErrorTreatmentService getErrorTreatmentService() {
+		if (errorTreatmentService != null) return errorTreatmentService;
+		return errorTreatmentService = new ErrorTreatmentServiceImpl();
+	}
+
 	private DispatchService getRequestDispatchService() {
 		if (requestDispatchService != null) return requestDispatchService;
 		return requestDispatchService = new DispatchServiceDefault(new RequestBuilderConfigurator() {
@@ -127,11 +132,6 @@ public class ClientServiceProvider {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
 				getProjectRepresentationProvider(), getErrorTreatmentService());
-	}
-
-	private ErrorTreatmentService getErrorTreatmentService() {
-		if (errorTreatmentService != null) return errorTreatmentService;
-		return errorTreatmentService = new ErrorTreatmentServiceImpl();
 	}
 
 	private ClientIdentificationProvider getClientIdentificationProvider() {

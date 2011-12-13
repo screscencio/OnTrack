@@ -23,7 +23,7 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 
 	@Override
 	public void treatUserWarning(final String message, final Exception e) {
-		new RuntimeException(e);
+		Window.alert(message);
 	}
 
 	private void setUpGlobalExceptionHandler() {

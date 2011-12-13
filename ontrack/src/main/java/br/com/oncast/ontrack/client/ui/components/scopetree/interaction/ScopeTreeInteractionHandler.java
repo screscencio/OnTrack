@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalAction;
@@ -30,8 +31,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 				internalAction.execute(tree);
 			}
 			catch (final OperationNotAllowedException e) {
-				// Only suppress the exception and the user will know that this operation is not allowed.
-				// TODO Show messages to the user when there is a good and beautiful way of notifying them, without showing that pop-up window.
+				ClientServiceProvider.getInstance().getErrorTreatmentService().treatUserWarning(e.getMessage(), e);
 			}
 			catch (final UnableToCompleteActionException e) {
 				this.pendingAction = null;
