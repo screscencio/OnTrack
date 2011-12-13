@@ -714,7 +714,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		// Only do the physical update if it changes
 		if (this.open != open) {
 			this.open = open;
-			updateState(true, true);
+			updateState(false, true);
 
 			if (fireEvents && tree != null) {
 				tree.fireStateChanged(this, open);

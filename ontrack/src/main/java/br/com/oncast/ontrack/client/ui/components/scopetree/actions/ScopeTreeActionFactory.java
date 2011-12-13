@@ -1,24 +1,24 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.actions.ReleaseAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareEffortAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeDeclareProgressAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildRollbackAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownRollbackAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpRollbackAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 // TODO ++Refactor this class to decentralize Action to WidgetActionFactory mappings.

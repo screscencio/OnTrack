@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.shared.services.actionExecution;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ActionExecutionContext {

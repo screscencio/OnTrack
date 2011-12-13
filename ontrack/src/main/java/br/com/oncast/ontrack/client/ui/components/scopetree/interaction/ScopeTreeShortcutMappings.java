@@ -20,11 +20,11 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Ins
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingUpInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveDownAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 

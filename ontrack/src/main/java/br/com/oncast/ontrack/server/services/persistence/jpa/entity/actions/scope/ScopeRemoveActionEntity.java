@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.mode
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 
 @Entity(name = "ScopeRemove")
 @ConvertTo(ScopeRemoveAction.class)

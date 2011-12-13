@@ -3,16 +3,16 @@ package br.com.oncast.ontrack.utils.mocks.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingDownAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertSiblingUpAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveDownAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveLeftAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveRightAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeMoveUpAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
