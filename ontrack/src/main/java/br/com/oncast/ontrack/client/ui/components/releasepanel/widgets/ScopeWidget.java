@@ -128,7 +128,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 		final ProgressState progressState = scope.getProgress().getState();
 		if (progressState == DONE) return DONE.getDescription();
-		if (scope.getEffort().getInfered() != 0) return UNDER_WORK.getDescription();
+		if (progressState == UNDER_WORK || scope.getEffort().getInfered() != 0) return UNDER_WORK.getDescription();
 
 		return "";
 	}
