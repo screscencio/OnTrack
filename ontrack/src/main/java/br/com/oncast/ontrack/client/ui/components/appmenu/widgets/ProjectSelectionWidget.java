@@ -77,8 +77,8 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 			}
 
 			@Override
-			public void onProjectListAvailabilityChange(final boolean availability) {
-				if (availability) hideLoadingIndicator();
+			public void onProjectListAvailabilityChange(final boolean projectListAvailable) {
+				if (projectListAvailable) hideLoadingIndicator();
 				else showLoadingIndicator();
 			}
 		};
