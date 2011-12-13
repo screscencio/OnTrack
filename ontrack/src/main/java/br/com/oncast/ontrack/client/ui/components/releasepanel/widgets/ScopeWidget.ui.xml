@@ -65,14 +65,14 @@
 		}
 		
 		.draggable {
-			background: url("resources/image/releasePanel/draggable.png") no-repeat center;
+			background: url("resources/image/releasePanel/draggable.png") repeat-y;
 			cursor: move;
 			
 			position: absolute;
-			top: 2px;
-			left: 0px;
+			top: 3px;
+			left: 4px;
+			bottom: 4px;
 			width: 8px;
-			height: 17px;
 		}
 		
 		.menuLink {
