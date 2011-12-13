@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionListener;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
+import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
@@ -17,11 +18,14 @@ public class NotificationServiceImpl implements NotificationService {
 	private static final Logger LOGGER = Logger.getLogger(NotificationServiceImpl.class);
 	private final ServerPushServerService serverPushServerService;
 	private final ClientManager clientManager;
+	private final SessionManager sessionManager;
 
-	public NotificationServiceImpl(final ServerPushServerService serverPushServerService, final ClientManager clientManager) {
+	public NotificationServiceImpl(final ServerPushServerService serverPushServerService, final ClientManager clientManager, final SessionManager sessionManager) {
 		this.serverPushServerService = serverPushServerService;
 		this.clientManager = clientManager;
-		// FIXME Jaime / Matsumoto: Move this registration logic to ClientManager
+		this.sessionManager = sessionManager;
+
+		// TODO Maybe move this registration logic to ClientManager
 		this.serverPushServerService.registerConnectionListener(new ServerPushConnectionListener() {
 
 			@Override
@@ -41,7 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public void notifyActions(final ModelActionSyncRequest modelActionSyncRequest) {
 		final Set<UUID> connectionSet = clientManager.getClientsAtProject(modelActionSyncRequest.getProjectId());
-		connectionSet.remove(modelActionSyncRequest.getClientId());
+		connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
 
 		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + modelActionSyncRequest.getProjectId()
 				+ "' to '" + connectionSet.toArray().toString() + "'.");

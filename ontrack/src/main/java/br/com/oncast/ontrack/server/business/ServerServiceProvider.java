@@ -40,7 +40,7 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
 			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getNotificationService(), getClientManagerService(),
-					getAuthenticationManager());
+					getAuthenticationManager(), getSessionManager());
 		}
 	}
 
@@ -70,7 +70,7 @@ public class ServerServiceProvider {
 
 	private NotificationService getNotificationService() {
 		if (notificationService != null) return notificationService;
-		return notificationService = new NotificationServiceImpl(getServerPushServerService(), getClientManagerService());
+		return notificationService = new NotificationServiceImpl(getServerPushServerService(), getClientManagerService(), getSessionManager());
 	}
 
 	private ClientManager getClientManagerService() {

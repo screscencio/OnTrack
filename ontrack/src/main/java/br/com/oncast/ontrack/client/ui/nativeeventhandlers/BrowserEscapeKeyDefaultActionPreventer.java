@@ -6,10 +6,9 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 
 public class BrowserEscapeKeyDefaultActionPreventer implements NativeEventListener {
+
 	@Override
 	public void onNativeEvent(final NativeEvent nativeEvent) {
-		if (nativeEvent.getKeyCode() == KeyCodes.KEY_ESCAPE) {
-			nativeEvent.preventDefault();
-		}
+		if (nativeEvent.getKeyCode() == KeyCodes.KEY_ESCAPE) nativeEvent.preventDefault();
 	}
 }

@@ -1,9 +1,13 @@
 package br.com.oncast.ontrack.server.business;
 
-import static br.com.oncast.ontrack.utils.mocks.models.UserTestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,12 +27,19 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.server.services.session.Session;
+import br.com.oncast.ontrack.server.services.session.SessionManager;
+import br.com.oncast.ontrack.shared.exceptions.authentication.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -48,23 +59,64 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.mocks.requests.RequestTestUtils;
 
-// TODO+++Refactor this test mocking infra.
 public class BusinessLogicTest {
 
 	private static final int PROJECT_ID = 1;
 	private EntityManager entityManager;
 	private ProjectRepresentation projectRepresentation;
+
 	private BusinessLogic business;
+	private PersistenceService persistence;
+	private ClientManager clientManager;
+	private AuthenticationManager authenticationManager;
+	private NotificationService notification;
+	private SessionManager sessionManager;
+	private User authenticatedUser;
+	private User admin;
 
 	@Before
 	public void setUp() throws Exception {
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 		projectRepresentation = assureProjectRepresentationExistance(PROJECT_ID);
+
+		configureMockDefaultBehavior();
+	}
+
+	private void configureMockDefaultBehavior() throws Exception {
+		authenticationManager = mock(AuthenticationManager.class);
+		persistence = mock(PersistenceService.class);
+		clientManager = mock(ClientManager.class);
+		notification = mock(NotificationService.class);
+		sessionManager = mock(SessionManager.class);
+
+		admin = UserTestUtils.createUser(999);
+		authenticatedUser = UserTestUtils.createUser(100);
+		configureToRetrieveAdmin();
+		authorizeUser(authenticatedUser, PROJECT_ID);
+		configureToRetrieveSnapshot(PROJECT_ID);
+	}
+
+	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException {
+		when(persistence.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(admin);
+	}
+
+	private void authorizeUser(final User user, final long projectId) throws PersistenceException {
+		when(authenticationManager.getAuthenticatedUser()).thenReturn(user);
+		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
+		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
+	}
+
+	private void configureToRetrieveSnapshot(final int projectId) throws Exception {
+		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
+		when(persistence.retrieveProjectSnapshot(projectId)).thenReturn(snapshot);
+		when(snapshot.getProject()).thenReturn(ProjectTestUtils.createProject());
 	}
 
 	@After
@@ -73,32 +125,39 @@ public class BusinessLogicTest {
 	}
 
 	@Test(expected = InvalidIncomingAction.class)
-	public void shouldThrowExceptionWhenAnInvalidActionIsExecuted() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithDumbPersistenceMockAndDumbNotificationMock();
+	public void invalidActionThrowsException() throws Exception {
+		business = BusinessLogicTestUtils.create();
+
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeUpdateAction(new UUID("id"), "bllla"));
+
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
-	public void shouldThrowExceptionAndNotPersistWhenAnInvalidActionIsExecuted() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithDumbNonWritablePersistenceMockAndDumbNotificationMock();
+	public void invalidActionIsNotPersisted() throws Exception {
+		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, sessionManager);
+
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(new UUID("0")));
+
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
+
+		verify(persistence, times(0)).persistActions(anyLong(), anyList(), any(Date.class));
 	}
 
 	@Test
 	public void shouldConstructAScopeHierarchyFromActions() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext context = new ProjectContext(project);
 
-		for (final ModelAction action : ActionTestUtils.getSomeActions()) {
+		for (final ModelAction action : ActionTestUtils.createSomeActions()) {
 			ActionExecuter.executeAction(context, action);
 		}
 
-		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(ActionTestUtils.getSomeActions()));
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(ActionTestUtils.createSomeActions()));
 		final Scope projectScope = loadProject().getProjectScope();
 
 		DeepEqualityTestUtils.assertObjectEquality(project.getProjectScope(), projectScope);
@@ -110,12 +169,12 @@ public class BusinessLogicTest {
 	 */
 	@Test
 	public void shouldPersistActionsAndTheirRollbacks() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext context = new ProjectContext(project);
 
 		final List<ModelAction> rollbackActions = new ArrayList<ModelAction>();
-		final List<ModelAction> actions = ActionTestUtils.getSomeActions();
+		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
 		for (final ModelAction action : actions) {
 			rollbackActions.add(ActionExecuter.executeAction(context, action).getReverseAction());
 		}
@@ -128,7 +187,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteOnePendentAction() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
 		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
@@ -145,7 +204,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteTwoPendentActions() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
 		final ModelAction action1 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
@@ -168,12 +227,12 @@ public class BusinessLogicTest {
 
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteManyPendentActions() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
 		final ProjectContext context = new ProjectContext(project1);
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.addAll(ActionTestUtils.getSomeActions());
+		actionList.addAll(ActionTestUtils.createSomeActions());
 
 		for (final ModelAction action : actionList)
 			action.execute(context);
@@ -187,10 +246,10 @@ public class BusinessLogicTest {
 
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteManyPendentActions2() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
-		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.getSomeActions());
+		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.createSomeActions());
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
 		final Project project2 = loadProject();
@@ -210,7 +269,7 @@ public class BusinessLogicTest {
 		final long OTHER_PROJECT_ID = 2;
 		assureProjectRepresentationExistance(OTHER_PROJECT_ID);
 
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
 		final ScopeInsertChildAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
@@ -229,10 +288,10 @@ public class BusinessLogicTest {
 
 	@Test
 	public void actionShouldOnlyUpdateRelatedProject() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 
 		final Project project1 = loadProject();
-		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.getSomeActions());
+		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.createSomeActions());
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
 		final long OTHER_PROJECT_ID = 2;
@@ -240,7 +299,7 @@ public class BusinessLogicTest {
 
 		final Project project2 = loadProject(OTHER_PROJECT_ID);
 		final List<ModelAction> actionList2 = executeActionsToProject(project2, ActionTestUtils.getActions2());
-		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(new UUID(), projectRepresentation2, actionList2));
+		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectRepresentation2, actionList2));
 
 		final Project loadedProject1 = loadProject();
 		final Project loadedProject2 = loadProject(OTHER_PROJECT_ID);
@@ -254,7 +313,7 @@ public class BusinessLogicTest {
 		assureProjectRepresentationExistance(2);
 		assureProjectRepresentationExistance(3);
 
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project loadedProject = loadProject(2);
 
 		assertEquals(2, loadedProject.getProjectRepresentation().getId());
@@ -263,20 +322,14 @@ public class BusinessLogicTest {
 
 	@Test(expected = ProjectNotFoundException.class)
 	public void shouldNotLoadProjectIfInexistentIdIsGiven() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final long inexistentProjectId = 123;
 		loadProject(inexistentProjectId);
 	}
 
 	@Test
 	public void shouldCreateANewProjectRepresentation() throws Exception {
-		final AuthenticationManager authManager = mock(AuthenticationManager.class);
-		final PersistenceService persistence = mock(PersistenceService.class);
-
-		when(authManager.getAuthenticatedUser()).thenReturn(createUser());
-
-		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbNotificationMockAndCustomAuthManagerMock(persistence, authManager);
-
+		business = BusinessLogicTestUtils.create(persistence);
 		business.createProject("Name");
 
 		final ArgumentCaptor<ProjectRepresentation> captor = ArgumentCaptor.forClass(ProjectRepresentation.class);
@@ -287,8 +340,8 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	public void scopeDeclareProgressActionShouldHaveHisTimestampRessetedByTheServer() throws Exception {
-		business = BusinessLogicMockFactoryTestUtils.createWithJpaPersistenceAndDumbNotificationMock();
+	public void scopeDeclareProgressActionShouldHaveItsTimestampResetedByTheServer() throws Exception {
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 
 		final Project project1 = loadProject();
@@ -307,55 +360,125 @@ public class BusinessLogicTest {
 
 	@Test
 	public void shouldSearchOnlyForProjectsThatAUserIsAuthorizedToAccess() throws Exception {
-		final AuthenticationManager authManager = mock(AuthenticationManager.class);
-		final PersistenceService persistence = mock(PersistenceService.class);
-
-		final User user = createUser();
-		user.setId(1);
-		when(authManager.getAuthenticatedUser()).thenReturn(user);
-
-		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbNotificationMockAndCustomAuthManagerMock(persistence, authManager);
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 		business.retrieveCurrentUserProjectList();
 
-		verify(authManager).getAuthenticatedUser();
-		verify(persistence).retrieveProjectAuthorizations(user.getId());
+		verify(authenticationManager).getAuthenticatedUser();
+		verify(persistence).retrieveProjectAuthorizations(authenticatedUser.getId());
 	}
 
 	@Test
-	public void shouldAuthorizeUserAfterProjectCreation() throws Exception {
-		final AuthenticationManager authManager = mock(AuthenticationManager.class);
-		final PersistenceService persistence = mock(PersistenceService.class);
-		business = BusinessLogicMockFactoryTestUtils.createWithCustomPersistenceMockAndDumbNotificationMockAndCustomAuthManagerMock(
-				persistence, authManager);
+	public void shouldAuthorizeCurrentUserAfterProjectCreation() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 
-		final User authenticatedUser = UserTestUtils.createUser("authenticated.user@domain.com");
-		final ProjectRepresentation createdProject = ProjectTestUtils.createProjectRepresentation();
-
-		when(authManager.getAuthenticatedUser()).thenReturn(authenticatedUser);
-		when(persistence.persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class))).thenReturn(createdProject);
+		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation();
+		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
 
 		business.createProject("new Project");
 		verify(persistence).authorize(authenticatedUser, createdProject);
 	}
 
 	@Test
-	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException {
-		projectRepresentation = ProjectTestUtils.createProjectRepresentation();
-		final User user = createUser();
+	public void shouldAuthorizeAdminUserAfterProjectCreation() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 
-		final NotificationService notification = mock(NotificationService.class);
-		final PersistenceService persistence = mock(PersistenceService.class);
+		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation();
+		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
+
+		business.createProject("new Project");
+		verify(persistence).authorize(authenticatedUser, createdProject);
+		verify(persistence).authorize(admin, createdProject);
+	}
+
+	@Test
+	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException {
+		projectRepresentation = ProjectTestUtils.createRepresentation();
 		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
 
-		final ClientManager clientManager = mock(ClientManager.class);
+		business = BusinessLogicTestUtils.create(persistence, notification, authenticationManager);
+		final ProjectRepresentation representation = business.createProject("new project");
 
-		final AuthenticationManager authManager = mock(AuthenticationManager.class);
-		when(authManager.getAuthenticatedUser()).thenReturn(user);
+		verify(notification, times(1)).notifyProjectCreation(authenticatedUser.getId(), representation);
+	}
 
-		business = new BusinessLogicImpl(persistence, notification, clientManager, authManager);
-		final ProjectRepresentation representation = business.createProject("bla");
+	@Test
+	public void bindClientToProjectAfterLoad() throws Exception {
+		final UUID clientId = new UUID("123");
 
-		verify(notification, times(1)).notifyProjectCreation(user.getId(), representation);
+		projectRepresentation = ProjectTestUtils.createRepresentation();
+		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
+
+		final Session sessionMock = Mockito.mock(Session.class);
+		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
+		when(sessionMock.getThreadLocalClientId()).thenReturn(clientId);
+
+		business = BusinessLogicTestUtils.create(persistence, notification, clientManager, authenticationManager, sessionManager);
+
+		final ProjectContextRequest request = new ProjectContextRequest(projectRepresentation.getId());
+		business.loadProjectForClient(request);
+
+		verify(clientManager, times(1)).bindClientToProject(clientId, request.getRequestedProjectId());
+	}
+
+	@Test(expected = AuthorizationException.class)
+	public void notAuthorizedUserCannotExecuteActions() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence);
+		final ModelActionSyncRequest request = RequestTestUtils.createModelActionSyncRequest();
+		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), request.getProjectId())).thenReturn(null);
+
+		business.handleIncomingActionSyncRequest(request);
+	}
+
+	@Test
+	public void onlyAuthorizedUserCanExecuteActions() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
+		final ModelActionSyncRequest request = RequestTestUtils.createModelActionSyncRequestWithOneAction();
+
+		business.handleIncomingActionSyncRequest(request);
+
+		verify(persistence, atLeastOnce()).retrieveProjectAuthorization(authenticatedUser.getId(), request.getProjectId());
+		verify(persistence).persistActions(eq(request.getProjectId()), eq(request.getActionList()), any(Date.class));
+	}
+
+	@Test
+	public void onlyAuthorizedProjectsAreReturnedToUser() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
+
+		final List<ProjectAuthorization> authorizations = ProjectTestUtils.createAuthorizations(3);
+		when(persistence.retrieveProjectAuthorizations(authenticatedUser.getId())).thenReturn(authorizations);
+
+		final List<ProjectRepresentation> projects = business.retrieveCurrentUserProjectList();
+
+		assertEquals(projects.size(), authorizations.size());
+		for (final ProjectAuthorization auth : authorizations) {
+			assertTrue(projects.contains(auth.getProject()));
+		}
+
+		verify(persistence).retrieveProjectAuthorizations(authenticatedUser.getId());
+	}
+
+	@Test
+	public void onlyAuthorizedUserCanLoadProjectForClient() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, sessionManager);
+		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest();
+
+		final Session sessionMock = Mockito.mock(Session.class);
+		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
+		when(sessionMock.getThreadLocalClientId()).thenReturn(new UUID());
+
+		business.loadProjectForClient(request);
+
+		verify(persistence, atLeastOnce()).retrieveProjectAuthorization(authenticatedUser.getId(), request.getRequestedProjectId());
+	}
+
+	@Test(expected = UnableToLoadProjectException.class)
+	public void notAuthorizedUserCannotLoadProjectForClient() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
+
+		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest();
+		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), request.getRequestedProjectId())).thenReturn(null);
+
+		business.loadProjectForClient(request);
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {
@@ -370,7 +493,7 @@ public class BusinessLogicTest {
 	}
 
 	private ModelActionSyncRequest createModelActionSyncRequest(final List<ModelAction> actionList) {
-		return new ModelActionSyncRequest(new UUID(), projectRepresentation, actionList);
+		return new ModelActionSyncRequest(projectRepresentation, actionList);
 	}
 
 	private Project loadProject() throws UnableToLoadProjectException, ProjectNotFoundException {
@@ -386,5 +509,4 @@ public class BusinessLogicTest {
 		new PersistenceServiceJpaImpl().persistOrUpdateProjectRepresentation(newProjectRepresentation);
 		return newProjectRepresentation;
 	}
-
 }

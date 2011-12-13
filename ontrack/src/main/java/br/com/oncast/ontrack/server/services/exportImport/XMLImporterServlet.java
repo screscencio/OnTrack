@@ -16,7 +16,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.dom4j.Document;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
-import br.com.oncast.ontrack.server.services.authentication.basic.BasicAutheticator;
+import br.com.oncast.ontrack.server.services.authentication.BasicAutheticator;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLUtils;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;

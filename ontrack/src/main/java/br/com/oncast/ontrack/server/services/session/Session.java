@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.session;
 import java.io.Serializable;
 
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 /**
  * Unique session information holder.<br/>
@@ -18,6 +19,8 @@ public class Session implements Serializable {
 
 	private final String sessionId;
 
+	private transient ThreadLocal<UUID> threadLocalClientId = new ThreadLocal<UUID>();
+
 	public Session(final String sessionId) {
 		this.sessionId = sessionId;
 	}
@@ -32,5 +35,13 @@ public class Session implements Serializable {
 
 	public void setAuthenticatedUser(final User authenticatedUser) {
 		this.authenticatedUser = authenticatedUser;
+	}
+
+	protected void setThreadLocalClientId(final UUID clientId) {
+		this.threadLocalClientId.set(clientId);
+	}
+
+	public UUID getThreadLocalClientId() {
+		return threadLocalClientId.get();
 	}
 }

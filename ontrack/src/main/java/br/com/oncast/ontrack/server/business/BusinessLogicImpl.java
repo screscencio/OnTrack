@@ -10,13 +10,15 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
-import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
+import br.com.oncast.ontrack.server.services.session.SessionManager;
+import br.com.oncast.ontrack.shared.exceptions.authentication.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -45,13 +47,15 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final NotificationService notificationService;
 	private final ClientManager clientManager;
 	private final AuthenticationManager authenticationManager;
+	private final SessionManager sessionManager;
 
 	protected BusinessLogicImpl(final PersistenceService persistenceService, final NotificationService notificationService, final ClientManager clientManager,
-			final AuthenticationManager authenticationManager) {
+			final AuthenticationManager authenticationManager, final SessionManager sessionManager) {
 		this.persistenceService = persistenceService;
 		this.notificationService = notificationService;
 		this.clientManager = clientManager;
 		this.authenticationManager = authenticationManager;
+		this.sessionManager = sessionManager;
 	}
 
 	@Override
@@ -124,7 +128,7 @@ class BusinessLogicImpl implements BusinessLogic {
 					projectName));
 			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 
-			persistenceService.authorize(authenticatedUser, persistedProjectRepresentation);
+			autorize(persistedProjectRepresentation, authenticatedUser);
 			notificationService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
 
 			return persistedProjectRepresentation;
@@ -133,6 +137,21 @@ class BusinessLogicImpl implements BusinessLogic {
 			final String errorMessage = "Unable to create project '" + projectName + "'.";
 			LOGGER.debug(errorMessage, e);
 			throw new UnableToCreateProjectRepresentation(errorMessage);
+		}
+	}
+
+	private void autorize(final ProjectRepresentation projectRepresentation, final User user) throws PersistenceException {
+		User admin;
+		try {
+			admin = persistenceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL);
+			if (user.getId() != admin.getId()) {
+				persistenceService.authorize(admin, projectRepresentation);
+			}
+			persistenceService.authorize(user, projectRepresentation);
+		}
+		catch (final NoResultFoundException e) {
+			throw new PersistenceException("Unable to autorize admin user for the newly created project '" + projectRepresentation.getName()
+					+ "': admin was not found.", e);
 		}
 	}
 
@@ -167,7 +186,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	public synchronized Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
 			ProjectNotFoundException {
 		final Project loadedProject = loadProject(projectContextRequest.getRequestedProjectId());
-		clientManager.bindClientToProject(projectContextRequest.getClientId(), projectContextRequest.getRequestedProjectId());
+		clientManager.bindClientToProject(sessionManager.getCurrentSession().getThreadLocalClientId(), projectContextRequest.getRequestedProjectId());
 		return loadedProject;
 	}
 
@@ -262,7 +281,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	private void assureProjectAccessAuthorization(final long projectId) throws PersistenceException {
 		final long currentUserId = authenticationManager.getAuthenticatedUser().getId();
 		final ProjectAuthorization retrieveProjectAuthorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
-		if (retrieveProjectAuthorization == null) throw new AuthenticationException("Not authorized to access project '" + projectId + "'.");
+		if (retrieveProjectAuthorization == null) throw new AuthorizationException("Not authorized to access project '" + projectId + "'.");
 	}
 
 	// TODO ++ Extract authorization responsibility to another class.

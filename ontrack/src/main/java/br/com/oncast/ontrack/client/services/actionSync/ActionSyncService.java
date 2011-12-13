@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
-import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.model.actions.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -19,8 +18,6 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequ
 
 public class ActionSyncService {
 
-	private final ClientIdentificationProvider clientIdentificationProvider;
-
 	private final ActionQueuedDispatcher actionQueuedDispatcher;
 
 	private final ActionExecutionService actionExecutionService;
@@ -30,14 +27,12 @@ public class ActionSyncService {
 	private final ProjectRepresentationProvider projectRepresentationProvider;
 
 	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
-			final ActionExecutionService actionExecutionService, final ClientIdentificationProvider clientIdentificationProvider,
-			final ProjectRepresentationProvider projectRepresentationProvider, final ErrorTreatmentService errorTreatmentService) {
+			final ActionExecutionService actionExecutionService, final ProjectRepresentationProvider projectRepresentationProvider,
+			final ErrorTreatmentService errorTreatmentService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.errorTreatmentService = errorTreatmentService;
 		this.actionExecutionService = actionExecutionService;
-		this.clientIdentificationProvider = clientIdentificationProvider;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, clientIdentificationProvider, projectRepresentationProvider,
-				errorTreatmentService);
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, errorTreatmentService);
 
 		serverPushClientService.registerServerEventHandler(ServerActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
@@ -46,7 +41,7 @@ public class ActionSyncService {
 				processServerActionSyncEvent(event);
 			}
 		});
-		actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
+		this.actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> scopeSet, final boolean isUserAction) {
@@ -58,7 +53,6 @@ public class ActionSyncService {
 	private void processServerActionSyncEvent(final ServerActionSyncEvent event) {
 		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
 
-		checkIfRequestWasOriginatedByThisClient(modelActionSyncRequest);
 		checkIfRequestIsPertinentToCurrentProject(modelActionSyncRequest);
 
 		try {
@@ -74,11 +68,6 @@ public class ActionSyncService {
 	private void handleActionExecution(final ModelAction action, final boolean isUserAction) {
 		if (!isUserAction) return;
 		actionQueuedDispatcher.dispatch(action);
-	}
-
-	private void checkIfRequestWasOriginatedByThisClient(final ModelActionSyncRequest modelActionSyncRequest) {
-		if (modelActionSyncRequest.getClientId().equals(clientIdentificationProvider.getClientId())) throw new RuntimeException(
-				"This client received the same action it sent to server. Please notify OnTrack team.");
 	}
 
 	private void checkIfRequestIsPertinentToCurrentProject(final ModelActionSyncRequest modelActionSyncRequest) {

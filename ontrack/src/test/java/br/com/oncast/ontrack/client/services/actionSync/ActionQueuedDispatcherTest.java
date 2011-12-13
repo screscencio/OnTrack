@@ -1,64 +1,46 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
-import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
-import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
-import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
-import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
-import br.com.oncast.ontrack.client.services.actionSync.ActionSyncServiceTestUtils.ValueHolder;
+import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchListener;
+import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchRequestServiceTestImplementation;
+import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.ValueHolder;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
+import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.shared.model.actions.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.VoidResult;
 
+// TODO Refactor this test for better readability
 public class ActionQueuedDispatcherTest {
 
-	private interface DispatchListener {
-		void onDispatch(final ModelActionSyncRequest modelActionSyncRequest, DispatchCallback<VoidResult> callback);
-	}
-
-	private final class DispatchRequestServiceTestImplementation implements DispatchService {
-		private DispatchListener listener;
-
-		public void registerDispatchListener(final DispatchListener listener) {
-			this.listener = listener;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T extends DispatchRequest<R>, R extends DispatchResponse> void dispatch(final T request, final DispatchCallback<R> dispatchCallback) {
-			if (!(request instanceof ModelActionSyncRequest)) throw new RuntimeException("The test should not try to dispatch '" + request.getClass().getName()
-					+ "'.");
-			if (listener == null) throw new RuntimeException("The listener was not set.");
-			listener.onDispatch((ModelActionSyncRequest) request, (DispatchCallback<VoidResult>) dispatchCallback);
-		}
-
-		@Override
-		public <T extends FailureHandler<R>, R extends Throwable> void addFailureHandler(final Class<R> throwableClass, final T handler) {
-			throw new RuntimeException("The test should not use this method.");
-		}
-	}
-
-	private ActionSyncServiceTestUtils actionSyncServiceTestUtils;
+	private ActionQueuedDispatcherTestUtils actionSyncServiceTestUtils;
 	private DispatchRequestServiceTestImplementation requestDispatchServiceMock;
 	private ActionQueuedDispatcher actionQueuedDispatcher;
 
 	@Before
 	public void setUp() {
-		actionSyncServiceTestUtils = new ActionSyncServiceTestUtils();
-		requestDispatchServiceMock = new DispatchRequestServiceTestImplementation();
+		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
+		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
 		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock,
-				actionSyncServiceTestUtils.getClientIdentificationProviderMock(),
-				actionSyncServiceTestUtils.getProjectRepresentationProviderMock(), actionSyncServiceTestUtils.getErrorTreatmentServiceMock());
+					getProjectRepresentationProviderMock(),
+					getErrorTreatmentServiceMock());
 	}
 
 	@Test
-	public void testQueueingWhileDispatchServiceDoesNotReturn() {
+	public void shouldQueueWhileDispatchServiceDoesNotReturn() {
 		final ValueHolder<DispatchCallback<VoidResult>> callbackHolder = actionSyncServiceTestUtils.new ValueHolder<DispatchCallback<VoidResult>>(null);
 		requestDispatchServiceMock.registerDispatchListener(new DispatchListener() {
 
@@ -69,7 +51,7 @@ public class ActionQueuedDispatcherTest {
 				callbackHolder.setValue(callback);
 			}
 		});
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 100; i++)
 			actionQueuedDispatcher.dispatch(new ScopeUpdateAction(new UUID(), ""));
 	}
 
@@ -158,5 +140,39 @@ public class ActionQueuedDispatcherTest {
 		callbackHolder.getValue().onSuccess(null);
 
 		Assert.assertEquals("The second action sync request should have all the remaining actions.", 10, request.getValue().getActionList().size());
+	}
+
+	private ProjectRepresentationProvider getProjectRepresentationProviderMock() {
+		final ProjectRepresentationProvider provider = mock(ProjectRepresentationProvider.class);
+		when(provider.getCurrentProjectRepresentation()).thenReturn(new ProjectRepresentation(1, "Default project"));
+
+		return provider;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private ErrorTreatmentService getErrorTreatmentServiceMock() {
+		final ErrorTreatmentService errorTreatment = mock(ErrorTreatmentService.class);
+
+		doAnswer(new Answer() {
+
+			@Override
+			public Object answer(final InvocationOnMock invocation) throws Throwable {
+				final Object[] arguments = invocation.getArguments();
+				Assert.fail((String) arguments[0]);
+				return null;
+			}
+		}).when(errorTreatment).treatFatalError(Mockito.anyString());
+
+		doAnswer(new Answer() {
+
+			@Override
+			public Object answer(final InvocationOnMock invocation) throws Throwable {
+				final Object[] arguments = invocation.getArguments();
+				Assert.fail((String) arguments[0]);
+				return null;
+			}
+		}).when(errorTreatment).treatFatalError(Mockito.anyString(), Mockito.any(Throwable.class));
+
+		return errorTreatment;
 	}
 }

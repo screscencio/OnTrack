@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.authentication.basic;
+package br.com.oncast.ontrack.server.services.authentication;
 
 import java.nio.charset.Charset;
 
@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 
 public class BasicAutheticator {
@@ -30,10 +29,10 @@ public class BasicAutheticator {
 	}
 
 	private static boolean verifyUser(final String user) {
-		return user.equals(DefaultAuthenticationCredentials.USER);
+		return user.equals(DefaultAuthenticationCredentials.USER_EMAIL);
 	}
 
 	private static boolean verifyPassword(final String password) {
-		return password.equals(DefaultAuthenticationCredentials.PASSWORD);
+		return password.equals(DefaultAuthenticationCredentials.USER_PASSWORD);
 	}
 }

@@ -136,7 +136,7 @@ public class ProjectRepresentationProviderTest {
 		assertEquals(0, listener.projectRepresentations.size());
 
 		final NewProjectCreatedEventHandler event = captor.getValue();
-		final ProjectRepresentation representation = ProjectTestUtils.createProjectRepresentation();
+		final ProjectRepresentation representation = ProjectTestUtils.createRepresentation();
 		event.onEvent(new ProjectCreatedEvent(representation));
 
 		assertEquals(1, listener.projectRepresentations.size());
@@ -150,7 +150,7 @@ public class ProjectRepresentationProviderTest {
 	@SuppressWarnings("unchecked")
 	private void respondOneProjectWhenProjectsListWereRequested() {
 		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
-		projects.add(ProjectTestUtils.createProjectRepresentation());
+		projects.add(ProjectTestUtils.createRepresentation());
 
 		DispatchCallbackMock.callOnSuccessWith(new ProjectListResponse(projects)).when(dispatch)
 				.dispatch(Mockito.any(ProjectListRequest.class), Mockito.any(DispatchCallback.class));

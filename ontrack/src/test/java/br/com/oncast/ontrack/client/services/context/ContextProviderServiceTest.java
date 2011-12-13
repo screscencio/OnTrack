@@ -14,7 +14,6 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
-import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -30,9 +29,6 @@ public class ContextProviderServiceTest {
 
 	@Mock
 	private ProjectRepresentationProviderImpl projectRepresentationProvider;
-
-	@Mock
-	private ClientIdentificationProvider clientIdentificationProvider;
 
 	@Mock
 	private DispatchService requestDispatchService;
@@ -52,7 +48,7 @@ public class ContextProviderServiceTest {
 		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProject())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
-		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, clientIdentificationProvider,
+		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider,
 				requestDispatchService, authenticationService);
 
 		Assert.assertFalse(contextProviderService.isContextAvailable(PROJECT_ID));
@@ -65,8 +61,8 @@ public class ContextProviderServiceTest {
 		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProject())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
-		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, clientIdentificationProvider,
-				requestDispatchService, authenticationService);
+		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
+				authenticationService);
 
 		contextProviderService.loadProjectContext(PROJECT_ID, Mockito.mock(ProjectContextLoadCallback.class));
 
@@ -80,8 +76,8 @@ public class ContextProviderServiceTest {
 		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProject())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
-		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, clientIdentificationProvider,
-				requestDispatchService, authenticationService);
+		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
+				authenticationService);
 
 		contextProviderService.loadProjectContext(PROJECT_ID, Mockito.mock(ProjectContextLoadCallback.class));
 

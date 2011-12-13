@@ -282,7 +282,7 @@ public class UserActionTestUtils {
 
 	public static UserAction createUserAction(final ModelAction action) throws Exception {
 		final UserAction userAction = new UserAction();
-		set(userAction, "projectRepresentation", ProjectTestUtils.createProjectRepresentation(projectId, projectName));
+		set(userAction, "projectRepresentation", ProjectTestUtils.createRepresentation(projectId, projectName));
 		set(userAction, "id", 1);
 		// Generate a different time stamp so it is like an id, so time stamp equality is like action equality.
 		set(userAction, "timestamp", new Date(new Random().nextInt(1000000)));
