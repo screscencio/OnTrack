@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 
 @Entity(name = "ReleaseScopePriorityUp")
 @ConvertTo(ReleaseScopeUpdatePriorityAction.class)

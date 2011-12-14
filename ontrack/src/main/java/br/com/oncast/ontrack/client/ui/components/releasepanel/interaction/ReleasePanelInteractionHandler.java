@@ -3,11 +3,11 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.interaction;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidgetInteractionHandler;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.actions.ReleaseRemoveAction;
-import br.com.oncast.ontrack.shared.model.actions.ReleaseScopeUpdatePriorityAction;
-import br.com.oncast.ontrack.shared.model.actions.ReleaseUpdatePriorityAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 

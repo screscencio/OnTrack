@@ -90,7 +90,7 @@ public class AuthenticationManagerTest {
 		assertUserIsNotLoggedIn();
 	}
 
-	@Test(expected = UserNotFoundException.class)
+	@Test(expected = InvalidAuthenticationCredentialsException.class)
 	public void shouldNotAuthenticateUserIfHisEmailIsNotRegistered() throws Exception {
 		assertUserIsNotLoggedIn();
 		forcePersistenceToDoNotFindUser();

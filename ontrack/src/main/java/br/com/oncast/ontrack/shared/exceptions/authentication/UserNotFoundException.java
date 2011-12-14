@@ -10,15 +10,7 @@ public class UserNotFoundException extends Exception implements Serializable {
 		super();
 	}
 
-	public UserNotFoundException(final Exception e) {
-		super(e);
-	}
-
 	public UserNotFoundException(final String message) {
 		super(message);
-	}
-
-	public UserNotFoundException(final String message, final Exception e) {
-		super(message, e);
 	}
 }

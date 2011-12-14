@@ -5,17 +5,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertChildAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeInsertParentRollbackAction;
-import br.com.oncast.ontrack.shared.model.actions.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 

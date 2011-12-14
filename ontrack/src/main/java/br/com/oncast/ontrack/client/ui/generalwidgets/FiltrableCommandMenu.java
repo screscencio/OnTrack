@@ -25,7 +25,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -61,14 +60,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	private List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 
 	private final CustomCommandMenuItemFactory customItemFactory;
-
-	private final Timer filteringTimer = new Timer() {
-
-		@Override
-		public void run() {
-			filterMenuItens();
-		}
-	};
 
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -115,35 +106,27 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@UiHandler("filterArea")
 	protected void handleKeyUp(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() == KEY_ESCAPE) hide();
-
-		else if (event.getNativeKeyCode() == KEY_ENTER) {
-			executeSelectedItemCommand();
+		if (event.getNativeKeyCode() == KEY_ESCAPE) {
 			hide();
 		}
-		else if (event.getNativeKeyCode() == KEY_DOWN || event.getNativeKeyCode() == KEY_UP) eatEvent(event);
-		else {
-			filteringTimer.cancel();
-			filteringTimer.schedule(300);
+		else if (event.getNativeKeyCode() == KEY_ENTER) {
+			if (executeSelectedItemCommand()) hide();
 		}
+		else if (event.getNativeKeyCode() == KEY_DOWN || event.getNativeKeyCode() == KEY_UP) {
+			eatEvent(event);
+		}
+		else filterMenuItens();
 
 		eatEvent(event);
 	}
 
 	@UiHandler("filterArea")
 	protected void handleKeyDown(final KeyDownEvent event) {
-		if (event.getNativeKeyCode() == KEY_DOWN) {
-			menu.selectItemDown();
-			eatEvent(event);
-		}
+		if (event.getNativeKeyCode() == KEY_DOWN) menu.selectItemDown();
+		else if (event.getNativeKeyCode() == KEY_UP) menu.selectItemUp();
+		else if (event.getNativeKeyCode() != KEY_TAB) return;
 
-		else if (event.getNativeKeyCode() == KEY_UP) {
-			menu.selectItemUp();
-			eatEvent(event);
-		}
-		else if (event.getNativeKeyCode() == KEY_TAB) {
-			eatEvent(event);
-		}
+		eatEvent(event);
 	}
 
 	@UiHandler("focusPanel")
@@ -151,11 +134,12 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		filterArea.setFocus(true);
 	}
 
-	private void executeSelectedItemCommand() {
+	private boolean executeSelectedItemCommand() {
 		final CommandMenuItem selectedItem = menu.getSelectedItem();
-		if (selectedItem == null) return;
+		if (selectedItem == null) return false;
 
 		selectedItem.getCommand().execute();
+		return true;
 	}
 
 	private void filterMenuItens() {

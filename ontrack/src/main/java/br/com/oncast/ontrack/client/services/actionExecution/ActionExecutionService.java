@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.services.actionExecution;
 
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 
 public interface ActionExecutionService extends ActionExecutionRequestHandler {
 

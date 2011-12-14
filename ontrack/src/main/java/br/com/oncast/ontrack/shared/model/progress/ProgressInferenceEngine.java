@@ -9,7 +9,7 @@ package br.com.oncast.ontrack.shared.model.progress;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.com.oncast.ontrack.shared.model.actions.ScopeAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;

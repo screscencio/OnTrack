@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 public class ModelActionSyncRequest implements DispatchRequest<VoidResult> {

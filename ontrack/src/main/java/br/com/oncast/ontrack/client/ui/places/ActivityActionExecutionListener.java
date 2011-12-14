@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
-import br.com.oncast.ontrack.shared.model.actions.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
