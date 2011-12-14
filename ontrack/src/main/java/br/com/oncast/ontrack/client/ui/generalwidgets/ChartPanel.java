@@ -167,7 +167,7 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 				.setLinePlotOptions(new LinePlotOptions()
 						.setEnableMouseTracking(false)
 						.setDataLabels(new DataLabels().setEnabled(true))
-						.setColor("#535153"));
+						.setColor("#7D839A"));
 
 		chart.getXAxis().setOffset(0).setTickmarkPlacement(null).setTickWidth(2);
 
