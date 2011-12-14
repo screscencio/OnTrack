@@ -106,9 +106,15 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@UiHandler("filterArea")
 	protected void handleKeyUp(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() == KEY_ESCAPE) hide();
-		else if (event.getNativeKeyCode() == KEY_ENTER) if (executeSelectedItemCommand()) hide();
-		else if (event.getNativeKeyCode() == KEY_DOWN || event.getNativeKeyCode() == KEY_UP) eatEvent(event);
+		if (event.getNativeKeyCode() == KEY_ESCAPE) {
+			hide();
+		}
+		else if (event.getNativeKeyCode() == KEY_ENTER) {
+			if (executeSelectedItemCommand()) hide();
+		}
+		else if (event.getNativeKeyCode() == KEY_DOWN || event.getNativeKeyCode() == KEY_UP) {
+			eatEvent(event);
+		}
 		else filterMenuItens();
 
 		eatEvent(event);
