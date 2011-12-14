@@ -6,9 +6,14 @@ import org.moxieapps.gwt.highcharts.client.Chart;
 import org.moxieapps.gwt.highcharts.client.Credits;
 import org.moxieapps.gwt.highcharts.client.Legend;
 import org.moxieapps.gwt.highcharts.client.PlotLine;
+import org.moxieapps.gwt.highcharts.client.Point;
 import org.moxieapps.gwt.highcharts.client.Series;
 import org.moxieapps.gwt.highcharts.client.ToolTip;
+import org.moxieapps.gwt.highcharts.client.ToolTipData;
+import org.moxieapps.gwt.highcharts.client.ToolTipFormatter;
 import org.moxieapps.gwt.highcharts.client.labels.DataLabels;
+import org.moxieapps.gwt.highcharts.client.labels.DataLabelsData;
+import org.moxieapps.gwt.highcharts.client.labels.DataLabelsFormatter;
 import org.moxieapps.gwt.highcharts.client.plotOptions.LinePlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker.Symbol;
@@ -128,9 +133,9 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 								.setRadius(3)));
 
 		newSerie.addPoint(0, 0);
-		for (int i = 0; i < yAxisLineValues.size(); i++) {
-			newSerie.addPoint(i, yAxisLineValues.get(i));
-		}
+
+		addYAxisValues(newSerie);
+
 		chart.addSeries(newSerie);
 	}
 
@@ -149,7 +154,7 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 								.setSymbol(Symbol.CIRCLE)
 								.setRadius(1)))
 				.addPoint(0, 0)
-				.addPoint(idealEnDay, maxValue);
+				.addPoint(createLastPoint(idealEnDay, maxValue));
 
 		chart.addSeries(idealLine);
 	}
@@ -157,7 +162,6 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 	private void configureBasicsChart() {
 		chart.setType(Series.Type.LINE)
 				.setChartTitleText("")
-				.setToolTip(new ToolTip().setEnabled(false))
 				.setLegend(new Legend().setEnabled(false))
 				.setMarginTop(20)
 				.setMarginLeft(30)
@@ -165,9 +169,19 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 				.setMarginBottom(25)
 				.setCredits(new Credits().setEnabled(false))
 				.setLinePlotOptions(new LinePlotOptions()
-						.setEnableMouseTracking(false)
-						.setDataLabels(new DataLabels().setEnabled(true))
-						.setColor("#7D839A"));
+						.setColor("#7D839A")
+						.setDataLabels(new DataLabels()
+								.setEnabled(true)
+								.setFormatter(new ShowOnlyLastPointFormatter()))
+				)
+				.setToolTip(new ToolTip()
+						.setFormatter(new ToolTipFormatter() {
+							@Override
+							public String format(final ToolTipData toolTipData) {
+								return toolTipData.getYAsDouble() + " ep";
+							}
+						})
+				);
 
 		chart.getXAxis().setOffset(0).setTickmarkPlacement(null).setTickWidth(2);
 
@@ -182,5 +196,28 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 		hide();
 		e.preventDefault();
 		e.stopPropagation();
+	}
+
+	private void addYAxisValues(final Series newSerie) {
+		final int lastIndex = yAxisLineValues.size() - 1;
+		for (int i = 0; i < lastIndex; i++) {
+			newSerie.addPoint(i, yAxisLineValues.get(i));
+		}
+		newSerie.addPoint(createLastPoint(lastIndex, yAxisLineValues.get(lastIndex)));
+	}
+
+	private Point createLastPoint(final Number x, final Number y) {
+		return new Point(x, y).setName("lastPoint");
+	}
+
+	private boolean isLastPoint(final DataLabelsData dataLabelsData) {
+		return dataLabelsData.getPointName() == null;
+	}
+
+	private class ShowOnlyLastPointFormatter implements DataLabelsFormatter {
+		@Override
+		public String format(final DataLabelsData dataLabelsData) {
+			return isLastPoint(dataLabelsData) ? null : String.valueOf(dataLabelsData.getYAsDouble());
+		}
 	}
 }
