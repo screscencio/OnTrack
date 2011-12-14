@@ -17,7 +17,10 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -35,7 +38,6 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 
 	interface ChartPanelUiBinder extends UiBinder<Widget, ChartPanel> {}
 
-	@UiField
 	protected Chart chart;
 
 	@UiField
@@ -52,9 +54,24 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 	public ChartPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
 
+		chart = new Chart();
 		configureBasicsChart();
+	}
 
-		chart.setSize(350, 210);
+	@UiHandler("clickableChartPanel")
+	public void onAttach(final AttachEvent event) {
+		if (event.isAttached()) {
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					clickableChartPanel.add(chart);
+					chart.setSizeToMatchContainer();
+				}
+			});
+		}
+		else {
+			clickableChartPanel.remove(chart);
+		}
 	}
 
 	public ChartPanel setMaxValue(final Number maxValue) {
