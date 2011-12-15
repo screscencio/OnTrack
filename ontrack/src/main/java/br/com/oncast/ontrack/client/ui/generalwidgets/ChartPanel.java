@@ -20,6 +20,7 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.Marker.Symbol;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -178,7 +179,7 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 						.setFormatter(new ToolTipFormatter() {
 							@Override
 							public String format(final ToolTipData toolTipData) {
-								return toolTipData.getYAsDouble() + " ep";
+								return round(toolTipData.getYAsDouble()) + " ep";
 							}
 						})
 				);
@@ -214,10 +215,14 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 		return dataLabelsData.getPointName() == null;
 	}
 
+	private String round(final double value) {
+		return ClientDecimalFormat.roundFloat((float) value, 1);
+	}
+
 	private class ShowOnlyLastPointFormatter implements DataLabelsFormatter {
 		@Override
 		public String format(final DataLabelsData dataLabelsData) {
-			return isLastPoint(dataLabelsData) ? null : String.valueOf(dataLabelsData.getYAsDouble());
+			return isLastPoint(dataLabelsData) ? null : String.valueOf(round(dataLabelsData.getYAsDouble()));
 		}
 	}
 }
