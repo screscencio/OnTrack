@@ -168,6 +168,7 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 				.setMarginLeft(30)
 				.setMarginRight(15)
 				.setMarginBottom(25)
+				.setBorderRadius(0)
 				.setCredits(new Credits().setEnabled(false))
 				.setLinePlotOptions(new LinePlotOptions()
 						.setColor("#7D839A")
