@@ -40,6 +40,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel>, PopupAware {
 
+	private static final int MAX_NUMBER_OF_TICKS = 22;
+
 	private static ChartPanelUiBinder uiBinder = GWT.create(ChartPanelUiBinder.class);
 
 	interface ChartPanelUiBinder extends UiBinder<Widget, ChartPanel> {}
@@ -141,7 +143,9 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 	}
 
 	private void configureXAxis() {
-		chart.getXAxis().setCategories(xAxisLineValues.toArray(new String[] {}));
+		chart.getXAxis()
+				.setTickInterval(((xAxisLineValues.size() + MAX_NUMBER_OF_TICKS - 1) / MAX_NUMBER_OF_TICKS))
+				.setCategories(xAxisLineValues.toArray(new String[] {}));
 	}
 
 	private void createIdealLine() {
@@ -185,10 +189,15 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 						})
 				);
 
-		chart.getXAxis().setOffset(0).setTickmarkPlacement(null).setTickWidth(2);
+		chart.getXAxis()
+				.setOffset(0)
+				.setTickmarkPlacement(null)
+				.setTickWidth(2);
 
-		chart.getYAxis().setAxisTitle(null).setMin(0);
-		chart.getYAxis().setShowFirstLabel(false);
+		chart.getYAxis()
+				.setAxisTitle(null)
+				.setMin(0)
+				.setShowFirstLabel(false);
 	}
 
 	@UiHandler("clickableChartPanel")
