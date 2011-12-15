@@ -34,9 +34,11 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	FocusPanel panel;
 
 	@UiField
+	// TODO use FastLabel
 	Label descriptionLabel;
 
 	@UiField
+	// TODO use FastLabel
 	Label progressLabel;
 
 	@UiField

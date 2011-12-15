@@ -11,7 +11,7 @@
 
     <properties>
         <gwtModule>br.com.oncast.ontrack.Application</gwtModule>
-        <gwtVersion>2.3.0</gwtVersion>
+        <gwtVersion>2.4.0</gwtVersion>
         <webappDirectory>${basedir}/war</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -208,7 +208,7 @@
         <dependency>
             <groupId>com.octo.gwt.test</groupId>
             <artifactId>gwt-test-utils</artifactId>
-            <version>0.31</version>
+            <version>0.34</version>
             <scope>test</scope>
         </dependency>
         <dependency>
