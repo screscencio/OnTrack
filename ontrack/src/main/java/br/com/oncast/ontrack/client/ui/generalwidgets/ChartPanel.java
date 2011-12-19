@@ -20,6 +20,7 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.Marker.Symbol;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -38,6 +39,8 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel>, PopupAware {
+
+	private static final int MAX_NUMBER_OF_TICKS = 22;
 
 	private static ChartPanelUiBinder uiBinder = GWT.create(ChartPanelUiBinder.class);
 
@@ -140,7 +143,9 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 	}
 
 	private void configureXAxis() {
-		chart.getXAxis().setCategories(xAxisLineValues.toArray(new String[] {}));
+		chart.getXAxis()
+				.setTickInterval(((xAxisLineValues.size() + MAX_NUMBER_OF_TICKS - 1) / MAX_NUMBER_OF_TICKS))
+				.setCategories(xAxisLineValues.toArray(new String[] {}));
 	}
 
 	private void createIdealLine() {
@@ -167,6 +172,7 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 				.setMarginLeft(30)
 				.setMarginRight(15)
 				.setMarginBottom(25)
+				.setBorderRadius(0)
 				.setCredits(new Credits().setEnabled(false))
 				.setLinePlotOptions(new LinePlotOptions()
 						.setColor("#7D839A")
@@ -178,15 +184,20 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 						.setFormatter(new ToolTipFormatter() {
 							@Override
 							public String format(final ToolTipData toolTipData) {
-								return toolTipData.getYAsDouble() + " ep";
+								return round(toolTipData.getYAsDouble()) + " ep";
 							}
 						})
 				);
 
-		chart.getXAxis().setOffset(0).setTickmarkPlacement(null).setTickWidth(2);
+		chart.getXAxis()
+				.setOffset(0)
+				.setTickmarkPlacement(null)
+				.setTickWidth(2);
 
-		chart.getYAxis().setAxisTitle(null).setMin(0);
-		chart.getYAxis().setShowFirstLabel(false);
+		chart.getYAxis()
+				.setAxisTitle(null)
+				.setMin(0)
+				.setShowFirstLabel(false);
 	}
 
 	@UiHandler("clickableChartPanel")
@@ -214,10 +225,14 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 		return dataLabelsData.getPointName() == null;
 	}
 
+	private String round(final double value) {
+		return ClientDecimalFormat.roundFloat((float) value, 1);
+	}
+
 	private class ShowOnlyLastPointFormatter implements DataLabelsFormatter {
 		@Override
 		public String format(final DataLabelsData dataLabelsData) {
-			return isLastPoint(dataLabelsData) ? null : String.valueOf(dataLabelsData.getYAsDouble());
+			return isLastPoint(dataLabelsData) ? null : String.valueOf(round(dataLabelsData.getYAsDouble()));
 		}
 	}
 }

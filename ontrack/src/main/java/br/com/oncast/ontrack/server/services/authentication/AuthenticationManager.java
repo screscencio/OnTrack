@@ -133,9 +133,7 @@ public class AuthenticationManager {
 			user = persistenceService.retrieveUserByEmail(email);
 		}
 		catch (final NoResultFoundException e) {
-			final String message = "No user found with e-mail '" + email + "'.";
-			LOGGER.error(message, e);
-			throw new UserNotFoundException(message);
+			throw new UserNotFoundException("No user found with e-mail '" + email + "'.");
 		}
 		catch (final PersistenceException e) {
 			final String message = "Unable to find user by email '" + email + "'.";

@@ -156,23 +156,23 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 
 	protected static boolean isArrowKey(final int code) {
 		switch (code) {
-		case OTHER_KEY_DOWN:
-		case OTHER_KEY_RIGHT:
-		case OTHER_KEY_UP:
-		case OTHER_KEY_LEFT:
-		case KeyCodes.KEY_DOWN:
-		case KeyCodes.KEY_RIGHT:
-		case KeyCodes.KEY_UP:
-		case KeyCodes.KEY_LEFT:
-			return true;
-		default:
-			return false;
+			case OTHER_KEY_DOWN:
+			case OTHER_KEY_RIGHT:
+			case OTHER_KEY_UP:
+			case OTHER_KEY_LEFT:
+			case KeyCodes.KEY_DOWN:
+			case KeyCodes.KEY_RIGHT:
+			case KeyCodes.KEY_UP:
+			case KeyCodes.KEY_LEFT:
+				return true;
+			default:
+				return false;
 		}
 	}
 
 	protected void keyboardNavigation(final Event event) {
 
-		if (event.getAltKey() || event.getCtrlKey() || event.getShiftKey()) {
+		if (event.getAltKey() || event.getCtrlKey() || event.getShiftKey() || event.getMetaKey()) {
 			super.onBrowserEvent(event);
 			return;
 		}
@@ -180,25 +180,25 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 			final int code = DOM.eventGetKeyCode(event);
 
 			switch (standardizeKeycode(code)) {
-			case KeyCodes.KEY_UP: {
-				moveSelectionUp(curSelection);
-				break;
-			}
-			case KeyCodes.KEY_DOWN: {
-				moveSelectionDown(curSelection, true);
-				break;
-			}
-			case KeyCodes.KEY_LEFT: {
-				maybeCollapseTreeItem();
-				break;
-			}
-			case KeyCodes.KEY_RIGHT: {
-				maybeExpandTreeItem();
-				break;
-			}
-			default: {
-				return;
-			}
+				case KeyCodes.KEY_UP: {
+					moveSelectionUp(curSelection);
+					break;
+				}
+				case KeyCodes.KEY_DOWN: {
+					moveSelectionDown(curSelection, true);
+					break;
+				}
+				case KeyCodes.KEY_LEFT: {
+					maybeCollapseTreeItem();
+					break;
+				}
+				case KeyCodes.KEY_RIGHT: {
+					maybeExpandTreeItem();
+					break;
+				}
+				default: {
+					return;
+				}
 			}
 		}
 	}
@@ -208,18 +208,18 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	 */
 	protected static int standardizeKeycode(int code) {
 		switch (code) {
-		case OTHER_KEY_DOWN:
-			code = KeyCodes.KEY_DOWN;
-			break;
-		case OTHER_KEY_RIGHT:
-			code = KeyCodes.KEY_RIGHT;
-			break;
-		case OTHER_KEY_UP:
-			code = KeyCodes.KEY_UP;
-			break;
-		case OTHER_KEY_LEFT:
-			code = KeyCodes.KEY_LEFT;
-			break;
+			case OTHER_KEY_DOWN:
+				code = KeyCodes.KEY_DOWN;
+				break;
+			case OTHER_KEY_RIGHT:
+				code = KeyCodes.KEY_RIGHT;
+				break;
+			case OTHER_KEY_UP:
+				code = KeyCodes.KEY_UP;
+				break;
+			case OTHER_KEY_LEFT:
+				code = KeyCodes.KEY_LEFT;
+				break;
 		}
 		if (LocaleInfo.getCurrentLocale().isRTL()) {
 			if (code == KeyCodes.KEY_RIGHT) {
@@ -542,77 +542,77 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 
 		switch (eventType) {
 		// Intentional fallthrough.
-		case Event.ONKEYPRESS:
-		case Event.ONKEYUP:
-			// Issue 1890: Do not block history navigation via alt+left/right
-			if (DOM.eventGetAltKey(event) || DOM.eventGetMetaKey(event)) {
-				super.onBrowserEvent(event);
-				return;
-			}
-			break;
+			case Event.ONKEYPRESS:
+			case Event.ONKEYUP:
+				// Issue 1890: Do not block history navigation via alt+left/right
+				if (DOM.eventGetAltKey(event) || DOM.eventGetMetaKey(event)) {
+					super.onBrowserEvent(event);
+					return;
+				}
+				break;
 		}
 
 		switch (eventType) {
-		case Event.ONCLICK: {
-			final Element e = DOM.eventGetTarget(event);
-			if (shouldTreeDelegateFocusToElement(e)) {
-				// The click event should have given focus to this element already.
-				// Avoid moving focus back up to the tree (so that focusable widgets
-				// attached to TreeItems can receive keyboard events).
+			case Event.ONCLICK: {
+				final Element e = DOM.eventGetTarget(event);
+				if (shouldTreeDelegateFocusToElement(e)) {
+					// The click event should have given focus to this element already.
+					// Avoid moving focus back up to the tree (so that focusable widgets
+					// attached to TreeItems can receive keyboard events).
+				}
+				else if (curSelection != null) {
+					setFocus(true);
+				}
+				break;
 			}
-			else if (curSelection != null) {
-				setFocus(true);
-			}
-			break;
-		}
 
-		case Event.ONMOUSEDOWN: {
-			// Currently, the way we're using image bundles causes extraneous events
-			// to be sunk on individual items' open/close images. This leads to an
-			// extra event reaching the Tree, which we will ignore here.
-			// Also, ignore middle and right clicks here.
-			if ((DOM.eventGetCurrentTarget(event) == getElement()) && (event.getButton() == Event.BUTTON_LEFT)) {
-				elementClicked(DOM.eventGetTarget(event));
+			case Event.ONMOUSEDOWN: {
+				// Currently, the way we're using image bundles causes extraneous events
+				// to be sunk on individual items' open/close images. This leads to an
+				// extra event reaching the Tree, which we will ignore here.
+				// Also, ignore middle and right clicks here.
+				if ((DOM.eventGetCurrentTarget(event) == getElement()) && (event.getButton() == Event.BUTTON_LEFT)) {
+					elementClicked(DOM.eventGetTarget(event));
+				}
+				break;
 			}
-			break;
-		}
-		case Event.ONKEYDOWN: {
-			keyboardNavigation(event);
-			lastWasKeyDown = true;
-			break;
-		}
-
-		case Event.ONKEYPRESS: {
-			if (!lastWasKeyDown) {
+			case Event.ONKEYDOWN: {
 				keyboardNavigation(event);
+				lastWasKeyDown = true;
+				break;
 			}
-			lastWasKeyDown = false;
-			break;
+
+			case Event.ONKEYPRESS: {
+				if (!lastWasKeyDown) {
+					keyboardNavigation(event);
+				}
+				lastWasKeyDown = false;
+				break;
+			}
+
+			case Event.ONKEYUP: {
+				if (DOM.eventGetKeyCode(event) == KeyCodes.KEY_TAB) {
+					final ArrayList<Element> chain = new ArrayList<Element>();
+					collectElementChain(chain, getElement(), DOM.eventGetTarget(event));
+					final TreeItem item = findItemByChain(chain, 0, root);
+					if (item != getSelectedItem()) {
+						setSelectedItem(item, true);
+					}
+				}
+				lastWasKeyDown = false;
+				break;
+			}
 		}
 
-		case Event.ONKEYUP: {
-			if (DOM.eventGetKeyCode(event) == KeyCodes.KEY_TAB) {
-				final ArrayList<Element> chain = new ArrayList<Element>();
-				collectElementChain(chain, getElement(), DOM.eventGetTarget(event));
-				final TreeItem item = findItemByChain(chain, 0, root);
-				if (item != getSelectedItem()) {
-					setSelectedItem(item, true);
+		switch (eventType) {
+			case Event.ONKEYDOWN:
+			case Event.ONKEYUP: {
+				if ((isArrowKey(DOM.eventGetKeyCode(event)) && !(event.getAltKey() || event.getCtrlKey() || event.getShiftKey())) && curSelection != null) {
+					DOM.eventCancelBubble(event, true);
+					DOM.eventPreventDefault(event);
+					return;
 				}
 			}
-			lastWasKeyDown = false;
-			break;
-		}
-		}
-
-		switch (eventType) {
-		case Event.ONKEYDOWN:
-		case Event.ONKEYUP: {
-			if ((isArrowKey(DOM.eventGetKeyCode(event)) && !(event.getAltKey() || event.getCtrlKey() || event.getShiftKey())) && curSelection != null) {
-				DOM.eventCancelBubble(event, true);
-				DOM.eventPreventDefault(event);
-				return;
-			}
-		}
 		}
 
 		// We must call super for all handlers.
