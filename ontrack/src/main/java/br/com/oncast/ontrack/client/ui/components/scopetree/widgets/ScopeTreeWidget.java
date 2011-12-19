@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
+import static br.com.oncast.ontrack.client.utils.jquery.JQuery.jquery;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,10 +35,9 @@ public class ScopeTreeWidget extends Composite {
 
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
 		initWidget(tree = new Tree());
-		tree.addKeyUpHandler(interactionHandler);
+		jquery(tree).keydown(interactionHandler);
 
 		tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
-
 			@Override
 			public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {
 				interactionHandler.onBindReleaseRequest(scopeId, releaseDescription);

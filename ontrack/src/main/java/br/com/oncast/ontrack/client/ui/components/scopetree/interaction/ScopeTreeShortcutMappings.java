@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Ins
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingUpInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
+import br.com.oncast.ontrack.client.utils.RuntimeEnvironment;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
@@ -148,16 +149,22 @@ enum ScopeTreeShortcutMappings {
 	}
 
 	public static void interpretKeyboardCommand(final ActionExecutionRequestHandler applicationActionHandler,
-			final InternalActionExecutionRequestHandler internalActionHandler, final int keyCode, final boolean hasControlModifier,
-			final boolean hasShiftModifier, final boolean hasAltModifier, final Scope scope, final ProjectContext context) {
+			final InternalActionExecutionRequestHandler internalActionHandler, final int keyCode, final boolean hasShiftModifier,
+			final boolean hasControlModifier, final boolean hasAltModifier, final boolean hasMetaModifier, final Scope scope, final ProjectContext context) {
+
 		for (final ScopeTreeShortcutMappings mapping : values())
-			if (mapping.accepts(keyCode, hasControlModifier, hasShiftModifier, hasAltModifier)) mapping.execute(applicationActionHandler,
-					internalActionHandler, scope, context);
+
+			// FIXME Rodrigo: The code below is platform dependent, move the platform specific key configuration elsewhere.
+			if (mapping.accepts(keyCode, RuntimeEnvironment.isMac() ? (hasMetaModifier && !hasControlModifier) : hasControlModifier,
+					hasShiftModifier, hasAltModifier)) {
+				mapping.execute(applicationActionHandler, internalActionHandler, scope, context);
+			}
 	}
 
 	protected abstract void execute(final ActionExecutionRequestHandler actionRequestHandler, InternalActionExecutionRequestHandler internalActionHandler,
 			final Scope scope, ProjectContext context);
 
+	// FIXME Rodrigo: The control modifier may also be a command modifier in mac, so the parameter name below does not reflect the reality.
 	private boolean accepts(final int keyCode, final boolean hasControlModifier, final boolean hasShiftModifier, final boolean hasAltModifier) {
 		return (this.keyUpCode == keyCode && this.controlModifier == hasControlModifier && this.shiftModifier == hasShiftModifier && this.altModifier == hasAltModifier);
 	}

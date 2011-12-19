@@ -9,13 +9,12 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Nod
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.OperationNotAllowedException;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.utils.jquery.Event;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-
-import com.google.gwt.event.dom.client.KeyUpEvent;
 
 public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInteractionHandler {
 
@@ -69,14 +68,17 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	private ProjectContext context;
 
 	@Override
-	public void onKeyUp(final KeyUpEvent event) {
+	public void handle(final Event e) {
 		assureConfigured();
 
 		final ScopeTreeItem selected = tree.getSelected();
 		if (selected == null) return;
 
-		ScopeTreeShortcutMappings.interpretKeyboardCommand(applicationActionHandler, internalActionHandler, event.getNativeKeyCode(), event.isControlKeyDown(),
-				event.isShiftKeyDown(), event.isAltKeyDown(), selected.getReferencedScope(), context);
+		ScopeTreeShortcutMappings.interpretKeyboardCommand(applicationActionHandler, internalActionHandler, e.which(), e.shiftKey(),
+				e.ctrlKey(), e.altKey(), e.metaKey(), selected.getReferencedScope(), context);
+
+		e.stopPropagation();
+		e.preventDefault();
 	}
 
 	@Override
