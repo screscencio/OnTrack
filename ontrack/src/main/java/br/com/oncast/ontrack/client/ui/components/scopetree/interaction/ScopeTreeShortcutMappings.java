@@ -154,7 +154,7 @@ enum ScopeTreeShortcutMappings {
 
 		for (final ScopeTreeShortcutMappings mapping : values())
 
-			// FIXME Rodrigo: The code below is platform dependent, move the platform specific key configuration elsewhere.
+			// TODO +++The code below is platform dependent, move the platform specific key configuration elsewhere.
 			if (mapping.accepts(keyCode, RuntimeEnvironment.isMac() ? (hasMetaModifier && !hasControlModifier) : hasControlModifier,
 					hasShiftModifier, hasAltModifier)) {
 				mapping.execute(applicationActionHandler, internalActionHandler, scope, context);
@@ -164,7 +164,6 @@ enum ScopeTreeShortcutMappings {
 	protected abstract void execute(final ActionExecutionRequestHandler actionRequestHandler, InternalActionExecutionRequestHandler internalActionHandler,
 			final Scope scope, ProjectContext context);
 
-	// FIXME Rodrigo: The control modifier may also be a command modifier in mac, so the parameter name below does not reflect the reality.
 	private boolean accepts(final int keyCode, final boolean hasControlModifier, final boolean hasShiftModifier, final boolean hasAltModifier) {
 		return (this.keyUpCode == keyCode && this.controlModifier == hasControlModifier && this.shiftModifier == hasShiftModifier && this.altModifier == hasAltModifier);
 	}
