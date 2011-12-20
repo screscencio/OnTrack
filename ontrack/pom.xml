@@ -259,7 +259,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.3.0-1</version>
+				<version>2.4.0</version>
 				<executions>
 					<execution>
 						<configuration>
@@ -335,7 +335,7 @@
 						<id>embedded-tomcat-startup</id>
 						<phase>pre-integration-test</phase>
 						<goals>
-							<goal>deploy</goal>
+							<goal>redeploy</goal>
 						</goals>
 					</execution>
 				</executions>
