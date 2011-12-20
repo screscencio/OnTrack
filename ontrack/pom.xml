@@ -298,27 +298,8 @@
 					<argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
 					<excludes>
 						<exclude>**/TestUtils.java</exclude>
-						<exclude>**/acceptance/**/*</exclude>
 					</excludes>
 				</configuration>
-				<executions>
-					<execution>
-						<id>acceptance-tests</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skip>false</skip>
-							<excludes>
-								<exclude>none</exclude>
-							</excludes>
-							<includes>
-								<include>**/acceptance/**/*.java</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
@@ -343,24 +324,18 @@
 				<artifactId>tomcat6-maven-plugin</artifactId>
 				<version>2.0-SNAPSHOT</version>
 				<configuration>
-					<fork>true</fork>
 					<warSourceDirectory>${webappDirectory}</warSourceDirectory>
+					<url>http://localhost:8888/manager</url>
 					<path>/</path>
-					<port>8888</port>
+					<username>manager</username>
+					<password>manager</password>
 				</configuration>
 				<executions>
 					<execution>
 						<id>embedded-tomcat-startup</id>
 						<phase>pre-integration-test</phase>
 						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>embedded-tomcat-shutdown</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>shutdown</goal>
+							<goal>deploy</goal>
 						</goals>
 					</execution>
 				</executions>
