@@ -1,22 +1,20 @@
 package br.com.oncast.ontrack.acceptance.login;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.openqa.selenium.WebDriver;
 
 import br.com.oncast.ontrack.acceptance.AcceptanceTestUtils;
 import br.com.oncast.ontrack.acceptance.WebDriverFactory;
 import br.com.oncast.ontrack.acceptance.navigation.NavigationTestUtils;
 import br.com.oncast.ontrack.acceptance.navigation.NavigationTestUtils.NavigationPlaces;
 
-
-@RunWith(Parameterized.class)
+@RunWith(ParameterizedType.class)
 public class LoginTest {
 
 	private final WebDriverFactory<?> driverFactory;
@@ -57,8 +55,7 @@ public class LoginTest {
 		final String password = "";
 
 		new NavigationTestUtils(driver).goToApplicationEntryPoint();
-		new LoginTestUtils(driver).authenticate(username, password).verifyMessageIsShowing()
-				.verifyMessage("Incorrect user or password.");
+		new LoginTestUtils(driver).authenticate(username, password).verifyMessageIsShowing().verifyMessage("Incorrect user or password.");
 	}
 
 	@Test
@@ -67,8 +64,7 @@ public class LoginTest {
 		final String password = "bli";
 
 		new NavigationTestUtils(driver).goToApplicationEntryPoint();
-		new LoginTestUtils(driver).authenticate(username, password).verifyMessageIsShowing()
-				.verifyMessage("Incorrect user or password.");
+		new LoginTestUtils(driver).authenticate(username, password).verifyMessageIsShowing().verifyMessage("Incorrect user or password.");
 	}
 
 	@Test
