@@ -28,7 +28,7 @@ xmlns:o="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 		}
 	</ui:style>
 
-	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
+	<g:FocusPanel debugId="projectSelectionPlace" ui:field="rootPanel" styleName="{style.rootPanel}">
 	   <o:ApplicationWidgetContainer text="Choose a project">
             <g:HTMLPanel styleName="{style.projectSelectionPanel}">
                 <cp:ProjectSelectionWidget ui:field="selectionProject"

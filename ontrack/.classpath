@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.6.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils-1.8.3.jar" sourcepath="/home/luiz/.m2/repository/commons-beanutils/commons-beanutils/1.8.3/commons-beanutils-1.8.3-sources.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
@@ -44,6 +43,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-comet-1.2.3-patch.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/RequestDispatch-0.9.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-test-utils-0.34.jar"/>
+	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
