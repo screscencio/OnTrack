@@ -1,20 +1,21 @@
 package br.com.oncast.ontrack.acceptance.login;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.openqa.selenium.WebDriver;
 
 import br.com.oncast.ontrack.acceptance.AcceptanceTestUtils;
 import br.com.oncast.ontrack.acceptance.WebDriverFactory;
 import br.com.oncast.ontrack.acceptance.navigation.NavigationTestUtils;
 import br.com.oncast.ontrack.acceptance.navigation.NavigationTestUtils.NavigationPlaces;
 
-@RunWith(ParameterizedType.class)
+@RunWith(Parameterized.class)
 public class LoginTest {
 
 	private final WebDriverFactory<?> driverFactory;
