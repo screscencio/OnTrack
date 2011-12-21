@@ -65,20 +65,20 @@
 		
 	</ui:style>
 
-	<o:ApplicationWidgetContainer text="Sign in">
+	<o:ApplicationWidgetContainer debugId="loginPlace" text="Sign in">
 		<g:HTMLPanel styleName="{style.contentPanel}">
 			<g:Label text="E-mail" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
-			<g:TextBox ui:field="emailArea" addStyleNames="{style.textArea}" />
+			<g:TextBox debugId="emailInput" ui:field="emailArea" addStyleNames="{style.textArea}" />
 			
 			<div class="{style.separator}" />
 			
 			<g:Label text="Password" ui:field="passwordLabel" styleName="{style.descriptionLabel}" />
-			<g:PasswordTextBox ui:field="passwordArea" addStyleNames="{style.textArea}" />
+			<g:PasswordTextBox debugId="passwordInput" ui:field="passwordArea" addStyleNames="{style.textArea}" />
 			
-			<g:Label ui:field="messageLabel" styleName="{style.errorLabel}" visible="false" />
+			<g:Label debugId="messageOutput" ui:field="messageLabel" styleName="{style.errorLabel}" visible="false" />
 			
 			<div class="{style.separator}" />
-			<g:Button text="LOGIN" ui:field="loginButton" styleName="{style.loginButton}" />
+			<g:Button debugId="submitButton" text="LOGIN" ui:field="loginButton" styleName="{style.loginButton}" />
 		</g:HTMLPanel>
 	</o:ApplicationWidgetContainer>
 

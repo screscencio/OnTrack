@@ -22,7 +22,7 @@ public interface BusinessLogic {
 
 	public abstract ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation;
 
-	// FIXME Rodrigo: Delete the following method.
+	// TODO Delete the following method.
 	public abstract List<ProjectRepresentation> retrieveProjectList() throws UnableToRetrieveProjectListException;
 
 	public abstract List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException;
