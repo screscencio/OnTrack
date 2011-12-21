@@ -332,8 +332,8 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>embedded-tomcat-startup</id>
-						<phase>pre-integration-test</phase>
+						<id>acceptance-deploy</id>
+						<phase>tomcat6:redeploy</phase>
 						<goals>
 							<goal>redeploy</goal>
 						</goals>
