@@ -5,6 +5,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Code analysis -->
 		<coverage.reports.dir>${basedir}/target/coverage-reports</coverage.reports.dir>
 		<sonar.jacoco.reportPath>${coverage.reports.dir}/jacoco-unit.exec</sonar.jacoco.reportPath>
@@ -44,7 +45,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.7.1</version>
 				<configuration>
 					<argLine>-Xmx512M -XX:MaxPermSize=128M</argLine>
 					<argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
