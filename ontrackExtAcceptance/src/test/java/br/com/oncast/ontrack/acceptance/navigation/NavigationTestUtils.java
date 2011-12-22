@@ -1,14 +1,16 @@
 package br.com.oncast.ontrack.acceptance.navigation;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+
+import br.com.oncast.ontrack.acceptance.ConditionVerifier;
+import br.com.oncast.ontrack.acceptance.ConditionVerifier.Condition;
 
 public class NavigationTestUtils {
 
 	public enum NavigationPlaces {
-		LOGIN("gwt-debug-loginPlace"), PROJECT_SELECTION("gwt-debug-projectSelectionPlace");
+		LOGIN("gwt-debug-loginPlace"),
+		PROJECT_SELECTION("gwt-debug-projectSelectionPlace");
 
 		private final String panelDebugId;
 
@@ -30,12 +32,7 @@ public class NavigationTestUtils {
 	}
 
 	public NavigationTestUtils verifyBrowserIsAt(final NavigationPlaces place) {
-		try {
-			Assert.assertTrue("The browser is not at '" + place.name() + "'.", driver.findElement(By.id(place.panelDebugId)).isDisplayed());
-		}
-		catch (final NoSuchElementException e) {
-			Assert.fail("The browser is not at '" + place.name() + "'.");
-		}
+		ConditionVerifier.verify(By.id(place.panelDebugId), Condition.IS_DIPLAYED, "The browser is not at '" + place.name() + "'.", driver).during(200);
 
 		return this;
 	}

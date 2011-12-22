@@ -26,9 +26,17 @@ public class LoginTestUtils {
 		driver.findElement(By.id(PASSWORD_INPUT_DEBUG_ID)).sendKeys(password);
 		driver.findElement(By.id(SUBMIT_BUTTON_DEBUG_ID)).click();
 
-		AcceptanceTestUtils.sleep(100);
+		AcceptanceTestUtils.sleep(200);
 
 		return this;
+	}
+
+	public LoginTestUtils authenticateWithAdminCredentials() {
+		// FIXME Use credential's reference constants
+		final String username = "admin@ontrack.com";
+		final String password = "ontrackpoulain";
+
+		return authenticate(username, password);
 	}
 
 	public LoginTestUtils verifyMessageIsShowing() {
