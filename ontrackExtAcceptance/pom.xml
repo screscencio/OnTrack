@@ -13,13 +13,6 @@
 	</properties>
 
 	<dependencies>
-		<!-- OnTrack Project -->
-		<dependency>
-			<groupId>br.com.oncast</groupId>
-			<artifactId>ontrackExt</artifactId>
-			<version>0.0.1</version>
-			<type>war</type>
-		</dependency>
 		
 		<!-- Test Dependencies -->
 		<dependency>
