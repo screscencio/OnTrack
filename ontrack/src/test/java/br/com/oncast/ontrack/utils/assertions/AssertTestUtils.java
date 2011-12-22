@@ -12,6 +12,8 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class AssertTestUtils {
 
+	private static final double EFFORT_TOLERANCE = 0.09;
+
 	public static void assertDeepEquals(final Scope expected, final Scope actual) {
 		assertEquality(expected, actual);
 		for (int i = 0; i < actual.getChildren().size(); i++) {
@@ -25,10 +27,10 @@ public class AssertTestUtils {
 	}
 
 	public static void assertEquality(final String message, final Effort expected, final Effort actual) {
-		assertEquals(message, expected.getBottomUpValue(), actual.getBottomUpValue(), 0.09);
-		assertEquals(message, expected.getTopDownValue(), actual.getTopDownValue(), 0.09);
+		assertEquals(message, expected.getBottomUpValue(), actual.getBottomUpValue(), EFFORT_TOLERANCE);
+		assertEquals(message, expected.getTopDownValue(), actual.getTopDownValue(), EFFORT_TOLERANCE);
 		assertEquals(message, expected.hasDeclared(), actual.hasDeclared());
-		assertEquals(message, expected.getDeclared(), actual.getDeclared());
+		assertEquals(message, expected.getDeclared(), actual.getDeclared(), EFFORT_TOLERANCE);
 	}
 
 	public static void assertNotEquals(final Object expected, final Object actual) {

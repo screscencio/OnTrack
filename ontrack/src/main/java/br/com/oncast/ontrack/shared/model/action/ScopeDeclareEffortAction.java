@@ -26,9 +26,9 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 
 	@ConversionAlias("newDeclaredEffort")
 	@Attribute
-	private int newDeclaredEffort;
+	private float newDeclaredEffort;
 
-	public ScopeDeclareEffortAction(final UUID referenceId, final boolean hasDeclaredEffort, final int newDeclaredEffort) {
+	public ScopeDeclareEffortAction(final UUID referenceId, final boolean hasDeclaredEffort, final float newDeclaredEffort) {
 		this.referenceId = referenceId;
 		this.hasDeclaredEffort = hasDeclaredEffort;
 		this.newDeclaredEffort = newDeclaredEffort;
@@ -42,7 +42,7 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
 		final boolean oldHasDeclared = selectedScope.getEffort().hasDeclared();
-		final int oldDeclaredEffort = selectedScope.getEffort().getDeclared();
+		final float oldDeclaredEffort = selectedScope.getEffort().getDeclared();
 
 		if (hasDeclaredEffort) selectedScope.getEffort().setDeclared(newDeclaredEffort);
 		else selectedScope.getEffort().resetDeclared();

@@ -31,11 +31,11 @@ public class DeclareEffortInternalAction implements InternalAction {
 
 	@Override
 	public ModelAction createEquivalentModelAction(final String value) {
-		int declaredEffort;
+		float declaredEffort;
 		boolean hasDeclaredEffort;
 
 		try {
-			declaredEffort = Integer.valueOf(value);
+			declaredEffort = Float.valueOf(value);
 			hasDeclaredEffort = (value != null && !value.isEmpty());
 		}
 		catch (final NumberFormatException e) {

@@ -8,7 +8,7 @@ public class Effort implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int declared;
+	private float declared;
 	private float topDownValue;
 	private float bottomUpValue;
 	private boolean hasDeclared;
@@ -16,11 +16,11 @@ public class Effort implements Serializable {
 	@IgnoredByDeepEquality
 	private boolean hasStronglyDefinedChildren;
 
-	public int getDeclared() {
+	public float getDeclared() {
 		return declared;
 	}
 
-	public void setDeclared(final int declared) {
+	public void setDeclared(final float declared) {
 		this.declared = declared;
 		this.hasDeclared = true;
 	}
