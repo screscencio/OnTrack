@@ -1,43 +1,21 @@
 package br.com.oncast.ontrack.acceptance.login;
 
-import java.util.Collection;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.openqa.selenium.WebDriver;
 
-import br.com.oncast.ontrack.acceptance.AcceptanceTestUtils;
+import br.com.oncast.ontrack.acceptance.AbstractAcceptanceTest;
 import br.com.oncast.ontrack.acceptance.WebDriverFactory;
 import br.com.oncast.ontrack.acceptance.navigation.NavigationTestUtils;
 import br.com.oncast.ontrack.acceptance.navigation.NavigationTestUtils.NavigationPlaces;
 
-@RunWith(Parameterized.class)
-public class LoginTest {
-
-	private final WebDriverFactory<?> driverFactory;
-	private WebDriver driver;
+public class LoginTest extends AbstractAcceptanceTest {
 
 	public LoginTest(final WebDriverFactory<?> driverFactory) {
-		this.driverFactory = driverFactory;
-	}
-
-	@Before
-	public void setUp() {
-		driver = driverFactory.createWebDriver();
-	}
-
-	@After
-	public void tearDown() {
-		driver.close();
+		super(driverFactory);
 	}
 
 	@Test
 	public void browserStartsAtLoginPlace() {
-		new NavigationTestUtils(driver).goToApplicationEntryPoint().verifyBrowserIsAt(NavigationPlaces.LOGIN);
+		new NavigationTestUtils(getCurrentWebDriver()).goToApplicationEntryPoint().verifyBrowserIsAt(NavigationPlaces.LOGIN);
 	}
 
 	@Test
@@ -45,18 +23,18 @@ public class LoginTest {
 		final String username = "";
 		final String password = "";
 
-		new NavigationTestUtils(driver).goToApplicationEntryPoint();
-		new LoginTestUtils(driver).authenticate(username, password).verifyMessageIsShowing()
+		new NavigationTestUtils(getCurrentWebDriver()).goToApplicationEntryPoint().verifyBrowserIsAt(NavigationPlaces.LOGIN);
+		new LoginTestUtils(getCurrentWebDriver()).authenticate(username, password).verifyMessageIsShowing()
 				.verifyMessage("Please provide a valid e-mail.");
 	}
 
 	@Test
-	public void loginFailsWhenUserDoesNotExit() {
+	public void loginFailsWhenUserDoesNotExist() {
 		final String username = "blablabal";
 		final String password = "";
 
-		new NavigationTestUtils(driver).goToApplicationEntryPoint();
-		new LoginTestUtils(driver).authenticate(username, password).verifyMessageIsShowing().verifyMessage("Incorrect user or password.");
+		new NavigationTestUtils(getCurrentWebDriver()).goToApplicationEntryPoint().verifyBrowserIsAt(NavigationPlaces.LOGIN);
+		new LoginTestUtils(getCurrentWebDriver()).authenticate(username, password).verifyMessageIsShowing().verifyMessage("Incorrect user or password.");
 	}
 
 	@Test
@@ -64,23 +42,15 @@ public class LoginTest {
 		final String username = "bla";
 		final String password = "bli";
 
-		new NavigationTestUtils(driver).goToApplicationEntryPoint();
-		new LoginTestUtils(driver).authenticate(username, password).verifyMessageIsShowing().verifyMessage("Incorrect user or password.");
+		new NavigationTestUtils(getCurrentWebDriver()).goToApplicationEntryPoint().verifyBrowserIsAt(NavigationPlaces.LOGIN);
+		new LoginTestUtils(getCurrentWebDriver()).authenticate(username, password).verifyMessageIsShowing().verifyMessage("Incorrect user or password.");
 	}
 
 	@Test
 	public void loginSuccedesWhenUserAndPasswordAreAdminCredentials() {
-		// FIXME Use credential's reference constants
-		final String username = "admin@ontrack.com";
-		final String password = "ontrackpoulain";
-
-		final NavigationTestUtils navigationTestUtils = new NavigationTestUtils(driver).goToApplicationEntryPoint();
-		new LoginTestUtils(driver).authenticate(username, password).verifyMessageIsNotShowing();
+		final NavigationTestUtils navigationTestUtils = new NavigationTestUtils(getCurrentWebDriver()).goToApplicationEntryPoint().verifyBrowserIsAt(
+				NavigationPlaces.LOGIN);
+		new LoginTestUtils(getCurrentWebDriver()).authenticateWithAdminCredentials().verifyMessageIsNotShowing();
 		navigationTestUtils.verifyBrowserIsAt(NavigationPlaces.PROJECT_SELECTION);
-	}
-
-	@Parameters
-	public static Collection<Object[]> parameters() {
-		return AcceptanceTestUtils.getTestingWebDriverFactories();
 	}
 }

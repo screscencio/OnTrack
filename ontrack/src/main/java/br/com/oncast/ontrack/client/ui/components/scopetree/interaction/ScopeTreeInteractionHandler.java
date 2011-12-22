@@ -69,6 +69,8 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 	@Override
 	public void handle(final Event e) {
+		// FIXME: When triggered by an ENTER keydown event, the following ENTER keyup event must also be suppressed.
+
 		assureConfigured();
 
 		final ScopeTreeItem selected = tree.getSelected();

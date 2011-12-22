@@ -10,7 +10,7 @@ public class AcceptanceTestUtils {
 
 	private static List<Object[]> testingWebDriverFactories;
 
-	// FIXME
+	// TODO Sleep in a better way.
 	public static void sleep(final long millis) {
 		final long end = System.currentTimeMillis() + millis;
 		while (System.currentTimeMillis() < end)
@@ -18,13 +18,10 @@ public class AcceptanceTestUtils {
 	}
 
 	public static Collection<Object[]> getTestingWebDriverFactories() {
-		if (testingWebDriverFactories != null)
-			return testingWebDriverFactories;
-
+		if (testingWebDriverFactories != null) return testingWebDriverFactories;
 		testingWebDriverFactories = new ArrayList<Object[]>();
-		// testingWebDriverFactories.add(new Object[] { new
-		// WebDriverFactory<InternetExplorerDriver>(InternetExplorerDriver.class)
-		// });
+
+		// testingWebDriverFactories.add(new Object[] { new WebDriverFactory<InternetExplorerDriver>(InternetExplorerDriver.class) });
 		testingWebDriverFactories.add(new Object[] { new WebDriverFactory<FirefoxDriver>(FirefoxDriver.class) });
 
 		return testingWebDriverFactories;
