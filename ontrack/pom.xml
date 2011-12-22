@@ -311,7 +311,7 @@
 					<argLine>-Xmx512M -XX:MaxPermSize=128M</argLine>
 					<argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
 					<excludes>
-						<exclude>**/TestUtils.java</exclude>
+						<exclude>**/*TestUtils.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
