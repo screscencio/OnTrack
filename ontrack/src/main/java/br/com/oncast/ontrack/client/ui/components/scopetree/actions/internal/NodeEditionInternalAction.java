@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class NodeEditionInternalAction implements InternalAction {
+public class NodeEditionInternalAction implements TwoStepInternalAction {
 
 	private final Scope scope;
 	private ScopeTreeItem selectedTreeItem;

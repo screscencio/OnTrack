@@ -2,13 +2,11 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class BindReleaseInternalAction implements InternalAction {
+public class BindReleaseInternalAction implements OneStepInternalAction {
 
 	private final ProjectContext context;
 	private final Scope scope;
@@ -25,13 +23,4 @@ public class BindReleaseInternalAction implements InternalAction {
 		tree.setSelected(null);
 		selectedTreeItem.getScopeTreeItemWidget().showReleaseMenu(context.getDescendantReleases());
 	}
-
-	@Override
-	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {}
-
-	@Override
-	public ModelAction createEquivalentModelAction(final String value) {
-		return new ScopeBindReleaseAction(scope.getId(), value);
-	}
-
 }

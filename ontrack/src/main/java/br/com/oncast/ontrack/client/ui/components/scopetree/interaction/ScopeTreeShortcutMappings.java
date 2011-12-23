@@ -36,7 +36,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
-			internalActionHandler.onInternalActionExecutionRequest(new NodeEditionInternalAction(scope));
+			internalActionHandler.handle(new NodeEditionInternalAction(scope));
 		}
 	},
 
@@ -44,7 +44,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
-			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingDownInternalAction(scope));
+			internalActionHandler.handle(new InsertSiblingDownInternalAction(scope));
 		}
 	},
 
@@ -52,7 +52,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
-			internalActionHandler.onInternalActionExecutionRequest(new InsertSiblingUpInternalAction(scope));
+			internalActionHandler.handle(new InsertSiblingUpInternalAction(scope));
 		}
 	},
 
@@ -60,7 +60,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
-			internalActionHandler.onInternalActionExecutionRequest(new InsertChildInternalAction(scope));
+			internalActionHandler.handle(new InsertChildInternalAction(scope));
 		}
 	},
 
@@ -68,7 +68,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
-			internalActionHandler.onInternalActionExecutionRequest(new InsertFatherInternalAction(scope));
+			internalActionHandler.handle(new InsertFatherInternalAction(scope));
 		}
 	},
 
@@ -116,7 +116,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
-			internalActionHandler.onInternalActionExecutionRequest(new BindReleaseInternalAction(context, scope));
+			internalActionHandler.handle(new BindReleaseInternalAction(context, scope));
 		}
 	},
 
@@ -124,7 +124,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
-			internalActionHandler.onInternalActionExecutionRequest(new DeclareProgressInternalAction(context, scope));
+			internalActionHandler.handle(new DeclareProgressInternalAction(context, scope));
 		}
 	},
 
@@ -132,7 +132,7 @@ enum ScopeTreeShortcutMappings {
 		@Override
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
-			internalActionHandler.onInternalActionExecutionRequest(new DeclareEffortInternalAction(scope, context));
+			internalActionHandler.handle(new DeclareEffortInternalAction(scope, context));
 		}
 	};
 
