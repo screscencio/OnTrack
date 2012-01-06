@@ -15,7 +15,7 @@ public class ScopeTreeItemWidgetEffortCommandMenuItemFactory implements ScopeTre
 
 	@Override
 	public CommandMenuItem createCustomItem(final String inputText) {
-		return new CommandMenuItem("Use '" + inputText + "'", new Command() {
+		return new CommandMenuItem("Use '" + inputText + "'", inputText, new Command() {
 
 			@Override
 			public void execute() {
@@ -26,7 +26,7 @@ public class ScopeTreeItemWidgetEffortCommandMenuItemFactory implements ScopeTre
 
 	@Override
 	public CommandMenuItem createItem(final String itemText, final String effortToDeclare) {
-		return new CommandMenuItem(itemText, new Command() {
+		return new CommandMenuItem(itemText, effortToDeclare, new Command() {
 
 			@Override
 			public void execute() {

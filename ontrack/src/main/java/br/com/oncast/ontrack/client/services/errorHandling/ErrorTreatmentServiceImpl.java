@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.services.errorHandling;
 
+import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
+import br.com.oncast.ontrack.client.services.messages.ClientNotificationService.ConfirmationListener;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.Window;
@@ -17,13 +20,17 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 
 	@Override
 	public void treatFatalError(final String errorDescriptionMessage) {
-		Window.alert(errorDescriptionMessage);
-		Window.Location.reload();
+		ClientNotificationService.showErrorWithConfirmation(errorDescriptionMessage, new ConfirmationListener() {
+			@Override
+			public void onConfirmation() {
+				Window.Location.reload();
+			}
+		});
 	}
 
 	@Override
 	public void treatUserWarning(final String message, final Exception e) {
-		Window.alert(message);
+		ClientNotificationService.showError(message);
 	}
 
 	private void setUpGlobalExceptionHandler() {
@@ -31,7 +38,7 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException(final Throwable e) {
-				Window.alert(e.getMessage());
+				ClientNotificationService.showError(e.getMessage());
 			}
 		});
 	}

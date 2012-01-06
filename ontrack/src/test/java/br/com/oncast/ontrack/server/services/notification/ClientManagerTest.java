@@ -18,7 +18,6 @@ import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;

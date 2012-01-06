@@ -31,7 +31,7 @@
 		}
 		
 		.changePasswordLabel:HOVER {
-				cursor: pointer;
+			cursor: pointer;
 		}
 		
 		.projectSwitchingMenuLabel {
@@ -44,10 +44,22 @@
 		.projectSwitchingMenuButton:HOVER {
 			cursor: pointer;
 		}
+		
+		.inviteLabel {
+			position: absolute;
+			top: 10px;
+			left: 130px;
+			color: #ffffff;
+		}
+		
+		.inviteLabel:HOVER {
+			cursor: pointer;
+		}
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<g:Label ui:field="projectSwitchingMenuLabel" text="Change Project" styleName="{style.projectSwitchingMenuLabel}"  />
+		<g:Label ui:field="inviteLabel" text="Invite to this Project" styleName="{style.inviteLabel}"  />
 		<g:Label ui:field="changePasswordLabel" text="Change Password" styleName="{style.changePasswordLabel}"  />
 		<g:Label ui:field="logoutLabel" text="Logout" styleName="{style.logoutLabel}" />
 	</g:HTMLPanel>

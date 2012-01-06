@@ -12,4 +12,6 @@ public interface ProjectRepresentationProvider {
 
 	public abstract void unregisterProjectListChangeListener(ProjectListChangeListener projectListChangeListener);
 
+	public abstract void authorizeUser(String mail, ProjectAuthorizationCallback callback);
+
 }

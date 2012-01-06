@@ -55,7 +55,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 			@Override
 			public CommandMenuItem createCustomItem(final String inputText) {
-				return new CommandMenuItem("Create new project '" + inputText + "'", new Command() {
+				return new CommandMenuItem("Create new project '" + inputText + "'", inputText, new Command() {
 
 					@Override
 					public void execute() {

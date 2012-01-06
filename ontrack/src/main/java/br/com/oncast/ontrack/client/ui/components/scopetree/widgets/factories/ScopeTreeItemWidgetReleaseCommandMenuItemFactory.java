@@ -15,7 +15,7 @@ public class ScopeTreeItemWidgetReleaseCommandMenuItemFactory implements ScopeTr
 
 	@Override
 	public CommandMenuItem createCustomItem(final String inputText) {
-		return new CommandMenuItem("Create '" + inputText + "'", new Command() {
+		return new CommandMenuItem("Create '" + inputText + "'", inputText, new Command() {
 
 			@Override
 			public void execute() {
@@ -26,7 +26,7 @@ public class ScopeTreeItemWidgetReleaseCommandMenuItemFactory implements ScopeTr
 
 	@Override
 	public CommandMenuItem createItem(final String itemText, final String releaseToBind) {
-		return new CommandMenuItem(itemText, new Command() {
+		return new CommandMenuItem(itemText, releaseToBind, new Command() {
 
 			@Override
 			public void execute() {

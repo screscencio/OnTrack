@@ -7,6 +7,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TA
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +34,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<FiltrableCommandMenu>, PopupAware {
+
+	private static final List<Integer> KEY_DOWN_HANDLED_KEYS = Arrays.asList(new Integer[] { KEY_DOWN, KEY_UP, KEY_TAB });
 
 	private final int maxHeight;
 
@@ -122,9 +125,13 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@UiHandler("filterArea")
 	protected void handleKeyDown(final KeyDownEvent event) {
-		if (event.getNativeKeyCode() == KEY_DOWN) menu.selectItemDown();
-		else if (event.getNativeKeyCode() == KEY_UP) menu.selectItemUp();
-		else if (event.getNativeKeyCode() != KEY_TAB) return;
+		final int keyCode = event.getNativeKeyCode();
+		if (!KEY_DOWN_HANDLED_KEYS.contains(keyCode)) return;
+
+		if (keyCode == KEY_UP) menu.selectItemUp();
+		else if (keyCode == KEY_DOWN) menu.selectItemDown();
+
+		filterArea.setText(menu.getSelectedItem().getValue());
 
 		eatEvent(event);
 	}
@@ -146,13 +153,12 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final String filterText = filterArea.getText().trim();
 
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
-		if (!filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText)) filteredItens.add(customItemFactory.createCustomItem(filterText));
+		final boolean shouldAddCustomItens = !filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText);
+		if (shouldAddCustomItens) filteredItens.add(0, customItemFactory.createCustomItem(filterText));
 
-		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		menu.setItens(filteredItens);
-
-		if (filteredItens.contains(selectedItem)) menu.setSelected(selectedItem);
-		else menu.selectFirstItem();
+		menu.selectFirstItem();
+		if (shouldAddCustomItens) menu.selectItemDown();
 
 		ajustDimentions();
 	}
@@ -163,15 +169,14 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		return false;
 	}
 
-	// TODO Cache filtering results and clean them when a new list is set.
 	private List<CommandMenuItem> getFilteredItens(final String filterText) {
 		if (filterText.isEmpty()) return new ArrayList<CommandMenuItem>(itens);
 
-		final String lowerCaseFIlterText = filterText.toLowerCase();
+		final String lowerCaseFilterText = filterText.toLowerCase();
 
 		final List<CommandMenuItem> filteredItens = new ArrayList<CommandMenuItem>();
 		for (final CommandMenuItem item : itens)
-			if (item.getText().toLowerCase().startsWith(lowerCaseFIlterText)) filteredItens.add(item);
+			if (item.getText().toLowerCase().contains(lowerCaseFilterText)) filteredItens.add(item);
 
 		return filteredItens;
 	}

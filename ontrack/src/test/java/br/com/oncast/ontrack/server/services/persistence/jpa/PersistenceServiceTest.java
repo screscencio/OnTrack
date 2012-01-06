@@ -293,13 +293,13 @@ public class PersistenceServiceTest {
 
 	@Test(expected = PersistenceException.class)
 	public void inexistentUserCannotBeAuthorized() throws Exception {
-		persistenceService.authorize(new User("inexistent@email.com"), persistenceService.retrieveProjectRepresentation(PROJECT_ID));
+		persistenceService.authorize("inexistent@email.com", PROJECT_ID);
 	}
 
 	@Test(expected = PersistenceException.class)
 	public void inexistentProjectCannotBeAuthorized() throws Exception {
 		final User user = createAndPersistUser();
-		persistenceService.authorize(user, ProjectTestUtils.createRepresentation(404, "inexistent project name"));
+		persistenceService.authorize(user.getEmail(), 404);
 	}
 
 	@Test
@@ -309,9 +309,9 @@ public class PersistenceServiceTest {
 
 		boolean reached = false;
 		try {
-			persistenceService.authorize(user, project);
+			persistenceService.authorize(user.getEmail(), project.getId());
 			reached = true;
-			persistenceService.authorize(user, project);
+			persistenceService.authorize(user.getEmail(), project.getId());
 			fail();
 		}
 		catch (final PersistenceException e) {
@@ -338,7 +338,7 @@ public class PersistenceServiceTest {
 
 	private void authorize(final User user, final ProjectRepresentation... projects) throws PersistenceException {
 		for (final ProjectRepresentation project : projects) {
-			persistenceService.authorize(user, project);
+			persistenceService.authorize(user.getEmail(), project.getId());
 		}
 	}
 

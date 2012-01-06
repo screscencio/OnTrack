@@ -8,9 +8,17 @@ public class CommandMenuItem implements Comparable<CommandMenuItem> {
 	private final Command command;
 	private final String text;
 	private MenuItem menuItem;
+	private final String value;
 
 	public CommandMenuItem(final String text, final Command command) {
 		this.text = text;
+		this.value = text;
+		this.command = command;
+	}
+
+	public CommandMenuItem(final String text, final String value, final Command command) {
+		this.text = text;
+		this.value = value;
 		this.command = command;
 	}
 
@@ -20,6 +28,10 @@ public class CommandMenuItem implements Comparable<CommandMenuItem> {
 
 	public String getText() {
 		return text;
+	}
+
+	public String getValue() {
+		return value;
 	}
 
 	public MenuItem getMenuItem() {

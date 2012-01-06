@@ -203,9 +203,9 @@ public class XMLImporterTest {
 
 		importer.persistObjects();
 
-		verify(persistenceService).authorize(user1, project1);
-		verify(persistenceService).authorize(user2, project2);
-		verify(persistenceService, never()).authorize(eq(user3), any(ProjectRepresentation.class));
+		verify(persistenceService).authorize(user1.getEmail(), project1.getId());
+		verify(persistenceService).authorize(user2.getEmail(), project2.getId());
+		verify(persistenceService, never()).authorize(eq(user3.getEmail()), anyLong());
 	}
 
 	@Test
@@ -232,9 +232,9 @@ public class XMLImporterTest {
 
 		importer.persistObjects();
 
-		verify(persistenceService).authorize(persistedUser1, project1);
-		verify(persistenceService).authorize(persistedUser2, project2);
-		verify(persistenceService, never()).authorize(eq(persistedUser3), any(ProjectRepresentation.class));
+		verify(persistenceService).authorize(persistedUser1.getEmail(), project1.getId());
+		verify(persistenceService).authorize(persistedUser2.getEmail(), project2.getId());
+		verify(persistenceService, never()).authorize(eq(persistedUser3.getEmail()), anyLong());
 	}
 
 	@Test
@@ -250,7 +250,7 @@ public class XMLImporterTest {
 
 		importer.persistObjects();
 
-		verify(persistenceService).authorize(user1, persistedProject);
+		verify(persistenceService).authorize(user1.getEmail(), persistedProject.getId());
 	}
 
 	private void addProjectAuthorization(final User user, final ProjectRepresentation project) {

@@ -42,7 +42,7 @@ public interface PersistenceService {
 
 	public List<ProjectRepresentation> retrieveAllProjectRepresentations() throws PersistenceException;
 
-	public void authorize(User user, ProjectRepresentation project) throws PersistenceException;
+	public void authorize(String userEmail, long projectId) throws PersistenceException;
 
 	public List<ProjectAuthorization> retrieveProjectAuthorizations(final long userId) throws PersistenceException;
 

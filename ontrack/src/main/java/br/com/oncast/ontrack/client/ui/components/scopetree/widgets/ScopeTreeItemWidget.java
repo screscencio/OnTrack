@@ -18,9 +18,11 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
+import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
@@ -185,6 +187,10 @@ public class ScopeTreeItemWidget extends Composite {
 		return new ScopeRepresentationBuilder(scope).includeEverything().toString();
 	}
 
+	private String getSimpleDescription() {
+		return new ScopeRepresentationBuilder(scope).includeScopeDescription().toString();
+	}
+
 	public void setValue(final String value) {
 		descriptionLabel.setText(value);
 		descriptionLabel.setTitle(value);
@@ -194,7 +200,7 @@ public class ScopeTreeItemWidget extends Composite {
 	public void switchToEditionMode() {
 		if (isEditing()) return;
 
-		editionBox.setText(getValue());
+		editionBox.setText(getSimpleDescription());
 		deckPanel.showWidget(1);
 		new Timer() {
 
@@ -215,9 +221,20 @@ public class ScopeTreeItemWidget extends Composite {
 			editionHandler.onEditionCancel();
 		}
 		else {
-			if (!getValue().equals(editionBox.getText()) || editionBox.getText().isEmpty()) editionHandler.onEditionEnd(editionBox.getText());
+			if (!getValue().equals(editionBox.getText()) || editionBox.getText().isEmpty()) editionHandler.onEditionEnd(completeDescription(editionBox
+					.getText()));
 			else editionHandler.onEditionCancel();
 		}
+	}
+
+	private String completeDescription(final String text) {
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(text);
+		final ScopeRepresentationBuilder builder = new ScopeRepresentationBuilder(scope);
+		final StringBuffer buffer = new StringBuffer(text);
+		if (!parser.hasDeclaredEffort()) buffer.append(builder.includeEffort().toString());
+		if (parser.getReleaseDescription().isEmpty()) buffer.append(builder.includeReleaseReference().toString());
+		if (parser.getProgressDescription() == null) buffer.append(builder.includeProgress().toString());
+		return buffer.toString();
 	}
 
 	private boolean isEditing() {
@@ -302,9 +319,10 @@ public class ScopeTreeItemWidget extends Composite {
 	public void showProgressMenu(final Set<String> progressDefinitionSet) {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
 
-		items.add(progressCommandMenuItemFactory.createItem("None", ""));
+		final String notStartedDescription = ProgressState.NOT_STARTED.getDescription();
+		items.add(progressCommandMenuItemFactory.createItem("Not Started", notStartedDescription));
 		for (final String progressDefinition : progressDefinitionSet)
-			items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
+			if (!notStartedDescription.equals(progressDefinition)) items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 300);
 

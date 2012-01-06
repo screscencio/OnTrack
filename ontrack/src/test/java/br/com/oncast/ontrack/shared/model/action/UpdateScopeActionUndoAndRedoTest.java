@@ -2,8 +2,6 @@ package br.com.oncast.ontrack.shared.model.action;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceTestUtils;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;

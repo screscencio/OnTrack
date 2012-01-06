@@ -15,7 +15,7 @@ public class ScopeTreeItemWidgetProgressCommandMenuItemFactory implements ScopeT
 
 	@Override
 	public CommandMenuItem createCustomItem(final String inputText) {
-		return new CommandMenuItem("Mark as '" + inputText + "'", new Command() {
+		return new CommandMenuItem("Mark as '" + inputText + "'", inputText, new Command() {
 
 			@Override
 			public void execute() {
@@ -26,7 +26,7 @@ public class ScopeTreeItemWidgetProgressCommandMenuItemFactory implements ScopeT
 
 	@Override
 	public CommandMenuItem createItem(final String itemText, final String progressToDeclare) {
-		return new CommandMenuItem(itemText, new Command() {
+		return new CommandMenuItem(itemText, progressToDeclare, new Command() {
 
 			@Override
 			public void execute() {
