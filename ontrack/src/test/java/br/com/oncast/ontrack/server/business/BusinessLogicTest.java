@@ -96,7 +96,7 @@ public class BusinessLogicTest {
 		notification = mock(NotificationService.class);
 		sessionManager = mock(SessionManager.class);
 
-		admin = UserTestUtils.createUser(999);
+		admin = UserTestUtils.createUser(DefaultAuthenticationCredentials.USER_EMAIL);
 		authenticatedUser = UserTestUtils.createUser(100);
 		configureToRetrieveAdmin();
 		authorizeUser(authenticatedUser, PROJECT_ID);
@@ -107,9 +107,10 @@ public class BusinessLogicTest {
 		when(persistence.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(admin);
 	}
 
-	private void authorizeUser(final User user, final long projectId) throws PersistenceException {
+	private void authorizeUser(final User user, final long projectId) throws PersistenceException, NoResultFoundException {
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user);
 		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
+		when(persistence.retrieveUserByEmail(user.getEmail())).thenReturn(user);
 		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
 	}
 
@@ -329,7 +330,9 @@ public class BusinessLogicTest {
 
 	@Test
 	public void shouldCreateANewProjectRepresentation() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence);
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
+
+		when(persistence.persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class))).thenReturn(ProjectTestUtils.createRepresentation(4));
 		business.createProject("Name");
 
 		final ArgumentCaptor<ProjectRepresentation> captor = ArgumentCaptor.forClass(ProjectRepresentation.class);
@@ -371,29 +374,53 @@ public class BusinessLogicTest {
 	public void shouldAuthorizeCurrentUserAfterProjectCreation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 
-		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation();
+		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation(4);
 		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
 
 		business.createProject("new Project");
-		verify(persistence).authorize(authenticatedUser, createdProject);
+		verify(persistence).authorize(authenticatedUser.getEmail(), createdProject.getId());
 	}
 
 	@Test
 	public void shouldAuthorizeAdminUserAfterProjectCreation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 
-		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation();
+		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation(4);
 		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
+		when(persistence.retrieveUserByEmail(authenticatedUser.getEmail())).thenReturn(authenticatedUser);
 
 		business.createProject("new Project");
-		verify(persistence).authorize(authenticatedUser, createdProject);
-		verify(persistence).authorize(admin, createdProject);
+		verify(persistence).authorize(admin.getEmail(), createdProject.getId());
+		verify(persistence).authorize(authenticatedUser.getEmail(), createdProject.getId());
 	}
 
 	@Test
-	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException {
-		projectRepresentation = ProjectTestUtils.createRepresentation();
-		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
+	public void shouldBeAbleToAuthorizeAnExistentUser() throws Exception {
+		final String mail = "user@mail.com";
+
+		when(persistence.retrieveUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
+		BusinessLogicTestUtils.create(persistence).authorize(PROJECT_ID, mail);
+		verify(persistence).authorize(mail, PROJECT_ID);
+	}
+
+	@Test
+	public void authorizeUserShouldCreateTheUserIfTheGivenUserDoesNotExist() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence);
+		final String mail = "inexistent@mail.com";
+
+		when(persistence.retrieveUserByEmail(mail)).thenThrow(new NoResultFoundException("", null));
+
+		business.authorize(PROJECT_ID, mail);
+
+		final ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+		verify(persistence).persistOrUpdateUser(captor.capture());
+
+		assertEquals(mail, captor.getValue().getEmail());
+	}
+
+	@Test
+	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException, NoResultFoundException {
+		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(ProjectTestUtils.createRepresentation(4));
 
 		business = BusinessLogicTestUtils.create(persistence, notification, authenticationManager);
 		final ProjectRepresentation representation = business.createProject("new project");

@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.client.ui.places.contextloading;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
+import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
+import br.com.oncast.ontrack.client.services.messages.ClientNotificationService.ConfirmationListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
@@ -41,7 +43,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 			@Override
 			public void onProjectNotFound() {
 				// TODO +++Treat communication failure.
-				Window.alert("Error! Could not load project: The requested project was not found.");
+				ClientNotificationService.showError("Error! Could not load project: The requested project was not found.");
 				SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace());
 			}
 
@@ -49,8 +51,12 @@ public class ContextLoadingActivity extends AbstractActivity {
 			public void onUnexpectedFailure(final Throwable cause) {
 				// TODO +++Treat communication failure.
 				cause.printStackTrace();
-				Window.alert("Error! Could not load project: " + cause.toString());
-				Window.Location.reload();
+				ClientNotificationService.showErrorWithConfirmation("Error! Could not load project: " + cause.toString(), new ConfirmationListener() {
+					@Override
+					public void onConfirmation() {
+						Window.Location.reload();
+					}
+				});
 			}
 		});
 	}

@@ -320,12 +320,12 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@Override
 	// TODO Consider renaming this to persistProjectAuthorization and change its parameter to receive a ProjectAuthorization.
-	public void authorize(final User user, final ProjectRepresentation project) throws PersistenceException {
+	public void authorize(final String userEmail, final long projectId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			final ProjectAuthorization authorization = new ProjectAuthorization(em.find(User.class, user.getId()), em.find(
-					ProjectRepresentation.class, project.getId()));
+			final ProjectAuthorization authorization = new ProjectAuthorization(retrieveUserByEmail(userEmail), em.find(
+					ProjectRepresentation.class, projectId));
 			em.persist(authorization);
 			em.getTransaction().commit();
 		}

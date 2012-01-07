@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class InsertFatherInternalAction implements InternalAction {
+public class InsertFatherInternalAction implements TwoStepInternalAction {
 
 	private final Scope scope;
 	private ScopeTreeItem newTreeItem;

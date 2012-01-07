@@ -12,7 +12,6 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 // TODO Review by Lobo - This code has been created by Rodrigo Machado and Jaime and has not yet been reviewed.
 public class FreeMindImporter {
-	private static Pattern INTEGER_EXTRACTOR = Pattern.compile("\\d+");
 	private static Pattern FLOAT_EXTRACTOR = Pattern.compile("(\\d+)(\\.\\d?)?");
 
 	private final FreeMindMap mindMap;
@@ -77,11 +76,11 @@ public class FreeMindImporter {
 		return false;
 	}
 
-	private static int extractDeclaredEffort(final MindNode effortNode) {
-		final Matcher matcher = INTEGER_EXTRACTOR.matcher(effortNode.getText());
+	private static float extractDeclaredEffort(final MindNode effortNode) {
+		final Matcher matcher = FLOAT_EXTRACTOR.matcher(effortNode.getText());
 		if (!matcher.find()) return 0;
 
-		return Integer.valueOf(matcher.group());
+		return Float.valueOf(matcher.group());
 	}
 
 	private static float extractCalculatedEffort(final MindNode effortNode) {

@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class InsertSiblingDownInternalAction implements InternalAction {
+public class InsertSiblingDownInternalAction implements TwoStepInternalAction {
 
 	private ScopeTreeItem newTreeItem;
 	private final Scope scope;

@@ -122,7 +122,7 @@ public class ScopeRepresentationParserTest {
 	public void shouldMatchReleaseWithNoText() {
 		test(" " + RELEASE_SYMBOL + "", "", "", false, 0);
 	}
-	
+
 	@Test
 	public void shouldMatchReleaseWithNoTextAndWithOnlyWhiteSpaces() {
 		test(" " + RELEASE_SYMBOL + "        ", "", "", false, 0);
@@ -267,8 +267,28 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
+	public void shouldMatchFloatingEffort() {
+		test(EFFORT_SYMBOL + "21.3", "", "", true, 21.3F);
+	}
+
+	@Test
+	public void shouldNotMatchPointAsEffort() {
+		test(EFFORT_SYMBOL + ".", "", "", false, 0);
+	}
+
+	@Test
+	public void shouldMatchUncompleteFloatingEffort() {
+		test(EFFORT_SYMBOL + "21.", "", "", true, 21.0F);
+	}
+
+	@Test
+	public void shouldNotMatchUncompleteFloatingEffortOnly2() {
+		test(EFFORT_SYMBOL + ".5", "", "", true, 0.5F);
+	}
+
+	@Test
 	public void shouldMatchEffortOnlyWithSufixSp() {
-		test(EFFORT_SYMBOL + "21sp", "", "", true, 21);
+		test(EFFORT_SYMBOL + "21.2sp", "", "", true, 21.2F);
 	}
 
 	@Test
@@ -374,12 +394,13 @@ public class ScopeRepresentationParserTest {
 				21);
 	}
 
-	private void test(final String pattern, final String descriptionMatch, final String releaseMatch, final boolean hasDeclaredEffort, final int declaredEffort) {
+	private void test(final String pattern, final String descriptionMatch, final String releaseMatch, final boolean hasDeclaredEffort,
+			final float declaredEffort) {
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(pattern);
 		assertEquals(descriptionMatch, parser.getScopeDescription());
 		assertEquals(releaseMatch, parser.getReleaseDescription());
 		assertEquals(hasDeclaredEffort, parser.hasDeclaredEffort());
-		assertEquals(declaredEffort, parser.getDeclaredEffort());
+		assertEquals(declaredEffort, parser.getDeclaredEffort(), 0);
 	}
 
 	private void test(final String pattern, final String descriptionMatch, final String progressMatch) {
@@ -389,12 +410,12 @@ public class ScopeRepresentationParserTest {
 	}
 
 	private void test(final String pattern, final String descriptionMatch, final String releaseMatch, final String progressMatch,
-			final boolean hasDeclaredEffort, final int declaredEffort) {
+			final boolean hasDeclaredEffort, final float declaredEffort) {
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(pattern);
 		assertEquals(descriptionMatch, parser.getScopeDescription());
 		assertEquals(releaseMatch, parser.getReleaseDescription());
 		assertEquals(hasDeclaredEffort, parser.hasDeclaredEffort());
-		assertEquals(declaredEffort, parser.getDeclaredEffort());
+		assertEquals(declaredEffort, parser.getDeclaredEffort(), 0);
 		assertEquals(progressMatch, parser.getProgressDescription());
 	}
 

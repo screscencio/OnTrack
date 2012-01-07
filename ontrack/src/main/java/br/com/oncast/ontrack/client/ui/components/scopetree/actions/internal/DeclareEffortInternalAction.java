@@ -2,13 +2,11 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class DeclareEffortInternalAction implements InternalAction {
+public class DeclareEffortInternalAction implements OneStepInternalAction {
 
 	private ScopeTreeItem selectedTreeItem;
 	private final Scope scope;
@@ -25,25 +23,4 @@ public class DeclareEffortInternalAction implements InternalAction {
 		tree.setSelected(null);
 		selectedTreeItem.getScopeTreeItemWidget().showEffortMenu(projectContext.getFibonacciScaleForEffort());
 	}
-
-	@Override
-	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {}
-
-	@Override
-	public ModelAction createEquivalentModelAction(final String value) {
-		int declaredEffort;
-		boolean hasDeclaredEffort;
-
-		try {
-			declaredEffort = Integer.valueOf(value);
-			hasDeclaredEffort = (value != null && !value.isEmpty());
-		}
-		catch (final NumberFormatException e) {
-			declaredEffort = 0;
-			hasDeclaredEffort = false;
-		}
-
-		return new ScopeDeclareEffortAction(scope.getId(), hasDeclaredEffort, declaredEffort);
-	}
-
 }

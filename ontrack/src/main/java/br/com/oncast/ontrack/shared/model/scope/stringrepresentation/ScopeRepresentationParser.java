@@ -14,7 +14,7 @@ public class ScopeRepresentationParser {
 
 	private String scopeDescription;
 	private String releaseDescription;
-	private int declaredEffort;
+	private float declaredEffort;
 	private boolean hasDeclaredEffort;
 	private String progressDescription;
 
@@ -24,7 +24,9 @@ public class ScopeRepresentationParser {
 	private final RegExp NODESCRIPTION_REGEX = RegExp.compile("^[\\s]*([" + TAGS + "].+)*$", "gi");
 
 	private final RegExp RELEASE_REGEX = RegExp.compile(RELEASE_SYMBOL + "[\\s]*([^" + TAGS + "]+)", "gi");
-	private final RegExp EFFORT_REGEX = RegExp.compile(EFFORT_SYMBOL + "[\\s]*([\\d]+)(?:[es]p)?(?:\\s+.*)?$", "gi");
+
+	private final RegExp EFFORT_REGEX = RegExp.compile(EFFORT_SYMBOL + "[\\s]*((?:[\\d]+(?:\\.[\\d]*)?|\\.[\\d]+))(?:[es]p)?(?:\\s+.*)?$", "gi");
+
 	private final RegExp PROGRESS_REGEX = RegExp.compile(PROGRESS_SYMBOL + "[\\s]*([^" + TAGS + "]+)", "gi");
 
 	public ScopeRepresentationParser(final String pattern) {
@@ -47,7 +49,7 @@ public class ScopeRepresentationParser {
 		return releaseDescription == null ? "" : releaseDescription;
 	}
 
-	public int getDeclaredEffort() {
+	public float getDeclaredEffort() {
 		return declaredEffort;
 	}
 
@@ -90,7 +92,7 @@ public class ScopeRepresentationParser {
 		if (result == null) return;
 
 		final String stringResult = result.getGroup(1);
-		final Integer valueOfEffort = stringResult == null ? 0 : Integer.valueOf(stringResult);
+		final Float valueOfEffort = stringResult == null ? 0 : Float.valueOf(stringResult);
 
 		hasDeclaredEffort = (stringResult != null);
 		declaredEffort = valueOfEffort;

@@ -6,17 +6,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;

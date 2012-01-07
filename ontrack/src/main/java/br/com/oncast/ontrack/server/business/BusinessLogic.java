@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.business;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
@@ -28,4 +29,6 @@ public interface BusinessLogic {
 	public abstract List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException;
 
 	public Project loadProject(long projectId) throws ProjectNotFoundException, UnableToLoadProjectException;
+
+	void authorize(long projectId, String userEmail) throws UnableToAuthorizeUserException;
 }

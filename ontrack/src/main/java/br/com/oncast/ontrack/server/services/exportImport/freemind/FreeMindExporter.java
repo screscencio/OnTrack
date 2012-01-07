@@ -82,7 +82,7 @@ public class FreeMindExporter {
 	private static void addEffortNodeTo(final MindNode node, final Scope scope) {
 		final Effort effort = scope.getEffort();
 
-		if (effort.hasDeclared()) appendNodeTo(node, Integer.toString(effort.getDeclared()), Icon.LAUNCH);
+		if (effort.hasDeclared()) appendNodeTo(node, Float.toString(effort.getDeclared()), Icon.LAUNCH);
 		if (effort.getInfered() > effort.getDeclared()) appendNodeTo(node, roundEffortValue(effort.getInfered()), Icon.LAUNCH,
 				Icon.WIZARD);
 	}

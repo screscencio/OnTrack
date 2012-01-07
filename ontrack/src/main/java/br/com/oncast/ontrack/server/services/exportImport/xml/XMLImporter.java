@@ -96,7 +96,7 @@ public class XMLImporter {
 
 	private void persistAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizationNodes) throws PersistenceException {
 		for (final ProjectAuthorizationXMLNode authNode : projectAuthorizationNodes) {
-			persistanceService.authorize(userIdMap.get(authNode.getUserId()), projectIdMap.get(authNode.getProjectId()));
+			persistanceService.authorize(userIdMap.get(authNode.getUserId()).getEmail(), projectIdMap.get(authNode.getProjectId()).getId());
 		}
 
 	}

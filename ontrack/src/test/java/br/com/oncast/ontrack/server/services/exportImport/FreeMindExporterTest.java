@@ -98,7 +98,7 @@ public class FreeMindExporterTest {
 		final MindNode scopeHierarchyContainerNode = exportedMap.root().getChildren().get(1);
 
 		final MindNode effort100 = scopeHierarchyContainerNode.getChildren().get(0);
-		assertEquals("100", effort100.getText());
+		assertEquals("100.0", effort100.getText());
 		assertTrue(effort100.hasIcon(Icon.LAUNCH));
 
 		final MindNode effort33 = scopeHierarchyContainerNode.getChildren().get(1).getChildren().get(0);

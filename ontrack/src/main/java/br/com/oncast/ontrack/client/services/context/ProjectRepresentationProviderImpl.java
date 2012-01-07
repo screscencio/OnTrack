@@ -7,17 +7,18 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
+import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.context.NewProjectCreatedEventHandler;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
-
-import com.google.gwt.user.client.Window;
 
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
@@ -79,7 +80,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
 				// TODO +++Treat fatal error. COuld not load project list...
-				Window.alert("It was not possible to load the project list.\n Verify your internet connection and reload the application.");
+				ClientNotificationService.showError("It was not possible to load the project list.\n Verify your internet connection and reload the application.");
 			}
 		});
 	}
@@ -112,6 +113,26 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 				else projectCreationListener.onUnexpectedFailure();
 			}
 		});
+	}
+
+	@Override
+	public void authorizeUser(final String mail, final ProjectAuthorizationCallback callback) {
+		dispatchService.dispatch(new ProjectAuthorizationRequest(currentProjectRepresentation.getId(), mail),
+				new DispatchCallback<ProjectAuthorizationResponse>() {
+
+					@Override
+					public void onSuccess(final ProjectAuthorizationResponse result) {
+						callback.onSuccess();
+					}
+
+					@Override
+					public void onTreatedFailure(final Throwable caught) {}
+
+					@Override
+					public void onUntreatedFailure(final Throwable caught) {
+						callback.onFailure(caught);
+					}
+				});
 	}
 
 	@Override
@@ -150,4 +171,5 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	protected void notifyProjectListAvailabilityChange(final ProjectListChangeListener projectListChangeListener) {
 		projectListChangeListener.onProjectListAvailabilityChange(projectListAvailability);
 	}
+
 }

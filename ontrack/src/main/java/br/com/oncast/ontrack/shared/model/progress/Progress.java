@@ -16,7 +16,7 @@ public class Progress implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum ProgressState {
-		NOT_STARTED("Not started") {
+		NOT_STARTED("") {
 			@Override
 			protected boolean matches(final String description) {
 				final String[] acceptableDescriptions = { "not started", "notstarted", "not_started", "ns", "n", "" };

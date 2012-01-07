@@ -21,6 +21,7 @@ import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
@@ -128,30 +129,34 @@ class BusinessLogicImpl implements BusinessLogic {
 					projectName));
 			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 
-			autorize(persistedProjectRepresentation, authenticatedUser);
+			authorize(persistedProjectRepresentation.getId(), authenticatedUser.getEmail());
+			authorizeAdmin(persistedProjectRepresentation, authenticatedUser);
 			notificationService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
 
 			return persistedProjectRepresentation;
 		}
-		catch (final PersistenceException e) {
+		catch (final Exception e) {
 			final String errorMessage = "Unable to create project '" + projectName + "'.";
 			LOGGER.debug(errorMessage, e);
 			throw new UnableToCreateProjectRepresentation(errorMessage);
 		}
 	}
 
-	private void autorize(final ProjectRepresentation projectRepresentation, final User user) throws PersistenceException {
-		User admin;
+	@Override
+	public void authorize(final long projectId, final String userEmail) throws UnableToAuthorizeUserException {
 		try {
-			admin = persistenceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL);
-			if (user.getId() != admin.getId()) {
-				persistenceService.authorize(admin, projectRepresentation);
+			try {
+				final User user = persistenceService.retrieveUserByEmail(userEmail);
+				if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) throw new UnableToAuthorizeUserException("The user '"
+						+ userEmail + "' is already authorized for the project '" + projectId + "'");
 			}
-			persistenceService.authorize(user, projectRepresentation);
+			catch (final NoResultFoundException e) {
+				persistenceService.persistOrUpdateUser(new User(userEmail));
+			}
+			persistenceService.authorize(userEmail, projectId);
 		}
-		catch (final NoResultFoundException e) {
-			throw new PersistenceException("Unable to autorize admin user for the newly created project '" + projectRepresentation.getName()
-					+ "': admin was not found.", e);
+		catch (final PersistenceException e) {
+			throw new UnableToAuthorizeUserException("It was not possoble to authorize the user '" + userEmail + "' for the project '" + projectId + "'");
 		}
 	}
 
@@ -226,6 +231,13 @@ class BusinessLogicImpl implements BusinessLogic {
 			final String errorMessage = "The server could not load the project. The project state could not be correctly restored because of an unknown problem.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
+		}
+	}
+
+	private void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation, final User authenticatedUser) throws PersistenceException {
+		final String adminEmail = DefaultAuthenticationCredentials.USER_EMAIL;
+		if (authenticatedUser.getEmail() != adminEmail) {
+			persistenceService.authorize(adminEmail, persistedProjectRepresentation.getId());
 		}
 	}
 

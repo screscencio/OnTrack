@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.AuthenticationReque
 import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.DeAuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.ProjectAuthorizationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
@@ -21,6 +22,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
@@ -47,6 +49,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(ModelActionSyncRequest.class, new ModelActionSyncRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ProjectContextRequest.class, new ProjectContextRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ProjectCreationRequest.class, new ProjectCreationRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(ProjectAuthorizationRequest.class, new ProjectAuthorizationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ProjectListRequest.class, new ProjectListRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(AuthenticationRequest.class, new AuthenticationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(DeAuthenticationRequest.class, new DeAuthenticationRequestHandler());

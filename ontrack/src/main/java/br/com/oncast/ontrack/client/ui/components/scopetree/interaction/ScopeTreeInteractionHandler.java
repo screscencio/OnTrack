@@ -6,11 +6,16 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.OneStepInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.TwoStepInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.OperationNotAllowedException;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.utils.jquery.Event;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -20,24 +25,23 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 	private class InternalActionHandler implements InternalActionExecutionRequestHandler {
 
-		private InternalAction pendingAction = null;
+		private TwoStepInternalAction pendingAction = null;
 
 		@Override
-		public void onInternalActionExecutionRequest(final InternalAction internalAction) {
+		public void handle(final TwoStepInternalAction internalAction) {
 			this.pendingAction = internalAction;
-
 			try {
-				internalAction.execute(tree);
+				execute(internalAction);
 			}
-			catch (final OperationNotAllowedException e) {
-				ClientServiceProvider.getInstance().getErrorTreatmentService().treatUserWarning(e.getMessage(), e);
-			}
-			catch (final UnableToCompleteActionException e) {
+			catch (final RuntimeException e) {
 				this.pendingAction = null;
-				// TODO ++Implement an adequate exception treatment.
-				// TODO ++Display error to the user
-				throw new RuntimeException(e);
+				throw e;
 			}
+		}
+
+		@Override
+		public void handle(final OneStepInternalAction internalAction) {
+			execute(internalAction);
 		}
 
 		public boolean hasPendingAction() {
@@ -59,6 +63,20 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 		public ModelAction getPendingActionEquivalentModelActionFor(final String value) {
 			return pendingAction.createEquivalentModelAction(value);
+		}
+
+		private void execute(final InternalAction internalAction) {
+			try {
+				internalAction.execute(tree);
+			}
+			catch (final OperationNotAllowedException e) {
+				ClientServiceProvider.getInstance().getErrorTreatmentService().treatUserWarning(e.getMessage(), e);
+			}
+			catch (final UnableToCompleteActionException e) {
+				// TODO ++Implement an adequate exception treatment.
+				// TODO ++Display error to the user
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -85,7 +103,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 	@Override
 	public void onItemEditionStart(final ScopeTreeItem item) {
-		internalActionHandler.onInternalActionExecutionRequest(new NodeEditionInternalAction(item.getReferencedScope()));
+		internalActionHandler.handle(new NodeEditionInternalAction(item.getReferencedScope()));
 	}
 
 	@Override
@@ -110,23 +128,29 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 	@Override
 	public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {
-		final ModelAction action = internalActionHandler.getPendingActionEquivalentModelActionFor(releaseDescription);
-		internalActionHandler.rollbackPendingAction();
-		applicationActionHandler.onUserActionExecutionRequest(action);
+		applicationActionHandler.onUserActionExecutionRequest(new ScopeBindReleaseAction(scopeId, releaseDescription));
 	}
 
 	@Override
 	public void onDeclareProgressRequest(final UUID scopeId, final String progressDescription) {
-		final ModelAction action = internalActionHandler.getPendingActionEquivalentModelActionFor(progressDescription);
-		internalActionHandler.rollbackPendingAction();
-		applicationActionHandler.onUserActionExecutionRequest(action);
+		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scopeId, progressDescription));
 	}
 
 	@Override
 	public void onDeclareEffortRequest(final UUID scopeId, final String effortDescription) {
-		final ModelAction action = internalActionHandler.getPendingActionEquivalentModelActionFor(effortDescription);
-		internalActionHandler.rollbackPendingAction();
-		applicationActionHandler.onUserActionExecutionRequest(action);
+		float declaredEffort;
+		boolean hasDeclaredEffort;
+
+		try {
+			declaredEffort = Float.valueOf(effortDescription);
+			hasDeclaredEffort = (effortDescription != null && !effortDescription.isEmpty());
+		}
+		catch (final NumberFormatException e) {
+			declaredEffort = 0;
+			hasDeclaredEffort = false;
+		}
+
+		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareEffortAction(scopeId, hasDeclaredEffort, declaredEffort));
 	}
 
 	private void assureConfigured() {

@@ -20,7 +20,7 @@ public class ProgressDefinitionManager {
 	private ProgressDefinitionManager() {}
 
 	public void onProgressDefinition(final String description) {
-		if (description == null || description.isEmpty()) return;
+		if (description == null) return;
 		for (final String definition : progressDefinitionSet)
 			if (definition.equalsIgnoreCase(description)) return;
 

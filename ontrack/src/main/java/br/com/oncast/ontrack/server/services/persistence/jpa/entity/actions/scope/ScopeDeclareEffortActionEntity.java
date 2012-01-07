@@ -21,7 +21,7 @@ public class ScopeDeclareEffortActionEntity extends ModelActionEntity {
 	private boolean hasDeclaredEffort;
 
 	@Column(name = "pos")
-	private int newDeclaredEffort;
+	private float newDeclaredEffort;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -39,11 +39,11 @@ public class ScopeDeclareEffortActionEntity extends ModelActionEntity {
 		this.hasDeclaredEffort = hasDeclaredEffort;
 	}
 
-	public int getNewDeclaredEffort() {
+	public float getNewDeclaredEffort() {
 		return newDeclaredEffort;
 	}
 
-	public void setNewDeclaredEffort(final int newDeclaredEffort) {
+	public void setNewDeclaredEffort(final float newDeclaredEffort) {
 		this.newDeclaredEffort = newDeclaredEffort;
 	}
 }
