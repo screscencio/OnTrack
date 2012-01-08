@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-// FIXME Write tons of tests
 @ConvertTo(ReleaseRenameActionEntity.class)
 public class ReleaseRenameAction implements ReleaseAction {
 

@@ -20,8 +20,6 @@ public class ScopeTreeReleaseUpdateAction implements ScopeTreeAction {
 		this.action = action;
 	}
 
-	// FIXME Throw new type of exception related to ModelNotFoundException
-
 	@Override
 	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		final Release release = context.findRelease(action.getReferenceId());
