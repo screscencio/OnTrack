@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.shared.model.release;
 public class ReleaseDescriptionParser {
 
 	private static final int INDEX_NOT_FOUND = -1;
-	private static final String SEPARATOR = Release.SEPARATOR;
+	public static final String SEPARATOR = Release.SEPARATOR;
 
 	private final String description;
 	// TODO Remove fullDescripionOfTheHead and simplify code if ReleaseCreator stop using it

@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.shared.model.scope.exceptions;
 
-public class ScopeNotFoundException extends Exception {
+import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
+
+public class ScopeNotFoundException extends ModelBeanNotFoundException {
 	private static final long serialVersionUID = 1L;
 
 	public ScopeNotFoundException(final String message) {

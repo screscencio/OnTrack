@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
+import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 public interface ScopeTreeAction {
 	// TODO Review if 'isUserInteraction' actions should be processed as other method and if it should be called externally or internally.
-	void execute(final ProjectContext context, boolean isUserInteraction) throws ScopeNotFoundException;
+	void execute(final ProjectContext context, boolean isUserInteraction) throws ModelBeanNotFoundException;
 }

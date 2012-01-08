@@ -290,4 +290,10 @@ public class Release implements Serializable {
 	public String toString() {
 		return getFullDescription();
 	}
+
+	public void setDescription(final String newReleaseDescription) {
+		if (newReleaseDescription == null || newReleaseDescription.isEmpty() || newReleaseDescription.contains(ReleaseDescriptionParser.SEPARATOR)) throw new RuntimeException(
+				"An invalid description was given.");
+		description = newReleaseDescription;
+	}
 }

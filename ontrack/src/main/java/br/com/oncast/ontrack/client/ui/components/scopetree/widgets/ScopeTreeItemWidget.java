@@ -50,9 +50,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTreeItemWidget extends Composite {
 
-	interface EditableLabelUiBinder extends UiBinder<Widget, ScopeTreeItemWidget> {}
+	interface ScopeTreeItemWidgetUiBinder extends UiBinder<Widget, ScopeTreeItemWidget> {}
 
-	private static EditableLabelUiBinder uiBinder = GWT.create(EditableLabelUiBinder.class);
+	private static ScopeTreeItemWidgetUiBinder uiBinder = GWT.create(ScopeTreeItemWidgetUiBinder.class);
 
 	interface Style extends CssResource {
 		String effortLabelTranslucid();

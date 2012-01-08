@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAct
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.effort.ScopeTreeEffortUpdateEngine;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -38,7 +39,7 @@ public class ScopeTree implements Component {
 					treeActionFactory.createEquivalentActionFor(action).execute(context, isUserAction);
 					ScopeTreeEffortUpdateEngine.process(tree, inferenceInfluencedScopeSet);
 				}
-				catch (final ScopeNotFoundException e) {
+				catch (final ModelBeanNotFoundException e) {
 					// TODO ++Redraw the entire structure to eliminate inconsistencies
 					throw new RuntimeException("It was not possible to update the view because an inconsistency with the model was detected.", e);
 				}

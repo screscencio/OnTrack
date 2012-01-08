@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePa
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
@@ -67,7 +68,8 @@ public class ReleasePanel implements Component {
 						action instanceof ReleaseRemoveAction ||
 						action instanceof ReleaseRemoveRollbackAction ||
 						action instanceof ReleaseUpdatePriorityAction ||
-						action instanceof ReleaseScopeUpdatePriorityAction) update();
+						action instanceof ReleaseScopeUpdatePriorityAction ||
+						action instanceof ReleaseRenameAction) update();
 			}
 		};
 	}

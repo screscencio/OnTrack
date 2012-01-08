@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
@@ -71,6 +72,12 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 		assureConfigured();
 		applicationActionHandler.onUserActionExecutionRequest(new ReleaseUpdatePriorityAction(release.getId(),
 				release.getParent().getChildIndex(release) + 1));
+	}
+
+	@Override
+	public void onReleaseRenameRequest(final Release release, final String newReleaseName) {
+		assureConfigured();
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseRenameAction(release.getId(), newReleaseName));
 	}
 
 	@Override
