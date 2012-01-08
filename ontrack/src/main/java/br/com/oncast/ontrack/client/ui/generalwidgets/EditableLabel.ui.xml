@@ -1,0 +1,36 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.editableLabel {
+			position: relative;
+			min-height: 15px;
+			outline: none;
+		}
+		
+		.container {
+			position: absolute;
+			top: 0px;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+			height: 20px;
+			min-height: 20px;
+		}
+		
+		.editionBox {
+			top: -3px;
+			padding: 0px;
+			
+			font-size: inherit;
+            outline: none;
+            border: 1px dashed black;            
+		}
+		
+	</ui:style>
+
+		<g:DeckPanel ui:field="deckPanel" addStyleNames="{style.editableLabel}">
+			<g:Label ui:field="visualizationLabel" addStyleNames="{style.container} v-ellip" />
+			<g:TextBox ui:field="editionBox" addStyleNames="{style.container} {style.editionBox}" />
+		</g:DeckPanel>
+	
+</ui:UiBinder> 

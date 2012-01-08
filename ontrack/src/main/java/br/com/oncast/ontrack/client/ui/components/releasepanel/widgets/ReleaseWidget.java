@@ -7,6 +7,8 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.ChartPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
+import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupOpenListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
@@ -17,11 +19,11 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -48,7 +50,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Style style;
 
 	@UiField
-	protected Label descriptionLabel;
+	protected EditableLabel descriptionLabel;
 
 	@UiField
 	protected Label progressLabel;
@@ -81,6 +83,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		return new ScopeWidgetContainer(scopeWidgetFactory, containerUpdateListener);
 	}
 
+	@UiFactory
+	protected EditableLabel createEditableLabel() {
+		return new EditableLabel(editionHandler);
+	}
+
+	private final EditableLabelEditionHandler editionHandler;
+
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
 
 	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
@@ -111,6 +120,14 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		this.releaseWidgetFactory = releaseWidgetFactory;
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
+		this.editionHandler = new EditableLabelEditionHandler() {
+
+			@Override
+			public boolean onEditionRequest(final String newReleaseName) {
+				releasePanelInteractionHandler.onReleaseRenameRequest(release, newReleaseName);
+				return false;
+			}
+		};
 
 		this.containerUpdateListener = createContainerUpdateListener();
 
@@ -120,8 +137,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		populateChildScopeWidgets();
 		populateChildReleaseWidgets();
-
-		addToogleClickableAreaHandler();
 
 		updateDescription();
 		updateProgress();
@@ -134,6 +149,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			}
 		});
 		configPopup().link(menuLink).popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2);
+	}
+
+	@UiHandler("containerToogleClickableArea")
+	protected void addToogleClickableAreaHandler(final ClickEvent event) {
+		setContainerState(!isContainerStateOpen);
 	}
 
 	private MouseCommandsMenu getMouseActionMenu() {
@@ -194,15 +214,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			releaseContainer.createChildModelWidget(childRelease);
 	}
 
-	private void addToogleClickableAreaHandler() {
-		containerToogleClickableArea.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				setContainerState(!isContainerStateOpen);
-			}
-		});
-	}
-
 	@Override
 	public boolean update() {
 		updateDescription();
@@ -215,7 +226,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (release.getDescription().equals(currentReleaseDescription)) return;
 		currentReleaseDescription = release.getDescription();
 
-		descriptionLabel.setText(currentReleaseDescription);
+		descriptionLabel.setValue(currentReleaseDescription);
 	}
 
 	private void updateProgress() {

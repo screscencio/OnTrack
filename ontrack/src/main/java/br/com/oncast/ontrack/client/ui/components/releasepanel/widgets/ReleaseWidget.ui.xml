@@ -134,7 +134,7 @@
 			}
 			
 			.chartPanel {
-		position: relative;
+		        position: relative;
                 width: 900px;
                 z-index: 2;
                 
@@ -151,9 +151,10 @@
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<div class="{style.header} gradReleaseWidgetHeader">
-			<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
-			<g:Label ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
-			<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" />
+   			<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
+			<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" >
+				<t:EditableLabel ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
+			</g:FocusPanel>
 			<g:Label styleName="{style.progressLabel}" ui:field="progressLabel" />
 			<g:Image styleName="{style.menuLink}" ui:field="menuLink" />
 		</div>

@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.shared.model.release.exceptions;
 
-public class ReleaseNotFoundException extends Exception {
+import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
+
+public class ReleaseNotFoundException extends ModelBeanNotFoundException {
 	private static final long serialVersionUID = 1L;
 
 	public ReleaseNotFoundException() {

@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
@@ -46,6 +47,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ReleaseAction) return new ScopeTreeReleaseAction(tree);
 		else if (action instanceof ScopeDeclareProgressAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeDeclareEffortAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
+		else if (action instanceof ReleaseRenameAction) return new ScopeTreeReleaseUpdateAction(tree, (ReleaseAction) action);
 
 		throw new ScopeNotFoundException("It was not possible to find the desired action.");
 	}
