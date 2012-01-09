@@ -115,10 +115,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		else if (event.getNativeKeyCode() == KEY_ENTER) {
 			if (executeSelectedItemCommand()) hide();
 		}
-		else if (event.getNativeKeyCode() == KEY_DOWN || event.getNativeKeyCode() == KEY_UP) {
-			eatEvent(event);
+		else if (!KEY_DOWN_HANDLED_KEYS.contains(event.getNativeKeyCode())) {
+			filterMenuItens();
 		}
-		else filterMenuItens();
 
 		eatEvent(event);
 	}
@@ -131,9 +130,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		if (keyCode == KEY_UP) menu.selectItemUp();
 		else if (keyCode == KEY_DOWN) menu.selectItemDown();
 
-		// FIXME Lobo: Using getValue() instead of getText() to get only the value not the text representation of it.
-		// FIXME Lobo: Treat Tab key here if replacement is only wanted on tab
-		filterArea.setText(menu.getSelectedItem().getValue());
+		if (keyCode == KEY_TAB) filterArea.setText(menu.getSelectedItem().getValue());
 
 		eatEvent(event);
 	}
@@ -156,13 +153,10 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
 		final boolean shouldAddCustomItens = !filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText);
-		// FIXME Lobo: putting custom item on 0 to be closer to choose
-		// FIXME Lobo: Using the custom item to restore the users original filter text
 		if (shouldAddCustomItens) filteredItens.add(0, customItemFactory.createCustomItem(filterText));
 
 		menu.setItens(filteredItens);
 		menu.selectFirstItem();
-		// FIXME Lobo: setting selection to second position when the custom item was added to avoid the custom item to be the default choise.
 		if (shouldAddCustomItens) menu.selectItemDown();
 
 		ajustDimentions();
