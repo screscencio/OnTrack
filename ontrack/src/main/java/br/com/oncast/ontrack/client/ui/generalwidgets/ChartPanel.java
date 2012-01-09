@@ -64,7 +64,7 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 
 		chart = new Chart();
 		configureBasicsChart();
-		// FIXME Lobo: this two line was added
+
 		clickableChartPanel.add(chart);
 		chart.setSizeToMatchContainer();
 	}
@@ -75,15 +75,9 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
-					// FIXME Lobo: this line was removed
-					// clickableChartPanel.add(chart);
 					chart.setSizeToMatchContainer();
 				}
 			});
-		}
-		else {
-			// FIXME Lobo: this line was removed
-			// clickableChartPanel.remove(chart);
 		}
 	}
 
@@ -128,8 +122,6 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 
 		this.setVisible(false);
 		chart.removeAllSeries();
-		// FIXME Lobo: this line was added
-		clickableChartPanel.remove(chart);
 		CloseEvent.fire(this, this);
 	}
 
