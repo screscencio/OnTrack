@@ -62,6 +62,12 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 				if (ScopeTreeItem.this.getTree().getSelectedItem() != null) return;
 				ScopeTreeItem.this.select();
 			}
+
+			@Override
+			public void declareValue(final String effortToDeclare) {
+				// FIXME Implement Value Declaration
+				System.out.println("Value Declared : " + effortToDeclare);
+			}
 		}));
 
 		setReferencedScope(scope);

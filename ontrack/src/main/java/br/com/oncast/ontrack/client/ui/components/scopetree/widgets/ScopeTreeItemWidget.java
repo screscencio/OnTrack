@@ -11,6 +11,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetValueCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
@@ -84,6 +85,10 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
+	protected HTMLPanel valuePanel;
+
+	@UiField
+	@IgnoredByDeepEquality
 	protected FastLabel inferedEffortLabel;
 
 	@UiField
@@ -124,6 +129,8 @@ public class ScopeTreeItemWidget extends Composite {
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetProgressCommandMenuItemFactory progressCommandMenuItemFactory;
 
+	private final ScopeTreeItemWidgetValueCommandMenuItemFactory valueCommandMenuItemFactory;
+
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -133,6 +140,7 @@ public class ScopeTreeItemWidget extends Composite {
 		this.editionHandler = editionHandler;
 		this.releaseCommandMenuItemFactory = new ScopeTreeItemWidgetReleaseCommandMenuItemFactory(editionHandler);
 		this.effortCommandMenuItemFactory = new ScopeTreeItemWidgetEffortCommandMenuItemFactory(editionHandler);
+		this.valueCommandMenuItemFactory = new ScopeTreeItemWidgetValueCommandMenuItemFactory(editionHandler);
 		this.progressCommandMenuItemFactory = new ScopeTreeItemWidgetProgressCommandMenuItemFactory(editionHandler);
 
 		focusPanel.addClickHandler(new ClickHandler() {
@@ -338,6 +346,17 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 300);
 		configPopup().alignBelow(descriptionLabel).alignRight(effortPanel).popup(commandsMenu).pop();
+	}
+
+	public void showValueMenu(final List<String> fibonacciScaleForValue) {
+		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+
+		items.add(valueCommandMenuItemFactory.createItem("None", ""));
+		for (final String value : fibonacciScaleForValue)
+			items.add(valueCommandMenuItemFactory.createItem(value, value));
+
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 100, 300);
+		configPopup().alignBelow(descriptionLabel).alignRight(valuePanel).popup(commandsMenu).pop();
 	}
 
 	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,

@@ -28,15 +28,14 @@ public class ReleaseChartDataProvider {
 	}
 
 	public List<Float> getAccomplishedEffortsByDate() {
-		final ArrayList<Float> accomplishedEffortsByDate = new ArrayList<Float>();
+		final ArrayList<Float> efforts = new ArrayList<Float>();
 		for (final String data : accomplishedEffortByDate.keySet()) {
 			final Float effortInThisDate = accomplishedEffortByDate.get(data);
-			if (effortInThisDate != null) {
-				accomplishedEffortsByDate.add(effortInThisDate);
-				if (effortInThisDate >= getEffortSum()) break;
-			}
+			if (effortInThisDate == null) continue;
+			efforts.add(effortInThisDate);
+			if (effortInThisDate >= getEffortSum()) break;
 		}
-		return accomplishedEffortsByDate;
+		return efforts;
 	}
 
 	public float getEffortSum() {

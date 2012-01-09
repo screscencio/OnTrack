@@ -81,4 +81,8 @@ public class ProjectContext {
 		return releaseLoadQuery;
 	}
 
+	public List<String> getFibonacciScaleForValue() {
+		return FibonacciScale.getFibonacciScaleList();
+	}
+
 }

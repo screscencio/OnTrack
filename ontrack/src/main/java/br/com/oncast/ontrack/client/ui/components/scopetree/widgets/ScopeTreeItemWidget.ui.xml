@@ -50,6 +50,25 @@
 				user-select: none;
 			}
 			
+			.value {
+				position: absolute;
+				right: 290px;
+				width: 80px;
+				height: 20px;
+				overflow: hidden;
+				margin-left: 4px;
+				margin-right: 4px;
+				padding-left: 3px;
+				padding-right: 3px;
+				vertical-align: super;
+				font-size: smaller;
+				cursor: default;
+				-moz-user-select: none;
+				-khtml-user-select: none;
+				user-select: none;
+
+			}
+			
 			.effortLabel {
 				opacity: 0.5;
 				display: inline;
@@ -129,6 +148,10 @@
 					<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
 						<t:FastLabel ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.effortLabelTranslucid}" />
 						<t:FastLabel ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
+					</g:HTMLPanel>
+					<g:HTMLPanel ui:field="valuePanel" styleName="{style.value}">
+						<t:FastLabel ui:field="inferedValueLabel" styleName="{style.effortLabel} {style.effortLabelTranslucid}" />
+						<t:FastLabel ui:field="declaredValueLabel" styleName="{style.effortLabel}" />
 					</g:HTMLPanel>
 				</g:HorizontalPanel>
 				<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}" >

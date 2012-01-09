@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_AT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DELETE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOLLAR;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_F2;
@@ -14,6 +15,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequ
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareValueInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertFatherInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingDownInternalAction;
@@ -133,6 +135,14 @@ enum ScopeTreeShortcutMappings {
 		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
 				final Scope scope, final ProjectContext context) {
 			internalActionHandler.handle(new DeclareEffortInternalAction(scope, context));
+		}
+	},
+	BIND_VALUE(KEY_DOLLAR, false, true, false) {
+		@Override
+		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
+				final Scope scope,
+				final ProjectContext context) {
+			internalActionHandler.handle(new DeclareValueInternalAction(scope, context));
 		}
 	};
 

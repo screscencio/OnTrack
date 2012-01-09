@@ -23,4 +23,6 @@ public interface ScopeTreeItemWidgetEditionHandler {
 	void declareProgress(String progressDescription);
 
 	void declareEffort(String effortDescription);
+
+	void declareValue(String effortToDeclare);
 }

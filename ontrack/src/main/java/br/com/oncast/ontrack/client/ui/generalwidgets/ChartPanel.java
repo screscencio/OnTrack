@@ -64,6 +64,9 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 
 		chart = new Chart();
 		configureBasicsChart();
+		// FIXME Lobo: this two line was added
+		clickableChartPanel.add(chart);
+		chart.setSizeToMatchContainer();
 	}
 
 	@UiHandler("clickableChartPanel")
@@ -72,13 +75,15 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
-					clickableChartPanel.add(chart);
+					// FIXME Lobo: this line was removed
+					// clickableChartPanel.add(chart);
 					chart.setSizeToMatchContainer();
 				}
 			});
 		}
 		else {
-			clickableChartPanel.remove(chart);
+			// FIXME Lobo: this line was removed
+			// clickableChartPanel.remove(chart);
 		}
 	}
 
@@ -123,6 +128,8 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 
 		this.setVisible(false);
 		chart.removeAllSeries();
+		// FIXME Lobo: this line was added
+		clickableChartPanel.remove(chart);
 		CloseEvent.fire(this, this);
 	}
 
@@ -210,6 +217,10 @@ public class ChartPanel extends Composite implements HasCloseHandlers<ChartPanel
 	}
 
 	private void addYAxisValues(final Series newSerie) {
+		if (yAxisLineValues.isEmpty()) {
+			newSerie.addPoint(createLastPoint(0, 0));
+			return;
+		}
 		final int lastIndex = yAxisLineValues.size() - 1;
 		for (int i = 0; i < lastIndex; i++) {
 			newSerie.addPoint(i, yAxisLineValues.get(i));

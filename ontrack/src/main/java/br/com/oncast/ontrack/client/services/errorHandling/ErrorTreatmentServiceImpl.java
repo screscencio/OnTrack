@@ -38,7 +38,10 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException(final Throwable e) {
+				System.out.println("oi");
+				e.printStackTrace(System.out);
 				ClientNotificationService.showError(e.getMessage());
+				throw new RuntimeException(e);
 			}
 		});
 	}
