@@ -307,6 +307,7 @@ public class PopupConfig {
 
 	private boolean newTopFits(final int newTop) {
 		if (newTop < 0) return false;
+		System.out.println(newTop + " | " + widgetToPopup.getOffsetHeight() + " | " + Window.getClientHeight());
 		if (newTop + widgetToPopup.getOffsetHeight() > Window.getClientHeight()) return false;
 		return true;
 	}

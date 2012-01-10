@@ -46,6 +46,13 @@
 		padding: 1px;
 	}
 	
+	.helpLabel {
+		position: absolute;
+		bottom:-18px;
+		right: 0px;
+	    font-size: 11px;
+	    color: #CCCCCF;
+	}
 </ui:style>
 
 
@@ -56,6 +63,7 @@
 			<g:ScrollPanel ui:field="scrollPanel" styleName="{style.scrollpanel}">
 				<t:CommandMenu ui:field="menu" />
 			</g:ScrollPanel>
+			<g:Label styleName="{style.helpLabel}">Hit TAB to complete</g:Label>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 
