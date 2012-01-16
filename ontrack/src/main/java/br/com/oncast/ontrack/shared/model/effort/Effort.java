@@ -13,6 +13,7 @@ public class Effort implements Serializable {
 	private float bottomUpValue;
 	private boolean hasDeclared;
 	private float accomplishedEffort;
+
 	@IgnoredByDeepEquality
 	private boolean hasStronglyDefinedChildren;
 
@@ -90,5 +91,4 @@ public class Effort implements Serializable {
 	public String toString() {
 		return "Declared: " + declared + ", TopDownValue: " + topDownValue + ", BottomUpValue: " + bottomUpValue + ", Infered: " + getInfered();
 	}
-
 }

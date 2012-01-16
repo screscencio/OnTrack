@@ -1,0 +1,80 @@
+<map version="1.0.0">
+<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
+<node CREATED="1310578582920" ID="ID_1386649517" MODIFIED="1310578586536" TEXT="Escopo">
+<node CREATED="1310154312846" ID="ID_242901692" MODIFIED="1310579518458" POSITION="right" TEXT="12">
+<icon BUILTIN="up"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310154312846" ID="ID_835624985" MODIFIED="1310653445084" POSITION="right" TEXT="12">
+<icon BUILTIN="down"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310578629997" ID="ID_517231989" MODIFIED="1310578629997" POSITION="right" TEXT="Cadastros">
+<node CREATED="1310154265642" ID="ID_1540400965" MODIFIED="1310579515401" TEXT="12">
+<font NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="pencil"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310154312846" ID="ID_77207408" MODIFIED="1310579549465" TEXT="12">
+<icon BUILTIN="down"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310578629997" ID="ID_1095340330" MODIFIED="1310578629997" TEXT="Cadastros de infra">
+<node CREATED="1310154312846" ID="ID_813294104" MODIFIED="1310579073657" TEXT="6">
+<icon BUILTIN="down"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310154312846" ID="ID_171818121" MODIFIED="1310579080938" TEXT="0">
+<icon BUILTIN="up"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310578629997" ID="ID_1251749388" MODIFIED="1310578629997" TEXT="Cadastro de Usu&#xe1;rios">
+<node CREATED="1310154312846" ID="ID_385446542" MODIFIED="1310579098378" TEXT="3">
+<icon BUILTIN="down"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310154312846" ID="ID_29316531" MODIFIED="1310579080938" TEXT="0">
+<icon BUILTIN="up"/><icon BUILTIN="bookmark"/>
+</node>
+</node>
+<node CREATED="1310578629998" ID="ID_885033935" MODIFIED="1310578629998" TEXT="Cadastro de Funcionalidades">
+<node CREATED="1310154312846" ID="ID_598420725" MODIFIED="1310579098378" TEXT="3">
+<icon BUILTIN="down"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310154312846" ID="ID_1747139959" MODIFIED="1310579080938" TEXT="0">
+<icon BUILTIN="up"/><icon BUILTIN="bookmark"/>
+</node>
+</node>
+</node>
+<node CREATED="1310578629998" ID="ID_1818026818" MODIFIED="1310578629998" TEXT="Cadastros de neg&#xf3;cio">
+<node CREATED="1310154312846" ID="ID_783477998" MODIFIED="1310579086475" TEXT="6">
+<icon BUILTIN="down"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310154312846" ID="ID_1531454796" MODIFIED="1310579086481" TEXT="0">
+<icon BUILTIN="up"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310578629999" ID="ID_183289602" MODIFIED="1310578629999" TEXT="Cadastro de Clientes">
+<node CREATED="1310154312846" ID="ID_1810800220" MODIFIED="1310579098378" TEXT="3">
+<icon BUILTIN="down"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310154312846" ID="ID_1674729267" MODIFIED="1310579080938" TEXT="0">
+<icon BUILTIN="up"/><icon BUILTIN="bookmark"/>
+</node>
+</node>
+<node CREATED="1310578629999" ID="ID_244206533" MODIFIED="1310578629999" TEXT="Cadastro de Produtos">
+<node CREATED="1310154312846" ID="ID_481108923" MODIFIED="1310579098378" TEXT="3">
+<icon BUILTIN="down"/><icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1310154312846" ID="ID_1693466586" MODIFIED="1310579080938" TEXT="0">
+<icon BUILTIN="up"/><icon BUILTIN="bookmark"/>
+</node>
+</node>
+</node>
+</node>
+<node CREATED="1310578629999" ID="ID_1778916004" MODIFIED="1310578629999" POSITION="right" TEXT="Opera&#xe7;&#xf5;es">
+<node CREATED="1310578630000" MODIFIED="1310578630000" TEXT="Colocar produto no carrinho de compras"/>
+<node CREATED="1310578630000" MODIFIED="1310578630000" TEXT="Remover produto do carrinho de compras"/>
+<node CREATED="1310578630001" MODIFIED="1310578630001" TEXT="Fechar pedido"/>
+</node>
+<node CREATED="1310578630001" ID="ID_211134509" MODIFIED="1310578630001" POSITION="right" TEXT="Relat&#xf3;rios">
+<node CREATED="1310578630001" MODIFIED="1310578630001" TEXT="Relat&#xf3;rio de produtos mais vendidos"/>
+<node CREATED="1310578630002" MODIFIED="1310578630002" TEXT="Relat&#xf3;rio de produtos por pedido"/>
+</node>
+<node CREATED="1310578630002" ID="ID_130846388" MODIFIED="1310578630002" POSITION="right" TEXT="Infra-estrutura">
+<node CREATED="1310578630002" MODIFIED="1310578630002" TEXT="Autentica&#xe7;&#xe3;o"/>
+</node>
+</node>
+</map>

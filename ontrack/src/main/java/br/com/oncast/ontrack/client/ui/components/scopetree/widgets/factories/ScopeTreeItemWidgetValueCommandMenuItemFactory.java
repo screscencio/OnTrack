@@ -19,18 +19,18 @@ public class ScopeTreeItemWidgetValueCommandMenuItemFactory implements ScopeTree
 
 			@Override
 			public void execute() {
-				controller.declareEffort(inputText);
+				controller.declareValue(inputText);
 			}
 		});
 	}
 
 	@Override
-	public CommandMenuItem createItem(final String itemText, final String effortToDeclare) {
-		return new CommandMenuItem(itemText, effortToDeclare, new Command() {
+	public CommandMenuItem createItem(final String itemText, final String valueToDeclare) {
+		return new CommandMenuItem(itemText, valueToDeclare, new Command() {
 
 			@Override
 			public void execute() {
-				controller.declareValue(effortToDeclare);
+				controller.declareValue(valueToDeclare);
 			}
 		});
 	}

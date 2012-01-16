@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.exportImport;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
@@ -68,8 +70,17 @@ public class FreeMindExporterTest {
 		assertTrue(legendNode.getChildren().get(2).hasIcon(Icon.LAUNCH));
 		assertTrue(legendNode.getChildren().get(2).hasIcon(Icon.WIZARD));
 
-		assertEquals("Declaração de progresso", legendNode.getChildren().get(3).getText());
-		assertTrue(legendNode.getChildren().get(3).hasIcon(Icon.HOURGLASS));
+		assertEquals("Declaração de valor", legendNode.getChildren().get(3).getText());
+		assertTrue(legendNode.getChildren().get(3).hasIcon(Icon.LAUNCH));
+		assertTrue(legendNode.getChildren().get(3).hasIcon(Icon.STAR));
+
+		assertEquals("Inferência de valor", legendNode.getChildren().get(4).getText());
+		assertTrue(legendNode.getChildren().get(4).hasIcon(Icon.LAUNCH));
+		assertTrue(legendNode.getChildren().get(4).hasIcon(Icon.WIZARD));
+		assertTrue(legendNode.getChildren().get(4).hasIcon(Icon.STAR));
+
+		assertEquals("Declaração de progresso", legendNode.getChildren().get(5).getText());
+		assertTrue(legendNode.getChildren().get(5).hasIcon(Icon.HOURGLASS));
 	}
 
 	@Test
@@ -100,11 +111,13 @@ public class FreeMindExporterTest {
 		final MindNode effort100 = scopeHierarchyContainerNode.getChildren().get(0);
 		assertEquals("100.0", effort100.getText());
 		assertTrue(effort100.hasIcon(Icon.LAUNCH));
+		assertFalse(effort100.hasIcon(Icon.STAR));
 
 		final MindNode effort33 = scopeHierarchyContainerNode.getChildren().get(1).getChildren().get(0);
 		assertEquals("33.333", effort33.getText());
 		assertTrue(effort33.hasIcon(Icon.LAUNCH));
 		assertTrue(effort33.hasIcon(Icon.WIZARD));
+		assertFalse(effort33.hasIcon(Icon.STAR));
 
 		final MindNode effort16 = scopeHierarchyContainerNode.getChildren().get(1).getChildren().get(1).getChildren().get(0);
 		assertEquals("16.666", effort16.getText());
@@ -115,6 +128,39 @@ public class FreeMindExporterTest {
 		assertEquals("8.333", effort8.getText());
 		assertTrue(effort8.hasIcon(Icon.LAUNCH));
 		assertTrue(effort8.hasIcon(Icon.WIZARD));
+		assertFalse(effort8.hasIcon(Icon.STAR));
+	}
+
+	@Test
+	public void exportedMapShouldRepresentValue() throws FileNotFoundException {
+		scope.getValue().setDeclared(100);
+		new ValueInferenceEngine().process(scope);
+
+		final FreeMindMap exportedMap = exportToMindMap(scope);
+		final MindNode scopeHierarchyContainerNode = exportedMap.root().getChildren().get(1);
+
+		final MindNode value100 = scopeHierarchyContainerNode.getChildren().get(0);
+		assertEquals("100.0", value100.getText());
+		assertTrue(value100.hasIcon(Icon.LAUNCH));
+		assertTrue(value100.hasIcon(Icon.STAR));
+
+		final MindNode value33 = scopeHierarchyContainerNode.getChildren().get(1).getChildren().get(0);
+		assertEquals("33.333", value33.getText());
+		assertTrue(value33.hasIcon(Icon.LAUNCH));
+		assertTrue(value33.hasIcon(Icon.WIZARD));
+		assertTrue(value33.hasIcon(Icon.STAR));
+
+		final MindNode value16 = scopeHierarchyContainerNode.getChildren().get(1).getChildren().get(1).getChildren().get(0);
+		assertEquals("16.666", value16.getText());
+		assertTrue(value16.hasIcon(Icon.LAUNCH));
+		assertTrue(value16.hasIcon(Icon.WIZARD));
+		assertTrue(value16.hasIcon(Icon.STAR));
+
+		final MindNode value8 = scopeHierarchyContainerNode.getChildren().get(1).getChildren().get(1).getChildren().get(1).getChildren().get(0);
+		assertEquals("8.333", value8.getText());
+		assertTrue(value8.hasIcon(Icon.LAUNCH));
+		assertTrue(value8.hasIcon(Icon.WIZARD));
+		assertTrue(value8.hasIcon(Icon.STAR));
 	}
 
 	@Test

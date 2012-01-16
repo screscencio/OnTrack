@@ -66,6 +66,11 @@ public class ScopeInsertChildRollbackAction implements ScopeAction {
 	}
 
 	@Override
+	public boolean changesValueInference() {
+		return true;
+	}
+
+	@Override
 	public boolean changesProgressInference() {
 		return true;
 	}

@@ -36,6 +36,7 @@ public class FreeMindImporter {
 		for (final MindNode childNode : node.getChildren()) {
 
 			if (extractEffort(scope, childNode)) continue;
+			if (extractValue(scope, childNode)) continue;
 			if (extractProgress(scope, childNode)) continue;
 
 			final ScopeBuilder childScope = ScopeBuilder.scope();
@@ -56,34 +57,54 @@ public class FreeMindImporter {
 		return progressNode.getText();
 	}
 
-	private static boolean extractEffort(final ScopeBuilder scope, final MindNode childNode) {
-		if (childNode.hasIcon(Icon.LAUNCH) && childNode.hasIcon(Icon.OK)) {
-			scope.accomplishedEffort(extractCalculatedEffort(childNode));
+	private static boolean extractValue(final ScopeBuilder scope, final MindNode childNode) {
+		if (childNode.hasIcon(Icon.LAUNCH) && childNode.hasIcon(Icon.OK) && childNode.hasIcon(Icon.STAR)) {
+			scope.accomplishedValue(extractCalculated(childNode));
 			return true;
 		}
-		else if (childNode.hasIcon(Icon.PENCIL)) {
-			scope.declaredEffort(extractDeclaredEffort(childNode));
+		else if (childNode.hasIcon(Icon.PENCIL) && childNode.hasIcon(Icon.STAR)) {
+			scope.declaredValue(extractDeclared(childNode));
 			return true;
 		}
-		else if (childNode.hasIcon(Icon.DOWN)) {
-			scope.topDownEffort(extractCalculatedEffort(childNode));
+		else if (childNode.hasIcon(Icon.DOWN) && childNode.hasIcon(Icon.STAR)) {
+			scope.topDownValue(extractCalculated(childNode));
 			return true;
 		}
-		else if (childNode.hasIcon(Icon.UP)) {
-			scope.bottomUpEffort(extractCalculatedEffort(childNode));
+		else if (childNode.hasIcon(Icon.UP) && childNode.hasIcon(Icon.STAR)) {
+			scope.bottomUpValue(extractCalculated(childNode));
 			return true;
 		}
 		return false;
 	}
 
-	private static float extractDeclaredEffort(final MindNode effortNode) {
+	private static boolean extractEffort(final ScopeBuilder scope, final MindNode childNode) {
+		if (childNode.hasIcon(Icon.LAUNCH) && childNode.hasIcon(Icon.OK) && !childNode.hasIcon(Icon.STAR)) {
+			scope.accomplishedEffort(extractCalculated(childNode));
+			return true;
+		}
+		else if (childNode.hasIcon(Icon.PENCIL) && !childNode.hasIcon(Icon.STAR)) {
+			scope.declaredEffort(extractDeclared(childNode));
+			return true;
+		}
+		else if (childNode.hasIcon(Icon.DOWN) && !childNode.hasIcon(Icon.STAR)) {
+			scope.topDownEffort(extractCalculated(childNode));
+			return true;
+		}
+		else if (childNode.hasIcon(Icon.UP) && !childNode.hasIcon(Icon.STAR)) {
+			scope.bottomUpEffort(extractCalculated(childNode));
+			return true;
+		}
+		return false;
+	}
+
+	private static float extractDeclared(final MindNode effortNode) {
 		final Matcher matcher = FLOAT_EXTRACTOR.matcher(effortNode.getText());
-		if (!matcher.find()) return 0;
+		if (!matcher.find()) return 0.0f;
 
 		return Float.valueOf(matcher.group());
 	}
 
-	private static float extractCalculatedEffort(final MindNode effortNode) {
+	private static float extractCalculated(final MindNode effortNode) {
 		final Matcher matcher = FLOAT_EXTRACTOR.matcher(effortNode.getText());
 		if (!matcher.find()) return 0.0f;
 

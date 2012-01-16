@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -153,6 +154,23 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareEffortAction(scopeId, hasDeclaredEffort, declaredEffort));
 	}
 
+	@Override
+	public void onDeclareValueRequest(final UUID scopeId, final String valueDescription) {
+		float declaredValue;
+		boolean hasDeclaredValue;
+
+		try {
+			declaredValue = Float.valueOf(valueDescription);
+			hasDeclaredValue = (valueDescription != null && !valueDescription.isEmpty());
+		}
+		catch (final NumberFormatException e) {
+			declaredValue = 0;
+			hasDeclaredValue = false;
+		}
+
+		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareValueAction(scopeId, hasDeclaredValue, declaredValue));
+	}
+
 	private void assureConfigured() {
 		if (applicationActionHandler == null || tree == null || context == null) throw new RuntimeException("This class was not yet configured.");
 	}
@@ -165,5 +183,4 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	public void setContext(final ProjectContext context) {
 		this.context = context;
 	}
-
 }

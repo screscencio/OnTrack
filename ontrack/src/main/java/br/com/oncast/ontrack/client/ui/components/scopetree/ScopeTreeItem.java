@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareValueEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
@@ -58,15 +59,14 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			}
 
 			@Override
-			public void onEditionMenuClose() {
-				if (ScopeTreeItem.this.getTree().getSelectedItem() != null) return;
-				ScopeTreeItem.this.select();
+			public void declareValue(final String valueDescription) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemDeclareValueEvent(getReferencedScope().getId(), valueDescription));
 			}
 
 			@Override
-			public void declareValue(final String effortToDeclare) {
-				// FIXME Implement Value Declaration
-				System.out.println("Value Declared : " + effortToDeclare);
+			public void onEditionMenuClose() {
+				if (ScopeTreeItem.this.getTree().getSelectedItem() != null) return;
+				ScopeTreeItem.this.select();
 			}
 		}));
 

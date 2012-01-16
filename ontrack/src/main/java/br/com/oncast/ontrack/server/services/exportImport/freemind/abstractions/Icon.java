@@ -13,7 +13,8 @@ public enum Icon {
 	DOWN("down"),
 	UP("up"),
 	OK("button_ok"),
-	KEY("password");
+	KEY("password"),
+	STAR("bookmark");
 
 	private final String freemindCode;
 

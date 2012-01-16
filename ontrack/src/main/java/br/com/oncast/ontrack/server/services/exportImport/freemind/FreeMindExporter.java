@@ -11,18 +11,19 @@ import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.value.Value;
 
 // TODO Review by Lobo - This code has been created by Rodrigo Machado and Jaime and has not yet been reviewed.
 public class FreeMindExporter {
 
-	private final static DecimalFormat EFFORT_DECIMAL_FORMAT;
+	private final static DecimalFormat EFFORT_AND_VALUE_DECIMAL_FORMAT;
 
 	static {
-		EFFORT_DECIMAL_FORMAT = new DecimalFormat("#.###");
-		EFFORT_DECIMAL_FORMAT.setRoundingMode(RoundingMode.DOWN);
+		EFFORT_AND_VALUE_DECIMAL_FORMAT = new DecimalFormat("#.###");
+		EFFORT_AND_VALUE_DECIMAL_FORMAT.setRoundingMode(RoundingMode.DOWN);
 		final DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
 		decimalFormatSymbols.setDecimalSeparator('.');
-		EFFORT_DECIMAL_FORMAT.setDecimalFormatSymbols(decimalFormatSymbols);
+		EFFORT_AND_VALUE_DECIMAL_FORMAT.setDecimalFormatSymbols(decimalFormatSymbols);
 	}
 
 	/**
@@ -56,6 +57,8 @@ public class FreeMindExporter {
 		appendNodeTo(legend, "Associação com entrega", Icon.CALENDAR);
 		appendNodeTo(legend, "Declaração de esforço", Icon.LAUNCH);
 		appendNodeTo(legend, "Inferência de esforço", Icon.LAUNCH, Icon.WIZARD);
+		appendNodeTo(legend, "Declaração de valor", Icon.LAUNCH, Icon.STAR);
+		appendNodeTo(legend, "Inferência de valor", Icon.LAUNCH, Icon.WIZARD, Icon.STAR);
 		appendNodeTo(legend, "Declaração de progresso", Icon.HOURGLASS);
 	}
 
@@ -67,6 +70,7 @@ public class FreeMindExporter {
 	private static void populateScopeHierarchy(final MindNode node, final Scope scope) {
 		addReleaseNodeTo(node, scope);
 		addEffortNodeTo(node, scope);
+		addValueNodeTo(node, scope);
 		addProgressNodeTo(node, scope);
 
 		for (final Scope childScope : scope.getChildren()) {
@@ -83,12 +87,20 @@ public class FreeMindExporter {
 		final Effort effort = scope.getEffort();
 
 		if (effort.hasDeclared()) appendNodeTo(node, Float.toString(effort.getDeclared()), Icon.LAUNCH);
-		if (effort.getInfered() > effort.getDeclared()) appendNodeTo(node, roundEffortValue(effort.getInfered()), Icon.LAUNCH,
+		if (effort.getInfered() > effort.getDeclared()) appendNodeTo(node, roundValue(effort.getInfered()), Icon.LAUNCH,
 				Icon.WIZARD);
 	}
 
-	private static String roundEffortValue(final float infered) {
-		return EFFORT_DECIMAL_FORMAT.format(infered);
+	private static void addValueNodeTo(final MindNode node, final Scope scope) {
+		final Value value = scope.getValue();
+
+		if (value.hasDeclared()) appendNodeTo(node, Float.toString(value.getDeclared()), Icon.LAUNCH, Icon.STAR);
+		if (value.getInfered() > value.getDeclared()) appendNodeTo(node, roundValue(value.getInfered()), Icon.LAUNCH,
+				Icon.WIZARD, Icon.STAR);
+	}
+
+	private static String roundValue(final float infered) {
+		return EFFORT_AND_VALUE_DECIMAL_FORMAT.format(infered);
 	}
 
 	private static void addProgressNodeTo(final MindNode node, final Scope scope) {

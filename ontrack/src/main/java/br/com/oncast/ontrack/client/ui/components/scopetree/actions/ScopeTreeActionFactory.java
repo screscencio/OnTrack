@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
@@ -47,6 +48,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ReleaseAction) return new ScopeTreeReleaseAction(tree);
 		else if (action instanceof ScopeDeclareProgressAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeDeclareEffortAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
+		else if (action instanceof ScopeDeclareValueAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
 		else if (action instanceof ReleaseRenameAction) return new ScopeTreeReleaseUpdateAction(tree, (ReleaseAction) action);
 
 		throw new ScopeNotFoundException("It was not possible to find the desired action.");
