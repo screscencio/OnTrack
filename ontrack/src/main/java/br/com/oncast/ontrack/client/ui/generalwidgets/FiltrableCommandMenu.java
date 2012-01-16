@@ -19,6 +19,7 @@ import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -81,15 +82,15 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	public void setOrderedItens(final List<CommandMenuItem> itens) {
 		this.itens = itens;
 		menu.setItens(itens);
+
+		ajustDimentions();
 	}
 
 	@Override
 	public void show() {
-		this.setVisible(true);
-
 		menu.show();
+		this.setVisible(true);
 		menu.selectFirstItem();
-		ajustDimentions();
 		focus();
 	}
 
@@ -246,5 +247,17 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@Override
 	public HandlerRegistration addCloseHandler(final com.google.gwt.event.logical.shared.CloseHandler<FiltrableCommandMenu> handler) {
 		return addHandler(handler, CloseEvent.getType());
+	}
+
+	@UiHandler("focusPanel")
+	protected void onAttach(final AttachEvent event) {
+		if (!event.isAttached()) return;
+		ajustDimentions();
+	}
+
+	@Override
+	public void setVisible(final boolean visible) {
+		super.setVisible(visible);
+		if (true) ajustDimentions();
 	}
 }
