@@ -4,4 +4,6 @@ public interface ScopeAction extends ModelAction {
 	boolean changesEffortInference();
 
 	boolean changesProgressInference();
+
+	boolean changesValueInference();
 }

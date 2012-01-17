@@ -22,8 +22,8 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 
 	private static final Random RANDOM = new Random();
 	private static final EffortInferenceEngine EFFORT_INFERENCE_ENGINE = new EffortInferenceEngine();
-	private static final String STRIPED_CLASS_NAME = "effortLabelStriped";
-	private static final String TRANSLUCID_CLASS_NAME = "effortLabelTranslucid";
+	private static final String STRIPED_CLASS_NAME = "labelStriped";
+	private static final String TRANSLUCID_CLASS_NAME = "labelTranslucid";
 	private ScopeTreeItemWidget parentWidget;
 	private ScopeTreeItemWidget childAWidget;
 	private Scope parent;

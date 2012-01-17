@@ -114,4 +114,9 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	public boolean changesProgressInference() {
 		return false;
 	}
+
+	@Override
+	public boolean changesValueInference() {
+		return false;
+	}
 }

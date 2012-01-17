@@ -34,13 +34,18 @@ public class ActionExecuterTestUtils extends ScopeActionExecuter {
 		public boolean changesProgressInference() {
 			return true;
 		}
+
+		@Override
+		public boolean changesValueInference() {
+			return true;
+		}
 	}
 
 	public static Set<UUID> executeInferenceEnginesForTestingPurposes(final Scope scope) {
 		return ActionExecuterTestUtils.executeInferenceEngines(new ModelActionMockImpl(), scope);
 	}
 
-	public static Scope getEffortInferenceBaseScopeForTestingPurposes(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {
-		return getEffortInferenceBaseScope(context, action);
+	public static Scope getInferenceBaseScopeForTestingPurposes(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {
+		return getInferenceBaseScope(context, action);
 	}
 }

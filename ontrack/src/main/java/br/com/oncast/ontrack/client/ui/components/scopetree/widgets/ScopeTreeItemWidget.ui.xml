@@ -49,7 +49,12 @@
 				-khtml-user-select: none;
 				user-select: none;
 			}
-			
+            
+            .effortLabel {
+                opacity: 0.5;
+                display: inline;
+            }
+            			
 			.value {
 				position: absolute;
 				right: 290px;
@@ -69,16 +74,16 @@
 
 			}
 			
-			.effortLabel {
+			.valueLabel {
 				opacity: 0.5;
 				display: inline;
 			}
 			
-			.effortLabelTranslucid {
+			.labelTranslucid {
 				opacity: 0.2;
 			}
 			
-			.effortLabelStriped {
+			.labelStriped {
 				text-decoration: line-through;
 			}
 			
@@ -99,30 +104,6 @@
 			.tag {
 				position: absolute;
 				right: 0px;
-			}
-			
-			.releaseMenuPanel {
-                position: absolute;
-                top: 21px;
-                right: 90px;
-                min-width: 200px;
-                z-index: 2;
-			}
-						
-			.progressMenuPanel {
-                position: absolute;
-                top: 21px;
-                right: 5px;
-                min-width: 200px;
-                z-index: 2;
-			}
-			
-			.effortMenuPanel {
-				position: absolute;
-                top: 21px;
-                right: 230px;
-                min-width: 45px;
-                z-index: 2;	
 			}
 
 			.progressLabel {
@@ -145,13 +126,13 @@
 			<g:FlowPanel styleName="{style.visualizationPanel}">
 				<g:HorizontalPanel styleName="{style.scope}" >
 					<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip" />
-					<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
-						<t:FastLabel ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.effortLabelTranslucid}" />
-						<t:FastLabel ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
-					</g:HTMLPanel>
 					<g:HTMLPanel ui:field="valuePanel" styleName="{style.value}">
-						<t:FastLabel ui:field="inferedValueLabel" styleName="{style.effortLabel} {style.effortLabelTranslucid}" />
-						<t:FastLabel ui:field="declaredValueLabel" styleName="{style.effortLabel}" />
+						<t:FastLabel ui:field="inferedValueLabel" styleName="{style.valueLabel} {style.labelTranslucid}" />
+						<t:FastLabel ui:field="declaredValueLabel" styleName="{style.valueLabel}" />
+					</g:HTMLPanel>
+					<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
+						<t:FastLabel ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.labelTranslucid}" />
+						<t:FastLabel ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
 					</g:HTMLPanel>
 				</g:HorizontalPanel>
 				<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}" >

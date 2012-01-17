@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 public class Scope implements Serializable {
@@ -29,6 +30,8 @@ public class Scope implements Serializable {
 
 	private Effort effort;
 
+	private Value value;
+
 	private Progress progress;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
@@ -42,6 +45,7 @@ public class Scope implements Serializable {
 		this.id = scopeId;
 		this.description = description;
 		this.effort = new Effort();
+		this.value = new Value();
 		this.progress = new Progress();
 
 		childrenList = new ArrayList<Scope>();
@@ -73,6 +77,10 @@ public class Scope implements Serializable {
 
 	public Effort getEffort() {
 		return effort;
+	}
+
+	public Value getValue() {
+		return value;
 	}
 
 	public Scope add(final Scope scope) {

@@ -72,6 +72,11 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		return true;
 	}
 
+	@Override
+	public boolean changesValueInference() {
+		return false;
+	}
+
 	public void setTimestamp(final Date timestamp) {
 		this.timestamp = timestamp;
 	}

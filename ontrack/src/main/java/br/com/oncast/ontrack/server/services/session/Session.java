@@ -19,7 +19,7 @@ public class Session implements Serializable {
 
 	private final String sessionId;
 
-	private transient ThreadLocal<UUID> threadLocalClientId = new ThreadLocal<UUID>();
+	private transient ThreadLocal<UUID> threadLocalClientId;
 
 	public Session(final String sessionId) {
 		this.sessionId = sessionId;
@@ -38,10 +38,14 @@ public class Session implements Serializable {
 	}
 
 	protected void setThreadLocalClientId(final UUID clientId) {
-		this.threadLocalClientId.set(clientId);
+		loadThreadLocalClientId().set(clientId);
 	}
 
 	public UUID getThreadLocalClientId() {
-		return threadLocalClientId.get();
+		return loadThreadLocalClientId().get();
+	}
+
+	private ThreadLocal<UUID> loadThreadLocalClientId() {
+		return threadLocalClientId == null ? threadLocalClientId = new ThreadLocal<UUID>() : threadLocalClientId;
 	}
 }

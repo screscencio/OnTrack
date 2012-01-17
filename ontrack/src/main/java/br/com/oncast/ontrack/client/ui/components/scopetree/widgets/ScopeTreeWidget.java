@@ -12,6 +12,8 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareValueEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareValueEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
@@ -52,6 +54,14 @@ public class ScopeTreeWidget extends Composite {
 			}
 
 		}, ScopeTreeItemDeclareEffortEvent.getType());
+
+		tree.addHandler(new ScopeTreeItemDeclareValueEventHandler() {
+
+			@Override
+			public void onDeclareValueRequest(final UUID scopeId, final String valueDescription) {
+				interactionHandler.onDeclareValueRequest(scopeId, valueDescription);
+			}
+		}, ScopeTreeItemDeclareValueEvent.getType());
 
 		tree.addHandler(new ScopeTreeItemDeclareProgressEventHandler() {
 

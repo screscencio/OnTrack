@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
 
 public class ScopeActionExecuter implements ModelActionExecuter {
 
@@ -25,6 +26,7 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 
 	static {
 		inferenceEngines.add(new EffortInferenceEngine());
+		inferenceEngines.add(new ValueInferenceEngine());
 		inferenceEngines.add(new ProgressInferenceEngine());
 	}
 
@@ -36,7 +38,7 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 	public ActionExecutionContext executeAction(final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		Scope scope;
 		try {
-			scope = getEffortInferenceBaseScope(context, action);
+			scope = getInferenceBaseScope(context, action);
 		}
 		catch (final ScopeNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
@@ -55,7 +57,7 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 		return inferenceInfluencedScopeSet;
 	}
 
-	protected static Scope getEffortInferenceBaseScope(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {
+	protected static Scope getInferenceBaseScope(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {
 		final Scope s = context.findScope(action.getReferenceId());
 		final Scope scope = s.isRoot()
 				|| (action instanceof ScopeInsertParentRollbackAction)

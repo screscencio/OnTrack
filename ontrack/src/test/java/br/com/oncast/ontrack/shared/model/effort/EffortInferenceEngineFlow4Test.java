@@ -114,7 +114,7 @@ public class EffortInferenceEngineFlow4Test {
 		while (!rollbackActions.isEmpty()) {
 			final ModelAction rollbackAction = rollbackActions.pop();
 			rollbackAction.execute(projectContext);
-			ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionExecuterTestUtils.getEffortInferenceBaseScopeForTestingPurposes(
+			ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(
 					projectContext, rollbackAction));
 		}
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX), rootScope);

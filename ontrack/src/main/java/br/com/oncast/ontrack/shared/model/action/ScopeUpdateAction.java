@@ -43,6 +43,7 @@ public class ScopeUpdateAction implements ScopeAction {
 		subActionList = new ArrayList<ModelAction>();
 		subActionList.add(new ScopeBindReleaseAction(referenceId, parser.getReleaseDescription()));
 		subActionList.add(new ScopeDeclareEffortAction(referenceId, parser.hasDeclaredEffort(), parser.getDeclaredEffort()));
+		subActionList.add(new ScopeDeclareValueAction(referenceId, parser.hasDeclaredValue(), parser.getDeclaredValue()));
 		subActionList.add(new ScopeDeclareProgressAction(referenceId, parser.getProgressDescription()));
 	}
 
@@ -78,6 +79,12 @@ public class ScopeUpdateAction implements ScopeAction {
 	// TODO Result should depend on its subActions.
 	@Override
 	public boolean changesEffortInference() {
+		return true;
+	}
+
+	// TODO Result should depend on its subActions.
+	@Override
+	public boolean changesValueInference() {
 		return true;
 	}
 

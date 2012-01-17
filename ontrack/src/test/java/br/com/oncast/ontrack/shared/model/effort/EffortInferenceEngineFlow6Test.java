@@ -82,7 +82,7 @@ public class EffortInferenceEngineFlow6Test {
 	}
 
 	private ModelAction executeAction(final ModelAction action) throws UnableToCompleteActionException, ScopeNotFoundException {
-		final Scope effortInferenceBaseScopeForTestingPurposes = ActionExecuterTestUtils.getEffortInferenceBaseScopeForTestingPurposes(projectContext, action);
+		final Scope effortInferenceBaseScopeForTestingPurposes = ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(projectContext, action);
 		final ModelAction rollbackAction = action.execute(projectContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(effortInferenceBaseScopeForTestingPurposes);
 		return rollbackAction;

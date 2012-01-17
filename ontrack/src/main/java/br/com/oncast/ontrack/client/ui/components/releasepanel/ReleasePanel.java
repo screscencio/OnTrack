@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentRollbackAction;
@@ -64,6 +65,7 @@ public class ReleasePanel implements Component {
 						action instanceof ScopeRemoveRollbackAction ||
 						action instanceof ScopeDeclareProgressAction ||
 						action instanceof ScopeDeclareEffortAction ||
+						action instanceof ScopeDeclareValueAction ||
 						action instanceof ScopeBindReleaseAction ||
 						action instanceof ReleaseRemoveAction ||
 						action instanceof ReleaseRemoveRollbackAction ||

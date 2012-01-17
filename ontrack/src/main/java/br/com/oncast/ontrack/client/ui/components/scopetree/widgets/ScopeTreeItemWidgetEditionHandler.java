@@ -24,5 +24,5 @@ public interface ScopeTreeItemWidgetEditionHandler {
 
 	void declareEffort(String effortDescription);
 
-	void declareValue(String effortToDeclare);
+	void declareValue(String valueToDeclare);
 }

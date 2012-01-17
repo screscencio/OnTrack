@@ -30,6 +30,26 @@ public class ScopeBuilder {
 		return this;
 	}
 
+	public ScopeBuilder declaredValue(final float value) {
+		scope.getValue().setDeclared(value);
+		return this;
+	}
+
+	public ScopeBuilder topDownValue(final float value) {
+		scope.getValue().setTopDownValue(value);
+		return this;
+	}
+
+	public ScopeBuilder bottomUpValue(final float value) {
+		scope.getValue().setBottomUpValue(value);
+		return this;
+	}
+
+	public ScopeBuilder accomplishedValue(final float value) {
+		scope.getValue().setAccomplished(value);
+		return this;
+	}
+
 	public ScopeBuilder declaredEffort(final float value) {
 		scope.getEffort().setDeclared(value);
 		return this;

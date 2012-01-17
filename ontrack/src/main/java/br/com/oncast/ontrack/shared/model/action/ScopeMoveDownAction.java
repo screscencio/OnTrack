@@ -57,6 +57,11 @@ public class ScopeMoveDownAction implements ScopeMoveAction {
 	}
 
 	@Override
+	public boolean changesValueInference() {
+		return false;
+	}
+
+	@Override
 	public boolean changesProgressInference() {
 		return false;
 	}

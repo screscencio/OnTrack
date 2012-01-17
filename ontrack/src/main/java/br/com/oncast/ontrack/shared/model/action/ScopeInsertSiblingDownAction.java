@@ -70,6 +70,11 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 	}
 
 	@Override
+	public boolean changesValueInference() {
+		return true;
+	}
+
+	@Override
 	public boolean changesProgressInference() {
 		return true;
 	}

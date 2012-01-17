@@ -24,6 +24,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
+import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
@@ -56,15 +57,7 @@ public class ScopeTreeItemWidget extends Composite {
 	private static ScopeTreeItemWidgetUiBinder uiBinder = GWT.create(ScopeTreeItemWidgetUiBinder.class);
 
 	interface Style extends CssResource {
-		String effortLabelTranslucid();
-
-		String effortLabelStriped();
-
-		String releaseMenuPanel();
-
-		String progressMenuPanel();
-
-		String effortMenuPanel();
+		String labelStriped();
 	}
 
 	@UiField
@@ -81,11 +74,19 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected HTMLPanel effortPanel;
+	protected HTMLPanel valuePanel;
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected HTMLPanel valuePanel;
+	protected FastLabel inferedValueLabel;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected FastLabel declaredValueLabel;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected HTMLPanel effortPanel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -129,6 +130,7 @@ public class ScopeTreeItemWidget extends Composite {
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetProgressCommandMenuItemFactory progressCommandMenuItemFactory;
 
+	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetValueCommandMenuItemFactory valueCommandMenuItemFactory;
 
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
@@ -191,18 +193,18 @@ public class ScopeTreeItemWidget extends Composite {
 
 	}
 
+	public void setValue(final String value) {
+		descriptionLabel.setText(value);
+		descriptionLabel.setTitle(value);
+		editionBox.setText(value);
+	}
+
 	public String getValue() {
 		return new ScopeRepresentationBuilder(scope).includeEverything().toString();
 	}
 
 	private String getSimpleDescription() {
 		return new ScopeRepresentationBuilder(scope).includeScopeDescription().toString();
-	}
-
-	public void setValue(final String value) {
-		descriptionLabel.setText(value);
-		descriptionLabel.setTitle(value);
-		editionBox.setText(value);
 	}
 
 	public void switchToEditionMode() {
@@ -240,6 +242,7 @@ public class ScopeTreeItemWidget extends Composite {
 		final ScopeRepresentationBuilder builder = new ScopeRepresentationBuilder(scope);
 		final StringBuffer buffer = new StringBuffer(text);
 		if (!parser.hasDeclaredEffort()) buffer.append(builder.includeEffort().toString());
+		if (!parser.hasDeclaredValue()) buffer.append(builder.includeValue().toString());
 		if (parser.getReleaseDescription().isEmpty()) buffer.append(builder.includeReleaseReference().toString());
 		if (parser.getProgressDescription() == null) buffer.append(builder.includeProgress().toString());
 		return buffer.toString();
@@ -264,7 +267,25 @@ public class ScopeTreeItemWidget extends Composite {
 	public void updateDisplay() {
 		updateProgressDisplay();
 		updateEffortDisplay();
+		updateValueDisplay();
 		updateReleaseDisplay();
+	}
+
+	private void updateValueDisplay() {
+		final Value value = scope.getValue();
+
+		final float declared = value.getDeclared();
+		final float infered = value.getInfered();
+
+		final boolean inferedDefined = declared != infered;
+		final boolean declaredLabelDefined = value.hasDeclared();
+		final boolean hasDifference = inferedDefined && declaredLabelDefined;
+
+		if (hasDifference) declaredValueLabel.addStyleName(style.labelStriped());
+		else declaredValueLabel.removeStyleName(style.labelStriped());
+
+		declaredValueLabel.setText(declaredLabelDefined ? ClientDecimalFormat.roundFloat(declared, 1) + "vp" : "");
+		inferedValueLabel.setText(inferedDefined ? ClientDecimalFormat.roundFloat(infered, 1) + "vp" : "");
 	}
 
 	private void updateEffortDisplay() {
@@ -277,8 +298,8 @@ public class ScopeTreeItemWidget extends Composite {
 		final boolean declaredEffortLabelDefined = effort.hasDeclared();
 		final boolean hasEffortDifference = inferedEffortDefined && declaredEffortLabelDefined;
 
-		if (hasEffortDifference) declaredEffortLabel.addStyleName(style.effortLabelStriped());
-		else declaredEffortLabel.removeStyleName(style.effortLabelStriped());
+		if (hasEffortDifference) declaredEffortLabel.addStyleName(style.labelStriped());
+		else declaredEffortLabel.removeStyleName(style.labelStriped());
 
 		declaredEffortLabel.setText(declaredEffortLabelDefined ? ClientDecimalFormat.roundFloat(declaredEffort, 1) + "ep" : "");
 		inferedEffortLabel.setText(inferedEffortDefined ? ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep" : "");
@@ -372,5 +393,4 @@ public class ScopeTreeItemWidget extends Composite {
 		menu.setOrderedItens(itens);
 		return menu;
 	}
-
 }
