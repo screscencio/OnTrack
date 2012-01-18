@@ -30,6 +30,7 @@ public class PlanningActivity extends AbstractActivity {
 	private final GlobalNativeEventService globalNativeEventService = GlobalNativeEventService.getInstance();
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private final NativeEventListener globalKeyUpListener;
+	private PlanningView view;
 
 	public PlanningActivity() {
 
@@ -39,7 +40,7 @@ public class PlanningActivity extends AbstractActivity {
 			@Override
 			public void onNativeEvent(final NativeEvent nativeEvent) {
 				PlanningShortcutMappings.interpretKeyboardCommand(
-						SERVICE_PROVIDER.getActionExecutionService(),
+						PlanningActivity.this,
 						nativeEvent.getKeyCode(),
 						nativeEvent.getCtrlKey(),
 						nativeEvent.getShiftKey(),
@@ -50,7 +51,7 @@ public class PlanningActivity extends AbstractActivity {
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-		final PlanningView view = new PlanningPanel();
+		view = new PlanningPanel();
 
 		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
 		final ProjectRepresentation currentProjectRepresentation = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation();
@@ -100,5 +101,13 @@ public class PlanningActivity extends AbstractActivity {
 		list.add(view.getScopeTree().getActionExecutionListener());
 		list.add(view.getReleasePanel().getActionExecutionListener());
 		return list;
+	}
+
+	public ActionExecutionService getActionRequestHandler() {
+		return SERVICE_PROVIDER.getActionExecutionService();
+	}
+
+	public void showSearchScope() {
+		view.getScopeTree().showSearchWidget();
 	}
 }

@@ -68,6 +68,10 @@ public class ScopeTree implements Component {
 		tree.setSelected(rootItem);
 	}
 
+	public void showSearchWidget() {
+		tree.showSearchWidget();
+	}
+
 	@Override
 	public Widget asWidget() {
 		return tree;

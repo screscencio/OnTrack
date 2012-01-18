@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
+
 public class MaskPanel {
 	private static BasicMaskPanel maskPanel;
 
@@ -15,5 +16,9 @@ public class MaskPanel {
 
 	private static BasicMaskPanel getPhysicalMaskWidget() {
 		return maskPanel == null ? maskPanel = new BasicMaskPanel() : maskPanel;
+	}
+
+	public static BasicMaskPanel get() {
+		return getPhysicalMaskWidget();
 	}
 }

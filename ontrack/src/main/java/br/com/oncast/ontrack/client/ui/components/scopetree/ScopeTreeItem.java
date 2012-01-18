@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
@@ -87,6 +90,16 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	public void enterEditMode() {
 		scopeItemWidget.switchToEditionMode();
 		getTree().setSelectedItem(null);
+	}
+
+	public List<ScopeTreeItem> getAllDescendantChilden() {
+		final ArrayList<ScopeTreeItem> children = new ArrayList<ScopeTreeItem>();
+		for (int i = 0; i < getChildCount(); i++) {
+			final ScopeTreeItem currentChild = getChild(i);
+			children.add(currentChild);
+			children.addAll(currentChild.getAllDescendantChilden());
+		}
+		return children;
 	}
 
 	@Override
