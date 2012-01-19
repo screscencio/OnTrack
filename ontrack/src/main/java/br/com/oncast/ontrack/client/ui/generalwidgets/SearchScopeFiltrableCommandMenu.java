@@ -14,7 +14,6 @@ import java.util.List;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -34,17 +33,17 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<FiltrableCommandMenu>, PopupAware {
+public class SearchScopeFiltrableCommandMenu extends Composite implements HasCloseHandlers<SearchScopeFiltrableCommandMenu>, PopupAware {
 
 	private static final List<Integer> KEY_DOWN_HANDLED_KEYS = Arrays.asList(new Integer[] { KEY_DOWN, KEY_UP, KEY_TAB });
 
 	private final int maxHeight;
 
-	private final int maxWidth;
+	private final int width;
 
-	private static FiltrableCommandMenuUiBinder uiBinder = GWT.create(FiltrableCommandMenuUiBinder.class);
+	private static SearchScopeFiltrableCommandMenuUiBinder uiBinder = GWT.create(SearchScopeFiltrableCommandMenuUiBinder.class);
 
-	interface FiltrableCommandMenuUiBinder extends UiBinder<Widget, FiltrableCommandMenu> {}
+	interface SearchScopeFiltrableCommandMenuUiBinder extends UiBinder<Widget, SearchScopeFiltrableCommandMenu> {}
 
 	@UiField
 	protected ScrollPanel scrollPanel;
@@ -63,15 +62,18 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 
-	private final CustomCommandMenuItemFactory customItemFactory;
+	private FiltrableCommandMenuListener listener;
 
-	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
+	public SearchScopeFiltrableCommandMenu(final int width, final int maxHeight) {
 		initWidget(uiBinder.createAndBindUi(this));
-		this.customItemFactory = customItemFactory;
 		this.maxHeight = maxHeight;
-		this.maxWidth = maxWidth;
+		this.width = width;
 
 		configureMenu();
+	}
+
+	public void setListener(final FiltrableCommandMenuListener filtrableCommandMenuListener) {
+		this.listener = filtrableCommandMenuListener;
 	}
 
 	public void setItens(final List<CommandMenuItem> itens) {
@@ -111,6 +113,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@UiHandler("filterArea")
 	protected void handleKeyUp(final KeyUpEvent event) {
 		if (event.getNativeKeyCode() == KEY_ESCAPE) {
+			listener.onCancel();
 			hide();
 		}
 		else if (event.getNativeKeyCode() == KEY_ENTER) {
@@ -130,6 +133,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 		if (keyCode == KEY_UP) menu.selectItemUp();
 		else if (keyCode == KEY_DOWN) menu.selectItemDown();
+		notifySelection();
 
 		if (keyCode == KEY_TAB) filterArea.setText(menu.getSelectedItem().getValue());
 
@@ -145,28 +149,20 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return false;
 
-		selectedItem.executeCommand();
-		return true;
+		return selectedItem.executeCommand();
 	}
 
 	private void filterMenuItens() {
 		final String filterText = filterArea.getText().trim();
 
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
-		final boolean shouldAddCustomItens = !filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText);
-		if (shouldAddCustomItens) filteredItens.add(0, customItemFactory.createCustomItem(filterText));
+		if (filteredItens.isEmpty()) filteredItens.add(new CommandMenuItem("No match for '" + filterText + "'", filterText, null));
 
 		menu.setItens(filteredItens);
 		menu.selectFirstItem();
-		if (shouldAddCustomItens) menu.selectItemDown();
+		notifySelection();
 
 		ajustDimentions();
-	}
-
-	private boolean hasTextMatchInItemList(final List<CommandMenuItem> itens, final String text) {
-		for (final CommandMenuItem item : itens)
-			if (item.getText().toLowerCase().equals(text.toLowerCase())) return true;
-		return false;
 	}
 
 	private List<CommandMenuItem> getFilteredItens(final String filterText) {
@@ -202,20 +198,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
 	 */
 	private void ajustDimentions() {
-		scrollPanel.setWidth("");
-		int calculatedMaxHeight;
-		if (menu.getOffsetWidth() > maxWidth) {
-			scrollPanel.setWidth((maxWidth + 20) + "px");
-			scrollPanel.getElement().getStyle().setOverflowX(Overflow.SCROLL);
-			calculatedMaxHeight = maxHeight + 10;
-		}
-		else {
-			scrollPanel.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
-			calculatedMaxHeight = maxHeight;
-		}
-
+		scrollPanel.setWidth(width + "px");
 		scrollPanel.setHeight("");
-		if (scrollPanel.getOffsetHeight() > calculatedMaxHeight) scrollPanel.setHeight(calculatedMaxHeight + "px");
+		if (scrollPanel.getOffsetHeight() > maxHeight) scrollPanel.setHeight(maxHeight + "px");
 	}
 
 	private void eatEvent(final DomEvent<?> event) {
@@ -245,7 +230,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	}
 
 	@Override
-	public HandlerRegistration addCloseHandler(final com.google.gwt.event.logical.shared.CloseHandler<FiltrableCommandMenu> handler) {
+	public HandlerRegistration addCloseHandler(final com.google.gwt.event.logical.shared.CloseHandler<SearchScopeFiltrableCommandMenu> handler) {
 		return addHandler(handler, CloseEvent.getType());
 	}
 
@@ -259,5 +244,16 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (true) ajustDimentions();
+	}
+
+	public interface FiltrableCommandMenuListener {
+
+		void onItemSelected(CommandMenuItem selectedItem);
+
+		void onCancel();
+	}
+
+	private void notifySelection() {
+		if (listener != null) listener.onItemSelected(menu.getSelectedItem());
 	}
 }

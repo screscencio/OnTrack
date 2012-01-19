@@ -71,7 +71,7 @@ class ActionQueuedDispatcher {
 											caught);
 						}
 						else {
-							errorTreatmentService.treatFatalError(
+							errorTreatmentService.treatConnectionError(
 									"The application server is unreachable.\nCheck your internet connection.\n\nThe application will be briethly reloaded",
 									caught);
 							caught.printStackTrace();

@@ -32,6 +32,8 @@ public class BrowserKeyCodes {
 
 	public static final int KEY_F2 = 113;
 
+	public static final int KEY_F = 70;
+
 	public static final int KEY_Y = 89;
 
 	public static final int KEY_Z = 90;

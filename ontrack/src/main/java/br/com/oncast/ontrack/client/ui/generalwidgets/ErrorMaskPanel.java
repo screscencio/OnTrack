@@ -1,12 +1,14 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
+import com.google.gwt.dom.client.Style;
 
-public class MaskPanel {
+public class ErrorMaskPanel {
 	private static BasicMaskPanel maskPanel;
 
-	private MaskPanel() {}
+	private ErrorMaskPanel() {}
 
 	public static void show(final HideHandler hideHandler) {
+		getPhysicalMaskWidget().setFocus(true);
 		getPhysicalMaskWidget().show(hideHandler);
 	}
 
@@ -15,10 +17,13 @@ public class MaskPanel {
 	}
 
 	private static BasicMaskPanel getPhysicalMaskWidget() {
-		return maskPanel == null ? maskPanel = new BasicMaskPanel() : maskPanel;
-	}
+		if (maskPanel != null) return maskPanel;
 
-	public static BasicMaskPanel get() {
-		return getPhysicalMaskWidget();
+		maskPanel = new BasicMaskPanel();
+		final Style style = maskPanel.getStyle();
+		style.setOpacity(0.4);
+		style.setBackgroundColor("black");
+
+		return maskPanel;
 	}
 }

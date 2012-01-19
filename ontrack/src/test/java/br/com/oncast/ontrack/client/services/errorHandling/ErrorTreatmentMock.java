@@ -20,4 +20,10 @@ public class ErrorTreatmentMock implements ErrorTreatmentService {
 		throw new RuntimeException(e);
 	}
 
+	@Override
+	public void treatConnectionError(final String errorDescriptionMessage, final Throwable caught) {
+		Assert.fail("Error: " + errorDescriptionMessage + " - " + caught.getMessage());
+		caught.printStackTrace();
+	}
+
 }

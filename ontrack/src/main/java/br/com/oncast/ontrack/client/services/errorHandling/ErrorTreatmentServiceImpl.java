@@ -29,6 +29,12 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 	}
 
 	@Override
+	public void treatConnectionError(final String errorDescriptionMessage, final Throwable caught) {
+		Window.Location.reload();
+		ClientNotificationService.showModalError(errorDescriptionMessage);
+	}
+
+	@Override
 	public void treatUserWarning(final String message, final Exception e) {
 		ClientNotificationService.showError(message);
 	}
@@ -38,11 +44,10 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException(final Throwable e) {
-				System.out.println("oi");
 				e.printStackTrace(System.out);
 				ClientNotificationService.showError(e.getMessage());
-				throw new RuntimeException(e);
 			}
 		});
 	}
+
 }

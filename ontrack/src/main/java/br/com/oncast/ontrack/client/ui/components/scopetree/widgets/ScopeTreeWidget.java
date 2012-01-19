@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 import static br.com.oncast.ontrack.client.utils.jquery.JQuery.jquery;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
@@ -174,5 +175,13 @@ public class ScopeTreeWidget extends Composite {
 
 	public void setSelectedItem(final ScopeTreeItem treeItem) {
 		tree.setSelectedItem(treeItem);
+	}
+
+	public void showSearchWidget() {
+		ScopeTreeSearchWidget.show(getAllItens());
+	}
+
+	private List<ScopeTreeItem> getAllItens() {
+		return getItem(0).getAllDescendantChilden();
 	}
 }

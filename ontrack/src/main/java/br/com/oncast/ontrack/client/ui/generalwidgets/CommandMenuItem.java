@@ -22,10 +22,6 @@ public class CommandMenuItem implements Comparable<CommandMenuItem> {
 		this.command = command;
 	}
 
-	public Command getCommand() {
-		return command;
-	}
-
 	public String getText() {
 		return text;
 	}
@@ -42,5 +38,11 @@ public class CommandMenuItem implements Comparable<CommandMenuItem> {
 	@Override
 	public int compareTo(final CommandMenuItem obj) {
 		return this.text.toLowerCase().compareTo(obj.text.toLowerCase());
+	}
+
+	public boolean executeCommand() {
+		if (command == null) return false;
+		command.execute();
+		return true;
 	}
 }
