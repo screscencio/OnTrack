@@ -11,6 +11,9 @@ public class JQueryNativeImplPatcher {
 		return new JQueryNative() {
 			@Override
 			public void bind(final String eventType, final EventHandler handler) {}
+
+			@Override
+			public void unbind(final String string, final EventHandler handler) {}
 		};
 	}
 }

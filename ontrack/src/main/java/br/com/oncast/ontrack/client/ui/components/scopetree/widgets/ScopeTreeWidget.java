@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import static br.com.oncast.ontrack.client.utils.jquery.JQuery.jquery;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +20,8 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -38,7 +38,7 @@ public class ScopeTreeWidget extends Composite {
 
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
 		initWidget(tree = new Tree());
-		jquery(tree).keydown(interactionHandler);
+		ShortcutService.register(tree, interactionHandler, ScopeTreeShortcutMappings.values());
 
 		tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
 			@Override
