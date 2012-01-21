@@ -19,6 +19,13 @@ public class ShortcutRegistration {
 
 	public void unregister() {
 		attachRegistration.removeHandler();
-		JQuery.jquery(widget.asWidget()).unbindKeyDown(handler);
+
+		// It could be already unbound.
+		try {
+			JQuery.jquery(widget.asWidget()).unbindKeyDown(handler);
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

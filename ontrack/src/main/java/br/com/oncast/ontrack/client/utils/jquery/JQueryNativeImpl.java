@@ -21,7 +21,7 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 	}-*/;
 
 	@Override
-	public native void unbind(String string, EventHandler handler) /*-{
+	public native void unbind(String eventType, EventHandler handler) /*-{
 		this.unbind(eventType, handler);
 	}-*/;
 }
