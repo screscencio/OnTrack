@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO refactor this class and FiltableCommandMenu to extract duplicated code
 public class SearchScopeFiltrableCommandMenu extends Composite implements HasCloseHandlers<SearchScopeFiltrableCommandMenu>, PopupAware {
 
 	private static final List<Integer> KEY_DOWN_HANDLED_KEYS = Arrays.asList(new Integer[] { KEY_DOWN, KEY_UP, KEY_TAB });
@@ -170,9 +171,16 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasClo
 
 		final String lowerCaseFilterText = filterText.toLowerCase();
 
+		int itensStartingWithIndex = 0;
 		final List<CommandMenuItem> filteredItens = new ArrayList<CommandMenuItem>();
-		for (final CommandMenuItem item : itens)
-			if (item.getText().toLowerCase().contains(lowerCaseFilterText)) filteredItens.add(item);
+		for (final CommandMenuItem item : itens) {
+			final String itemText = item.getText().toLowerCase();
+			if (itemText.contains(lowerCaseFilterText)) {
+				if (itemText.startsWith(lowerCaseFilterText)) filteredItens.add(itensStartingWithIndex++, item);
+				else filteredItens.add(item);
+			}
+
+		}
 
 		return filteredItens;
 	}

@@ -12,6 +12,7 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
+@SuppressWarnings("deprecation")
 public class ApplicationPlaceController {
 
 	private final PlaceController placeController;

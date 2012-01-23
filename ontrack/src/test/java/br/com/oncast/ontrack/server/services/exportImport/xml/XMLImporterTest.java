@@ -212,7 +212,6 @@ public class XMLImporterTest {
 	public void xmlUserIdIsOnlyUsedForMapInsideXMLAndShouldNotBeUsedForPersisting() throws Exception {
 		final User user1 = addUserWithoutPassword(1, "user1");
 		final User user2 = addUserWithoutPassword(2, "user2");
-		final User user3 = addUserWithoutPassword(3, "user3");
 
 		final ProjectRepresentation project1 = addProjectWithActionsAndMockPersistedProject(1).getProjectRepresentation();
 		final ProjectRepresentation project2 = addProjectWithActionsAndMockPersistedProject(2).getProjectRepresentation();
