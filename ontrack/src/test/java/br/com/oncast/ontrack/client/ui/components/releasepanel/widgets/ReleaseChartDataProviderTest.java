@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -117,7 +116,6 @@ public class ReleaseChartDataProviderTest {
 			releaseEffortSum = (float) i;
 			assertEquals(releaseEffortSum, getProvider().getEffortSum());
 		}
-		Mockito.verify(releaseMock, Mockito.times(20)).getEffortSum();
 	}
 
 	@Test
@@ -130,7 +128,6 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	@Test
-	@Ignore
 	public void accomplishedEffortByDateShouldHaveOnlyOneZeroWhenReleaseEffortSumIsZero() throws Exception {
 		releaseEffortSum = 0f;
 		assertAccomplishedEffortsByDate(0);
@@ -149,7 +146,6 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	@Test
-	@Ignore
 	public void shouldNotReplicateAccomplishedEffortAfterReachingTheReleaseEffortSum() throws Exception {
 		releaseEffortSum = 10f;
 		final WorkingDay startDay = WorkingDayFactory.create().add(-10);

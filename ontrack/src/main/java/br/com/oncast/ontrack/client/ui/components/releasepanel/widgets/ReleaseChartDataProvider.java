@@ -27,16 +27,21 @@ public class ReleaseChartDataProvider {
 	}
 
 	public void evaluateData() {
-		accomplishedEffortByDate = new LinkedHashMap<WorkingDay, Float>();
 		accomplishedValueByDate = new LinkedHashMap<WorkingDay, Float>();
+		accomplishedEffortByDate = new LinkedHashMap<WorkingDay, Float>();
 
+		final float effortSum = getEffortSum();
 		releaseDays = calculateReleaseDays();
 		for (final WorkingDay releaseDay : releaseDays) {
-			final Float accomplishedEffort = getAccomplishedEffortFor(releaseDay);
 			final Float accomplishedValue = getAccomplishedValueFor(releaseDay);
+			final Float accomplishedEffort = getAccomplishedEffortFor(releaseDay);
 
-			if (accomplishedEffort != null) accomplishedEffortByDate.put(releaseDay, accomplishedEffort);
 			if (accomplishedValue != null) accomplishedValueByDate.put(releaseDay, accomplishedValue);
+			if (accomplishedEffort != null) {
+				accomplishedEffortByDate.put(releaseDay, accomplishedEffort);
+				if (accomplishedEffort >= effortSum) break;
+			}
+
 		}
 	}
 
