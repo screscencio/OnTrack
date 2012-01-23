@@ -4,6 +4,7 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 
 public class ProjectContextRequest implements DispatchRequest<ProjectContextResponse> {
 
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 	private long requestedProjectId;
 

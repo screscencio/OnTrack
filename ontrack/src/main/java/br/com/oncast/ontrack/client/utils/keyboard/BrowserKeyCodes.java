@@ -54,6 +54,10 @@ public class BrowserKeyCodes {
 
 	public static final int KEY_PERCENT = 53;
 
+	public static final int KEY_U = 85;
+
+	public static final int KEY_SLASH = 191;
+
 	public static boolean isArrowKey(final int nativeKeyCode) {
 		if (nativeKeyCode == KEY_LEFT || nativeKeyCode == KEY_UP || nativeKeyCode == KEY_RIGHT || nativeKeyCode == KEY_DOWN) return true;
 		return false;

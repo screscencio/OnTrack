@@ -35,6 +35,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.resources.client.CssResource;
@@ -182,15 +183,21 @@ public class ScopeTreeItemWidget extends Composite {
 	protected void onKeyDown(final KeyDownEvent event) {
 		if (!isEditing()) return;
 
+		event.stopPropagation();
+
 		final boolean isEnter = event.getNativeKeyCode() == KEY_ENTER;
 		if (isEnter || event.getNativeKeyCode() == KEY_ESCAPE) {
-
 			event.preventDefault();
-			event.stopPropagation();
 			switchToVisualization(isEnter);
 		}
-		else return;
+	}
 
+	@UiHandler("editionBox")
+	protected void onKeyUp(final KeyUpEvent event) {
+		if (!isEditing()) return;
+
+		event.preventDefault();
+		event.stopPropagation();
 	}
 
 	public void setValue(final String value) {

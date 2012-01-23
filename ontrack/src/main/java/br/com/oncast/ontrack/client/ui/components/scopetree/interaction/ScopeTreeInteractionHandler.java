@@ -11,8 +11,8 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Two
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.OperationNotAllowedException;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.utils.jquery.Event;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInteractionHandler {
@@ -87,19 +88,28 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	private ProjectContext context;
 
 	@Override
-	public void handle(final Event e) {
-		// FIXME: When triggered by an ENTER keydown event, the following ENTER keyup event must also be suppressed.
+	public Scope getSelectedScope() {
+		return tree.getSelected().getReferencedScope();
+	}
 
-		assureConfigured();
+	@Override
+	public void onInternalAction(final OneStepInternalAction action) {
+		internalActionHandler.handle(action);
+	}
 
-		final ScopeTreeItem selected = tree.getSelected();
-		if (selected == null) return;
+	@Override
+	public void onInternalAction(final TwoStepInternalAction action) {
+		internalActionHandler.handle(action);
+	}
 
-		ScopeTreeShortcutMappings.interpretKeyboardCommand(applicationActionHandler, internalActionHandler, e.which(), e.shiftKey(),
-				e.ctrlKey(), e.altKey(), e.metaKey(), selected.getReferencedScope(), context);
+	@Override
+	public void onUserActionExecutionRequest(final ScopeAction scopeMoveUpAction) {
+		applicationActionHandler.onUserActionExecutionRequest(scopeMoveUpAction);
+	}
 
-		e.stopPropagation();
-		e.preventDefault();
+	@Override
+	public ProjectContext getProjectContext() {
+		return context;
 	}
 
 	@Override
@@ -171,7 +181,8 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareValueAction(scopeId, hasDeclaredValue, declaredValue));
 	}
 
-	private void assureConfigured() {
+	@Override
+	public void assureConfigured() {
 		if (applicationActionHandler == null || tree == null || context == null) throw new RuntimeException("This class was not yet configured.");
 	}
 

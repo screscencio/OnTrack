@@ -28,24 +28,24 @@ public class GlobalNativeEventService {
 				final int eventType = event.getTypeInt();
 
 				switch (eventType) {
-				case Event.ONKEYUP: {
-					final NativeEvent nativeEvent = event.getNativeEvent();
-					for (final NativeEventListener listener : new ArrayList<NativeEventListener>(keyUpListeners))
-						listener.onNativeEvent(nativeEvent);
-				}
-					break;
-				case Event.ONKEYDOWN: {
-					final NativeEvent nativeEvent = event.getNativeEvent();
-					for (final NativeEventListener listener : new ArrayList<NativeEventListener>(keyDownListeners))
-						listener.onNativeEvent(nativeEvent);
-				}
-					break;
-				case Event.ONCLICK: {
-					final NativeEvent nativeEvent = event.getNativeEvent();
-					for (final NativeEventListener listener : new ArrayList<NativeEventListener>(clickListeners))
-						listener.onNativeEvent(nativeEvent);
-				}
-					break;
+					case Event.ONKEYUP: {
+						final NativeEvent nativeEvent = event.getNativeEvent();
+						for (final NativeEventListener listener : new ArrayList<NativeEventListener>(keyUpListeners))
+							listener.onNativeEvent(nativeEvent);
+					}
+						break;
+					case Event.ONKEYDOWN: {
+						final NativeEvent nativeEvent = event.getNativeEvent();
+						for (final NativeEventListener listener : new ArrayList<NativeEventListener>(keyDownListeners))
+							listener.onNativeEvent(nativeEvent);
+					}
+						break;
+					case Event.ONCLICK: {
+						final NativeEvent nativeEvent = event.getNativeEvent();
+						for (final NativeEventListener listener : new ArrayList<NativeEventListener>(clickListeners))
+							listener.onNativeEvent(nativeEvent);
+					}
+						break;
 				}
 			}
 		});

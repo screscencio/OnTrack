@@ -6,9 +6,8 @@ import java.util.List;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
-import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
@@ -19,7 +18,6 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -27,26 +25,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class PlanningActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
-	private final GlobalNativeEventService globalNativeEventService = GlobalNativeEventService.getInstance();
 	private final ActivityActionExecutionListener activityActionExecutionListener;
-	private final NativeEventListener globalKeyUpListener;
 	private PlanningView view;
 
 	public PlanningActivity() {
-
 		activityActionExecutionListener = new ActivityActionExecutionListener();
-		globalKeyUpListener = new NativeEventListener() {
-
-			@Override
-			public void onNativeEvent(final NativeEvent nativeEvent) {
-				PlanningShortcutMappings.interpretKeyboardCommand(
-						PlanningActivity.this,
-						nativeEvent.getKeyCode(),
-						nativeEvent.getCtrlKey(),
-						nativeEvent.getShiftKey(),
-						nativeEvent.getAltKey());
-			}
-		};
 	}
 
 	@Override
@@ -84,7 +67,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.setExporterPath(URLBuilder.buildMindMapExportURL(currentProjectId));
 
 		panel.setWidget(view);
-		globalNativeEventService.addKeyUpListener(globalKeyUpListener);
+		ShortcutService.register(view, this, PlanningShortcutMappings.values());
 		view.getScopeTree().setFocus(true);
 	}
 
@@ -92,7 +75,6 @@ public class PlanningActivity extends AbstractActivity {
 	public void onStop() {
 		Window.setTitle(DefaultViewSettings.TITLE);
 
-		globalNativeEventService.removeKeyUpListener(globalKeyUpListener);
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
 	}
 

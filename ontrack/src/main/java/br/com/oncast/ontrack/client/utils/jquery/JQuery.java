@@ -21,7 +21,7 @@ public final class JQuery {
 		return new JQuery(widget.getElement());
 	}
 
-	public JQuery keydown(final EventHandler handler) {
+	public JQuery bindKeydown(final EventHandler handler) {
 		nat.bind("keydown", handler);
 		return this;
 	}
@@ -29,5 +29,13 @@ public final class JQuery {
 	public JQuery keyup(final EventHandler handler) {
 		nat.bind("keyup", handler);
 		return this;
+	}
+
+	public static JQuery jquery(final Element element) {
+		return new JQuery(element);
+	}
+
+	public void unbindKeyDown(final EventHandler handler) {
+		nat.unbind("keydown", handler);
 	}
 }

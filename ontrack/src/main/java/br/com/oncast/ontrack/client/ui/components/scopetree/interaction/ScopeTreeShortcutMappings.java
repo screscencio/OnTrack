@@ -11,7 +11,6 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_PE
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_SHARP;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
-import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
@@ -20,161 +19,145 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Ins
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertFatherInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingDownInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingUpInternalAction;
-import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
-import br.com.oncast.ontrack.client.utils.RuntimeEnvironment;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.EventPostExecutionProcessor;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 // TODO Refactor this class into a shortcut manager with better resposability division and better performance while mapping interactions.
-enum ScopeTreeShortcutMappings {
-
-	UPDATE(KEY_F2, false, false, false) {
+public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidgetInteractionHandler> {
+	UPDATE(new Shortcut(KEY_F2)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			internalActionHandler.handle(new NodeEditionInternalAction(scope));
+		public void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new NodeEditionInternalAction(scope));
 		}
 	},
 
-	INSERT_SIBLING_SCOPE_DOWN(KEY_ENTER, false, false, false) {
+	INSERT_SIBLING_SCOPE_DOWN(new Shortcut(KEY_ENTER)) {
+
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			internalActionHandler.handle(new InsertSiblingDownInternalAction(scope));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new InsertSiblingDownInternalAction(scope));
 		}
 	},
 
-	INSERT_SIBLING_SCOPE_UP(KEY_ENTER, false, true, false) {
+	INSERT_SIBLING_SCOPE_UP(new Shortcut(KEY_ENTER).with(ShiftModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			internalActionHandler.handle(new InsertSiblingUpInternalAction(scope));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new InsertSiblingUpInternalAction(scope));
 		}
 	},
 
-	INSERT_SCOPE_AS_CHILD(KEY_ENTER, true, false, false) {
+	INSERT_SCOPE_AS_CHILD(new Shortcut(KEY_ENTER).with(ControlModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			internalActionHandler.handle(new InsertChildInternalAction(scope));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new InsertChildInternalAction(scope));
 		}
 	},
 
-	INSERT_SCOPE_AS_PARENT(KEY_ENTER, true, true, false) {
+	INSERT_SCOPE_AS_PARENT(new Shortcut(KEY_ENTER).with(ControlModifier.PRESSED).with(ShiftModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			internalActionHandler.handle(new InsertFatherInternalAction(scope));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new InsertFatherInternalAction(scope));
 		}
 	},
 
-	MOVE_SCOPE_UP(KEY_UP, true, false, false) {
+	MOVE_SCOPE_UP(new Shortcut(KEY_UP).with(ControlModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveUpAction(scope.getId()));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onUserActionExecutionRequest(new ScopeMoveUpAction(scope.getId()));
 		}
 	},
 
-	MOVE_SCOPE_DOWN(KEY_DOWN, true, false, false) {
+	MOVE_SCOPE_DOWN(new Shortcut(KEY_DOWN).with(ControlModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveDownAction(scope.getId()));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onUserActionExecutionRequest(new ScopeMoveDownAction(scope.getId()));
+		}
+
+	},
+	MOVE_SCOPE_RIGHT(new Shortcut(KEY_RIGHT).with(ControlModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onUserActionExecutionRequest(new ScopeMoveRightAction(scope.getId()));
 		}
 	},
 
-	MOVE_SCOPE_RIGHT(KEY_RIGHT, true, false, false) {
+	MOVE_SCOPE_LEFT(new Shortcut(KEY_LEFT).with(ControlModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveRightAction(scope.getId()));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onUserActionExecutionRequest(new ScopeMoveLeftAction(scope.getId()));
 		}
 	},
 
-	MOVE_SCOPE_LEFT(KEY_LEFT, true, false, false) {
+	DELETE_SCOPE(new Shortcut(KEY_DELETE)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			actionRequestHandler.onUserActionExecutionRequest(new ScopeMoveLeftAction(scope.getId()));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onUserActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
 		}
 	},
 
-	DELETE_SCOPE(KEY_DELETE, false, false, false) {
+	BIND_RELEASE(new Shortcut(KEY_AT).with(ShiftModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			actionRequestHandler.onUserActionExecutionRequest(new ScopeRemoveAction(scope.getId()));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new BindReleaseInternalAction(interactionHandler.getProjectContext(), scope));
 		}
 	},
 
-	BIND_RELEASE(KEY_AT, false, true, false) {
+	BIND_PROGRESS(new Shortcut(KEY_PERCENT).with(ShiftModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			internalActionHandler.handle(new BindReleaseInternalAction(context, scope));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new DeclareProgressInternalAction(interactionHandler.getProjectContext(), scope));
 		}
 	},
 
-	BIND_PROGRESS(KEY_PERCENT, false, true, false) {
+	BIND_EFFORT(new Shortcut(KEY_SHARP).with(ShiftModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			internalActionHandler.handle(new DeclareProgressInternalAction(context, scope));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new DeclareEffortInternalAction(scope, interactionHandler.getProjectContext()));
 		}
 	},
 
-	BIND_EFFORT(KEY_SHARP, false, true, false) {
+	BIND_VALUE(new Shortcut(KEY_DOLLAR).with(ShiftModifier.PRESSED)) {
 		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope, final ProjectContext context) {
-			internalActionHandler.handle(new DeclareEffortInternalAction(scope, context));
-		}
-	},
-	BIND_VALUE(KEY_DOLLAR, false, true, false) {
-		@Override
-		protected void execute(final ActionExecutionRequestHandler actionRequestHandler, final InternalActionExecutionRequestHandler internalActionHandler,
-				final Scope scope,
-				final ProjectContext context) {
-			internalActionHandler.handle(new DeclareValueInternalAction(scope, context));
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new DeclareValueInternalAction(scope, interactionHandler.getProjectContext()));
 		}
 	};
 
-	private final int keyUpCode;
-	private final boolean controlModifier;
-	private final boolean shiftModifier;
-	private final boolean altModifier;
+	private final Shortcut shortcut;
 
-	private ScopeTreeShortcutMappings(final int keyCode, final boolean controlModifier, final boolean shiftModifier, final boolean hasAltModifier) {
-		this.keyUpCode = keyCode;
-		this.controlModifier = controlModifier;
-		this.shiftModifier = shiftModifier;
-		this.altModifier = hasAltModifier;
+	ScopeTreeShortcutMappings(final Shortcut shortcut) {
+		this.shortcut = shortcut;
 	}
 
-	public static void interpretKeyboardCommand(final ActionExecutionRequestHandler applicationActionHandler,
-			final InternalActionExecutionRequestHandler internalActionHandler, final int keyCode, final boolean hasShiftModifier,
-			final boolean hasControlModifier, final boolean hasAltModifier, final boolean hasMetaModifier, final Scope scope, final ProjectContext context) {
-
-		for (final ScopeTreeShortcutMappings mapping : values())
-
-			// TODO +++The code below is platform dependent, move the platform specific key configuration elsewhere.
-			if (mapping.accepts(keyCode, RuntimeEnvironment.isMac() ? (hasMetaModifier && !hasControlModifier) : hasControlModifier,
-					hasShiftModifier, hasAltModifier)) {
-				mapping.execute(applicationActionHandler, internalActionHandler, scope, context);
-			}
+	@Override
+	public void execute(final ScopeTreeWidgetInteractionHandler interactionHandler) {
+		interactionHandler.assureConfigured();
+		final Scope selectedScope = interactionHandler.getSelectedScope();
+		if (selectedScope == null) return;
+		customExecution(interactionHandler, selectedScope);
 	}
 
-	protected abstract void execute(final ActionExecutionRequestHandler actionRequestHandler, InternalActionExecutionRequestHandler internalActionHandler,
-			final Scope scope, ProjectContext context);
+	protected abstract void customExecution(ScopeTreeWidgetInteractionHandler interactionHandler, Scope scope);
 
-	private boolean accepts(final int keyCode, final boolean hasControlModifier, final boolean hasShiftModifier, final boolean hasAltModifier) {
-		return (this.keyUpCode == keyCode && this.controlModifier == hasControlModifier && this.shiftModifier == hasShiftModifier && this.altModifier == hasAltModifier);
+	@Override
+	public Shortcut getShortcut() {
+		return this.shortcut;
 	}
+
+	@Override
+	public EventPostExecutionProcessor getEventPostExecutionProcessor() {
+		return EventPostExecutionProcessor.CONSUME;
+	}
+
 }

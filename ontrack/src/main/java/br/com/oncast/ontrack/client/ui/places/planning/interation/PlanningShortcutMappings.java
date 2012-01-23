@@ -1,54 +1,51 @@
 package br.com.oncast.ontrack.client.ui.places.planning.interation;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_F;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_Y;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_Z;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_SLASH;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_U;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.EventPostExecutionProcessor;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 
-public enum PlanningShortcutMappings {
-
-	UNDO(KEY_Z, true, false, false) {
+public enum PlanningShortcutMappings implements ShortcutMapping<PlanningActivity> {
+	UNDO(new Shortcut(KEY_U)) {
 		@Override
-		protected void execute(final PlanningActivity activity) {
+		public void execute(final PlanningActivity activity) {
 			activity.getActionRequestHandler().onUserActionUndoRequest();
 		}
-	},
 
-	REDO(KEY_Y, true, false, false) {
+	},
+	REDO(new Shortcut(KEY_U).with(ShiftModifier.PRESSED)) {
 		@Override
-		protected void execute(final PlanningActivity activity) {
+		public void execute(final PlanningActivity activity) {
 			activity.getActionRequestHandler().onUserActionRedoRequest();
 		}
 	},
-	SEARCH_SCOPE(KEY_F, true, false, false) {
+	SEARCH_SCOPE(new Shortcut(KEY_SLASH)) {
 		@Override
-		protected void execute(final PlanningActivity activity) {
+		public void execute(final PlanningActivity activity) {
 			activity.showSearchScope();
 		}
 	};
 
-	private final int keyUpCode;
-	private final boolean controlModifier;
-	private final boolean shiftModifier;
-	private final boolean altModifier;
+	private final Shortcut shortcut;
 
-	private PlanningShortcutMappings(final int keyCode, final boolean controlModifier, final boolean shiftModifier, final boolean hasAltModifier) {
-		this.keyUpCode = keyCode;
-		this.controlModifier = controlModifier;
-		this.shiftModifier = shiftModifier;
-		this.altModifier = hasAltModifier;
+	PlanningShortcutMappings(final Shortcut shortcut) {
+		this.shortcut = shortcut;
 	}
 
-	public static void interpretKeyboardCommand(final PlanningActivity activity,
-			final int keyCode, final boolean hasControlModifier, final boolean hasShiftModifier,
-			final boolean hasAltModifier) {
-		for (final PlanningShortcutMappings mapping : values())
-			if (mapping.accepts(keyCode, hasControlModifier, hasShiftModifier, hasAltModifier)) mapping.execute(activity);
+	@Override
+	public abstract void execute(PlanningActivity target);
+
+	@Override
+	public Shortcut getShortcut() {
+		return this.shortcut;
 	}
 
-	protected abstract void execute(final PlanningActivity activity);
-
-	private boolean accepts(final int keyCode, final boolean hasControlModifier, final boolean hasShiftModifier, final boolean hasAltModifier) {
-		return (this.keyUpCode == keyCode && this.controlModifier == hasControlModifier && this.shiftModifier == hasShiftModifier && this.altModifier == hasAltModifier);
+	@Override
+	public EventPostExecutionProcessor getEventPostExecutionProcessor() {
+		return EventPostExecutionProcessor.CONSUME;
 	}
+
 }

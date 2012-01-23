@@ -41,8 +41,7 @@ public class ActionQueuedDispatcherTestUtils {
 			}
 
 			@Override
-			public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {
-				}
+			public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {}
 		};
 	}
 
@@ -69,7 +68,6 @@ public class ActionQueuedDispatcherTestUtils {
 	final class DispatchRequestServiceTestImplementation implements DispatchService {
 		private DispatchListener listener;
 
-		@SuppressWarnings("hiding")
 		public void registerDispatchListener(final DispatchListener listener) {
 			this.listener = listener;
 		}
