@@ -54,9 +54,9 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 
 	private static final String IDEAL_EFFORT_COLOR = "#r4r44r";
 
-	private static final String VALUE_COLOR = "#AA0000";
+	private static final String VALUE_COLOR = "#00AA00";
 
-	private static final String EFFORT_COLOR = "#0000AA";
+	private static final String EFFORT_COLOR = "#AA0000";
 
 	private static final String SERIES_IDEAL_BURN_UP_LINE = "Ideal Effort";
 
@@ -162,13 +162,13 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 						.setCursor(PlotOptions.Cursor.POINTER)
 						.setMarker(new Marker().setLineWidth(1))
 				)
-					.setLinePlotOptions(new LinePlotOptions()
-							.setDataLabels(new DataLabels()
-									.setEnabled(true)
-									.setAlign(Align.RIGHT)
-									.setFormatter(new ShowOnlyLastPointFormatter())
-							)
-					)
+				.setLinePlotOptions(new LinePlotOptions()
+						.setDataLabels(new DataLabels()
+								.setEnabled(true)
+								.setAlign(Align.RIGHT)
+								.setFormatter(new ShowOnlyLastPointFormatter())
+						)
+				)
 				.setToolTip(new ToolTip()
 						.setCrosshairs(true)
 						.setFormatter(new ToolTipFormatter() {
