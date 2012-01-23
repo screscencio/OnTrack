@@ -66,6 +66,8 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private final CustomCommandMenuItemFactory customItemFactory;
 
+	private boolean shouldCloseOnEscape = true;
+
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.customItemFactory = customItemFactory;
@@ -111,7 +113,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@UiHandler("filterArea")
 	protected void handleKeyUp(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() == KEY_ESCAPE) {
+		if (shouldCloseOnEscape && event.getNativeKeyCode() == KEY_ESCAPE) {
 			hide();
 		}
 		else if (event.getNativeKeyCode() == KEY_ENTER) {
@@ -250,6 +252,11 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	public void selectFirstItem() {
 		menu.selectFirstItem();
+	}
+
+	public FiltrableCommandMenu setCloseOnEscape(final boolean bool) {
+		shouldCloseOnEscape = bool;
+		return this;
 	}
 
 	@Override
