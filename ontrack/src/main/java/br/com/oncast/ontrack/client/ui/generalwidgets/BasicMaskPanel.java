@@ -9,6 +9,7 @@ import com.google.gwt.place.shared.PlaceChangeRequestEvent;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class BasicMaskPanel {
 
@@ -55,7 +56,7 @@ public class BasicMaskPanel {
 	protected void setFocus(final boolean focused) {
 		maskPanel.setFocus(focused);
 	}
-	
+
 	private void configureToCleanOnAnyNavigationEvent() {
 		maskPanel.addHandler(new PlaceChangeRequestEvent.Handler() {
 			@Override
@@ -64,12 +65,15 @@ public class BasicMaskPanel {
 			}
 		}, PlaceChangeRequestEvent.TYPE);
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
-
 			@Override
 			public void onValueChange(final ValueChangeEvent<String> event) {
 				maskPanel.clear();
 			}
 		});
+	}
+
+	public void add(final Widget widget) {
+		maskPanel.add(widget);
 	}
 
 }

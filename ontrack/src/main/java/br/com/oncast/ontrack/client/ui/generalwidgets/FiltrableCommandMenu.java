@@ -23,13 +23,10 @@ import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -89,7 +86,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		this.itens = itens;
 		menu.setItens(itens);
 
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	@Override
@@ -166,7 +163,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		menu.selectFirstItem();
 		if (shouldAddCustomItens) menu.selectItemDown();
 
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	private boolean hasTextMatchInItemList(final List<CommandMenuItem> itens, final String text) {
@@ -214,7 +211,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	 * IMPORTANT Do not use max_height CSS property directly in the ui.xml file, because the first time this ScrollabeCommandMenu is
 	 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
 	 */
-	private void ajustDimentions() {
+	private void adjustDimentions() {
 		scrollPanel.setWidth("");
 		int calculatedMaxHeight;
 		if (menu.getOffsetWidth() > maxWidth) {
@@ -251,12 +248,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 				hide();
 			}
 		});
-		History.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(final ValueChangeEvent<String> event) {
-				ajustDimentions();
-			}
-		});
 	}
 
 	public void selectFirstItem() {
@@ -276,12 +267,12 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@UiHandler("focusPanel")
 	protected void onAttach(final AttachEvent event) {
 		if (!event.isAttached()) return;
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
-		if (true) ajustDimentions();
+		if (visible) adjustDimentions();
 	}
 }
