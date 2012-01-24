@@ -26,7 +26,7 @@
 				cursor: pointer;
 				text-align: left;
 				position: absolute;
-				right: 300px;
+				right: 168px;
 				left: 0px;
 				top: 0px;
 				bottom: 0px;
@@ -34,7 +34,7 @@
 			
 			.effort {
 				position: absolute;
-				right: 210px;
+				right: 0px;
 				width: 80px;
 				height: 20px;
 				overflow: hidden;
@@ -57,7 +57,7 @@
             			
 			.value {
 				position: absolute;
-				right: 290px;
+				right: 80px;
 				width: 80px;
 				height: 20px;
 				overflow: hidden;
@@ -87,7 +87,13 @@
 				text-decoration: line-through;
 			}
 			
-			.scope { 
+			.scope {
+				position: absolute;
+                top: 0px;
+                bottom: 0px;
+                left: 0px;
+                right: 215px;
+                display: block;
 			}
 			
 			.releasePanel {
