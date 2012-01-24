@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
@@ -15,43 +16,48 @@ public class ReleaseChartDataProvider {
 
 	private final Release release;
 	private final ReleaseEstimator releaseEstimator;
-	private HashMap<String, Float> accomplishedEffortByDate;
+	private HashMap<WorkingDay, Float> accomplishedEffortByDate;
+	private HashMap<WorkingDay, Float> accomplishedValueByDate;
+	private List<WorkingDay> releaseDays;
 
 	public ReleaseChartDataProvider(final Release release, final ReleaseEstimator estimator) {
 		this.release = release;
 		this.releaseEstimator = estimator;
-		calculateAccomplishedEffortByDate();
+		evaluateData();
 	}
 
-	public List<String> getReleaseDays() {
-		return new ArrayList<String>(accomplishedEffortByDate.keySet());
-	}
+	public void evaluateData() {
+		accomplishedValueByDate = new LinkedHashMap<WorkingDay, Float>();
+		accomplishedEffortByDate = new LinkedHashMap<WorkingDay, Float>();
 
-	public List<Float> getAccomplishedEffortsByDate() {
-		final ArrayList<Float> efforts = new ArrayList<Float>();
-		for (final String data : accomplishedEffortByDate.keySet()) {
-			final Float effortInThisDate = accomplishedEffortByDate.get(data);
-			if (effortInThisDate == null) continue;
-			efforts.add(effortInThisDate);
-			if (effortInThisDate >= getEffortSum()) break;
-		}
-		return efforts;
-	}
-
-	public float getEffortSum() {
-		return release.getEffortSum();
-	}
-
-	private void calculateAccomplishedEffortByDate() {
-		accomplishedEffortByDate = new LinkedHashMap<String, Float>();
-
-		final List<WorkingDay> releaseDays = calculateReleaseDays();
+		final float effortSum = getEffortSum();
+		releaseDays = calculateReleaseDays();
 		for (final WorkingDay releaseDay : releaseDays) {
-			accomplishedEffortByDate.put(releaseDay.getDayAndMonthString(), getAccomplishedEffort(releaseDay));
+			final Float accomplishedValue = getAccomplishedValueFor(releaseDay);
+			final Float accomplishedEffort = getAccomplishedEffortFor(releaseDay);
+
+			if (accomplishedValue != null) accomplishedValueByDate.put(releaseDay, accomplishedValue);
+			if (accomplishedEffort != null) {
+				accomplishedEffortByDate.put(releaseDay, accomplishedEffort);
+				if (accomplishedEffort >= effortSum) break;
+			}
+
 		}
 	}
 
-	private Float getAccomplishedEffort(final WorkingDay day) {
+	private Float getAccomplishedValueFor(final WorkingDay day) {
+		if (day.isAfter(WorkingDayFactory.create())) return null;
+
+		float accomplishedValueSum = 0;
+		for (final Scope scope : release.getAllScopesIncludingChildrenReleases()) {
+			if (scope.getProgress().isDone() && scope.getProgress().getEndDay().isBeforeOrSameDayOf(day)) {
+				accomplishedValueSum += scope.getValue().getInfered();
+			}
+		}
+		return accomplishedValueSum;
+	}
+
+	private Float getAccomplishedEffortFor(final WorkingDay day) {
 		if (day.isAfter(WorkingDayFactory.create())) return null;
 
 		float accomplishedEffortSum = 0;
@@ -61,6 +67,22 @@ public class ReleaseChartDataProvider {
 			}
 		}
 		return accomplishedEffortSum;
+	}
+
+	public List<WorkingDay> getReleaseDays() {
+		return new ArrayList<WorkingDay>(releaseDays);
+	}
+
+	public Map<WorkingDay, Float> getAccomplishedValuePointsByDate() {
+		return accomplishedValueByDate;
+	}
+
+	public Map<WorkingDay, Float> getAccomplishedEffortPointsByDate() {
+		return accomplishedEffortByDate;
+	}
+
+	public float getEffortSum() {
+		return release.getEffortSum();
 	}
 
 	private List<WorkingDay> calculateReleaseDays() {
@@ -81,8 +103,7 @@ public class ReleaseChartDataProvider {
 		return estimatedEndDay.isAfter(releaseEndDay) ? estimatedEndDay : releaseEndDay;
 	}
 
-	public String getEstimatedEndDay() {
-		return releaseEstimator.getEstimatedEndDayFor(release).getDayAndMonthString();
+	public WorkingDay getEstimatedEndDay() {
+		return releaseEstimator.getEstimatedEndDayFor(release);
 	}
-
 }

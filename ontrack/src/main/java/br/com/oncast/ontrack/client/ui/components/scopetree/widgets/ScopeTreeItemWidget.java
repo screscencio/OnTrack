@@ -195,7 +195,6 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiHandler("editionBox")
 	protected void onKeyUp(final KeyUpEvent event) {
 		if (!isEditing()) return;
-
 		event.preventDefault();
 		event.stopPropagation();
 	}

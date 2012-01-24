@@ -24,12 +24,12 @@ import br.com.oncast.ontrack.shared.config.RequestConfigurations;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * The {@link ClientServiceProvider} is programmed in such a way that only business services are publicly available.

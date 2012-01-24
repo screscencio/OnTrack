@@ -245,6 +245,15 @@ public class Release implements Serializable {
 		return endDay;
 	}
 
+	public Float getValueSum() {
+		float valueSum = 0;
+
+		for (final Scope scope : getAllScopesIncludingChildrenReleases())
+			valueSum += scope.getValue().getInfered();
+
+		return valueSum;
+	}
+
 	public float getEffortSum() {
 		float effortSum = 0;
 

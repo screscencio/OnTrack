@@ -7,5 +7,4 @@ public class ClientDecimalFormat {
 		var num = new Number(number);
 		return num.toFixed(decimalDigits).toString();
 	}-*/;
-
 }

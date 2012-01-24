@@ -5,12 +5,10 @@ import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configP
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.ChartPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupOpenListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
@@ -110,7 +108,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private MouseCommandsMenu mouseCommandsMenu;
 
-	private ChartPanel chartPanel;
+	private ReleaseChart chartPanel;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
 			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
@@ -142,12 +140,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		updateProgress();
 		setContainerState(true);
 
-		configPopup().link(progressLabel).popup(getChartPanel()).alignRight(progressLabel).alignBelow(progressLabel).onOpen(new PopupOpenListener() {
-			@Override
-			public void onWillOpen() {
-				updateBurnUpChart();
-			}
-		});
+		configPopup().link(progressLabel).popup(getChartPanel()).alignRight(progressLabel).alignBelow(progressLabel);
 		configPopup().link(menuLink).popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2);
 	}
 
@@ -185,13 +178,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		return mouseCommandsMenu;
 	}
 
-	private ChartPanel getChartPanel() {
-		if (chartPanel != null) return chartPanel;
-		chartPanel = new ChartPanel();
-		chartPanel.setStyleName(style.chartPanel());
-		return chartPanel;
-	}
-
 	private ModelWidgetContainerListener createContainerUpdateListener() {
 		return new ModelWidgetContainerListener() {
 
@@ -219,7 +205,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		updateDescription();
 		updateProgress();
 
-		return releaseContainer.update(release.getChildren()) | scopeContainer.update(release.getScopeList());
+		final boolean releaseUpdate = releaseContainer.update(release.getChildren());
+		final boolean scopeUpdate = scopeContainer.update(release.getScopeList());
+		return releaseUpdate || scopeUpdate;
 	}
 
 	private void updateDescription() {
@@ -230,15 +218,14 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void updateProgress() {
-		final String newProgress = getProcessDescription();
+		final String newProgress = getProgressDescription();
 
 		if (newProgress.equals(currentReleaseProgressDescription)) return;
 		currentReleaseProgressDescription = newProgress;
-
-		updateReleaseChartPanel(newProgress);
+		progressLabel.setText(currentReleaseProgressDescription);
 	}
 
-	private String getProcessDescription() {
+	private String getProgressDescription() {
 		if (release.isDone()) return "100%";
 		final float effortSum = release.getEffortSum();
 		if (effortSum == 0) return "";
@@ -246,11 +233,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		final float concludedEffortSum = release.getAccomplishedEffortSum();
 		final float percentage = 100 * concludedEffortSum / effortSum;
 		return ClientDecimalFormat.roundFloat(percentage, 1) + "%";
-	}
-
-	private void updateReleaseChartPanel(final String newProgress) {
-		if (newProgress.isEmpty()) getChartPanel().hide();
-		progressLabel.setText(currentReleaseProgressDescription);
 	}
 
 	public void setContainerState(final boolean shouldOpen) {
@@ -269,13 +251,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		isContainerStateOpen = shouldOpen;
 	}
 
-	private void updateBurnUpChart() {
-		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, getReleaseEstimator());
-
-		getChartPanel().setMaxValue(dataProvider.getEffortSum())
-				.setXAxisLineValues(dataProvider.getReleaseDays())
-				.setYAxisLineValues(dataProvider.getAccomplishedEffortsByDate())
-				.setIdealEndDay(dataProvider.getEstimatedEndDay());
+	private ReleaseChart getChartPanel() {
+		if (chartPanel != null) return chartPanel;
+		chartPanel = new ReleaseChart(new ReleaseChartDataProvider(release, getReleaseEstimator()));
+		chartPanel.setStyleName(style.chartPanel());
+		return chartPanel;
 	}
 
 	private ReleaseEstimator getReleaseEstimator() {
