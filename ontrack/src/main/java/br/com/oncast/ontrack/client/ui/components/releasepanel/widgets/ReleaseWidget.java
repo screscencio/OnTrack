@@ -5,10 +5,12 @@ import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configP
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
+import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
@@ -70,6 +72,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected Image menuLink;
+
+	@UiField
+	protected Image progressLink;
 
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
@@ -142,6 +147,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		configPopup().link(progressLabel).popup(getChartPanel()).alignRight(progressLabel).alignBelow(progressLabel);
 		configPopup().link(menuLink).popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2);
+	}
+
+	@UiHandler("progressLink")
+	protected void onClick(final ClickEvent event) {
+		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
+		final long projectId = provider.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId();
+		provider.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
 	}
 
 	@UiHandler("containerToogleClickableArea")
