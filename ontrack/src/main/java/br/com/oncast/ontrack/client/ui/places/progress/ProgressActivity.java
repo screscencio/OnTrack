@@ -2,40 +2,47 @@ package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
-import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
+import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ProgressActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private final ActivityActionExecutionListener activityActionExecutionListener;
+	private final ProgressPlace place;
 	private ProgressView view;
-	private final Release release;
-	private final String projectName;
 
 	public ProgressActivity(final ProgressPlace place) {
+		this.place = place;
 		activityActionExecutionListener = new ActivityActionExecutionListener();
-		final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(place.getRequestedProjectId());
-		release = projectContext.getProjectRelease().findRelease(place.getRequestedReleaseId());
-		projectName = projectContext.getProjectRepresentation().getName();
 	}
 
 	@Override
+	// FIXME Lobo: Show the Project and release somewhere
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-		Window.setTitle(projectName + " - " + release.getDescription());
 		view = new ProgressPanel();
 
-		for (final Scope scope : release.getAllScopesIncludingChildrenReleases()) {
-			final Progress prog = scope.getProgress();
-			view.addItem(prog, release.getScopeIndex(scope), scope);
+		final long projectId = place.getRequestedProjectId();
+		final UUID releaseId = place.getRequestedReleaseId();
+
+		try {
+			final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(projectId);
+			view.getKanbanPanel().setRelease(projectContext.findRelease(releaseId));
+		}
+		catch (final ReleaseNotFoundException e) {
+			// FIXME LOBO
+			SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
+		}
+		// FIXME LOBO Change the runtime exception
+		catch (final RuntimeException e) {
+			SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace());
 		}
 
 		panel.setWidget(view);
@@ -43,9 +50,6 @@ public class ProgressActivity extends AbstractActivity {
 
 	@Override
 	public void onStop() {
-		Window.setTitle(DefaultViewSettings.TITLE);
-
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
 	}
-
 }

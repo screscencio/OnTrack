@@ -27,7 +27,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 			@Override
 			public void onUserLoggedOut() {
-				projectContext = null;
+				setProjectContext(null);
 			}
 
 			@Override

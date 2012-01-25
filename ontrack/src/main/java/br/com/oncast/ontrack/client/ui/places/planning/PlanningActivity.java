@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
-import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -19,7 +18,6 @@ import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class PlanningActivity extends AbstractActivity {
@@ -40,8 +38,6 @@ public class PlanningActivity extends AbstractActivity {
 		final ProjectRepresentation currentProjectRepresentation = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation();
 		final long currentProjectId = currentProjectRepresentation.getId();
 		final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(currentProjectId);
-
-		Window.setTitle(currentProjectRepresentation.getName());
 
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
@@ -73,8 +69,6 @@ public class PlanningActivity extends AbstractActivity {
 
 	@Override
 	public void onStop() {
-		Window.setTitle(DefaultViewSettings.TITLE);
-
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
 	}
 

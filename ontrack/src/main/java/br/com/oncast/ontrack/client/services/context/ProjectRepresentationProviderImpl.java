@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
+import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.context.NewProjectCreatedEventHandler;
@@ -19,6 +20,8 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequ
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
+
+import com.google.gwt.user.client.Window;
 
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
 
@@ -80,19 +83,21 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
 				// TODO +++Treat fatal error. COuld not load project list...
-				ClientNotificationService.showError("It was not possible to load the project list.\n Verify your internet connection and reload the application.");
+				ClientNotificationService
+						.showError("It was not possible to load the project list.\n Verify your internet connection and reload the application.");
 			}
 		});
 	}
 
 	@Override
 	public ProjectRepresentation getCurrentProjectRepresentation() {
-		if (currentProjectRepresentation == null) throw new RuntimeException("There is no project representation set yet.");
+		if (currentProjectRepresentation == null) throw new RuntimeException("There is no project representation set.");
 		return currentProjectRepresentation;
 	}
 
 	protected void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
 		this.currentProjectRepresentation = projectRepresentation;
+		Window.setTitle(projectRepresentation == null ? DefaultViewSettings.TITLE : currentProjectRepresentation.getName());
 	}
 
 	@Override
