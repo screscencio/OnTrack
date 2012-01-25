@@ -6,6 +6,8 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ReleaseTestUtils {
 
+	private static int releaseCounter = 0;
+
 	// IMPORTANT Doesn't change this scope without checking the tests that use it.
 	public static Release getEmptyRelease() {
 		return ReleaseFactoryTestUtil.create("release");
@@ -91,6 +93,10 @@ public class ReleaseTestUtils {
 		}
 
 		return r1;
+	}
+
+	public static Release createRelease() {
+		return ReleaseFactoryTestUtil.create(Release.class.getSimpleName() + ++releaseCounter);
 	}
 
 }
