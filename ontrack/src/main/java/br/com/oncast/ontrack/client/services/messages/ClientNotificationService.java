@@ -28,18 +28,18 @@ public class ClientNotificationService {
 
 	}
 
-	// FIXME handle clicks over the toast
+	// FIXME MATS handle clicks over the NotificationMessage
 	private static void makeConfirmationNotification(final String message, final NotificationType type, final ConfirmationListener listener) {
-		final NotificationWidget toast = new NotificationWidget();
+		final NotificationWidget notificationMessage = new NotificationWidget();
 		ErrorMaskPanel.show(new HideHandler() {
 
 			@Override
 			public void onWillHide() {
-				toast.hide();
+				notificationMessage.hide();
 				listener.onConfirmation();
 			}
 		});
-		toast.show(message + " Please Click Anyware", type);
+		notificationMessage.show(message + " Please Click Anywhere", type);
 	}
 
 	private static void makeAutoCloseNotification(final String message, final NotificationType type, final int autoCloseTime) {

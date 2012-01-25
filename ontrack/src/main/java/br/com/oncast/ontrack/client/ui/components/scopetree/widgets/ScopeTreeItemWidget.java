@@ -324,19 +324,10 @@ public class ScopeTreeItemWidget extends Composite {
 	 * Decisions: - [02/08/2011] It was decided to display a percentage result even if some child scope not been estimated (effort = 0) and it is not done.
 	 */
 	private void updateProgressDisplay() {
-		final String progress = scope.isLeaf() ? getProgressDescriptionForLeaf() : getProgressDescriptionForNonLeaf();
+		final String progress = scope.getProgress().getDescription();
+
 		progressLabel.setText(progress);
 		progressLabel.setTitle(progress);
-	}
-
-	private String getProgressDescriptionForLeaf() {
-		return scope.getProgress().getDescription();
-	}
-
-	private String getProgressDescriptionForNonLeaf() {
-		if (scope.getProgress().isDone()) return "100%";
-		if (scope.getEffort().getInfered() == 0) return "";
-		return ClientDecimalFormat.roundFloat(scope.getEffort().getAccomplishedPercentual(), 1) + "%";
 	}
 
 	public void showReleaseMenu(final List<Release> releaseList) {

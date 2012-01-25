@@ -12,7 +12,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -253,7 +252,7 @@ public class PopupConfig {
 
 		if (!widgetToPopup.isAttached()) {
 			widgetToPopup.setVisible(false);
-			RootPanel.get().add(widgetToPopup);
+			MaskPanel.add(widgetToPopup);
 			DOM.setStyleAttribute(widgetToPopup.getElement(), "position", "absolute");
 			leaveWidgetInDomOnClose = false;
 		}

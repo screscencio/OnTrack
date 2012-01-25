@@ -69,8 +69,10 @@
                 width: 18px;
                 height: 18px;
                 display: block;
-                right: 50px;
+                right: 80px;
                 top: 6px;
+                
+                text-align: right;
                 
                 -moz-border-radius: 2px;
                 border-radius: 2px;
@@ -79,6 +81,28 @@
             .progressLabel:hover {
 				cursor: pointer;
             }
+			
+			.progressIcon {
+				position: absolute;
+				
+				width: 18px;
+				height: 18px;
+				right: 30px;
+				top: 5px;
+
+                opacity: 0.6;
+				display: block;
+				background: #dfe0e3 url("resources/image/releasePanel/progressIcon.png") no-repeat center;
+				background-size: 18px 18px;
+				
+				-moz-border-radius: 2px;
+                border-radius: 2px;
+			}
+			
+			.progressIcon:hover {
+				opacity: 1;
+				cursor: pointer;
+			}
             
 			.releaseChartPanel {
 				position: absolute;
@@ -156,6 +180,7 @@
 				<t:EditableLabel ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
 			</g:FocusPanel>
 			<g:Label styleName="{style.progressLabel}" ui:field="progressLabel" />
+			<g:Image styleName="{style.progressIcon}" ui:field="progressLink" />
 			<g:Image styleName="{style.menuLink}" ui:field="menuLink" />
 		</div>
 		<div ui:field="bodyContainer" class="{style.body}" >

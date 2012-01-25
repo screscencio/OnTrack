@@ -137,7 +137,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.getTransaction().begin();
 			final User mergedUser = em.merge(user);
 			em.getTransaction().commit();
-			// FIXME Make this method void and change the incoming object with id.
+			// TODO ++++ Make this method void and change the incoming object with id.
 			return mergedUser;
 		}
 		catch (final Exception e) {
@@ -262,7 +262,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final ProjectRepresentation mergedProjectRepresentation = em.merge(projectRepresentation);
 			em.getTransaction().commit();
 			projectRepresentation.setId(mergedProjectRepresentation.getId());
-			// FIXME Make this method void, because it is already changing the incoming object with generated id.
+			// TODO ++++ Make this method void, because it is already changing the incoming object with generated id.
 			return mergedProjectRepresentation;
 		}
 		catch (final Exception e) {

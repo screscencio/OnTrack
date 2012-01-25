@@ -86,7 +86,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		this.itens = itens;
 		menu.setItens(itens);
 
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		menu.selectFirstItem();
 		if (shouldAddCustomItens) menu.selectItemDown();
 
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	private boolean hasTextMatchInItemList(final List<CommandMenuItem> itens, final String text) {
@@ -211,7 +211,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	 * IMPORTANT Do not use max_height CSS property directly in the ui.xml file, because the first time this ScrollabeCommandMenu is
 	 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
 	 */
-	private void ajustDimentions() {
+	private void adjustDimentions() {
 		scrollPanel.setWidth("");
 		int calculatedMaxHeight;
 		if (menu.getOffsetWidth() > maxWidth) {
@@ -267,12 +267,12 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@UiHandler("focusPanel")
 	protected void onAttach(final AttachEvent event) {
 		if (!event.isAttached()) return;
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
-		if (true) ajustDimentions();
+		if (visible) adjustDimentions();
 	}
 }

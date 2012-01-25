@@ -1,15 +1,12 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -115,7 +112,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	 * @return if the progress was updated.
 	 */
 	private boolean updateProgress() {
-		final String description = getScopeProgressDescription();
+		final String description = scope.getProgress().getDescription();
 		if (description.equals(currentScopeProgress)) return false;
 		currentScopeProgress = description;
 
@@ -123,16 +120,6 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		progressLabel.setVisible(!currentScopeProgress.isEmpty());
 
 		return true;
-	}
-
-	private String getScopeProgressDescription() {
-		if (scope.isLeaf()) return scope.getProgress().getDescription();
-
-		final ProgressState progressState = scope.getProgress().getState();
-		if (progressState == DONE) return DONE.getDescription();
-		if (progressState == UNDER_WORK || scope.getEffort().getInfered() != 0) return UNDER_WORK.getDescription();
-
-		return "";
 	}
 
 	public Scope getScope() {

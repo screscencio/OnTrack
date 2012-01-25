@@ -1,0 +1,54 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:pp='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel'
+	xmlns:ap='urn:import:br.com.oncast.ontrack.client.ui.components.appmenu'>
+
+	<ui:style>
+		.rootPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+		}
+		
+		.appMenu {
+			position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            height: 35px;
+            border-bottom: 1px solid #333;
+            -moz-box-shadow: 0px 0px 5px #a5a5a5;
+            -webkit-box-shadow: 0px 0px 5px #a5a5a5;
+            box-shadow: 0px 0px 5px #a5a5a5;
+		}
+		
+		.kanbanPanel {
+			position: absolute;
+			top: 50px;
+			left: 10px;
+			right: 10px;
+			bottom: 20px;
+			padding: 5px;
+			overflow: auto;
+			overflow-x: hidden;
+			
+			border: 1px solid #a5a5a5;
+			-moz-box-shadow: 0px 0px 5px #a5a5a5;
+			-webkit-box-shadow: 0px 0px 5px #a5a5a5;
+			box-shadow: 0px 0px 5px #a5a5a5;
+            background: #fff;
+		}
+	</ui:style>
+
+	<g:FlowPanel styleName="{style.rootPanel}">
+        <g:SimplePanel styleName="{style.appMenu} gradAppHeader">
+        	<ap:ApplicationMenu ui:field="applicationMenu"/>
+        </g:SimplePanel>
+		<g:SimplePanel styleName="{style.kanbanPanel}">
+			<g:HorizontalPanel ui:field="board" />
+		</g:SimplePanel>
+	</g:FlowPanel>
+</ui:UiBinder>

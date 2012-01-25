@@ -58,7 +58,7 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 			}
 		}
 		else {
-			if (!progress.getDescription().isEmpty()) {
+			if (!progress.getDescription().isEmpty() && !progress.hasDeclared()) {
 				progress.setDescription("");
 				shouldBeInsertedIntoSet = true;
 			}
@@ -89,8 +89,11 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 
 	private boolean shouldProgressBeMarketAsCompleted(final Scope scope) {
 		if (scope.isLeaf()) return scope.getProgress().isDone();
+		else if (scope.getProgress().isDone() && scope.getProgress().hasDeclared()) return true;
+
 		for (final Scope child : scope.getChildren())
 			if (!child.getProgress().isDone()) return false;
+
 		return true;
 	}
 

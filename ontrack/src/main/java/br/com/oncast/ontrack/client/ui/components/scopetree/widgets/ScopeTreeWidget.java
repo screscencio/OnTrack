@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,6 +183,10 @@ public class ScopeTreeWidget extends Composite {
 	}
 
 	private List<ScopeTreeItem> getAllItens() {
-		return getItem(0).getAllDescendantChilden();
+		final ArrayList<ScopeTreeItem> allItens = new ArrayList<ScopeTreeItem>();
+		final ScopeTreeItem rootItem = getItem(0);
+		allItens.add(rootItem);
+		allItens.addAll(rootItem.getAllDescendantChilden());
+		return allItens;
 	}
 }
