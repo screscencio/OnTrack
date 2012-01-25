@@ -34,7 +34,7 @@ public class ProgressActivity extends AbstractActivity {
 
 		try {
 			final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(projectId);
-			view.getKanbanPanel().setRelease(projectContext.findRelease(releaseId));
+			view.getKanbanPanel().setKanban(projectContext.getKanban(projectContext.findRelease(releaseId)));
 		}
 		catch (final ReleaseNotFoundException e) {
 			// FIXME LOBO

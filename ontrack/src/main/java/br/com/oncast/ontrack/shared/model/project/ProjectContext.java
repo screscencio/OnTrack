@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
@@ -85,4 +86,8 @@ public class ProjectContext {
 		return FibonacciScale.getFibonacciScaleList();
 	}
 
+	public Kanban getKanban(final Release release) {
+		// FIXME LOBO
+		return new Kanban(release);
+	}
 }

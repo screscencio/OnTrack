@@ -1,7 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
+import java.util.List;
+
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -9,19 +12,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ProgressStateContainer extends Composite implements HasText {
+public class KanbanColumnWidget extends Composite {
 
-	private static ProgressStateContainerUiBinder uiBinder = GWT.create(ProgressStateContainerUiBinder.class);
+	private static KanbanColumnWidgetUiBinder uiBinder = GWT.create(KanbanColumnWidgetUiBinder.class);
 
-	interface ProgressStateContainerUiBinder extends UiBinder<Widget, ProgressStateContainer> {}
-
-	public ProgressStateContainer() {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
+	interface KanbanColumnWidgetUiBinder extends UiBinder<Widget, KanbanColumnWidget> {}
 
 	@UiField
 	Label title;
@@ -33,29 +31,25 @@ public class ProgressStateContainer extends Composite implements HasText {
 
 	private ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
 
+	private final KanbanColumn column;
+
 	@UiFactory
 	protected ScopeWidgetContainer createScopeContainer() {
 		scopeWidgetFactory = new ScopeWidgetFactory(new ProgressPanelWidgetInteractionHandler() {});
 		return new ScopeWidgetContainer(scopeWidgetFactory, containerUpdateListener);
 	}
 
-	public ProgressStateContainer(final String text) {
+	public KanbanColumnWidget(final KanbanColumn column) {
+		this.column = column;
 		initWidget(uiBinder.createAndBindUi(this));
-		this.title.setText(text);
+		update();
 	}
 
-	@Override
-	public String getText() {
-		return title.getText();
+	private void update() {
+		this.title.setText(column.getTitle());
+		final List<Scope> scopes = column.getScopes();
+		for (final Scope scope : scopes) {
+			scopeContainer.createChildModelWidget(scope);
+		}
 	}
-
-	@Override
-	public void setText(final String text) {
-		this.title.setText(text);
-	}
-
-	public void add(final Scope scope) {
-		scopeContainer.createChildModelWidget(scope);
-	}
-
 }

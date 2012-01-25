@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:rp='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel.widgets'>
+	
 	<ui:style>
 		.rootPanel {
 			width: 250px;
@@ -41,6 +42,7 @@
 			margin-right: auto;
 		}
 	</ui:style>
+	
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<g:HTMLPanel styleName="{style.titlePanel}">
 			<g:FocusPanel styleName="{style.draggable}" />
