@@ -43,7 +43,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private void setProjectContext(final ProjectContext projectContext) {
 		this.projectContext = projectContext;
-		projectRepresentationProvider.setProjectRepresentation(projectContext.getProjectRepresentation());
+		projectRepresentationProvider.setProjectRepresentation(projectContext == null ? null : projectContext.getProjectRepresentation());
 	}
 
 	@Override

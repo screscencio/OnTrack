@@ -18,6 +18,8 @@ import com.ibm.icu.util.Calendar;
 
 public class ScopeTestUtils {
 
+	private static int scopeCounter = 0;
+
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getScope() {
 		final Scope root = new Scope("Project");
@@ -194,6 +196,14 @@ public class ScopeTestUtils {
 
 	private static <T> T choose(final List<T> list) {
 		return list.get(new Random().nextInt(list.size()));
+	}
+
+	public static Scope createScope(final String description) {
+		return new Scope(description);
+	}
+
+	public static Scope createScope() {
+		return createScope(Scope.class.getSimpleName() + ++scopeCounter);
 	}
 
 }

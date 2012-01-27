@@ -5,6 +5,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
+import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
 import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
@@ -76,9 +77,8 @@ public class ProjectContext {
 
 	private String removeProjectReleaseDescription(final String releaseDescription) {
 		final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(releaseDescription);
-		final String releaseLoadQuery = !parser.getHeadRelease().equals(project.getProjectRelease().getDescription()) ? releaseDescription
-				: parser
-						.getTailReleases();
+		final String releaseLoadQuery = !parser.getHeadRelease().equals(project.getProjectRelease().getDescription()) ? releaseDescription : parser
+				.getTailReleases();
 		return releaseLoadQuery;
 	}
 
@@ -87,7 +87,6 @@ public class ProjectContext {
 	}
 
 	public Kanban getKanban(final Release release) {
-		// FIXME LOBO
-		return new Kanban(release);
+		return KanbanFactory.createFor(release);
 	}
 }
