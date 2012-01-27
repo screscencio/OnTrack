@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanPanel;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanWigetDisplay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -19,7 +19,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 	protected ApplicationMenu applicationMenu;
 
 	@UiField
-	protected KanbanPanel kanbanPanel;
+	protected KanbanWigetDisplay kanbanPanel;
 
 	public ProgressPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -31,7 +31,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 	}
 
 	@Override
-	public KanbanPanel getKanbanPanel() {
+	public KanbanWigetDisplay getKanbanPanel() {
 		return kanbanPanel;
 	}
 }

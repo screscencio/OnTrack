@@ -120,7 +120,7 @@ public class Scope implements Serializable {
 		this.childrenList.clear();
 	}
 
-	// TODO ++++Think about making the association bidirectional
+	// TODO ++Think about bidirectional linkage (if not present in the release, then set it)
 	public void setRelease(final Release release) {
 		this.release = release;
 	}

@@ -12,12 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncPresenter.Display;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.ReleaseMonitor;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
@@ -30,13 +29,15 @@ import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundExceptio
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
-public class ProgressPanelActionSyncPresenterTest {
+public class ProgressPanelActionSyncControllerTest {
 
 	private ActionExecutionListener actionExecutionListener;
 	private Display display;
 	private ProjectContext context;
 	private Release myRelease;
+	private ReleaseMonitor releaseMonitor;
 	private Scope scopePresentOnDisplay;
 
 	@Before
@@ -45,18 +46,23 @@ public class ProgressPanelActionSyncPresenterTest {
 		context = mock(ProjectContext.class);
 		scopePresentOnDisplay = createScope();
 		myRelease = createRelease();
-		when(display.containsScope(Mockito.any(Scope.class))).thenAnswer(new Answer<Boolean>() {
-			@Override
-			public Boolean answer(final InvocationOnMock invocation) throws Throwable {
-				return scopePresentOnDisplay.equals(invocation.getArguments()[0]);
-			}
-		});
+		// releaseMonitor = mock(ReleaseMonitor.class);
+		// when(releaseMonitor.releaseContainedScope(Mockito.any(Scope.class))).thenAnswer(new Answer<Boolean>() {
+		// @Override
+		// public Boolean answer(final InvocationOnMock invocation) throws Throwable {
+		// return scopePresentOnDisplay.equals(invocation.getArguments()[0]);
+		// }
+		// });
+		// when(releaseMonitor.getRelease()).thenReturn(myRelease);
 
 		final ActionExecutionService actionExecutionServiceMock = mock(ActionExecutionService.class);
 		final ArgumentCaptor<ActionExecutionListener> captor = ArgumentCaptor.forClass(ActionExecutionListener.class);
 		Mockito.doNothing().when(actionExecutionServiceMock).addActionExecutionListener(captor.capture());
 
-		new ProgressPanelActionSyncPresenter(myRelease, display, actionExecutionServiceMock);
+		final ProgressPanelActionSyncController actionSyncController = new ProgressPanelActionSyncController(actionExecutionServiceMock, myRelease, display);
+		releaseMonitor = actionSyncController.new ReleaseMonitor(myRelease);
+		ReflectionTestUtils.set(actionSyncController, "releaseMonitor", releaseMonitor);
+		actionSyncController.registerActionExecutionListener();
 		actionExecutionListener = captor.getValue();
 	}
 
@@ -94,7 +100,7 @@ public class ProgressPanelActionSyncPresenterTest {
 
 	@Test
 	public void shouldUpdateDisplayWhenAScopeActionWithAScopeThatIsPresentOnDisplay() throws Exception {
-		scopePresentOnDisplay.setRelease(ReleaseTestUtils.createRelease());
+		scopePresentOnDisplay.setRelease(myRelease);
 
 		onActionExecution(createScopeAction(scopePresentOnDisplay.getId()));
 		shouldBeUpdated();

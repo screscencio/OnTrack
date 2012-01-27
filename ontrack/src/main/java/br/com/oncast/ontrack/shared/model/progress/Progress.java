@@ -15,6 +15,8 @@ public class Progress implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String DEFAULT_NOT_STARTED_NAME = "Not Started";
+
 	public enum ProgressState {
 		NOT_STARTED("") {
 			@Override

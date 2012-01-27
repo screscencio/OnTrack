@@ -31,8 +31,6 @@ public class KanbanColumnWidget extends Composite {
 
 	private ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
 
-	private final KanbanColumn column;
-
 	@UiFactory
 	protected ScopeWidgetContainer createScopeContainer() {
 		scopeWidgetFactory = new ScopeWidgetFactory(new ProgressPanelWidgetInteractionHandler() {});
@@ -40,16 +38,13 @@ public class KanbanColumnWidget extends Composite {
 	}
 
 	public KanbanColumnWidget(final KanbanColumn column) {
-		this.column = column;
 		initWidget(uiBinder.createAndBindUi(this));
-		update();
+		this.title.setText(column.getTitle());
 	}
 
-	private void update() {
-		this.title.setText(column.getTitle());
-		final List<Scope> scopes = column.getScopes();
-		for (final Scope scope : scopes) {
+	public KanbanColumnWidget addScopes(final List<Scope> scopes) {
+		for (final Scope scope : scopes)
 			scopeContainer.createChildModelWidget(scope);
-		}
+		return this;
 	}
 }
