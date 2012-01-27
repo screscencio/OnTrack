@@ -7,6 +7,10 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectSelectionWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.BreadcrumbWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
@@ -18,7 +22,10 @@ import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 
 public class PlanningActivity extends AbstractActivity {
 
@@ -64,6 +71,7 @@ public class PlanningActivity extends AbstractActivity {
 
 		panel.setWidget(view);
 		ShortcutService.register(view, this, PlanningShortcutMappings.values());
+		addBreadcrumbToMenu(currentProjectRepresentation);
 		view.getScopeTree().setFocus(true);
 	}
 
@@ -85,5 +93,21 @@ public class PlanningActivity extends AbstractActivity {
 
 	public void showSearchScope() {
 		view.getScopeTree().showSearchWidget();
+	}
+
+	private void addBreadcrumbToMenu(final ProjectRepresentation project) {
+		final BreadcrumbWidget breadcrumb = new BreadcrumbWidget();
+		view.getApplicationMenu().setCustomItem(breadcrumb);
+		breadcrumb.addPopupItem(project.getName(), new ProjectSelectionWidget());
+		breadcrumb.addSeparator();
+		final MenuBar menu = new MenuBar(true);
+		final MenuItem placeItem = breadcrumb.addItem("Planning", menu);
+		final PopupConfig config = PopupConfig.configPopup().popup(new ReleaseSelectionWidget()).alignBelow(placeItem).alignRight(placeItem);
+		menu.addItem("Progress", new Command() {
+			@Override
+			public void execute() {
+				config.pop();
+			}
+		});
 	}
 }

@@ -11,56 +11,53 @@
 			top: 0px;
 			bottom: 0px;
 		}
-	
-		.logoutLabel {
+		
+		.customItemContainer {
 			position: absolute;
-			top: 10px;
-			right: 10px;
-			color: #ffffff;
-		}
-		
-		.logoutLabel:HOVER {
-			cursor: pointer;
-		}
-		
-		.changePasswordLabel {
-			position: absolute;
-			top: 10px;
-			right: 80px;
-			color: #ffffff;
-		}
-		
-		.changePasswordLabel:HOVER {
-			cursor: pointer;
-		}
-		
-		.projectSwitchingMenuLabel {
-			position: absolute;
-			top: 10px;
 			left: 10px;
-			color: #ffffff;
+			top: 0px;
+			bottom: 0px;
+			color: #FFF;
 		}
-		
+	
 		.projectSwitchingMenuButton:HOVER {
 			cursor: pointer;
 		}
 		
-		.inviteLabel {
+		.menu {
 			position: absolute;
-			top: 10px;
-			left: 130px;
-			color: #ffffff;
+			top: 6px;
+			color: #FFF;
+			text-shadow: -2px 2px 5px #000;
 		}
-		
-		.inviteLabel:HOVER {
+		.menu:HOVER {
 			cursor: pointer;
+		}
+		.projectMenu {
+			right: 207px;
+		}
+		.userMenu {
+			right: 150px;
+		}
+		.separator {
+			position: absolute;
+			width: 1px;
+			top: 2px;
+			bottom: 2px;
+			right: 194px;
+			background-color: #BBB;
+			box-shadow: -2px 2px 5px #000;
+			-moz-box-shadow: -2px 2px 5px #000;    
+	 		-webkit-box-shadow: -2px 2px 5px #000;
 		}
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
-		<g:Label ui:field="projectSwitchingMenuLabel" text="Change Project" styleName="{style.projectSwitchingMenuLabel}"  />
-		<g:Label ui:field="inviteLabel" text="Invite to this Project" styleName="{style.inviteLabel}"  />
-		<g:Label ui:field="changePasswordLabel" text="Change Password" styleName="{style.changePasswordLabel}"  />
-		<g:Label ui:field="logoutLabel" text="Logout" styleName="{style.logoutLabel}" />
+		<g:HTMLPanel ui:field="customItemContainer" styleName="{style.customItemContainer}" />
+		<g:MenuBar ui:field="projectMenuBar" styleName="{style.projectMenu} {style.menu}" />
+		<g:HTMLPanel styleName="{style.separator}"/>
+		<g:MenuBar ui:field="userMenuBar" styleName="{style.userMenu} {style.menu}" />
+<!-- 		<g:Label ui:field="projectMenuLabel" styleName="{style.projectMenuLabel} {style.menuLabel}" text="Project" /> -->
+<!-- 		<g:Label ui:field="userMenuLabel" styleName="{style.userMenuLabel} {style.menuLabel}" text="Users" /> -->
 	</g:HTMLPanel>
 </ui:UiBinder>

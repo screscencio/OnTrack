@@ -128,6 +128,11 @@ html,body {
 	 -moz-box-shadow: 1px 1px 6px #d9dae1;    
 	 -webkit-box-shadow: 1px 1px 6px #d9dae1; */
 }
+.gwt-MenuBar-topMenu {
+	  box-shadow: -2px 2px 5px #444;
+	 -moz-box-shadow: -2px 2px 5px #444;    
+	 -webkit-box-shadow: -2px 2px 5px #444;
+}
 
 .gwt-MenuBar-vertical>table {
 	width: 100%;
@@ -144,9 +149,35 @@ html,body {
 	background-color: white;
 }
 
+.gwt-MenuBar-breadcrumb .gwt-MenuItem {
+	background: transparent;
+	background-color: transparent;
+	font-size: 14px;
+	color: #FFF;
+	text-shadow: -2px 2px 5px #000;
+}
+
+.gwt-MenuBar-topMenu .gwt-MenuItem {
+	padding-right: 55px;
+}
+
 .gwt-MenuBar .gwt-MenuItem-selected {
 	color: white;
 	background-color: #a5a5a5;
+}
+
+.gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {
+	color: white;
+	background-color: transparent;
+}
+
+.gwt-MenuBar-breadcrumb .gwt-MenuItemSeparator {
+	width: 5px;
+	margin: 0px 5px;
+}
+
+.gwt-MenuBar-breadcrumb .gwt-MenuItemSeparator .menuSeparatorInner {
+	text-shadow: -2px 2px 5px #000;
 }
 
 .gwt-MenuBar .gwt-MenuItemSeparator {

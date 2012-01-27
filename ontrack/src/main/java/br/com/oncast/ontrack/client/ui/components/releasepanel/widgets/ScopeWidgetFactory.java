@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ScopeWidget> {

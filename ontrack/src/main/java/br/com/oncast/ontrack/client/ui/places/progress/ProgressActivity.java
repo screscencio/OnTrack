@@ -1,16 +1,22 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectSelectionWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
+import br.com.oncast.ontrack.client.ui.generalwidgets.BreadcrumbWidget;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.MenuBar;
 
 public class ProgressActivity extends AbstractActivity {
 
@@ -26,6 +32,7 @@ public class ProgressActivity extends AbstractActivity {
 			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(place.getRequestedProjectId());
 			release = projectContext.findRelease(place.getRequestedReleaseId());
 			view = new ProgressPanel();
+			addBreadcrumbToMenu(projectContext, release);
 
 			progressPanelActionSyncController = new ProgressPanelActionSyncController(SERVICE_PROVIDER.getActionExecutionService(), release, new Display() {
 
@@ -67,5 +74,23 @@ public class ProgressActivity extends AbstractActivity {
 	private void exitToPlanningPlace() {
 		final long projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId();
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
+	}
+
+	private void addBreadcrumbToMenu(final ProjectContext projectContext, final Release release) {
+		final BreadcrumbWidget breadcrumb = new BreadcrumbWidget();
+		view.getApplicationMenu().setCustomItem(breadcrumb);
+		final ProjectRepresentation project = projectContext.getProjectRepresentation();
+		breadcrumb.addPopupItem(project.getName(), new ProjectSelectionWidget());
+		breadcrumb.addSeparator();
+		final MenuBar placeMenu = new MenuBar(true);
+		placeMenu.addItem("Planning", new Command() {
+			@Override
+			public void execute() {
+				exitToPlanningPlace();
+			}
+		});
+		breadcrumb.addItem("Progress", placeMenu);
+		breadcrumb.addSeparator();
+		breadcrumb.addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
 	}
 }

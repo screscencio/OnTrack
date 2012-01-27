@@ -88,9 +88,9 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 		if (!isEditionMode()) return;
 
 		final boolean isEnter = event.getNativeKeyCode() == KEY_ENTER;
+		event.stopPropagation(); // IMPORTANT to avoid "global" shortcuts
 		if (isEnter || event.getNativeKeyCode() == KEY_ESCAPE) {
 			event.preventDefault();
-			event.stopPropagation();
 			switchToVisualization(isEnter);
 		}
 		else return;

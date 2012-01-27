@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.project;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -88,5 +89,20 @@ public class ProjectContext {
 
 	public Kanban getKanban(final Release release) {
 		return KanbanFactory.createFor(release);
+	}
+
+	public Set<Release> getAllReleasesWithOpenScopes() {
+		final HashSet<Release> releases = new HashSet<Release>();
+
+		for (final Release release : getProjectRelease().getDescendants(true)) {
+			if (hasOpenScopes(release)) {
+				releases.add(release);
+			}
+		}
+		return releases;
+	}
+
+	public static boolean hasOpenScopes(final Release release) {
+		return !release.getScopeList().isEmpty() && !release.isDone();
 	}
 }

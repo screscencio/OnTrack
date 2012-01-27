@@ -156,7 +156,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final String filterText = filterArea.getText().trim();
 
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
-		final boolean shouldAddCustomItens = !filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText);
+		final boolean shouldAddCustomItens = customItemFactory != null && !filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText);
 		if (shouldAddCustomItens) filteredItens.add(0, customItemFactory.createCustomItem(filterText));
 
 		menu.setItens(filteredItens);
@@ -257,6 +257,10 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	public FiltrableCommandMenu setCloseOnEscape(final boolean bool) {
 		shouldCloseOnEscape = bool;
 		return this;
+	}
+
+	public void setCloseOnEscape(final String bool) {
+		shouldCloseOnEscape = Boolean.valueOf(bool);
 	}
 
 	@Override

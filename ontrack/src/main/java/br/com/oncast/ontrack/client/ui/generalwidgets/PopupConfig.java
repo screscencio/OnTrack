@@ -12,6 +12,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -61,8 +62,8 @@ public class PopupConfig {
 	}
 
 	private Widget widgetToPopup;
-	private Widget alignRight;
-	private Widget alignBelow;
+	private UIObject alignRight;
+	private UIObject alignBelow;
 	private int belowOffset;
 	private PopupOpenListener openListener;
 	private PopupCloseListener closeListener;
@@ -148,7 +149,7 @@ public class PopupConfig {
 	 * @param widget the reference widget.
 	 * @return the self assistant for in-line call convenience.
 	 */
-	public PopupConfig alignRight(final Widget widget) {
+	public PopupConfig alignRight(final UIObject widget) {
 		this.alignRight = widget;
 		return this;
 	}
@@ -166,7 +167,7 @@ public class PopupConfig {
 	 * @param widget the reference widget.
 	 * @return the self assistant for in-line call convenience.
 	 */
-	public PopupConfig alignBelow(final Widget widget) {
+	public PopupConfig alignBelow(final UIObject widget) {
 		alignBelow(widget, 0);
 		return this;
 	}
@@ -180,7 +181,7 @@ public class PopupConfig {
 	 *            fact, overlapping it).
 	 * @return the self assistant for in-line call convenience.
 	 */
-	public PopupConfig alignBelow(final Widget widget, final int offset) {
+	public PopupConfig alignBelow(final UIObject widget, final int offset) {
 		this.alignBelow = widget;
 		this.belowOffset = offset;
 		return this;
@@ -252,7 +253,7 @@ public class PopupConfig {
 
 		if (!widgetToPopup.isAttached()) {
 			widgetToPopup.setVisible(false);
-			MaskPanel.add(widgetToPopup);
+			PopUpPanel.add(widgetToPopup);
 			DOM.setStyleAttribute(widgetToPopup.getElement(), "position", "absolute");
 			leaveWidgetInDomOnClose = false;
 		}

@@ -305,4 +305,14 @@ public class Release implements Serializable {
 				"An invalid description was given.");
 		description = newReleaseDescription;
 	}
+
+	public List<Release> getDescendants(final boolean shouldIncludeMyself) {
+		final ArrayList<Release> releases = new ArrayList<Release>();
+		if (shouldIncludeMyself) releases.add(this);
+		for (final Release child : getChildren()) {
+			releases.add(child);
+			releases.addAll(child.getDescendants(false));
+		}
+		return releases;
+	}
 }

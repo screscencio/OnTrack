@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
