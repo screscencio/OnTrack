@@ -28,6 +28,7 @@ public class BreadcrumbWidget extends MenuBar {
 			@Override
 			public void execute() {}
 		});
+
 		final PopupConfig config = PopupConfig.configPopup().popup(widgetToPopup).alignBelow(item).alignRight(item);
 		item.setCommand(new Command() {
 			@Override

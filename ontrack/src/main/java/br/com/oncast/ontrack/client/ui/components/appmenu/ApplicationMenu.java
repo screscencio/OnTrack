@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ApplicationMenu extends Composite {
@@ -68,36 +69,44 @@ public class ApplicationMenu extends Composite {
 	private void createUserMenu() {
 		userMenu = new MenuBar(true);
 		userMenu.addStyleDependentName("topMenu");
+		final MenuItem item = userMenuBar.addItem("User", userMenu);
+
+		final PopupConfig popup = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignRight(item).alignBelow(item, 4);
 		userMenu.addItem("Change Password", new Command() {
 			@Override
 			public void execute() {
-				PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignRight(userMenuBar).alignBelow(userMenuBar, 4).pop();
+				popup.pop();
 			}
 		});
+
 		userMenu.addItem("Logout", new Command() {
 			@Override
 			public void execute() {
 				logUserOut();
 			}
 		});
-		userMenuBar.addItem("User", userMenu);
 	}
 
 	private void createProjectMenu() {
 		projectMenu = new MenuBar(true);
 		projectMenu.addStyleDependentName("topMenu");
+		final MenuItem item = projectMenuBar.addItem("Project", projectMenu);
+
+		final PopupConfig projectSelectionPopup = PopupConfig.configPopup().popup(new ProjectSelectionWidget()).alignRight(item)
+				.alignBelow(item);
 		projectMenu.addItem("Switch project", new Command() {
 			@Override
 			public void execute() {
-				PopupConfig.configPopup().popup(new ProjectSelectionWidget()).alignRight(projectMenuBar).alignBelow(projectMenuBar).pop();
+				projectSelectionPopup.pop();
 			}
 		});
+
+		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget()).alignRight(item).alignBelow(item, 4);
 		projectMenu.addItem("Invite", new Command() {
 			@Override
 			public void execute() {
-				PopupConfig.configPopup().popup(new InvitationWidget()).alignRight(projectMenuBar).alignBelow(projectMenuBar, 4).pop();
+				invitePopup.pop();
 			}
 		});
-		projectMenuBar.addItem("Project", projectMenu);
 	}
 }
