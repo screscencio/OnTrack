@@ -7,16 +7,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
+import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class KanbanPanel extends Composite implements KanbanWigetDisplay {
@@ -29,14 +34,19 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 	protected HorizontalPanel board;
 	private Kanban kanban;
 	private Release release;
+	final DragAndDropManager dragAndDropMangager;
+	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
 
 	public KanbanPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
+		dragAndDropMangager = new DragAndDropManager();
+		dragAndDropMangager.configureBoundaryPanel(RootPanel.get());
+		dragAndDropMangager.setDragHandler(new DragHandlerAdapter() {});
+		scopeWidgetFactory = new KanbanScopeWidgetFactory(dragAndDropMangager, new ProgressPanelInteractionHandler());
 	}
 
-	// FIXME BESEN rename method
 	@Override
-	public void setKanban(final Kanban kanban, final Release release) {
+	public void configureKanbanPanel(final Kanban kanban, final Release release) {
 		this.kanban = kanban;
 		this.release = release;
 		update();
@@ -45,8 +55,12 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 	@Override
 	public void update() {
 		board.clear();
-		for (final Entry<KanbanColumn, List<Scope>> entry : getScopesByColumn(kanban.getColumns(), release.getScopeList()).entrySet())
-			board.add(new KanbanColumnWidget(entry.getKey()).addScopes(entry.getValue()));
+		for (final Entry<KanbanColumn, List<Scope>> entry : getScopesByColumn(kanban.getColumns(), release.getScopeList()).entrySet()) {
+			final KanbanColumnWidget kanbanColumnWidget = new KanbanColumnWidget(entry.getKey(), scopeWidgetFactory);
+			dragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getVerticalContainer());
+			board.add(kanbanColumnWidget.addScopes(entry.getValue()));
+		}
+
 	}
 
 	private Map<KanbanColumn, List<Scope>> getScopesByColumn(final List<KanbanColumn> columns, final List<Scope> scopeList) {

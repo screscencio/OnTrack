@@ -33,7 +33,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	private String currentScopeDescription;
 
 	// IMPORTANT Used to refresh DOM only when needed.
-	public ScopeWidget(final Scope scope, final ProgressPanelWidgetInteractionHandler releasePanelInteractionHandler) {
+	public ScopeWidget(final Scope scope, final ProgressPanelWidgetInteractionHandler progressPanelInteractionHandler) {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;

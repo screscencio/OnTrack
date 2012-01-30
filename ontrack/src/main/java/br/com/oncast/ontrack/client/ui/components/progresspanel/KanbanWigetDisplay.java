@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 
 public interface KanbanWigetDisplay {
 
-	public void setKanban(final Kanban kanban, final Release release);
+	public void configureKanbanPanel(final Kanban kanban, final Release release);
 
 	public void update();
 }

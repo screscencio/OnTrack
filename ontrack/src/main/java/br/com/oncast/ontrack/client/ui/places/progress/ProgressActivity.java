@@ -68,7 +68,7 @@ public class ProgressActivity extends AbstractActivity {
 	}
 
 	protected void updateViewData() {
-		view.getKanbanPanel().setKanban(projectContext.getKanban(release), release);
+		view.getKanbanPanel().configureKanbanPanel(projectContext.getKanban(release), release);
 	}
 
 	private void exitToPlanningPlace() {

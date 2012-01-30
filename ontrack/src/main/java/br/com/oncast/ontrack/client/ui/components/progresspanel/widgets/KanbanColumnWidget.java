@@ -30,15 +30,15 @@ public class KanbanColumnWidget extends Composite {
 
 	private ModelWidgetContainerListener containerUpdateListener;
 
-	private ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
+	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
 
 	@UiFactory
 	protected VerticalModelWidgetContainer<Scope, ScopeWidget> createScopeContainer() {
-		scopeWidgetFactory = new ScopeWidgetFactory(new ProgressPanelWidgetInteractionHandler() {});
 		return new VerticalModelWidgetContainer<Scope, ScopeWidget>(scopeWidgetFactory, containerUpdateListener);
 	}
 
-	public KanbanColumnWidget(final KanbanColumn column) {
+	public KanbanColumnWidget(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory) {
+		this.scopeWidgetFactory = scopeWidgetFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		this.title.setText(column.getTitle());
 	}
@@ -47,5 +47,9 @@ public class KanbanColumnWidget extends Composite {
 		for (final Scope scope : scopes)
 			scopeContainer.createChildModelWidget(scope);
 		return this;
+	}
+
+	public VerticalModelWidgetContainer<Scope, ScopeWidget> getScopeContainter() {
+		return scopeContainer;
 	}
 }
