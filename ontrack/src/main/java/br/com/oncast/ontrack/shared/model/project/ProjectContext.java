@@ -95,14 +95,14 @@ public class ProjectContext {
 		final HashSet<Release> releases = new HashSet<Release>();
 
 		for (final Release release : getProjectRelease().getDescendantReleases()) {
-			if (hasOpenScopes(release)) {
+			if (hasDirectScopes(release)) {
 				releases.add(release);
 			}
 		}
 		return releases;
 	}
 
-	public static boolean hasOpenScopes(final Release release) {
-		return !release.getScopeList().isEmpty() && !release.isDone();
+	public static boolean hasDirectScopes(final Release release) {
+		return !release.getScopeList().isEmpty();
 	}
 }

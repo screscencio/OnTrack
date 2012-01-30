@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
@@ -16,7 +15,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProgressActivity extends AbstractActivity {
@@ -90,16 +88,12 @@ public class ProgressActivity extends AbstractActivity {
 	private Widget createBreadcrumb() {
 		final BreadcrumbWidget breadcrumb = new BreadcrumbWidget();
 		final ProjectRepresentation project = projectContext.getProjectRepresentation();
-		breadcrumb.addPopupItem(project.getName(), new ProjectSelectionWidget());
-		breadcrumb.addSeparator();
-		final MenuBar placeMenu = new MenuBar(true);
-		placeMenu.addItem("Planning", new Command() {
+		breadcrumb.addItem(project.getName(), new Command() {
 			@Override
 			public void execute() {
 				exitToPlanningPlace();
 			}
 		});
-		breadcrumb.addItem("Progress", placeMenu);
 		breadcrumb.addSeparator();
 		breadcrumb.addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
 		return breadcrumb;

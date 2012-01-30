@@ -5,8 +5,8 @@ import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.InvitationWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectSelectionWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -92,12 +92,10 @@ public class ApplicationMenu extends Composite {
 		projectMenu.addStyleDependentName("topMenu");
 		final MenuItem item = projectMenuBar.addItem("Project", projectMenu);
 
-		final PopupConfig projectSelectionPopup = PopupConfig.configPopup().popup(new ProjectSelectionWidget()).alignRight(item)
-				.alignBelow(item);
 		projectMenu.addItem("Switch project", new Command() {
 			@Override
 			public void execute() {
-				projectSelectionPopup.pop();
+				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new ProjectSelectionPlace());
 			}
 		});
 

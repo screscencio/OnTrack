@@ -34,28 +34,16 @@
 			cursor: pointer;
 		}
 		.projectMenu {
-			right: 207px;
+			right: 195px;
 		}
 		.userMenu {
 			right: 150px;
-		}
-		.separator {
-			position: absolute;
-			width: 1px;
-			top: 2px;
-			bottom: 2px;
-			right: 194px;
-			background-color: #BBB;
-			box-shadow: -2px 2px 5px #000;
-			-moz-box-shadow: -2px 2px 5px #000;    
-	 		-webkit-box-shadow: -2px 2px 5px #000;
 		}
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<g:HTMLPanel ui:field="customItemContainer" styleName="{style.customItemContainer}" />
 		<g:MenuBar ui:field="projectMenuBar" styleName="{style.projectMenu} {style.menu}" />
-		<g:HTMLPanel styleName="{style.separator}"/>
 		<g:MenuBar ui:field="userMenuBar" styleName="{style.userMenu} {style.menu}" />
 <!-- 		<g:Label ui:field="projectMenuLabel" styleName="{style.projectMenuLabel} {style.menuLabel}" text="Project" /> -->
 <!-- 		<g:Label ui:field="userMenuLabel" styleName="{style.userMenuLabel} {style.menuLabel}" text="Users" /> -->

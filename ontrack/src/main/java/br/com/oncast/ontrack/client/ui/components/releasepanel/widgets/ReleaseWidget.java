@@ -211,7 +211,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private boolean updateChildReleaseWidgets() {
-		progressLink.setVisible(ProjectContext.hasOpenScopes(release));
+		progressLink.setVisible(ProjectContext.hasDirectScopes(release));
 		return releaseContainer.update(release.getChildren());
 	}
 
