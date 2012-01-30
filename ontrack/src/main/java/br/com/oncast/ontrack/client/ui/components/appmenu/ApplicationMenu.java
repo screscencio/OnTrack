@@ -49,6 +49,7 @@ public class ApplicationMenu extends Composite {
 	}
 
 	public void setCustomItem(final IsWidget widget) {
+		customItemContainer.clear();
 		customItemContainer.add(widget);
 	}
 
