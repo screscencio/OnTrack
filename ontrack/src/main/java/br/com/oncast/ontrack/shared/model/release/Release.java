@@ -306,13 +306,7 @@ public class Release implements Serializable {
 		description = newReleaseDescription;
 	}
 
-	public List<Release> getDescendants(final boolean shouldIncludeMyself) {
-		final ArrayList<Release> releases = new ArrayList<Release>();
-		if (shouldIncludeMyself) releases.add(this);
-		for (final Release child : getChildren()) {
-			releases.add(child);
-			releases.addAll(child.getDescendants(false));
-		}
-		return releases;
+	public boolean isSubReleaseOf(final Release actionRelease) {
+		return actionRelease.getDescendantReleases().contains(this);
 	}
 }

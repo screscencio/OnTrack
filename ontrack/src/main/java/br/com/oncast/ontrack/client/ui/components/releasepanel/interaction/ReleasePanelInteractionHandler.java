@@ -35,7 +35,7 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	public void onScopeIncreasePriorityRequest(final Scope scope) {
 		assureConfigured();
 		final Release release = scope.getRelease();
-		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(scope.getId(),
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(),
 				release.getScopeIndex(scope) - 1));
 	}
 
@@ -43,7 +43,7 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	public void onScopeDecreasePriorityRequest(final Scope scope) {
 		assureConfigured();
 		final Release release = scope.getRelease();
-		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(scope.getId(),
+		applicationActionHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(),
 				release.getScopeIndex(scope) + 1));
 	}
 
@@ -54,7 +54,7 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 		ModelAction action;
 
 		final Release release = scope.getRelease();
-		if (release.equals(targetRelease)) action = new ReleaseScopeUpdatePriorityAction(scope.getId(), newPriority);
+		if (release.equals(targetRelease)) action = new ReleaseScopeUpdatePriorityAction(release.getId(), scope.getId(), newPriority);
 		else action = new ScopeBindReleaseAction(scope.getId(), targetRelease.getFullDescription(), newPriority);
 
 		applicationActionHandler.onUserActionExecutionRequest(action);

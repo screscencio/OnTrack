@@ -244,8 +244,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createReleaseScopeUpdatePriorityAction() throws Exception {
-		final ReleaseScopeUpdatePriorityAction releaseScopeUpdatePriorityAction = new ReleaseScopeUpdatePriorityAction(new UUID(), 1);
-		set(releaseScopeUpdatePriorityAction, "releaseReferenceId", new UUID());
+		final ReleaseScopeUpdatePriorityAction releaseScopeUpdatePriorityAction = new ReleaseScopeUpdatePriorityAction(new UUID(), new UUID(), 1);
 		return createUserAction(releaseScopeUpdatePriorityAction);
 	}
 

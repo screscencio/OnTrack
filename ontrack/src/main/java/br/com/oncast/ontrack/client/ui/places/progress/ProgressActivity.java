@@ -17,6 +17,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.Widget;
 
 public class ProgressActivity extends AbstractActivity {
 
@@ -32,7 +33,6 @@ public class ProgressActivity extends AbstractActivity {
 			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(place.getRequestedProjectId());
 			release = projectContext.findRelease(place.getRequestedReleaseId());
 			view = new ProgressPanel();
-			addBreadcrumbToMenu(projectContext, release);
 
 			progressPanelActionSyncController = new ProgressPanelActionSyncController(SERVICE_PROVIDER.getActionExecutionService(), release, new Display() {
 
@@ -44,6 +44,11 @@ public class ProgressActivity extends AbstractActivity {
 				@Override
 				public void exit() {
 					exitToPlanningPlace();
+				}
+
+				@Override
+				public void updateReleaseInfo() {
+					updateViewMenus();
 				}
 			});
 		}
@@ -57,6 +62,8 @@ public class ProgressActivity extends AbstractActivity {
 		if (view == null) throw new RuntimeException("The view wasnt initialized correctly.");
 
 		updateViewData();
+		updateViewMenus();
+
 		panel.setWidget(view);
 
 		progressPanelActionSyncController.registerActionExecutionListener();
@@ -71,14 +78,17 @@ public class ProgressActivity extends AbstractActivity {
 		view.getKanbanPanel().configureKanbanPanel(projectContext.getKanban(release), release);
 	}
 
+	private void updateViewMenus() {
+		view.getApplicationMenu().setCustomItem(createBreadcrumb());
+	}
+
 	private void exitToPlanningPlace() {
 		final long projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId();
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
 	}
 
-	private void addBreadcrumbToMenu(final ProjectContext projectContext, final Release release) {
+	private Widget createBreadcrumb() {
 		final BreadcrumbWidget breadcrumb = new BreadcrumbWidget();
-		view.getApplicationMenu().setCustomItem(breadcrumb);
 		final ProjectRepresentation project = projectContext.getProjectRepresentation();
 		breadcrumb.addPopupItem(project.getName(), new ProjectSelectionWidget());
 		breadcrumb.addSeparator();
@@ -92,5 +102,6 @@ public class ProgressActivity extends AbstractActivity {
 		breadcrumb.addItem("Progress", placeMenu);
 		breadcrumb.addSeparator();
 		breadcrumb.addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
+		return breadcrumb;
 	}
 }

@@ -39,7 +39,7 @@ public class ReleaseScopeUpdatePriorityActionTest {
 
 	@Test
 	public void decresePriorityOfTheSecondChild() throws Exception {
-		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(secondChild.getId(),
+		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), secondChild.getId(),
 				release.getScopeIndex(secondChild) + 1);
 		increase.execute(context);
 
@@ -50,7 +50,7 @@ public class ReleaseScopeUpdatePriorityActionTest {
 
 	@Test
 	public void decresePriorityOfTheFirstChild() throws Exception {
-		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(firstChild.getId(),
+		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), firstChild.getId(),
 				release.getScopeIndex(firstChild) + 1);
 		increase.execute(context);
 
@@ -61,7 +61,7 @@ public class ReleaseScopeUpdatePriorityActionTest {
 
 	@Test
 	public void decresePriorityOfTheSecondChildAndRollbackTheAction() throws Exception {
-		final ReleaseScopeUpdatePriorityAction decrease = new ReleaseScopeUpdatePriorityAction(secondChild.getId(),
+		final ReleaseScopeUpdatePriorityAction decrease = new ReleaseScopeUpdatePriorityAction(release.getId(), secondChild.getId(),
 				release.getScopeIndex(secondChild) + 1);
 		final ModelAction increase = decrease.execute(context);
 
@@ -77,20 +77,20 @@ public class ReleaseScopeUpdatePriorityActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void decreseLowestPriorityScope() throws Exception {
-		new ReleaseScopeUpdatePriorityAction(thirdChild.getId(),
+		new ReleaseScopeUpdatePriorityAction(release.getId(), thirdChild.getId(),
 				release.getScopeIndex(thirdChild) + 1).execute(context);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void decreseScopePriorityOutsideRelease() throws Exception {
 		final Scope scopeOutsideRelease = new Scope("otherScope");
-		new ReleaseScopeUpdatePriorityAction(scopeOutsideRelease.getId(),
+		new ReleaseScopeUpdatePriorityAction(release.getId(), scopeOutsideRelease.getId(),
 				release.getScopeIndex(scopeOutsideRelease) + 1).execute(context);
 	}
 
 	@Test
 	public void incresePriorityOfTheSecondChild() throws Exception {
-		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(secondChild.getId(),
+		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), secondChild.getId(),
 				release.getScopeIndex(secondChild) - 1);
 		increase.execute(context);
 
@@ -101,7 +101,7 @@ public class ReleaseScopeUpdatePriorityActionTest {
 
 	@Test
 	public void incresePriorityOfTheThirdChild() throws Exception {
-		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(thirdChild.getId(),
+		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), thirdChild.getId(),
 				release.getScopeIndex(thirdChild) - 1);
 		increase.execute(context);
 
@@ -112,7 +112,7 @@ public class ReleaseScopeUpdatePriorityActionTest {
 
 	@Test
 	public void incresePriorityOfTheSecondChildAndRollbackTheAction() throws Exception {
-		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(secondChild.getId(),
+		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), secondChild.getId(),
 				release.getScopeIndex(secondChild) - 1);
 		final ReleaseScopeUpdatePriorityAction decrease = (ReleaseScopeUpdatePriorityAction) increase.execute(context);
 
@@ -128,7 +128,7 @@ public class ReleaseScopeUpdatePriorityActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void increseTheMostPriorityScope() throws Exception {
-		new ReleaseScopeUpdatePriorityAction(firstChild.getId(),
+		new ReleaseScopeUpdatePriorityAction(release.getId(), firstChild.getId(),
 				release.getScopeIndex(firstChild) - 1).execute(context);
 	}
 

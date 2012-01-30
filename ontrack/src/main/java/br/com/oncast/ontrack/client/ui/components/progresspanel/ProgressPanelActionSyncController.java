@@ -7,9 +7,25 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -50,14 +66,11 @@ public class ProgressPanelActionSyncController {
 		if (releaseMonitor == null) return;
 
 		try {
-			if (ActionMapper.isRelated(context, action, releaseMonitor)) {
-				if (action instanceof ReleaseRemoveAction) display.exit();
-				else display.update();
-			}
+			ActionMapper.handleAction(context, action, releaseMonitor, display);
 		}
 		catch (final ModelBeanNotFoundException e) {
-			// FIXME MATSUMOTO
-			e.printStackTrace();
+			// TODO ++Resync and Redraw the entire structure to eliminate inconsistencies
+			throw new RuntimeException("It was not possible to update the view because an inconsistency with the model was detected.", e);
 		}
 		finally {
 			releaseMonitor.updateMonitoredReleaseState();
@@ -68,49 +81,129 @@ public class ProgressPanelActionSyncController {
 		void update();
 
 		void exit();
+
+		void updateReleaseInfo();
 	}
 
 	private enum ActionMapper {
-		SCOPE_ACTION {
+		SCOPE_INSERTION_ACTIONS {
+
 			@Override
-			protected boolean accepts(final ModelAction action) {
-				return action instanceof ScopeAction;
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
+					throws ModelBeanNotFoundException {
+				final Scope scope = context.findScope(((ScopeInsertAction) action).getNewScopeId());
+				if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) display.update();
 			}
 
 			@Override
-			protected boolean isRelatedImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor)
-					throws ModelBeanNotFoundException {
-				final Scope scope = context.findScope(action.getReferenceId());
-				return releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope);
+			protected boolean isHandlerFor(final ModelAction action) {
+				if (action instanceof ScopeInsertAction) return true;
+
+				return false;
 			}
 		},
-		RELEASE_ACTION {
-			@Override
-			protected boolean accepts(final ModelAction action) {
-				return action instanceof ReleaseAction;
-			}
+		SCOPE_GENERAL_ACTION {
 
 			@Override
-			protected boolean isRelatedImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor)
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
 					throws ModelBeanNotFoundException {
-				final Release foundRelease = context.findRelease(action.getReferenceId());
-				return releaseMonitor.getRelease().equals(foundRelease);
+				final Scope scope = context.findScope(action.getReferenceId());
+				if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) display.update();
 			}
 
+			@Override
+			protected boolean isHandlerFor(final ModelAction action) {
+				if (action instanceof ScopeRemoveAction) return true;
+				if (action instanceof ScopeRemoveRollbackAction) return true;
+				if (action instanceof ScopeUpdateAction) return true;
+				if (action instanceof ScopeInsertSiblingUpRollbackAction) return true;
+				if (action instanceof ScopeInsertSiblingDownRollbackAction) return true;
+				if (action instanceof ScopeInsertParentRollbackAction) return true;
+				if (action instanceof ScopeInsertChildRollbackAction) return true;
+				if (action instanceof ScopeBindReleaseAction) return true;
+				if (action instanceof ScopeDeclareProgressAction) return true;
+
+				return false;
+			}
+		},
+		RELEASE_GENERAL_ACTION {
+
+			@Override
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
+					throws ModelBeanNotFoundException {
+				if (releaseMonitor.getRelease().getId().equals(action.getReferenceId())) display.update();
+			}
+
+			@Override
+			protected boolean isHandlerFor(final ModelAction action) {
+				if (action instanceof ReleaseScopeUpdatePriorityAction) return true;
+
+				return false;
+			}
+		},
+		RELEASE_RENAMING_ACTION {
+			@Override
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
+					throws ModelBeanNotFoundException {
+				if (releaseMonitor.getRelease().getId().equals(action.getReferenceId())) display.updateReleaseInfo();
+			}
+
+			@Override
+			protected boolean isHandlerFor(final ModelAction action) {
+				if (action instanceof ReleaseRenameAction) return true;
+
+				return false;
+			}
+		},
+		RELEASE_REMOVAL_ACTION {
+			@Override
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
+					throws ModelBeanNotFoundException {
+				final Release actionRelease = context.findRelease(action.getReferenceId());
+				final Release kanbanRelease = releaseMonitor.getRelease();
+
+				if (kanbanRelease.equals(actionRelease) || kanbanRelease.isSubReleaseOf(actionRelease)) display.exit();
+			}
+
+			@Override
+			protected boolean isHandlerFor(final ModelAction action) {
+				if (action instanceof ReleaseRemoveAction) return true;
+
+				return false;
+			}
+		},
+		IGNORED_ACTIONS {
+			@Override
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
+					throws ModelBeanNotFoundException {}
+
+			@Override
+			protected boolean isHandlerFor(final ModelAction action) {
+				if (action instanceof ReleaseCreateActionDefault) return true;
+				if (action instanceof ReleaseRemoveRollbackAction) return true;
+				if (action instanceof ReleaseUpdatePriorityAction) return true;
+				if (action instanceof ScopeDeclareEffortAction) return true;
+				if (action instanceof ScopeDeclareValueAction) return true;
+				if (action instanceof ScopeMoveAction) return true;
+
+				return false;
+			}
 		};
 
-		private static boolean isRelated(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor)
+		private static void handleAction(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
 				throws ModelBeanNotFoundException {
 			for (final ActionMapper mapper : values()) {
-				if (mapper.accepts(action)) return mapper.isRelatedImpl(context, action, releaseMonitor);
+				if (mapper.isHandlerFor(action)) {
+					mapper.handleActionImpl(context, action, releaseMonitor, display);
+					break;
+				}
 			}
-			return false;
 		}
 
-		protected abstract boolean accepts(ModelAction action);
-
-		protected abstract boolean isRelatedImpl(ProjectContext context, ModelAction action, ReleaseMonitor releaseMonitor)
+		protected abstract void handleActionImpl(ProjectContext context, ModelAction action, ReleaseMonitor releaseMonitor, Display display)
 				throws ModelBeanNotFoundException;
+
+		protected abstract boolean isHandlerFor(ModelAction action);
 	}
 
 	protected class ReleaseMonitor {

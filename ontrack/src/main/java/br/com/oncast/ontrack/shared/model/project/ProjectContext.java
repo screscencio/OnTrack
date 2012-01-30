@@ -94,7 +94,7 @@ public class ProjectContext {
 	public Set<Release> getAllReleasesWithOpenScopes() {
 		final HashSet<Release> releases = new HashSet<Release>();
 
-		for (final Release release : getProjectRelease().getDescendants(true)) {
+		for (final Release release : getProjectRelease().getDescendantReleases()) {
 			if (hasOpenScopes(release)) {
 				releases.add(release);
 			}
