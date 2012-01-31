@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
+package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 
 public interface ModelWidgetFactory<T, E extends ModelWidget<T>> {

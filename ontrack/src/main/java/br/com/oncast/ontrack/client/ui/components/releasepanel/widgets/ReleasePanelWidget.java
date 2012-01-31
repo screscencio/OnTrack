@@ -1,8 +1,11 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ItemDroppedListener;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ScopeItemDragHandler;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ReleaseScopeItemDragHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
@@ -63,8 +66,8 @@ public class ReleasePanelWidget extends Composite {
 		});
 	}
 
-	private ScopeItemDragHandler createScopeItemDragHandler(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
-		return new ScopeItemDragHandler(createItemDroppedListener(releasePanelInteractionHandler));
+	private ReleaseScopeItemDragHandler createScopeItemDragHandler(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+		return new ReleaseScopeItemDragHandler(createItemDroppedListener(releasePanelInteractionHandler));
 	}
 
 	private ItemDroppedListener createItemDroppedListener(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {

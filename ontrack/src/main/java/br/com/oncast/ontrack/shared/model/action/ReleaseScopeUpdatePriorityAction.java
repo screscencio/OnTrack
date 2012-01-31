@@ -32,7 +32,8 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ReleaseScopeUpdatePriorityAction() {}
 
-	public ReleaseScopeUpdatePriorityAction(final UUID scopeReferenceId, final int priority) {
+	public ReleaseScopeUpdatePriorityAction(final UUID releaseReferenceId, final UUID scopeReferenceId, final int priority) {
+		this.releaseReferenceId = releaseReferenceId;
 		this.scopeReferenceId = scopeReferenceId;
 		this.priority = priority;
 	}
@@ -40,7 +41,8 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope scope = ScopeActionHelper.findScope(scopeReferenceId, context);
-		final Release release = scope.getRelease();
+		// IMPORTANT The release id should be used to recover the release, but as it was not being saved there is the need to maintain backwards compatibility.
+		final Release release = releaseReferenceId != null ? ReleaseActionHelper.findRelease(releaseReferenceId, context) : scope.getRelease();
 
 		if (!release.containsScope(scope)) throw new UnableToCompleteActionException(
 				"The scope priority cannot be updated because it is not part of the referenced release.");
@@ -53,7 +55,7 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 		release.removeScope(scope);
 		release.addScope(scope, priority);
 
-		return new ReleaseScopeUpdatePriorityAction(scopeReferenceId, oldPriority);
+		return new ReleaseScopeUpdatePriorityAction(releaseReferenceId, scopeReferenceId, oldPriority);
 	}
 
 	@Override

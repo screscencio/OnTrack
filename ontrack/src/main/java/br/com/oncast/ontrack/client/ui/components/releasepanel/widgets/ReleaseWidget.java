@@ -9,9 +9,13 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -138,8 +142,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		scopeContainer.setOwnerRelease(release);
 
-		populateChildScopeWidgets();
-		populateChildReleaseWidgets();
+		updateChildReleaseWidgets();
+		updateScopeWidgets();
 
 		updateDescription();
 		updateProgress();
@@ -202,14 +206,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		};
 	}
 
-	private void populateChildReleaseWidgets() {
-		for (final Scope scope : release.getScopeList())
-			scopeContainer.createChildModelWidget(scope);
+	private boolean updateScopeWidgets() {
+		return scopeContainer.update(release.getScopeList());
 	}
 
-	private void populateChildScopeWidgets() {
-		for (final Release childRelease : release.getChildren())
-			releaseContainer.createChildModelWidget(childRelease);
+	private boolean updateChildReleaseWidgets() {
+		progressLink.setVisible(ProjectContext.hasDirectScopes(release));
+		return releaseContainer.update(release.getChildren());
 	}
 
 	@Override
@@ -217,8 +220,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		updateDescription();
 		updateProgress();
 
-		final boolean releaseUpdate = releaseContainer.update(release.getChildren());
-		final boolean scopeUpdate = scopeContainer.update(release.getScopeList());
+		final boolean releaseUpdate = updateChildReleaseWidgets();
+		final boolean scopeUpdate = updateScopeWidgets();
 		return releaseUpdate || scopeUpdate;
 	}
 

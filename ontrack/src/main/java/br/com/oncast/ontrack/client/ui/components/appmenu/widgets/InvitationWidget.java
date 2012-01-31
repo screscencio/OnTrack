@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -50,7 +51,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	@UiHandler("inviteButton")
 	protected void inviteButtonClick(final ClickEvent event) {
-		InvitationKeyDownHandler.INVITE.execute(this);
+		InvitationKeyDownHandler.INVITE.execute(this, event);
 	}
 
 	@UiHandler("inviteButton")
@@ -97,7 +98,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 		INVITE(KEY_ENTER, true) {
 			@Override
-			protected void execute(final InvitationWidget widget) {
+			protected void executeImpl(final InvitationWidget widget) {
 				final String mail = widget.invitationTextBox.getText();
 				PROVIDER.getProjectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override
@@ -115,7 +116,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 		},
 		CANCEL(KEY_ESCAPE, true) {
 			@Override
-			protected void execute(final InvitationWidget widget) {
+			protected void executeImpl(final InvitationWidget widget) {
 				widget.hide();
 			}
 		};
@@ -128,19 +129,23 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 			this.shouldConsume = shouldConsume;
 		}
 
-		protected abstract void execute(InvitationWidget widget);
+		protected abstract void executeImpl(InvitationWidget widget);
 
 		static void handle(final InvitationWidget widget, final KeyDownEvent event) {
 			for (final InvitationKeyDownHandler handler : values()) {
 				if (handler.keyCode == event.getNativeKeyCode()) {
-					handler.execute(widget);
-					handler.consume(event);
+					handler.execute(widget, event);
 					return;
 				}
 			}
 		}
 
-		private void consume(final KeyDownEvent event) {
+		private void execute(final InvitationWidget widget, final DomEvent<?> event) {
+			executeImpl(widget);
+			consume(event);
+		}
+
+		private void consume(final DomEvent<?> event) {
 			if (shouldConsume) {
 				event.preventDefault();
 				event.stopPropagation();

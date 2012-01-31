@@ -63,7 +63,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 					}
 				});
 			}
-		}, 700, 400).setCloseOnEscape(false);
+		}, 700, 400);
 	}
 
 	public ProjectSelectionWidget() {
@@ -84,6 +84,15 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		};
 		registerProjectListChangeListener();
 		registerCloseHandler();
+	}
+
+	public ProjectSelectionWidget setCloseOnEscape(final boolean bool) {
+		projectSwitchingMenu.setCloseOnEscape(bool);
+		return this;
+	}
+
+	public void setCloseOnEscape(final String bool) {
+		projectSwitchingMenu.setCloseOnEscape(bool);
 	}
 
 	protected void hideLoadingIndicator() {

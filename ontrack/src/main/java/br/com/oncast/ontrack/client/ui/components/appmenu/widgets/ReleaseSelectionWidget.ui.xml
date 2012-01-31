@@ -1,0 +1,20 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cp='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
+
+	<ui:style>
+		.releaseSelectionMenu {
+			position: absolute;
+			top: 33px;
+			left: 0px;
+			min-width:100px;
+			z-index: 2;
+		}
+	</ui:style>
+
+    <g:FlowPanel ui:field="rootPanel" styleName="{style.releaseSelectionMenu}">
+    	<cp:FiltrableCommandMenu ui:field="releaseSelectionMenu" />
+    </g:FlowPanel>	
+
+</ui:UiBinder>

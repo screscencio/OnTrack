@@ -18,8 +18,28 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.ReleaseMonitor;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -38,22 +58,12 @@ public class ProgressPanelActionSyncControllerTest {
 	private ProjectContext context;
 	private Release myRelease;
 	private ReleaseMonitor releaseMonitor;
-	private Scope scopePresentOnDisplay;
 
 	@Before
 	public void setUp() throws Exception {
 		display = Mockito.mock(Display.class);
 		context = mock(ProjectContext.class);
-		scopePresentOnDisplay = createScope();
 		myRelease = createRelease();
-		// releaseMonitor = mock(ReleaseMonitor.class);
-		// when(releaseMonitor.releaseContainedScope(Mockito.any(Scope.class))).thenAnswer(new Answer<Boolean>() {
-		// @Override
-		// public Boolean answer(final InvocationOnMock invocation) throws Throwable {
-		// return scopePresentOnDisplay.equals(invocation.getArguments()[0]);
-		// }
-		// });
-		// when(releaseMonitor.getRelease()).thenReturn(myRelease);
 
 		final ActionExecutionService actionExecutionServiceMock = mock(ActionExecutionService.class);
 		final ArgumentCaptor<ActionExecutionListener> captor = ArgumentCaptor.forClass(ActionExecutionListener.class);
@@ -67,60 +77,402 @@ public class ProgressPanelActionSyncControllerTest {
 	}
 
 	@Test
-	public void shouldNotBrokeWhenAnUnhandledActionOccurs() throws Exception {
-		onActionExecution(createBrandNewModelAction(null));
-		shouldNotBeUpdated();
+	public void shouldDoNothingWhenAScopeInsertChildActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		shouldBeIgnored();
 	}
 
 	@Test
-	public void shouldDoNothingWhenAScopeActionWithDifferentReleaseAndScopeNotPresentOnDisplayOccurs() throws Exception {
-		final Scope scopeNotPresentOnDisplay = createScope();
-		createRelease().addScope(scopeNotPresentOnDisplay);
+	public void shouldUpdateWhenAScopeInsertChildActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
 
-		onActionExecution(createScopeAction(scopeNotPresentOnDisplay.getId()));
-		shouldNotBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, scope.getId(), myRelease.getId()));
+		shouldOnlyBeUpdated();
 	}
 
 	@Test
-	public void shouldDoNothingWhenAScopeActionWithScopeWithoutReleaseAndNotPresentOnDisplayOccurs() throws Exception {
-		final Scope scopeNotPresentOnDisplay = createScope();
+	public void shouldDoNothingWhenAScopeInsertParentActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
 
-		onActionExecution(createScopeAction(scopeNotPresentOnDisplay.getId()));
-		shouldNotBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeInsertParentAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		shouldBeIgnored();
 	}
 
 	@Test
-	public void shouldUpdateDisplayWhenAScopeActionWithTheSameReleaseOccurs() throws Exception {
-		final Scope notRelatedScopeOnSameRelease = createScope();
-		myRelease.addScope(notRelatedScopeOnSameRelease);
+	public void shouldUpdateWhenAScopeInsertParentActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
 
-		onActionExecution(createScopeAction(notRelatedScopeOnSameRelease.getId()));
-		shouldBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeInsertParentAction.class, scope.getId(), myRelease.getId()));
+		shouldOnlyBeUpdated();
 	}
 
 	@Test
-	public void shouldUpdateDisplayWhenAScopeActionWithAScopeThatIsPresentOnDisplay() throws Exception {
-		scopePresentOnDisplay.setRelease(myRelease);
+	public void shouldDoNothingWhenAScopeRemoveRollbackActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
 
-		onActionExecution(createScopeAction(scopePresentOnDisplay.getId()));
-		shouldBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeRemoveRollbackAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		shouldBeIgnored();
 	}
 
 	@Test
-	public void shouldNotUpdateDisplayWhenAReleaseActionWithDifferentReleaseOccurs() throws Exception {
-		final Release differentRelease = createRelease();
-		onActionExecution(createReleaseAction(differentRelease.getId()));
-		shouldNotBeUpdated();
+	public void shouldUpdateWhenAScopeRemoveRollbackActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createScopeInsertionAction(ScopeRemoveRollbackAction.class, scope.getId(), myRelease.getId()));
+		shouldOnlyBeUpdated();
 	}
 
 	@Test
-	public void shouldUpdateDisplayWhenAReleaseActionWithTheSameReleaseOccurs() throws Exception {
-		onActionExecution(createReleaseAction(myRelease.getId()));
-		shouldBeUpdated();
+	public void shouldDoNothingWhenAScopeInsertSiblingDownActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingDownAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		shouldBeIgnored();
 	}
 
-	private ModelAction createReleaseAction(final UUID referenceId) {
-		return createAction(ReleaseAction.class, referenceId);
+	@Test
+	public void shouldUpdateWhenAScopeInsertSiblingDownActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingDownAction.class, scope.getId(), myRelease.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeInsertSiblingUpActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingUpAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeInsertSiblingUpActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingUpAction.class, scope.getId(), myRelease.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAReleaseScopeUpdatePriorityActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ReleaseScopeUpdatePriorityAction.class, releaseNotBeingShown.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAReleaseScopeUpdatePriorityActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ReleaseScopeUpdatePriorityAction.class, myRelease.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeRemoveActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeRemoveAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeRemoveActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeRemoveAction.class, scope.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeUpdateActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeUpdateAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeUpdateActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeUpdateAction.class, scope.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeInsertSiblingUpRollbackActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeInsertSiblingUpRollbackAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeInsertSiblingUpRollbackActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeInsertSiblingUpRollbackAction.class, scope.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeInsertSiblingDownRollbackActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeInsertSiblingDownRollbackAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeInsertSiblingDownRollbackActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeInsertSiblingDownRollbackAction.class, scope.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeInsertParentRollbackActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeInsertParentRollbackAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeInsertParentRollbackActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeInsertParentRollbackAction.class, scope.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeInsertChildRollbackActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeInsertChildRollbackAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeInsertChildRollbackActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeInsertChildRollbackAction.class, scope.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeBindReleaseActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeBindReleaseAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeBindReleaseActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeBindReleaseAction.class, scope.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeDeclareProgressActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeDeclareProgressAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeDeclareProgressActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeDeclareProgressAction.class, scope.getId()));
+		shouldOnlyBeUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAReleaseRenameActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ReleaseRenameAction.class, releaseNotBeingShown.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAReleaseRenameActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ReleaseRenameAction.class, myRelease.getId()));
+		shouldOnlyHaveTheTitleUpdated();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAReleaseRemoveActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ReleaseRemoveAction.class, releaseNotBeingShown.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAReleaseRemoveActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ReleaseRemoveAction.class, myRelease.getId()));
+		shouldOnlyHaveExited();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAReleaseCreateActionDefaultWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ReleaseCreateActionDefault.class, releaseNotBeingShown.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAReleaseCreateActionDefaultWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ReleaseCreateActionDefault.class, myRelease.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAReleaseRemoveRollbackActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ReleaseRemoveRollbackAction.class, releaseNotBeingShown.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAReleaseRemoveRollbackActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ReleaseRemoveRollbackAction.class, myRelease.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAReleaseUpdatePriorityActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ReleaseUpdatePriorityAction.class, releaseNotBeingShown.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAReleaseUpdatePriorityActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ReleaseUpdatePriorityAction.class, myRelease.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeDeclareEffortActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeDeclareEffortAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeDeclareEffortActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeDeclareEffortAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldDoNothingWhenAScopeDeclareValueActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		final Release releaseNotBeingShown = createRelease();
+		releaseNotBeingShown.addScope(scope);
+
+		onActionExecution(createAction(ScopeDeclareValueAction.class, scope.getId()));
+		shouldBeIgnored();
+	}
+
+	@Test
+	public void shouldUpdateWhenAScopeDeclareValueActionWithCreatedScopeOnReleaseOccurs() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+
+		onActionExecution(createAction(ScopeDeclareValueAction.class, scope.getId()));
+		shouldBeIgnored();
 	}
 
 	private void onActionExecution(final ModelAction action) throws UnableToCompleteActionException {
@@ -135,17 +487,18 @@ public class ProgressPanelActionSyncControllerTest {
 		when(context.findScope(scope.getId())).thenReturn(scope);
 	}
 
-	private ModelAction createBrandNewModelAction(final UUID referenceId) {
-		return createAction(ModelAction.class, referenceId);
-	}
-
-	private ModelAction createScopeAction(final UUID referenceId) {
-		return createAction(ScopeAction.class, referenceId);
-	}
-
-	private ModelAction createAction(final Class<? extends ModelAction> clazz, final UUID referenceId) {
-		final ModelAction mock = Mockito.mock(clazz);
+	private <T extends ModelAction> ModelAction createAction(final Class<T> clazz, final UUID referenceId) {
+		final T mock = Mockito.mock(clazz);
 		when(mock.getReferenceId()).thenReturn(referenceId);
+		return mock;
+	}
+
+	private <T extends ScopeInsertAction> ScopeInsertAction createScopeInsertionAction(final Class<T> clazz, final UUID scopeReferenceId,
+			final UUID releaseReferenceId) {
+		final T mock = Mockito.mock(clazz);
+		when(mock.getNewScopeId()).thenReturn(scopeReferenceId);
+		when(mock.getReferenceId()).thenReturn(releaseReferenceId);
+
 		return mock;
 	}
 
@@ -161,12 +514,28 @@ public class ProgressPanelActionSyncControllerTest {
 		return scope;
 	}
 
-	private void shouldBeUpdated() {
+	private void shouldOnlyBeUpdated() {
 		verify(display, times(1)).update();
+		verify(display, never()).exit();
+		verify(display, never()).updateReleaseInfo();
 	}
 
-	private void shouldNotBeUpdated() {
+	private void shouldOnlyHaveExited() {
 		verify(display, never()).update();
+		verify(display, times(1)).exit();
+		verify(display, never()).updateReleaseInfo();
+	}
+
+	private void shouldOnlyHaveTheTitleUpdated() {
+		verify(display, times(1)).updateReleaseInfo();
+		verify(display, never()).update();
+		verify(display, never()).exit();
+	}
+
+	private void shouldBeIgnored() {
+		verify(display, never()).update();
+		verify(display, never()).exit();
+		verify(display, never()).updateReleaseInfo();
 	}
 
 }

@@ -32,7 +32,7 @@ xmlns:o="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	   <o:ApplicationWidgetContainer text="Choose a project">
             <g:HTMLPanel styleName="{style.projectSelectionPanel}">
                 <cp:ProjectSelectionWidget ui:field="selectionProject"
-                    styleName="{style.projectSelectionWidget}" />
+                    styleName="{style.projectSelectionWidget}" closeOnEscape="false"/>
             </g:HTMLPanel>
 	   </o:ApplicationWidgetContainer>
 	</g:FocusPanel>

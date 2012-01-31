@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd;
+package br.com.oncast.ontrack.client.ui.generalwidgets.dnd;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;

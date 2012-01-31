@@ -1,9 +1,8 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd;
+package br.com.oncast.ontrack.client.ui.generalwidgets.dnd;
 
 import java.util.Map;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
-
+import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -32,30 +31,29 @@ public class DragAndDropManager {
 		dragController.setBehaviorMultipleSelection(false);
 	}
 
-	public void setDragHandler(final ScopeItemDragHandler scopeItemDragHandler) {
-		dragController.addDragHandler(scopeItemDragHandler);
+	public void setDragHandler(final DragHandler dragHandler) {
+		dragController.addDragHandler(dragHandler);
 	}
 
 	private void assureConfigured() {
 		if (dragController == null) throw new RuntimeException("The drag and drop manager must be configured before handling widget creation.");
 	}
 
-	public void monitorDropTarget(final ReleaseWidget widget) {
-		final VerticalPanel dropTarget = widget.getScopeContainer().getVerticalContainer();
-		dropTarget.addAttachHandler(new Handler() {
+	public void monitorDropTarget(final VerticalPanel panel) {
+		panel.addAttachHandler(new Handler() {
 
 			@Override
 			public void onAttachOrDetach(final AttachEvent event) {
 				assureConfigured();
 
 				if (event.isAttached()) {
-					final VerticalPanelDropController dropController = new VerticalPanelDropController(dropTarget);
-					dropTargetMap.put(dropTarget, dropController);
+					final VerticalPanelDropController dropController = new VerticalPanelDropController(panel);
+					dropTargetMap.put(panel, dropController);
 					dragController.registerDropController(dropController);
 				}
 				else {
-					dragController.unregisterDropController(dropTargetMap.get(dropTarget));
-					dropTargetMap.remove(dropTarget);
+					dragController.unregisterDropController(dropTargetMap.get(panel));
+					dropTargetMap.remove(panel);
 				}
 			}
 		});

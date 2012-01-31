@@ -2,8 +2,9 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ModelWidgetContainerListener;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -25,20 +26,21 @@ public class KanbanColumnWidget extends Composite {
 	Label title;
 
 	@UiField
-	ScopeWidgetContainer scopeContainer;
+	KanbanScopeContainer scopeContainer;
 
 	private ModelWidgetContainerListener containerUpdateListener;
 
-	private ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
+	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
 
 	@UiFactory
-	protected ScopeWidgetContainer createScopeContainer() {
-		scopeWidgetFactory = new ScopeWidgetFactory(new ProgressPanelWidgetInteractionHandler() {});
-		return new ScopeWidgetContainer(scopeWidgetFactory, containerUpdateListener);
+	protected KanbanScopeContainer createScopeContainer() {
+		return new KanbanScopeContainer(scopeWidgetFactory, containerUpdateListener);
 	}
 
-	public KanbanColumnWidget(final KanbanColumn column) {
+	public KanbanColumnWidget(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory) {
+		this.scopeWidgetFactory = scopeWidgetFactory;
 		initWidget(uiBinder.createAndBindUi(this));
+		scopeContainer.setKanbanColumn(column);
 		this.title.setText(column.getTitle());
 	}
 
@@ -46,5 +48,9 @@ public class KanbanColumnWidget extends Composite {
 		for (final Scope scope : scopes)
 			scopeContainer.createChildModelWidget(scope);
 		return this;
+	}
+
+	public VerticalModelWidgetContainer<Scope, ScopeWidget> getScopeContainter() {
+		return scopeContainer;
 	}
 }

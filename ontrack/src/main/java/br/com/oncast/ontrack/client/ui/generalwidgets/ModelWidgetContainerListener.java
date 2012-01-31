@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
+package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 public interface ModelWidgetContainerListener {
 	void onUpdateComplete(boolean hasChanged);

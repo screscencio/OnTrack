@@ -305,4 +305,8 @@ public class Release implements Serializable {
 				"An invalid description was given.");
 		description = newReleaseDescription;
 	}
+
+	public boolean isSubReleaseOf(final Release actionRelease) {
+		return actionRelease.getDescendantReleases().contains(this);
+	}
 }

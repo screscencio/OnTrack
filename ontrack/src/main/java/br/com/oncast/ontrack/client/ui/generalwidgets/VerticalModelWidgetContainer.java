@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
+package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import java.util.HashMap;
 import java.util.List;
