@@ -26,16 +26,11 @@ public final class JQuery {
 		return this;
 	}
 
-	public JQuery keyup(final EventHandler handler) {
-		nat.bind("keyup", handler);
-		return this;
+	public void unbindKeyDown(final EventHandler handler) {
+		nat.unbind("keydown", handler);
 	}
 
 	public static JQuery jquery(final Element element) {
 		return new JQuery(element);
-	}
-
-	public void unbindKeyDown(final EventHandler handler) {
-		nat.unbind("keydown", handler);
 	}
 }

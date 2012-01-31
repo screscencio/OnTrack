@@ -14,7 +14,9 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 	public native void bind(String eventType, EventHandler handler) /*-{
 		this
 				.bind(
-						eventType,
+						eventType
+								+ "."
+								+ handler.@br.com.oncast.ontrack.client.utils.jquery.EventHandler::registrationId,
 						function(e) {
 							handler.@br.com.oncast.ontrack.client.utils.jquery.EventHandler::handle(Lbr/com/oncast/ontrack/client/utils/jquery/Event;)(e);
 						});
@@ -22,6 +24,9 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 
 	@Override
 	public native void unbind(String eventType, EventHandler handler) /*-{
-		this.unbind(eventType, handler);
+		this
+				.unbind(eventType
+						+ "."
+						+ handler.@br.com.oncast.ontrack.client.utils.jquery.EventHandler::registrationId);
 	}-*/;
 }
