@@ -88,10 +88,11 @@ public class ProjectContext {
 	}
 
 	public Kanban getKanban(final Release release) {
-		return KanbanFactory.createFor(release);
+		final Kanban kanban = project.hasKanbanFor(release) ? project.getKanban(release) : KanbanFactory.createFor(release);
+		return kanban.isFixed() ? kanban : KanbanFactory.createInfered(kanban, release);
 	}
 
-	public Set<Release> getAllReleasesWithOpenScopes() {
+	public Set<Release> getAllReleasesWithDirectScopes() {
 		final HashSet<Release> releases = new HashSet<Release>();
 
 		for (final Release release : getProjectRelease().getDescendantReleases()) {
