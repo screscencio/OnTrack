@@ -102,7 +102,7 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private Set<Release> getReleases() {
-		return SERVICE_PROVIDER.getContextProviderService().getProjectContext(projectId).getAllReleasesWithOpenScopes();
+		return SERVICE_PROVIDER.getContextProviderService().getProjectContext(projectId).getAllReleasesWithDirectScopes();
 	}
 
 	@Override

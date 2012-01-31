@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-
 public class KanbanColumn {
 
 	private final String title;

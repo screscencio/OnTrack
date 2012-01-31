@@ -99,4 +99,14 @@ public class ReleaseTestUtils {
 		return ReleaseFactoryTestUtil.create(Release.class.getSimpleName() + ++releaseCounter);
 	}
 
+	public static Release createReleaseForKanbanWithColumns(final String... progressDescriptions) {
+		final Release release = ReleaseFactoryTestUtil.create("Mock Release");
+		for (final String description : progressDescriptions) {
+			final Scope scope = ScopeTestUtils.createScope();
+			scope.getProgress().setDescription(description);
+			release.addScope(scope);
+		}
+		return release;
+	}
+
 }

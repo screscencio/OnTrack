@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.project;
 
 import java.io.Serializable;
 
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -32,5 +33,15 @@ public class Project implements Serializable {
 
 	public ProjectRepresentation getProjectRepresentation() {
 		return projectRepresentation;
+	}
+
+	public boolean hasKanbanFor(final Release release) {
+		// FIXME LOBO implement;
+		return false;
+	}
+
+	public Kanban getKanban(final Release release) {
+		// FIXME LOBO implement
+		return null;
 	}
 }
