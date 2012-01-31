@@ -26,20 +26,21 @@ public class KanbanColumnWidget extends Composite {
 	Label title;
 
 	@UiField
-	VerticalModelWidgetContainer<Scope, ScopeWidget> scopeContainer;
+	KanbanScopeContainer scopeContainer;
 
 	private ModelWidgetContainerListener containerUpdateListener;
 
 	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
 
 	@UiFactory
-	protected VerticalModelWidgetContainer<Scope, ScopeWidget> createScopeContainer() {
-		return new VerticalModelWidgetContainer<Scope, ScopeWidget>(scopeWidgetFactory, containerUpdateListener);
+	protected KanbanScopeContainer createScopeContainer() {
+		return new KanbanScopeContainer(scopeWidgetFactory, containerUpdateListener);
 	}
 
 	public KanbanColumnWidget(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory) {
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		initWidget(uiBinder.createAndBindUi(this));
+		scopeContainer.setKanbanColumn(column);
 		this.title.setText(column.getTitle());
 	}
 

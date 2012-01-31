@@ -1,8 +1,6 @@
-package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd;
+package br.com.oncast.ontrack.client.ui.generalwidgets.dnd;
 
 import java.util.Map;
-
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
 
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
@@ -33,17 +31,12 @@ public class DragAndDropManager {
 		dragController.setBehaviorMultipleSelection(false);
 	}
 
-	public void setDragHandler(final DragHandler scopeItemDragHandler) {
-		dragController.addDragHandler(scopeItemDragHandler);
+	public void setDragHandler(final DragHandler dragHandler) {
+		dragController.addDragHandler(dragHandler);
 	}
 
 	private void assureConfigured() {
 		if (dragController == null) throw new RuntimeException("The drag and drop manager must be configured before handling widget creation.");
-	}
-
-	// FIXME BESEN remove specific implementation
-	public void monitorDropTarget(final ReleaseWidget widget) {
-		monitorDropTarget(widget.getScopeContainer().getVerticalContainer());
 	}
 
 	public void monitorDropTarget(final VerticalPanel panel) {

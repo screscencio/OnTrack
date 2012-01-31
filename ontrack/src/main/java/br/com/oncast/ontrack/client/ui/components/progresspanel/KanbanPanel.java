@@ -6,16 +6,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidgetFactory;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanScopeItemDragHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -36,13 +39,15 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 	private Release release;
 	final DragAndDropManager dragAndDropMangager;
 	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
+	private final ProgressPanelInteractionHandler interactionHandler;
 
 	public KanbanPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
 		dragAndDropMangager = new DragAndDropManager();
 		dragAndDropMangager.configureBoundaryPanel(RootPanel.get());
-		dragAndDropMangager.setDragHandler(new DragHandlerAdapter() {});
-		scopeWidgetFactory = new KanbanScopeWidgetFactory(dragAndDropMangager, new ProgressPanelInteractionHandler());
+		interactionHandler = new ProgressPanelInteractionHandler();
+		dragAndDropMangager.setDragHandler(new KanbanScopeItemDragHandler(interactionHandler));
+		scopeWidgetFactory = new KanbanScopeWidgetFactory(dragAndDropMangager, interactionHandler);
 	}
 
 	@Override
@@ -70,5 +75,10 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		for (final Scope scope : scopeList)
 			map.get(kanban.columnForDescription(scope.getProgress().getDescription())).add(scope);
 		return map;
+	}
+
+	@Override
+	public void setActionExecutionService(final ActionExecutionService actionExecutionService) {
+		interactionHandler.configureActionExecutionRequestHandler(actionExecutionService);
 	}
 }

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
+import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 

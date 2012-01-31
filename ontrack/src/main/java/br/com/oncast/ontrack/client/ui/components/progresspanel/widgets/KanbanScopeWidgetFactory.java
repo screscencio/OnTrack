@@ -1,9 +1,8 @@
-package br.com.oncast.ontrack.client.ui.components.progresspanel;
+package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ProgressPanelWidgetInteractionHandler;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public final class KanbanScopeWidgetFactory implements ModelWidgetFactory<Scope, ScopeWidget> {
