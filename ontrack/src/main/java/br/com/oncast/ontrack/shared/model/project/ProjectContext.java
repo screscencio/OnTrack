@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
 import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.Release.Condition;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -89,7 +90,17 @@ public class ProjectContext {
 
 	public Kanban getKanban(final Release release) {
 		final Kanban kanban = project.hasKanbanFor(release) ? project.getKanban(release) : KanbanFactory.createFor(release);
-		return kanban.isFixed() ? kanban : KanbanFactory.createInfered(kanban, release);
+		return kanban.isFixed() ? kanban : KanbanFactory.merge(getPreviousKanbanFrom(release), kanban);
+	}
+
+	private Kanban getPreviousKanbanFrom(final Release release) {
+		final Release previousRelease = release.getLatestPreviousRelease(new Condition() {
+			@Override
+			public boolean eval(final Release release) {
+				return project.hasKanbanFor(release);
+			}
+		});
+		return previousRelease == null ? KanbanFactory.createEmpty() : project.getKanban(previousRelease);
 	}
 
 	public Set<Release> getAllReleasesWithDirectScopes() {

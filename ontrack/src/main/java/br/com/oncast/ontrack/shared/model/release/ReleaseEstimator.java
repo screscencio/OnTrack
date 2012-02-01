@@ -39,7 +39,7 @@ public class ReleaseEstimator {
 	}
 
 	public float getEstimatedVelocityOnDay(final WorkingDay day) {
-		final List<Scope> sampleScopes = rootRelease.getAllScopesIncludingChildrenReleases();
+		final List<Scope> sampleScopes = rootRelease.getAllScopesIncludingDescendantReleases();
 
 		final List<Scope> consideredSampleScopes = getDoneScopesSortedByLatestEndDateUntilDay(sampleScopes, day);
 		if (consideredSampleScopes.isEmpty()) return DEFAULT_VELOCITY;

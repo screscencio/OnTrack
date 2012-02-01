@@ -7,6 +7,14 @@ html,body {
 	font-size: 14px;
 }
 
+.popupPanel {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 0px;
+	width: 0px;
+}
+
 .maskPanel {
 	position: absolute;
 	top: 0px;
