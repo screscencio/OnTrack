@@ -17,18 +17,25 @@
 	}
 
 	.filterArea {
+		width: 100%;
+		
+		padding-left: 2px;
+		font-size: 14px;
+		font-weight: normal;
+		
+		outline: none;
+		border: 0px;
+	}
+	
+	.container {
 		position: absolute;
 		top: 3px;
 		left: 2px;
 		right: 2px;
-		font-size: 14px;
-		font-weight: normal;
-		padding-left: 2px;
+		
 		padding-right: 20px;
 		
 		background: url("resources/image/filtrableCommandMenu/search-icon.gif") no-repeat top right;
-		outline: none;
-		border: 0px;
 	}
 	
 	.separator {
@@ -58,7 +65,9 @@
 
 	<g:FocusPanel ui:field="focusPanel">
 		<g:HTMLPanel ui:field="rootPanel" styleName="{style.rootPanel}" >
-			<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
+			<g:HTMLPanel styleName="{style.container}" >
+				<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
+			</g:HTMLPanel>
 			<g:HTMLPanel styleName="{style.separator}" />
 			<g:ScrollPanel ui:field="scrollPanel" styleName="{style.scrollpanel}">
 				<t:CommandMenu ui:field="menu" />
