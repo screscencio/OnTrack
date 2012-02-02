@@ -242,6 +242,8 @@ public class PopupConfig {
 		});
 	}
 
+	// TODO: Poppups aligned using bottom will not work properly with this implementation of popupconfig consider engaging widgets to RootPanel and find another
+	// way to clean then when user hits navigation commands eg. "Back"
 	private void engagePopup() {
 		if (widgetToPopup == null) throw new IllegalStateException("No popup panel attached to link. Did you forget to call the PopupConfig#popup() method?");
 		MaskPanel.show(new HideHandler() {

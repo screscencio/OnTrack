@@ -24,8 +24,8 @@ public class ScopeTreeReleaseUpdateAction implements ScopeTreeAction {
 	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		final Release release = context.findRelease(action.getReferenceId());
 
-		final List<Scope> scopesIncludingFromChildrenReleases = release.getAllScopesIncludingChildrenReleases();
-		for (final Scope scope : scopesIncludingFromChildrenReleases) {
+		final List<Scope> scopesIncludingDescendantReleases = release.getAllScopesIncludingDescendantReleases();
+		for (final Scope scope : scopesIncludingDescendantReleases) {
 			final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
 			treeItem.getScopeTreeItemWidget().updateReleaseDisplay();
 		}

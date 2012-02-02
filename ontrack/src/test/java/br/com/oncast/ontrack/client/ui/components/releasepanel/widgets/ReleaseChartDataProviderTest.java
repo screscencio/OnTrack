@@ -53,7 +53,7 @@ public class ReleaseChartDataProviderTest {
 	public void verifyMocks() {
 		Mockito.verify(estimatorMock, Mockito.atLeastOnce()).getEstimatedEndDayFor(releaseMock);
 		Mockito.verify(estimatorMock, Mockito.atLeastOnce()).getEstimatedStartDayFor(releaseMock);
-		Mockito.verify(releaseMock, Mockito.atLeastOnce()).getAllScopesIncludingChildrenReleases();
+		Mockito.verify(releaseMock, Mockito.atLeastOnce()).getAllScopesIncludingDescendantReleases();
 	}
 
 	@Test
@@ -211,7 +211,7 @@ public class ReleaseChartDataProviderTest {
 				return releaseEffortSum;
 			}
 		});
-		Mockito.when(releaseMock.getAllScopesIncludingChildrenReleases()).thenAnswer(new Answer<List<Scope>>() {
+		Mockito.when(releaseMock.getAllScopesIncludingDescendantReleases()).thenAnswer(new Answer<List<Scope>>() {
 
 			@Override
 			public List<Scope> answer(final InvocationOnMock invocation) throws Throwable {

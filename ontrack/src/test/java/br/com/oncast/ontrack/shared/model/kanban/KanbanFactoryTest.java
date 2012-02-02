@@ -12,6 +12,7 @@ import org.junit.matchers.JUnitMatchers;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.release.Release;
 
 public class KanbanFactoryTest {
 
@@ -65,31 +66,27 @@ public class KanbanFactoryTest {
 	}
 
 	@Test
-	public void kanbanCreatedFromAnotherKanbanShouldHaveAllHisColumnsInOrder() throws Exception {
+	public void mergedKanbanShouldContainTheBaseKanbansColumnsInOrder() throws Exception {
 		final Kanban kanban = KanbanFactory.createFor(createReleaseForKanbanWithColumns("Planning", "Implementing", "Testing"));
-		assertKanbanColumnTitles(kanban, NOT_STARTED_DESCRIPTION, "Planning", "Implementing", "Testing", DONE_DESCRIPTION);
-
-		final Kanban newKanban = KanbanFactory.createFrom(kanban, createReleaseForKanbanWithColumns());
-		kanban.addColumn(new KanbanColumn("New Column"));
+		final Kanban newKanban = KanbanFactory.merge(kanban, KanbanFactory.createFor(createReleaseForKanbanWithColumns()));
 
 		assertKanbanColumnTitles(newKanban, NOT_STARTED_DESCRIPTION, "Planning", "Implementing", "Testing", DONE_DESCRIPTION);
 	}
 
 	@Test
-	public void kanbanCreatedFromAnotherKanbanShouldAlsoIncludeTheReleaseProgresses() throws Exception {
+	public void shouldInsertNewColumnsOnBeginningOfNewKanban() throws Exception {
 		final Kanban kanban = KanbanFactory.createFor(createReleaseForKanbanWithColumns("Planning", "Implementing", "Testing"));
-		assertKanbanColumnTitles(kanban, NOT_STARTED_DESCRIPTION, "Planning", "Implementing", "Testing", DONE_DESCRIPTION);
 
-		final Kanban newKanban = KanbanFactory.createFrom(kanban, createReleaseForKanbanWithColumns("New Progress1", "New Progress2"));
+		final Release release = createReleaseForKanbanWithColumns("New Progress1", "New Progress2");
+		final Kanban newKanban = KanbanFactory.merge(kanban, KanbanFactory.createFor(release));
 		assertKanbanColumnTitles(newKanban, NOT_STARTED_DESCRIPTION, "New Progress1", "New Progress2", "Planning", "Implementing", "Testing", DONE_DESCRIPTION);
 	}
 
 	@Test
-	public void kanbanCreatedFromAnotherKanbanShouldNotIncludeColumnsFromReleaseThatTheGivenKanbanAlreadyHad() throws Exception {
+	public void mergedKanbanShouldNotContainRepetitionsAndKeepOrderOfBaseKanban() throws Exception {
 		final Kanban kanban = KanbanFactory.createFor(createReleaseForKanbanWithColumns("Planning", "Implementing", "Testing"));
-		assertKanbanColumnTitles(kanban, NOT_STARTED_DESCRIPTION, "Planning", "Implementing", "Testing", DONE_DESCRIPTION);
 
-		final Kanban newKanban = KanbanFactory.createFrom(kanban, createReleaseForKanbanWithColumns("New Progress1", "Implementing"));
+		final Kanban newKanban = KanbanFactory.merge(kanban, KanbanFactory.createFor(createReleaseForKanbanWithColumns("New Progress1", "Implementing")));
 
 		assertKanbanColumnTitles(newKanban, NOT_STARTED_DESCRIPTION, "New Progress1", "Planning", "Implementing", "Testing", DONE_DESCRIPTION);
 	}

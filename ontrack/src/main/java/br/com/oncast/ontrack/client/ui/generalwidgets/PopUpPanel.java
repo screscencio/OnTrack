@@ -21,7 +21,9 @@ public class PopUpPanel {
 	}
 
 	private static FocusPanel createFocusPanel() {
-		return configureToCleanOnAnyNavigationEvent(addToRootPanel(new FocusPanel()));
+		final FocusPanel panel = new FocusPanel();
+		panel.setStyleName("popupPanel");
+		return configureToCleanOnAnyNavigationEvent(addToRootPanel(panel));
 	}
 
 	private static FocusPanel addToRootPanel(final FocusPanel panel) {

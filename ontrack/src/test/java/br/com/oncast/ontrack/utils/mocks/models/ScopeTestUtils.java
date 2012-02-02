@@ -100,12 +100,14 @@ public class ScopeTestUtils {
 		return root;
 	}
 
-	public static void setProgress(final Scope scope, final ProgressState progress) {
+	public static Scope setProgress(final Scope scope, final ProgressState progress) {
 		scope.getProgress().setDescription(progress.getDescription());
+		return scope;
 	}
 
-	public static void setDelcaredEffort(final Scope scope, final int effort) {
+	public static Scope setDelcaredEffort(final Scope scope, final int effort) {
 		scope.getEffort().setDeclared(effort);
+		return scope;
 	}
 
 	public static void setEndDate(final Scope scope, final WorkingDay day) {
@@ -204,6 +206,11 @@ public class ScopeTestUtils {
 
 	public static Scope createScope() {
 		return createScope(Scope.class.getSimpleName() + ++scopeCounter);
+	}
+
+	public static Scope createScope(final ProgressState progress) {
+		final Scope scope = createScope();
+		return setProgress(scope, progress);
 	}
 
 }

@@ -63,7 +63,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 					}
 				});
 			}
-		}, 700, 400);
+		}, 576, 400);
 	}
 
 	public ProjectSelectionWidget() {

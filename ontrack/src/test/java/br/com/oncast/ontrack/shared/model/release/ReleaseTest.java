@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.release;
 
+import static br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils.createScope;
+import static br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils.setDelcaredEffort;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -14,6 +16,7 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.release.Release.Condition;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -207,14 +210,14 @@ public class ReleaseTest {
 		for (int i = 0; i < nScopes; i++) {
 			release.addScope(new Scope("scope"));
 		}
-		assertEquals(nScopes, release.getAllScopesIncludingChildrenReleases().size());
+		assertEquals(nScopes, release.getAllScopesIncludingDescendantReleases().size());
 	}
 
 	@Test
 	public void shouldReturnAllScopesRegardingChildReleases() throws Exception {
 		final Release release = ReleaseTestUtils.getReleaseWithScopes();
 		final int nScopes = 12;
-		assertEquals(nScopes, release.getAllScopesIncludingChildrenReleases().size());
+		assertEquals(nScopes, release.getAllScopesIncludingDescendantReleases().size());
 	}
 
 	@Test
@@ -337,6 +340,90 @@ public class ReleaseTest {
 		release.getScopeList().get(0).getEffort().setDeclared(25);
 
 		assertEquals(70, release.getEffortSum(), 0.01);
+	}
+
+	@Test
+	public void testingWhenTheLatestPreviousReleaseIsTheFirstOlderBother() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+
+		parent.addChild(firstSon);
+		parent.addChild(secondSon);
+
+		firstSon.addScope(ScopeTestUtils.createScope(ProgressState.DONE));
+
+		assertEquals(firstSon, secondSon.getLatestPreviousRelease(new Condition() {
+			@Override
+			public boolean eval(final Release release) {
+				return release.isDone();
+			}
+		}));
+	}
+
+	@Test
+	public void testingWhenTheLatestPreviousReleaseIsTheParent() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+
+		parent.addChild(firstSon);
+		parent.addChild(secondSon);
+
+		parent.addScope(setDelcaredEffort(createScope(), 1));
+
+		assertEquals(parent, secondSon.getLatestPreviousRelease(new Condition() {
+			@Override
+			public boolean eval(final Release release) {
+				return release.getEffortSum() == 1;
+			}
+		}));
+	}
+
+	@Test
+	public void testingWhenTheLatestPreviousReleaseIsTheSecondNephew() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
+		final Release firstNephew = ReleaseFactoryTestUtil.create("First Nephew");
+		final Release secondNephew = ReleaseFactoryTestUtil.create("Second Nephew");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+
+		parent.addChild(firstSon);
+		parent.addChild(secondSon);
+		firstSon.addChild(firstNephew);
+		firstSon.addChild(secondNephew);
+
+		secondNephew.addScope(setDelcaredEffort(createScope(), 1));
+
+		assertEquals(secondNephew, secondSon.getLatestPreviousRelease(new Condition() {
+			@Override
+			public boolean eval(final Release release) {
+				return release.getEffortSum() == 1;
+			}
+		}));
+	}
+
+	@Test
+	public void shouldNotConsiderNextReleases() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
+		final Release firstNephew = ReleaseFactoryTestUtil.create("First Nephew");
+		final Release secondNephew = ReleaseFactoryTestUtil.create("Second Nephew");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+
+		parent.addChild(firstSon);
+		parent.addChild(secondSon);
+		firstSon.addChild(firstNephew);
+		firstSon.addChild(secondNephew);
+
+		secondSon.addScope(createScope(ProgressState.DONE));
+
+		assertNull(secondNephew.getLatestPreviousRelease(new Condition() {
+			@Override
+			public boolean eval(final Release release) {
+				return release.isDone();
+			}
+		}));
 	}
 
 	private void setScopeToUnderWorkInDay(final Scope scope, final WorkingDay day) throws Exception {

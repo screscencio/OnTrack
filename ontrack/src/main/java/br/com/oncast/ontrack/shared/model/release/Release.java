@@ -57,6 +57,14 @@ public class Release implements Serializable {
 		return parent == null;
 	}
 
+	public boolean isDescendantOf(final Release actionRelease) {
+		return actionRelease.getDescendantReleases().contains(this);
+	}
+
+	public boolean isLeaf() {
+		return childrenList.isEmpty();
+	}
+
 	public Release getParent() {
 		return parent;
 	}
@@ -126,9 +134,11 @@ public class Release implements Serializable {
 	}
 
 	private Release findDirectChildRelease(final String releaseDescription) {
-		if (releaseDescription.isEmpty()) return null;
-		for (final Release release : childrenList)
-			if (release.getDescription().toLowerCase().equals(releaseDescription.trim().toLowerCase())) return release;
+		final String description = releaseDescription.trim().toLowerCase();
+		if (description.isEmpty()) return null;
+		for (final Release child : childrenList) {
+			if (child.getDescription().toLowerCase().equals(description)) return child;
+		}
 		return null;
 	}
 
@@ -160,11 +170,11 @@ public class Release implements Serializable {
 		return new ArrayList<Scope>(scopeList);
 	}
 
-	public List<Scope> getAllScopesIncludingChildrenReleases() {
+	public List<Scope> getAllScopesIncludingDescendantReleases() {
 		final List<Scope> scopes = new ArrayList<Scope>();
 		scopes.addAll(scopeList);
 		for (final Release release : childrenList) {
-			scopes.addAll(release.getAllScopesIncludingChildrenReleases());
+			scopes.addAll(release.getAllScopesIncludingDescendantReleases());
 		}
 		return scopes;
 	}
@@ -223,9 +233,15 @@ public class Release implements Serializable {
 		return scopeList.contains(scope);
 	}
 
+	public void setDescription(final String newReleaseDescription) {
+		if (newReleaseDescription == null || newReleaseDescription.isEmpty() || newReleaseDescription.contains(ReleaseDescriptionParser.SEPARATOR)) throw new RuntimeException(
+				"An invalid description was given.");
+		description = newReleaseDescription;
+	}
+
 	public WorkingDay getStartDay() {
 		WorkingDay startDay = null;
-		for (final Scope scope : getAllScopesIncludingChildrenReleases()) {
+		for (final Scope scope : getAllScopesIncludingDescendantReleases()) {
 			final WorkingDay scopeStartDay = scope.getProgress().getStartDay();
 			if (startDay == null || scopeStartDay != null && scopeStartDay.isBefore(startDay)) {
 				startDay = scopeStartDay;
@@ -236,7 +252,7 @@ public class Release implements Serializable {
 
 	public WorkingDay getEndDay() {
 		WorkingDay endDay = null;
-		for (final Scope scope : getAllScopesIncludingChildrenReleases()) {
+		for (final Scope scope : getAllScopesIncludingDescendantReleases()) {
 			final WorkingDay scopeEndDay = scope.getProgress().getEndDay();
 			if (endDay == null || (scopeEndDay != null && scopeEndDay.isAfter(endDay))) {
 				endDay = scopeEndDay;
@@ -248,7 +264,7 @@ public class Release implements Serializable {
 	public Float getValueSum() {
 		float valueSum = 0;
 
-		for (final Scope scope : getAllScopesIncludingChildrenReleases())
+		for (final Scope scope : getAllScopesIncludingDescendantReleases())
 			valueSum += scope.getValue().getInfered();
 
 		return valueSum;
@@ -257,7 +273,7 @@ public class Release implements Serializable {
 	public float getEffortSum() {
 		float effortSum = 0;
 
-		for (final Scope scope : getAllScopesIncludingChildrenReleases())
+		for (final Scope scope : getAllScopesIncludingDescendantReleases())
 			effortSum += scope.getEffort().getInfered();
 
 		return effortSum;
@@ -266,7 +282,7 @@ public class Release implements Serializable {
 	public float getAccomplishedEffortSum() {
 		float accomplishedEffortSum = 0;
 
-		for (final Scope scope : getAllScopesIncludingChildrenReleases())
+		for (final Scope scope : getAllScopesIncludingDescendantReleases())
 			accomplishedEffortSum += scope.getEffort().getAccomplishedEffort();
 
 		return accomplishedEffortSum;
@@ -282,6 +298,29 @@ public class Release implements Serializable {
 			if (!childRelease.isDone()) return false;
 
 		return true;
+	}
+
+	/**
+	 * Finds the latest previous release that satisfies the given condition
+	 * @param condition that tests if the release is the right one
+	 * @return the latest release that satisfies the given condition or null if any previous release satisfies the condition
+	 */
+	public Release getLatestPreviousRelease(final Condition condition) {
+		if (isRoot()) return condition.eval(this) ? this : null;
+		final Release parent = getParent();
+		final int i = parent.getChildIndex(this);
+		if (i > 0) {
+			Release child = parent.getChild(i - 1);
+			while (!child.isLeaf())
+				child = child.getChild(child.getChildren().size() - 1);
+			if (condition.eval(child)) return child;
+			return child.getLatestPreviousRelease(condition);
+		}
+		return parent.getLatestPreviousRelease(condition);
+	}
+
+	public interface Condition {
+		public boolean eval(Release release);
 	}
 
 	@Override
@@ -300,13 +339,4 @@ public class Release implements Serializable {
 		return getFullDescription();
 	}
 
-	public void setDescription(final String newReleaseDescription) {
-		if (newReleaseDescription == null || newReleaseDescription.isEmpty() || newReleaseDescription.contains(ReleaseDescriptionParser.SEPARATOR)) throw new RuntimeException(
-				"An invalid description was given.");
-		description = newReleaseDescription;
-	}
-
-	public boolean isSubReleaseOf(final Release actionRelease) {
-		return actionRelease.getDescendantReleases().contains(this);
-	}
 }

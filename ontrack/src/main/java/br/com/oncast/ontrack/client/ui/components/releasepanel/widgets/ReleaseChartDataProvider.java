@@ -49,7 +49,7 @@ public class ReleaseChartDataProvider {
 		if (day.isAfter(WorkingDayFactory.create())) return null;
 
 		float accomplishedValueSum = 0;
-		for (final Scope scope : release.getAllScopesIncludingChildrenReleases()) {
+		for (final Scope scope : release.getAllScopesIncludingDescendantReleases()) {
 			if (scope.getProgress().isDone() && scope.getProgress().getEndDay().isBeforeOrSameDayOf(day)) {
 				accomplishedValueSum += scope.getValue().getInfered();
 			}
@@ -61,7 +61,7 @@ public class ReleaseChartDataProvider {
 		if (day.isAfter(WorkingDayFactory.create())) return null;
 
 		float accomplishedEffortSum = 0;
-		for (final Scope scope : release.getAllScopesIncludingChildrenReleases()) {
+		for (final Scope scope : release.getAllScopesIncludingDescendantReleases()) {
 			if (scope.getProgress().isDone() && scope.getProgress().getEndDay().isBeforeOrSameDayOf(day)) {
 				accomplishedEffortSum += scope.getEffort().getInfered();
 			}

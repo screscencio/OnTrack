@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.shared.model.project;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -13,6 +15,7 @@ public class Project implements Serializable {
 	private ProjectRepresentation projectRepresentation;
 	private Scope projectScope;
 	private Release projectRelease;
+	private final Map<Release, Kanban> kanbanMap = new HashMap<Release, Kanban>();
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
@@ -36,12 +39,14 @@ public class Project implements Serializable {
 	}
 
 	public boolean hasKanbanFor(final Release release) {
-		// FIXME LOBO implement;
-		return false;
+		return kanbanMap.containsKey(release);
 	}
 
 	public Kanban getKanban(final Release release) {
-		// FIXME LOBO implement
-		return null;
+		return kanbanMap.get(release);
+	}
+
+	public void setKanban(final Release release, final Kanban kanban) {
+		kanbanMap.put(release, kanban);
 	}
 }

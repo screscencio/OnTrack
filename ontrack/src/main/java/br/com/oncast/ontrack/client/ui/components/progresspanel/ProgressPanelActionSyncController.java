@@ -162,7 +162,7 @@ public class ProgressPanelActionSyncController {
 				final Release actionRelease = context.findRelease(action.getReferenceId());
 				final Release kanbanRelease = releaseMonitor.getRelease();
 
-				if (kanbanRelease.equals(actionRelease) || kanbanRelease.isSubReleaseOf(actionRelease)) display.exit();
+				if (kanbanRelease.equals(actionRelease) || kanbanRelease.isDescendantOf(actionRelease)) display.exit();
 			}
 
 			@Override

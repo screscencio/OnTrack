@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -115,7 +116,7 @@ public class ProjectContextTest {
 
 		ctx.getKanban(release);
 
-		verify(proj, times(1)).getKanban(release);
+		verify(proj, atLeastOnce()).getKanban(release);
 	}
 
 	@Test
