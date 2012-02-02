@@ -4,13 +4,13 @@ import static br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils.set;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
@@ -102,6 +102,7 @@ public class UserActionTestUtils {
 		userActions.add(createScopeInsertSiblingUpAction());
 		userActions.add(createScopeMoveLeftAction());
 		userActions.add(createScopeMoveRightAction());
+		userActions.add(createKanbanColumnMoveAction());
 		return userActions;
 	}
 
@@ -120,7 +121,7 @@ public class UserActionTestUtils {
 
 	public static List<UserAction> createRandomUserActionList() throws Exception {
 		final List<UserAction> actionList = createCompleteUserActionList();
-		sort(actionList);
+		shuffle(actionList);
 		return actionList;
 	}
 
@@ -128,7 +129,7 @@ public class UserActionTestUtils {
 		setProjectName(projectName);
 
 		final List<UserAction> actionList = createCompleteUserActionList(projectId);
-		sort(actionList);
+		shuffle(actionList);
 
 		resetProjectName();
 		return actionList;
@@ -138,17 +139,11 @@ public class UserActionTestUtils {
 		UserActionTestUtils.projectName = projectName;
 	}
 
-	private static void sort(final List<UserAction> actionList) {
-		Collections.sort(actionList, new Comparator<UserAction>() {
-
-			@Override
-			public int compare(final UserAction action1, final UserAction action2) {
-				return new Random().nextInt();
-			}
-		});
+	private static void shuffle(final List<UserAction> actionList) {
+		Collections.shuffle(actionList);
 
 		for (int i = 0; i < new Random().nextInt(10); i++) {
-			actionList.remove(new Random().nextInt(actionList.size() - 1));
+			actionList.remove(0);
 		}
 	}
 
@@ -277,6 +272,11 @@ public class UserActionTestUtils {
 	public static UserAction createScopeMoveUpAction() throws Exception {
 		final ScopeMoveUpAction scopeMoveUpAction = new ScopeMoveUpAction(new UUID());
 		return createUserAction(scopeMoveUpAction);
+	}
+
+	public static UserAction createKanbanColumnMoveAction() throws Exception {
+		final KanbanColumnMoveAction action = new KanbanColumnMoveAction(new UUID(), "description", 2);
+		return createUserAction(action);
 	}
 
 	public static UserAction createUserAction(final ModelAction action) throws Exception {

@@ -89,8 +89,14 @@ public class ProjectContext {
 	}
 
 	public Kanban getKanban(final Release release) {
-		final Kanban kanban = project.hasKanbanFor(release) ? project.getKanban(release) : KanbanFactory.createFor(release);
-		return kanban.isFixed() ? kanban : KanbanFactory.merge(getPreviousKanbanFrom(release), kanban);
+		final Kanban kanban;
+		if (project.hasKanbanFor(release)) kanban = project.getKanban(release);
+		else {
+			kanban = KanbanFactory.createFor(release);
+			project.setKanban(release, kanban);
+		}
+		if (!kanban.isLocked()) kanban.merge(getPreviousKanbanFrom(release));
+		return kanban;
 	}
 
 	private Kanban getPreviousKanbanFrom(final Release release) {

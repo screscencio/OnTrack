@@ -47,7 +47,7 @@
 	
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<g:HTMLPanel styleName="{style.titlePanel}">
-			<g:FocusPanel styleName="{style.draggable}" />
+			<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
 			<g:Label ui:field="title" styleName="{style.titleLabel}"/>
 		</g:HTMLPanel>
 		<ow:KanbanScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}"/>

@@ -13,6 +13,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,11 +27,16 @@ public class KanbanColumnWidget extends Composite {
 	Label title;
 
 	@UiField
+	FocusPanel draggableAnchor;
+
+	@UiField
 	KanbanScopeContainer scopeContainer;
 
 	private ModelWidgetContainerListener containerUpdateListener;
 
 	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
+
+	private final KanbanColumn column;
 
 	@UiFactory
 	protected KanbanScopeContainer createScopeContainer() {
@@ -38,6 +44,7 @@ public class KanbanColumnWidget extends Composite {
 	}
 
 	public KanbanColumnWidget(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory) {
+		this.column = column;
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		scopeContainer.setKanbanColumn(column);
@@ -52,5 +59,13 @@ public class KanbanColumnWidget extends Composite {
 
 	public VerticalModelWidgetContainer<Scope, ScopeWidget> getScopeContainter() {
 		return scopeContainer;
+	}
+
+	public Widget getDraggableAnchor() {
+		return draggableAnchor;
+	}
+
+	public KanbanColumn getKanbanColumn() {
+		return column;
 	}
 }

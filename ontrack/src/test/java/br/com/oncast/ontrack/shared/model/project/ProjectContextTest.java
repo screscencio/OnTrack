@@ -1,12 +1,10 @@
 package br.com.oncast.ontrack.shared.model.project;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +13,7 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
@@ -130,41 +129,40 @@ public class ProjectContextTest {
 
 		ctx.getKanban(release);
 
-		verify(proj, times(0)).getKanban(release);
+		verify(proj, never()).getKanban(release);
 	}
 
-	// FIXME Review this test when real implementation comes in;
 	@Test
-	public void shouldReturnInferedKanbanWhenTheKanbanIsNotFixed() throws Exception {
+	public void shouldInferKanbanWhenTheKanbanIsNotLocked() throws Exception {
 		final Project proj = mock(Project.class);
 		when(proj.getProjectScope()).thenReturn(ScopeTestUtils.createScope());
 		final ProjectContext ctx = new ProjectContext(proj);
 
 		final Release release = ReleaseTestUtils.createRelease();
 		when(proj.hasKanbanFor(release)).thenReturn(true);
-		final Kanban expected = KanbanFactory.createFor(release);
-		when(proj.getKanban(release)).thenReturn(expected);
+		final Kanban kanban = Mockito.mock(Kanban.class);
+		when(proj.getKanban(release)).thenReturn(kanban);
+		when(kanban.isLocked()).thenReturn(false);
 
-		final Kanban obtained = ctx.getKanban(release);
+		ctx.getKanban(release);
 
-		assertNotSame(expected, obtained);
+		verify(kanban).merge(Mockito.any(Kanban.class));
 	}
 
-	// FIXME Review this test when real implementation comes in;
 	@Test
-	public void shouldReturnTheKanbanWhenTheKanbanIsFixed() throws Exception {
+	public void shouldNotInferKanbanWhenTheKanbanIsLocked() throws Exception {
 		final Project proj = mock(Project.class);
 		when(proj.getProjectScope()).thenReturn(ScopeTestUtils.createScope());
 		final ProjectContext ctx = new ProjectContext(proj);
 
 		final Release release = ReleaseTestUtils.createRelease();
 		when(proj.hasKanbanFor(release)).thenReturn(true);
-		final Kanban expected = KanbanFactory.createFor(release);
-		expected.setFixed(true);
-		when(proj.getKanban(release)).thenReturn(expected);
+		final Kanban kanban = Mockito.mock(Kanban.class);
+		when(proj.getKanban(release)).thenReturn(kanban);
+		when(kanban.isLocked()).thenReturn(true);
 
-		final Kanban obtained = ctx.getKanban(release);
+		ctx.getKanban(release);
 
-		assertSame(expected, obtained);
+		verify(kanban, never()).merge(Mockito.any(Kanban.class));
 	}
 }

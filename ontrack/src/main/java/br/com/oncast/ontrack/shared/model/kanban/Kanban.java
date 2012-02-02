@@ -1,51 +1,72 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress;
+public class Kanban extends SimpleKanban implements Serializable {
 
-public class Kanban {
+	private static final long serialVersionUID = 1L;
 
-	private final List<KanbanColumn> columns;
-	private boolean isFixed;
+	private boolean isLocked;
 
+	private SimpleKanban fullKanban = null;
+
+	private SimpleKanban kanbanWithoutInference = null;
+
+	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Kanban() {
-		this.columns = new ArrayList<KanbanColumn>();
-		isFixed = false;
+		fullKanban = new SimpleKanban();
+		kanbanWithoutInference = new SimpleKanban();
+		isLocked = false;
 	}
 
+	public boolean isLocked() {
+		return isLocked;
+	}
+
+	public void setLocked(final boolean bool) {
+		isLocked = bool;
+	}
+
+	@Override
 	public List<KanbanColumn> getColumns() {
-		return new ArrayList<KanbanColumn>(columns);
+		return fullKanban.getColumns();
 	}
 
-	public boolean isFixed() {
-		return isFixed;
-	}
-
-	public void setFixed(final boolean bool) {
-		isFixed = bool;
-	}
-
+	@Override
 	public KanbanColumn getColumnForDescription(final String description) {
-		final String key = description.trim().isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : description;
-		for (final KanbanColumn column : columns) {
-			if (column.getTitle().equals(key)) return column;
-		}
-		return null;
+		return fullKanban.getColumnForDescription(description);
 	}
 
-	public void appendColumn(final KanbanColumn column) {
-		if (getColumnForDescription(column.getTitle()) != null) return;
-		columns.add(columns.size() - 1, column);
+	@Override
+	public int indexOf(final String columnDescription) {
+		return fullKanban.indexOf(columnDescription);
 	}
 
-	protected void addColumn(final KanbanColumn column) {
-		columns.add(column);
+	@Override
+	public void appendColumn(final String columnDescription) {
+		kanbanWithoutInference.appendColumn(columnDescription);
+		fullKanban.appendColumn(columnDescription);
 	}
 
-	protected void prependColumn(final KanbanColumn column) {
-		columns.add(1, column);
+	@Override
+	public void moveColumn(final String columnDescription, final int requestedIndex) {
+		kanbanWithoutInference.moveColumn(columnDescription, requestedIndex);
+		fullKanban.moveColumn(columnDescription, requestedIndex);
 	}
 
+	public void merge(final Kanban kanbanToMerge) {
+		if (isLocked || kanbanToMerge.isEmpty()) return;
+		fullKanban = KanbanFactory.merge(kanbanToMerge.fullKanban, kanbanWithoutInference);
+	}
+
+	private boolean isEmpty() {
+		return getColumns().size() <= FIXED_COLUMNS.size();
+	}
+
+	@Override
+	protected void prependColumn(final String columnDescription) {
+		kanbanWithoutInference.prependColumn(columnDescription);
+		fullKanban.prependColumn(columnDescription);
+	}
 }

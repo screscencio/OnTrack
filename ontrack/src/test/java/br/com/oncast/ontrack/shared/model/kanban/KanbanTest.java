@@ -1,18 +1,12 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import java.util.ArrayList;
 
-import java.util.List;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
-import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class KanbanTest {
 
@@ -20,48 +14,218 @@ public class KanbanTest {
 	private static final String NOT_STARTED = Progress.DEFAULT_NOT_STARTED_NAME;
 
 	@Test
-	public void shouldReturnTheSameColumnWhenAppended() throws Exception {
-		final Kanban kanban = KanbanFactory.createFor(getRelease());
+	public void shouldCreateWithDefaultColumns() throws Exception {
+		final Kanban kanban = new Kanban();
+		assertColumns(kanban, NOT_STARTED, DONE);
+	}
 
-		final KanbanColumn newColumn = new KanbanColumn("New Column");
-		kanban.appendColumn(newColumn);
-
-		assertSame(newColumn, kanban.getColumnForDescription("New Column"));
+	@Test
+	public void preppendedColumnsShouldKeepNotStartedColumnAsFirstColumn() throws Exception {
+		final Kanban kanban = new Kanban();
+		prependColumns(kanban, "Planning", "", NOT_STARTED, "Implementing", DONE, "Testing");
+		assertColumns(kanban, NOT_STARTED, "Testing", "Implementing", "Planning", DONE);
 	}
 
 	@Test
 	public void appendedColumnsShouldKeepDoneColumnAsLastColumn() {
-		final Kanban kanban = KanbanFactory.createFor(getRelease("First", "Old Last"));
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "First", "Old Last", "New Last");
 
-		kanban.appendColumn(new KanbanColumn("New Last"));
 		assertColumns(kanban, NOT_STARTED, "First", "Old Last", "New Last", DONE);
 	}
 
 	@Test
-	public void shouldNotDuplicateColumnsOnAppend() throws Exception {
-		final Kanban kanban = KanbanFactory.createFor(getRelease("First", "Last"));
+	public void prependShouldNotDuplicateColumns() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "First", "Last");
 
-		kanban.appendColumn(new KanbanColumn("Last"));
+		kanban.prependColumn("First");
 		assertColumns(kanban, NOT_STARTED, "First", "Last", DONE);
 	}
 
-	private Release getRelease(final String... progressDescriptions) {
-		final Release release = ReleaseFactoryTestUtil.create("Mock Release");
-		for (final String description : progressDescriptions) {
-			final Scope scope = ScopeTestUtils.createScope();
-			scope.getProgress().setDescription(description);
-			release.addScope(scope);
-		}
-		return release;
+	@Test
+	public void appendShouldNotDuplicateColumns() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "First", "Last");
+
+		kanban.appendColumn("Last");
+		assertColumns(kanban, NOT_STARTED, "First", "Last", DONE);
 	}
 
-	private void assertColumns(final Kanban kanban, final String... columnTitles) {
-		final List<KanbanColumn> columns = kanban.getColumns();
+	@Test(expected = RuntimeException.class)
+	public void shouldNotAllowMovingColumnToZeroPosition() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
 
-		assertEquals("There are different number of columns than the expected", columnTitles.length, columns.size());
-		for (int i = 0; i < columns.size(); i++) {
-			assertEquals(columnTitles[i], columns.get(i).getTitle());
+		kanban.moveColumn("B", 0);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotAllowMovingColumnToLastPosition() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+
+		kanban.moveColumn("B", 4);
+	}
+
+	@Test
+	public void shouldBeAbleToMoveColumnToLeft() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		final int desiredIndex = 1;
+
+		kanban.moveColumn("B", desiredIndex);
+		assertColumns(kanban, NOT_STARTED, "B", "A", "C", DONE);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotBeAbleToMoveDoneColumn() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		final int desiredIndex = 1;
+
+		kanban.moveColumn(DONE, desiredIndex);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotBeAbleToMoveNotStartedColumn() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		final int desiredIndex = 1;
+
+		kanban.moveColumn(NOT_STARTED, desiredIndex);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotBeAbleToMoveNotStartedColumnAsEmptyString() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		final int desiredIndex = 1;
+
+		kanban.moveColumn("", desiredIndex);
+	}
+
+	@Test
+	public void shouldBeAbleToMoveColumnToRight() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		final int desiredIndex = 3;
+
+		kanban.moveColumn("B", desiredIndex);
+		assertColumns(kanban, NOT_STARTED, "A", "C", "B", DONE);
+	}
+
+	@Test
+	public void shouldBeAbleToMergeToAnotherKanban() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+
+		final Kanban kanbanToMerge = new Kanban();
+		appendColumns(kanbanToMerge, "Y", "Z");
+
+		baseKanban.merge(kanbanToMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "Y", "Z", DONE);
+	}
+
+	@Test
+	public void mergingShouldNotForgetTheOriginalColumns() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+
+		final Kanban firstMerge = new Kanban();
+		appendColumns(firstMerge, "Y", "Z");
+
+		final Kanban secondMerge = new Kanban();
+		appendColumns(secondMerge, "U", "V");
+
+		baseKanban.merge(firstMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "Y", "Z", DONE);
+
+		baseKanban.merge(secondMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "U", "V", DONE);
+	}
+
+	@Test
+	public void kanbanShouldNotMergeAfterLocking() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+
+		final Kanban kanbanToMerge = new Kanban();
+		appendColumns(kanbanToMerge, "Y", "Z");
+
+		baseKanban.setLocked(true);
+		baseKanban.merge(kanbanToMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", DONE);
+	}
+
+	@Test
+	public void kanbanShouldNotForgetTheOriginalColumnsAfterLocking() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+
+		final Kanban firstMerge = new Kanban();
+		appendColumns(firstMerge, "Y", "Z");
+
+		final Kanban secondMerge = new Kanban();
+		appendColumns(secondMerge, "U", "V");
+
+		baseKanban.merge(firstMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "Y", "Z", DONE);
+
+		baseKanban.setLocked(true);
+		baseKanban.merge(secondMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "Y", "Z", DONE);
+
+		baseKanban.setLocked(false);
+		baseKanban.merge(secondMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "U", "V", DONE);
+	}
+
+	@Test
+	public void kanbanShouldKeepUpdatingTheOriginalColumnsAfterLocking() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+
+		final Kanban firstMerge = new Kanban();
+		appendColumns(firstMerge, "Y", "Z");
+
+		final Kanban secondMerge = new Kanban();
+		appendColumns(secondMerge, "U", "V");
+
+		baseKanban.merge(firstMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "Y", "Z", DONE);
+
+		baseKanban.setLocked(true);
+		baseKanban.appendColumn("M");
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "Y", "Z", "M", DONE);
+
+		baseKanban.setLocked(false);
+		baseKanban.merge(secondMerge);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "M", "U", "V", DONE);
+	}
+
+	private void prependColumns(final Kanban kanban, final String... columns) {
+		for (final String column : columns) {
+			kanban.prependColumn(column);
 		}
+	}
+
+	private void appendColumns(final Kanban kanban, final String... columns) {
+		for (final String column : columns) {
+			kanban.appendColumn(column);
+		}
+	}
+
+	protected static void assertColumns(final SimpleKanban kanban, final String... columnTitles) {
+		Assert.assertArrayEquals(columnTitles, getDescriptions(kanban));
+	}
+
+	private static Object[] getDescriptions(final SimpleKanban kanban) {
+		final ArrayList<String> list = new ArrayList<String>();
+		for (final KanbanColumn c : kanban.getColumns()) {
+			list.add(c.getTitle());
+		}
+		return list.toArray();
 	}
 
 }
