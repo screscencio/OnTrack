@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
@@ -8,10 +11,9 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(KanbanColumnRemoveActionEntity.class)
@@ -32,9 +34,7 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 	private boolean shouldLockKanban;
 
 	public KanbanColumnRemoveAction(final UUID releaseReferenceId, final String columnDescription) {
-		this.referenceId = releaseReferenceId;
-		this.columnDescription = columnDescription;
-		this.shouldLockKanban = true;
+		this(releaseReferenceId, columnDescription, true);
 	}
 
 	public KanbanColumnRemoveAction(final UUID releaseReferenceId, final String columnDescription, final boolean shouldLockKanban) {
@@ -52,22 +52,34 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 		final Kanban kanban = context.getKanban(release);
 
 		validateExecution(kanban);
+		final List<ModelAction> rollbackActions = moveColumnScopes(columnDescription, kanban.getColumnPredeceding(columnDescription).getDescription(), release,
+				context);
+		final int oldColumnIndex = kanban.indexOf(columnDescription);
 		kanban.removeColumn(columnDescription);
 
 		if (shouldLockKanban) kanban.setLocked(true);
 
-		return new KanbanColumnCreateAction(referenceId, columnDescription, shouldLockKanban);
+		return new KanbanColumnCreateAction(referenceId, columnDescription, shouldLockKanban, oldColumnIndex, rollbackActions);
 	}
 
-	private void validateExecution(final Kanban savedKanban) throws UnableToCompleteActionException {
-		final String defaultNotStartedName = Progress.DEFAULT_NOT_STARTED_NAME;
-		final String defaultDoneName = ProgressState.DONE.getDescription();
+	private List<ModelAction> moveColumnScopes(final String originColumn, final String destinationColumn, final Release release, final ProjectContext context)
+			throws UnableToCompleteActionException {
+		final List<Scope> scopes = release.getScopeList();
+		if (scopes.isEmpty()) return null;
 
-		if (!savedKanban.hasColumnForDescription(columnDescription)) throw new UnableToCompleteActionException("The column is does not exist.");
-		if (defaultDoneName.equals(columnDescription)) throw new UnableToCompleteActionException("The column '" + defaultDoneName
-				+ "' should never be removed.");
-		if (columnDescription.isEmpty() || defaultNotStartedName.equals(columnDescription)) throw new UnableToCompleteActionException("The column '"
-				+ defaultNotStartedName + "' should never be removed.");
+		final List<ModelAction> rollbackActions = new LinkedList<ModelAction>();
+		for (final Scope scope : scopes) {
+			if (!originColumn.equals(scope.getProgress().getDescription())) continue;
+			rollbackActions.add(0, new ScopeDeclareProgressAction(scope.getId(), destinationColumn).execute(context));
+		}
+
+		return rollbackActions;
+	}
+
+	private void validateExecution(final Kanban kanban) throws UnableToCompleteActionException {
+		if (!kanban.hasColumn(columnDescription)) throw new UnableToCompleteActionException("The column is does not exist.");
+		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException("The column '" + columnDescription
+				+ "' is static and should never be removed.");
 	}
 
 	@Override

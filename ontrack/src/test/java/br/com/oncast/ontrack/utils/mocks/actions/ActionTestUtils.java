@@ -15,8 +15,11 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
@@ -91,10 +94,29 @@ public class ActionTestUtils {
 
 	public static void assertExpectedKanbanColumns(final ProjectContext context, final Release release, final int expectedColumns,
 			final String... columnDescriptions) {
-		Assert.assertEquals("Its should have " + expectedColumns + " columns.", expectedColumns, context.getKanban(release).getColumns().size());
+		final Kanban kanban = context.getKanban(release);
+		Assert.assertEquals("Its should have " + expectedColumns + " columns.", expectedColumns, kanban.getColumns().size());
 
-		for (final String column : columnDescriptions)
-			Assert.assertNotNull("It should have a column for " + column + ".", context.getKanban(release).getColumnForDescription(column));
+		int i = 0;
+		for (final String column : columnDescriptions) {
+			Assert.assertNotNull("It should have a column for " + column + ".", kanban.getColumn(column));
+			if (kanban.isStaticColumn(column)) continue;
+			assertExpectedKanbanColumnPosition(context, release, column, i++);
+		}
 	}
 
+	public static void assertExpectedKanbanColumnPosition(final ProjectContext context, final Release release, final String columnDescription,
+			final int columnPosition) {
+		Assert.assertEquals("The position for the column '" + columnDescription + "' should be '" + columnPosition + "'.", columnPosition,
+				context.getKanban(release).indexOf(columnDescription));
+	}
+
+	public static void assertProgressForScopes(final String expectedProgressDescription, final Scope... scopes) {
+		for (final Scope scope : scopes) {
+			final String desc = scope.getProgress().getDescription().isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : scope.getProgress().getDescription();
+			Assert.assertEquals("The progress set for the scope '" + scope.getDescription() + "' is not '" + expectedProgressDescription + "'.",
+					expectedProgressDescription,
+					desc);
+		}
+	}
 }

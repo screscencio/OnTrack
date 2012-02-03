@@ -14,17 +14,18 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 public class KanbanColumnCreateActionTest {
 
 	private ProjectContext context;
+	private Release release;
+	private String newColumnDescription;
 
 	@Before
 	public void setUp() {
 		context = new ProjectContext(ProjectTestUtils.createPopulatedProject());
+		release = context.getProjectRelease().getChild(0);
+		newColumnDescription = "Blabla";
 	}
 
 	@Test
 	public void executionShouldCreateNewKanbanColumnNamedBlabla() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
-		final String newColumnDescription = "Blabla";
-
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
 		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
@@ -33,9 +34,6 @@ public class KanbanColumnCreateActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void executionShouldFailWhenTryingToCreateNewKanbanColumnThatAlreadyExists() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
-		final String newColumnDescription = "Blabla";
-
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
 		try {
 			new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
@@ -50,40 +48,90 @@ public class KanbanColumnCreateActionTest {
 
 	@Test
 	public void executionShouldCreateTwoNewKanbanColumns() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
-		final String newColumnDescription1 = "Blabla";
 		final String newColumnDescription2 = "Blibli";
 
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
-		new KanbanColumnCreateAction(release.getId(), newColumnDescription1, true).execute(context);
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription1,
+		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
+		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
 				ProgressState.DONE.getDescription());
 		new KanbanColumnCreateAction(release.getId(), newColumnDescription2, true).execute(context);
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 4, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription1, newColumnDescription2,
+		ActionTestUtils.assertExpectedKanbanColumns(context, release, 4, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription, newColumnDescription2,
 				ProgressState.DONE.getDescription());
+	}
+
+	@Test
+	public void kanbanShouldHaveByDefaultAKanbanColumnForNotStartedAndForDone() throws UnableToCompleteActionException {
+		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
+	}
+
+	@Test
+	public void shouldBeAbleToInsertColumnInTheCorrectPosition() throws UnableToCompleteActionException {
+		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, newColumnDescription, 0);
+	}
+
+	@Test
+	public void shouldBeAbleToInsertColumnsInTheCorrectPositions() throws UnableToCompleteActionException {
+		final String columnDescription2 = newColumnDescription + "1";
+
+		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription2, true).execute(context);
+
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, newColumnDescription, 0);
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, columnDescription2, 1);
+	}
+
+	@Test
+	public void shouldBeAbleToInsertColumnsInTheDesiredPositions() throws UnableToCompleteActionException {
+		final String columnDescription2 = newColumnDescription + "1";
+
+		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription2, true, 0).execute(context);
+
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, columnDescription2, 0);
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, newColumnDescription, 1);
+	}
+
+	@Test
+	public void shouldBeAbleToInsertColumnsInTheDesiredPositions1() throws UnableToCompleteActionException {
+		final String columnDescription2 = newColumnDescription + "2";
+		final String columnDescription3 = newColumnDescription + "3";
+
+		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription2, true, 0).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription3, true, 1).execute(context);
+
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, columnDescription2, 0);
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, columnDescription3, 1);
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, newColumnDescription, 2);
+	}
+
+	@Test
+	public void shouldBeAbleToInsertColumnsInTheDesiredPositions2() throws UnableToCompleteActionException {
+		final String columnDescription2 = newColumnDescription + "1";
+
+		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true, 0).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription2, true, 0).execute(context);
+
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, columnDescription2, 0);
+		ActionTestUtils.assertExpectedKanbanColumnPosition(context, release, newColumnDescription, 1);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void executionShouldFailWhenTryingToCreateNewKanbanColumnNamedDone() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
 		final String newColumnDescription = ProgressState.DONE.getDescription();
-
 		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void executionShouldFailWhenTryingToCreateNewKanbanColumnNamedNotStarted() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
 		final String newColumnDescription = Progress.DEFAULT_NOT_STARTED_NAME;
-
 		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void executionShouldFailWhenTryingToCreateNewKanbanColumnNamedBlank() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
 		final String newColumnDescription = "";
-
 		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
 	}
 }

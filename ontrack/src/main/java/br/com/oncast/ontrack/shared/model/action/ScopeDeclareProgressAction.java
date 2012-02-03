@@ -76,7 +76,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	}
 
 	private ModelAction assureKanbanColumnExistence(final ProjectContext context, final Release release) throws UnableToCompleteActionException {
-		if (release == null || context.getKanban(release).hasColumnForDescription(newProgressDescription)) return null;
+		if (release == null || context.getKanban(release).hasColumn(newProgressDescription)) return null;
 		return (new KanbanColumnCreateAction(release.getId(), newProgressDescription, false)).execute(context);
 	}
 

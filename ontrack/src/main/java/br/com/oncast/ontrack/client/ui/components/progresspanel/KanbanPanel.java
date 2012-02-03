@@ -95,7 +95,7 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		for (final KanbanColumn c : columns)
 			map.put(c, new ArrayList<Scope>());
 		for (final Scope scope : scopeList)
-			map.get(kanban.getColumnForDescription(scope.getProgress().getDescription())).add(scope);
+			map.get(kanban.getColumn(scope.getProgress().getDescription())).add(scope);
 		return map;
 	}
 

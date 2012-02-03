@@ -32,7 +32,7 @@ public class LoginTestUtils {
 	}
 
 	public LoginTestUtils authenticateWithAdminCredentials() {
-		// FIXME Use credential's reference constants
+		// TODO ++++ Use credential's reference constants
 		final String username = "admin@ontrack.com";
 		final String password = "ontrackpoulain";
 

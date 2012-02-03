@@ -254,7 +254,7 @@ public class KanbanTest {
 	private static Object[] getDescriptions(final SimpleKanban kanban) {
 		final ArrayList<String> list = new ArrayList<String>();
 		for (final KanbanColumn c : kanban.getColumns()) {
-			list.add(c.getTitle());
+			list.add(c.getDescription());
 		}
 		return list.toArray();
 	}

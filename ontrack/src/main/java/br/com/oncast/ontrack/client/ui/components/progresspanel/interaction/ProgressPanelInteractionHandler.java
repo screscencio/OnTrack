@@ -31,7 +31,7 @@ public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInter
 
 	public void onKanbanColumnMove(final KanbanColumn column, final int index) {
 		assureConfigured();
-		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnMoveAction(currentRelease.getId(), column.getTitle(), index));
+		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnMoveAction(currentRelease.getId(), column.getDescription(), index));
 	}
 
 	private void assureConfigured() {

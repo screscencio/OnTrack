@@ -29,28 +29,33 @@ public class SimpleKanban implements Serializable {
 	}
 
 	protected void moveColumn(final String columnDescription, final int requestedIndex) {
-		final KanbanColumn kanbanColumn = getColumnForDescription(columnDescription);
+		final KanbanColumn kanbanColumn = getColumn(columnDescription);
 		if (!columns.remove(kanbanColumn)) throw new RuntimeException("Column not found");
 		columns.add(Math.min(requestedIndex, columns.size()), kanbanColumn);
 	}
 
 	protected int indexOf(final String columnDescription) {
-		return columns.indexOf(getColumnForDescription(columnDescription));
+		return columns.indexOf(getColumn(columnDescription));
 	}
 
 	protected void removeColumn(final String columnDescription) {
-		columns.remove(getColumnForDescription(columnDescription));
+		columns.remove(getColumn(columnDescription));
 	}
 
 	private void addColumn(final int index, final String columnDescription) {
-		if (getColumnForDescription(columnDescription) != null) return;
+		if (getColumn(columnDescription) != null) return;
 		columns.add(index, new KanbanColumn(columnDescription));
 	}
 
-	private KanbanColumn getColumnForDescription(final String description) {
+	private KanbanColumn getColumn(final String columnDescription) {
 		for (final KanbanColumn column : columns) {
-			if (column.getTitle().equals(description)) return column;
+			if (column.getDescription().equals(columnDescription)) return column;
 		}
 		return null;
+	}
+
+	public KanbanColumn getColumn(final int index) {
+		if (index < 0 || index >= columns.size()) return null;
+		return columns.get(index);
 	}
 }

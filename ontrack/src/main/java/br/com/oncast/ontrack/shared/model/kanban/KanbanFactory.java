@@ -7,7 +7,6 @@ import java.util.List;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-// FIXME LOBO Test this class
 public class KanbanFactory {
 
 	public static Kanban createEmpty() {
@@ -32,13 +31,13 @@ public class KanbanFactory {
 		final SimpleKanban newKanban = new SimpleKanban();
 
 		for (final KanbanColumn column : baseKanban.getColumns()) {
-			newKanban.appendColumn(column.getTitle());
+			newKanban.appendColumn(column.getDescription());
 		}
 
 		final List<KanbanColumn> otherColumns = otherKanban.getColumns();
 		Collections.reverse(otherColumns);
 		for (final KanbanColumn column : otherColumns) {
-			newKanban.prependColumn(column.getTitle());
+			newKanban.prependColumn(column.getDescription());
 		}
 		return newKanban;
 	}

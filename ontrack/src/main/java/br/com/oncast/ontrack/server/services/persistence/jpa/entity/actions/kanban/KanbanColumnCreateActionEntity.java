@@ -1,7 +1,12 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -26,6 +31,32 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 	@ConversionAlias("shouldFixKanban")
 	@Column(name = "boleano")
 	private boolean shouldFixKanban;
+
+	@ConversionAlias("subActions")
+	@OneToMany(cascade = CascadeType.ALL)
+	@Column(name = "modelActionEntity_subActionList")
+	@JoinTable(name = "KanbanColumnCreate_subActionList")
+	private List<ModelActionEntity> subActions;
+
+	@ConversionAlias("columnIndex")
+	@Column(name = "pos")
+	private int columnIndex;
+
+	public int getColumnIndex() {
+		return columnIndex;
+	}
+
+	public void setColumnIndex(final int columnIndex) {
+		this.columnIndex = columnIndex;
+	}
+
+	public List<ModelActionEntity> getSubActions() {
+		return subActions;
+	}
+
+	public void setSubActions(final List<ModelActionEntity> subActions) {
+		this.subActions = subActions;
+	}
 
 	public String getReferenceId() {
 		return referenceId;

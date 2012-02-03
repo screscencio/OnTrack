@@ -54,14 +54,14 @@ public class Kanban extends SimpleKanban implements Serializable {
 		return columns;
 	}
 
-	public boolean hasColumnForDescription(final String columnDescription) {
-		return getColumnForDescription(columnDescription) != null;
+	public boolean hasColumn(final String columnDescription) {
+		return getColumn(columnDescription) != null;
 	}
 
-	public KanbanColumn getColumnForDescription(final String columnDescription) {
+	public KanbanColumn getColumn(final String columnDescription) {
 		final String description = getNormalizedDescription(columnDescription);
 		for (final KanbanColumn column : getColumns()) {
-			if (column.getTitle().equals(description)) return column;
+			if (column.getDescription().equals(description)) return column;
 		}
 		return null;
 	}
@@ -116,12 +116,17 @@ public class Kanban extends SimpleKanban implements Serializable {
 		if (isStaticColumn(columnDescription)) throw new RuntimeException("Cannot move a fixed column");
 	}
 
-	private boolean isStaticColumn(final String columnDescription) {
+	public boolean isStaticColumn(final String columnDescription) {
 		final String key = getNormalizedDescription(columnDescription);
 		return STATIC_COLUMNS.contains(key);
 	}
 
 	private String getNormalizedDescription(final String columnDescription) {
 		return columnDescription.trim().isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : columnDescription;
+	}
+
+	public KanbanColumn getColumnPredeceding(final String columnDescription) {
+		final int index = indexOf(columnDescription) - 1;
+		return (index < 0) ? notStartedColumn : fullKanban.getColumn(index);
 	}
 }

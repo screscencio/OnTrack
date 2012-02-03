@@ -26,7 +26,7 @@ public class KanbanColumn implements Serializable {
 		return isStaticColumn;
 	}
 
-	public String getTitle() {
+	public String getDescription() {
 		return title;
 	}
 }

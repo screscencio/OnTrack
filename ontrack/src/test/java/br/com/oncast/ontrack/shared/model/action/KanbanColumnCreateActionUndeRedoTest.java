@@ -14,69 +14,62 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class KanbanColumnCreateActionUndeRedoTest {
 	private ProjectContext context;
+	private Release release;
+	private String columnDescription;
 
 	@Before
 	public void setUp() {
 		context = new ProjectContext(ProjectTestUtils.createPopulatedProject());
+		release = context.getProjectRelease().getChild(0);
+		columnDescription = "Blabla";
 	}
 
 	@Test
 	public void executionShouldLockTheUnlockedKanban() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
-		final String newColumnDescription = "Blabla";
-
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
 		Assert.assertFalse("The kanban should be unlocked.", context.getKanban(release).isLocked());
 
-		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription, true).execute(context);
 
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
+		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, columnDescription,
 				ProgressState.DONE.getDescription());
 		Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
 	}
 
 	@Test
 	public void executionShouldNotLockTheUnlockedKanbanWhenParametersSaySo() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
-		final String newColumnDescription = "Blabla";
-
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
 		Assert.assertFalse("The kanban should be unlocked.", context.getKanban(release).isLocked());
 
-		new KanbanColumnCreateAction(release.getId(), newColumnDescription, false).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription, false).execute(context);
 
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
+		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, columnDescription,
 				ProgressState.DONE.getDescription());
 		Assert.assertFalse("The kanban should be unlocked.", context.getKanban(release).isLocked());
 	}
 
 	@Test
 	public void kanbanShouldRemainLockedWhenExecutionIsNotMeantToLockIt() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
-		final String newColumnDescription = "Blabla";
 		context.getKanban(release).setLocked(true);
 
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
 		Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
 
-		new KanbanColumnCreateAction(release.getId(), newColumnDescription, false).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription, false).execute(context);
 
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
+		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, columnDescription,
 				ProgressState.DONE.getDescription());
 		Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
 	}
 
 	@Test
 	public void doUndoAndRedoShouldReturnToTheState() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
-		final String newColumnDescription = "Blabla";
-
-		ModelAction action = new KanbanColumnCreateAction(release.getId(), newColumnDescription, true);
+		ModelAction action = new KanbanColumnCreateAction(release.getId(), columnDescription, true);
 		ModelAction rollbackAction;
 
 		for (int i = 0; i < 10; i++) {
 			rollbackAction = action.execute(context);
-			ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
+			ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, columnDescription,
 					ProgressState.DONE.getDescription());
 			action = rollbackAction.execute(context);
 			ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
@@ -85,11 +78,9 @@ public class KanbanColumnCreateActionUndeRedoTest {
 
 	@Test
 	public void undoShouldNotUnlockThePreviouslyUnlockedKanban() throws UnableToCompleteActionException {
-		final Release release = context.getProjectRelease().getChild(0);
-		final String newColumnDescription = "Blabla";
 		Assert.assertFalse("The kanban should be unlocked.", context.getKanban(release).isLocked());
 
-		ModelAction action = new KanbanColumnCreateAction(release.getId(), newColumnDescription, true);
+		ModelAction action = new KanbanColumnCreateAction(release.getId(), columnDescription, true);
 		ModelAction rollbackAction;
 
 		for (int i = 0; i < 10; i++) {
@@ -99,6 +90,30 @@ public class KanbanColumnCreateActionUndeRedoTest {
 			action = rollbackAction.execute(context);
 			ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
 			Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
+		}
+	}
+
+	@Test
+	public void doUndoAndRedoShouldRecreateKanbanColumnInTheSamePosition() throws UnableToCompleteActionException {
+		final String columnBefore = columnDescription + "Before";
+		final String columnAfter = columnDescription + "After";
+
+		new KanbanColumnCreateAction(release.getId(), columnBefore, true).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnAfter, true).execute(context);
+
+		ModelAction action = new KanbanColumnCreateAction(release.getId(), columnDescription, true, 1);
+		ModelAction rollbackAction;
+
+		for (int i = 0; i < 10; i++) {
+			ActionTestUtils.assertExpectedKanbanColumns(context, release, 4, Progress.DEFAULT_NOT_STARTED_NAME, columnBefore, columnAfter,
+					ProgressState.DONE.getDescription());
+
+			rollbackAction = action.execute(context);
+
+			ActionTestUtils.assertExpectedKanbanColumns(context, release, 5, Progress.DEFAULT_NOT_STARTED_NAME, columnBefore, columnDescription,
+					columnAfter, ProgressState.DONE.getDescription());
+
+			action = rollbackAction.execute(context);
 		}
 	}
 }

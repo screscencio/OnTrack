@@ -65,7 +65,7 @@ public class KanbanColumnRemoveActionTest {
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
-	public void executionShouldFailWhenTryingToRKanbanColumnNamedBlank() throws UnableToCompleteActionException {
+	public void executionShouldFailWhenTryingToRemoveKanbanColumnThatDoesNotExist() throws UnableToCompleteActionException {
 		final String columnDescription = "";
 
 		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context);

@@ -58,7 +58,7 @@ public class KanbanColumnWidget extends Composite {
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		initWidget(uiBinder.createAndBindUi(this));
 		scopeContainer.setKanbanColumn(column);
-		this.title.setText(column.getTitle());
+		this.title.setText(column.getDescription());
 		if (column.isStaticColumn()) draggableAnchor.setVisible(false);
 	}
 
