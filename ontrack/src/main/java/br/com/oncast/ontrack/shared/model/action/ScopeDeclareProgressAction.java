@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
@@ -39,8 +40,19 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	@IgnoredByDeepEquality
 	private Date timestamp;
 
+	@ConversionAlias("subAction")
+	@Element(required = false)
+	@IgnoredByDeepEquality
+	private ModelAction rollbackSubAction;
+
 	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription) {
 		this.referenceId = referenceId;
+		this.newProgressDescription = newProgressDescription == null ? "" : newProgressDescription;
+	}
+
+	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription, final ModelAction rollbackAction) {
+		this.referenceId = referenceId;
+		rollbackSubAction = rollbackAction;
 		this.newProgressDescription = newProgressDescription == null ? "" : newProgressDescription;
 	}
 
@@ -52,9 +64,20 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
+		final ModelAction rollback = processSubActions(context, selectedScope);
 		selectedScope.getProgress().setDescription(newProgressDescription, timestamp);
 
-		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription);
+		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollback);
+	}
+
+	private ModelAction processSubActions(final ProjectContext context, final Scope scope) throws UnableToCompleteActionException {
+		return (rollbackSubAction != null) ? rollbackSubAction.execute(context) : assureKanbanColumnExistence(context,
+				scope.getRelease());
+	}
+
+	private ModelAction assureKanbanColumnExistence(final ProjectContext context, final Release release) throws UnableToCompleteActionException {
+		if (release == null || context.getKanban(release).hasColumnForDescription(newProgressDescription)) return null;
+		return (new KanbanColumnCreateAction(release.getId(), newProgressDescription, false)).execute(context);
 	}
 
 	@Override

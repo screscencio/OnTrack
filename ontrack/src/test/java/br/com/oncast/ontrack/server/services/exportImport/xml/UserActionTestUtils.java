@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
+import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
@@ -223,7 +223,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createReleaseCreateActionDefault() throws Exception {
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("description");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("description");
 		set(createAction, "parentReleaseId", new UUID());
 		return createUserAction(createAction);
 	}

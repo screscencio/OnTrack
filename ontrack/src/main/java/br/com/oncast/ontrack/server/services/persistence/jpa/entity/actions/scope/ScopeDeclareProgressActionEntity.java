@@ -2,12 +2,15 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
@@ -27,6 +30,10 @@ public class ScopeDeclareProgressActionEntity extends ModelActionEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "timestamp")
 	private Date timestamp;
+
+	@ConversionAlias("subAction")
+	@OneToOne(cascade = CascadeType.ALL)
+	private ModelActionEntity subAction;
 
 	public String getReferenceId() {
 		return referenceId;
@@ -52,4 +59,11 @@ public class ScopeDeclareProgressActionEntity extends ModelActionEntity {
 		return timestamp;
 	}
 
+	public ModelActionEntity getSubAction() {
+		return subAction;
+	}
+
+	public void setSubAction(final ModelActionEntity subAction) {
+		this.subAction = subAction;
+	}
 }

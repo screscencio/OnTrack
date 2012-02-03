@@ -31,12 +31,12 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	@ConversionAlias("subAction")
 	@Element(required = false)
 	@IgnoredByDeepEquality
-	private ReleaseRemoveAction rollbackSubAction;
+	private ModelAction rollbackSubAction;
 
 	@ConversionAlias("releaseCreateAction")
 	@Element(required = false)
 	@IgnoredByDeepEquality
-	private ReleaseCreateActionDefault releaseCreateAction;
+	private ModelAction releaseCreateAction;
 
 	@ConversionAlias("scopePriority")
 	@Attribute
@@ -56,7 +56,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		this.scopePriority = scopePriority;
 	}
 
-	public ScopeBindReleaseAction(final UUID scopeId, final String releaseDescription, final int scopePriority, final ReleaseRemoveAction subAction) {
+	public ScopeBindReleaseAction(final UUID scopeId, final String releaseDescription, final int scopePriority, final ModelAction subAction) {
 		this(scopeId, releaseDescription, scopePriority);
 		this.rollbackSubAction = subAction;
 	}
@@ -70,9 +70,9 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		final int oldScopePriority = (oldRelease != null) ? oldRelease.removeScope(selectedScope) : -1;
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
 
-		if (rollbackSubAction != null) rollbackSubAction.execute(context);
+		if (rollbackSubAction != null) releaseCreateAction = rollbackSubAction.execute(context);
 
-		ReleaseRemoveAction newRollbackSubAction = null;
+		ModelAction newRollbackSubAction = releaseCreateAction;
 		if (shouldBindToNewRelease()) {
 			newRollbackSubAction = assureNewReleaseExistence(context);
 
@@ -88,13 +88,13 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		return newReleaseDescription != null && !new ReleaseDescriptionParser(newReleaseDescription).getHeadRelease().isEmpty();
 	}
 
-	private ReleaseRemoveAction assureNewReleaseExistence(final ProjectContext context) throws UnableToCompleteActionException {
-		ReleaseRemoveAction newRollbackSubAction = null;
+	private ModelAction assureNewReleaseExistence(final ProjectContext context) throws UnableToCompleteActionException {
+		ModelAction newRollbackSubAction = null;
 		try {
 			context.findRelease(newReleaseDescription);
 		}
 		catch (final ReleaseNotFoundException e) {
-			if (releaseCreateAction == null) releaseCreateAction = new ReleaseCreateActionDefault(newReleaseDescription);
+			if (releaseCreateAction == null) releaseCreateAction = new ReleaseCreateAction(newReleaseDescription);
 			newRollbackSubAction = releaseCreateAction.execute(context);
 		}
 		return newRollbackSubAction;

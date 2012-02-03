@@ -11,11 +11,11 @@ public class SimpleKanban implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	protected static final ArrayList<String> FIXED_COLUMNS = new ArrayList<String>();
+	protected static final ArrayList<String> STATIC_COLUMNS = new ArrayList<String>();
 
 	static {
-		FIXED_COLUMNS.add(ProgressState.NOT_STARTED.getDescription());
-		FIXED_COLUMNS.add(ProgressState.DONE.getDescription());
+		STATIC_COLUMNS.add(ProgressState.NOT_STARTED.getDescription());
+		STATIC_COLUMNS.add(ProgressState.DONE.getDescription());
 	}
 
 	private List<KanbanColumn> columns = null;
@@ -51,7 +51,7 @@ public class SimpleKanban implements Serializable {
 
 	public void moveColumn(final String columnDescription, final int requestedIndex) {
 		if (requestedIndex == 0 || requestedIndex == columns.size() - 1) throw new RuntimeException("Cannot move to the requested index");
-		if (FIXED_COLUMNS.contains(columnDescription) || Progress.DEFAULT_NOT_STARTED_NAME.equals(columnDescription)) throw new RuntimeException(
+		if (isStaticColumn(columnDescription)) throw new RuntimeException(
 				"Cannot move fixed column");
 
 		final KanbanColumn kanbanColumn = getColumnForDescription(columnDescription);
@@ -59,8 +59,16 @@ public class SimpleKanban implements Serializable {
 		columns.add(requestedIndex, kanbanColumn);
 	}
 
+	private boolean isStaticColumn(final String columnDescription) {
+		return STATIC_COLUMNS.contains(columnDescription) || Progress.DEFAULT_NOT_STARTED_NAME.equals(columnDescription);
+	}
+
 	public int indexOf(final String columnDescription) {
 		return columns.indexOf(getColumnForDescription(columnDescription));
 	}
 
+	protected void removeColumn(final String columnDescription) {
+		if (isStaticColumn(columnDescription)) return;
+		columns.remove(getColumnForDescription(columnDescription));
+	}
 }

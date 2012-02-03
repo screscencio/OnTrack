@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
+import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -194,7 +194,7 @@ public class ProgressPanelActionSyncController {
 
 			@Override
 			protected boolean isHandlerFor(final ModelAction action) {
-				if (action instanceof ReleaseCreateActionDefault) return true;
+				if (action instanceof ReleaseCreateAction) return true;
 				if (action instanceof ReleaseRemoveRollbackAction) return true;
 				if (action instanceof ReleaseUpdatePriorityAction) return true;
 				if (action instanceof ScopeDeclareEffortAction) return true;

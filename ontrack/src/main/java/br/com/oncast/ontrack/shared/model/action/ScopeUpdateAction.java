@@ -62,7 +62,7 @@ public class ScopeUpdateAction implements ScopeAction {
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		for (final ModelAction action : subActionList) {
-			subActionRollbackList.add(action.execute(context));
+			subActionRollbackList.add(0, action.execute(context));
 		}
 
 		final String oldDescription = selectedScope.getDescription();

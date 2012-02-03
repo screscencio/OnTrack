@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.utils.mocks.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
+
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
@@ -13,6 +15,8 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
@@ -84,4 +88,13 @@ public class ActionTestUtils {
 		actions.add(new ScopeInsertChildAction(ProjectTestUtils.createProject().getProjectScope().getId(), "a"));
 		return actions;
 	}
+
+	public static void assertExpectedKanbanColumns(final ProjectContext context, final Release release, final int expectedColumns,
+			final String... columnDescriptions) {
+		Assert.assertEquals("Its should have " + expectedColumns + " columns.", expectedColumns, context.getKanban(release).getColumns().size());
+
+		for (final String column : columnDescriptions)
+			Assert.assertNotNull("It should have a column for " + column + ".", context.getKanban(release).getColumnForDescription(column));
+	}
+
 }

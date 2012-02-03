@@ -61,12 +61,22 @@ public class Kanban extends SimpleKanban implements Serializable {
 	}
 
 	private boolean isEmpty() {
-		return getColumns().size() <= FIXED_COLUMNS.size();
+		return getColumns().size() <= STATIC_COLUMNS.size();
 	}
 
 	@Override
-	protected void prependColumn(final String columnDescription) {
+	public void prependColumn(final String columnDescription) {
 		kanbanWithoutInference.prependColumn(columnDescription);
 		fullKanban.prependColumn(columnDescription);
+	}
+
+	@Override
+	public void removeColumn(final String columnDescription) {
+		kanbanWithoutInference.removeColumn(columnDescription);
+		fullKanban.removeColumn(columnDescription);
+	}
+
+	public boolean hasColumnForDescription(final String columnDescription) {
+		return getColumnForDescription(columnDescription) != null;
 	}
 }
