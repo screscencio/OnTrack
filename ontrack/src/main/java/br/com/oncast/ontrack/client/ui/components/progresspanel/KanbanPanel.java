@@ -66,6 +66,7 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		this.kanban = kanban;
 		this.release = release;
 		interactionHandler.configureCurrentRelease(release);
+		addStyleName("kanban");
 		update();
 	}
 

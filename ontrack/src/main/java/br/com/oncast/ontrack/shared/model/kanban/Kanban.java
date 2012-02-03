@@ -15,8 +15,8 @@ public class Kanban extends SimpleKanban implements Serializable {
 	private static final ArrayList<String> STATIC_COLUMNS = new ArrayList<String>();
 
 	static {
-		STATIC_COLUMNS.add(Progress.DEFAULT_NOT_STARTED_NAME);
-		STATIC_COLUMNS.add(ProgressState.DONE.getDescription());
+		STATIC_COLUMNS.add(Progress.DEFAULT_NOT_STARTED_NAME.toLowerCase());
+		STATIC_COLUMNS.add(ProgressState.DONE.getDescription().toLowerCase());
 	}
 
 	private boolean isLocked;
@@ -61,7 +61,7 @@ public class Kanban extends SimpleKanban implements Serializable {
 	public KanbanColumn getColumn(final String columnDescription) {
 		final String description = getNormalizedDescription(columnDescription);
 		for (final KanbanColumn column : getColumns()) {
-			if (column.getDescription().equals(description)) return column;
+			if (column.getDescription().toLowerCase().equals(description.toLowerCase())) return column;
 		}
 		return null;
 	}
@@ -118,7 +118,7 @@ public class Kanban extends SimpleKanban implements Serializable {
 
 	public boolean isStaticColumn(final String columnDescription) {
 		final String key = getNormalizedDescription(columnDescription);
-		return STATIC_COLUMNS.contains(key);
+		return STATIC_COLUMNS.contains(key.toLowerCase());
 	}
 
 	private String getNormalizedDescription(final String columnDescription) {

@@ -36,7 +36,7 @@ public class KanbanPriorityCalculator {
 
 	private int getPriorityOfWidgetAtIndex(final int index) {
 		if (index < 0) return Integer.MAX_VALUE;
-		if (index > dropTarget.getWidgetCount()) return Integer.MIN_VALUE;
+		if (index >= dropTarget.getWidgetCount()) return Integer.MIN_VALUE;
 		return getPriorityOfWidget((ScopeWidget) dropTarget.getWidget(index));
 	}
 

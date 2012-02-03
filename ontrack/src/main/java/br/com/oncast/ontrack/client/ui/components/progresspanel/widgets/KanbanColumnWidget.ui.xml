@@ -45,7 +45,7 @@
 			text-align: center;
 		}
 		.scopeContainer {
-			margin-top: 30px;
+			padding-top: 30px;
 			width: 210px;
 			margin-left:  auto;
 			margin-right: auto;
