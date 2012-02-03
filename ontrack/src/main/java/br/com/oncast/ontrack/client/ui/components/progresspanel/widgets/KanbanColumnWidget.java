@@ -9,11 +9,15 @@ import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -24,10 +28,16 @@ public class KanbanColumnWidget extends Composite {
 	interface KanbanColumnWidgetUiBinder extends UiBinder<Widget, KanbanColumnWidget> {}
 
 	@UiField
+	FocusPanel rootPanel;
+
+	@UiField
 	Label title;
 
 	@UiField
 	FocusPanel draggableAnchor;
+
+	@UiField
+	HTMLPanel columnControls;
 
 	@UiField
 	KanbanScopeContainer scopeContainer;
@@ -49,6 +59,17 @@ public class KanbanColumnWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		scopeContainer.setKanbanColumn(column);
 		this.title.setText(column.getTitle());
+		if (column.isStaticColumn()) draggableAnchor.setVisible(false);
+	}
+
+	@UiHandler("rootPanel")
+	protected void onMouseOver(final MouseOverEvent event) {
+		columnControls.setVisible(true);
+	}
+
+	@UiHandler("rootPanel")
+	protected void onMouseOut(final MouseOutEvent event) {
+		columnControls.setVisible(false);
 	}
 
 	public KanbanColumnWidget addScopes(final List<Scope> scopes) {

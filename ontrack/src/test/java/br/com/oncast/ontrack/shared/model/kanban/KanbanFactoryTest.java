@@ -30,7 +30,7 @@ public class KanbanFactoryTest {
 		final SimpleKanban kanban = createSimpleKanban("Planning", "Implementing", "Testing");
 		final SimpleKanban newKanban = KanbanFactory.merge(kanban, createSimpleKanban());
 
-		assertColumns(newKanban, NOT_STARTED, "Planning", "Implementing", "Testing", DONE);
+		assertColumns(newKanban, "Planning", "Implementing", "Testing");
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class KanbanFactoryTest {
 		final SimpleKanban kanban = createSimpleKanban("Planning", "Implementing", "Testing");
 		final SimpleKanban newKanban = KanbanFactory.merge(kanban, createSimpleKanban("New Progress1", "New Progress2"));
 
-		assertColumns(newKanban, NOT_STARTED, "New Progress1", "New Progress2", "Planning", "Implementing", "Testing", DONE);
+		assertColumns(newKanban, "New Progress1", "New Progress2", "Planning", "Implementing", "Testing");
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class KanbanFactoryTest {
 		final SimpleKanban kanban = createSimpleKanban("Planning", "Implementing", "Testing");
 		final SimpleKanban newKanban = KanbanFactory.merge(kanban, createSimpleKanban("New Progress1", "Implementing"));
 
-		assertColumns(newKanban, NOT_STARTED, "New Progress1", "Planning", "Implementing", "Testing", DONE);
+		assertColumns(newKanban, "New Progress1", "Planning", "Implementing", "Testing");
 	}
 
 	private SimpleKanban createSimpleKanban(final String... columns) {

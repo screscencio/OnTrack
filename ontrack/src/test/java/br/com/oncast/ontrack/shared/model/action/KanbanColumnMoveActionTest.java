@@ -37,7 +37,7 @@ public class KanbanColumnMoveActionTest {
 
 	@Test
 	public void shouldMoveColumnToDesiredIndex() throws Exception {
-		final int desiredIndex = 1;
+		final int desiredIndex = 0;
 
 		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, desiredIndex);
 		action.execute(context);
@@ -47,7 +47,7 @@ public class KanbanColumnMoveActionTest {
 
 	@Test
 	public void shouldLockKanban() throws Exception {
-		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 1);
+		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 0);
 		action.execute(context);
 
 		assertTrue(kanban.isLocked());
@@ -55,23 +55,23 @@ public class KanbanColumnMoveActionTest {
 
 	@Test
 	public void undoShouldReturnKanbanToPreviousState() throws Exception {
-		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 1);
+		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 0);
 		final ModelAction undo = action.execute(context);
 		undo.execute(context);
-		assertEquals(2, kanban.indexOf(kanbanColumnDescription));
-	}
-
-	@Test
-	public void shouldRedo() throws Exception {
-		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 1);
-		final ModelAction redo = action.execute(context).execute(context);
-		redo.execute(context);
 		assertEquals(1, kanban.indexOf(kanbanColumnDescription));
 	}
 
 	@Test
+	public void shouldRedo() throws Exception {
+		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 0);
+		final ModelAction redo = action.execute(context).execute(context);
+		redo.execute(context);
+		assertEquals(0, kanban.indexOf(kanbanColumnDescription));
+	}
+
+	@Test
 	public void undoShouldKeepTheTheKanbanLocked() throws Exception {
-		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 1);
+		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 0);
 		final ModelAction undo = action.execute(context);
 		undo.execute(context);
 		assertTrue(kanban.isLocked());

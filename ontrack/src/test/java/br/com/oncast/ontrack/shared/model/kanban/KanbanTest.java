@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 
 import org.junit.Assert;
@@ -52,29 +54,43 @@ public class KanbanTest {
 		assertColumns(kanban, NOT_STARTED, "First", "Last", DONE);
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void shouldNotAllowMovingColumnToZeroPosition() throws Exception {
+	@Test
+	public void shouldBeAbleToMoveColumnToZeroPosition() throws Exception {
 		final Kanban kanban = new Kanban();
 		appendColumns(kanban, "A", "B", "C");
+		final int desiredIndex = 0;
 
-		kanban.moveColumn("B", 0);
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void shouldNotAllowMovingColumnToLastPosition() throws Exception {
-		final Kanban kanban = new Kanban();
-		appendColumns(kanban, "A", "B", "C");
-
-		kanban.moveColumn("B", 4);
+		kanban.moveColumn("B", desiredIndex);
+		assertEquals(desiredIndex, kanban.indexOf("B"));
 	}
 
 	@Test
-	public void shouldBeAbleToMoveColumnToLeft() throws Exception {
+	public void shouldBeAbleToMoveColumnToLastPosition() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		final int desiredIndex = 2;
+
+		kanban.moveColumn("B", desiredIndex);
+		assertEquals(desiredIndex, kanban.indexOf("B"));
+	}
+
+	@Test
+	public void shouldBeAbleToMoveColumnLeft() throws Exception {
 		final Kanban kanban = new Kanban();
 		appendColumns(kanban, "A", "B", "C");
 		final int desiredIndex = 1;
 
-		kanban.moveColumn("B", desiredIndex);
+		kanban.moveColumn("C", desiredIndex);
+		assertColumns(kanban, NOT_STARTED, "A", "C", "B", DONE);
+	}
+
+	@Test
+	public void shouldBeAbleToMoveColumnRight() throws Exception {
+		final Kanban kanban = new Kanban();
+		appendColumns(kanban, "A", "B", "C");
+		final int desiredIndex = 1;
+
+		kanban.moveColumn("A", desiredIndex);
 		assertColumns(kanban, NOT_STARTED, "B", "A", "C", DONE);
 	}
 
@@ -109,7 +125,7 @@ public class KanbanTest {
 	public void shouldBeAbleToMoveColumnToRight() throws Exception {
 		final Kanban kanban = new Kanban();
 		appendColumns(kanban, "A", "B", "C");
-		final int desiredIndex = 3;
+		final int desiredIndex = 2;
 
 		kanban.moveColumn("B", desiredIndex);
 		assertColumns(kanban, NOT_STARTED, "A", "C", "B", DONE);
@@ -202,6 +218,21 @@ public class KanbanTest {
 		baseKanban.setLocked(false);
 		baseKanban.merge(secondMerge);
 		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", "M", "U", "V", DONE);
+	}
+
+	@Test
+	public void shouldAppendWhenTheDesiredIndexIsBiggerThanTheKanbanColumnCount() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+
+		final Kanban firstMerge = new Kanban();
+		appendColumns(firstMerge, "W", "X", "Y", "Z");
+
+		baseKanban.merge(firstMerge);
+
+		baseKanban.moveColumn("B", 9);
+
+		assertColumns(baseKanban, NOT_STARTED, "A", "C", "W", "X", "Y", "Z", "B", DONE);
 	}
 
 	private void prependColumns(final Kanban kanban, final String... columns) {
