@@ -27,11 +27,11 @@ public class KanbanPriorityCalculator {
 	}
 
 	private boolean isDecreasedPriority(final int currentPriority, final int prevPriority) {
-		return currentPriority < prevPriority;
+		return prevPriority < Integer.MAX_VALUE && currentPriority < prevPriority;
 	}
 
 	private boolean isIncreasedPriority(final int currentPriority, final int nextPriority) {
-		return currentPriority > nextPriority;
+		return nextPriority >= 0 && currentPriority > nextPriority;
 	}
 
 	private int getPriorityOfWidgetAtIndex(final int index) {
