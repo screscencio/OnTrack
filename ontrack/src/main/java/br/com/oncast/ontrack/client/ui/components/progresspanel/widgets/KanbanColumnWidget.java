@@ -2,13 +2,14 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.TextInputPopup.EditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -42,6 +43,9 @@ public class KanbanColumnWidget extends Composite {
 	Label deleteButton;
 
 	@UiField
+	KanbanColumnCreateWidget createColumn;
+
+	@UiField
 	KanbanScopeContainer scopeContainer;
 
 	private ModelWidgetContainerListener containerUpdateListener;
@@ -50,24 +54,33 @@ public class KanbanColumnWidget extends Composite {
 
 	private final KanbanColumn column;
 
-	private final ProgressPanelInteractionHandler interactionHandler;
+	private final ProgressPanelWidgetInteractionHandler interactionHandler;
+
+	private final int insertionIndex;
 
 	@UiFactory
 	protected KanbanScopeContainer createScopeContainer() {
 		return new KanbanScopeContainer(scopeWidgetFactory, containerUpdateListener);
 	}
 
+	@UiFactory
+	protected KanbanColumnCreateWidget createNewColumnWidget() {
+		return new KanbanColumnCreateWidget(interactionHandler, insertionIndex);
+	}
+
 	public KanbanColumnWidget(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
-			final ProgressPanelInteractionHandler interactionHandler) {
+			final ProgressPanelWidgetInteractionHandler interactionHandler, final int insertionIndex) {
 		this.column = column;
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.interactionHandler = interactionHandler;
+		this.insertionIndex = insertionIndex;
 		initWidget(uiBinder.createAndBindUi(this));
 		scopeContainer.setKanbanColumn(column);
 		this.title.setText(column.getDescription());
 		if (column.isStaticColumn()) {
 			draggableAnchor.setVisible(false);
 			deleteButton.setVisible(false);
+			if (ProgressState.DONE.getDescription().equals(column.getDescription())) createColumn.setVisible(false);
 		}
 	}
 

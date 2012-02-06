@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 
-import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragHandlerAdapter;
 
@@ -10,9 +10,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 
 public class KanbanColumnDragHandler extends DragHandlerAdapter {
 
-	private final ProgressPanelInteractionHandler interactionHandler;
+	private final ProgressPanelWidgetInteractionHandler interactionHandler;
 
-	public KanbanColumnDragHandler(final ProgressPanelInteractionHandler interactionHandler) {
+	public KanbanColumnDragHandler(final ProgressPanelWidgetInteractionHandler interactionHandler) {
 		this.interactionHandler = interactionHandler;
 	}
 

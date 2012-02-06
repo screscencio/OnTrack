@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.interaction;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
@@ -47,17 +48,22 @@ public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInter
 				newDescription));
 	}
 
+	@Override
+	public void onKanbanColumnCreate(final String description, final int index) {
+		assureConfigured();
+		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnCreateAction(currentRelease.getId(), description, true, index));
+	}
+
 	private void assureConfigured() {
 		if (currentRelease == null) throw new RuntimeException(
 				"This class was not yet configured.");
 	}
-	
+
 	public void configureActionExecutionRequestHandler(final ActionExecutionRequestHandler actionExecutionRequestHandler) {
 		this.actionExecutionRequestHandler = actionExecutionRequestHandler;
 	}
-	
+
 	public void configureCurrentRelease(final Release release) {
 		currentRelease = release;
 	}
-
 }

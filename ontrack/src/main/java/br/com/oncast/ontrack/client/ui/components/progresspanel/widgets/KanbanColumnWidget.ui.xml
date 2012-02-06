@@ -8,10 +8,8 @@
 	<ui:style>
 		.rootPanel {
 			width: 250px;
-
 			padding: 10px;
 			margin: 2px 4px;
-			border: solid 1px #CCC;
 		}
 		.titlePanel {
 			position: relative;
@@ -22,6 +20,10 @@
 			border: solid 1px #333;
 			background-color: #333;
 			color: #FFF;
+		}
+		.addControlPanel {
+			position: relative;
+			width: 100%;
 		}
 		.columnControls {
 			position: absolute;
@@ -43,7 +45,13 @@
 		.deleteButton {
 			position: absolute;
 			right: 4px;
+			top: 0px;
 			color: red;
+		}
+		.createButton {
+			position: absolute;
+			right: 2px;
+			top: 2px;
 		}
 		.titleLabel {
 			font-size: 13px;
@@ -59,6 +67,9 @@
 	
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
 		<g:HTMLPanel>
+			<g:HTMLPanel styleName="{style.addControlPanel}">
+				<ow:KanbanColumnCreateWidget ui:field="createColumn" styleName="{style.createButton}" />
+			</g:HTMLPanel>
 			<g:HTMLPanel styleName="{style.titlePanel}">
 				<g:Label ui:field="title" styleName="{style.titleLabel}"/>
 				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
