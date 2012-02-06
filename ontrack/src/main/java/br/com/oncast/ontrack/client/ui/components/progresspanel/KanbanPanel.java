@@ -77,7 +77,8 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		final List<KanbanColumn> columns = kanban.getColumns();
 		final Map<KanbanColumn, List<Scope>> scopesByColumn = getScopesByColumn(columns, release.getScopeList());
 		for (final KanbanColumn column : columns) {
-			final KanbanColumnWidget kanbanColumnWidget = new KanbanColumnWidget(column, scopeWidgetFactory).addScopes(scopesByColumn.get(column));
+			final KanbanColumnWidget kanbanColumnWidget = new KanbanColumnWidget(column, scopeWidgetFactory, interactionHandler).addScopes(scopesByColumn
+					.get(column));
 			scopeDragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getVerticalContainer());
 
 			if (!column.isStaticColumn()) {

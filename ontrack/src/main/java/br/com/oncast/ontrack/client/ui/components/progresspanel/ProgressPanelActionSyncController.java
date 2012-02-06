@@ -6,7 +6,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
-import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
@@ -97,8 +97,7 @@ public class ProgressPanelActionSyncController {
 
 			@Override
 			protected boolean isHandlerFor(final ModelAction action) {
-				if (action instanceof KanbanColumnMoveAction) return true;
-				return false;
+				return action instanceof KanbanAction;
 			}
 		},
 		SCOPE_INSERTION_ACTIONS {

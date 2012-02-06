@@ -40,6 +40,11 @@
 			bottom: 4px;
 			width: 8px;
 		}
+		.deleteButton {
+			position: absolute;
+			right: 4px;
+			color: red;
+		}
 		.titleLabel {
 			font-size: 13px;
 			text-align: center;
@@ -57,6 +62,7 @@
 			<g:HTMLPanel styleName="{style.titlePanel}">
 				<g:HTMLPanel ui:field="columnControls" styleName="{style.columnControls}" visible="false">
 					<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
+					<g:Label ui:field="deleteButton" styleName="{style.deleteButton}">x</g:Label>
 				</g:HTMLPanel>
 				<g:Label ui:field="title" styleName="{style.titleLabel}"/>
 			</g:HTMLPanel>

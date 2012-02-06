@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
 import java.util.List;
 
+import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
@@ -9,6 +10,7 @@ import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -37,6 +39,9 @@ public class KanbanColumnWidget extends Composite {
 	FocusPanel draggableAnchor;
 
 	@UiField
+	Label deleteButton;
+
+	@UiField
 	HTMLPanel columnControls;
 
 	@UiField
@@ -48,18 +53,25 @@ public class KanbanColumnWidget extends Composite {
 
 	private final KanbanColumn column;
 
+	private final ProgressPanelInteractionHandler interactionHandler;
+
 	@UiFactory
 	protected KanbanScopeContainer createScopeContainer() {
 		return new KanbanScopeContainer(scopeWidgetFactory, containerUpdateListener);
 	}
 
-	public KanbanColumnWidget(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory) {
+	public KanbanColumnWidget(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
+			final ProgressPanelInteractionHandler interactionHandler) {
 		this.column = column;
 		this.scopeWidgetFactory = scopeWidgetFactory;
+		this.interactionHandler = interactionHandler;
 		initWidget(uiBinder.createAndBindUi(this));
 		scopeContainer.setKanbanColumn(column);
 		this.title.setText(column.getDescription());
-		if (column.isStaticColumn()) draggableAnchor.setVisible(false);
+		if (column.isStaticColumn()) {
+			draggableAnchor.setVisible(false);
+			deleteButton.setVisible(false);
+		}
 	}
 
 	@UiHandler("rootPanel")
@@ -70,6 +82,11 @@ public class KanbanColumnWidget extends Composite {
 	@UiHandler("rootPanel")
 	protected void onMouseOut(final MouseOutEvent event) {
 		columnControls.setVisible(false);
+	}
+
+	@UiHandler("deleteButton")
+	protected void onClick(final ClickEvent event) {
+		interactionHandler.onKanbanColumnRemove(column);
 	}
 
 	public KanbanColumnWidget addScopes(final List<Scope> scopes) {
