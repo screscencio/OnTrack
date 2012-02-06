@@ -10,7 +10,10 @@ import java.util.Random;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
@@ -103,6 +106,9 @@ public class UserActionTestUtils {
 		userActions.add(createScopeMoveLeftAction());
 		userActions.add(createScopeMoveRightAction());
 		userActions.add(createKanbanColumnMoveAction());
+		userActions.add(createKanbanColumnRenameAction());
+		userActions.add(createKanbanColumnRemoveAction());
+		userActions.add(createKanbanColumnCreateAction());
 		return userActions;
 	}
 
@@ -276,6 +282,23 @@ public class UserActionTestUtils {
 
 	public static UserAction createKanbanColumnMoveAction() throws Exception {
 		final KanbanColumnMoveAction action = new KanbanColumnMoveAction(new UUID(), "description", 2);
+		return createUserAction(action);
+	}
+
+	public static UserAction createKanbanColumnRenameAction() throws Exception {
+		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(new UUID(), "description", "new Description");
+		return createUserAction(action);
+	}
+
+	public static UserAction createKanbanColumnRemoveAction() throws Exception {
+		final KanbanColumnRemoveAction action = new KanbanColumnRemoveAction(new UUID(), "description");
+		return createUserAction(action);
+	}
+
+	public static UserAction createKanbanColumnCreateAction() throws Exception {
+		final ArrayList<ModelAction> rollbackActions = new ArrayList<ModelAction>();
+		rollbackActions.add(new ScopeDeclareProgressAction(new UUID(), "newProgressDescription"));
+		final KanbanColumnCreateAction action = new KanbanColumnCreateAction(new UUID(), "description", false, 2, rollbackActions);
 		return createUserAction(action);
 	}
 

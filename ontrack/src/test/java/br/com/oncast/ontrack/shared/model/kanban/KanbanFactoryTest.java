@@ -1,8 +1,10 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-import static br.com.oncast.ontrack.shared.model.kanban.KanbanTest.assertColumns;
 import static br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils.createReleaseForKanbanWithColumns;
 
+import java.util.ArrayList;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress;
@@ -47,6 +49,18 @@ public class KanbanFactoryTest {
 		final SimpleKanban newKanban = KanbanFactory.merge(kanban, createSimpleKanban("New Progress1", "Implementing"));
 
 		assertColumns(newKanban, "New Progress1", "Planning", "Implementing", "Testing");
+	}
+
+	private void assertColumns(final SimpleKanban kanban, final String... columnTitles) {
+		Assert.assertArrayEquals(columnTitles, getDescriptions(kanban));
+	}
+
+	private static Object[] getDescriptions(final SimpleKanban kanban) {
+		final ArrayList<String> list = new ArrayList<String>();
+		for (final KanbanColumn c : kanban.getColumns()) {
+			list.add(c.getDescription());
+		}
+		return list.toArray();
 	}
 
 	private SimpleKanban createSimpleKanban(final String... columns) {

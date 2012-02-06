@@ -187,6 +187,21 @@ public class XMLWriterTest {
 	}
 
 	@Test
+	public void shouldWriteUsersPasswordAndKanbanColumnRenameActionToXML() throws Exception {
+		testWithActionList(asList(UserActionTestUtils.createKanbanColumnRenameAction()));
+	}
+
+	@Test
+	public void shouldWriteUsersPasswordAndKanbanColumnRemoveActionToXML() throws Exception {
+		testWithActionList(asList(UserActionTestUtils.createKanbanColumnRemoveAction()));
+	}
+
+	@Test
+	public void shouldWriteUsersPasswordAndKanbanColumnCreateActionToXML() throws Exception {
+		testWithActionList(asList(UserActionTestUtils.createKanbanColumnCreateAction()));
+	}
+
+	@Test
 	public void shouldWriteUsersPasswordAndActionsToXML() throws Exception {
 		testWithActionList(UserActionTestUtils.createCompleteUserActionList());
 	}

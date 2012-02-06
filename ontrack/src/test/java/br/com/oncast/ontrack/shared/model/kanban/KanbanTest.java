@@ -1,19 +1,13 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
+import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.DONE;
+import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.NOT_STARTED;
+import static br.com.oncast.ontrack.utils.assertions.KanbanTestUtils.assertColumns;
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-
-import org.junit.Assert;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
-
 public class KanbanTest {
-
-	private static final String DONE = ProgressState.DONE.getDescription();
-	private static final String NOT_STARTED = Progress.DEFAULT_NOT_STARTED_NAME;
 
 	@Test
 	public void shouldCreateWithDefaultColumns() throws Exception {
@@ -285,18 +279,6 @@ public class KanbanTest {
 		for (final String column : columns) {
 			kanban.appendColumn(column);
 		}
-	}
-
-	protected static void assertColumns(final SimpleKanban kanban, final String... columnTitles) {
-		Assert.assertArrayEquals(columnTitles, getDescriptions(kanban));
-	}
-
-	private static Object[] getDescriptions(final SimpleKanban kanban) {
-		final ArrayList<String> list = new ArrayList<String>();
-		for (final KanbanColumn c : kanban.getColumns()) {
-			list.add(c.getDescription());
-		}
-		return list.toArray();
 	}
 
 }

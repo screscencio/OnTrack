@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -33,7 +34,7 @@ public class KanbanColumnCreateAction implements KanbanAction {
 	private boolean shouldLockKanban;
 
 	@ConversionAlias("subActions")
-	@Attribute
+	@ElementList(required = false)
 	private List<ModelAction> subActions;
 
 	@ConversionAlias("columnIndex")
