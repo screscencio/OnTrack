@@ -13,4 +13,5 @@ public interface ProgressPanelWidgetInteractionHandler {
 
 	void onKanbanColumnRemove(final KanbanColumn column);
 
+	void onKanbanColumnRename(KanbanColumn column, String newDescription);
 }

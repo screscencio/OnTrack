@@ -235,6 +235,46 @@ public class KanbanTest {
 		assertColumns(baseKanban, NOT_STARTED, "A", "C", "W", "X", "Y", "Z", "B", DONE);
 	}
 
+	@Test
+	public void shouldBeAbleToRenameAColumn() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+		baseKanban.renameColumn("B", "2");
+		assertColumns(baseKanban, NOT_STARTED, "A", "2", "C", DONE);
+	}
+
+	@Test
+	public void renameShouldBeCaseInsensitiveOnMatch() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+		baseKanban.renameColumn("b", "2");
+		assertColumns(baseKanban, NOT_STARTED, "A", "2", "C", DONE);
+	}
+
+	@Test
+	public void renameShouldBeCaseSensitiveOnDescriptionUpdate() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+		baseKanban.renameColumn("B", "b");
+		assertColumns(baseKanban, NOT_STARTED, "A", "b", "C", DONE);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotBeAbleToRenameAStaticColumn() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+		baseKanban.renameColumn(NOT_STARTED, "b");
+		assertColumns(baseKanban, NOT_STARTED, "A", "b", "C", DONE);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotBeAbleToRenameAColumnThatTheKanbanNotContains() throws Exception {
+		final Kanban baseKanban = new Kanban();
+		appendColumns(baseKanban, "A", "B", "C");
+		baseKanban.renameColumn("D", "b");
+		assertColumns(baseKanban, NOT_STARTED, "A", "b", "C", DONE);
+	}
+
 	private void prependColumns(final Kanban kanban, final String... columns) {
 		for (final String column : columns) {
 			kanban.prependColumn(column);

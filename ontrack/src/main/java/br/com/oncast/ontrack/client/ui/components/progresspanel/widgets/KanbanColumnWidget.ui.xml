@@ -28,7 +28,7 @@
 			top : 0px;	
 			left : 0px;	
 			bottom : 0px;	
-			right : 0px;	
+			right : 0px;
 		}
 		.draggable {
 			background: url("resources/image/releasePanel/draggable.png") repeat-y;
@@ -60,11 +60,9 @@
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
 		<g:HTMLPanel>
 			<g:HTMLPanel styleName="{style.titlePanel}">
-				<g:HTMLPanel ui:field="columnControls" styleName="{style.columnControls}" visible="false">
-					<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
-					<g:Label ui:field="deleteButton" styleName="{style.deleteButton}">x</g:Label>
-				</g:HTMLPanel>
 				<g:Label ui:field="title" styleName="{style.titleLabel}"/>
+				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
+				<g:Label ui:field="deleteButton" styleName="{style.deleteButton}">x</g:Label>
 			</g:HTMLPanel>
 			<ow:KanbanScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}"/>
 		</g:HTMLPanel>

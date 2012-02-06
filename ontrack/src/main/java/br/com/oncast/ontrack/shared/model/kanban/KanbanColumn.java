@@ -6,19 +6,19 @@ public class KanbanColumn implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String title;
+	private String description;
 
 	private boolean isStaticColumn = false;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected KanbanColumn() {}
 
-	public KanbanColumn(final String title) {
-		this.title = title;
+	public KanbanColumn(final String description) {
+		this.description = description;
 	}
 
 	public KanbanColumn(final String title, final boolean isStatic) {
-		this.title = title;
+		this.description = title;
 		this.isStaticColumn = isStatic;
 	}
 
@@ -27,6 +27,10 @@ public class KanbanColumn implements Serializable {
 	}
 
 	public String getDescription() {
-		return title;
+		return description;
+	}
+
+	public void setDescription(final String description) {
+		this.description = description;
 	}
 }

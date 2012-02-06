@@ -58,6 +58,7 @@ public class Kanban extends SimpleKanban implements Serializable {
 		return getColumn(columnDescription) != null;
 	}
 
+	@Override
 	public KanbanColumn getColumn(final String columnDescription) {
 		final String description = getNormalizedDescription(columnDescription);
 		for (final KanbanColumn column : getColumns()) {
@@ -89,18 +90,32 @@ public class Kanban extends SimpleKanban implements Serializable {
 
 	@Override
 	public void removeColumn(final String columnDescription) {
-		avoidStaticColumns(columnDescription);
+		assureIsAnEditableColumn(columnDescription);
 
-		kanbanWithoutInference.removeColumn(columnDescription);
 		fullKanban.removeColumn(columnDescription);
+
+		if (!kanbanWithoutInferenceContainsColumn(columnDescription)) return;
+		kanbanWithoutInference.removeColumn(columnDescription);
 	}
 
 	@Override
 	public void moveColumn(final String columnDescription, final int requestedIndex) {
-		avoidStaticColumns(columnDescription);
+		assureIsAnEditableColumn(columnDescription);
 
-		kanbanWithoutInference.moveColumn(columnDescription, requestedIndex);
 		fullKanban.moveColumn(columnDescription, requestedIndex);
+
+		if (!kanbanWithoutInferenceContainsColumn(columnDescription)) return;
+		kanbanWithoutInference.moveColumn(columnDescription, requestedIndex);
+	}
+
+	@Override
+	public void renameColumn(final String columnDescription, final String newDescription) {
+		assureIsAnEditableColumn(columnDescription);
+
+		fullKanban.renameColumn(columnDescription, newDescription);
+
+		if (!kanbanWithoutInferenceContainsColumn(columnDescription)) return;
+		kanbanWithoutInference.renameColumn(columnDescription, newDescription);
 	}
 
 	public void merge(final Kanban kanbanToMerge) {
@@ -108,25 +123,38 @@ public class Kanban extends SimpleKanban implements Serializable {
 		fullKanban = KanbanFactory.merge(kanbanToMerge.fullKanban, kanbanWithoutInference);
 	}
 
+	public boolean isStaticColumn(final String columnDescription) {
+		final String key = getNormalizedDescription(columnDescription);
+		return STATIC_COLUMNS.contains(key.toLowerCase());
+	}
+
+	public KanbanColumn getColumnPredeceding(final String columnDescription) {
+		final int index = indexOf(columnDescription) - 1;
+		return (index < 0) ? notStartedColumn : fullKanban.getColumn(index);
+	}
+
 	private boolean isEmpty() {
 		return fullKanban.getColumns().isEmpty();
 	}
 
-	private void avoidStaticColumns(final String columnDescription) {
-		if (isStaticColumn(columnDescription)) throw new RuntimeException("Cannot move a fixed column");
+	private void assureIsAnEditableColumn(final String columnDescription) {
+		assureContainsColumn(columnDescription);
+		assureIsNotAStaticColumn(columnDescription);
 	}
 
-	public boolean isStaticColumn(final String columnDescription) {
-		final String key = getNormalizedDescription(columnDescription);
-		return STATIC_COLUMNS.contains(key.toLowerCase());
+	private void assureIsNotAStaticColumn(final String columnDescription) {
+		if (isStaticColumn(columnDescription)) throw new RuntimeException("Cannot change a fixed column");
 	}
 
 	private String getNormalizedDescription(final String columnDescription) {
 		return columnDescription.trim().isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : columnDescription;
 	}
 
-	public KanbanColumn getColumnPredeceding(final String columnDescription) {
-		final int index = indexOf(columnDescription) - 1;
-		return (index < 0) ? notStartedColumn : fullKanban.getColumn(index);
+	private void assureContainsColumn(final String columnDescription) {
+		if (getColumn(columnDescription) == null) throw new RuntimeException("The column with description '" + columnDescription + "' was not found.");
+	}
+
+	private boolean kanbanWithoutInferenceContainsColumn(final String columnDescription) {
+		return kanbanWithoutInference.getColumn(columnDescription) != null;
 	}
 }

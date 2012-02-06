@@ -3,23 +3,23 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.TextInputPopup.EditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -40,9 +40,6 @@ public class KanbanColumnWidget extends Composite {
 
 	@UiField
 	Label deleteButton;
-
-	@UiField
-	HTMLPanel columnControls;
 
 	@UiField
 	KanbanScopeContainer scopeContainer;
@@ -74,14 +71,18 @@ public class KanbanColumnWidget extends Composite {
 		}
 	}
 
-	@UiHandler("rootPanel")
-	protected void onMouseOver(final MouseOverEvent event) {
-		columnControls.setVisible(true);
-	}
-
-	@UiHandler("rootPanel")
-	protected void onMouseOut(final MouseOutEvent event) {
-		columnControls.setVisible(false);
+	@UiHandler("title")
+	protected void onDoubleClick(final DoubleClickEvent event) {
+		if (column.isStaticColumn()) return;
+		PopupConfig.configPopup().popup(new TextInputPopup("new Description", column.getDescription(), new EditionHandler() {
+			@Override
+			public boolean onEdition(final String text) {
+				final String trimmedText = text.trim();
+				if (trimmedText.isEmpty() || trimmedText.equals(column.getDescription())) return false;
+				interactionHandler.onKanbanColumnRename(column, text);
+				return true;
+			}
+		})).alignBelow(title).alignRight(title).pop();
 	}
 
 	@UiHandler("deleteButton")

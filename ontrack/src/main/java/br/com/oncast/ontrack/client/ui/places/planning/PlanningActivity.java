@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.BreadcrumbWidget;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
+import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -65,6 +66,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.setExporterPath(URLBuilder.buildMindMapExportURL(currentProjectId));
 
 		panel.setWidget(view);
+		ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
 		ShortcutService.register(view, this, PlanningShortcutMappings.values());
 		addBreadcrumbToMenu(currentProjectRepresentation);
 		view.getScopeTree().setFocus(true);
@@ -80,10 +82,6 @@ public class PlanningActivity extends AbstractActivity {
 		list.add(view.getScopeTree().getActionExecutionListener());
 		list.add(view.getReleasePanel().getActionExecutionListener());
 		return list;
-	}
-
-	public ActionExecutionService getActionRequestHandler() {
-		return SERVICE_PROVIDER.getActionExecutionService();
 	}
 
 	public void showSearchScope() {

@@ -5,6 +5,9 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelecti
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
 import br.com.oncast.ontrack.client.ui.generalwidgets.BreadcrumbWidget;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutRegistration;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
+import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -15,6 +18,7 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProgressActivity extends AbstractActivity {
@@ -25,6 +29,8 @@ public class ProgressActivity extends AbstractActivity {
 	private ProgressView view;
 	private ProjectContext projectContext;
 	private Release release;
+
+	private ShortcutRegistration registration;
 
 	public ProgressActivity(final ProgressPlace place) {
 		try {
@@ -66,11 +72,13 @@ public class ProgressActivity extends AbstractActivity {
 		panel.setWidget(view);
 
 		progressPanelActionSyncController.registerActionExecutionListener();
+		registration = ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
 	}
 
 	@Override
 	public void onStop() {
 		progressPanelActionSyncController.unregisterActionExecutionListener();
+		registration.unregister();
 	}
 
 	protected void updateViewData() {
