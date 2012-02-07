@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.hibernate.collection.PersistentBag;
@@ -36,6 +37,7 @@ public class GeneralTypeConverter implements TypeConverter {
 		addCustomConverter(Long.class, new LongConverter());
 		addCustomConverter(String.class, new StringConverter());
 		addCustomConverter(ArrayList.class, new ListConverter<ArrayList>(ArrayList.class));
+		addCustomConverter(LinkedList.class, new ListConverter<LinkedList>(LinkedList.class));
 		// IMPORTANT Date is the superclass of Timestamp, so the same converter is really used for both.
 		addCustomConverter(Date.class, new DateConverter());
 		addCustomConverter(Timestamp.class, new DateConverter());

@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -75,6 +76,7 @@ public class ReleasePanel implements Component {
 						action instanceof ReleaseScopeUpdatePriorityAction ||
 						action instanceof ReleaseRenameAction ||
 						action instanceof KanbanColumnRenameAction ||
+						action instanceof KanbanColumnCreateAction ||
 						action instanceof KanbanColumnRemoveAction) update();
 			}
 		};
