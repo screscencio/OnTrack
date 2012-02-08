@@ -39,6 +39,9 @@ public class ScopeTree implements Component {
 					treeActionFactory.createEquivalentActionFor(action).execute(context, isUserAction);
 					ScopeTreeEffortUpdateEngine.process(tree, inferenceInfluencedScopeSet);
 				}
+				catch (final ScopeNotFoundException e) {
+					// FIXME Mats Discuss if is it ok to do nothing here
+					}
 				catch (final ModelBeanNotFoundException e) {
 					// TODO ++Resync and Redraw the entire structure to eliminate inconsistencies
 					throw new RuntimeException("It was not possible to update the view because an inconsistency with the model was detected.", e);

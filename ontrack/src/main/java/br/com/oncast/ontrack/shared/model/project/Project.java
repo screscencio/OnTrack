@@ -15,12 +15,14 @@ public class Project implements Serializable {
 	private ProjectRepresentation projectRepresentation;
 	private Scope projectScope;
 	private Release projectRelease;
-	private final Map<Release, Kanban> kanbanMap = new HashMap<Release, Kanban>();
+	private Map<Release, Kanban> kanbanMap;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
 
 	public Project(final ProjectRepresentation projectRepresentation, final Scope projectScope, final Release projectRelease) {
+		kanbanMap = new HashMap<Release, Kanban>();
+
 		this.projectRepresentation = projectRepresentation;
 		this.projectScope = projectScope;
 		this.projectRelease = projectRelease;

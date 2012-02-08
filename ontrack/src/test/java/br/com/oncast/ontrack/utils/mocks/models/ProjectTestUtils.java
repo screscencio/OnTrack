@@ -81,4 +81,22 @@ public class ProjectTestUtils {
 		return auths;
 	}
 
+	public static Project createPopulatedProject() {
+		final Release projectRelease = ReleaseTestUtils.getRelease();
+		final Release r1 = projectRelease.getChild(0);
+
+		final Scope scope = ScopeTestUtils.getSimpleScope();
+		r1.addScope(scope.getChild(0));
+		r1.addScope(scope.getChild(1));
+		r1.addScope(scope.getChild(2));
+
+		for (final Release r : r1.getChildren()) {
+			final Scope s = ScopeTestUtils.getSimpleScope();
+			r.addScope(s.getChild(0));
+			r.addScope(s.getChild(1));
+			r.addScope(s.getChild(2));
+		}
+
+		return new Project(getDefaultRepresentation(), scope, projectRelease);
+	}
 }

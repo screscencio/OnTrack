@@ -4,15 +4,18 @@ import static br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils.set;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
+import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
@@ -102,6 +105,10 @@ public class UserActionTestUtils {
 		userActions.add(createScopeInsertSiblingUpAction());
 		userActions.add(createScopeMoveLeftAction());
 		userActions.add(createScopeMoveRightAction());
+		userActions.add(createKanbanColumnMoveAction());
+		userActions.add(createKanbanColumnRenameAction());
+		userActions.add(createKanbanColumnRemoveAction());
+		userActions.add(createKanbanColumnCreateAction());
 		return userActions;
 	}
 
@@ -120,7 +127,7 @@ public class UserActionTestUtils {
 
 	public static List<UserAction> createRandomUserActionList() throws Exception {
 		final List<UserAction> actionList = createCompleteUserActionList();
-		sort(actionList);
+		shuffle(actionList);
 		return actionList;
 	}
 
@@ -128,7 +135,7 @@ public class UserActionTestUtils {
 		setProjectName(projectName);
 
 		final List<UserAction> actionList = createCompleteUserActionList(projectId);
-		sort(actionList);
+		shuffle(actionList);
 
 		resetProjectName();
 		return actionList;
@@ -138,17 +145,11 @@ public class UserActionTestUtils {
 		UserActionTestUtils.projectName = projectName;
 	}
 
-	private static void sort(final List<UserAction> actionList) {
-		Collections.sort(actionList, new Comparator<UserAction>() {
-
-			@Override
-			public int compare(final UserAction action1, final UserAction action2) {
-				return new Random().nextInt();
-			}
-		});
+	private static void shuffle(final List<UserAction> actionList) {
+		Collections.shuffle(actionList);
 
 		for (int i = 0; i < new Random().nextInt(10); i++) {
-			actionList.remove(new Random().nextInt(actionList.size() - 1));
+			actionList.remove(0);
 		}
 	}
 
@@ -228,7 +229,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createReleaseCreateActionDefault() throws Exception {
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("description");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("description");
 		set(createAction, "parentReleaseId", new UUID());
 		return createUserAction(createAction);
 	}
@@ -277,6 +278,28 @@ public class UserActionTestUtils {
 	public static UserAction createScopeMoveUpAction() throws Exception {
 		final ScopeMoveUpAction scopeMoveUpAction = new ScopeMoveUpAction(new UUID());
 		return createUserAction(scopeMoveUpAction);
+	}
+
+	public static UserAction createKanbanColumnMoveAction() throws Exception {
+		final KanbanColumnMoveAction action = new KanbanColumnMoveAction(new UUID(), "description", 2);
+		return createUserAction(action);
+	}
+
+	public static UserAction createKanbanColumnRenameAction() throws Exception {
+		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(new UUID(), "description", "new Description");
+		return createUserAction(action);
+	}
+
+	public static UserAction createKanbanColumnRemoveAction() throws Exception {
+		final KanbanColumnRemoveAction action = new KanbanColumnRemoveAction(new UUID(), "description");
+		return createUserAction(action);
+	}
+
+	public static UserAction createKanbanColumnCreateAction() throws Exception {
+		final ArrayList<ModelAction> rollbackActions = new ArrayList<ModelAction>();
+		rollbackActions.add(new ScopeDeclareProgressAction(new UUID(), "newProgressDescription"));
+		final KanbanColumnCreateAction action = new KanbanColumnCreateAction(new UUID(), "description", false, 2, rollbackActions);
+		return createUserAction(action);
 	}
 
 	public static UserAction createUserAction(final ModelAction action) throws Exception {

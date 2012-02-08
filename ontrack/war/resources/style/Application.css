@@ -100,6 +100,10 @@ html,body {
 	border: 0px;
 }
 
+.kanban .dragdrop-positioner {
+	width: auto;
+}
+
 .dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {
 	background-color: #d4d5d9;
 	filter: alpha(opacity \= 70);

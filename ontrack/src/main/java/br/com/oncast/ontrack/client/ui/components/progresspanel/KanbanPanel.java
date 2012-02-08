@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidgetFactory;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanColumnDragHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanScopeItemDragHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
@@ -35,37 +35,63 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 
 	@UiField
 	protected HorizontalPanel board;
+
+	protected HorizontalPanel draggableColumns;
 	private Kanban kanban;
 	private Release release;
-	final DragAndDropManager dragAndDropMangager;
+	final DragAndDropManager scopeDragAndDropMangager;
+	final DragAndDropManager kanbanColumnDragAndDropMangager;
 	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
 	private final ProgressPanelInteractionHandler interactionHandler;
 
 	public KanbanPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
-		dragAndDropMangager = new DragAndDropManager();
-		dragAndDropMangager.configureBoundaryPanel(RootPanel.get());
+		scopeDragAndDropMangager = new DragAndDropManager();
+		scopeDragAndDropMangager.configureBoundaryPanel(RootPanel.get());
 		interactionHandler = new ProgressPanelInteractionHandler();
-		dragAndDropMangager.setDragHandler(new KanbanScopeItemDragHandler(interactionHandler));
-		scopeWidgetFactory = new KanbanScopeWidgetFactory(dragAndDropMangager, interactionHandler);
+		scopeDragAndDropMangager.setDragHandler(new KanbanScopeItemDragHandler(interactionHandler));
+		scopeWidgetFactory = new KanbanScopeWidgetFactory(scopeDragAndDropMangager, interactionHandler);
+
+		draggableColumns = new HorizontalPanel();
+
+		kanbanColumnDragAndDropMangager = new DragAndDropManager();
+		kanbanColumnDragAndDropMangager.configureBoundaryPanel(RootPanel.get());
+		kanbanColumnDragAndDropMangager.setDragHandler(new KanbanColumnDragHandler(interactionHandler));
+		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns);
+
 	}
 
 	@Override
 	public void configureKanbanPanel(final Kanban kanban, final Release release) {
 		this.kanban = kanban;
 		this.release = release;
+		interactionHandler.configureCurrentRelease(release);
+		addStyleName("kanban");
 		update();
 	}
 
 	@Override
 	public void update() {
 		board.clear();
-		for (final Entry<KanbanColumn, List<Scope>> entry : getScopesByColumn(kanban.getColumns(), release.getScopeList()).entrySet()) {
-			final KanbanColumnWidget kanbanColumnWidget = new KanbanColumnWidget(entry.getKey(), scopeWidgetFactory);
-			dragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getVerticalContainer());
-			board.add(kanbanColumnWidget.addScopes(entry.getValue()));
-		}
+		draggableColumns.clear();
+		final List<KanbanColumn> columns = kanban.getColumns();
+		final Map<KanbanColumn, List<Scope>> scopesByColumn = getScopesByColumn(columns, release.getScopeList());
+		int insertionIndex = 0;
+		for (final KanbanColumn column : columns) {
+			final KanbanColumnWidget kanbanColumnWidget = new KanbanColumnWidget(column, scopeWidgetFactory, interactionHandler, insertionIndex)
+					.addScopes(scopesByColumn.get(column));
+			insertionIndex++;
+			scopeDragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getVerticalContainer());
 
+			if (!column.isStaticColumn()) {
+				kanbanColumnDragAndDropMangager.monitorNewDraggableItem(kanbanColumnWidget, kanbanColumnWidget.getDraggableAnchor());
+				draggableColumns.add(kanbanColumnWidget);
+			}
+			else {
+				board.add(kanbanColumnWidget);
+			}
+		}
+		board.insert(draggableColumns, 1);
 	}
 
 	private Map<KanbanColumn, List<Scope>> getScopesByColumn(final List<KanbanColumn> columns, final List<Scope> scopeList) {
@@ -73,7 +99,7 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		for (final KanbanColumn c : columns)
 			map.put(c, new ArrayList<Scope>());
 		for (final Scope scope : scopeList)
-			map.get(kanban.getColumnForDescription(scope.getProgress().getDescription())).add(scope);
+			map.get(kanban.getColumn(scope.getProgress().getDescription())).add(scope);
 		return map;
 	}
 

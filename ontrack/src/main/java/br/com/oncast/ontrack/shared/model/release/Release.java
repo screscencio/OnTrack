@@ -339,4 +339,8 @@ public class Release implements Serializable {
 		return getFullDescription();
 	}
 
+
+	public boolean hasDirectScopes() {
+		return !getScopeList().isEmpty();
+	}
 }

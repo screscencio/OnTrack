@@ -36,7 +36,7 @@ public class ReleaseCreateActionTest {
 
 	@Test
 	public void shouldCreateNewReleaseInsideProjectReleaseWhenNoRelativeReleaseIsProvided() throws UnableToCompleteActionException, ReleaseNotFoundException {
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("New release");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("New release");
 		createAction.execute(context);
 
 		assertEquals(4, rootRelease.getChildren().size());
@@ -45,7 +45,7 @@ public class ReleaseCreateActionTest {
 
 	@Test
 	public void shouldCreateEntireReleaseHierarchy() throws UnableToCompleteActionException {
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R4/It1/w1/d1");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("R4/It1/w1/d1");
 		createAction.execute(context);
 
 		assertEquals(4, rootRelease.getChildren().size());
@@ -62,7 +62,7 @@ public class ReleaseCreateActionTest {
 	public void shouldCreateOnlySubReleaseWhenParentReleaseAlreadyExists() throws UnableToCompleteActionException {
 		final Release releaseR2 = rootRelease.getChild(1);
 
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R2/It5");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("R2/It5");
 		createAction.execute(context);
 
 		// Do not create a new release for 'R2', because it already exists.
@@ -77,7 +77,7 @@ public class ReleaseCreateActionTest {
 	public void shouldCreateOnlySubReleaseWhenParentReleaseAlreadyExists_GoingMoreDeeply() throws UnableToCompleteActionException {
 		final Release releaseR2 = rootRelease.getChild(1);
 
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R2/It4/Week1");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("R2/It4/Week1");
 		createAction.execute(context);
 
 		// Do not create a new release for 'R2', neither for 'It4' because they already exist.
@@ -94,7 +94,7 @@ public class ReleaseCreateActionTest {
 	public void shouldCreateAllNonExistentSubReleasesWhenParentReleaseAlreadyExists() throws UnableToCompleteActionException {
 		final Release releaseR2 = rootRelease.getChild(1);
 
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R2/It5/Week1");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("R2/It5/Week1");
 		createAction.execute(context);
 
 		// Do not create a new release for 'R2', because it already exists.
@@ -109,7 +109,7 @@ public class ReleaseCreateActionTest {
 
 	@Test
 	public void entireReleaseHierarchyShouldBeInProjectContext() throws UnableToCompleteActionException, ReleaseNotFoundException {
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R4/It1");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("R4/It1");
 		createAction.execute(context);
 
 		assertNotNull(context.findRelease("R4"));
@@ -119,7 +119,7 @@ public class ReleaseCreateActionTest {
 
 	@Test
 	public void rollbackShouldRemoveReleasePreviouslyCreated() throws UnableToCompleteActionException {
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R4");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("R4");
 
 		final ModelAction rollback = createAction.execute(context);
 		assertEquals(4, rootRelease.getChildren().size());
@@ -136,7 +136,7 @@ public class ReleaseCreateActionTest {
 
 	@Test
 	public void rollbackShouldRemoveSubReleasePreviouslyCreated() throws UnableToCompleteActionException {
-		final ReleaseCreateActionDefault createAction = new ReleaseCreateActionDefault("R4/It1");
+		final ReleaseCreateAction createAction = new ReleaseCreateAction("R4/It1");
 
 		final ModelAction rollback = createAction.execute(context);
 		assertEquals(4, rootRelease.getChildren().size());
@@ -156,7 +156,7 @@ public class ReleaseCreateActionTest {
 	@Test
 	public void shouldHandleRemovalCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ReleaseCreateActionDefault("R4/It1"), context);
+		actionExecutionManager.doUserAction(new ReleaseCreateAction("R4/It1"), context);
 
 		assertEquals(4, rootRelease.getChildren().size());
 		assertEquals("R4", rootRelease.getChild(3).getDescription());
@@ -198,7 +198,7 @@ public class ReleaseCreateActionTest {
 		final Release releaseR2 = rootRelease.getChild(1);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ReleaseCreateActionDefault("R2/It5/Week1"), context);
+		actionExecutionManager.doUserAction(new ReleaseCreateAction("R2/It5/Week1"), context);
 
 		// Do not create a new release for 'R2', because it already exists.
 		assertEquals(3, rootRelease.getChildren().size());

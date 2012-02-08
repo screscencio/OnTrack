@@ -8,10 +8,8 @@
 	<ui:style>
 		.rootPanel {
 			width: 250px;
-
 			padding: 10px;
 			margin: 2px 4px;
-			border: solid 1px #CCC;
 		}
 		.titlePanel {
 			position: relative;
@@ -23,6 +21,17 @@
 			background-color: #333;
 			color: #FFF;
 		}
+		.addControlPanel {
+			position: relative;
+			width: 100%;
+		}
+		.columnControls {
+			position: absolute;
+			top : 0px;	
+			left : 0px;	
+			bottom : 0px;	
+			right : 0px;
+		}
 		.draggable {
 			background: url("resources/image/releasePanel/draggable.png") repeat-y;
 			cursor: move;
@@ -33,23 +42,40 @@
 			bottom: 4px;
 			width: 8px;
 		}
+		.deleteButton {
+			position: absolute;
+			right: 4px;
+			top: 0px;
+			color: red;
+		}
+		.createButton {
+			position: absolute;
+			right: 2px;
+			top: 2px;
+		}
 		.titleLabel {
 			font-size: 13px;
 			text-align: center;
 		}
 		.scopeContainer {
-			margin-top: 30px;
+			padding-top: 30px;
 			width: 210px;
 			margin-left:  auto;
 			margin-right: auto;
 		}
 	</ui:style>
 	
-	<g:HTMLPanel styleName="{style.rootPanel}">
-		<g:HTMLPanel styleName="{style.titlePanel}">
-			<g:FocusPanel styleName="{style.draggable}" />
-			<g:Label ui:field="title" styleName="{style.titleLabel}"/>
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
+		<g:HTMLPanel>
+			<g:HTMLPanel styleName="{style.addControlPanel}">
+				<ow:KanbanColumnCreateWidget ui:field="createColumn" styleName="{style.createButton}" />
+			</g:HTMLPanel>
+			<g:HTMLPanel styleName="{style.titlePanel}">
+				<g:Label ui:field="title" styleName="{style.titleLabel}"/>
+				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
+				<g:Label ui:field="deleteButton" styleName="{style.deleteButton}">x</g:Label>
+			</g:HTMLPanel>
+			<ow:KanbanScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}"/>
 		</g:HTMLPanel>
-		<ow:KanbanScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}"/>
-	</g:HTMLPanel>
+	</g:FocusPanel>
 </ui:UiBinder> 

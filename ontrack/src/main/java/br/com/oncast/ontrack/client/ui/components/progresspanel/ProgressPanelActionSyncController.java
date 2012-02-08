@@ -6,8 +6,9 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
+import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
+import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -86,6 +87,19 @@ public class ProgressPanelActionSyncController {
 	}
 
 	private enum ActionMapper {
+		KANBAN_ACTIONS {
+			@Override
+			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
+					throws ModelBeanNotFoundException {
+				if (releaseMonitor.getRelease().equals(context.findRelease(action.getReferenceId())))
+				display.update();
+			}
+
+			@Override
+			protected boolean isHandlerFor(final ModelAction action) {
+				return action instanceof KanbanAction;
+			}
+		},
 		SCOPE_INSERTION_ACTIONS {
 
 			@Override
@@ -179,7 +193,7 @@ public class ProgressPanelActionSyncController {
 
 			@Override
 			protected boolean isHandlerFor(final ModelAction action) {
-				if (action instanceof ReleaseCreateActionDefault) return true;
+				if (action instanceof ReleaseCreateAction) return true;
 				if (action instanceof ReleaseRemoveRollbackAction) return true;
 				if (action instanceof ReleaseUpdatePriorityAction) return true;
 				if (action instanceof ScopeDeclareEffortAction) return true;

@@ -10,10 +10,10 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
+import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 
 @Entity(name = "ReleaseCreate")
-@ConvertTo(ReleaseCreateActionDefault.class)
+@ConvertTo(ReleaseCreateAction.class)
 public class ReleaseCreateActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)

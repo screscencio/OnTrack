@@ -18,7 +18,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.ReleaseMonitor;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseCreateActionDefault;
+import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -386,7 +386,7 @@ public class ProgressPanelActionSyncControllerTest {
 		final Release releaseNotBeingShown = createRelease();
 		releaseNotBeingShown.addScope(scope);
 
-		onActionExecution(createAction(ReleaseCreateActionDefault.class, releaseNotBeingShown.getId()));
+		onActionExecution(createAction(ReleaseCreateAction.class, releaseNotBeingShown.getId()));
 		shouldBeIgnored();
 	}
 
@@ -395,7 +395,7 @@ public class ProgressPanelActionSyncControllerTest {
 		final Scope scope = createScope();
 		myRelease.addScope(scope);
 
-		onActionExecution(createAction(ReleaseCreateActionDefault.class, myRelease.getId()));
+		onActionExecution(createAction(ReleaseCreateAction.class, myRelease.getId()));
 		shouldBeIgnored();
 	}
 

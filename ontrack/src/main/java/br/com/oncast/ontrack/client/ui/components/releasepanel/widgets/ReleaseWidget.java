@@ -15,7 +15,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -211,7 +210,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private boolean updateChildReleaseWidgets() {
-		progressLink.setVisible(ProjectContext.hasDirectScopes(release));
+		progressLink.setVisible(release.hasDirectScopes());
 		return releaseContainer.update(release.getChildren());
 	}
 

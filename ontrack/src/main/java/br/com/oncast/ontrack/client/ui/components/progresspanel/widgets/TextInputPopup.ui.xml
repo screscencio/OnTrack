@@ -1,0 +1,85 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.clickableRootPanel {
+	    	position: absolute;
+	    	top: 0px;
+	    	left: 0px;
+	    	z-index: 5;
+        }
+        
+		.contentPanel {
+			position: relative;
+			width: 175px;
+			margin: 0px auto;
+			padding: 10px;
+			text-align: center;
+			background: #fff;
+			border: 1px solid #a5a5a5;
+			-moz-box-shadow: 0px 0px 5px #a5a5a5;
+			-webkit-box-shadow: 0px 0px 5px #a5a5a5;
+			box-shadow: 0px 0px 5px #a5a5a5;
+		}
+		
+        .descriptionLabel {
+            color: gray;
+            
+            text-align: left;
+            margin-bottom: 4px;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 12px;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: lighter;
+            height: 12px;
+            line-height: 13px;
+        }
+
+        .errorLabel {
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 0px;
+
+            color: #cc3c29;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 13px;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: bold;
+            height: 13px;
+            line-height: 13px;
+        }
+        
+        .textArea {
+            width: 100%;
+            margin-left: -1px;
+            
+            font-size: 15px;
+        }
+        
+        .button {
+            width: 100%;
+            height: 35px;
+            margin-top: 10px;
+        }
+        
+        .separator {
+            margin-top: 15px;
+        }
+                
+	</ui:style>
+
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.clickableRootPanel}" >
+		<g:HTMLPanel styleName="{style.contentPanel}">
+			<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
+			<g:TextBox ui:field="inputTextBox" addStyleNames="{style.textArea}" />
+			
+			<g:Label ui:field="errorMessageLabel" styleName="{style.errorLabel}" visible="false" />
+			<div class="{style.separator}" />
+			
+			<g:Button text="Ok" ui:field="submitButton" styleName="{style.button}" />
+		</g:HTMLPanel>
+	</g:FocusPanel>
+</ui:UiBinder> 

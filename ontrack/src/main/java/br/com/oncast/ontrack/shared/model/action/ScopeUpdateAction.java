@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecutionHelper;
 
 @ConvertTo(ScopeUpdateActionEntity.class)
 public class ScopeUpdateAction implements ScopeAction {
@@ -60,10 +61,7 @@ public class ScopeUpdateAction implements ScopeAction {
 	public ScopeUpdateAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
-		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
-		for (final ModelAction action : subActionList) {
-			subActionRollbackList.add(action.execute(context));
-		}
+		final List<ModelAction> subActionRollbackList = ActionExecutionHelper.executeSubActions(subActionList, context);
 
 		final String oldDescription = selectedScope.getDescription();
 		selectedScope.setDescription(newDescription);
