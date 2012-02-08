@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.drop.AbstractInsertPanelDropController;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -20,7 +20,7 @@ public class DragAndDropManager {
 
 	private PickupDragController dragController;
 
-	private final Map<CellPanel, AbstractInsertPanelDropController> dropTargetMap = new java.util.HashMap<CellPanel, AbstractInsertPanelDropController>();
+	private final Map<CellPanel, DropController> dropTargetMap = new java.util.HashMap<CellPanel, DropController>();
 
 	/**
 	 * Configure a draggable area (boundaryPanel) on which the draggable items can be moved over.
@@ -39,7 +39,7 @@ public class DragAndDropManager {
 		if (dragController == null) throw new RuntimeException("The drag and drop manager must be configured before handling widget creation.");
 	}
 
-	public void monitorDropTarget(final CellPanel panel) {
+	public void monitorDropTarget(final CellPanel panel, final DropControllerFactory factory) {
 		panel.addAttachHandler(new Handler() {
 
 			@Override
@@ -47,7 +47,7 @@ public class DragAndDropManager {
 				assureConfigured();
 
 				if (event.isAttached()) {
-					final AbstractInsertPanelDropController dropController = DropControllerFactory.create(panel);
+					final DropController dropController = factory.create(panel);
 					dropTargetMap.put(panel, dropController);
 					dragController.registerDropController(dropController);
 				}

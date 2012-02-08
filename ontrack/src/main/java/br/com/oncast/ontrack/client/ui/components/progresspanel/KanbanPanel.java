@@ -11,9 +11,11 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanCo
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidgetFactory;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanColumnDragHandler;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanPositioningDropControllerFactory;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanScopeItemDragHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.HorizontalPanelDropControllerFactory;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -57,7 +59,7 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		kanbanColumnDragAndDropMangager = new DragAndDropManager();
 		kanbanColumnDragAndDropMangager.configureBoundaryPanel(RootPanel.get());
 		kanbanColumnDragAndDropMangager.setDragHandler(new KanbanColumnDragHandler(interactionHandler));
-		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns);
+		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns, new HorizontalPanelDropControllerFactory());
 
 	}
 
@@ -81,7 +83,8 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 			final KanbanColumnWidget kanbanColumnWidget = new KanbanColumnWidget(column, scopeWidgetFactory, interactionHandler, insertionIndex)
 					.addScopes(scopesByColumn.get(column));
 			insertionIndex++;
-			scopeDragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getVerticalContainer());
+			scopeDragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getVerticalContainer(),
+					new KanbanPositioningDropControllerFactory(column, release));
 
 			if (!column.isStaticColumn()) {
 				kanbanColumnDragAndDropMangager.monitorNewDraggableItem(kanbanColumnWidget, kanbanColumnWidget.getDraggableAnchor());
