@@ -91,8 +91,7 @@ public class ProgressPanelActionSyncController {
 			@Override
 			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
 					throws ModelBeanNotFoundException {
-				if (releaseMonitor.getRelease().equals(context.findRelease(action.getReferenceId())))
-				display.update();
+				if (releaseMonitor.getRelease().equals(context.findRelease(action.getReferenceId()))) display.update();
 			}
 
 			@Override

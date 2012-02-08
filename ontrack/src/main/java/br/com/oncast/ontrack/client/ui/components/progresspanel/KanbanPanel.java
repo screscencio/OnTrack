@@ -66,12 +66,12 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		this.kanban = kanban;
 		this.release = release;
 		interactionHandler.configureCurrentRelease(release);
+		// TODO+++ Move the style from Application.css to KanbanPanel.ui.xml file.
 		addStyleName("kanban");
 		update();
 	}
 
-	@Override
-	public void update() {
+	private void update() {
 		board.clear();
 		draggableColumns.clear();
 		final List<KanbanColumn> columns = kanban.getColumns();
@@ -98,8 +98,9 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		final Map<KanbanColumn, List<Scope>> map = new HashMap<KanbanColumn, List<Scope>>();
 		for (final KanbanColumn c : columns)
 			map.put(c, new ArrayList<Scope>());
-		for (final Scope scope : scopeList)
+		for (final Scope scope : scopeList) {
 			map.get(kanban.getColumn(scope.getProgress().getDescription())).add(scope);
+		}
 		return map;
 	}
 
