@@ -27,6 +27,5 @@ public class ScopeTreeUpdateProgressAction implements ScopeTreeAction {
 
 			if (isUserInteraction) treeItem.getTree().setSelectedItem(treeItem);
 		}
-
 	}
 }
