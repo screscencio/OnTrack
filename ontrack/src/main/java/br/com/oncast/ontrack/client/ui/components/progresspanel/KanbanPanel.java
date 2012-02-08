@@ -60,7 +60,8 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		kanbanColumnDragAndDropMangager.configureBoundaryPanel(RootPanel.get());
 		kanbanColumnDragAndDropMangager.setDragHandler(new KanbanColumnDragHandler(interactionHandler));
 		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns, new HorizontalPanelDropControllerFactory());
-
+		// TODO+++ Move the style from Application.css to KanbanPanel.ui.xml file.
+		addStyleName("kanban");
 	}
 
 	@Override
@@ -68,8 +69,6 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		this.kanban = kanban;
 		this.release = release;
 		interactionHandler.configureCurrentRelease(release);
-		// TODO+++ Move the style from Application.css to KanbanPanel.ui.xml file.
-		addStyleName("kanban");
 		update();
 	}
 

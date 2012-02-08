@@ -54,6 +54,11 @@ public class Kanban extends SimpleKanban implements Serializable {
 		return columns;
 	}
 
+	public boolean hasNonInferedColumn(final String columnDescription) {
+		return isStaticColumn(columnDescription) || kanbanWithoutInference.hasColumn(getNormalizedDescription(columnDescription));
+	}
+
+	@Override
 	public boolean hasColumn(final String columnDescription) {
 		return getColumn(columnDescription) != null;
 	}
@@ -161,4 +166,5 @@ public class Kanban extends SimpleKanban implements Serializable {
 	private boolean kanbanWithoutInferenceContainsColumn(final String columnDescription) {
 		return kanbanWithoutInference.getColumn(columnDescription) != null;
 	}
+
 }

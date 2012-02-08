@@ -172,10 +172,14 @@ public class ProgressPanelActionSyncController {
 			@Override
 			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
 					throws ModelBeanNotFoundException {
-				final Release actionRelease = context.findRelease(action.getReferenceId());
 				final Release kanbanRelease = releaseMonitor.getRelease();
+				try {
+					context.findRelease(kanbanRelease.getId());
+				}
+				catch (final ModelBeanNotFoundException e) {
+					display.exit();
+				}
 
-				if (kanbanRelease.equals(actionRelease) || kanbanRelease.isDescendantOf(actionRelease)) display.exit();
 			}
 
 			@Override
