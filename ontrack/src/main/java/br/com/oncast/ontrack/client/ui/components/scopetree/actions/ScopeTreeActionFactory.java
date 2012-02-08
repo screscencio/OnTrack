@@ -1,9 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
-import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
-import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -53,10 +51,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeDeclareEffortAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
 		else if (action instanceof ScopeDeclareValueAction) return new ScopeTreeUpdateAction(tree, (ScopeAction) action);
 		else if (action instanceof ReleaseRenameAction) return new ScopeTreeReleaseUpdateAction(tree, (ReleaseAction) action);
-		else if (action instanceof KanbanColumnRenameAction) return new ScopeTreeUpdateProgressAction(tree, (KanbanColumnRenameAction) action);
-		else if (action instanceof KanbanColumnCreateAction) return new ScopeTreeUpdateProgressAction(tree, (KanbanColumnRenameAction) action);
-		else if (action instanceof KanbanColumnRemoveAction) return new ScopeTreeUpdateProgressAction(tree, (KanbanColumnRenameAction) action);
-		// FIXME Besen: handle KanbanColumnRemoveAction here;
+		else if (action instanceof KanbanAction) return new ScopeTreeUpdateProgressAction(tree, (KanbanAction) action);
 
 		throw new ScopeNotFoundException("It was not possible to find the desired action.");
 	}
