@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -51,6 +52,11 @@ public class TextInputPopup extends Composite implements HasCloseHandlers<TextIn
 		final int keyCode = event.getNativeKeyCode();
 		if (keyCode == BrowserKeyCodes.KEY_ESCAPE) hide();
 		if (keyCode == BrowserKeyCodes.KEY_ENTER) onSubmit(null);
+	}
+
+	@UiHandler("inputTextBox")
+	protected void onKeyDown(final KeyDownEvent event) {
+		event.stopPropagation();
 	}
 
 	@UiHandler("submitButton")

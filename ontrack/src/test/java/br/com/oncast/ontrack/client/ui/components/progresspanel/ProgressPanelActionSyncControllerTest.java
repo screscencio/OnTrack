@@ -375,6 +375,7 @@ public class ProgressPanelActionSyncControllerTest {
 	public void shouldUpdateWhenAReleaseRemoveActionWithCreatedScopeOnReleaseOccurs() throws Exception {
 		final Scope scope = createScope();
 		myRelease.addScope(scope);
+		when(context.findRelease(myRelease.getId())).thenThrow(new ReleaseNotFoundException());
 
 		onActionExecution(createAction(ReleaseRemoveAction.class, myRelease.getId()));
 		shouldOnlyHaveExited();

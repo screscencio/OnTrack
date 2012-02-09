@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
-import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
+import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -11,9 +11,9 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class ScopeTreeUpdateProgressAction implements ScopeTreeAction {
 
 	private final ScopeTreeWidget tree;
-	private final KanbanColumnRenameAction action;
+	private final KanbanAction action;
 
-	public ScopeTreeUpdateProgressAction(final ScopeTreeWidget tree, final KanbanColumnRenameAction action) {
+	public ScopeTreeUpdateProgressAction(final ScopeTreeWidget tree, final KanbanAction action) {
 		this.tree = tree;
 		this.action = action;
 	}
@@ -27,6 +27,5 @@ public class ScopeTreeUpdateProgressAction implements ScopeTreeAction {
 
 			if (isUserInteraction) treeItem.getTree().setSelectedItem(treeItem);
 		}
-
 	}
 }

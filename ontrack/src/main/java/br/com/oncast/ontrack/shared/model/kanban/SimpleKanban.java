@@ -43,7 +43,7 @@ public class SimpleKanban implements Serializable {
 	}
 
 	private void addColumn(final int index, final String columnDescription) {
-		if (getColumn(columnDescription) != null) return;
+		if (hasColumn(columnDescription)) return;
 		columns.add(index, new KanbanColumn(columnDescription));
 	}
 
@@ -61,5 +61,9 @@ public class SimpleKanban implements Serializable {
 
 	protected void renameColumn(final String columnDescription, final String newDescription) {
 		getColumn(columnDescription).setDescription(newDescription);
+	}
+
+	protected boolean hasColumn(final String columnDescription) {
+		return getColumn(columnDescription) != null;
 	}
 }

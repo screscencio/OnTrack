@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.VerticalPanelDropControllerFactory;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -23,7 +24,7 @@ public class ReleaseWidgetFactory implements ModelWidgetFactory<Release, Release
 	@Override
 	public ReleaseWidget createWidget(final Release release) {
 		widget = new ReleaseWidget(release, this, scopeWidgetFactory, releasePanelInteractionHandler);
-		dragAndDropManager.monitorDropTarget(widget.getScopeContainer().getVerticalContainer());
+		dragAndDropManager.monitorDropTarget(widget.getScopeContainer().getVerticalContainer(), new VerticalPanelDropControllerFactory());
 		widget.setContainerState(true);
 
 		return widget;

@@ -73,6 +73,18 @@ public abstract class Migration implements Comparable<Migration> {
 		}
 	}
 
+	protected void renameClass(final String classPackage, final String originalClassName, final String targetClassName) {
+		final String originalClass = classPackage + "." + originalClassName;
+		final String targetClass = classPackage + "." + targetClassName;
+
+		final List<Element> actions = getElementsWithClassAttribute(originalClass);
+		for (final Element a : actions) {
+			final Attribute att = a.attribute(CLASS);
+			if (!att.getValue().equals(originalClass)) continue;
+			att.setValue(targetClass);
+		}
+	}
+
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj == null) return false;

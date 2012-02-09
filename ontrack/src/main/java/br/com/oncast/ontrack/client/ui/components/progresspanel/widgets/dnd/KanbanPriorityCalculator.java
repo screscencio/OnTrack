@@ -18,11 +18,13 @@ public class KanbanPriorityCalculator {
 		final int widgetIndex = dropTarget.getWidgetIndex(scopeWidget);
 
 		final int currentPriority = getPriorityOfWidget(scopeWidget);
-		final int prevPriority = getPriorityOfWidgetAtIndex(widgetIndex - 1);
-		final int nextPriority = getPriorityOfWidgetAtIndex(widgetIndex + 1);
 
+		final int nextPriority = getPriorityOfWidgetAtIndex(widgetIndex + 1);
 		if (isIncreasedPriority(currentPriority, nextPriority)) return nextPriority;
-		if (isDecreasedPriority(currentPriority, prevPriority)) return prevPriority + 1;
+
+		final int prevPriority = getPriorityOfWidgetAtIndex(widgetIndex - 1);
+		if (isDecreasedPriority(currentPriority, prevPriority)) return prevPriority;
+
 		return currentPriority;
 	}
 

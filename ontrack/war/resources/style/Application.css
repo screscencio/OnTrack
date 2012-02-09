@@ -100,8 +100,11 @@ html,body {
 	border: 0px;
 }
 
+/* Move the style from Application.css to KanbanPanel.ui.xml file. */
 .kanban .dragdrop-positioner {
-	width: auto;
+	width: 100%;
+	border: 1px dashed #CFCFCF;
+	margin: 1px;
 }
 
 .dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {

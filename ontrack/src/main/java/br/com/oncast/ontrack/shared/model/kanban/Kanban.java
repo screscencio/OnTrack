@@ -54,6 +54,11 @@ public class Kanban extends SimpleKanban implements Serializable {
 		return columns;
 	}
 
+	public boolean hasNonInferedColumn(final String columnDescription) {
+		return isStaticColumn(columnDescription) || kanbanWithoutInference.hasColumn(getNormalizedDescription(columnDescription));
+	}
+
+	@Override
 	public boolean hasColumn(final String columnDescription) {
 		return getColumn(columnDescription) != null;
 	}
@@ -110,8 +115,12 @@ public class Kanban extends SimpleKanban implements Serializable {
 
 	@Override
 	public void renameColumn(final String columnDescription, final String newDescription) {
-		assureIsAnEditableColumn(columnDescription);
+		final KanbanColumn columnToRename = getColumn(columnDescription);
+		if (columnToRename == null) throw new RuntimeException("The column with description '" + columnDescription + "' was not found.");
+		if (columnToRename.getDescription().equals(newDescription)) return;
 
+		final KanbanColumn desiredColumn = getColumn(newDescription);
+		if (desiredColumn != null && !columnToRename.equals(desiredColumn)) throw new RuntimeException("Cannot rename into an existing column");
 		fullKanban.renameColumn(columnDescription, newDescription);
 
 		if (!kanbanWithoutInferenceContainsColumn(columnDescription)) return;
@@ -157,4 +166,5 @@ public class Kanban extends SimpleKanban implements Serializable {
 	private boolean kanbanWithoutInferenceContainsColumn(final String columnDescription) {
 		return kanbanWithoutInference.getColumn(columnDescription) != null;
 	}
+
 }
