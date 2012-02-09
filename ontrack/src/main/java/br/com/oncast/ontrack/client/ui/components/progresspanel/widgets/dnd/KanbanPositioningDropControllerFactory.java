@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
-import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
@@ -10,11 +10,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class KanbanPositioningDropControllerFactory implements DropControllerFactory {
 
-	private final KanbanColumn kanbanColumn;
+	private final KanbanColumnWidget kanbanColumn;
 	private final Release release;
 
-	public KanbanPositioningDropControllerFactory(final KanbanColumn kanbanColumn, final Release release) {
-		this.kanbanColumn = kanbanColumn;
+	public KanbanPositioningDropControllerFactory(final KanbanColumnWidget kanbanColumnWidget, final Release release) {
+		this.kanbanColumn = kanbanColumnWidget;
 		this.release = release;
 	}
 
