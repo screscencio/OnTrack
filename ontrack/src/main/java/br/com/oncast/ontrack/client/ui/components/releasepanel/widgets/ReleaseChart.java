@@ -189,8 +189,8 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 				.setTickWidth(0)
 				.setLabels(new XAxisLabels()
 						.setAlign(Align.CENTER)
-						.setX(0)
-						.setY(13)
+						.setX(20)
+						.setRotation(-45)
 				);
 
 		newChart.getYAxis(0)
@@ -246,7 +246,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 
 		final String[] array = new String[numberOfDays];
 		for (int i = 0; i < numberOfDays; i++)
-			array[i] = workingDays.get(i).getDayAndMonthString();
+			array[i] = workingDays.get(i).getDayMonthShortYearString();
 
 		chart.getXAxis(0)
 				.setTickInterval(Math.ceil(((float) numberOfDays) / MAX_NUMBER_OF_TICKS))
