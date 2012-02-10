@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class KanbanColumnWidget extends Composite {
@@ -52,6 +53,9 @@ public class KanbanColumnWidget extends Composite {
 
 	@UiField
 	protected KanbanColumnCreateWidget createColumn;
+
+	@UiField
+	protected Panel highlightBlock;
 
 	@UiField
 	protected KanbanScopeContainer scopeContainer;
@@ -129,7 +133,8 @@ public class KanbanColumnWidget extends Composite {
 		return column;
 	}
 
-	public void setHighlight(final boolean on) {
-		setStyleName(style.highlight(), on);
+	public void setHighlight(final boolean shouldHighlight) {
+		if (shouldHighlight) highlightBlock.addStyleName(style.highlight());
+		else highlightBlock.removeStyleName(style.highlight());
 	}
 }
