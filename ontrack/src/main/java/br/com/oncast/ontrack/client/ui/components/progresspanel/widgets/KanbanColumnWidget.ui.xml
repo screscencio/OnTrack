@@ -5,7 +5,7 @@
 	xmlns:ow='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel.widgets'
 	>
 	
-	<ui:style>
+	<ui:style type="br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget.KanbanColumnWidgetStyle">
 		.rootPanel {
 			width: 250px;
 			padding: 10px;
@@ -64,6 +64,11 @@
 			width: 210px;
 			margin-left:  auto;
 			margin-right: auto;
+		}
+		.highlight {
+			background-color: #FAFAFA;
+			border: 1px dashed #CFCFCF;
+			margin: 1px;
 		}
 	</ui:style>
 	

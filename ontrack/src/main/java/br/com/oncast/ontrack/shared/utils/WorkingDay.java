@@ -127,6 +127,10 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		return fillWithZeroIfDataHasJustOneDigit(javaDate.getDate()) + "/" + fillWithZeroIfDataHasJustOneDigit(javaDate.getMonth() + 1);
 	}
 
+	public String getDayMonthShortYearString() {
+		return getDayAndMonthString() + "/" + fillWithZeroIfDataHasJustOneDigit(javaDate.getYear() % 100);
+	}
+
 	private String fillWithZeroIfDataHasJustOneDigit(final int date) {
 		String dateString = String.valueOf(date);
 		if (dateString.length() == 1) dateString = "0" + dateString;

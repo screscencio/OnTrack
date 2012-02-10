@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
-import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -15,20 +15,20 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 	private Widget refPositioner;
 	private boolean isPriorityChange;
 	private int dropIndex;
-	private final KanbanColumn kanbanColumn;
+	private final KanbanColumnWidget kanbanColumnWidget;
 	private final Release release;
 
-	KanbanPositioningDragController(final VerticalPanel dropTarget, final Release release, final KanbanColumn kanbanColumn) {
+	KanbanPositioningDragController(final VerticalPanel dropTarget, final Release release, final KanbanColumnWidget kanbanColumnWidget) {
 		super(dropTarget);
 		this.release = release;
-		this.kanbanColumn = kanbanColumn;
+		this.kanbanColumnWidget = kanbanColumnWidget;
 	}
 
 	@Override
 	public void onEnter(final DragContext context) {
 		super.onEnter(context);
 		final ScopeWidget draggedScope = (ScopeWidget) context.draggable;
-		isPriorityChange = isPriorityChange(draggedScope.getModelObject(), kanbanColumn.getDescription());
+		isPriorityChange = isPriorityChange(draggedScope.getModelObject(), kanbanColumnWidget.getKanbanColumn().getDescription());
 		if (!isPriorityChange) {
 			dropIndex = findIndex(draggedScope);
 		}
@@ -38,6 +38,7 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 	public void onLeave(final DragContext context) {
 		super.onLeave(context);
 		refPositioner = null;
+		kanbanColumnWidget.setHighlight(false);
 	}
 
 	@Override
@@ -46,6 +47,7 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 		if (isPriorityChange) return;
 		((VerticalPanel) dropTarget).remove(refPositioner);
 		dropTarget.insert(refPositioner, dropIndex);
+		kanbanColumnWidget.setHighlight(true);
 	}
 
 	private int findIndex(final ScopeWidget draggedScope) {

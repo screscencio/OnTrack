@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -30,23 +31,30 @@ public class KanbanColumnWidget extends Composite {
 
 	interface KanbanColumnWidgetUiBinder extends UiBinder<Widget, KanbanColumnWidget> {}
 
-	@UiField
-	FocusPanel rootPanel;
+	public interface KanbanColumnWidgetStyle extends CssResource {
+		String highlight();
+	}
 
 	@UiField
-	Label title;
+	protected KanbanColumnWidgetStyle style;
 
 	@UiField
-	FocusPanel draggableAnchor;
+	protected FocusPanel rootPanel;
 
 	@UiField
-	Label deleteButton;
+	protected Label title;
 
 	@UiField
-	KanbanColumnCreateWidget createColumn;
+	protected FocusPanel draggableAnchor;
 
 	@UiField
-	KanbanScopeContainer scopeContainer;
+	protected Label deleteButton;
+
+	@UiField
+	protected KanbanColumnCreateWidget createColumn;
+
+	@UiField
+	protected KanbanScopeContainer scopeContainer;
 
 	private ModelWidgetContainerListener containerUpdateListener;
 
@@ -119,5 +127,9 @@ public class KanbanColumnWidget extends Composite {
 
 	public KanbanColumn getKanbanColumn() {
 		return column;
+	}
+
+	public void setHighlight(final boolean on) {
+		setStyleName(style.highlight(), on);
 	}
 }

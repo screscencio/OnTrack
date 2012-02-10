@@ -83,7 +83,7 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 					.addScopes(scopesByColumn.get(column));
 			insertionIndex++;
 			scopeDragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getVerticalContainer(),
-					new KanbanPositioningDropControllerFactory(column, release));
+					new KanbanPositioningDropControllerFactory(kanbanColumnWidget, release));
 
 			if (!column.isStaticColumn()) {
 				kanbanColumnDragAndDropMangager.monitorNewDraggableItem(kanbanColumnWidget, kanbanColumnWidget.getDraggableAnchor());
