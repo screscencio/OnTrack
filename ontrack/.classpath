@@ -44,6 +44,11 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/RequestDispatch-0.9.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-test-utils-0.34.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/dsn.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/imap.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/mailapi.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/pop3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/smtp.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

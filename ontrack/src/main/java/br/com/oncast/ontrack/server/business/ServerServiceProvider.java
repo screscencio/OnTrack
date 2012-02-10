@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.business;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
@@ -28,6 +29,8 @@ public class ServerServiceProvider {
 	private ServerPushServerService serverPushServerService;
 	private PersistenceService persistenceService;
 
+	private ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
+
 	public static ServerServiceProvider getInstance() {
 		if (instance != null) return instance;
 		return instance = new ServerServiceProvider();
@@ -40,7 +43,7 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
 			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getNotificationService(), getClientManagerService(),
-					getAuthenticationManager(), getSessionManager());
+					getAuthenticationManager(), getSessionManager(), getProjectAuthorizationMailFactory());
 		}
 	}
 
@@ -91,6 +94,14 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (sessionManager != null) return sessionManager;
 			return sessionManager = new SessionManager();
+		}
+	}
+
+	public ProjectAuthorizationMailFactory getProjectAuthorizationMailFactory() {
+		if (projectAuthorizationMailFactory != null) return projectAuthorizationMailFactory;
+		synchronized (this) {
+			if (projectAuthorizationMailFactory != null) return projectAuthorizationMailFactory;
+			return projectAuthorizationMailFactory = new ProjectAuthorizationMailFactory();
 		}
 	}
 

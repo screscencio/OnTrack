@@ -30,6 +30,8 @@ import org.mockito.Mockito;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMail;
+import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -78,6 +80,7 @@ public class BusinessLogicTest {
 	private AuthenticationManager authenticationManager;
 	private NotificationService notification;
 	private SessionManager sessionManager;
+	private ProjectAuthorizationMailFactory mailFactory;
 	private User authenticatedUser;
 	private User admin;
 
@@ -95,6 +98,7 @@ public class BusinessLogicTest {
 		clientManager = mock(ClientManager.class);
 		notification = mock(NotificationService.class);
 		sessionManager = mock(SessionManager.class);
+		mailFactory = mock(ProjectAuthorizationMailFactory.class);
 
 		admin = UserTestUtils.createUser(DefaultAuthenticationCredentials.USER_EMAIL);
 		authenticatedUser = UserTestUtils.createUser(100);
@@ -138,7 +142,7 @@ public class BusinessLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
-		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, sessionManager);
+		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, sessionManager, mailFactory);
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(new UUID("0")));
@@ -399,8 +403,23 @@ public class BusinessLogicTest {
 		final String mail = "user@mail.com";
 
 		when(persistence.retrieveUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
-		BusinessLogicTestUtils.create(persistence).authorize(PROJECT_ID, mail);
+		BusinessLogicTestUtils.create(persistence, mailFactory).authorize(PROJECT_ID, mail, false);
 		verify(persistence).authorize(mail, PROJECT_ID);
+	}
+
+	@Test
+	public void shouldSendMailToUserOnProjectAuthorization() throws Exception {
+		final String mail = "user@mail.com";
+
+		final ProjectAuthorizationMail mockMail = mock(ProjectAuthorizationMail.class);
+		when(mockMail.setProject(Mockito.<ProjectRepresentation> anyObject())).thenReturn(mockMail);
+		when(mailFactory.createMail()).thenReturn(mockMail);
+		when(persistence.retrieveUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
+		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());
+
+		BusinessLogicTestUtils.create(persistence, mailFactory).authorize(PROJECT_ID, mail, true);
+
+		verify(mockMail).sendTo(mail);
 	}
 
 	@Test
@@ -410,7 +429,7 @@ public class BusinessLogicTest {
 
 		when(persistence.retrieveUserByEmail(mail)).thenThrow(new NoResultFoundException("", null));
 
-		business.authorize(PROJECT_ID, mail);
+		business.authorize(PROJECT_ID, mail, false);
 
 		final ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
 		verify(persistence).persistOrUpdateUser(captor.capture());
