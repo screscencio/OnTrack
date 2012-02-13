@@ -413,6 +413,7 @@ public class BusinessLogicTest {
 
 		final ProjectAuthorizationMail mockMail = mock(ProjectAuthorizationMail.class);
 		when(mockMail.setProject(Mockito.<ProjectRepresentation> anyObject())).thenReturn(mockMail);
+		when(mockMail.currentUser(Mockito.anyString())).thenReturn(mockMail);
 		when(mailFactory.createMail()).thenReturn(mockMail);
 		when(persistence.retrieveUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
 		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());

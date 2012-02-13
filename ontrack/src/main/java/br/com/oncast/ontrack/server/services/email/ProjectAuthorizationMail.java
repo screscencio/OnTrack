@@ -8,6 +8,7 @@ public class ProjectAuthorizationMail {
 
 	private final MailSender sender;
 	private ProjectRepresentation project;
+	private String currentUser;
 
 	private ProjectAuthorizationMail() {
 		sender = MailSender.createInstance();
@@ -22,14 +23,19 @@ public class ProjectAuthorizationMail {
 		return this;
 	}
 
+	public ProjectAuthorizationMail currentUser(final String currentUser) {
+		this.currentUser = currentUser;
+		return this;
+	}
+
 	public void sendTo(final String userEmail) {
 		try {
-			sender.subject(createAuthorizationSubject()).htmlContent(HtmlMailContent.forProjectAuthorization(userEmail, project));
+			sender.subject(createAuthorizationSubject()).htmlContent(HtmlMailContent.forProjectAuthorization(userEmail, project, currentUser));
 		}
 		catch (final MessagingException e) {
 			throw new RuntimeException("Exception configuring mail service.", e);
 		}
-		sender.sendTo(userEmail);
+		// sender.sendTo(userEmail);
 	}
 
 	private static String createAuthorizationSubject() {

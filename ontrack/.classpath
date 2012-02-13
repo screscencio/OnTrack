@@ -49,6 +49,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mailapi.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/pop3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smtp.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/velocity-1.7.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

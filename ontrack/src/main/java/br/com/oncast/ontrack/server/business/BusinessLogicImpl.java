@@ -159,7 +159,8 @@ class BusinessLogicImpl implements BusinessLogic {
 			}
 			persistenceService.authorize(userEmail, projectId);
 			if (sendMailNotification) {
-				projectAuthorizationMailFactory.createMail().setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail);
+				projectAuthorizationMailFactory.createMail().currentUser(authenticationManager.getAuthenticatedUser().getEmail())
+						.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail);
 			}
 		}
 		catch (final PersistenceException e) {
