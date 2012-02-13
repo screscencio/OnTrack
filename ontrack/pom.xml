@@ -242,27 +242,72 @@
 			<version>1.6</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.sun</groupId>
+			<artifactId>tools</artifactId>
+			<version>1.5.0</version>
+			<scope>system</scope>
+			<systemPath>${java.home}/../lib/tools.jar</systemPath>
+		</dependency>
 	</dependencies>
-	
+
 	<profiles>
 		<profile>
-	    	<id>default-tools.jar</id>
-	    	<activation>
-	      		<property>
-	        		<name>java.vendor</name>
-	        		<value>Sun Microsystems Inc.</value>
-	      		</property>
-    		</activation>
-	    	<dependencies>
-	      		<dependency>
-			        <groupId>com.sun</groupId>
-			        <artifactId>tools</artifactId>
-			        <version>1.5.0</version>
-			        <scope>system</scope>
-			        <systemPath>${java.home}/../lib/tools.jar</systemPath>
-      			</dependency>
-	    	</dependencies>
-	  	</profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>compile</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<delete file="${project.build.outputDirectory}/environment.prod.properties" />
+										<delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>compile</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<delete file="${project.build.outputDirectory}/environment.properties" />
+										<delete file="${project.build.outputDirectory}/META-INF/persistence.xml" />
+										<copy file="src/main/resources/environment.prod.properties" tofile="${project.build.outputDirectory}/environment.properties" />
+										<copy file="src/main/resources/META-INF/persistence.prod.xml" tofile="${project.build.outputDirectory}/META-INF/persistence.xml" />
+										<delete file="${project.build.outputDirectory}/environment.prod.properties" />
+										<delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 	<build>
@@ -291,7 +336,28 @@
 		</resources>
 
 		<plugins>
-            <plugin>
+
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>auto-clean</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>2.4.0</version>
@@ -353,7 +419,7 @@
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat6-maven-plugin</artifactId>
@@ -375,7 +441,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -423,4 +489,5 @@
 			<url>http://forge.octo.com/nexus/content/repositories/releases/</url>
 		</repository>
 	</repositories>
+
 </project>

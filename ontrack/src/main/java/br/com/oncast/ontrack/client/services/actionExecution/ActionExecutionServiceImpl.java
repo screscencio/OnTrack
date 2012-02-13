@@ -7,10 +7,14 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
+import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
+import br.com.oncast.ontrack.client.services.places.PlaceChangeListener;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import com.google.gwt.place.shared.Place;
 
 public class ActionExecutionServiceImpl implements ActionExecutionService {
 
@@ -21,7 +25,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	private final ProjectRepresentationProvider projectRepresentationProvider;
 
 	public ActionExecutionServiceImpl(final ContextProviderService contextService, final ErrorTreatmentService errorTreatmentService,
-			final ProjectRepresentationProvider projectRepresentationProvider) {
+			final ProjectRepresentationProvider projectRepresentationProvider, final ApplicationPlaceController applicationPlaceController) {
 		this.errorTreatmentService = errorTreatmentService;
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
@@ -32,6 +36,12 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isClientAction) {
 				notifyActionExecutionListeners(action, context, inferenceInfluencedScopeSet, isClientAction);
+			}
+		});
+		applicationPlaceController.addPlaceChangeListener(new PlaceChangeListener() {
+			@Override
+			public void onPlaceChange(final Place newPlace) {
+				actionManager.cleanActionExecutionHistory();
 			}
 		});
 	}
