@@ -149,6 +149,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	@Override
 	public void authorize(final long projectId, final String userEmail, final boolean sendMailNotification) throws UnableToAuthorizeUserException {
 		try {
+			boolean isNewUser = false;
 			try {
 				final User user = persistenceService.retrieveUserByEmail(userEmail);
 				if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) throw new UnableToAuthorizeUserException("The user '"
@@ -156,11 +157,12 @@ class BusinessLogicImpl implements BusinessLogic {
 			}
 			catch (final NoResultFoundException e) {
 				persistenceService.persistOrUpdateUser(new User(userEmail));
+				isNewUser = true;
 			}
 			persistenceService.authorize(userEmail, projectId);
 			if (sendMailNotification) {
 				projectAuthorizationMailFactory.createMail().currentUser(authenticationManager.getAuthenticatedUser().getEmail())
-						.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail);
+						.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, isNewUser);
 			}
 		}
 		catch (final PersistenceException e) {

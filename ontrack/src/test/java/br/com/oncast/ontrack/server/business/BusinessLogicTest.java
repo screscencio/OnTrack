@@ -420,7 +420,7 @@ public class BusinessLogicTest {
 
 		BusinessLogicTestUtils.create(persistence, mailFactory).authorize(PROJECT_ID, mail, true);
 
-		verify(mockMail).sendTo(mail);
+		verify(mockMail).sendTo(mail, false);
 	}
 
 	@Test

@@ -13,9 +13,17 @@ public class HtmlMailContent {
 
 	public static String forProjectAuthorization(final String userEmail, final ProjectRepresentation project, final String currentUser) {
 		final Template template = getTemplate("emailProjAuth/authMail.html");
-		final Writer writer = new StringWriter();
-		template.merge(createProjectAuthorizationContext(project, userEmail, currentUser), writer);
+		return writeMailContent(createProjectAuthorizationContext(project, userEmail, currentUser), template);
+	}
 
+	public static String forNewUserProjectAuthorization(final String userEmail, final ProjectRepresentation project, final String currentUser) {
+		final Template template = getTemplate("emailProjAuth/authMailNewUser.html");
+		return writeMailContent(createProjectAuthorizationContext(project, userEmail, currentUser), template);
+	}
+
+	private static String writeMailContent(final VelocityContext context, final Template template) {
+		final Writer writer = new StringWriter();
+		template.merge(context, writer);
 		return writer.toString();
 	}
 
@@ -25,7 +33,6 @@ public class HtmlMailContent {
 		context.put("projectLink", project.getId()); // FIXME BESEN generate link correctly
 		context.put("userEmail", userEmail);
 		context.put("currentUser", currentUser);
-
 		return context;
 	}
 
