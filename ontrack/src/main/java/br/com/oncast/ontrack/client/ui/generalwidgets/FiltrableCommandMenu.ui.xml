@@ -51,6 +51,7 @@
 		margin-top: 32px;
 		min-width: 100px;
 		padding: 1px;
+		overflow-x: auto; 
 	}
 	
 	.helpLabel {

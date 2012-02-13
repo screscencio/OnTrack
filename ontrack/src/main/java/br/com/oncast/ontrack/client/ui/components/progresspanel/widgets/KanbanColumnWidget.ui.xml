@@ -9,6 +9,7 @@
 	
 		.rootPanel {
 			width: 250px;
+			height: 98%;
 		}
 
 		.addControlPanel {
@@ -100,7 +101,7 @@
 		}
 		
 		.highlight {
-			background-color: #FCFCFC;
+			background-color: #FAFAFC;
 		}
 		
 	</ui:style>
