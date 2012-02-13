@@ -1,7 +1,8 @@
 package br.com.oncast.ontrack.client.services.globalEvent;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.client.Event;
@@ -11,9 +12,10 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 public class GlobalNativeEventService {
 
 	private static GlobalNativeEventService instance;
-	private final List<NativeEventListener> keyUpListeners = new ArrayList<NativeEventListener>();
-	private final List<NativeEventListener> keyDownListeners = new ArrayList<NativeEventListener>();
-	private final List<NativeEventListener> clickListeners = new ArrayList<NativeEventListener>();
+	private final Set<NativeEventListener> keyUpListeners = new HashSet<NativeEventListener>();
+	private final Set<NativeEventListener> keyDownListeners = new HashSet<NativeEventListener>();
+	private final Set<NativeEventListener> clickListeners = new HashSet<NativeEventListener>();
+	private final Set<NativeEventListener> mouseUpListeners = new HashSet<NativeEventListener>();
 
 	public static GlobalNativeEventService getInstance() {
 		if (instance != null) return instance;
@@ -46,6 +48,12 @@ public class GlobalNativeEventService {
 							listener.onNativeEvent(nativeEvent);
 					}
 						break;
+					case Event.ONMOUSEUP: {
+						final NativeEvent nativeEvent = event.getNativeEvent();
+						for (final NativeEventListener listener : new ArrayList<NativeEventListener>(mouseUpListeners))
+							listener.onNativeEvent(nativeEvent);
+					}
+						break;
 				}
 			}
 		});
@@ -73,6 +81,14 @@ public class GlobalNativeEventService {
 
 	public void removeKeyDownListener(final NativeEventListener listener) {
 		keyDownListeners.remove(listener);
+	}
+
+	public void addMouseUpListener(final NativeEventListener listener) {
+		mouseUpListeners.add(listener);
+	}
+
+	public void removeMouseUpListener(final NativeEventListener listener) {
+		mouseUpListeners.remove(listener);
 	}
 
 }

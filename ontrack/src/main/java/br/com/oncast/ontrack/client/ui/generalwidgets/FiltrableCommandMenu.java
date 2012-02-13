@@ -14,7 +14,6 @@ import java.util.List;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -216,13 +215,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		int calculatedMaxHeight;
 		if (menu.getOffsetWidth() > maxWidth) {
 			scrollPanel.setWidth((maxWidth + 20) + "px");
-			scrollPanel.getElement().getStyle().setOverflowX(Overflow.SCROLL);
 			calculatedMaxHeight = maxHeight + 10;
 		}
-		else {
-			scrollPanel.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
-			calculatedMaxHeight = maxHeight;
-		}
+		else calculatedMaxHeight = maxHeight;
 
 		scrollPanel.setHeight("");
 		if (scrollPanel.getOffsetHeight() > calculatedMaxHeight) scrollPanel.setHeight(calculatedMaxHeight + "px");

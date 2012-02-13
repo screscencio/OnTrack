@@ -30,5 +30,5 @@ public interface BusinessLogic {
 
 	public Project loadProject(long projectId) throws ProjectNotFoundException, UnableToLoadProjectException;
 
-	void authorize(long projectId, String userEmail) throws UnableToAuthorizeUserException;
+	void authorize(long projectId, String userEmail, boolean sendMailNotification) throws UnableToAuthorizeUserException;
 }

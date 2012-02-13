@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -49,14 +50,17 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final ClientManager clientManager;
 	private final AuthenticationManager authenticationManager;
 	private final SessionManager sessionManager;
+	private final ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
 
 	protected BusinessLogicImpl(final PersistenceService persistenceService, final NotificationService notificationService, final ClientManager clientManager,
-			final AuthenticationManager authenticationManager, final SessionManager sessionManager) {
+			final AuthenticationManager authenticationManager, final SessionManager sessionManager,
+			final ProjectAuthorizationMailFactory projectAuthorizationMailFactory) {
 		this.persistenceService = persistenceService;
 		this.notificationService = notificationService;
 		this.clientManager = clientManager;
 		this.authenticationManager = authenticationManager;
 		this.sessionManager = sessionManager;
+		this.projectAuthorizationMailFactory = projectAuthorizationMailFactory;
 	}
 
 	@Override
@@ -129,7 +133,7 @@ class BusinessLogicImpl implements BusinessLogic {
 					projectName));
 			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 
-			authorize(persistedProjectRepresentation.getId(), authenticatedUser.getEmail());
+			authorize(persistedProjectRepresentation.getId(), authenticatedUser.getEmail(), false);
 			authorizeAdmin(persistedProjectRepresentation, authenticatedUser);
 			notificationService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
 
@@ -143,8 +147,9 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public void authorize(final long projectId, final String userEmail) throws UnableToAuthorizeUserException {
+	public void authorize(final long projectId, final String userEmail, final boolean sendMailNotification) throws UnableToAuthorizeUserException {
 		try {
+			boolean isNewUser = false;
 			try {
 				final User user = persistenceService.retrieveUserByEmail(userEmail);
 				if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) throw new UnableToAuthorizeUserException("The user '"
@@ -152,10 +157,18 @@ class BusinessLogicImpl implements BusinessLogic {
 			}
 			catch (final NoResultFoundException e) {
 				persistenceService.persistOrUpdateUser(new User(userEmail));
+				isNewUser = true;
 			}
 			persistenceService.authorize(userEmail, projectId);
+			if (sendMailNotification) {
+				projectAuthorizationMailFactory.createMail().currentUser(authenticationManager.getAuthenticatedUser().getEmail())
+						.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, isNewUser);
+			}
 		}
 		catch (final PersistenceException e) {
+			throw new UnableToAuthorizeUserException("It was not possoble to authorize the user '" + userEmail + "' for the project '" + projectId + "'");
+		}
+		catch (final NoResultFoundException e) {
 			throw new UnableToAuthorizeUserException("It was not possoble to authorize the user '" + userEmail + "' for the project '" + projectId + "'");
 		}
 	}
