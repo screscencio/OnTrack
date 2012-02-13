@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.Kanb
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanScopeItemDragHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
-import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.HorizontalPanelDropControllerFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.KanbanColumnDropControllerFactory;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -59,7 +59,7 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		kanbanColumnDragAndDropMangager = new DragAndDropManager();
 		kanbanColumnDragAndDropMangager.configureBoundaryPanel(RootPanel.get());
 		kanbanColumnDragAndDropMangager.setDragHandler(new KanbanColumnDragHandler(interactionHandler));
-		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns, new HorizontalPanelDropControllerFactory());
+		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns, new KanbanColumnDropControllerFactory());
 		addStyleName("kanban");
 	}
 

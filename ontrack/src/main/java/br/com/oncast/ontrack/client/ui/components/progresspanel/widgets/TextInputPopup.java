@@ -75,20 +75,12 @@ public class TextInputPopup extends Composite implements HasCloseHandlers<TextIn
 		this.setVisible(true);
 		inputTextBox.setFocus(true);
 		inputTextBox.selectAll();
-		alignCenter();
 	}
 
 	@Override
 	public void hide() {
 		this.setVisible(false);
-	}
-
-	private void alignCenter() {
-		// final int width = (Window.getClientWidth() - getOffsetWidth()) / 2;
-		// final int height = (Window.getClientHeight() - getOffsetHeight()) / 2;
-		//
-		// getElement().getStyle().setLeft(width, Unit.PX);
-		// getElement().getStyle().setTop(25, Unit.PX);
+		CloseEvent.fire(this, this);
 	}
 
 	public interface EditionHandler {
