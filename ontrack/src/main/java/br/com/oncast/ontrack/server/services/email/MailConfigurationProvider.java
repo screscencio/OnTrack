@@ -5,6 +5,8 @@ import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 
+import br.com.oncast.ontrack.server.configuration.Configurations;
+
 public class MailConfigurationProvider {
 
 	static Properties configProperties() {
@@ -15,18 +17,17 @@ public class MailConfigurationProvider {
 				"javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "465");
-	
+
 		return props;
 	}
 
-	// TODO ++++extract user and password to configuration file
 	static Authenticator mailAuthenticator() {
 		return new javax.mail.Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("username", "password");
+				final Configurations c = Configurations.getInstance();
+				return new PasswordAuthentication(c.getEmailUsername(), c.getEmailPassword());
 			}
 		};
 	}
-
 }

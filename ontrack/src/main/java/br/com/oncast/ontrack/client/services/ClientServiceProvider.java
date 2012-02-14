@@ -103,7 +103,7 @@ public class ClientServiceProvider {
 	public ActionExecutionService getActionExecutionService() {
 		if (actionExecutionService != null) return actionExecutionService;
 		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getErrorTreatmentService(),
-				getProjectRepresentationProvider());
+				getProjectRepresentationProvider(), getApplicationPlaceController());
 	}
 
 	public ContextProviderService getContextProviderService() {

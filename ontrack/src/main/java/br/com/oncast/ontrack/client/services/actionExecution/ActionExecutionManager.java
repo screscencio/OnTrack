@@ -69,4 +69,9 @@ public class ActionExecutionManager {
 			// Purposefully ignoring exception
 		}
 	}
+
+	public void cleanActionExecutionHistory() {
+		undoStack.clear();
+		redoStack.clear();
+	}
 }

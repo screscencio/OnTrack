@@ -8,6 +8,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.places.CustomUrlGenerator;
 
 public class HtmlMailContent {
 
@@ -30,7 +31,7 @@ public class HtmlMailContent {
 	private static VelocityContext createProjectAuthorizationContext(final ProjectRepresentation project, final String userEmail, final String currentUser) {
 		final VelocityContext context = new VelocityContext();
 		context.put("projectName", project.getName());
-		context.put("projectLink", project.getId()); // FIXME BESEN generate link correctly
+		context.put("projectLink", CustomUrlGenerator.forProject(project));
 		context.put("userEmail", userEmail);
 		context.put("currentUser", currentUser);
 		return context;
