@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class EffortInferenceEngineFlow1Test {
 
+	private static final double ERROR = 1e-1;
 	private final String FILE_NAME_PREFIX = "Flow1";
 	private Scope original = null;
 	private final EffortInferenceEngine effortInferenceEngine = new EffortInferenceEngine();
@@ -152,7 +153,7 @@ public class EffortInferenceEngineFlow1Test {
 		effortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
 		for (final Scope child : scopeWithChangedEffort.getChildren()) {
-			assertEquals(87.5, child.getEffort().getInfered(), 0.09);
+			assertEquals(87.5, child.getEffort().getInfered(), ERROR);
 		}
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 3), original);
@@ -163,9 +164,9 @@ public class EffortInferenceEngineFlow1Test {
 		scopeWithChangedEffort.getEffort().setDeclared(150);
 		effortInferenceEngine.process(scopeWithChangedEffort.getParent());
 
-		assertEquals(66.6, original.getChild(1).getChild(1).getEffort().getInfered(), 0.09);
-		assertEquals(66.6, original.getChild(1).getChild(2).getEffort().getInfered(), 0.09);
-		assertEquals(66.6, original.getChild(1).getChild(3).getEffort().getInfered(), 0.09);
+		assertEquals(66.6, original.getChild(1).getChild(1).getEffort().getInfered(), ERROR);
+		assertEquals(66.6, original.getChild(1).getChild(2).getEffort().getInfered(), ERROR);
+		assertEquals(66.6, original.getChild(1).getChild(3).getEffort().getInfered(), ERROR);
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 4), original);
 	}
@@ -182,10 +183,10 @@ public class EffortInferenceEngineFlow1Test {
 		parentScopeWithChildrenModification.getChild(3).getEffort().setDeclared(150);
 		effortInferenceEngine.process(parentScopeWithChildrenModification);
 
-		assertEquals(600, parentScopeWithChildrenModification.getEffort().getInfered(), 0.09);
-		assertEquals(133.3, original.getChild(0).getEffort().getInfered(), 0.09);
-		assertEquals(133.3, original.getChild(2).getEffort().getInfered(), 0.09);
-		assertEquals(133.3, original.getChild(3).getEffort().getInfered(), 0.09);
+		assertEquals(600, parentScopeWithChildrenModification.getEffort().getInfered(), ERROR);
+		assertEquals(133.3, original.getChild(0).getEffort().getInfered(), ERROR);
+		assertEquals(133.3, original.getChild(2).getEffort().getInfered(), ERROR);
+		assertEquals(133.3, original.getChild(3).getEffort().getInfered(), ERROR);
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 5), original);
 	}

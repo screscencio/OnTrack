@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.sco
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.Columns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
@@ -20,7 +21,7 @@ public class ScopeDeclareEffortActionEntity extends ModelActionEntity {
 	@Column(name = "boleano")
 	private boolean hasDeclaredEffort;
 
-	@Column(name = "pos")
+	@Column(name = Columns.Float.FLOAT_1)
 	private float newDeclaredEffort;
 
 	public String getReferenceId() {
