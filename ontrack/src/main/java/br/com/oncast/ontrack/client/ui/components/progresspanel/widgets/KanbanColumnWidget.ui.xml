@@ -56,7 +56,6 @@
         }
         
         .scopeContainer > tbody > tr > td, .scopeContainer > tr > td {
-        	height: 30px;
         	width: 210px;
         	position: relative;
         }
