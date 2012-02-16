@@ -32,7 +32,7 @@ public class NavigationTestUtils {
 	}
 
 	public NavigationTestUtils verifyBrowserIsAt(final NavigationPlaces place) {
-		ConditionVerifier.verify(By.id(place.panelDebugId), Condition.IS_DIPLAYED, "The browser is not at '" + place.name() + "'.", driver).during(200);
+		ConditionVerifier.verify(By.id(place.panelDebugId), Condition.IS_DIPLAYED, "The browser is not at '" + place.name() + "'.", driver).during(500);
 
 		return this;
 	}
