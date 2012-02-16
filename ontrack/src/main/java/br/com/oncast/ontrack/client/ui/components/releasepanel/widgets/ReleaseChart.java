@@ -189,8 +189,9 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 				.setTickWidth(0)
 				.setLabels(new XAxisLabels()
 						.setAlign(Align.CENTER)
-						.setX(20)
 						.setRotation(-45)
+						.setX(-16)
+						.setY(27)
 				);
 
 		newChart.getYAxis(0)
