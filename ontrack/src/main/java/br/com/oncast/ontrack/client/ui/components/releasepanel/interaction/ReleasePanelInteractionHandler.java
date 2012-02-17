@@ -83,7 +83,7 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	@Override
 	public void onScopeSelectionRequest(final Scope scope) {
 		assureConfigured();
-		componentInteractionHandler.onScopeSelectionRequest(scope.getId());
+		componentInteractionHandler.onScopeSelectionRequest(scope);
 	}
 
 	private void assureConfigured() {

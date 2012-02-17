@@ -23,9 +23,12 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -112,21 +115,25 @@ public class ScopeTreeWidget extends Composite {
 			}
 
 			private void addRecursivelyToCache(final ScopeTreeItem scopeTreeItem) {
-				itemMapCache.put(scopeTreeItem.getScopeTreeItemWidget().getScope().getId(), scopeTreeItem);
+				final Scope scope = scopeTreeItem.getReferencedScope();
+				if (itemMapCache.containsKey(scope.getId())) throw new RuntimeException(
+						"You are trying to Add a widget for Scope '" + scope.getDescription() + "' that the ScopeTreeWidget already has");
 
-				final int count = scopeTreeItem.getChildCount();
-				for (int i = 0; i < count; i++) {
-					addRecursivelyToCache(scopeTreeItem.getChild(i));
-				}
+				itemMapCache.put(scope.getId(), scopeTreeItem);
 			}
 
 			private void removeRecusivelyFromCache(final ScopeTreeItem scopeTreeItem) {
-				itemMapCache.remove(scopeTreeItem.getScopeTreeItemWidget().getScope().getId());
+				final Scope scope = scopeTreeItem.getReferencedScope();
+				if (!itemMapCache.containsKey(scope.getId())) throw new RuntimeException("You are trying to Remove a widget for Scope '"
+						+ scope.getDescription() + "' that is not present in the ScopeTreeWidget");
 
-				final int count = scopeTreeItem.getChildCount();
-				for (int i = 0; i < count; i++) {
-					removeRecusivelyFromCache(scopeTreeItem.getChild(i));
-				}
+				itemMapCache.remove(scope.getId());
+			}
+		});
+		tree.addOpenHandler(new OpenHandler<TreeItem>() {
+			@Override
+			public void onOpen(final OpenEvent<TreeItem> event) {
+				((ScopeTreeItem) event.getTarget()).mountTwoLevels();
 			}
 		});
 	}
@@ -168,10 +175,18 @@ public class ScopeTreeWidget extends Composite {
 		return tree.getItemCount();
 	}
 
-	public ScopeTreeItem findScopeTreeItem(final UUID scopeId) throws ScopeNotFoundException {
+	public ScopeTreeItem findScopeTreeItem(final Scope scope) throws ScopeNotFoundException {
+		final UUID scopeId = scope.getId();
+
 		final ScopeTreeItem scopeTreeItem = itemMapCache.get(scopeId);
-		if (scopeTreeItem == null) throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
-		return scopeTreeItem;
+		if (scopeTreeItem != null) return scopeTreeItem;
+		if (scope.isRoot()) throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
+
+		findScopeTreeItem(scope.getParent()).mountTwoLevels();
+
+		if (!itemMapCache.containsKey(scopeId)) throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
+
+		return itemMapCache.get(scopeId);
 	}
 
 	public void setSelectedItem(final ScopeTreeItem treeItem) {

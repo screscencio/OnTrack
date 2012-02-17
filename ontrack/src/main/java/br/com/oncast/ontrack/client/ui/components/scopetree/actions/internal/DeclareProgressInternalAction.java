@@ -22,6 +22,6 @@ public class DeclareProgressInternalAction implements OneStepInternalAction {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 
 		tree.setSelected(null);
-		selectedTreeItem.getScopeTreeItemWidget().showProgressMenu(context.getProgressDefinitions());
+		selectedTreeItem.getScopeTreeItemWidget().showProgressMenu(context.getProgressDefinitions(scope));
 	}
 }

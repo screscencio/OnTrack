@@ -22,7 +22,7 @@ public class ScopeTreeUpdateProgressAction implements ScopeTreeAction {
 	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		final Release release = context.findRelease(action.getReferenceId());
 		for (final Scope scope : release.getScopeList()) {
-			final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
+			final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
 			treeItem.setReferencedScope(context.findScope(scope.getId()));
 
 			if (isUserInteraction) treeItem.getTree().setSelectedItem(treeItem);

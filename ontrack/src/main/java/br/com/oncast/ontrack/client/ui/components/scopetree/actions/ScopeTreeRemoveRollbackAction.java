@@ -24,8 +24,9 @@ public class ScopeTreeRemoveRollbackAction implements ScopeTreeAction {
 
 		final int childIndex = parentScope.getChildIndex(referencedScope);
 
-		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope.getId());
+		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope);
 		final ScopeTreeItem newTreeItem = new ScopeTreeItem(referencedScope);
+		newTreeItem.mountTwoLevels();
 		parentItem.insertItem(childIndex, newTreeItem);
 
 		// TODO Is this necessary? The tree already receives a set of the modified scopes by the inference engines (effort, progress, ...).

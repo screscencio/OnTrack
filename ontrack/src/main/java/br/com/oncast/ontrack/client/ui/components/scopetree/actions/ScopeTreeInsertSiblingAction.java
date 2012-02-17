@@ -20,12 +20,8 @@ class ScopeTreeInsertSiblingAction implements ScopeTreeAction {
 	@Override
 	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope newScope = context.findScope(action.getNewScopeId());
-		final Scope parentScope = newScope.getParent();
 
-		final ScopeTreeItem parentTreeItem = tree.findScopeTreeItem(parentScope.getId());
-		final ScopeTreeItem newItem = new ScopeTreeItem(newScope);
-
-		parentTreeItem.insertItem(parentScope.getChildIndex(newScope), newItem);
+		final ScopeTreeItem newItem = tree.findScopeTreeItem(newScope);
 
 		if (isUserInteraction) tree.setSelected(newItem);
 	}

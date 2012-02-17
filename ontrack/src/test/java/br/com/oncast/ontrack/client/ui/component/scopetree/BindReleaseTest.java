@@ -93,7 +93,7 @@ public class BindReleaseTest extends GwtTest {
 
 	private Tag getTag() throws ScopeNotFoundException, NoSuchFieldException, IllegalAccessException {
 		final ScopeTreeWidget asWidget = (ScopeTreeWidget) tree.asWidget();
-		final ScopeTreeItem item = asWidget.findScopeTreeItem(firstScope.getId());
+		final ScopeTreeItem item = asWidget.findScopeTreeItem(firstScope);
 
 		final Field scopeItemWidgetField = item.getClass().getDeclaredField("scopeItemWidget");
 		scopeItemWidgetField.setAccessible(true);

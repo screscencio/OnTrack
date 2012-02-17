@@ -1,16 +1,15 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public class ProgressDefinitionManager {
 
 	private static ProgressDefinitionManager instance;
-	private final Set<String> progressDefinitionSet = new HashSet<String>();
+	private final List<String> progressDefinitionList = new ArrayList<String>();
 
 	public static ProgressDefinitionManager getInstance() {
 		if (instance == null) instance = new ProgressDefinitionManager();
@@ -21,30 +20,24 @@ public class ProgressDefinitionManager {
 
 	public void onProgressDefinition(final String description) {
 		if (description == null) return;
-		for (final String definition : progressDefinitionSet)
-			if (definition.equalsIgnoreCase(description)) return;
 
-		progressDefinitionSet.add(description);
+		for (final String definition : progressDefinitionList)
+			if (definition.equalsIgnoreCase(description)) return;
+		
+		progressDefinitionList.add(description);
 	}
 
-	public Set<String> getProgressDefinitions() {
-		return progressDefinitionSet;
+	public List<String> getProgressDefinitions() {
+		return progressDefinitionList;
 	}
 
 	public void populate(final Project project) {
-		progressDefinitionSet.clear();
+		progressDefinitionList.clear();
 		populateFromProgressState();
-		populateFromScope(project.getProjectScope());
 	}
 
 	private void populateFromProgressState() {
 		for (final ProgressState state : ProgressState.values())
 			this.onProgressDefinition(state.getDescription());
-	}
-
-	private void populateFromScope(final Scope scope) {
-		this.onProgressDefinition(scope.getProgress().getDescription());
-		for (final Scope scopeChild : scope.getChildren())
-			populateFromScope(scopeChild);
 	}
 }

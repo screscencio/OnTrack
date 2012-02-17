@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 class ScopeTreeRemoveAction implements ScopeTreeAction {
@@ -18,7 +19,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 
 	@Override
 	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ScopeNotFoundException {
-		final ScopeTreeItem treeItem = tree.findScopeTreeItem(action.getReferenceId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(new Scope("", action.getReferenceId()));
 
 		final ScopeTreeItem parentItem = treeItem.getParentItem();
 		final int childIndex = parentItem.getChildIndex(treeItem);

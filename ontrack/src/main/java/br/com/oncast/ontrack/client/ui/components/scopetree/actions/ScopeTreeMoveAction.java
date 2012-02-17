@@ -23,8 +23,8 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 		final Scope parentScope = scope.getParent();
 		final int index = parentScope.getChildIndex(scope);
 
-		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
-		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope.getId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
+		final ScopeTreeItem parentItem = tree.findScopeTreeItem(parentScope);
 
 		// TODO Refactor the update of display of modified items. Maybe the algorithm should depend on the runtime action instance.
 		if (!treeItem.isRoot()) treeItem.getParentItem().getScopeTreeItemWidget().updateDisplay();

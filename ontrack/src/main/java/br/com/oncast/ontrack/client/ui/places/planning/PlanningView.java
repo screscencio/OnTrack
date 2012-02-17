@@ -15,4 +15,6 @@ public interface PlanningView extends IsWidget {
 	ReleasePanel getReleasePanel();
 
 	ApplicationMenu getApplicationMenu();
+
+	void setVisible(boolean b);
 }

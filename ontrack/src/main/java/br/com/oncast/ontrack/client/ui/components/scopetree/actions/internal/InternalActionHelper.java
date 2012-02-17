@@ -10,7 +10,7 @@ class InternalActionHelper {
 
 	static ScopeTreeItem findScopeTreeItem(final ScopeTreeWidget tree, final Scope scope) throws UnableToCompleteActionException {
 		try {
-			return tree.findScopeTreeItem(scope.getId());
+			return tree.findScopeTreeItem(scope);
 		}
 		catch (final ScopeNotFoundException e) {
 			throw new UnableToCompleteActionException(

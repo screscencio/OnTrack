@@ -28,7 +28,7 @@ public class InsertFatherInternalAction implements TwoStepInternalAction {
 		newTreeItem.addItem(selectedTreeItem);
 
 		tree.setSelectedItem(newTreeItem);
-		newTreeItem.setState(true);
+		newTreeItem.setState(true, false);
 		newTreeItem.enterEditMode();
 	}
 

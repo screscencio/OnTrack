@@ -36,6 +36,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	}
 
 	public boolean update(final List<T> modelBeanList) {
+		setVisible(false);
 		boolean hasChanged = false;
 
 		for (int i = 0; i < modelBeanList.size(); i++) {
@@ -54,8 +55,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 				hasChanged = true;
 			}
 
-			final boolean wasChildUpdated = modelWidget.update();
-			if (wasChildUpdated) hasChanged = true;
+			hasChanged |= modelWidget.update();
 		}
 		for (int i = modelBeanList.size(); i < verticalContainer.getWidgetCount(); i++) {
 			@SuppressWarnings("unchecked") final E modelWidget = (E) verticalContainer.getWidget(i);
@@ -65,7 +65,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		}
 
 		listener.onUpdateComplete(hasChanged);
-
+		setVisible(true);
 		return hasChanged;
 	}
 
