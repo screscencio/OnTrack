@@ -32,7 +32,7 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 
 		if (isUserInteraction) {
 			parentTreeItem.setState(true);
-			tree.setSelected(newItem);
+			tree.setSelectedItem(newItem);
 		}
 	}
 }

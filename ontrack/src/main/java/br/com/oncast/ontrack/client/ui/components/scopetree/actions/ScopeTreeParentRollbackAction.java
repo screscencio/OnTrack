@@ -31,7 +31,7 @@ public class ScopeTreeParentRollbackAction implements ScopeTreeAction {
 
 		if (isUserInteraction) {
 			grandParentTreeItem.setHierarchicalState(true);
-			tree.setSelected(treeItem);
+			tree.setSelectedItem(treeItem);
 		}
 	}
 }

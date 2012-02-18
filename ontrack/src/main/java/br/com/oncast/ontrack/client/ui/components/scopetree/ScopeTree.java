@@ -75,7 +75,7 @@ public class ScopeTree implements Component {
 		tree.add(rootItem);
 		rootItem.mountTwoLevels();
 		rootItem.setState(true);
-		tree.setSelected(rootItem);
+		tree.setSelectedItem(rootItem);
 	}
 
 	public void showSearchWidget() {
@@ -94,6 +94,6 @@ public class ScopeTree implements Component {
 	public void setSelectedScope(final Scope scope) throws ScopeNotFoundException {
 		final ScopeTreeItem scopeTreeItem = tree.findScopeTreeItem(scope);
 		scopeTreeItem.setHierarchicalState(true);
-		tree.setSelected(scopeTreeItem);
+		tree.setSelectedItem(scopeTreeItem);
 	}
 }

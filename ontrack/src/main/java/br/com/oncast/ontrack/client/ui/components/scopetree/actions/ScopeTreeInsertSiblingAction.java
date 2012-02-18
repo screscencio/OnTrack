@@ -23,6 +23,6 @@ class ScopeTreeInsertSiblingAction implements ScopeTreeAction {
 
 		final ScopeTreeItem newItem = tree.findScopeTreeItem(newScope);
 
-		if (isUserInteraction) tree.setSelected(newItem);
+		if (isUserInteraction) tree.setSelectedItem(newItem);
 	}
 }

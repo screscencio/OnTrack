@@ -133,7 +133,9 @@ public class ScopeTreeWidget extends Composite {
 		tree.addOpenHandler(new OpenHandler<TreeItem>() {
 			@Override
 			public void onOpen(final OpenEvent<TreeItem> event) {
-				((ScopeTreeItem) event.getTarget()).mountTwoLevels();
+				final ScopeTreeItem item = (ScopeTreeItem) event.getTarget();
+				item.mountTwoLevels();
+				tree.setSelectedItem(item);
 			}
 		});
 	}
@@ -154,11 +156,11 @@ public class ScopeTreeWidget extends Composite {
 		tree.clear();
 	}
 
-	public ScopeTreeItem getSelected() {
+	public ScopeTreeItem getSelectedItem() {
 		return (ScopeTreeItem) tree.getSelectedItem();
 	}
 
-	public void setSelected(final ScopeTreeItem selected) {
+	public void setSelectedItem(final ScopeTreeItem selected) {
 		tree.setSelectedItem(selected);
 	}
 
@@ -187,10 +189,6 @@ public class ScopeTreeWidget extends Composite {
 		if (!itemMapCache.containsKey(scopeId)) throw new ScopeNotFoundException("It was not possible to find any tree item for the given scope.");
 
 		return itemMapCache.get(scopeId);
-	}
-
-	public void setSelectedItem(final ScopeTreeItem treeItem) {
-		tree.setSelectedItem(treeItem);
 	}
 
 	public void showSearchWidget() {

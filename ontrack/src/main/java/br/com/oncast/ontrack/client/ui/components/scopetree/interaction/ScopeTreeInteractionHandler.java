@@ -89,7 +89,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 	@Override
 	public Scope getSelectedScope() {
-		return tree.getSelected().getReferencedScope();
+		return tree.getSelectedItem().getReferencedScope();
 	}
 
 	@Override

@@ -35,7 +35,7 @@ class ScopeTreeInsertParentAction implements ScopeTreeAction {
 		if (isUserInteraction) {
 			newTreeItem.setHierarchicalState(true);
 			newTreeItem.setState(true);
-			tree.setSelected(newTreeItem);
+			tree.setSelectedItem(newTreeItem);
 		}
 	}
 }

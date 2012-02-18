@@ -34,7 +34,7 @@ public class ScopeTreeRemoveRollbackAction implements ScopeTreeAction {
 
 		if (isUserInteraction) {
 			newTreeItem.setHierarchicalState(true);
-			tree.setSelected(newTreeItem);
+			tree.setSelectedItem(newTreeItem);
 		}
 	}
 }

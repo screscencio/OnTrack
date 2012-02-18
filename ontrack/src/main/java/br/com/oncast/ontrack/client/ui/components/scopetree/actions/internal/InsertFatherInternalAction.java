@@ -38,7 +38,7 @@ public class InsertFatherInternalAction implements TwoStepInternalAction {
 		parentTreeItem.insertItem(parentTreeItem.getChildIndex(newTreeItem), selectedTreeItem);
 		newTreeItem.remove();
 
-		tree.setSelected(selectedTreeItem);
+		tree.setSelectedItem(selectedTreeItem);
 	}
 
 	@Override
