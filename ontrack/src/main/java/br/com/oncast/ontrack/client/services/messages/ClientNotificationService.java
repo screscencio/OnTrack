@@ -23,7 +23,7 @@ public class ClientNotificationService {
 		makeAutoCloseNotification(errorMessage, NotificationType.WARNING, 5000);
 	}
 
-	public static void showMessage(final String message) {
+	public static void showSuccess(final String message) {
 		makeAutoCloseNotification(message, NotificationType.SUCCESS, 3000);
 
 	}
