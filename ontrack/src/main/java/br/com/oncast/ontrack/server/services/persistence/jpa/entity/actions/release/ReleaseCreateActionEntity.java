@@ -27,7 +27,7 @@ public class ReleaseCreateActionEntity extends ModelActionEntity {
 	private String newReleaseId;
 
 	@ConversionAlias("description")
-	@Column(name = "description")
+	@Column(name = "description", length = 400)
 	private String description;
 
 	@OneToOne(cascade = CascadeType.ALL)

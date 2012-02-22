@@ -20,7 +20,7 @@ public class ReleaseRenameActionEntity extends ModelActionEntity {
 	private String referenceId;
 
 	@ConversionAlias("newReleaseDescription")
-	@Column(name = "description")
+	@Column(name = "description", length = 400)
 	private String newReleaseDescription;
 
 	public String getReferenceId() {

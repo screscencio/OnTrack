@@ -24,7 +24,7 @@ public class KanbanColumnRenameActionEntity extends ModelActionEntity {
 	private String columnDescription;
 
 	@ConversionAlias("newDescription")
-	@Column(name = "description")
+	@Column(name = "description", length = 400)
 	private String newDescription;
 
 	public String getReleaseId() {

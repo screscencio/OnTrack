@@ -31,7 +31,7 @@ public class ReleaseRemoveRollbackActionEntity extends ModelActionEntity {
 	private String parentReleaseId;
 
 	@ConversionAlias("description")
-	@Column(name = "description")
+	@Column(name = "description", length = 400)
 	private String description;
 
 	@ConversionAlias("index")
