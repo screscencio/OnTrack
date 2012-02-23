@@ -100,11 +100,13 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 			@Override
 			protected void executeImpl(final InvitationWidget widget) {
 				final String mail = widget.invitationTextBox.getText();
+				widget.hide();
+				// FIXME Mats change this for show info or waiting message;
+				ClientNotificationService.showSuccess("Processing you invitation in background...");
 				PROVIDER.getProjectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
-						ClientNotificationService.showMessage("User with e-mail '" + mail + "' was successfully invited");
-						widget.hide();
+						ClientNotificationService.showSuccess("User with e-mail '" + mail + "' was successfully invited");
 					}
 
 					@Override

@@ -27,7 +27,7 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 	@Column(name = "secundaryReferenceId")
 	private String parentScopeId;
 
-	@Column(name = "description")
+	@Column(name = "description", length = 400)
 	private String description;
 
 	@ConversionAlias("index")

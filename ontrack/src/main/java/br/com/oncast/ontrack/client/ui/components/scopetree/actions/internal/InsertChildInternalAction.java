@@ -20,11 +20,13 @@ public class InsertChildInternalAction implements TwoStepInternalAction {
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
+		selectedTreeItem.setState(true);
+
 		newTreeItem = new ScopeTreeItem(new Scope(""));
 
 		selectedTreeItem.addItem(newTreeItem);
+		if (!selectedTreeItem.getState()) selectedTreeItem.setState(true, false);
 
-		selectedTreeItem.setState(true);
 		tree.setSelectedItem(newTreeItem);
 		newTreeItem.enterEditMode();
 	}
@@ -32,7 +34,7 @@ public class InsertChildInternalAction implements TwoStepInternalAction {
 	@Override
 	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		newTreeItem.remove();
-		tree.setSelected(selectedTreeItem);
+		tree.setSelectedItem(selectedTreeItem);
 	}
 
 	@Override

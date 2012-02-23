@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
@@ -13,11 +14,16 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
+import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeItem extends TreeItem implements IsTreeItem {
+
+	@IgnoredByDeepEquality
+	private final HashMap<Scope, ScopeTreeItem> scopeItemCacheMap = new HashMap<Scope, ScopeTreeItem>();
 
 	private final ScopeTreeItemWidget scopeItemWidget;
 
@@ -74,9 +80,52 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		}));
 
 		setReferencedScope(scope);
-		for (final Scope childScope : scope.getChildren()) {
-			addItem(new ScopeTreeItem(childScope));
+	}
+
+	public void mountTwoLevels() {
+		assureChildrenWasAdded();
+		for (int i = 0; i < getChildCount(); i++)
+			getChild(i).assureChildrenWasAdded();
+	}
+
+	@Override
+	public void insertItem(final int beforeIndex, final TreeItem item) throws IndexOutOfBoundsException {
+		super.insertItem(beforeIndex, item);
+		final ScopeTreeItem scopeItem = (ScopeTreeItem) item;
+		scopeItemCacheMap.put(scopeItem.getReferencedScope(), scopeItem);
+	}
+
+	@Override
+	public void removeItem(final TreeItem item) {
+		super.removeItem(item);
+		scopeItemCacheMap.remove(((ScopeTreeItem) item).getReferencedScope());
+	}
+
+	private void assureChildrenWasAdded() {
+		this.setVisible(false);
+		final List<Scope> children = this.getReferencedScope().getChildren();
+		for (int i = 0; i < children.size(); i++) {
+			final Scope childScope = children.get(i);
+			final ScopeTreeItem childItem = scopeItemCacheMap.get(childScope);
+			if (childItem == null) {
+				final ScopeTreeItem item = new ScopeTreeItem(childScope);
+				this.insertItem(i, item);
+				scopeItemCacheMap.put(childScope, item);
+				continue;
+			}
+
+			if (this.getChildIndex(childItem) != i) {
+				this.removeItem(childItem);
+				this.insertItem(i, childItem);
+			}
 		}
+
+		for (int i = children.size(); i < this.getChildCount(); i++) {
+			final ScopeTreeItem childItem = this.getChild(i);
+			this.removeItem(childItem);
+			scopeItemCacheMap.remove(childItem.getReferencedScope());
+		}
+		this.setVisible(true);
 	}
 
 	protected void select() {
@@ -89,7 +138,8 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	public void enterEditMode() {
 		scopeItemWidget.switchToEditionMode();
-		getTree().setSelectedItem(null);
+		final Tree tree = getTree();
+		if (tree != null) tree.setSelectedItem(null);
 	}
 
 	public List<ScopeTreeItem> getAllDescendantChilden() {

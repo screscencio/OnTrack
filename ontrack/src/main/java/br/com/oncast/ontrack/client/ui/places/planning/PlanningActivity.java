@@ -14,8 +14,9 @@ import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -36,6 +37,7 @@ public class PlanningActivity extends AbstractActivity {
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		view = new PlanningPanel();
+		view.setVisible(false);
 
 		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
 		final ProjectRepresentation currentProjectRepresentation = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation();
@@ -44,14 +46,15 @@ public class PlanningActivity extends AbstractActivity {
 
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
+
 		view.getScopeTree().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setComponentInteractionHandler(new ComponentInteractionHandler() {
 
 			@Override
-			public void onScopeSelectionRequest(final UUID scopeId) {
+			public void onScopeSelectionRequest(final Scope scope) {
 				try {
-					view.getScopeTree().setSelectedScope(scopeId);
+					view.getScopeTree().setSelectedScope(scope);
 				}
 				catch (final ScopeNotFoundException e) {
 					// TODO Think about how to treat this error properly.
@@ -62,13 +65,17 @@ public class PlanningActivity extends AbstractActivity {
 		});
 
 		view.getScopeTree().setContext(projectContext);
-		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
+		final Release release = projectContext.getProjectRelease();
+
+		view.getReleasePanel().setRelease(release);
 		view.setExporterPath(URLBuilder.buildMindMapExportURL(currentProjectId));
+
+		addBreadcrumbToMenu(currentProjectRepresentation);
 
 		panel.setWidget(view);
 		ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
 		ShortcutService.register(view, this, PlanningShortcutMappings.values());
-		addBreadcrumbToMenu(currentProjectRepresentation);
+		view.setVisible(true);
 		view.getScopeTree().setFocus(true);
 	}
 

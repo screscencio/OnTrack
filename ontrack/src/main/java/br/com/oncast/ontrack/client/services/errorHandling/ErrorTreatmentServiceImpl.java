@@ -36,6 +36,7 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 
 	@Override
 	public void treatUserWarning(final String message, final Exception e) {
+		e.printStackTrace();
 		ClientNotificationService.showError(message);
 	}
 
@@ -44,7 +45,7 @@ public class ErrorTreatmentServiceImpl implements ErrorTreatmentService {
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException(final Throwable e) {
-				e.printStackTrace(System.out);
+				e.printStackTrace();
 				ClientNotificationService.showError(e.getMessage());
 			}
 		});

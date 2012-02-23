@@ -47,7 +47,7 @@ public class ProgressDefinitionManagerTest {
 	}
 
 	@Test
-	public void shouldContainTheUserDefinedProgress() {
+	public void shouldNotContainTheUserDefinedProgress() {
 		final String userDefinedProgress = "in design";
 
 		final Scope scope = ScopeTestUtils.getScope();
@@ -59,68 +59,7 @@ public class ProgressDefinitionManagerTest {
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.NOT_STARTED.getDescription()));
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.UNDER_WORK.getDescription()));
 		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.DONE.getDescription()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress));
-		assertEquals(4, progressDefinitionManager.getProgressDefinitions().size());
-	}
-
-	@Test
-	public void shouldContainAllUserDefinedProgresses() {
-		final String userDefinedProgress1 = "in design";
-		final String userDefinedProgress2 = "test";
-		final String userDefinedProgress3 = "homologation";
-		final String userDefinedProgress4 = "for PO checking";
-
-		final Scope scope = ScopeTestUtils.getScope();
-		scope.getChild(0).getProgress().setDescription(userDefinedProgress1);
-		scope.getChild(0).getChild(0).getProgress().setDescription(userDefinedProgress2);
-		scope.getChild(1).getProgress().setDescription(userDefinedProgress3);
-		scope.getChild(2).getProgress().setDescription(userDefinedProgress4);
-
-		final Project project = ProjectTestUtils.createProject(scope, null);
-		progressDefinitionManager.populate(project);
-
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.NOT_STARTED.getDescription()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.UNDER_WORK.getDescription()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.DONE.getDescription()));
-
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress1));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress2));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress3));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress4));
-
-		assertEquals(7, progressDefinitionManager.getProgressDefinitions().size());
-	}
-
-	@Test
-	public void shouldNotContainAProgressThatIsNotInAppDefinedProgressesAndWasNotDefinedByUser() {
-		final String userDefinedProgress1 = "in design";
-		final String userDefinedProgress2 = "test";
-		final String userDefinedProgress3 = "homologation";
-		final String userDefinedProgress4 = "for PO checking";
-
-		final Scope scope = ScopeTestUtils.getScope();
-		scope.getChild(0).getProgress().setDescription(userDefinedProgress1);
-		scope.getChild(0).getChild(0).getProgress().setDescription(userDefinedProgress2);
-		scope.getChild(1).getProgress().setDescription(userDefinedProgress3);
-		scope.getChild(2).getProgress().setDescription(userDefinedProgress4);
-
-		final Project project = ProjectTestUtils.createProject(scope, null);
-		progressDefinitionManager.populate(project);
-
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.NOT_STARTED.getDescription()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.UNDER_WORK.getDescription()));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(ProgressState.DONE.getDescription()));
-
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress1));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress2));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress3));
-		assertTrue(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress4));
-
-		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Anything"));
-		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Other thing"));
-		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Another state not defined"));
-		assertFalse(progressDefinitionManager.getProgressDefinitions().contains("Anything"));
-
-		assertEquals(7, progressDefinitionManager.getProgressDefinitions().size());
+		assertFalse(progressDefinitionManager.getProgressDefinitions().contains(userDefinedProgress));
+		assertEquals(3, progressDefinitionManager.getProgressDefinitions().size());
 	}
 }

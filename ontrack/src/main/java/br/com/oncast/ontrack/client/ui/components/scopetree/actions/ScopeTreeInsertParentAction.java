@@ -23,17 +23,19 @@ class ScopeTreeInsertParentAction implements ScopeTreeAction {
 		final Scope newScope = context.findScope(action.getNewScopeId());
 		final Scope grandParentScope = newScope.getParent();
 
-		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
-		final ScopeTreeItem grandParentTreeItem = tree.findScopeTreeItem(grandParentScope.getId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
+		final ScopeTreeItem grandParentTreeItem = tree.findScopeTreeItem(grandParentScope);
 		final ScopeTreeItem newTreeItem = new ScopeTreeItem(newScope);
 
 		final int index = grandParentScope.getChildIndex(newScope);
 		grandParentTreeItem.removeItem(treeItem);
+		newTreeItem.addItem(treeItem);
 		grandParentTreeItem.insertItem(index, newTreeItem);
 
 		if (isUserInteraction) {
 			newTreeItem.setHierarchicalState(true);
-			tree.setSelected(newTreeItem);
+			newTreeItem.setState(true);
+			tree.setSelectedItem(newTreeItem);
 		}
 	}
 }

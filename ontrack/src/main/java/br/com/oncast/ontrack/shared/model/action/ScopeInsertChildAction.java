@@ -48,6 +48,7 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
+		// TODO ++++ Re-think of removing the leaf scope's progress when inserting a son.
 		if (selectedScope.isLeaf()) subActionRollbackList.add(new ScopeDeclareProgressAction(selectedScope.getId(), "").execute(context));
 
 		selectedScope.add(new Scope("", newScopeId));

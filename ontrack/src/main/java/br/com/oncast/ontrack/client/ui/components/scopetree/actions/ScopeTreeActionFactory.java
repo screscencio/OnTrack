@@ -53,6 +53,6 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ReleaseRenameAction) return new ScopeTreeReleaseUpdateAction(tree, (ReleaseAction) action);
 		else if (action instanceof KanbanAction) return new ScopeTreeUpdateProgressAction(tree, (KanbanAction) action);
 
-		throw new ScopeNotFoundException("It was not possible to find the desired action.");
+		throw new RuntimeException("It was not possible to find the desired action.");
 	}
 }

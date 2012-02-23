@@ -23,6 +23,7 @@ public class ReleaseChartDataProvider {
 	public ReleaseChartDataProvider(final Release release, final ReleaseEstimator estimator) {
 		this.release = release;
 		this.releaseEstimator = estimator;
+		// TODO+++ [Performance] Make it lazy loading
 		evaluateData();
 	}
 

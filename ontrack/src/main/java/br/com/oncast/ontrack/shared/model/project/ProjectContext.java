@@ -1,12 +1,16 @@
 package br.com.oncast.ontrack.shared.model.project;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
+import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.Release.Condition;
@@ -69,8 +73,22 @@ public class ProjectContext {
 		return project.getProjectRelease().getDescendantReleases();
 	}
 
-	public Set<String> getProgressDefinitions() {
-		return ProgressDefinitionManager.getInstance().getProgressDefinitions();
+	public List<String> getProgressDefinitions(final Scope scope) {
+		final Release release = scope.getRelease();
+		if (release == null) return ProgressDefinitionManager.getInstance().getProgressDefinitions();
+
+		return getProgressDefinitionsFromRelease(release);
+	}
+
+	private List<String> getProgressDefinitionsFromRelease(final Release release) {
+		final Kanban kanban = getKanban(release);
+
+		final List<String> progressDefinitions = new ArrayList<String>();
+		for (final KanbanColumn column : kanban.getColumns()) {
+			final String description = column.getDescription();
+			progressDefinitions.add(description.equals(Progress.DEFAULT_NOT_STARTED_NAME) ? ProgressState.NOT_STARTED.getDescription() : description);
+		}
+		return progressDefinitions;
 	}
 
 	public List<String> getFibonacciScaleForEffort() {

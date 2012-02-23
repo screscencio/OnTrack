@@ -24,7 +24,7 @@ public class ScopeDeclareProgressActionEntity extends ModelActionEntity {
 	@Column(name = "referenceId")
 	private String referenceId;
 
-	@Column(name = "description")
+	@Column(name = "description", length = 400)
 	private String newProgressDescription;
 
 	@Temporal(TemporalType.TIMESTAMP)

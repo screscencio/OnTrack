@@ -33,7 +33,7 @@ public class InsertSiblingDownInternalAction implements TwoStepInternalAction {
 	@Override
 	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		newTreeItem.remove();
-		tree.setSelected(treeItem);
+		tree.setSelectedItem(treeItem);
 	}
 
 	@Override

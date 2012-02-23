@@ -30,7 +30,7 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 
 	private static void preProcessBottomUp(final Scope scope, int recursionIndex, final Set<UUID> inferenceInfluencedScopeSet) {
 		recursionIndex -= 1;
-		int sum = 0;
+		float sum = 0;
 
 		final Effort effort = scope.getEffort();
 		boolean hasStronglyDefinedChildren = scope.getChildren().size() > 0;
@@ -71,7 +71,7 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		if (effort.isStronglyDefined()) effort.setTopDownValue((effort.getDeclared() > effort.getBottomUpValue()) ? effort.getDeclared() : effort
 				.getBottomUpValue());
 		else if (scope.isRoot()) {
-			final int stronglyDefinedEffortSum = getStronglyDefinedEffortSum(scope);
+			final float stronglyDefinedEffortSum = getStronglyDefinedEffortSum(scope);
 			final float bottomUpValue = effort.getBottomUpValue();
 			effort.setTopDownValue(stronglyDefinedEffortSum > bottomUpValue ? stronglyDefinedEffortSum : bottomUpValue);
 		}
@@ -102,8 +102,8 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		}
 	}
 
-	private static int getStronglyDefinedEffortSum(final Scope scope) {
-		int sum = 0;
+	private static float getStronglyDefinedEffortSum(final Scope scope) {
+		float sum = 0;
 		final List<Scope> children = scope.getChildren();
 		for (final Scope child : children)
 			if (child.getEffort().isStronglyDefined()) sum += (child.getEffort().getDeclared() > child.getEffort().getBottomUpValue()) ? child.getEffort()

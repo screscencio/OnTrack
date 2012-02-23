@@ -47,10 +47,7 @@ public class ReleasePanelWidget extends Composite {
 
 	public void setRelease(final Release rootRelease) {
 		this.rootRelease = rootRelease;
-		releaseContainer.clear();
-
-		for (final Release childRelease : rootRelease.getChildren())
-			releaseContainer.createChildModelWidget(childRelease);
+		releaseContainer.update(rootRelease.getChildren());
 	}
 
 	public void update() {
@@ -60,7 +57,6 @@ public class ReleasePanelWidget extends Composite {
 	@UiFactory
 	protected VerticalModelWidgetContainer<Release, ReleaseWidget> createReleaseContainer() {
 		return new VerticalModelWidgetContainer<Release, ReleaseWidget>(releaseWidgetFactory, new ModelWidgetContainerListener() {
-
 			@Override
 			public void onUpdateComplete(final boolean hasChanged) {}
 		});

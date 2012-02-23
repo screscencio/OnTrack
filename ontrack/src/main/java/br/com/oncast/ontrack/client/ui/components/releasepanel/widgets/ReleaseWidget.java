@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -127,7 +128,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
 		this.editionHandler = new EditableLabelEditionHandler() {
-
 			@Override
 			public boolean onEditionRequest(final String newReleaseName) {
 				releasePanelInteractionHandler.onReleaseRenameRequest(release, newReleaseName);
@@ -138,6 +138,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		this.containerUpdateListener = createContainerUpdateListener();
 
 		initWidget(uiBinder.createAndBindUi(this));
+		setVisible(false);
 
 		scopeContainer.setOwnerRelease(release);
 
@@ -147,9 +148,19 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		updateDescription();
 		updateProgress();
 		setContainerState(true);
+		setVisible(true);
+	}
 
-		configPopup().link(progressLabel).popup(getChartPanel()).alignRight(progressLabel).alignBelow(progressLabel);
-		configPopup().link(menuLink).popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2);
+	@UiHandler("menuLink")
+	protected void showMenu(final ClickEvent event) {
+		SpeedTracerConsole.log("configPopup().link(menuLink)");
+		configPopup().popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2).pop();
+	}
+
+	@UiHandler("progressLabel")
+	protected void showChartPanel(final ClickEvent event) {
+		SpeedTracerConsole.log("configPopup().link(progressLabel)");
+		configPopup().popup(getChartPanel()).alignRight(progressLabel).alignBelow(progressLabel).pop();
 	}
 
 	@UiHandler("progressLink")
@@ -274,7 +285,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private ReleaseEstimator getReleaseEstimator() {
 		// XXX Burnup: Locate the root Release in a more direct fashion.
-
+		// TODO+++ [Performance] Use one instance per project.
 		Release r = getRelease();
 		while (r.getParent() != null)
 			r = r.getParent();

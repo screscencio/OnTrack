@@ -18,13 +18,13 @@ public class NodeEditionInternalAction implements TwoStepInternalAction {
 
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
-		selectedTreeItem = tree.getSelected();
+		selectedTreeItem = tree.getSelectedItem();
 		selectedTreeItem.enterEditMode();
 	}
 
 	@Override
 	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
-		tree.setSelected(selectedTreeItem);
+		tree.setSelectedItem(selectedTreeItem);
 	}
 
 	@Override

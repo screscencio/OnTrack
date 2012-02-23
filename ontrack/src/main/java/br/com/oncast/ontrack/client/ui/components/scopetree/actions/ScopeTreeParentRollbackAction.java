@@ -22,8 +22,8 @@ public class ScopeTreeParentRollbackAction implements ScopeTreeAction {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope grandParentScope = scope.getParent();
 
-		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
-		final ScopeTreeItem grandParentTreeItem = tree.findScopeTreeItem(grandParentScope.getId());
+		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
+		final ScopeTreeItem grandParentTreeItem = tree.findScopeTreeItem(grandParentScope);
 
 		final int index = grandParentScope.getChildIndex(scope);
 		grandParentTreeItem.removeItem(treeItem.getParentItem());
@@ -31,7 +31,7 @@ public class ScopeTreeParentRollbackAction implements ScopeTreeAction {
 
 		if (isUserInteraction) {
 			grandParentTreeItem.setHierarchicalState(true);
-			tree.setSelected(treeItem);
+			tree.setSelectedItem(treeItem);
 		}
 	}
 }

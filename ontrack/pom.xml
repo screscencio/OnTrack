@@ -156,7 +156,7 @@
 			<version>1.7</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- Misc Dependencies -->
 		<dependency>
 			<groupId>dom4j</groupId>
@@ -261,6 +261,25 @@
 			<build>
 				<plugins>
 					<plugin>
+						<artifactId>maven-clean-plugin</artifactId>
+						<version>2.4.1</version>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+						<executions>
+							<execution>
+								<id>auto-clean</id>
+								<phase>initialize</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+								<configuration>
+									<skip>false</skip>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
 							<execution>
@@ -270,8 +289,10 @@
 								</goals>
 								<configuration>
 									<tasks>
-										<delete file="${project.build.outputDirectory}/environment.prod.properties" />
-										<delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
+                                        <delete file="${project.build.outputDirectory}/environment.stag.properties" />
+                                        <delete file="${project.build.outputDirectory}/META-INF/persistence.stag.xml" />
+                                        <delete file="${project.build.outputDirectory}/environment.prod.properties" />
+                                        <delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
 									</tasks>
 								</configuration>
 							</execution>
@@ -284,6 +305,25 @@
 			<id>prod</id>
 			<build>
 				<plugins>
+					<plugin>
+						<artifactId>maven-clean-plugin</artifactId>
+						<version>2.4.1</version>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+						<executions>
+							<execution>
+								<id>auto-clean</id>
+								<phase>initialize</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+								<configuration>
+									<skip>false</skip>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
@@ -298,8 +338,40 @@
 										<delete file="${project.build.outputDirectory}/META-INF/persistence.xml" />
 										<copy file="src/main/resources/environment.prod.properties" tofile="${project.build.outputDirectory}/environment.properties" />
 										<copy file="src/main/resources/META-INF/persistence.prod.xml" tofile="${project.build.outputDirectory}/META-INF/persistence.xml" />
-										<delete file="${project.build.outputDirectory}/environment.prod.properties" />
-										<delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
+                                        <delete file="${project.build.outputDirectory}/environment.stag.properties" />
+                                        <delete file="${project.build.outputDirectory}/META-INF/persistence.stag.xml" />
+                                        <delete file="${project.build.outputDirectory}/environment.prod.properties" />
+                                        <delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>stag</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>compile</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<delete file="${project.build.outputDirectory}/environment.properties" />
+										<delete file="${project.build.outputDirectory}/META-INF/persistence.xml" />
+										<copy file="src/main/resources/environment.stag.properties" tofile="${project.build.outputDirectory}/environment.properties" />
+										<copy file="src/main/resources/META-INF/persistence.stag.xml" tofile="${project.build.outputDirectory}/META-INF/persistence.xml" />
+										<delete file="${project.build.outputDirectory}/environment.stag.properties" />
+										<delete file="${project.build.outputDirectory}/META-INF/persistence.stag.xml" />
+                                        <delete file="${project.build.outputDirectory}/environment.prod.properties" />
+                                        <delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
 									</tasks>
 								</configuration>
 							</execution>
@@ -336,26 +408,6 @@
 		</resources>
 
 		<plugins>
-
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-				<executions>
-					<execution>
-						<id>auto-clean</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-						<configuration>
-							<skip>false</skip>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -399,6 +451,8 @@
 					<argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
 					<excludes>
 						<exclude>**/TestUtils.java</exclude>
+						<exclude>**/*TestUtils.java</exclude>
+						<exclude>**/*Mock.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

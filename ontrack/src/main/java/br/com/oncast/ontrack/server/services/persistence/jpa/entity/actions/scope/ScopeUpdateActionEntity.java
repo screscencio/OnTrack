@@ -22,7 +22,7 @@ public class ScopeUpdateActionEntity extends ModelActionEntity {
 	@Column(name = "referenceId")
 	private String referenceId;
 
-	@Column(name = "description")
+	@Column(name = "description", length = 400)
 	private String newDescription;
 
 	@OneToMany(cascade = CascadeType.ALL)

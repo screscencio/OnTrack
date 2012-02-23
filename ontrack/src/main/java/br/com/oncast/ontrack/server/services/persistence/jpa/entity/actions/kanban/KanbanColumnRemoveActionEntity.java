@@ -20,7 +20,7 @@ public class KanbanColumnRemoveActionEntity extends ModelActionEntity {
 	private String referenceId;
 
 	@ConversionAlias("columnDescription")
-	@Column(name = "description")
+	@Column(name = "description", length = 400)
 	private String columnDescription;
 
 	@ConversionAlias("shouldUnfixKanban")

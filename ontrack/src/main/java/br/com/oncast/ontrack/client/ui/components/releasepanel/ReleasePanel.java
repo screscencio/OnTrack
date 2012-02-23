@@ -24,6 +24,8 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
@@ -63,6 +65,8 @@ public class ReleasePanel implements Component {
 						action instanceof ScopeInsertChildRollbackAction ||
 						action instanceof ScopeInsertSiblingUpRollbackAction ||
 						action instanceof ScopeInsertSiblingDownRollbackAction ||
+						action instanceof ScopeMoveLeftAction ||
+						action instanceof ScopeMoveRightAction ||
 						action instanceof ScopeRemoveRollbackAction ||
 						action instanceof ScopeDeclareProgressAction ||
 						action instanceof ScopeDeclareEffortAction ||

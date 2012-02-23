@@ -26,7 +26,7 @@ public class ScopeTreeReleaseUpdateAction implements ScopeTreeAction {
 
 		final List<Scope> scopesIncludingDescendantReleases = release.getAllScopesIncludingDescendantReleases();
 		for (final Scope scope : scopesIncludingDescendantReleases) {
-			final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope.getId());
+			final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
 			treeItem.getScopeTreeItemWidget().updateReleaseDisplay();
 		}
 	}

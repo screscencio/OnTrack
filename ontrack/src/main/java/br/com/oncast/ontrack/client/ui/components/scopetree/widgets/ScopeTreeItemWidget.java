@@ -6,7 +6,6 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
@@ -219,7 +218,6 @@ public class ScopeTreeItemWidget extends Composite {
 		editionBox.setText(getSimpleDescription());
 		deckPanel.showWidget(1);
 		new Timer() {
-
 			@Override
 			public void run() {
 				editionBox.selectAll();
@@ -342,12 +340,12 @@ public class ScopeTreeItemWidget extends Composite {
 		configPopup().alignBelow(descriptionLabel).alignRight(releasePanel).popup(commandsMenu).pop();
 	}
 
-	public void showProgressMenu(final Set<String> progressDefinitionSet) {
+	public void showProgressMenu(final List<String> list) {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
 
 		final String notStartedDescription = ProgressState.NOT_STARTED.getDescription();
 		items.add(progressCommandMenuItemFactory.createItem("Not Started", notStartedDescription));
-		for (final String progressDefinition : progressDefinitionSet)
+		for (final String progressDefinition : list)
 			if (!notStartedDescription.equals(progressDefinition)) items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 300);
