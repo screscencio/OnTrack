@@ -164,4 +164,13 @@ public class Scope implements Serializable {
 	public String toString() {
 		return description;
 	}
+
+	public List<Scope> getAllDescendantScopes() {
+		final ArrayList<Scope> l = new ArrayList<Scope>();
+		for (final Scope scope : childrenList) {
+			l.add(scope);
+			l.addAll(scope.getAllDescendantScopes());
+		}
+		return l;
+	}
 }

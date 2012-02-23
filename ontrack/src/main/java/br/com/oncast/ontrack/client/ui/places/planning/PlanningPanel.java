@@ -69,12 +69,12 @@ public class PlanningPanel extends Composite implements PlanningView {
 	}
 
 	@Override
-	//FIXME Mats review this method
+	// FIXME Mats review this method
 	public void ensureWidgetIsVisible(final IsWidget isWidget) {
 		final Widget widget = isWidget.asWidget();
 
 		final int menuTop = releaseScroll.getVerticalScrollPosition();
-		final int menuHeight = releaseScroll.getElement().getClientHeight();
+		final int menuHeight = releaseScroll.getElement().getOffsetHeight();
 		final int menuBottom = menuTop + menuHeight;
 
 		final Element widgetElement = widget.getElement();

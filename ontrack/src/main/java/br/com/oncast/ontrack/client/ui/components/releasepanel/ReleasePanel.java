@@ -111,7 +111,7 @@ public class ReleasePanel implements Component {
 		return rootRelease.hashCode();
 	}
 
-	public ReleaseWidget setHierarchicalContainerState(final Release release, final boolean state) {
-		return releasePanelWidget.setHierarchicalContainerState(release, state);
+	public ReleaseWidget findWidgetAndSetContainerState(final Release release, final boolean state) {
+		return releasePanelWidget.findWidgetAndSetContainerState(release, state);
 	}
 }

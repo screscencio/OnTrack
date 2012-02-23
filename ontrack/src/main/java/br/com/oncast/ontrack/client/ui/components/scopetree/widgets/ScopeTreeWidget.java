@@ -31,17 +31,20 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeItemAdoptionListener;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class ScopeTreeWidget extends Composite {
+public class ScopeTreeWidget extends Composite implements HasFocusHandlers {
 
 	private final Tree tree;
 
@@ -225,18 +228,26 @@ public class ScopeTreeWidget extends Composite {
 	}
 
 	public void showSearchWidget() {
-		ScopeTreeSearchWidget.show(getAllItens());
+		ScopeTreeSearchWidget.show(this, getAllItens());
 	}
 
-	private List<ScopeTreeItem> getAllItens() {
-		final ArrayList<ScopeTreeItem> allItens = new ArrayList<ScopeTreeItem>();
-		final ScopeTreeItem rootItem = getItem(0);
-		allItens.add(rootItem);
-		allItens.addAll(rootItem.getAllDescendantChilden());
+	@Override
+	public HandlerRegistration addFocusHandler(final FocusHandler handler) {
+		return tree.addFocusHandler(handler);
+	}
+
+	private List<Scope> getAllItens() {
+		final ArrayList<Scope> allItens = new ArrayList<Scope>();
+		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
+		final Scope projectScope = provider.getContextProviderService()
+				.getProjectContext(provider.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId()).getProjectScope();
+		allItens.add(projectScope);
+		allItens.addAll(projectScope.getAllDescendantScopes());
 		return allItens;
 	}
 
 	public void toggle(final VisibilityOf element) {
 		element.toggle();
 	}
+
 }
