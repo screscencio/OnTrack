@@ -5,6 +5,8 @@ import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configP
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
@@ -138,7 +140,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	@UiHandler("panel")
 	public void onScopeWidgetClick(final ClickEvent e) {
-		releasePanelInteractionHandler.onScopeSelectionRequest(scope);
+		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 	}
 
 }

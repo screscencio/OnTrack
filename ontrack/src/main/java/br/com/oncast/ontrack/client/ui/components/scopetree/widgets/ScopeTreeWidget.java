@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
@@ -23,16 +26,20 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.VisibilityOf;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeItemAdoptionListener;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class ScopeTreeWidget extends Composite {
 
@@ -105,16 +112,16 @@ public class ScopeTreeWidget extends Composite {
 			@Override
 			public void onTreeItemAdopted(final TreeItem treeItem) {
 				final ScopeTreeItem scopeTreeItem = ((ScopeTreeItem) treeItem);
-				addRecursivelyToCache(scopeTreeItem);
+				addToCache(scopeTreeItem);
 			}
 
 			@Override
 			public void onTreeItemAbandoned(final TreeItem treeItem) {
 				final ScopeTreeItem scopeTreeItem = ((ScopeTreeItem) treeItem);
-				removeRecusivelyFromCache(scopeTreeItem);
+				removeFromCache(scopeTreeItem);
 			}
 
-			private void addRecursivelyToCache(final ScopeTreeItem scopeTreeItem) {
+			private void addToCache(final ScopeTreeItem scopeTreeItem) {
 				final Scope scope = scopeTreeItem.getReferencedScope();
 				if (itemMapCache.containsKey(scope.getId())) throw new RuntimeException(
 						"You are trying to Add a widget for Scope '" + scope.getDescription() + "' that the ScopeTreeWidget already has");
@@ -122,7 +129,7 @@ public class ScopeTreeWidget extends Composite {
 				itemMapCache.put(scope.getId(), scopeTreeItem);
 			}
 
-			private void removeRecusivelyFromCache(final ScopeTreeItem scopeTreeItem) {
+			private void removeFromCache(final ScopeTreeItem scopeTreeItem) {
 				final Scope scope = scopeTreeItem.getReferencedScope();
 				if (!itemMapCache.containsKey(scope.getId())) throw new RuntimeException("You are trying to Remove a widget for Scope '"
 						+ scope.getDescription() + "' that is not present in the ScopeTreeWidget");
@@ -130,11 +137,37 @@ public class ScopeTreeWidget extends Composite {
 				itemMapCache.remove(scope.getId());
 			}
 		});
+		final EventBus eventBus = ClientServiceProvider.getInstance().getEventBus();
+		tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+			@Override
+			public void onSelection(final SelectionEvent<TreeItem> event) {
+				final ScopeTreeItem selectedItem = (ScopeTreeItem) event.getSelectedItem();
+				eventBus.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
+			}
+		});
+
+		eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+			@Override
+			public void onScopeSelectionRequest(final Scope scope) {
+				try {
+					tree.setSelectedItem(findScopeTreeItem(scope), false);
+				}
+				catch (final ScopeNotFoundException e) {
+					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
+				}
+			}
+
+			@Override
+			public boolean mustIgnoreFromSource(final Object source) {
+				return source instanceof ScopeTreeWidget;
+			}
+		});
 		tree.addOpenHandler(new OpenHandler<TreeItem>() {
 			@Override
 			public void onOpen(final OpenEvent<TreeItem> event) {
 				final ScopeTreeItem item = (ScopeTreeItem) event.getTarget();
 				item.mountTwoLevels();
+				tree.setSelectedItem(null);
 				tree.setSelectedItem(item);
 			}
 		});
@@ -201,5 +234,9 @@ public class ScopeTreeWidget extends Composite {
 		allItens.add(rootItem);
 		allItens.addAll(rootItem.getAllDescendantChilden());
 		return allItens;
+	}
+
+	public void toggle(final VisibilityOf element) {
+		element.toggle();
 	}
 }

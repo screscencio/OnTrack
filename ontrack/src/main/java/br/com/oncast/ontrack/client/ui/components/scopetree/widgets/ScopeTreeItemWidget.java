@@ -16,6 +16,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFacto
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.VisibilityOf;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.VisibilityOf.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -67,6 +69,10 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiField
 	@IgnoredByDeepEquality
 	protected DeckPanel deckPanel;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected HTMLPanel descriptionPanel;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -136,7 +142,6 @@ public class ScopeTreeItemWidget extends Composite {
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
-		releaseTag.setVisible(false);
 		setScope(scope);
 
 		this.editionHandler = editionHandler;
@@ -174,6 +179,9 @@ public class ScopeTreeItemWidget extends Composite {
 				editionHandler.onEditionEnd(new ScopeRepresentationBuilder(scope).includeEverything().excludeReleaseReference().toString());
 			}
 		});
+
+		configureItensAttributes();
+		registerCustomItensChangeListeners();
 
 		deckPanel.showWidget(0);
 	}
@@ -387,5 +395,45 @@ public class ScopeTreeItemWidget extends Composite {
 
 		menu.setOrderedItens(itens);
 		return menu;
+	}
+
+	private void configureItensAttributes() {
+		setupParentTdWidthAttribute(releasePanel, "1");
+		setupParentTdWidthAttribute(progressLabel, "1");
+		setupParentTdWidthAttribute(effortPanel, "1");
+		setupParentTdWidthAttribute(valuePanel, "1");
+		setupParentTdWidthAttribute(descriptionPanel, "*");
+	}
+
+	private void setupParentTdWidthAttribute(final Widget widget, final String widthValue) {
+		widget.getElement().getParentElement().setAttribute("width", widthValue);
+	}
+
+	private void registerCustomItensChangeListeners() {
+		VisibilityOf.RELEASE.register(new VisibilityChangeListener() {
+			@Override
+			public void onVisiblityChange(final boolean isVisible) {
+				releasePanel.setVisible(isVisible);
+			}
+		});
+
+		VisibilityOf.PROGRESS.register(new VisibilityChangeListener() {
+			@Override
+			public void onVisiblityChange(final boolean isVisible) {
+				progressLabel.setVisible(isVisible);
+			}
+		});
+		VisibilityOf.EFFORT.register(new VisibilityChangeListener() {
+			@Override
+			public void onVisiblityChange(final boolean isVisible) {
+				effortPanel.setVisible(isVisible);
+			}
+		});
+		VisibilityOf.VALUE.register(new VisibilityChangeListener() {
+			@Override
+			public void onVisiblityChange(final boolean isVisible) {
+				valuePanel.setVisible(isVisible);
+			}
+		});
 	}
 }

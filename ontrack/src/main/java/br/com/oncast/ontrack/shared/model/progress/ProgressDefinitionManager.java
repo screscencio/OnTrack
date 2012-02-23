@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
-import br.com.oncast.ontrack.shared.model.project.Project;
 
 public class ProgressDefinitionManager {
 
@@ -23,7 +22,7 @@ public class ProgressDefinitionManager {
 
 		for (final String definition : progressDefinitionList)
 			if (definition.equalsIgnoreCase(description)) return;
-		
+
 		progressDefinitionList.add(description);
 	}
 
@@ -31,7 +30,7 @@ public class ProgressDefinitionManager {
 		return progressDefinitionList;
 	}
 
-	public void populate(final Project project) {
+	public void populate() {
 		progressDefinitionList.clear();
 		populateFromProgressState();
 	}
@@ -40,4 +39,5 @@ public class ProgressDefinitionManager {
 		for (final ProgressState state : ProgressState.values())
 			this.onProgressDefinition(state.getDescription());
 	}
+
 }

@@ -102,7 +102,6 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	}
 
 	private void assureChildrenWasAdded() {
-		this.setVisible(false);
 		final List<Scope> children = this.getReferencedScope().getChildren();
 		for (int i = 0; i < children.size(); i++) {
 			final Scope childScope = children.get(i);
@@ -125,7 +124,6 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			this.removeItem(childItem);
 			scopeItemCacheMap.remove(childItem.getReferencedScope());
 		}
-		this.setVisible(true);
 	}
 
 	protected void select() {

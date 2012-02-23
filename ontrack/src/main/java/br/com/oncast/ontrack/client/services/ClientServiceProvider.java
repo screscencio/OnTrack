@@ -144,7 +144,7 @@ public class ClientServiceProvider {
 		return serverPushClientService = new ServerPushClientServiceImpl(getClientIdentificationProvider(), getErrorTreatmentService());
 	}
 
-	private EventBus getEventBus() {
+	public EventBus getEventBus() {
 		if (eventBus != null) return eventBus;
 		return eventBus = new SimpleEventBus();
 	}

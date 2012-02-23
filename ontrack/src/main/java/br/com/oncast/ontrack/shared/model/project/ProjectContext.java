@@ -26,7 +26,7 @@ public class ProjectContext {
 
 	public ProjectContext(final Project project) {
 		this.project = project;
-		ProgressDefinitionManager.getInstance().populate(project);
+		ProgressDefinitionManager.getInstance().populate();
 	}
 
 	public ProjectRepresentation getProjectRepresentation() {

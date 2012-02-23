@@ -97,6 +97,10 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		return verticalContainer;
 	}
 
+	public E getWidgetFor(final T modelBean) {
+		return widgetMap.get(modelBean);
+	}
+
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;

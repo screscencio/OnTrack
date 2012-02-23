@@ -13,28 +13,29 @@
 			}
 			
 			.visualizationPanel {
-				position: absolute;
-				top: 0px;
-				bottom: 0px;
-				left: 0px;
-				right: 0px;
 				height: 20px;
 				min-height: 20px;
 			}
 			
-			.descriptionLabel {
-				cursor: pointer;
-				text-align: left;
+			.descriptionPanel {
 				position: absolute;
-				right: 168px;
-				left: 0px;
 				top: 0px;
 				bottom: 0px;
+				left: 0px;
+				right: 0px;
+			}
+			
+			.descriptionLabel {
+				cursor: pointer;
+				position: absolute;
+				top: 0px;
+				right: 0px;
+				bottom: 0px;
+				left: 0px;
 			}
 			
 			.effort {
-				position: absolute;
-				right: 0px;
+				position: relative;
 				width: 80px;
 				height: 20px;
 				overflow: hidden;
@@ -56,8 +57,7 @@
             }
             			
 			.value {
-				position: absolute;
-				right: 80px;
+				position: relative;
 				width: 80px;
 				height: 20px;
 				overflow: hidden;
@@ -71,7 +71,7 @@
 				-moz-user-select: none;
 				-khtml-user-select: none;
 				user-select: none;
-
+				z-index: 1;
 			}
 			
 			.valueLabel {
@@ -92,15 +92,12 @@
                 top: 0px;
                 bottom: 0px;
                 left: 0px;
-                right: 215px;
+                right: 0px;
                 display: block;
 			}
 			
 			.releasePanel {
-                position: absolute;
-                top: 0px;
-                bottom: 0px;
-                right: 90px;
+                position: relative;
                 width: 120px;
 				overflow: hidden;				
                 text-align: right;
@@ -113,25 +110,30 @@
 			}
 
 			.progressLabel {
-				position: absolute;
-				top: 0px;
-				bottom: 0px;
-				right: 5px;
+				position: relative;
 				width: 80px;
+				height: 20px;
 				opacity: 0.2;
 				font-size: small;
 				font-stretch: expanded;
 			}
-			
 			.editionBox {
+			}
+			.scopeTable {
+				width: 100%;
+			}
+			.scopeTable > tbody > tr > td:first-child {
+				position: relative;
 			}
 		</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
 		<g:DeckPanel ui:field="deckPanel" styleName="{style.editableLabel}">
 			<g:FlowPanel styleName="{style.visualizationPanel}">
-				<g:HorizontalPanel styleName="{style.scope}" >
-					<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip" />
+				<g:HorizontalPanel styleName="{style.scopeTable}">
+					<g:HTMLPanel ui:field="descriptionPanel" styleName="{style.descriptionPanel}">
+						<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel} v-ellip" width="100%"/>
+					</g:HTMLPanel>
 					<g:HTMLPanel ui:field="valuePanel" styleName="{style.value}">
 						<t:FastLabel ui:field="inferedValueLabel" styleName="{style.valueLabel} {style.labelTranslucid}" />
 						<t:FastLabel ui:field="declaredValueLabel" styleName="{style.valueLabel}" />
@@ -140,11 +142,11 @@
 						<t:FastLabel ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.labelTranslucid}" />
 						<t:FastLabel ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
 					</g:HTMLPanel>
+					<t:FastLabel ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
+					<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}" >
+					    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
+					</g:HTMLPanel>
 				</g:HorizontalPanel>
-				<g:HTMLPanel ui:field="releasePanel" styleName="{style.releasePanel}" >
-				    <t:Tag ui:field="releaseTag" styleName="{style.tag}" />
-				</g:HTMLPanel>
-				<t:FastLabel ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
 			</g:FlowPanel>
 			<g:TextBox ui:field="editionBox" styleName="{style.editionBox}" />
 		</g:DeckPanel>

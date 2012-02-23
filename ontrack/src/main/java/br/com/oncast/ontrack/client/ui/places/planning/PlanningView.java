@@ -17,4 +17,6 @@ public interface PlanningView extends IsWidget {
 	ApplicationMenu getApplicationMenu();
 
 	void setVisible(boolean b);
+
+	void ensureWidgetIsVisible(IsWidget widget);
 }
