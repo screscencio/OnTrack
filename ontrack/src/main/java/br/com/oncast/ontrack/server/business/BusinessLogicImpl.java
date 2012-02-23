@@ -249,7 +249,7 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation, final User authenticatedUser) throws PersistenceException {
 		final String adminEmail = DefaultAuthenticationCredentials.USER_EMAIL;
-		if (authenticatedUser.getEmail() != adminEmail) {
+		if (!adminEmail.equals(authenticatedUser.getEmail())) {
 			persistenceService.authorize(adminEmail, persistedProjectRepresentation.getId());
 		}
 	}
