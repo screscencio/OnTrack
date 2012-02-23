@@ -36,7 +36,6 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	}
 
 	public boolean update(final List<T> modelBeanList) {
-		setVisible(false);
 		boolean hasChanged = false;
 
 		for (int i = 0; i < modelBeanList.size(); i++) {
@@ -65,7 +64,6 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		}
 
 		listener.onUpdateComplete(hasChanged);
-		setVisible(true);
 		return hasChanged;
 	}
 

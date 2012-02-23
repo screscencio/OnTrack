@@ -71,7 +71,7 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 		final Scope scope = ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6);
 
 		final Scope child = scope.getChild(1).getChild(0);
-		child.getProgress().setDescription("");
+		child.getProgress().setDescription("DONE");
 		ProgressTestUtils.setProgressState(child, ProgressState.DONE);
 
 		final Scope grandChild = new Scope("b11");
