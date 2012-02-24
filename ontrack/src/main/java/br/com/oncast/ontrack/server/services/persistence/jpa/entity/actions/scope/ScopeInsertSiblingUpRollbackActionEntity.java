@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -17,7 +18,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAct
 public class ScopeInsertSiblingUpRollbackActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
 	@ConversionAlias("scopeUpdateRollbackAction")

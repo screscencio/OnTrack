@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kan
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -16,16 +17,16 @@ public class KanbanColumnRenameActionEntity extends ModelActionEntity {
 
 	@ConversionAlias("releaseId")
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String releaseId;
 
-	@ConversionAlias("columnDescription")
-	@Column(name = "secondaryReferenceId")
-	private String columnDescription;
-
 	@ConversionAlias("newDescription")
-	@Column(name = "description", length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = 400)
 	private String newDescription;
+
+	@ConversionAlias("columnDescription")
+	@Column(name = ActionTableColumns.STRING_3)
+	private String columnDescription;
 
 	public String getReleaseId() {
 		return releaseId;

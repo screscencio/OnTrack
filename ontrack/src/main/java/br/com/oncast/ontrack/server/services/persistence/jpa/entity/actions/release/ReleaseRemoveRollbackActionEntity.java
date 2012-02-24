@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -22,20 +23,20 @@ public class ReleaseRemoveRollbackActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
 	@ConversionAlias("referenceId")
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
 	@ConvertUsing(StringToUuidConverter.class)
 	@ConversionAlias("parentReleaseId")
-	@Column(name = "secundaryReferenceId")
+	@Column(name = ActionTableColumns.STRING_4)
 	private String parentReleaseId;
 
 	@ConversionAlias("description")
-	@Column(name = "description", length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = 400)
 	private String description;
 
 	@ConversionAlias("index")
-	@Column(name = "pos")
+	@Column(name = ActionTableColumns.INTEGER)
 	private int pos;
 
 	@Column(name = "ReleaseRemoveRollbackActionEntity_childActionList")

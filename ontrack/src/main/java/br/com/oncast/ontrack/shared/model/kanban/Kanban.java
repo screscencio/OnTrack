@@ -166,5 +166,4 @@ public class Kanban extends SimpleKanban implements Serializable {
 	private boolean kanbanWithoutInferenceContainsColumn(final String columnDescription) {
 		return kanbanWithoutInference.getColumn(columnDescription) != null;
 	}
-
 }

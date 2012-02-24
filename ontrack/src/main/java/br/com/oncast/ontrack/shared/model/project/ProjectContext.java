@@ -114,6 +114,7 @@ public class ProjectContext {
 			project.setKanban(release, kanban);
 		}
 		if (!kanban.isLocked()) kanban.merge(getPreviousKanbanFrom(release));
+
 		return kanban;
 	}
 
@@ -131,14 +132,10 @@ public class ProjectContext {
 		final HashSet<Release> releases = new HashSet<Release>();
 
 		for (final Release release : getProjectRelease().getDescendantReleases()) {
-			if (hasDirectScopes(release)) {
+			if (release.hasDirectScopes()) {
 				releases.add(release);
 			}
 		}
 		return releases;
-	}
-
-	public static boolean hasDirectScopes(final Release release) {
-		return !release.getScopeList().isEmpty();
 	}
 }
