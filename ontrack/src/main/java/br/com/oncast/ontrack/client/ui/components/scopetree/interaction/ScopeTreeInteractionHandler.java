@@ -171,7 +171,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 		try {
 			declaredValue = Float.valueOf(valueDescription);
-			hasDeclaredValue = (valueDescription != null && !valueDescription.isEmpty());
+			hasDeclaredValue = true;
 		}
 		catch (final NumberFormatException e) {
 			declaredValue = 0;

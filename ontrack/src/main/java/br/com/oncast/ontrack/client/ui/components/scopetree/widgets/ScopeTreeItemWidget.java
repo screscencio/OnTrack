@@ -72,10 +72,6 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected HTMLPanel descriptionPanel;
-
-	@UiField
-	@IgnoredByDeepEquality
 	protected Label descriptionLabel;
 
 	@UiField
@@ -180,7 +176,6 @@ public class ScopeTreeItemWidget extends Composite {
 			}
 		});
 
-		configureItensAttributes();
 		registerCustomItensChangeListeners();
 
 		deckPanel.showWidget(0);
@@ -243,8 +238,9 @@ public class ScopeTreeItemWidget extends Composite {
 			editionHandler.onEditionCancel();
 		}
 		else {
-			if (!getValue().equals(editionBox.getText()) || editionBox.getText().isEmpty()) editionHandler.onEditionEnd(completeDescription(editionBox
-					.getText()));
+			if (!getSimpleDescription().equals(editionBox.getText())) editionHandler
+					.onEditionEnd(completeDescription(editionBox
+							.getText()));
 			else editionHandler.onEditionCancel();
 		}
 	}
@@ -253,11 +249,11 @@ public class ScopeTreeItemWidget extends Composite {
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(text);
 		final ScopeRepresentationBuilder builder = new ScopeRepresentationBuilder(scope);
 		final StringBuffer buffer = new StringBuffer(text);
-		if (!parser.hasDeclaredEffort()) buffer.append(builder.includeEffort().toString());
-		if (!parser.hasDeclaredValue()) buffer.append(builder.includeValue().toString());
-		if (parser.getReleaseDescription().isEmpty()) buffer.append(builder.includeReleaseReference().toString());
-		if (parser.getProgressDescription() == null) buffer.append(builder.includeProgress().toString());
-		return buffer.toString();
+		if (!parser.hasDeclaredEffort()) builder.includeEffort();
+		if (!parser.hasDeclaredValue()) builder.includeValue();
+		if (parser.getReleaseDescription().isEmpty()) builder.includeReleaseReference();
+		if (parser.getProgressDescription() == null) builder.includeProgress();
+		return buffer.append(builder.toString()).toString();
 	}
 
 	private boolean isEditing() {
@@ -395,18 +391,6 @@ public class ScopeTreeItemWidget extends Composite {
 
 		menu.setOrderedItens(itens);
 		return menu;
-	}
-
-	private void configureItensAttributes() {
-		setupParentTdWidthAttribute(releasePanel, "1");
-		setupParentTdWidthAttribute(progressLabel, "1");
-		setupParentTdWidthAttribute(effortPanel, "1");
-		setupParentTdWidthAttribute(valuePanel, "1");
-		setupParentTdWidthAttribute(descriptionPanel, "*");
-	}
-
-	private void setupParentTdWidthAttribute(final Widget widget, final String widthValue) {
-		widget.getElement().getParentElement().setAttribute("width", widthValue);
 	}
 
 	private void registerCustomItensChangeListeners() {
