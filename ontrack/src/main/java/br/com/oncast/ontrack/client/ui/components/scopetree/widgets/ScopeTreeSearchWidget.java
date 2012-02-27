@@ -3,11 +3,14 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SearchScopeFiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SearchScopeFiltrableCommandMenu.FiltrableCommandMenuListener;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -17,23 +20,22 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeSearchWidget {
 
 	private ScopeTreeSearchWidget() {}
 
-	public static void show(final List<ScopeTreeItem> scopeTreeItemList) {
+	public static void show(final ScopeTreeWidget tree, final List<Scope> scopeList) {
 		final SearchScopeFiltrableCommandMenu searchMenu = new SearchScopeFiltrableCommandMenu(700, 400);
 
-		registerHandlers(searchMenu, scopeTreeItemList.get(0).getTree());
+		registerHandlers(searchMenu, tree);
 
-		searchMenu.setOrderedItens(asCommandMenuItens(scopeTreeItemList));
+		searchMenu.setOrderedItens(asCommandMenuItens(tree, scopeList));
 
 		asPoupup(searchMenu).pop();
 	}
 
-	private static void registerHandlers(final SearchScopeFiltrableCommandMenu searchMenu, final Tree tree) {
+	private static void registerHandlers(final SearchScopeFiltrableCommandMenu searchMenu, final ScopeTreeWidget tree) {
 		final HandlerRegistration treeFocusHandler = tree.addFocusHandler(new FocusHandler() {
 			@Override
 			public void onFocus(final FocusEvent event) {
@@ -41,7 +43,7 @@ public class ScopeTreeSearchWidget {
 			}
 		});
 
-		final TreeItem previouslySelectedItem = tree.getSelectedItem();
+		final Scope previouslySelectedScope = tree.getSelectedItem().getReferencedScope();
 		searchMenu.setListener(new FiltrableCommandMenuListener() {
 			@Override
 			public void onItemSelected(final CommandMenuItem selectedItem) {
@@ -50,7 +52,7 @@ public class ScopeTreeSearchWidget {
 
 			@Override
 			public void onCancel() {
-				selectItem(previouslySelectedItem);
+				selectItem(tree, previouslySelectedScope);
 			}
 		});
 
@@ -63,13 +65,13 @@ public class ScopeTreeSearchWidget {
 		});
 	}
 
-	private static List<CommandMenuItem> asCommandMenuItens(final List<ScopeTreeItem> scopeTreeItemList) {
+	private static List<CommandMenuItem> asCommandMenuItens(final ScopeTreeWidget tree, final List<Scope> scopeList) {
 		final List<CommandMenuItem> menuItens = new ArrayList<CommandMenuItem>();
-		for (final ScopeTreeItem item : scopeTreeItemList) {
-			menuItens.add(new CommandMenuItem(getItemText(item), new Command() {
+		for (final Scope item : scopeList) {
+			menuItens.add(new CommandMenuItem(item.getDescription(), new Command() {
 				@Override
 				public void execute() {
-					selectItem(item);
+					selectItem(tree, item);
 				}
 			}));
 		}
@@ -82,15 +84,19 @@ public class ScopeTreeSearchWidget {
 		return PopupConfig.configPopup().popup(searchMenu);
 	}
 
-	private static void selectItem(final TreeItem selectedItem) {
-		final Tree tree = selectedItem.getTree();
-		tree.setSelectedItem(null);
-		tree.setSelectedItem(selectedItem);
-		tree.ensureSelectedItemVisible();
-		tree.setSelectedItem(selectedItem);
+	private static void selectItem(final ScopeTreeWidget treeWidget, final Scope scope) {
+		try {
+			final ScopeTreeItem item = treeWidget.findScopeTreeItem(scope);
+			final Tree tree = item.getTree();
+			tree.setSelectedItem(null, false);
+			tree.setSelectedItem(item, false);
+			tree.ensureSelectedItemVisible();
+			tree.setSelectedItem(item);
+		}
+		catch (final ScopeNotFoundException e) {
+			e.printStackTrace();
+			ClientNotificationService.showError(e.getMessage());
+		}
 	}
 
-	private static String getItemText(final ScopeTreeItem item) {
-		return item.getScopeTreeItemWidget().getScope().getDescription();
-	}
 }

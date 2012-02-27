@@ -105,8 +105,8 @@ public class ScopeInsertChildActionTest {
 		final ModelAction rollbackAction = insertChildAction.execute(context);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
 
-		assertFalse(parent.getProgress().hasDeclared());
-		assertFalse(parent.getProgress().isDone());
+		assertTrue(parent.getProgress().hasDeclared());
+		assertTrue(parent.getProgress().isDone());
 
 		rollbackAction.execute(context);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);

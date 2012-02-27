@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.rel
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -16,16 +17,16 @@ public class ReleaseScopeUpdatePriorityActionEntity extends ModelActionEntity {
 
 	@ConversionAlias("releaseReferenceId")
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String releaseReferenceId;
 
 	@ConversionAlias("scopeReferenceId")
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "secundaryReferenceId")
+	@Column(name = ActionTableColumns.STRING_4)
 	private String scopeReferenceId;
 
 	@ConversionAlias("priority")
-	@Column(name = "pos")
+	@Column(name = ActionTableColumns.INTEGER)
 	private int priority;
 
 	public String getReleaseReferenceId() {

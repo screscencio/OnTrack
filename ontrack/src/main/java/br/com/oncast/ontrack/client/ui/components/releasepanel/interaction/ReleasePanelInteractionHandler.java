@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.interaction;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
-import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
@@ -15,14 +14,9 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInteractionHandler {
 
 	private ActionExecutionRequestHandler applicationActionHandler;
-	private ComponentInteractionHandler componentInteractionHandler;
 
 	public void configureActionExecutionRequestHandler(final ActionExecutionRequestHandler actionExecutionRequestHandler) {
 		this.applicationActionHandler = actionExecutionRequestHandler;
-	}
-
-	public void configureComponentInteractionHandler(final ComponentInteractionHandler componentInteractionHandler) {
-		this.componentInteractionHandler = componentInteractionHandler;
 	}
 
 	@Override
@@ -80,14 +74,8 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 		applicationActionHandler.onUserActionExecutionRequest(new ReleaseRenameAction(release.getId(), newReleaseName));
 	}
 
-	@Override
-	public void onScopeSelectionRequest(final Scope scope) {
-		assureConfigured();
-		componentInteractionHandler.onScopeSelectionRequest(scope);
-	}
-
 	private void assureConfigured() {
-		if (applicationActionHandler == null || componentInteractionHandler == null) throw new RuntimeException(
+		if (applicationActionHandler == null) throw new RuntimeException(
 				"This class was not yet configured.");
 	}
 }

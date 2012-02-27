@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kan
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -16,15 +17,15 @@ public class KanbanColumnRemoveActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
 	@ConversionAlias("referenceId")
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
 	@ConversionAlias("columnDescription")
-	@Column(name = "description", length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = 400)
 	private String columnDescription;
 
 	@ConversionAlias("shouldUnfixKanban")
-	@Column(name = "boleano")
+	@Column(name = ActionTableColumns.BOOLEAN)
 	private boolean shouldUnfixKanban;
 
 	public String getReferenceId() {

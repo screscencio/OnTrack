@@ -9,6 +9,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -21,14 +22,14 @@ import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 public class ScopeDeclareProgressActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
-	@Column(name = "description", length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = 400)
 	private String newProgressDescription;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "timestamp")
+	@Column(name = ActionTableColumns.TIMESTAMP)
 	private Date timestamp;
 
 	@ConversionAlias("subAction")

@@ -16,6 +16,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFacto
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.VisibilityOf;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.VisibilityOf.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -136,7 +138,6 @@ public class ScopeTreeItemWidget extends Composite {
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
-		releaseTag.setVisible(false);
 		setScope(scope);
 
 		this.editionHandler = editionHandler;
@@ -174,6 +175,8 @@ public class ScopeTreeItemWidget extends Composite {
 				editionHandler.onEditionEnd(new ScopeRepresentationBuilder(scope).includeEverything().excludeReleaseReference().toString());
 			}
 		});
+
+		registerCustomItensChangeListeners();
 
 		deckPanel.showWidget(0);
 	}
@@ -235,8 +238,9 @@ public class ScopeTreeItemWidget extends Composite {
 			editionHandler.onEditionCancel();
 		}
 		else {
-			if (!getValue().equals(editionBox.getText()) || editionBox.getText().isEmpty()) editionHandler.onEditionEnd(completeDescription(editionBox
-					.getText()));
+			if (!getSimpleDescription().equals(editionBox.getText())) editionHandler
+					.onEditionEnd(completeDescription(editionBox
+							.getText()));
 			else editionHandler.onEditionCancel();
 		}
 	}
@@ -245,11 +249,11 @@ public class ScopeTreeItemWidget extends Composite {
 		final ScopeRepresentationParser parser = new ScopeRepresentationParser(text);
 		final ScopeRepresentationBuilder builder = new ScopeRepresentationBuilder(scope);
 		final StringBuffer buffer = new StringBuffer(text);
-		if (!parser.hasDeclaredEffort()) buffer.append(builder.includeEffort().toString());
-		if (!parser.hasDeclaredValue()) buffer.append(builder.includeValue().toString());
-		if (parser.getReleaseDescription().isEmpty()) buffer.append(builder.includeReleaseReference().toString());
-		if (parser.getProgressDescription() == null) buffer.append(builder.includeProgress().toString());
-		return buffer.toString();
+		if (!parser.hasDeclaredEffort()) builder.includeEffort();
+		if (!parser.hasDeclaredValue()) builder.includeValue();
+		if (parser.getReleaseDescription().isEmpty()) builder.includeReleaseReference();
+		if (parser.getProgressDescription() == null) builder.includeProgress();
+		return buffer.append(builder.toString()).toString();
 	}
 
 	private boolean isEditing() {
@@ -387,5 +391,33 @@ public class ScopeTreeItemWidget extends Composite {
 
 		menu.setOrderedItens(itens);
 		return menu;
+	}
+
+	private void registerCustomItensChangeListeners() {
+		VisibilityOf.RELEASE.register(new VisibilityChangeListener() {
+			@Override
+			public void onVisiblityChange(final boolean isVisible) {
+				releasePanel.setVisible(isVisible);
+			}
+		});
+
+		VisibilityOf.PROGRESS.register(new VisibilityChangeListener() {
+			@Override
+			public void onVisiblityChange(final boolean isVisible) {
+				progressLabel.setVisible(isVisible);
+			}
+		});
+		VisibilityOf.EFFORT.register(new VisibilityChangeListener() {
+			@Override
+			public void onVisiblityChange(final boolean isVisible) {
+				effortPanel.setVisible(isVisible);
+			}
+		});
+		VisibilityOf.VALUE.register(new VisibilityChangeListener() {
+			@Override
+			public void onVisiblityChange(final boolean isVisible) {
+				valuePanel.setVisible(isVisible);
+			}
+		});
 	}
 }

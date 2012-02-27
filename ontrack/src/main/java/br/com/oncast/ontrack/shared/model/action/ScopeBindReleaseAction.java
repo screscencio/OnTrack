@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
@@ -7,6 +10,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scop
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
@@ -28,10 +32,10 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	@Attribute(required = false)
 	private String newReleaseDescription;
 
-	@ConversionAlias("subAction")
+	@ConversionAlias("subActionList")
 	@Element(required = false)
 	@IgnoredByDeepEquality
-	private ModelAction rollbackSubAction;
+	private List<ModelAction> rollbackSubActions;
 
 	@ConversionAlias("releaseCreateAction")
 	@Element(required = false)
@@ -56,9 +60,9 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		this.scopePriority = scopePriority;
 	}
 
-	public ScopeBindReleaseAction(final UUID scopeId, final String releaseDescription, final int scopePriority, final ModelAction subAction) {
+	public ScopeBindReleaseAction(final UUID scopeId, final String releaseDescription, final int scopePriority, final List<ModelAction> subActions) {
 		this(scopeId, releaseDescription, scopePriority);
-		this.rollbackSubAction = subAction;
+		this.rollbackSubActions = subActions;
 	}
 
 	// TODO Reference a release by its ID, not by its description. (Think about the consequences).
@@ -70,18 +74,32 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		final int oldScopePriority = (oldRelease != null) ? oldRelease.removeScope(selectedScope) : -1;
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
 
-		if (rollbackSubAction != null) releaseCreateAction = rollbackSubAction.execute(context);
+		final List<ModelAction> newRollbackSubActions = (rollbackSubActions == null) ? new ArrayList<ModelAction>() : processRollbackActions(context);
 
-		ModelAction newRollbackSubAction = releaseCreateAction;
 		if (shouldBindToNewRelease()) {
-			newRollbackSubAction = assureNewReleaseExistence(context);
+			final ModelAction releaseExistenceAssuranceAction = assureNewReleaseExistence(context);
+			if (releaseExistenceAssuranceAction != null) newRollbackSubActions.add(0, releaseExistenceAssuranceAction);
 
 			final Release newRelease = ReleaseActionHelper.findRelease(newReleaseDescription, context);
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
+
+			if (selectedScope.getProgress().getState().equals(ProgressState.UNDER_WORK)) newRollbackSubActions.add(new ScopeDeclareProgressAction(referenceId,
+					selectedScope.getProgress().getDescription()).execute(context));
 		}
 
-		return new ScopeBindReleaseAction(referenceId, oldReleaseDescription, oldScopePriority, newRollbackSubAction);
+		return new ScopeBindReleaseAction(referenceId, oldReleaseDescription, oldScopePriority, newRollbackSubActions);
+	}
+
+	private List<ModelAction> processRollbackActions(final ProjectContext context) throws UnableToCompleteActionException {
+		final List<ModelAction> newRollbackSubActions = new ArrayList<ModelAction>();
+		for (final ModelAction action : rollbackSubActions) {
+			final ModelAction newRollbackAction = action.execute(context);
+			newRollbackSubActions.add(0, newRollbackAction);
+
+			if (newRollbackAction instanceof ReleaseCreateAction) releaseCreateAction = newRollbackAction;
+		}
+		return newRollbackSubActions;
 	}
 
 	private boolean shouldBindToNewRelease() {

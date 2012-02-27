@@ -1,7 +1,8 @@
-package br.com.oncast.ontrack.shared.places;
+package br.com.oncast.ontrack.server.services;
 
 import br.com.oncast.ontrack.server.configuration.Configurations;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.places.PlacesPrefixes;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 

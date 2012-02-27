@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
@@ -19,11 +20,11 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 public class ScopeMoveLeftActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@Column(name = "modelActionEntity_subActionList")
+	@Column(name = ActionTableColumns.ACTION_LIST)
 	@JoinTable(name = "ScopeMoveLeftAction_subActionList")
 	private List<ModelActionEntity> subActionList;
 

@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kan
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -16,15 +17,15 @@ public class KanbanColumnMoveActionEntity extends ModelActionEntity {
 
 	@ConversionAlias("releaseId")
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String releaseId;
 
 	@ConversionAlias("columnDescription")
-	@Column(name = "secondaryReferenceId")
+	@Column(name = ActionTableColumns.STRING_3)
 	private String columnDescription;
 
 	@ConversionAlias("desiredIndex")
-	@Column(name = "pos")
+	@Column(name = ActionTableColumns.INTEGER)
 	private int desiredIndex;
 
 	public String getReleaseId() {

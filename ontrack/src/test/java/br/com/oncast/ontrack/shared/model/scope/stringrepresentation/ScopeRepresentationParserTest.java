@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.shared.model.scope.stringrepresentation;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.EFFORT_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.PROGRESS_SYMBOL;
 import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.RELEASE_SYMBOL;
+import static br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbols.VALUE_SYMBOL;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -222,6 +223,41 @@ public class ScopeRepresentationParserTest {
 	}
 
 	@Test
+	public void shouldMatchDescriptionAndValue1() {
+		test("descrição " + VALUE_SYMBOL + "1", "descrição", "", false, 0, true, 1);
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndValue2() {
+		test("descrição " + VALUE_SYMBOL + "99", "descrição", "", false, 0, true, 99);
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndValue3() {
+		test("descrição " + VALUE_SYMBOL + "21vp", "descrição", "", false, 0, true, 21);
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndValue4() {
+		test("descrição " + VALUE_SYMBOL + "21vp", "descrição", "", false, 0, true, 21);
+	}
+
+	@Test
+	public void shouldMatchDescriptionAndValue5() {
+		test("descrição " + VALUE_SYMBOL + "21 dfsdfsdep", "descrição", "", false, 0, true, 21);
+	}
+
+	@Test
+	public void shouldMatchValueWithSpacesAndTrimIt1() {
+		test(VALUE_SYMBOL + "   33", "", "", false, 0, true, 33);
+	}
+
+	@Test
+	public void shouldMatchValueWithSpacesAndTrimIt2() {
+		test(" " + VALUE_SYMBOL + "   33 ", "", "", false, 0, true, 33);
+	}
+
+	@Test
 	public void shouldMatchReleaseAndEffort1() {
 		test(RELEASE_SYMBOL + "release/subrelease " + EFFORT_SYMBOL + "1", "", "release/subrelease", true, 1);
 	}
@@ -417,6 +453,17 @@ public class ScopeRepresentationParserTest {
 		assertEquals(hasDeclaredEffort, parser.hasDeclaredEffort());
 		assertEquals(declaredEffort, parser.getDeclaredEffort(), 0);
 		assertEquals(progressMatch, parser.getProgressDescription());
+	}
+
+	private void test(final String pattern, final String descriptionMatch, final String releaseMatch,
+			final boolean hasDeclaredEffort, final float declaredEffort, final boolean hasDeclaredValue, final float declaredValue) {
+		final ScopeRepresentationParser parser = new ScopeRepresentationParser(pattern);
+		assertEquals(descriptionMatch, parser.getScopeDescription());
+		assertEquals(releaseMatch, parser.getReleaseDescription());
+		assertEquals(hasDeclaredEffort, parser.hasDeclaredEffort());
+		assertEquals(declaredEffort, parser.getDeclaredEffort(), 0);
+		assertEquals(hasDeclaredValue, parser.hasDeclaredValue());
+		assertEquals(declaredValue, parser.getDeclaredValue(), 0);
 	}
 
 }

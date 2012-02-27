@@ -5,9 +5,9 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
-import br.com.oncast.ontrack.client.ui.components.ComponentInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
@@ -96,10 +96,6 @@ public class ReleasePanel implements Component {
 		return actionExecutionListener;
 	}
 
-	public void setComponentInteractionHandler(final ComponentInteractionHandler componentInteractionHandler) {
-		releasePanelInteractionHandler.configureComponentInteractionHandler(componentInteractionHandler);
-	}
-
 	@Override
 	public void setActionExecutionRequestHandler(final ActionExecutionRequestHandler actionHandler) {
 		releasePanelInteractionHandler.configureActionExecutionRequestHandler(actionHandler);
@@ -113,5 +109,9 @@ public class ReleasePanel implements Component {
 	@Override
 	public int hashCode() {
 		return rootRelease.hashCode();
+	}
+
+	public ReleaseWidget findWidgetAndSetContainerState(final Release release, final boolean state) {
+		return releasePanelWidget.findWidgetAndSetContainerState(release, state);
 	}
 }

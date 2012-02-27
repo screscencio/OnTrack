@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -102,7 +101,6 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	}
 
 	private void assureChildrenWasAdded() {
-		this.setVisible(false);
 		final List<Scope> children = this.getReferencedScope().getChildren();
 		for (int i = 0; i < children.size(); i++) {
 			final Scope childScope = children.get(i);
@@ -125,7 +123,6 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			this.removeItem(childItem);
 			scopeItemCacheMap.remove(childItem.getReferencedScope());
 		}
-		this.setVisible(true);
 	}
 
 	protected void select() {
@@ -140,16 +137,6 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		scopeItemWidget.switchToEditionMode();
 		final Tree tree = getTree();
 		if (tree != null) tree.setSelectedItem(null);
-	}
-
-	public List<ScopeTreeItem> getAllDescendantChilden() {
-		final ArrayList<ScopeTreeItem> children = new ArrayList<ScopeTreeItem>();
-		for (int i = 0; i < getChildCount(); i++) {
-			final ScopeTreeItem currentChild = getChild(i);
-			children.add(currentChild);
-			children.addAll(currentChild.getAllDescendantChilden());
-		}
-		return children;
 	}
 
 	@Override

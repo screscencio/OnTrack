@@ -305,4 +305,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	public ScopeWidgetContainer getScopeContainer() {
 		return scopeContainer;
 	}
+
+	public ReleaseWidgetContainer getChildReleasesContainer() {
+		return releaseContainer;
+	}
 }

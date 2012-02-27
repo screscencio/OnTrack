@@ -7,8 +7,8 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
+import br.com.oncast.ontrack.server.services.CustomUrlGenerator;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.places.CustomUrlGenerator;
 
 public class HtmlMailContent {
 

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -20,18 +21,18 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 public class ScopeMoveRightActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
 	@ConversionAlias("position")
-	@Column(name = "pos")
+	@Column(name = ActionTableColumns.INTEGER)
 	private int pos;
 
-	@Column(name = "boleano")
+	@Column(name = ActionTableColumns.BOOLEAN)
 	private boolean wasIndexSet;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@Column(name = "modelActionEntity_subActionList")
+	@Column(name = ActionTableColumns.ACTION_LIST)
 	@JoinTable(name = "ScopeMoveRightAction_subActionList")
 	private List<ModelActionEntity> subActionList;
 

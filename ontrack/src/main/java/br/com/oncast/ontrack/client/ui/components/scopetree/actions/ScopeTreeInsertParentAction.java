@@ -29,8 +29,8 @@ class ScopeTreeInsertParentAction implements ScopeTreeAction {
 
 		final int index = grandParentScope.getChildIndex(newScope);
 		grandParentTreeItem.removeItem(treeItem);
-		newTreeItem.addItem(treeItem);
 		grandParentTreeItem.insertItem(index, newTreeItem);
+		newTreeItem.addItem(treeItem);
 
 		if (isUserInteraction) {
 			newTreeItem.setHierarchicalState(true);

@@ -30,7 +30,7 @@ public class ScopeRepresentationParser {
 
 	private final RegExp EFFORT_REGEX = RegExp.compile(EFFORT_SYMBOL + "[\\s]*((?:[\\d]+(?:\\.[\\d]*)?|\\.[\\d]+))(?:[es]p)?(?:\\s+.*)?$", "gi");
 
-	private final RegExp VALUE_REGEX = RegExp.compile(VALUE_SYMBOL + "[\\s]*((?:[\\d]+(?:\\.[\\d]*)?|\\.[\\d]+))(?:[v]p)?(?:\\s+.*)?$", "gi");
+	private final RegExp VALUE_REGEX = RegExp.compile("\\" + VALUE_SYMBOL + "[\\s]*((?:[\\d]+(?:\\.[\\d]*)?|\\.[\\d]+))(?:[v]p)?(?:\\s+.*)?$", "gi");
 
 	private final RegExp PROGRESS_REGEX = RegExp.compile(PROGRESS_SYMBOL + "[\\s]*([^" + TAGS + "]+)", "gi");
 

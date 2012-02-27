@@ -8,11 +8,11 @@ public class ScopeTreeItemDeclareValueEvent extends GwtEvent<ScopeTreeItemDeclar
 
 	public static Type<ScopeTreeItemDeclareValueEventHandler> TYPE;
 	private final UUID scopeId;
-	private final String effortDescription;
+	private final String valueDescription;
 
-	public ScopeTreeItemDeclareValueEvent(final UUID scopeId, final String effortDescription) {
+	public ScopeTreeItemDeclareValueEvent(final UUID scopeId, final String valueDescription) {
 		this.scopeId = scopeId;
-		this.effortDescription = effortDescription;
+		this.valueDescription = valueDescription;
 	}
 
 	public static Type<ScopeTreeItemDeclareValueEventHandler> getType() {
@@ -29,6 +29,6 @@ public class ScopeTreeItemDeclareValueEvent extends GwtEvent<ScopeTreeItemDeclar
 
 	@Override
 	protected void dispatch(final ScopeTreeItemDeclareValueEventHandler handler) {
-		handler.onDeclareValueRequest(scopeId, effortDescription);
+		handler.onDeclareValueRequest(scopeId, valueDescription);
 	}
 }

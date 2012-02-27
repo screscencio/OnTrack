@@ -72,9 +72,9 @@
 		<g:SimplePanel styleName="{style.scopeTree}">
 			<st:ScopeTree ui:field="scopeTree" />
 		</g:SimplePanel>
-		<g:SimplePanel styleName="{style.releasePanel}">
+		<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
 			<rp:ReleasePanel ui:field="releasePanel" />
-		</g:SimplePanel>
+		</g:ScrollPanel>
 		<g:Anchor ui:field="exportMapLink" text="Export to mind map"
 			target="_blank" styleName="{style.exportToMapLink}" />
 	</g:FlowPanel>

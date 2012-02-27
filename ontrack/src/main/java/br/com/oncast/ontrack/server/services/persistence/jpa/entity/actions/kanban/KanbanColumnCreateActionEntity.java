@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -21,25 +22,25 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 
 	@ConvertUsing(StringToUuidConverter.class)
 	@ConversionAlias("referenceId")
-	@Column(name = "referenceId")
+	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
 	@ConversionAlias("columnDescription")
-	@Column(name = "description", length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = 400)
 	private String columnDescription;
 
 	@ConversionAlias("shouldFixKanban")
-	@Column(name = "boleano")
+	@Column(name = ActionTableColumns.BOOLEAN)
 	private boolean shouldFixKanban;
 
 	@ConversionAlias("subActions")
 	@OneToMany(cascade = CascadeType.ALL)
-	@Column(name = "modelActionEntity_subActionList")
+	@Column(name = ActionTableColumns.ACTION_LIST)
 	@JoinTable(name = "KanbanColumnCreate_subActionList")
 	private List<ModelActionEntity> subActions;
 
 	@ConversionAlias("columnIndex")
-	@Column(name = "pos")
+	@Column(name = ActionTableColumns.INTEGER)
 	private int columnIndex;
 
 	public int getColumnIndex() {
