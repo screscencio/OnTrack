@@ -1,51 +1,74 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:cp="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
+	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
 
+	<ui:image field="logo" src="images/logo.png"/>
+	
 	<ui:style>
 		.rootPanel {
-			position: absolute;
+			position: relative;
+
+			top: 0px;
 			left: 0px;
 			right: 0px;
-			top: 0px;
-			bottom: 0px;
 		}
-		
-		.customItemContainer {
-			position: absolute;
-			left: 10px;
-			top: 0px;
-			bottom: 0px;
-			color: #FFF;
+		.menuBar {
+			position: relative;
+
+            height: 56px;
+            width: 100%;
+			
+			background: #f7cf75;
+			background: -moz-linear-gradient(top,  #f7cf75 0%, #f0c662 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7cf75), color-stop(100%,#f0c662));
+			background: -webkit-linear-gradient(top,  #f7cf75 0%,#f0c662 100%);
+			background: -o-linear-gradient(top,  #f7cf75 0%,#f0c662 100%);
+			background: -ms-linear-gradient(top,  #f7cf75 0%,#f0c662 100%);
+			background: linear-gradient(top,  #f7cf75 0%,#f0c662 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7cf75', endColorstr='#f0c662',GradientType=0 );
 		}
-	
-		.projectSwitchingMenuButton:HOVER {
-			cursor: pointer;
+		.logo{
+			float: right;
+			margin: 8px 15px;
 		}
-		
-		.menu {
-			position: absolute;
-			top: 6px;
-			color: #FFF;
-			text-shadow: -2px 2px 5px #000;
+		.menuItemContainer {
+			position: relative;
+			float: right;
+						
+			margin: 20px 15px; 
 		}
-		.menu:HOVER {
-			cursor: pointer;
+		.leftSideMenuItem {
+			float: left;
 		}
-		.projectMenu {
-			right: 195px;
+		.border1, .border2 {
+			height: 1px;
+			width: 100%;
+			padding: 0;
+			margin: 0;
+			border: 0;
+			opacity:.80;
+			filter:alpha(opacity=80);
 		}
-		.userMenu {
-			right: 150px;
+		.border1 {
+			background: #b4aa67;
+		}
+		.border2 {
+			background: #eae9de;
 		}
 	</ui:style>
 
-	<g:HTMLPanel styleName="{style.rootPanel}">
-		<g:HTMLPanel ui:field="customItemContainer" styleName="{style.customItemContainer}" />
-		<g:MenuBar ui:field="projectMenuBar" styleName="{style.projectMenu} {style.menu}" />
-		<g:MenuBar ui:field="userMenuBar" styleName="{style.userMenu} {style.menu}" />
-<!-- 		<g:Label ui:field="projectMenuLabel" styleName="{style.projectMenuLabel} {style.menuLabel}" text="Project" /> -->
-<!-- 		<g:Label ui:field="userMenuLabel" styleName="{style.userMenuLabel} {style.menuLabel}" text="Users" /> -->
-	</g:HTMLPanel>
+	<g:FlowPanel styleName="{style.rootPanel}">
+		<g:HTMLPanel ui:field="applicationMenuPanel" styleName="{style.menuBar}" >
+			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItemContainer} {style.leftSideMenuItem}" text="Project" biggerFont="true"/>
+			<g:FlowPanel styleName="{style.menuItemContainer} {style.leftSideMenuItem}">
+				<aw:BreadcrumbWidget ui:field="breadcrumb" />
+			</g:FlowPanel>
+			<g:Image resource="{logo}" styleName="{style.logo}"/>
+			<aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItemContainer}" text="User" />
+			<aw:ApplicationMenuItem ui:field="memberMenuItem" styleName="{style.menuItemContainer}" text="Members" />
+		</g:HTMLPanel>
+		<g:SimplePanel styleName="{style.border1}"/>
+		<g:SimplePanel styleName="{style.border2}"/>
+	</g:FlowPanel>
 </ui:UiBinder>

@@ -1,0 +1,47 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:image field="arrowUp" src="images/up.png"/>
+	<ui:image field="arrowDown" src="images/down.png"/>
+	
+	<ui:style type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem.ApplicationMenuItemStyle">
+		.menuItem {
+			float: left;
+			
+			font: 11pt 'ProximaNovaRegular';
+			text-transform: uppercase;
+			color: #996600;
+			text-shadow: 1px -1px 1px #f6d792;
+			filter: dropshadow(color=#f6d792, offx=1, offy=-1);
+		}
+		.menuItem:HOVER {
+			cursor: pointer;
+		}
+		.menuItem:HOVER, .menuItemSelected {
+			color: #cc9900;
+		}
+		
+		.biggerFont {
+			font-size: 12pt;
+		}
+		
+		.arrowUp, .arrowDown {
+			float: left;	
+			margin-left: 10px;
+			margin-top: 5px;
+		}
+		
+		@sprite .arrowUp {
+			gwt-image: 'arrowUp';
+		}
+		
+		@sprite .arrowDown {
+			gwt-image: 'arrowDown';
+		}
+	</ui:style>
+	<g:FlowPanel ui:field="rootPanel">
+		<g:Label ui:field="textLabel" styleName="{style.menuItem}" />
+		<g:Label ui:field="arrow" styleName="{style.arrowUp}" />
+	</g:FlowPanel>
+</ui:UiBinder> 

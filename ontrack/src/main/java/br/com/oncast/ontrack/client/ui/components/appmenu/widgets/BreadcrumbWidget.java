@@ -1,6 +1,7 @@
-package br.com.oncast.ontrack.client.ui.generalwidgets;
+package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import com.google.gwt.dom.client.Style.Unit;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -13,7 +14,12 @@ public class BreadcrumbWidget extends MenuBar {
 
 	public BreadcrumbWidget() {
 		addStyleDependentName("breadcrumb");
-		getElement().getStyle().setMarginTop(3, Unit.PX);
+	}
+
+	@Override
+	public void clearItems() {
+		super.clearItems();
+		addStyleDependentName("breadcrumb");
 	}
 
 	@Override

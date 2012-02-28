@@ -1,23 +1,22 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.BreadcrumbWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
-import br.com.oncast.ontrack.client.ui.generalwidgets.BreadcrumbWidget;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutRegistration;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,6 +30,8 @@ public class ProgressActivity extends AbstractActivity {
 	private Release release;
 
 	private ShortcutRegistration registration;
+
+	private MenuItem breadcrumbReleaseItem;
 
 	public ProgressActivity(final ProgressPlace place) {
 		try {
@@ -82,11 +83,12 @@ public class ProgressActivity extends AbstractActivity {
 	}
 
 	protected void updateViewData() {
-		view.getKanbanPanel().configureKanbanPanel(projectContext.getKanban(release), release);
+		updateBreadcrumb();
 	}
 
 	private void updateViewMenus() {
-		view.getApplicationMenu().setCustomItem(createBreadcrumb());
+		view.getApplicationMenu().getBreadcrumb().removeItem(breadcrumbReleaseItem);
+		breadcrumbReleaseItem = view.getApplicationMenu().getBreadcrumb().addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
 	}
 
 	private void exitToPlanningPlace() {
@@ -94,17 +96,10 @@ public class ProgressActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
 	}
 
-	private Widget createBreadcrumb() {
-		final BreadcrumbWidget breadcrumb = new BreadcrumbWidget();
-		final ProjectRepresentation project = projectContext.getProjectRepresentation();
-		breadcrumb.addItem(project.getName(), new Command() {
-			@Override
-			public void execute() {
-				exitToPlanningPlace();
-			}
-		});
-		breadcrumb.addSeparator();
-		breadcrumb.addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
+	private Widget updateBreadcrumb() {
+		final BreadcrumbWidget breadcrumb = view.getApplicationMenu().getBreadcrumb();
+		breadcrumb.clearItems();
+		breadcrumbReleaseItem = breadcrumb.addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
 		return breadcrumb;
 	}
 }

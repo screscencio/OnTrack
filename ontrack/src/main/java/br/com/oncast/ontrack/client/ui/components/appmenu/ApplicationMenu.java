@@ -3,20 +3,18 @@ package br.com.oncast.ontrack.client.ui.components.appmenu;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.BreadcrumbWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.InvitationWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectMenuWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
-import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ApplicationMenu extends Composite {
@@ -28,29 +26,36 @@ public class ApplicationMenu extends Composite {
 	interface ApplicationMenuWidgetUiBinder extends UiBinder<Widget, ApplicationMenu> {}
 
 	@UiField
-	protected MenuBar projectMenuBar;
+	protected HTMLPanel applicationMenuPanel;
 
 	@UiField
-	protected MenuBar userMenuBar;
+	protected ApplicationMenuItem projectMenuItem;
 
 	@UiField
-	protected HTMLPanel customItemContainer;
+	protected ApplicationMenuItem memberMenuItem;
 
-	private MenuBar projectMenu;
+	@UiField
+	protected ApplicationMenuItem userMenuItem;
 
-	private MenuBar userMenu;
+	@UiField
+	protected BreadcrumbWidget breadcrumb;
 
 	public ApplicationMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		createProjectMenu();
 
+		createMemberMenu();
+
 		createUserMenu();
 	}
 
-	public void setCustomItem(final IsWidget widget) {
-		customItemContainer.clear();
-		customItemContainer.add(widget);
+	public BreadcrumbWidget getBreadcrumb() {
+		return breadcrumb;
+	}
+
+	public void setProjectName(final String name) {
+		projectMenuItem.setText(name);
 	}
 
 	private void logUserOut() {
@@ -67,45 +72,18 @@ public class ApplicationMenu extends Composite {
 		});
 	}
 
-	private void createUserMenu() {
-		userMenu = new MenuBar(true);
-		userMenu.addStyleDependentName("topMenu");
-		final MenuItem item = userMenuBar.addItem("User", userMenu);
-
-		final PopupConfig popup = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignRight(item).alignBelow(item, 4);
-		userMenu.addItem("Change Password", new Command() {
-			@Override
-			public void execute() {
-				popup.pop();
-			}
-		});
-
-		userMenu.addItem("Logout", new Command() {
-			@Override
-			public void execute() {
-				logUserOut();
-			}
-		});
+	private void createProjectMenu() {
+		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget()).alignBelow(applicationMenuPanel).alignRight(projectMenuItem);
+		projectMenuItem.setPopupConfig(config);
 	}
 
-	private void createProjectMenu() {
-		projectMenu = new MenuBar(true);
-		projectMenu.addStyleDependentName("topMenu");
-		final MenuItem item = projectMenuBar.addItem("Project", projectMenu);
+	private void createUserMenu() {
+		final PopupConfig popup = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignRight(userMenuItem).alignBelow(applicationMenuPanel);
+		userMenuItem.setPopupConfig(popup);
+	}
 
-		projectMenu.addItem("Switch project", new Command() {
-			@Override
-			public void execute() {
-				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new ProjectSelectionPlace());
-			}
-		});
-
-		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget()).alignRight(item).alignBelow(item, 4);
-		projectMenu.addItem("Invite", new Command() {
-			@Override
-			public void execute() {
-				invitePopup.pop();
-			}
-		});
+	private void createMemberMenu() {
+		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget()).alignRight(memberMenuItem).alignBelow(applicationMenuPanel);
+		memberMenuItem.setPopupConfig(invitePopup);
 	}
 }
