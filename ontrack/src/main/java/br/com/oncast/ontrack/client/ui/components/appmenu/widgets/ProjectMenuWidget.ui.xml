@@ -1,0 +1,81 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
+	
+	<ui:image field="exportData" src="images/exportproject.png" />
+	<ui:image field="background" src="images/box-bg-project.png" />
+	
+	<ui:style>
+		@sprite .container {
+			width: 210px;
+			padding: 16px;
+			
+			gwt-image: 'background';
+			background-position: right bottom;
+			
+			background-color: #fafafa;
+			background: -moz-linear-gradient(top,  #fafafa 1%, #ededed 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#fafafa), color-stop(100%,#ededed));
+			background: -webkit-linear-gradient(top,  #fafafa 1%,#ededed 100%);
+			background: -o-linear-gradient(top,  #fafafa 1%,#ededed 100%);
+			background: -ms-linear-gradient(top,  #fafafa 1%,#ededed 100%);
+			background: linear-gradient(top,  #fafafa 1%,#ededed 100%);
+
+			-webkit-box-shadow: 1px 5px 9px #999999;
+			-moz-box-shadow: 1px 5px 9px #999999;
+			box-shadow: 1px 5px 9px #999999;
+
+			border: 1px solid #ddd;
+			border-top: 0;
+			
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#ededed',GradientType=0 );
+		}
+		.exportDataLabel {
+			margin-left: 10px;
+			
+			font-size: 12pt;
+			font-family: 'ProximaNovaRegularItalic';
+			color: #999999;
+		}
+		.separator {
+			margin: 10px -16px;
+		}
+		.separatorMiddle, .separatorBorder1, .separatorBorder2 {
+			height: 1px; width: 100%; padding: 0; margin: 0; border: 0; opacity:.80; filter:alpha(opacity=80);
+		}
+		.separatorBorder1 {
+			background: #fff;
+		}
+		.separatorMiddle {
+			background: #d3d3d3
+		}
+		.separatorBorder2 {
+			background: #fff;
+		}
+		.switchLabel {
+			font-family: 'ProximaNovaRegularItalic';
+			font-size: 12pt;
+			color: #999999;
+			margin: 10px 0;
+		}
+	</ui:style>
+	<g:FocusPanel ui:field="exportDataPanel" styleName="{style.container}">
+		<g:HTMLPanel>
+			<g:HorizontalPanel width="100%">
+				<g:cell width="1" horizontalAlignment="center">
+					<g:Image resource="{exportData}" />
+				</g:cell>
+				<g:cell width="*" horizontalAlignment="center">
+					<g:Label styleName="{style.exportDataLabel}" text="Export data (.mm)"/>
+				</g:cell>
+			</g:HorizontalPanel>
+			<g:HTMLPanel styleName="{style.separator}">
+				<g:HTMLPanel styleName="{style.separatorBorder1}"/>
+				<g:HTMLPanel styleName="{style.separatorMiddle}"/>
+				<g:HTMLPanel styleName="{style.separatorBorder2}"/>
+			</g:HTMLPanel>
+			<g:Label styleName="{style.switchLabel}" text="Switch project"/>
+		</g:HTMLPanel>
+	</g:FocusPanel>
+</ui:UiBinder> 

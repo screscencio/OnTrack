@@ -13,22 +13,18 @@
 			right: 0px;
 			bottom: 0px;
 		}
-		
-		.appMenu {
+		.content {
 			position: absolute;
-            top: 0px;
-            left: 0px;
-            right: 0px;
-            height: 35px;
-            border-bottom: 1px solid #333;
-            -moz-box-shadow: 0px 0px 5px #a5a5a5;
-            -webkit-box-shadow: 0px 0px 5px #a5a5a5;
-            box-shadow: 0px 0px 5px #a5a5a5;
+
+			top: 58px;
+			left: 0px;
+			right: 0px;			
+			bottom: 0px;
 		}
 		
 		.scopeTree {
 			position: absolute;
-			top: 50px;
+			top: 10px;
 			left: 10px;
 			right: 420px;
 			bottom: 20px;
@@ -45,7 +41,7 @@
 		
 		.releasePanel {
 			position: absolute;
-			top: 40px;
+			top: 10px;
 			right: 0px;
 			bottom: 0px;
 			width: 400px;
@@ -66,16 +62,16 @@
 	</ui:style>
 
 	<g:FlowPanel styleName="{style.rootPanel}">
-        <g:SimplePanel styleName="{style.appMenu} gradAppHeader">
-        	<ap:ApplicationMenu ui:field="applicationMenu"/>
-        </g:SimplePanel>
-		<g:SimplePanel styleName="{style.scopeTree}">
-			<st:ScopeTree ui:field="scopeTree" />
-		</g:SimplePanel>
-		<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
-			<rp:ReleasePanel ui:field="releasePanel" />
-		</g:ScrollPanel>
-		<g:Anchor ui:field="exportMapLink" text="Export to mind map"
-			target="_blank" styleName="{style.exportToMapLink}" />
+       	<ap:ApplicationMenu ui:field="applicationMenu"/>
+       	<g:FlowPanel styleName="{style.content}">
+			<g:SimplePanel styleName="{style.scopeTree}">
+				<st:ScopeTree ui:field="scopeTree" />
+			</g:SimplePanel>
+			<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
+				<rp:ReleasePanel ui:field="releasePanel" />
+			</g:ScrollPanel>
+			<g:Anchor ui:field="exportMapLink" text="Export to mind map"
+				target="_blank" styleName="{style.exportToMapLink}" />
+       	</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

@@ -6,7 +6,7 @@ import java.util.List;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.ui.generalwidgets.BreadcrumbWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.BreadcrumbWidget;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
@@ -17,7 +17,6 @@ import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class PlanningActivity extends AbstractActivity {
@@ -43,6 +42,8 @@ public class PlanningActivity extends AbstractActivity {
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
 
+		view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
+
 		view.getScopeTree().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setActionExecutionRequestHandler(actionExecutionService);
 
@@ -50,7 +51,23 @@ public class PlanningActivity extends AbstractActivity {
 		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
 		view.setExporterPath(URLBuilder.buildMindMapExportURL(currentProjectId));
 
-		addBreadcrumbToMenu(currentProjectRepresentation);
+		// FIXME Matsumoto enable scroll when art where applied
+		// ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+		// @Override
+		// public void onScopeSelectionRequest(final Scope scope) {
+		// final Release release = scope.getRelease();
+		// if (release == null) return;
+		//
+		// view.ensureWidgetIsVisible(view.getReleasePanel().findWidgetAndSetContainerState(release, true));
+		// }
+		//
+		// @Override
+		// public boolean mustIgnoreFromSource(final Object source) {
+		// return source instanceof ScopeWidget;
+		// }
+		// });
+		//
+		updateBreadcrumb(currentProjectRepresentation);
 
 		panel.setWidget(view);
 		ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
@@ -75,12 +92,8 @@ public class PlanningActivity extends AbstractActivity {
 		view.getScopeTree().showSearchWidget();
 	}
 
-	private void addBreadcrumbToMenu(final ProjectRepresentation project) {
-		final BreadcrumbWidget breadcrumb = new BreadcrumbWidget();
-		view.getApplicationMenu().setCustomItem(breadcrumb);
-		breadcrumb.addItem(project.getName(), new Command() {
-			@Override
-			public void execute() {}
-		});
+	private void updateBreadcrumb(final ProjectRepresentation project) {
+		final BreadcrumbWidget breadcrumb = view.getApplicationMenu().getBreadcrumb();
+		breadcrumb.clearItems();
 	}
 }

@@ -178,9 +178,6 @@ html,body {
 .gwt-MenuBar-breadcrumb .gwt-MenuItem {
 	background: transparent;
 	background-color: transparent;
-	font-size: 14px;
-	color: #FFF;
-	text-shadow: -2px 2px 5px #000;
 }
 
 .gwt-MenuBar-topMenu .gwt-MenuItem {
@@ -193,7 +190,6 @@ html,body {
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {
-	color: white;
 	background-color: transparent;
 }
 
@@ -203,7 +199,6 @@ html,body {
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItemSeparator .menuSeparatorInner {
-	text-shadow: -2px 2px 5px #000;
 }
 
 .gwt-MenuBar .gwt-MenuItemSeparator {

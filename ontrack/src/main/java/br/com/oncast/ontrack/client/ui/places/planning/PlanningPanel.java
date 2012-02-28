@@ -6,10 +6,10 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -36,6 +36,8 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	@UiField
 	protected Anchor exportMapLink;
+
+	private final ScrollAnimation animation = new ScrollAnimation();
 
 	@UiFactory
 	protected ScrollPanel createReleaseScrollPanel() {
@@ -74,7 +76,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 		final Widget widget = isWidget.asWidget();
 
 		final int menuTop = releaseScroll.getVerticalScrollPosition();
-		final int menuHeight = releaseScroll.getElement().getOffsetHeight();
+		final int menuHeight = releaseScroll.getElement().getClientHeight();
 		final int menuBottom = menuTop + menuHeight;
 
 		final Element widgetElement = widget.getElement();
@@ -82,30 +84,43 @@ public class PlanningPanel extends Composite implements PlanningView {
 		final int itemHeight = widgetElement.getOffsetHeight();
 		final int itemBottom = itemTop + itemHeight;
 
-		int position = Integer.MIN_VALUE;
-		if (itemTop < menuTop) position = itemTop;
-		else if (itemBottom > menuBottom) position = itemTop - menuHeight + itemHeight;
-		if (position != Integer.MIN_VALUE) {
-			final int delta = (position > 0 ? position - 2 : position + 2) - menuTop;
-			new Animation() {
-				@Override
-				protected void onUpdate(final double progress) {
-					releaseScroll.setVerticalScrollPosition((int) (menuTop + delta * progress));
-				}
-
-				@Override
-				protected void onComplete() {
-					releaseScroll.setVerticalScrollPosition(menuTop + delta);
-				}
-			}.run(500);
-		}
+		if (itemTop < menuTop) animation.scroll(menuTop, itemTop, 500);
+		else if (itemBottom > menuBottom) animation.scroll(menuTop, itemTop - menuHeight + itemHeight, 500);
 	}
 
-	private int getOffisetTop(final Widget widget, final ScrollPanel scroll) {
-		if (widget.getParent() == null) throw new RuntimeException("Widget should be inside the scroll panel");
+	private int getOffisetTop(final Widget widget, final ScrollPanel scrollPanel) {
+		final Widget parent = widget.getParent();
+		if (parent == null) throw new RuntimeException("Widget should be inside the scroll panel");
 
-		if (scroll.equals(widget.getParent())) return widget.getElement().getOffsetTop();
+		if (parent == scrollPanel) return widget.getElement().getOffsetTop();
 
-		return getOffisetTop(widget.getParent(), scroll) + widget.getElement().getOffsetTop();
+		return getOffisetTop(parent, scrollPanel) + widget.getElement().getOffsetTop();
+	}
+
+	private class ScrollAnimation extends Animation {
+		private int endPosition;
+		private int startPosition;
+
+		@Override
+		protected void onComplete() {
+			releaseScroll.setVerticalScrollPosition(endPosition);
+		}
+
+		@Override
+		protected void onUpdate(final double progress) {
+			final double delta = (endPosition - startPosition) * progress;
+			final int newPosition = (int) (startPosition + delta);
+			releaseScroll.setVerticalScrollPosition(newPosition);
+		}
+
+		void scroll(final int startPosition, final int endPosition, final int duration) {
+			this.startPosition = startPosition;
+			this.endPosition = endPosition;
+			if (duration == 0) {
+				onComplete();
+				return;
+			}
+			run(duration);
+		}
 	}
 }
