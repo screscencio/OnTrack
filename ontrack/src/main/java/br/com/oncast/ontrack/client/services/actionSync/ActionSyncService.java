@@ -72,7 +72,7 @@ public class ActionSyncService {
 
 	private void checkIfRequestIsPertinentToCurrentProject(final ModelActionSyncRequest modelActionSyncRequest) {
 		final long requestedProjectId = modelActionSyncRequest.getProjectId();
-		final long currentProjectId = projectRepresentationProvider.getCurrentProjectRepresentation().getId();
+		final long currentProjectId = projectRepresentationProvider.getCurrent().getId();
 		if (requestedProjectId != currentProjectId) throw new RuntimeException(
 				"This client received an action for project '" + requestedProjectId + "' but it is currently on project '" + currentProjectId
 						+ "'. Please notify OnTrack team.");

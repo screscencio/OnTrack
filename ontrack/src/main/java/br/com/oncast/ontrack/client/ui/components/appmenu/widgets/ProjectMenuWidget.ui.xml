@@ -1,81 +1,73 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:image field="exportData" src="images/exportproject.png" />
-	<ui:image field="background" src="images/box-bg-project.png" />
-	
-	<ui:style>
-		@sprite .container {
+	<ui:image field="exportData" src="exportproject.png" />
+	<ui:image field="background" src="box-bg-project.png" />
+	<ui:style src="../../../style/fonts.css, ../../../style/decorations.css, ../../../style/colors.css">
+
+		.container {
+			background-color: COLOR_MENUBOX_BACKGROUND;
+			-webkit-box-shadow: POPUP_SHADOW;
+			-moz-box-shadow: POPUP_SHADOW;
+			box-shadow: POPUP_SHADOW;
+			border: POPUP_BORDER;
+			border-top: 0px;
+            position: relative;
+            padding: 15px;
+
 			width: 210px;
-			padding: 16px;
-			
-			gwt-image: 'background';
-			background-position: right bottom;
-			
-			background-color: #fafafa;
-			background: -moz-linear-gradient(top,  #fafafa 1%, #ededed 100%);
-			background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#fafafa), color-stop(100%,#ededed));
-			background: -webkit-linear-gradient(top,  #fafafa 1%,#ededed 100%);
-			background: -o-linear-gradient(top,  #fafafa 1%,#ededed 100%);
-			background: -ms-linear-gradient(top,  #fafafa 1%,#ededed 100%);
-			background: linear-gradient(top,  #fafafa 1%,#ededed 100%);
+		}
 
-			-webkit-box-shadow: 1px 5px 9px #999999;
-			-moz-box-shadow: 1px 5px 9px #999999;
-			box-shadow: 1px 5px 9px #999999;
-
-			border: 1px solid #ddd;
-			border-top: 0;
-			
-			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#ededed',GradientType=0 );
-		}
-		.exportDataLabel {
-			margin-left: 10px;
-			
-			font-size: 12pt;
-			font-family: 'ProximaNovaRegularItalic';
-			color: #999999;
-		}
-		.separator {
-			margin: 10px -16px;
-		}
-		.separatorMiddle, .separatorBorder1, .separatorBorder2 {
-			height: 1px; width: 100%; padding: 0; margin: 0; border: 0; opacity:.80; filter:alpha(opacity=80);
-		}
-		.separatorBorder1 {
-			background: #fff;
-		}
-		.separatorMiddle {
-			background: #d3d3d3
-		}
-		.separatorBorder2 {
-			background: #fff;
-		}
+        @sprite .backgroundImg {
+        	gwt-image: 'background';
+        	position: absolute;
+        	right: 0px;
+        	bottom: 0px;
+        }
+        
+        .content {
+        	position: relative;
+        }
+        		
 		.switchLabel {
-			font-family: 'ProximaNovaRegularItalic';
-			font-size: 12pt;
-			color: #999999;
+			color: COLOR_MENUBOX_TEXT;
+			font: FONT_SIZE_LARGE FONT_DEFAULT_ITALIC;
+			
 			margin: 10px 0;
 		}
+		
+		@sprite .exportDataImg {
+			gwt-image: 'exportData';
+		}
+		
+		.exportToMapLink {
+            font: FONT_SIZE_LARGE FONT_DEFAULT_ITALIC;
+            color: COLOR_MENUBOX_TEXT;
+            
+            text-decoration: none;
+		}
 	</ui:style>
+
 	<g:FocusPanel ui:field="exportDataPanel" styleName="{style.container}">
 		<g:HTMLPanel>
-			<g:HorizontalPanel width="100%">
-				<g:cell width="1" horizontalAlignment="center">
-					<g:Image resource="{exportData}" />
-				</g:cell>
-				<g:cell width="*" horizontalAlignment="center">
-					<g:Label styleName="{style.exportDataLabel}" text="Export data (.mm)"/>
-				</g:cell>
-			</g:HorizontalPanel>
-			<g:HTMLPanel styleName="{style.separator}">
-				<g:HTMLPanel styleName="{style.separatorBorder1}"/>
-				<g:HTMLPanel styleName="{style.separatorMiddle}"/>
-				<g:HTMLPanel styleName="{style.separatorBorder2}"/>
-			</g:HTMLPanel>
-			<g:Label styleName="{style.switchLabel}" text="Switch project"/>
+			<div class="{style.backgroundImg}" />
+			<div class="{style.content}">
+				<g:Anchor ui:field="exportMapLink" target="_blank" styleName="{style.exportToMapLink}" href="#">
+				    <table width="100%">
+				        <tr>
+				            <td width="1" align="center">
+				                <div class="{style.exportDataImg}" />
+				            </td>
+				            <td width="*" align="center">Export data (.mm)</td>
+				        </tr>
+				    </table>
+	            </g:Anchor>
+				<misc:Separator/>
+				<g:Label styleName="{style.switchLabel}" text="Switch project" />
+				<misc:ProjectSelectionWidget ui:field="projectSelector" minimalist="true"/>
+			</div>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

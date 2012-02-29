@@ -3,73 +3,68 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-<ui:style>
-
-	.rootPanel {
-		position: relative;
-		
-		background-color: #FFF;
-
-        border: 1px solid gray;
-        -moz-box-shadow: 2px 2px 4px #888;
-        -webkit-box-shadow: 2px 2px 4px #888;
-        box-shadow: 2px 2px 4px #888;
-	}
-
-	.filterArea {
-		width: 100%;
-		
-		padding-left: 2px;
-		font-size: 14px;
-		font-weight: normal;
-		
-		outline: none;
-		border: 0px;
-	}
+	<ui:style>
 	
-	.container {
-		position: absolute;
-		top: 3px;
-		left: 2px;
-		right: 2px;
-		
-		padding-right: 20px;
-		
-		background: url("resources/image/filtrableCommandMenu/search-icon.gif") no-repeat top right;
-	}
+		.rootPanel {
+			position: relative;
+	        border: 1px solid gray;
 	
-	.separator {
-		position: absolute;
-		top: 28px;
-		left: 3px;
-		right: 3px;
-		height: 1px;
-		border-bottom: 1px dashed #b5b5b5;
-	}
-
-	.scrollpanel {
-		margin-top: 32px;
-		min-width: 100px;
-		padding: 1px;
-		overflow-x: auto; 
-	}
+			background-color: #FFF;
+	        -moz-box-shadow: 2px 2px 4px #888;
+	        -webkit-box-shadow: 2px 2px 4px #888;
+	        box-shadow: 2px 2px 4px #888;
+		}
 	
-	.helpLabel {
-		position: absolute;
-		bottom:-18px;
-		right: 0px;
-	    font-size: 11px;
-	    color: #CCCCCF;
-	}
-</ui:style>
-
+		.filterArea {
+			width: 100%;
+			outline: none;
+			border: 0px;
+			padding-left: 2px;
+			font-size: 14px;
+			font-weight: normal;
+		}
+		
+		.container {
+			position: absolute;
+			top: 3px;
+			left: 2px;
+			right: 2px;
+			padding-right: 20px;
+			background: url("resources/image/filtrableCommandMenu/search-icon.gif") no-repeat top right;
+		}
+		
+		.separator {
+			position: absolute;
+			top: 28px;
+			left: 3px;
+			right: 3px;
+			height: 1px;
+			border-bottom: 1px dashed #b5b5b5;
+		}
+	
+		.scrollpanel {
+			margin-top: 32px;
+			min-width: 100px;
+			padding: 1px;
+			overflow-x: auto; 
+		}
+		
+		.helpLabel {
+			position: absolute;
+			bottom:-18px;
+			right: 0px;
+		    font-size: 11px;
+		    color: #CCCCCF;
+		}
+		
+	</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel">
 		<g:HTMLPanel ui:field="rootPanel" styleName="{style.rootPanel}" >
 			<g:HTMLPanel styleName="{style.container}" >
 				<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
 			</g:HTMLPanel>
-			<g:HTMLPanel styleName="{style.separator}" />
+            <g:HTMLPanel ui:field="separator" styleName="{style.separator}" />
 			<g:ScrollPanel ui:field="scrollPanel" styleName="{style.scrollpanel}">
 				<t:CommandMenu ui:field="menu" />
 			</g:ScrollPanel>

@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
+import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndWidgetContainer;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
@@ -10,7 +11,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -32,10 +32,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 	protected ScopeTree scopeTree;
 
 	@UiField
-	protected ApplicationMenu applicationMenu;
-
-	@UiField
-	protected Anchor exportMapLink;
+	protected ApplicationMenuAndWidgetContainer rootPanel;
 
 	private final ScrollAnimation animation = new ScrollAnimation();
 
@@ -51,11 +48,6 @@ public class PlanningPanel extends Composite implements PlanningView {
 	}
 
 	@Override
-	public void setExporterPath(final String href) {
-		exportMapLink.setHref(href);
-	}
-
-	@Override
 	public ScopeTree getScopeTree() {
 		return scopeTree;
 	}
@@ -67,7 +59,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	@Override
 	public ApplicationMenu getApplicationMenu() {
-		return applicationMenu;
+		return rootPanel.getMenu();
 	}
 
 	@Override

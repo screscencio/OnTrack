@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.projectSelection;
 
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectSelectionWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectSelectionWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseUpEvent;

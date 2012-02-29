@@ -2,46 +2,49 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="arrowUp" src="images/up.png"/>
-	<ui:image field="arrowDown" src="images/down.png"/>
+	<ui:image field="arrowUp" src="up.png"/>
+	<ui:image field="arrowDown" src="down.png"/>
+	<ui:style src="../../../style/fonts.css, ../../../style/decorations.css, ../../../style/colors.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem.ApplicationMenuItemStyle">
 	
-	<ui:style type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem.ApplicationMenuItemStyle">
 		.menuItem {
-			float: left;
-			
-			font: 11pt 'ProximaNovaRegular';
+			font: FONT_DEFAULT_M;
 			text-transform: uppercase;
-			color: #996600;
-			text-shadow: 1px -1px 1px #f6d792;
-			filter: dropshadow(color=#f6d792, offx=1, offy=-1);
+			
+			text-shadow: TEXT_SHADOW;
+			filter: TEXT_SHADOW_IE;
 		}
-		.menuItem:HOVER {
+		
+		.hoverPanel {
 			cursor: pointer;
+			color: COLOR_MENU_LINK;
 		}
-		.menuItem:HOVER, .menuItemSelected {
-			color: #cc9900;
+
+		.hoverPanel:hover, .menuItemSelected {
+			color: COLOR_MENU_LINK_HOVER;
 		}
 		
 		.biggerFont {
-			font-size: 12pt;
+			font-size: FONT_SIZE_LARGE;
 		}
 		
-		.arrowUp, .arrowDown {
-			float: left;	
-			margin-left: 10px;
-			margin-top: 5px;
+		@sprite .arrowDown {
+			gwt-image: 'arrowDown';
 		}
 		
 		@sprite .arrowUp {
 			gwt-image: 'arrowUp';
 		}
 		
-		@sprite .arrowDown {
-			gwt-image: 'arrowDown';
+		.arrowUp, .arrowDown {
+			margin-left: 10px;
+			margin-top: 5px;
 		}
 	</ui:style>
-	<g:FlowPanel ui:field="rootPanel">
-		<g:Label ui:field="textLabel" styleName="{style.menuItem}" />
-		<g:Label ui:field="arrow" styleName="{style.arrowUp}" />
-	</g:FlowPanel>
+
+	<g:FocusPanel ui:field="rootPanel">
+		<g:HorizontalPanel styleName="{style.hoverPanel}">
+			<g:Label ui:field="textLabel" styleName="{style.menuItem}" />
+			<g:Label ui:field="arrow" styleName="{style.arrowDown}" />
+		</g:HorizontalPanel>
+	</g:FocusPanel>
 </ui:UiBinder> 

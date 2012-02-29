@@ -1,0 +1,35 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:ap='urn:import:br.com.oncast.ontrack.client.ui.components.appmenu'>
+
+	<ui:style>
+	
+		.rootPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+		}
+		
+		.menu {
+			position: absolute;
+            top: 0px;
+            height: 58px;
+            left: 0px;
+            right: 0px;
+		}
+		
+		.contentPanel {
+            position: absolute;
+            top: 58px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+        }
+	</ui:style>
+
+	<g:HTMLPanel styleName="{style.rootPanel}">
+		<ap:ApplicationMenu ui:field="applicationMenu" styleName="{style.menu}" />
+        <g:FlowPanel ui:field="widgetContainer" styleName="{style.contentPanel}" />
+	</g:HTMLPanel>
+</ui:UiBinder> 

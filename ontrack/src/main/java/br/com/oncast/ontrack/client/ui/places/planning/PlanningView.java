@@ -8,8 +8,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface PlanningView extends IsWidget {
 
-	void setExporterPath(String href);
-
 	ScopeTree getScopeTree();
 
 	ReleasePanel getReleasePanel();

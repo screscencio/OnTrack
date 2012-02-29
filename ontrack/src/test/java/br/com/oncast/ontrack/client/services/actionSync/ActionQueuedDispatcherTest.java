@@ -144,7 +144,7 @@ public class ActionQueuedDispatcherTest {
 
 	private ProjectRepresentationProvider getProjectRepresentationProviderMock() {
 		final ProjectRepresentationProvider provider = mock(ProjectRepresentationProvider.class);
-		when(provider.getCurrentProjectRepresentation()).thenReturn(new ProjectRepresentation(1, "Default project"));
+		when(provider.getCurrent()).thenReturn(new ProjectRepresentation(1, "Default project"));
 
 		return provider;
 	}

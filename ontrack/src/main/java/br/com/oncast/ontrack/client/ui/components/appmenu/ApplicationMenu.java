@@ -58,6 +58,7 @@ public class ApplicationMenu extends Composite {
 		projectMenuItem.setText(name);
 	}
 
+	// FIXME LOBO
 	private void logUserOut() {
 		SERVICE_PROVIDER.getAuthenticationService().logout(new UserLogoutCallback() {
 
@@ -73,17 +74,17 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private void createProjectMenu() {
-		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget()).alignBelow(applicationMenuPanel).alignRight(projectMenuItem);
+		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget()).alignBelow(applicationMenuPanel, 1).alignRight(projectMenuItem);
 		projectMenuItem.setPopupConfig(config);
 	}
 
 	private void createUserMenu() {
-		final PopupConfig popup = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignRight(userMenuItem).alignBelow(applicationMenuPanel);
+		final PopupConfig popup = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignBelow(applicationMenuPanel, 1).alignRight(userMenuItem);
 		userMenuItem.setPopupConfig(popup);
 	}
 
 	private void createMemberMenu() {
-		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget()).alignRight(memberMenuItem).alignBelow(applicationMenuPanel);
+		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget()).alignBelow(applicationMenuPanel, 1).alignRight(memberMenuItem);
 		memberMenuItem.setPopupConfig(invitePopup);
 	}
 }

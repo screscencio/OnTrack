@@ -4,7 +4,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 public interface ProjectRepresentationProvider {
 
-	public abstract ProjectRepresentation getCurrentProjectRepresentation();
+	public abstract ProjectRepresentation getCurrent();
 
 	public abstract void registerProjectListChangeListener(final ProjectListChangeListener projectListChangeListener);
 

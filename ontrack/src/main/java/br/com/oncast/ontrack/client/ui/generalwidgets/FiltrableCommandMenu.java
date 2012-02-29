@@ -61,11 +61,18 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@UiField
 	protected TextBox filterArea;
 
+	@UiField
+	protected HTMLPanel separator;
+
 	private List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 
 	private final CustomCommandMenuItemFactory customItemFactory;
 
-	private boolean shouldCloseOnEscape = true;
+	private boolean closeOnEscape = true;
+
+	private boolean alwaysShowMenu = true;
+
+	private boolean menuVisibility = alwaysShowMenu;
 
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -74,6 +81,12 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		this.maxWidth = maxWidth;
 
 		configureMenu();
+	}
+
+	public FiltrableCommandMenu setAlwaysShowMenu(final boolean mustShown) {
+		this.alwaysShowMenu = mustShown;
+		setMenuVisibility(false);
+		return this;
 	}
 
 	public void setItens(final List<CommandMenuItem> itens) {
@@ -90,7 +103,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@Override
 	public void show() {
-		menu.show();
+
 		this.setVisible(true);
 		menu.selectFirstItem();
 		focus();
@@ -100,8 +113,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	public void hide() {
 		if (!this.isVisible()) return;
 
-		this.setVisible(false);
 		filterArea.setText("");
+		setMenuVisibility(false);
+		this.setVisible(false);
 
 		CloseEvent.fire(this, this);
 	}
@@ -112,7 +126,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@UiHandler("filterArea")
 	protected void handleKeyUp(final KeyUpEvent event) {
-		if (shouldCloseOnEscape && event.getNativeKeyCode() == KEY_ESCAPE) {
+		if (closeOnEscape && event.getNativeKeyCode() == KEY_ESCAPE) {
 			hide();
 		}
 		else if (event.getNativeKeyCode() == KEY_ENTER) {
@@ -153,6 +167,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private void filterMenuItens() {
 		final String filterText = filterArea.getText().trim();
+		setMenuVisibility(!filterText.isEmpty());
 
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
 		final boolean shouldAddCustomItens = customItemFactory != null && !filterText.isEmpty() && !hasTextMatchInItemList(filteredItens, filterText);
@@ -163,6 +178,14 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		if (shouldAddCustomItens) menu.selectItemDown();
 
 		adjustDimentions();
+	}
+
+	private void setMenuVisibility(final boolean b) {
+		if (alwaysShowMenu) return;
+		if (menuVisibility != b) {
+			separator.setVisible(menuVisibility = b);
+			menu.setVisible(menuVisibility);
+		}
 	}
 
 	private boolean hasTextMatchInItemList(final List<CommandMenuItem> itens, final String text) {
@@ -250,12 +273,12 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	}
 
 	public FiltrableCommandMenu setCloseOnEscape(final boolean bool) {
-		shouldCloseOnEscape = bool;
+		closeOnEscape = bool;
 		return this;
 	}
 
 	public void setCloseOnEscape(final String bool) {
-		shouldCloseOnEscape = Boolean.valueOf(bool);
+		closeOnEscape = Boolean.valueOf(bool);
 	}
 
 	@Override

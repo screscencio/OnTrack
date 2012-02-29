@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationWidgetContainer;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;

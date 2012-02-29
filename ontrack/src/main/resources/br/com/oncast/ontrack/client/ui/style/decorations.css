@@ -1,0 +1,14 @@
+@def TEXT_SHADOW 1px -1px 1px #F6D792;
+@def TEXT_SHADOW_IE literal('dropshadow(color=#F6D792, offx=1, offy=-1)');
+@def POPUP_SHADOW 1px 5px 9px #999999;
+@def POPUP_BORDER 1px solid #ddd;
+
+.borderDecoration {
+	height: 1px;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	opacity:.8;
+	filter: literal('alpha(opacity=80)');
+}
