@@ -166,7 +166,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiHandler("progressLink")
 	protected void onClick(final ClickEvent event) {
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
-		final long projectId = provider.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId();
+		final long projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
 		provider.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
 	}
 

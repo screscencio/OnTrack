@@ -48,13 +48,13 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 
 	@Override
 	public void onNonUserActionRequest(final ModelAction action) throws UnableToCompleteActionException {
-		actionManager.doNonUserAction(action, contextService.getProjectContext(projectRepresentationProvider.getCurrentProjectRepresentation().getId()));
+		actionManager.doNonUserAction(action, contextService.getProjectContext(projectRepresentationProvider.getCurrent().getId()));
 	}
 
 	@Override
 	public void onUserActionExecutionRequest(final ModelAction action) {
 		try {
-			actionManager.doUserAction(action, contextService.getProjectContext(projectRepresentationProvider.getCurrentProjectRepresentation().getId()));
+			actionManager.doUserAction(action, contextService.getProjectContext(projectRepresentationProvider.getCurrent().getId()));
 		}
 		catch (final UnableToCompleteActionException e) {
 			errorTreatmentService.treatUserWarning("It was not possible to execute the requested user action.", e);
@@ -64,7 +64,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	@Override
 	public void onUserActionUndoRequest() {
 		try {
-			actionManager.undoUserAction(contextService.getProjectContext(projectRepresentationProvider.getCurrentProjectRepresentation().getId()));
+			actionManager.undoUserAction(contextService.getProjectContext(projectRepresentationProvider.getCurrent().getId()));
 		}
 		catch (final UnableToCompleteActionException e) {
 			errorTreatmentService.treatUserWarning("It was not possible to undo the requested user action.", e);
@@ -74,7 +74,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	@Override
 	public void onUserActionRedoRequest() {
 		try {
-			actionManager.redoUserAction(contextService.getProjectContext(projectRepresentationProvider.getCurrentProjectRepresentation().getId()));
+			actionManager.redoUserAction(contextService.getProjectContext(projectRepresentationProvider.getCurrent().getId()));
 		}
 		catch (final UnableToCompleteActionException e) {
 			errorTreatmentService.treatUserWarning("It was not possible to redo the requested user action.", e);

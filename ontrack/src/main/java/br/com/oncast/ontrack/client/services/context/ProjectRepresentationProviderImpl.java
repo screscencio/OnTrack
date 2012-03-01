@@ -90,7 +90,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	}
 
 	@Override
-	public ProjectRepresentation getCurrentProjectRepresentation() {
+	public ProjectRepresentation getCurrent() {
 		if (currentProjectRepresentation == null) throw new RuntimeException("There is no project representation set.");
 		return currentProjectRepresentation;
 	}

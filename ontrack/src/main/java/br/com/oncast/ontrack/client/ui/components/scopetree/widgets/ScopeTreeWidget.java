@@ -240,7 +240,7 @@ public class ScopeTreeWidget extends Composite implements HasFocusHandlers {
 		final ArrayList<Scope> allItens = new ArrayList<Scope>();
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
 		final Scope projectScope = provider.getContextProviderService()
-				.getProjectContext(provider.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId()).getProjectScope();
+				.getProjectContext(provider.getProjectRepresentationProvider().getCurrent().getId()).getProjectScope();
 		allItens.add(projectScope);
 		allItens.addAll(projectScope.getAllDescendantScopes());
 		return allItens;

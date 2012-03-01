@@ -20,7 +20,7 @@ public class ActionExecutionFactoryTestUtil {
 		final ProjectRepresentation projectRepresentation = mock(ProjectRepresentation.class);
 		final ApplicationPlaceController applicationPlaceController = mock(ApplicationPlaceController.class);
 
-		when(projectRepresentationProvider.getCurrentProjectRepresentation()).thenReturn(projectRepresentation);
+		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
 		when(projectRepresentation.getId()).thenReturn(0L);
 
 		return new ActionExecutionServiceImpl(contextService, new ErrorTreatmentMock(), projectRepresentationProvider, applicationPlaceController);

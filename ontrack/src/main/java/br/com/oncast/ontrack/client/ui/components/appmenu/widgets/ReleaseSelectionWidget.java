@@ -48,7 +48,7 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 	public ReleaseSelectionWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId();
+		projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
 		registerCloseHandler();
 	}
 

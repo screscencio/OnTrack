@@ -1,0 +1,20 @@
+@def COLOR_BACKGROUND #DBDCE1;
+@def COLOR_MENU_LINK #996600;
+@def COLOR_MENU_LINK_HOVER #CC9900;
+@def COLOR_MENU_BORDER1 #B4AA67;
+@def COLOR_MENU_BORDER2 #EAE9DE;
+@def COLOR_MENUBOX_SEPARATOR_BORDER1 #D3D3D3;
+@def COLOR_MENUBOX_SEPARATOR_BORDER2 #FFFFFF;
+@def COLOR_MENUBOX_BACKGROUND #FAFAFA;
+@def COLOR_MENUBOX_TEXT #999999;
+
+.colorMenuBackgroundGradient {
+	background: #f7cf75;
+	background: literal('-moz-linear-gradient(top,  #f7cf75 0%, #f0c662 100%)');
+	background: literal('-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7cf75), color-stop(100%,#f0c662))');
+	background: literal('-webkit-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
+	background: literal('-o-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
+	background: literal('-ms-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
+	background: literal('linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
+	filter: literal('progid:DXImageTransform.Microsoft.gradient( startColorstr="#f7cf75", endColorstr="#f0c662",GradientType=0 )');
+}

@@ -1,0 +1,7 @@
+@def FONT_DEFAULT 'ProximaNovaRegular';
+@def FONT_DEFAULT_ITALIC 'ProximaNovaRegularItalic';
+
+@def FONT_SIZE_MEDIUM 11pt;
+@def FONT_SIZE_LARGE 12pt;
+
+@def FONT_DEFAULT_M FONT_SIZE_MEDIUM FONT_DEFAULT;

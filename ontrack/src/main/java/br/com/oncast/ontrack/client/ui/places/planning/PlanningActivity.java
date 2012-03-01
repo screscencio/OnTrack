@@ -13,7 +13,6 @@ import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -35,7 +34,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.setVisible(false);
 
 		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
-		final ProjectRepresentation currentProjectRepresentation = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation();
+		final ProjectRepresentation currentProjectRepresentation = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent();
 		final long currentProjectId = currentProjectRepresentation.getId();
 		final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(currentProjectId);
 
@@ -49,7 +48,6 @@ public class PlanningActivity extends AbstractActivity {
 
 		view.getScopeTree().setContext(projectContext);
 		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
-		view.setExporterPath(URLBuilder.buildMindMapExportURL(currentProjectId));
 
 		// FIXME Matsumoto enable scroll when art where applied
 		// ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {

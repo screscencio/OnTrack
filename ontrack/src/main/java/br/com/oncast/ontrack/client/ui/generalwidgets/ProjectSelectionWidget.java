@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
+package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,9 +6,6 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
@@ -84,6 +81,15 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		};
 		registerProjectListChangeListener();
 		registerCloseHandler();
+	}
+
+	public ProjectSelectionWidget setMinimalist(final boolean isMinimalist) {
+		projectSwitchingMenu.setAlwaysShowMenu(!isMinimalist);
+		return this;
+	}
+
+	public void setMinimalist(final String isMinimalist) {
+		projectSwitchingMenu.setAlwaysShowMenu(!Boolean.valueOf(isMinimalist));
 	}
 
 	public ProjectSelectionWidget setCloseOnEscape(final boolean bool) {
@@ -177,6 +183,8 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	@Override
 	public void hide() {
+		if (!rootPanel.isVisible()) return;
+
 		rootPanel.setVisible(false);
 		projectSwitchingMenu.hide();
 		CloseEvent.fire(this, this);

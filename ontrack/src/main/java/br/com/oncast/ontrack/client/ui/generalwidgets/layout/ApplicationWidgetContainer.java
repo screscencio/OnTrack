@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.generalwidgets;
+package br.com.oncast.ontrack.client.ui.generalwidgets.layout;
 
 import java.util.Iterator;
 

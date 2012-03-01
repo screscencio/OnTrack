@@ -3,63 +3,46 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
 
-	<ui:image field="logo" src="images/logo.png"/>
-	
-	<ui:style>
+	<ui:image field="logo" src="logo.png"/>
+	<ui:style src="../../style/decorations.css, ../../style/colors.css">
+
 		.rootPanel {
 			position: relative;
-
-			top: 0px;
-			left: 0px;
-			right: 0px;
 		}
+		
 		.menuBar {
 			position: relative;
-
             height: 56px;
             width: 100%;
-			
-			background: #f7cf75;
-			background: -moz-linear-gradient(top,  #f7cf75 0%, #f0c662 100%);
-			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7cf75), color-stop(100%,#f0c662));
-			background: -webkit-linear-gradient(top,  #f7cf75 0%,#f0c662 100%);
-			background: -o-linear-gradient(top,  #f7cf75 0%,#f0c662 100%);
-			background: -ms-linear-gradient(top,  #f7cf75 0%,#f0c662 100%);
-			background: linear-gradient(top,  #f7cf75 0%,#f0c662 100%);
-			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7cf75', endColorstr='#f0c662',GradientType=0 );
 		}
-		.logo{
+		
+		.logo {
 			float: right;
 			margin: 8px 15px;
 		}
+		
 		.menuItemContainer {
 			position: relative;
 			float: right;
 						
 			margin: 20px 15px; 
 		}
+		
 		.leftSideMenuItem {
 			float: left;
 		}
-		.border1, .border2 {
-			height: 1px;
-			width: 100%;
-			padding: 0;
-			margin: 0;
-			border: 0;
-			opacity:.80;
-			filter:alpha(opacity=80);
-		}
+		
 		.border1 {
-			background: #b4aa67;
+			background: COLOR_MENU_BORDER1;
 		}
+		
 		.border2 {
-			background: #eae9de;
+			background: COLOR_MENU_BORDER2;
 		}
 	</ui:style>
 
 	<g:FlowPanel styleName="{style.rootPanel}">
-		<g:HTMLPanel ui:field="applicationMenuPanel" styleName="{style.menuBar}" >
+		<g:HTMLPanel ui:field="applicationMenuPanel" styleName="{style.menuBar} {style.colorMenuBackgroundGradient}" >
 			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItemContainer} {style.leftSideMenuItem}" text="Project" biggerFont="true"/>
 			<g:FlowPanel styleName="{style.menuItemContainer} {style.leftSideMenuItem}">
 				<aw:BreadcrumbWidget ui:field="breadcrumb" />
@@ -68,7 +51,7 @@
 			<aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItemContainer}" text="User" />
 			<aw:ApplicationMenuItem ui:field="memberMenuItem" styleName="{style.menuItemContainer}" text="Members" />
 		</g:HTMLPanel>
-		<g:SimplePanel styleName="{style.border1}"/>
-		<g:SimplePanel styleName="{style.border2}"/>
+		<g:SimplePanel styleName="{style.border1} {style.borderDecoration}"/>
+		<g:SimplePanel styleName="{style.border2} {style.borderDecoration}"/>
 	</g:FlowPanel>
 </ui:UiBinder>

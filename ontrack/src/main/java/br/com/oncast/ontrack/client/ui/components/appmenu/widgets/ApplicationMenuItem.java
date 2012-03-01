@@ -11,7 +11,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -23,7 +23,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 	interface ApplicationMenuItemUiBinder extends UiBinder<Widget, ApplicationMenuItem> {}
 
 	interface ApplicationMenuItemStyle extends CssResource {
-		String arrowDown();
+		String arrowUp();
 
 		String menuItemSelected();
 
@@ -38,7 +38,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 	}
 
 	@UiField
-	FlowPanel rootPanel;
+	FocusPanel rootPanel;
 
 	@UiField
 	Label textLabel;
@@ -48,7 +48,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 
 	private PopupConfig popup;
 
-	@UiHandler("textLabel")
+	@UiHandler("rootPanel")
 	void onClick(final ClickEvent e) {
 		openPopup();
 	}
@@ -72,14 +72,14 @@ public class ApplicationMenuItem extends Composite implements HasText {
 		popup.onOpen(new PopupOpenListener() {
 			@Override
 			public void onWillOpen() {
-				arrow.addStyleName(style.arrowDown());
+				arrow.addStyleName(style.arrowUp());
 				textLabel.addStyleName(style.menuItemSelected());
 			}
 		});
 		popup.onClose(new PopupCloseListener() {
 			@Override
 			public void onHasClosed() {
-				arrow.removeStyleName(style.arrowDown());
+				arrow.removeStyleName(style.arrowUp());
 				textLabel.removeStyleName(style.menuItemSelected());
 			}
 		});

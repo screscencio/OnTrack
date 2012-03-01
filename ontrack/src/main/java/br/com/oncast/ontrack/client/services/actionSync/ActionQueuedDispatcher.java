@@ -46,7 +46,7 @@ class ActionQueuedDispatcher {
 
 		// TODO Display 'loading' UI indicator.
 		requestDispatchService.dispatch(
-				new ModelActionSyncRequest(projectRepresentationProvider.getCurrentProjectRepresentation(), waitingServerAnswerActionList),
+				new ModelActionSyncRequest(projectRepresentationProvider.getCurrent(), waitingServerAnswerActionList),
 				new DispatchCallback<VoidResult>() {
 
 					@Override

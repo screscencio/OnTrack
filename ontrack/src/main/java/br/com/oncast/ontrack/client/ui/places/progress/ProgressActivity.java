@@ -92,7 +92,7 @@ public class ProgressActivity extends AbstractActivity {
 	}
 
 	private void exitToPlanningPlace() {
-		final long projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrentProjectRepresentation().getId();
+		final long projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
 	}
 
