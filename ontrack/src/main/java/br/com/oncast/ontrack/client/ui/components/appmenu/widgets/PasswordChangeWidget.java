@@ -6,6 +6,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TA
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationPopupBoxContainer;
 import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 
 import com.google.gwt.core.client.GWT;
@@ -21,7 +22,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,7 +35,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	protected PasswordTextBox oldPasswordArea;
 
 	@UiField
-	protected FocusPanel clickableRootPanel;
+	protected ApplicationPopupBoxContainer clickableRootPanel;
 
 	@UiField
 	protected PasswordTextBox newPasswordArea;

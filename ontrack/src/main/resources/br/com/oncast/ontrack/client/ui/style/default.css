@@ -1,0 +1,92 @@
+/* Base Styles */
+
+@def COLOR_APP_BACKGROUND #DBDCE1;
+
+@def FONT_DEFAULT 'ProximaNovaRegular';
+@def FONT_DEFAULT_ITALIC 'ProximaNovaRegularItalic';
+
+@def FONT_SIZE_SMALL 10pt;
+@def FONT_SIZE_MEDIUM 11pt;
+@def FONT_SIZE_LARGE 12pt;
+
+@def TEXT_SHADOW 1px -1px 1px #F6D792;
+@def TEXT_SHADOW_IE literal('dropshadow(color=#F6D792, offx=1, offy=-1)');
+
+.borderDecoration {
+	height: 1px;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	opacity:.8;
+	filter: literal('alpha(opacity=80)');
+}
+
+@def TEXTINPUT_COLOR #A8A7A7;
+@def TEXTINPUT_SHADOW inset 0px 0px 4px #D8D8D8;
+@def TEXTINPUT_BORDER 1px solid #CCCCCC;
+.textBoxDecoration {
+	-webkit-box-shadow: TEXTINPUT_SHADOW;
+	-moz-box-shadow: TEXTINPUT_SHADOW;
+	box-shadow: TEXTINPUT_SHADOW;
+	
+	font-family: FONT_DEFAULT_ITALIC;
+	border: TEXTINPUT_BORDER;
+	padding: 5px 0px;
+	color: TEXTINPUT_COLOR;
+	width: 100%;
+}
+
+/* Component Styles */
+
+@def POPUP_SHADOW 1px 5px 10px #999999;
+@def POPUP_BORDER 1px #AAAAAA #DDDDDD;
+
+@def COLOR_MENU_BORDER_TOP #B4AA67;
+@def COLOR_MENU_BORDER_BOTTOM #EAE9DE;
+
+@def COLOR_MENU_LINK #996600;
+@def COLOR_MENU_LINK_HOVER #CC9900;
+.colorMenuBackgroundGradient {
+	background: #f7cf75;
+	background: literal('-moz-linear-gradient(top,  #f7cf75 0%, #f0c662 100%)');
+	background: literal('-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7cf75), color-stop(100%,#f0c662))');
+	background: literal('-webkit-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
+	background: literal('-o-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
+	background: literal('-ms-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
+	background: literal('linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
+	filter: literal('progid:DXImageTransform.Microsoft.gradient( startColorstr="#f7cf75", endColorstr="#f0c662",GradientType=0 )');
+}
+
+@def COLOR_MENUBOX_SEPARATOR_BORDER_TOP #D3D3D3;
+@def COLOR_MENUBOX_SEPARATOR_BORDER_BOTTOM #FFFFFF;
+@def COLOR_MENUBOX_BACKGROUND #FAFAFA;
+@def COLOR_MENUBOX_TEXT #999999;
+@def COLOR_MENUBOX_BUTTOM_BACKGROUND #F1C663;
+@def MENUBOX_BUTTOM_SHADOW 1px 1px 3px 0px #DDDDDD, inset -1px -1px 0px 0px #F5D893;
+@def MENUBOX_BUTTOM_BORDER 1px solid #CCAF6B;
+.menuboxButton {
+		background: COLOR_MENUBOX_BUTTOM_BACKGROUND;
+		
+		border: MENUBOX_BUTTOM_BORDER;
+		-webkit-box-shadow: MENUBOX_BUTTOM_SHADOW;
+		-moz-box-shadow: MENUBOX_BUTTOM_SHADOW;
+		box-shadow: MENUBOX_BUTTOM_SHADOW;
+		
+		color: #FFFFFF;
+		font-family: FONT_DEFAULT FONT_SIZE_MEDIUM;
+		
+		padding: 5px;
+		width: 100%;
+}
+.menuboxButton:active {
+		background: #EDB443;
+		background: literal('-moz-linear-gradient(top, #EDB443 1%, #F1C460 100%)');
+		background: literal('-webkit-gradient(linear, left top, left bottom, color-stop(1%,#EDB443), color-stop(100%,#F1C460))');
+		background: literal('-webkit-linear-gradient(top, #EDB443 1%,#F1C460 100%)');
+		background: literal('-o-linear-gradient(top, #EDB443 1%,#F1C460 100%)');
+		background: literal('-ms-linear-gradient(top, #EDB443 1%,#F1C460 100%)');
+		background: literal('linear-gradient(top, #EDB443 1%,#F1C460 100%)');
+		filter: literal('progid:DXImageTransform.Microsoft.gradient( startColorstr="#EDB443", endColorstr="#F1C460",GradientType=0)');
+}
+

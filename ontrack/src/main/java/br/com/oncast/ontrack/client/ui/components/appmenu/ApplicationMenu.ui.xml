@@ -4,7 +4,7 @@
 	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
 
 	<ui:image field="logo" src="logo.png"/>
-	<ui:style src="../../style/decorations.css, ../../style/colors.css">
+	<ui:style src="../../style/default.css">
 
 		.rootPanel {
 			position: relative;
@@ -33,11 +33,11 @@
 		}
 		
 		.border1 {
-			background: COLOR_MENU_BORDER1;
+			background: COLOR_MENU_BORDER_TOP;
 		}
 		
 		.border2 {
-			background: COLOR_MENU_BORDER2;
+			background: COLOR_MENU_BORDER_BOTTOM;
 		}
 	</ui:style>
 

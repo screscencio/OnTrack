@@ -283,40 +283,15 @@ html,body {
 
 /* Button */
 button {
-	margin: 1px;
-	height: 27px;
-	padding: 0 20px;
-	min-width: 60px;
-	text-align: center;
-	font-size: 13px;
-	font-weight: bold;
-	line-height: 27px;
-	font-stretch: ultra-expanded;
-	color: #FFFFFF;
-	border: 1px solid #585e76;
-	background-color: #7d839a;
-	border-radius: 2px 2px 2px 2px;
-	cursor: default;
-	display: inline-block;
 }
 
 button:hover {
-	background-color: #585e76;
-
-	-moz-box-shadow: 0px 0px 5px #a5a5a5;
-	-webkit-box-shadow: 0px 0px 5px #a5a5a5;
-	box-shadow: 0px 0px 5px #a5a5a5;
-	border: 1px solid #7d839a;
 }
 
 button:active, button:focus {
-	border: 1px solid #ffffff;
 }
 
 button[disabled], button[disabled]:hover, input[disabled], input[disabled]:hover {
-	opacity: 0.3;
-	background-color: gray;
-	box-shadow: 0px 0px 0px;
 }
 
 /* TextArea */

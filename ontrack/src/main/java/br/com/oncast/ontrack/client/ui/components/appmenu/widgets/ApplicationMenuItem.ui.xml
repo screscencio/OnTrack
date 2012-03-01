@@ -4,10 +4,10 @@
 	
 	<ui:image field="arrowUp" src="up.png"/>
 	<ui:image field="arrowDown" src="down.png"/>
-	<ui:style src="../../../style/fonts.css, ../../../style/decorations.css, ../../../style/colors.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem.ApplicationMenuItemStyle">
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem.ApplicationMenuItemStyle">
 	
 		.menuItem {
-			font: FONT_DEFAULT_M;
+			font: FONT_DEFAULT FONT_SIZE_MEDIUM;
 			text-transform: uppercase;
 			
 			text-shadow: TEXT_SHADOW;
