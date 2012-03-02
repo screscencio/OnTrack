@@ -1,9 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.place.shared.PlaceChangeRequestEvent;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -23,7 +19,7 @@ public class PopUpPanel {
 	private static FocusPanel createFocusPanel() {
 		final FocusPanel panel = new FocusPanel();
 		panel.setStyleName("popupPanel");
-		return configureToCleanOnAnyNavigationEvent(addToRootPanel(panel));
+		return addToRootPanel(panel);
 	}
 
 	private static FocusPanel addToRootPanel(final FocusPanel panel) {
@@ -31,19 +27,7 @@ public class PopUpPanel {
 		return panel;
 	}
 
-	private static FocusPanel configureToCleanOnAnyNavigationEvent(final FocusPanel panel) {
-		panel.addHandler(new PlaceChangeRequestEvent.Handler() {
-			@Override
-			public void onPlaceChangeRequest(final PlaceChangeRequestEvent event) {
-				panel.clear();
-			}
-		}, PlaceChangeRequestEvent.TYPE);
-		History.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(final ValueChangeEvent<String> event) {
-				panel.clear();
-			}
-		});
-		return panel;
+	public static void clear() {
+		getInstance().clear();
 	}
 }

@@ -218,6 +218,7 @@ public class PopupConfig {
 	 * {@link #link(Widget)}.
 	 */
 	public void pop() {
+		MaskPanel.assureHidden();
 		engagePopup();
 	}
 
@@ -337,4 +338,5 @@ public class PopupConfig {
 		if (newLeft + widgetToPopup.getOffsetWidth() > Window.getClientWidth()) return false;
 		return true;
 	}
+
 }

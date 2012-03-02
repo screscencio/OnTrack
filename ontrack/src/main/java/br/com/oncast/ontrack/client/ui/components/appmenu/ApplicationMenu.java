@@ -13,8 +13,10 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ApplicationMenu extends Composite {
@@ -58,7 +60,6 @@ public class ApplicationMenu extends Composite {
 		projectMenuItem.setText(name);
 	}
 
-	// FIXME LOBO
 	private void logUserOut() {
 		SERVICE_PROVIDER.getAuthenticationService().logout(new UserLogoutCallback() {
 
@@ -78,13 +79,35 @@ public class ApplicationMenu extends Composite {
 		projectMenuItem.setPopupConfig(config);
 	}
 
-	private void createUserMenu() {
-		final PopupConfig popup = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignBelow(applicationMenuPanel, 1).alignRight(userMenuItem);
-		userMenuItem.setPopupConfig(popup);
-	}
-
 	private void createMemberMenu() {
 		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget()).alignBelow(applicationMenuPanel, 1).alignRight(memberMenuItem);
 		memberMenuItem.setPopupConfig(invitePopup);
+	}
+
+	// FIXME LOBO Substituir utilizando PopUpBox
+	// FIXME LOBO Criar estilo
+	private void createUserMenu() {
+		final MenuBar userMenu = new MenuBar(true);
+
+		final PopupConfig popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignBelow(applicationMenuPanel, 1)
+				.alignRight(userMenuItem);
+		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu).alignBelow(applicationMenuPanel, 1).alignRight(userMenuItem);
+
+		userMenu.addItem("Change Password", new Command() {
+			@Override
+			public void execute() {
+				popupPassChange.pop();
+			}
+		});
+
+		userMenu.addItem("Logout", new Command() {
+			@Override
+			public void execute() {
+				logUserOut();
+			}
+		});
+
+		userMenuItem.setPopupConfig(popup);
+
 	}
 }
