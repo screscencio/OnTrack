@@ -14,7 +14,7 @@
 			
             position: relative;
 			width: 210px;
-            padding: 15px;
+            padding: POPUP_PADDING;
 			
 			color: COLOR_MENUBOX_TEXT;
 			font: FONT_SIZE_SMALL FONT_DEFAULT_ITALIC;

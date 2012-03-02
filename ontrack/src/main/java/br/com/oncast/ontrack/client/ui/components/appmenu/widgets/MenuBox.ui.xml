@@ -1,0 +1,20 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style src="../../../style/default.css">
+		.content {
+			background: white;
+			margin: POPUP_PADDING_NEGATIVE;
+			margin-top: POPUP_PADDING;
+			border-top: COLOR_MENUBOX_SEPARATOR_BORDER_TOP 1px solid;
+			overflow-x: hidden;
+			overflow-y: auto;
+			max-height: 220px;
+		}
+		
+		.content>div:first-child {
+			border-top: COLOR_MENUBOX_SEPARATOR_BORDER_BOTTOM 1px solid !important;
+		}
+	</ui:style>
+	<g:HTMLPanel ui:field="content" styleName="{style.content}"/>
+</ui:UiBinder> 

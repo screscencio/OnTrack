@@ -4,7 +4,7 @@
 	<ui:style src="../style/default.css">
 
 		.separator {
-			margin: 10px -16px;
+			margin: 10px -15px;
 		}
 
 		.border1 {
