@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationPopupBoxContainer.Style">
+
+		.container {
+			background-color: COLOR_MENUBOX_BACKGROUND;
+			-webkit-box-shadow: POPUP_SHADOW;
+			-moz-box-shadow: POPUP_SHADOW;
+			box-shadow: POPUP_SHADOW;
+			border: POPUP_BORDER;
+			border-top: 0px;
+			
+            position: relative;
+			width: 210px;
+			
+			color: COLOR_MENUBOX_TEXT;
+			font: FONT_SIZE_SMALL FONT_DEFAULT_ITALIC;
+		}
+
+        .content {
+        	position: relative;
+        }
+        
+        .boxPadding {
+        	padding: POPUP_PADDING;
+        }
+        
+	</ui:style>
+
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.container} {style.boxPadding}">
+		<g:HTMLPanel>
+			<g:HTMLPanel ui:field="background"/>
+			<g:HTMLPanel ui:field="content" styleName="{style.content}" />
+		</g:HTMLPanel>
+	</g:FocusPanel>
+</ui:UiBinder> 

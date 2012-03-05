@@ -1,18 +1,18 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:style src="../style/decorations.css, ../style/colors.css">
+	<ui:style src="../style/default.css">
 
 		.separator {
-			margin: 10px -16px;
+			margin: 10px -15px;
 		}
 
 		.border1 {
-			background: COLOR_MENUBOX_SEPARATOR_BORDER1;
+			background: COLOR_MENUBOX_SEPARATOR_BORDER_TOP;
 		}
 		
 		.border2 {
-			background: COLOR_MENUBOX_SEPARATOR_BORDER2;
+			background: COLOR_MENUBOX_SEPARATOR_BORDER_BOTTOM;
 		}
 
 	</ui:style>

@@ -1,0 +1,33 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder 
+    xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+    xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout">
+    
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu.Style">
+
+        .menu {
+        	background: transparent;
+        	background-color: transparent;
+        }
+
+		.menuItem {
+            font: FONT_SIZE_MEDIUM FONT_DEFAULT;
+            color: COLOR_MENUBOX_TEXT;
+            background-color: COLOR_MENUBOX_BACKGROUND;
+		    padding: 10px;
+			font-weight: normal;
+			cursor: pointer;
+		}
+	   	
+		.menuItem:hover {
+            color: COLOR_MENUBOX_BACKGROUND;
+            background-color: COLOR_MENUBOX_ITEM_SELECTED; 
+		}
+	   	
+	</ui:style>
+
+	<layout:ApplicationPopupBoxContainer paddingEnabled="false">
+        <g:MenuBar ui:field="submenu" animationEnabled="true" autoOpen="true" vertical="true" addStyleNames="{style.menu}" />
+	</layout:ApplicationPopupBoxContainer>
+</ui:UiBinder> 

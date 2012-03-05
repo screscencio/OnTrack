@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:data field="background" src="background.jpg" />
-	<ui:style src="style/colors.css">
+	<ui:style src="style/default.css">
 	
 		@url bgUrl background;
 		
@@ -13,7 +13,7 @@
 			padding: 0px;
 			
 			background-image: bgUrl;
-			background-color: COLOR_BACKGROUND;
+			background-color: COLOR_APP_BACKGROUND;
 			background-attachment: fixed;
 			background-position: center center;
 			background-repeat: no-repeat;

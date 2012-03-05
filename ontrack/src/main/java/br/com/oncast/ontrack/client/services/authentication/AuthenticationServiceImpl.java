@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
@@ -23,6 +24,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final ApplicationPlaceController applicationPlaceController;
 
 	private final DispatchService dispatchService;
+
+	private User currentUser;
 
 	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController) {
 		this.dispatchService = dispatchService;
@@ -44,7 +47,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 			@Override
 			public void onSuccess(final AuthenticationResponse result) {
-				callback.onUserAuthenticatedSuccessfully(result.getUser());
+				currentUser = result.getUser();
+				callback.onUserAuthenticatedSuccessfully(currentUser);
 				notifyLoginToUserAuthenticationListeners();
 			}
 
@@ -132,5 +136,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		for (final UserAuthenticationListener listener : userAuthenticatedListeners) {
 			listener.onUserLoggedOut();
 		}
+	}
+
+	@Override
+	public User getCurrentUser() {
+		return currentUser;
 	}
 }

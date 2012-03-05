@@ -2,14 +2,12 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectAuthorizationCallback;
 import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -19,7 +17,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,9 +34,6 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 	@UiField
 	protected TextBox invitationTextBox;
 
-	@UiField
-	protected Button inviteButton;
-
 	public InvitationWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -47,23 +41,6 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 	@UiHandler("invitationTextBox")
 	protected void onKeyDown(final KeyDownEvent event) {
 		InvitationKeyDownHandler.handle(this, event);
-	}
-
-	@UiHandler("inviteButton")
-	protected void inviteButtonClick(final ClickEvent event) {
-		InvitationKeyDownHandler.INVITE.execute(this, event);
-	}
-
-	@UiHandler("inviteButton")
-	protected void inviteButtonOnKeyDown(final KeyDownEvent event) {
-		if (event.getNativeKeyCode() == KEY_TAB) {
-			event.stopPropagation();
-			event.preventDefault();
-			invitationTextBox.setFocus(true);
-		}
-		else {
-			InvitationKeyDownHandler.handle(this, event);
-		}
 	}
 
 	@Override
@@ -92,6 +69,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	public void focus() {
 		invitationTextBox.setFocus(true);
+		invitationTextBox.selectAll();
 	}
 
 	private enum InvitationKeyDownHandler {

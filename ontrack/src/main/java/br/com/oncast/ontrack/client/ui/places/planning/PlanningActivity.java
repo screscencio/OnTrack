@@ -65,7 +65,7 @@ public class PlanningActivity extends AbstractActivity {
 		// }
 		// });
 		//
-		updateBreadcrumb(currentProjectRepresentation);
+		updateBreadcrumb();
 
 		panel.setWidget(view);
 		ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
@@ -90,7 +90,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.getScopeTree().showSearchWidget();
 	}
 
-	private void updateBreadcrumb(final ProjectRepresentation project) {
+	private void updateBreadcrumb() {
 		final BreadcrumbWidget breadcrumb = view.getApplicationMenu().getBreadcrumb();
 		breadcrumb.clearItems();
 	}

@@ -1,12 +1,25 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.FilterEngine;
+import br.com.oncast.ontrack.client.ui.generalwidgets.FilterEngine.FilterResultListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectSelectionWidget;
+import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
+import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -14,11 +27,15 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ProjectMenuWidget extends Composite implements HasCloseHandlers<ProjectMenuWidget>, PopupAware {
+// TODO++++ Use FiltrableCommandMenu with custom Style
+public class ProjectMenuWidget extends Composite implements HasCloseHandlers<ProjectMenuWidget>, PopupAware, ProjectListChangeListener,
+		FilterResultListener<MenuBoxItem> {
 
 	private static ProjectMenuWidgetUiBinder uiBinder = GWT.create(ProjectMenuWidgetUiBinder.class);
 
@@ -28,46 +45,94 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 	Anchor exportMapLink;
 
 	@UiField
-	ProjectSelectionWidget projectSelector;
+	TextBox projectFilterTextBox;
 
-	private HandlerRegistration closeHandler = null;
+	@UiField
+	MenuBox results;
+
+	private FilterEngine<MenuBoxItem> engine;
+
+	private final String defaultText;
+
+	private static final Set<Integer> NAVIGATION_KEYS = new HashSet<Integer>();
+	static {
+		NAVIGATION_KEYS.add(BrowserKeyCodes.KEY_DOWN);
+		NAVIGATION_KEYS.add(BrowserKeyCodes.KEY_UP);
+	}
 
 	public ProjectMenuWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
+		defaultText = projectFilterTextBox.getText();
 	}
 
 	@Override
-	protected void onAttach() {
-		super.onAttach();
-		if (closeHandler == null) closeHandler = projectSelector.addCloseHandler(new CloseHandler<ProjectSelectionWidget>() {
-			@Override
-			public void onClose(final CloseEvent<ProjectSelectionWidget> event) {
-				hide();
-			}
-		});
+	protected void onLoad() {
+		super.onLoad();
+		ClientServiceProvider.getInstance().getProjectRepresentationProvider().registerProjectListChangeListener(this);
 	}
 
 	@Override
-	protected void onDetach() {
-		super.onDetach();
-		if (closeHandler != null) {
-			closeHandler.removeHandler();
-			closeHandler = null;
+	protected void onUnload() {
+		super.onUnload();
+		ClientServiceProvider.getInstance().getProjectRepresentationProvider().unregisterProjectListChangeListener(this);
+	}
+
+	@UiHandler("projectFilterTextBox")
+	protected void onKeyDown(final KeyDownEvent event) {
+		if (!NAVIGATION_KEYS.contains(event.getNativeKeyCode())) {
+			if (projectFilterTextBox.getText().equals(defaultText)) projectFilterTextBox.setText("");
+			return;
 		}
+		event.preventDefault();
+
+		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_DOWN) results.selectDown();
+		else results.selectUp();
+	}
+
+	@UiHandler("projectFilterTextBox")
+	protected void onKeyUp(final KeyUpEvent event) {
+		if (NAVIGATION_KEYS.contains(event.getNativeKeyCode())) return;
+		event.stopPropagation();
+		if (projectFilterTextBox.getText().isEmpty()) setDefaultText();
+
+		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hide();
+		else if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER) {
+			hide();
+			changeProject();
+		}
+		else filter();
+	}
+
+	private void setDefaultText() {
+		projectFilterTextBox.setText(defaultText);
+		projectFilterTextBox.setCursorPos(0);
+	}
+
+	private void filter() {
+		final String text = projectFilterTextBox.getText();
+		engine.filterMenuItens(defaultText.equals(text) ? "" : text);
+	}
+
+	private void changeProject() {
+		final MenuBoxItem selectedItem = results.getSelectedItem();
+		if (selectedItem != null) selectedItem.executeCommand();
 	}
 
 	@Override
 	public void show() {
+		setResultsVisiblity(false);
 		this.setVisible(true);
-		projectSelector.show();
+
+		projectFilterTextBox.setFocus(true);
+		projectFilterTextBox.setCursorPos(0);
 	}
 
 	@Override
 	public void hide() {
 		if (!this.isVisible()) return;
-
-		projectSelector.hide();
 		this.setVisible(false);
+		setDefaultText();
+
 		CloseEvent.fire(this, this);
 	}
 
@@ -87,4 +152,69 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 		hide();
 	}
 
+	@Override
+	public void onProjectListChanged(final Set<ProjectRepresentation> projectRepresentations) {
+		this.engine = new FilterEngine<MenuBoxItem>(createProjectList(projectRepresentations), this);
+	}
+
+	private List<MenuBoxItem> createProjectList(final Set<ProjectRepresentation> projectRepresentations) {
+		final ArrayList<MenuBoxItem> itens = new ArrayList<MenuBoxItem>();
+		for (final ProjectRepresentation project : projectRepresentations) {
+			itens.add(createItem(project));
+		}
+		return itens;
+	}
+
+	@Override
+	public void onProjectListAvailabilityChange(final boolean availability) {
+		projectFilterTextBox.setText(availability ? defaultText : "Loading Projects list...");
+		projectFilterTextBox.setEnabled(availability);
+	}
+
+	@Override
+	public void onFilterActivationChanged(final boolean isActive) {
+		setResultsVisiblity(isActive);
+	}
+
+	private void setResultsVisiblity(final boolean isActive) {
+		results.setVisible(isActive);
+	}
+
+	@Override
+	public void onUpdateItens(final List<MenuBoxItem> filteredItens, final boolean shouldAddCustomItem, final String filterText) {
+		results.clear();
+
+		if (shouldAddCustomItem) addCustomItem(filterText);
+
+		for (final MenuBoxItem item : filteredItens) {
+			results.add(item);
+		}
+
+		results.selectItem(shouldAddCustomItem ? 1 : 0);
+	}
+
+	private void addCustomItem(final String filterText) {
+		results.add(createCustomItem("Create '" + filterText + "'", filterText));
+	}
+
+	private MenuBoxItem createItem(final ProjectRepresentation project) {
+		return new MenuBoxItem(project.getName(), new Command() {
+			@Override
+			public void execute() {
+				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new PlanningPlace(project));
+				hide();
+			}
+		});
+	}
+
+	private MenuBoxItem createCustomItem(final String text, final String value) {
+		return new MenuBoxItem(text, value, new Command() {
+			@Override
+			public void execute() {
+				final ProjectCreationPlace projectCreationPlace = new ProjectCreationPlace(text);
+				hide();
+				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(projectCreationPlace);
+			}
+		});
+	}
 }

@@ -33,7 +33,9 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO refactor this class and SearchScopeFiltableCommandMenu to extract duplicated code
+// TODO++++ refactor this class and SearchScopeFiltableCommandMenu to extract duplicated code
+// TODO++++ refactor this class and ProjectMenuWidget to extract duplicated code
+// TODO++++ merge this class with FilterEngine
 public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<FiltrableCommandMenu>, PopupAware {
 
 	private static final List<Integer> KEY_DOWN_HANDLED_KEYS = Arrays.asList(new Integer[] { KEY_DOWN, KEY_UP, KEY_TAB });
