@@ -47,8 +47,8 @@ public class ApplicationEntryPoint implements EntryPoint {
 
 			@Override
 			public void onPlaceChange(final Place newPlace) {
-				PopUpPanel.clear();
 				MaskPanel.assureHidden();
+				PopUpPanel.clear();
 			}
 		});
 	}

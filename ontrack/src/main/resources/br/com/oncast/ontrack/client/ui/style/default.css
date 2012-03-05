@@ -68,6 +68,7 @@
 @def COLOR_MENUBOX_ITEM_SELECTED #CCCCCC;
 @def MENUBOX_BUTTOM_SHADOW 1px 1px 3px 0px #DDDDDD, inset -1px -1px 0px 0px #F5D893;
 @def MENUBOX_BUTTOM_BORDER 1px solid #CCAF6B;
+
 .menuboxButton {
 		background: COLOR_MENUBOX_BUTTOM_BACKGROUND;
 		

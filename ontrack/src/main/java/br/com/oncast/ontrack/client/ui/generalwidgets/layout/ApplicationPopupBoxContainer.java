@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -22,9 +23,16 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 
 	interface ApplicationPopupBoxContainerUiBinder extends UiBinder<Widget, ApplicationPopupBoxContainer> {}
 
+	protected interface Style extends CssResource {
+		String boxPadding();
+	}
+
 	protected ApplicationPopupBoxContainer() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
+
+	@UiField
+	Style style;
 
 	@UiField
 	FocusPanel rootPanel;
@@ -66,4 +74,7 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 		return rootPanel.addKeyUpHandler(handler);
 	}
 
+	public void setPaddingEnabled(final boolean padding) {
+		this.setStyleName(style.boxPadding(), padding);
+	}
 }
