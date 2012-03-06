@@ -151,14 +151,12 @@ html,body {
 }
 
 .gwt-MenuBar-vertical {
-	color: black;
-	background: white;
-	background-color: white;
+	color: #999999;
+	background: #FAFAFA;
+	background-color: #FAFAFA;
 	border: none;
-	/* This is being removed because this is causing an unexpected effect when the menu item is bigger then menu bar.
-	  box-shadow: 1px 1px 6px #d9dae1;
-	 -moz-box-shadow: 1px 1px 6px #d9dae1;    
-	 -webkit-box-shadow: 1px 1px 6px #d9dae1; */
+	font-family: 'ProximaNovaRegular';
+	font-size: inherit;
 }
 .gwt-MenuBar-topMenu {
 	  box-shadow: -2px 2px 5px #444;
@@ -173,12 +171,11 @@ html,body {
 
 .gwt-MenuBar .gwt-MenuItem {
 	padding: 4px;
-	font-size: 90%;
 	font-weight: normal;
 	cursor: pointer;
-	color: #a5a5a5;
-	background: white;
-	background-color: white;
+	color: #999999;
+	background: #FAFAFA;
+	background-color: #FAFAFA;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem {
@@ -191,8 +188,8 @@ html,body {
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
-	color: white;
-	background-color: #a5a5a5;
+	color: #FAFAFA;
+	background-color:#CCC;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {

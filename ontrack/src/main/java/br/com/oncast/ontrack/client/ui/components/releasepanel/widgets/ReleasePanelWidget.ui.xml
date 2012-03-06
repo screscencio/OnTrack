@@ -16,9 +16,19 @@
 	   	.releases {
 	   		width: 100%;
 	   	}
+	   	
+	   	.noReleaseLabel {
+			color: COLOR_MENUBOX_TEXT;
+			font-weight: bolder;
+			margin: 30px 0px 35px 0px;
+			text-shadow: 1px 1px 1px COLOR_MENUBOX_BACKGROUND;
+			width: 100%;
+			text-align: center;
+		}
 	</ui:style>
 	
 	<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}">
+		<g:Label ui:field="noReleaseLabel" text="No Release yet" styleName="{style.noReleaseLabel}" visible="false"/>
 		<misc:VerticalModelWidgetContainer ui:field="releaseContainer" styleName="{style.releases}" />
 	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 

@@ -219,7 +219,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiHandler("menuIcon")
 	protected void showMenu(final ClickEvent event) {
-		configPopup().popup(getMouseActionMenu()).alignRight(menuIcon).alignBelow(menuIcon, 2).onClose(new PopupCloseListener() {
+		configPopup().popup(getMouseActionMenu()).alignRight(menuIcon).alignBelow(menuIcon).onClose(new PopupCloseListener() {
 			@Override
 			public void onHasClosed() {
 				menuIcon.setVisible(false);
