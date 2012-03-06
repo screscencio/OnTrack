@@ -20,22 +20,20 @@
 		}
 	</ui:style>
 
-	<g:HTMLPanel>
-		<layout:ApplicationPopupBoxContainer ui:field="menu">
-			<g:Anchor ui:field="exportMapLink" target="_blank" styleName="{style.exportToMapLink}" href="#">
-			    <table width="100%">
-			        <tr>
-			            <td width="1" align="center">
-			                <div class="{style.exportDataImg}" />
-			            </td>
-			            <td width="*" align="center">Export data (.mm)</td>
-			        </tr>
-			    </table>
-	           </g:Anchor>
-			<misc:Separator/>
-			<g:Label text="Switch project" />
-			<g:TextBox ui:field="projectFilterTextBox" styleName="{style.textBoxDecoration}" text="Start typing and hit ENTER to choose"/>
- 			<menuWidget:MenuBox ui:field="results"/>
-		</layout:ApplicationPopupBoxContainer>
-	</g:HTMLPanel>
+	<layout:ApplicationPopupBoxContainer ui:field="menu">
+		<g:Anchor ui:field="exportMapLink" target="_blank" styleName="{style.exportToMapLink}" href="#">
+		    <table width="100%">
+		        <tr>
+		            <td width="1" align="center">
+		                <div class="{style.exportDataImg}" />
+		            </td>
+		            <td width="*" align="center">Export data (.mm)</td>
+		        </tr>
+		    </table>
+           </g:Anchor>
+		<misc:Separator/>
+		<g:Label text="Switch project" />
+		<g:TextBox ui:field="projectFilterTextBox" styleName="{style.textBoxDecoration}" text="Start typing and hit ENTER to choose"/>
+			<menuWidget:MenuBox ui:field="results"/>
+	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 

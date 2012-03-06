@@ -1,5 +1,10 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -12,6 +17,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -72,6 +78,126 @@ public class PopupConfig {
 	private HandlerRegistration closeHandler;
 	private HandlerRegistration resizeHandler;
 	private boolean shown;
+	private int animationDuration = 0;
+
+	public class SlideAnimation extends Animation {
+
+		public static final int DURATION_SHORT = 500;
+
+		private static final int CONTAINER_PADDING = 10;
+
+		private int top;
+		private int left;
+		private int startPos;
+		private int endPos;
+
+		private SimplePanel container;
+
+		@Override
+		protected void onUpdate(final double progress) {
+			widgetToPopup.getElement().getStyle().setTop(startPos + progress * (endPos - startPos), Unit.PX);
+		}
+
+		@Override
+		protected void onComplete() {
+			super.onComplete();
+			restoreWidget();
+		}
+
+		@Override
+		protected void onCancel() {
+			super.onCancel();
+			restoreWidget();
+		}
+
+		public void show() {
+			if (animationDuration == 0) {
+				setPopupWidgetVisible();
+				return;
+			}
+
+			setupContainer(true);
+			setupWidget();
+
+			run(animationDuration);
+		}
+
+		public void hide() {
+			if (animationDuration == 0) {
+				disengagePopup();
+				return;
+			}
+
+			widgetToPopup.setVisible(true);
+			setupContainer(false);
+			setupWidget();
+
+			run(animationDuration);
+		}
+
+		private void setupContainer(final boolean showing) {
+			top = widgetToPopup.getAbsoluteTop();
+			left = widgetToPopup.getAbsoluteLeft();
+			final int height = widgetToPopup.getOffsetHeight();
+			final int width = widgetToPopup.getOffsetWidth();
+
+			widgetToPopup.removeFromParent();
+
+			container = new SimplePanel();
+			PopUpPanel.add(container);
+			container.add(widgetToPopup);
+
+			final Style s = container.getElement().getStyle();
+			s.setPosition(Position.ABSOLUTE);
+			s.setTop(top, Unit.PX);
+			s.setLeft(left - CONTAINER_PADDING, Unit.PX);
+			s.setHeight(height, Unit.PX);
+			s.setWidth(width + 2 * CONTAINER_PADDING, Unit.PX);
+			s.setOverflowY(Overflow.HIDDEN);
+
+			startPos = 0;
+			endPos = 0;
+			if (showing) startPos = -height;
+			else endPos = -height;
+		}
+
+		private void setupWidget() {
+			final Style s = widgetToPopup.getElement().getStyle();
+			s.setPosition(Position.RELATIVE);
+			s.setTop(startPos, Unit.PX);
+			s.setLeft(CONTAINER_PADDING, Unit.PX);
+		}
+
+		private void restoreWidget() {
+			widgetToPopup.removeFromParent();
+			container.removeFromParent();
+			PopUpPanel.add(widgetToPopup);
+
+			final Style s = widgetToPopup.getElement().getStyle();
+			s.setPosition(Position.ABSOLUTE);
+			s.setTop(top, Unit.PX);
+			s.setLeft(left, Unit.PX);
+
+			if (endPos < 0) {
+				widgetToPopup.setVisible(false);
+				disengagePopup();
+			}
+			else {
+				setPopupWidgetVisible();
+			}
+		}
+
+		private void setPopupWidgetVisible() {
+			if (widgetToPopup instanceof PopupAware) {
+				widgetToPopup.setVisible(false);
+				((PopupAware) widgetToPopup).show();
+			}
+			else widgetToPopup.setVisible(true);
+		}
+
+	}
+
+	private final SlideAnimation animation = new SlideAnimation();
 
 	private PopupConfig() {}
 
@@ -188,6 +314,16 @@ public class PopupConfig {
 	}
 
 	/**
+	 * Defines the duration of the popup's animation when showing or hiding.
+	 * @param Animation duration in milliseconds.
+	 * @return the self assistant for in-line call convenience.
+	 */
+	public PopupConfig setAnimationDuration(final int milliseconds) {
+		this.animationDuration = milliseconds;
+		return this;
+	}
+
+	/**
 	 * Defines a listener that will be notified when the popup opens.<br />
 	 * Each popup configuration allows just one open listener.
 	 * @param openListener the open listener to be notified.
@@ -227,6 +363,9 @@ public class PopupConfig {
 		closeHandler = ((HasCloseHandlers) widgetToPopup).addCloseHandler(new CloseHandler() {
 			@Override
 			public void onClose(final CloseEvent event) {
+				if (shown) {
+					animation.hide();
+				}
 				shown = false;
 				MaskPanel.assureHidden();
 			}
@@ -250,7 +389,7 @@ public class PopupConfig {
 		MaskPanel.show(new HideHandler() {
 			@Override
 			public void onWillHide() {
-				disengagePopup();
+				hidePopup();
 			}
 		});
 
@@ -264,20 +403,28 @@ public class PopupConfig {
 		addResizeWindowListener();
 
 		if (openListener != null) openListener.onWillOpen();
-		if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).show();
-		else widgetToPopup.setVisible(true);
+
+		widgetToPopup.setVisible(true);
 		shown = true;
 
 		evalHorizontalPosition();
 		evalVerticalPosition();
+
+		animation.show();
+	}
+
+	private void hidePopup() {
+		if (shown) {
+			if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).hide();
+			else {
+				widgetToPopup.setVisible(false);
+				animation.hide();
+			}
+			shown = false;
+		}
 	}
 
 	private void disengagePopup() {
-		if (shown) {
-			if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).hide();
-			else widgetToPopup.setVisible(false);
-			shown = false;
-		}
 		if (closeListener != null) closeListener.onHasClosed();
 
 		closeHandler.removeHandler();

@@ -37,8 +37,7 @@ public class ReleasePanelWidget extends Composite {
 
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
-		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(releasePanelInteractionHandler,
-				dragAndDropManager), dragAndDropManager);
+		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager), dragAndDropManager);
 
 		initWidget(uiBinder.createAndBindUi(this));
 		dragAndDropManager.configureBoundaryPanel(RootPanel.get());

@@ -1,26 +1,18 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
-import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -30,6 +22,13 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	interface ScopeWidgetUiBinder extends UiBinder<Widget, ScopeWidget> {}
 
+	interface ScopeWidgetStyle extends CssResource {
+		String panelDone();
+	}
+
+	@UiField
+	ScopeWidgetStyle style;
+
 	@UiField
 	FocusPanel panel;
 
@@ -38,14 +37,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	Label descriptionLabel;
 
 	@UiField
-	// TODO use FastLabel
-	Label progressLabel;
-
-	@UiField
 	FocusPanel draggableAnchor;
-
-	@UiField
-	protected Image menuLink;
 
 	private final Scope scope;
 
@@ -55,42 +47,12 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeProgress;
 
-	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
-
-	private MouseCommandsMenu mouseCommandsMenu;
-
-	private MouseCommandsMenu getMouseActionMenu() {
-		if (mouseCommandsMenu != null) return mouseCommandsMenu;
-
-		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		itens.add(new CommandMenuItem("Increase priority", new Command() {
-
-			@Override
-			public void execute() {
-				releasePanelInteractionHandler.onScopeIncreasePriorityRequest(scope);
-			}
-		}));
-		itens.add(new CommandMenuItem("Decrease priority", new Command() {
-
-			@Override
-			public void execute() {
-				releasePanelInteractionHandler.onScopeDecreasePriorityRequest(scope);
-			}
-		}));
-
-		mouseCommandsMenu = new MouseCommandsMenu(itens);
-		return mouseCommandsMenu;
-	}
-
-	public ScopeWidget(final Scope scope, final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
-		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
+	public ScopeWidget(final Scope scope) {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
 		updateDescription();
 		updateProgress();
-
-		configPopup().link(menuLink).popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2);
 	}
 
 	@Override
@@ -119,8 +81,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		if (description.equals(currentScopeProgress)) return false;
 		currentScopeProgress = description;
 
-		progressLabel.setText(currentScopeProgress);
-		progressLabel.setVisible(!currentScopeProgress.isEmpty());
+		panel.setStyleName(style.panelDone(), scope.getProgress().isDone());
 
 		return true;
 	}

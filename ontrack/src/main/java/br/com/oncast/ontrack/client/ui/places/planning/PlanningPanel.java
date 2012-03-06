@@ -72,21 +72,21 @@ public class PlanningPanel extends Composite implements PlanningView {
 		final int menuBottom = menuTop + menuHeight;
 
 		final Element widgetElement = widget.getElement();
-		final int itemTop = getOffisetTop(widget, releaseScroll);
-		final int itemHeight = widgetElement.getOffsetHeight();
+		final int itemTop = getOffisetTop(widgetElement, releaseScroll.getElement());
+		final int itemHeight = widgetElement.getParentElement().getOffsetHeight();
 		final int itemBottom = itemTop + itemHeight;
 
-		if (itemTop < menuTop) animation.scroll(menuTop, itemTop, 500);
+		if (itemTop < menuTop) animation.scroll(menuTop, itemTop - 5, 500);
 		else if (itemBottom > menuBottom) animation.scroll(menuTop, itemTop - menuHeight + itemHeight, 500);
 	}
 
-	private int getOffisetTop(final Widget widget, final ScrollPanel scrollPanel) {
-		final Widget parent = widget.getParent();
+	private int getOffisetTop(final Element widget, final Element scrollPanel) {
+		final Element parent = widget.getOffsetParent();
 		if (parent == null) throw new RuntimeException("Widget should be inside the scroll panel");
 
-		if (parent == scrollPanel) return widget.getElement().getOffsetTop();
+		if (parent == scrollPanel) return widget.getOffsetTop();
 
-		return getOffisetTop(parent, scrollPanel) + widget.getElement().getOffsetTop();
+		return getOffisetTop(parent, scrollPanel) + widget.getOffsetTop();
 	}
 
 	private class ScrollAnimation extends Animation {

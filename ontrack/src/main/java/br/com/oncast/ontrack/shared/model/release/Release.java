@@ -340,6 +340,10 @@ public class Release implements Serializable {
 	}
 
 	public boolean hasDirectScopes() {
-		return !getScopeList().isEmpty();
+		return !scopeList.isEmpty();
+	}
+
+	public boolean hasChildren() {
+		return !childrenList.isEmpty();
 	}
 }

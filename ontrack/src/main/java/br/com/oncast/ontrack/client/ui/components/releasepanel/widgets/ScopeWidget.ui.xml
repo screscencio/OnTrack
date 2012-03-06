@@ -3,106 +3,62 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:style>
+	<ui:image field="draggableImage" src="bg-move-scope.png"/>
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget.ScopeWidgetStyle">
+	
 		.panel {
 			position: relative;
-			min-height: 16px;
-			margin: 1px;
-			border: 1px solid #d8d8db;
-			background: #dfe0e3;
-			padding: 0px;
-			width: 100%;
+			margin-top: -1px;
+
+			background: COLOR_MENUBOX_BACKGROUND;
+			
+			color: COLOR_MENUBOX_TEXT;
+			font-family: FONT_DEFAULT;
+
+			border: SCOPE_WIDGET_BORDER;
+			
+		}
+		
+		.panelDone {
+			color: #ccc;
 		}
 		
 		.panel:hover {
-			border: 1px solid #d3d4d6;
-			background-color: #d4d5d9;
+			background-color: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_CLOSED;
 		}
 
 	    .internalPanel {
 	        position: relative;
-            top: 0px;
-            bottom: 0px;
-            left: 0px;
-            right: 0px;
+	        height: 100%;
+	        width: 100%;
 	    }
 		
 		.descriptionLabel {
-			position: relative;
-			top: 0px;
-			bottom: 0px;
-			left: 10px;
-			margin-right: 100px;
-			padding-top: 4px;
-			padding-bottom: 4px;
-			padding-right: 5px;
-			padding-left: 8px;
-			overflow: visible;
-			overflow-x: visible;
-			overflow-y: hidden;
-			
-			font-size: 12px;
-			font-stretch: extra-expanded;
-			line-height: 120%;
-			color: #555;
-		}
-		
-		.progressLabel {
-			position: absolute;
-			top: 0px;
-			bottom: 0px;
-			right: 25px;
-			width: 70px;
-			padding-top: 5px;
-			padding-bottom: 4px;
-			padding-right: 5px;
-			padding-left: 5px;
-			color: #A5A5A5;
-            overflow: hidden;
-           
-           	text-align: right;
-            font-size: 11px;
+			padding: 10px;
 		}
 		
 		.draggable {
-			background: url("resources/image/releasePanel/draggable.png") repeat-y;
 			cursor: move;
-			
-			position: absolute;
-			top: 3px;
-			left: 4px;
-			bottom: 4px;
-			width: 8px;
+			border-right: RELEASE_WIDGET_BORDER;
+			height: 100%;
 		}
 		
-		.menuLink {
-			position: absolute;
-			top: 2px;
-			right: 1px;
-			
-			background: #dfe0e3 url("resources/image/releasePanel/arrow.png") no-repeat center;
-			cursor: pointer;
-			width: 18px;
-			height: 18px;
-			opacity: 0.2;
-			display: block;
-			
-			-moz-border-radius: 2px;
-			border-radius: 2px;
+		.draggableImage {
+			margin: 6px 2px 0px 2px;
 		}
 		
-		.menuLink:hover {
-			background: #d4d5d9 url("resources/image/releasePanel/arrow.png") no-repeat center;
-			opacity: 1;
-		}
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">
-	   <g:FlowPanel styleName="{style.internalPanel}">
-		<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
-		<g:Label ui:field="progressLabel" styleName="{style.progressLabel} v-ellip" />
-		<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
-		<g:Image styleName="{style.menuLink}" ui:field="menuLink" />
-		</g:FlowPanel>
+	   <g:HorizontalPanel styleName="{style.internalPanel}" verticalAlignment="middle">
+	   		<g:cell width="1">
+				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
+					<g:Image resource="{draggableImage}" styleName="{style.draggableImage}"/>
+				</g:FocusPanel>
+	   		</g:cell>
+	   		<g:cell width="*">
+				<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
+	   		</g:cell>
+		</g:HorizontalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

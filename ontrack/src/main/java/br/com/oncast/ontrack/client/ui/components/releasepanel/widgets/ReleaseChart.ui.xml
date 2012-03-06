@@ -3,6 +3,26 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:org.moxieapps.gwt.highcharts.client">
 	
-	<g:FocusPanel ui:field="clickableChartPanel" />
+	<ui:image field="closeImage" src="stats-close.png"/>
+	
+	<ui:style>
+	
+	.rootPanel {
+		position: relative;
+	}
+	
+	.closeIcon {
+		position: absolute;
+		top: -9.5px;
+		right: -9.5px;
+		
+		cursor: pointer;
+	}
+	</ui:style>
+	
+	<g:HTMLPanel styleName="{style.rootPanel}">
+		<g:FocusPanel ui:field="clickableChartPanel" />
+		<g:Image ui:field="closeIcon" resource="{closeImage}" styleName="{style.closeIcon}"/>
+	</g:HTMLPanel>
 
 </ui:UiBinder> 

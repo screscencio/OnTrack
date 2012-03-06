@@ -75,7 +75,7 @@ public class ApplicationMenu extends Composite {
 		final ApplicationSubmenu userMenu = new ApplicationSubmenu();
 
 		final PopupConfig popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignBelow(applicationMenuPanel, 1)
-				.alignRight(userMenuItem);
+				.alignRight(userMenuItem).setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
 		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu).alignBelow(applicationMenuPanel, 1).alignRight(userMenuItem);
 
 		userMenu.addItem("Change Password", new Command() {
