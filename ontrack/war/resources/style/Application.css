@@ -17,7 +17,7 @@ html,body {
 	left: 0px;
 	right: 0px;
 	height: 0px;
-	z-index: 1;
+	z-index: 2;
 }
 
 .maskPanel {
@@ -26,7 +26,7 @@ html,body {
 	left: 0px;
 	right: 0px;
 	bottom: 0px;
-	z-index: 0;
+	z-index: 1;
 }
 
 .gradAppHeader {
@@ -101,8 +101,11 @@ html,body {
 
 /* Drag n Drop */
 .dragdrop-positioner {
-	width: 350px;
 	border: 0px;
+}
+
+.scopeWidgetContainer tr:last-child .dragdrop-positioner {
+	border-width: 0px !important;
 }
 
 .kanban .dragdrop-positioner {
@@ -114,6 +117,8 @@ html,body {
 .dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {
 	filter: alpha(opacity \= 70);
 	opacity: 0.7;
+	border-width: 1px !important;
+	min-width: 250px;
 }
 
 .kanbanColumn.dragdrop-dragging {
@@ -317,8 +322,10 @@ button[disabled], button[disabled]:hover, input[disabled], input[disabled]:hover
 }
 
 .gwt-TextBox:focus, .gwt-PasswordTextBox:focus {
+	/*
 	border: 1px solid gray;
 	-moz-box-shadow: 0px 0px 5px #a5a5a5;
 	-webkit-box-shadow: 0px 0px 5px #a5a5a5;
 	box-shadow: 0px 0px 5px #a5a5a5;
+	*/
 }

@@ -97,7 +97,6 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 
 		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hide();
 		else if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER) {
-			hide();
 			changeProject();
 		}
 		else filter();
@@ -115,7 +114,10 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 
 	private void changeProject() {
 		final MenuBoxItem selectedItem = results.getSelectedItem();
-		if (selectedItem != null) selectedItem.executeCommand();
+		if (selectedItem != null) {
+			hide();
+			selectedItem.executeCommand();
+		}
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -40,7 +41,13 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	@UiHandler("invitationTextBox")
 	protected void onKeyDown(final KeyDownEvent event) {
+		if (DEFAULT_TEXT.equals(invitationTextBox.getText())) invitationTextBox.setText("");
 		InvitationKeyDownHandler.handle(this, event);
+	}
+
+	@UiHandler("invitationTextBox")
+	protected void onKeyUp(final KeyUpEvent event) {
+		if (invitationTextBox.getText().isEmpty()) setDefaultText();
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	private void setDefaultText() {
 		invitationTextBox.setText(DEFAULT_TEXT);
-		invitationTextBox.setSelectionRange(0, DEFAULT_TEXT.length());
+		invitationTextBox.setCursorPos(0);
 	}
 
 	@Override
@@ -78,6 +85,8 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 			@Override
 			protected void executeImpl(final InvitationWidget widget) {
 				final String mail = widget.invitationTextBox.getText();
+				if (mail.trim().isEmpty()) return;
+
 				widget.hide();
 				// FIXME Mats change this for show info or waiting message;
 				ClientNotificationService.showSuccess("Processing you invitation in background...");
@@ -111,13 +120,14 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 		protected abstract void executeImpl(InvitationWidget widget);
 
-		static void handle(final InvitationWidget widget, final KeyDownEvent event) {
+		static boolean handle(final InvitationWidget widget, final KeyDownEvent event) {
 			for (final InvitationKeyDownHandler handler : values()) {
 				if (handler.keyCode == event.getNativeKeyCode()) {
 					handler.execute(widget, event);
-					return;
+					return true;
 				}
 			}
+			return false;
 		}
 
 		private void execute(final InvitationWidget widget, final DomEvent<?> event) {

@@ -4,157 +4,127 @@
 	xmlns:ow="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-	<ui:style
-		type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Style">
+	<ui:with field="resources" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Resources"/>
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Style">
+		
 			.rootPanel {
 				position: relative;
-				margin-bottom: 5px;
-				border: 1px solid #a5a5a5;
-				font-size: 13px;
 				width: 100%;
+				
+				margin-bottom: 10px;
 			}
 			
 			.header {
-				position: relative;
-                top: 0px;
-                left: 0px;
-                right: 0px;
-                height: 30px;
+				width: 100%;
+				padding: 8px;
 
-				border: 1px solid #d9dae1;
-				color: #fff;
+				border: RELEASE_WIDGET_BORDER;
+				
+				background: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED;
+				-webkit-box-shadow: RELEASE_WIDGET_HEADER_SHADOW_OPENED;
+				-moz-box-shadow: RELEASE_WIDGET_HEADER_SHADOW_OPENED;
+				box-shadow: RELEASE_WIDGET_HEADER_SHADOW_OPENED;
+				
+				color: COLOR_RELEASE_WIDGET_HEADER_TEXT_OPENED;
+				font-family: FONT_DEFAULT;
+				font-size: FONT_SIZE_LARGE;				
+				text-shadow: RELEASE_WIDGET_HEADER_TEXT_SHADOW;
+				filter: RELEASE_WIDGET_HEADER_TEXT_SHADOW_IE;
 			}
 			
+			.headerClosed {
+				background: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_CLOSED;
+				-webkit-box-shadow: RELEASE_WIDGET_HEADER_SHADOW_CLOSED;
+				-moz-box-shadow: RELEASE_WIDGET_HEADER_SHADOW_CLOSED;
+				box-shadow: RELEASE_WIDGET_HEADER_SHADOW_CLOSED;
+				
+				color: COLOR_RELEASE_WIDGET_HEADER_TEXT_CLOSED;
+			}
+			
+			
 			.containerStateToogleClickableArea {
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				right: 0px;
-				bottom: 0px;
+				width: 100%;
+			}
+			
+			.headerItem, .descriptionLabel {
+				cursor: pointer;
+				margin: 0px 4px;
 			}
 			
 			.headerContainerStateImage {
-				position: absolute;
-                top: 10px;
-                left: 10px;
-				width: 10px;
-				height: 10px;
-				display: block;
+				margin-bottom: -1px;
 			}
-			
-			.headerContainerStateImageOpened {
-				background: url("resources/image/releasePanel/closeContainer.jpg")
-					no-repeat center;
-				cursor: pointer;
-			}
-			
-			.headerContainerStateImageClosed {
-				background: url("resources/image/releasePanel/openContainer.jpg")
-					no-repeat center;
-				cursor: pointer;
-			}
-			
-			.headerLabel {
-				position: absolute;
-				top: 8px;
-				left: 25px;
-				right: 80px;
-				height: 20px;
-				overflow: hidden;
-			}
-			
-			.progressLabel {
-				position: absolute;
-	
-                width: 18px;
-                height: 18px;
-                display: block;
-                right: 80px;
-                top: 6px;
-                
-                text-align: right;
-                
-                -moz-border-radius: 2px;
-                border-radius: 2px;
-			}
-
-            .progressLabel:hover {
-				cursor: pointer;
-            }
 			
 			.progressIcon {
-				position: absolute;
-				
-				width: 18px;
-				height: 18px;
-				right: 30px;
-				top: 5px;
-
-                opacity: 0.6;
-				display: block;
-				background: #dfe0e3 url("resources/image/releasePanel/progressIcon.png") no-repeat center;
-				background-size: 18px 18px;
-				
-				-moz-border-radius: 2px;
-                border-radius: 2px;
+				margin-bottom: -3px;
 			}
 			
-			.progressIcon:hover {
-				opacity: 1;
-				cursor: pointer;
+			.kanbanIcon {
+				margin-bottom: -2px;
 			}
-            
-			.releaseChartPanel {
-				position: absolute;
-				top: 8px;
-				height: 20px;
-				right: 35px;
-				width: 40px;
-				font-size: small;
-				text-align: center;
+			
+			.descriptionLabel {
+				cursor: auto;
 			}
 			
 			.menuLink {
-				position: absolute;
-				top: 5px;
-				right: 5px;
-				
-				background: #dfe0e3 url("resources/image/releasePanel/arrow.png") no-repeat center;
 				cursor: pointer;
-                width: 18px;
-                height: 18px;
-                opacity: 0.2;
-                display: block;
-                
-                -moz-border-radius: 2px;
-                border-radius: 2px;
-			}
-			
-            .menuLink:hover {
-                background: #d4d5d9 url("resources/image/releasePanel/arrow.png") no-repeat center;
-            	opacity: 1;
-            }
-			
-			.burnUpChartPanel {
+				
+				background-color: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED;
+				
 				position: absolute;
-				top: 5px;
-				right: 25px;
+				top: 10px;
+				right: -11px;
 			}
 			
 			.body {
 				position: relative;
-				background-color: #e3e4e8;
-				width: 100%;
+				margin: 0px 5px;
+
+				border: RELEASE_WIDGET_BORDER;
+				border-top: none;
+				
+				background-color: COLOR_MENUBOX_BACKGROUND;
 			}
 			
 			.releaseContainer {
+				padding: 10px 5px 0px 5px;
+				width: 100%;
+			}
+			
+			.laterSeparator {
+				width: 100%;
+				padding: 0px 5px;	
+			}
+			
+			.laterImage {
+				margin-bottom: 3.5px;
+			}
+			
+			.laterLabel {
+				margin: 0px 4px;
+
+				color: COLOR_RELEASE_WIDGET_HEADER_TEXT_CLOSED; 
+				font-family: FONT_DEFAULT;
+				font-size: 8pt;
+				text-transform: uppercase;
+				text-shadow: -1px 0px 1px #CCCCCC;
+				filter: literal('dropshadow(color=#CCCCCC, offx=-1, offy=0)');;
+			}
+			
+			.laterLine {
+				height: 1px;
+				width: 100%;
+				background-color: COLOR_RELEASE_WIDGET_BORDER;
+			}
+			
+			.scopeContainer {
 				padding: 5px;
 				width: 100%;
 			}
 			
-			.scopeContainer {
-				padding: 8px;
-				width: 100%;
+			/* //TODO+++ think a better way to handle border problem */
+			.scopeContainer > tbody > tr:first-child > td > div {
 			}
 			
 			.chartPanel {
@@ -174,17 +144,40 @@
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
-		<div class="{style.header} gradReleaseWidgetHeader">
-   			<g:Image ui:field="containerStateImage" styleName="{style.headerContainerStateImage}" />
-			<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}" >
-				<t:EditableLabel ui:field="descriptionLabel" styleName="{style.headerLabel} v-ellip" />
-			</g:FocusPanel>
-			<g:Label styleName="{style.progressLabel}" ui:field="progressLabel" />
-			<g:Image styleName="{style.progressIcon}" ui:field="progressLink" />
-			<g:Image styleName="{style.menuLink}" ui:field="menuLink" />
-		</div>
-		<div ui:field="bodyContainer" class="{style.body}" >
+		<g:FocusPanel ui:field="menuMouseOverArea">
+			<g:HTMLPanel>
+				<g:HorizontalPanel ui:field="header" styleName="{style.header}" verticalAlignment="middle">
+					<g:cell width="1">
+						<g:Image resource="{resources.containerStateOpened}" ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem}" />
+					</g:cell>
+					<g:cell width="*">
+						<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}">
+							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
+						</g:FocusPanel>
+					</g:cell>
+					<g:cell width="1">
+						<g:Image ui:field="progressIcon" resource="{resources.progress0}" styleName="{style.headerItem} {style.progressIcon}"/>
+					</g:cell>
+					<g:cell width="1">
+						<g:Image ui:field="kanbanLink" resource="{resources.kanbanIcon}" styleName="{style.headerItem} {style.kanbanIcon}" />
+					</g:cell>
+				</g:HorizontalPanel>
+				<g:Image resource="{resources.menuIcon}" styleName="{style.menuLink}" ui:field="menuIcon" visible="false"/>
+			</g:HTMLPanel>
+		</g:FocusPanel>
+		<div ui:field="bodyContainer" class="{style.body}">
 			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
+			<g:HorizontalPanel ui:field="laterSeparator" styleName="{style.laterSeparator}" verticalAlignment="middle">
+				<g:cell width="1">
+					<g:Image resource="{resources.laterImage}" styleName="{style.laterImage}"/>
+				</g:cell>
+				<g:cell width="1">
+					<g:Label text="Later" styleName="{style.laterLabel}"/>
+				</g:cell>
+				<g:cell width="*">
+					<g:SimplePanel styleName="{style.laterLine}"/>
+				</g:cell>
+			</g:HorizontalPanel>
 			<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
 		</div>
 	</g:HTMLPanel>

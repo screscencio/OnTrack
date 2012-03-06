@@ -37,6 +37,7 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -48,6 +49,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseChart>, PopupAware {
@@ -74,6 +76,9 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 
 	@UiField
 	protected FocusPanel clickableChartPanel;
+
+	@UiField
+	protected Image closeIcon;
 
 	private final ReleaseChartDataProvider dataProvider;
 
@@ -107,6 +112,11 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 		hide();
 		e.preventDefault();
 		e.stopPropagation();
+	}
+
+	@UiHandler("closeIcon")
+	protected void onClick(final ClickEvent event) {
+		hide();
 	}
 
 	@Override

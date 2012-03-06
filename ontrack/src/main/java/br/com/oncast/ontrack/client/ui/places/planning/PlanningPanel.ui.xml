@@ -32,8 +32,7 @@
 			width: 400px;
 			overflow: auto;
 			overflow-x: hidden;
-			padding-right: 10px;
-			padding-top: 10px;
+			padding: 0px 10px;
 		}
 		
 	</ui:style>

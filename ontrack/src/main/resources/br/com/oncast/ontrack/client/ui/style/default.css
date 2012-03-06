@@ -42,7 +42,7 @@
 /* Component Styles */
 
 @def POPUP_SHADOW 1px 5px 10px #999999;
-@def POPUP_BORDER 1px #AAAAAA #DDDDDD;
+@def POPUP_BORDER 1px solid #DDDDDD;
 
 @def COLOR_MENU_BORDER_TOP #B4AA67;
 @def COLOR_MENU_BORDER_BOTTOM #EAE9DE;
@@ -93,4 +93,18 @@
 		background: literal('linear-gradient(top, #EDB443 1%,#F1C460 100%)');
 		filter: literal('progid:DXImageTransform.Microsoft.gradient( startColorstr="#EDB443", endColorstr="#F1C460",GradientType=0)');
 }
+
+@def COLOR_RELEASE_WIDGET_BORDER #C2C2C2;
+@def RELEASE_WIDGET_BORDER 1px solid COLOR_RELEASE_WIDGET_BORDER;
+@def COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED #d3d3d3;
+@def COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_CLOSED #e2e2e2;
+@def COLOR_RELEASE_WIDGET_HEADER_TEXT_OPENED #777777;
+@def COLOR_RELEASE_WIDGET_HEADER_TEXT_CLOSED #9b9b9b;
+@def RELEASE_WIDGET_HEADER_TEXT_SHADOW 1px 1px 0px #ededed;
+@def RELEASE_WIDGET_HEADER_TEXT_SHADOW_IE literal('dropshadow(color=#ededed, offx=1, offy=1)');
+@def RELEASE_WIDGET_HEADER_SHADOW_OPENED inset 0px 1px 0px 1px #e9e9e9, 0 2px 6px #e1e1e1;
+@def RELEASE_WIDGET_HEADER_SHADOW_CLOSED inset 0px 1px 0px 1px #dedede, 0 2px 6px #e1e1e1;
+
+/* //IMPORTANT SCOPE_WIDGET_BORDER's value is replicated on 'Application.css' at '.dragdrop-positioner' because of a workaround. */
+@def SCOPE_WIDGET_BORDER 1px solid #bebebe;
 

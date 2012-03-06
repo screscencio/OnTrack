@@ -7,12 +7,17 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.BreadcrumbWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -50,21 +55,21 @@ public class PlanningActivity extends AbstractActivity {
 		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
 
 		// FIXME Matsumoto enable scroll when art where applied
-		// ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
-		// @Override
-		// public void onScopeSelectionRequest(final Scope scope) {
-		// final Release release = scope.getRelease();
-		// if (release == null) return;
-		//
-		// view.ensureWidgetIsVisible(view.getReleasePanel().findWidgetAndSetContainerState(release, true));
-		// }
-		//
-		// @Override
-		// public boolean mustIgnoreFromSource(final Object source) {
-		// return source instanceof ScopeWidget;
-		// }
-		// });
-		//
+		ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+			@Override
+			public void onScopeSelectionRequest(final Scope scope) {
+				final Release release = scope.getRelease();
+				if (release == null) return;
+
+				view.ensureWidgetIsVisible(view.getReleasePanel().findWidgetAndSetContainerState(release, true));
+			}
+
+			@Override
+			public boolean mustIgnoreFromSource(final Object source) {
+				return source instanceof ScopeWidget;
+			}
+		});
+
 		updateBreadcrumb();
 
 		panel.setWidget(view);

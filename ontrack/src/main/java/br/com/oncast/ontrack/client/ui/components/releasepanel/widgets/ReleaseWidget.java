@@ -13,9 +13,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
-import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
-import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -23,7 +22,11 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -32,7 +35,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO Refactor dividing visualization logic from business logic
@@ -43,42 +46,97 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	interface ReleasePanelItemWidgetUiBinder extends UiBinder<Widget, ReleaseWidget> {}
 
 	interface Style extends CssResource {
-		String headerContainerStateImageOpened();
-
-		String headerContainerStateImageClosed();
-
 		String chartPanel();
+
+		String headerClosed();
+	}
+
+	@UiField
+	protected Resources resources;
+
+	interface Resources extends ClientBundle {
+		@Source("bg-expand-minus.png")
+		ImageResource containerStateOpened();
+
+		@Source("bg-expand-plus.png")
+		ImageResource containerStateClosed();
+
+		@Source("stats_0.png")
+		ImageResource progress0();
+
+		@Source("stats_1.png")
+		ImageResource progress1();
+
+		@Source("stats_2.png")
+		ImageResource progress2();
+
+		@Source("stats_3.png")
+		ImageResource progress3();
+
+		@Source("stats_4.png")
+		ImageResource progress4();
+
+		@Source("stats_5.png")
+		ImageResource progress5();
+
+		@Source("stats_6.png")
+		ImageResource progress6();
+
+		@Source("stats_7.png")
+		ImageResource progress7();
+
+		@Source("stats_8.png")
+		ImageResource progress8();
+
+		@Source("switch-kanban.png")
+		ImageResource kanbanIcon();
+
+		@Source("priority-expand.png")
+		ImageResource menuIcon();
+
+		@Source("bg-later.png")
+		ImageResource laterImage();
+
 	}
 
 	@UiField
 	protected Style style;
 
 	@UiField
-	protected EditableLabel descriptionLabel;
+	protected FocusPanel menuMouseOverArea;
 
 	@UiField
-	protected Label progressLabel;
+	protected UIObject header;
 
 	@UiField
-	protected ReleaseWidgetContainer releaseContainer;
-
-	@UiField
-	protected ScopeWidgetContainer scopeContainer;
-
-	@UiField
-	protected DivElement bodyContainer;
-
-	@UiField
-	protected Image containerStateImage;
+	protected Image containerStateIcon;
 
 	@UiField
 	protected FocusPanel containerToogleClickableArea;
 
 	@UiField
-	protected Image menuLink;
+	protected EditableLabel descriptionLabel;
 
 	@UiField
-	protected Image progressLink;
+	protected Image progressIcon;
+
+	@UiField
+	protected Image kanbanLink;
+
+	@UiField
+	protected Image menuIcon;
+
+	@UiField
+	protected DivElement bodyContainer;
+
+	@UiField
+	protected ReleaseWidgetContainer releaseContainer;
+
+	@UiField
+	protected UIObject laterSeparator;
+
+	@UiField
+	protected ScopeWidgetContainer scopeContainer;
 
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
@@ -109,7 +167,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private String currentReleaseDescription;
 
 	// IMPORTANT Used to refresh DOM only when needed.
-	private String currentReleaseProgressDescription;
+	private float lastProgress;
 
 	private final Release release;
 
@@ -118,6 +176,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private MouseCommandsMenu mouseCommandsMenu;
 
 	private ReleaseChart chartPanel;
+
+	private boolean isMenuOpen = false;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
 			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
@@ -142,36 +202,47 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		scopeContainer.setOwnerRelease(release);
 
-		updateChildReleaseWidgets();
-		updateScopeWidgets();
-
-		updateDescription();
-		updateProgress();
+		update();
 		setContainerState(true);
 		setVisible(true);
 	}
 
-	@UiHandler("menuLink")
+	@UiHandler("menuMouseOverArea")
+	protected void onMouseOver(final MouseOverEvent event) {
+		menuIcon.setVisible(true);
+	}
+
+	@UiHandler("menuMouseOverArea")
+	protected void onMouseOut(final MouseOutEvent event) {
+		menuIcon.setVisible(isMenuOpen || false);
+	}
+
+	@UiHandler("menuIcon")
 	protected void showMenu(final ClickEvent event) {
-		SpeedTracerConsole.log("configPopup().link(menuLink)");
-		configPopup().popup(getMouseActionMenu()).alignRight(menuLink).alignBelow(menuLink, 2).pop();
+		configPopup().popup(getMouseActionMenu()).alignRight(menuIcon).alignBelow(menuIcon, 2).onClose(new PopupCloseListener() {
+			@Override
+			public void onHasClosed() {
+				menuIcon.setVisible(false);
+				isMenuOpen = false;
+			}
+		}).pop();
+		isMenuOpen = true;
 	}
 
-	@UiHandler("progressLabel")
+	@UiHandler("progressIcon")
 	protected void showChartPanel(final ClickEvent event) {
-		SpeedTracerConsole.log("configPopup().link(progressLabel)");
-		configPopup().popup(getChartPanel()).alignRight(progressLabel).alignBelow(progressLabel).pop();
+		configPopup().popup(getChartPanel()).alignRight(progressIcon).alignBelow(progressIcon).pop();
 	}
 
-	@UiHandler("progressLink")
+	@UiHandler("kanbanLink")
 	protected void onClick(final ClickEvent event) {
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
 		final long projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
 		provider.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
 	}
 
-	@UiHandler("containerToogleClickableArea")
-	protected void addToogleClickableAreaHandler(final ClickEvent event) {
+	@UiHandler("containerStateIcon")
+	protected void onContainerStateIconClicked(final ClickEvent event) {
 		setContainerState(!isContainerStateOpen);
 	}
 
@@ -221,7 +292,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private boolean updateChildReleaseWidgets() {
-		progressLink.setVisible(release.hasDirectScopes());
+		kanbanLink.setVisible(release.hasDirectScopes());
 		return releaseContainer.update(release.getChildren());
 	}
 
@@ -232,6 +303,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		final boolean releaseUpdate = updateChildReleaseWidgets();
 		final boolean scopeUpdate = updateScopeWidgets();
+
+		laterSeparator.setVisible(release.hasDirectScopes() && release.hasChildren());
+
 		return releaseUpdate || scopeUpdate;
 	}
 
@@ -243,35 +317,40 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void updateProgress() {
-		final String newProgress = getProgressDescription();
+		final float progress = getProgressPercentage();
+		if (lastProgress == progress) return;
+		lastProgress = progress;
 
-		if (newProgress.equals(currentReleaseProgressDescription)) return;
-		currentReleaseProgressDescription = newProgress;
-		progressLabel.setText(currentReleaseProgressDescription);
+		final float aux = 100F / 8F;
+		if (progress == 0) progressIcon.setResource(resources.progress0());
+		else if (progress <= 1 * aux) progressIcon.setResource(resources.progress1());
+		else if (progress <= 2 * aux) progressIcon.setResource(resources.progress2());
+		else if (progress <= 3 * aux) progressIcon.setResource(resources.progress3());
+		else if (progress <= 4 * aux) progressIcon.setResource(resources.progress4());
+		else if (progress <= 5 * aux) progressIcon.setResource(resources.progress5());
+		else if (progress <= 6 * aux) progressIcon.setResource(resources.progress6());
+		else if (progress < 100) progressIcon.setResource(resources.progress7());
+		else progressIcon.setResource(resources.progress8());
 	}
 
-	private String getProgressDescription() {
-		if (release.isDone()) return "100%";
+	private float getProgressPercentage() {
 		final float effortSum = release.getEffortSum();
-		if (effortSum == 0) return "";
+		if (effortSum == 0) return 0;
 
 		final float concludedEffortSum = release.getAccomplishedEffortSum();
 		final float percentage = 100 * concludedEffortSum / effortSum;
-		return ClientDecimalFormat.roundFloat(percentage, 1) + "%";
+		return percentage;
 	}
 
 	public void setContainerState(final boolean shouldOpen) {
-		if (shouldOpen) {
-			containerStateImage.getElement().removeClassName(style.headerContainerStateImageClosed());
-			containerStateImage.getElement().addClassName(style.headerContainerStateImageOpened());
-		}
-		else {
-			containerStateImage.getElement().removeClassName(style.headerContainerStateImageOpened());
-			containerStateImage.getElement().addClassName(style.headerContainerStateImageClosed());
-		}
+		containerStateIcon.setResource(shouldOpen ? resources.containerStateOpened() : resources.containerStateClosed());
+		header.setStyleName(style.headerClosed(), !shouldOpen);
+
+		final boolean shouldShowReleaseContainer = shouldOpen && release.hasChildren();
 
 		scopeContainer.setVisible(shouldOpen);
-		releaseContainer.setVisible(releaseContainer.getWidgetCount() != 0 && shouldOpen);
+		releaseContainer.setVisible(shouldShowReleaseContainer);
+		laterSeparator.setVisible(shouldShowReleaseContainer && release.hasDirectScopes());
 
 		isContainerStateOpen = shouldOpen;
 	}

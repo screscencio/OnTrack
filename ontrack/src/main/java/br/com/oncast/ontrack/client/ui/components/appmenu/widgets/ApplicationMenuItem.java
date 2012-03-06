@@ -83,6 +83,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 				textLabel.removeStyleName(style.menuItemSelected());
 			}
 		});
+		popup.setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
 	}
 
 	public void setBiggerFont(final boolean hasBiggerFont) {

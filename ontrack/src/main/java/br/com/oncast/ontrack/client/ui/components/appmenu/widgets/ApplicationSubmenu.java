@@ -40,7 +40,14 @@ public class ApplicationSubmenu extends Composite implements HasCloseHandlers<Ap
 	}
 
 	public void addItem(final String string, final Command command) {
-		final MenuItem menuItem = new MenuItem(string, command);
+		final MenuItem menuItem = new MenuItem(string, new Command() {
+
+			@Override
+			public void execute() {
+				hide();
+				command.execute();
+			}
+		});
 		menuItem.setStyleName(style.menuItem());
 		submenu.addItem(menuItem);
 	}

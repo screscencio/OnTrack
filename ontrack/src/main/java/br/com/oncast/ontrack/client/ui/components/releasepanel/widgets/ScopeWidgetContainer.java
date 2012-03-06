@@ -13,6 +13,7 @@ public class ScopeWidgetContainer extends VerticalModelWidgetContainer<Scope, Sc
 
 	public ScopeWidgetContainer(final ModelWidgetFactory<Scope, ScopeWidget> modelWidgetFactory, final ModelWidgetContainerListener listener) {
 		super(modelWidgetFactory, listener);
+		this.addStyleName("scopeWidgetContainer");
 	}
 
 	public void setOwnerRelease(final Release release) {
@@ -22,4 +23,5 @@ public class ScopeWidgetContainer extends VerticalModelWidgetContainer<Scope, Sc
 	public Release getOwnerRelease() {
 		return this.release;
 	}
+
 }
