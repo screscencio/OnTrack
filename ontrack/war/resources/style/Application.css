@@ -72,8 +72,8 @@ html,body {
 
 /* Tree */
 .gwt-Tree {
-	font-family: verdana, arial, monospace;
-	font-size: 13px;
+	font-family: "ProximaNovaRegular";
+	font-size: 11pt;
 }
 
 .gwt-Tree table {
