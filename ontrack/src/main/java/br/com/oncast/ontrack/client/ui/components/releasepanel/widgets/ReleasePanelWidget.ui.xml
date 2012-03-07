@@ -17,18 +17,39 @@
 	   		width: 100%;
 	   	}
 	   	
-	   	.noReleaseLabel {
-			color: COLOR_MENUBOX_TEXT;
-			font-weight: bolder;
-			margin: 30px 0px 35px 0px;
+	   	.noReleaseContainer {
+			position: relative;
+			padding: 30px 0px;
 			text-shadow: 1px 1px 1px COLOR_MENUBOX_BACKGROUND;
 			width: 100%;
-			text-align: center;
 		}
+	   	
+	   	.noReleaseLabel {
+			color: COLOR_MENUBOX_TEXT;
+			text-align: center;
+			width: 100%;
+			margin-bottom: 5px;
+			font-size: FONT_SIZE_MEDIUM;
+			font-family: FONT_DEFAULT;
+		}
+		
+		.helpLabel {
+			position: absolute;
+			bottom: 5px;
+			left: 0px;
+			right: 0px;
+			
+			color: COLOR_MENUBOX_ITEM_SELECTED;
+			text-align: right;
+		}
+			
 	</ui:style>
 	
 	<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}">
-		<g:Label ui:field="noReleaseLabel" text="No Release yet" styleName="{style.noReleaseLabel}" visible="false"/>
+		<g:FlowPanel ui:field="noReleaseText" styleName="{style.noReleaseContainer}">
+			<g:Label text="No Release yet" styleName="{style.noReleaseLabel}"/>
+			<g:Label text="Select a Scope and hit '@' key to attach the Scope to a Release" styleName="{style.helpLabel}"/>
+		</g:FlowPanel>
 		<misc:VerticalModelWidgetContainer ui:field="releaseContainer" styleName="{style.releases}" />
 	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 

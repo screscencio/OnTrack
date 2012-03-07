@@ -17,7 +17,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -33,7 +33,7 @@ public class ReleasePanelWidget extends Composite {
 	protected VerticalModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
 
 	@UiField
-	protected Label noReleaseLabel;
+	protected FlowPanel noReleaseText;
 
 	private Release rootRelease;
 
@@ -52,12 +52,12 @@ public class ReleasePanelWidget extends Composite {
 
 	public void setRelease(final Release rootRelease) {
 		this.rootRelease = rootRelease;
-		releaseContainer.update(rootRelease.getChildren());
+		update();
 	}
 
 	public void update() {
 		final List<Release> children = rootRelease.getChildren();
-		noReleaseLabel.setVisible(children.isEmpty());
+		noReleaseText.setVisible(children.isEmpty());
 		releaseContainer.update(children);
 	}
 
