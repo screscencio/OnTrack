@@ -25,7 +25,7 @@
 		}
 	   	
 	   	.noReleaseLabel {
-			color: COLOR_MENUBOX_TEXT;
+			color: COLOR_GRAY;
 			text-align: center;
 			width: 100%;
 			margin-bottom: 5px;
@@ -39,7 +39,7 @@
 			left: 0px;
 			right: 0px;
 			
-			color: COLOR_MENUBOX_ITEM_SELECTED;
+			color: COLOR_GRAY_LIGHT;
 			text-align: right;
 		}
 			
