@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import java.util.List;
+
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ItemDroppedListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ReleaseScopeItemDragHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
@@ -15,6 +17,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -28,6 +31,9 @@ public class ReleasePanelWidget extends Composite {
 	@UiField
 	@IgnoredByDeepEquality
 	protected VerticalModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
+
+	@UiField
+	protected FlowPanel noReleaseText;
 
 	private Release rootRelease;
 
@@ -46,11 +52,13 @@ public class ReleasePanelWidget extends Composite {
 
 	public void setRelease(final Release rootRelease) {
 		this.rootRelease = rootRelease;
-		releaseContainer.update(rootRelease.getChildren());
+		update();
 	}
 
 	public void update() {
-		releaseContainer.update(rootRelease.getChildren());
+		final List<Release> children = rootRelease.getChildren();
+		noReleaseText.setVisible(children.isEmpty());
+		releaseContainer.update(children);
 	}
 
 	public ReleaseWidget findWidgetAndSetContainerState(final Release release, final boolean state) {

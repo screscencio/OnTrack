@@ -31,6 +31,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -38,6 +39,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -46,12 +48,36 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class ScopeTreeWidget extends Composite implements HasFocusHandlers {
 
+	/**
+	 * A ClientBundle that provides images for this widget.
+	 */
+	protected interface Resources extends Tree.Resources {
+
+		/**
+		 * An image indicating a closed branch.
+		 */
+		@Override
+		ImageResource treeClosed();
+
+		/**
+		 * An image indicating a leaf.
+		 */
+		@Override
+		ImageResource treeLeaf();
+
+		/**
+		 * An image indicating an open branch.
+		 */
+		@Override
+		ImageResource treeOpen();
+	}
+
 	private final Tree tree;
 
 	private final Map<UUID, ScopeTreeItem> itemMapCache = new HashMap<UUID, ScopeTreeItem>();
 
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
-		initWidget(tree = new Tree());
+		initWidget(tree = new Tree((Resources) GWT.create(Resources.class), true));
 		ShortcutService.register(tree, interactionHandler, ScopeTreeShortcutMappings.values());
 
 		tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {

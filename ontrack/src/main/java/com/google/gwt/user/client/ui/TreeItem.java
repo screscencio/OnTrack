@@ -950,7 +950,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 			return;
 		}
 
-		// IMPORTANT Remove selected item to avoid scroll if the selected item don't be visible
+		// IMPORTANT Remove selected item to avoid scroll if the selected item is not visible
 		tree.setSelectedItem(null);
 		// We must use 'display' rather than 'visibility' here,
 		// or the children will always take up space.
