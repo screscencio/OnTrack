@@ -8,6 +8,10 @@
 	<ui:image field="exportData" src="exportproject.png" />
 	<ui:style src="../../../style/default.css">
 
+        .title {
+            font-weight: 600;
+        }
+        
 		@sprite .exportDataImg {
 			gwt-image: 'exportData';
 		}
@@ -17,6 +21,7 @@
             color: COLOR_MENUBOX_TEXT;
             
             text-decoration: none;
+            font-weight: 500;
 		}
 	</ui:style>
 
@@ -32,7 +37,7 @@
 		    </table>
            </g:Anchor>
 		<misc:Separator/>
-		<g:Label text="Switch project" />
+		<g:Label text="Switch project" styleName="{style.title}" />
 		<g:TextBox ui:field="projectFilterTextBox" styleName="{style.textBoxDecoration}" text="Start typing and hit ENTER to choose"/>
 			<menuWidget:MenuBox ui:field="results"/>
 	</layout:ApplicationPopupBoxContainer>

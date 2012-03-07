@@ -6,16 +6,10 @@
 
 <ui:style src="../../../style/default.css">
 	
-		.contentPanel {
-			position: relative;
-			padding: 10px;
-			text-align: center;
-			background: #fff;
-			border: 1px solid #a5a5a5;
-			-moz-box-shadow: 0px 0px 5px #a5a5a5;
-			-webkit-box-shadow: 0px 0px 5px #a5a5a5;
-			box-shadow: 0px 0px 5px #a5a5a5;
-		}
+	    .title {
+	    	font-family: FONT_DEFAULT;
+	    	font-weight: 600;
+	    }
 		
         .errorLabel {
             width: 100%;
@@ -38,7 +32,7 @@
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel">
-		<g:Label text="Invitee:"/>
+		<g:Label text="Invitee:" styleName="{style.title}" />
 		<g:TextBox ui:field="invitationTextBox" styleName="{style.textBoxDecoration}"/>
 		<g:Label text="Hit ENTER to invite" styleName="{style.helpLabel}"/>
 	</layout:ApplicationPopupBoxContainer>

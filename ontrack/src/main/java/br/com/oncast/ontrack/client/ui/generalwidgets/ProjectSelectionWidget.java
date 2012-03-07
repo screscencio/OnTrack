@@ -51,8 +51,8 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		return new FiltrableCommandMenu(new CustomCommandMenuItemFactory() {
 
 			@Override
-			public CommandMenuItem createCustomItem(final String inputText) {
-				return new CommandMenuItem("Create new project '" + inputText + "'", inputText, new Command() {
+			public SimpleCommandMenuItem createCustomItem(final String inputText) {
+				return new SimpleCommandMenuItem("Create new project '" + inputText + "'", inputText, new Command() {
 
 					@Override
 					public void execute() {
@@ -136,8 +136,8 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		return projects;
 	}
 
-	private CommandMenuItem createProjectMenuItem(final ProjectRepresentation projectRepresentation) {
-		return new CommandMenuItem(projectRepresentation.getName(), new Command() {
+	private SimpleCommandMenuItem createProjectMenuItem(final ProjectRepresentation projectRepresentation) {
+		return new SimpleCommandMenuItem(projectRepresentation.getName(), new Command() {
 
 			@Override
 			public void execute() {

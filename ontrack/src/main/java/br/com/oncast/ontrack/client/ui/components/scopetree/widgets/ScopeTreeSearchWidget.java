@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SearchScopeFiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SearchScopeFiltrableCommandMenu.FiltrableCommandMenuListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
@@ -68,7 +69,7 @@ public class ScopeTreeSearchWidget {
 	private static List<CommandMenuItem> asCommandMenuItens(final ScopeTreeWidget tree, final List<Scope> scopeList) {
 		final List<CommandMenuItem> menuItens = new ArrayList<CommandMenuItem>();
 		for (final Scope item : scopeList) {
-			menuItens.add(new CommandMenuItem(item.getDescription(), new Command() {
+			menuItens.add(new SimpleCommandMenuItem(item.getDescription(), new Command() {
 				@Override
 				public void execute() {
 					selectItem(tree, item);

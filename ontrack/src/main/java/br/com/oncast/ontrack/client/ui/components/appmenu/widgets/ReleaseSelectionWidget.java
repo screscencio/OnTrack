@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
@@ -74,8 +75,8 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 		return releaseMenuItens;
 	}
 
-	private CommandMenuItem createReleasetMenuItem(final Release release) {
-		return new CommandMenuItem(release.getFullDescription(), new Command() {
+	private SimpleCommandMenuItem createReleasetMenuItem(final Release release) {
+		return new SimpleCommandMenuItem(release.getFullDescription(), new Command() {
 			@Override
 			public void execute() {
 				openReleaseProgress(release);

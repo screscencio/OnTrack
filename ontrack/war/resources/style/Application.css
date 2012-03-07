@@ -5,6 +5,7 @@ html,body {
 	padding: 0px;
 	font-family: tahoma, verdana, arial, serif;
 	font-size: 14px;
+	font-weight: 500;
 }
 
 * {
@@ -73,7 +74,6 @@ html,body {
 /* Tree */
 .gwt-Tree {
 	font-family: "ProximaNovaRegular";
-	font-size: 11pt;
 }
 
 .gwt-Tree table {
@@ -81,8 +81,8 @@ html,body {
 }
 
 .gwt-Tree .gwt-TreeItem {
-	height: 20px;
-	border: 1px solid transparent;
+	height: 21px;
+    margin: 1px;
 }
 
 .gwt-Tree .gwt-TreeItem>div {
@@ -92,11 +92,22 @@ html,body {
 .gwt-Tree .gwt-TreeItem:hover {
 	background-color: #F5F5F5;
 	border: 1px solid #EEEEEE;
+    margin: 0px;
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
-	background-color: #EAEAEA;
-	border: 1px solid #CFCFCF;
+	background-color: #ffe8b3;
+	border: 1px solid #ddcda7;
+    margin: 0px;
+}
+
+.ScopeTreeItem {
+	border: 1px solid transparent;
+}
+
+.ScopeTreeItem-selected {
+    background-color: #f6f6f6;
+    border: 1px solid #e5e5e5;
 }
 
 /* Drag n Drop */

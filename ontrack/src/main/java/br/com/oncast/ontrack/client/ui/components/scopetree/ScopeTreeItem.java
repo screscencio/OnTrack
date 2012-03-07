@@ -78,6 +78,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			}
 		}));
 
+		addStyleName("ScopeTreeItem");
 		setReferencedScope(scope);
 	}
 

@@ -111,3 +111,12 @@
 /* //IMPORTANT SCOPE_WIDGET_BORDER's value is replicated on 'Application.css' at '.dragdrop-positioner' because of a workaround. */
 @def SCOPE_WIDGET_BORDER 1px solid #bebebe;
 
+.popupContainer {
+        color: COLOR_MENUBOX_TEXT;
+        background-color: COLOR_MENUBOX_BACKGROUND;
+        -webkit-box-shadow: POPUP_SHADOW;
+        -moz-box-shadow: POPUP_SHADOW;
+        box-shadow: POPUP_SHADOW;
+        border: POPUP_BORDER;
+        border-top: 0px;
+}
