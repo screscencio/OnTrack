@@ -28,7 +28,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,13 +58,10 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	protected CommandMenu menu;
 
 	@UiField
-	protected HTMLPanel rootPanel;
-
-	@UiField
 	protected TextBox filterArea;
 
 	@UiField
-	protected HTMLPanel separator;
+	protected Label helpLabel;
 
 	private List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 
@@ -128,6 +125,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@UiHandler("filterArea")
 	protected void handleKeyUp(final KeyUpEvent event) {
+		helpLabel.setVisible(filterArea.getText().isEmpty());
 		if (closeOnEscape && event.getNativeKeyCode() == KEY_ESCAPE) {
 			hide();
 		}
@@ -184,10 +182,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private void setMenuVisibility(final boolean b) {
 		if (alwaysShowMenu) return;
-		if (menuVisibility != b) {
-			separator.setVisible(menuVisibility = b);
-			menu.setVisible(menuVisibility);
-		}
+		if (menuVisibility != b) menu.setVisible(menuVisibility = b);
 	}
 
 	private boolean hasTextMatchInItemList(final List<CommandMenuItem> itens, final String text) {
@@ -298,5 +293,10 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) adjustDimentions();
+	}
+
+	public FiltrableCommandMenu setLargePadding() {
+		menu.setLargePadding();
+		return this;
 	}
 }

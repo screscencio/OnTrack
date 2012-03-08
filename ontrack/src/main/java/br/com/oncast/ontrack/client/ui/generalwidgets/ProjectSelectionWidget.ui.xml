@@ -5,11 +5,7 @@
 
 	<ui:style>
 		.projectSwitchingMenu {
-			position: absolute;
-			top: 33px;
-			left: 0px;
 			min-width: 200px;
-			z-index: 2;
 		}
 		
 		.loadingIndicatorPanel {

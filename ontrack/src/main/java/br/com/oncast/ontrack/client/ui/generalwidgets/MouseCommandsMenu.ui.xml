@@ -13,11 +13,12 @@
                 right: 0px;
                 width: 150px;
 				z-index: 2;
+				border-bottom: none;
 			}
 			
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.panel}">
-		<t:CommandMenu styleName="{style.menu} {style.popupContainer}" ui:field="menu" />
+		<t:CommandMenu styleName="{style.popupContainer} {style.menu}" ui:field="menu" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

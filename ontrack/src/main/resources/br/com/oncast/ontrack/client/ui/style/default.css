@@ -2,6 +2,9 @@
 
 @def COLOR_APP_BACKGROUND #DBDCE1;
 
+@def COLOR_GRAY_LIGHT #CCCCCC;
+@def COLOR_GRAY #999999;
+
 @def FONT_DEFAULT 'ProximaNovaRegular';
 @def FONT_DEFAULT_ITALIC 'ProximaNovaRegularItalic';
 
@@ -24,19 +27,20 @@
 
 @def TEXTINPUT_COLOR #A8A7A7;
 @def TEXTINPUT_SHADOW inset 0px 0px 4px #D8D8D8;
-@def TEXTINPUT_BORDER 1px solid #CCCCCC;
+@def TEXTINPUT_BORDER 1px solid COLOR_GRAY_LIGHT;
 @def POPUP_PADDING 15px;
 @def POPUP_PADDING_NEGATIVE -15px;
 .textBoxDecoration {
-	-webkit-box-shadow: TEXTINPUT_SHADOW;
-	-moz-box-shadow: TEXTINPUT_SHADOW;
-	box-shadow: TEXTINPUT_SHADOW;
+	width: 100%;
 	
 	font-family: FONT_DEFAULT_ITALIC;
 	border: TEXTINPUT_BORDER;
 	padding: 5px 0px;
 	color: TEXTINPUT_COLOR;
-	width: 100%;
+	
+	-webkit-box-shadow: TEXTINPUT_SHADOW;
+	-moz-box-shadow: TEXTINPUT_SHADOW;
+	box-shadow: TEXTINPUT_SHADOW;
 }
 
 /* Component Styles */
@@ -60,9 +64,6 @@
 	filter: literal('progid:DXImageTransform.Microsoft.gradient( startColorstr="#f7cf75", endColorstr="#f0c662",GradientType=0 )');
 }
 
-@def COLOR_GRAY_LIGHT #CCCCCC;
-@def COLOR_GRAY #999999;
-
 @def COLOR_MENUBOX_SEPARATOR_BORDER_TOP #D3D3D3;
 @def COLOR_MENUBOX_SEPARATOR_BORDER_BOTTOM #FFFFFF;
 @def COLOR_MENUBOX_BACKGROUND #FAFAFA;
@@ -71,6 +72,8 @@
 @def COLOR_MENUBOX_ITEM_SELECTED COLOR_GRAY_LIGHT;
 @def MENUBOX_BUTTOM_SHADOW 1px 1px 3px 0px #DDDDDD, inset -1px -1px 0px 0px #F5D893;
 @def MENUBOX_BUTTOM_BORDER 1px solid #CCAF6B;
+
+@def TEXT_SHADOW_ENGRAVED_METAL 1px 1px 1px COLOR_MENUBOX_BACKGROUND;
 
 .menuboxButton {
 		background: COLOR_MENUBOX_BUTTOM_BACKGROUND;
@@ -81,9 +84,10 @@
 		box-shadow: MENUBOX_BUTTOM_SHADOW;
 		
 		color: #FFFFFF;
-		font-family: FONT_DEFAULT FONT_SIZE_MEDIUM;
+		font-family: FONT_DEFAULT;
+		font-size: FONT_SIZE_MEDIUM;
 		
-		padding: 5px;
+		padding: 8px;
 		width: 100%;
 }
 .menuboxButton:active {

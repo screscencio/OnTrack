@@ -364,7 +364,7 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String effort : fibonacciScaleForEffort)
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 200, 300);
 		configPopup().alignBelow(descriptionLabel).alignRight(effortPanel).popup(commandsMenu).pop();
 	}
 
@@ -375,7 +375,7 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String value : fibonacciScaleForValue)
 			items.add(valueCommandMenuItemFactory.createItem(value, value));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 100, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 200, 300);
 		configPopup().alignBelow(descriptionLabel).alignRight(valuePanel).popup(commandsMenu).pop();
 	}
 

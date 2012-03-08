@@ -60,6 +60,10 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 		});
 	}
 
+	public void setLargePadding() {
+		menu.addStyleDependentName("largePadding");
+	}
+
 	public void setItens(final List<CommandMenuItem> items) {
 		menu.clearItems();
 		itensMap.clear();

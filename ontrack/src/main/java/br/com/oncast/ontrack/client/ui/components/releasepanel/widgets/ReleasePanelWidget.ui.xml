@@ -20,7 +20,7 @@
 	   	.noReleaseContainer {
 			position: relative;
 			padding: 30px 0px;
-			text-shadow: 1px 1px 1px COLOR_MENUBOX_BACKGROUND;
+			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
 			width: 100%;
 		}
 	   	
@@ -40,7 +40,7 @@
 			right: 0px;
 			
 			color: COLOR_GRAY_LIGHT;
-			text-align: right;
+			text-align: center;
 		}
 			
 	</ui:style>

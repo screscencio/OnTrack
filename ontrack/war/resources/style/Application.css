@@ -177,16 +177,23 @@ html,body {
 
 .gwt-MenuBar-vertical>table {
 	width: 100%;
-	border-spacing: 2px;
+	border-spacing: 0px;
 }
 
 .gwt-MenuBar .gwt-MenuItem {
-	padding: 4px;
+	padding: 8px;
 	font-weight: normal;
 	cursor: pointer;
 	color: #999999;
 	background: #FAFAFA;
 	background-color: #FAFAFA;
+	
+	border-top: 1px solid white;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+.gwt-MenuBar-largePadding .gwt-MenuItem {
+	padding: 13px;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem {
@@ -201,6 +208,8 @@ html,body {
 .gwt-MenuBar .gwt-MenuItem-selected {
 	color: #FAFAFA;
 	background-color:#CCC;
+	
+	border: 1px solid #DADADA;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {
