@@ -15,6 +15,13 @@
 @def TEXT_SHADOW 1px -1px 1px #F6D792;
 @def TEXT_SHADOW_IE literal('dropshadow(color=#F6D792, offx=1, offy=-1)');
 
+@def KANBAN_TITLE_TEXT_COLOR #8A8A8A;
+@def KANBAN_TITLE_BORDER 1px solid #CACACA;
+@def KANBAN_TITLE_BORDER_COLORS #C3C3C3 #CACACA #CACACA #CACACA;
+@def KANBAN_TITLE_BACKGROUND_COLOR #D3D3D3;
+@def KANBAN_TITLE_TEXT_SHADOW 1px 1px 1px #ECECEC;
+@def KANBAN_TITLE_TEXT_SHADOW_IE literal('dropshadow(color=#ECECEC, offx=1, offy=-1)');
+
 .borderDecoration {
 	height: 1px;
 	width: 100%;
@@ -123,4 +130,21 @@
         box-shadow: POPUP_SHADOW;
         border: POPUP_BORDER;
         border-top: 0px;
+}
+
+.semiTrasnparentContainer {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    background-color: COLOR_MENUBOX_BACKGROUND;
+    -webkit-box-shadow: POPUP_SHADOW;
+    -moz-box-shadow: POPUP_SHADOW;
+    box-shadow: POPUP_SHADOW;
+    border: POPUP_BORDER;
+    
+    opacity: 0.7;
+    filter: literal('alpha(opacity=70)');
 }

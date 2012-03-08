@@ -30,36 +30,6 @@ html,body {
 	z-index: 1;
 }
 
-.gradAppHeader {
-	background-image: linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -o-linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -moz-linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -webkit-linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -ms-linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.21, rgb(82,
-		80, 82) ), color-stop(0.73, rgb(94, 93, 94) ) );
-}
-
-.gradReleaseWidgetHeader {
-	background-image: linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -o-linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -moz-linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -webkit-linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -ms-linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.21, rgb(97,
-		95, 97) ), color-stop(0.73, rgb(110, 110, 110) ) );
-}
-
 /* Cross browser CSS3-based text-overflow (ie6+, firefox, chrome, opera, safari, etc) */
 .v-ellip,v\:ellip {
 	text-overflow: ellipsis;

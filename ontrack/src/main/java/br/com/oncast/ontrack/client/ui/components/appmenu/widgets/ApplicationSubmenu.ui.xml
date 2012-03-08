@@ -14,7 +14,6 @@
 		.menuItem {
             font: FONT_SIZE_SMALL FONT_DEFAULT;
             color: COLOR_MENUBOX_TEXT;
-            font-weight: 600;
             background-color: COLOR_MENUBOX_BACKGROUND;
 		    padding: 10px;
 			cursor: pointer;

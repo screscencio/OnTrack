@@ -5,16 +5,15 @@
 	xmlns:ow='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel.widgets'
 	>
 	
+	<ui:image field="image" src="newColumnImg.jpg" />
 	<ui:style>
 		.rootPanel {
-			padding: 2px;
-			margin: 2px 4px;
-			width: 8px;
-			height: 8px;
+			width: 16px;
+			height: 16px;
 		}
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
-		<g:Label ui:field="create">+</g:Label>
+		<g:Image ui:field="create" resource="{image}" />
 	</g:FocusPanel>
 </ui:UiBinder> 

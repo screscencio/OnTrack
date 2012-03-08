@@ -9,7 +9,6 @@
 	<ui:style src="../../../style/default.css">
 
         .title {
-            font-weight: 600;
         }
         
 		@sprite .exportDataImg {
