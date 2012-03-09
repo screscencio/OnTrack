@@ -23,7 +23,7 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 	private static final Random RANDOM = new Random();
 	private static final EffortInferenceEngine EFFORT_INFERENCE_ENGINE = new EffortInferenceEngine();
 	private static final String STRIPED_CLASS_NAME = "labelStriped";
-	private static final String TRANSLUCID_CLASS_NAME = "labelTranslucid";
+	private static final String TRANSLUCID_CLASS_NAME = "labelInfered";
 	private ScopeTreeItemWidget parentWidget;
 	private ScopeTreeItemWidget childAWidget;
 	private Scope parent;
@@ -96,10 +96,10 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		updateDisplays();
 
 		assertNotDefinedInferedEffortLabel(parentWidget);
-		assertDefinedAndTranslucidInferedEffortLabel(childAWidget);
-		assertDefinedAndTranslucidInferedEffortLabel(childBWidget);
-		assertDefinedAndTranslucidInferedEffortLabel(grandChildA1Widget);
-		assertDefinedAndTranslucidInferedEffortLabel(grandChildA2Widget);
+		assertDefinedAndInferedEffortLabel(childAWidget);
+		assertDefinedAndInferedEffortLabel(childBWidget);
+		assertDefinedAndInferedEffortLabel(grandChildA1Widget);
+		assertDefinedAndInferedEffortLabel(grandChildA2Widget);
 
 		assertDefinedDeclaredEffortLabel(parentWidget);
 		assertNotDefinedDeclaredEffortLabel(childAWidget);
@@ -114,8 +114,8 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		updateEfforts();
 		updateDisplays();
 
-		assertDefinedAndTranslucidInferedEffortLabel(parentWidget);
-		assertDefinedAndTranslucidInferedEffortLabel(childAWidget);
+		assertDefinedAndInferedEffortLabel(parentWidget);
+		assertDefinedAndInferedEffortLabel(childAWidget);
 		assertNotDefinedInferedEffortLabel(childBWidget);
 		assertNotDefinedInferedEffortLabel(grandChildA1Widget);
 		assertNotDefinedInferedEffortLabel(grandChildA2Widget);
@@ -141,8 +141,8 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		assertNotDefinedInferedEffortLabel(parentWidget);
 		assertNotDefinedInferedEffortLabel(childAWidget);
 		assertNotDefinedInferedEffortLabel(childBWidget);
-		assertDefinedAndTranslucidInferedEffortLabel(grandChildA1Widget);
-		assertDefinedAndTranslucidInferedEffortLabel(grandChildA2Widget);
+		assertDefinedAndInferedEffortLabel(grandChildA1Widget);
+		assertDefinedAndInferedEffortLabel(grandChildA2Widget);
 
 		assertDefinedDeclaredEffortLabel(parentWidget);
 		assertDefinedDeclaredEffortLabel(childAWidget);
@@ -166,8 +166,8 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		assertNotDefinedInferedEffortLabel(parentWidget);
 		assertNotDefinedInferedEffortLabel(childAWidget);
 		assertNotDefinedInferedEffortLabel(childBWidget);
-		assertDefinedAndTranslucidInferedEffortLabel(grandChildA1Widget);
-		assertDefinedAndTranslucidInferedEffortLabel(grandChildA2Widget);
+		assertDefinedAndInferedEffortLabel(grandChildA1Widget);
+		assertDefinedAndInferedEffortLabel(grandChildA2Widget);
 
 		assertDefinedDeclaredEffortLabel(parentWidget);
 		assertDefinedDeclaredEffortLabel(childAWidget);
@@ -193,11 +193,11 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		updateEfforts();
 		updateDisplays();
 
-		assertDefinedAndTranslucidInferedEffortLabel(parentWidget);
+		assertDefinedAndInferedEffortLabel(parentWidget);
 		assertNotDefinedInferedEffortLabel(childAWidget);
 		assertNotDefinedInferedEffortLabel(childBWidget);
-		assertDefinedAndTranslucidInferedEffortLabel(grandChildA1Widget);
-		assertDefinedAndTranslucidInferedEffortLabel(grandChildA2Widget);
+		assertDefinedAndInferedEffortLabel(grandChildA1Widget);
+		assertDefinedAndInferedEffortLabel(grandChildA2Widget);
 
 		assertDefinedDeclaredEffortLabel(parentWidget);
 		assertDefinedDeclaredEffortLabel(childAWidget);
@@ -239,7 +239,7 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 		assertDefined(widget.declaredEffortLabel);
 	}
 
-	private void assertDefinedAndTranslucidInferedEffortLabel(final ScopeTreeItemWidget widget) {
+	private void assertDefinedAndInferedEffortLabel(final ScopeTreeItemWidget widget) {
 		assertDefined(widget.inferedEffortLabel);
 		assertTrue(widget.inferedEffortLabel.getElement().getClassName().contains(TRANSLUCID_CLASS_NAME));
 	}
