@@ -11,7 +11,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public class KanbanColumnCreateWidget extends Composite {
@@ -28,7 +28,7 @@ public class KanbanColumnCreateWidget extends Composite {
 	FocusPanel rootPanel;
 
 	@UiField
-	Label create;
+	Image create;
 
 	public KanbanColumnCreateWidget(final ProgressPanelWidgetInteractionHandler interactionHandler, final int insertionIndex) {
 		this.interactionHandler = interactionHandler;

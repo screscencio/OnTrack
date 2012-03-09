@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    xmlns:gwl='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout'
+    xmlns:layout='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout'
 	xmlns:pp='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel'
 >
 
@@ -12,20 +12,14 @@
 			top: 10px;
 			left: 10px;
 			right: 10px;
-			bottom: 20px;
+			bottom: 10px;
 			padding: 5px;
 			overflow: auto;
-			
-			background: #fff;
-			
-			border: 1px solid #a5a5a5;
-			-moz-box-shadow: 0px 0px 5px #a5a5a5;
-			-webkit-box-shadow: 0px 0px 5px #a5a5a5;
-			box-shadow: 0px 0px 5px #a5a5a5;
 		}
+		
 	</ui:style>
 
-    <gwl:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
+    <layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
 		<pp:KanbanPanel ui:field="kanbanPanel" addStyleNames="{style.kanbanPanel}" />
-   </gwl:ApplicationMenuAndWidgetContainer>
+   </layout:ApplicationMenuAndWidgetContainer>
 </ui:UiBinder>

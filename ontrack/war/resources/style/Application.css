@@ -5,6 +5,7 @@ html,body {
 	padding: 0px;
 	font-family: tahoma, verdana, arial, serif;
 	font-size: 14px;
+	font-weight: 500;
 }
 
 * {
@@ -29,36 +30,6 @@ html,body {
 	z-index: 1;
 }
 
-.gradAppHeader {
-	background-image: linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -o-linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -moz-linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -webkit-linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -ms-linear-gradient(bottom, rgb(82, 80, 82) 21%,
-		rgb(94, 93, 94) 73% );
-	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.21, rgb(82,
-		80, 82) ), color-stop(0.73, rgb(94, 93, 94) ) );
-}
-
-.gradReleaseWidgetHeader {
-	background-image: linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -o-linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -moz-linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -webkit-linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -ms-linear-gradient(bottom, rgb(97, 95, 97) 21%,
-		rgb(110, 110, 110) 73% );
-	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.21, rgb(97,
-		95, 97) ), color-stop(0.73, rgb(110, 110, 110) ) );
-}
-
 /* Cross browser CSS3-based text-overflow (ie6+, firefox, chrome, opera, safari, etc) */
 .v-ellip,v\:ellip {
 	text-overflow: ellipsis;
@@ -73,7 +44,6 @@ html,body {
 /* Tree */
 .gwt-Tree {
 	font-family: "ProximaNovaRegular";
-	font-size: 11pt;
 }
 
 .gwt-Tree table {
@@ -81,8 +51,8 @@ html,body {
 }
 
 .gwt-Tree .gwt-TreeItem {
-	height: 20px;
-	border: 1px solid transparent;
+	height: 21px;
+    margin: 1px;
 }
 
 .gwt-Tree .gwt-TreeItem>div {
@@ -91,12 +61,23 @@ html,body {
 
 .gwt-Tree .gwt-TreeItem:hover {
 	background-color: #F5F5F5;
-	border: 1px solid #EEEEEE;
+	border: 1px solid #F5F5F5;
+    margin: 0px;
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
-	background-color: #EAEAEA;
-	border: 1px solid #CFCFCF;
+	background-color: #ffe8b3;
+	border: 1px solid #ddcda7;
+    margin: 0px;
+}
+
+.ScopeTreeItem {
+	border: 1px solid transparent;
+}
+
+.ScopeTreeItem-selected {
+    background-color: #f6f6f6;
+    border: 1px solid #e5e5e5;
 }
 
 /* Drag n Drop */
@@ -166,16 +147,23 @@ html,body {
 
 .gwt-MenuBar-vertical>table {
 	width: 100%;
-	border-spacing: 2px;
+	border-spacing: 0px;
 }
 
 .gwt-MenuBar .gwt-MenuItem {
-	padding: 4px;
+	padding: 8px;
 	font-weight: normal;
 	cursor: pointer;
 	color: #999999;
 	background: #FAFAFA;
 	background-color: #FAFAFA;
+	
+	border-top: 1px solid white;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+.gwt-MenuBar-largePadding .gwt-MenuItem {
+	padding: 13px;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem {
@@ -190,6 +178,8 @@ html,body {
 .gwt-MenuBar .gwt-MenuItem-selected {
 	color: #FAFAFA;
 	background-color:#CCC;
+	
+	border: 1px solid #DADADA;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {

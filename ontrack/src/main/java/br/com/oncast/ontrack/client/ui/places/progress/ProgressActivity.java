@@ -83,12 +83,11 @@ public class ProgressActivity extends AbstractActivity {
 	}
 
 	protected void updateViewData() {
-		updateBreadcrumb();
+		view.getKanbanPanel().configureKanbanPanel(projectContext.getKanban(release), release);
 	}
 
 	private void updateViewMenus() {
-		view.getApplicationMenu().getBreadcrumb().removeItem(breadcrumbReleaseItem);
-		breadcrumbReleaseItem = view.getApplicationMenu().getBreadcrumb().addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
+		updateBreadcrumb();
 	}
 
 	private void exitToPlanningPlace() {

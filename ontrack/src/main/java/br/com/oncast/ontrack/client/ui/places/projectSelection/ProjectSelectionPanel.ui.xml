@@ -14,25 +14,28 @@
 			z-index: 0;
 		}
 		
+		.chooseLabel {
+			margin-bottom: 10px;
+		}
+		
 		.projectSelectionWidget {
 		}
 		
 		.projectSelectionPanel {
-			height: 22px;
-			width: 600px;
+			width: 425px;
 			margin: 0px auto;
 			display: block;
-			margin-top: 2px;
+			margin-top: 45px;
 			margin-bottom: 2px;
 			z-index: 1;
 		}
 	</ui:style>
 
 	<g:FocusPanel debugId="projectSelectionPlace" ui:field="rootPanel" styleName="{style.rootPanel}">
-	   <layout:ApplicationWidgetContainer text="Choose a project">
+	   <layout:ApplicationWidgetContainer>
             <g:HTMLPanel styleName="{style.projectSelectionPanel}">
-                <misc:ProjectSelectionWidget ui:field="selectionProject"
-                    styleName="{style.projectSelectionWidget}" closeOnEscape="false"/>
+            	<g:Label text="Choose a Project" styleName="{style.chooseLabel}"/>
+                <misc:ProjectSelectionWidget ui:field="selectionProject" styleName="{style.projectSelectionWidget}" closeOnEscape="false"/>
             </g:HTMLPanel>
 	   </layout:ApplicationWidgetContainer>
 	</g:FocusPanel>

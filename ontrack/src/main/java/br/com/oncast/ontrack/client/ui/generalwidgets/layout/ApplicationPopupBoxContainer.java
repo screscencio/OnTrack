@@ -6,7 +6,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.dom.client.HasMouseUpHandlers;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -15,9 +17,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ApplicationPopupBoxContainer extends Composite implements HasWidgets, HasClickHandlers, HasKeyUpHandlers {
+public class ApplicationPopupBoxContainer extends Composite implements HasWidgets, HasClickHandlers, HasKeyUpHandlers, HasMouseUpHandlers {
 
 	private static ApplicationPopupBoxContainerUiBinder uiBinder = GWT.create(ApplicationPopupBoxContainerUiBinder.class);
 
@@ -40,8 +43,16 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 	@UiField
 	HTMLPanel content;
 
+	@UiField
+	SimplePanel background;
+
 	public ApplicationPopupBoxContainer(final String firstName) {
 		initWidget(uiBinder.createAndBindUi(this));
+	}
+
+	// IMPORTANT needed to put setAdd... in method name to use it correctly on ui.xml files
+	public void setAddBackgroundStyleNames(final String styleNames) {
+		background.addStyleName(styleNames);
 	}
 
 	@Override
@@ -76,5 +87,10 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 
 	public void setPaddingEnabled(final boolean padding) {
 		this.setStyleName(style.boxPadding(), padding);
+	}
+
+	@Override
+	public HandlerRegistration addMouseUpHandler(final MouseUpHandler handler) {
+		return rootPanel.addMouseUpHandler(handler);
 	}
 }

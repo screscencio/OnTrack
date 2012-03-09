@@ -1,13 +1,21 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-	<ui:style>
+	<ui:style src="../../../style/default.css">
+	
 		.panel {
 			min-height: 25px;
 			width: 207px;
-			border: 1px solid #000;
-			padding: 0px;
+
 			margin: 0 0 3px 0;
+			
+			background: COLOR_MENUBOX_BACKGROUND;
+            
+            color: COLOR_MENUBOX_TEXT;
+            font-family: FONT_DEFAULT;
+            font-size: FONT_SIZE_SMALL;
+
+            border: SCOPE_WIDGET_BORDER;
 			
 			-moz-box-shadow: 1px 1px 2px #ddd;
 			-webkit-box-shadow: 1px 1px 2px #ddd;

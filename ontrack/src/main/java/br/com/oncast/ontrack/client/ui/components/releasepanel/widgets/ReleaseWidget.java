@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListen
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
@@ -97,6 +98,14 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		@Source("bg-later.png")
 		ImageResource laterImage();
 
+		@Source("priority-decrease.png")
+		ImageResource menuReleaseDecreasePriority();
+
+		@Source("priority-increase.png")
+		ImageResource menuReleaseIncreasePriority();
+
+		@Source("priority-delete.png")
+		ImageResource menuReleaseDelete();
 	}
 
 	@UiField
@@ -250,21 +259,21 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (mouseCommandsMenu != null) return mouseCommandsMenu;
 
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		itens.add(new CommandMenuItem("Increase priority", new Command() {
+		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseIncreasePriority(), "Increase priority", new Command() {
 
 			@Override
 			public void execute() {
 				releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
 			}
 		}));
-		itens.add(new CommandMenuItem("Decrease priority", new Command() {
+		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDecreasePriority(), "Decrease priority", new Command() {
 
 			@Override
 			public void execute() {
 				releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
 			}
 		}));
-		itens.add(new CommandMenuItem("Delete Release", new Command() {
+		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDelete(), "Delete Release", new Command() {
 
 			@Override
 			public void execute() {

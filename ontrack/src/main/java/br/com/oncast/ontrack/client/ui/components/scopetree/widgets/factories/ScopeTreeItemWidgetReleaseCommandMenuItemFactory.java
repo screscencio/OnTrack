@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 
 import com.google.gwt.user.client.Command;
 
@@ -14,8 +14,8 @@ public class ScopeTreeItemWidgetReleaseCommandMenuItemFactory implements ScopeTr
 	}
 
 	@Override
-	public CommandMenuItem createCustomItem(final String inputText) {
-		return new CommandMenuItem("Create '" + inputText + "'", inputText, new Command() {
+	public SimpleCommandMenuItem createCustomItem(final String inputText) {
+		return new SimpleCommandMenuItem("Create '" + inputText + "'", inputText, new Command() {
 
 			@Override
 			public void execute() {
@@ -25,8 +25,8 @@ public class ScopeTreeItemWidgetReleaseCommandMenuItemFactory implements ScopeTr
 	}
 
 	@Override
-	public CommandMenuItem createItem(final String itemText, final String releaseToBind) {
-		return new CommandMenuItem(itemText, releaseToBind, new Command() {
+	public SimpleCommandMenuItem createItem(final String itemText, final String releaseToBind) {
+		return new SimpleCommandMenuItem(itemText, releaseToBind, new Command() {
 
 			@Override
 			public void execute() {

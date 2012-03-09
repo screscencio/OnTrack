@@ -213,7 +213,7 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 		return new MenuBoxItem(text, value, new Command() {
 			@Override
 			public void execute() {
-				final ProjectCreationPlace projectCreationPlace = new ProjectCreationPlace(text);
+				final ProjectCreationPlace projectCreationPlace = new ProjectCreationPlace(value);
 				hide();
 				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(projectCreationPlace);
 			}

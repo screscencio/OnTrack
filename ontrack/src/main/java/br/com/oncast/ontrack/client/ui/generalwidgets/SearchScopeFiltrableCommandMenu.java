@@ -157,7 +157,7 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasClo
 		final String filterText = filterArea.getText().trim();
 
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
-		if (filteredItens.isEmpty()) filteredItens.add(new CommandMenuItem("No match for '" + filterText + "'", filterText, null));
+		if (filteredItens.isEmpty()) filteredItens.add(new SimpleCommandMenuItem("No match for '" + filterText + "'", filterText, null));
 
 		menu.setItens(filteredItens);
 		menu.selectFirstItem();

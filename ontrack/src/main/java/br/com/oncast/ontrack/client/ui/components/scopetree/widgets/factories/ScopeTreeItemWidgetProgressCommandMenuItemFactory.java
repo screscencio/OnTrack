@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 
 import com.google.gwt.user.client.Command;
 
@@ -14,8 +14,8 @@ public class ScopeTreeItemWidgetProgressCommandMenuItemFactory implements ScopeT
 	}
 
 	@Override
-	public CommandMenuItem createCustomItem(final String inputText) {
-		return new CommandMenuItem("Mark as '" + inputText + "'", inputText, new Command() {
+	public SimpleCommandMenuItem createCustomItem(final String inputText) {
+		return new SimpleCommandMenuItem("Mark as '" + inputText + "'", inputText, new Command() {
 
 			@Override
 			public void execute() {
@@ -25,8 +25,8 @@ public class ScopeTreeItemWidgetProgressCommandMenuItemFactory implements ScopeT
 	}
 
 	@Override
-	public CommandMenuItem createItem(final String itemText, final String progressToDeclare) {
-		return new CommandMenuItem(itemText, progressToDeclare, new Command() {
+	public SimpleCommandMenuItem createItem(final String itemText, final String progressToDeclare) {
+		return new SimpleCommandMenuItem(itemText, progressToDeclare, new Command() {
 
 			@Override
 			public void execute() {

@@ -4,22 +4,24 @@
 	
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationPopupBoxContainer.Style">
 		.container {
-			background-color: COLOR_MENUBOX_BACKGROUND;
-			-webkit-box-shadow: POPUP_SHADOW;
-			-moz-box-shadow: POPUP_SHADOW;
-			box-shadow: POPUP_SHADOW;
-			border: POPUP_BORDER;
-			border-top: 0px;
-			
             position: relative;
 			width: 210px;
 			
 			color: COLOR_MENUBOX_TEXT;
 			font: FONT_SIZE_SMALL FONT_DEFAULT_ITALIC;
 		}
+		
+		.backgroundPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+		}
 
         .content {
         	position: relative;
+        	margin: 1px;
         }
         
         .boxPadding {
@@ -29,6 +31,9 @@
 	</ui:style>
 
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.container} {style.boxPadding}">
-		<g:HTMLPanel ui:field="content" styleName="{style.content}" />
+		<g:HTMLPanel>
+			<g:SimplePanel ui:field="background" styleName="{style.backgroundPanel} {style.popupContainer}"/>
+			<g:HTMLPanel ui:field="content" styleName="{style.content}" />
+		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

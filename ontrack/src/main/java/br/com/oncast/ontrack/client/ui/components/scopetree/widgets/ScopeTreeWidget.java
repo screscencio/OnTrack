@@ -76,6 +76,8 @@ public class ScopeTreeWidget extends Composite implements HasFocusHandlers {
 
 	private final Map<UUID, ScopeTreeItem> itemMapCache = new HashMap<UUID, ScopeTreeItem>();
 
+	private ScopeTreeItem lastTreeItem = null;
+
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
 		initWidget(tree = new Tree((Resources) GWT.create(Resources.class), true));
 		ShortcutService.register(tree, interactionHandler, ScopeTreeShortcutMappings.values());
@@ -166,12 +168,26 @@ public class ScopeTreeWidget extends Composite implements HasFocusHandlers {
 				itemMapCache.remove(scope.getId());
 			}
 		});
+
 		final EventBus eventBus = ClientServiceProvider.getInstance().getEventBus();
 		tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(final SelectionEvent<TreeItem> event) {
+				if (lastTreeItem != null) removeBorder(lastTreeItem);
 				final ScopeTreeItem selectedItem = (ScopeTreeItem) event.getSelectedItem();
+				if (selectedItem.isRoot()) return;
+
 				eventBus.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
+				addBorder(selectedItem);
+				lastTreeItem = selectedItem;
+			}
+
+			private void removeBorder(final ScopeTreeItem item) {
+				item.removeStyleName("ScopeTreeItem-selected");
+			}
+
+			private void addBorder(final ScopeTreeItem item) {
+				item.addStyleName("ScopeTreeItem-selected");
 			}
 		});
 

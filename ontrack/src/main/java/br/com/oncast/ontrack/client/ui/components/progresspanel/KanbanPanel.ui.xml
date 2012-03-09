@@ -1,6 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style>
+
+	<ui:style src="../../style/default.css">
+	
 		.boardContainer {
 			position: absolute;
 			top: 0px;
@@ -19,7 +21,8 @@
 		} 
 	</ui:style>
 
-	<g:SimplePanel styleName="{style.boardContainer}">
+	<g:HTMLPanel styleName="{style.boardContainer}">
+	    <g:SimplePanel styleName="{style.semiTransparentContainer}" />
 		<g:HorizontalPanel ui:field="board" styleName="{style.board}" />
-	</g:SimplePanel>
+	</g:HTMLPanel>
 </ui:UiBinder> 
