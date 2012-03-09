@@ -10,9 +10,18 @@
 			color: COLOR_MENUBOX_TEXT;
 			font: FONT_SIZE_SMALL FONT_DEFAULT_ITALIC;
 		}
+		
+		.backgroundPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+		}
 
         .content {
         	position: relative;
+        	margin: 1px;
         }
         
         .boxPadding {
@@ -21,7 +30,10 @@
         
 	</ui:style>
 
-	<g:FocusPanel ui:field="rootPanel" styleName="{style.popupContainer} {style.container} {style.boxPadding}">
-		<g:HTMLPanel ui:field="content" styleName="{style.content}" />
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.container} {style.boxPadding}">
+		<g:HTMLPanel>
+			<g:SimplePanel ui:field="background" styleName="{style.backgroundPanel} {style.popupContainer}"/>
+			<g:HTMLPanel ui:field="content" styleName="{style.content}" />
+		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

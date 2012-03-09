@@ -22,7 +22,7 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.boardContainer}">
-	    <g:SimplePanel styleName="{style.semiTrasnparentContainer}" />
+	    <g:SimplePanel styleName="{style.semiTransparentContainer}" />
 		<g:HorizontalPanel ui:field="board" styleName="{style.board}" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

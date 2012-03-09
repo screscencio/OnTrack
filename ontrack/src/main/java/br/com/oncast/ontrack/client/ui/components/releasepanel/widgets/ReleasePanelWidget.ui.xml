@@ -9,8 +9,6 @@
 			padding: 5px;
 			padding-bottom: 0px;
 			width: auto;
-			border-top: POPUP_BORDER;
-			background-color: #eaeaea;
 	   	}
 	   	
 	   	.releases {
@@ -45,7 +43,7 @@
 			
 	</ui:style>
 	
-	<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}">
+	<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.semiTransparentContainer}">
 		<g:FlowPanel ui:field="noReleaseText" styleName="{style.noReleaseContainer}">
 			<g:Label text="No Release yet" styleName="{style.noReleaseLabel}"/>
 			<g:Label text="Select a Scope and hit '@' key to attach the Scope to a Release" styleName="{style.helpLabel}"/>

@@ -54,7 +54,6 @@ public class PlanningActivity extends AbstractActivity {
 		view.getScopeTree().setContext(projectContext);
 		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
 
-		// FIXME Matsumoto enable scroll when art where applied
 		ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 			@Override
 			public void onScopeSelectionRequest(final Scope scope) {

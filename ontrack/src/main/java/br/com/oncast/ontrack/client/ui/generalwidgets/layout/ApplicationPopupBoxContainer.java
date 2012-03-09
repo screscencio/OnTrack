@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ApplicationPopupBoxContainer extends Composite implements HasWidgets, HasClickHandlers, HasKeyUpHandlers, HasMouseUpHandlers {
@@ -42,8 +43,16 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 	@UiField
 	HTMLPanel content;
 
+	@UiField
+	SimplePanel background;
+
 	public ApplicationPopupBoxContainer(final String firstName) {
 		initWidget(uiBinder.createAndBindUi(this));
+	}
+
+	// IMPORTANT needed to put setAdd... in method name to use it correctly on ui.xml files
+	public void setAddBackgroundStyleNames(final String styleNames) {
+		background.addStyleName(styleNames);
 	}
 
 	@Override

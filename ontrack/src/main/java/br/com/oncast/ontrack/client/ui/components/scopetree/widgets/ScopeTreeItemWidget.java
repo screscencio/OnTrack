@@ -60,6 +60,8 @@ public class ScopeTreeItemWidget extends Composite {
 
 	interface Style extends CssResource {
 		String labelStriped();
+
+		String done();
 	}
 
 	@UiField
@@ -330,6 +332,8 @@ public class ScopeTreeItemWidget extends Composite {
 
 		progressLabel.setText(progress);
 		progressLabel.setTitle(progress);
+
+		focusPanel.setStyleName(style.done(), scope.getProgress().isDone());
 	}
 
 	public void showReleaseMenu(final List<Release> releaseList) {

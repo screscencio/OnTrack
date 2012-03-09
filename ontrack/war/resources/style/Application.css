@@ -61,7 +61,7 @@ html,body {
 
 .gwt-Tree .gwt-TreeItem:hover {
 	background-color: #F5F5F5;
-	border: 1px solid #EEEEEE;
+	border: 1px solid #F5F5F5;
     margin: 0px;
 }
 

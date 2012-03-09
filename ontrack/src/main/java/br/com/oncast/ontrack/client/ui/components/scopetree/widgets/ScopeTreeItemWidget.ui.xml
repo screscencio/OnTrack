@@ -10,7 +10,11 @@
 				min-height: 15px;
 				outline: none;
 				font-size: FONT_SIZE_SMALL;
-				color: #333333;
+				color: #b7b7b7;
+			}
+			
+			.done {
+				opacity: 0.3;
 			}
 			
 			.visualizationPanel {
@@ -20,7 +24,8 @@
 			
 			.descriptionLabel {
 				cursor: pointer;
-				position: absolute;
+				
+				color: #333333;
 			}
 			
 			.effort {
@@ -38,13 +43,9 @@
 				-moz-user-select: none;
 				-khtml-user-select: none;
 				user-select: none;
-
-				color: #9199cf;
-				text-shadow: 1px 1px 1px #fff;
 			}
             
             .effortLabel {
-                opacity: 1;
                 display: inline;
             }
             			
@@ -67,17 +68,17 @@
 			}
 			
 			.valueLabel {
-				opacity: 1;
 				display: inline;
 			}
 			
-			.labelTranslucid {
-				opacity: 0.5;
+			.labelInfered {
+				color: #9199cf;
 			}
 			
 			.labelStriped {
 				text-decoration: line-through;
-				color: #b7b7b7
+				color: #b7b7b7;
+				text-shadow: none;
 			}
 			
 			.scope {
@@ -106,7 +107,6 @@
 				position: relative;
 				width: 80px;
 				height: 20px;
-				opacity: 0.2;
 				font-size: small;
 				font-stretch: expanded;
 			}
@@ -127,13 +127,13 @@
 					</g:cell>
 					<g:cell width="1">
 						<g:HTMLPanel ui:field="valuePanel" styleName="{style.value}">
-							<t:FastLabel ui:field="inferedValueLabel" styleName="{style.valueLabel} {style.labelTranslucid}" />
+							<t:FastLabel ui:field="inferedValueLabel" styleName="{style.valueLabel} {style.labelInfered}" />
 							<t:FastLabel ui:field="declaredValueLabel" styleName="{style.valueLabel}" />
 						</g:HTMLPanel>
 					</g:cell>
 					<g:cell width="1">
 						<g:HTMLPanel ui:field="effortPanel" styleName="{style.effort}">
-							<t:FastLabel ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.labelTranslucid}" />
+							<t:FastLabel ui:field="inferedEffortLabel" styleName="{style.effortLabel} {style.labelInfered}" />
 							<t:FastLabel ui:field="declaredEffortLabel" styleName="{style.effortLabel}" />
 						</g:HTMLPanel>
 					</g:cell>

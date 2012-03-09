@@ -9,7 +9,10 @@
 	
 		.rootPanel {
 			width: 100%;
+		}
+		.background {
 			border: none;
+			margin: 1px;
 		}
 		
 		.container {
@@ -60,7 +63,7 @@
 	</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel">
-		<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" paddingEnabled="false">
+		<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.background}" paddingEnabled="false">
 			<g:HorizontalPanel styleName="{style.textBoxDecoration} {style.container}" >
 				<g:cell width="1">
 					<g:SimplePanel styleName="{style.searchIcon}"/>
