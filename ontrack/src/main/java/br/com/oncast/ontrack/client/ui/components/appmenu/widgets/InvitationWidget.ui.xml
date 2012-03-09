@@ -25,14 +25,15 @@
             line-height: 13px;
         }
  		.helpLabel {
-			float: right;
+			width: 100%;
+			text-align: right;
 		}
                 
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel">
 		<g:Label text="Invitee:" styleName="{style.title}" />
-		<g:TextBox ui:field="invitationTextBox" styleName="{style.textBoxDecoration}"/>
+		<misc:DefaultTextedTextBox ui:field="invitationTextBox" defaultText="domain@email.com"/>
 		<g:Label text="Hit ENTER to invite" styleName="{style.helpLabel}"/>
 	</layout:ApplicationPopupBoxContainer>
 

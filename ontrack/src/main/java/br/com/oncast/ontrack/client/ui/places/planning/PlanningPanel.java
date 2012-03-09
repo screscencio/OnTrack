@@ -82,7 +82,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	private int getOffisetTop(final Element widget, final Element scrollPanel) {
 		final Element parent = widget.getOffsetParent();
-		if (parent == null) throw new RuntimeException("Widget should be inside the scroll panel");
+		if (parent == null) return 0;
 
 		if (parent == scrollPanel) return widget.getOffsetTop();
 

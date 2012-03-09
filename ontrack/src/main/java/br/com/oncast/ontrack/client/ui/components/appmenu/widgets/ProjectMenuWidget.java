@@ -7,6 +7,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FilterEngine;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FilterEngine.FilterResultListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
@@ -30,7 +31,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO++++ Use FiltrableCommandMenu with custom Style
@@ -45,14 +45,12 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 	Anchor exportMapLink;
 
 	@UiField
-	TextBox projectFilterTextBox;
+	DefaultTextedTextBox projectFilterTextBox;
 
 	@UiField
 	MenuBox results;
 
 	private FilterEngine<MenuBoxItem> engine;
-
-	private final String defaultText;
 
 	private static final Set<Integer> NAVIGATION_KEYS = new HashSet<Integer>();
 	static {
@@ -62,7 +60,6 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 
 	public ProjectMenuWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
-		defaultText = projectFilterTextBox.getText();
 	}
 
 	@Override
@@ -79,10 +76,7 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 
 	@UiHandler("projectFilterTextBox")
 	protected void onKeyDown(final KeyDownEvent event) {
-		if (!NAVIGATION_KEYS.contains(event.getNativeKeyCode())) {
-			if (projectFilterTextBox.getText().equals(defaultText)) projectFilterTextBox.setText("");
-			return;
-		}
+		if (!NAVIGATION_KEYS.contains(event.getNativeKeyCode())) return;
 		event.preventDefault();
 
 		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_DOWN) results.selectDown();
@@ -93,8 +87,6 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 	protected void onKeyUp(final KeyUpEvent event) {
 		if (NAVIGATION_KEYS.contains(event.getNativeKeyCode())) return;
 		event.stopPropagation();
-		if (projectFilterTextBox.getText().isEmpty()) setDefaultText();
-
 		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hide();
 		else if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER) {
 			changeProject();
@@ -102,14 +94,9 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 		else filter();
 	}
 
-	private void setDefaultText() {
-		projectFilterTextBox.setText(defaultText);
-		projectFilterTextBox.setCursorPos(0);
-	}
-
 	private void filter() {
 		final String text = projectFilterTextBox.getText();
-		engine.filterMenuItens(defaultText.equals(text) ? "" : text);
+		engine.filterMenuItens(text);
 	}
 
 	private void changeProject() {
@@ -133,7 +120,6 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 	public void hide() {
 		if (!this.isVisible()) return;
 		this.setVisible(false);
-		setDefaultText();
 
 		CloseEvent.fire(this, this);
 	}
@@ -169,7 +155,7 @@ public class ProjectMenuWidget extends Composite implements HasCloseHandlers<Pro
 
 	@Override
 	public void onProjectListAvailabilityChange(final boolean availability) {
-		projectFilterTextBox.setText(availability ? defaultText : "Loading Projects list...");
+		projectFilterTextBox.setText(availability ? "" : "Loading Projects list...");
 		projectFilterTextBox.setEnabled(availability);
 	}
 

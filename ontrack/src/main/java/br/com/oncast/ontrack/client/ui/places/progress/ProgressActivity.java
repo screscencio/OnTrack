@@ -16,7 +16,6 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -30,8 +29,6 @@ public class ProgressActivity extends AbstractActivity {
 	private Release release;
 
 	private ShortcutRegistration registration;
-
-	private MenuItem breadcrumbReleaseItem;
 
 	public ProgressActivity(final ProgressPlace place) {
 		try {
@@ -98,7 +95,7 @@ public class ProgressActivity extends AbstractActivity {
 	private Widget updateBreadcrumb() {
 		final BreadcrumbWidget breadcrumb = view.getApplicationMenu().getBreadcrumb();
 		breadcrumb.clearItems();
-		breadcrumbReleaseItem = breadcrumb.addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
+		breadcrumb.addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
 		return breadcrumb;
 	}
 }

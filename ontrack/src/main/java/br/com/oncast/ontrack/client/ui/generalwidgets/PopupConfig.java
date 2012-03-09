@@ -84,7 +84,7 @@ public class PopupConfig {
 
 		public static final int DURATION_SHORT = 500;
 
-		private static final int CONTAINER_PADDING = 10;
+		private static final int CONTAINER_PADDING = 20;
 
 		private int top;
 		private int left;
@@ -151,7 +151,7 @@ public class PopupConfig {
 			s.setPosition(Position.ABSOLUTE);
 			s.setTop(top, Unit.PX);
 			s.setLeft(left - CONTAINER_PADDING, Unit.PX);
-			s.setHeight(height, Unit.PX);
+			s.setHeight(height + CONTAINER_PADDING, Unit.PX);
 			s.setWidth(width + 2 * CONTAINER_PADDING, Unit.PX);
 			s.setOverflowY(Overflow.HIDDEN);
 
