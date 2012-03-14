@@ -1,5 +1,9 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -68,9 +72,6 @@ public class PopupConfig {
 	}
 
 	private Widget widgetToPopup;
-	private UIObject alignRight;
-	private UIObject alignBelow;
-	private int belowOffset;
 	private PopupOpenListener openListener;
 	private PopupCloseListener closeListener;
 
@@ -80,124 +81,11 @@ public class PopupConfig {
 	private boolean shown;
 	private int animationDuration = 0;
 
-	public class SlideAnimation extends Animation {
-
-		public static final int DURATION_SHORT = 500;
-
-		private static final int CONTAINER_PADDING = 10;
-
-		private int top;
-		private int left;
-		private int startPos;
-		private int endPos;
-
-		private SimplePanel container;
-
-		@Override
-		protected void onUpdate(final double progress) {
-			widgetToPopup.getElement().getStyle().setTop(startPos + progress * (endPos - startPos), Unit.PX);
-		}
-
-		@Override
-		protected void onComplete() {
-			super.onComplete();
-			restoreWidget();
-		}
-
-		@Override
-		protected void onCancel() {
-			super.onCancel();
-			restoreWidget();
-		}
-
-		public void show() {
-			if (animationDuration == 0) {
-				setPopupWidgetVisible();
-				return;
-			}
-
-			setupContainer(true);
-			setupWidget();
-
-			run(animationDuration);
-		}
-
-		public void hide() {
-			if (animationDuration == 0) {
-				disengagePopup();
-				return;
-			}
-
-			widgetToPopup.setVisible(true);
-			setupContainer(false);
-			setupWidget();
-
-			run(animationDuration);
-		}
-
-		private void setupContainer(final boolean showing) {
-			top = widgetToPopup.getAbsoluteTop();
-			left = widgetToPopup.getAbsoluteLeft();
-			final int height = widgetToPopup.getOffsetHeight();
-			final int width = widgetToPopup.getOffsetWidth();
-
-			widgetToPopup.removeFromParent();
-
-			container = new SimplePanel();
-			PopUpPanel.add(container);
-			container.add(widgetToPopup);
-
-			final Style s = container.getElement().getStyle();
-			s.setPosition(Position.ABSOLUTE);
-			s.setTop(top, Unit.PX);
-			s.setLeft(left - CONTAINER_PADDING, Unit.PX);
-			s.setHeight(height, Unit.PX);
-			s.setWidth(width + 2 * CONTAINER_PADDING, Unit.PX);
-			s.setOverflowY(Overflow.HIDDEN);
-
-			startPos = 0;
-			endPos = 0;
-			if (showing) startPos = -height;
-			else endPos = -height;
-		}
-
-		private void setupWidget() {
-			final Style s = widgetToPopup.getElement().getStyle();
-			s.setPosition(Position.RELATIVE);
-			s.setTop(startPos, Unit.PX);
-			s.setLeft(CONTAINER_PADDING, Unit.PX);
-		}
-
-		private void restoreWidget() {
-			widgetToPopup.removeFromParent();
-			container.removeFromParent();
-			PopUpPanel.add(widgetToPopup);
-
-			final Style s = widgetToPopup.getElement().getStyle();
-			s.setPosition(Position.ABSOLUTE);
-			s.setTop(top, Unit.PX);
-			s.setLeft(left, Unit.PX);
-
-			if (endPos < 0) {
-				widgetToPopup.setVisible(false);
-				disengagePopup();
-			}
-			else {
-				setPopupWidgetVisible();
-			}
-		}
-
-		private void setPopupWidgetVisible() {
-			if (widgetToPopup instanceof PopupAware) {
-				widgetToPopup.setVisible(false);
-				((PopupAware) widgetToPopup).show();
-			}
-			else widgetToPopup.setVisible(true);
-		}
-
-	}
-
 	private final SlideAnimation animation = new SlideAnimation();
+	private HorizontalAlignment horizontalAlignment;
+	private AlignmentReference alignHorizontallyTo;
+	private VerticalAlignment verticalAlignment;
+	private AlignmentReference alignVerticallyTo;
 
 	private PopupConfig() {}
 
@@ -264,19 +152,32 @@ public class PopupConfig {
 	}
 
 	/**
-	 * Defines that the popup widget must have its right margin matching the provided reference widget's right margin.<br />
+	 * @deprecated use {@link #alignHorizontal(HorizontalAlignment, AlignmentReference)} instead
+	 * @param reference widget for alignment.
+	 * @return
+	 */
+	@Deprecated
+	public PopupConfig alignRight(final UIObject widget) {
+		return alignHorizontal(RIGHT, new AlignmentReference(widget, RIGHT));
+	}
+
+	/**
+	 * Defines the horizontal alignment of the widget to popup.<br>
 	 * Note that the popup configuration may override this definition in case it realizes the popup widget will not fit. The popup configuration will try the
 	 * following to determine the popup widget horizontal alignment:
 	 * <ol>
-	 * <li>Match popup widget and reference widget right margins;</li>
-	 * <li>Match popup widget and reference widget left margins, in case the first rule does not apply;</li>
-	 * <li>Use the closes possible placement to the first rule in case none of the two first apply.</li>
+	 * <li>Match popup widget and reference widget margins according to the given specification;</li>
+	 * <li>Use the closes possible placement to the first rule in case the first rule does not apply;</li>
+	 * <li>Fix the popup to the alignment side margin and let it pass through the other side in case the widget is bigger than the screen</li>
 	 * </ol>
-	 * @param widget the reference widget.
+	 * @param Horizontal alignment of the widget to popup.
+	 * @param Reference widget .
 	 * @return the self assistant for in-line call convenience.
 	 */
-	public PopupConfig alignRight(final UIObject widget) {
-		this.alignRight = widget;
+	public PopupConfig alignHorizontal(final HorizontalAlignment alignment, final AlignmentReference alignmentReference) {
+		this.horizontalAlignment = alignment;
+		this.alignHorizontallyTo = alignmentReference;
+
 		return this;
 	}
 
@@ -289,27 +190,24 @@ public class PopupConfig {
 	 * <li>Put popup widget immediately above the reference widget, in case the first rule does not apply;</li>
 	 * <li>Use the closes possible placement to the first rule in case none of the two first apply.</li>
 	 * </ol>
-	 * There are times you want to offset the popup widget a little up or down. In such cases, use the {@link #alignBelow(Widget, int)} method.
+	 * There are times you want to offset the popup widget a little up or down. In such cases, use the {@link #alignVertical(Widget, int)} method.
 	 * @param widget the reference widget.
 	 * @return the self assistant for in-line call convenience.
 	 */
+	@Deprecated
 	public PopupConfig alignBelow(final UIObject widget) {
-		alignBelow(widget, 0);
-		return this;
+		return alignBelow(widget, 0);
 	}
 
-	/**
-	 * Defines that the popup widget must be placed below a reference widget with some offset.<br />
-	 * This method follows the same rules of the {@link #alignBelow(Widget)}, only applying some offset to it. Note that the offset will only be applied to the
-	 * first and third rules, the second rule is not affected.
-	 * @param widget the reference widget.
-	 * @param offset the offset to the widget. Use positive numbers to put the popup widget farther from the reference widget and negative to make it closer (in
-	 *            fact, overlapping it).
-	 * @return the self assistant for in-line call convenience.
-	 */
+	@Deprecated
 	public PopupConfig alignBelow(final UIObject widget, final int offset) {
-		this.alignBelow = widget;
-		this.belowOffset = offset;
+		return alignVertical(VerticalAlignment.TOP, new AlignmentReference(widget, VerticalAlignment.BOTTOM, offset));
+	}
+
+	public PopupConfig alignVertical(final VerticalAlignment alignment, final AlignmentReference alignTo) {
+		this.verticalAlignment = alignment;
+		this.alignVerticallyTo = alignTo;
+
 		return this;
 	}
 
@@ -437,53 +335,129 @@ public class PopupConfig {
 	}
 
 	private void evalVerticalPosition() {
-		if (alignBelow == null) return;
-
-		final int desiredTop = alignBelow.getAbsoluteTop() + alignBelow.getOffsetHeight() + belowOffset;
-		if (newTopFits(desiredTop)) {
-			DOM.setStyleAttribute(widgetToPopup.getElement(), "top", desiredTop + "px");
-			return;
-		}
-
-		final int acceptedTop = alignBelow.getAbsoluteTop() - widgetToPopup.getOffsetHeight();
-		if (newTopFits(acceptedTop)) {
-			DOM.setStyleAttribute(widgetToPopup.getElement(), "top", acceptedTop + "px");
-			return;
-		}
-
-		final int constrainedTop = Math.max(0, Math.min(Window.getClientHeight() - widgetToPopup.getOffsetHeight(), desiredTop));
-		DOM.setStyleAttribute(widgetToPopup.getElement(), "top", constrainedTop + "px");
-	}
-
-	private boolean newTopFits(final int newTop) {
-		if (newTop < 0) return false;
-		if (newTop + widgetToPopup.getOffsetHeight() > Window.getClientHeight()) return false;
-		return true;
+		if (alignVerticallyTo != null) alignVerticallyTo.align(widgetToPopup, verticalAlignment);
 	}
 
 	private void evalHorizontalPosition() {
-		if (alignRight == null) return;
-
-		final int desiredLeft = alignRight.getAbsoluteLeft() + alignRight.getOffsetWidth() - widgetToPopup.getOffsetWidth();
-		if (newLeftFits(desiredLeft)) {
-			DOM.setStyleAttribute(widgetToPopup.getElement(), "left", desiredLeft + "px");
-			return;
+		if (alignHorizontallyTo != null) {
+			alignHorizontallyTo.align(widgetToPopup, horizontalAlignment);
 		}
-
-		final int acceptedLeft = alignRight.getAbsoluteLeft();
-		if (newLeftFits(acceptedLeft)) {
-			DOM.setStyleAttribute(widgetToPopup.getElement(), "left", acceptedLeft + "px");
-			return;
-		}
-
-		final int constrainedLeft = Math.max(0, Math.min(Window.getClientWidth() - widgetToPopup.getOffsetWidth(), desiredLeft));
-		DOM.setStyleAttribute(widgetToPopup.getElement(), "left", constrainedLeft + "px");
 	}
 
-	private boolean newLeftFits(final int newLeft) {
-		if (newLeft < 0) return false;
-		if (newLeft + widgetToPopup.getOffsetWidth() > Window.getClientWidth()) return false;
-		return true;
-	}
+	public class SlideAnimation extends Animation {
 
+		public static final int DURATION_SHORT = 500;
+
+		private static final int CONTAINER_PADDING = 20;
+
+		private int top;
+		private int left;
+		private int startPos;
+		private int endPos;
+
+		private SimplePanel container;
+
+		@Override
+		protected void onUpdate(final double progress) {
+			widgetToPopup.getElement().getStyle().setTop(startPos + progress * (endPos - startPos), Unit.PX);
+		}
+
+		@Override
+		protected void onComplete() {
+			super.onComplete();
+			restoreWidget();
+		}
+
+		@Override
+		protected void onCancel() {
+			super.onCancel();
+			restoreWidget();
+		}
+
+		public void show() {
+			if (animationDuration == 0) {
+				setPopupWidgetVisible();
+				return;
+			}
+
+			setupContainer(true);
+			setupWidget();
+
+			run(animationDuration);
+		}
+
+		public void hide() {
+			if (animationDuration == 0) {
+				disengagePopup();
+				return;
+			}
+
+			widgetToPopup.setVisible(true);
+			setupContainer(false);
+			setupWidget();
+
+			run(animationDuration);
+		}
+
+		private void setupContainer(final boolean showing) {
+			top = widgetToPopup.getAbsoluteTop();
+			left = widgetToPopup.getAbsoluteLeft();
+			final int height = widgetToPopup.getOffsetHeight();
+			final int width = widgetToPopup.getOffsetWidth();
+
+			widgetToPopup.removeFromParent();
+
+			container = new SimplePanel();
+			PopUpPanel.add(container);
+			container.add(widgetToPopup);
+
+			final Style s = container.getElement().getStyle();
+			s.setPosition(Position.ABSOLUTE);
+			s.setTop(top, Unit.PX);
+			s.setLeft(left - CONTAINER_PADDING, Unit.PX);
+			s.setHeight(height + CONTAINER_PADDING, Unit.PX);
+			s.setWidth(width + 2 * CONTAINER_PADDING, Unit.PX);
+			s.setOverflowY(Overflow.HIDDEN);
+
+			startPos = 0;
+			endPos = 0;
+			if (showing) startPos = -height;
+			else endPos = -height;
+		}
+
+		private void setupWidget() {
+			final Style s = widgetToPopup.getElement().getStyle();
+			s.setPosition(Position.RELATIVE);
+			s.setTop(startPos, Unit.PX);
+			s.setLeft(CONTAINER_PADDING, Unit.PX);
+		}
+
+		private void restoreWidget() {
+			widgetToPopup.removeFromParent();
+			container.removeFromParent();
+			PopUpPanel.add(widgetToPopup);
+
+			final Style s = widgetToPopup.getElement().getStyle();
+			s.setPosition(Position.ABSOLUTE);
+			s.setTop(top, Unit.PX);
+			s.setLeft(left, Unit.PX);
+
+			if (endPos < 0) {
+				widgetToPopup.setVisible(false);
+				disengagePopup();
+			}
+			else {
+				setPopupWidgetVisible();
+			}
+		}
+
+		private void setPopupWidgetVisible() {
+			if (widgetToPopup instanceof PopupAware) {
+				widgetToPopup.setVisible(false);
+				((PopupAware) widgetToPopup).show();
+			}
+			else widgetToPopup.setVisible(true);
+		}
+
+	}
 }

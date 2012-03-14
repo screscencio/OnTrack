@@ -5,6 +5,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectAuthorizationCallback;
 import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
+import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 
 import com.google.gwt.core.client.GWT;
@@ -19,12 +20,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InvitationWidget extends Composite implements HasCloseHandlers<InvitationWidget>, PopupAware {
-
-	private static final String DEFAULT_TEXT = "mail@domain.com";
 
 	private static InvitationWidgetUiBinder uiBinder = GWT.create(InvitationWidgetUiBinder.class);
 
@@ -33,7 +31,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 	interface InvitationWidgetUiBinder extends UiBinder<Widget, InvitationWidget> {}
 
 	@UiField
-	protected TextBox invitationTextBox;
+	protected DefaultTextedTextBox invitationTextBox;
 
 	public InvitationWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -41,7 +39,6 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	@UiHandler("invitationTextBox")
 	protected void onKeyDown(final KeyDownEvent event) {
-		if (DEFAULT_TEXT.equals(invitationTextBox.getText())) invitationTextBox.setText("");
 		InvitationKeyDownHandler.handle(this, event);
 	}
 
@@ -63,7 +60,6 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 	}
 
 	private void setDefaultText() {
-		invitationTextBox.setText(DEFAULT_TEXT);
 		invitationTextBox.setCursorPos(0);
 	}
 

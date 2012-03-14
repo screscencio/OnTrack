@@ -37,7 +37,7 @@
            </g:Anchor>
 		<misc:Separator/>
 		<g:Label text="Switch project" styleName="{style.title}" />
-		<g:TextBox ui:field="projectFilterTextBox" styleName="{style.textBoxDecoration}" text="Start typing and hit ENTER to choose"/>
+		<misc:DefaultTextedTextBox ui:field="projectFilterTextBox" defaultText="Type to Filter" defaultTextAlign="right"/>
 			<menuWidget:MenuBox ui:field="results"/>
 	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 

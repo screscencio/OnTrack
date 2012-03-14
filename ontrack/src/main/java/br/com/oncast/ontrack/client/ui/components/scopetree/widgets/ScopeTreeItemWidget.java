@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.LEFT;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
@@ -11,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.Sc
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetValueCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
@@ -345,7 +348,10 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 670, 300);
 
-		configPopup().alignBelow(descriptionLabel).alignRight(releasePanel).popup(commandsMenu).pop();
+		configPopup().popup(commandsMenu)
+				.alignBelow(releasePanel)
+				.alignHorizontal(RIGHT, new AlignmentReference(releasePanel, RIGHT))
+				.pop();
 	}
 
 	public void showProgressMenu(final List<String> list) {
@@ -358,7 +364,10 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 300);
 
-		configPopup().alignBelow(descriptionLabel).alignRight(progressLabel).popup(commandsMenu).pop();
+		configPopup().popup(commandsMenu)
+				.alignBelow(progressLabel)
+				.alignHorizontal(LEFT, new AlignmentReference(progressLabel, LEFT))
+				.pop();
 	}
 
 	public void showEffortMenu(final List<String> fibonacciScaleForEffort) {
@@ -369,7 +378,10 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 200, 300);
-		configPopup().alignBelow(descriptionLabel).alignRight(effortPanel).popup(commandsMenu).pop();
+		configPopup().popup(commandsMenu)
+				.alignBelow(effortPanel)
+				.alignHorizontal(LEFT, new AlignmentReference(effortPanel, LEFT))
+				.pop();
 	}
 
 	public void showValueMenu(final List<String> fibonacciScaleForValue) {
@@ -380,7 +392,10 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(valueCommandMenuItemFactory.createItem(value, value));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 200, 300);
-		configPopup().alignBelow(descriptionLabel).alignRight(valuePanel).popup(commandsMenu).pop();
+		configPopup().popup(commandsMenu)
+				.alignBelow(valuePanel)
+				.alignHorizontal(LEFT, new AlignmentReference(valuePanel, LEFT))
+				.pop();
 	}
 
 	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,
@@ -392,7 +407,6 @@ public class ScopeTreeItemWidget extends Composite {
 				editionHandler.onEditionMenuClose();
 			}
 		});
-
 		menu.setOrderedItens(itens);
 		return menu;
 	}

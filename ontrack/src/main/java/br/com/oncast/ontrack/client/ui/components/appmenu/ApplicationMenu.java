@@ -9,6 +9,8 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.BreadcrumbWidg
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.InvitationWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectMenuWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -62,12 +64,16 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private void createProjectMenu() {
-		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget()).alignBelow(applicationMenuPanel, 1).alignRight(projectMenuItem);
+		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget())
+				.alignBelow(applicationMenuPanel, 1)
+				.alignHorizontal(HorizontalAlignment.HORIZONTAL_CENTER, new AlignmentReference(projectMenuItem, HorizontalAlignment.HORIZONTAL_CENTER));
 		projectMenuItem.setPopupConfig(config);
 	}
 
 	private void createMemberMenu() {
-		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget()).alignBelow(applicationMenuPanel, 1).alignRight(memberMenuItem);
+		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget())
+				.alignBelow(applicationMenuPanel, 1)
+				.alignHorizontal(HorizontalAlignment.HORIZONTAL_CENTER, new AlignmentReference(memberMenuItem, HorizontalAlignment.HORIZONTAL_CENTER));
 		memberMenuItem.setPopupConfig(invitePopup);
 	}
 
@@ -75,8 +81,10 @@ public class ApplicationMenu extends Composite {
 		final ApplicationSubmenu userMenu = new ApplicationSubmenu();
 
 		final PopupConfig popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignBelow(applicationMenuPanel, 1)
-				.alignRight(userMenuItem).setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
-		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu).alignBelow(applicationMenuPanel, 1).alignRight(userMenuItem);
+				.alignHorizontal(HorizontalAlignment.HORIZONTAL_CENTER, new AlignmentReference(userMenuItem, HorizontalAlignment.HORIZONTAL_CENTER))
+				.setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
+		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu).alignBelow(applicationMenuPanel, 1)
+				.alignHorizontal(HorizontalAlignment.HORIZONTAL_CENTER, new AlignmentReference(userMenuItem, HorizontalAlignment.HORIZONTAL_CENTER));
 
 		userMenu.addItem("Change Password", new Command() {
 			@Override

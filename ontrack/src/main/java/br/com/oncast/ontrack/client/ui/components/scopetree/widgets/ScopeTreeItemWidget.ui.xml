@@ -23,6 +23,12 @@
 			}
 			
 			.descriptionLabel {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				
 				cursor: pointer;
 				
 				color: #333333;
@@ -38,7 +44,6 @@
 				padding-left: 3px;
 				padding-right: 3px;
 				vertical-align: super;
-				font-size: smaller;
 				cursor: default;
 				-moz-user-select: none;
 				-khtml-user-select: none;
@@ -59,7 +64,6 @@
 				padding-left: 3px;
 				padding-right: 3px;
 				vertical-align: super;
-				font-size: smaller;
 				cursor: default;
 				-moz-user-select: none;
 				-khtml-user-select: none;
@@ -93,7 +97,7 @@
 			.releasePanel {
                 position: relative;
                 width: 120px;
-				overflow: hidden;				
+				overflow: hidden;
                 text-align: right;
                 height: 20px;
 			}

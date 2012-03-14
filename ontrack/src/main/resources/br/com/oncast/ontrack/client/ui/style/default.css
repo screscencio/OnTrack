@@ -37,16 +37,15 @@
 @def TEXTINPUT_BORDER 1px solid COLOR_GRAY_LIGHT;
 @def POPUP_PADDING 15px;
 @def POPUP_PADDING_NEGATIVE -15px;
+@def TEXTBOX_PADDING 5px;
 .textBoxDecoration {
 	width: 100%;
 	
 	font-family: FONT_DEFAULT_ITALIC;
 	border: TEXTINPUT_BORDER;
-	padding: 5px 0px;
+	padding: TEXTBOX_PADDING;
 	color: TEXTINPUT_COLOR;
 	
-	-webkit-box-shadow: TEXTINPUT_SHADOW;
-	-moz-box-shadow: TEXTINPUT_SHADOW;
 	box-shadow: TEXTINPUT_SHADOW;
 }
 
