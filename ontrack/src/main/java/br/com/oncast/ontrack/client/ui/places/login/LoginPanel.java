@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedPasswordTextBox;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedTextBox;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,8 +14,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LoginPanel extends Composite implements LoginView {
@@ -23,13 +23,13 @@ public class LoginPanel extends Composite implements LoginView {
 	interface LoginPanelUiBinder extends UiBinder<Widget, LoginPanel> {}
 
 	@UiField
-	protected TextBox emailArea;
+	protected PaddedTextBox emailArea;
 
 	@UiField
 	protected Label messageLabel;
 
 	@UiField
-	protected PasswordTextBox passwordArea;
+	protected PaddedPasswordTextBox passwordArea;
 
 	@UiField
 	protected Button loginButton;

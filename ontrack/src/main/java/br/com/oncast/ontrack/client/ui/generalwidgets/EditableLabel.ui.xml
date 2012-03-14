@@ -11,7 +11,7 @@
 		}
 		
 		.editionBox {
-			margin-top: -3px;
+			margin: -1px;
 			padding: 0px;
 			
 			font-family: inherit;
@@ -22,7 +22,7 @@
 
 		<g:DeckPanel ui:field="deckPanel" addStyleNames="{style.editableLabel}">
 			<g:Label ui:field="visualizationLabel" addStyleNames="{style.container} v-ellip" />
-			<g:TextBox ui:field="editionBox" addStyleNames="{style.container} {style.editionBox} {style.textBoxDecoration}" />
+			<g:TextBox ui:field="editionBox" addStyleNames="{style.textBoxDecoration} {style.container} {style.editionBox}" />
 		</g:DeckPanel>
 	
 </ui:UiBinder> 

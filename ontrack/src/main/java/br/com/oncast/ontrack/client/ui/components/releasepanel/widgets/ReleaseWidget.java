@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
@@ -228,19 +231,26 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiHandler("menuIcon")
 	protected void showMenu(final ClickEvent event) {
-		configPopup().popup(getMouseActionMenu()).alignRight(menuIcon).alignBelow(menuIcon).onClose(new PopupCloseListener() {
-			@Override
-			public void onHasClosed() {
-				menuIcon.setVisible(false);
-				isMenuOpen = false;
-			}
-		}).pop();
+		configPopup().popup(getMouseActionMenu())
+				.alignRight(menuIcon)
+				.alignBelow(menuIcon)
+				.onClose(new PopupCloseListener() {
+					@Override
+					public void onHasClosed() {
+						menuIcon.setVisible(false);
+						isMenuOpen = false;
+					}
+				})
+				.pop();
 		isMenuOpen = true;
 	}
 
 	@UiHandler("progressIcon")
 	protected void showChartPanel(final ClickEvent event) {
-		configPopup().popup(getChartPanel()).alignRight(progressIcon).alignBelow(progressIcon).pop();
+		configPopup().popup(getChartPanel())
+				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.HORIZONTAL_CENTER))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.VERTICAL_CENTER))
+				.pop();
 	}
 
 	@UiHandler("kanbanLink")
@@ -367,7 +377,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private ReleaseChart getChartPanel() {
 		if (chartPanel != null) return chartPanel;
 		chartPanel = new ReleaseChart(new ReleaseChartDataProvider(release, getReleaseEstimator()));
-		chartPanel.setStyleName(style.chartPanel());
+		chartPanel.addStyleName(style.chartPanel());
 		return chartPanel;
 	}
 

@@ -5,6 +5,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedPasswordTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationPopupBoxContainer;
 import br.com.oncast.ontrack.shared.utils.PasswordValidator;
@@ -23,7 +24,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget>, PopupAware {
@@ -32,16 +32,16 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	interface PasswordChangeWidgetUiBinder extends UiBinder<Widget, PasswordChangeWidget> {}
 
 	@UiField
-	protected PasswordTextBox oldPasswordArea;
+	protected PaddedPasswordTextBox oldPasswordArea;
 
 	@UiField
 	protected ApplicationPopupBoxContainer clickableRootPanel;
 
 	@UiField
-	protected PasswordTextBox newPasswordArea;
+	protected PaddedPasswordTextBox newPasswordArea;
 
 	@UiField
-	protected PasswordTextBox retypePasswordArea;
+	protected PaddedPasswordTextBox retypePasswordArea;
 
 	@UiField
 	protected Label messageLabel;

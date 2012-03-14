@@ -85,11 +85,11 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 	public ReleaseChart(final ReleaseChartDataProvider dataProvider) {
 		this.dataProvider = dataProvider;
 		initWidget(uiBinder.createAndBindUi(this));
+		this.setVisible(false);
 
 		chart = createBasicChart();
 
 		clickableChartPanel.add(chart);
-		chart.setSizeToMatchContainer();
 		configureXAxis(dataProvider.getReleaseDays());
 	}
 
@@ -99,7 +99,8 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
-					chart.setSizeToMatchContainer();
+					setVisible(true);
+					chart.setSize(clickableChartPanel.getElement().getClientWidth(), clickableChartPanel.getElement().getClientHeight(), false);
 				}
 			});
 		}
@@ -127,8 +128,6 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 	@Override
 	public void show() {
 		updateData();
-		this.setVisible(true);
-
 		clickableChartPanel.setFocus(true);
 	}
 
@@ -153,6 +152,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 
 	private Chart createBasicChart() {
 		final Chart newChart = new Chart()
+				.setAnimation(false)
 				.setType(Series.Type.LINE)
 				.setChartTitleText("")
 				.setLegend(new Legend()

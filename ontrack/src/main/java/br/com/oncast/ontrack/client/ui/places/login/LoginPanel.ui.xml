@@ -1,7 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:gwl="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout">
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout">
 
 
 	<ui:style src="../../style/default.css">
@@ -32,21 +33,21 @@
 		
 	</ui:style>
 
-	<gwl:ApplicationWidgetContainer debugId="loginPlace">
+	<layout:ApplicationWidgetContainer debugId="loginPlace">
 		<g:HTMLPanel styleName="{style.contentPanel}">
 			<g:Label text="Username" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
-			<g:TextBox debugId="emailInput" ui:field="emailArea" addStyleNames="{style.textBoxDecoration}" />
+			<misc:PaddedTextBox debugId="emailInput" ui:field="emailArea"/>
 			
 			<div class="{style.separator}" />
 			
 			<g:Label text="Password" ui:field="passwordLabel" styleName="{style.descriptionLabel}" />
-			<g:PasswordTextBox debugId="passwordInput" ui:field="passwordArea" addStyleNames="{style.textBoxDecoration}" />
+			<misc:PaddedPasswordTextBox debugId="passwordInput" ui:field="passwordArea" />
 			
 			<g:Label debugId="messageOutput" ui:field="messageLabel" styleName="{style.errorLabel}" visible="false" />
 			
 			<div class="{style.separator}" />
 			<g:Button debugId="submitButton" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />
 		</g:HTMLPanel>
-	</gwl:ApplicationWidgetContainer>
+	</layout:ApplicationWidgetContainer>
 
 </ui:UiBinder> 

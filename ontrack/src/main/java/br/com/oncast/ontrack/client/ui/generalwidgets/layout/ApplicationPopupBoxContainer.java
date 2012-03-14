@@ -30,10 +30,6 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 		String boxPadding();
 	}
 
-	protected ApplicationPopupBoxContainer() {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
-
 	@UiField
 	Style style;
 
@@ -46,7 +42,7 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 	@UiField
 	SimplePanel background;
 
-	public ApplicationPopupBoxContainer(final String firstName) {
+	protected ApplicationPopupBoxContainer() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 

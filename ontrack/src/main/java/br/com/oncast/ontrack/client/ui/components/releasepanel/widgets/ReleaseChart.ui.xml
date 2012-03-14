@@ -5,10 +5,15 @@
 	
 	<ui:image field="closeImage" src="stats-close.png"/>
 	
-	<ui:style>
+	<ui:style src="../../../style/default.css">
 	
 	.rootPanel {
 		position: relative;
+		background: white;
+	}
+	
+	.container {
+		margin: POPUP_PADDING;
 	}
 	
 	.closeIcon {
@@ -20,8 +25,8 @@
 	}
 	</ui:style>
 	
-	<g:HTMLPanel styleName="{style.rootPanel}">
-		<g:FocusPanel ui:field="clickableChartPanel" />
+	<g:HTMLPanel styleName="{style.popupContainer} {style.rootPanel}">
+		<g:FocusPanel ui:field="clickableChartPanel" styleName="{style.container}"/>
 		<g:Image ui:field="closeIcon" resource="{closeImage}" styleName="{style.closeIcon}"/>
 	</g:HTMLPanel>
 
