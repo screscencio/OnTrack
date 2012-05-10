@@ -16,6 +16,8 @@
 			
 			.header {
 				width: 100%;
+				height: 36px;
+				
 				padding: 8px;
 
 				border: RELEASE_WIDGET_BORDER;
@@ -44,6 +46,8 @@
 			
 			.containerStateToogleClickableArea {
 				width: 100%;
+				height: 100%;
+				position: relative;
 			}
 			
 			.headerItem, .descriptionLabel {
@@ -64,6 +68,12 @@
 			}
 			
 			.descriptionLabel {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				bottom: 0px;
+				right: 0px;
+				
 				cursor: auto;
 			}
 			
@@ -144,8 +154,8 @@
 					<g:cell width="1">
 						<g:Image resource="{resources.containerStateOpened}" ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem}" />
 					</g:cell>
-					<g:cell width="*">
-						<g:FocusPanel ui:field="containerToogleClickableArea" styleName="{style.containerStateToogleClickableArea}">
+					<g:cell width="*" height="100%">
+						<g:FocusPanel styleName="{style.containerStateToogleClickableArea}">
 							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
 						</g:FocusPanel>
 					</g:cell>

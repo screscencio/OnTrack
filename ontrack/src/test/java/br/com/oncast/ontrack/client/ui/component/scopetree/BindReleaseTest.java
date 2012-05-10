@@ -29,7 +29,7 @@ import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 
-import com.octo.gwt.test.GwtTest;
+import com.googlecode.gwt.test.GwtTest;
 
 public class BindReleaseTest extends GwtTest {
 

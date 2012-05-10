@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseScopeUpdatePriorityActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -12,7 +14,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class ReleaseScopeUpdatePriorityActionTest {
+public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	private ProjectContext context;
 	private Release release;
 	private Scope rootScope;
@@ -130,6 +132,16 @@ public class ReleaseScopeUpdatePriorityActionTest {
 	public void increseTheMostPriorityScope() throws Exception {
 		new ReleaseScopeUpdatePriorityAction(release.getId(), firstChild.getId(),
 				release.getScopeIndex(firstChild) - 1).execute(context);
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ReleaseScopeUpdatePriorityActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ReleaseScopeUpdatePriorityAction.class;
 	}
 
 }

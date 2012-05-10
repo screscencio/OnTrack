@@ -34,4 +34,9 @@ public class ScopeTreeItemWidgetReleaseCommandMenuItemFactory implements ScopeTr
 			}
 		});
 	}
+
+	@Override
+	public String getNoItemText() {
+		return null;
+	}
 }

@@ -4,8 +4,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
+import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
@@ -18,7 +20,7 @@ import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityC
 import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-import com.octo.gwt.test.GwtTest;
+import com.googlecode.gwt.test.GwtTest;
 
 public class RemoveTest extends GwtTest {
 
@@ -29,6 +31,9 @@ public class RemoveTest extends GwtTest {
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
 	private ActionExecutionServiceImpl actionExecutionService;
+
+	@Mock
+	private ClientNotificationService notificationService;
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -47,7 +52,7 @@ public class RemoveTest extends GwtTest {
 		tree.setContext(ProjectTestUtils.createProjectContext(scope, null));
 
 		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
-		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);
+		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext, notificationService);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 

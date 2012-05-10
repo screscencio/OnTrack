@@ -14,6 +14,6 @@ public class ActionExecuter {
 		if (action instanceof ReleaseAction) return new ReleaseActionExecuter().executeAction(context, action);
 		if (action instanceof KanbanAction) return new KanbanActionExecuter().executeAction(context, action);
 
-		throw new UnableToCompleteActionException("There is no mapped action executer for the type " + action.getClass() + ".");
+		throw new UnableToCompleteActionException("There is no mapped action executer for " + action.getClass() + ".");
 	}
 }

@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
 
-@Entity(name = "KanbanRemoveColumn")
+@Entity(name = "KanbanColumnRemove")
 @ConvertTo(KanbanColumnRemoveAction.class)
 public class KanbanColumnRemoveActionEntity extends ModelActionEntity {
 
@@ -21,11 +21,11 @@ public class KanbanColumnRemoveActionEntity extends ModelActionEntity {
 	private String referenceId;
 
 	@ConversionAlias("columnDescription")
-	@Column(name = ActionTableColumns.STRING_2, length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = ActionTableColumns.STRING_2_LENGTH)
 	private String columnDescription;
 
 	@ConversionAlias("shouldUnfixKanban")
-	@Column(name = ActionTableColumns.BOOLEAN)
+	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean shouldUnfixKanban;
 
 	public String getReferenceId() {

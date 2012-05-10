@@ -19,8 +19,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFacto
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
-import br.com.oncast.ontrack.client.ui.settings.ViewSettings.VisibilityOf;
-import br.com.oncast.ontrack.client.ui.settings.ViewSettings.VisibilityOf.VisibilityChangeListener;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -38,6 +38,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -47,6 +49,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -181,7 +184,7 @@ public class ScopeTreeItemWidget extends Composite {
 			}
 		});
 
-		registerCustomItensChangeListeners();
+		registerColumnVisibilityChangeListeners();
 
 		deckPanel.showWidget(0);
 	}
@@ -195,14 +198,13 @@ public class ScopeTreeItemWidget extends Composite {
 		final boolean isEnter = event.getNativeKeyCode() == KEY_ENTER;
 		if (isEnter || event.getNativeKeyCode() == KEY_ESCAPE) {
 			event.preventDefault();
-			switchToVisualization(isEnter);
+			if (!isEnter || !editionBox.getText().trim().isEmpty()) switchToVisualization(isEnter);
 		}
 	}
 
 	@UiHandler("editionBox")
 	protected void onKeyUp(final KeyUpEvent event) {
 		if (!isEditing()) return;
-		event.preventDefault();
 		event.stopPropagation();
 	}
 
@@ -327,16 +329,19 @@ public class ScopeTreeItemWidget extends Composite {
 		releaseTag.setText(isReleasePresent ? release.getFullDescription() : "");
 	}
 
-	/*
-	 * Decisions: - [02/08/2011] It was decided to display a percentage result even if some child scope not been estimated (effort = 0) and it is not done.
-	 */
 	private void updateProgressDisplay() {
-		final String progress = scope.getProgress().getDescription();
+		final String progress = scope.isLeaf() || scope.getProgress().hasDeclared() ? scope.getProgress().getDescription() : getPercentageProgress();
 
 		progressLabel.setText(progress);
 		progressLabel.setTitle(progress);
 
 		focusPanel.setStyleName(style.done(), scope.getProgress().isDone());
+	}
+
+	private String getPercentageProgress() {
+		if (scope.getProgress().isDone()) return "100%";
+		if (scope.getEffort().getInfered() == 0 || scope.getEffort().getAccomplishedPercentual() == 0) return "";
+		return ClientDecimalFormat.roundFloat(scope.getEffort().getAccomplishedPercentual(), 1) + "%";
 	}
 
 	public void showReleaseMenu(final List<Release> releaseList) {
@@ -346,7 +351,7 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final Release releaseItem : releaseList)
 			items.add(releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription()));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 670, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 670, 264);
 
 		configPopup().popup(commandsMenu)
 				.alignBelow(releasePanel)
@@ -362,7 +367,7 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String progressDefinition : list)
 			if (!notStartedDescription.equals(progressDefinition)) items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 264);
 
 		configPopup().popup(commandsMenu)
 				.alignBelow(progressLabel)
@@ -377,7 +382,8 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String effort : fibonacciScaleForEffort)
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 200, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 264);
+		commandsMenu.setHelpText("");
 		configPopup().popup(commandsMenu)
 				.alignBelow(effortPanel)
 				.alignHorizontal(LEFT, new AlignmentReference(effortPanel, LEFT))
@@ -391,7 +397,8 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String value : fibonacciScaleForValue)
 			items.add(valueCommandMenuItemFactory.createItem(value, value));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 200, 300);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 100, 264);
+		commandsMenu.setHelpText("");
 		configPopup().popup(commandsMenu)
 				.alignBelow(valuePanel)
 				.alignHorizontal(LEFT, new AlignmentReference(valuePanel, LEFT))
@@ -407,31 +414,31 @@ public class ScopeTreeItemWidget extends Composite {
 				editionHandler.onEditionMenuClose();
 			}
 		});
-		menu.setOrderedItens(itens);
+		menu.setOrderedItems(itens);
 		return menu;
 	}
 
-	private void registerCustomItensChangeListeners() {
-		VisibilityOf.RELEASE.register(new VisibilityChangeListener() {
+	private void registerColumnVisibilityChangeListeners() {
+		ScopeTreeColumn.RELEASE.register(new VisibilityChangeListener() {
 			@Override
 			public void onVisiblityChange(final boolean isVisible) {
 				releasePanel.setVisible(isVisible);
 			}
 		});
 
-		VisibilityOf.PROGRESS.register(new VisibilityChangeListener() {
+		ScopeTreeColumn.PROGRESS.register(new VisibilityChangeListener() {
 			@Override
 			public void onVisiblityChange(final boolean isVisible) {
 				progressLabel.setVisible(isVisible);
 			}
 		});
-		VisibilityOf.EFFORT.register(new VisibilityChangeListener() {
+		ScopeTreeColumn.EFFORT.register(new VisibilityChangeListener() {
 			@Override
 			public void onVisiblityChange(final boolean isVisible) {
 				effortPanel.setVisible(isVisible);
 			}
 		});
-		VisibilityOf.VALUE.register(new VisibilityChangeListener() {
+		ScopeTreeColumn.VALUE.register(new VisibilityChangeListener() {
 			@Override
 			public void onVisiblityChange(final boolean isVisible) {
 				valuePanel.setVisible(isVisible);

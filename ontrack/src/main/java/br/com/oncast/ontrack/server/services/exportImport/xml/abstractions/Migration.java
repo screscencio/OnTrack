@@ -49,6 +49,10 @@ public abstract class Migration implements Comparable<Migration> {
 		return getDocument().selectNodes("//*[@" + CLASS + "='" + className + "']");
 	}
 
+	protected String getClass(final Element element) {
+		return element.attributeValue(CLASS);
+	}
+
 	protected Element addElementWithName(final Element parent, final String name) {
 		final Element element = parent.addElement(name);
 		return element;

@@ -6,7 +6,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
-import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentMock;
+import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -19,10 +19,23 @@ public class ActionExecutionFactoryTestUtil {
 		final ProjectRepresentationProvider projectRepresentationProvider = mock(ProjectRepresentationProviderImpl.class);
 		final ProjectRepresentation projectRepresentation = mock(ProjectRepresentation.class);
 		final ApplicationPlaceController applicationPlaceController = mock(ApplicationPlaceController.class);
+		final ClientNotificationService notificationService = mock(ClientNotificationService.class);
 
 		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
 		when(projectRepresentation.getId()).thenReturn(0L);
 
-		return new ActionExecutionServiceImpl(contextService, new ErrorTreatmentMock(), projectRepresentationProvider, applicationPlaceController);
+		return new ActionExecutionServiceImpl(contextService, notificationService, projectRepresentationProvider, applicationPlaceController);
+	}
+
+	public static ActionExecutionServiceImpl create(final ProjectContext projectContext, final ClientNotificationService notificationService) {
+		final ContextProviderService contextService = new ContextProviderServiceMock(projectContext);
+		final ProjectRepresentationProvider projectRepresentationProvider = mock(ProjectRepresentationProviderImpl.class);
+		final ProjectRepresentation projectRepresentation = mock(ProjectRepresentation.class);
+		final ApplicationPlaceController applicationPlaceController = mock(ApplicationPlaceController.class);
+
+		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
+		when(projectRepresentation.getId()).thenReturn(0L);
+
+		return new ActionExecutionServiceImpl(contextService, notificationService, projectRepresentationProvider, applicationPlaceController);
 	}
 }

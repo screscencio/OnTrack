@@ -17,4 +17,9 @@ public class LoginPlace extends Place {
 	public Place getDestinationPlace() {
 		return destinationPlace;
 	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return false;
+	}
 }

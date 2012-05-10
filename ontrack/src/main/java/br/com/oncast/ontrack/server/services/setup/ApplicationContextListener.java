@@ -6,24 +6,30 @@ import javax.servlet.ServletContextListener;
 import net.zschech.gwt.comet.server.impl.AsyncServlet;
 import br.com.drycode.api.web.gwt.dispatchService.server.DispatchServiceServlet;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchServiceException;
+import br.com.oncast.ontrack.client.services.feedback.SendFeedbackRequest;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationVerificationAspectFilter;
 import br.com.oncast.ontrack.server.services.requestDispatch.AuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.DeAuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectAuthorizationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationQuotaRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.SendFeedbackRequestHandler;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationQuotaRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 
@@ -54,6 +60,9 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(AuthenticationRequest.class, new AuthenticationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(DeAuthenticationRequest.class, new DeAuthenticationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ChangePasswordRequest.class, new ChangePasswordRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(CurrentUserInformationRequest.class, new CurrentUserInformationRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(ProjectCreationQuotaRequest.class, new ProjectCreationQuotaRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(SendFeedbackRequest.class, new SendFeedbackRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

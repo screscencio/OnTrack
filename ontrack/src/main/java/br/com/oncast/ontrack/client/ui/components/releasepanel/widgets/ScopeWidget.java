@@ -1,8 +1,11 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -14,6 +17,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeWidget extends Composite implements ModelWidget<Scope> {
@@ -23,7 +27,13 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	interface ScopeWidgetUiBinder extends UiBinder<Widget, ScopeWidget> {}
 
 	interface ScopeWidgetStyle extends CssResource {
-		String panelDone();
+		String progressIconDone();
+
+		String progressIconNotStarted();
+
+		String progressIconUnderwork();
+
+		String selected();
 	}
 
 	@UiField
@@ -39,6 +49,9 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiField
 	FocusPanel draggableAnchor;
 
+	@UiField
+	SimplePanel progressIcon;
+
 	private final Scope scope;
 
 	// IMPORTANT Used to refresh DOM only when needed.
@@ -51,13 +64,35 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
-		updateDescription();
-		updateProgress();
+		update();
 	}
 
 	@Override
 	public boolean update() {
-		return updateDescription() | updateProgress();
+		return updateDescription() | updateProgress() | updateTitle();
+	}
+
+	private boolean updateTitle() {
+		final String title = buildLineageRepresentationText();
+		if (title.isEmpty() || title.equals(panel.getTitle())) return false;
+
+		descriptionLabel.setTitle(title);
+		return true;
+	}
+
+	private String buildLineageRepresentationText() {
+		if (scope.isRoot()) return "";
+
+		final StringBuilder builder = new StringBuilder();
+		Scope current = scope.getParent();
+		while (!current.isRoot()) {
+			builder.insert(0, current.getDescription());
+			builder.insert(0, " > ");
+			current = current.getParent();
+		}
+		builder.insert(0, current.getDescription());
+		final String title = builder.toString();
+		return title;
 	}
 
 	/**
@@ -73,15 +108,22 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		return true;
 	}
 
+	// TODO+++ centralize progress calculations and removing from here.
 	/**
 	 * @return if the progress was updated.
 	 */
 	private boolean updateProgress() {
-		final String description = scope.getProgress().getDescription();
-		if (description.equals(currentScopeProgress)) return false;
+		final Progress progress = scope.getProgress();
+		final String description = progress.getDescription();
+		if (!description.isEmpty() && description.equals(currentScopeProgress)) return false;
 		currentScopeProgress = description;
 
-		panel.setStyleName(style.panelDone(), scope.getProgress().isDone());
+		final boolean done = progress.isDone();
+		final boolean notStarted = progress.getState() == ProgressState.NOT_STARTED && scope.getEffort().getAccomplishedEffort() == 0;
+
+		progressIcon.setStyleName(style.progressIconDone(), done);
+		progressIcon.setStyleName(style.progressIconNotStarted(), notStarted);
+		progressIcon.setStyleName(style.progressIconUnderwork(), progress.getState() == UNDER_WORK || (!done && !notStarted));
 
 		return true;
 	}
@@ -102,6 +144,10 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiHandler("panel")
 	public void onScopeWidgetClick(final ClickEvent e) {
 		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
+	}
+
+	public void setSelected(final boolean shouldSelect) {
+		panel.setStyleName(style.selected(), shouldSelect);
 	}
 
 }

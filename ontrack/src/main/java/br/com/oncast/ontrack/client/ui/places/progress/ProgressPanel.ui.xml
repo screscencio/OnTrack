@@ -5,7 +5,10 @@
 	xmlns:pp='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel'
 >
 
-	<ui:style>
+    <ui:data field="bgPixelImg" src="../../semitransparentPixel.png" />
+	<ui:style src="../../style/default.css">
+	
+	   @url bgPixelUrl bgPixelImg;
 		
 		.kanbanPanel {
 			position: absolute;
@@ -15,6 +18,14 @@
 			bottom: 10px;
 			padding: 5px;
 			overflow: auto;
+			
+			-webkit-box-shadow: POPUP_SHADOW;
+		    -moz-box-shadow: POPUP_SHADOW;
+		    box-shadow: POPUP_SHADOW;
+		    border: POPUP_BORDER;
+		    
+		    background-image: bgPixelUrl;
+		    background-repeat: repeat;
 		}
 		
 	</ui:style>

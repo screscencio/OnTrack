@@ -1,0 +1,51 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget.ScopeTreeWidgetStyle">
+
+			.rootPanel {
+				height: 100%;
+				overflow: auto;
+			}
+			
+			.instructionPanel {
+				width: 100%;
+
+				vertical-align: middle;
+				text-align: center;
+			}
+			
+			.emptyIndicationLabel {
+				width: 100%;
+				
+				vertical-align: middle;
+				text-align: center;
+				
+				font-size: 14pt; 
+				padding: 25px 0px;
+				
+				color: COLOR_GRAY;
+				text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
+			}
+			
+			.instructionLabel {
+				font-family: FONT_DEFAULT_ITALIC;
+				font-size: FONT_SIZE_MEDIUM;
+				
+				color: COLOR_GRAY_LIGHT;
+				text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
+				
+				margin: 5px;
+			}
+		</ui:style>
+
+	<g:FocusPanel styleName="{style.rootPanel}">
+		<g:HTMLPanel>
+			<g:Tree ui:field="tree" />
+			<g:Label ui:field="noScopeLabel" styleName="{style.emptyIndicationLabel}" text="No Scope yet"/>
+			<g:HTMLPanel ui:field="instructionPanel" styleName="{style.instructionPanel}"/>
+		</g:HTMLPanel>
+	</g:FocusPanel>
+</ui:UiBinder>

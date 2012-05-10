@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class ViewSettings {
 
-	public enum VisibilityOf {
+	public enum ScopeTreeColumn {
 		RELEASE(DefaultViewSettings.SCOPE_TREE_RELEASE_COLUMN_VISIBILITY),
 		PROGRESS(DefaultViewSettings.SCOPE_TREE_PROGRESS_COLUMN_VISIBILITY),
 		EFFORT(DefaultViewSettings.SCOPE_TREE_EFFORT_COLUMN_VISIBILITY),
@@ -14,9 +14,13 @@ public class ViewSettings {
 		private boolean isVisibile;
 		private final Set<VisibilityChangeListener> listeners;
 
-		private VisibilityOf(final boolean visibility) {
+		private ScopeTreeColumn(final boolean visibility) {
 			this.isVisibile = visibility;
 			listeners = new HashSet<VisibilityChangeListener>();
+		}
+
+		public boolean isVisible() {
+			return isVisibile;
 		}
 
 		public boolean toggle() {

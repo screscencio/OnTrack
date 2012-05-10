@@ -4,6 +4,7 @@
 
 @def COLOR_GRAY_LIGHT #CCCCCC;
 @def COLOR_GRAY #999999;
+@def COLOR_YELLOW #CC9900;
 
 @def FONT_DEFAULT 'ProximaNovaRegular';
 @def FONT_DEFAULT_ITALIC 'ProximaNovaRegularItalic';
@@ -21,6 +22,9 @@
 @def KANBAN_TITLE_BACKGROUND_COLOR #D3D3D3;
 @def KANBAN_TITLE_TEXT_SHADOW 1px 1px 1px #ECECEC;
 @def KANBAN_TITLE_TEXT_SHADOW_IE literal('dropshadow(color=#ECECEC, offx=1, offy=-1)');
+@def KANBAN_TITLE_SHADOW 1px 2px 6px #999;
+@def KANBAN_SCOPE_BACKGROUND #FAFAFA;
+@def KANBAN_SCOPE_HOVER_BACKGROUND #FCFCFC;
 
 .borderDecoration {
 	height: 1px;
@@ -30,6 +34,15 @@
 	border: 0;
 	opacity:.8;
 	filter: literal('alpha(opacity=80)');
+}
+
+.noSelection {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 @def TEXTINPUT_COLOR #A8A7A7;
@@ -46,13 +59,18 @@
 	padding: TEXTBOX_PADDING;
 	color: TEXTINPUT_COLOR;
 	
+	-webkit-box-shadow: TEXTINPUT_SHADOW;
+	-moz-box-shadow: TEXTINPUT_SHADOW;
 	box-shadow: TEXTINPUT_SHADOW;
 }
 
 /* Component Styles */
 
+@def NOTIFICATION_SHADOW 0px 5px 20px #666666;
+
 @def POPUP_SHADOW 1px 5px 10px #999999;
 @def POPUP_BORDER 1px solid #DDDDDD;
+@def WIDTH_DEFAULT_POPUP 240px;
 
 @def COLOR_MENU_BORDER_TOP #B4AA67;
 @def COLOR_MENU_BORDER_BOTTOM #EAE9DE;
@@ -115,20 +133,20 @@
 @def COLOR_RELEASE_WIDGET_HEADER_TEXT_CLOSED #9b9b9b;
 @def RELEASE_WIDGET_HEADER_TEXT_SHADOW 1px 1px 0px #ededed;
 @def RELEASE_WIDGET_HEADER_TEXT_SHADOW_IE literal('dropshadow(color=#ededed, offx=1, offy=1)');
-@def RELEASE_WIDGET_HEADER_SHADOW_OPENED inset 0px 1px 0px 1px #e9e9e9, 0 2px 6px #e1e1e1;
-@def RELEASE_WIDGET_HEADER_SHADOW_CLOSED inset 0px 1px 0px 1px #dedede, 0 2px 6px #e1e1e1;
+@def RELEASE_WIDGET_HEADER_SHADOW_OPENED inset 0px 1px 0px 0px #e9e9e9, 0 2px 6px #e1e1e1;
+@def RELEASE_WIDGET_HEADER_SHADOW_CLOSED inset 0px 1px 0px 0px #dedede, 0 2px 6px #e1e1e1;
 
 /* //IMPORTANT SCOPE_WIDGET_BORDER's value is replicated on 'Application.css' at '.dragdrop-positioner' because of a workaround. */
 @def SCOPE_WIDGET_BORDER 1px solid #bebebe;
 
 .popupContainer {
-        color: COLOR_MENUBOX_TEXT;
-        background-color: COLOR_MENUBOX_BACKGROUND;
-        -webkit-box-shadow: POPUP_SHADOW;
-        -moz-box-shadow: POPUP_SHADOW;
-        box-shadow: POPUP_SHADOW;
-        border: POPUP_BORDER;
-        border-top: 0px;
+       color: COLOR_MENUBOX_TEXT;
+       background-color: COLOR_MENUBOX_BACKGROUND;
+       -webkit-box-shadow: POPUP_SHADOW;
+       -moz-box-shadow: POPUP_SHADOW;
+       box-shadow: POPUP_SHADOW;
+       border: POPUP_BORDER;
+       border-top: 0px;
 }
 
 .semiTransparentContainer {
@@ -144,6 +162,6 @@
     box-shadow: POPUP_SHADOW;
     border: POPUP_BORDER;
     
-    opacity: 0.7;
-    filter: literal('alpha(opacity=70)');
+    opacity: 0.8;
+    filter: literal('alpha(opacity=80)');
 }

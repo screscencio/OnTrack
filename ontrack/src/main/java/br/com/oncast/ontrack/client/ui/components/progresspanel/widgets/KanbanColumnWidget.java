@@ -4,10 +4,11 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.TextInputPopup.EditionHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -99,7 +100,7 @@ public class KanbanColumnWidget extends Composite {
 	@UiHandler("title")
 	protected void onDoubleClick(final DoubleClickEvent event) {
 		if (column.isStaticColumn()) return;
-		PopupConfig.configPopup().popup(new TextInputPopup("new Description", column.getDescription(), new EditionHandler() {
+		PopupConfig.configPopup().popup(new TextInputPopup("New Description", column.getDescription(), new EditionHandler() {
 			@Override
 			public boolean onEdition(final String text) {
 				final String trimmedText = text.trim();
@@ -107,7 +108,8 @@ public class KanbanColumnWidget extends Composite {
 				interactionHandler.onKanbanColumnRename(column, text);
 				return true;
 			}
-		})).alignBelow(title).alignRight(title).pop();
+		})).alignBelow(title).alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(title, HorizontalAlignment.CENTER))
+				.pop();
 	}
 
 	@UiHandler("deleteButton")
@@ -121,7 +123,7 @@ public class KanbanColumnWidget extends Composite {
 		return this;
 	}
 
-	public VerticalModelWidgetContainer<Scope, ScopeWidget> getScopeContainter() {
+	public KanbanScopeContainer getScopeContainter() {
 		return scopeContainer;
 	}
 
@@ -134,7 +136,6 @@ public class KanbanColumnWidget extends Composite {
 	}
 
 	public void setHighlight(final boolean shouldHighlight) {
-		if (shouldHighlight) highlightBlock.addStyleName(style.highlight());
-		else highlightBlock.removeStyleName(style.highlight());
+		highlightBlock.setStyleName(style.highlight(), shouldHighlight);
 	}
 }

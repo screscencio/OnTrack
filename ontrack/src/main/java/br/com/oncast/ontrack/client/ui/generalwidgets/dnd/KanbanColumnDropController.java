@@ -29,6 +29,12 @@ public class KanbanColumnDropController extends HorizontalPanelDropController im
 	}
 
 	@Override
+	public void onDrop(final DragContext context) {
+		clearPositioner(context);
+		super.onDrop(context);
+	}
+
+	@Override
 	public void onEnter(final DragContext context) {
 		clearPositioner(context);
 
@@ -56,6 +62,8 @@ public class KanbanColumnDropController extends HorizontalPanelDropController im
 	}
 
 	private void movePositionerToOriginalIndex() {
+		if (refPositioner == null) return;
+
 		refPositioner.removeFromParent();
 		dropTarget.insert(refPositioner, originalIndex);
 	}

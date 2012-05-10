@@ -6,7 +6,7 @@ import java.util.List;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.BreadcrumbWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
@@ -15,19 +15,20 @@ import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class PlanningActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private PlanningView view;
+	private HandlerRegistration scopeSelectionEventHandlerRegistration;
 
 	public PlanningActivity() {
 		activityActionExecutionListener = new ActivityActionExecutionListener();
@@ -39,48 +40,79 @@ public class PlanningActivity extends AbstractActivity {
 		view.setVisible(false);
 
 		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
-		final ProjectRepresentation currentProjectRepresentation = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent();
-		final long currentProjectId = currentProjectRepresentation.getId();
-		final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(currentProjectId);
+		final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getCurrentProjectContext();
 
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
 
 		view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
+		view.getApplicationMenu().setBackButtonVisibility(false);
+		view.getApplicationMenu().clearCustomMenuItems();
 
 		view.getScopeTree().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setActionExecutionRequestHandler(actionExecutionService);
+		view.getSearchBar().setActionExecutionRequestHandler(actionExecutionService);
 
 		view.getScopeTree().setContext(projectContext);
 		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
 
-		ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
-			@Override
-			public void onScopeSelectionRequest(final Scope scope) {
-				final Release release = scope.getRelease();
-				if (release == null) return;
-
-				view.ensureWidgetIsVisible(view.getReleasePanel().findWidgetAndSetContainerState(release, true));
-			}
-
-			@Override
-			public boolean mustIgnoreFromSource(final Object source) {
-				return source instanceof ScopeWidget;
-			}
-		});
-
-		updateBreadcrumb();
-
 		panel.setWidget(view);
+		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.getNotificationMenu());
 		ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
 		ShortcutService.register(view, this, PlanningShortcutMappings.values());
+
 		view.setVisible(true);
+		final Release firstReleaseInProgress = getFirstReleaseInProgress(projectContext);
+		if (firstReleaseInProgress != null) view.ensureWidgetIsVisible(view.getReleasePanel().getWidgetFor(firstReleaseInProgress));
 		view.getScopeTree().setFocus(true);
+
+		scopeSelectionEventHandlerRegistration = registerScopeSelectionEventHandler();
+		SERVICE_PROVIDER.getClientApplicationStateService().restore();
+		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
+	}
+
+	private Release getFirstReleaseInProgress(final ProjectContext context) {
+		return context.getProjectRelease().getFirstFutureRelease(new Release.Condition() {
+
+			@Override
+			public boolean eval(final Release release) {
+				return !release.isDone() && release.getEffortSum() > 0;
+			}
+		});
 	}
 
 	@Override
 	public void onStop() {
+		SERVICE_PROVIDER.getClientApplicationStateService().stopRecording();
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
+		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+		scopeSelectionEventHandlerRegistration.removeHandler();
+	}
+
+	private HandlerRegistration registerScopeSelectionEventHandler() {
+		return ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+			private ScopeWidget selectedScope;
+
+			@Override
+			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
+				if (selectedScope != null) selectedScope.setSelected(false);
+
+				final Scope scope = event.getTargetScope();
+				final Release release = scope.getRelease();
+				if (release == null) return;
+
+				final ReleaseWidget releaseWidget = view.getReleasePanel().getWidgetFor(release);
+
+				selectedScope = releaseWidget.getScopeContainer().getWidgetFor(scope);
+				selectedScope.setSelected(true);
+
+				if (event.getSource() instanceof ScopeWidget) return;
+
+				releaseWidget.setHierarchicalContainerState(true);
+				view.ensureWidgetIsVisible(selectedScope);
+			}
+
+		});
 	}
 
 	private List<ActionExecutionListener> getActionExecutionSuccessListeners(final PlanningView view) {
@@ -91,11 +123,6 @@ public class PlanningActivity extends AbstractActivity {
 	}
 
 	public void showSearchScope() {
-		view.getScopeTree().showSearchWidget();
-	}
-
-	private void updateBreadcrumb() {
-		final BreadcrumbWidget breadcrumb = view.getApplicationMenu().getBreadcrumb();
-		breadcrumb.clearItems();
+		view.getSearchBar().focus();
 	}
 }

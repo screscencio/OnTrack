@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectTestUtils {
@@ -73,10 +74,14 @@ public class ProjectTestUtils {
 		return new ProjectAuthorization(UserTestUtils.createUser(), createRepresentation());
 	}
 
-	public static List<ProjectAuthorization> createAuthorizations(final int numberOfAuthorizations) {
+	public static ProjectAuthorization createAuthorization(final User user) {
+		return new ProjectAuthorization(user, createRepresentation());
+	}
+
+	public static List<ProjectAuthorization> createAuthorizations(final int numberOfAuthorizations, final User user) {
 		final List<ProjectAuthorization> auths = new ArrayList<ProjectAuthorization>();
 		for (int i = 0; i < numberOfAuthorizations; i++) {
-			auths.add(createAuthorization());
+			auths.add(createAuthorization(user));
 		}
 		return auths;
 	}

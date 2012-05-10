@@ -1,15 +1,15 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_AT;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_2;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_3;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_4;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_5;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DELETE;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOLLAR;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_F2;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LEFT;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_PERCENT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_SHARP;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
@@ -21,7 +21,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Ins
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingUpInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
-import br.com.oncast.ontrack.client.ui.keyeventhandler.EventPostExecutionProcessor;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.EventProcessor;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
@@ -106,28 +106,28 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 		}
 	},
 
-	BIND_RELEASE(new Shortcut(KEY_AT).with(ShiftModifier.PRESSED)) {
+	BIND_RELEASE(new Shortcut(KEY_2).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new BindReleaseInternalAction(interactionHandler.getProjectContext(), scope));
 		}
 	},
 
-	BIND_PROGRESS(new Shortcut(KEY_PERCENT).with(ShiftModifier.PRESSED)) {
+	BIND_PROGRESS(new Shortcut(KEY_5).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareProgressInternalAction(interactionHandler.getProjectContext(), scope));
 		}
 	},
 
-	BIND_EFFORT(new Shortcut(KEY_SHARP).with(ShiftModifier.PRESSED)) {
+	BIND_EFFORT(new Shortcut(KEY_3).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareEffortInternalAction(scope, interactionHandler.getProjectContext()));
 		}
 	},
 
-	BIND_VALUE(new Shortcut(KEY_DOLLAR).with(ShiftModifier.PRESSED)) {
+	BIND_VALUE(new Shortcut(KEY_4).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareValueInternalAction(scope, interactionHandler.getProjectContext()));
@@ -156,8 +156,8 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	}
 
 	@Override
-	public EventPostExecutionProcessor getEventPostExecutionProcessor() {
-		return EventPostExecutionProcessor.CONSUME;
+	public EventProcessor getEventPostExecutionProcessor() {
+		return EventProcessor.CONSUME;
 	}
 
 }

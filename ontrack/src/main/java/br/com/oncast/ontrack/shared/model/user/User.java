@@ -19,10 +19,22 @@ public class User implements Serializable {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
+	@Column(name = "projectInvitationQuota", nullable = false)
+	private int projectInvitationQuota;
+
+	@Column(name = "projectCreationQuota", nullable = false)
+	private int projectCreationQuota;
+
 	public User() {}
 
-	public User(final String email) {
+	public User(final String email, final int projectInvitationQuota, final int projectCreationQuota) {
 		this.email = email;
+		this.projectCreationQuota = projectCreationQuota;
+		this.projectInvitationQuota = projectInvitationQuota;
+	}
+
+	public User(final String email) {
+		this(email, 0, 0);
 	}
 
 	public long getId() {
@@ -39,6 +51,22 @@ public class User implements Serializable {
 
 	public void setEmail(final String email) {
 		this.email = email;
+	}
+
+	public int getProjectInvitationQuota() {
+		return projectInvitationQuota;
+	}
+
+	public void setProjectInvitationQuota(final int projectInvitationQuota) {
+		this.projectInvitationQuota = projectInvitationQuota;
+	}
+
+	public int getProjectCreationQuota() {
+		return projectCreationQuota;
+	}
+
+	public void setProjectCreationQuota(final int projectCreationQuota) {
+		this.projectCreationQuota = projectCreationQuota;
 	}
 
 	@Override

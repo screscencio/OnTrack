@@ -3,8 +3,15 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:image field="draggableImage" src="bg-move-scope.png"/>
+	<ui:data field="draggableImage" src="../../move_scope.png"/>
+	<ui:image field="notStarted" src="not_started.png"/>
+	<ui:image field="notStartedHover" src="not_started_hover.png"/>
+	<ui:image field="underwork" src="underwork.png"/>
+	<ui:image field="done" src="done.png"/>
+
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget.ScopeWidgetStyle">
+	
+	    @url draggableImageUrl draggableImage;
 	
 		.panel {
 			position: relative;
@@ -19,14 +26,13 @@
 			
 		}
 		
-		.panelDone {
-			color: #ccc;
-		}
-		
 		.panel:hover {
 			background-color: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_CLOSED;
 		}
-
+		
+		.selected {
+			background-color: #ffe8b3;
+		}
 	    .internalPanel {
 	        position: relative;
 	        height: 100%;
@@ -41,10 +47,35 @@
 			cursor: move;
 			border-right: RELEASE_WIDGET_BORDER;
 			height: 100%;
+            width: 10px; 
 		}
 		
 		.draggableImage {
-			margin: 6px 2px 0px 2px;
+			position: absolute;
+			top: 5px;
+			bottom: 5px;
+			left: 2px;
+            width: 9px; 
+			
+			background-image: draggableImageUrl;
+            background-repeat: repeat-y;
+		}
+		
+		.progressIcon {
+			margin-right: 10px;
+			margin-top: 4px;
+		}
+		
+		@sprite .progressIconDone {
+			gwt-image: 'done';
+		}
+		
+		@sprite .progressIconUnderwork {
+			gwt-image: 'underwork';
+		}
+		
+		@sprite .progressIconNotStarted {
+			gwt-image: 'notStarted';
 		}
 		
 	</ui:style>
@@ -53,11 +84,14 @@
 	   <g:HorizontalPanel styleName="{style.internalPanel}" verticalAlignment="middle">
 	   		<g:cell width="1">
 				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
-					<g:Image resource="{draggableImage}" styleName="{style.draggableImage}"/>
+					<g:SimplePanel styleName="{style.draggableImage}"/>
 				</g:FocusPanel>
 	   		</g:cell>
 	   		<g:cell width="*">
 				<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
+	   		</g:cell>
+	   		<g:cell width="1">
+	   			<g:SimplePanel ui:field="progressIcon" styleName="{style.progressIconNotStarted} {style.progressIcon}"/>
 	   		</g:cell>
 		</g:HorizontalPanel>
 	</g:FocusPanel>

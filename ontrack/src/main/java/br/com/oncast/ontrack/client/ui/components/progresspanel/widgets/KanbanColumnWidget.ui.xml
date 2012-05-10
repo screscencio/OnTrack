@@ -5,35 +5,38 @@
 	xmlns:ow='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel.widgets'
 	>
 	
+	<ui:data src="delete_column.png" field="deleteColumnImg" />
+	<ui:data src="delete_column_hover.png" field="deleteColumnHoverImg" />
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget.KanbanColumnWidgetStyle">
 	
+	   @url deleteImgUrl deleteColumnImg;
+	   @url deleteHoverImgUrl deleteColumnHoverImg;
+	
 		.rootPanel {
+			height: 100%;
 			width: 250px;
-			height: 98%;
 		}
 
-		.addControlPanel {
-			z-index: 2;
-			position: relative;
-			width: 100%;
-		}
+        .createButton {
+			position: absolute;
+			right: -27px;
+			top: 10px;
+	
+            cursor: pointer;
+        }
 
 		.titlePanel {
 			position: relative;
-			
+	
 			height: 36px;
 			width: 214px;
-			margin-top: 10px;
-			margin-left:  auto;
-			margin-right: auto;
+			margin: 10px 0px;
 			vertical-align: middle;
 			
-			z-index: 1;
-			
             background: KANBAN_TITLE_BACKGROUND_COLOR;
-	        -webkit-box-shadow: POPUP_SHADOW;
-	        -moz-box-shadow: POPUP_SHADOW;
-	        box-shadow: POPUP_SHADOW;
+	        -webkit-box-shadow: KANBAN_TITLE_SHADOW;
+	        -moz-box-shadow: KANBAN_TITLE_SHADOW;
+	        box-shadow: KANBAN_TITLE_SHADOW;
             
             border: KANBAN_TITLE_BORDER;
             border-color: KANBAN_TITLE_BORDER_COLORS;
@@ -45,95 +48,75 @@
 		}
 		
         .titleLabel {
-        	position: absolute;
-        	top: 1px;
-        	right: 1px;
-        	left: 1px;
-        	bottom: 1px;
         	padding-top: 8px;
         	border-top: 1px solid #DEDEDE;
             text-align: center;
+            
         }
 		
 		.scopeContainer {
-            position: absolute;
-            top: 52px;
-            bottom: 1px;
-            right: 0px;
-            left: 20px;
-            display: block;
-            overflow: auto;
+			height: 100%;
+	
+            overflow-y: auto;
             overflow-x: hidden;
-            
-            z-index: 1;
         }
         
         .highlightBlock {
-        	top: 0px;
-        	right: 0px;
-        	left: 1px;
-        	bottom: 0px;
-        	overflow: hidden;
-        	z-index: 0;
+			height: 100%;
         }
         
-        .scopeContainer > tbody > tr > td, .scopeContainer > tr > td {
-        	width: 210px;
-        	position: relative;
-        }
-        
-		.columnControls {
-			position: absolute;
-			top : 0px;	
-			left : 0px;	
-			bottom : 0px;	
-			right : 0px;
-		}
-		
 		.draggable {
-			background: url("resources/image/releasePanel/draggable.png") repeat-y;
-			cursor: move;
-			
 			position: absolute;
 			top: 4px;
 			left: 4px;
 			bottom: 4px;
 			width: 8px;
+			
+			background: url("resources/image/releasePanel/draggable.png") repeat-y;
+			cursor: move;
+			
 		}
 		
 		.deleteButton {
 			position: absolute;
-			right: 4px;
-			top: 0px;
-			color: red;
+			top: 12px;
+			right: 5px;
+			width: 9px;
+			height: 9px;
+
 			cursor: pointer;
+			border: 1px solid transparent;
+			
+			background-image: deleteImgUrl;
+			background-repeat: no-repeat;
+			background-position: center;
 		}
 		
-		.createButton {
-			position: absolute;
-			right: -9px;
-			top: 8px;
-			cursor: pointer;
+		.deleteButton:hover {
+			background-image: deleteHoverImgUrl;
+			background-color: #efefef;
+            border: 1px solid #ededed;
 		}
 		
 		.highlight {
-			background-color: #FAFAFC;
+			background-color: #e5e5e5;
 		}
 		
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
-		<g:HTMLPanel>
-			<g:HTMLPanel ui:field="highlightBlock" styleName="{style.scopeContainer} {style.highlightBlock}" />
-			<g:HTMLPanel styleName="{style.addControlPanel}">
-				<ow:KanbanColumnCreateWidget ui:field="createColumn" styleName="{style.createButton}" />
-			</g:HTMLPanel>
-			<g:HTMLPanel styleName="{style.titlePanel}">
-				<g:Label ui:field="title" styleName="{style.titleLabel}"/>
-				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
-				<g:Label ui:field="deleteButton" styleName="{style.deleteButton}">x</g:Label>
-			</g:HTMLPanel>
-			<ow:KanbanScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}"/>
-		</g:HTMLPanel>
+		<g:VerticalPanel ui:field="highlightBlock" styleName="{style.highlightBlock}">
+			<g:cell height="1">
+				<g:HTMLPanel styleName="{style.titlePanel}">
+					<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
+					<g:Label ui:field="title" styleName="{style.titleLabel}"/>
+					<g:Label ui:field="deleteButton" styleName="{style.deleteButton}" />
+					<ow:KanbanColumnCreateWidget ui:field="createColumn" styleName="{style.createButton}" />
+				</g:HTMLPanel>
+			</g:cell>
+			<g:cell height="*" horizontalAlignment="center">
+				<ow:KanbanScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}"/>
+			</g:cell>
+		</g:VerticalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

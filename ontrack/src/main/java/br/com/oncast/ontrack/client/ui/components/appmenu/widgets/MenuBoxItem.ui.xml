@@ -7,16 +7,29 @@
 		border-top: POPUP_BORDER;
 		padding: 1px;
 	}
+	
 	.selected, .rootPanel:hover {
 		background-color: COLOR_MENUBOX_ITEM_SELECTED;
 		color: white;
 	}
+	
 	.label {
 		padding: 13px 15px;
+	}
+	
+	.icon {
+        margin: 13px 0px 13px 15px;
 	}
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
+	   <g:HorizontalPanel>
+	   <g:cell verticalAlignment="middle">
+	    <g:Image ui:field="icon" styleName="{style.icon}" />
+	   </g:cell>
+	   <g:cell verticalAlignment="middle" width="*">
 		<g:Label ui:field="label" styleName="{style.label}"/>
+	   </g:cell>
+	   </g:HorizontalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

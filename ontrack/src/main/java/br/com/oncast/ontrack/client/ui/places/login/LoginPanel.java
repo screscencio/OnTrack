@@ -1,19 +1,19 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
-import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedPasswordTextBox;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedTextBox;
+import br.com.oncast.ontrack.client.services.validation.EmailValidator;
+import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputContainer.ValidationHandler;
+import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LoginPanel extends Composite implements LoginView {
@@ -23,32 +23,49 @@ public class LoginPanel extends Composite implements LoginView {
 	interface LoginPanelUiBinder extends UiBinder<Widget, LoginPanel> {}
 
 	@UiField
-	protected PaddedTextBox emailArea;
+	protected ValidationInputContainer emailArea;
 
 	@UiField
-	protected Label messageLabel;
-
-	@UiField
-	protected PaddedPasswordTextBox passwordArea;
+	protected ValidationInputContainer passwordArea;
 
 	@UiField
 	protected Button loginButton;
 
 	private final Presenter presenter;
 
+	private boolean isEmailValid;
+
 	public LoginPanel(final LoginView.Presenter presenter) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.presenter = presenter;
+		emailArea.setHandler(new ValidationHandler() {
+			@Override
+			public boolean isValid(final String email) {
+				isEmailValid = !email.trim().isEmpty() && EmailValidator.isValid(email);
+				return isEmailValid;
+			}
+
+			@Override
+			public void onSubmit() {
+				doAuthenticate();
+			}
+		});
+
+		passwordArea.setHandler(new ValidationHandler() {
+			@Override
+			public boolean isValid(final String value) {
+				return true;
+			}
+
+			@Override
+			public void onSubmit() {
+				doAuthenticate();
+			}
+		});
 	}
 
 	@UiHandler("loginButton")
 	protected void onClick(final ClickEvent event) {
-		doAuthenticate();
-	}
-
-	@UiHandler("passwordArea")
-	protected void passwordAreaOnKeyUp(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() != KEY_ENTER) return;
 		doAuthenticate();
 	}
 
@@ -59,19 +76,24 @@ public class LoginPanel extends Composite implements LoginView {
 	}
 
 	@UiHandler("emailArea")
-	protected void emailAreaOnKeyUp(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() != KEY_ENTER) return;
-		doAuthenticate();
+	protected void onEmailTab(final KeyDownEvent event) {
+		if (event.getNativeKeyCode() != BrowserKeyCodes.KEY_TAB) return;
+
+		passwordArea.setFocus(true);
+		event.preventDefault();
 	}
 
-	@Override
-	public void setErrorMessage(final String message) {
-		messageLabel.setText(message);
-		messageLabel.setVisible(true);
+	@UiHandler("passwordArea")
+	protected void onPasswordTab(final KeyDownEvent event) {
+		if (event.getNativeKeyCode() != BrowserKeyCodes.KEY_TAB) return;
+
+		emailArea.setFocus(true);
+		event.preventDefault();
 	}
 
 	private void doAuthenticate() {
-		messageLabel.setVisible(false);
+		if (!isEmailValid) return;
+
 		presenter.onAuthenticationRequest(emailArea.getText(), passwordArea.getText());
 	}
 
@@ -87,5 +109,11 @@ public class LoginPanel extends Composite implements LoginView {
 		emailArea.setEnabled(true);
 		passwordArea.setEnabled(true);
 		loginButton.setEnabled(true);
+	}
+
+	@Override
+	public void onIncorrectCredentials() {
+		emailArea.update(false);
+		passwordArea.update(false);
 	}
 }

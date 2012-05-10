@@ -18,8 +18,8 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	@SuppressWarnings("rawtypes")
 	interface VerticalModelWidgetContainerUiBinder extends UiBinder<Widget, VerticalModelWidgetContainer> {}
 
-	@UiField
-	VerticalPanel verticalContainer;
+	@UiField(provided = true)
+	protected VerticalPanel verticalContainer;
 
 	private final Map<T, E> widgetMap;
 
@@ -31,8 +31,14 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		this.modelWidgetFactory = modelWidgetFactory;
 		this.listener = listener;
 		widgetMap = new HashMap<T, E>();
+		verticalContainer = createVerticalContainer();
 
 		initWidget(uiBinder.createAndBindUi(this));
+	}
+
+	// IMPORTANT this is protected to be able to override and provide any VerticalPanel.
+	protected VerticalPanel createVerticalContainer() {
+		return new VerticalPanel();
 	}
 
 	public boolean update(final List<T> modelBeanList) {

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -24,7 +26,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CommandMenu extends Composite implements HasCloseHandlers<CommandMenu> {
+public class CommandMenu extends Composite implements HasCloseHandlers<CommandMenu>, PopupAware {
 
 	private static CommandMenuUiBinder uiBinder = GWT.create(CommandMenuUiBinder.class);
 
@@ -38,7 +40,9 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 
 	private ItemSelectionHandler selectionHandler;
 
-	private final Map<MenuItem, CommandMenuItem> itensMap;
+	private final Map<MenuItem, CommandMenuItem> itemsMap;
+
+	private boolean hidden = false;
 
 	@UiFactory
 	protected MenuBar createMenuBar() {
@@ -47,7 +51,7 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 
 	public CommandMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
-		itensMap = new HashMap<MenuItem, CommandMenuItem>();
+		itemsMap = new HashMap<MenuItem, CommandMenuItem>();
 		menu.setAnimationEnabled(true);
 		menu.setAutoOpen(true);
 
@@ -64,22 +68,34 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 		menu.addStyleDependentName("largePadding");
 	}
 
-	public void setItens(final List<CommandMenuItem> items) {
+	public void setItems(final List<CommandMenuItem> items) {
 		menu.clearItems();
-		itensMap.clear();
+		itemsMap.clear();
 		for (final CommandMenuItem item : items) {
-			itensMap.put(item.getMenuItem(), item);
-			menu.addItem(item.getMenuItem());
+			addItem(item);
 		}
 	}
 
-	public void show() {
-		this.setVisible(true);
+	public void setItem(final CommandMenuItem item) {
+		menu.clearItems();
+		addItem(item);
 	}
 
+	private void addItem(final CommandMenuItem item) {
+		itemsMap.put(item.getMenuItem(), item);
+		menu.addItem(item.getMenuItem());
+	}
+
+	@Override
+	public void show() {
+		hidden = false;
+	}
+
+	@Override
 	public void hide() {
-		if (!this.isVisible()) return;
-		this.setVisible(false);
+		if (hidden) return;
+
+		hidden = true;
 		CloseEvent.fire(this, this);
 	}
 
@@ -87,21 +103,18 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 	protected void handleKeyUp(final KeyUpEvent event) {
 		if (event.getNativeKeyCode() != KEY_ESCAPE) return;
 
-		event.preventDefault();
 		event.stopPropagation();
 		hide();
 	}
 
 	@UiHandler("focusPanel")
 	protected void handleClick(final ClickEvent event) {
-		event.preventDefault();
 		event.stopPropagation();
 		hide();
 	}
 
 	@UiHandler("focusPanel")
 	protected void handleDoubleClick(final DoubleClickEvent event) {
-		event.preventDefault();
 		event.stopPropagation();
 		hide();
 	}
@@ -116,7 +129,7 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 	}
 
 	public CommandMenuItem getSelectedItem() {
-		return itensMap.get(menu.getSelectedItem());
+		return itemsMap.get(menu.getSelectedItem());
 	}
 
 	private void notifyItemSelectionHandler() {

@@ -42,7 +42,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-comet-1.2.3-patch.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/RequestDispatch-0.9.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-test-utils-0.34.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/dsn.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/imap.jar"/>
@@ -51,5 +50,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smtp.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/velocity-1.7.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/gwt-test-utils-0.38.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

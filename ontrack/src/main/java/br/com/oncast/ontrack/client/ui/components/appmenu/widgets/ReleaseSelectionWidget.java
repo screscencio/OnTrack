@@ -43,27 +43,18 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 
 	@UiFactory
 	protected FiltrableCommandMenu createReleaseSelectionCommandMenu() {
-		return new FiltrableCommandMenu(null, 700, 400);
+		return new FiltrableCommandMenu(null, 400, 215);
 	}
 
 	public ReleaseSelectionWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
-		registerCloseHandler();
-	}
-
-	private void registerCloseHandler() {
-		releaseSelectionMenu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
-			@Override
-			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
-				hide();
-			}
-		});
+		updateReleaseMenuItens(getReleases());
 	}
 
 	private void updateReleaseMenuItens(final Set<Release> releases) {
-		releaseSelectionMenu.setItens(buildUpdateProjectCommandMenuItemList(releases));
+		releaseSelectionMenu.setItems(buildUpdateProjectCommandMenuItemList(releases));
 	}
 
 	private List<CommandMenuItem> buildUpdateProjectCommandMenuItemList(final Set<Release> releases) {
@@ -90,16 +81,13 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 
 	@Override
 	public HandlerRegistration addCloseHandler(final CloseHandler<ReleaseSelectionWidget> handler) {
-		return addHandler(handler, CloseEvent.getType());
+		return releaseSelectionMenu.addHandler(handler, CloseEvent.getType());
 	}
 
 	@Override
 	public void show() {
 		updateReleaseMenuItens(getReleases());
-		rootPanel.setVisible(true);
 		releaseSelectionMenu.show();
-		releaseSelectionMenu.selectFirstItem();
-		releaseSelectionMenu.focus();
 	}
 
 	private Set<Release> getReleases() {
@@ -108,9 +96,7 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 
 	@Override
 	public void hide() {
-		rootPanel.setVisible(false);
 		releaseSelectionMenu.hide();
-		CloseEvent.fire(this, this);
 	}
 
 	public void focus() {

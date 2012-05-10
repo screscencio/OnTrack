@@ -37,6 +37,9 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 	FocusPanel rootPanel;
 
 	@UiField
+	HTMLPanel container;
+
+	@UiField
 	HTMLPanel content;
 
 	@UiField
@@ -49,6 +52,11 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 	// IMPORTANT needed to put setAdd... in method name to use it correctly on ui.xml files
 	public void setAddBackgroundStyleNames(final String styleNames) {
 		background.addStyleName(styleNames);
+	}
+
+	// IMPORTANT needed to put setAdd... in method name to use it correctly on ui.xml files
+	public void setAddContainerStyleNames(final String styleNames) {
+		container.addStyleName(styleNames);
 	}
 
 	@Override
@@ -81,8 +89,12 @@ public class ApplicationPopupBoxContainer extends Composite implements HasWidget
 		return rootPanel.addKeyUpHandler(handler);
 	}
 
-	public void setPaddingEnabled(final boolean padding) {
-		this.setStyleName(style.boxPadding(), padding);
+	public void setPaddingEnabled(final String paddingEnabled) {
+		setPaddingEnabled(Boolean.valueOf(paddingEnabled));
+	}
+
+	public void setPaddingEnabled(final boolean paddingEnabled) {
+		container.setStyleName(style.boxPadding(), paddingEnabled);
 	}
 
 	@Override

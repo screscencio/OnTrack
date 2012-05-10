@@ -45,9 +45,12 @@ import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class UserActionTestUtils {
 
-	private static final int DEFAULT_PROJECT_ID = 1;
-	private static final String DEFAULT_PROJECT_NAME = "Default project";
+	public static final int DEFAULT_USER_ID = Integer.MAX_VALUE;
+	public static final int DEFAULT_PROJECT_ID = 1;
+	public static final String DEFAULT_PROJECT_NAME = "Default project";
 
+	private static long actionCount = 0;
+	private static long userId = DEFAULT_USER_ID;
 	private static long projectId = DEFAULT_PROJECT_ID;
 	private static String projectName = DEFAULT_PROJECT_NAME;
 
@@ -73,10 +76,10 @@ public class UserActionTestUtils {
 	}
 
 	public static List<UserAction> createCompleteUserActionList(final int projectId) throws Exception {
-		UserActionTestUtils.projectId = projectId;
+		setProjectId(projectId);
 		final List<UserAction> actionList = createCompleteUserActionList();
 
-		resetProjectId();
+		resetProperties();
 		return actionList;
 	}
 
@@ -137,12 +140,8 @@ public class UserActionTestUtils {
 		final List<UserAction> actionList = createCompleteUserActionList(projectId);
 		shuffle(actionList);
 
-		resetProjectName();
+		resetProperties();
 		return actionList;
-	}
-
-	private static void setProjectName(final String projectName) {
-		UserActionTestUtils.projectName = projectName;
 	}
 
 	private static void shuffle(final List<UserAction> actionList) {
@@ -305,18 +304,37 @@ public class UserActionTestUtils {
 	public static UserAction createUserAction(final ModelAction action) throws Exception {
 		final UserAction userAction = new UserAction();
 		set(userAction, "projectRepresentation", ProjectTestUtils.createRepresentation(projectId, projectName));
-		set(userAction, "id", 1);
+		set(userAction, "id", ++actionCount);
+		set(userAction, "userId", userId);
 		// Generate a different time stamp so it is like an id, so time stamp equality is like action equality.
 		set(userAction, "timestamp", new Date(new Random().nextInt(1000000)));
 		return set(userAction, "action", action);
 	}
 
-	private static void resetProjectId() {
-		UserActionTestUtils.projectId = DEFAULT_PROJECT_ID;
+	private static void setProjectName(final String projectName) {
+		UserActionTestUtils.projectName = projectName;
 	}
 
-	private static void resetProjectName() {
+	private static void setProjectId(final long projectId) {
+		UserActionTestUtils.projectId = projectId;
+	}
+
+	private static void setUserId(final long userId) {
+		UserActionTestUtils.userId = userId;
+	}
+
+	private static void resetProperties() {
+		UserActionTestUtils.projectId = DEFAULT_PROJECT_ID;
 		UserActionTestUtils.projectName = DEFAULT_PROJECT_NAME;
+		UserActionTestUtils.userId = DEFAULT_USER_ID;
+	}
+
+	public static List<UserAction> createRandomUserActionList(final long projectId, final long userId) throws Exception {
+		setProjectId(projectId);
+		setUserId(userId);
+		final List<UserAction> actions = createRandomUserActionList();
+		resetProperties();
+		return actions;
 	}
 
 }

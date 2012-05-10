@@ -4,12 +4,15 @@
 	xmlns:cp='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
 
 	<ui:style>
+		
 		.releaseSelectionMenu {
-			position: absolute;
-			top: 33px;
-			left: 0px;
-			min-width:100px;
+			min-width: 200px;
+			height: 250px;
 			z-index: 2;
+			border-top: none;
+		}
+		.releaseSelectionMenu table:first-child {
+			border-top: none;
 		}
 	</ui:style>
 

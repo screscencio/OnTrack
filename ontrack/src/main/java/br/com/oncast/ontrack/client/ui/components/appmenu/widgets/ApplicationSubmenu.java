@@ -62,14 +62,11 @@ public class ApplicationSubmenu extends Composite implements HasCloseHandlers<Ap
 	}
 
 	@Override
-	public void show() {
-		this.setVisible(true);
-	}
+	public void show() {}
 
 	@Override
 	public void hide() {
 		if (!this.isVisible()) return;
-		this.setVisible(false);
 		CloseEvent.fire(this, this);
 	}
 

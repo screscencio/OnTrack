@@ -4,8 +4,8 @@ import java.text.DecimalFormat;
 
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 
-import com.octo.gwt.test.patchers.PatchClass;
-import com.octo.gwt.test.patchers.PatchMethod;
+import com.googlecode.gwt.test.patchers.PatchClass;
+import com.googlecode.gwt.test.patchers.PatchMethod;
 
 @PatchClass(ClientDecimalFormat.class)
 public class ClientDecimalFormatPatcher {

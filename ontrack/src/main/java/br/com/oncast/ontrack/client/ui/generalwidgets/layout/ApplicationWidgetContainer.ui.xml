@@ -14,26 +14,6 @@
 			font-family: FONT_DEFAULT;            
             text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
         }
-        .explanatoryLabel {
-			position: absolute;
-			top: 120px;
-			left: 0px;
-			right: 0px;
-
-            height: 35px;
-            max-width: 100%;
-			 
-            text-align: center;
-            font-size: 24pt;
-            
-            color: gray;
-            cursor: default;
-            user-select: none;
-            -moz-user-select: none;
-            -khtml-user-select: none;
-            -webkit-user-select: none;
-            -o-user-select: none;
-        }
         
         .positioningPanel {
             position: absolute;
@@ -48,6 +28,27 @@
 			background-position: center center;
 		}
         
+        .explanatoryLabel {
+            position: relative;
+            top: 70px;
+            left: 0px;
+            right: 0px;
+
+            height: 35px;
+            max-width: 100%;
+             
+            text-align: center;
+            font-size: 14pt;
+            
+            color: gray;
+            cursor: default;
+            user-select: none;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -o-user-select: none;
+        }
+        
         .contentPanel {
             position: relative;
             min-width: 100px;
@@ -61,10 +62,10 @@
     </ui:style>
 
     <g:HTMLPanel styleName="{style.rootPanel}">
-        <g:Label ui:field="messageLabel" styleName="{style.explanatoryLabel}" />
         <g:HTMLPanel styleName="{style.positioningPanel}">
         	<g:SimplePanel ui:field="logoImage" styleName="{style.logoImage}"/>
             <g:FlowPanel ui:field="widgetContainer" styleName="{style.contentPanel}" />
+            <g:Label ui:field="messageLabel" styleName="{style.explanatoryLabel}" />
         </g:HTMLPanel>
     </g:HTMLPanel>
 

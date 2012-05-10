@@ -8,6 +8,8 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseUpdatePriorityActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -17,7 +19,7 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
-public class ReleaseUpdatePriorityActionTest {
+public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 
 	private ProjectContext context;
 	private Scope rootScope;
@@ -158,5 +160,15 @@ public class ReleaseUpdatePriorityActionTest {
 			assertEquals(1, rootRelease.getChildIndex(release));
 			assertEquals(rootRelease.getChild(1), release);
 		}
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ReleaseUpdatePriorityActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ReleaseUpdatePriorityAction.class;
 	}
 }

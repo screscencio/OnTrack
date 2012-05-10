@@ -35,4 +35,9 @@ public class ProgressPanel extends Composite implements ProgressView {
 	public KanbanWigetDisplay getKanbanPanel() {
 		return kanbanPanel;
 	}
+
+	@Override
+	public Widget getNotificationPanel() {
+		return rootPanel.getContentPanelWidget();
+	}
 }

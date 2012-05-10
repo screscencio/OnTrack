@@ -15,4 +15,12 @@ public interface AuthenticationService {
 	void unregisterUserAuthenticatedListener(UserAuthenticationListener listener);
 
 	User getCurrentUser();
+
+	void loadCurrentUserInformation(UserInformationLoadCallback userInformationLoadCallback);
+
+	void registerAuthenticationExceptionGlobalHandler();
+
+	boolean isUserAvailable();
+
+	void onUserLogout();
 }

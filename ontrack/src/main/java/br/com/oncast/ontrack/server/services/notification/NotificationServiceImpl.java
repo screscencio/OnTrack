@@ -8,8 +8,10 @@ import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionList
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
@@ -59,7 +61,15 @@ public class NotificationServiceImpl implements NotificationService {
 		LOGGER.debug("Multicasting " + ProjectRepresentation.class.getSimpleName() + " with name '" + projectRepresentation.getName()
 				+ "' to '" + connectionSet.toArray().toString() + "'.");
 		serverPushServerService.pushEvent(new ProjectCreatedEvent(projectRepresentation), connectionSet);
+	}
 
+	@Override
+	public void notifyUserInformationChange(final User authenticatedUser) {
+		final Set<UUID> connectionSet = clientManager.getClientsOfUser(authenticatedUser.getId());
+
+		LOGGER.debug("Multicasting " + User.class.getSimpleName() + " of '" + authenticatedUser.getEmail()
+				+ "' to '" + connectionSet.toArray().toString() + "'.");
+		serverPushServerService.pushEvent(new UserInformationChangeEvent(authenticatedUser), connectionSet);
 	}
 
 }

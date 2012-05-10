@@ -95,12 +95,14 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		scopeItemCacheMap.put(scopeItem.getReferencedScope(), scopeItem);
 	}
 
+	// TODO+++ improve performance
 	@Override
 	public void removeItem(final TreeItem item) {
 		super.removeItem(item);
 		scopeItemCacheMap.remove(((ScopeTreeItem) item).getReferencedScope());
 	}
 
+	// TODO+++ improve performance
 	private void assureChildrenWasAdded() {
 		final List<Scope> children = this.getReferencedScope().getChildren();
 		for (int i = 0; i < children.size(); i++) {

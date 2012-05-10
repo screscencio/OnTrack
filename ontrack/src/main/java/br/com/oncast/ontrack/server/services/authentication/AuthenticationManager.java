@@ -76,13 +76,14 @@ public class AuthenticationManager {
 		return false;
 	}
 
-	public void createNewUser(final String email, final String password) {
+	public User createNewUser(final String email, final String password, final int projectInvitationQuota, final int projectCreationQuota) {
 		final String formattedUserEmail = formatUserEmail(email);
 
 		try {
-			final User user = new User(formattedUserEmail);
+			final User user = new User(formattedUserEmail, projectInvitationQuota, projectCreationQuota);
 			final User newUser = persistenceService.persistOrUpdateUser(user);
 			createPasswordForUser(newUser, password);
+			return newUser;
 		}
 		catch (final PersistenceException e) {
 			final String message = "Could not create a new user with e-mail '" + formattedUserEmail + "'";
@@ -126,7 +127,7 @@ public class AuthenticationManager {
 		authenticationListeners.remove(authenticationListener);
 	}
 
-	private User findUserByEmail(final String email) throws UserNotFoundException {
+	public User findUserByEmail(final String email) throws UserNotFoundException {
 		User user;
 
 		try {

@@ -24,8 +24,11 @@ public class ScopeSelectionEvent extends GwtEvent<ScopeSelectionEventHandler> {
 
 	@Override
 	protected void dispatch(final ScopeSelectionEventHandler handler) {
-		if (getSource() != null && handler.mustIgnoreFromSource(getSource())) return;
-		handler.onScopeSelectionRequest(scope);
+		handler.onScopeSelectionRequest(this);
+	}
+
+	public Scope getTargetScope() {
+		return scope;
 	}
 
 }

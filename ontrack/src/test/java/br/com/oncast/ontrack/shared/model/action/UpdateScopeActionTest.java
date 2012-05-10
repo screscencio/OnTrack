@@ -45,4 +45,5 @@ public class UpdateScopeActionTest {
 		rollbackAction.execute(context);
 		assertEquals("root", rootScope.getDescription());
 	}
+
 }

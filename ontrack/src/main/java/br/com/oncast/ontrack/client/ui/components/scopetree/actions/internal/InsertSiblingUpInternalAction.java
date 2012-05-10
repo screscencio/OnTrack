@@ -20,7 +20,7 @@ public class InsertSiblingUpInternalAction implements TwoStepInternalAction {
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		treeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
-		if (treeItem.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for a root node.");
+		if (treeItem.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for the root node.");
 		newTreeItem = new ScopeTreeItem(new Scope(""));
 
 		final ScopeTreeItem parentItem = treeItem.getParentItem();

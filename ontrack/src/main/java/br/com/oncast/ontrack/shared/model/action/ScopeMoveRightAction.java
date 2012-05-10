@@ -57,11 +57,11 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move the root node.");
 
 		final Scope parent = selectedScope.getParent();
 		if (isFirstNode(parent.getChildIndex(selectedScope))) throw new UnableToCompleteActionException(
-				"The action cannot be processed because there is no node where this node could be moved into.");
+				"It's not possible to move right the first node");
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 

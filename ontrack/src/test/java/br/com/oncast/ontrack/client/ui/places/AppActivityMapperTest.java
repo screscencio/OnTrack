@@ -18,13 +18,14 @@ import org.mockito.stubbing.Answer;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
-import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
+import br.com.oncast.ontrack.client.ui.places.loading.ContextLoadingActivity;
+import br.com.oncast.ontrack.client.ui.places.loading.UserInformationLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
-import com.octo.gwt.test.GwtTest;
+import com.googlecode.gwt.test.GwtTest;
 
 public class AppActivityMapperTest extends GwtTest {
 
@@ -42,8 +43,8 @@ public class AppActivityMapperTest extends GwtTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-
 		when(clientServiceProvider.getAuthenticationService()).thenReturn(authenticationService);
+		when(authenticationService.isUserAvailable()).thenReturn(true);
 		when(clientServiceProvider.getContextProviderService()).thenReturn(contextProvider);
 		when(contextProvider.isContextAvailable(PROJECT_ID)).thenAnswer(new Answer<Boolean>() {
 
@@ -118,6 +119,12 @@ public class AppActivityMapperTest extends GwtTest {
 		when(projectDependentPlace.getRequestedProjectId()).thenReturn(1L);
 
 		assertTrue(appActivityMapper.getActivity(projectDependentPlace) instanceof ContextLoadingActivity);
+	}
+
+	@Test
+	public void userDataShouldBeLoadedIfNotPresentWhenAnotherPlaceIsRequested() {
+		when(authenticationService.isUserAvailable()).thenReturn(false);
+		assertTrue(appActivityMapper.getActivity(new ProjectSelectionPlace()) instanceof UserInformationLoadingActivity);
 	}
 
 	@Override

@@ -8,13 +8,15 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveRightActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class ScopeMoveRightActionTest {
+public class ScopeMoveRightActionTest extends ModelActionTest {
 
 	private Scope rootScope;
 	private Scope firstChild;
@@ -99,5 +101,15 @@ public class ScopeMoveRightActionTest {
 			assertEquals(firstChild, rootScope.getChildren().get(0));
 			assertEquals(lastChild, firstChild.getChildren().get(0));
 		}
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ScopeMoveRightActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ScopeMoveRightAction.class;
 	}
 }

@@ -1,7 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout">
 
 
@@ -19,14 +18,6 @@
 			font-family: FONT_DEFAULT_ITALIC;
 		}
 		
-		.errorLabel {
-			width: 100%;
-			margin-top: 20px;
-
-			text-align: center;
-			color: #cc3c29;
-		}
-		
 		.separator {
 			margin-top: 20px;
 		}
@@ -36,14 +27,16 @@
 	<layout:ApplicationWidgetContainer debugId="loginPlace">
 		<g:HTMLPanel styleName="{style.contentPanel}">
 			<g:Label text="Username" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
-			<misc:PaddedTextBox debugId="emailInput" ui:field="emailArea"/>
+			<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea">
+				<g:TextBox/>
+			</layout:ValidationInputContainer>
 			
 			<div class="{style.separator}" />
 			
 			<g:Label text="Password" ui:field="passwordLabel" styleName="{style.descriptionLabel}" />
-			<misc:PaddedPasswordTextBox debugId="passwordInput" ui:field="passwordArea" />
-			
-			<g:Label debugId="messageOutput" ui:field="messageLabel" styleName="{style.errorLabel}" visible="false" />
+			<layout:ValidationInputContainer debugId="passwordInput" ui:field="passwordArea">
+				<g:PasswordTextBox/>
+			</layout:ValidationInputContainer>
 			
 			<div class="{style.separator}" />
 			<g:Button debugId="submitButton" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />

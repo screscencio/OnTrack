@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -14,7 +16,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class ScopeInsertParentActionTest {
+public class ScopeInsertParentActionTest extends ModelActionTest {
 
 	private Scope rootScope;
 	private Scope childScope;
@@ -92,5 +94,15 @@ public class ScopeInsertParentActionTest {
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
 		assertFalse(release.getScopeList().contains(insertedParent));
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ScopeInsertParentActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ScopeInsertParentAction.class;
 	}
 }

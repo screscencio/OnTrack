@@ -8,7 +8,12 @@
 	<ui:image field="exportData" src="exportproject.png" />
 	<ui:style src="../../../style/default.css">
 
-        .title {
+        .rootPanel {
+			width: WIDTH_DEFAULT_POPUP;
+        }
+        
+        .container {
+			padding-bottom: 0px;
         }
         
 		@sprite .exportDataImg {
@@ -22,9 +27,25 @@
             text-decoration: none;
             font-weight: 500;
 		}
+		
+		.countdownLabel {
+            margin-bottom: -5px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .customSeparatorMargin {
+        	margin: 10px -15px;
+        	margin-top: 16px;
+        }
+        
+        .switchProjectLabel {
+			margin-bottom: 10px;
+        }
+		
 	</ui:style>
 
-	<layout:ApplicationPopupBoxContainer ui:field="menu">
+	<layout:ApplicationPopupBoxContainer ui:field="menu" styleName="{style.rootPanel}" addContainerStyleNames="{style.container}">
 		<g:Anchor ui:field="exportMapLink" target="_blank" styleName="{style.exportToMapLink}" href="#">
 		    <table width="100%">
 		        <tr>
@@ -36,8 +57,7 @@
 		    </table>
            </g:Anchor>
 		<misc:Separator/>
-		<g:Label text="Switch project" styleName="{style.title}" />
-		<misc:DefaultTextedTextBox ui:field="projectFilterTextBox" defaultText="Type to Filter" defaultTextAlign="right"/>
-			<menuWidget:MenuBox ui:field="results"/>
+		<g:Label text="Switch project" styleName="{style.switchProjectLabel}"/>
+		<misc:ProjectSelectionWidget ui:field="projectSelectionWidget"/>
 	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 

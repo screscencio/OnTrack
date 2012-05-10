@@ -30,14 +30,15 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			public void onUnexpectedFailure(final Throwable caught) {
 				// TODO Improve feedback message.
 				view.enable();
-				view.setErrorMessage("Unexpected error.");
+				SERVICE_PROVIDER.getClientNotificationService().showError("Unexpected error.");
 			}
 
 			@Override
 			public void onIncorrectCredentialsFailure() {
 				// TODO Improve feedback message.
 				view.enable();
-				view.setErrorMessage("Incorrect user or password.");
+				view.onIncorrectCredentials();
+				SERVICE_PROVIDER.getClientNotificationService().showError("Incorrect user or password.");
 			}
 		};
 	}
@@ -45,24 +46,17 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		panel.setWidget(view.asWidget());
+		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
 	}
 
 	@Override
-	public void onStop() {}
+	public void onStop() {
+		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+	}
 
 	@Override
 	public void onAuthenticationRequest(final String username, final String password) {
-		if (!isValidEmail(username)) {
-			view.setErrorMessage("Please provide a valid e-mail.");
-			return;
-		}
-
 		view.disable();
 		SERVICE_PROVIDER.getAuthenticationService().authenticate(username, password, authenticationCallback);
-	}
-
-	private boolean isValidEmail(final String email) {
-		if (email.trim().equals("")) return false;
-		return true;
 	}
 }

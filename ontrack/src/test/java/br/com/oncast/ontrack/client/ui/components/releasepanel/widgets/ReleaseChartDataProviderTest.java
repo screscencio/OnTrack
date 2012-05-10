@@ -15,6 +15,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -34,6 +36,7 @@ public class ReleaseChartDataProviderTest {
 	private WorkingDay estimatedEndDay;
 	private WorkingDay estimatedStartDay;
 	private Float releaseEffortSum;
+	private ActionExecutionService actionExecutionServiceMock;
 	private static List<Scope> releaseScopes;
 
 	@Before
@@ -47,6 +50,8 @@ public class ReleaseChartDataProviderTest {
 		estimatedStartDay = WorkingDayFactory.create();
 		estimatedEndDay = WorkingDayFactory.create().add(5);
 		setupEstimatorMock();
+
+		actionExecutionServiceMock = Mockito.mock(ActionExecutionService.class);
 	}
 
 	@After
@@ -218,11 +223,17 @@ public class ReleaseChartDataProviderTest {
 				return releaseScopes;
 			}
 		});
-		Mockito.when(releaseMock.getEndDay()).thenCallRealMethod();
+		Mockito.when(releaseMock.getInferedEndDay()).thenCallRealMethod();
+		Mockito.when(releaseMock.getEndDay()).thenAnswer(new Answer<WorkingDay>() {
+			@Override
+			public WorkingDay answer(final InvocationOnMock invocation) throws Throwable {
+				return releaseMock.getInferedEndDay();
+			}
+		});
 	}
 
 	private ReleaseChartDataProvider getProvider() {
-		return new ReleaseChartDataProvider(releaseMock, estimatorMock);
+		return new ReleaseChartDataProvider(releaseMock, estimatorMock, actionExecutionServiceMock);
 	}
 
 	private static class Accomplish {

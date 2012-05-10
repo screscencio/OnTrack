@@ -4,10 +4,11 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class BasicMaskPanel {
+public class BasicMaskPanel implements IsWidget {
 
 	private final FocusPanel maskPanel;
 	private HideHandler hideHandler;
@@ -53,6 +54,11 @@ public class BasicMaskPanel {
 
 	public void add(final Widget widget) {
 		maskPanel.add(widget);
+	}
+
+	@Override
+	public Widget asWidget() {
+		return maskPanel;
 	}
 
 }

@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 
-@Entity(name = "KanbanCreateColumn")
+@Entity(name = "KanbanColumnCreate")
 @ConvertTo(KanbanColumnCreateAction.class)
 public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 
@@ -26,11 +26,11 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 	private String referenceId;
 
 	@ConversionAlias("columnDescription")
-	@Column(name = ActionTableColumns.STRING_2, length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = ActionTableColumns.STRING_2_LENGTH)
 	private String columnDescription;
 
 	@ConversionAlias("shouldFixKanban")
-	@Column(name = ActionTableColumns.BOOLEAN)
+	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean shouldFixKanban;
 
 	@ConversionAlias("subActions")
@@ -40,7 +40,7 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 	private List<ModelActionEntity> subActions;
 
 	@ConversionAlias("columnIndex")
-	@Column(name = ActionTableColumns.INTEGER)
+	@Column(name = ActionTableColumns.INT_1)
 	private int columnIndex;
 
 	public int getColumnIndex() {

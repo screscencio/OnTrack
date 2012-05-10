@@ -8,7 +8,8 @@
 	<ui:style src="../style/default.css">
 	
 		.rootPanel {
-			width: 100%;
+			width: auto;
+			margin: -1px;
 		}
 		.background {
 			border: none;
@@ -17,6 +18,12 @@
 		
 		.container {
 			background-color: white;
+			
+			user-select: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
 		}
 		
 		@sprite .searchIcon {
@@ -32,17 +39,16 @@
 		
 		.filterArea {
 			width: 100%;
+			
+			margin: 0px;
+			padding: 0px;
+			
 			border: none;
 			background: transparent;
 			
-			font-family: FONT_DEFAULT_ITALIC;
-			font-size: FONT_SIZE_SMALL;
-			color: TEXTINPUT_COLOR;
-		}
-		
-		.scrollpanel {
-			min-width: 100px;
-			overflow-x: auto; 
+			font-family: inherit;
+			font-size: inherit;
+			color: inherit;
 		}
 		
 		.menu {
@@ -56,17 +62,19 @@
 			position: absolute;
 			cursor: default;
 			
-			bottom: 3px;
-			right: 10px;
+			bottom: 0px;
+			right: 0px;
 		    font-size: FONT_SIZE_SMALL;
 		    color: COLOR_GRAY_LIGHT;
+		    
+		    display: inline;
 		}
 		
 	</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel">
 		<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.background}" paddingEnabled="false">
-			<g:HorizontalPanel styleName="{style.textBoxDecoration} {style.container}" >
+			<g:HorizontalPanel styleName="{style.textBoxDecoration} {style.container}" verticalAlignment="middle">
 				<g:cell width="1">
 					<g:SimplePanel styleName="{style.searchIcon}"/>
 				</g:cell>
@@ -77,7 +85,7 @@
 					</g:HTMLPanel>
 				</g:cell>
 			</g:HorizontalPanel>
-			<g:ScrollPanel ui:field="scrollPanel" styleName="{style.scrollpanel}">
+			<g:ScrollPanel ui:field="scrollPanel">
 				<misc:CommandMenu ui:field="menu" styleName="{style.menu}" />
 			</g:ScrollPanel>
 		</layout:ApplicationPopupBoxContainer>

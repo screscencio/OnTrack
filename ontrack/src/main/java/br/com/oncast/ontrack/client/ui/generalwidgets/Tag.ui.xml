@@ -3,70 +3,73 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
+	<ui:image field="close" src="close-release.png"></ui:image>
+	<ui:image field="leftBg" src="tag-release.png"></ui:image>
 	<ui:style>
 		.tag {
-			display: inline-table;
-			margin-right: 4px;
-			margin-top: 3px;
-
+			width: 100%;
+			height: 13px;
+			
 			border-collapse: collapse;
 			vertical-align: top;
+			
+			font-size: 11px;
+			color: #b5955c;
+		}
+		
+		.container {
+			width: 100%;
+			height: 13px;
+			position: relative;
 		}
 
         .tagLabel {
-            padding-left: 4px;
-            padding-right: 6px;
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
+			left: 0px;
+	
+            padding-left: 6px;
+            padding-right: 2px;
+            
+			border-top: 1px solid #f7c559;
+			border-bottom: 1px solid #f7c559;
+			background-color: #fada9b;
+			
+			text-align: justify;
         }
 
-        .separator {
-            width: 1px;
-        }
-		
-		.closeLabel {
-			padding: 1px 4px;
-		}
-		
-		.clickable:hover {
-			background: #777;
+		@sprite .closeLabel {
+			gwt-image: 'close';
+			background-position: center;
+
 			cursor: pointer;
-		}
 
-		.bgColor {
-			padding-bottom: 1px;
+			height: 11px;
+			width: 11px;
 
-			font: 9px verdana, arial, sans-serif;
-			background-color: #555;
-			color: #FFE3E3;
-		}
+			background-color: #fada9b;
 
-		.roundedLeft {
-			-moz-border-radius-bottomleft: 3px 3px;
-			border-bottom-left-radius: 3px 3px;
-			-moz-border-radius-topleft: 3px 3px;
-			border-bottom-top-radius: 3px 3px;
+			border: 1px solid #f7c559;
+			border-left: none;
 		}
-
-		.roundedRight {
-			-moz-border-radius-bottomright: 3px 3px;
-			border-bottom-right-radius: 3px 3px;
-			-moz-border-radius-topright: 3px 3px;
-			border-top-right-radius: 3px 3px;
-		}
+		
 	</ui:style>
 	
-	<g:HTMLPanel>
-		<table cellpadding="0" class="{style.tag}">
-			<tbody>
-				<tr>
-					<td class="{style.bgColor} {style.roundedLeft}">
-						<t:FastLabel styleName="{style.tagLabel}" ui:field="tagLabel" />
-					</td>
-					<td style="background-color: #ffe3e3" class="{style.separator}"></td>
-					<td class="{style.bgColor} {style.roundedRight} {style.clickable}">
-						<g:Label styleName="{style.closeLabel}" ui:field="closeLabel" text="X" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</g:HTMLPanel>
+	<g:FocusPanel>
+		<g:HorizontalPanel styleName="{style.tag}">
+			<g:cell width="1">
+				<g:Image resource="{leftBg}"/>
+			</g:cell>
+			<g:cell width="*">
+				<g:SimplePanel styleName="{style.container}">
+					<t:FastLabel styleName="{style.tagLabel} v-ellip" ui:field="tagLabel" />
+				</g:SimplePanel>
+			</g:cell>
+			<g:cell width="1">
+				<g:FocusPanel ui:field="closeLabel" styleName="{style.closeLabel}"/>
+			</g:cell>
+		</g:HorizontalPanel>
+	</g:FocusPanel>
 </ui:UiBinder> 

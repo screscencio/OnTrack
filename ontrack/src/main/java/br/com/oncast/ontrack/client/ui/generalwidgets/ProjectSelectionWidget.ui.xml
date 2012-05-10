@@ -30,7 +30,7 @@
         <g:SimplePanel ui:field="loadingPanel" styleName="{style.loadingIndicatorPanel}" >
         	<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
         </g:SimplePanel>
-    	<misc:FiltrableCommandMenu ui:field="projectSwitchingMenu" />
+    	<misc:FiltrableCommandMenu ui:field="filtrableMenu" />
     </g:FlowPanel>	
 
 </ui:UiBinder>

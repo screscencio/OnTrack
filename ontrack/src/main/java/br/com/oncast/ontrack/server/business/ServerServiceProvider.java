@@ -1,7 +1,10 @@
 package br.com.oncast.ontrack.server.business;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
+import br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerImpl;
 import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
+import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
@@ -21,6 +24,7 @@ public class ServerServiceProvider {
 	private XMLExporterService xmlExporter;
 	private XMLImporterService xmlImporter;
 
+	private AuthorizationManager authorizationManager;
 	private AuthenticationManager authenticationManager;
 	private NotificationService notificationService;
 	private ClientManager clientManagerService;
@@ -30,6 +34,7 @@ public class ServerServiceProvider {
 	private PersistenceService persistenceService;
 
 	private ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
+	private FeedbackMailFactory userQuotaRequestMailFactory;
 
 	public static ServerServiceProvider getInstance() {
 		if (instance != null) return instance;
@@ -43,7 +48,16 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
 			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getNotificationService(), getClientManagerService(),
-					getAuthenticationManager(), getSessionManager(), getProjectAuthorizationMailFactory());
+					getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory());
+		}
+	}
+
+	public AuthorizationManager getAuthorizationManager() {
+		if (authorizationManager != null) return authorizationManager;
+		synchronized (this) {
+			if (authorizationManager != null) return authorizationManager;
+			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getNotificationService(),
+					getProjectAuthorizationMailFactory());
 		}
 	}
 
@@ -102,6 +116,14 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (projectAuthorizationMailFactory != null) return projectAuthorizationMailFactory;
 			return projectAuthorizationMailFactory = new ProjectAuthorizationMailFactory();
+		}
+	}
+
+	private FeedbackMailFactory getFeedbackMailFactory() {
+		if (userQuotaRequestMailFactory != null) return userQuotaRequestMailFactory;
+		synchronized (this) {
+			if (userQuotaRequestMailFactory != null) return userQuotaRequestMailFactory;
+			return userQuotaRequestMailFactory = new FeedbackMailFactory();
 		}
 	}
 

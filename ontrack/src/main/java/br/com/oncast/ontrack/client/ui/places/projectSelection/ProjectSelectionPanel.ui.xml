@@ -18,9 +18,6 @@
 			margin-bottom: 10px;
 		}
 		
-		.projectSelectionWidget {
-		}
-		
 		.projectSelectionPanel {
 			width: 425px;
 			margin: 0px auto;
@@ -35,7 +32,7 @@
 	   <layout:ApplicationWidgetContainer>
             <g:HTMLPanel styleName="{style.projectSelectionPanel}">
             	<g:Label text="Choose a Project" styleName="{style.chooseLabel}"/>
-                <misc:ProjectSelectionWidget ui:field="selectionProject" styleName="{style.projectSelectionWidget}" closeOnEscape="false"/>
+                <misc:ProjectSelectionWidget ui:field="selectionProject" closeOnEscape="false"/>
             </g:HTMLPanel>
 	   </layout:ApplicationWidgetContainer>
 	</g:FocusPanel>

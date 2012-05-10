@@ -6,15 +6,19 @@ import br.com.drycode.api.web.gwt.dispatchService.client.RequestBuilderConfigura
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
+import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
+import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateServiceImpl;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationServiceImpl;
+import br.com.oncast.ontrack.client.services.authorization.AuthorizationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
-import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
-import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentServiceImpl;
+import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
+import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
+import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
@@ -22,6 +26,7 @@ import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
 import br.com.oncast.ontrack.shared.config.RequestConfigurations;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -47,18 +52,22 @@ public class ClientServiceProvider {
 	private ProjectRepresentationProvider projectRepresentationProvider;
 
 	private AuthenticationService authenticationService;
+	private AuthorizationService authorizationService;
 	private ApplicationPlaceController placeController;
+	private ClientNotificationService notificationService;
 
 	private ClientIdentificationProvider clientIdentificationProvider;
 	private ActionSyncService actionSyncService;
 
 	private DispatchService requestDispatchService;
 	private ServerPushClientService serverPushClientService;
-	private ErrorTreatmentService errorTreatmentService;
 	private EventBus eventBus;
+	private FeedbackServiceImpl feedbackService;
+	private ClientApplicationStateService clientApplicationStateService;
 
 	private static ClientServiceProvider instance;
 
+	// TODO let this method be private and make it call before other public methods.
 	public static ClientServiceProvider getInstance() {
 		if (instance != null) return instance;
 		return instance = new ClientServiceProvider();
@@ -69,24 +78,29 @@ public class ClientServiceProvider {
 	/**
 	 * Configures the necessary services for application full usage.
 	 * - Initiates the {@link AuthenticationService}, which register a communication failure handler for {@link NotAuthenticatedException};
+	 * - Initiates the {@link AuthenticationService}, which register a communication failure handler for {@link AuthorizationException};
 	 * - Initiates the {@link ActionSyncService}, which starts a server-push connection with the server;
-	 * - Initiates the {@link ErrorTreatmentService}, which starts an global error handler;
 	 * - Initiates the {@link ApplicationPlaceController} setting the default place and panel in which the application navigation will occur.
 	 * 
 	 * @param panel the panel that will be used by the application "navigation" through the {@link ApplicationPlaceController}.
 	 * @param defaultAppPlace the default place used by the {@link ApplicationPlaceController} "navigation".
 	 */
 	public void configure(final AcceptsOneWidget panel, final Place defaultAppPlace) {
-		getAuthenticationService();
+		getAuthenticationService().registerAuthenticationExceptionGlobalHandler();
+		getAuthorizationService().registerAuthorizationExceptionGlobalHandler();
 		getActionSyncService();
-		getErrorTreatmentService();
 		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
 	}
 
+	private AuthorizationService getAuthorizationService() {
+		if (authorizationService != null) return authorizationService;
+		return authorizationService = new AuthorizationServiceImpl(getRequestDispatchService(), getApplicationPlaceController());
+	}
+
 	public AuthenticationService getAuthenticationService() {
 		if (authenticationService != null) return authenticationService;
-		return authenticationService = new AuthenticationServiceImpl(getRequestDispatchService(), getApplicationPlaceController());
+		return authenticationService = new AuthenticationServiceImpl(getRequestDispatchService(), getApplicationPlaceController(), getServerPushClientService());
 	}
 
 	public ApplicationPlaceController getApplicationPlaceController() {
@@ -97,12 +111,17 @@ public class ClientServiceProvider {
 	public ProjectRepresentationProvider getProjectRepresentationProvider() {
 		if (projectRepresentationProvider != null) return projectRepresentationProvider;
 		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(getRequestDispatchService(), getServerPushClientService(),
-				getAuthenticationService());
+				getAuthenticationService(), getClientNotificationService());
+	}
+
+	public ClientNotificationService getClientNotificationService() {
+		if (notificationService != null) return notificationService;
+		return notificationService = new ClientNotificationService();
 	}
 
 	public ActionExecutionService getActionExecutionService() {
 		if (actionExecutionService != null) return actionExecutionService;
-		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getErrorTreatmentService(),
+		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getClientNotificationService(),
 				getProjectRepresentationProvider(), getApplicationPlaceController());
 	}
 
@@ -112,9 +131,9 @@ public class ClientServiceProvider {
 				getRequestDispatchService(), getAuthenticationService());
 	}
 
-	public ErrorTreatmentService getErrorTreatmentService() {
-		if (errorTreatmentService != null) return errorTreatmentService;
-		return errorTreatmentService = new ErrorTreatmentServiceImpl();
+	public FeedbackService getFeedbackService() {
+		if (feedbackService != null) return feedbackService;
+		return feedbackService = new FeedbackServiceImpl(getRequestDispatchService());
 	}
 
 	private DispatchService getRequestDispatchService() {
@@ -131,7 +150,7 @@ public class ClientServiceProvider {
 	private ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
-				getProjectRepresentationProvider(), getErrorTreatmentService());
+				getProjectRepresentationProvider(), getClientNotificationService());
 	}
 
 	private ClientIdentificationProvider getClientIdentificationProvider() {
@@ -141,11 +160,16 @@ public class ClientServiceProvider {
 
 	private ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientServiceImpl(getClientIdentificationProvider(), getErrorTreatmentService());
+		return serverPushClientService = new ServerPushClientServiceImpl(getClientIdentificationProvider(), getClientNotificationService());
 	}
 
 	public EventBus getEventBus() {
 		if (eventBus != null) return eventBus;
 		return eventBus = new SimpleEventBus();
+	}
+
+	public ClientApplicationStateService getClientApplicationStateService() {
+		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(getEventBus(), getContextProviderService()
+				.getCurrentProjectContext()) : clientApplicationStateService;
 	}
 }

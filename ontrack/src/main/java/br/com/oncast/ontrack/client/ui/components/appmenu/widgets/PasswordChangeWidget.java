@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -51,20 +52,27 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 
 	public PasswordChangeWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
+		final KeyDownHandler consumeKeyDownHandler = new KeyDownHandler() {
+			@Override
+			public void onKeyDown(final KeyDownEvent event) {
+				event.stopPropagation();
+			}
+		};
+		oldPasswordArea.addKeyDownHandler(consumeKeyDownHandler);
+		newPasswordArea.addKeyDownHandler(consumeKeyDownHandler);
+		retypePasswordArea.addKeyDownHandler(consumeKeyDownHandler);
 	}
 
 	@Override
 	public void hide() {
 		if (!this.isVisible()) return;
-		this.setVisible(false);
 		CloseEvent.fire(this, this);
 	}
 
 	@Override
 	public void show() {
 		clearFields();
-		this.setVisible(true);
-		oldPasswordArea.setFocus(true);
+		focus();
 	}
 
 	public void focus() {
@@ -112,7 +120,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 
 	private void changePassword() {
 		if (newPasswordArea.getText().isEmpty() || retypePasswordArea.getText().isEmpty()) showErrorMessage("The new password cannot be empty.");
-		else if (!areTypedPasswordsEqual()) showErrorMessage("The two typed passwords are different.");
+		else if (!areTypedPasswordsEqual()) showErrorMessage("You typed two different passwords.");
 		else if (!PasswordValidator.isValid(newPasswordArea.getText())) showErrorMessage("The new password must have at least 6 characters.");
 		else submitUserPasswordChange();
 	}
@@ -135,7 +143,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 
 					@Override
 					public void onUserPasswordChangedSuccessfully() {
-						// TODO Improve feedback message.
+						ClientServiceProvider.getInstance().getClientNotificationService().showSuccess("Password changed succesfully");
 						enable();
 						hide();
 					}
@@ -144,7 +152,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 					public void onUnexpectedFailure(final Throwable caught) {
 						// TODO Improve feedback message.
 						enable();
-						showErrorMessage("Unexpected error.");
+						ClientServiceProvider.getInstance().getClientNotificationService().showError("Unexpected error.");
 
 					}
 
@@ -152,7 +160,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 					public void onIncorrectUserPasswordFailure() {
 						// TODO Improve feedback message.
 						enable();
-						showErrorMessage("Incorrect old password.");
+						ClientServiceProvider.getInstance().getClientNotificationService().showError("Incorrect old password.");
 					}
 				});
 
@@ -172,6 +180,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	private void submitOrHideForm(final KeyUpEvent event) {
 		if (event.getNativeKeyCode() == KEY_ENTER) changePassword();
 		if (event.getNativeKeyCode() == KEY_ESCAPE) this.hide();
+		event.stopPropagation();
 	}
 
 	@Override

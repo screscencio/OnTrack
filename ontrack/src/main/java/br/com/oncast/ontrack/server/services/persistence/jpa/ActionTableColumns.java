@@ -6,13 +6,15 @@ package br.com.oncast.ontrack.server.services.persistence.jpa;
 public interface ActionTableColumns {
 
 	public static final String ACTION_LIST = "modelActionEntity_subActionList";
-	public final static String FLOAT = "float_1";
+	public final static String FLOAT_1 = "float_1";
 	public final static String STRING_1 = "referenceId";
 	public final static String STRING_2 = "description";
 	public static final String STRING_3 = "secondaryReferenceId";
 	public static final String STRING_4 = "secundaryReferenceId";
-	public static final String BOOLEAN = "boleano";
-	public static final String INTEGER = "pos";
-	public static final String TIMESTAMP = "timestamp";
+	public static final String BOOLEAN_1 = "boleano";
+	public static final String INT_1 = "pos";
+	public static final String DATE_1 = "timestamp";
+
+	public static final int STRING_2_LENGTH = 400;
 
 }

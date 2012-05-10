@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertChildActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -16,7 +18,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class ScopeInsertChildActionTest {
+public class ScopeInsertChildActionTest extends ModelActionTest {
 
 	private Scope selectedScope;
 	private ProjectContext context;
@@ -114,6 +116,16 @@ public class ScopeInsertChildActionTest {
 		assertTrue(parent.getProgress().isDone());
 		assertTrue(parent.getProgress().hasDeclared());
 		assertEquals(ProgressState.DONE, parent.getProgress().getState());
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ScopeInsertChildActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ScopeInsertChildAction.class;
 	}
 
 }

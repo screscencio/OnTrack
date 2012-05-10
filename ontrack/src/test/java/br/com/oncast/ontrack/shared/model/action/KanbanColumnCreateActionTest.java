@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.shared.model.action;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnCreateActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -11,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class KanbanColumnCreateActionTest {
+public class KanbanColumnCreateActionTest extends ModelActionTest {
 
 	private ProjectContext context;
 	private Release release;
@@ -133,5 +135,15 @@ public class KanbanColumnCreateActionTest {
 	public void executionShouldFailWhenTryingToCreateNewKanbanColumnNamedBlank() throws UnableToCompleteActionException {
 		final String newColumnDescription = "";
 		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context);
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return KanbanColumnCreateActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return KanbanColumnCreateAction.class;
 	}
 }

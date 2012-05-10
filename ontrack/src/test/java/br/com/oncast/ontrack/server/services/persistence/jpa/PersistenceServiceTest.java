@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
+import static br.com.oncast.ontrack.utils.ListUtils.lastOf;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -51,6 +52,8 @@ public class PersistenceServiceTest {
 
 	private static final int PROJECT_ID = 1;
 
+	private static final long USER_ID = 1;
+
 	private PersistenceService persistenceService;
 
 	private EntityManager entityManager;
@@ -69,12 +72,12 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldOnlyReturnActionsAfterAGivenId() throws Exception {
-		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.createSomeActions(), new Date());
+		persistenceService.persistActions(PROJECT_ID, USER_ID, ActionTestUtils.createSomeActions(), new Date());
 
 		final List<UserAction> userActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
 
 		final List<ModelAction> secondWaveOfActions = ActionTestUtils.getActions2();
-		persistenceService.persistActions(PROJECT_ID, secondWaveOfActions, new Date());
+		persistenceService.persistActions(PROJECT_ID, USER_ID, secondWaveOfActions, new Date());
 
 		final List<UserAction> actionsReceived = persistenceService.retrieveActionsSince(PROJECT_ID, userActions.get(userActions.size() - 1).getId());
 		assertEquals(secondWaveOfActions.size(), actionsReceived.size());
@@ -318,6 +321,15 @@ public class PersistenceServiceTest {
 			assertTrue(reached);
 		}
 
+	}
+
+	@Test
+	public void userIdShouldBeBoundToUserActionCotainer() throws Exception {
+		final long userId = 123;
+		persistenceService.persistActions(PROJECT_ID, userId, ActionTestUtils.createSomeActions(), new Date());
+		final List<UserAction> retrievedActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
+
+		assertEquals(userId, lastOf(retrievedActions).getUserId());
 	}
 
 	@Test

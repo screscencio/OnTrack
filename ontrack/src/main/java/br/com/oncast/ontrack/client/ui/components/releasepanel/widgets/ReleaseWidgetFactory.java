@@ -25,7 +25,6 @@ public class ReleaseWidgetFactory implements ModelWidgetFactory<Release, Release
 	public ReleaseWidget createWidget(final Release release) {
 		widget = new ReleaseWidget(release, this, scopeWidgetFactory, releasePanelInteractionHandler);
 		dragAndDropManager.monitorDropTarget(widget.getScopeContainer().getVerticalContainer(), new VerticalPanelDropControllerFactory());
-		widget.setContainerState(true);
 
 		return widget;
 	}

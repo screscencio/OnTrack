@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnMoveActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -15,7 +17,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 
-public class KanbanColumnMoveActionTest {
+public class KanbanColumnMoveActionTest extends ModelActionTest {
 
 	private final String kanbanColumnDescription = "target column";
 	private Kanban kanban;
@@ -75,5 +77,15 @@ public class KanbanColumnMoveActionTest {
 		final ModelAction undo = action.execute(context);
 		undo.execute(context);
 		assertTrue(kanban.isLocked());
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return KanbanColumnMoveActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return KanbanColumnMoveAction.class;
 	}
 }

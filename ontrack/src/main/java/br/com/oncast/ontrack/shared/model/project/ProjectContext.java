@@ -119,7 +119,7 @@ public class ProjectContext {
 	}
 
 	private Kanban getPreviousKanbanFrom(final Release release) {
-		final Release previousRelease = release.getLatestPreviousRelease(new Condition() {
+		final Release previousRelease = release.getLatestPastRelease(new Condition() {
 			@Override
 			public boolean eval(final Release release) {
 				return project.hasKanbanFor(release);

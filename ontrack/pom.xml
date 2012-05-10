@@ -211,6 +211,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+		    <groupId>commons-lang</groupId>
+		    <artifactId>commons-lang</artifactId>
+		    <version>2.6</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.5</version>
@@ -219,9 +225,9 @@
 
 		<!-- Testing Related Dependencies. -->
 		<dependency>
-			<groupId>com.octo.gwt.test</groupId>
+			<groupId>com.googlecode.gwt-test-utils</groupId>
 			<artifactId>gwt-test-utils</artifactId>
-			<version>0.34</version>
+			<version>0.38</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -243,13 +249,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.sun</groupId>
-			<artifactId>tools</artifactId>
-			<version>1.5.0</version>
-			<scope>system</scope>
-			<systemPath>${java.home}/../lib/tools.jar</systemPath>
-		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -395,6 +394,17 @@
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+		            <exclude>**/*.properties</exclude>
+		        </excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+		            <include>**/*.properties</include>
+		        </includes>
 			</resource>
 			<resource>
 				<directory>src/test/java</directory>
@@ -408,7 +418,31 @@
 		</resources>
 
 		<plugins>
-
+			<plugin>
+				<groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
+				<artifactId>maven-svn-revision-number-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+				    <entries>
+				        <entry>
+				            <path>${project.basedir}</path>
+				            <prefix>svnInfo</prefix>
+				            <depth>empty</depth>
+				            <reportUnversioned>false</reportUnversioned>
+				            <reportIgnored>false</reportIgnored>
+				            <reportOutOfDate>false</reportOutOfDate>
+				        </entry>
+				    </entries>
+				</configuration>
+			</plugin>
+        
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -543,5 +577,4 @@
 			<url>http://forge.octo.com/nexus/content/repositories/releases/</url>
 		</repository>
 	</repositories>
-
 </project>

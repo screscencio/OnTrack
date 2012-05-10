@@ -28,11 +28,11 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_4)
 	private String parentScopeId;
 
-	@Column(name = ActionTableColumns.STRING_2, length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = ActionTableColumns.STRING_2_LENGTH)
 	private String description;
 
 	@ConversionAlias("index")
-	@Column(name = ActionTableColumns.INTEGER)
+	@Column(name = ActionTableColumns.INT_1)
 	private int pos;
 
 	@OneToMany(cascade = CascadeType.ALL)

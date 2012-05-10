@@ -1,0 +1,82 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+
+<ui:image field="background" src="pattern_background.png"/>
+<ui:style src="../../../../style/default.css">
+
+	@sprite .rootPanel {
+		gwt-image: "background";
+		background-repeat: repeat;
+		overflow: visible;
+
+		position: relative;
+		width: auto;
+		height: auto;
+		
+		padding: 8px 10px;
+
+        border: 1px solid #9899ad;
+	}
+
+	.filterArea {
+		width: 100%;
+		
+		font-size: FONT_SIZE_SMALL;
+		
+		outline: none;
+		border: none;
+		padding: 0px;
+		margin: 0px;
+	}
+	
+	.container {
+		border: 2px solid #9196ce;
+		border-radius: 10px;
+		padding: 0px 7px;
+		background: #FFF;
+	}
+	
+	.scrollpanel {
+		border: 1px solid #9899ad;
+		margin: -1px;
+	}
+	
+	.resultContainer {
+		position: absolute;
+		top: 40px;
+		left: 0px;
+		right: 0px;
+	}
+	
+	.resultInfoContainer {
+		background: #e4e4e4;
+		border: 1px solid #9899ad;
+		margin: -1px;
+		padding: 17px 12px;
+		
+		font-family: FONT_DEFAULT_ITALIC;
+		font-size: 10pt;
+	}
+	
+</ui:style>
+
+
+	<g:FocusPanel ui:field="focusPanel">
+		<g:HTMLPanel ui:field="rootPanel" styleName="{style.rootPanel}" >
+			<g:HTMLPanel styleName="{style.container}" >
+				<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
+			</g:HTMLPanel>
+			<g:HTMLPanel ui:field="result" styleName="{style.resultContainer}">
+				<g:SimplePanel styleName="{style.resultInfoContainer}">
+					<g:Label ui:field="resultInfo"/>
+				</g:SimplePanel>
+				<g:ScrollPanel ui:field="scrollPanel" styleName="{style.scrollpanel}">
+					<t:CommandMenu ui:field="menu" />
+				</g:ScrollPanel>
+			</g:HTMLPanel>
+		</g:HTMLPanel>
+	</g:FocusPanel>
+
+</ui:UiBinder> 

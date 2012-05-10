@@ -607,7 +607,9 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		switch (eventType) {
 			case Event.ONKEYDOWN:
 			case Event.ONKEYUP: {
-				if ((isArrowKey(DOM.eventGetKeyCode(event)) && !(event.getAltKey() || event.getCtrlKey() || event.getShiftKey())) && curSelection != null) {
+				// IMPORTANT added '|| event.getMetaKey()' to let move scopes with Mac Cmd + arrow keys
+				if ((isArrowKey(DOM.eventGetKeyCode(event)) && !(event.getAltKey() || event.getCtrlKey() || event.getShiftKey() || event.getMetaKey()))
+						&& curSelection != null) {
 					DOM.eventCancelBubble(event, true);
 					DOM.eventPreventDefault(event);
 					return;

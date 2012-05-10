@@ -34,4 +34,9 @@ public class ScopeTreeItemWidgetProgressCommandMenuItemFactory implements ScopeT
 			}
 		});
 	}
+
+	@Override
+	public String getNoItemText() {
+		return null;
+	}
 }

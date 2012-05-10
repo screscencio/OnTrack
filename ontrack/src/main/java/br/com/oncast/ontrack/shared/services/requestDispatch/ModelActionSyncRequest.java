@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 public class ModelActionSyncRequest implements DispatchRequest<VoidResult> {
 
-	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 
 	private List<ModelAction> actionList;

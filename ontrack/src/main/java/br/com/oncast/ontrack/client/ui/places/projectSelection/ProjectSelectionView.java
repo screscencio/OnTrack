@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.client.ui.places.projectSelection;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 public interface ProjectSelectionView {
 
-	IsWidget asWidget();
+	Widget asWidget();
 
 	void focus();
 

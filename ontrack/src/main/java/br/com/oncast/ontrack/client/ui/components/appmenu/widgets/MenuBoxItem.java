@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -13,6 +14,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,17 +28,16 @@ public class MenuBoxItem extends Composite implements HasText, HasValue<String> 
 		String selected();
 	}
 
-	public MenuBoxItem() {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
-
 	@UiField
 	FocusPanel rootPanel;
 
 	@UiField
 	Label label;
 
-	private Command command;
+	@UiField
+	Image icon;
+
+	private final Command command;
 
 	private String value;
 
@@ -44,15 +45,23 @@ public class MenuBoxItem extends Composite implements HasText, HasValue<String> 
 	MenuBoxItemStyle style;
 
 	public MenuBoxItem(final String text, final Command command) {
-		this(text, text, command);
+		this(text, text, command, null);
 	}
 
 	public MenuBoxItem(final String text, final String value, final Command command) {
+		this(text, value, command, null);
+	}
+
+	public MenuBoxItem(final String text, final String value, final Command command, final ImageResource iconImage) {
 		this.value = value;
 		this.command = command;
 
 		initWidget(uiBinder.createAndBindUi(this));
 		this.label.setText(text);
+
+		final boolean hasImage = iconImage != null;
+		this.icon.setVisible(hasImage);
+		if (hasImage) this.icon.setUrl(iconImage.getSafeUri());
 	}
 
 	public void executeCommand() {

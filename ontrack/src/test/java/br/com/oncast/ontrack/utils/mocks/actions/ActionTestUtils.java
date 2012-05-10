@@ -2,8 +2,11 @@ package br.com.oncast.ontrack.utils.mocks.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
+import org.mockito.Mockito;
+import org.reflections.Reflections;
 
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -118,5 +121,14 @@ public class ActionTestUtils {
 					expectedProgressDescription,
 					desc);
 		}
+	}
+
+	public static <T extends ModelAction> List<T> getAllSubactionsOfType(final Class<T> clazz) {
+		final ArrayList<T> actions = new ArrayList<T>();
+		final Set<Class<? extends T>> subTypes = new Reflections(ModelAction.class.getPackage().getName()).getSubTypesOf(clazz);
+		for (final Class<? extends T> sub : subTypes) {
+			actions.add(Mockito.mock(sub));
+		}
+		return actions;
 	}
 }

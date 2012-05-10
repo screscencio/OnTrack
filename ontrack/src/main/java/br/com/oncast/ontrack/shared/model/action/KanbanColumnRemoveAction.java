@@ -77,9 +77,9 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 	}
 
 	private void validateExecution(final Kanban kanban) throws UnableToCompleteActionException {
-		if (!kanban.hasColumn(columnDescription)) throw new UnableToCompleteActionException("The column is does not exist.");
+		if (!kanban.hasColumn(columnDescription)) throw new UnableToCompleteActionException("The column does not exist.");
 		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException("The column '" + columnDescription
-				+ "' is static and should never be removed.");
+				+ "' is static and can't be removed.");
 	}
 
 	@Override

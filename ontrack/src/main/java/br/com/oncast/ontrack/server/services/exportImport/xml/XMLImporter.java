@@ -9,6 +9,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
@@ -28,6 +29,7 @@ public class XMLImporter {
 	private OntrackXML ontrackXML;
 	private final HashMap<Long, User> userIdMap = new HashMap<Long, User>();
 	private final HashMap<Long, ProjectRepresentation> projectIdMap = new HashMap<Long, ProjectRepresentation>();
+	private long adminId = -1;
 
 	public XMLImporter(final PersistenceService persistenceService) {
 		this.persistanceService = persistenceService;
@@ -90,7 +92,17 @@ public class XMLImporter {
 		for (final UserAction userAction : userActions) {
 			final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
 			actions.add(userAction.getModelAction());
-			persistanceService.persistActions(projectId, actions, userAction.getTimestamp());
+			final User user = userIdMap.get(userAction.getUserId());
+			persistanceService.persistActions(projectId, user == null ? getAdminId() : user.getId(), actions, userAction.getTimestamp());
+		}
+	}
+
+	private long getAdminId() throws PersistenceException {
+		try {
+			return adminId < 0 ? adminId = persistanceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL).getId() : adminId;
+		}
+		catch (final NoResultFoundException e) {
+			return adminId = 1;
 		}
 	}
 

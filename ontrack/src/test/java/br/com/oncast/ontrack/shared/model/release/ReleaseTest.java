@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.shared.model.release;
 
-import static br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils.createScope;
-import static br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils.setDelcaredEffort;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -12,6 +10,7 @@ import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.progress.Progress;
@@ -27,6 +26,18 @@ import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ReleaseTest {
+
+	private Condition condition;
+
+	@Before
+	public void setUpCondition() {
+		condition = new Condition() {
+			@Override
+			public boolean eval(final Release release) {
+				return release.getDescription().contains("*");
+			}
+		};
+	}
 
 	@Test
 	public void shouldFindAReleaseByDescription() throws ReleaseNotFoundException {
@@ -343,45 +354,61 @@ public class ReleaseTest {
 	}
 
 	@Test
-	public void testingWhenTheLatestPreviousReleaseIsTheFirstOlderBother() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+	public void firstPastSimblingIsTheLatestPastReleaseWhenItDoesntHaveChildren() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son *");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
 
-		firstSon.addScope(ScopeTestUtils.createScope(ProgressState.DONE));
-
-		assertEquals(firstSon, secondSon.getLatestPreviousRelease(new Condition() {
-			@Override
-			public boolean eval(final Release release) {
-				return release.isDone();
-			}
-		}));
+		assertEquals(firstSon, secondSon.getLatestPastRelease(condition));
 	}
 
 	@Test
-	public void testingWhenTheLatestPreviousReleaseIsTheParent() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent");
+	public void futureSimblingReleasesDoesNotCount() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
 		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
-		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
+		final Release thirdSon = ReleaseFactoryTestUtil.create("Third Son *");
+
+		parent.addChild(firstSon);
+		parent.addChild(secondSon);
+		parent.addChild(thirdSon);
+
+		assertNull(secondSon.getLatestPastRelease(condition));
+	}
+
+	@Test
+	public void parentReleaseIsConsideredFutureRelease() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
 
-		parent.addScope(setDelcaredEffort(createScope(), 1));
-
-		assertEquals(parent, secondSon.getLatestPreviousRelease(new Condition() {
-			@Override
-			public boolean eval(final Release release) {
-				return release.getEffortSum() == 1;
-			}
-		}));
+		assertNull(secondSon.getLatestPastRelease(condition));
 	}
 
 	@Test
-	public void testingWhenTheLatestPreviousReleaseIsTheSecondNephew() throws Exception {
+	public void testingWhenTheLatestPastReleaseIsTheSecondNephew() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
+		final Release firstNephew = ReleaseFactoryTestUtil.create("First Nephew *");
+		final Release secondNephew = ReleaseFactoryTestUtil.create("Second Nephew *");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
+
+		parent.addChild(firstSon);
+		parent.addChild(secondSon);
+		firstSon.addChild(firstNephew);
+		firstSon.addChild(secondNephew);
+
+		assertEquals(secondNephew, secondSon.getLatestPastRelease(condition));
+	}
+
+	@Test
+	public void returnsNullWhenNoReleaseSatisfiesTheGivenCondition() throws Exception {
 		final Release parent = ReleaseFactoryTestUtil.create("Parent");
 		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
 		final Release firstNephew = ReleaseFactoryTestUtil.create("First Nephew");
@@ -393,37 +420,87 @@ public class ReleaseTest {
 		firstSon.addChild(firstNephew);
 		firstSon.addChild(secondNephew);
 
-		secondNephew.addScope(setDelcaredEffort(createScope(), 1));
-
-		assertEquals(secondNephew, secondSon.getLatestPreviousRelease(new Condition() {
-			@Override
-			public boolean eval(final Release release) {
-				return release.getEffortSum() == 1;
-			}
-		}));
+		assertNull(secondNephew.getLatestPastRelease(condition));
 	}
 
 	@Test
-	public void shouldNotConsiderNextReleases() throws Exception {
-		final Release parent = ReleaseFactoryTestUtil.create("Parent");
-		final Release firstSon = ReleaseFactoryTestUtil.create("First Son");
-		final Release firstNephew = ReleaseFactoryTestUtil.create("First Nephew");
-		final Release secondNephew = ReleaseFactoryTestUtil.create("Second Nephew");
+	public void firstFutureReleaseWhenThereIsOnlyOneRelease() throws Exception {
+		final Release release = ReleaseFactoryTestUtil.create("ROOT *");
+		assertNull(release.getFirstFutureRelease(condition));
+	}
+
+	@Test
+	public void parentReleaseIsTheFirstFutureReleaseWhenThereIsNoSimbling() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("parent *");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son *");
+		parent.addChild(firstSon);
+
+		assertEquals(parent, firstSon.getFirstFutureRelease(condition));
+
 		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son");
+
+		parent.addChild(secondSon);
+
+		assertEquals(parent, firstSon.getFirstFutureRelease(condition));
+	}
+
+	@Test
+	public void childReleaseIsConsideredPastReleases() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("parent *");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son *");
+		parent.addChild(firstSon);
+
+		assertNull(parent.getFirstFutureRelease(condition));
+	}
+
+	@Test
+	public void firstFutureReleaseIsTheNextSimblingRelease() throws Exception {
+		final Release parent = ReleaseFactoryTestUtil.create("Parent *");
+		final Release firstSon = ReleaseFactoryTestUtil.create("First Son *");
+		final Release secondSon = ReleaseFactoryTestUtil.create("Second Son *");
 
 		parent.addChild(firstSon);
 		parent.addChild(secondSon);
-		firstSon.addChild(firstNephew);
-		firstSon.addChild(secondNephew);
 
-		secondSon.addScope(createScope(ProgressState.DONE));
+		assertEquals(secondSon, firstSon.getFirstFutureRelease(condition));
+	}
 
-		assertNull(secondNephew.getLatestPreviousRelease(new Condition() {
-			@Override
-			public boolean eval(final Release release) {
-				return release.isDone();
-			}
-		}));
+	@Test
+	public void getStartDayShouldReturnDeclaredStartDayInsteadOfInferedOneWhenDeclared() throws Exception {
+		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final WorkingDay declaredDay = WorkingDayFactory.create(2000, 1, 27);
+		final WorkingDay inferedDay = WorkingDayFactory.create();
+
+		ReleaseTestUtils.setInferedStartDay(release, inferedDay);
+
+		assertFalse(release.hasDeclaredStartDay());
+		assertEquals(inferedDay, release.getInferedStartDay());
+		assertEquals(inferedDay, release.getStartDay());
+
+		release.declareStartDay(declaredDay);
+
+		assertTrue(release.hasDeclaredStartDay());
+		assertEquals(inferedDay, release.getInferedStartDay());
+		assertEquals(declaredDay, release.getStartDay());
+	}
+
+	@Test
+	public void getEndDayShouldReturnDeclaredStartDayInsteadOfInferedOneWhenDeclared() throws Exception {
+		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final WorkingDay declaredDay = WorkingDayFactory.create(2000, 1, 27);
+		final WorkingDay inferedDay = WorkingDayFactory.create();
+
+		ReleaseTestUtils.setInferedEndDay(release, inferedDay);
+
+		assertFalse(release.hasDeclaredEndDay());
+		assertEquals(inferedDay, release.getInferedEndDay());
+		assertEquals(inferedDay, release.getEndDay());
+
+		release.declareEndDay(declaredDay);
+
+		assertTrue(release.hasDeclaredEndDay());
+		assertEquals(inferedDay, release.getInferedEndDay());
+		assertEquals(declaredDay, release.getEndDay());
 	}
 
 	private void setScopeToUnderWorkInDay(final Scope scope, final WorkingDay day) throws Exception {

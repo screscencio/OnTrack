@@ -7,5 +7,5 @@ public interface ShortcutMapping<T> {
 
 	public Shortcut getShortcut();
 
-	public EventPostExecutionProcessor getEventPostExecutionProcessor();
+	public EventProcessor getEventPostExecutionProcessor();
 }

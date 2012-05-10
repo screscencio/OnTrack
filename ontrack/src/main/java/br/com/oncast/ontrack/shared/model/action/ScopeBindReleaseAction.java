@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -33,8 +34,8 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	private String newReleaseDescription;
 
 	@ConversionAlias("subActionList")
-	@Element(required = false)
 	@IgnoredByDeepEquality
+	@ElementList(required = false)
 	private List<ModelAction> rollbackSubActions;
 
 	@ConversionAlias("releaseCreateAction")

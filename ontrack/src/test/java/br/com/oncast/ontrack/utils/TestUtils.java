@@ -3,8 +3,8 @@ package br.com.oncast.ontrack.utils;
 
 public class TestUtils {
 
-	private static final int SLEEP_TIME = 2;
-	public static final float TOLERATED_FLOAT_DIFFERENCE = 0.01f;
+	private static final long SLEEP_TIME = 2;
+	public static final float TOLERATED_FLOAT_DIFFERENCE = 0f;
 
 	public static void sleep() {
 		try {
@@ -14,5 +14,4 @@ public class TestUtils {
 			throw new RuntimeException(e);
 		}
 	}
-
 }

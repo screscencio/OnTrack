@@ -6,6 +6,10 @@
     
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu.Style">
 
+		.rootPanel {
+			min-width: WIDTH_DEFAULT_POPUP;
+		}
+		
         .menu {
         	background: transparent;
         	background-color: transparent;
@@ -26,7 +30,7 @@
 	   	
 	</ui:style>
 
-	<layout:ApplicationPopupBoxContainer paddingEnabled="false">
+	<layout:ApplicationPopupBoxContainer paddingEnabled="false" styleName="{style.rootPanel}">
         <g:MenuBar ui:field="submenu" animationEnabled="true" autoOpen="true" vertical="true" addStyleNames="{style.menu}" />
 	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 

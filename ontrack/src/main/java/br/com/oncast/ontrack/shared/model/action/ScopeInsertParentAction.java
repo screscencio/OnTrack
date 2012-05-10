@@ -43,7 +43,7 @@ public class ScopeInsertParentAction implements ScopeInsertAction {
 	@Override
 	public ScopeInsertParentRollbackAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a father for a root node.");
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a parent node for the root node.");
 
 		final Scope parent = selectedScope.getParent();
 		final int index = parent.getChildIndex(selectedScope);

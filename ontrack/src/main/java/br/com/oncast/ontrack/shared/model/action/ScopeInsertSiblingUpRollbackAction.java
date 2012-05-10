@@ -35,7 +35,7 @@ public class ScopeInsertSiblingUpRollbackAction implements ScopeAction {
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("Unable to remove root level.");
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("Unable to remove the root node.");
 
 		final Scope parent = selectedScope.getParent();
 		final String pattern = new ScopeRepresentationBuilder(selectedScope).includeEverything().toString();

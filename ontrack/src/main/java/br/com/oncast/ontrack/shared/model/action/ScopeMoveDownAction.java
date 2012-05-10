@@ -29,12 +29,12 @@ public class ScopeMoveDownAction implements ScopeMoveAction {
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move a root node.");
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move the root node.");
 
 		final Scope parent = selectedScope.getParent();
 		final int index = parent.getChildIndex(selectedScope);
 
-		if (isLastNode(index, parent)) throw new UnableToCompleteActionException("It is not possible to move down the node when it is the last node.");
+		if (isLastNode(index, parent)) throw new UnableToCompleteActionException("It is not possible to move down the last node.");
 
 		parent.remove(selectedScope);
 		parent.add(index + 1, selectedScope);

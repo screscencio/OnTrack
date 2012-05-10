@@ -14,7 +14,7 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-import com.octo.gwt.test.GwtTest;
+import com.googlecode.gwt.test.GwtTest;
 
 public class MoveUpTest extends GwtTest {
 

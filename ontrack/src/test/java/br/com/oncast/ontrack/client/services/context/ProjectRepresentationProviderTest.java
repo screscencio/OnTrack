@@ -22,6 +22,7 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
+import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.context.NewProjectCreatedEventHandler;
@@ -41,6 +42,9 @@ public class ProjectRepresentationProviderTest {
 
 	@Mock
 	private AuthenticationService auth;
+
+	@Mock
+	private ClientNotificationService notificationService;
 
 	@Before
 	public void setUp() {
@@ -144,7 +148,7 @@ public class ProjectRepresentationProviderTest {
 	}
 
 	private ProjectRepresentationProviderImpl createProvider() {
-		return new ProjectRepresentationProviderImpl(dispatch, serverPush, auth);
+		return new ProjectRepresentationProviderImpl(dispatch, serverPush, auth, notificationService);
 	}
 
 	@SuppressWarnings("unchecked")

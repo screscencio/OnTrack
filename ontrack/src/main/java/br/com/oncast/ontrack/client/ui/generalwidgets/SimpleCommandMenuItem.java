@@ -16,6 +16,12 @@ public class SimpleCommandMenuItem implements CommandMenuItem {
 		this.command = command;
 	}
 
+	/**
+	 * Creates a simple item.
+	 * @param text to be shown on the items list
+	 * @param value to be used instead of the shown text
+	 * @param command to be executed, if null this item will NOT close the menu when activated.
+	 */
 	public SimpleCommandMenuItem(final String text, final String value, final Command command) {
 		this.text = text;
 		this.value = value;

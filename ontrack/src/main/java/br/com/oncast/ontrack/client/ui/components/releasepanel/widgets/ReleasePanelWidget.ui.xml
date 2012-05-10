@@ -6,8 +6,7 @@
 
 	<ui:style src="../../../style/default.css">
 	   .rootPanel {
-			padding: 5px;
-			padding-bottom: 0px;
+			padding: 0px 5px;
 			width: auto;
 	   	}
 	   	

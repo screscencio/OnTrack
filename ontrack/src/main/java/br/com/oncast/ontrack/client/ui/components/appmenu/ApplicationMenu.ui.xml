@@ -4,6 +4,7 @@
 	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
 
 	<ui:image field="logo" src="logo.png"/>
+	<ui:image field="backBtnImg" src="go_back_arrow.png"/>
 	<ui:style src="../../style/default.css">
 
 		.rootPanel {
@@ -21,15 +22,30 @@
 			margin: 8px 15px;
 		}
 		
-		.menuItemContainer {
-			position: relative;
-			float: right;
-						
-			margin: 20px 15px; 
+        .menuItemContainer, .menuItem, .backButtonContainer {
+            position: relative;
+            float: left;
+        }
+		
+        .menuItemContainer, .menuItem {
+            margin: 20px 15px;
+        }
+		
+		.backButtonContainer {
+			margin-left: 16px;
+			width: 18px;
+			height: 100%;
+			text-align: center;
 		}
 		
-		.leftSideMenuItem {
-			float: left;
+		.backButton {
+			margin: 0px auto;
+			margin-top: 22px;
+            cursor: pointer;
+		}
+		
+		.rightSideMenuItem {
+			float: right;
 		}
 		
 		.border1 {
@@ -43,13 +59,16 @@
 
 	<g:FlowPanel styleName="{style.rootPanel}">
 		<g:HTMLPanel ui:field="applicationMenuPanel" styleName="{style.menuBar} {style.colorMenuBackgroundGradient}" >
-			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItemContainer} {style.leftSideMenuItem}" text="Project" biggerFont="true"/>
-			<g:FlowPanel styleName="{style.menuItemContainer} {style.leftSideMenuItem}">
-				<aw:BreadcrumbWidget ui:field="breadcrumb" />
-			</g:FlowPanel>
+		    <div class="{style.backButtonContainer}">
+    			<g:Image ui:field="backButton" resource="{backBtnImg}" styleName="{style.backButton}"/>
+		    </div>
+			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItem}" text="Project" biggerFont="true"/>
+			<g:HTMLPanel ui:field="itemContainer" styleName="{style.menuItemContainer}">
+    			<aw:ApplicationMenuItem ui:field="releaseMenuItem2" styleName="{style.menuItem}" text="Release" biggerFont="true"/>
+			</g:HTMLPanel>
 			<g:Image resource="{logo}" styleName="{style.logo}"/>
-			<aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItemContainer}" text="User" />
-			<aw:ApplicationMenuItem ui:field="memberMenuItem" styleName="{style.menuItemContainer}" text="Members" />
+			<aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="User" />
+			<aw:ApplicationMenuItem ui:field="memberMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="Members" />
 		</g:HTMLPanel>
 		<g:SimplePanel styleName="{style.border1} {style.borderDecoration}"/>
 		<g:SimplePanel styleName="{style.border2} {style.borderDecoration}"/>

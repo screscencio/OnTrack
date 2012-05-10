@@ -25,10 +25,10 @@ public class ScopeMoveRightActionEntity extends ModelActionEntity {
 	private String referenceId;
 
 	@ConversionAlias("position")
-	@Column(name = ActionTableColumns.INTEGER)
+	@Column(name = ActionTableColumns.INT_1)
 	private int pos;
 
-	@Column(name = ActionTableColumns.BOOLEAN)
+	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean wasIndexSet;
 
 	@OneToMany(cascade = CascadeType.ALL)

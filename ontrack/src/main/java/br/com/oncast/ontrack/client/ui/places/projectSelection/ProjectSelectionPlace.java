@@ -5,6 +5,11 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class ProjectSelectionPlace extends Place {
 
+	@Override
+	public boolean equals(final Object obj) {
+		return false;
+	}
+
 	public static class Tokenizer implements PlaceTokenizer<ProjectSelectionPlace> {
 
 		@Override

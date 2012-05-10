@@ -6,6 +6,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
+import br.com.oncast.ontrack.client.services.feedback.ProjectCreationQuotaRequisitionCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
@@ -18,7 +19,6 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
@@ -29,14 +29,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ProjectSelectionWidget extends Composite implements HasCloseHandlers<ProjectSelectionWidget>, PopupAware {
 
+	private static final int FILTRABLE_MENU_MAX_HEIGHT = 172;
+
+	private static final int FILTRABLE_MENU_MAX_WIDTH = 425;
+
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
 	private static ProjectSelectionWidgetUiBinder uiBinder = GWT.create(ProjectSelectionWidgetUiBinder.class);
 
 	interface ProjectSelectionWidgetUiBinder extends UiBinder<Widget, ProjectSelectionWidget> {}
 
-	@UiField
-	protected FiltrableCommandMenu projectSwitchingMenu;
+	@UiField(provided = true)
+	protected FiltrableCommandMenu filtrableMenu;
 
 	@UiField
 	protected SimplePanel loadingPanel;
@@ -46,24 +50,17 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	private final ProjectListChangeListener projectListChangeListener;
 
-	@UiFactory
-	protected FiltrableCommandMenu createProjectSwitchCommandMenu() {
-		return new FiltrableCommandMenu(new CustomCommandMenuItemFactory() {
-
-			@Override
-			public SimpleCommandMenuItem createCustomItem(final String inputText) {
-				return new SimpleCommandMenuItem("Create new project '" + inputText + "'", inputText, new Command() {
-
-					@Override
-					public void execute() {
-						createNewProject(inputText);
-					}
-				});
-			}
-		}, 425, 400).setAlwaysShowMenu(false).setLargePadding();
+	public static ProjectSelectionWidget forProjectSwitchingMenu() {
+		return new ProjectSelectionWidget(createForProjectSwitchingMenu());
 	}
 
 	public ProjectSelectionWidget() {
+		this(createDefaultFiltrableCommandMenu());
+	}
+
+	public ProjectSelectionWidget(final FiltrableCommandMenu filtrableMenu) {
+		this.filtrableMenu = filtrableMenu;
+
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.projectListChangeListener = new ProjectListChangeListener() {
@@ -83,48 +80,109 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		registerCloseHandler();
 	}
 
+	private static FiltrableCommandMenu createForProjectSwitchingMenu() {
+		return configureFiltrableMenu(FiltrableCommandMenu.forProjectSwitchingMenu(createCustomItemFactory(), FILTRABLE_MENU_MAX_WIDTH,
+				FILTRABLE_MENU_MAX_HEIGHT));
+	}
+
+	private static FiltrableCommandMenu createDefaultFiltrableCommandMenu() {
+		return configureFiltrableMenu(new FiltrableCommandMenu(createCustomItemFactory(), FILTRABLE_MENU_MAX_WIDTH, FILTRABLE_MENU_MAX_HEIGHT)
+				.setCloseOnEscape(false));
+
+	}
+
+	private static FiltrableCommandMenu configureFiltrableMenu(final FiltrableCommandMenu filtrableMenu) {
+		return filtrableMenu.setAlwaysShowMenu(false)
+				.setHelpText("Hit ↓ to show your projects")
+				.setLargePadding();
+	}
+
+	private static CustomCommandMenuItemFactory createCustomItemFactory() {
+		return new CustomCommandMenuItemFactory() {
+			private CommandMenuItem requisitionItem;
+
+			@Override
+			public CommandMenuItem createCustomItem(final String inputText) {
+				final int projectCreationQuota = SERVICE_PROVIDER.getAuthenticationService().getCurrentUser().getProjectCreationQuota();
+				if (projectCreationQuota > 0) return createProjectCreationItem(inputText, projectCreationQuota);
+				else return getProjectCreationQuotaRequisitionItem();
+			}
+
+			private CommandMenuItem createProjectCreationItem(final String inputText, final int projectCreationQuota) {
+				return new SimpleCommandMenuItem("Create project '" + inputText + "' (" + projectCreationQuota + " creations available)", inputText,
+						new Command() {
+
+							@Override
+							public void execute() {
+								createNewProject(inputText);
+							}
+						});
+			}
+
+			private CommandMenuItem getProjectCreationQuotaRequisitionItem() {
+				return requisitionItem == null ? requisitionItem = createProjectCreationQuotaRequisitionItem() : requisitionItem;
+			}
+
+			private CommandMenuItem createProjectCreationQuotaRequisitionItem() {
+				return new TextAndImageCommandMenuItem(ProjectCreationQuotaRequestResources.INSTANCE.quotaRequestIcon(), "Ask for more projects",
+						new Command() {
+							@Override
+							public void execute() {
+								requestProjectCreationQuota();
+							}
+						});
+			}
+
+			@Override
+			public String getNoItemText() {
+				return "No Projects. Type to create one.";
+			}
+
+		};
+	}
+
 	public ProjectSelectionWidget setMinimalist(final boolean isMinimalist) {
-		projectSwitchingMenu.setAlwaysShowMenu(!isMinimalist);
+		filtrableMenu.setAlwaysShowMenu(!isMinimalist);
 		return this;
 	}
 
 	public void setMinimalist(final String isMinimalist) {
-		projectSwitchingMenu.setAlwaysShowMenu(!Boolean.valueOf(isMinimalist));
+		filtrableMenu.setAlwaysShowMenu(!Boolean.valueOf(isMinimalist));
 	}
 
 	public ProjectSelectionWidget setCloseOnEscape(final boolean bool) {
-		projectSwitchingMenu.setCloseOnEscape(bool);
+		filtrableMenu.setCloseOnEscape(bool);
 		return this;
 	}
 
 	public void setCloseOnEscape(final String bool) {
-		projectSwitchingMenu.setCloseOnEscape(bool);
+		filtrableMenu.setCloseOnEscape(bool);
 	}
 
 	protected void hideLoadingIndicator() {
 		loadingPanel.setVisible(false);
-		projectSwitchingMenu.setVisible(true);
-		projectSwitchingMenu.focus();
-		projectSwitchingMenu.selectFirstItem();
+		filtrableMenu.setVisible(true);
+		filtrableMenu.focus();
+		filtrableMenu.selectFirstItem();
 	}
 
 	protected void showLoadingIndicator() {
 		loadingPanel.setVisible(true);
-		projectSwitchingMenu.setVisible(false);
+		filtrableMenu.setVisible(false);
 	}
 
 	private void registerCloseHandler() {
-		projectSwitchingMenu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
+		filtrableMenu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
 			@Override
 			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
-				hide();
+				CloseEvent.fire(ProjectSelectionWidget.this, ProjectSelectionWidget.this);
 			}
 		});
 	}
 
 	private void updateProjectMenuItens(final Set<ProjectRepresentation> projectRepresentations) {
-		projectSwitchingMenu.setItens(buildUpdateProjectCommandMenuItemList(projectRepresentations));
-		projectSwitchingMenu.focus();
+		filtrableMenu.setItems(buildUpdateProjectCommandMenuItemList(projectRepresentations));
+		filtrableMenu.focus();
 	}
 
 	private List<CommandMenuItem> buildUpdateProjectCommandMenuItemList(final Set<ProjectRepresentation> projectRepresentations) {
@@ -151,12 +209,12 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectPlanningPlace);
 	}
 
-	private void createNewProject(final String inputText) {
+	private static void createNewProject(final String inputText) {
 		final ProjectCreationPlace projectCreationPlace = new ProjectCreationPlace(inputText);
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectCreationPlace);
 	}
 
-	@UiHandler("projectSwitchingMenu")
+	@UiHandler("filtrableMenu")
 	protected void onAttachOrDetach(final AttachEvent event) {
 		if (event.isAttached()) registerProjectListChangeListener();
 		else unregisterProjectListChangeListener();
@@ -177,20 +235,32 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	@Override
 	public void show() {
-		rootPanel.setVisible(true);
-		projectSwitchingMenu.show();
+		filtrableMenu.show();
 	}
 
 	@Override
 	public void hide() {
-		if (!rootPanel.isVisible()) return;
+		if (!this.isVisible()) return;
 
-		rootPanel.setVisible(false);
-		projectSwitchingMenu.hide();
-		CloseEvent.fire(this, this);
+		filtrableMenu.hide();
 	}
 
 	public void focus() {
-		projectSwitchingMenu.focus();
+		filtrableMenu.focus();
+	}
+
+	protected static void requestProjectCreationQuota() {
+		SERVICE_PROVIDER.getClientNotificationService().showInfo("Processing you invitation...");
+		ClientServiceProvider.getInstance().getFeedbackService().requestProjectCreationQuota(new ProjectCreationQuotaRequisitionCallback() {
+			@Override
+			public void onRequestSentSucessfully() {
+				SERVICE_PROVIDER.getClientNotificationService().showSuccess("Invitation request was sent!");
+			}
+
+			@Override
+			public void onUnexpectedFailure(final Throwable caught) {
+				SERVICE_PROVIDER.getClientNotificationService().showWarning(caught.getMessage());
+			}
+		});
 	}
 }

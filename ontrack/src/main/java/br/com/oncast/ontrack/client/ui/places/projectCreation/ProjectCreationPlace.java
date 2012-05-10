@@ -13,4 +13,9 @@ public class ProjectCreationPlace extends Place {
 	public String getProjectName() {
 		return projectName;
 	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return false;
+	}
 }

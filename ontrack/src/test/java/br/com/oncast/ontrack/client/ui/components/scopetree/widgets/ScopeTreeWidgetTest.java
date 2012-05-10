@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidg
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
-import com.octo.gwt.test.GwtTest;
+import com.googlecode.gwt.test.GwtTest;
 
 public class ScopeTreeWidgetTest extends GwtTest {
 

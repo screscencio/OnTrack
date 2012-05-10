@@ -15,7 +15,6 @@ public class ReleaseDescriptionParserTest {
 	private static final String SEPARATOR = "/";
 	private static final int TEST_LENGTH = 5;
 	private static final char[] WHITE_CHARACTERS = { ' ', '\n', '\r', '\t' };
-	private static final int VARIATIONS_LENGTH = 3 * WHITE_CHARACTERS.length + 1;
 
 	@Test
 	public void emptyStringShouldBeTheHeadOfABlankDescription() {
@@ -302,41 +301,6 @@ public class ReleaseDescriptionParserTest {
 			assertEquals("R2/R3", parser.getTailReleases());
 			parser.next();
 			assertEquals("R3", parser.getTailReleases());
-		}
-	}
-
-	@Test
-	public void testingTheHeadAndTheTailOfAllPossibilityOfWhiteSpacesInADescriptionWithAtLeastOneLevelOfReleases() throws Exception {
-		// init
-		final int[] indexes = new int[TEST_LENGTH];
-		final List<List<String>> releasesList = new ArrayList<List<String>>(TEST_LENGTH);
-		for (int i = 0; i < TEST_LENGTH; i++) {
-			indexes[i] = 0;
-			releasesList.add(getWhiteSpaceConcatenationVariationsOf("R" + i));
-		}
-
-		while (indexes[TEST_LENGTH - 1] < VARIATIONS_LENGTH) {
-			// mount description and the expected tail
-			String description = releasesList.get(0).get(indexes[0]);
-			String tail = "";
-			for (int i = 1; i < TEST_LENGTH; i++) {
-				description += SEPARATOR + releasesList.get(i).get(indexes[i]);
-				tail += SEPARATOR + releasesList.get(i).get(indexes[i]);
-			}
-			tail = tail.substring(SEPARATOR.length()).trim();
-
-			// test expectations
-			final ReleaseDescriptionParser parser = new ReleaseDescriptionParser(description);
-			assertEquals("R0", parser.getHeadRelease());
-			assertEquals(tail, parser.getTailReleases());
-
-			// increment indexes to get all combinations
-			indexes[0]++;
-			int i = 0;
-			while (i < TEST_LENGTH - 1 && indexes[i] == VARIATIONS_LENGTH) {
-				indexes[i++] = 0;
-				indexes[i]++;
-			}
 		}
 	}
 

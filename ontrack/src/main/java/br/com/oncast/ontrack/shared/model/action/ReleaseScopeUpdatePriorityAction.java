@@ -45,11 +45,11 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 		final Release release = releaseReferenceId != null ? ReleaseActionHelper.findRelease(releaseReferenceId, context) : scope.getRelease();
 
 		if (!release.containsScope(scope)) throw new UnableToCompleteActionException(
-				"The scope priority cannot be updated because it is not part of the referenced release.");
+				"The scope is not part of the referenced release.");
 		if (priority < 0) throw new UnableToCompleteActionException(
-				"The scope priority cannot be decreased because it already is the most prioritary in this release.");
+				"It's already the most prioritary scope.");
 		if (priority >= release.getScopeList().size()) throw new UnableToCompleteActionException(
-				"The scope priority cannot be decreased because it already is the least prioritary in this release.");
+				"It's already the least prioritary scope.");
 
 		final int oldPriority = release.getScopeIndex(scope);
 		release.removeScope(scope);

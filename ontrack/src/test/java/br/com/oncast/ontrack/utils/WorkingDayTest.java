@@ -95,6 +95,7 @@ public class WorkingDayTest {
 	@Test
 	public void shouldReturnNextMondayWhenNewWorkingDayIsCreatedOnSundayOrSaturday() throws Exception {
 		final Calendar calendar = Calendar.getInstance();
+		calendar.set(2001, Calendar.MAY, 1);
 
 		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		final int sunday = calendar.get(Calendar.DAY_OF_MONTH);
@@ -110,6 +111,7 @@ public class WorkingDayTest {
 		calendar.setTime(WorkingDayFactory.create(calendar.getTime()).getJavaDate());
 
 		assertEquals(Calendar.MONDAY, calendar.get(Calendar.DAY_OF_WEEK));
+		System.out.println(calendar.get(Calendar.DAY_OF_MONTH) + " - " + saturday);
 		assertEquals(2, calendar.get(Calendar.DAY_OF_MONTH) - saturday);
 	}
 

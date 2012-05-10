@@ -1,15 +1,12 @@
 package br.com.oncast.ontrack.client.services.actionSync;
 
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import org.mockito.Mock;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
@@ -17,7 +14,7 @@ import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTe
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchRequestServiceTestImplementation;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.ValueHolder;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
+import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -30,13 +27,16 @@ public class ActionQueuedDispatcherTest {
 	private DispatchRequestServiceTestImplementation requestDispatchServiceMock;
 	private ActionQueuedDispatcher actionQueuedDispatcher;
 
+	@Mock
+	private ClientNotificationService notificationService;
+
 	@Before
 	public void setUp() {
 		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
 		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock,
 					getProjectRepresentationProviderMock(),
-					getErrorTreatmentServiceMock());
+					notificationService);
 	}
 
 	@Test
@@ -147,32 +147,5 @@ public class ActionQueuedDispatcherTest {
 		when(provider.getCurrent()).thenReturn(new ProjectRepresentation(1, "Default project"));
 
 		return provider;
-	}
-
-	@SuppressWarnings("rawtypes")
-	private ErrorTreatmentService getErrorTreatmentServiceMock() {
-		final ErrorTreatmentService errorTreatment = mock(ErrorTreatmentService.class);
-
-		doAnswer(new Answer() {
-
-			@Override
-			public Object answer(final InvocationOnMock invocation) throws Throwable {
-				final Object[] arguments = invocation.getArguments();
-				Assert.fail((String) arguments[0]);
-				return null;
-			}
-		}).when(errorTreatment).treatFatalError(Mockito.anyString());
-
-		doAnswer(new Answer() {
-
-			@Override
-			public Object answer(final InvocationOnMock invocation) throws Throwable {
-				final Object[] arguments = invocation.getArguments();
-				Assert.fail((String) arguments[0]);
-				return null;
-			}
-		}).when(errorTreatment).treatFatalError(Mockito.anyString(), Mockito.any(Throwable.class));
-
-		return errorTreatment;
 	}
 }

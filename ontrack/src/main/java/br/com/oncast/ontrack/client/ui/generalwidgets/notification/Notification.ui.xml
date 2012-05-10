@@ -1,0 +1,54 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style src="../../style/default.css">
+
+		.rootPanel {
+			width: 100%;
+			z-index: 1;
+
+			text-align: center;
+		}
+
+		.notificationPanel {
+			margin: 0px auto;
+			overflow: hidden;
+			display: inline-block;
+
+            height: 35px;
+            max-height: 35px;
+            min-height: 35px;
+
+            background-color: COLOR_MENUBOX_BACKGROUND;
+            -webkit-box-shadow: NOTIFICATION_SHADOW;
+            -moz-box-shadow: NOTIFICATION_SHADOW;
+            box-shadow: NOTIFICATION_SHADOW;
+            border: POPUP_BORDER;
+            border-top: 0px;
+
+			background-repeat: no-repeat;
+			background-position: 0px 0px;
+		}
+		
+		.notificationText {
+            color: COLOR_MENUBOX_TEXT;
+            font-family: FONT_DEFAULT;
+            font-size: FONT_SIZE_MEDIUM;
+
+            margin-right: 10px;
+            margin-left: 50px;
+            display: block;
+		}
+
+	</ui:style>
+
+    <g:HTMLPanel ui:field="notificationContainer" styleName="{style.rootPanel}">
+        <div ui:field="notificationDiv" class="{style.notificationPanel}">
+            <table height="100%" width="100%">
+                <tr><td>
+		            <span class='{style.notificationText}' ui:field='notificationText'></span>
+                </td></tr>
+            </table>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder> 

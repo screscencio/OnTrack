@@ -18,10 +18,10 @@ public class ScopeDeclareValueActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
-	@Column(name = ActionTableColumns.BOOLEAN)
+	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean hasDeclaredValue;
 
-	@Column(name = ActionTableColumns.INTEGER)
+	@Column(name = ActionTableColumns.INT_1)
 	private float newDeclaredValue;
 
 	public String getReferenceId() {

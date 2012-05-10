@@ -1,7 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.places.contextloading.ContextLoadingActivity;
+import br.com.oncast.ontrack.client.ui.places.loading.ContextLoadingActivity;
+import br.com.oncast.ontrack.client.ui.places.loading.UserInformationLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
@@ -29,6 +30,8 @@ public class AppActivityMapper implements ActivityMapper {
 	public Activity getActivity(final Place place) {
 
 		if (place instanceof LoginPlace) return createLoginActivity((LoginPlace) place);
+
+		if (!services.getAuthenticationService().isUserAvailable()) return createUserInformationLoadingActivity(place);
 
 		if (place instanceof ProjectDependentPlace) {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
@@ -68,5 +71,9 @@ public class AppActivityMapper implements ActivityMapper {
 
 	private ContextLoadingActivity createContextLoadingActivity(final ProjectDependentPlace projectDependentPlace) {
 		return new ContextLoadingActivity(projectDependentPlace);
+	}
+
+	private UserInformationLoadingActivity createUserInformationLoadingActivity(final Place place) {
+		return new UserInformationLoadingActivity(place);
 	}
 }

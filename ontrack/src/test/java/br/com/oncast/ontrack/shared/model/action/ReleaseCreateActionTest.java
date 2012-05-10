@@ -10,6 +10,8 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseCreateActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -19,7 +21,7 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
-public class ReleaseCreateActionTest {
+public class ReleaseCreateActionTest extends ModelActionTest {
 
 	private ProjectContext context;
 	private Scope rootScope;
@@ -245,5 +247,15 @@ public class ReleaseCreateActionTest {
 			assertNotNull(context.findRelease("R2/It5"));
 			assertNotNull(context.findRelease("R2/It5/Week1"));
 		}
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ReleaseCreateActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ReleaseCreateAction.class;
 	}
 }

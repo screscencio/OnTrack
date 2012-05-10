@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.server.services.email;
 
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -20,7 +19,7 @@ public class MailSender {
 	private MailSender() throws MessagingException {
 		message = new MimeMessage(session);
 		try {
-			message.setFrom(new InternetAddress("robot@oncast.com.br"));
+			message.setFrom(new InternetAddress(MailConfigurationProvider.getMailUsername()));
 		}
 		catch (final AddressException e) {
 			throw new RuntimeException("Invalid sender e-mail.", e);
@@ -61,5 +60,9 @@ public class MailSender {
 		catch (final MessagingException e) {
 			throw new RuntimeException("Error sending e-mail.", e);
 		}
+	}
+
+	public void sendToDefaultEmail() {
+		sendTo(MailConfigurationProvider.getMailUsername());
 	}
 }

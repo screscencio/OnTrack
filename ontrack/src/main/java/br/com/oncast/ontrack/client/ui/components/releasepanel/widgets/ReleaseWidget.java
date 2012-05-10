@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -124,9 +126,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Image containerStateIcon;
 
 	@UiField
-	protected FocusPanel containerToogleClickableArea;
-
-	@UiField
 	protected EditableLabel descriptionLabel;
 
 	@UiField
@@ -173,7 +172,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private final ModelWidgetContainerListener containerUpdateListener;
 
-	private boolean isContainerStateOpen;
+	private boolean isContainerStateOpen = true;
 
 	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentReleaseDescription;
@@ -215,7 +214,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		scopeContainer.setOwnerRelease(release);
 
 		update();
-		setContainerState(true);
+		setContainerState(!release.isDone());
 		setVisible(true);
 	}
 
@@ -226,7 +225,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiHandler("menuMouseOverArea")
 	protected void onMouseOut(final MouseOutEvent event) {
-		menuIcon.setVisible(isMenuOpen || false);
+		menuIcon.setVisible(isMenuOpen);
 	}
 
 	@UiHandler("menuIcon")
@@ -248,8 +247,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiHandler("progressIcon")
 	protected void showChartPanel(final ClickEvent event) {
 		configPopup().popup(getChartPanel())
-				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.HORIZONTAL_CENTER))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.VERTICAL_CENTER))
+				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.CENTER))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.MIDDLE))
 				.pop();
 	}
 
@@ -294,15 +293,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		return mouseCommandsMenu;
 	}
 
+	// TODO Is this necessary ?
 	private ModelWidgetContainerListener createContainerUpdateListener() {
 		return new ModelWidgetContainerListener() {
-
 			@Override
-			public void onUpdateComplete(final boolean hasChanged) {
-				if (!hasChanged) return;
-
-				setContainerState(true);
-			}
+			public void onUpdateComplete(final boolean hasChanged) {}
 		};
 	}
 
@@ -312,6 +307,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private boolean updateChildReleaseWidgets() {
 		kanbanLink.setVisible(release.hasDirectScopes());
+		releaseContainer.setVisible(isContainerStateOpen && release.hasChildren());
 		return releaseContainer.update(release.getChildren());
 	}
 
@@ -362,6 +358,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	public void setContainerState(final boolean shouldOpen) {
+		if (isContainerStateOpen == shouldOpen) return;
+
 		containerStateIcon.setResource(shouldOpen ? resources.containerStateOpened() : resources.containerStateClosed());
 		header.setStyleName(style.headerClosed(), !shouldOpen);
 
@@ -376,7 +374,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private ReleaseChart getChartPanel() {
 		if (chartPanel != null) return chartPanel;
-		chartPanel = new ReleaseChart(new ReleaseChartDataProvider(release, getReleaseEstimator()));
+		chartPanel = new ReleaseChart(new ReleaseChartDataProvider(release, getReleaseEstimator(), ClientServiceProvider.getInstance()
+				.getActionExecutionService()));
 		chartPanel.addStyleName(style.chartPanel());
 		return chartPanel;
 	}
@@ -406,5 +405,20 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	public ReleaseWidgetContainer getChildReleasesContainer() {
 		return releaseContainer;
+	}
+
+	public void setHierarchicalContainerState(final boolean shouldOpen) {
+		ReleaseWidget current = this;
+		while (current != null && !current.release.isRoot()) {
+			current.setContainerState(shouldOpen);
+			current = getParentReleaseWidget(current);
+		}
+	}
+
+	private ReleaseWidget getParentReleaseWidget(final ReleaseWidget widget) {
+		Widget current = widget.getParent();
+		while (current != null && !(current instanceof ReleaseWidget))
+			current = current.getParent();
+		return (ReleaseWidget) current;
 	}
 }

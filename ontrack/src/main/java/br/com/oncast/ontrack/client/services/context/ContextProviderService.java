@@ -9,4 +9,6 @@ public interface ContextProviderService {
 	public boolean isContextAvailable(long projectId);
 
 	public void loadProjectContext(long requestedProjectId, ProjectContextLoadCallback projectContextLoadCallback);
+
+	public ProjectContext getCurrentProjectContext();
 }

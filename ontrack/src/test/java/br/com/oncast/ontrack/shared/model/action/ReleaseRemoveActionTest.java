@@ -14,6 +14,8 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -23,7 +25,7 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
-public class ReleaseRemoveActionTest {
+public class ReleaseRemoveActionTest extends ModelActionTest {
 
 	private ProjectContext context;
 	private Scope rootScope;
@@ -323,5 +325,15 @@ public class ReleaseRemoveActionTest {
 			assertFalse(rootRelease.getChildren().contains(removedRelease));
 
 		}
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ReleaseRemoveActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ReleaseRemoveAction.class;
 	}
 }

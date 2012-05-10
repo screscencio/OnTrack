@@ -3,9 +3,10 @@ html,body {
 	height: 100%;
 	margin: 0px auto;
 	padding: 0px;
-	font-family: tahoma, verdana, arial, serif;
+	font-family: 'ProximaNovaRegular', tahoma, verdana, arial, serif;
 	font-size: 14px;
 	font-weight: 500;
+	overflow: hidden;
 }
 
 * {
@@ -81,34 +82,47 @@ html,body {
 }
 
 /* Drag n Drop */
+.dragdrop-movable-panel {
+    cursor: move !important;
+}
+
 .dragdrop-positioner {
-	border: 0px;
+    background: #cccccc;
+    border: 1px #c5c5c5;
+}
+
+.kanban .dragdrop-positioner {
+	width: 100%;
+	min-width: 207px;
+	margin-bottom: 3px !important;
 }
 
 .scopeWidgetContainer tr:last-child .dragdrop-positioner {
 	border-width: 0px !important;
 }
 
-.kanban .dragdrop-positioner {
-	width: 100%;
-	border: 1px dashed #CFCFCF;
-	margin: 1px;
+.dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {
+	filter: alpha(opacity \= 100);
+	opacity: 1;
+	border-width: 1px !important;
+	min-width: 207px;
 }
 
-.dragdrop-selected,.dragdrop-dragging,.dragdrop-proxy {
-	filter: alpha(opacity \= 70);
-	opacity: 0.7;
-	border-width: 1px !important;
-	min-width: 250px;
+.kanban .dragdrop-selected, .kanban .dragdrop-dragging, .kanban .dragdrop-proxy {
+    min-width: 207px;
+}
+
+.kanbanColumn-draggable-positioner {
+	width: 216px !important;
+	margin-right: 34px !important;
 }
 
 .kanbanColumn.dragdrop-dragging {
-    -moz-box-shadow: 3px 2px 4px #bbb;
-    -webkit-box-shadow: 3px 2px 4px #bbb;
-    box-shadow: 3px 2px 4px #bbb;
+    -moz-box-shadow: 2px 4px 10px #999;
+    -webkit-box-shadow: 2px 4px 10px #999;
+    box-shadow: 2px 4px 10px #999;
     margin-top: -2px;
     margin-left: -1px;
-    background-color: #EFEFFF;
 }
 
 .dragdrop-draggable {
@@ -139,10 +153,49 @@ html,body {
 	font-family: 'ProximaNovaRegular';
 	font-size: inherit;
 }
+
 .gwt-MenuBar-topMenu {
 	  box-shadow: -2px 2px 5px #444;
 	 -moz-box-shadow: -2px 2px 5px #444;    
 	 -webkit-box-shadow: -2px 2px 5px #444;
+}
+
+.footerCommandsMenu>div {
+	box-shadow: none;
+	-moz-box-shadow: none;    
+	-webkit-box-shadow: none;
+	width: auto;
+}
+.footerCommandsMenu img {
+	margin-bottom: -2px;
+}
+
+.footerCommandsMenu .gwt-MenuBar .gwt-MenuItem {
+	border-top: 1px solid #DDD;
+	border-bottom: none;	
+	padding: 5px;
+	white-space: nowrap;
+	font-size: 9pt;
+}
+
+/* SearchScopeResult menu item */
+.searchScopeResult-container {
+	padding: 3px;
+	font-family: 'ProximaNovaRegular';
+	font-size: 10pt;
+	color: #9c9c9c;
+}
+
+.searchScopeResult-description {
+	display: block;
+	
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 11pt;
+}
+.searchScopeResult-partOf {
+	margin-left: 25px;
+	display: inline;
 }
 
 .gwt-MenuBar-vertical>table {
@@ -169,6 +222,12 @@ html,body {
 .gwt-MenuBar-breadcrumb .gwt-MenuItem {
 	background: transparent;
 	background-color: transparent;
+	font-family: 'ProximaNovaRegular';
+	font-size: 12pt;
+	color: #960;
+	text-shadow: #F6D792 1px -1px 1px;
+	padding: 0px;
+	border: 0px;
 }
 
 .gwt-MenuBar-topMenu .gwt-MenuItem {
@@ -176,10 +235,8 @@ html,body {
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
-	color: #FAFAFA;
-	background-color:#CCC;
-	
-	border: 1px solid #DADADA;
+	background-color:#E8E8E8;
+	text-shadow: none;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {
@@ -272,6 +329,91 @@ html,body {
 
 .gwt-MenuBarPopup .menuPopupBottomRightInner {
 	
+}
+
+/* DatePicker */
+.gwt-DatePicker {
+	background: #d3d3d3;	
+	border: 1px solid #999;
+	box-shadow: 1px 1px 3px #999;
+	
+	padding: 10px;
+	
+	-webkit-user-select: none;
+}
+
+.datePickerMonthSelector {
+	width: 100%;
+	text-align: center;
+}
+
+.datePickerMonth {
+	background: white;
+	border: 1px solid #999;
+	
+	color: #5c5b5c;
+}
+
+.datePickerPreviousButton, .datePickerNextButton {
+	cursor: pointer;
+	color: #4d5781;
+}
+
+.datePickerPreviousButton:HOVER, .datePickerNextButton:HOVER {
+	background: #E8E8E8;
+}
+
+.datePickerDays {
+	border-collapse: collapse;
+	text-align: right;
+}
+
+.datePickerWeekdayLabel {
+	color: #5c5b5c;
+	text-align: center;
+}
+
+.datePickerWeekendLabel {
+	color: #5c5b5c;
+	text-align: center;
+}
+
+.datePickerDay {
+	background: white;
+	color: #5c5b5c;
+
+	border: 1px solid #999;
+	padding: 1px;
+	
+	cursor: default;
+}
+
+.datePickerDayIsToday {
+	color: #505050;
+	font-weight: bold;
+}
+
+.datePickerDayIsWeekend {
+	background: #E8E8E8;
+}
+
+.datePickerDayIsFiller {
+	color: #999;
+}
+
+.datePickerDayIsValue {
+	background: #f5cc6f;
+}
+
+.datePickerDayIsDisabled {
+}
+
+.datePickerDayIsHighlighted {
+	background:#E8E8E8;
+	color: #4d5781;
+}
+
+.datePickerDayIsValueAndHighlighted {
 }
 
 /* Button */

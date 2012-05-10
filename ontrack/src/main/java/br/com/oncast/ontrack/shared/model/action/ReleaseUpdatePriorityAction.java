@@ -35,15 +35,14 @@ public class ReleaseUpdatePriorityAction implements ReleaseAction {
 
 	@Override
 	public ReleaseUpdatePriorityAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		if (targetIndex < 0) throw new UnableToCompleteActionException("Unable to change release priority to a negative position.");
+		if (targetIndex < 0) throw new UnableToCompleteActionException("It's already the least prioritary release.");
 
 		final Release selectedRelease = ReleaseActionHelper.findRelease(releaseId, context);
-		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException("Unable to change priority of a root level.");
+		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException("Unable to change priority of the root release.");
 
 		final Release parentRelease = selectedRelease.getParent();
 		if (targetIndex >= parentRelease.getChildren().size()) throw new UnableToCompleteActionException(
-				"The release priority could not be updated because the target position is not within the allowed range. You are trying to update for position "
-						+ targetIndex + ", but there are only " + parentRelease.getChildren().size() + " itens in the parent release.");
+				"It's already the most prioritary release.");
 
 		final int currentIndex = parentRelease.getChildIndex(selectedRelease);
 		parentRelease.removeChild(selectedRelease);

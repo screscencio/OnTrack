@@ -21,11 +21,11 @@ public class KanbanColumnMoveActionEntity extends ModelActionEntity {
 	private String releaseId;
 
 	@ConversionAlias("columnDescription")
-	@Column(name = ActionTableColumns.STRING_3)
+	@Column(name = ActionTableColumns.STRING_2, length = ActionTableColumns.STRING_2_LENGTH)
 	private String columnDescription;
 
 	@ConversionAlias("desiredIndex")
-	@Column(name = ActionTableColumns.INTEGER)
+	@Column(name = ActionTableColumns.INT_1)
 	private int desiredIndex;
 
 	public String getReleaseId() {

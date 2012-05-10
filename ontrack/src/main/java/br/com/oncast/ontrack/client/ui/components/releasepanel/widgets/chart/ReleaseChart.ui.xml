@@ -1,0 +1,75 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:chart="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart"
+	xmlns:t="urn:import:org.moxieapps.gwt.highcharts.client">
+	
+	<ui:image field="closeImage" src="stats-close.png"/>
+	
+	<ui:style src="../../../../style/default.css">
+	
+	.rootPanel {
+		position: relative;
+		background: white;
+	}
+	
+	.container {
+		margin: POPUP_PADDING;
+	}
+	
+	.closeIcon {
+		position: absolute;
+		top: -9.5px;
+		right: -9.5px;
+		
+		cursor: pointer;
+	}
+	
+	.parameterLabel {
+		font-weight: bold;
+		margin-right: 5px;
+	}
+
+	.parameterLabel, .parameterValue {
+		display: inline;
+	}
+	
+	.parameterValue:HOVER {
+		color: #4d5781;
+		cursor: pointer;
+		background-color:#E8E8E8;
+		text-shadow: none;
+		border-radius: 2px;
+	}
+	
+	.unitLabel {
+		margin-left: 3px;
+	}
+	
+	.separator {
+		margin-right: 15px;
+	}
+	
+	</ui:style>
+	
+	<g:HTMLPanel styleName="{style.popupContainer} {style.rootPanel}">
+		<g:FocusPanel ui:field="clickableChartPanel" styleName="{style.container}">
+			<g:HTMLPanel>
+				<g:SimplePanel ui:field="chartPanel"/>
+				<g:HorizontalPanel horizontalAlignment="right">
+					<chart:ReleaseChartEditableDateLabel ui:field="startDate" text="Start:"/>
+					<g:SimplePanel styleName="{style.separator}"/>
+					
+					<chart:ReleaseChartEditableDateLabel ui:field="endDate" text="End:"/>
+					<g:SimplePanel styleName="{style.separator}"/>
+					
+					<g:Label text="Velocity:" styleName="{style.parameterLabel}"/>
+					<g:Label ui:field="velocity" styleName="{style.parameterValue}"/>
+					<g:Label text="ep/day" styleName="{style.unitLabel}"/>
+				</g:HorizontalPanel>
+			</g:HTMLPanel>
+		</g:FocusPanel>
+		<g:Image ui:field="closeIcon" resource="{closeImage}" styleName="{style.closeIcon}"/>
+	</g:HTMLPanel>
+
+</ui:UiBinder> 

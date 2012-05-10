@@ -39,7 +39,8 @@ public class TextAndImageCommandMenuItem implements CommandMenuItem {
 	public MenuItem getMenuItem() {
 		if (menuItem != null) return menuItem;
 		final SafeHtml safeHtml = new SafeHtmlBuilder().appendHtmlConstant(
-				"<img src='" + image.getSafeUri().asString() + "'><span style='margin-left:5px;display: inline;'>" + text + "</span>")
+				"<img src='" + image.getSafeUri().asString() + "' style='width: " + image.getWidth() + "px; height: " + image.getHeight()
+						+ "px;'><span style='margin-left:5px;display: inline;'>" + text + "</span>")
 				.toSafeHtml();
 		return menuItem = new MenuItem(safeHtml, command);
 	}

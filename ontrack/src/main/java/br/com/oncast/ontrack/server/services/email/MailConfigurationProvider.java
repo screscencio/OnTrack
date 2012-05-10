@@ -9,6 +9,8 @@ import br.com.oncast.ontrack.server.configuration.Configurations;
 
 public class MailConfigurationProvider {
 
+	private static Configurations CONFIGURATIONS = Configurations.getInstance();
+
 	static Properties configProperties() {
 		final Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
@@ -23,11 +25,21 @@ public class MailConfigurationProvider {
 
 	static Authenticator mailAuthenticator() {
 		return new javax.mail.Authenticator() {
+
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				final Configurations c = Configurations.getInstance();
-				return new PasswordAuthentication(c.getEmailUsername(), c.getEmailPassword());
+				return new PasswordAuthentication(getMailUsername(), getMailPassword());
 			}
+
 		};
 	}
+
+	static String getMailUsername() {
+		return CONFIGURATIONS.getEmailUsername();
+	}
+
+	private static String getMailPassword() {
+		return CONFIGURATIONS.getEmailPassword();
+	}
+
 }

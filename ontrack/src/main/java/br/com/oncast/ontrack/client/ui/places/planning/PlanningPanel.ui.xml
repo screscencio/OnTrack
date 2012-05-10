@@ -3,21 +3,42 @@
     xmlns:ui="urn:ui:com.google.gwt.uibinder" 
     xmlns:g="urn:import:com.google.gwt.user.client.ui" 
 	xmlns:layout='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout'
+	xmlns:search='urn:import:br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar'
+	xmlns:footer='urn:import:br.com.oncast.ontrack.client.ui.components.footerbar'
 	xmlns:st='urn:import:br.com.oncast.ontrack.client.ui.components.scopetree' 
     xmlns:rp='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel'
 >
 
 	<ui:style src="../../style/default.css">
 	
+		.searchBar {
+			position: absolute;
+			top: 15px;
+			left: 15px;
+			right: 420px;
+		}
+		
 		.scopeTree {
 			position: absolute;
+			
 			top: 10px;
-			left: 10px;
-			right: 420px;
-			bottom: 10px;
+			left: 25px;
+			right: 430px;
+			bottom: 43px;
+			
 			padding: 5px;
+			padding-top: 50px;
+			
 			overflow: auto;
 			overflow-x: hidden;
+		}
+		
+		.footerBar {
+			position: absolute;
+			left: 15px;
+			right: 420px;
+			bottom: 10px;
+			height: 33px;
 		}
 		
 		.releasePanel {
@@ -36,6 +57,12 @@
 	<layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
 		<g:SimplePanel styleName="{style.popupContainer} {style.scopeTree}">
 			<st:ScopeTree ui:field="scopeTree" />
+		</g:SimplePanel>
+		<g:SimplePanel styleName="{style.searchBar}">
+			<search:SearchBar ui:field="searchBar"/>
+		</g:SimplePanel>
+		<g:SimplePanel styleName="{style.footerBar}">
+			<footer:FooterBar/>
 		</g:SimplePanel>
 		<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
 			<rp:ReleasePanel ui:field="releasePanel" />

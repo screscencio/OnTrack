@@ -8,8 +8,11 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequ
 import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.effort.ScopeTreeEffortUpdateEngine;
+import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInstructionGuide;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInteractionHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -29,9 +32,16 @@ public class ScopeTree implements Component {
 
 	private final ScopeTreeInteractionHandler treeInteractionHandler;
 
+	private final ScopeTreeInstructionGuide instructionGuide;
+
 	public ScopeTree() {
 		treeInteractionHandler = new ScopeTreeInteractionHandler();
 		tree = new ScopeTreeWidget(treeInteractionHandler);
+
+		ShortcutService.register(tree, treeInteractionHandler, ScopeTreeShortcutMappings.values());
+
+		instructionGuide = new ScopeTreeInstructionGuide(tree);
+
 		actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
@@ -44,9 +54,11 @@ public class ScopeTree implements Component {
 						inferenceInfluencedScopes.add(context.findScope(id));
 
 					ScopeTreeEffortUpdateEngine.process(tree, inferenceInfluencedScopes);
+
+					instructionGuide.onActionExecution(action);
 				}
 				catch (final RuntimeException e) {
-					//This happens when the incoming action is not important for ScopeTree
+					// This happens when the incoming action is not important for ScopeTree
 				}
 				catch (final ModelBeanNotFoundException e) {
 					// TODO ++Resync and Redraw the entire structure to eliminate inconsistencies
@@ -54,6 +66,7 @@ public class ScopeTree implements Component {
 				}
 			}
 		};
+
 		treeActionFactory = new ScopeTreeActionFactory(tree);
 	}
 
@@ -76,10 +89,8 @@ public class ScopeTree implements Component {
 		rootItem.mountTwoLevels();
 		rootItem.setState(true);
 		tree.setSelectedItem(rootItem);
-	}
 
-	public void showSearchWidget() {
-		tree.showSearchWidget();
+		instructionGuide.onSetContext(context);
 	}
 
 	@Override

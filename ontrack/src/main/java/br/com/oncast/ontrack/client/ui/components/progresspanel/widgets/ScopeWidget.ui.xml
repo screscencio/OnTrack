@@ -1,71 +1,82 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
+    <ui:data field="draggableImage" src="../../move_scope.png"/>
 	<ui:style src="../../../style/default.css">
 	
+        @url draggableImageUrl draggableImage;
+    
 		.panel {
-			min-height: 25px;
+			position: relative;
+			
+			margin: 0px 0px 3px 0px;
+			min-height: 28px;
 			width: 207px;
 
-			margin: 0 0 3px 0;
-			
-			background: COLOR_MENUBOX_BACKGROUND;
-            
-            color: COLOR_MENUBOX_TEXT;
-            font-family: FONT_DEFAULT;
-            font-size: FONT_SIZE_SMALL;
+			background: KANBAN_SCOPE_BACKGROUND;
 
             border: SCOPE_WIDGET_BORDER;
-			
 			-moz-box-shadow: 1px 1px 2px #ddd;
 			-webkit-box-shadow: 1px 1px 2px #ddd;
 			box-shadow: 1px 1px 2px #ddd;
 		}
 		
 		.panel:hover {
-			border: 1px solid #000;
-			background-color: #EFEFFF;
+            background-color: KANBAN_SCOPE_HOVER_BACKGROUND;
 		}
 		
-		.scopeControls {
-			position: absolute;
-			top: 0px;
-			right: 0px;
-			bottom: 0px;
-			left: 0px;
-		}
-		
+		.internalPanel {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+        
 		.descriptionLabel {
-			padding-top: 3px;
-			padding-bottom: 4px;
+			padding-top: 7px;
+			padding-bottom: 7px;
 			padding-left: 16px;
 			padding-right: 10px;
 			overflow: visible;
 			overflow-x: visible;
 			overflow-y: hidden;
-			font-size: 12px;
 			font-stretch: extra-expanded;
 			line-height: 120%;
 			text-align: center;
+            color: COLOR_MENUBOX_TEXT;
+            font-family: FONT_DEFAULT;
+            font-size: FONT_SIZE_SMALL;
 		}
-		
-		.draggable {
-			background: url("resources/image/releasePanel/draggable.png") repeat-y;
-			cursor: move;
-			position: absolute;
-			top: 3px;
-			left: 4px;
-			bottom: 6px;
-			width: 8px;
-		}
+		      
+        .draggable {
+            cursor: move;
+            border-right: RELEASE_WIDGET_BORDER;
+            height: 100%;
+            width: 10px; 
+        }
+        
+        .draggableImage {
+            position: absolute;
+            top: 5px;
+            bottom: 5px;
+            left: 2px;
+            width: 9px; 
+            
+            background-image: draggableImageUrl;
+            background-repeat: repeat-y;
+        }
+        
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel} kanbanColumn">
-		<g:FlowPanel>
-			<g:HTMLPanel ui:field="scopeControls" styleName="{style.scopeControls}" visible="false">
-				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
-			</g:HTMLPanel>
-			<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
-		</g:FlowPanel>
+		<g:HorizontalPanel styleName="{style.internalPanel}" verticalAlignment="middle">
+            <g:cell width="1">
+                <g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
+                    <g:SimplePanel styleName="{style.draggableImage}"/>
+                </g:FocusPanel>
+            </g:cell>
+            <g:cell width="*">
+                <g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
+            </g:cell>
+        </g:HorizontalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

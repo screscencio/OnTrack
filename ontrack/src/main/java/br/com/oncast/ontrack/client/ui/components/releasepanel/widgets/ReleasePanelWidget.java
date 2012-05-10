@@ -61,18 +61,16 @@ public class ReleasePanelWidget extends Composite {
 		releaseContainer.update(children);
 	}
 
-	public ReleaseWidget findWidgetAndSetContainerState(final Release release, final boolean state) {
+	public ReleaseWidget getWidgetFor(final Release release) {
 		if (rootRelease.equals(release.getParent())) {
 			final ReleaseWidget widget = releaseContainer.getWidgetFor(release);
 			if (widget == null) throw new RuntimeException("Release not found");
-			widget.setContainerState(state);
 			return widget;
 		}
-		final ReleaseWidget parentWidget = findWidgetAndSetContainerState(release.getParent(), state);
+		final ReleaseWidget parentWidget = getWidgetFor(release.getParent());
 
 		final ReleaseWidget widget = parentWidget.getChildReleasesContainer().getWidgetFor(release);
 		if (widget == null) throw new RuntimeException("Release not found");
-		widget.setContainerState(state);
 		return widget;
 	}
 

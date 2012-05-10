@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
@@ -15,9 +16,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TextInputPopup extends Composite implements HasCloseHandlers<TextInputPopup>, PopupAware {
@@ -27,10 +26,7 @@ public class TextInputPopup extends Composite implements HasCloseHandlers<TextIn
 	interface TextInputPopupUiBinder extends UiBinder<Widget, TextInputPopup> {}
 
 	@UiField
-	protected FocusPanel rootPanel;
-
-	@UiField
-	protected TextBox inputTextBox;
+	protected PaddedTextBox inputTextBox;
 
 	@UiField
 	protected Label descriptionLabel;
@@ -72,14 +68,13 @@ public class TextInputPopup extends Composite implements HasCloseHandlers<TextIn
 
 	@Override
 	public void show() {
-		this.setVisible(true);
 		inputTextBox.setFocus(true);
 		inputTextBox.selectAll();
 	}
 
 	@Override
 	public void hide() {
-		this.setVisible(false);
+		if (!this.isVisible()) return;
 		CloseEvent.fire(this, this);
 	}
 

@@ -18,10 +18,10 @@ public class ScopeDeclareEffortActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
-	@Column(name = ActionTableColumns.BOOLEAN)
+	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean hasDeclaredEffort;
 
-	@Column(name = ActionTableColumns.FLOAT)
+	@Column(name = ActionTableColumns.FLOAT_1)
 	private float newDeclaredEffort;
 
 	public String getReferenceId() {

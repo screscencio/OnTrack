@@ -315,10 +315,9 @@ public class PopupConfig {
 		if (shown) {
 			if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).hide();
 			else {
-				widgetToPopup.setVisible(false);
 				animation.hide();
+				shown = false;
 			}
-			shown = false;
 		}
 	}
 
@@ -346,16 +345,24 @@ public class PopupConfig {
 
 	public class SlideAnimation extends Animation {
 
-		public static final int DURATION_SHORT = 500;
+		public static final int DURATION_SHORT = 250;
 
 		private static final int CONTAINER_PADDING = 20;
 
+		private String styleWidthValue;
 		private int top;
 		private int left;
 		private int startPos;
 		private int endPos;
+		private boolean showAnimation;
 
 		private SimplePanel container;
+
+		private String styleHeightValue;
+
+		private int height;
+
+		private int width;
 
 		@Override
 		protected void onUpdate(final double progress) {
@@ -375,35 +382,39 @@ public class PopupConfig {
 		}
 
 		public void show() {
+			showAnimation = true;
+
 			if (animationDuration == 0) {
 				setPopupWidgetVisible();
 				return;
 			}
 
-			setupContainer(true);
+			setupContainer();
 			setupWidget();
 
 			run(animationDuration);
 		}
 
 		public void hide() {
+			showAnimation = false;
+
 			if (animationDuration == 0) {
 				disengagePopup();
 				return;
 			}
 
-			widgetToPopup.setVisible(true);
-			setupContainer(false);
+			setupContainer();
 			setupWidget();
 
 			run(animationDuration);
 		}
 
-		private void setupContainer(final boolean showing) {
+		private void setupContainer() {
 			top = widgetToPopup.getAbsoluteTop();
 			left = widgetToPopup.getAbsoluteLeft();
-			final int height = widgetToPopup.getOffsetHeight();
-			final int width = widgetToPopup.getOffsetWidth();
+
+			height = widgetToPopup.getOffsetHeight();
+			width = widgetToPopup.getOffsetWidth();
 
 			widgetToPopup.removeFromParent();
 
@@ -417,19 +428,24 @@ public class PopupConfig {
 			s.setLeft(left - CONTAINER_PADDING, Unit.PX);
 			s.setHeight(height + CONTAINER_PADDING, Unit.PX);
 			s.setWidth(width + 2 * CONTAINER_PADDING, Unit.PX);
-			s.setOverflowY(Overflow.HIDDEN);
+			s.setOverflow(Overflow.HIDDEN);
 
 			startPos = 0;
 			endPos = 0;
-			if (showing) startPos = -height;
+			if (showAnimation) startPos = -height;
 			else endPos = -height;
 		}
 
 		private void setupWidget() {
 			final Style s = widgetToPopup.getElement().getStyle();
+			styleWidthValue = s.getWidth();
+			styleHeightValue = s.getHeight();
+
 			s.setPosition(Position.RELATIVE);
 			s.setTop(startPos, Unit.PX);
 			s.setLeft(CONTAINER_PADDING, Unit.PX);
+			s.setWidth(width, Unit.PX);
+			s.setHeight(height, Unit.PX);
 		}
 
 		private void restoreWidget() {
@@ -441,22 +457,21 @@ public class PopupConfig {
 			s.setPosition(Position.ABSOLUTE);
 			s.setTop(top, Unit.PX);
 			s.setLeft(left, Unit.PX);
+			s.setProperty("width", styleWidthValue);
+			s.setProperty("height", styleHeightValue);
 
-			if (endPos < 0) {
-				widgetToPopup.setVisible(false);
-				disengagePopup();
+			if (showAnimation) {
+				setPopupWidgetVisible();
 			}
 			else {
-				setPopupWidgetVisible();
+				widgetToPopup.setVisible(false);
+				disengagePopup();
 			}
 		}
 
 		private void setPopupWidgetVisible() {
-			if (widgetToPopup instanceof PopupAware) {
-				widgetToPopup.setVisible(false);
-				((PopupAware) widgetToPopup).show();
-			}
-			else widgetToPopup.setVisible(true);
+			widgetToPopup.setVisible(true);
+			if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).show();
 		}
 
 	}

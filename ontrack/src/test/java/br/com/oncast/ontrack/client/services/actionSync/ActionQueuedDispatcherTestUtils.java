@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
@@ -42,6 +43,9 @@ public class ActionQueuedDispatcherTestUtils {
 
 			@Override
 			public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {}
+
+			@Override
+			public void notifyUserInformationChange(final User authenticatedUser) {}
 		};
 	}
 

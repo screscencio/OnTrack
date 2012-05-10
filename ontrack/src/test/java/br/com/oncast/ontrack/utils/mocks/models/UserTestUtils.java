@@ -3,10 +3,13 @@ package br.com.oncast.ontrack.utils.mocks.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 public class UserTestUtils {
+
+	private static User admin;
 
 	public static User createUser() {
 		return new User("user@email.com");
@@ -16,9 +19,14 @@ public class UserTestUtils {
 		return new User(email);
 	}
 
-	public static User createUser(final long id, final String email) throws Exception {
+	public static User createUser(final long id, final String email) {
 		final User user = createUser(email);
-		ReflectionTestUtils.set(user, "id", id);
+		try {
+			ReflectionTestUtils.set(user, "id", id);
+		}
+		catch (final Exception e) {
+			throw new RuntimeException("Reflection Failed when tring to create a user");
+		}
 		return user;
 	}
 
@@ -26,17 +34,19 @@ public class UserTestUtils {
 		final List<User> users = new ArrayList<User>(size);
 
 		for (int i = 1; i <= size; i++) {
-			final User user = createUser("user" + i + "@email.com");
-			ReflectionTestUtils.set(user, "id", i);
-			users.add(user);
+			users.add(createUser(i, "user" + i + "@email.com"));
 		}
 		return users;
 	}
 
-	public static User createUser(final int id) throws Exception {
+	public static User createUser(final long id) throws Exception {
 		final User user = createUser("user" + id + "@email.com");
 		ReflectionTestUtils.set(user, "id", id);
 		return user;
+	}
+
+	public static User getAdmin() {
+		return admin == null ? admin = createUser(1, DefaultAuthenticationCredentials.USER_EMAIL) : admin;
 	}
 
 }

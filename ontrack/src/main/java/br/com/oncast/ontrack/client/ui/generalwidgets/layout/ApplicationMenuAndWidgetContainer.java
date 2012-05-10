@@ -51,4 +51,12 @@ public class ApplicationMenuAndWidgetContainer extends Composite implements HasW
 	public ApplicationMenu getMenu() {
 		return applicationMenu;
 	}
+
+	public HasWidgets getContentPanel() {
+		return widgetContainer;
+	}
+
+	public Widget getContentPanelWidget() {
+		return widgetContainer;
+	}
 }

@@ -5,16 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
+import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
+import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+
+import com.google.gwt.user.client.Window;
 
 public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
 
-	public ServerPushClientServiceImpl(final ClientIdentificationProvider clientIdentificationProvider, final ErrorTreatmentService errorTreatmentService) {
+	public ServerPushClientServiceImpl(final ClientIdentificationProvider clientIdentificationProvider, final ClientNotificationService notificationService) {
 		serverPushClient = new GwtCometClient(clientIdentificationProvider, new ServerPushClientEventListener() {
 
 			@Override
@@ -36,9 +39,12 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			@Override
 			public void onError(final Throwable exception) {
 				exception.printStackTrace();
-				errorTreatmentService.treatConnectionError(
-						"The connection with the server was lost.\nCheck your internet connection...\n\nThe application will be briethly reloaded.",
-						exception);
+				notificationService.showErrorWithConfirmation("No internet connection...", new NotificationConfirmationListener() {
+					@Override
+					public void onConfirmation() {
+						Window.Location.reload();
+					}
+				});
 			}
 		});
 		connect();

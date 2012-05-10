@@ -37,6 +37,12 @@ public class ApplicationMenuItem extends Composite implements HasText {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
+	public ApplicationMenuItem(final String text, final boolean hasBiggerFont) {
+		initWidget(uiBinder.createAndBindUi(this));
+		setText(text);
+		setBiggerFont(hasBiggerFont);
+	}
+
 	@UiField
 	FocusPanel rootPanel;
 

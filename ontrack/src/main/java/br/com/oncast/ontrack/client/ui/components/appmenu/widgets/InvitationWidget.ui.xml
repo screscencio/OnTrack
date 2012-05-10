@@ -6,35 +6,33 @@
 
 <ui:style src="../../../style/default.css">
 	
+		.rootPanel {
+			width: WIDTH_DEFAULT_POPUP;
+		}
+		
 	    .title {
 	    	font-family: FONT_DEFAULT;
 	    }
 		
-        .errorLabel {
-            width: 100%;
-            margin-top: 10px;
-            margin-bottom: 0px;
-
-            color: #cc3c29;
-            font-family: arial, helvetica, sans-serif;
-            font-size: 13px;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: bold;
-            height: 13px;
-            line-height: 13px;
-        }
  		.helpLabel {
 			width: 100%;
 			text-align: right;
 		}
+		
+		.countdownLabel {
+ 			margin-bottom: -5px;
+			width: 100%;
+			text-align: center;
+		}
                 
 	</ui:style>
 
-	<layout:ApplicationPopupBoxContainer ui:field="rootPanel">
+	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}">
 		<g:Label text="Invitee:" styleName="{style.title}" />
 		<misc:DefaultTextedTextBox ui:field="invitationTextBox" defaultText="domain@email.com"/>
 		<g:Label text="Hit ENTER to invite" styleName="{style.helpLabel}"/>
+		<misc:Separator />
+		<g:Label ui:field="countdownLabel" styleName="{style.countdownLabel}" />
 	</layout:ApplicationPopupBoxContainer>
 
 </ui:UiBinder>

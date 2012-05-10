@@ -5,13 +5,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveLeftActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class ScopeMoveLeftActionTest {
+public class ScopeMoveLeftActionTest extends ModelActionTest {
 
 	private Scope rootScope;
 	private Scope middle;
@@ -73,5 +75,15 @@ public class ScopeMoveLeftActionTest {
 		assertEquals(middle.getChildren().get(0), lastChild);
 		assertEquals(1, middle.getChildren().size());
 		assertEquals(1, rootScope.getChildren().size());
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ScopeMoveLeftActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ScopeMoveLeftAction.class;
 	}
 }

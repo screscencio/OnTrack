@@ -8,6 +8,8 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -17,7 +19,7 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
-public class ScopeBindReleaseActionTest {
+public class ScopeBindReleaseActionTest extends ModelActionTest {
 
 	private ProjectContext context;
 	private Scope rootScope;
@@ -118,6 +120,16 @@ public class ScopeBindReleaseActionTest {
 			fail("The release should not exist in project context.");
 		}
 		catch (final ReleaseNotFoundException e) {}
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ScopeBindReleaseActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ScopeBindReleaseAction.class;
 	}
 
 }

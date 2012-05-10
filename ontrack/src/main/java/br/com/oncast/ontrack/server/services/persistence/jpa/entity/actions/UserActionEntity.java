@@ -38,10 +38,14 @@ public class UserActionEntity {
 	@ConversionAlias("projectRepresentation")
 	private ProjectRepresentation projectRepresentation;
 
+	@ConversionAlias("userId")
+	private long userId;
+
 	public UserActionEntity() {}
 
-	public UserActionEntity(final ModelActionEntity actionEntity, final ProjectRepresentation projectRepresentation, final Date timestamp) {
+	public UserActionEntity(final ModelActionEntity actionEntity, final long userId, final ProjectRepresentation projectRepresentation, final Date timestamp) {
 		this.actionEntity = actionEntity;
+		this.userId = userId;
 		this.projectRepresentation = projectRepresentation;
 		this.timestamp = timestamp;
 	}
@@ -76,5 +80,13 @@ public class UserActionEntity {
 
 	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
 		this.projectRepresentation = projectRepresentation;
+	}
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(final long userId) {
+		this.userId = userId;
 	}
 }

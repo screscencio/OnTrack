@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar.SearchBar;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndWidgetContainer;
 
 import com.google.gwt.animation.client.Animation;
@@ -32,6 +33,9 @@ public class PlanningPanel extends Composite implements PlanningView {
 	protected ScopeTree scopeTree;
 
 	@UiField
+	protected SearchBar searchBar;
+
+	@UiField
 	protected ApplicationMenuAndWidgetContainer rootPanel;
 
 	private final ScrollAnimation animation = new ScrollAnimation();
@@ -45,6 +49,8 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	public PlanningPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
+
+		searchBar.setTree(scopeTree);
 	}
 
 	@Override
@@ -63,8 +69,25 @@ public class PlanningPanel extends Composite implements PlanningView {
 	}
 
 	@Override
+	public SearchBar getSearchBar() {
+		return searchBar;
+	}
+
+	@Override
+	public Widget getNotificationMenu() {
+		return rootPanel.getContentPanelWidget();
+	}
+
+	/**
+	 * Makes the widget visible by moving the scroll position<br>
+	 * If the widget is already completely visible it does nothing.
+	 * If the widget is higher than the scroll then it scrolls to top of the widget letting the bottom part hidden.
+	 * If the widget is occupying all the scroll space then it does nothing.
+	 * @return true if the widget fits the scroll been able to be completely visible false otherwise.
+	 */
+	@Override
 	// FIXME Mats review this method
-	public void ensureWidgetIsVisible(final IsWidget isWidget) {
+	public boolean ensureWidgetIsVisible(final IsWidget isWidget) {
 		final Widget widget = isWidget.asWidget();
 
 		final int menuTop = releaseScroll.getVerticalScrollPosition();
@@ -76,8 +99,12 @@ public class PlanningPanel extends Composite implements PlanningView {
 		final int itemHeight = widgetElement.getParentElement().getOffsetHeight();
 		final int itemBottom = itemTop + itemHeight;
 
-		if (itemTop < menuTop) animation.scroll(menuTop, itemTop - 5, 500);
+		if (itemTop < menuTop && itemBottom > menuBottom) return false;
+
+		if (itemTop < menuTop || itemHeight > menuHeight) animation.scroll(menuTop, itemTop - 5, 500);
 		else if (itemBottom > menuBottom) animation.scroll(menuTop, itemTop - menuHeight + itemHeight, 500);
+
+		return itemHeight <= menuHeight;
 	}
 
 	private int getOffisetTop(final Element widget, final Element scrollPanel) {
@@ -100,7 +127,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 		@Override
 		protected void onUpdate(final double progress) {
-			final double delta = (endPosition - startPosition) * progress;
+			final double delta = (endPosition - startPosition) * interpolate(progress);
 			final int newPosition = (int) (startPosition + delta);
 			releaseScroll.setVerticalScrollPosition(newPosition);
 		}

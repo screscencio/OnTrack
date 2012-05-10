@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,8 +32,8 @@ import org.mockito.Mockito;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
-import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMail;
-import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
+import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
+import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -41,7 +43,8 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJ
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.server.services.session.Session;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
-import br.com.oncast.ontrack.shared.exceptions.authentication.AuthorizationException;
+import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -70,7 +73,7 @@ import br.com.oncast.ontrack.utils.mocks.requests.RequestTestUtils;
 
 public class BusinessLogicTest {
 
-	private static final int PROJECT_ID = 1;
+	private static final long PROJECT_ID = 1;
 	private EntityManager entityManager;
 	private ProjectRepresentation projectRepresentation;
 
@@ -78,9 +81,9 @@ public class BusinessLogicTest {
 	private PersistenceService persistence;
 	private ClientManager clientManager;
 	private AuthenticationManager authenticationManager;
+	private AuthorizationManager authorizationManager;
 	private NotificationService notification;
 	private SessionManager sessionManager;
-	private ProjectAuthorizationMailFactory mailFactory;
 	private User authenticatedUser;
 	private User admin;
 
@@ -94,31 +97,32 @@ public class BusinessLogicTest {
 
 	private void configureMockDefaultBehavior() throws Exception {
 		authenticationManager = mock(AuthenticationManager.class);
+		authorizationManager = mock(AuthorizationManager.class);
 		persistence = mock(PersistenceService.class);
 		clientManager = mock(ClientManager.class);
 		notification = mock(NotificationService.class);
 		sessionManager = mock(SessionManager.class);
-		mailFactory = mock(ProjectAuthorizationMailFactory.class);
 
 		admin = UserTestUtils.createUser(DefaultAuthenticationCredentials.USER_EMAIL);
 		authenticatedUser = UserTestUtils.createUser(100);
 		configureToRetrieveAdmin();
-		authorizeUser(authenticatedUser, PROJECT_ID);
+		authenticateAndAuthorizeUser(authenticatedUser, PROJECT_ID);
 		configureToRetrieveSnapshot(PROJECT_ID);
 	}
 
-	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException {
+	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException, UserNotFoundException {
 		when(persistence.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(admin);
+		when(authenticationManager.findUserByEmail(authenticatedUser.getEmail())).thenReturn(authenticatedUser);
 	}
 
-	private void authorizeUser(final User user, final long projectId) throws PersistenceException, NoResultFoundException {
+	private void authenticateAndAuthorizeUser(final User user, final long projectId) throws PersistenceException, NoResultFoundException {
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user);
 		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
 		when(persistence.retrieveUserByEmail(user.getEmail())).thenReturn(user);
 		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
 	}
 
-	private void configureToRetrieveSnapshot(final int projectId) throws Exception {
+	private void configureToRetrieveSnapshot(final long projectId) throws Exception {
 		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
 		when(persistence.retrieveProjectSnapshot(projectId)).thenReturn(snapshot);
 		when(snapshot.getProject()).thenReturn(ProjectTestUtils.createProject());
@@ -142,14 +146,15 @@ public class BusinessLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
-		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, sessionManager, mailFactory);
+		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, authorizationManager, sessionManager,
+				mock(FeedbackMailFactory.class));
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(new UUID("0")));
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
-		verify(persistence, times(0)).persistActions(anyLong(), anyList(), any(Date.class));
+		verify(persistence, times(0)).persistActions(anyLong(), anyLong(), anyList(), any(Date.class));
 	}
 
 	@Test
@@ -366,86 +371,28 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	public void shouldSearchOnlyForProjectsThatAUserIsAuthorizedToAccess() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
-		business.retrieveCurrentUserProjectList();
-
-		verify(authenticationManager).getAuthenticatedUser();
-		verify(persistence).retrieveProjectAuthorizations(authenticatedUser.getId());
-	}
-
-	@Test
-	public void shouldAuthorizeCurrentUserAfterProjectCreation() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
-
-		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation(4);
-		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
-
-		business.createProject("new Project");
-		verify(persistence).authorize(authenticatedUser.getEmail(), createdProject.getId());
-	}
-
-	@Test
-	public void shouldAuthorizeAdminUserAfterProjectCreation() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
-
-		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation(4);
-		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
-		when(persistence.retrieveUserByEmail(authenticatedUser.getEmail())).thenReturn(authenticatedUser);
-
-		business.createProject("new Project");
-		verify(persistence).authorize(admin.getEmail(), createdProject.getId());
-		verify(persistence).authorize(authenticatedUser.getEmail(), createdProject.getId());
-	}
-
-	@Test
-	public void shouldBeAbleToAuthorizeAnExistentUser() throws Exception {
-		final String mail = "user@mail.com";
-
-		when(persistence.retrieveUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
-		BusinessLogicTestUtils.create(persistence, mailFactory).authorize(PROJECT_ID, mail, false);
-		verify(persistence).authorize(mail, PROJECT_ID);
-	}
-
-	@Test
-	public void shouldSendMailToUserOnProjectAuthorization() throws Exception {
-		final String mail = "user@mail.com";
-
-		final ProjectAuthorizationMail mockMail = mock(ProjectAuthorizationMail.class);
-		when(mockMail.setProject(Mockito.<ProjectRepresentation> anyObject())).thenReturn(mockMail);
-		when(mockMail.currentUser(Mockito.anyString())).thenReturn(mockMail);
-		when(mailFactory.createMail()).thenReturn(mockMail);
-		when(persistence.retrieveUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
-		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());
-
-		BusinessLogicTestUtils.create(persistence, mailFactory).authorize(PROJECT_ID, mail, true);
-
-		verify(mockMail).sendTo(mail, false);
-	}
-
-	@Test
-	public void authorizeUserShouldCreateTheUserIfTheGivenUserDoesNotExist() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence);
-		final String mail = "inexistent@mail.com";
-
-		when(persistence.retrieveUserByEmail(mail)).thenThrow(new NoResultFoundException("", null));
-
-		business.authorize(PROJECT_ID, mail, false);
-
-		final ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-		verify(persistence).persistOrUpdateUser(captor.capture());
-
-		assertEquals(mail, captor.getValue().getEmail());
-	}
-
-	@Test
-	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException, NoResultFoundException {
+	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException, NoResultFoundException,
+			AuthorizationException {
 		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(ProjectTestUtils.createRepresentation(4));
 
 		business = BusinessLogicTestUtils.create(persistence, notification, authenticationManager);
 		final ProjectRepresentation representation = business.createProject("new project");
 
 		verify(notification, times(1)).notifyProjectCreation(authenticatedUser.getId(), representation);
+	}
+
+	@Test
+	public void createProjectShouldFailIfUsersProjectCreationQuotaValidationFails() throws UnableToCreateProjectRepresentation, PersistenceException,
+			AuthorizationException {
+		doThrow(new AuthorizationException()).when(authorizationManager).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
+		try {
+			BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager).createProject("");
+			Assert.fail("An authorization exception should have been thrown.");
+		}
+		catch (final Exception e) {}
+		finally {
+			verify(persistence, times(0)).persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class));
+		}
 	}
 
 	@Test
@@ -467,46 +414,60 @@ public class BusinessLogicTest {
 		verify(clientManager, times(1)).bindClientToProject(clientId, request.getRequestedProjectId());
 	}
 
+	@Test
+	public void shouldAuthorizeCurrentUserAfterProjectCreation() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
+
+		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation(4);
+		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
+
+		business.createProject("new Project");
+		verify(authorizationManager).authorize(createdProject.getId(), authenticatedUser.getEmail(), false);
+	}
+
+	@Test
+	public void shouldAuthorizeAdminUserAfterProjectCreation() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
+
+		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation(4);
+		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
+
+		business.createProject("new Project");
+		verify(authorizationManager).authorizeAdmin(createdProject);
+		verify(authorizationManager).authorize(createdProject.getId(), authenticatedUser.getEmail(), false);
+	}
+
 	@Test(expected = AuthorizationException.class)
 	public void notAuthorizedUserCannotExecuteActions() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence);
+		business = BusinessLogicTestUtils.create(persistence, authorizationManager);
 		final ModelActionSyncRequest request = RequestTestUtils.createModelActionSyncRequest();
-		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), request.getProjectId())).thenReturn(null);
+		doThrow(new AuthorizationException()).when(authorizationManager).assureProjectAccessAuthorization(request.getProjectId());
 
 		business.handleIncomingActionSyncRequest(request);
 	}
 
 	@Test
 	public void onlyAuthorizedUserCanExecuteActions() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 		final ModelActionSyncRequest request = RequestTestUtils.createModelActionSyncRequestWithOneAction();
 
 		business.handleIncomingActionSyncRequest(request);
 
-		verify(persistence, atLeastOnce()).retrieveProjectAuthorization(authenticatedUser.getId(), request.getProjectId());
-		verify(persistence).persistActions(eq(request.getProjectId()), eq(request.getActionList()), any(Date.class));
+		verify(authorizationManager, atLeastOnce()).assureProjectAccessAuthorization(request.getProjectId());
+		verify(persistence).persistActions(eq(request.getProjectId()), eq(authenticatedUser.getId()), eq(request.getActionList()),
+				any(Date.class));
 	}
 
 	@Test
 	public void onlyAuthorizedProjectsAreReturnedToUser() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
-
-		final List<ProjectAuthorization> authorizations = ProjectTestUtils.createAuthorizations(3);
-		when(persistence.retrieveProjectAuthorizations(authenticatedUser.getId())).thenReturn(authorizations);
-
-		final List<ProjectRepresentation> projects = business.retrieveCurrentUserProjectList();
-
-		assertEquals(projects.size(), authorizations.size());
-		for (final ProjectAuthorization auth : authorizations) {
-			assertTrue(projects.contains(auth.getProject()));
-		}
-
-		verify(persistence).retrieveProjectAuthorizations(authenticatedUser.getId());
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
+		business.retrieveCurrentUserProjectList();
+		verify(authorizationManager).listAuthorizedProjects(authenticatedUser);
 	}
 
 	@Test
 	public void onlyAuthorizedUserCanLoadProjectForClient() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence, authenticationManager, sessionManager);
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager, sessionManager);
 		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest();
 
 		final Session sessionMock = Mockito.mock(Session.class);
@@ -515,17 +476,44 @@ public class BusinessLogicTest {
 
 		business.loadProjectForClient(request);
 
-		verify(persistence, atLeastOnce()).retrieveProjectAuthorization(authenticatedUser.getId(), request.getRequestedProjectId());
+		verify(authorizationManager, atLeastOnce()).assureProjectAccessAuthorization(request.getRequestedProjectId());
 	}
 
 	@Test(expected = UnableToLoadProjectException.class)
 	public void notAuthorizedUserCannotLoadProjectForClient() throws Exception {
-		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 
 		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest();
-		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), request.getRequestedProjectId())).thenReturn(null);
+		doThrow(new AuthorizationException()).when(authorizationManager).assureProjectAccessAuthorization(request.getRequestedProjectId());
 
 		business.loadProjectForClient(request);
+	}
+
+	@Test
+	public void actionsShouldBeBoundToAuthenticatedUser() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
+
+		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
+		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
+		business.handleIncomingActionSyncRequest(actionSyncRequest);
+
+		verify(persistence).persistActions(eq(PROJECT_ID), eq(authenticatedUser.getId()), eq(actions), any(Date.class));
+	}
+
+	@Test
+	public void actionsShouldBeBoundToAuthenticatedUser2() throws Exception {
+		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
+
+		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
+		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
+
+		Mockito.reset(authenticationManager);
+		final long userId = 123;
+		authenticateAndAuthorizeUser(UserTestUtils.createUser(userId), PROJECT_ID);
+
+		business.handleIncomingActionSyncRequest(actionSyncRequest);
+
+		verify(persistence).persistActions(eq(PROJECT_ID), eq(userId), eq(actions), any(Date.class));
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {

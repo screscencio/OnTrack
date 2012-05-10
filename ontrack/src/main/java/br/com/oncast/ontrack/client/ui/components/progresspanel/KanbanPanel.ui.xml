@@ -4,25 +4,22 @@
 	<ui:style src="../../style/default.css">
 	
 		.boardContainer {
-			position: absolute;
-			top: 0px;
-			bottom: 0px;
-			left: 0px;
-			right: 0px;
 		}
 		
-		.board, .board > tbody > tr > td > table, .board > tr > td > table {
-            position: relative;
-            height: 100%;			
+		.board {
+			height: 100%; 
+			margin-left: 10px;
 		}
 		
-		.board td {
-			position: relative;
-		} 
+		.board > tbody > tr > td {
+			height: 100%;
+		}
+		.board > tbody > tr > td > table, .board > tbody > tr > td > table > tbody > tr > td {
+			height: 100%;
+		}
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.boardContainer}">
-	    <g:SimplePanel styleName="{style.semiTransparentContainer}" />
-		<g:HorizontalPanel ui:field="board" styleName="{style.board}" />
+		<g:HorizontalPanel ui:field="board" styleName="{style.board}" verticalAlignment="top" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

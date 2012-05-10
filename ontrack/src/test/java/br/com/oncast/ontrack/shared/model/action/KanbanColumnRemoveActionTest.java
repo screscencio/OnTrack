@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.shared.model.action;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRemoveActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -11,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class KanbanColumnRemoveActionTest {
+public class KanbanColumnRemoveActionTest extends ModelActionTest {
 
 	private ProjectContext context;
 	private Release release;
@@ -69,5 +71,15 @@ public class KanbanColumnRemoveActionTest {
 		final String columnDescription = "";
 
 		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context);
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return KanbanColumnRemoveActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return KanbanColumnRemoveAction.class;
 	}
 }

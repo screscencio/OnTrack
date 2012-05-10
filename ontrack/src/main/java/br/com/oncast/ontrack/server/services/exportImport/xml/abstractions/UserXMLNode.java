@@ -15,6 +15,12 @@ public class UserXMLNode {
 	@Attribute
 	private String email;
 
+	@Attribute
+	private int projectCreationQuota;
+
+	@Attribute
+	private int projectInvitationQuota;
+
 	@Attribute(required = false)
 	private String passwordHash;
 
@@ -28,6 +34,8 @@ public class UserXMLNode {
 	public UserXMLNode(final User user) {
 		id = user.getId();
 		email = user.getEmail();
+		projectCreationQuota = user.getProjectCreationQuota();
+		projectInvitationQuota = user.getProjectInvitationQuota();
 	}
 
 	public long getId() {
@@ -36,6 +44,14 @@ public class UserXMLNode {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public int getProjectCreationQuota() {
+		return projectCreationQuota;
+	}
+
+	public int getProjectInvitationQuota() {
+		return projectInvitationQuota;
 	}
 
 	public User getUser() {

@@ -10,6 +10,8 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRenameActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -19,7 +21,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
-public class KanbanColumnRenameActionTest {
+public class KanbanColumnRenameActionTest extends ModelActionTest {
 
 	private Release release;
 	private ProjectContext context;
@@ -130,5 +132,15 @@ public class KanbanColumnRenameActionTest {
 			}
 		}
 
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return KanbanColumnRenameActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return KanbanColumnRenameAction.class;
 	}
 }

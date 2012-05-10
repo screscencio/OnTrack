@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.utils.jquery;
 
 import com.google.gwt.dom.client.Element;
-import com.octo.gwt.test.patchers.PatchClass;
-import com.octo.gwt.test.patchers.PatchMethod;
+import com.googlecode.gwt.test.patchers.PatchClass;
+import com.googlecode.gwt.test.patchers.PatchMethod;
 
 @PatchClass(JQueryNativeImpl.class)
 public class JQueryNativeImplPatcher {

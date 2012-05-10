@@ -29,6 +29,12 @@ public class Release implements Serializable {
 
 	private List<Scope> scopeList;
 
+	@IgnoredByDeepEquality
+	private WorkingDay declaredStartDay;
+
+	@IgnoredByDeepEquality
+	private WorkingDay declaredEndDay;
+
 	// IMPORTANT The default constructor is used by GWT to construct new releases. Do not remove this.
 	protected Release() {}
 
@@ -162,6 +168,23 @@ public class Release implements Serializable {
 		return descendatReleases;
 	}
 
+	private List<Release> getDescendantReleasesInTemporalOrder() {
+		final List<Release> descendatReleases = new ArrayList<Release>();
+		for (final Release childRelease : childrenList) {
+			descendatReleases.addAll(childRelease.getDescendantReleasesInTemporalOrder());
+			descendatReleases.add(childRelease);
+		}
+		return descendatReleases;
+	}
+
+	private List<Release> getAllReleasesInTemporalOrder() {
+		final Release root = getRootRelease();
+
+		final List<Release> descendantReleases = root.getDescendantReleasesInTemporalOrder();
+		descendantReleases.add(root);
+		return descendantReleases;
+	}
+
 	/**
 	 * Returns a copy of the list of associated scopes. If you want to add or remove a scope from this release, use {@link Release#addScope(Scope, int)} and
 	 * {@link Release#removeScope(Scope)}. Do NOT manipulate this list directly.
@@ -240,6 +263,10 @@ public class Release implements Serializable {
 	}
 
 	public WorkingDay getStartDay() {
+		return hasDeclaredStartDay() ? declaredStartDay : getInferedStartDay();
+	}
+
+	public WorkingDay getInferedStartDay() {
 		WorkingDay startDay = null;
 		for (final Scope scope : getAllScopesIncludingDescendantReleases()) {
 			final WorkingDay scopeStartDay = scope.getProgress().getStartDay();
@@ -251,6 +278,10 @@ public class Release implements Serializable {
 	}
 
 	public WorkingDay getEndDay() {
+		return hasDeclaredEndDay() ? declaredEndDay : getInferedEndDay();
+	}
+
+	public WorkingDay getInferedEndDay() {
 		WorkingDay endDay = null;
 		for (final Scope scope : getAllScopesIncludingDescendantReleases()) {
 			final WorkingDay scopeEndDay = scope.getProgress().getEndDay();
@@ -301,22 +332,44 @@ public class Release implements Serializable {
 	}
 
 	/**
-	 * Finds the latest previous release that satisfies the given condition
+	 * Finds the latest past release that satisfies the given condition
 	 * @param condition that tests if the release is the right one
-	 * @return the latest release that satisfies the given condition or null if any previous release satisfies the condition
+	 * @return the latest release that satisfies the given condition or null if any past release satisfies the condition
 	 */
-	public Release getLatestPreviousRelease(final Condition condition) {
-		if (isRoot()) return condition.eval(this) ? this : null;
-		final Release parent = getParent();
-		final int i = parent.getChildIndex(this);
-		if (i > 0) {
-			Release child = parent.getChild(i - 1);
-			while (!child.isLeaf())
-				child = child.getChild(child.getChildren().size() - 1);
-			if (condition.eval(child)) return child;
-			return child.getLatestPreviousRelease(condition);
+	public Release getLatestPastRelease(final Condition condition) {
+		final List<Release> allReleases = getAllReleasesInTemporalOrder();
+		final int myIndex = allReleases.indexOf(this);
+
+		for (int i = myIndex - 1; i >= 0; i--) {
+			final Release pastRelease = allReleases.get(i);
+			if (condition.eval(pastRelease)) return pastRelease;
 		}
-		return parent.getLatestPreviousRelease(condition);
+
+		return null;
+	}
+
+	/**
+	 * Finds the first future release that satisfies the given condition
+	 * @param condition that tests if the release is the right one
+	 * @return the first release that satisfies the given condition or null if any future release satisfies the condition
+	 */
+	public Release getFirstFutureRelease(final Condition condition) {
+		final List<Release> allReleases = getAllReleasesInTemporalOrder();
+		final int myIndex = allReleases.indexOf(this);
+
+		for (int i = myIndex + 1; i < allReleases.size(); i++) {
+			final Release futureRelease = allReleases.get(i);
+			if (condition.eval(futureRelease)) return futureRelease;
+		}
+
+		return null;
+	}
+
+	private Release getRootRelease() {
+		Release current = this;
+		while (!current.isRoot())
+			current = current.getParent();
+		return current;
 	}
 
 	public interface Condition {
@@ -345,5 +398,21 @@ public class Release implements Serializable {
 
 	public boolean hasChildren() {
 		return !childrenList.isEmpty();
+	}
+
+	public void declareStartDay(final WorkingDay workingDay) {
+		declaredStartDay = workingDay;
+	}
+
+	public void declareEndDay(final WorkingDay workingDay) {
+		declaredEndDay = workingDay;
+	}
+
+	public boolean hasDeclaredStartDay() {
+		return declaredStartDay != null;
+	}
+
+	public boolean hasDeclaredEndDay() {
+		return declaredEndDay != null;
 	}
 }

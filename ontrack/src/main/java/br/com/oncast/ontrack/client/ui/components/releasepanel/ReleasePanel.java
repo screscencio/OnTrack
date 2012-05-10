@@ -111,7 +111,7 @@ public class ReleasePanel implements Component {
 		return rootRelease.hashCode();
 	}
 
-	public ReleaseWidget findWidgetAndSetContainerState(final Release release, final boolean state) {
-		return releasePanelWidget.findWidgetAndSetContainerState(release, state);
+	public ReleaseWidget getWidgetFor(final Release release) {
+		return releasePanelWidget.getWidgetFor(release);
 	}
 }

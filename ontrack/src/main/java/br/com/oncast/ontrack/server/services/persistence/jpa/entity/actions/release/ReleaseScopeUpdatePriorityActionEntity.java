@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 
-@Entity(name = "ReleaseScopePriorityUp")
+@Entity(name = "ReleaseScopeUpdatePriority")
 @ConvertTo(ReleaseScopeUpdatePriorityAction.class)
 public class ReleaseScopeUpdatePriorityActionEntity extends ModelActionEntity {
 
@@ -26,7 +26,7 @@ public class ReleaseScopeUpdatePriorityActionEntity extends ModelActionEntity {
 	private String scopeReferenceId;
 
 	@ConversionAlias("priority")
-	@Column(name = ActionTableColumns.INTEGER)
+	@Column(name = ActionTableColumns.INT_1)
 	private int priority;
 
 	public String getReleaseReferenceId() {

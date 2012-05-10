@@ -27,4 +27,10 @@ public class ContextProviderServiceMock implements ContextProviderService {
 	public void loadProjectContext(final long requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
 		throw new RuntimeException("Should not be called.");
 	}
+
+	@Override
+	public ProjectContext getCurrentProjectContext() {
+		if (projectContext != null) return projectContext;
+		throw new RuntimeException();
+	}
 }

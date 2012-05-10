@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.utils.mocks.models;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
 public class ReleaseTestUtils {
 
@@ -106,6 +107,20 @@ public class ReleaseTestUtils {
 			scope.getProgress().setDescription(description);
 			release.addScope(scope);
 		}
+		return release;
+	}
+
+	public static Release setInferedStartDay(final Release release, final WorkingDay day) {
+		final Scope scope = ScopeTestUtils.createScope();
+		ScopeTestUtils.setStartDate(scope, day);
+		release.addScope(scope);
+		return release;
+	}
+
+	public static Release setInferedEndDay(final Release release, final WorkingDay day) {
+		final Scope scope = ScopeTestUtils.createScope();
+		ScopeTestUtils.setEndDate(scope, day);
+		release.addScope(scope);
 		return release;
 	}
 

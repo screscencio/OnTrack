@@ -38,4 +38,5 @@ class ScopeTreeInsertParentAction implements ScopeTreeAction {
 			tree.setSelectedItem(newTreeItem);
 		}
 	}
+
 }

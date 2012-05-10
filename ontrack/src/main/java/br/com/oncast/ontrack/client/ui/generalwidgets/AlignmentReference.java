@@ -35,7 +35,7 @@ public class AlignmentReference {
 	public enum HorizontalAlignment implements Alignment {
 		LEFT(AlignmentStyleAttribute.LEFT, AlignmentDirection.POSITIVE, AlignmentAnchor.EDGE),
 		RIGHT(AlignmentStyleAttribute.RIGHT, AlignmentDirection.NEGATIVE, AlignmentAnchor.EDGE),
-		HORIZONTAL_CENTER(AlignmentStyleAttribute.LEFT, AlignmentDirection.POSITIVE, AlignmentAnchor.MIDDLE);
+		CENTER(AlignmentStyleAttribute.LEFT, AlignmentDirection.POSITIVE, AlignmentAnchor.MIDDLE);
 
 		private final AlignmentConfiguration configuration;
 
@@ -52,7 +52,7 @@ public class AlignmentReference {
 	public enum VerticalAlignment implements Alignment {
 		TOP(AlignmentStyleAttribute.TOP, AlignmentDirection.POSITIVE, AlignmentAnchor.EDGE),
 		BOTTOM(AlignmentStyleAttribute.BOTTOM, AlignmentDirection.NEGATIVE, AlignmentAnchor.EDGE),
-		VERTICAL_CENTER(AlignmentStyleAttribute.TOP, AlignmentDirection.POSITIVE, AlignmentAnchor.MIDDLE);
+		MIDDLE(AlignmentStyleAttribute.TOP, AlignmentDirection.POSITIVE, AlignmentAnchor.MIDDLE);
 
 		private final AlignmentConfiguration configuration;
 

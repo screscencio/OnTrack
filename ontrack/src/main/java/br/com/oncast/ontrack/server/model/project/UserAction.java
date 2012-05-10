@@ -24,6 +24,10 @@ public class UserAction {
 	@IgnoredByDeepEquality
 	private ProjectRepresentation projectRepresentation;
 
+	@Attribute
+	@IgnoredByDeepEquality
+	private long userId;
+
 	public UserAction() {}
 
 	public long getId() {
@@ -40,5 +44,9 @@ public class UserAction {
 
 	public ProjectRepresentation getProjectRepresentation() {
 		return projectRepresentation;
+	}
+
+	public long getUserId() {
+		return userId;
 	}
 }

@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.user.client.ui.Label;
-import com.octo.gwt.test.GwtTest;
+import com.googlecode.gwt.test.GwtTest;
 
 public class ScopeTreeItemWidgetTest extends GwtTest {
 

@@ -6,7 +6,8 @@ import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.client.services.errorHandling.ErrorTreatmentService;
+import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
+import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -16,23 +17,25 @@ import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
+import com.google.gwt.user.client.Window;
+
 public class ActionSyncService {
 
 	private final ActionQueuedDispatcher actionQueuedDispatcher;
 
 	private final ActionExecutionService actionExecutionService;
 
-	private final ErrorTreatmentService errorTreatmentService;
+	private final ClientNotificationService notificationService;
 
 	private final ProjectRepresentationProvider projectRepresentationProvider;
 
 	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
 			final ActionExecutionService actionExecutionService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ErrorTreatmentService errorTreatmentService) {
+			final ClientNotificationService notificationService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
-		this.errorTreatmentService = errorTreatmentService;
 		this.actionExecutionService = actionExecutionService;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, errorTreatmentService);
+		this.notificationService = notificationService;
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, notificationService);
 
 		serverPushClientService.registerServerEventHandler(ServerActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
@@ -60,8 +63,13 @@ public class ActionSyncService {
 				actionExecutionService.onNonUserActionRequest(modelAction);
 		}
 		catch (final UnableToCompleteActionException e) {
-			errorTreatmentService.treatFatalError(
-					"The application is out of sync with the server.\n\nIt will be briethly reloaded and some of your lattest changes may be rollbacked.", e);
+			notificationService.showErrorWithConfirmation("Some of the lattest changes conflicted.",
+					new NotificationConfirmationListener() {
+						@Override
+						public void onConfirmation() {
+							Window.Location.reload();
+						}
+					});
 		}
 	}
 

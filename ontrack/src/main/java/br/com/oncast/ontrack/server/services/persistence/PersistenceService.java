@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 
 public interface PersistenceService {
 
-	public void persistActions(final long projectId, final List<ModelAction> actionList, final Date timestamp)
+	public void persistActions(final long projectId, long userId, final List<ModelAction> actionList, final Date timestamp)
 			throws PersistenceException;
 
 	public ProjectSnapshot retrieveProjectSnapshot(long projectId) throws PersistenceException, NoResultFoundException;

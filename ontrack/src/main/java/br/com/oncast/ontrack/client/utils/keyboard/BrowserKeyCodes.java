@@ -46,13 +46,25 @@ public class BrowserKeyCodes {
 
 	public static final int KEY_DOWN = 40;
 
-	public static final int KEY_AT = 50;
+	/**
+	 * This key with Shift Modifier pressed is the KEY_AT
+	 */
+	public static final int KEY_2 = 50;
 
-	public static final int KEY_SHARP = 51;
+	/**
+	 * This key with Shift Modifier pressed is the KEY_SHARP
+	 */
+	public static final int KEY_3 = 51;
 
-	public static final int KEY_DOLLAR = 52;
+	/**
+	 * This key with Shift Modifier pressed is the KEY_DOLLAR
+	 */
+	public static final int KEY_4 = 52;
 
-	public static final int KEY_PERCENT = 53;
+	/**
+	 * This key with Shift Modifier pressed is the KEY_PERCENT
+	 */
+	public static final int KEY_5 = 53;
 
 	public static final int KEY_U = 85;
 

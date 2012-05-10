@@ -36,14 +36,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 
 	@Override
-	public void persistActions(final long projectId, final List<ModelAction> actionList, final Date timestamp) throws PersistenceException {
+	public void persistActions(final long projectId, final long userId, final List<ModelAction> actionList, final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
 			final ProjectRepresentation projectRepresentation = retrieveProjectRepresentation(projectId);
 			for (final ModelAction modelAction : actionList) {
 				final ModelActionEntity entity = convertActionToEntity(modelAction);
-				final UserActionEntity container = new UserActionEntity(entity, projectRepresentation, timestamp);
+				final UserActionEntity container = new UserActionEntity(entity, userId, projectRepresentation, timestamp);
 				em.persist(container);
 			}
 			em.getTransaction().commit();

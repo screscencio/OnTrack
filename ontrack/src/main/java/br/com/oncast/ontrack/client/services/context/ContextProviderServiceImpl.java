@@ -73,4 +73,10 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 					}
 				});
 	}
+
+	@Override
+	public ProjectContext getCurrentProjectContext() {
+		if (projectContext == null) throw new RuntimeException("There is no project context avaliable.");
+		return projectContext;
+	}
 }

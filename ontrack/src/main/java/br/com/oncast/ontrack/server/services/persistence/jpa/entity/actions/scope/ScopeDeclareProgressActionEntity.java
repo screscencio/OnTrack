@@ -25,11 +25,11 @@ public class ScopeDeclareProgressActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
-	@Column(name = ActionTableColumns.STRING_2, length = 400)
+	@Column(name = ActionTableColumns.STRING_2, length = ActionTableColumns.STRING_2_LENGTH)
 	private String newProgressDescription;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = ActionTableColumns.TIMESTAMP)
+	@Column(name = ActionTableColumns.DATE_1)
 	private Date timestamp;
 
 	@ConversionAlias("subAction")

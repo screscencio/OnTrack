@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.places;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_Z;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.ui.keyeventhandler.EventPostExecutionProcessor;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.EventProcessor;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
@@ -35,8 +35,8 @@ public enum UndoRedoShortCutMapping implements ShortcutMapping<ActionExecutionSe
 	}
 
 	@Override
-	public EventPostExecutionProcessor getEventPostExecutionProcessor() {
-		return EventPostExecutionProcessor.CONSUME;
+	public EventProcessor getEventPostExecutionProcessor() {
+		return EventProcessor.CONSUME;
 	}
 
 }

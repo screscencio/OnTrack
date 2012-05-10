@@ -28,11 +28,6 @@ public class ProgressPlace extends ProjectDependentPlace {
 		return projectId;
 	}
 
-	@Override
-	public boolean equals(final Object obj) {
-		return false;
-	}
-
 	@Prefix(PlacesPrefixes.PROGRESS)
 	public static class Tokenizer implements PlaceTokenizer<ProgressPlace> {
 

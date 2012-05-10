@@ -4,9 +4,11 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_EN
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectAuthorizationCallback;
-import br.com.oncast.ontrack.client.services.messages.ClientNotificationService;
+import br.com.oncast.ontrack.client.services.validation.EmailValidator;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
+import br.com.oncast.ontrack.shared.model.user.User;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -20,6 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InvitationWidget extends Composite implements HasCloseHandlers<InvitationWidget>, PopupAware {
@@ -32,6 +35,9 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	@UiField
 	protected DefaultTextedTextBox invitationTextBox;
+
+	@UiField
+	protected Label countdownLabel;
 
 	public InvitationWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -54,9 +60,17 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	@Override
 	public void show() {
-		this.setVisible(true);
 		focus();
 		setDefaultText();
+		validateCountdown();
+	}
+
+	private void validateCountdown() {
+		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
+		final int invitationQuota = (currentUser == null || currentUser.getProjectInvitationQuota() <= 0) ? 0 : currentUser.getProjectInvitationQuota();
+
+		countdownLabel.setText("You have '" + invitationQuota + "' invitations left.");
+		invitationTextBox.setEnabled(invitationQuota > 0);
 	}
 
 	private void setDefaultText() {
@@ -65,7 +79,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	@Override
 	public void hide() {
-		this.setVisible(false);
+		if (!this.isVisible()) return;
 		invitationTextBox.setText("");
 		CloseEvent.fire(this, this);
 	}
@@ -77,29 +91,33 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 	private enum InvitationKeyDownHandler {
 
-		INVITE(KEY_ENTER, true) {
+		INVITE(KEY_ENTER) {
 			@Override
 			protected void executeImpl(final InvitationWidget widget) {
 				final String mail = widget.invitationTextBox.getText();
-				if (mail.trim().isEmpty()) return;
+				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 
 				widget.hide();
-				// FIXME Mats change this for show info or waiting message;
-				ClientNotificationService.showSuccess("Processing you invitation in background...");
+				// TODO Change this for show info or loading type notification;
+				ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Processing you invitation...");
 				PROVIDER.getProjectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
-						ClientNotificationService.showSuccess("User with e-mail '" + mail + "' was successfully invited");
+						ClientServiceProvider.getInstance().getClientNotificationService()
+								.showSuccess("'" + mail + "' was invited!");
 					}
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						ClientNotificationService.showError(caught.getMessage());
+						if (caught instanceof UnableToAuthorizeUserException) ClientServiceProvider.getInstance().getClientNotificationService()
+								.showWarning("'" + mail + "' already has been invited");
+						else
+						ClientServiceProvider.getInstance().getClientNotificationService().showWarning(caught.getMessage());
 					}
 				});
 			}
 		},
-		CANCEL(KEY_ESCAPE, true) {
+		CANCEL(KEY_ESCAPE) {
 			@Override
 			protected void executeImpl(final InvitationWidget widget) {
 				widget.hide();
@@ -107,11 +125,9 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 		};
 
 		private final int keyCode;
-		private boolean shouldConsume;
 
-		private InvitationKeyDownHandler(final int keyCode, final boolean shouldConsume) {
+		private InvitationKeyDownHandler(final int keyCode) {
 			this.keyCode = keyCode;
-			this.shouldConsume = shouldConsume;
 		}
 
 		protected abstract void executeImpl(InvitationWidget widget);
@@ -123,6 +139,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 					return true;
 				}
 			}
+			consume(event);
 			return false;
 		}
 
@@ -131,12 +148,8 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 			consume(event);
 		}
 
-		private void consume(final DomEvent<?> event) {
-			if (shouldConsume) {
-				event.preventDefault();
-				event.stopPropagation();
-			}
-
+		private static void consume(final DomEvent<?> event) {
+			event.stopPropagation();
 		}
 
 	}

@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.BreadcrumbWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
@@ -17,7 +17,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 public class ProgressActivity extends AbstractActivity {
 
@@ -51,7 +50,7 @@ public class ProgressActivity extends AbstractActivity {
 
 				@Override
 				public void updateReleaseInfo() {
-					updateViewMenus();
+					updateCustomApplicationMenus();
 				}
 			});
 		}
@@ -64,27 +63,28 @@ public class ProgressActivity extends AbstractActivity {
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		if (view == null) throw new RuntimeException("The view wasnt initialized correctly.");
 
+		view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
+		view.getApplicationMenu().setBackButtonVisibility(true);
+
 		updateViewData();
-		updateViewMenus();
+		updateCustomApplicationMenus();
 
 		panel.setWidget(view);
 
 		progressPanelActionSyncController.registerActionExecutionListener();
 		registration = ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
+		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.getNotificationPanel());
 	}
 
 	@Override
 	public void onStop() {
 		progressPanelActionSyncController.unregisterActionExecutionListener();
 		registration.unregister();
+		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
 	}
 
 	protected void updateViewData() {
 		view.getKanbanPanel().configureKanbanPanel(projectContext.getKanban(release), release);
-	}
-
-	private void updateViewMenus() {
-		updateBreadcrumb();
 	}
 
 	private void exitToPlanningPlace() {
@@ -92,10 +92,11 @@ public class ProgressActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
 	}
 
-	private Widget updateBreadcrumb() {
-		final BreadcrumbWidget breadcrumb = view.getApplicationMenu().getBreadcrumb();
-		breadcrumb.clearItems();
-		breadcrumb.addPopupItem(release.getFullDescription(), new ReleaseSelectionWidget());
-		return breadcrumb;
+	private void updateCustomApplicationMenus() {
+		view.getApplicationMenu().clearCustomMenuItems().addCustomMenuItem(createReleaseMenuItem(), new ReleaseSelectionWidget());
+	}
+
+	private ApplicationMenuItem createReleaseMenuItem() {
+		return new ApplicationMenuItem(release.getFullDescription(), true);
 	}
 }

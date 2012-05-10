@@ -5,13 +5,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveDownActionEntity;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
-public class ScopeMoveDownActionTest {
+public class ScopeMoveDownActionTest extends ModelActionTest {
 
 	private Scope rootScope;
 	private Scope firstChild;
@@ -66,6 +68,16 @@ public class ScopeMoveDownActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void lastNodeCantBeMovedDown() throws UnableToCompleteActionException {
 		new ScopeMoveDownAction(lastChild.getId()).execute(context);
+	}
+
+	@Override
+	protected Class<? extends ModelActionEntity> getEntityType() {
+		return ScopeMoveDownActionEntity.class;
+	}
+
+	@Override
+	protected Class<? extends ModelAction> getActionType() {
+		return ScopeMoveDownAction.class;
 	}
 
 }
