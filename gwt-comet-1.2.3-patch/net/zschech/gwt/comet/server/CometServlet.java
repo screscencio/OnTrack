@@ -40,6 +40,7 @@ import net.zschech.gwt.comet.server.impl.CometSessionImpl;
 import net.zschech.gwt.comet.server.impl.EventSourceCometServletResponse;
 import net.zschech.gwt.comet.server.impl.HTTPRequestCometServletResponse;
 import net.zschech.gwt.comet.server.impl.IEHTMLFileCometServletResponse;
+import net.zschech.gwt.comet.server.impl.IEXDRCometServletResponse;
 import net.zschech.gwt.comet.server.impl.OperaEventSourceCometServletResponse;
 
 import com.google.gwt.rpc.server.ClientOracle;
@@ -117,6 +118,13 @@ public class CometServlet extends HttpServlet {
 			ClientOracle clientOracle, int requestHeartbeat) {
 		String accept = request.getHeader("Accept");
 		String userAgent = request.getHeader("User-Agent");
+		
+		//IMPORTANT this is a workarround for IE 9 
+		if (userAgent.contains("MSIE 9.0")) {
+			return new IEXDRCometServletResponse(request, response,
+					serializationPolicy, clientOracle, this, async, heartbeat);
+		}
+			
 		if ("text/event-stream".equals(accept)) {
 			return new EventSourceCometServletResponse(request, response, serializationPolicy, clientOracle, this, async, requestHeartbeat);
 		} else if ("application/comet".equals(accept)) {
