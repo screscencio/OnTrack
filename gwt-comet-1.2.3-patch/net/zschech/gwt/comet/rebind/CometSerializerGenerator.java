@@ -47,6 +47,7 @@ import com.google.gwt.user.rebind.rpc.TypeSerializerCreator;
 
 public class CometSerializerGenerator extends GeneratorExt {
 	
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	public RebindResult generateIncrementally(TreeLogger logger, GeneratorContextExt context, String typeName) throws UnableToCompleteException {
 		

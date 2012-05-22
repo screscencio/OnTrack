@@ -3,24 +3,14 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc= "urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:image field="menuIconClosed" src="arrow_down.png"/>
-	<ui:image field="menuIconOpened" src="arrow_up.png"/>
-	<ui:image field="control" src="shortcuts/ctrl.png" />
-	<ui:image field="arrows" src="shortcuts/arrows.png" />
-	<ui:image field="at" src="shortcuts/associate.png" />
-	<ui:image field="percentage" src="shortcuts/progress.png" />
-	<ui:image field="sharp" src="shortcuts/effort.png" />
-	<ui:image field="dollar" src="shortcuts/value.png" />
-	<ui:image field="f2" src="shortcuts/f2.png" />
-	<ui:image field="enter" src="shortcuts/enter.png" />
-	
-	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.footerbar.FooterBar.FooterBarStyle">
+	<ui:style src="../../style/default.css">
 	
 		.root {
 			width: 100%;
 		}
 		.footer {
 			border: RELEASE_WIDGET_BORDER;
+			padding: 8px;
 			
 			background: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED;
 			box-shadow: inset 0px 1px 0px 0px #e9e9e9, POPUP_SHADOW;
@@ -36,24 +26,8 @@
 			padding: 8px;
 			width: 100%;
 			height: 100%;
-		}
-		
-		.scroll {
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			bottom: 0px;
 			
-			overflow: hidden;
-			white-space: nowrap;
-			cursor: default;
-			-webkit-touch-callout: none;
-			-webkit-user-select: none;
-			-khtml-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			user-select: none;
+			position: relative;
 		}
 		
 		.shortcut {
@@ -74,51 +48,25 @@
 			
 			white-space: nowrap;
 		}
-		.feedbackLink {
-			cursor: pointer;
-			margin-left: 10px;
+		.feedback {
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			
+			padding: 4px;
+			
+			width: auto;
+			height: auto;
+			
+			color: COLOR_MENU_LINK;
+			
 			font-size: FONT_SIZE_SMALL;
 			white-space: nowrap;
-		}
-		.feedbackLink:HOVER {
-			color: COLOR_YELLOW;
-		}
-		
-		@sprite .menu {
+			
 			cursor: pointer;
-			margin-left: 8px;
-			gwt-image: 'menuIconClosed';
 		}
-		
-		@sprite .menuOpened {
-			gwt-image: 'menuIconOpened';
-		}
-		
-		@sprite .control {
-			gwt-image: 'control';
-		}
-		
-		@sprite .arrows {
-			gwt-image: 'arrows';
-		}
-		
-		@sprite .at {
-			gwt-image: 'at';
-		}
-		@sprite .sharp {
-			gwt-image: 'sharp';
-		}
-		@sprite .percentage {
-			gwt-image: 'percentage';
-		}
-		@sprite .dollar {
-			gwt-image: 'dollar';
-		}
-		@sprite .f2 {
-			gwt-image: 'f2';
-		}
-		@sprite .enter {
-			gwt-image: 'enter';
+		.feedback:HOVER {
+			color: COLOR_MENU_LINK_HOVER;
 		}
 		
 		.scrollArea {
@@ -135,10 +83,27 @@
 		}
 		
 		.scrollContainer {
-			width: 100%;
-			height: 100%;
-			
 			position: relative;
+			margin-right: 109px;
+			height: 17px;
+		}
+		
+		.scroll {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			
+			overflow: hidden;
+			white-space: nowrap;
+			cursor: default;
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
 		}
 		
 		@if user.agent ff gecko mozilla firefox Gecko Mozilla moz gecko1_8 {
@@ -151,47 +116,41 @@
 	
 	<g:FocusPanel styleName="{style.root}">
 		<g:HTMLPanel styleName="{style.footer}">
-			<g:HorizontalPanel verticalAlignment="middle" styleName="{style.container}">
-				<g:cell width="*" height="100%">
-					<g:HTMLPanel styleName="{style.scrollContainer}">
-						<g:HTMLPanel ui:field="scroll" styleName="{style.scroll}">
-							<g:HorizontalPanel  verticalAlignment="middle">
-								<misc:ShortcutLabel text="ENTER" styleName="{style.shortcut}" />
-								<g:Label text="Insert Bellow" styleName="{style.shortcutDescription}" />
-								
-								<misc:ShortcutLabel text="CONTROL ENTER" styleName="{style.shortcut}" />
-								<g:Label text="Insert a Child" styleName="{style.shortcutDescription}" />
-								
-								<misc:ShortcutLabel text="@" styleName="{style.shortcut}" />
-								<g:Label text="Schedule" styleName="{style.shortcutDescription}" />
-								
-								<misc:ShortcutLabel text="#" styleName="{style.shortcut}" />
-								<g:Label text="Effort" styleName="{style.shortcutDescription}" />
-								
-								<misc:ShortcutLabel text="$" styleName="{style.shortcut}" />
-								<g:Label text="Value" styleName="{style.shortcutDescription}" />
-								
-								<misc:ShortcutLabel text="%" styleName="{style.shortcut}" />
-								<g:Label text="Progress" styleName="{style.shortcutDescription}" />
-								
-								<misc:ShortcutLabel text="CONTROL ARROWS" styleName="{style.shortcut}" />
-								<g:Label text="Move" styleName="{style.shortcutDescription}" />
-								
-								<misc:ShortcutLabel text="CONTROL Z" styleName="{style.shortcut} {style.upperAdjust}" />
-								<g:Label text="Undo" styleName="{style.shortcutDescription}" />
-								
-								<misc:ShortcutLabel text="CONTROL F" styleName="{style.shortcut} {style.upperAdjust}" />
-								<g:Label text="Search" styleName="{style.shortcutDescription}" />
-							</g:HorizontalPanel>
-						</g:HTMLPanel>
-						<g:FocusPanel ui:field="rightScrollArea" styleName="{style.scrollArea} {style.scrollRight}"/>
-						<g:FocusPanel ui:field="leftScrollArea" styleName="{style.scrollArea} {style.scrollLeft}"/>
-					</g:HTMLPanel>
-				</g:cell>
-				<g:cell width="1">
-					<g:Label text="Give us Feedback" ui:field="feedbackLink" styleName="{style.feedbackLink}" horizontalAlignment="right"/>
-				</g:cell>
-			</g:HorizontalPanel>
+			<g:HTMLPanel styleName="{style.scrollContainer}">
+				<g:HTMLPanel ui:field="scroll" styleName="{style.scroll}">
+					<g:HorizontalPanel verticalAlignment="middle" >
+						<misc:ShortcutLabel text="ENTER" styleName="{style.shortcut}" />
+						<g:Label text="Insert Bellow" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="CONTROL ENTER" styleName="{style.shortcut}" />
+						<g:Label text="Insert a Child" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="@" styleName="{style.shortcut}" />
+						<g:Label text="Schedule" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="#" styleName="{style.shortcut}" />
+						<g:Label text="Effort" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="$" styleName="{style.shortcut}" />
+						<g:Label text="Value" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="%" styleName="{style.shortcut}" />
+						<g:Label text="Progress" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="CONTROL ARROWS" styleName="{style.shortcut}" />
+						<g:Label text="Move" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="CONTROL Z" styleName="{style.shortcut} {style.upperAdjust}" />
+						<g:Label text="Undo" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="CONTROL F" styleName="{style.shortcut} {style.upperAdjust}" />
+						<g:Label text="Search" styleName="{style.shortcutDescription}" />
+					</g:HorizontalPanel>
+				</g:HTMLPanel>
+				<g:FocusPanel ui:field="rightScrollArea" styleName="{style.scrollArea} {style.scrollRight}"/>
+				<g:FocusPanel ui:field="leftScrollArea" styleName="{style.scrollArea} {style.scrollLeft}"/>
+			</g:HTMLPanel>
+			<g:Button text="Give us Feedback" ui:field="feedback" styleName="{style.menuboxButton} {style.feedback}"/>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

@@ -21,8 +21,6 @@ import java.util.List;
 
 import net.zschech.gwt.comet.client.impl.CometTransport;
 import net.zschech.gwt.comet.client.impl.EventSourceCometTransport;
-import net.zschech.gwt.comet.client.impl.IEXDRCometTransport;
-import net.zschech.gwt.comet.client.impl.XDomainRequest;
 import net.zschech.gwt.eventsource.client.EventSource;
 
 import com.google.gwt.core.client.Duration;
@@ -281,8 +279,6 @@ public class CometClient {
 		public CometClientTransportWrapper() {
 			if (EventSource.isSupported()) {
 				transport = new EventSourceCometTransport();
-			} else if (XDomainRequest.isSupported()) { //IMPORTANT this is a workaround for IE 9 security rule
-              transport = new IEXDRCometTransport(); 
 			} else {
 				transport = GWT.create(CometTransport.class);
 			}

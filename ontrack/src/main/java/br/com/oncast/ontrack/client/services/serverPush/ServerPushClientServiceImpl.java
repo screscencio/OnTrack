@@ -39,6 +39,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			@Override
 			public void onError(final Throwable exception) {
 				exception.printStackTrace();
+				// FIXME Mats think about how to update current model without being annoying to the user
 				notificationService.showErrorWithConfirmation("No internet connection...", new NotificationConfirmationListener() {
 					@Override
 					public void onConfirmation() {

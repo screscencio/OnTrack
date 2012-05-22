@@ -90,7 +90,7 @@ public class RemoveOnCancelScheduledThreadPoolExecutor extends ScheduledThreadPo
 			return result;
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj) {
@@ -119,7 +119,7 @@ public class RemoveOnCancelScheduledThreadPoolExecutor extends ScheduledThreadPo
 			return wrap.getDelay(unit);
 		}
 		
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		@Override
 		public int compareTo(Delayed o) {
 			return wrap.compareTo(((WrapScheduledFuture) o).wrap);

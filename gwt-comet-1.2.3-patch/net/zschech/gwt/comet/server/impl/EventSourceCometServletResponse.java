@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.zschech.gwt.comet.client.impl.OperaEventSourceCometTransport;
 import net.zschech.gwt.comet.server.CometServlet;
-import net.zschech.gwt.comet.server.CometSession;
 
 import com.google.gwt.rpc.server.ClientOracle;
 import com.google.gwt.user.server.rpc.SerializationPolicy;

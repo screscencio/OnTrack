@@ -214,6 +214,7 @@ public abstract class AbstractGrizzlyAsyncServlet extends NonBlockingAsyncServle
 			}
 		}
 		
+		@SuppressWarnings("rawtypes")
 		@Override
 		public void onInitialize(CometEvent event) throws IOException {
 			synchronized (response) {
@@ -224,11 +225,13 @@ public abstract class AbstractGrizzlyAsyncServlet extends NonBlockingAsyncServle
 		}
 		
 		@Override
+		@SuppressWarnings("rawtypes")
 		public void onInterrupt(CometEvent event) throws IOException {
 			terminate();
 		}
 		
 		@Override
+		@SuppressWarnings("rawtypes")
 		public void onTerminate(CometEvent event) throws IOException {
 			terminate();
 		}
@@ -242,6 +245,7 @@ public abstract class AbstractGrizzlyAsyncServlet extends NonBlockingAsyncServle
 		}
 		
 		@Override
+		@SuppressWarnings("rawtypes")
 		public void onEvent(CometEvent event) throws IOException {
 			active = true;
 			if (event.getType() == CometEvent.WRITE) {

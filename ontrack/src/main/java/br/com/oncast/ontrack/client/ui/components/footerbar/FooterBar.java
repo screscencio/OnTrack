@@ -7,14 +7,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class FooterBar extends Composite {
@@ -22,13 +21,6 @@ public class FooterBar extends Composite {
 	private static FooterBarUiBinder uiBinder = GWT.create(FooterBarUiBinder.class);
 
 	interface FooterBarUiBinder extends UiBinder<Widget, FooterBar> {}
-
-	interface FooterBarStyle extends CssResource {
-		String menuOpened();
-	}
-
-	@UiField
-	FooterBarStyle style;
 
 	@UiField
 	HTMLPanel scroll;
@@ -40,7 +32,7 @@ public class FooterBar extends Composite {
 	FocusPanel rightScrollArea;
 
 	@UiField
-	Label feedbackLink;
+	Button feedback;
 
 	private ShortcutPanelMover mover;
 
@@ -70,7 +62,7 @@ public class FooterBar extends Composite {
 		mover.cancel();
 	}
 
-	@UiHandler("feedbackLink")
+	@UiHandler("feedback")
 	void onClick(final ClickEvent event) {
 		PopupConfig.configPopup()
 				.popup(new FeedbackPopup())

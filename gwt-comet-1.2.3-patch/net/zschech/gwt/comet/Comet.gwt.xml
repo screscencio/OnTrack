@@ -28,6 +28,13 @@
 		</any>
 	</replace-with>
 	
+	<replace-with class="net.zschech.gwt.comet.client.impl.IEXDRCometTransport">
+		<when-type-is class="net.zschech.gwt.comet.client.impl.CometTransport"/>
+		<any>
+			<when-property-is name="user.agent" value="ie9"/>
+		</any>
+	</replace-with>
+	
 	<replace-with class="net.zschech.gwt.comet.client.impl.OperaEventSourceCometTransport">
 		<when-type-is class="net.zschech.gwt.comet.client.impl.CometTransport"/>
 		<when-property-is name="user.agent" value="opera"/>

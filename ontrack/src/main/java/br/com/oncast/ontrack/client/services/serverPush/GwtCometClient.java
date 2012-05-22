@@ -30,46 +30,46 @@ class GwtCometClient implements ServerPushClient {
 
 	public GwtCometClient(final ClientIdentificationProvider clientIdentificationProvider, final ServerPushClientEventListener serverPushClientEventListener) {
 		client = new CometClient(URLBuilder.SERVER_PUSH_COMET_URL,
-						clientIdentificationProvider.getClientId().toStringRepresentation(),
-						GWT.<CometSerializer> create(ServerPushSerializer.class),
-						new CometListener() {
+				clientIdentificationProvider.getClientId().toStringRepresentation(),
+				GWT.<CometSerializer> create(ServerPushSerializer.class),
+				new CometListener() {
+
+					@Override
+					public void onConnected(final int heartbeat) {
+						serverPushClientEventListener.onConnected();
+					}
+
+					@Override
+					public void onDisconnected() {
+						serverPushClientEventListener.onDisconnected();
+					}
+
+					@Override
+					public void onHeartbeat() {}
+
+					@Override
+					public void onRefresh() {}
+
+					@Override
+					public void onError(final Throwable exception, final boolean connected) {
+						// IMPORTANT This is a workaround so that Alerts are not shown when manually reloading the application. This is done because
+						// there is no
+						// safe
+						// way to determine if a error was caused by the reload itself and the library errors throw only one type of exception.
+						new Timer() {
 
 							@Override
-							public void onConnected(final int heartbeat) {
-								serverPushClientEventListener.onConnected();
+							public void run() {
+								serverPushClientEventListener.onError(exception);
 							}
+						}.schedule(500);
+					}
 
-							@Override
-							public void onDisconnected() {
-								serverPushClientEventListener.onDisconnected();
-							}
-
-							@Override
-							public void onHeartbeat() {}
-
-							@Override
-							public void onRefresh() {}
-
-							@Override
-							public void onError(final Throwable exception, final boolean connected) {
-								// IMPORTANT This is a workaround so that Alerts are not shown when manually reloading the application. This is done because
-								// there is no
-								// safe
-								// way to determine if a error was caused by the reload itself and the library errors throw only one type of exception.
-								new Timer() {
-
-									@Override
-									public void run() {
-										serverPushClientEventListener.onError(exception);
-									}
-								}.schedule(500);
-							}
-
-							@Override
-							public void onMessage(final List<? extends Serializable> messages) {
-								processIncomingMessages(serverPushClientEventListener, messages);
-							}
-						});
+					@Override
+					public void onMessage(final List<? extends Serializable> messages) {
+						processIncomingMessages(serverPushClientEventListener, messages);
+					}
+				});
 
 		// IMPORTANT This timer is only used to keep the session alive. Should be removed when changing ServerPush implementation.
 		new Timer() {

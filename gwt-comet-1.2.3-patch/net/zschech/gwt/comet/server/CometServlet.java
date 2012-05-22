@@ -121,8 +121,7 @@ public class CometServlet extends HttpServlet {
 		
 		//IMPORTANT this is a workarround for IE 9 
 		if (userAgent.contains("MSIE 9.0")) {
-			return new IEXDRCometServletResponse(request, response,
-					serializationPolicy, clientOracle, this, async, heartbeat);
+			return new IEXDRCometServletResponse(request, response, serializationPolicy, clientOracle, this, async, heartbeat);
 		}
 			
 		if ("text/event-stream".equals(accept)) {
