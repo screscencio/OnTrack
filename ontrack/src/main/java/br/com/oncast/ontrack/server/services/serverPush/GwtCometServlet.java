@@ -53,6 +53,7 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	private static void addCometSession(final CometSession cometSession) {
 		LOGGER.debug("A new commet session was added (clientId='" + cometSession.getSessionID() + "', sessionId='" + cometSession.getHttpSession().getId()
 				+ "').");
+		LOGGER.debug("Commet sessions: " + cometSessionMap.size());
 
 		cometSessionMap.put(cometSession.getSessionID(), cometSession);
 		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientConnected(createGwtCometClientConnection(cometSession));

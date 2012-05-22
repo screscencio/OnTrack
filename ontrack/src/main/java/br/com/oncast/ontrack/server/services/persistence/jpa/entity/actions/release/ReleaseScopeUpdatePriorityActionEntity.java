@@ -22,7 +22,7 @@ public class ReleaseScopeUpdatePriorityActionEntity extends ModelActionEntity {
 
 	@ConversionAlias("scopeReferenceId")
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = ActionTableColumns.STRING_4)
+	@Column(name = ActionTableColumns.STRING_3)
 	private String scopeReferenceId;
 
 	@ConversionAlias("priority")

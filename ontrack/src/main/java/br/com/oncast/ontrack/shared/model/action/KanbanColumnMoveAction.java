@@ -48,7 +48,6 @@ public class KanbanColumnMoveAction implements KanbanAction {
 			return new KanbanColumnMoveAction(releaseId, columnDescription, previousIndex);
 		}
 		catch (final RuntimeException e) {
-			e.printStackTrace();
 			throw new UnableToCompleteActionException(e);
 		}
 	}

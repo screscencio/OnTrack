@@ -55,7 +55,10 @@ public class UserXMLNode {
 	}
 
 	public User getUser() {
-		return new User(email);
+		final User user = new User(email);
+		user.setProjectCreationQuota(projectCreationQuota);
+		user.setProjectInvitationQuota(projectInvitationQuota);
+		return user;
 	}
 
 	public boolean hasPassword() {

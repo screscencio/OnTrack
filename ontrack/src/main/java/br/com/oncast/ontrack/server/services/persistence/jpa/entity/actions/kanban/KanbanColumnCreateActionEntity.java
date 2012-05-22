@@ -26,7 +26,7 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 	private String referenceId;
 
 	@ConversionAlias("columnDescription")
-	@Column(name = ActionTableColumns.STRING_2, length = ActionTableColumns.STRING_2_LENGTH)
+	@Column(name = ActionTableColumns.STRING_2)
 	private String columnDescription;
 
 	@ConversionAlias("shouldFixKanban")

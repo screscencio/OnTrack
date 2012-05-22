@@ -35,6 +35,9 @@ public class Release implements Serializable {
 	@IgnoredByDeepEquality
 	private WorkingDay declaredEndDay;
 
+	@IgnoredByDeepEquality
+	private Float declaredEstimatedVelocity;
+
 	// IMPORTANT The default constructor is used by GWT to construct new releases. Do not remove this.
 	protected Release() {}
 
@@ -263,7 +266,7 @@ public class Release implements Serializable {
 	}
 
 	public WorkingDay getStartDay() {
-		return hasDeclaredStartDay() ? declaredStartDay : getInferedStartDay();
+		return hasDeclaredStartDay() ? declaredStartDay.copy() : getInferedStartDay();
 	}
 
 	public WorkingDay getInferedStartDay() {
@@ -278,7 +281,7 @@ public class Release implements Serializable {
 	}
 
 	public WorkingDay getEndDay() {
-		return hasDeclaredEndDay() ? declaredEndDay : getInferedEndDay();
+		return hasDeclaredEndDay() ? declaredEndDay.copy() : getInferedEndDay();
 	}
 
 	public WorkingDay getInferedEndDay() {
@@ -414,5 +417,17 @@ public class Release implements Serializable {
 
 	public boolean hasDeclaredEndDay() {
 		return declaredEndDay != null;
+	}
+
+	public void declareEstimatedVelocity(final Float declaredVelocity) {
+		this.declaredEstimatedVelocity = declaredVelocity;
+	}
+
+	public boolean hasDeclaredEstimatedVelocity() {
+		return declaredEstimatedVelocity != null;
+	}
+
+	public Float getEstimatedVelocity() {
+		return declaredEstimatedVelocity;
 	}
 }

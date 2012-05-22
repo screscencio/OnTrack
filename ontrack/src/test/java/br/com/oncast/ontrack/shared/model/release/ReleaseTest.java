@@ -503,6 +503,38 @@ public class ReleaseTest {
 		assertEquals(declaredDay, release.getEndDay());
 	}
 
+	@Test
+	public void getEstimatedVelocityShouldReturnNullIfThereIsNoDeclaredVelocity() throws Exception {
+		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		assertNull(release.getEstimatedVelocity());
+	}
+
+	@Test
+	public void getEstimatedVelocityShouldReturnTheDeclaredVelocity() throws Exception {
+		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final Float declaredVelocity = 1.4f;
+
+		release.declareEstimatedVelocity(declaredVelocity);
+
+		assertEquals(declaredVelocity, release.getEstimatedVelocity());
+	}
+
+	@Test
+	public void shouldNotHaveDeclaredEstimatedVelocityWhenNoOneDeclared() throws Exception {
+		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		assertFalse(release.hasDeclaredEstimatedVelocity());
+	}
+
+	@Test
+	public void shouldHaveDeclaredEstimatedVelocityWhenAlreadyDeclaredOne() throws Exception {
+		final Release release = ReleaseFactoryTestUtil.create("Any Release");
+		final Float declaredVelocity = 1.4f;
+
+		release.declareEstimatedVelocity(declaredVelocity);
+
+		assertTrue(release.hasDeclaredEstimatedVelocity());
+	}
+
 	private void setScopeToUnderWorkInDay(final Scope scope, final WorkingDay day) throws Exception {
 		ScopeTestUtils.setProgress(scope, ProgressState.UNDER_WORK);
 		setWorkingDayToField(scope, "startDate", day);

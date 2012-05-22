@@ -46,7 +46,7 @@
   
   <root> 
     <!-- <level value="DEBUG" /> -->
-    <priority value="ERROR" />
+    <priority value="DEBUG" />
     <appender-ref ref="consoleAppender" /> 
   </root>  
   

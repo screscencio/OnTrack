@@ -1,10 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -12,7 +9,7 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseDeclareStartDayActionEntity;
@@ -28,11 +25,9 @@ public class ReleaseDeclareStartDayActionTest extends ModelActionTest {
 	private UUID releaseId;
 	private Release release;
 	private ProjectContext context;
-	private ArgumentCaptor<WorkingDay> workingDayCaptor;
 
 	@Before
 	public void setUp() throws Exception {
-		workingDayCaptor = ArgumentCaptor.forClass(WorkingDay.class);
 		release = mock(Release.class);
 		releaseId = new UUID();
 
@@ -46,9 +41,7 @@ public class ReleaseDeclareStartDayActionTest extends ModelActionTest {
 
 		new ReleaseDeclareStartDayAction(releaseId, declaredDay).execute(context);
 
-		verify(release).declareStartDay(workingDayCaptor.capture());
-
-		assertEquals(WorkingDayFactory.create(declaredDay), workingDayCaptor.getValue());
+		verify(release).declareStartDay(Mockito.eq(WorkingDayFactory.create(declaredDay)));
 	}
 
 	@Test
@@ -68,12 +61,12 @@ public class ReleaseDeclareStartDayActionTest extends ModelActionTest {
 
 		final ModelAction rollbackAction = new ReleaseDeclareStartDayAction(releaseId, new Date()).execute(context);
 
+		verify(release).declareStartDay(Mockito.any(WorkingDay.class));
+
 		rollbackAction.execute(context);
 
-		verify(release, times(2)).declareStartDay(workingDayCaptor.capture());
+		verify(release).declareStartDay((WorkingDay) Mockito.isNull());
 		verify(release, never()).getStartDay();
-
-		assertNull(workingDayCaptor.getValue());
 	}
 
 	@Test
@@ -84,12 +77,13 @@ public class ReleaseDeclareStartDayActionTest extends ModelActionTest {
 		when(release.getStartDay()).thenReturn(previousDate);
 
 		final ModelAction rollbackAction = new ReleaseDeclareStartDayAction(releaseId, new Date()).execute(context);
+
 		verify(release).getStartDay();
+		verify(release).declareStartDay(Mockito.any(WorkingDay.class));
 
 		rollbackAction.execute(context);
 
-		verify(release, times(2)).declareStartDay(workingDayCaptor.capture());
-		assertEquals(previousDate, workingDayCaptor.getValue());
+		verify(release).declareStartDay(Mockito.eq(previousDate));
 	}
 
 	@Override

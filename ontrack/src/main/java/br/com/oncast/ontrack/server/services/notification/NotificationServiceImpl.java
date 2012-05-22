@@ -50,7 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
 		connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
 
 		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + modelActionSyncRequest.getProjectId()
-				+ "' to '" + connectionSet.toArray().toString() + "'.");
+				+ "' to '" + connectionSet.toString() + "'.");
 		serverPushServerService.pushEvent(new ServerActionSyncEvent(modelActionSyncRequest), connectionSet);
 	}
 

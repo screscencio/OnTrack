@@ -105,8 +105,8 @@ public class ScopeTestUtils {
 		return scope;
 	}
 
-	public static Scope setDelcaredEffort(final Scope scope, final int effort) {
-		scope.getEffort().setDeclared(effort);
+	public static Scope setDelcaredEffort(final Scope scope, final float averageVelocity) {
+		scope.getEffort().setDeclared(averageVelocity);
 		return scope;
 	}
 

@@ -22,7 +22,7 @@ public class ScopeInsertSiblingUpActionEntity extends ModelActionEntity {
 	private String referenceId;
 
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = ActionTableColumns.STRING_4)
+	@Column(name = ActionTableColumns.STRING_3)
 	private String newScopeId;
 
 	@ConversionAlias("scopeUpdateAction")

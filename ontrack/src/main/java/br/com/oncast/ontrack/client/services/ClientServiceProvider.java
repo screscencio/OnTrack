@@ -18,6 +18,8 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
+import br.com.oncast.ontrack.client.services.migration.MigrationService;
+import br.com.oncast.ontrack.client.services.migration.MigrationServiceImpl;
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -169,7 +171,12 @@ public class ClientServiceProvider {
 	}
 
 	public ClientApplicationStateService getClientApplicationStateService() {
-		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(getEventBus(), getContextProviderService()
-				.getCurrentProjectContext()) : clientApplicationStateService;
+		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(getEventBus(),
+				getContextProviderService()
+						.getCurrentProjectContext()) : clientApplicationStateService;
+	}
+
+	public MigrationService getMigrationService() {
+		return new MigrationServiceImpl(getRequestDispatchService());
 	}
 }

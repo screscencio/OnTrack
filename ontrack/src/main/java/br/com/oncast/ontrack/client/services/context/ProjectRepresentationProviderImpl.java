@@ -84,7 +84,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
-				// TODO +++Treat fatal error. COuld not load project list...
+				// TODO +++Treat fatal error. Could not load project list...
 				notificationService
 						.showWarning("Projects list unavailable. Verify your connection.");
 			}

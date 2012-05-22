@@ -86,7 +86,6 @@ public class PlanningPanel extends Composite implements PlanningView {
 	 * @return true if the widget fits the scroll been able to be completely visible false otherwise.
 	 */
 	@Override
-	// FIXME Mats review this method
 	public boolean ensureWidgetIsVisible(final IsWidget isWidget) {
 		final Widget widget = isWidget.asWidget();
 

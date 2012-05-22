@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.shared.model.release;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class ReleaseEstimatorTest {
 
 	@Test
 	public void estimatedVelocityShouldBeOneWhenNoScopeIsDone() throws Exception {
-		assertEquals(1, getEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(1, estimator.getInferedEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
@@ -48,7 +47,7 @@ public class ReleaseEstimatorTest {
 		populateSampleScopesWithOneDaySpentAndArithmeticSequenceForEffortAndStartDay(nScopes);
 
 		final float velocity = effortSum / nDaysSpent;
-		assertEquals(velocity, getEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(velocity, estimator.getInferedEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
@@ -69,7 +68,7 @@ public class ReleaseEstimatorTest {
 		final float effortSum = 378 + 20 + 2 + 18;
 		final float estimatedVelocity = effortSum / nDaysSpent;
 
-		assertEquals(estimatedVelocity, getEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(estimatedVelocity, estimator.getInferedEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
@@ -85,7 +84,7 @@ public class ReleaseEstimatorTest {
 
 		final float velocity = effortSum / daysSpent;
 
-		assertEquals(velocity, getEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(velocity, estimator.getInferedEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 
 	}
 
@@ -101,7 +100,7 @@ public class ReleaseEstimatorTest {
 		final int daysSpent = 30;
 
 		final float velocity = effortSum / daysSpent;
-		assertEquals(velocity, getEstimatedVelocityOnDay(anyDayBetween), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
+		assertEquals(velocity, estimator.getInferedEstimatedVelocityOnDay(anyDayBetween), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 
 	@Test
@@ -110,7 +109,7 @@ public class ReleaseEstimatorTest {
 
 		populateSampleScopesWithOneDaySpentAndArithmeticSequenceForEffortAndStartDay(13);
 
-		assertEquals(WorkingDayFactory.create(), estimator.getEstimatedEndDayFor(emptyRelease));
+		assertEquals(WorkingDayFactory.create(), estimator.getEstimatedEndDayUsingInferedEstimatedVelocity(emptyRelease));
 	}
 
 	@Test
@@ -121,7 +120,7 @@ public class ReleaseEstimatorTest {
 		for (int i = 0; i < 10; i++)
 			release.addScope(createDoneScopeWithEffort(0));
 
-		assertEquals(release.getStartDay(), estimator.getEstimatedEndDayFor(release));
+		assertEquals(release.getStartDay(), estimator.getEstimatedEndDayUsingInferedEstimatedVelocity(release));
 	}
 
 	@Test
@@ -131,13 +130,13 @@ public class ReleaseEstimatorTest {
 
 		final WorkingDay startDate = sampleReleases.getStartDay();
 
-		final float estimatedVelocity = getEstimatedVelocityOnDay(startDate);
+		final float estimatedVelocity = estimator.getInferedEstimatedVelocityOnDay(startDate);
 		final float effortSum = sampleReleases.getEffortSum();
 
 		// TODO Remove this calculation and put the result by hand. This is not explaining how to get to correct result.
 		final WorkingDay estimatedEndDate = startDate.add(((int) (effortSum / estimatedVelocity + 0.999999) - 1)); // Subtract 1 because today is included.
 
-		assertEquals(estimatedEndDate, estimator.getEstimatedEndDayFor(sampleReleases));
+		assertEquals(estimatedEndDate, estimator.getEstimatedEndDayUsingInferedEstimatedVelocity(sampleReleases));
 	}
 
 	private void addDoneScopesWithEffortToRelease(final Release release, final int... efforts) {
@@ -154,7 +153,7 @@ public class ReleaseEstimatorTest {
 		return scope;
 	}
 
-	private Scope createDoneScopeWithEffortAndDaysSpent(final int effort, final WorkingDay date, final int daysSpent) throws Exception {
+	private Scope createDoneScopeWithEffortAndDaysSpent(final float effort, final WorkingDay date, final int daysSpent) throws Exception {
 		final Scope scope = new Scope("Scope" + effort);
 		ScopeTestUtils.setProgress(scope, ProgressState.DONE);
 		ScopeTestUtils.setDelcaredEffort(scope, effort);
@@ -183,14 +182,6 @@ public class ReleaseEstimatorTest {
 		for (int i = 1; i <= nScopes; i++) {
 			sampleReleases.addScope(createDoneScopeWithEffortAndDaysSpent(i, day.copy().add(-i * daysSpent), daysSpent));
 		}
-	}
-
-	// Reflection for test a private method. We are testing this because it does a important logic.
-	private float getEstimatedVelocityOnDay(final WorkingDay day) throws Exception {
-		final Method method = ReleaseEstimator.class.getDeclaredMethod("getEstimatedVelocityOnDay", WorkingDay.class);
-		method.setAccessible(true);
-
-		return (Float) method.invoke(estimator, day);
 	}
 
 }

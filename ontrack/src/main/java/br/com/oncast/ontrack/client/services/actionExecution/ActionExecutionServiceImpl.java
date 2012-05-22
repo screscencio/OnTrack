@@ -21,13 +21,11 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	private final ActionExecutionManager actionManager;
 	private final ContextProviderService contextService;
 	private final List<ActionExecutionListener> actionExecutionListeners;
-	private final ProjectRepresentationProvider projectRepresentationProvider;
 	private final ClientNotificationService notificationService;
 
 	public ActionExecutionServiceImpl(final ContextProviderService contextService, final ClientNotificationService notificationService,
 			final ProjectRepresentationProvider projectRepresentationProvider, final ApplicationPlaceController applicationPlaceController) {
 		this.notificationService = notificationService;
-		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 		this.contextService = contextService;
 		this.actionManager = new ActionExecutionManager(new ActionExecutionListener() {

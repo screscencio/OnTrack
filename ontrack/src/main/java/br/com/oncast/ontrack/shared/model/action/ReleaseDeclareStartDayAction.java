@@ -2,6 +2,9 @@ package br.com.oncast.ontrack.shared.model.action;
 
 import java.util.Date;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseDeclareStartDayActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -15,7 +18,10 @@ public class ReleaseDeclareStartDayAction implements ReleaseAction {
 
 	private static final long serialVersionUID = 1L;
 
+	@Element
 	private UUID referenceId;
+
+	@Attribute(required = false)
 	private Date date;
 
 	ReleaseDeclareStartDayAction() {}

@@ -25,7 +25,7 @@ public class ScopeBindReleaseActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_1)
 	private String referenceId;
 
-	@Column(name = ActionTableColumns.STRING_4)
+	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
 	private String newReleaseDescription;
 
 	@ConversionAlias("subActionList")
@@ -38,6 +38,8 @@ public class ScopeBindReleaseActionEntity extends ModelActionEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	private ModelActionEntity secundarySubAction;
 
+	@ConversionAlias("scopePriority")
+	@Column(name = ActionTableColumns.INT_1)
 	private int scopePriority;
 
 	public String getReferenceId() {

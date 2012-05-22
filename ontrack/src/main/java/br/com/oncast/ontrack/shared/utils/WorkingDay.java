@@ -33,13 +33,16 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 
 	public WorkingDay add(final int nWorkingDays) {
 		final boolean forward = nWorkingDays >= 0;
-		for (int i = 0; i < Math.abs(nWorkingDays); i++) {
+		int abs = Math.abs(nWorkingDays);
+		for (int i = 0; i < abs; i++) {
 			addOneWorkingDay(forward);
 		}
 		return this;
 	}
 
 	public boolean isBefore(final WorkingDay day) {
+		if (day == null) return true;
+
 		return getDaysBetween(day) > 0;
 	}
 
@@ -47,8 +50,10 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		return getDaysBetween(day) >= 0;
 	}
 
-	public boolean isAfter(final WorkingDay date) {
-		return getDaysBetween(date) < 0;
+	public boolean isAfter(final WorkingDay day) {
+		if (day == null) return true;
+
+		return getDaysBetween(day) < 0;
 	}
 
 	public int countTo(final WorkingDay day) {
@@ -136,5 +141,21 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		if (dateString.length() == 1) dateString = "0" + dateString;
 
 		return dateString;
+	}
+
+	public static WorkingDay getLatest(final WorkingDay... workingDays) {
+		WorkingDay latest = null;
+		for (final WorkingDay workingDay : workingDays) {
+			latest = latest == null ? workingDay : latest.isAfter(workingDay) ? latest : workingDay;
+		}
+		return latest;
+	}
+
+	public static WorkingDay getEarliest(final WorkingDay... workingDays) {
+		WorkingDay earliest = null;
+		for (final WorkingDay day : workingDays) {
+			earliest = earliest == null ? day : earliest.isBefore(day) ? earliest : day;
+		}
+		return earliest;
 	}
 }

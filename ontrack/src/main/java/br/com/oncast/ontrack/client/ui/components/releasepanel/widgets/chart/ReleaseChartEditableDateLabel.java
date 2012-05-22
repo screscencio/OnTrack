@@ -7,8 +7,12 @@ import java.util.Date;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -41,7 +45,10 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 	@UiField
 	Label value;
 
-	private Date date;
+	@UiField
+	Label remove;
+
+	private boolean isRemoveAvailable;
 
 	public ReleaseChartEditableDateLabel() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -49,9 +56,32 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 	}
 
 	@UiHandler("value")
-	protected void onClick(final ClickEvent e) {
+	protected void onValueClick(final ClickEvent e) {
 		datePicker.setVisible(true);
 		focusPanel.setFocus(true);
+	}
+
+	@UiHandler("remove")
+	protected void onRemoveClick(final ClickEvent e) {
+		if (remove.getElement().getStyle().getVisibility().equals(Visibility.HIDDEN.getCssName())) return;
+
+		setValue(null);
+		hidePicker();
+	}
+
+	@UiHandler("focusPanel")
+	protected void onMouseOver(final MouseOverEvent e) {
+		hideRemoveLabel(false);
+	}
+
+	@UiHandler("focusPanel")
+	protected void onBlur(final BlurEvent e) {
+		hidePicker();
+	}
+
+	@UiHandler("focusPanel")
+	protected void onMouseOut(final MouseOutEvent e) {
+		hideRemoveLabel(true);
 	}
 
 	@UiHandler("focusPanel")
@@ -70,6 +100,11 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 
 	public void hidePicker() {
 		datePicker.setVisible(false);
+		hideRemoveLabel(true);
+	}
+
+	private void hideRemoveLabel(final boolean mustHide) {
+		remove.getElement().getStyle().setVisibility(!isRemoveAvailable || mustHide ? Visibility.HIDDEN : Visibility.VISIBLE);
 	}
 
 	@Override
@@ -84,13 +119,13 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 
 	@Override
 	public Date getValue() {
-		return date;
+		return this.datePicker.getValue();
 	}
 
 	@Override
 	public void setValue(final Date date, final boolean fireEvents) {
-		this.date = date;
-		this.value.setText(WorkingDayFactory.create(date).getDayMonthShortYearString());
+		this.datePicker.setValue(date, false);
+		if (date != null) this.value.setText(WorkingDayFactory.create(date).getDayMonthShortYearString());
 
 		if (fireEvents) ValueChangeEvent.fire(this, date);
 	}
@@ -103,5 +138,9 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 	@Override
 	public void setText(final String text) {
 		label.setText(text);
+	}
+
+	public void setRemoveValueAvailable(final boolean isAvailable) {
+		isRemoveAvailable = isAvailable;
 	}
 }

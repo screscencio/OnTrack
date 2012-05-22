@@ -23,12 +23,12 @@ public class ReleaseCreateActionEntity extends ModelActionEntity {
 	private String referenceId;
 
 	@ConversionAlias("description")
-	@Column(name = ActionTableColumns.STRING_2, length = ActionTableColumns.STRING_2_LENGTH)
+	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
 	private String description;
 
 	@ConvertUsing(StringToUuidConverter.class)
 	@ConversionAlias("newReleaseId")
-	@Column(name = ActionTableColumns.STRING_3)
+	@Column(name = ActionTableColumns.STRING_2)
 	private String newReleaseId;
 
 	@OneToOne(cascade = CascadeType.ALL)

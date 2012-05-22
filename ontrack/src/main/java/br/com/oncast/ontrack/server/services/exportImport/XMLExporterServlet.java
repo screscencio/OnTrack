@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectExcep
 
 public class XMLExporterServlet extends HttpServlet {
 
+	private static final String ATTRIBUTE_PROJECT_ID = "projectId";
 	private static final ServerServiceProvider SERVICE_PROVIDER = ServerServiceProvider.getInstance();
 	private static final long serialVersionUID = 1L;
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy_MM_dd");
@@ -33,13 +34,13 @@ public class XMLExporterServlet extends HttpServlet {
 
 	private void doReply(final HttpServletRequest request, final HttpServletResponse response) throws UnableToLoadProjectException, IOException {
 		configureResponse(response);
-		generateAndWriteXMLTo(response);
-
+		final long projectId = Long.valueOf(request.getParameter(ATTRIBUTE_PROJECT_ID));
+		generateAndWriteXMLTo(projectId, response);
 		response.getOutputStream().flush();
 	}
 
-	private void generateAndWriteXMLTo(final HttpServletResponse response) throws IOException {
-		SERVICE_PROVIDER.getXmlExporterService().export(response.getOutputStream());
+	private void generateAndWriteXMLTo(final long projectId, final HttpServletResponse response) throws IOException {
+		SERVICE_PROVIDER.getXmlExporterService().export(response.getOutputStream(), projectId);
 	}
 
 	private void configureResponse(final HttpServletResponse response) throws UnableToLoadProjectException {

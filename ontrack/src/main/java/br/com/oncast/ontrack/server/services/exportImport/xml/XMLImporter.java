@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -30,16 +31,20 @@ public class XMLImporter {
 	private final HashMap<Long, User> userIdMap = new HashMap<Long, User>();
 	private final HashMap<Long, ProjectRepresentation> projectIdMap = new HashMap<Long, ProjectRepresentation>();
 	private long adminId = -1;
+	private static final Logger LOGGER = Logger.getLogger(XMLImporter.class);
 
 	public XMLImporter(final PersistenceService persistenceService) {
+		LOGGER.debug("Initializing XML Import");
 		this.persistanceService = persistenceService;
 	}
 
 	public XMLImporter loadXML(final File file) {
+		LOGGER.debug("Initializing Serialization");
 		final Serializer serializer = new Persister();
 
 		try {
 			ontrackXML = serializer.read(OntrackXML.class, file);
+			LOGGER.debug("Finished Serialization");
 		}
 		catch (final Exception e) {
 			throw new UnableToImportXMLException("Unable to deserialize xml file.", e);
@@ -52,8 +57,12 @@ public class XMLImporter {
 
 		try {
 			persistUsers(ontrackXML.getUsers());
+			LOGGER.debug("Persist User DONE!");
 			persistProjects(ontrackXML.getProjects());
+			LOGGER.debug("Persist Projects DONE!");
 			persistAuthorizations(ontrackXML.getProjectAuthorizations());
+			LOGGER.debug("Persist Project Authorizations DONE!");
+			LOGGER.debug("Finished XML Import");
 		}
 		catch (final PersistenceException e) {
 			throw new UnableToImportXMLException("The xml import was not concluded. Some operations may be changed the database, but was not rolledback. ", e);

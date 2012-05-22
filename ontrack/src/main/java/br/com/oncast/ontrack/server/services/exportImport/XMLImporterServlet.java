@@ -13,6 +13,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
@@ -30,6 +31,8 @@ public class XMLImporterServlet extends HttpServlet {
 	private final String TEMP_DIR = System.getProperty("java.io.tmpdir");
 	private static final String SOURCE_XML_FILE_NAME = "ontrack.xml";
 	private static final String MIGRATED_XML_FILE_NAME = "migrated.xml";
+
+	private static final Logger LOGGER = Logger.getLogger(XMLImporterServlet.class);
 
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
@@ -70,9 +73,13 @@ public class XMLImporterServlet extends HttpServlet {
 	}
 
 	private File migrate(final File sourceXML) throws Exception {
+		LOGGER.debug("Initializing XML reading");
 		final Document document = XMLUtils.read(sourceXML);
+		LOGGER.debug("Finished XML reading");
 
+		LOGGER.debug("Initializing Migration");
 		OntrackMigrationManager.applyMigrationsOn(document);
+		LOGGER.debug("Finished Migration");
 
 		final File migratedXML = new File(TEMP_DIR, MIGRATED_XML_FILE_NAME);
 		XMLUtils.write(document, migratedXML);
@@ -81,6 +88,8 @@ public class XMLImporterServlet extends HttpServlet {
 	}
 
 	private void updateDatabase(final File xmlFile) throws PersistenceException {
+		LOGGER.debug("Initializing Database update");
 		SERVICE_PROVIDER.getXmlImporterService().importFromFile(xmlFile);
+		LOGGER.debug("Finished Database update");
 	}
 }

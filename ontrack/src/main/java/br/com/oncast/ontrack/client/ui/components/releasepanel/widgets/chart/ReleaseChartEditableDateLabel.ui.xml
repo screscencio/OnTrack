@@ -11,7 +11,7 @@
 	
 	.datePicker {
 		position: absolute;
-		top: 31px;
+		bottom: 30px;
 	}
 	
 	.label {
@@ -19,8 +19,9 @@
 		margin-right: 5px;
 	}
 
-	.label, .value {
+	.label, .value, .remove {
 		display: inline;
+		cursor: default;
 	}
 	
 	.value:HOVER {
@@ -31,12 +32,18 @@
 		border-radius: 2px;
 	}
 	
+	.remove {
+		color: red;
+		cursor: pointer;
+	}
+	
 	</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel">
 		<g:HTMLPanel styleName="{style.container}">
 			<g:Label ui:field="label" styleName="{style.label}"/>
 			<g:Label ui:field="value" styleName="{style.value}"/>
+			<g:Label ui:field="remove" styleName="{style.remove}" text="X"/>
 			<dp:DatePicker ui:field="datePicker" addStyleNames="{style.datePicker}"/>
 		</g:HTMLPanel>
 	</g:FocusPanel>

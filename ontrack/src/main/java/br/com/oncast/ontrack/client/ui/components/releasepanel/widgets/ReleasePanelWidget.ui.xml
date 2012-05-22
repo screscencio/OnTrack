@@ -6,9 +6,14 @@
 
 	<ui:style src="../../../style/default.css">
 	   .rootPanel {
-			padding: 0px 5px;
+			padding: 0px;
 			width: auto;
 	   	}
+	   	
+	   	.container {
+			padding: 10px;
+			padding-bottom: 5px;
+		}
 	   	
 	   	.releases {
 	   		width: 100%;
@@ -42,7 +47,7 @@
 			
 	</ui:style>
 	
-	<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.semiTransparentContainer}">
+	<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.semiTransparentContainer}" addContainerStyleNames="{style.container}">
 		<g:FlowPanel ui:field="noReleaseText" styleName="{style.noReleaseContainer}">
 			<g:Label text="No Release yet" styleName="{style.noReleaseLabel}"/>
 			<g:Label text="Select a Scope and hit '@' key to attach the Scope to a Release" styleName="{style.helpLabel}"/>

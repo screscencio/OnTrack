@@ -107,7 +107,6 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 
 			@Override
 			public void execute() {
-				// editionBox.selectAll();
 				editionBox.setFocus(true);
 			}
 		});

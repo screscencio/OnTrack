@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
@@ -28,8 +30,62 @@ public class ReleaseChartDataProvider {
 		this.release = release;
 		this.releaseEstimator = estimator;
 		this.actionService = actionService;
-		// TODO+++ [Performance] Make it lazy loading
-		evaluateData();
+	}
+
+	public float getEffortSum() {
+		return release.getEffortSum();
+	}
+
+	public WorkingDay getInferedEstimatedEndDay() {
+		return releaseEstimator.getEstimatedEndDayUsingInferedEstimatedVelocity(release);
+	}
+
+	public float getEstimatedVelocity() {
+		return release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : releaseEstimator
+				.getInferedEstimatedVelocityOnDay(getEstimatedStartDay());
+	}
+
+	public WorkingDay getEstimatedStartDay() {
+		return releaseEstimator.getEstimatedStartDayFor(release);
+	}
+
+	public void declareStartDate(final Date date) {
+		actionService.onUserActionExecutionRequest(new ReleaseDeclareStartDayAction(release.getId(), date));
+	}
+
+	public void declareEndDate(final Date date) {
+		actionService.onUserActionExecutionRequest(new ReleaseDeclareEndDayAction(release.getId(), date));
+	}
+
+	public WorkingDay getEstimatedEndDay() {
+		return releaseEstimator.getEstimatedEndDayFor(release);
+	}
+
+	public boolean hasDeclaredStartDay() {
+		return release.hasDeclaredStartDay();
+	}
+
+	public boolean hasDeclaredEndDay() {
+		return release.hasDeclaredEndDay();
+	}
+
+	public void declareEstimatedVelocity(final Float velocity) {
+		actionService.onUserActionExecutionRequest(new ReleaseDeclareEstimatedVelocityAction(release.getId(), velocity));
+	}
+
+	public List<WorkingDay> getReleaseDays() {
+		if (releaseDays == null) evaluateData();
+		return new ArrayList<WorkingDay>(releaseDays);
+	}
+
+	public Map<WorkingDay, Float> getAccomplishedValuePointsByDate() {
+		if (accomplishedValueByDate == null) evaluateData();
+		return accomplishedValueByDate;
+	}
+
+	public Map<WorkingDay, Float> getAccomplishedEffortPointsByDate() {
+		if (accomplishedEffortByDate == null) evaluateData();
+		return accomplishedEffortByDate;
 	}
 
 	public void evaluateData() {
@@ -49,6 +105,23 @@ public class ReleaseChartDataProvider {
 			}
 
 		}
+	}
+
+	private List<WorkingDay> calculateReleaseDays() {
+		final WorkingDay startDay = releaseEstimator.getEstimatedStartDayFor(release);
+		final WorkingDay inferedEstimatedEndDay = releaseEstimator.getEstimatedEndDayUsingInferedEstimatedVelocity(release);
+		final WorkingDay estimatedEndDay = releaseEstimator.getEstimatedEndDayFor(release);
+
+		final WorkingDay lastReleaseDay = WorkingDay.getLatest(inferedEstimatedEndDay, estimatedEndDay, release.getInferedEndDay());
+
+		final List<WorkingDay> releaseDays = new ArrayList<WorkingDay>();
+
+		final int daysCount = startDay.countTo(lastReleaseDay);
+		for (int i = 0; i < daysCount; i++) {
+			releaseDays.add(startDay.copy().add(i));
+		}
+
+		return releaseDays;
 	}
 
 	private Float getAccomplishedValueFor(final WorkingDay day) {
@@ -75,57 +148,20 @@ public class ReleaseChartDataProvider {
 		return accomplishedEffortSum;
 	}
 
-	public List<WorkingDay> getReleaseDays() {
-		return new ArrayList<WorkingDay>(releaseDays);
+	public boolean hasDeclaredEstimatedVelocity() {
+		return release.hasDeclaredEstimatedVelocity();
 	}
 
-	public Map<WorkingDay, Float> getAccomplishedValuePointsByDate() {
-		return accomplishedValueByDate;
+	public Float getCurrentVelocity() {
+		final WorkingDay currentDay = WorkingDay.getEarliest(release.getEndDay(), WorkingDayFactory.create());
+		final WorkingDay startDay = release.getStartDay();
+
+		if (currentDay.isBefore(startDay)) return 0f;
+
+		return getAccomplishedEffortFor(currentDay) / startDay.countTo(currentDay);
 	}
 
-	public Map<WorkingDay, Float> getAccomplishedEffortPointsByDate() {
-		return accomplishedEffortByDate;
-	}
-
-	public float getEffortSum() {
-		return release.getEffortSum();
-	}
-
-	private List<WorkingDay> calculateReleaseDays() {
-		final List<WorkingDay> releaseDays = new ArrayList<WorkingDay>();
-		final WorkingDay rollingDay = releaseEstimator.getEstimatedStartDayFor(release);
-		final WorkingDay lastReleaseDay = getLatestDay(releaseEstimator.getEstimatedEndDayFor(release), release.getEndDay());
-
-		do {
-			releaseDays.add(rollingDay.copy());
-			rollingDay.add(1);
-		} while (rollingDay.isBeforeOrSameDayOf(lastReleaseDay));
-
-		return releaseDays;
-	}
-
-	private WorkingDay getLatestDay(final WorkingDay estimatedEndDay, final WorkingDay releaseEndDay) {
-		if (releaseEndDay == null) return estimatedEndDay;
-		return estimatedEndDay.isAfter(releaseEndDay) ? estimatedEndDay : releaseEndDay;
-	}
-
-	public WorkingDay getEstimatedEndDay() {
-		return releaseEstimator.getEstimatedEndDayFor(release);
-	}
-
-	public float getEstimatedVelocity() {
-		return releaseEstimator.getEstimatedVelocityOnDay(getEstimatedStartDay());
-	}
-
-	public WorkingDay getEstimatedStartDay() {
-		return releaseEstimator.getEstimatedStartDayFor(release);
-	}
-
-	public void declareStartDate(final Date date) {
-		actionService.onUserActionExecutionRequest(new ReleaseDeclareStartDayAction(release.getId(), date));
-	}
-
-	public void declareEndDate(final Date date) {
-		release.declareEndDay(WorkingDayFactory.create(date));
+	public float getValueSum() {
+		return release.getValueSum();
 	}
 }
