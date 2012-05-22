@@ -42,8 +42,6 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 
 	private final Map<MenuItem, CommandMenuItem> itemsMap;
 
-	private boolean hidden = false;
-
 	@UiFactory
 	protected MenuBar createMenuBar() {
 		return new MenuBar(true);
@@ -87,15 +85,12 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 	}
 
 	@Override
-	public void show() {
-		hidden = false;
-	}
+	public void show() {}
 
 	@Override
 	public void hide() {
-		if (hidden) return;
+		if (!isVisible()) return;
 
-		hidden = true;
 		CloseEvent.fire(this, this);
 	}
 

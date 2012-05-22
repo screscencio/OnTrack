@@ -120,7 +120,7 @@
 				<g:HTMLPanel ui:field="scroll" styleName="{style.scroll}">
 					<g:HorizontalPanel verticalAlignment="middle" >
 						<misc:ShortcutLabel text="ENTER" styleName="{style.shortcut}" />
-						<g:Label text="Insert Bellow" styleName="{style.shortcutDescription}" />
+						<g:Label text="Insert Below" styleName="{style.shortcutDescription}" />
 						
 						<misc:ShortcutLabel text="CONTROL ENTER" styleName="{style.shortcut}" />
 						<g:Label text="Insert a Child" styleName="{style.shortcutDescription}" />

@@ -30,7 +30,7 @@ public class MouseCommandsMenu extends Composite implements HasCloseHandlers<Mou
 		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
 			@Override
 			public void onClose(final CloseEvent<CommandMenu> event) {
-				CloseEvent.fire(MouseCommandsMenu.this, MouseCommandsMenu.this);
+				hide();
 			}
 		});
 	}
@@ -46,7 +46,8 @@ public class MouseCommandsMenu extends Composite implements HasCloseHandlers<Mou
 	@Override
 	public void hide() {
 		if (!isVisible()) return;
-		menu.hide();
+
+		CloseEvent.fire(this, this);
 	}
 
 	@Override
