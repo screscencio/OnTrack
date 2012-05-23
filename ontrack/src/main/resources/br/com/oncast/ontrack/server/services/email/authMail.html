@@ -1,8 +1,222 @@
-Hello $userEmail,
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta property="og:title" content="*|MC:SUBJECT|*" />
 
-$currentUser has invited you to join the '$projectName' project.
-Here is a link for the project:
+		<title>OnTrack</title>
+		
+		<style type="text/css">
+		#outlook a {
+			padding: 0;
+		}
+		
+		body{
+			width: 100% !important;
+		}
+		
+		.ReadMsgBody {
+			width: 100%;
+		}
+		
+		.ExternalClass {
+			width:100%;
+		}
+		
+		body{
+			-webkit-text-size-adjust: none;
+		}
+		
+		body {
+			margin:0;
+			padding:0;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 0.8em;
+			color: #666;
+		}
+		
+		img {
+			border: 0px;
+			height: auto;
+			line-height: 100%;
+			outline: none;
+			text-decoration: none;
+		}
+		
+		table td {
+			border-collapse: collapse;
+		}
+		
+		#backgroundTable{
+			height: 100% !important;
+			margin: 0px;
+			padding: 0px;
+			width:100% !important;
+		}
 
-$projectLink
+		body, #backgroundTable{
+			background-color:#FFFFFF;
+		}
 
-This e-mail was sent automatically. Please, do not reply to it.
+		h1, .h1{
+			color:#303030;
+			display:block;
+			font-family:Helvetica;
+			font-size:40px;
+			font-weight:bold;
+			line-height:100%;
+			margin-top:0;
+			margin-right:0;
+			margin-bottom:10px;
+			margin-left:0;
+			text-align:center;
+		}
+
+		h2, .h2{
+			color:#666666;
+			display:block;
+			font-family:Helvetica;
+			font-size: 20px;
+			font-weight:bold;
+			line-height:100%;
+			margin-top:0;
+			margin-right:0;
+			margin-bottom:10px;
+			margin-left:0;
+			text-align:left;
+		}
+		
+		.headerContent {
+			height: 56px;
+			background-color: #f5cc6f;
+		}
+
+		#templateBody{
+			border:1px solid #CCCCCC;
+		}
+		.bodyContent {
+			border: 1px solid #cccccc;
+			box-shadow: 0px 0px 5px #cccccc;
+		}
+
+		.bodyContent a:link, .bodyContent a:visited, .bodyContent a .yshortcuts {
+			color: #006;
+			font-weight: bold;
+			text-decoration: none;
+		}
+
+		.bodyContent img {
+			display: inline;
+			height: auto;
+		}
+
+
+		.appButton{
+			border: 1px solid #999;
+			background-color: #eee;
+			margin-left: 20px;
+		}
+		
+		.appButtonContent, .appButtonContent a:link, .appButtonContent a:visited, .appButtonContent a .yshortcuts {
+			color:#999;
+			font-family:Helvetica;
+			font-size: 1em;
+			font-weight:bold;
+			line-height:150%;
+			text-align:center;
+			text-decoration:none;			
+		}
+
+		#footerLinks a {
+			color: #6f6f6f;
+			font-weight: none;
+			text-transform: uppercase;
+			font-size: 11px;
+		}
+
+
+		.footerContent{
+			color: #707070;
+			font-family: Helvetica;
+			font-size: 11px;
+			line-height: 125%;
+			text-align: left;
+		}
+
+		.footerContent a:link, .footerContent a:visited, .footerContent a .yshortcuts {
+			color: #505050;
+			font-weight: normal;
+			text-decoration: underline;
+		}
+
+		.footerContent img {
+			display: inline;
+		}
+		</style>
+	</head>
+	
+	<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+		<center>
+			<table style="margin-top: 20px; margin-bottom:20px; border: 1px solid #cccccc; box-shadow: 0px 0px 5px #cccccc;" class="bodyContent" cellpadding="0" cellspacing="0" width="570">
+				<tr>
+					<td align="center" valign="top" style="padding:0px;">
+						<table border="0" cellpadding="0" cellspacing="0" width="570" id="templateHeader">
+							<tr>
+								<td class="headerContent" style="padding-bottom: 56px; background-color: #f5cc6f;"></td>
+							</tr>
+							<tr>
+								<td style="padding-bottom:40px;"></td>
+							</tr>
+							<tr>
+								<td align="left" valign="top">
+									<table border="0" cellpadding="10" cellspacing="0">
+										<tr>
+											<td align="left" colspan="3" height="25" valign="top" width="550">
+
+												<h2 style="color:#666666; display:block; font-family:Helvetica; font-size: 20px; font-weight:bold; line-height:100%; margin-top:0; margin-right:0; margin-bottom:10px; margin-left:0; text-align:left;">
+													You've been invited to OnTrack!
+												</h2>
+												<br />
+
+												$currentUser invited to contribute on the project '$projectName'. 
+												<br /><br />
+																																								
+												Here is a link for the project: <a href="$projectLink" class="projectLink" style="color: #006; font-weight: bold; text-decoration: none;">$projectLink</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding-bottom: 40px;"></td>
+				</tr>
+				<tr>
+					<td align="center" width="550" id="footerLinks" style="background: #e7e7e7; color: #6f6f6f; padding: 10px;" valign="top">
+						<table border="0">
+							<a href="http://onca.st" style="color: #6f6f6f; font-weight: none; text-transform: uppercase; font-size: 11px;">About Us</a>   |   <a href="http://onca.st/blog/" style="color: #6f6f6f; font-weight: none; text-transform: uppercase; font-size: 11px;">OnCast blog </a>
+						</table>
+					</td>
+				</tr>  
+			</table>
+			<table>
+				<tr>
+					<td align="center" valign="top" style="margin-top:10px;">
+						<table border="0" cellpadding="0" cellspacing="0" width="570" id="templateFooter">
+							<tr>
+								<td valign="top" class="footerContent" style="padding-right:20px; color: #707070; font-family: Helvetica; font-size: 11px; line-height: 125%; text-align: left;" mc:edit="footer">
+									This e-mail was sent automatically. Please, do not reply to it.
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" valign="bottom" class="footerContent" style="padding-top:20px;"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</center>
+	</body>
+</html>
