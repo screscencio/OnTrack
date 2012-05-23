@@ -8,10 +8,11 @@ import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /**
- * @author Icky from https://groups.google.com/forum/?fromgroups#!topic/gwt-comet/NkfGh6-nREM
+ * @author Icky and Pierre from https://groups.google.com/forum/?fromgroups#!topic/gwt-comet/NkfGh6-nREM
  * Workaround for IE 9 Security rule 
  */
 public class IEXDRCometTransport extends RawDataCometTransport {
@@ -97,6 +98,40 @@ public class IEXDRCometTransport extends RawDataCometTransport {
 		}
 		listener.onDisconnected();
 	}
+	
+	@Override
+    public String getUrl(int connectionCount) {
+        String url = super.getUrl(connectionCount);
+        // Detect if we have a session in a cookie and pass it on the url, because XDomainRequest does not
+        // send cookies
+        if (url.toLowerCase().contains(";jsessionid") == false) {
+            String sessionid = Cookies.getCookie("JSESSIONID");
+            if (sessionid != null) {
+                String parm = ";jsessionid=" + sessionid;
+                int p = url.indexOf('?');
+                if (p > 0) {
+                    return url.substring(0, p) + parm + url.substring(p);
+                } else {
+                    return url + parm;
+                }
+            }
+        }
+        
+        if (!url.toUpperCase().contains("PHPSESSID")) {
+            String sessionid = Cookies.getCookie("PHPSESSID");
+            if (sessionid != null) {
+                int p = url.indexOf('?');
+                String param = "PHPSESSID=" + sessionid;
+                if (p > 0) {
+                    return url.substring(0, p + 1) + param + "&" + url.substring(p + 1);
+                } else {
+                    return url + "?" + param;
+                }
+            }
+        }
+
+        return url;
+    }
 
 	private void onReceiving(int statusCode, String responseText,
 			boolean connected) {
@@ -135,8 +170,8 @@ public class IEXDRCometTransport extends RawDataCometTransport {
 	}
 
 	native static JsArrayString split(String string, String separator) /*-{ 
-																		     return string.split(separator); 
-																		}-*/;
+   		return string.split(separator); 
+   	}-*/;
 
 	static String unescape(String string) {
 		return string.replace("\\n", "\n").replace("\\\\", "\\");
