@@ -10,3 +10,4 @@
 /tools/work/
 ontrack/gwt-unitCache/
 ontrackExtAcceptance/target/
+*.class
