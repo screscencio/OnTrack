@@ -10,23 +10,19 @@ import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 public class UserTestUtils {
 
 	private static User admin;
+	private static int userCount = 0;
 
 	public static User createUser() {
-		return new User("user@email.com");
+		return new User("user" + ++userCount + "@email.com");
 	}
 
 	public static User createUser(final String email) {
 		return new User(email);
 	}
 
-	public static User createUser(final long id, final String email) {
+	public static User createUser(final long id, final String email) throws Exception {
 		final User user = createUser(email);
-		try {
-			ReflectionTestUtils.set(user, "id", id);
-		}
-		catch (final Exception e) {
-			throw new RuntimeException("Reflection Failed when tring to create a user");
-		}
+		ReflectionTestUtils.set(user, "id", id);
 		return user;
 	}
 
@@ -34,7 +30,7 @@ public class UserTestUtils {
 		final List<User> users = new ArrayList<User>(size);
 
 		for (int i = 1; i <= size; i++) {
-			users.add(createUser(i, "user" + i + "@email.com"));
+			users.add(createUser());
 		}
 		return users;
 	}
@@ -45,7 +41,7 @@ public class UserTestUtils {
 		return user;
 	}
 
-	public static User getAdmin() {
+	public static User getAdmin() throws Exception {
 		return admin == null ? admin = createUser(1, DefaultAuthenticationCredentials.USER_EMAIL) : admin;
 	}
 

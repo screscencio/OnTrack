@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
@@ -137,5 +138,9 @@ public class ProjectContext {
 			}
 		}
 		return releases;
+	}
+
+	public void addAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
+
 	}
 }

@@ -17,8 +17,8 @@ public class BasicMaskPanel implements IsWidget {
 		maskPanel = new FocusPanel();
 		maskPanel.setStyleName("maskPanel");
 		maskPanel.setVisible(false);
-		RootPanel.get().add(maskPanel);
 
+		RootPanel.get().add(maskPanel);
 		maskPanel.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -28,6 +28,7 @@ public class BasicMaskPanel implements IsWidget {
 	}
 
 	protected void show(final HideHandler hideHandler) {
+
 		if (maskPanel.isVisible()) throw new RuntimeException("The MaskPanel is already visible.");
 
 		this.hideHandler = hideHandler;

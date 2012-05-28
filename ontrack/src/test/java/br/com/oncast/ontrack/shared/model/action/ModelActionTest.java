@@ -148,12 +148,18 @@ public abstract class ModelActionTest {
 	@Test
 	public void actionShouldBeMappedOnActionExecuter() throws Exception {
 		try {
-			ActionExecuter.executeAction(mock(ProjectContext.class), getActionType().newInstance());
+			ActionExecuter.executeAction(mock(ProjectContext.class), getInstance());
 		}
 		catch (final UnableToCompleteActionException e) {
-			assertFalse(e.getMessage(), ("There is no mapped action executer for " + getActionName() + ".").equals(e.getMessage()));
+			assertFalse(e.getMessage(), e.getMessage().contains("There is no mapped action executer"));
 		}
 		catch (final Exception e) {}
+	}
+
+	@Test
+	public void shouldSetReferenceUUIDBeforeExecution() throws Exception {
+		final ModelAction action = getInstance();
+		assertNotNull(action.getReferenceId());
 	}
 
 	private List<Field> getUuidFields() {
@@ -198,7 +204,7 @@ public abstract class ModelActionTest {
 		}
 	}
 
-	protected Field getMatchingAliasField(final Field sourceField, final Class<?> target) {
+	private Field getMatchingAliasField(final Field sourceField, final Class<?> target) {
 		return getMatchingAliasField(getAliasName(sourceField), target);
 	}
 
@@ -218,7 +224,9 @@ public abstract class ModelActionTest {
 		return getActionType().getSimpleName();
 	}
 
-	protected abstract Class<? extends ModelActionEntity> getEntityType();
+	protected abstract ModelAction getInstance();
 
 	protected abstract Class<? extends ModelAction> getActionType();
+
+	protected abstract Class<? extends ModelActionEntity> getEntityType();
 }

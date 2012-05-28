@@ -75,9 +75,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 				ClientServiceProvider.getInstance().getClientNotificationService().showWarning(e.getMessage());
 			}
 			catch (final UnableToCompleteActionException e) {
-				// TODO ++Implement an adequate exception treatment.
-				// TODO ++Display error to the user
-				throw new RuntimeException(e);
+				ClientServiceProvider.getInstance().getClientNotificationService().showError(e.getMessage());
 			}
 		}
 	}
