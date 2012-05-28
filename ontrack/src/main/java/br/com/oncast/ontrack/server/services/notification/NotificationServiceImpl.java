@@ -32,14 +32,12 @@ public class NotificationServiceImpl implements NotificationService {
 
 			@Override
 			public void onClientConnected(final UUID clientId, final String sessionId) {
-				LOGGER.debug("Registering client '" + clientId + "' to server push service.");
 				clientManager.registerClient(clientId, sessionId);
 			}
 
 			@Override
-			public void onClientDisconnected(final UUID clientId, final String sessionId) {
-				LOGGER.debug("Unregistering client '" + clientId + "' from server push service.");
-				clientManager.unregisterClient(clientId, sessionId);
+			public void onClientDisconnected(final UUID clientId) {
+				clientManager.unregisterClient(clientId);
 			}
 		});
 	}

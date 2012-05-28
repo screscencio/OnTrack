@@ -14,7 +14,6 @@
 @def FONT_SIZE_LARGE 12pt;
 
 @def TEXT_SHADOW 1px -1px 1px #F6D792;
-@def TEXT_SHADOW_IE literal('dropshadow(color=#F6D792, offx=1, offy=-1)');
 
 @def KANBAN_TITLE_TEXT_COLOR #8A8A8A;
 @def KANBAN_TITLE_BORDER 1px solid #CACACA;

@@ -27,21 +27,21 @@ public class XDomainRequest extends JavaScriptObject {
 	public final native void setListener(XDomainRequestListener listener) /*-{ 
 	    var self = this; 
 	    
-	    this.request.onload = function() { 
+	    self.request.onload = function() { 
 			listener.@net.zschech.gwt.comet.client.impl.XDomainRequestListener::onLoad(Lnet/zschech/gwt/comet/client/impl/XDomainRequest;Ljava/lang/String;) 
 			(self,self.request.responseText); 
 	    }; 
 	    
-	    this.request.onprogress = function() {
+	    self.request.onprogress = function() {
 			listener.@net.zschech.gwt.comet.client.impl.XDomainRequestListener::onProgress(Lnet/zschech/gwt/comet/client/impl/XDomainRequest;Ljava/lang/String;) 
 			(self,self.request.responseText); 
 		}; 
 	    
-	    this.request.ontimeout = function() { 
+	    self.request.ontimeout = function() { 
 			listener.@net.zschech.gwt.comet.client.impl.XDomainRequestListener::onTimeout(Lnet/zschech/gwt/comet/client/impl/XDomainRequest;)
 			(self); 
 	    }; 
-	    this.request.onerror = function() { 
+	    self.request.onerror = function() { 
 			listener.@net.zschech.gwt.comet.client.impl.XDomainRequestListener::onError(Lnet/zschech/gwt/comet/client/impl/XDomainRequest;)
 			(self); 
 	    }; 

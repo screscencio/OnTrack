@@ -75,10 +75,8 @@
 	<g:FocusPanel ui:field="focusPanel">
 		<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.background}" paddingEnabled="false">
 			<g:HorizontalPanel styleName="{style.textBoxDecoration} {style.container}" verticalAlignment="middle">
-				<g:cell width="1">
-					<g:SimplePanel styleName="{style.searchIcon}"/>
-				</g:cell>
-				<g:cell width="*">
+				<g:SimplePanel styleName="{style.searchIcon}"/>
+				<g:cell width="100%">
 				 	<g:HTMLPanel styleName="{style.filterBoxContainer}">
 						<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
 						<g:Label ui:field="helpLabel" styleName="{style.helpLabel}">Hit TAB to complete</g:Label>

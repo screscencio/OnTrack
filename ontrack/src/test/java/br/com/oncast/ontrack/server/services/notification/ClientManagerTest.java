@@ -292,7 +292,7 @@ public class ClientManagerTest {
 
 	private void unregisterClients(final UUID... clientIds) {
 		for (final UUID clientId : clientIds) {
-			manager.unregisterClient(clientId, DEFAULT_SESSION_ID);
+			manager.unregisterClient(clientId);
 		}
 	}
 

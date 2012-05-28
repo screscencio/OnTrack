@@ -69,8 +69,6 @@ public abstract class CometServletResponseImpl implements CometServletResponse {
 	private ScheduledFuture<?> heartbeatFuture;
 	private ScheduledFuture<?> sessionKeepAliveFuture;
 	
-	private static final String COMET_SESSION_ID_PARAM = "cometSessionId";
-
 	protected CometServletResponseImpl(HttpServletRequest request, HttpServletResponse response, SerializationPolicy serializationPolicy, ClientOracle clientOracle, CometServlet servlet, AsyncServlet async, int heartbeat) {
 		this.request = request;
 		this.response = response;

@@ -104,7 +104,7 @@ public class IEXDRCometTransport extends RawDataCometTransport {
         String url = super.getUrl(connectionCount);
         // Detect if we have a session in a cookie and pass it on the url, because XDomainRequest does not
         // send cookies
-        if (url.toLowerCase().contains(";jsessionid") == false) {
+        if (!url.toLowerCase().contains(";jsessionid")) {
             String sessionid = Cookies.getCookie("JSESSIONID");
             if (sessionid != null) {
                 String parm = ";jsessionid=" + sessionid;
@@ -133,8 +133,7 @@ public class IEXDRCometTransport extends RawDataCometTransport {
         return url;
     }
 
-	private void onReceiving(int statusCode, String responseText,
-			boolean connected) {
+	private void onReceiving(int statusCode, String responseText, boolean connected) {
 		if (statusCode != Response.SC_OK) {
 			if (!connected) {
 				super.disconnect();

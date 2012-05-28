@@ -23,13 +23,13 @@
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
-	   <g:HorizontalPanel>
-	   <g:cell verticalAlignment="middle">
-	    <g:Image ui:field="icon" styleName="{style.icon}" />
-	   </g:cell>
-	   <g:cell verticalAlignment="middle" width="*">
-		<g:Label ui:field="label" styleName="{style.label}"/>
-	   </g:cell>
-	   </g:HorizontalPanel>
+		<g:HorizontalPanel>
+			<g:cell verticalAlignment="middle">
+				<g:Image ui:field="icon" styleName="{style.icon}" />
+			</g:cell>
+			<g:cell verticalAlignment="middle" width="100%">
+				<g:Label ui:field="label" styleName="{style.label}" />
+			</g:cell>
+		</g:HorizontalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

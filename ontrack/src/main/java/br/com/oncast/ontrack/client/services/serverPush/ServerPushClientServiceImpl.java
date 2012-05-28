@@ -71,6 +71,6 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	}
 
 	private void connect() {
-		if (!serverPushClient.isRunning()) serverPushClient.start();
+		serverPushClient.start();
 	}
 }

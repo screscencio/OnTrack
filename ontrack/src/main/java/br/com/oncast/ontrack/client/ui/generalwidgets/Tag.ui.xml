@@ -62,7 +62,7 @@
 			<g:cell width="1">
 				<g:Image resource="{leftBg}"/>
 			</g:cell>
-			<g:cell width="*">
+			<g:cell width="100%">
 				<g:SimplePanel styleName="{style.container}">
 					<t:FastLabel styleName="{style.tagLabel} v-ellip" ui:field="tagLabel" />
 				</g:SimplePanel>

@@ -58,7 +58,7 @@
 				<g:cell width="1">
 					<g:Label text="Search"/>
 				</g:cell>
-				<g:cell width="*">
+				<g:cell width="100%">
 					<search:SearchScopeFiltrableCommandMenu ui:field="search" styleName="{style.search}"/>
 				</g:cell>
 				

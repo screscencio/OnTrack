@@ -87,7 +87,7 @@
 				<g:cell width="1">
 					<g:SimplePanel styleName="{style.searchIcon}"/>
 				</g:cell>
-				<g:cell width="*">
+				<g:cell width="100%">
 				 	<g:HTMLPanel styleName="{style.filterBoxContainer}">
 						<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
 						<g:Label ui:field="helpLabel" styleName="{style.helpLabel}">Hit TAB to complete</g:Label>

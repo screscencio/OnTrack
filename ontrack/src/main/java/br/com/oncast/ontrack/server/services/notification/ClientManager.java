@@ -41,11 +41,13 @@ public class ClientManager {
 	}
 
 	public void registerClient(final UUID clientId, final String sessionId) {
+		LOGGER.debug("Registering client (clientId='" + clientId + "', sessionId='" + sessionId + "').");
 		add(clientId, UNBOUND_PROJECT_INDEX, clientsByProject);
 		add(clientId, sessionId, clientsBySession);
 	}
 
-	public void unregisterClient(final UUID clientId, final String sessionId) {
+	public void unregisterClient(final UUID clientId) {
+		LOGGER.debug("Unregistering client '" + clientId + "'.");
 		remove(clientId, clientsByProject);
 		remove(clientId, clientsBySession);
 	}

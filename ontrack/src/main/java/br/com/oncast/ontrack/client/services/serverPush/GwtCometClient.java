@@ -1,6 +1,6 @@
 /*
  * DECISION (14/09/2011) Rodrigo decided to keep this implementation, for now fixing only excessive Alerts (mainly in browser crashes apparently caused by
- * session timeout), even though some workarounds are going to be needed. A ping will be implemented to keep the server session a live and all other errors will
+ * session timeout), even though some workarounds are going to be needed. A ping will be implemented to keep the server session alive and all other errors will
  * still show an alert.
  */
 

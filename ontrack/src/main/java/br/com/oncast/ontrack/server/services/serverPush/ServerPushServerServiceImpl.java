@@ -41,7 +41,7 @@ public class ServerPushServerServiceImpl implements ServerPushServerService {
 
 				clientConnectionMap.remove(clientId);
 				for (final ServerPushConnectionListener listener : serverPushConnectionListenerSet)
-					listener.onClientDisconnected(clientId, connection.getSessionId());
+					listener.onClientDisconnected(clientId);
 			}
 		});
 	}

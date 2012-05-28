@@ -96,6 +96,7 @@ public class IEHTMLFileCometTransport extends CometTransport {
 	public void disconnect() {
 		// TODO this does not seem to close the connection immediately.
 		expectingDisconnection = true;
+		
 		iframe.setSrc("");
 		if (connected) {
 			onDisconnected();

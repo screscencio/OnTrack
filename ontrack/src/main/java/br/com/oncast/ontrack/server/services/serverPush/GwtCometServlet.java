@@ -50,21 +50,33 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 		}
 	}
 
-	private static void addCometSession(final CometSession cometSession) {
-		LOGGER.debug("A new commet session was added (clientId='" + cometSession.getSessionID() + "', sessionId='" + cometSession.getHttpSession().getId()
-				+ "').");
-		LOGGER.debug("Commet sessions: " + cometSessionMap.size());
+	@Override
+	public void log(final String message, final Throwable t) {
+		// TODO workaround for not showing heartbeat error messages
+	}
 
+	private static void addCometSession(final CometSession cometSession) {
 		cometSessionMap.put(cometSession.getSessionID(), cometSession);
+		LOGGER.debug("Currently active commet sessions: " + cometSessionMap.size());
+
 		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientConnected(createGwtCometClientConnection(cometSession));
 	}
 
 	private static void removeCometSession(final CometSession cometSession) {
-		LOGGER.debug("A commet session was removed (clientId='" + cometSession.getSessionID() + "', sessionId='" + cometSession.getHttpSession().getId()
-				+ "').");
+		removeCometSession(cometSession.getSessionID());
+	}
 
-		cometSessionMap.remove(cometSession.getSessionID());
-		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientDisconnected(createGwtCometClientConnection(cometSession));
+	private static void removeCometSession(final String cometSessionId) {
+		cometSessionMap.remove(cometSessionId);
+		LOGGER.debug("Currently active commet sessions: " + cometSessionMap.size());
+
+		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientDisconnected(createGwtCometClientConnection(cometSessionId));
+	}
+
+	@Override
+	public void cometTerminated(final CometServletResponse cometResponse, final boolean serverInitiated) {
+		final String cometSessionId = cometResponse.getRequest().getParameter(CometServletResponse.COMET_SESSION_ID_PARAM);
+		removeCometSession(cometSessionId);
 	}
 
 	@Override
@@ -104,5 +116,9 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 
 	private static GwtCometClientConnection createGwtCometClientConnection(final CometSession cometSession) {
 		return new GwtCometClientConnection(cometSession.getSessionID(), cometSession.getHttpSession().getId());
+	}
+
+	private static ServerPushConnection createGwtCometClientConnection(final String cometSessionId) {
+		return new GwtCometClientConnection(cometSessionId, null);
 	}
 }

@@ -30,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface CometServletResponse {
 	
+	public static final String COMET_SESSION_ID_PARAM = "cometSessionId";
+	
 	/**
 	 * The HTTP request attached to this Comet response
 	 * 
