@@ -22,6 +22,12 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String annotatedObjectId;
 
+	@Column(name = ActionTableColumns.LONG_1)
+	private Long authorId;
+
+	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
+	private String message;
+
 	protected AnnotationCreateActionEntity() {}
 
 	public String getAnnotationId() {
@@ -38,6 +44,22 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 
 	public void setAnnotatedObjectId(final String annotatedObjectId) {
 		this.annotatedObjectId = annotatedObjectId;
+	}
+
+	public Long getAuthorId() {
+		return authorId;
+	}
+
+	public void setAuthorId(final Long authorId) {
+		this.authorId = authorId;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(final String message) {
+		this.message = message;
 	}
 
 }

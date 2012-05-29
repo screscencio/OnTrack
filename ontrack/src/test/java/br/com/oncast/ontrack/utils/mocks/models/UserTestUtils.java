@@ -12,8 +12,8 @@ public class UserTestUtils {
 	private static User admin;
 	private static int userCount = 0;
 
-	public static User createUser() {
-		return new User("user" + ++userCount + "@email.com");
+	public static User createUser() throws Exception {
+		return createUser(++userCount);
 	}
 
 	public static User createUser(final String email) {

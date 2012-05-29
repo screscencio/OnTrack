@@ -8,6 +8,7 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseDeclareStartDayActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -33,7 +34,7 @@ public class ReleaseDeclareStartDayAction implements ReleaseAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Release release = ReleaseActionHelper.findRelease(referenceId, context);
+		final Release release = ActionHelper.findRelease(referenceId, context);
 		final Date previousDate = release.hasDeclaredStartDay() ? release.getStartDay().getJavaDate() : null;
 
 		release.declareStartDay(date == null ? null : WorkingDayFactory.create(date));

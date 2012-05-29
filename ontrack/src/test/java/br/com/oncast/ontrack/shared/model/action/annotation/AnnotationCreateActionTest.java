@@ -1,8 +1,11 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +14,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationCreateActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
@@ -24,16 +28,18 @@ import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 public class AnnotationCreateActionTest extends ModelActionTest {
 
 	private ProjectContext context;
-	private UUID annotationId;
 	private User author;
 	private UUID annotatedObjectId;
+	private String message;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		context = mock(ProjectContext.class);
-		annotationId = new UUID();
 		annotatedObjectId = new UUID();
 		author = UserTestUtils.createUser();
+		message = "Any message";
+
+		when(context.findUser(author.getId())).thenReturn(author);
 	}
 
 	@Test
@@ -54,8 +60,59 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		assertEquals(author, captor.getValue().getAuthor());
 	}
 
-	private void execute() throws UnableToCompleteActionException {
-		new AnnotationCreateAction(annotatedObjectId, author).execute(context);
+	@Test(expected = UnableToCompleteActionException.class)
+	public void shouldNotCompleteWhenTheSpecifiedUserDoesNotExist() throws Exception {
+		when(context.findUser(author.getId())).thenThrow(new UserNotFoundException());
+		execute();
+	}
+
+	@Test
+	public void shouldBeAbleToOverrideTheAuthor() throws Exception {
+		final AnnotationCreateAction action = new AnnotationCreateAction(annotatedObjectId, author, message);
+		final User expectedAuthor = UserTestUtils.createUser();
+		action.setAuthor(expectedAuthor);
+
+		when(context.findUser(expectedAuthor.getId())).thenReturn(expectedAuthor);
+		action.execute(context);
+
+		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
+		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+		verify(context, never()).findUser(author.getId());
+		verify(context).findUser(expectedAuthor.getId());
+
+		final User obtainedAuthor = captor.getValue().getAuthor();
+		assertFalse(author.equals(obtainedAuthor));
+		assertEquals(expectedAuthor, obtainedAuthor);
+	}
+
+	@Test
+	public void shouldHaveTheMessage() throws Exception {
+		execute();
+
+		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
+		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+
+		assertEquals(message, captor.getValue().getMessage());
+	}
+
+	// FIXME Mats move this test to another class
+	@Test
+	public void shouldRemoveTheCreatedAnnotationOnUndo() throws Exception {
+		final ModelAction undoAction = execute();
+
+		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
+		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+		final Annotation createdAnnotation = captor.getValue();
+
+		when(context.findAnnotation(createdAnnotation.getId())).thenReturn(createdAnnotation);
+
+		undoAction.execute(context);
+
+		verify(context).removeAnnotation(createdAnnotation, annotatedObjectId);
+	}
+
+	private ModelAction execute() throws UnableToCompleteActionException {
+		return new AnnotationCreateAction(annotatedObjectId, author, message).execute(context);
 	}
 
 	@Override
@@ -70,7 +127,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getInstance() {
-		return new AnnotationCreateAction(annotatedObjectId, author);
+		return new AnnotationCreateAction(annotatedObjectId, author, message);
 	}
 
 }

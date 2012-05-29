@@ -22,4 +22,6 @@ public interface ActionTableColumns {
 
 	public static final String DATE_1 = "timestamp";
 
+	public static final String LONG_1 = "long_1";
+
 }

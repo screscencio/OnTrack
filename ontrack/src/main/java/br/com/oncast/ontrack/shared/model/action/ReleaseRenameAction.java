@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.rele
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -33,7 +34,7 @@ public class ReleaseRenameAction implements ReleaseAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Release release = ReleaseActionHelper.findRelease(referenceId, context);
+		final Release release = ActionHelper.findRelease(referenceId, context);
 		final String oldDescription = release.getDescription();
 		try {
 			release.setDescription(newReleaseDescription);

@@ -7,10 +7,12 @@ public class Annotation {
 
 	private final UUID id;
 	private final User author;
+	private final String message;
 
-	public Annotation(final UUID id, final User author) {
+	public Annotation(final UUID id, final User author, final String message) {
 		this.id = id;
 		this.author = author;
+		this.message = message;
 	}
 
 	@Override
@@ -36,6 +38,14 @@ public class Annotation {
 
 	public User getAuthor() {
 		return author;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public UUID getId() {
+		return id;
 	}
 
 }

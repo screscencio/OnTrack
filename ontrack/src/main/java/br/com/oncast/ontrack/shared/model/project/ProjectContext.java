@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
@@ -19,11 +21,13 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectContext {
 
 	private final Project project;
+	private Set<User> users;
 
 	public ProjectContext(final Project project) {
 		this.project = project;
@@ -141,6 +145,24 @@ public class ProjectContext {
 	}
 
 	public void addAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
+		// FIXME Auto-generated catch block
 
+	}
+
+	public User findUser(final Long userId) throws UserNotFoundException {
+		for (final User user : users) {
+			if (user.getId() == userId) return user;
+		}
+		throw new UserNotFoundException("The user referenced by id " + userId + " was not found.");
+	}
+
+	public void removeAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
+		// FIXME Auto-generated catch block
+
+	}
+
+	public Annotation findAnnotation(final UUID id) throws AnnotationNotFoundException {
+		// FIXME Auto-generated catch block
+		return null;
 	}
 }

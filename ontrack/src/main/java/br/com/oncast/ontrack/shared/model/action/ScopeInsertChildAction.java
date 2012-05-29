@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scop
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -45,7 +46,7 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 

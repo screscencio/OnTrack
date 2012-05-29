@@ -65,9 +65,9 @@ public class AnnotationsWidget extends Composite {
 		// FIXME Mats use a service here
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
 		final User user = provider.getAuthenticationService().getCurrentUser();
-		provider.getActionExecutionService().onUserActionExecutionRequest(new AnnotationCreateAction(subjectId, user));
+		provider.getActionExecutionService().onUserActionExecutionRequest(new AnnotationCreateAction(subjectId, user, message));
 
-		annotations.insert(new AnnotationTopic("admin@ontrack.com", message), 0);
+		annotations.insert(new AnnotationTopic(user.getEmail(), message), 0);
 		annotations.insert(new Separator(), 1);
 	}
 

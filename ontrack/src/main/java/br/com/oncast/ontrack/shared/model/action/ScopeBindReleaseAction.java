@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scop
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -69,7 +70,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	// TODO Reference a release by its ID, not by its description. (Think about the consequences).
 	@Override
 	public ScopeBindReleaseAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope selectedScope = ScopeActionHelper.findScope(referenceId, context);
+		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 
 		final Release oldRelease = selectedScope.getRelease();
 		final int oldScopePriority = (oldRelease != null) ? oldRelease.removeScope(selectedScope) : -1;
@@ -81,7 +82,7 @@ public class ScopeBindReleaseAction implements ScopeAction {
 			final ModelAction releaseExistenceAssuranceAction = assureNewReleaseExistence(context);
 			if (releaseExistenceAssuranceAction != null) newRollbackSubActions.add(0, releaseExistenceAssuranceAction);
 
-			final Release newRelease = ReleaseActionHelper.findRelease(newReleaseDescription, context);
+			final Release newRelease = ActionHelper.findRelease(newReleaseDescription, context);
 			if (newRelease.equals(oldRelease)) newRelease.addScope(selectedScope, oldScopePriority);
 			else newRelease.addScope(selectedScope, scopePriority);
 

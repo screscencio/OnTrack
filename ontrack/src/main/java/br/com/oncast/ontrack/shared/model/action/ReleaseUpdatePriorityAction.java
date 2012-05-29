@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.rele
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -37,7 +38,7 @@ public class ReleaseUpdatePriorityAction implements ReleaseAction {
 	public ReleaseUpdatePriorityAction execute(final ProjectContext context) throws UnableToCompleteActionException {
 		if (targetIndex < 0) throw new UnableToCompleteActionException("It's already the least prioritary release.");
 
-		final Release selectedRelease = ReleaseActionHelper.findRelease(releaseId, context);
+		final Release selectedRelease = ActionHelper.findRelease(releaseId, context);
 		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException("Unable to change priority of the root release.");
 
 		final Release parentRelease = selectedRelease.getParent();

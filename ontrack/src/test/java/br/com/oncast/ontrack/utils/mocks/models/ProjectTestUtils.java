@@ -70,7 +70,7 @@ public class ProjectTestUtils {
 		return list;
 	}
 
-	public static ProjectAuthorization createAuthorization() {
+	public static ProjectAuthorization createAuthorization() throws Exception {
 		return new ProjectAuthorization(UserTestUtils.createUser(), createRepresentation());
 	}
 
