@@ -48,7 +48,7 @@ public class XMLWriterTest {
 		xmlExporter = new XMLWriter();
 		version = OntrackMigrationManager.getCurrentVersion();
 		userList = UserActionTestUtils.createUserList();
-		passwordList = UserActionTestUtils.createPasswordList();
+		passwordList = UserActionTestUtils.createPasswordListFor(userList);
 	}
 
 	@After

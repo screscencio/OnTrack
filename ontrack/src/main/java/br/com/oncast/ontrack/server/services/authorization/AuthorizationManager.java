@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
@@ -19,4 +20,7 @@ public interface AuthorizationManager {
 	public void assureProjectAccessAuthorization(final long projectId) throws PersistenceException, AuthorizationException;
 
 	public void validateAndUpdateUserProjectCreationQuota(User requestingUser) throws PersistenceException, AuthorizationException;
+
+	public Set<User> listAuthorizedUsers(long projectId) throws PersistenceException;
+
 }

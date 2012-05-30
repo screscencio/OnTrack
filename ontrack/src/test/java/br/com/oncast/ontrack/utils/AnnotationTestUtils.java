@@ -10,4 +10,8 @@ public class AnnotationTestUtils {
 		return new Annotation(id, UserTestUtils.createUser(), "Message of annotation '" + id + "'.");
 	}
 
+	public static Annotation create() throws Exception {
+		return create(new UUID());
+	}
+
 }

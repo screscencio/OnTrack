@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationCreateActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
@@ -22,6 +21,7 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
@@ -62,7 +62,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenTheSpecifiedUserDoesNotExist() throws Exception {
-		when(context.findUser(author.getId())).thenThrow(new UserNotFoundException());
+		when(context.findUser(author.getId())).thenThrow(new UserNotFoundException(""));
 		execute();
 	}
 
@@ -104,7 +104,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
 		final Annotation createdAnnotation = captor.getValue();
 
-		when(context.findAnnotation(createdAnnotation.getId())).thenReturn(createdAnnotation);
+		when(context.findAnnotation(createdAnnotation.getId(), annotatedObjectId)).thenReturn(createdAnnotation);
 
 		undoAction.execute(context);
 

@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.helper;
 
-import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
@@ -10,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ActionHelper {
@@ -50,9 +50,9 @@ public class ActionHelper {
 		}
 	}
 
-	public static Annotation findAnnotation(final UUID id, final ProjectContext context) throws UnableToCompleteActionException {
+	public static Annotation findAnnotation(final UUID id, final UUID annotatedObjectId, final ProjectContext context) throws UnableToCompleteActionException {
 		try {
-			return context.findAnnotation(id);
+			return context.findAnnotation(id, annotatedObjectId);
 		}
 		catch (final AnnotationNotFoundException e) {
 			throw new UnableToCompleteActionException(e);

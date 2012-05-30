@@ -185,6 +185,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final List<UserAction> actionList = persistenceService.retrieveActionsSince(projectId, snapshot.getLastAppliedActionId());
 
 			Project project = snapshot.getProject();
+			project.setUserList(authorizationManager.listAuthorizedUsers(projectId));
 			if (actionList.isEmpty()) return project;
 
 			project = applyActionsToProject(project, actionList);
@@ -282,4 +283,5 @@ class BusinessLogicImpl implements BusinessLogic {
 				.send();
 
 	}
+
 }

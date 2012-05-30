@@ -374,7 +374,8 @@ public class PersistenceServiceTest {
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {
-			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(persistenceService.retrieveProjectRepresentation(PROJECT_ID), projectScope,
+			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(ProjectTestUtils.createProject(
+					persistenceService.retrieveProjectRepresentation(PROJECT_ID), projectScope,
 					projectRelease), new Date(0));
 			return projectSnapshot;
 		}

@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
@@ -129,4 +131,16 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		persistenceService.persistOrUpdateUser(requestingUser);
 		notificationService.notifyUserInformationChange(requestingUser);
 	}
+
+	@Override
+	public Set<User> listAuthorizedUsers(final long projectId) throws PersistenceException {
+		final Set<User> users = new HashSet<User>();
+		for (final ProjectAuthorization authorization : persistenceService.retrieveAllProjectAuthorizations()) {
+			if (authorization.getProject().getId() == projectId) {
+				users.add(authorization.getUser());
+			}
+		}
+		return users;
+	}
+
 }

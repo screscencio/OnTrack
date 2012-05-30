@@ -22,6 +22,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
 import br.com.oncast.ontrack.utils.mocks.callback.DispatchCallbackMock;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class ContextProviderServiceTest {
 
@@ -92,6 +93,6 @@ public class ContextProviderServiceTest {
 	}
 
 	private Project createDummyProject() {
-		return new Project(new ProjectRepresentation(PROJECT_ID, ""), new Scope(""), new Release("", new UUID()));
+		return ProjectTestUtils.createProject(new ProjectRepresentation(PROJECT_ID, ""), new Scope(""), new Release("", new UUID()));
 	}
 }

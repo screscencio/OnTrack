@@ -17,7 +17,7 @@
 		<g:HTMLPanel>
 			<aw:ExtendableTextArea ui:field="newAnnotationText" maxHeight="100px" />
 			<misc:Separator styleName="{style.separator}"/>
-			<g:VerticalPanel ui:field="annotations" width="100%"/>
+			<misc:VerticalModelWidgetContainer ui:field="annotations" width="100%"/>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

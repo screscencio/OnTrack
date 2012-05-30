@@ -58,20 +58,15 @@ public class UserActionTestUtils {
 		return UserTestUtils.createList(2);
 	}
 
-	public static List<Password> createPasswordList() {
+	public static List<Password> createPasswordListFor(final List<User> userList) {
 		final List<Password> passwords = new ArrayList<Password>();
 
-		final Password password1 = new Password();
-		password1.setUserId(1);
-		password1.setPassword("password1");
-
-		final Password password2 = new Password();
-		password2.setUserId(2);
-		password2.setPassword("password2");
-
-		passwords.add(password1);
-		passwords.add(password2);
-
+		for (final User user : userList) {
+			final Password password = new Password();
+			password.setUserId(user.getId());
+			password.setPassword("password" + user.getId());
+			passwords.add(password);
+		}
 		return passwords;
 	}
 

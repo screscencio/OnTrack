@@ -47,7 +47,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	@Override
 	public UUID getReferenceId() {
-		return annotationId;
+		return annotatedObjectId;
 	}
 
 	public void setAuthor(final User author) {

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
@@ -22,12 +21,12 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectContext {
 
 	private final Project project;
-	private Set<User> users;
 
 	public ProjectContext(final Project project) {
 		this.project = project;
@@ -144,25 +143,34 @@ public class ProjectContext {
 		return releases;
 	}
 
-	public void addAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
-		// FIXME Auto-generated catch block
+	public User findUser(final Long userId) throws UserNotFoundException {
+		final User user = project.getUser(userId);
+		if (user == null) throw new UserNotFoundException("The user referenced by id " + userId + " was not found.");
 
+		return user;
 	}
 
-	public User findUser(final Long userId) throws UserNotFoundException {
-		for (final User user : users) {
-			if (user.getId() == userId) return user;
-		}
-		throw new UserNotFoundException("The user referenced by id " + userId + " was not found.");
+	public void addAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
+		project.addAnnotation(annotation, annotatedObjectId);
 	}
 
 	public void removeAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
-		// FIXME Auto-generated catch block
-
+		if (project.hasAnnotationsFor(annotatedObjectId)) project.removeAnnotation(annotation, annotatedObjectId);
 	}
 
-	public Annotation findAnnotation(final UUID id) throws AnnotationNotFoundException {
-		// FIXME Auto-generated catch block
-		return null;
+	public Annotation findAnnotation(final UUID annotationId, final UUID annotatedObjectId) throws AnnotationNotFoundException {
+		if (!project.hasAnnotationsFor(annotatedObjectId)) throw new AnnotationNotFoundException("The object with id '" + annotatedObjectId
+				+ "' has no annotations");
+
+		final Annotation annotation = project.getAnnotation(annotationId, annotatedObjectId);
+		if (annotation != null) return annotation;
+
+		throw new AnnotationNotFoundException("The Object with id '" + annotatedObjectId + "' does not have the annotations with id '" + annotationId + "'");
+	}
+
+	public List<Annotation> findAnnotationsFor(final UUID annotatedObjectId) {
+		if (!project.hasAnnotationsFor(annotatedObjectId)) return new ArrayList<Annotation>();
+
+		return project.getAnnotationsFor(annotatedObjectId);
 	}
 }

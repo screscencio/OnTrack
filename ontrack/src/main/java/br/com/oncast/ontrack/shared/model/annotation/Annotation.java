@@ -1,13 +1,19 @@
 package br.com.oncast.ontrack.shared.model.annotation;
 
+import java.io.Serializable;
+
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class Annotation {
+public class Annotation implements Serializable {
 
-	private final UUID id;
-	private final User author;
-	private final String message;
+	private static final long serialVersionUID = 1L;
+
+	private UUID id;
+	private User author;
+	private String message;
+
+	public Annotation() {}
 
 	public Annotation(final UUID id, final User author, final String message) {
 		this.id = id;

@@ -1,20 +1,28 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
+import java.util.List;
+import java.util.Set;
+
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.generalwidgets.Separator;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
-import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationsWidget extends Composite {
@@ -30,12 +38,51 @@ public class AnnotationsWidget extends Composite {
 	protected ExtendableTextArea newAnnotationText;
 
 	@UiField
-	protected VerticalPanel annotations;
+	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> annotations;
+
+	@UiFactory
+	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> createAnnotationsContainer() {
+		return new VerticalModelWidgetContainer<Annotation, AnnotationTopic>(new ModelWidgetFactory<Annotation, AnnotationTopic>() {
+
+			@Override
+			public AnnotationTopic createWidget(final Annotation modelBean) {
+				return new AnnotationTopic(modelBean);
+			}
+
+		}, new ModelWidgetContainerListener() {
+			@Override
+			public void onUpdateComplete(final boolean hasChanged) {}
+		});
+	}
 
 	private UUID subjectId;
 
+	private final ActionExecutionListener listener;
+
 	public AnnotationsWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
+
+		listener = new ActionExecutionListener() {
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isUserAction) {
+				if (action instanceof AnnotationAction && subjectId.equals(action.getReferenceId())) {
+					update(context.findAnnotationsFor(action.getReferenceId()));
+				}
+			}
+		};
+	}
+
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(listener);
+	}
+
+	@Override
+	protected void onUnload() {
+		ClientServiceProvider.getInstance().getActionExecutionService().removeActionExecutionListener(listener);
+		super.onUnload();
 	}
 
 	@UiHandler("newAnnotationText")
@@ -62,16 +109,14 @@ public class AnnotationsWidget extends Composite {
 		final String message = newAnnotationText.getText().trim();
 		if (message.isEmpty()) return;
 
-		// FIXME Mats use a service here
-		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
-		final User user = provider.getAuthenticationService().getCurrentUser();
-		provider.getActionExecutionService().onUserActionExecutionRequest(new AnnotationCreateAction(subjectId, user, message));
-
-		annotations.insert(new AnnotationTopic(user.getEmail(), message), 0);
-		annotations.insert(new Separator(), 1);
+		ClientServiceProvider.getInstance().getAnnotationService().createAnnotationFor(subjectId, message);
 	}
 
-	public void setSubjectId(final UUID id) {
-		this.subjectId = id;
+	public void setSubjectId(final UUID subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public void update(final List<Annotation> annotationsList) {
+		annotations.update(annotationsList);
 	}
 }
