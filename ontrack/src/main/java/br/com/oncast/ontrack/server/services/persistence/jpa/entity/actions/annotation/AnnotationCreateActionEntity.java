@@ -22,9 +22,6 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String annotatedObjectId;
 
-	@Column(name = ActionTableColumns.STRING_3)
-	private String authorEmail;
-
 	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
 	private String message;
 
@@ -52,14 +49,6 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 
 	public void setMessage(final String message) {
 		this.message = message;
-	}
-
-	public String getAuthorEmail() {
-		return authorEmail;
-	}
-
-	public void setAuthorEmail(String authorEmail) {
-		this.authorEmail = authorEmail;
 	}
 
 }

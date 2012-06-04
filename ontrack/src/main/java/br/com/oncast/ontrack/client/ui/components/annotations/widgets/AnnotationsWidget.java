@@ -16,6 +16,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -63,10 +65,21 @@ public class AnnotationsWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
+	private boolean shouldRefresh = true;
+
 	@Override
 	protected void onLoad() {
 		getActionExecutionService().addActionExecutionListener(getListener());
 		update();
+		shouldRefresh = true;
+		Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+			@Override
+			public boolean execute() {
+				update();
+				return shouldRefresh;
+			}
+		}, 3000);
 	}
 
 	public void setSubjectId(final UUID subjectId) {
@@ -77,6 +90,7 @@ public class AnnotationsWidget extends Composite {
 	@Override
 	protected void onUnload() {
 		getActionExecutionService().removeActionExecutionListener(listener);
+		shouldRefresh = false;
 	}
 
 	@UiHandler("newAnnotationText")
@@ -118,8 +132,6 @@ public class AnnotationsWidget extends Composite {
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
 				if (action instanceof AnnotationAction && subjectId.equals(action.getReferenceId())) {
-					for (final Annotation a : context.findAnnotationsFor(subjectId))
-						System.out.println("Widget\n" + a.getAuthor().getEmail() + ": " + a.getMessage());
 					update();
 				}
 			}

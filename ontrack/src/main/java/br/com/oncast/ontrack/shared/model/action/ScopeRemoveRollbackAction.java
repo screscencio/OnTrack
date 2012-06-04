@@ -58,27 +58,27 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 	protected ScopeRemoveRollbackAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope parent = ActionHelper.findScope(parentScopeId, context);
 		final Scope newScope = new Scope(description, referenceId);
 
 		parent.add(index, newScope);
 
-		executSubActions(context);
-		executeChildActions(context);
+		executSubActions(context, actionContext);
+		executeChildActions(context, actionContext);
 
 		return new ScopeRemoveAction(referenceId);
 	}
 
-	private void executeChildActions(final ProjectContext context) throws UnableToCompleteActionException {
+	private void executeChildActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		for (int i = childActionList.size() - 1; i >= 0; i--) {
-			childActionList.get(i).execute(context);
+			childActionList.get(i).execute(context, actionContext);
 		}
 	}
 
-	private void executSubActions(final ProjectContext context) throws UnableToCompleteActionException {
+	private void executSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		for (final ModelAction subAction : subActionList)
-			subAction.execute(context);
+			subAction.execute(context, actionContext);
 	}
 
 	@Override

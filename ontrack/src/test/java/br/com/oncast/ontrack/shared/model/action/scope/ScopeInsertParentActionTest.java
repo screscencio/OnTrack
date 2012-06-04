@@ -6,9 +6,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
@@ -46,7 +48,7 @@ public class ScopeInsertParentActionTest extends ModelActionTest {
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
 
-		new ScopeInsertParentAction(childScope.getId(), newScopeDescription).execute(context);
+		new ScopeInsertParentAction(childScope.getId(), newScopeDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(childScope.getParent().getDescription(), newScopeDescription);
 		assertEquals(rootScope.getChildren().get(0).getDescription(), newScopeDescription);
@@ -54,18 +56,18 @@ public class ScopeInsertParentActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void insertingFatherAtRootNodeMustThrowException() throws UnableToCompleteActionException {
-		new ScopeInsertParentAction(rootScope.getId(), newScopeDescription).execute(context);
+		new ScopeInsertParentAction(rootScope.getId(), newScopeDescription).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
 	public void rollbackMustRevertExecuteChanges() throws UnableToCompleteActionException {
 		final ScopeInsertParentAction insertFatherScopeAction = new ScopeInsertParentAction(childScope.getId(), newScopeDescription);
-		final ScopeAction rollbackAction = insertFatherScopeAction.execute(context);
+		final ScopeAction rollbackAction = insertFatherScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(childScope.getParent().getDescription(), newScopeDescription);
 		assertEquals(rootScope.getChildren().get(0).getDescription(), newScopeDescription);
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);
@@ -73,7 +75,7 @@ public class ScopeInsertParentActionTest extends ModelActionTest {
 
 	@Test
 	public void mustAssociateScopeWithARelease() throws UnableToCompleteActionException {
-		new ScopeInsertParentAction(childScope.getId(), newScopeDescription + " @" + newReleaseDescription).execute(context);
+		new ScopeInsertParentAction(childScope.getId(), newScopeDescription + " @" + newReleaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(childScope.getParent().getDescription(), newScopeDescription);
 		assertEquals(childScope.getParent().getRelease().getDescription(), newReleaseDescription);
@@ -84,7 +86,7 @@ public class ScopeInsertParentActionTest extends ModelActionTest {
 	public void mustDisassociateScopeFromReleaseAfterUndo() throws UnableToCompleteActionException {
 		final ScopeInsertParentAction insertFatherScopeAction = new ScopeInsertParentAction(childScope.getId(), newScopeDescription + " @"
 				+ newReleaseDescription);
-		final ScopeAction rollbackAction = insertFatherScopeAction.execute(context);
+		final ScopeAction rollbackAction = insertFatherScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		final Scope insertedParent = childScope.getParent();
 		final Release release = insertedParent.getRelease();
@@ -94,7 +96,7 @@ public class ScopeInsertParentActionTest extends ModelActionTest {
 		assertEquals(insertedParent.getDescription(), newScopeDescription);
 		assertEquals(rootScope.getChildren().get(0).getDescription(), newScopeDescription);
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(childScope.getParent(), rootScope);
 		assertEquals(rootScope.getChildren().get(0), childScope);

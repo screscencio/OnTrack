@@ -44,7 +44,7 @@ public class InsertChildTest extends GwtTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 
 		scope = getScope();
 

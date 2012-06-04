@@ -24,29 +24,25 @@ public class AnnotationCreateAction implements AnnotationAction {
 	private UUID annotatedObjectId;
 
 	@Attribute
-	private String authorEmail;
-
-	@Attribute
 	private String message;
 
 	protected AnnotationCreateAction() {}
 
-	public AnnotationCreateAction(final UUID annotatedObjectId, final User author, final String message) {
+	public AnnotationCreateAction(final UUID annotatedObjectId, final String message) {
 		this.message = message;
 		this.annotationId = new UUID();
 		this.annotatedObjectId = annotatedObjectId;
-		setAuthor(author);
 	}
 
 	public AnnotationCreateAction(final Annotation annotation, final UUID annotatedObjectId) {
-		this(annotatedObjectId, annotation.getAuthor(), annotation.getMessage());
+		this(annotatedObjectId, annotation.getMessage());
 		annotationId = annotation.getId();
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final User author = ActionHelper.findUser(authorEmail, context);
-		final Annotation annotation = new Annotation(annotationId, author, message);
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
+		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message);
 
 		context.addAnnotation(annotation, annotatedObjectId);
 		return new AnnotationRemoveAction(annotationId, annotatedObjectId);
@@ -55,10 +51,6 @@ public class AnnotationCreateAction implements AnnotationAction {
 	@Override
 	public UUID getReferenceId() {
 		return annotatedObjectId;
-	}
-
-	public void setAuthor(final User author) {
-		this.authorEmail = author.getEmail();
 	}
 
 }

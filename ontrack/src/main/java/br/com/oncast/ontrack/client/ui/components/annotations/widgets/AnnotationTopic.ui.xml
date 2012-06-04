@@ -7,25 +7,36 @@
 	
 		.author {
 			border: 1px solid COLOR_GRAY_DARK;
-			display: inline-block;
+			float: left;
 			
 			width: 40px;
 			height: 40px;
 			margin-right: 5px;
 		}
 		
-		.message {
-			vertical-align: top;
-			display: inline-block;
+		.container {
+			min-height: 42px;
 		}
-	
+		
+		.date {
+			float: right;
+			margin-bottom: -5px;
+			text-align: right;
+			font-size: FONT_SIZE_TINY;
+			font-style: italic;
+		}
+		
+		.separator {
+			margin: 15px -15px 10px -15px;
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel>
-		<g:HTMLPanel>
+		<g:HTMLPanel ui:field="container" styleName="{style.container}">
 			<g:Image ui:field="author" styleName="{style.author}" />
-			<g:HTMLPanel ui:field="message" styleName="{style.message}"/>
 		</g:HTMLPanel>
-		<misc:Separator />
+		<g:Label ui:field="date" styleName="{style.date}"/>
+		<misc:Separator styleName="{style.separator}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

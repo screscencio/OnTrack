@@ -7,7 +7,9 @@ import java.util.Stack;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -83,7 +85,7 @@ public class EffortInferenceEngineFlow6Test {
 
 	private ModelAction executeAction(final ModelAction action) throws UnableToCompleteActionException, ScopeNotFoundException {
 		final Scope effortInferenceBaseScopeForTestingPurposes = ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(projectContext, action);
-		final ModelAction rollbackAction = action.execute(projectContext);
+		final ModelAction rollbackAction = action.execute(projectContext, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(effortInferenceBaseScopeForTestingPurposes);
 		return rollbackAction;
 	}

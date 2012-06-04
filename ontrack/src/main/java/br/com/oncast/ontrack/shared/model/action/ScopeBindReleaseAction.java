@@ -69,17 +69,18 @@ public class ScopeBindReleaseAction implements ScopeAction {
 
 	// TODO Reference a release by its ID, not by its description. (Think about the consequences).
 	@Override
-	public ScopeBindReleaseAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ScopeBindReleaseAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 
 		final Release oldRelease = selectedScope.getRelease();
 		final int oldScopePriority = (oldRelease != null) ? oldRelease.removeScope(selectedScope) : -1;
 		final String oldReleaseDescription = context.getReleaseDescriptionFor(oldRelease);
 
-		final List<ModelAction> newRollbackSubActions = (rollbackSubActions == null) ? new ArrayList<ModelAction>() : processRollbackActions(context);
+		final List<ModelAction> newRollbackSubActions = (rollbackSubActions == null) ? new ArrayList<ModelAction>() : processRollbackActions(context,
+				actionContext);
 
 		if (shouldBindToNewRelease()) {
-			final ModelAction releaseExistenceAssuranceAction = assureNewReleaseExistence(context);
+			final ModelAction releaseExistenceAssuranceAction = assureNewReleaseExistence(context, actionContext);
 			if (releaseExistenceAssuranceAction != null) newRollbackSubActions.add(0, releaseExistenceAssuranceAction);
 
 			final Release newRelease = ActionHelper.findRelease(newReleaseDescription, context);
@@ -87,16 +88,16 @@ public class ScopeBindReleaseAction implements ScopeAction {
 			else newRelease.addScope(selectedScope, scopePriority);
 
 			if (selectedScope.getProgress().getState().equals(ProgressState.UNDER_WORK)) newRollbackSubActions.add(new ScopeDeclareProgressAction(referenceId,
-					selectedScope.getProgress().getDescription()).execute(context));
+					selectedScope.getProgress().getDescription()).execute(context, actionContext));
 		}
 
 		return new ScopeBindReleaseAction(referenceId, oldReleaseDescription, oldScopePriority, newRollbackSubActions);
 	}
 
-	private List<ModelAction> processRollbackActions(final ProjectContext context) throws UnableToCompleteActionException {
+	private List<ModelAction> processRollbackActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final List<ModelAction> newRollbackSubActions = new ArrayList<ModelAction>();
 		for (final ModelAction action : rollbackSubActions) {
-			final ModelAction newRollbackAction = action.execute(context);
+			final ModelAction newRollbackAction = action.execute(context, actionContext);
 			newRollbackSubActions.add(0, newRollbackAction);
 
 			if (newRollbackAction instanceof ReleaseCreateAction) releaseCreateAction = newRollbackAction;
@@ -108,14 +109,14 @@ public class ScopeBindReleaseAction implements ScopeAction {
 		return newReleaseDescription != null && !new ReleaseDescriptionParser(newReleaseDescription).getHeadRelease().isEmpty();
 	}
 
-	private ModelAction assureNewReleaseExistence(final ProjectContext context) throws UnableToCompleteActionException {
+	private ModelAction assureNewReleaseExistence(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		ModelAction newRollbackSubAction = null;
 		try {
 			context.findRelease(newReleaseDescription);
 		}
 		catch (final ReleaseNotFoundException e) {
 			if (releaseCreateAction == null) releaseCreateAction = new ReleaseCreateAction(newReleaseDescription);
-			newRollbackSubAction = releaseCreateAction.execute(context);
+			newRollbackSubAction = releaseCreateAction.execute(context, actionContext);
 		}
 		return newRollbackSubAction;
 	}

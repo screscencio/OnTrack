@@ -9,9 +9,11 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRenameActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
@@ -47,7 +49,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		final String columnDescription = "B";
 
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context);
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}
@@ -58,7 +60,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		final String columnDescription = "B";
 
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context);
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}
@@ -70,7 +72,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 
 		doThrow(new RuntimeException("any exception")).when(kanban).renameColumn(columnDescription, newDescription);
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context);
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(kanban).renameColumn(columnDescription, newDescription);
 	}
@@ -95,7 +97,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		when(context.findScope(scope3.getId())).thenReturn(scope3);
 
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context);
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(ProgressState.NOT_STARTED.getDescription(), scope.getProgress().getDescription());
 		assertEquals("other", scope2.getProgress().getDescription());
@@ -105,7 +107,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 	@Test
 	public void kanbanShouldBeLockedAfterExecution() throws Exception {
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), "B", "new B");
-		action.execute(context);
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(kanban).setLocked(true);
 	}
@@ -125,12 +127,12 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		int times = 0;
 		for (int i = 0; i < 10; i++) {
 			if (i % 2 == 0) {
-				currentAction = currentAction.execute(context);
+				currentAction = currentAction.execute(context, Mockito.mock(ActionContext.class));
 				verify(kanban, times(++times)).renameColumn(columnDescription, newDescription);
 				assertEquals(newDescription, scope.getProgress().getDescription());
 			}
 			else {
-				currentAction = currentAction.execute(context);
+				currentAction = currentAction.execute(context, Mockito.mock(ActionContext.class));
 				verify(kanban, times(times)).renameColumn(newDescription, columnDescription);
 				assertEquals(columnDescription, scope.getProgress().getDescription());
 			}

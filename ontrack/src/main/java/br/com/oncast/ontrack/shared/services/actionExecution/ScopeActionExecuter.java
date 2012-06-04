@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -35,7 +36,8 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 	}
 
 	@Override
-	public ActionExecutionContext executeAction(final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
+	public ActionExecutionContext executeAction(final ProjectContext context, final ActionContext actionContext, final ModelAction action)
+			throws UnableToCompleteActionException {
 		Scope scope;
 		try {
 			scope = getInferenceBaseScope(context, action);
@@ -44,7 +46,7 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 			throw new UnableToCompleteActionException(e);
 		}
 
-		final ModelAction reverseAction = action.execute(context);
+		final ModelAction reverseAction = action.execute(context, actionContext);
 		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope);
 
 		return new ActionExecutionContext(reverseAction, inferenceInfluencedScopeSet);

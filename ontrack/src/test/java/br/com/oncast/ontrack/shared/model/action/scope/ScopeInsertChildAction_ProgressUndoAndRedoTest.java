@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -84,7 +86,7 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 	}
 
 	private ModelAction executeAction(final Scope scope, final ModelAction action, final ProjectContext context) throws UnableToCompleteActionException {
-		final ModelAction rollbackAction = action.execute(context);
+		final ModelAction rollbackAction = action.execute(context, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);
 		return rollbackAction;
 	}

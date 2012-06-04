@@ -40,7 +40,7 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope scope = ActionHelper.findScope(scopeReferenceId, context);
 		// IMPORTANT The release id should be used to recover the release, but as it was not being saved there is the need to maintain backwards compatibility.
 		final Release release = releaseReferenceId != null ? ActionHelper.findRelease(releaseReferenceId, context) : scope.getRelease();

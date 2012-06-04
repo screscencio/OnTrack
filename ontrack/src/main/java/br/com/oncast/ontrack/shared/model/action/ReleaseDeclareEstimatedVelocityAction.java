@@ -30,7 +30,7 @@ public class ReleaseDeclareEstimatedVelocityAction implements ReleaseAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (estimatedVelocity != null && estimatedVelocity < 0.001f) throw new UnableToCompleteActionException("Cant declare estimated velocity as 0.");
 		final Release release = ActionHelper.findRelease(releaseId, context);
 		final Float previousDeclaration = release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : null;

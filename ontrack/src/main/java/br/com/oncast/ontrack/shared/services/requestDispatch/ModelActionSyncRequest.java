@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
@@ -14,6 +15,8 @@ public class ModelActionSyncRequest implements DispatchRequest<VoidResult> {
 	private long projectId;
 
 	private boolean shouldNotifyCurrentClient;
+
+	private ActionContext actionContext;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ModelActionSyncRequest() {}
@@ -43,5 +46,13 @@ public class ModelActionSyncRequest implements DispatchRequest<VoidResult> {
 
 	public long getProjectId() {
 		return projectId;
+	}
+
+	public void setActionContext(final ActionContext actionContext) {
+		this.actionContext = actionContext;
+	}
+
+	public ActionContext getActionContext() {
+		return this.actionContext;
 	}
 }

@@ -58,25 +58,25 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 	}
 
 	@Override
-	public ReleaseRemoveAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ReleaseRemoveAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Release parentRelease = ActionHelper.findRelease(parentReleaseId, context);
 
 		final Release newRelease = new Release(description, newReleaseId);
 		parentRelease.addChild(index, newRelease);
-		executeSubActions(context);
-		executeChildActions(context);
+		executeSubActions(context, actionContext);
+		executeChildActions(context, actionContext);
 
 		return new ReleaseRemoveAction(newRelease.getId());
 	}
 
-	private void executeSubActions(final ProjectContext context) throws UnableToCompleteActionException {
+	private void executeSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		for (final ScopeBindReleaseAction subAction : subActionRollbackList)
-			subAction.execute(context);
+			subAction.execute(context, actionContext);
 	}
 
-	private void executeChildActions(final ProjectContext context) throws UnableToCompleteActionException {
+	private void executeChildActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		for (int i = childActionList.size() - 1; i >= 0; i--)
-			childActionList.get(i).execute(context);
+			childActionList.get(i).execute(context, actionContext);
 	}
 
 	@Override

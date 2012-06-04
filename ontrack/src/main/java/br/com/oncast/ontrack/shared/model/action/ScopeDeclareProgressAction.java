@@ -61,24 +61,26 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	protected ScopeDeclareProgressAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
-		final ModelAction rollback = processSubActions(context, selectedScope);
+		final ModelAction rollback = processSubActions(context, actionContext, selectedScope);
 		selectedScope.getProgress().setDescription(newProgressDescription, timestamp);
 
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollback);
 	}
 
-	private ModelAction processSubActions(final ProjectContext context, final Scope scope) throws UnableToCompleteActionException {
-		return (rollbackSubAction != null) ? rollbackSubAction.execute(context) : assureKanbanColumnExistence(context,
+	private ModelAction processSubActions(final ProjectContext context, final ActionContext actionContext, final Scope scope)
+			throws UnableToCompleteActionException {
+		return (rollbackSubAction != null) ? rollbackSubAction.execute(context, actionContext) : assureKanbanColumnExistence(context, actionContext,
 				scope.getRelease());
 	}
 
-	private ModelAction assureKanbanColumnExistence(final ProjectContext context, final Release release) throws UnableToCompleteActionException {
+	private ModelAction assureKanbanColumnExistence(final ProjectContext context, final ActionContext actionContext, final Release release)
+			throws UnableToCompleteActionException {
 		if (release == null || context.getKanban(release).hasNonInferedColumn(newProgressDescription)) return null;
-		return (new KanbanColumnCreateAction(release.getId(), newProgressDescription, false)).execute(context);
+		return (new KanbanColumnCreateAction(release.getId(), newProgressDescription, false)).execute(context, actionContext);
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class ReleaseCreateAction implements ReleaseAction {
 	}
 
 	@Override
-	public ReleaseRemoveAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ReleaseRemoveAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		Release parentRelease = context.getProjectRelease();
 
 		Release newRelease = null;
@@ -64,14 +64,14 @@ public class ReleaseCreateAction implements ReleaseAction {
 
 		parentRelease.addChild(newRelease);
 
-		if (parser.next()) createSubRelease(context);
+		if (parser.next()) createSubRelease(context, actionContext);
 
 		return new ReleaseRemoveAction(newReleaseId);
 	}
 
-	private void createSubRelease(final ProjectContext context) throws UnableToCompleteActionException {
+	private void createSubRelease(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (subReleaseCreateAction == null) subReleaseCreateAction = new ReleaseCreateAction(description);
-		subReleaseCreateAction.execute(context);
+		subReleaseCreateAction.execute(context, actionContext);
 	}
 
 	@Override

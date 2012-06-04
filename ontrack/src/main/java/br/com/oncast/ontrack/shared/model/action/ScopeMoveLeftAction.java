@@ -43,7 +43,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	protected ScopeMoveLeftAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move the root node.");
 		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException("It is not possible to move left when the parent is the root node.");
@@ -55,7 +55,7 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 		parent.remove(selectedScope);
 		grandParent.add(grandParent.getChildIndex(parent) + 1, selectedScope);
 
-		return new ScopeMoveRightAction(referenceId, index, executeSubActions(context));
+		return new ScopeMoveRightAction(referenceId, index, executeSubActions(context, actionContext));
 	}
 
 	@Override
@@ -78,10 +78,10 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 		return true;
 	}
 
-	private List<ModelAction> executeSubActions(final ProjectContext context) throws UnableToCompleteActionException {
+	private List<ModelAction> executeSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		for (final ModelAction subAction : subActionList) {
-			subActionRollbackList.add(subAction.execute(context));
+			subActionRollbackList.add(subAction.execute(context, actionContext));
 		}
 		return subActionRollbackList;
 	}

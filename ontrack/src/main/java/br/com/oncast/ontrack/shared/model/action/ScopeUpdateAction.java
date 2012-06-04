@@ -59,10 +59,10 @@ public class ScopeUpdateAction implements ScopeAction {
 	protected ScopeUpdateAction() {}
 
 	@Override
-	public ScopeUpdateAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ScopeUpdateAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 
-		final List<ModelAction> subActionRollbackList = ActionExecutionHelper.executeSubActions(subActionList, context);
+		final List<ModelAction> subActionRollbackList = ActionExecutionHelper.executeSubActions(subActionList, context, actionContext);
 
 		final String oldDescription = selectedScope.getDescription();
 		selectedScope.setDescription(newDescription);

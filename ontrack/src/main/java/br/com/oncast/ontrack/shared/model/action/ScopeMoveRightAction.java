@@ -56,7 +56,7 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 	protected ScopeMoveRightAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move the root node.");
 
@@ -67,7 +67,7 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 
 		final Scope upperSibling = parent.getChildren().get(parent.getChildIndex(selectedScope) - 1);
-		if (upperSibling.isLeaf()) subActionRollbackList.add(removeDeclaredProgress(upperSibling, context));
+		if (upperSibling.isLeaf()) subActionRollbackList.add(removeDeclaredProgress(upperSibling, context, actionContext));
 
 		selectedScope.getParent().remove(selectedScope);
 		if (wasIndexSet) upperSibling.add(position, selectedScope);
@@ -76,11 +76,12 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 		return new ScopeMoveLeftAction(referenceId, subActionRollbackList);
 	}
 
-	private ModelAction removeDeclaredProgress(final Scope scope, final ProjectContext context) throws UnableToCompleteActionException {
+	private ModelAction removeDeclaredProgress(final Scope scope, final ProjectContext context, final ActionContext actionContext)
+			throws UnableToCompleteActionException {
 		final ScopeDeclareProgressAction removeProgressAction = new ScopeDeclareProgressAction(scope.getId(), "");
 		subActionList.add(removeProgressAction);
 
-		return removeProgressAction.execute(context);
+		return removeProgressAction.execute(context, actionContext);
 	}
 
 	private boolean isFirstNode(final int index) {

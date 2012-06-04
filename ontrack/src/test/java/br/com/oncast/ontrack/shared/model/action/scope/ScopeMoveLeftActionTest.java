@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveLeftActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
@@ -37,13 +39,13 @@ public class ScopeMoveLeftActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedLeft() throws UnableToCompleteActionException {
-		new ScopeMoveLeftAction(rootScope.getId()).execute(context);
+		new ScopeMoveLeftAction(rootScope.getId()).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void aRootChildCantbeMovedLeft() throws UnableToCompleteActionException {
 		assertEquals(rootScope.getChildren().get(0), middle);
-		new ScopeMoveLeftAction(middle.getId()).execute(context);
+		new ScopeMoveLeftAction(middle.getId()).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
@@ -52,7 +54,7 @@ public class ScopeMoveLeftActionTest extends ModelActionTest {
 		assertEquals(1, middle.getChildren().size());
 		assertEquals(1, rootScope.getChildren().size());
 
-		new ScopeMoveLeftAction(lastChild.getId()).execute(context);
+		new ScopeMoveLeftAction(lastChild.getId()).execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(0, middle.getChildren().size());
 		assertEquals(2, rootScope.getChildren().size());
@@ -67,14 +69,14 @@ public class ScopeMoveLeftActionTest extends ModelActionTest {
 		assertEquals(1, rootScope.getChildren().size());
 
 		final ScopeMoveLeftAction moveLeftScopeAction = new ScopeMoveLeftAction(lastChild.getId());
-		final ModelAction rollbackAction = moveLeftScopeAction.execute(context);
+		final ModelAction rollbackAction = moveLeftScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(0, middle.getChildren().size());
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(middle, rootScope.getChildren().get(0));
 		assertEquals(lastChild, rootScope.getChildren().get(1));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(middle.getChildren().get(0), lastChild);
 		assertEquals(1, middle.getChildren().size());

@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationRemoveActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
@@ -48,12 +49,12 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldRecreateTheSameAnnotationOnUndo() throws Exception {
-		execute().execute(context);
+		execute().execute(context, Mockito.mock(ActionContext.class));
 		verify(context).addAnnotation(annotation, annotatedObjectId);
 	}
 
 	private ModelAction execute() throws UnableToCompleteActionException {
-		return getInstance().execute(context);
+		return getInstance().execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Override

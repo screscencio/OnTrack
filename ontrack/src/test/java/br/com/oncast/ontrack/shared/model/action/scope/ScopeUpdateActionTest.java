@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -31,7 +33,7 @@ public class ScopeUpdateActionTest {
 	@Test
 	public void updateActionChangeScopeDescription() throws UnableToCompleteActionException {
 		assertEquals("root", rootScope.getDescription());
-		new ScopeUpdateAction(rootScope.getId(), "new text").execute(context);
+		new ScopeUpdateAction(rootScope.getId(), "new text").execute(context, Mockito.mock(ActionContext.class));
 		assertEquals("new text", rootScope.getDescription());
 	}
 
@@ -40,11 +42,11 @@ public class ScopeUpdateActionTest {
 		assertEquals("root", rootScope.getDescription());
 
 		final ScopeUpdateAction updateScopeAction = new ScopeUpdateAction(rootScope.getId(), "new text");
-		final ModelAction rollbackAction = updateScopeAction.execute(context);
+		final ModelAction rollbackAction = updateScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals("new text", rootScope.getDescription());
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 		assertEquals("root", rootScope.getDescription());
 	}
 

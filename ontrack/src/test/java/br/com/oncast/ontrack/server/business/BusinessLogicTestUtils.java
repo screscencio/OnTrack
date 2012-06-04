@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -19,19 +20,20 @@ import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerImpl;
-import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
+import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class BusinessLogicTestUtils {
 
@@ -47,8 +49,18 @@ public class BusinessLogicTestUtils {
 		notificationMock = mock(NotificationService.class);
 		clientManagerMock = mock(ClientManager.class);
 		sessionManager = mock(SessionManager.class);
-		authorizationMock = mock(AuthorizationManagerImpl.class);
+		configureAuthorizationMock();
 		userQuotaRequestMailFactory = mock(FeedbackMailFactory.class);
+	}
+
+	private static void configureAuthorizationMock() {
+		try {
+			authorizationMock = mock(AuthorizationManagerImpl.class);
+			Mockito.doNothing().when(authorizationMock).assureProjectAccessAuthorization(Mockito.anyLong());
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static BusinessLogic create() throws Exception {
@@ -134,8 +146,13 @@ public class BusinessLogicTestUtils {
 	private static PersistenceServiceJpaImpl getPersistenceServiceJpaImplMockingAuthorization() {
 		return new PersistenceServiceJpaImpl() {
 			@Override
-			public ProjectAuthorization retrieveProjectAuthorization(final long userId, final long projectId) throws PersistenceException {
-				return new ProjectAuthorization(null, null);
+			public User retrieveUserById(final long id) throws NoResultFoundException, PersistenceException {
+				try {
+					return UserTestUtils.createUser(id);
+				}
+				catch (final Exception e) {
+					throw new PersistenceException(e);
+				}
 			}
 		};
 	}

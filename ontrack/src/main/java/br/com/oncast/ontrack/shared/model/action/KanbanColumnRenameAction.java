@@ -41,7 +41,7 @@ public class KanbanColumnRenameAction implements KanbanAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final String trimmedDescription = newDescription.trim();
 		if (trimmedDescription.isEmpty()) throw new UnableToCompleteActionException("The new column description can't be empty");
 
@@ -55,7 +55,8 @@ public class KanbanColumnRenameAction implements KanbanAction {
 			throw new UnableToCompleteActionException(e);
 		}
 		for (final Scope scope : release.getScopeList()) {
-			if (scope.getProgress().getDescription().equals(columnDescription)) new ScopeDeclareProgressAction(scope.getId(), newDescription).execute(context);
+			if (scope.getProgress().getDescription().equals(columnDescription)) new ScopeDeclareProgressAction(scope.getId(), newDescription).execute(context,
+					actionContext);
 		}
 		kanban.setLocked(true);
 		return new KanbanColumnRenameAction(releaseId, newDescription, columnDescription);

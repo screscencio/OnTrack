@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.team.TeamInviteActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
@@ -33,12 +34,12 @@ public class TeamInviteActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldNotBeAbleToUndoThisAction() throws Exception {
-		assertNull(getInstance().execute(context));
+		assertNull(getInstance().execute(context, Mockito.mock(ActionContext.class)));
 	}
 
 	@Test
 	public void shouldAddUserToProjectContext() throws Exception {
-		getInstance().execute(context);
+		getInstance().execute(context, Mockito.mock(ActionContext.class));
 
 		final ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
 		Mockito.verify(context).addUser(captor.capture());

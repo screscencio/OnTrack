@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnMoveActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
@@ -45,7 +46,7 @@ public class KanbanColumnMoveActionTest extends ModelActionTest {
 		final int desiredIndex = 0;
 
 		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, desiredIndex);
-		action.execute(context);
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(desiredIndex, kanban.indexOf(kanbanColumnDescription));
 	}
@@ -53,7 +54,7 @@ public class KanbanColumnMoveActionTest extends ModelActionTest {
 	@Test
 	public void shouldLockKanban() throws Exception {
 		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 0);
-		action.execute(context);
+		action.execute(context, Mockito.mock(ActionContext.class));
 
 		assertTrue(kanban.isLocked());
 	}
@@ -61,24 +62,24 @@ public class KanbanColumnMoveActionTest extends ModelActionTest {
 	@Test
 	public void undoShouldReturnKanbanToPreviousState() throws Exception {
 		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 0);
-		final ModelAction undo = action.execute(context);
-		undo.execute(context);
+		final ModelAction undo = action.execute(context, Mockito.mock(ActionContext.class));
+		undo.execute(context, Mockito.mock(ActionContext.class));
 		assertEquals(1, kanban.indexOf(kanbanColumnDescription));
 	}
 
 	@Test
 	public void shouldRedo() throws Exception {
 		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 0);
-		final ModelAction redo = action.execute(context).execute(context);
-		redo.execute(context);
+		final ModelAction redo = action.execute(context, Mockito.mock(ActionContext.class)).execute(context, Mockito.mock(ActionContext.class));
+		redo.execute(context, Mockito.mock(ActionContext.class));
 		assertEquals(0, kanban.indexOf(kanbanColumnDescription));
 	}
 
 	@Test
 	public void undoShouldKeepTheTheKanbanLocked() throws Exception {
 		final ModelAction action = new KanbanColumnMoveAction(releaseId, kanbanColumnDescription, 0);
-		final ModelAction undo = action.execute(context);
-		undo.execute(context);
+		final ModelAction undo = action.execute(context, Mockito.mock(ActionContext.class));
+		undo.execute(context, Mockito.mock(ActionContext.class));
 		assertTrue(kanban.isLocked());
 	}
 

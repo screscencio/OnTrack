@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseScopeUpdatePriorityActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
@@ -46,7 +48,7 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	public void decresePriorityOfTheSecondChild() throws Exception {
 		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), secondChild.getId(),
 				release.getScopeIndex(secondChild) + 1);
-		increase.execute(context);
+		increase.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(secondChild.getDescription(), release.getScopeList().get(2).getDescription());
 		assertEquals(firstChild.getDescription(), release.getScopeList().get(0).getDescription());
@@ -57,7 +59,7 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	public void decresePriorityOfTheFirstChild() throws Exception {
 		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), firstChild.getId(),
 				release.getScopeIndex(firstChild) + 1);
-		increase.execute(context);
+		increase.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(firstChild.getDescription(), release.getScopeList().get(1).getDescription());
 		assertEquals(secondChild.getDescription(), release.getScopeList().get(0).getDescription());
@@ -68,13 +70,13 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	public void decresePriorityOfTheSecondChildAndRollbackTheAction() throws Exception {
 		final ReleaseScopeUpdatePriorityAction decrease = new ReleaseScopeUpdatePriorityAction(release.getId(), secondChild.getId(),
 				release.getScopeIndex(secondChild) + 1);
-		final ModelAction increase = decrease.execute(context);
+		final ModelAction increase = decrease.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(secondChild.getDescription(), release.getScopeList().get(2).getDescription());
 		assertEquals(firstChild.getDescription(), release.getScopeList().get(0).getDescription());
 		assertEquals(thirdChild.getDescription(), release.getScopeList().get(1).getDescription());
 
-		increase.execute(context);
+		increase.execute(context, Mockito.mock(ActionContext.class));
 		assertEquals(secondChild.getDescription(), release.getScopeList().get(1).getDescription());
 		assertEquals(firstChild.getDescription(), release.getScopeList().get(0).getDescription());
 		assertEquals(thirdChild.getDescription(), release.getScopeList().get(2).getDescription());
@@ -83,21 +85,21 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void decreseLowestPriorityScope() throws Exception {
 		new ReleaseScopeUpdatePriorityAction(release.getId(), thirdChild.getId(),
-				release.getScopeIndex(thirdChild) + 1).execute(context);
+				release.getScopeIndex(thirdChild) + 1).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void decreseScopePriorityOutsideRelease() throws Exception {
 		final Scope scopeOutsideRelease = new Scope("otherScope");
 		new ReleaseScopeUpdatePriorityAction(release.getId(), scopeOutsideRelease.getId(),
-				release.getScopeIndex(scopeOutsideRelease) + 1).execute(context);
+				release.getScopeIndex(scopeOutsideRelease) + 1).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
 	public void incresePriorityOfTheSecondChild() throws Exception {
 		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), secondChild.getId(),
 				release.getScopeIndex(secondChild) - 1);
-		increase.execute(context);
+		increase.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(firstChild.getDescription(), release.getScopeList().get(1).getDescription());
 		assertEquals(secondChild.getDescription(), release.getScopeList().get(0).getDescription());
@@ -108,7 +110,7 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	public void incresePriorityOfTheThirdChild() throws Exception {
 		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), thirdChild.getId(),
 				release.getScopeIndex(thirdChild) - 1);
-		increase.execute(context);
+		increase.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(thirdChild.getDescription(), release.getScopeList().get(1).getDescription());
 		assertEquals(firstChild.getDescription(), release.getScopeList().get(0).getDescription());
@@ -119,13 +121,13 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	public void incresePriorityOfTheSecondChildAndRollbackTheAction() throws Exception {
 		final ReleaseScopeUpdatePriorityAction increase = new ReleaseScopeUpdatePriorityAction(release.getId(), secondChild.getId(),
 				release.getScopeIndex(secondChild) - 1);
-		final ReleaseScopeUpdatePriorityAction decrease = (ReleaseScopeUpdatePriorityAction) increase.execute(context);
+		final ReleaseScopeUpdatePriorityAction decrease = (ReleaseScopeUpdatePriorityAction) increase.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(secondChild.getDescription(), release.getScopeList().get(0).getDescription());
 		assertEquals(firstChild.getDescription(), release.getScopeList().get(1).getDescription());
 		assertEquals(thirdChild.getDescription(), release.getScopeList().get(2).getDescription());
 
-		decrease.execute(context);
+		decrease.execute(context, Mockito.mock(ActionContext.class));
 		assertEquals(secondChild.getDescription(), release.getScopeList().get(1).getDescription());
 		assertEquals(firstChild.getDescription(), release.getScopeList().get(0).getDescription());
 		assertEquals(thirdChild.getDescription(), release.getScopeList().get(2).getDescription());
@@ -134,7 +136,7 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void increseTheMostPriorityScope() throws Exception {
 		new ReleaseScopeUpdatePriorityAction(release.getId(), firstChild.getId(),
-				release.getScopeIndex(firstChild) - 1).execute(context);
+				release.getScopeIndex(firstChild) - 1).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Override

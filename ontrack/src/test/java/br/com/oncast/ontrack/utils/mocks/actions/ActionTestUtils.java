@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.mockito.Mockito;
 import org.reflections.Reflections;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
@@ -18,6 +19,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -130,5 +132,9 @@ public class ActionTestUtils {
 			actions.add(Mockito.mock(sub));
 		}
 		return actions;
+	}
+
+	public static ModelAction execute(final ModelAction action, final ProjectContext context) throws UnableToCompleteActionException {
+		return action.execute(context, Mockito.mock(ActionContext.class));
 	}
 }

@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.services.actionExecution;
 
 import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -21,7 +22,7 @@ public class ActionExecuterTestUtils extends ScopeActionExecuter {
 		}
 
 		@Override
-		public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+		public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 			return null;
 		}
 

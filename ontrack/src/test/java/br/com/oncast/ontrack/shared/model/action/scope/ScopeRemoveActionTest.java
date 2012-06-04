@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
@@ -48,7 +49,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootScopeCantBeRemoved() throws UnableToCompleteActionException {
-		new ScopeRemoveAction(rootScope.getId()).execute(context);
+		new ScopeRemoveAction(rootScope.getId()).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
@@ -57,7 +58,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
 		assertEquals(child2Level1, rootScope.getChildren().get(1));
 
-		new ScopeRemoveAction(child2Level1.getId()).execute(context);
+		new ScopeRemoveAction(child2Level1.getId()).execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -72,8 +73,8 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		child1Level2.add(child1Level32);
 		child1Level2.add(child1Level33);
 
-		final ScopeRemoveRollbackAction rollbackAction = new ScopeRemoveAction(child1Level1.getId()).execute(context);
-		rollbackAction.execute(context);
+		final ScopeRemoveRollbackAction rollbackAction = new ScopeRemoveAction(child1Level1.getId()).execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
 		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
@@ -89,12 +90,12 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		assertEquals(child2Level1, rootScope.getChildren().get(1));
 
 		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child2Level1.getId());
-		final ModelAction rollbackAction = removeScopeAction.execute(context);
+		final ModelAction rollbackAction = removeScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -110,7 +111,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
 		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1.getId());
-		removeScopeAction.execute(context);
+		removeScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child2Level1, rootScope.getChildren().get(0));
@@ -131,7 +132,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
 		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1.getId());
-		final ModelAction rollbackAction = removeScopeAction.execute(context);
+		final ModelAction rollbackAction = removeScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child2Level1, rootScope.getChildren().get(0));
@@ -142,7 +143,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		assertEquals(child1Level2.getChildren().size(), 0);
 		assertEquals(child1Level3.getChildren().size(), 0);
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -161,7 +162,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
 		final ScopeRemoveAction removeScopeAction = new ScopeRemoveAction(child1Level1.getId());
-		final ModelAction rollbackAction = removeScopeAction.execute(context);
+		final ModelAction rollbackAction = removeScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child2Level1, rootScope.getChildren().get(0));
@@ -172,7 +173,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		assertEquals(child1Level2.getChildren().size(), 0);
 		assertEquals(child1Level3.getChildren().size(), 0);
 
-		final ModelAction redoAction = rollbackAction.execute(context);
+		final ModelAction redoAction = rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -180,7 +181,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
 		assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
-		redoAction.execute(context);
+		redoAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(child2Level1, rootScope.getChildren().get(0));
@@ -195,10 +196,10 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 	@Test
 	public void shouldHandleRemovalCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ScopeRemoveAction(child1Level1.getId()), context);
+		actionExecutionManager.doUserAction(new ScopeRemoveAction(child1Level1.getId()), context, Mockito.mock(ActionContext.class));
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context);
+			actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 
 			assertEquals(2, rootScope.getChildren().size());
 			assertEquals(child1Level1, rootScope.getChildren().get(0));
@@ -206,7 +207,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 			assertEquals(child1Level2, rootScope.getChildren().get(0).getChildren().get(0));
 			assertEquals(child1Level3, rootScope.getChildren().get(0).getChildren().get(0).getChildren().get(0));
 
-			actionExecutionManager.redoUserAction(context);
+			actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
 
 			assertEquals(1, rootScope.getChildren().size());
 			assertEquals(child2Level1, rootScope.getChildren().get(0));

@@ -27,6 +27,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRep
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
@@ -76,9 +77,13 @@ class BusinessLogicImpl implements BusinessLogic {
 			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
 			final long projectId = modelActionSyncRequest.getProjectId();
 			synchronized (this) {
-				validateIncomingActions(projectId, actionList);
+				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
+				final Date actionTimestamp = new Date();
+				final ActionContext actionContext = new ActionContext(authenticatedUser, actionTimestamp);
+				validateIncomingActions(projectId, actionList, actionContext);
 				postProcessIncomingActions(actionList);
-				persistenceService.persistActions(projectId, authenticationManager.getAuthenticatedUser().getId(), actionList, new Date());
+				persistenceService.persistActions(projectId, authenticatedUser.getId(), actionList, actionTimestamp);
+				modelActionSyncRequest.setActionContext(actionContext);
 			}
 			notificationService.notifyActions(modelActionSyncRequest);
 		}
@@ -94,13 +99,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	// DECISION It is common sense that this validation is needed at this time (of development). Roberto thinks it should be a provisory solution, as it may be
 	// a major performance bottleneck, but that the solution is good to ensure that BetaTesters are safe while the application matures. Rodrigo thinks it should
 	// be permanent (but maybe passive of refactorings) to guarantee user safety in the long term.
-	private void validateIncomingActions(final long projectId, final List<ModelAction> actionList) throws UnableToHandleActionException {
+	private void validateIncomingActions(final long projectId, final List<ModelAction> actionList, final ActionContext actionContext)
+			throws UnableToHandleActionException {
 		LOGGER.debug("Validating action upon the project current state.");
 		try {
 			final Project project = loadProject(projectId);
 			final ProjectContext context = new ProjectContext(project);
 			for (final ModelAction action : actionList)
-				ActionExecuter.executeAction(context, action);
+				ActionExecuter.executeAction(context, actionContext, action);
 		}
 		catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";
@@ -275,8 +281,18 @@ class BusinessLogicImpl implements BusinessLogic {
 	private Project applyActionsToProject(final Project project, final List<UserAction> actionList) throws UnableToCompleteActionException {
 		final ProjectContext context = new ProjectContext(project);
 
-		for (final UserAction action : actionList)
-			ActionExecuter.executeAction(context, action.getModelAction());
+		for (final UserAction action : actionList) {
+			User user;
+			try {
+				user = persistenceService.retrieveUserById(action.getUserId());
+				ActionExecuter.executeAction(context, new ActionContext(user, action.getTimestamp()),
+						action.getModelAction());
+			}
+			catch (final Exception e) {
+				LOGGER.error("Unable to apply action to project", e);
+				throw new UnableToCompleteActionException(e);
+			}
+		}
 
 		return project;
 	}

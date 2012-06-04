@@ -174,6 +174,26 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@Override
+	public User retrieveUserById(final long id) throws NoResultFoundException, PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select user from " + User.class.getSimpleName() + " as user where user.id = :id");
+			query.setParameter("id", id);
+
+			return (User) query.getSingleResult();
+		}
+		catch (final NoResultException e) {
+			throw new NoResultFoundException("No user found with id: " + id, e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the user.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> retrieveAllUsers() throws PersistenceException {
@@ -419,4 +439,5 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 		return entity;
 	}
+
 }

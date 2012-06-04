@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseDeclareStartDayActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
@@ -42,18 +43,18 @@ public class ReleaseDeclareStartDayActionTest extends ModelActionTest {
 	public void shouldDeclareStartDayOnTheReleaseWithTheReferenceId() throws Exception {
 		final Date declaredDay = DateTestUtils.newDate(2011, 05, 15);
 
-		new ReleaseDeclareStartDayAction(releaseId, declaredDay).execute(context);
+		new ReleaseDeclareStartDayAction(releaseId, declaredDay).execute(context, Mockito.mock(ActionContext.class));
 
 		verify(release).declareStartDay(Mockito.eq(WorkingDayFactory.create(declaredDay)));
 	}
 
 	@Test
 	public void rollbackActionShouldOperateOverTheSameRelease() throws Exception {
-		final ModelAction rollbackAction = new ReleaseDeclareStartDayAction(releaseId, new Date()).execute(context);
+		final ModelAction rollbackAction = new ReleaseDeclareStartDayAction(releaseId, new Date()).execute(context, Mockito.mock(ActionContext.class));
 
 		final ProjectContext otherContext = mock(ProjectContext.class);
 		when(otherContext.findRelease(releaseId)).thenReturn(release);
-		rollbackAction.execute(otherContext);
+		rollbackAction.execute(otherContext, Mockito.mock(ActionContext.class));
 
 		verify(otherContext).findRelease(releaseId);
 	}
@@ -62,11 +63,11 @@ public class ReleaseDeclareStartDayActionTest extends ModelActionTest {
 	public void shouldRollbackStartDayToNullWhenThereWasNoDeclaredStartDayBefore() throws Exception {
 		when(release.hasDeclaredStartDay()).thenReturn(false);
 
-		final ModelAction rollbackAction = new ReleaseDeclareStartDayAction(releaseId, new Date()).execute(context);
+		final ModelAction rollbackAction = new ReleaseDeclareStartDayAction(releaseId, new Date()).execute(context, Mockito.mock(ActionContext.class));
 
 		verify(release).declareStartDay(Mockito.any(WorkingDay.class));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(release).declareStartDay((WorkingDay) Mockito.isNull());
 		verify(release, never()).getStartDay();
@@ -79,12 +80,12 @@ public class ReleaseDeclareStartDayActionTest extends ModelActionTest {
 		when(release.hasDeclaredStartDay()).thenReturn(true);
 		when(release.getStartDay()).thenReturn(previousDate);
 
-		final ModelAction rollbackAction = new ReleaseDeclareStartDayAction(releaseId, new Date()).execute(context);
+		final ModelAction rollbackAction = new ReleaseDeclareStartDayAction(releaseId, new Date()).execute(context, Mockito.mock(ActionContext.class));
 
 		verify(release).getStartDay();
 		verify(release).declareStartDay(Mockito.any(WorkingDay.class));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(release).declareStartDay(Mockito.eq(previousDate));
 	}

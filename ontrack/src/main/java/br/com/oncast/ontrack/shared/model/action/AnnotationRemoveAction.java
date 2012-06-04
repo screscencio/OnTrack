@@ -30,7 +30,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(annotationId, annotatedObjectId, context);
 		context.removeAnnotation(annotation, annotatedObjectId);
 		return new AnnotationCreateAction(annotation, annotatedObjectId);

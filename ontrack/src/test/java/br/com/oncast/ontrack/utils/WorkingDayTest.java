@@ -111,7 +111,6 @@ public class WorkingDayTest {
 		calendar.setTime(WorkingDayFactory.create(calendar.getTime()).getJavaDate());
 
 		assertEquals(Calendar.MONDAY, calendar.get(Calendar.DAY_OF_WEEK));
-		System.out.println(calendar.get(Calendar.DAY_OF_MONTH) + " - " + saturday);
 		assertEquals(2, calendar.get(Calendar.DAY_OF_MONTH) - saturday);
 	}
 

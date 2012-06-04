@@ -49,6 +49,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -164,7 +165,7 @@ public class BusinessLogicTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		for (final ModelAction action : ActionTestUtils.createSomeActions()) {
-			ActionExecuter.executeAction(context, action);
+			ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 		}
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(ActionTestUtils.createSomeActions()));
@@ -186,7 +187,7 @@ public class BusinessLogicTest {
 		final List<ModelAction> rollbackActions = new ArrayList<ModelAction>();
 		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
 		for (final ModelAction action : actions) {
-			rollbackActions.add(ActionExecuter.executeAction(context, action).getReverseAction());
+			rollbackActions.add(ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action).getReverseAction());
 		}
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actions));
@@ -201,7 +202,7 @@ public class BusinessLogicTest {
 		final Project project1 = loadProject();
 
 		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
-		action.execute(new ProjectContext(project1));
+		action.execute(new ProjectContext(project1), Mockito.mock(ActionContext.class));
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(action);
@@ -219,13 +220,13 @@ public class BusinessLogicTest {
 
 		final ModelAction action1 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
-		action1.execute(context);
+		action1.execute(context, Mockito.mock(ActionContext.class));
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(action1);
 
 		final ModelAction action2 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "small sister");
-		action2.execute(context);
+		action2.execute(context, Mockito.mock(ActionContext.class));
 		actionList.add(action2);
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
@@ -245,7 +246,7 @@ public class BusinessLogicTest {
 		actionList.addAll(ActionTestUtils.createSomeActions());
 
 		for (final ModelAction action : actionList)
-			action.execute(context);
+			action.execute(context, Mockito.mock(ActionContext.class));
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -283,7 +284,7 @@ public class BusinessLogicTest {
 		final Project project1 = loadProject();
 
 		final ScopeInsertChildAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
-		action.execute(new ProjectContext(project1));
+		action.execute(new ProjectContext(project1), Mockito.mock(ActionContext.class));
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(action);
@@ -532,7 +533,7 @@ public class BusinessLogicTest {
 
 		for (final ModelAction action : actions) {
 			actionList.add(action);
-			action.execute(context);
+			action.execute(context, Mockito.mock(ActionContext.class));
 		}
 		return actionList;
 	}

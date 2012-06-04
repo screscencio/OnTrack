@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -59,8 +60,10 @@ public class ActionSyncService {
 		checkIfRequestIsPertinentToCurrentProject(modelActionSyncRequest);
 
 		try {
-			for (final ModelAction modelAction : modelActionSyncRequest.getActionList())
-				actionExecutionService.onNonUserActionRequest(modelAction);
+			final ActionContext actionContext = modelActionSyncRequest.getActionContext();
+			for (final ModelAction modelAction : modelActionSyncRequest.getActionList()) {
+				actionExecutionService.onNonUserActionRequest(modelAction, actionContext);
+			}
 		}
 		catch (final UnableToCompleteActionException e) {
 			notificationService.showErrorWithConfirmation("Some of the lattest changes conflicted.",

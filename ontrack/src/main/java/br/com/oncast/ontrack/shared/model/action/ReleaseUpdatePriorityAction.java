@@ -35,7 +35,7 @@ public class ReleaseUpdatePriorityAction implements ReleaseAction {
 	}
 
 	@Override
-	public ReleaseUpdatePriorityAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ReleaseUpdatePriorityAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (targetIndex < 0) throw new UnableToCompleteActionException("It's already the least prioritary release.");
 
 		final Release selectedRelease = ActionHelper.findRelease(releaseId, context);

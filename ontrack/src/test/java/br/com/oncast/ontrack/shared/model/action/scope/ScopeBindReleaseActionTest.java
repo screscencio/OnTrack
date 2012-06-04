@@ -7,9 +7,11 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeBindReleaseActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
@@ -41,7 +43,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		final Scope scope = rootScope.getChild(0);
 		assertFalse(rootRelease.getChild(0).getScopeList().contains(scope));
 
-		new ScopeBindReleaseAction(scope.getId(), "R1").execute(context);
+		new ScopeBindReleaseAction(scope.getId(), "R1").execute(context, Mockito.mock(ActionContext.class));
 		assertTrue(rootRelease.getChild(0).getScopeList().contains(scope));
 	}
 
@@ -52,7 +54,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		release.addScope(scope);
 		assertTrue(rootRelease.getChild(0).getScopeList().contains(scope));
 
-		new ScopeBindReleaseAction(scope.getId(), "").execute(context);
+		new ScopeBindReleaseAction(scope.getId(), "").execute(context, Mockito.mock(ActionContext.class));
 		assertFalse(rootRelease.getChild(0).getScopeList().contains(scope));
 	}
 
@@ -62,7 +64,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		assertThatReleaseIsNotInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(0);
-		new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context);
+		new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(scope));
@@ -74,7 +76,7 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		assertThatReleaseIsInContext(release.getDescription());
 
 		final Scope scope = rootScope.getChild(0);
-		new ScopeBindReleaseAction(scope.getId(), release.getDescription()).execute(context);
+		new ScopeBindReleaseAction(scope.getId(), release.getDescription()).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release loadedRelease = assertThatReleaseIsInContext(release.getDescription());
 		assertTrue(loadedRelease.getScopeList().contains(scope));
@@ -87,12 +89,12 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		assertThatReleaseIsNotInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(0);
-		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context);
+		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(scope));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertThatReleaseIsNotInContext(releaseDescription);
 	}
@@ -103,12 +105,12 @@ public class ScopeBindReleaseActionTest extends ModelActionTest {
 		assertThatReleaseIsInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(0);
-		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context);
+		final ModelAction rollbackAction = new ScopeBindReleaseAction(scope.getId(), releaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(scope));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertThatReleaseIsInContext(releaseDescription);
 	}

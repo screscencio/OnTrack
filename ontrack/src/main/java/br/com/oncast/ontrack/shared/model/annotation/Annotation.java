@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.annotation;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -12,12 +13,14 @@ public class Annotation implements Serializable {
 	private UUID id;
 	private User author;
 	private String message;
+	private Date date;
 
 	public Annotation() {}
 
-	public Annotation(final UUID id, final User author, final String message) {
+	public Annotation(final UUID id, final User author, final Date date, final String message) {
 		this.id = id;
 		this.author = author;
+		this.date = date;
 		this.message = message;
 	}
 
@@ -52,6 +55,10 @@ public class Annotation implements Serializable {
 
 	public UUID getId() {
 		return id;
+	}
+
+	public Date getDate() {
+		return date;
 	}
 
 }

@@ -33,7 +33,7 @@ public class ReleaseRenameAction implements ReleaseAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Release release = ActionHelper.findRelease(referenceId, context);
 		final String oldDescription = release.getDescription();
 		try {

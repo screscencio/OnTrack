@@ -37,7 +37,7 @@ public class ScopeInsertChildRollbackAction implements ScopeAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("Unable to remove root level.");
 
@@ -45,15 +45,15 @@ public class ScopeInsertChildRollbackAction implements ScopeAction {
 		final UUID parentScopeId = parent.getId();
 		final String pattern = new ScopeRepresentationBuilder(selectedScope).includeEverything().toString();
 
-		executeSubActions(context);
+		executeSubActions(context, actionContext);
 		parent.remove(selectedScope);
 
 		return new ScopeInsertChildAction(parentScopeId, referenceId, pattern);
 	}
 
-	private void executeSubActions(final ProjectContext context) throws UnableToCompleteActionException {
+	private void executeSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		for (final ModelAction subAction : subActionList)
-			subAction.execute(context);
+			subAction.execute(context, actionContext);
 	}
 
 	@Override

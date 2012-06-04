@@ -7,7 +7,9 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -44,7 +46,7 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		new EffortInferenceEngine().process(manipulatedScope.getParent());
 
 		final ScopeMoveLeftAction moveLeftAction = new ScopeMoveLeftAction(manipulatedScope.getId());
-		moveLeftAction.execute(ProjectTestUtils.createProjectContext(scope, null));
+		moveLeftAction.execute(ProjectTestUtils.createProjectContext(scope, null), Mockito.mock(ActionContext.class));
 
 		final Set<UUID> expectedInfluencedScopes = new HashSet<UUID>();
 		expectedInfluencedScopes.add(scope.getChild(0).getId());

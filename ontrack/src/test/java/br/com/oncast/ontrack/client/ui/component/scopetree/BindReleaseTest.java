@@ -49,7 +49,7 @@ public class BindReleaseTest extends GwtTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		projectContext = ProjectTestUtils.createProjectContext(getScope(), ReleaseTestUtils.getRelease());
 		tree = new ScopeTree();
 		tree.setContext(projectContext);

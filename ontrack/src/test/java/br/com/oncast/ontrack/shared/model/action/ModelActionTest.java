@@ -18,6 +18,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
@@ -174,7 +175,7 @@ public abstract class ModelActionTest {
 	@Test
 	public void actionShouldBeMappedOnActionExecuter() throws Exception {
 		try {
-			ActionExecuter.executeAction(mock(ProjectContext.class), getInstance());
+			ActionExecuter.executeAction(mock(ProjectContext.class), Mockito.mock(ActionContext.class), getInstance());
 		}
 		catch (final UnableToCompleteActionException e) {
 			assertFalse(e.getMessage(), e.getMessage().contains("There is no mapped action executer"));

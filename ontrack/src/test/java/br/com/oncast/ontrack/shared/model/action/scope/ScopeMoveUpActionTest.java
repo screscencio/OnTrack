@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveUpActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
@@ -36,7 +38,7 @@ public class ScopeMoveUpActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedUp() throws UnableToCompleteActionException {
-		new ScopeMoveUpAction(rootScope.getId()).execute(context);
+		new ScopeMoveUpAction(rootScope.getId()).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
@@ -45,7 +47,7 @@ public class ScopeMoveUpActionTest extends ModelActionTest {
 		assertEquals(rootScope.getChildren().get(1), lastChild);
 
 		final ScopeMoveUpAction moveUp = new ScopeMoveUpAction(lastChild.getId());
-		moveUp.execute(context);
+		moveUp.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
@@ -57,12 +59,12 @@ public class ScopeMoveUpActionTest extends ModelActionTest {
 		assertEquals(rootScope.getChildren().get(1), lastChild);
 
 		final ScopeMoveUpAction moveDown = new ScopeMoveUpAction(lastChild.getId());
-		final ModelAction rollbackAction = moveDown.execute(context);
+		final ModelAction rollbackAction = moveDown.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(rootScope.getChildren().get(0), lastChild);
 		assertEquals(rootScope.getChildren().get(1), firstChild);
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(rootScope.getChildren().get(0), firstChild);
 		assertEquals(rootScope.getChildren().get(1), lastChild);
@@ -70,7 +72,7 @@ public class ScopeMoveUpActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void lastNodeCantBeMovedDown() throws UnableToCompleteActionException {
-		new ScopeMoveUpAction(firstChild.getId()).execute(context);
+		new ScopeMoveUpAction(firstChild.getId()).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Override

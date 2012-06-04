@@ -9,11 +9,13 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -60,17 +62,17 @@ public class ScopeTreeWidgetActionManagerTest {
 
 	@Test
 	public void executeAnActionMustChangeTheTreeProperly() throws UnableToCompleteActionException {
-		actionExecutionManager.doUserAction(normalAction, context);
+		actionExecutionManager.doUserAction(normalAction, context, Mockito.mock(ActionContext.class));
 		assertEquals(1, rootScope.getChildren().size());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void ifActionsThrowExceptionNothingHappens() throws UnableToCompleteActionException, ScopeNotFoundException {
 		exceptionAction = mock(ScopeInsertChildAction.class);
-		doThrow(new UnableToCompleteActionException("")).when(exceptionAction).execute(context);
+		doThrow(new UnableToCompleteActionException("")).when(exceptionAction).execute(Mockito.eq(context), Mockito.any(ActionContext.class));
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(exceptionAction)).thenReturn(widgetExceptionActionMock);
 
-		actionExecutionManager.doUserAction(exceptionAction, context);
+		actionExecutionManager.doUserAction(exceptionAction, context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -78,16 +80,16 @@ public class ScopeTreeWidgetActionManagerTest {
 		normalActionWithBadWidgetAction = new ScopeInsertChildAction(rootScope.getId(), newScopeDescription);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(normalActionWithBadWidgetAction)).thenReturn(widgetExceptionActionMock);
 
-		actionExecutionManager.doUserAction(normalActionWithBadWidgetAction, context);
-		verify(normalActionWithBadWidgetAction, atMost(2)).execute(context);
+		actionExecutionManager.doUserAction(normalActionWithBadWidgetAction, context, Mockito.mock(ActionContext.class));
+		verify(normalActionWithBadWidgetAction, atMost(2)).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
 	public void undoMustRevertChangesAtTheTree() throws UnableToCompleteActionException {
-		actionExecutionManager.doUserAction(normalAction, context);
+		actionExecutionManager.doUserAction(normalAction, context, Mockito.mock(ActionContext.class));
 		assertEquals(1, rootScope.getChildren().size());
 
-		actionExecutionManager.undoUserAction(context);
+		actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 		assertEquals(0, rootScope.getChildren().size());
 	}
 
@@ -95,7 +97,7 @@ public class ScopeTreeWidgetActionManagerTest {
 	public void undoWithNoActionsExecutedMustDoNothing() throws UnableToCompleteActionException {
 		assertEquals(0, rootScope.getChildren().size());
 
-		actionExecutionManager.undoUserAction(context);
+		actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(0, rootScope.getChildren().size());
 	}
@@ -104,7 +106,7 @@ public class ScopeTreeWidgetActionManagerTest {
 	public void redoWithNoActionsExecutedMustDoNothing() throws UnableToCompleteActionException {
 		assertEquals(0, rootScope.getChildren().size());
 
-		actionExecutionManager.redoUserAction(context);
+		actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(0, rootScope.getChildren().size());
 	}
@@ -115,13 +117,13 @@ public class ScopeTreeWidgetActionManagerTest {
 		final ScopeTreeAction rollbackWidgetException = mock(ScopeTreeAction.class);
 		final ScopeAction rollbackAction = mock(ScopeAction.class);
 
-		when(rollbackException.execute(context)).thenReturn(rollbackAction);
+		when(rollbackException.execute(context, Mockito.mock(ActionContext.class))).thenReturn(rollbackAction);
 		doThrow(new UnableToCompleteActionException("")).when(rollbackWidgetException).execute(context, true);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(rollbackAction)).thenReturn(rollbackWidgetException);
 
-		actionExecutionManager.doUserAction(rollbackException, context);
+		actionExecutionManager.doUserAction(rollbackException, context, Mockito.mock(ActionContext.class));
 		assertEquals(1, rootScope.getChildren().size());
-		actionExecutionManager.undoUserAction(context);
+		actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 		assertEquals(1, rootScope.getChildren().size());
 	}
 
@@ -134,25 +136,25 @@ public class ScopeTreeWidgetActionManagerTest {
 		doThrow(new UnableToCompleteActionException("")).when(execute).execute(context, true);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(rollbackException)).thenReturn(normalWidgetException).thenReturn(execute);
 
-		actionExecutionManager.doUserAction(rollbackException, context);
+		actionExecutionManager.doUserAction(rollbackException, context, Mockito.mock(ActionContext.class));
 		assertEquals(1, rootScope.getChildren().size());
 
-		actionExecutionManager.undoUserAction(context);
+		actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 		assertEquals(0, rootScope.getChildren().size());
 
-		actionExecutionManager.redoUserAction(context);
+		actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
 		assertEquals(0, rootScope.getChildren().size());
 	}
 
 	@Test
 	public void redoAfterUndoMustDontChangeTheTree() throws UnableToCompleteActionException {
-		actionExecutionManager.doUserAction(normalAction, context);
+		actionExecutionManager.doUserAction(normalAction, context, Mockito.mock(ActionContext.class));
 		assertEquals(1, rootScope.getChildren().size());
 
-		actionExecutionManager.undoUserAction(context);
+		actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 		assertEquals(0, rootScope.getChildren().size());
 
-		actionExecutionManager.redoUserAction(context);
+		actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
 		assertEquals(1, rootScope.getChildren().size());
 	}
 }

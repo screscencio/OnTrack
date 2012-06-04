@@ -2,9 +2,11 @@ package br.com.oncast.ontrack.shared.model.action.kanban;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRemoveActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -29,14 +31,14 @@ public class KanbanColumnRemoveActionTest extends ModelActionTest {
 		context = new ProjectContext(ProjectTestUtils.createPopulatedProject());
 		release = context.getProjectRelease().getChild(0);
 		columnDescription = "Blabla";
-		new KanbanColumnCreateAction(release.getId(), columnDescription, false).execute(context);
+		new KanbanColumnCreateAction(release.getId(), columnDescription, false).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
 	public void executionShouldRemoveKanbanColumnNamedBlabla() throws UnableToCompleteActionException {
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, columnDescription,
 				ProgressState.DONE.getDescription());
-		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context);
+		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context, Mockito.mock(ActionContext.class));
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
 	}
 
@@ -46,7 +48,7 @@ public class KanbanColumnRemoveActionTest extends ModelActionTest {
 				ProgressState.DONE.getDescription());
 
 		try {
-			new KanbanColumnRemoveAction(release.getId(), columnDescription).execute(context);
+			new KanbanColumnRemoveAction(release.getId(), columnDescription).execute(context, Mockito.mock(ActionContext.class));
 		}
 		catch (final Exception e) {
 			throw new RuntimeException();
@@ -54,28 +56,28 @@ public class KanbanColumnRemoveActionTest extends ModelActionTest {
 
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
 
-		new KanbanColumnRemoveAction(release.getId(), columnDescription).execute(context);
+		new KanbanColumnRemoveAction(release.getId(), columnDescription).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void executionShouldFailWhenTryingToRemoveKanbanColumnNamedDone() throws UnableToCompleteActionException {
 		final String columnDescription = ProgressState.DONE.getDescription();
 
-		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context);
+		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void executionShouldFailWhenTryingToRemoveKanbanColumnNamedNotStarted() throws UnableToCompleteActionException {
 		final String columnDescription = Progress.DEFAULT_NOT_STARTED_NAME;
 
-		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context);
+		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void executionShouldFailWhenTryingToRemoveKanbanColumnThatDoesNotExist() throws UnableToCompleteActionException {
 		final String columnDescription = "";
 
-		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context);
+		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Override

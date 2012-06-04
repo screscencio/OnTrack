@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 
 import com.google.gwt.core.client.GWT;
@@ -13,6 +14,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationTopic extends Composite implements ModelWidget<Annotation> {
@@ -25,7 +27,10 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	Image author;
 
 	@UiField
-	HTMLPanel message;
+	HTMLPanel container;
+
+	@UiField
+	Label date;
 
 	private Annotation annotation;
 
@@ -39,10 +44,20 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		initWidget(uiBinder.createAndBindUi(this));
 
 		final String email = annotation.getAuthor().getEmail();
+		this.container.clear();
 		this.author.setUrl(getGravatarImageUrl(email));
 		this.author.setTitle(email);
-		this.message.clear();
-		this.message.getElement().setInnerHTML(replaceNewLines(annotation.getMessage()));
+		container.add(author);
+
+		for (final String line : annotation.getMessage().split("\\n")) {
+			container.add(new Label(line));
+		}
+
+		update();
+	}
+
+	private String getDateText(final Annotation annotation) {
+		return HumanDateFormatter.getRelativeText(annotation.getDate()) + " (" + HumanDateFormatter.getDifferenceText(annotation.getDate()) + ")";
 	}
 
 	private SafeUri getGravatarImageUrl(final String email) {
@@ -61,12 +76,10 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		};
 	}
 
-	private String replaceNewLines(final String text) {
-		return text.replaceAll("\\n", "<br />");
-	}
-
 	@Override
 	public boolean update() {
+		this.date.setText(getDateText(annotation));
+		this.date.setTitle(HumanDateFormatter.getAbsoluteText(annotation.getDate()));
 		return false;
 	}
 

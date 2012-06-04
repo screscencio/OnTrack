@@ -1,12 +1,13 @@
 package br.com.oncast.ontrack.client.services.actionExecution;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 
 public interface ActionExecutionService extends ActionExecutionRequestHandler {
 
 	// TODO Analyze adding this method to ActionExecutionRequestHandler as 'onNonUserActionExecutionRequest'
-	public void onNonUserActionRequest(final ModelAction action) throws UnableToCompleteActionException;
+	public void onNonUserActionRequest(final ModelAction action, ActionContext actionContext) throws UnableToCompleteActionException;
 
 	@Override
 	public void onUserActionExecutionRequest(final ModelAction action);

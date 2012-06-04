@@ -1,9 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +12,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationCreateActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
@@ -31,6 +30,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	private User author;
 	private UUID annotatedObjectId;
 	private String message;
+	private ActionContext actionContext;
 
 	@Before
 	public void setUp() throws Exception {
@@ -38,7 +38,9 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		annotatedObjectId = new UUID();
 		author = UserTestUtils.createUser();
 		message = "Any message";
+		actionContext = Mockito.mock(ActionContext.class);
 
+		when(actionContext.getUserEmail()).thenReturn(author.getEmail());
 		when(context.findUser(author.getEmail())).thenReturn(author);
 	}
 
@@ -67,25 +69,6 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	}
 
 	@Test
-	public void shouldBeAbleToOverrideTheAuthor() throws Exception {
-		final AnnotationCreateAction action = new AnnotationCreateAction(annotatedObjectId, author, message);
-		final User expectedAuthor = UserTestUtils.createUser();
-		action.setAuthor(expectedAuthor);
-
-		when(context.findUser(expectedAuthor.getEmail())).thenReturn(expectedAuthor);
-		action.execute(context);
-
-		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
-		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
-		verify(context, never()).findUser(author.getEmail());
-		verify(context).findUser(expectedAuthor.getEmail());
-
-		final User obtainedAuthor = captor.getValue().getAuthor();
-		assertFalse(author.equals(obtainedAuthor));
-		assertEquals(expectedAuthor, obtainedAuthor);
-	}
-
-	@Test
 	public void shouldHaveTheMessage() throws Exception {
 		execute();
 
@@ -106,13 +89,13 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 		when(context.findAnnotation(createdAnnotation.getId(), annotatedObjectId)).thenReturn(createdAnnotation);
 
-		undoAction.execute(context);
+		undoAction.execute(context, Mockito.mock(ActionContext.class));
 
 		verify(context).removeAnnotation(createdAnnotation, annotatedObjectId);
 	}
 
 	private ModelAction execute() throws UnableToCompleteActionException {
-		return new AnnotationCreateAction(annotatedObjectId, author, message).execute(context);
+		return new AnnotationCreateAction(annotatedObjectId, message).execute(context, actionContext);
 	}
 
 	@Override
@@ -127,7 +110,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getInstance() {
-		return new AnnotationCreateAction(annotatedObjectId, author, message);
+		return new AnnotationCreateAction(annotatedObjectId, message);
 	}
 
 }

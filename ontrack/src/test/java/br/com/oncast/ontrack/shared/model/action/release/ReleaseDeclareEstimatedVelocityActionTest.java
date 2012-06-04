@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseDeclareEstimatedVelocityActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
@@ -45,7 +46,7 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 	public void shouldThrowExceptionWhenReferenceIdIsNull() throws Exception {
 		when(context.findRelease(Mockito.any(UUID.class))).thenThrow(new ReleaseNotFoundException());
 
-		new ReleaseDeclareEndDayAction(null, null).execute(context);
+		new ReleaseDeclareEndDayAction(null, null).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
@@ -74,7 +75,7 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 		final ModelAction undoAction = execute();
 		verify(release).declareEstimatedVelocity(Mockito.anyFloat());
 
-		undoAction.execute(context);
+		undoAction.execute(context, Mockito.mock(ActionContext.class));
 		verify(release).declareEstimatedVelocity((Float) Mockito.isNull());
 	}
 
@@ -86,7 +87,7 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 		final ModelAction undoAction = execute();
 		verify(release).declareEstimatedVelocity(Mockito.anyFloat());
 
-		undoAction.execute(context);
+		undoAction.execute(context, Mockito.mock(ActionContext.class));
 		verify(release).declareEstimatedVelocity(Mockito.eq(previouslyDeclaredEstimatedVelocity));
 	}
 
@@ -96,11 +97,11 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 	}
 
 	private ModelAction execute() throws UnableToCompleteActionException {
-		return new ReleaseDeclareEstimatedVelocityAction(referenceId, declaredVelocity).execute(context);
+		return new ReleaseDeclareEstimatedVelocityAction(referenceId, declaredVelocity).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	private void executeDeclaring(final Float declaredVelocity) throws UnableToCompleteActionException {
-		new ReleaseDeclareEstimatedVelocityAction(referenceId, declaredVelocity).execute(context);
+		new ReleaseDeclareEstimatedVelocityAction(referenceId, declaredVelocity).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Override

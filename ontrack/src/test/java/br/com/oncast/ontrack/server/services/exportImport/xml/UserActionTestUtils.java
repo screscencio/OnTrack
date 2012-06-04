@@ -170,7 +170,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createAnnotationCreateAction() throws Exception {
-		return createUserAction(new AnnotationCreateAction(new UUID(), UserTestUtils.createUser(), ""));
+		return createUserAction(new AnnotationCreateAction(new UUID(), ""));
 	}
 
 	public static UserAction createReleaseDeclareEndDayAction() throws Exception {

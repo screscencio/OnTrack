@@ -29,7 +29,7 @@ public class MoveDownTest extends GwtTest {
 	private ActionExecutionServiceImpl actionExecutionService;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		scope = getScope();
 		tree = new ScopeTree();
 		tree.setContext(ProjectTestUtils.createProjectContext(scope, null));

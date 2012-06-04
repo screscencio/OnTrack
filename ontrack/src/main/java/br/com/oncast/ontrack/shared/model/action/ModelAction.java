@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface ModelAction extends Serializable {
 
-	ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException;
+	ModelAction execute(final ProjectContext context, ActionContext actionContext) throws UnableToCompleteActionException;
 
 	UUID getReferenceId();
 

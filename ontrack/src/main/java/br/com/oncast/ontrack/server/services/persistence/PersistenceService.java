@@ -26,6 +26,8 @@ public interface PersistenceService {
 
 	public User retrieveUserByEmail(String email) throws NoResultFoundException, PersistenceException;
 
+	public User retrieveUserById(long userId) throws NoResultFoundException, PersistenceException;
+
 	public User persistOrUpdateUser(User user) throws PersistenceException;
 
 	public List<User> retrieveAllUsers() throws PersistenceException;

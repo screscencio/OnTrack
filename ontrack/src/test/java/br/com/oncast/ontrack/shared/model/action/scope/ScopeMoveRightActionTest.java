@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveRightActionEntity;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
@@ -40,12 +41,12 @@ public class ScopeMoveRightActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantbeMovedRight() throws UnableToCompleteActionException {
-		new ScopeMoveRightAction(rootScope.getId()).execute(context);
+		new ScopeMoveRightAction(rootScope.getId()).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void aScopeCantBeMovedIfDontHaveUpSibling() throws UnableToCompleteActionException {
-		new ScopeMoveRightAction(firstChild.getId()).execute(context);
+		new ScopeMoveRightAction(firstChild.getId()).execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Test
@@ -54,7 +55,7 @@ public class ScopeMoveRightActionTest extends ModelActionTest {
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, rootScope.getChildren().get(1));
 
-		new ScopeMoveRightAction(lastChild.getId()).execute(context);
+		new ScopeMoveRightAction(lastChild.getId()).execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
@@ -69,14 +70,14 @@ public class ScopeMoveRightActionTest extends ModelActionTest {
 		assertEquals(lastChild, rootScope.getChildren().get(1));
 
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
-		final ModelAction rollbackAction = moveRightScopeAction.execute(context);
+		final ModelAction rollbackAction = moveRightScopeAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(1, rootScope.getChildren().size());
 		assertEquals(1, firstChild.getChildren().size());
 		assertEquals(firstChild, rootScope.getChildren().get(0));
 		assertEquals(lastChild, firstChild.getChildren().get(0));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertEquals(2, rootScope.getChildren().size());
 		assertEquals(0, firstChild.getChildren().size());
@@ -88,17 +89,17 @@ public class ScopeMoveRightActionTest extends ModelActionTest {
 	public void shouldHandleScopeHierarchyCorrectlyAfterMultipleUndosAndRedos() throws UnableToCompleteActionException {
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(moveRightScopeAction, context);
+		actionExecutionManager.doUserAction(moveRightScopeAction, context, Mockito.mock(ActionContext.class));
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context);
+			actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 
 			assertEquals(2, rootScope.getChildren().size());
 			assertEquals(0, firstChild.getChildren().size());
 			assertEquals(firstChild, rootScope.getChildren().get(0));
 			assertEquals(lastChild, rootScope.getChildren().get(1));
 
-			actionExecutionManager.redoUserAction(context);
+			actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
 
 			assertEquals(1, rootScope.getChildren().size());
 			assertEquals(1, firstChild.getChildren().size());

@@ -5,7 +5,9 @@ import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
@@ -60,7 +62,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeUpdateAction(new UUID("s11"), "11 @rootRelease/release1");
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -71,7 +73,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeUpdateAction(new UUID("s12"), "12 @rootRelease/release1");
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -82,7 +84,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeUpdateAction(new UUID("s42"), "42 @rootRelease/release2");
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -93,8 +95,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeUpdateAction(new UUID("s11"), "11 @rootRelease/release1");
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -105,9 +107,10 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeUpdateAction(new UUID("s11"), "11 @rootRelease/release1");
-		final ActionExecutionContext executionContextDo = ActionExecuter.executeAction(context, action);
-		final ActionExecutionContext executionContextUndo = ActionExecuter.executeAction(context, executionContextDo.getReverseAction());
-		ActionExecuter.executeAction(context, executionContextUndo.getReverseAction());
+		final ActionExecutionContext executionContextDo = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		final ActionExecutionContext executionContextUndo = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContextDo.getReverseAction());
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContextUndo.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -118,8 +121,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeRemoveAction(new UUID("s12"));
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -130,10 +133,12 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeRemoveAction(new UUID("s12"));
-		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, action);
-		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, executionContext1.getReverseAction());
-		final ActionExecutionContext executionContext3 = ActionExecuter.executeAction(context, executionContext2.getReverseAction());
-		ActionExecuter.executeAction(context, executionContext3.getReverseAction());
+		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext1.getReverseAction());
+		final ActionExecutionContext executionContext3 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext2.getReverseAction());
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext3.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -144,8 +149,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ReleaseRemoveAction(new UUID("release1"));
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -156,10 +161,12 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ReleaseRemoveAction(new UUID("release1"));
-		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, action);
-		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, executionContext1.getReverseAction());
-		final ActionExecutionContext executionContext3 = ActionExecuter.executeAction(context, executionContext2.getReverseAction());
-		ActionExecuter.executeAction(context, executionContext3.getReverseAction());
+		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext1.getReverseAction());
+		final ActionExecutionContext executionContext3 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext2.getReverseAction());
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext3.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -170,7 +177,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeMoveUpAction(new UUID("s12"));
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -181,8 +188,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeMoveUpAction(new UUID("s12"));
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -193,7 +200,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeMoveDownAction(new UUID("s12"));
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -204,8 +211,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeMoveDownAction(new UUID("s12"));
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -216,7 +223,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeMoveLeftAction(new UUID("s12"));
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -227,8 +234,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeMoveLeftAction(new UUID("s12"));
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -239,7 +246,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeMoveRightAction(new UUID("s12"));
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -250,8 +257,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeMoveRightAction(new UUID("s12"));
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -262,7 +269,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeDeclareProgressAction(new UUID("s12"), "DONE");
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -273,8 +280,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeDeclareProgressAction(new UUID("s12"), "DONE");
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -285,7 +292,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeDeclareEffortAction(new UUID("s12"), true, 5);
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -296,8 +303,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeDeclareEffortAction(new UUID("s12"), true, 5);
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -308,7 +315,7 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeBindReleaseAction(new UUID("s12"), "release1");
-		ActionExecuter.executeAction(context, action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -319,8 +326,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeBindReleaseAction(new UUID("s12"), "release1");
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -331,8 +338,8 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeBindReleaseAction(new UUID("s12"), "release3");
-		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
-		ActionExecuter.executeAction(context, executionContext.getReverseAction());
+		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -343,9 +350,10 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeBindReleaseAction(new UUID("s12"), "release1");
-		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, action);
-		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, executionContext1.getReverseAction());
-		ActionExecuter.executeAction(context, executionContext2.getReverseAction());
+		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext1.getReverseAction());
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext2.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -356,10 +364,12 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeBindReleaseAction(new UUID("s12"), "release1");
-		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, action);
-		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, executionContext1.getReverseAction());
-		final ActionExecutionContext executionContext3 = ActionExecuter.executeAction(context, executionContext2.getReverseAction());
-		ActionExecuter.executeAction(context, executionContext3.getReverseAction());
+		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext1.getReverseAction());
+		final ActionExecutionContext executionContext3 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext2.getReverseAction());
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext3.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}
@@ -370,10 +380,12 @@ public class ReleaseScopeOrderTest {
 		final ProjectContext context = new ProjectContext(project);
 
 		final ModelAction action = new ScopeBindReleaseAction(new UUID("s12"), "release5");
-		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, action);
-		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, executionContext1.getReverseAction());
-		final ActionExecutionContext executionContext3 = ActionExecuter.executeAction(context, executionContext2.getReverseAction());
-		ActionExecuter.executeAction(context, executionContext3.getReverseAction());
+		final ActionExecutionContext executionContext1 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		final ActionExecutionContext executionContext2 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext1.getReverseAction());
+		final ActionExecutionContext executionContext3 = ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class),
+				executionContext2.getReverseAction());
+		ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), executionContext3.getReverseAction());
 
 		DeepEqualityTestUtils.assertObjectEquality(getProjectMock().getProjectRelease(), project.getProjectRelease());
 	}

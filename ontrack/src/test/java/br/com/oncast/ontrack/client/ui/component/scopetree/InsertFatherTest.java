@@ -43,7 +43,7 @@ public class InsertFatherTest extends GwtTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		scope = getScope();
 		tree = new ScopeTree();
 		tree.setContext(ProjectTestUtils.createProjectContext(scope, null));

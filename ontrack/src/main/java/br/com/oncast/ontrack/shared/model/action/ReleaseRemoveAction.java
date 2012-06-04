@@ -33,12 +33,12 @@ public class ReleaseRemoveAction implements ReleaseAction {
 	}
 
 	@Override
-	public ReleaseRemoveRollbackAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ReleaseRemoveRollbackAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Release selectedRelease = ActionHelper.findRelease(referenceId, context);
 		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException("Unable to remove root level.");
 
-		final List<ReleaseRemoveRollbackAction> childActionRollbackList = removeDescendantsReleases(context, selectedRelease);
-		final List<ScopeBindReleaseAction> subActionRollbackList = dissociateScopesFromThisRelease(context, selectedRelease);
+		final List<ReleaseRemoveRollbackAction> childActionRollbackList = removeDescendantsReleases(context, actionContext, selectedRelease);
+		final List<ScopeBindReleaseAction> subActionRollbackList = dissociateScopesFromThisRelease(context, actionContext, selectedRelease);
 
 		final Release parentRelease = selectedRelease.getParent();
 		final int index = parentRelease.getChildIndex(selectedRelease);
@@ -48,23 +48,23 @@ public class ReleaseRemoveAction implements ReleaseAction {
 				subActionRollbackList);
 	}
 
-	private List<ScopeBindReleaseAction> dissociateScopesFromThisRelease(final ProjectContext context, final Release release)
+	private List<ScopeBindReleaseAction> dissociateScopesFromThisRelease(final ProjectContext context, final ActionContext actionContext, final Release release)
 			throws UnableToCompleteActionException {
 
 		final List<ScopeBindReleaseAction> subActionRollbackList = new ArrayList<ScopeBindReleaseAction>();
 		for (final Scope scope : release.getScopeList())
-			subActionRollbackList.add(new ScopeBindReleaseAction(scope.getId(), null).execute(context));
+			subActionRollbackList.add(new ScopeBindReleaseAction(scope.getId(), null).execute(context, actionContext));
 
 		Collections.reverse(subActionRollbackList);
 		return subActionRollbackList;
 	}
 
-	private List<ReleaseRemoveRollbackAction> removeDescendantsReleases(final ProjectContext context, final Release release)
+	private List<ReleaseRemoveRollbackAction> removeDescendantsReleases(final ProjectContext context, final ActionContext actionContext, final Release release)
 			throws UnableToCompleteActionException {
 
 		final List<ReleaseRemoveRollbackAction> childActionRollbackList = new ArrayList<ReleaseRemoveRollbackAction>();
 		for (final Release child : release.getChildren())
-			childActionRollbackList.add(new ReleaseRemoveAction(child.getId()).execute(context));
+			childActionRollbackList.add(new ReleaseRemoveAction(child.getId()).execute(context, actionContext));
 
 		return childActionRollbackList;
 	}

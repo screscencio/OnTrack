@@ -48,13 +48,13 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 	protected KanbanColumnRemoveAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Release release = ActionHelper.findRelease(referenceId, context);
 		final Kanban kanban = context.getKanban(release);
 
 		validateExecution(kanban);
 		final List<ModelAction> rollbackActions = moveColumnScopes(columnDescription, kanban.getColumnPredeceding(columnDescription).getDescription(), release,
-				context);
+				context, actionContext);
 		final int oldColumnIndex = kanban.indexOf(columnDescription);
 		kanban.removeColumn(columnDescription);
 
@@ -63,7 +63,8 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 		return new KanbanColumnCreateAction(referenceId, columnDescription, shouldLockKanban, oldColumnIndex, rollbackActions);
 	}
 
-	private List<ModelAction> moveColumnScopes(final String originColumn, final String destinationColumn, final Release release, final ProjectContext context)
+	private List<ModelAction> moveColumnScopes(final String originColumn, final String destinationColumn, final Release release, final ProjectContext context,
+			final ActionContext actionContext)
 			throws UnableToCompleteActionException {
 		final List<Scope> scopes = release.getScopeList();
 		if (scopes.isEmpty()) return null;
@@ -71,7 +72,7 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 		final List<ModelAction> rollbackActions = new LinkedList<ModelAction>();
 		for (final Scope scope : scopes) {
 			if (!originColumn.equals(scope.getProgress().getDescription())) continue;
-			rollbackActions.add(0, new ScopeDeclareProgressAction(scope.getId(), destinationColumn).execute(context));
+			rollbackActions.add(0, new ScopeDeclareProgressAction(scope.getId(), destinationColumn).execute(context, actionContext));
 		}
 
 		return rollbackActions;

@@ -40,7 +40,7 @@ public class KanbanColumnMoveAction implements KanbanAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Kanban kanban = context.getKanban(ActionHelper.findRelease(releaseId, context));
 		try {
 			final int previousIndex = kanban.indexOf(columnDescription);

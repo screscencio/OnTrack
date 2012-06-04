@@ -45,14 +45,14 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 
 		selectedScope.add(new Scope("", newScopeId));
 
-		subActionRollbackList.add(scopeUpdateAction.execute(context));
+		subActionRollbackList.add(scopeUpdateAction.execute(context, actionContext));
 		return new ScopeInsertChildRollbackAction(newScopeId, subActionRollbackList);
 	}
 

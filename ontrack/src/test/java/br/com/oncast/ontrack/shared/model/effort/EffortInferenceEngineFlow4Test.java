@@ -4,7 +4,9 @@ import java.util.Stack;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -113,7 +115,7 @@ public class EffortInferenceEngineFlow4Test {
 	private void shouldReturnToInitialStateAfterRollbackingAllActions() throws UnableToCompleteActionException, ScopeNotFoundException {
 		while (!rollbackActions.isEmpty()) {
 			final ModelAction rollbackAction = rollbackActions.pop();
-			rollbackAction.execute(projectContext);
+			rollbackAction.execute(projectContext, Mockito.mock(ActionContext.class));
 			ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(
 					projectContext, rollbackAction));
 		}
@@ -121,7 +123,7 @@ public class EffortInferenceEngineFlow4Test {
 	}
 
 	private ModelAction executeAction(final Scope scope, final ModelAction action) throws UnableToCompleteActionException {
-		final ModelAction rollbackAction = action.execute(projectContext);
+		final ModelAction rollbackAction = action.execute(projectContext, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);
 		return rollbackAction;
 	}

@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -40,7 +41,7 @@ public class ScopeInsertSiblingUpAction_ReleaseCreationTest {
 	@Test
 	public void shouldBindScopeToRelease() throws UnableToCompleteActionException {
 		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + "R1").execute(context);
+		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + "R1").execute(context, Mockito.mock(ActionContext.class));
 
 		assertTrue(rootRelease.getChild(0).getScopeList().contains(rootScope.getChild(2)));
 	}
@@ -51,7 +52,7 @@ public class ScopeInsertSiblingUpAction_ReleaseCreationTest {
 		assertThatReleaseIsNotInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
+		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
@@ -63,7 +64,7 @@ public class ScopeInsertSiblingUpAction_ReleaseCreationTest {
 		assertThatReleaseIsInContext(release.getDescription());
 
 		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + release.getDescription()).execute(context);
+		new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + release.getDescription()).execute(context, Mockito.mock(ActionContext.class));
 
 		final Release loadedRelease = assertThatReleaseIsInContext(release.getDescription());
 		assertTrue(loadedRelease.getScopeList().contains(rootScope.getChild(2)));
@@ -76,12 +77,13 @@ public class ScopeInsertSiblingUpAction_ReleaseCreationTest {
 		assertThatReleaseIsNotInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(2);
-		final ModelAction rollbackAction = new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
+		final ModelAction rollbackAction = new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context,
+				Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 		assertThatReleaseIsNotInContext(releaseDescription);
 	}
 
@@ -91,12 +93,13 @@ public class ScopeInsertSiblingUpAction_ReleaseCreationTest {
 		assertThatReleaseIsInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(2);
-		final ModelAction rollbackAction = new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context);
+		final ModelAction rollbackAction = new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context,
+				Mockito.mock(ActionContext.class));
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 
 		assertThatReleaseIsInContext(releaseDescription);
 	}
@@ -109,16 +112,17 @@ public class ScopeInsertSiblingUpAction_ReleaseCreationTest {
 		final Scope scope = rootScope.getChild(2);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription), context);
+		actionExecutionManager.doUserAction(new ScopeInsertSiblingUpAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription), context,
+				Mockito.mock(ActionContext.class));
 
 		Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context);
+			actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 			assertThatReleaseIsNotInContext(releaseDescription);
 
-			actionExecutionManager.redoUserAction(context);
+			actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
 			newRelease = assertThatReleaseIsInContext(releaseDescription);
 			assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
 		}

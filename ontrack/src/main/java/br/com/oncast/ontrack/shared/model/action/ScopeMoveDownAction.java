@@ -28,7 +28,7 @@ public class ScopeMoveDownAction implements ScopeMoveAction {
 	protected ScopeMoveDownAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move the root node.");
 

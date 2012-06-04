@@ -42,7 +42,7 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 	}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for the root node.");
 
@@ -51,7 +51,7 @@ public class ScopeInsertSiblingUpAction implements ScopeInsertSiblingAction {
 		final Scope parent = selectedScope.getParent();
 		parent.add(parent.getChildIndex(selectedScope), newScope);
 
-		final ScopeUpdateAction updateRollbackAction = scopeUpdateAction.execute(context);
+		final ScopeUpdateAction updateRollbackAction = scopeUpdateAction.execute(context, actionContext);
 		return new ScopeInsertSiblingUpRollbackAction(newScopeId, updateRollbackAction);
 	}
 

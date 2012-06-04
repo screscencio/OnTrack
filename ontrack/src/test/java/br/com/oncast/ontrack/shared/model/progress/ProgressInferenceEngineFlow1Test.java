@@ -2,7 +2,9 @@ package br.com.oncast.ontrack.shared.model.progress;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
@@ -84,7 +86,7 @@ public class ProgressInferenceEngineFlow1Test {
 	}
 
 	private ModelAction executeAction(final Scope scope, final ModelAction action) throws UnableToCompleteActionException {
-		final ModelAction rollbackAction = action.execute(getProjectContext());
+		final ModelAction rollbackAction = action.execute(getProjectContext(), Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);
 		return rollbackAction;
 	}
@@ -135,7 +137,7 @@ public class ProgressInferenceEngineFlow1Test {
 		final Scope scope = parent.getChild(1);
 
 		new ScopeInsertChildAction(scope.getId(), "b1 " + StringRepresentationSymbolsProvider.EFFORT_SYMBOL + "5 "
-				+ StringRepresentationSymbolsProvider.PROGRESS_SYMBOL + "DONE").execute(getProjectContext());
+				+ StringRepresentationSymbolsProvider.PROGRESS_SYMBOL + "DONE").execute(getProjectContext(), Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 5), rootScope);
@@ -155,7 +157,7 @@ public class ProgressInferenceEngineFlow1Test {
 		final Scope parent = rootScope.getChild(1);
 		final Scope scope = parent.getChild(0);
 
-		new ScopeRemoveAction(scope.getId()).execute(getProjectContext());
+		new ScopeRemoveAction(scope.getId()).execute(getProjectContext(), Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 7), rootScope);

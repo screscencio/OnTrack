@@ -69,7 +69,7 @@ public class KanbanColumnCreateAction implements KanbanAction {
 	protected KanbanColumnCreateAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Release release = ActionHelper.findRelease(referenceId, context);
 		final Kanban kanban = context.getKanban(release);
 
@@ -78,7 +78,7 @@ public class KanbanColumnCreateAction implements KanbanAction {
 		kanban.appendColumn(columnDescription);
 		if (columnIndex >= 0) kanban.moveColumn(columnDescription, columnIndex);
 		if (shouldLockKanban) kanban.setLocked(true);
-		if (subActions != null) ActionExecutionHelper.executeSubActions(subActions, context);
+		if (subActions != null) ActionExecutionHelper.executeSubActions(subActions, context, actionContext);
 
 		return new KanbanColumnRemoveAction(referenceId, columnDescription, shouldLockKanban);
 	}

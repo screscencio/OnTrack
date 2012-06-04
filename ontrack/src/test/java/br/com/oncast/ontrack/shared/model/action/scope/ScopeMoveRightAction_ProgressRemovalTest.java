@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -48,7 +49,7 @@ public class ScopeMoveRightAction_ProgressRemovalTest {
 		assertEquals(ProgressState.DONE, firstChild.getProgress().getState());
 
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
-		moveRightScopeAction.execute(context);
+		moveRightScopeAction.execute(context, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 
 		assertFalse(firstChild.getProgress().hasDeclared());
@@ -65,13 +66,13 @@ public class ScopeMoveRightAction_ProgressRemovalTest {
 		assertEquals(ProgressState.DONE, firstChild.getProgress().getState());
 
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
-		final ModelAction rollbackAction = moveRightScopeAction.execute(context);
+		final ModelAction rollbackAction = moveRightScopeAction.execute(context, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 
 		assertFalse(firstChild.getProgress().hasDeclared());
 		assertFalse(firstChild.getProgress().isDone());
 
-		rollbackAction.execute(context);
+		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 
 		assertTrue(firstChild.getProgress().isDone());
@@ -85,18 +86,18 @@ public class ScopeMoveRightAction_ProgressRemovalTest {
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
-		final ModelAction rollbackAction = moveRightScopeAction.execute(context);
+		final ModelAction rollbackAction = moveRightScopeAction.execute(context, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 		assertFalse(firstChild.getProgress().hasDeclared());
 		assertFalse(firstChild.getProgress().isDone());
 
-		final ModelAction redoAction = rollbackAction.execute(context);
+		final ModelAction redoAction = rollbackAction.execute(context, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 		assertTrue(firstChild.getProgress().isDone());
 		assertTrue(firstChild.getProgress().hasDeclared());
 		assertEquals(ProgressState.DONE, firstChild.getProgress().getState());
 
-		redoAction.execute(context);
+		redoAction.execute(context, Mockito.mock(ActionContext.class));
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(rootScope);
 		assertFalse(firstChild.getProgress().hasDeclared());
 		assertFalse(firstChild.getProgress().isDone());
@@ -109,15 +110,15 @@ public class ScopeMoveRightAction_ProgressRemovalTest {
 
 		final ScopeMoveRightAction moveRightScopeAction = new ScopeMoveRightAction(lastChild.getId());
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(moveRightScopeAction, context);
+		actionExecutionManager.doUserAction(moveRightScopeAction, context, Mockito.mock(ActionContext.class));
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context);
-			actionExecutionManager.redoUserAction(context);
+			actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
 		}
 		assertFalse(firstChild.getProgress().hasDeclared());
 		assertFalse(firstChild.getProgress().isDone());
 
-		actionExecutionManager.undoUserAction(context);
+		actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
 
 		assertTrue(firstChild.getProgress().isDone());
 		assertTrue(firstChild.getProgress().hasDeclared());

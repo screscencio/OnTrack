@@ -39,7 +39,7 @@ public class ScopeDeclareEffortAction implements ScopeAction {
 	protected ScopeDeclareEffortAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 
 		final boolean oldHasDeclared = selectedScope.getEffort().hasDeclared();

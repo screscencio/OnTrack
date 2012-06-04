@@ -39,14 +39,14 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 	protected ScopeInsertParentRollbackAction() {}
 
 	@Override
-	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope newScope = ActionHelper.findScope(newScopeId, context);
 		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove the root node.");
 		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException("It is not possible to rollback this action due to inconsistences.");
 
 		final String pattern = new ScopeRepresentationBuilder(newScope).includeEverything().toString();
 
-		scopeUpdateAction.execute(context);
+		scopeUpdateAction.execute(context, actionContext);
 
 		final Scope child = newScope.getChildren().get(0);
 		final Scope parent = newScope.getParent();

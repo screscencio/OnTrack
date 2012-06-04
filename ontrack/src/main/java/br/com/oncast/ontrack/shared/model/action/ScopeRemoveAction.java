@@ -42,7 +42,7 @@ public class ScopeRemoveAction implements ScopeAction {
 	protected ScopeRemoveAction() {}
 
 	@Override
-	public ScopeRemoveRollbackAction execute(final ProjectContext context) throws UnableToCompleteActionException {
+	public ScopeRemoveRollbackAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("Unable to remove the root node.");
 
@@ -50,8 +50,8 @@ public class ScopeRemoveAction implements ScopeAction {
 		final UUID parentScopeId = parent.getId();
 		final String description = selectedScope.getDescription();
 
-		final List<ScopeRemoveRollbackAction> childActionRollbackList = executeChildActions(context, selectedScope);
-		final List<ModelAction> subActionRollbackList = executeSubActions(context, selectedScope);
+		final List<ScopeRemoveRollbackAction> childActionRollbackList = executeChildActions(context, actionContext, selectedScope);
+		final List<ModelAction> subActionRollbackList = executeSubActions(context, actionContext, selectedScope);
 
 		final int index = parent.getChildIndex(selectedScope);
 		parent.remove(selectedScope);
@@ -60,22 +60,24 @@ public class ScopeRemoveAction implements ScopeAction {
 		return new ScopeRemoveRollbackAction(parentScopeId, referenceId, description, index, subActionRollbackList, childActionRollbackList);
 	}
 
-	private List<ScopeRemoveRollbackAction> executeChildActions(final ProjectContext context, final Scope selectedScope) throws UnableToCompleteActionException {
+	private List<ScopeRemoveRollbackAction> executeChildActions(final ProjectContext context, final ActionContext actionContext, final Scope selectedScope)
+			throws UnableToCompleteActionException {
 		final List<ScopeRemoveRollbackAction> childActionRollbackList = new ArrayList<ScopeRemoveRollbackAction>();
 		for (final Scope child : selectedScope.getChildren())
-			childActionRollbackList.add(new ScopeRemoveAction(child.getId()).execute(context));
+			childActionRollbackList.add(new ScopeRemoveAction(child.getId()).execute(context, actionContext));
 
 		return childActionRollbackList;
 	}
 
-	private List<ModelAction> executeSubActions(final ProjectContext context, final Scope selectedScope) throws UnableToCompleteActionException {
+	private List<ModelAction> executeSubActions(final ProjectContext context, final ActionContext actionContext, final Scope selectedScope)
+			throws UnableToCompleteActionException {
 		subActionList.add(new ScopeDeclareProgressAction(referenceId, null));
 		subActionList.add(new ScopeBindReleaseAction(referenceId, null));
 		subActionList.add(new ScopeDeclareEffortAction(referenceId, false, 0));
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		for (final ModelAction subAction : subActionList) {
-			subActionRollbackList.add(subAction.execute(context));
+			subActionRollbackList.add(subAction.execute(context, actionContext));
 		}
 		return subActionRollbackList;
 	}
