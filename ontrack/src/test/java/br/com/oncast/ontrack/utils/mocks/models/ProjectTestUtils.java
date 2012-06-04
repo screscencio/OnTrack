@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.utils.mocks.models;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -17,15 +19,16 @@ public class ProjectTestUtils {
 	public static final String DEFAULT_PROJECT_NAME = "Default project";
 
 	public static Project createProject() {
-		return createProject(getDefaultRepresentation(), getDefaultScope(), getDefaultRelease());
+		return createProject(getDefaultScope(), getDefaultRelease());
 	}
 
 	public static Project createProject(final Scope scope, final Release release) {
 		return createProject(getDefaultRepresentation(), scope, release);
 	}
 
-	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release) {
+	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release, final Set<User> userList) {
 		final Project project = new Project(projectRepresentation, scope, release);
+		project.setUserList(userList);
 		return project;
 	}
 
@@ -70,7 +73,7 @@ public class ProjectTestUtils {
 		return list;
 	}
 
-	public static ProjectAuthorization createAuthorization() {
+	public static ProjectAuthorization createAuthorization() throws Exception {
 		return new ProjectAuthorization(UserTestUtils.createUser(), createRepresentation());
 	}
 
@@ -102,6 +105,18 @@ public class ProjectTestUtils {
 			r.addScope(s.getChild(2));
 		}
 
-		return new Project(getDefaultRepresentation(), scope, projectRelease);
+		return createProject(getDefaultRepresentation(), scope, projectRelease);
+	}
+
+	public static ProjectContext createProjectContext(final Scope scope, final Release release, final Set<User> userList) {
+		return new ProjectContext(createProject(scope, release, userList));
+	}
+
+	private static Project createProject(final Scope scope, final Release release, final Set<User> userList) {
+		return createProject(getDefaultRepresentation(), scope, release, userList);
+	}
+
+	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release) {
+		return createProject(projectRepresentation, scope, release, new HashSet<User>());
 	}
 }

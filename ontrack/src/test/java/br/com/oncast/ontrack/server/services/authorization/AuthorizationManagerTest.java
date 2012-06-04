@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -164,17 +165,17 @@ public class AuthorizationManagerTest {
 		final String mail = "user@mail.com";
 
 		final ProjectAuthorizationMail mockMail = mock(ProjectAuthorizationMail.class);
-		when(mockMail.setProject(Mockito.<ProjectRepresentation> anyObject())).thenReturn(mockMail);
+		when(mockMail.setProject(Mockito.any(ProjectRepresentation.class))).thenReturn(mockMail);
 		when(mockMail.currentUser(Mockito.anyString())).thenReturn(mockMail);
 		when(mailFactory.createMail()).thenReturn(mockMail);
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
-		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());
+		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation(PROJECT_ID));
 		when(authenticationManager.isUserAuthenticated()).thenReturn(false);
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, true);
 
-		verify(mockMail, times(0)).sendTo(mail, false);
+		verify(mockMail, never()).sendTo(mail, false);
 	}
 
 	@Test

@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.business;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -27,6 +29,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectExcep
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -101,7 +104,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 		catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";
-			LOGGER.debug(errorMessage, e);
+			LOGGER.error(errorMessage, e);
 			throw new InvalidIncomingAction(errorMessage);
 		}
 		catch (final UnableToLoadProjectException e) {
@@ -111,7 +114,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 		catch (final Exception e) {
 			final String errorMessage = "Unable to process action. An unknown problem occured.";
-			LOGGER.debug(errorMessage, e);
+			LOGGER.error(errorMessage, e);
 			throw new InvalidIncomingAction(errorMessage);
 		}
 	}
@@ -138,7 +141,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(
 					projectName));
 
-			authorizationManager.authorize(persistedProjectRepresentation.getId(), authenticatedUser.getEmail(), false);
+			authorize(authenticatedUser.getEmail(), persistedProjectRepresentation.getId(), false);
 			if (!authenticatedUser.getEmail().equals(DefaultAuthenticationCredentials.USER_EMAIL)) authorizationManager
 					.authorizeAdmin(persistedProjectRepresentation);
 
@@ -148,9 +151,20 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 		catch (final Exception e) {
 			final String errorMessage = "Unable to create project '" + projectName + "'.";
-			LOGGER.debug(errorMessage, e);
+			LOGGER.error(errorMessage, e);
 			throw new UnableToCreateProjectRepresentation(errorMessage);
 		}
+	}
+
+	@Override
+	public void authorize(final String userEmail, final long projectId, final boolean sendEmail) throws UnableToAuthorizeUserException,
+			UnableToHandleActionException,
+			AuthorizationException {
+		authorizationManager.authorize(projectId, userEmail, sendEmail);
+		final List<ModelAction> list = new ArrayList<ModelAction>();
+		list.add(new TeamInviteAction(userEmail));
+		final ModelActionSyncRequest request = new ModelActionSyncRequest(projectId, list);
+		handleIncomingActionSyncRequest(request);
 	}
 
 	@Override
@@ -162,7 +176,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "Unable to retrieve the current user project list.";
-			LOGGER.debug(errorMessage, e);
+			LOGGER.error(errorMessage, e);
 			throw new UnableToRetrieveProjectListException(errorMessage);
 		}
 	}
@@ -282,4 +296,5 @@ class BusinessLogicImpl implements BusinessLogic {
 				.send();
 
 	}
+
 }

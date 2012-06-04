@@ -27,7 +27,7 @@
 	}
 	
 	.value:HOVER {
-		color: #4d5781;
+		color: COLOR_BLUE;
 		cursor: pointer;
 		background-color:#E8E8E8;
 		text-shadow: none;

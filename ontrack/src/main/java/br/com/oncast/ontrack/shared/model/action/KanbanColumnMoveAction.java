@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanb
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -40,7 +41,7 @@ public class KanbanColumnMoveAction implements KanbanAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Kanban kanban = context.getKanban(ReleaseActionHelper.findRelease(releaseId, context));
+		final Kanban kanban = context.getKanban(ActionHelper.findRelease(releaseId, context));
 		try {
 			final int previousIndex = kanban.indexOf(columnDescription);
 			kanban.moveColumn(columnDescription, desiredIndex);

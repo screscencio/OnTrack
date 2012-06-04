@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.rele
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -40,9 +41,9 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope scope = ScopeActionHelper.findScope(scopeReferenceId, context);
+		final Scope scope = ActionHelper.findScope(scopeReferenceId, context);
 		// IMPORTANT The release id should be used to recover the release, but as it was not being saved there is the need to maintain backwards compatibility.
-		final Release release = releaseReferenceId != null ? ReleaseActionHelper.findRelease(releaseReferenceId, context) : scope.getRelease();
+		final Release release = releaseReferenceId != null ? ActionHelper.findRelease(releaseReferenceId, context) : scope.getRelease();
 
 		if (!release.containsScope(scope)) throw new UnableToCompleteActionException(
 				"The scope is not part of the referenced release.");

@@ -126,7 +126,6 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	public void authorizeUser(final String mail, final ProjectAuthorizationCallback callback) {
 		dispatchService.dispatch(new ProjectAuthorizationRequest(currentProjectRepresentation.getId(), mail),
 				new DispatchCallback<ProjectAuthorizationResponse>() {
-
 					@Override
 					public void onSuccess(final ProjectAuthorizationResponse result) {
 						callback.onSuccess();

@@ -1,0 +1,66 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
+	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets">
+	
+	<ui:style src="../../style/default.css" >
+
+		.rootPanel {
+			position: absolute;
+			top: 40px;
+			right: 40px;
+			bottom: 40px;
+			left: 40px;
+		}
+		
+		.rootContainer {
+			height: 100%;
+			width: 100%;
+			
+			color: COLOR_MENUBOX_TEXT;
+		}
+		
+		.separator1, .separator2 {
+			height: 100%;
+			width: 1px;
+		}
+		.separator1 {
+			background-color: #D3D3D3;
+		}
+		.separator2 {
+			background-color: #FFF;
+		}
+		
+		.detailWidget {
+			height: 100%;
+			width: 200px;
+			
+			padding: POPUP_PADDING;
+		}
+		
+		.annotationsPanel {
+			height: 100%;
+			
+			padding: POPUP_PADDING;
+		}
+	</ui:style>
+	
+        
+
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
+		<g:HTMLPanel ui:field="container" styleName="{style.rootContainer} {style.popupContainer}">
+			<g:HorizontalPanel height="100%" width="100%">
+				<g:cell width="100%">
+					<aw:AnnotationsWidget ui:field="annotations" styleName="{style.annotationsPanel}" />
+				</g:cell>
+				
+				<g:SimplePanel styleName="{style.separator1}" />
+				<g:SimplePanel styleName="{style.separator2}" />
+				
+				<aw:SubjectDetailWidget ui:field="subjectDetails" styleName="{style.detailWidget}" />
+			</g:HorizontalPanel>
+		</g:HTMLPanel>
+	</g:FocusPanel>
+	
+</ui:UiBinder> 

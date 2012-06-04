@@ -19,6 +19,8 @@ import javax.persistence.Entity;
 
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -100,6 +102,30 @@ public abstract class ModelActionTest {
 	}
 
 	@Test
+	public void entitysNonStaticFieldsShouldHaveGetterAndSetter() throws Exception {
+		final Class<?> type = getEntityType();
+		try {
+			for (final Field field : type.getDeclaredFields()) {
+				final String name = field.getName();
+				final String methodSuffix = firstCharToUpperCase(name);
+				type.getDeclaredMethod((isBooleanType(field) ? "is" : "get") + methodSuffix);
+				type.getDeclaredMethod("set" + methodSuffix, field.getType());
+			}
+		}
+		catch (final NoSuchMethodException e) {
+			fail(getEntityType().getSimpleName() + " should have getters and setters for its fields");
+		}
+	}
+
+	private boolean isBooleanType(final Field field) {
+		return boolean.class.equals(field.getType()) || Boolean.class.equals(field.getType());
+	}
+
+	private String firstCharToUpperCase(final String name) {
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+
+	@Test
 	public void entitysUuidFieldShouldBeStringType() throws Exception {
 		for (final Field field : getUuidFields()) {
 			assertEquals(String.class, getMatchingAliasField(field, getEntityType()).getType());
@@ -148,12 +174,26 @@ public abstract class ModelActionTest {
 	@Test
 	public void actionShouldBeMappedOnActionExecuter() throws Exception {
 		try {
-			ActionExecuter.executeAction(mock(ProjectContext.class), getActionType().newInstance());
+			ActionExecuter.executeAction(mock(ProjectContext.class), getInstance());
 		}
 		catch (final UnableToCompleteActionException e) {
-			assertFalse(e.getMessage(), ("There is no mapped action executer for " + getActionName() + ".").equals(e.getMessage()));
+			assertFalse(e.getMessage(), e.getMessage().contains("There is no mapped action executer"));
 		}
 		catch (final Exception e) {}
+	}
+
+	@Test
+	public void shouldSetReferenceUUIDBeforeExecution() throws Exception {
+		final ModelAction action = getInstance();
+		assertNotNull(action.getReferenceId());
+	}
+
+	@Test
+	public void shouldAddThisActionIntoUserActionTestUtilsCompleteActionsList() throws Exception {
+		for (final UserAction action : UserActionTestUtils.createCompleteUserActionList()) {
+			if (action.getModelAction().getClass().equals(getActionType())) return;
+		}
+		fail("UserActionTestUtils.createCompleteUserActionList() should contain a instance of " + getActionType().getSimpleName());
 	}
 
 	private List<Field> getUuidFields() {
@@ -198,7 +238,7 @@ public abstract class ModelActionTest {
 		}
 	}
 
-	protected Field getMatchingAliasField(final Field sourceField, final Class<?> target) {
+	private Field getMatchingAliasField(final Field sourceField, final Class<?> target) {
 		return getMatchingAliasField(getAliasName(sourceField), target);
 	}
 
@@ -218,7 +258,9 @@ public abstract class ModelActionTest {
 		return getActionType().getSimpleName();
 	}
 
-	protected abstract Class<? extends ModelActionEntity> getEntityType();
+	protected abstract ModelAction getInstance();
 
 	protected abstract Class<? extends ModelAction> getActionType();
+
+	protected abstract Class<? extends ModelActionEntity> getEntityType();
 }

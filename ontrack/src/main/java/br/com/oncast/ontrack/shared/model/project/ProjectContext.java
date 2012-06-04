@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
@@ -18,6 +20,8 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectContext {
@@ -137,5 +141,41 @@ public class ProjectContext {
 			}
 		}
 		return releases;
+	}
+
+	public User findUser(final String userEmail) throws UserNotFoundException {
+		final User user = project.getUser(userEmail);
+		if (user == null) throw new UserNotFoundException("The user referenced " + userEmail + " was not found.");
+
+		return user;
+	}
+
+	public void addAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
+		project.addAnnotation(annotation, annotatedObjectId);
+	}
+
+	public void removeAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
+		if (project.hasAnnotationsFor(annotatedObjectId)) project.removeAnnotation(annotation, annotatedObjectId);
+	}
+
+	public Annotation findAnnotation(final UUID annotationId, final UUID annotatedObjectId) throws AnnotationNotFoundException {
+		if (!project.hasAnnotationsFor(annotatedObjectId)) throw new AnnotationNotFoundException("The object with id '" + annotatedObjectId
+				+ "' has no annotations");
+
+		final Annotation annotation = project.getAnnotation(annotationId, annotatedObjectId);
+		if (annotation == null) throw new AnnotationNotFoundException("The Object with id '" + annotatedObjectId + "' does not have the annotations with id '"
+				+ annotationId + "'");
+
+		return annotation;
+	}
+
+	public List<Annotation> findAnnotationsFor(final UUID annotatedObjectId) {
+		if (!project.hasAnnotationsFor(annotatedObjectId)) return new ArrayList<Annotation>();
+
+		return project.getAnnotationsFor(annotatedObjectId);
+	}
+
+	public void addUser(final User user) {
+		project.addUser(user);
 	}
 }

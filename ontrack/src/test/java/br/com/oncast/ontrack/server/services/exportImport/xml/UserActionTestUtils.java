@@ -10,14 +10,20 @@ import java.util.Random;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
+import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
@@ -38,6 +44,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
@@ -58,20 +65,15 @@ public class UserActionTestUtils {
 		return UserTestUtils.createList(2);
 	}
 
-	public static List<Password> createPasswordList() {
+	public static List<Password> createPasswordListFor(final List<User> userList) {
 		final List<Password> passwords = new ArrayList<Password>();
 
-		final Password password1 = new Password();
-		password1.setUserId(1);
-		password1.setPassword("password1");
-
-		final Password password2 = new Password();
-		password2.setUserId(2);
-		password2.setPassword("password2");
-
-		passwords.add(password1);
-		passwords.add(password2);
-
+		for (final User user : userList) {
+			final Password password = new Password();
+			password.setUserId(user.getId());
+			password.setPassword("password" + user.getId());
+			passwords.add(password);
+		}
 		return passwords;
 	}
 
@@ -112,6 +114,13 @@ public class UserActionTestUtils {
 		userActions.add(createKanbanColumnRenameAction());
 		userActions.add(createKanbanColumnRemoveAction());
 		userActions.add(createKanbanColumnCreateAction());
+		userActions.add(createReleaseDeclareEndDayAction());
+		userActions.add(createReleaseDeclareStartDayAction());
+		userActions.add(createReleaseDeclareEstimatedVelocityAction());
+		userActions.add(createReleaseRenameAction());
+		userActions.add(createAnnotationCreateAction());
+		userActions.add(createAnnotationRemoveAction());
+		userActions.add(createTeamInviteAction());
 		return userActions;
 	}
 
@@ -150,6 +159,34 @@ public class UserActionTestUtils {
 		for (int i = 0; i < new Random().nextInt(10); i++) {
 			actionList.remove(0);
 		}
+	}
+
+	public static UserAction createTeamInviteAction() throws Exception {
+		return createUserAction(new TeamInviteAction("user@mail.com"));
+	}
+
+	public static UserAction createAnnotationRemoveAction() throws Exception {
+		return createUserAction(new AnnotationRemoveAction(new UUID(), new UUID()));
+	}
+
+	public static UserAction createAnnotationCreateAction() throws Exception {
+		return createUserAction(new AnnotationCreateAction(new UUID(), UserTestUtils.createUser(), ""));
+	}
+
+	public static UserAction createReleaseDeclareEndDayAction() throws Exception {
+		return createUserAction(new ReleaseDeclareEndDayAction(new UUID(), new Date()));
+	}
+
+	public static UserAction createReleaseDeclareStartDayAction() throws Exception {
+		return createUserAction(new ReleaseDeclareStartDayAction(new UUID(), new Date()));
+	}
+
+	public static UserAction createReleaseDeclareEstimatedVelocityAction() throws Exception {
+		return createUserAction(new ReleaseDeclareEstimatedVelocityAction(new UUID(), 2f));
+	}
+
+	public static UserAction createReleaseRenameAction() throws Exception {
+		return createUserAction(new ReleaseRenameAction(new UUID(), "new release name"));
 	}
 
 	public static UserAction createScopeMoveRightAction() throws Exception {

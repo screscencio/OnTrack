@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scop
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
@@ -39,7 +40,7 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope newScope = ScopeActionHelper.findScope(newScopeId, context);
+		final Scope newScope = ActionHelper.findScope(newScopeId, context);
 		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove the root node.");
 		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException("It is not possible to rollback this action due to inconsistences.");
 

@@ -17,7 +17,7 @@
 	.container {
 		margin: POPUP_PADDING;
 		
-		color: #606060;
+		color: COLOR_GRAY_DARK;
 	}
 	
 	.closeIcon {
@@ -50,7 +50,7 @@
 		top: 3px;
 		right: 12px;
 		
-		color: #9ba2d2;
+		color: COLOR_BLUE_LIGHT;
 		font-style: italic;
 	}
 	

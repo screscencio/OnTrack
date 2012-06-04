@@ -45,7 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public void notifyActions(final ModelActionSyncRequest modelActionSyncRequest) {
 		final Set<UUID> connectionSet = clientManager.getClientsAtProject(modelActionSyncRequest.getProjectId());
-		connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
+		if (!modelActionSyncRequest.shouldNotifyCurrentClient()) connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
 
 		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + modelActionSyncRequest.getProjectId()
 				+ "' to '" + connectionSet.toString() + "'.");

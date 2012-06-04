@@ -59,7 +59,8 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	@Override
 	// TODO Refactor the code so that even when the system is the authorization requestant an email can be sent. Refactor email builder for that.
-	public void authorize(final long projectId, final String userEmail, final boolean shouldSendMailNotification) throws UnableToAuthorizeUserException {
+	public void authorize(final long projectId, final String userEmail, final boolean shouldSendMailNotification)
+			throws UnableToAuthorizeUserException {
 		try {
 			final boolean isNewUser = validateUserAndItsProjectAccessAuthorization(projectId, userEmail);
 
@@ -129,4 +130,5 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		persistenceService.persistOrUpdateUser(requestingUser);
 		notificationService.notifyUserInformationChange(requestingUser);
 	}
+
 }

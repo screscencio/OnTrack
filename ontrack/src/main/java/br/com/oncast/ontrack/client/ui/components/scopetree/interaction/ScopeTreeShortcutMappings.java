@@ -11,6 +11,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_F2
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LEFT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
@@ -26,6 +27,7 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
+import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
@@ -131,6 +133,12 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
 			interactionHandler.onInternalAction(new DeclareValueInternalAction(scope, interactionHandler.getProjectContext()));
+		}
+	},
+	OPEN_ANNOTATIONS(new Shortcut(BrowserKeyCodes.KEY_A).with(ShiftModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(scope);
 		}
 	};
 

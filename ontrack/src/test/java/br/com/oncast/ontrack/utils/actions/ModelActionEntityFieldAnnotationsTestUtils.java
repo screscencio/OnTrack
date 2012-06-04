@@ -122,6 +122,23 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 
 		},
 
+		LONG(long.class, Long.class) {
+
+			@Override
+			public void validade(final Field field) {
+				final Column column = getAnnotation(field, Column.class);
+				ensureColumnName(column,
+						"The field " + field.getName() + " shoud have ActionTableColumns.LONG_1 as name attribute of annotation @Column",
+						ActionTableColumns.LONG_1);
+			}
+
+			@Override
+			protected boolean accepts(final Field field) {
+				return ACCEPTS_ANY_FIELD;
+			}
+
+		},
+
 		DATE(Date.class) {
 
 			@Override

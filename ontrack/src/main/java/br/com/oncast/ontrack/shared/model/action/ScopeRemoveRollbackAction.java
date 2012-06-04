@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scop
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -58,7 +59,7 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Scope parent = ScopeActionHelper.findScope(parentScopeId, context);
+		final Scope parent = ActionHelper.findScope(parentScopeId, context);
 		final Scope newScope = new Scope(description, referenceId);
 
 		parent.add(index, newScope);

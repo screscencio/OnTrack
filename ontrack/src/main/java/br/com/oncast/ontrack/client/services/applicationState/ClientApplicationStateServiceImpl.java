@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.services.applicationState;
 
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.Scheduler;
@@ -13,13 +13,13 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 public class ClientApplicationStateServiceImpl implements ClientApplicationStateService {
 
 	private Scope selectedScope;
-	private final Scope defaultSelectionScope;
 	private final EventBus eventBus;
 	private HandlerRegistration handlerRegistration;
+	private final ContextProviderService contextProviderService;
 
-	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ProjectContext projectContext) {
+	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService) {
 		this.eventBus = eventBus;
-		this.defaultSelectionScope = projectContext.getProjectScope();
+		this.contextProviderService = contextProviderService;
 	}
 
 	@Override
@@ -56,6 +56,6 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	}
 
 	private Scope getSelectedScope() {
-		return selectedScope == null ? defaultSelectionScope : selectedScope;
+		return selectedScope == null ? contextProviderService.getCurrentProjectContext().getProjectScope() : selectedScope;
 	}
 }

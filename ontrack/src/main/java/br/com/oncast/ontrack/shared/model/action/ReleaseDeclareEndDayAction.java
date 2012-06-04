@@ -8,10 +8,12 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseDeclareEndDayActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(ReleaseDeclareEndDayActionEntity.class)
 public class ReleaseDeclareEndDayAction implements ReleaseAction {
@@ -22,6 +24,7 @@ public class ReleaseDeclareEndDayAction implements ReleaseAction {
 	private UUID referenceId;
 
 	@Attribute(required = false)
+	@IgnoredByDeepEquality
 	private Date endDay;
 
 	protected ReleaseDeclareEndDayAction() {}
@@ -33,7 +36,7 @@ public class ReleaseDeclareEndDayAction implements ReleaseAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Release release = ReleaseActionHelper.findRelease(referenceId, context);
+		final Release release = ActionHelper.findRelease(referenceId, context);
 
 		Date previousDeclaration = null;
 		if (release.hasDeclaredEndDay() && release.getEndDay() != null) previousDeclaration = release.getEndDay().getJavaDate();

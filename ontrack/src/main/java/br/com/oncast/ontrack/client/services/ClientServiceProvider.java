@@ -6,6 +6,8 @@ import br.com.drycode.api.web.gwt.dispatchService.client.RequestBuilderConfigura
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
+import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
+import br.com.oncast.ontrack.client.services.annotations.AnnotationServiceImpl;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateServiceImpl;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
@@ -66,6 +68,8 @@ public class ClientServiceProvider {
 	private EventBus eventBus;
 	private FeedbackServiceImpl feedbackService;
 	private ClientApplicationStateService clientApplicationStateService;
+
+	private AnnotationService annotationService;
 
 	private static ClientServiceProvider instance;
 
@@ -172,11 +176,15 @@ public class ClientServiceProvider {
 
 	public ClientApplicationStateService getClientApplicationStateService() {
 		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(getEventBus(),
-				getContextProviderService()
-						.getCurrentProjectContext()) : clientApplicationStateService;
+				getContextProviderService()) : clientApplicationStateService;
 	}
 
 	public MigrationService getMigrationService() {
 		return new MigrationServiceImpl(getRequestDispatchService());
+	}
+
+	public AnnotationService getAnnotationService() {
+		if (annotationService != null) return annotationService;
+		return annotationService = new AnnotationServiceImpl();
 	}
 }

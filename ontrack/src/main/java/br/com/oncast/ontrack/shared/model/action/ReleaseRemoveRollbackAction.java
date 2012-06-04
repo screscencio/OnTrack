@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.rele
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -58,7 +59,7 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 
 	@Override
 	public ReleaseRemoveAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final Release parentRelease = ReleaseActionHelper.findRelease(parentReleaseId, context);
+		final Release parentRelease = ActionHelper.findRelease(parentReleaseId, context);
 
 		final Release newRelease = new Release(description, newReleaseId);
 		parentRelease.addChild(index, newRelease);
