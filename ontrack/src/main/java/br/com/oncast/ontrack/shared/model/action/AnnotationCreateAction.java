@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -14,12 +17,16 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	private static final long serialVersionUID = 1L;
 
+	@Element
 	private UUID annotationId;
 
+	@Element
 	private UUID annotatedObjectId;
 
-	private Long authorId;
+	@Attribute
+	private String authorEmail;
 
+	@Attribute
 	private String message;
 
 	protected AnnotationCreateAction() {}
@@ -38,11 +45,11 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context) throws UnableToCompleteActionException {
-		final User author = ActionHelper.findUser(authorId, context);
+		final User author = ActionHelper.findUser(authorEmail, context);
 		final Annotation annotation = new Annotation(annotationId, author, message);
 
 		context.addAnnotation(annotation, annotatedObjectId);
-		return new AnnotationRemoveAction(annotation.getId(), annotatedObjectId);
+		return new AnnotationRemoveAction(annotationId, annotatedObjectId);
 	}
 
 	@Override
@@ -51,7 +58,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 	}
 
 	public void setAuthor(final User author) {
-		this.authorId = author.getId();
+		this.authorEmail = author.getEmail();
 	}
 
 }

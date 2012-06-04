@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
@@ -33,4 +34,8 @@ public interface BusinessLogic {
 	public abstract void sendProjectCreationQuotaRequestEmail();
 
 	public abstract void sendFeedbackEmail(String feedbackText);
+
+	void authorize(String userEmail, long projectId, boolean sendEmail) throws UnableToAuthorizeUserException, UnableToHandleActionException,
+			AuthorizationException;
+
 }

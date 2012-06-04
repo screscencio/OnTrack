@@ -27,10 +27,10 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget<
 	@Override
 	public void setSubject(final Scope scope) {
 		this.scope = scope;
+		update();
 	}
 
-	@Override
-	public void update() {
+	private void update() {
 		title.setText(scope.getDescription());
 	}
 

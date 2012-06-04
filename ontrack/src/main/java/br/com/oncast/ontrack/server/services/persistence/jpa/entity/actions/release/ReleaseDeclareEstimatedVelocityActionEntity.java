@@ -18,7 +18,7 @@ public class ReleaseDeclareEstimatedVelocityActionEntity extends ModelActionEnti
 	@Column(name = ActionTableColumns.STRING_1)
 	private String releaseId;
 
-	@Column(name = ActionTableColumns.FLOAT_1)
+	@Column(name = ActionTableColumns.FLOAT_1, nullable = true)
 	private Float estimatedVelocity;
 
 	public String getReleaseId() {
@@ -33,7 +33,7 @@ public class ReleaseDeclareEstimatedVelocityActionEntity extends ModelActionEnti
 		return estimatedVelocity;
 	}
 
-	public void setEstimatedVelocity(final float estimatedVelocity) {
+	public void setEstimatedVelocity(final Float estimatedVelocity) {
 		this.estimatedVelocity = estimatedVelocity;
 	}
 

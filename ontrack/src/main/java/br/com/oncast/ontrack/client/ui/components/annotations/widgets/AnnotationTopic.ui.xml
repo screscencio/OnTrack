@@ -6,17 +6,16 @@
 	<ui:style src="../../../style/default.css">
 	
 		.author {
-			margin-bottom: 7px;
-
-			color: COLOR_GRAY_DARK;
-			font-size: FONT_SIZE_MEDIUM;
+			border: 1px solid COLOR_GRAY_DARK;
 			display: inline-block;
-		}
-	
-		.wrote {
-			font-size: FONT_SIZE_TINY;
-			font-style: italic;
 			
+			width: 40px;
+			height: 40px;
+			margin-right: 5px;
+		}
+		
+		.message {
+			vertical-align: top;
 			display: inline-block;
 		}
 	
@@ -24,10 +23,8 @@
 	
 	<g:HTMLPanel>
 		<g:HTMLPanel>
-			<g:Label ui:field="author" styleName="{style.author}" />
-			<g:Label styleName="{style.wrote}" text="wrote"/>
-			<g:Label ui:field="when" styleName="{style.wrote}" />
-			<g:HTMLPanel ui:field="message" />
+			<g:Image ui:field="author" styleName="{style.author}" />
+			<g:HTMLPanel ui:field="message" styleName="{style.message}"/>
 		</g:HTMLPanel>
 		<misc:Separator />
 	</g:HTMLPanel>

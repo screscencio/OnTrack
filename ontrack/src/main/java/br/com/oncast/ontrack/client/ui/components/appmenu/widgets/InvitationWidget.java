@@ -98,7 +98,6 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 
 				widget.hide();
-				// TODO Change this for show info or loading type notification;
 				ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Processing you invitation...");
 				PROVIDER.getProjectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override

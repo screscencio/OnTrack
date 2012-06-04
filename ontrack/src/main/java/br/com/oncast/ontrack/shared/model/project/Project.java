@@ -25,7 +25,7 @@ public class Project implements Serializable {
 	private Release projectRelease;
 	private Map<Release, Kanban> kanbanMap;
 	private Set<User> users;
-	private Map<UUID, List<Annotation>> annotations;
+	private Map<UUID, List<Annotation>> annotationsMap;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
@@ -36,7 +36,7 @@ public class Project implements Serializable {
 		this.projectRepresentation = projectRepresentation;
 		this.projectScope = projectScope;
 		this.projectRelease = projectRelease;
-		annotations = new HashMap<UUID, List<Annotation>>();
+		annotationsMap = new HashMap<UUID, List<Annotation>>();
 		users = new HashSet<User>();
 	}
 
@@ -64,40 +64,44 @@ public class Project implements Serializable {
 		kanbanMap.put(release, kanban);
 	}
 
-	public User getUser(final Long userId) {
+	public User getUser(final String userEmail) {
 		for (final User user : users) {
-			if (user.getId() == userId) return user;
+			if (user.getEmail().equals(userEmail)) return user;
 		}
 		return null;
 	}
 
 	public void addAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
-		if (!annotations.containsKey(annotatedObjectId)) annotations.put(annotatedObjectId, new ArrayList<Annotation>());
-		annotations.get(annotatedObjectId).add(0, annotation);
+		if (!hasAnnotationsFor(annotatedObjectId)) annotationsMap.put(annotatedObjectId, new ArrayList<Annotation>());
+		annotationsMap.get(annotatedObjectId).add(0, annotation);
 	}
 
 	public void removeAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
-		if (!annotations.containsKey(annotatedObjectId)) return;
+		if (!annotationsMap.containsKey(annotatedObjectId)) return;
 
-		annotations.get(annotatedObjectId).remove(annotation);
+		annotationsMap.get(annotatedObjectId).remove(annotation);
 	}
 
 	public Annotation getAnnotation(final UUID annotationId, final UUID annotatedObjectId) throws AnnotationNotFoundException {
-		for (final Annotation annotation : annotations.get(annotatedObjectId)) {
+		for (final Annotation annotation : annotationsMap.get(annotatedObjectId)) {
 			if (annotation.getId().equals(annotationId)) return annotation;
 		}
 		return null;
 	}
 
 	public boolean hasAnnotationsFor(final UUID annotatedObjectId) {
-		return annotations.containsKey(annotatedObjectId);
+		return annotationsMap.containsKey(annotatedObjectId);
 	}
 
 	public List<Annotation> getAnnotationsFor(final UUID annotatedObjectId) {
-		return new ArrayList<Annotation>(annotations.get(annotatedObjectId));
+		return new ArrayList<Annotation>(annotationsMap.get(annotatedObjectId));
 	}
 
 	public void setUserList(final Set<User> userList) {
 		users = userList;
+	}
+
+	public void addUser(final User user) {
+		users.add(user);
 	}
 }

@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(ReleaseDeclareStartDayActionEntity.class)
 public class ReleaseDeclareStartDayAction implements ReleaseAction {
@@ -23,6 +24,7 @@ public class ReleaseDeclareStartDayAction implements ReleaseAction {
 	private UUID referenceId;
 
 	@Attribute(required = false)
+	@IgnoredByDeepEquality
 	private Date date;
 
 	ReleaseDeclareStartDayAction() {}

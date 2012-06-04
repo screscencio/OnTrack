@@ -143,9 +143,9 @@ public class ProjectContext {
 		return releases;
 	}
 
-	public User findUser(final Long userId) throws UserNotFoundException {
-		final User user = project.getUser(userId);
-		if (user == null) throw new UserNotFoundException("The user referenced by id " + userId + " was not found.");
+	public User findUser(final String userEmail) throws UserNotFoundException {
+		final User user = project.getUser(userEmail);
+		if (user == null) throw new UserNotFoundException("The user referenced " + userEmail + " was not found.");
 
 		return user;
 	}
@@ -163,14 +163,19 @@ public class ProjectContext {
 				+ "' has no annotations");
 
 		final Annotation annotation = project.getAnnotation(annotationId, annotatedObjectId);
-		if (annotation != null) return annotation;
+		if (annotation == null) throw new AnnotationNotFoundException("The Object with id '" + annotatedObjectId + "' does not have the annotations with id '"
+				+ annotationId + "'");
 
-		throw new AnnotationNotFoundException("The Object with id '" + annotatedObjectId + "' does not have the annotations with id '" + annotationId + "'");
+		return annotation;
 	}
 
 	public List<Annotation> findAnnotationsFor(final UUID annotatedObjectId) {
 		if (!project.hasAnnotationsFor(annotatedObjectId)) return new ArrayList<Annotation>();
 
 		return project.getAnnotationsFor(annotatedObjectId);
+	}
+
+	public void addUser(final User user) {
+		project.addUser(user);
 	}
 }

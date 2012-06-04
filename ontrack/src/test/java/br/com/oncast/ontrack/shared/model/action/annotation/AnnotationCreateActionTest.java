@@ -39,7 +39,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		author = UserTestUtils.createUser();
 		message = "Any message";
 
-		when(context.findUser(author.getId())).thenReturn(author);
+		when(context.findUser(author.getEmail())).thenReturn(author);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenTheSpecifiedUserDoesNotExist() throws Exception {
-		when(context.findUser(author.getId())).thenThrow(new UserNotFoundException(""));
+		when(context.findUser(author.getEmail())).thenThrow(new UserNotFoundException(""));
 		execute();
 	}
 
@@ -72,13 +72,13 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		final User expectedAuthor = UserTestUtils.createUser();
 		action.setAuthor(expectedAuthor);
 
-		when(context.findUser(expectedAuthor.getId())).thenReturn(expectedAuthor);
+		when(context.findUser(expectedAuthor.getEmail())).thenReturn(expectedAuthor);
 		action.execute(context);
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
 		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
-		verify(context, never()).findUser(author.getId());
-		verify(context).findUser(expectedAuthor.getId());
+		verify(context, never()).findUser(author.getEmail());
+		verify(context).findUser(expectedAuthor.getEmail());
 
 		final User obtainedAuthor = captor.getValue().getAuthor();
 		assertFalse(author.equals(obtainedAuthor));

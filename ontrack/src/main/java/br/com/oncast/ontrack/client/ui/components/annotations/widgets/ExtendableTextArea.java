@@ -103,7 +103,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	}
 
 	private void shrink() {
-		animateHeight(maxHeight, defaultHeight);
+		if (defaultHeight != 0) animateHeight(maxHeight, defaultHeight);
 	}
 
 	private void animateHeight(final float fromHeight, final float toHeight) {

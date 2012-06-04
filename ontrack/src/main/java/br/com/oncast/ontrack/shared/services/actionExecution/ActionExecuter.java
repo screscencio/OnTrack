@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
+import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
@@ -15,6 +16,7 @@ public class ActionExecuter {
 		if (action instanceof ReleaseAction) return new ReleaseActionExecuter().executeAction(context, action);
 		if (action instanceof KanbanAction) return new KanbanActionExecuter().executeAction(context, action);
 		if (action instanceof AnnotationAction) return new AnnotationActionExecuter().executeAction(context, action);
+		if (action instanceof TeamAction) return new TeamActionExecuter().executeAction(context, action);
 
 		throw new UnableToCompleteActionException("There is no mapped action executer for " + action.getClass() + ".");
 	}

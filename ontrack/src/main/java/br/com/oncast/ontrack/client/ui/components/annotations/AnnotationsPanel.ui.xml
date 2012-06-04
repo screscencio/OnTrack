@@ -15,11 +15,8 @@
 		}
 		
 		.rootContainer {
-			position: absolute;
-			top: 0px;
-			right: 0px;
-			bottom: 0px;
-			left: 0px;
+			height: 100%;
+			width: 100%;
 			
 			color: COLOR_MENUBOX_TEXT;
 		}
@@ -36,12 +33,16 @@
 		}
 		
 		.detailWidget {
+			height: 100%;
 			width: 200px;
-			margin: POPUP_PADDING;
+			
+			padding: POPUP_PADDING;
 		}
 		
 		.annotationsPanel {
-			margin: POPUP_PADDING;
+			height: 100%;
+			
+			padding: POPUP_PADDING;
 		}
 	</ui:style>
 	
@@ -49,7 +50,7 @@
 
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
 		<g:HTMLPanel ui:field="container" styleName="{style.rootContainer} {style.popupContainer}">
-			<g:HorizontalPanel height="100%" width="">
+			<g:HorizontalPanel height="100%" width="100%">
 				<g:cell width="100%">
 					<aw:AnnotationsWidget ui:field="annotations" styleName="{style.annotationsPanel}" />
 				</g:cell>

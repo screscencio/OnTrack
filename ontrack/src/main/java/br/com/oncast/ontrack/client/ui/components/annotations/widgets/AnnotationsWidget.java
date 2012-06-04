@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
@@ -57,32 +57,26 @@ public class AnnotationsWidget extends Composite {
 
 	private UUID subjectId;
 
-	private final ActionExecutionListener listener;
+	private ActionExecutionListener listener;
 
 	public AnnotationsWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
-
-		listener = new ActionExecutionListener() {
-			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				if (action instanceof AnnotationAction && subjectId.equals(action.getReferenceId())) {
-					update(context.findAnnotationsFor(action.getReferenceId()));
-				}
-			}
-		};
 	}
 
 	@Override
 	protected void onLoad() {
-		super.onLoad();
-		ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(listener);
+		getActionExecutionService().addActionExecutionListener(getListener());
+		update();
+	}
+
+	public void setSubjectId(final UUID subjectId) {
+		this.subjectId = subjectId;
+		update();
 	}
 
 	@Override
 	protected void onUnload() {
-		ClientServiceProvider.getInstance().getActionExecutionService().removeActionExecutionListener(listener);
-		super.onUnload();
+		getActionExecutionService().removeActionExecutionListener(listener);
 	}
 
 	@UiHandler("newAnnotationText")
@@ -109,14 +103,38 @@ public class AnnotationsWidget extends Composite {
 		final String message = newAnnotationText.getText().trim();
 		if (message.isEmpty()) return;
 
-		ClientServiceProvider.getInstance().getAnnotationService().createAnnotationFor(subjectId, message);
+		getProvider().getAnnotationService().createAnnotationFor(subjectId, message);
 	}
 
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
+	private void update() {
+		annotations.update(getCurrentProjectContext().findAnnotationsFor(subjectId));
 	}
 
-	public void update(final List<Annotation> annotationsList) {
-		annotations.update(annotationsList);
+	private ActionExecutionListener getListener() {
+		if (listener != null) return listener;
+
+		return listener = new ActionExecutionListener() {
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isUserAction) {
+				if (action instanceof AnnotationAction && subjectId.equals(action.getReferenceId())) {
+					for (final Annotation a : context.findAnnotationsFor(subjectId))
+						System.out.println("Widget\n" + a.getAuthor().getEmail() + ": " + a.getMessage());
+					update();
+				}
+			}
+		};
+	}
+
+	private ProjectContext getCurrentProjectContext() {
+		return getProvider().getContextProviderService().getCurrentProjectContext();
+	}
+
+	private ActionExecutionService getActionExecutionService() {
+		return getProvider().getActionExecutionService();
+	}
+
+	private ClientServiceProvider getProvider() {
+		return ClientServiceProvider.getInstance();
 	}
 }

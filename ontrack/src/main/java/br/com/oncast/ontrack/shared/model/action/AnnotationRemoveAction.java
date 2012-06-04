@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -12,7 +14,11 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public class AnnotationRemoveAction implements AnnotationAction {
 
 	private static final long serialVersionUID = 1L;
+
+	@Element
 	private UUID annotationId;
+
+	@Element
 	private UUID annotatedObjectId;
 
 	public AnnotationRemoveAction() {}

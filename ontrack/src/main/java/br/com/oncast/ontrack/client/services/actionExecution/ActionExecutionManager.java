@@ -27,10 +27,10 @@ public class ActionExecutionManager {
 		executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet(), false);
 	}
 
-	public void doUserAction(final ModelAction action, final ProjectContext context)
-			throws UnableToCompleteActionException {
+	public void doUserAction(final ModelAction action, final ProjectContext context) throws UnableToCompleteActionException {
 		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, action);
 		executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet(), true);
+
 		final ModelAction undoAction = executionContext.getReverseAction();
 		undoStack.push(undoAction);
 		redoStack.clear();

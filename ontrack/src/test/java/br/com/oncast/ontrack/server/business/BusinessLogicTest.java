@@ -341,7 +341,8 @@ public class BusinessLogicTest {
 	public void shouldCreateANewProjectRepresentation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 
-		when(persistence.persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class))).thenReturn(ProjectTestUtils.createRepresentation(4));
+		final int projectId = 4;
+		setupMocksToCreateProjectWithId(projectId);
 		business.createProject("Name");
 
 		final ArgumentCaptor<ProjectRepresentation> captor = ArgumentCaptor.forClass(ProjectRepresentation.class);
@@ -373,8 +374,8 @@ public class BusinessLogicTest {
 	@Test
 	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException, NoResultFoundException,
 			AuthorizationException {
-		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(ProjectTestUtils.createRepresentation(4));
 
+		setupMocksToCreateProjectWithId(4);
 		business = BusinessLogicTestUtils.create(persistence, notification, authenticationManager);
 		final ProjectRepresentation representation = business.createProject("new project");
 
@@ -418,19 +419,16 @@ public class BusinessLogicTest {
 	public void shouldAuthorizeCurrentUserAfterProjectCreation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 
-		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation(4);
-		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
-
+		setupMocksToCreateProjectWithId(4);
 		business.createProject("new Project");
-		verify(authorizationManager).authorize(createdProject.getId(), authenticatedUser.getEmail(), false);
+		verify(authorizationManager).authorize(4, authenticatedUser.getEmail(), false);
 	}
 
 	@Test
 	public void shouldAuthorizeAdminUserAfterProjectCreation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 
-		final ProjectRepresentation createdProject = ProjectTestUtils.createRepresentation(4);
-		when(persistence.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(createdProject);
+		final ProjectRepresentation createdProject = setupMocksToCreateProjectWithId(4);
 
 		business.createProject("new Project");
 		verify(authorizationManager).authorizeAdmin(createdProject);
@@ -514,6 +512,18 @@ public class BusinessLogicTest {
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
 		verify(persistence).persistActions(eq(PROJECT_ID), eq(userId), eq(actions), any(Date.class));
+	}
+
+	private ProjectRepresentation setupMocksToCreateProjectWithId(final int projectId) throws PersistenceException, NoResultFoundException {
+		final ProjectRepresentation projectRepresentation = ProjectTestUtils.createRepresentation(projectId);
+		authenticateAndAuthorizeUser(authenticatedUser, projectId);
+
+		when(persistence.retrieveProjectSnapshot(projectId)).thenThrow(new NoResultFoundException(null, null));
+		when(persistence.persistOrUpdateProjectRepresentation(Mockito.any(ProjectRepresentation.class))).thenReturn(
+				projectRepresentation);
+		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(projectRepresentation);
+
+		return projectRepresentation;
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {

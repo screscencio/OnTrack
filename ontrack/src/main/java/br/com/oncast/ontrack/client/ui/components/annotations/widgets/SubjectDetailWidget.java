@@ -6,8 +6,6 @@ public interface SubjectDetailWidget<T> extends IsWidget {
 
 	void setSubject(T scope);
 
-	void update();
-
 	void setStyleName(String name);
 
 }

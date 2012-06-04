@@ -1,15 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.annotations;
 
-import java.util.List;
-
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ScopeDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
-import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -69,15 +64,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 	public void setScope(final Scope scope) {
 		subjectDetails.setSubject(scope);
-		subjectDetails.update();
-
 		annotations.setSubjectId(scope.getId());
-		final ProjectContext context = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
-		updateAnnotations(context.findAnnotationsFor(scope.getId()));
-	}
-
-	public void updateAnnotations(final List<Annotation> annotationsList) {
-		annotations.update(annotationsList);
 	}
 
 }

@@ -4,6 +4,10 @@
 	
 	<ui:style src="../../../style/default.css">
 	
+		.root {
+			height: 26px;
+		}
+	
 		.expandPanel {
 			position: relative;
 			
@@ -41,7 +45,7 @@
 		}
 		
 	</ui:style>
-	<g:FocusPanel ui:field="focusPanel">
+	<g:FocusPanel ui:field="focusPanel" styleName="{style.root}">
 		<g:SimplePanel styleName="{style.expandPanel}">
 			<g:HTMLPanel styleName="{style.textBoxDecoration} {style.container}">
 				<g:TextArea ui:field="textArea" styleName="{style.textArea}"/>
