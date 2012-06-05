@@ -12,6 +12,8 @@ import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
@@ -120,6 +122,8 @@ public class UserActionTestUtils {
 		userActions.add(createReleaseRenameAction());
 		userActions.add(createAnnotationCreateAction());
 		userActions.add(createAnnotationRemoveAction());
+		userActions.add(createAnnotationVoteAction());
+		userActions.add(createAnnotationVoteRemoveAction());
 		userActions.add(createTeamInviteAction());
 		return userActions;
 	}
@@ -163,6 +167,14 @@ public class UserActionTestUtils {
 
 	public static UserAction createTeamInviteAction() throws Exception {
 		return createUserAction(new TeamInviteAction("user@mail.com"));
+	}
+
+	public static UserAction createAnnotationVoteRemoveAction() throws Exception {
+		return createUserAction(new AnnotationVoteRemoveAction(new UUID(), new UUID()));
+	}
+
+	public static UserAction createAnnotationVoteAction() throws Exception {
+		return createUserAction(new AnnotationVoteAction(new UUID(), new UUID()));
 	}
 
 	public static UserAction createAnnotationRemoveAction() throws Exception {

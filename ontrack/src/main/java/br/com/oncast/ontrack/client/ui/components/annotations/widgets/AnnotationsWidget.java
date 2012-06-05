@@ -48,7 +48,7 @@ public class AnnotationsWidget extends Composite {
 
 			@Override
 			public AnnotationTopic createWidget(final Annotation modelBean) {
-				return new AnnotationTopic(modelBean);
+				return new AnnotationTopic(modelBean, subjectId);
 			}
 
 		}, new ModelWidgetContainerListener() {

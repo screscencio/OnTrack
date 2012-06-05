@@ -3,7 +3,9 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:style src="../../../style/default.css">
+	<ui:image field="like" src="like.png"></ui:image>
+	<ui:image field="likeActive" src="like_active.png"></ui:image>
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationTopic.AnnotationTopicStyle">
 	
 		.author {
 			border: 1px solid COLOR_GRAY_DARK;
@@ -18,12 +20,43 @@
 			min-height: 42px;
 		}
 		
-		.date {
+		.detailContainer {
 			float: right;
 			margin-bottom: -5px;
 			text-align: right;
 			font-size: FONT_SIZE_TINY;
 			font-style: italic;
+		}
+		
+		@sprite .like {
+			gwt-image: 'like';
+			background-size: 12px 12px;
+			width: 12px;
+			height: 12px;
+			
+			margin-bottom: -1px;
+
+			cursor: pointer;
+		}
+		
+		@sprite .likeActive {
+			gwt-image: 'likeActive';
+			background-size: 12px 12px;
+			width: 12px;
+			height: 12px;
+			
+			margin-bottom: -1px;
+			
+			cursor: pointer;
+		}
+		
+		.likeCount {
+			margin-right: 5px;
+			font-weight: bold;
+		}
+		
+		.detail {
+			display: inline-block;
 		}
 		
 		.separator {
@@ -36,7 +69,11 @@
 		<g:HTMLPanel ui:field="container" styleName="{style.container}">
 			<g:Image ui:field="author" styleName="{style.author}" />
 		</g:HTMLPanel>
-		<g:Label ui:field="date" styleName="{style.date}"/>
+		<g:HTMLPanel styleName="{style.detailContainer}">
+			<g:FocusPanel ui:field="likeIcon" styleName="{style.like} {style.detail}" title="Like"/>
+			<g:Label ui:field="likeCount" styleName="{style.detail} {style.likeCount}"/>
+			<g:Label ui:field="date" styleName="{style.detail}"/>
+		</g:HTMLPanel>
 		<misc:Separator styleName="{style.separator}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -1,4 +1,4 @@
-﻿.DS_Store
+.DS_Store
 /ontrack/.gwt/
 /ontrack/war/application/
 /ontrack/war/ROOT.war
@@ -10,3 +10,5 @@
 /tools/work/
 ontrack/gwt-unitCache/
 ontrackExtAcceptance/target/
+.DS_Store
+ontrack/.DS_Store

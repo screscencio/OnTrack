@@ -35,7 +35,7 @@ public interface BusinessLogic {
 
 	public abstract void sendFeedbackEmail(String feedbackText);
 
-	void authorize(String userEmail, long projectId, boolean sendEmail) throws UnableToAuthorizeUserException, UnableToHandleActionException,
+	void authorize(String userEmail, long projectId, boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException, UnableToHandleActionException,
 			AuthorizationException;
 
 }

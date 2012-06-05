@@ -9,4 +9,6 @@ public interface AnnotationService {
 
 	void createAnnotationFor(UUID subjectId, String message);
 
+	void toggleVote(UUID annotationId, UUID subjectId);
+
 }

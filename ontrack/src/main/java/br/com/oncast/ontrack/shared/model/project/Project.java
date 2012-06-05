@@ -104,4 +104,5 @@ public class Project implements Serializable {
 	public void addUser(final User user) {
 		users.add(user);
 	}
+
 }

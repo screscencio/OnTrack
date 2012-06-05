@@ -178,4 +178,5 @@ public class ProjectContext {
 	public void addUser(final User user) {
 		project.addUser(user);
 	}
+
 }

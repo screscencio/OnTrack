@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.shared.model.annotation;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -15,6 +17,8 @@ public class Annotation implements Serializable {
 	private String message;
 	private Date date;
 
+	private Set<String> voters;
+
 	public Annotation() {}
 
 	public Annotation(final UUID id, final User author, final Date date, final String message) {
@@ -22,6 +26,7 @@ public class Annotation implements Serializable {
 		this.author = author;
 		this.date = date;
 		this.message = message;
+		voters = new HashSet<String>();
 	}
 
 	@Override
@@ -59,6 +64,22 @@ public class Annotation implements Serializable {
 
 	public Date getDate() {
 		return date;
+	}
+
+	public int getVoteCount() {
+		return voters.size();
+	}
+
+	public void vote(final String voterEmail) {
+		voters.add(voterEmail);
+	}
+
+	public void removeVote(final String voterEmail) {
+		voters.remove(voterEmail);
+	}
+
+	public boolean hasVoted(final String voterEmail) {
+		return voters.contains(voterEmail);
 	}
 
 }
