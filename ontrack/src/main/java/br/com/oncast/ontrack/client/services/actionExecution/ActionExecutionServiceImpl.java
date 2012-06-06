@@ -90,7 +90,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 
 	private void notifyActionExecutionListeners(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 			final boolean isUserAction) {
-		for (final ActionExecutionListener handler : actionExecutionListeners) {
+		for (final ActionExecutionListener handler : new ArrayList<ActionExecutionListener>(actionExecutionListeners)) {
 			handler.onActionExecution(action, context, inferenceInfluencedScopeSet, isUserAction);
 		}
 	}

@@ -16,13 +16,12 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -32,6 +31,11 @@ public class AnnotationsWidget extends Composite {
 	private static AnnotationsWidgetUiBinder uiBinder = GWT.create(AnnotationsWidgetUiBinder.class);
 
 	interface AnnotationsWidgetUiBinder extends UiBinder<Widget, AnnotationsWidget> {}
+
+	private static CommentsWidgetUiBinder commentsUiBinder = GWT.create(CommentsWidgetUiBinder.class);
+
+	@UiTemplate("CommentsWidget.ui.xml")
+	interface CommentsWidgetUiBinder extends UiBinder<Widget, AnnotationsWidget> {}
 
 	@UiField
 	protected FocusPanel focusPanel;
@@ -62,24 +66,21 @@ public class AnnotationsWidget extends Composite {
 	private ActionExecutionListener listener;
 
 	public AnnotationsWidget() {
-		initWidget(uiBinder.createAndBindUi(this));
+		this(uiBinder);
 	}
 
-	private boolean shouldRefresh = true;
+	private AnnotationsWidget(final UiBinder<Widget, AnnotationsWidget> binder) {
+		initWidget(binder.createAndBindUi(this));
+	}
+
+	public static AnnotationsWidget forComments() {
+		return new AnnotationsWidget(commentsUiBinder);
+	}
 
 	@Override
 	protected void onLoad() {
 		getActionExecutionService().addActionExecutionListener(getListener());
 		update();
-		shouldRefresh = true;
-		Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-
-			@Override
-			public boolean execute() {
-				update();
-				return shouldRefresh;
-			}
-		}, 3000);
 	}
 
 	public void setSubjectId(final UUID subjectId) {
@@ -90,7 +91,6 @@ public class AnnotationsWidget extends Composite {
 	@Override
 	protected void onUnload() {
 		getActionExecutionService().removeActionExecutionListener(listener);
-		shouldRefresh = false;
 	}
 
 	@UiHandler("newAnnotationText")

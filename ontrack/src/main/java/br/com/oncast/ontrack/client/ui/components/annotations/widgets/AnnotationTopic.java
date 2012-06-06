@@ -11,10 +11,13 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,17 +47,33 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	HTMLPanel container;
 
 	@UiField
+	AnnotationsWidget commentPanel;
+
+	@UiField
 	Label date;
 
 	@UiField
 	Label likeCount;
 
 	@UiField
-	FocusPanel likeIcon;
+	FocusPanel like;
+
+	@UiField
+	Label commentCount;
+
+	@UiField
+	FocusPanel comment;
 
 	private Annotation annotation;
 
 	private UUID subjectId;
+
+	private boolean shouldRefresh = true;
+
+	@UiFactory
+	protected AnnotationsWidget createCommentsPainel() {
+		return AnnotationsWidget.forComments();
+	}
 
 	public AnnotationTopic() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -75,13 +94,39 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		for (final String line : annotation.getMessage().split("\\n")) {
 			container.add(new Label(line));
 		}
+		commentPanel.setSubjectId(annotation.getId());
 
 		update();
 	}
 
-	@UiHandler("likeIcon")
-	protected void onClick(final ClickEvent e) {
+	@UiHandler("like")
+	protected void onLikeClicked(final ClickEvent e) {
 		ClientServiceProvider.getInstance().getAnnotationService().toggleVote(annotation.getId(), subjectId);
+	}
+
+	@UiHandler("comment")
+	protected void onCommentClicked(final ClickEvent e) {
+		commentPanel.setVisible(!commentPanel.isVisible());
+		commentPanel.setFocus(true);
+	}
+
+	@Override
+	protected void onLoad() {
+		shouldRefresh = true;
+		Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+			@Override
+			public boolean execute() {
+				updateTime();
+				return shouldRefresh;
+			}
+		}, 3000);
+		commentPanel.setVisible(false);
+	}
+
+	@Override
+	protected void onUnload() {
+		shouldRefresh = false;
 	}
 
 	private String getDateText(final Annotation annotation) {
@@ -107,19 +152,26 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	@Override
 	public boolean update() {
 		updateLike();
-		updateDate();
+		updateComment();
+		updateTime();
 		return false;
 	}
 
-	private void updateDate() {
+	private void updateComment() {
+		final int comments = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext().findAnnotationsFor(annotation.getId())
+				.size();
+		this.commentCount.setText("" + comments);
+	}
+
+	public void updateTime() {
 		this.date.setText(getDateText(annotation));
 		this.date.setTitle(HumanDateFormatter.getAbsoluteText(annotation.getDate()));
 	}
 
 	private void updateLike() {
 		final boolean hasLiked = hasLiked();
-		this.likeIcon.setStyleName(style.likeActive(), hasLiked);
-		this.likeIcon.setTitle(hasLiked ? "Remove like" : "Like");
+		this.like.setStyleName(style.likeActive(), hasLiked);
+		this.like.setTitle(hasLiked ? "Remove like" : "Like");
 
 		this.likeCount.setText("" + annotation.getVoteCount());
 	}

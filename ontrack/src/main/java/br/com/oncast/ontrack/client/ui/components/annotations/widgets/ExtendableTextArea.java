@@ -2,8 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -41,13 +39,6 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	public ExtendableTextArea() {
 		initWidget(uiBinder.createAndBindUi(this));
-
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				ExtendableTextArea.this.defaultHeight = getCurrentHeight();
-			}
-		});
 	}
 
 	public ExtendableTextArea(final int maxHeight) {
@@ -55,12 +46,20 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 		setMaxHeight(maxHeight);
 	}
 
+	public void setDefaultHeight(final int defaultHeight) {
+		this.defaultHeight = defaultHeight;
+	}
+
 	public void setMaxHeight(final int maxHeight) {
 		this.maxHeight = maxHeight;
 	}
 
 	public void setMaxHeight(final String maxHeight) {
-		this.maxHeight = Float.valueOf(maxHeight.replaceAll("[^0-9]+", ""));
+		this.maxHeight = convertToInt(maxHeight);
+	}
+
+	public void setDefaultHeight(final String defaultHeight) {
+		this.defaultHeight = convertToInt(defaultHeight);
 	}
 
 	@UiHandler("textArea")
@@ -114,8 +113,8 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 		return heightAnimation == null ? heightAnimation = new HeightAnimation(focusPanel, ANIMATION_DURATION) : heightAnimation;
 	}
 
-	private float getCurrentHeight() {
-		return focusPanel.getOffsetHeight();
+	private Float convertToInt(final String maxHeight) {
+		return Float.valueOf(maxHeight.replaceAll("[^0-9]+", ""));
 	}
 
 	private class HeightAnimation extends Animation {
