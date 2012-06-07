@@ -57,13 +57,17 @@ public class AnnotationsWidget extends Composite {
 
 		}, new ModelWidgetContainerListener() {
 			@Override
-			public void onUpdateComplete(final boolean hasChanged) {}
+			public void onUpdateComplete(final boolean hasChanged) {
+				if (hasChanged && updateListener != null) updateListener.onChanged();
+			}
 		});
 	}
 
 	private UUID subjectId;
 
-	private ActionExecutionListener listener;
+	private ActionExecutionListener actionsListener;
+
+	private UpdateListener updateListener;
 
 	public AnnotationsWidget() {
 		this(uiBinder);
@@ -90,7 +94,7 @@ public class AnnotationsWidget extends Composite {
 
 	@Override
 	protected void onUnload() {
-		getActionExecutionService().removeActionExecutionListener(listener);
+		getActionExecutionService().removeActionExecutionListener(actionsListener);
 	}
 
 	@UiHandler("newAnnotationText")
@@ -113,6 +117,14 @@ public class AnnotationsWidget extends Composite {
 		newAnnotationText.setFocus(true);
 	}
 
+	public int getWidgetCount() {
+		return annotations.getWidgetCount();
+	}
+
+	public void setUpdateListener(final UpdateListener listener) {
+		this.updateListener = listener;
+	}
+
 	private void addAnnotation() {
 		final String message = newAnnotationText.getText().trim();
 		if (message.isEmpty()) return;
@@ -125,9 +137,9 @@ public class AnnotationsWidget extends Composite {
 	}
 
 	private ActionExecutionListener getListener() {
-		if (listener != null) return listener;
+		if (actionsListener != null) return actionsListener;
 
-		return listener = new ActionExecutionListener() {
+		return actionsListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
@@ -149,4 +161,9 @@ public class AnnotationsWidget extends Composite {
 	private ClientServiceProvider getProvider() {
 		return ClientServiceProvider.getInstance();
 	}
+
+	public interface UpdateListener {
+		void onChanged();
+	}
+
 }

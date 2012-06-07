@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ExtendableTextArea extends Composite implements HasText, HasKeyDownHandlers {
 
-	private static final int ANIMATION_DURATION = 250;
+	private static final int ANIMATION_DURATION = 200;
 
 	private static ExtendableTextAreaUiBinder uiBinder = GWT.create(ExtendableTextAreaUiBinder.class);
 
@@ -132,7 +132,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 		@Override
 		protected void onUpdate(final double progress) {
-			setHeight(startHeight + (endHeight - startHeight) * progress);
+			setHeight(startHeight + (endHeight - startHeight) * interpolate(progress));
 		}
 
 		@Override

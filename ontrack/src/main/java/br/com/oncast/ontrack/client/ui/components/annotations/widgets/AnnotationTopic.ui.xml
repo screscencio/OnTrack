@@ -81,10 +81,10 @@
 			<g:FocusPanel ui:field="like" styleName="{style.like} {style.icon} {style.detail}" title="Like"/>
 			<g:Label ui:field="likeCount" styleName="{style.detail} {style.countLabel}"/>
 			<g:FocusPanel ui:field="comment" styleName="{style.commentIcon} {style.icon} {style.detail}"/>
-			<g:Label ui:field="commentCount" styleName="{style.detail} {style.countLabel}"/>
+			<g:Label ui:field="commentsCount" styleName="{style.detail} {style.countLabel}"/>
 			<g:Label ui:field="date" styleName="{style.detail}"/>
 		</g:HTMLPanel>
-		<aw:AnnotationsWidget ui:field="commentPanel" styleName="{style.commentPanel}"/>
+		<aw:AnnotationsWidget ui:field="commentsPanel" styleName="{style.commentPanel}"/>
 		<misc:Separator styleName="{style.separator}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

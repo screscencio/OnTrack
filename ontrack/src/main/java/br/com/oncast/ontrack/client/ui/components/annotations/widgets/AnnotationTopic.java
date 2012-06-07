@@ -4,9 +4,11 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget.UpdateListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -14,6 +16,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -47,7 +50,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	HTMLPanel container;
 
 	@UiField
-	AnnotationsWidget commentPanel;
+	AnnotationsWidget commentsPanel;
 
 	@UiField
 	Label date;
@@ -59,7 +62,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	FocusPanel like;
 
 	@UiField
-	Label commentCount;
+	Label commentsCount;
 
 	@UiField
 	FocusPanel comment;
@@ -94,7 +97,29 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		for (final String line : annotation.getMessage().split("\\n")) {
 			container.add(new Label(line));
 		}
-		commentPanel.setSubjectId(annotation.getId());
+		commentsPanel.setSubjectId(annotation.getId());
+
+		try {
+			ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext().findScope(subjectId);
+			comment.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(final ClickEvent event) {
+					commentsPanel.setVisible(!commentsPanel.isVisible());
+					commentsPanel.setFocus(true);
+				}
+			});
+			commentsPanel.setUpdateListener(new UpdateListener() {
+				@Override
+				public void onChanged() {
+					updateComment();
+				}
+			});
+		}
+		catch (final ScopeNotFoundException e) {
+			comment.setVisible(false);
+			commentsCount.setVisible(false);
+		}
 
 		update();
 	}
@@ -102,12 +127,6 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	@UiHandler("like")
 	protected void onLikeClicked(final ClickEvent e) {
 		ClientServiceProvider.getInstance().getAnnotationService().toggleVote(annotation.getId(), subjectId);
-	}
-
-	@UiHandler("comment")
-	protected void onCommentClicked(final ClickEvent e) {
-		commentPanel.setVisible(!commentPanel.isVisible());
-		commentPanel.setFocus(true);
 	}
 
 	@Override
@@ -121,7 +140,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 				return shouldRefresh;
 			}
 		}, 3000);
-		commentPanel.setVisible(false);
+		commentsPanel.setVisible(false);
 	}
 
 	@Override
@@ -158,9 +177,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	private void updateComment() {
-		final int comments = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext().findAnnotationsFor(annotation.getId())
-				.size();
-		this.commentCount.setText("" + comments);
+		this.commentsCount.setText("" + commentsPanel.getWidgetCount());
 	}
 
 	public void updateTime() {
