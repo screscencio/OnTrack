@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.ui.components.annotations.AnnotationsPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
@@ -32,11 +33,11 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void showAnnotationsFor(final Scope scope) {
+	public void showAnnotationsFor(final Scope scope, final PopupCloseListener closeListener) {
 		final AnnotationsPanel panel = getAnnotationPanel();
 		panel.setScope(scope);
 
-		PopupConfig.configPopup().popup(panel).pop();
+		PopupConfig.configPopup().popup(panel).onClose(closeListener).pop();
 	}
 
 	protected AnnotationsPanel getAnnotationPanel() {

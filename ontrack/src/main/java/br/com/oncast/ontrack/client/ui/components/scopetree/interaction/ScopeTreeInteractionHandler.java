@@ -192,4 +192,9 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	public void setContext(final ProjectContext context) {
 		this.context = context;
 	}
+
+	@Override
+	public void focusTree() {
+		tree.setFocus(true);
+	}
 }

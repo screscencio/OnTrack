@@ -67,7 +67,8 @@
 		    font-size: FONT_SIZE_SMALL;
 		    color: COLOR_GRAY_LIGHT;
 		    
-		    display: inline;
+		    display: inline-block;
+		    white-space: nowrap;
 		}
 		
 	</ui:style>

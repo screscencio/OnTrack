@@ -43,8 +43,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private final int maxHeight;
 
-	private final int maxWidth;
-
 	interface FiltrableCommandMenuUiBinder extends UiBinder<Widget, FiltrableCommandMenu> {}
 
 	private static FiltrableCommandMenuUiBinder defaultUiBinder = GWT.create(FiltrableCommandMenuUiBinder.class);
@@ -86,18 +84,18 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private SimpleCommandMenuItem noItemsItem;
 
-	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
-		this(defaultUiBinder, customItemFactory, maxWidth, maxHeight);
+	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int width, final int maxHeight) {
+		this(defaultUiBinder, customItemFactory, width, maxHeight);
 	}
 
 	private FiltrableCommandMenu(final UiBinder<Widget, FiltrableCommandMenu> binder, final CustomCommandMenuItemFactory customItemFactory,
-			final int maxWidth,
+			final int width,
 			final int maxHeight) {
 
 		initWidget(binder.createAndBindUi(this));
 		this.customItemFactory = customItemFactory;
 		this.maxHeight = maxHeight;
-		this.maxWidth = maxWidth;
+		focusPanel.setWidth(width + "px");
 
 		configureMenu();
 	}
@@ -117,7 +115,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		this.items = items;
 		setMenuItems(items);
 
-		adjustDimentions();
+		adjustHeight();
 	}
 
 	@Override
@@ -168,7 +166,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 			if (isMenuVisible) menu.selectItemDown();
 			else if (filterArea.getText().isEmpty()) {
 				setMenuVisibility(true);
-				adjustDimentions();
+				adjustHeight();
 			}
 		}
 
@@ -205,13 +203,13 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		menu.selectFirstItem();
 		if (shouldAddCustomItems) menu.selectItemDown();
 
-		adjustDimentions();
+		adjustHeight();
 	}
 
 	private void setMenuVisibility(final boolean b) {
 		if (alwaysShowMenu) return;
 		if (isMenuVisible != b) scrollPanel.setVisible(isMenuVisible = b);
-		adjustDimentions();
+		adjustHeight();
 	}
 
 	private boolean hasTextMatchInItemList(final List<CommandMenuItem> items, final String text) {
@@ -260,10 +258,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
 	 */
 	// TODO++++ Think a new way of setting the max height
-	private void adjustDimentions() {
-		focusPanel.setWidth("");
-		if (focusPanel.getOffsetWidth() > maxWidth) focusPanel.setWidth(maxWidth + "px");
-
+	private void adjustHeight() {
 		scrollPanel.setHeight("");
 		if (scrollPanel.getOffsetHeight() > maxHeight) scrollPanel.setHeight(maxHeight + "px");
 	}
@@ -313,13 +308,13 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@UiHandler("focusPanel")
 	protected void onAttach(final AttachEvent event) {
 		if (!event.isAttached()) return;
-		adjustDimentions();
+		adjustHeight();
 	}
 
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
-		if (visible) adjustDimentions();
+		if (visible) adjustHeight();
 	}
 
 	public FiltrableCommandMenu setLargePadding() {

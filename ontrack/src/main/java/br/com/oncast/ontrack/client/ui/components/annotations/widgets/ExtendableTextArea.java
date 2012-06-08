@@ -55,11 +55,11 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	}
 
 	public void setMaxHeight(final String maxHeight) {
-		this.maxHeight = convertToInt(maxHeight);
+		this.maxHeight = convertToNumber(maxHeight);
 	}
 
 	public void setDefaultHeight(final String defaultHeight) {
-		this.defaultHeight = convertToInt(defaultHeight);
+		this.defaultHeight = convertToNumber(defaultHeight);
 	}
 
 	@UiHandler("textArea")
@@ -98,11 +98,15 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	}
 
 	private void stretch() {
-		animateHeight(defaultHeight, maxHeight);
+		animateHeight(getCurrentHeight(), maxHeight);
 	}
 
 	private void shrink() {
-		if (defaultHeight != 0) animateHeight(maxHeight, defaultHeight);
+		if (defaultHeight != 0) animateHeight(getCurrentHeight(), defaultHeight);
+	}
+
+	private float getCurrentHeight() {
+		return focusPanel.getOffsetHeight();
 	}
 
 	private void animateHeight(final float fromHeight, final float toHeight) {
@@ -113,7 +117,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 		return heightAnimation == null ? heightAnimation = new HeightAnimation(focusPanel, ANIMATION_DURATION) : heightAnimation;
 	}
 
-	private Float convertToInt(final String maxHeight) {
+	private Float convertToNumber(final String maxHeight) {
 		return Float.valueOf(maxHeight.replaceAll("[^0-9]+", ""));
 	}
 

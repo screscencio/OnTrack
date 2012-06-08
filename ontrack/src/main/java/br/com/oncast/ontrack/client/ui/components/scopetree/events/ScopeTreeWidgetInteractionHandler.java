@@ -26,4 +26,6 @@ public interface ScopeTreeWidgetInteractionHandler extends
 	ProjectContext getProjectContext();
 
 	void assureConfigured();
+
+	void focusTree();
 }

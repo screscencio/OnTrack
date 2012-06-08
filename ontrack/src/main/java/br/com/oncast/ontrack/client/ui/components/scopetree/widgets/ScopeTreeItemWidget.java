@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.LEFT;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.CENTER;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment.BOTTOM;
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment.TOP;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
@@ -18,6 +20,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
@@ -348,11 +351,10 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final Release releaseItem : releaseList)
 			items.add(releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription()));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 670, 264);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 155, 264);
 
-		configPopup().popup(commandsMenu)
-				.alignBelow(releasePanel)
-				.alignHorizontal(RIGHT, new AlignmentReference(releasePanel, RIGHT))
+		align(configPopup(), releasePanel)
+				.popup(commandsMenu)
 				.pop();
 	}
 
@@ -364,11 +366,10 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String progressDefinition : list)
 			if (!notStartedDescription.equals(progressDefinition)) items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 400, 264);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 155, 264);
 
-		configPopup().popup(commandsMenu)
-				.alignBelow(progressLabel)
-				.alignHorizontal(LEFT, new AlignmentReference(progressLabel, LEFT))
+		align(configPopup(), progressLabel)
+				.popup(commandsMenu)
 				.pop();
 	}
 
@@ -381,9 +382,8 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 264);
 		commandsMenu.setHelpText("");
-		configPopup().popup(commandsMenu)
-				.alignBelow(effortPanel)
-				.alignHorizontal(LEFT, new AlignmentReference(effortPanel, LEFT))
+		align(configPopup(), effortPanel)
+				.popup(commandsMenu)
 				.pop();
 	}
 
@@ -396,10 +396,16 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 100, 264);
 		commandsMenu.setHelpText("");
-		configPopup().popup(commandsMenu)
-				.alignBelow(valuePanel)
-				.alignHorizontal(LEFT, new AlignmentReference(valuePanel, LEFT))
+		align(configPopup(), valuePanel)
+				.popup(commandsMenu)
 				.pop();
+	}
+
+	private PopupConfig align(final PopupConfig config, final Widget widget) {
+		config.alignVertical(TOP, new AlignmentReference(this, BOTTOM, 5));
+
+		if (widget.isVisible()) return config.alignHorizontal(CENTER, new AlignmentReference(widget, CENTER));
+		else return config.alignHorizontal(RIGHT, new AlignmentReference(descriptionLabel, RIGHT));
 	}
 
 	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,

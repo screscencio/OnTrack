@@ -18,16 +18,16 @@
 		}
 		
 		.container {
-			background-color: white;
-			
+			width: auto;
+			height: auto;
+
 			position: absolute;
 			top: 0px;
 			right: 0px;
 			bottom: 0px;
 			left: 0px;
-			
-			width: auto;
-			height: auto;
+
+			background-color: white;
 		}
 		
 		.textArea {

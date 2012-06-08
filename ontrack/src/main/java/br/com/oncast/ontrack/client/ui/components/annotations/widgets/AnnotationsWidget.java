@@ -114,7 +114,7 @@ public class AnnotationsWidget extends Composite {
 	}
 
 	public void setFocus(final boolean b) {
-		newAnnotationText.setFocus(true);
+		newAnnotationText.setFocus(b);
 	}
 
 	public int getWidgetCount() {
