@@ -119,13 +119,20 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		currentScopeProgress = description;
 
 		final boolean done = progress.isDone();
-		final boolean notStarted = progress.getState() == ProgressState.NOT_STARTED && scope.getEffort().getAccomplishedEffort() == 0;
+		final boolean notStarted = progress.getState() == ProgressState.NOT_STARTED && scope.getEffort().getAccomplishedEffort() == 0 && !isAnyDescendantUnderWork();
 
 		progressIcon.setStyleName(style.progressIconDone(), done);
 		progressIcon.setStyleName(style.progressIconNotStarted(), notStarted);
 		progressIcon.setStyleName(style.progressIconUnderwork(), progress.getState() == UNDER_WORK || (!done && !notStarted));
 
 		return true;
+	}
+
+	private boolean isAnyDescendantUnderWork() {
+		for (final Scope descendant : scope.getAllDescendantScopes()) {
+			if (descendant.getProgress().getState() == ProgressState.UNDER_WORK) return true;
+		}
+		return false;
 	}
 
 	public Scope getScope() {
