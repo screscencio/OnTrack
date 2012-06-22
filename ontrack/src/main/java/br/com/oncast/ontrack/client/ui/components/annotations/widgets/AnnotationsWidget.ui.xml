@@ -14,7 +14,7 @@
 			overflow-y: auto;
 			overflow-x: hidden;
 		}
-	
+		
 		.separator {
 			margin: 15px -15px 10px -15px;
 		}
@@ -29,12 +29,21 @@
 			overflow-y: auto;
 			overflow-x: hidden;
 		}
+		
+		.uploadPanel {
+			margin-left: 15px;
+		}
 
 	</ui:style>
 	
 	<g:FocusPanel ui:field="focusPanel">
 		<g:VerticalPanel height="100%" width="100%">
-			<aw:ExtendableTextArea ui:field="newAnnotationText" defaultHeight="26px"  maxHeight="100px" />
+			<g:HorizontalPanel width="100%">
+				<g:cell width="100%">
+					<aw:ExtendableTextArea ui:field="newAnnotationText" defaultHeight="26px"  maxHeight="100px" helpText="Type to create a new topic" />
+				</g:cell>
+				<aw:UploadWidget ui:field="uploadWidget" styleName="{style.uploadPanel}"/>
+			</g:HorizontalPanel>
 			<misc:Separator styleName="{style.separator}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">

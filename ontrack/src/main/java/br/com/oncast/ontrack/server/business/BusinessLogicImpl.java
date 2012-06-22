@@ -28,10 +28,12 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionExce
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -80,8 +82,8 @@ class BusinessLogicImpl implements BusinessLogic {
 				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 				final Date actionTimestamp = new Date();
 				final ActionContext actionContext = new ActionContext(authenticatedUser, actionTimestamp);
-				validateIncomingActions(projectId, actionList, actionContext);
-				postProcessIncomingActions(actionList);
+				final ProjectContext projectContext = validateIncomingActions(projectId, actionList, actionContext);
+				postProcessIncomingActions(projectContext, actionList);
 				persistenceService.persistActions(projectId, authenticatedUser.getId(), actionList, actionTimestamp);
 				modelActionSyncRequest.setActionContext(actionContext);
 			}
@@ -99,7 +101,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	// DECISION It is common sense that this validation is needed at this time (of development). Roberto thinks it should be a provisory solution, as it may be
 	// a major performance bottleneck, but that the solution is good to ensure that BetaTesters are safe while the application matures. Rodrigo thinks it should
 	// be permanent (but maybe passive of refactorings) to guarantee user safety in the long term.
-	private void validateIncomingActions(final long projectId, final List<ModelAction> actionList, final ActionContext actionContext)
+	private ProjectContext validateIncomingActions(final long projectId, final List<ModelAction> actionList, final ActionContext actionContext)
 			throws UnableToHandleActionException {
 		LOGGER.debug("Validating action upon the project current state.");
 		try {
@@ -107,6 +109,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final ProjectContext context = new ProjectContext(project);
 			for (final ModelAction action : actionList)
 				ActionExecuter.executeAction(context, actionContext, action);
+			return context;
 		}
 		catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "Unable to process action. The incoming action is invalid.";
@@ -127,10 +130,19 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	// TODO Find a better way to post process actions. (Eg. ScopeDeclareProgressAction come from clients with its own time definitions, and this time stamps
 	// should be standardized using the server time).
-	private void postProcessIncomingActions(final List<ModelAction> actionList) {
+	private void postProcessIncomingActions(final ProjectContext context, final List<ModelAction> actionList) throws UnableToHandleActionException {
 		LOGGER.debug("Post-Processing actions.");
-		for (final ModelAction action : actionList) {
-			if (action instanceof ScopeDeclareProgressAction) ((ScopeDeclareProgressAction) action).setTimestamp(new Date());
+		try {
+			for (final ModelAction action : actionList) {
+				if (action instanceof ScopeDeclareProgressAction) ((ScopeDeclareProgressAction) action).setTimestamp(new Date());
+				if (action instanceof FileUploadAction) {
+					persistenceService.persistOrUpdateFileRepresentation(context.findFileRepresentation(action.getReferenceId()));
+				}
+			}
+		}
+		catch (final Exception e) {
+			LOGGER.error("Post-Processing of the actions failed.", e);
+			throw new InvalidIncomingAction("Unable to post-process action. The incoming action is invalid.");
 		}
 	}
 
@@ -313,4 +325,15 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	}
 
+	@Override
+	public void onFileUploadCompleted(final FileRepresentation fileRepresentation) throws UnableToHandleActionException, AuthorizationException {
+		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+		final long projectId = Long.valueOf(fileRepresentation.getProjectId().toStringRepresentation());
+
+		actionList.add(new FileUploadAction(fileRepresentation));
+
+		final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(projectId, actionList);
+		modelActionSyncRequest.setShouldNotifyCurrentClient(true);
+		handleIncomingActionSyncRequest(modelActionSyncRequest);
+	}
 }

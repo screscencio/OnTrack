@@ -18,12 +18,15 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 // TODO Analise using CriteriaApi instead of HQL.
@@ -440,4 +443,53 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		return entity;
 	}
 
+	@Override
+	public void persistOrUpdateFileRepresentation(final FileRepresentation fileRepresentation) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+
+			final FileRepresentationEntity entity = (FileRepresentationEntity) TYPE_CONVERTER.convert(fileRepresentation);
+			em.merge(entity);
+
+			em.getTransaction().commit();
+		}
+		catch (final TypeConverterException e) {
+			throw new PersistenceException("It was not possible to convert the FileRepresentation to its entity", e);
+		}
+		catch (final Exception e) {
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to persist the user nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the fileRepresentation.", e);
+		}
+		finally {
+			em.close();
+		}
+
+	}
+
+	@Override
+	public FileRepresentation retrieveFileRepresentationById(final UUID fileId) throws NoResultFoundException, PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select fileRepresentation from " + FileRepresentationEntity.class.getSimpleName()
+					+ " as fileRepresentation where fileRepresentation.id = :id");
+			query.setParameter("id", fileId.toStringRepresentation());
+
+			return (FileRepresentation) TYPE_CONVERTER.convert(query.getSingleResult());
+		}
+		catch (final NoResultException e) {
+			throw new NoResultFoundException("No file representation found for id: " + fileId.toStringRepresentation(), e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to convert the FileRepresentationEntity to it's model", e);
+		}
+		finally {
+			em.close();
+		}
+	}
 }

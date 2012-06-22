@@ -17,8 +17,12 @@ public class SessionManager {
 
 	public void configureCurrentHttpSession(final HttpServletRequest request) {
 		final Session session = getOrCreateSession(request.getSession());
-		session.setThreadLocalClientId(new UUID(request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_HEADER)));
+		session.setThreadLocalClientId(extractClientId(request));
 		LOCAL_SESSION.set(session);
+	}
+
+	private UUID extractClientId(final HttpServletRequest request) {
+		return new UUID(request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_HEADER));
 	}
 
 	private Session getOrCreateSession(final HttpSession httpSession) {

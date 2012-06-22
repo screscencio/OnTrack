@@ -1,9 +1,12 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import com.google.gwt.animation.client.Animation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BasicAnimation;
+import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -12,15 +15,27 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ExtendableTextArea extends Composite implements HasText, HasKeyDownHandlers {
 
-	private static final int ANIMATION_DURATION = 200;
+	private static final double VISIBLE_OPACITY = 0.6;
+
+	private static final double INVISIBLE_OPACITY = 0.0;
+
+	private static final int SUBMIT_HELP_TEXT_FADE_DELAY = 2000;
+
+	private static final int SUBMIT_HELP_TEXT_ANIMATION_DURATION = 500;
+
+	private static final int TEXT_LENGHT_TO_HIDE_SUBMIT_HELP = 50;
+
+	private static final int HEIGHT_ANIMATION_DURATION = 200;
 
 	private static ExtendableTextAreaUiBinder uiBinder = GWT.create(ExtendableTextAreaUiBinder.class);
 
@@ -32,18 +47,32 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	@UiField
 	FocusPanel focusPanel;
 
+	@UiField
+	Label helpText;
+
+	@UiField
+	Label submitHelpText;
+
 	private float maxHeight;
 	private float defaultHeight;
 
 	private HeightAnimation heightAnimation;
+	private BasicAnimation fadeAnimation;
+
+	private boolean isHelptTextVisible = true;
 
 	public ExtendableTextArea() {
 		initWidget(uiBinder.createAndBindUi(this));
+		setSubmitHelpTextVisible(false);
 	}
 
 	public ExtendableTextArea(final int maxHeight) {
 		this();
 		setMaxHeight(maxHeight);
+	}
+
+	public void setHelpText(final String text) {
+		helpText.setText(text);
 	}
 
 	public void setDefaultHeight(final int defaultHeight) {
@@ -62,6 +91,16 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 		this.defaultHeight = convertToNumber(defaultHeight);
 	}
 
+	@UiHandler("helpText")
+	protected void onHelpTextFocus(final ClickEvent e) {
+		textArea.setFocus(true);
+	}
+
+	@UiHandler("submitHelpText")
+	protected void onSubmitHelpTextFocus(final ClickEvent e) {
+		textArea.setFocus(true);
+	}
+
 	@UiHandler("textArea")
 	protected void onFocus(final FocusEvent event) {
 		if (!textArea.getText().trim().isEmpty()) stretch();
@@ -69,8 +108,27 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	@UiHandler("textArea")
 	public void onKeyUp(final KeyUpEvent event) {
-		if (textArea.getText().trim().isEmpty()) shrink();
-		else stretch();
+		final String text = textArea.getText();
+		final boolean isEmpty = text.trim().isEmpty();
+
+		if (isHelptTextVisible != isEmpty) {
+			isHelptTextVisible = !isHelptTextVisible;
+			helpText.setVisible(isHelptTextVisible);
+			if (isEmpty) shrink();
+			else stretch();
+		}
+		final boolean isSubmitHelpTextVisible = !isEmpty && text.length() < TEXT_LENGHT_TO_HIDE_SUBMIT_HELP;
+		setSubmitHelpTextVisible(isSubmitHelpTextVisible);
+
+		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER && !isSubmitHelpTextVisible) {
+			setSubmitHelpTextVisible(true);
+			new Timer() {
+				@Override
+				public void run() {
+					setSubmitHelpTextVisible(false);
+				}
+			}.schedule(SUBMIT_HELP_TEXT_FADE_DELAY);
+		}
 	}
 
 	@UiHandler("textArea")
@@ -110,58 +168,48 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	}
 
 	private void animateHeight(final float fromHeight, final float toHeight) {
-		getHeightAnimation().grow(fromHeight, toHeight);
+		getHeightAnimation().animate(fromHeight, toHeight);
 	}
 
 	private HeightAnimation getHeightAnimation() {
-		return heightAnimation == null ? heightAnimation = new HeightAnimation(focusPanel, ANIMATION_DURATION) : heightAnimation;
+		return heightAnimation == null ? heightAnimation = new HeightAnimation(focusPanel, HEIGHT_ANIMATION_DURATION) : heightAnimation;
 	}
 
 	private Float convertToNumber(final String maxHeight) {
 		return Float.valueOf(maxHeight.replaceAll("[^0-9]+", ""));
 	}
 
-	private class HeightAnimation extends Animation {
+	private void setSubmitHelpTextVisible(final boolean visible) {
+		if (visible) getFadeAnimation().animate(INVISIBLE_OPACITY, VISIBLE_OPACITY);
+		else getFadeAnimation().animate(VISIBLE_OPACITY, INVISIBLE_OPACITY);
+	}
 
-		private final Widget widget;
-		private final int duration;
+	private BasicAnimation getFadeAnimation() {
+		if (fadeAnimation == null) fadeAnimation = new OpacityAnimation(submitHelpText, SUBMIT_HELP_TEXT_ANIMATION_DURATION);
+		return fadeAnimation;
+	}
 
-		private float startHeight = -1;
-		private float endHeight = -1;
+	private class OpacityAnimation extends BasicAnimation {
 
+		public OpacityAnimation(final Widget widget, final int duration) {
+			super(widget, duration);
+		}
+
+		@Override
+		protected void setValue(final double value) {
+			this.widget.getElement().getStyle().setOpacity(value);
+		}
+
+	}
+
+	private class HeightAnimation extends BasicAnimation {
 		public HeightAnimation(final Widget widget, final int duration) {
-			this.widget = widget;
-			this.duration = duration;
+			super(widget, duration);
 		}
 
 		@Override
-		protected void onUpdate(final double progress) {
-			setHeight(startHeight + (endHeight - startHeight) * interpolate(progress));
-		}
-
-		@Override
-		protected void onStart() {
-			super.onStart();
-			setHeight(startHeight);
-		}
-
-		@Override
-		protected void onComplete() {
-			super.onComplete();
-			setHeight(endHeight);
-		}
-
-		protected void setHeight(final double height) {
-			widget.getElement().getStyle().setHeight(height, Unit.PX);
-		}
-
-		public void grow(final float startHeight, final float endHeight) {
-			if (startHeight == endHeight || endHeight == this.endHeight) return;
-
-			this.startHeight = startHeight;
-			this.endHeight = endHeight;
-
-			this.run(duration);
+		protected void setValue(final double value) {
+			widget.getElement().getStyle().setHeight(value, Unit.PX);
 		}
 	}
 

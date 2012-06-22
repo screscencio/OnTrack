@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.shared.model.action.helper;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
@@ -55,6 +57,15 @@ public class ActionHelper {
 			return context.findAnnotation(id, annotatedObjectId);
 		}
 		catch (final AnnotationNotFoundException e) {
+			throw new UnableToCompleteActionException(e);
+		}
+	}
+
+	public static FileRepresentation findFileRepresentation(final UUID attachmentId, final ProjectContext context) throws UnableToCompleteActionException {
+		try {
+			return context.findFileRepresentation(attachmentId);
+		}
+		catch (final FileRepresentationNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
 		}
 	}

@@ -5,9 +5,12 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -44,6 +47,9 @@ public class AnnotationsWidget extends Composite {
 	protected ExtendableTextArea newAnnotationText;
 
 	@UiField
+	protected UploadWidget uploadWidget;
+
+	@UiField
 	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> annotations;
 
 	@UiFactory
@@ -52,7 +58,7 @@ public class AnnotationsWidget extends Composite {
 
 			@Override
 			public AnnotationTopic createWidget(final Annotation modelBean) {
-				return new AnnotationTopic(modelBean, subjectId);
+				return new AnnotationTopic(modelBean, subjectId, enableComments);
 			}
 
 		}, new ModelWidgetContainerListener() {
@@ -69,20 +75,25 @@ public class AnnotationsWidget extends Composite {
 
 	private UpdateListener updateListener;
 
+	private final boolean enableComments;
+
 	public AnnotationsWidget() {
-		this(uiBinder);
+		this(uiBinder, true);
 	}
 
-	private AnnotationsWidget(final UiBinder<Widget, AnnotationsWidget> binder) {
+	private AnnotationsWidget(final UiBinder<Widget, AnnotationsWidget> binder, final boolean enableComments) {
+		this.enableComments = enableComments;
 		initWidget(binder.createAndBindUi(this));
+		uploadWidget.setActionUrl("/application/file/upload");
 	}
 
 	public static AnnotationsWidget forComments() {
-		return new AnnotationsWidget(commentsUiBinder);
+		return new AnnotationsWidget(commentsUiBinder, false);
 	}
 
 	@Override
 	protected void onLoad() {
+		uploadWidget.setVisible(enableComments);
 		getActionExecutionService().addActionExecutionListener(getListener());
 		update();
 	}
@@ -99,7 +110,7 @@ public class AnnotationsWidget extends Composite {
 
 	@UiHandler("newAnnotationText")
 	protected void onNewAnnotationTextKeyDown(final KeyDownEvent e) {
-		if (BrowserKeyCodes.KEY_ENTER != e.getNativeKeyCode() || !e.isControlKeyDown()) return;
+		if (!new Shortcut(BrowserKeyCodes.KEY_ENTER).with(ControlModifier.PRESSED).accepts(e.getNativeEvent())) return;
 		e.preventDefault();
 
 		addAnnotation();
@@ -127,9 +138,16 @@ public class AnnotationsWidget extends Composite {
 
 	private void addAnnotation() {
 		final String message = newAnnotationText.getText().trim();
-		if (message.isEmpty()) return;
+		final String fileName = uploadWidget.getFilename();
+		if (message.isEmpty() && fileName.isEmpty()) return;
 
-		getProvider().getAnnotationService().createAnnotationFor(subjectId, message);
+		uploadWidget.submitForm(new UploadWidgetListener() {
+			@Override
+			public void onUploadCompleted(final UUID fileRepresentationId) {
+				uploadWidget.setUploadFieldVisible(false);
+				getProvider().getAnnotationService().createAnnotationFor(subjectId, message, fileRepresentationId);
+			}
+		});
 	}
 
 	private void update() {
@@ -143,7 +161,7 @@ public class AnnotationsWidget extends Composite {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
-				if (action instanceof AnnotationAction && subjectId.equals(action.getReferenceId())) {
+				if (action instanceof AnnotationAction && action.getReferenceId().equals(subjectId)) {
 					update();
 				}
 			}

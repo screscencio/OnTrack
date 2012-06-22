@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -15,17 +16,19 @@ public class Annotation implements Serializable {
 	private UUID id;
 	private User author;
 	private String message;
+	private FileRepresentation attachmentFile;
 	private Date date;
 
 	private Set<String> voters;
 
 	public Annotation() {}
 
-	public Annotation(final UUID id, final User author, final Date date, final String message) {
+	public Annotation(final UUID id, final User author, final Date date, final String message, final FileRepresentation attachmentFile) {
 		this.id = id;
 		this.author = author;
 		this.date = date;
 		this.message = message;
+		this.attachmentFile = attachmentFile;
 		voters = new HashSet<String>();
 	}
 
@@ -80,6 +83,10 @@ public class Annotation implements Serializable {
 
 	public boolean hasVoted(final String voterEmail) {
 		return voters.contains(voterEmail);
+	}
+
+	public FileRepresentation getAttachmentFile() {
+		return attachmentFile;
 	}
 
 }

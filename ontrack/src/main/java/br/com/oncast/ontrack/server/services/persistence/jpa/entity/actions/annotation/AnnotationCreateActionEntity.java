@@ -22,6 +22,10 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String annotatedObjectId;
 
+	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = ActionTableColumns.STRING_3)
+	private String attachmentId;
+
 	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
 	private String message;
 
@@ -49,6 +53,14 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 
 	public void setMessage(final String message) {
 		this.message = message;
+	}
+
+	public String getAttachmentId() {
+		return attachmentId;
+	}
+
+	public void setAttachmentId(final String attachmentFileId) {
+		this.attachmentId = attachmentFileId;
 	}
 
 }

@@ -96,7 +96,7 @@ public enum HumanDateFormatter {
 		this.maxTimeDifference = maxTimeDifference;
 	}
 
-	public static String getDifferenceText(final Date date) {
+	public static String getDifferenceDate(final Date date) {
 		final long difference = getDifference(date);
 		for (final HumanDateFormatter formatter : values()) {
 			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference); }
@@ -104,7 +104,7 @@ public enum HumanDateFormatter {
 		return getAbsoluteText(date);
 	}
 
-	public static String getRelativeText(final Date date) {
+	public static String getRelativeDate(final Date date) {
 		final long difference = getDifference(date);
 		for (final HumanDateFormatter formatter : values()) {
 			if (formatter.maxTimeDifference > difference) { return formatter.formatRelativeTime(date); }

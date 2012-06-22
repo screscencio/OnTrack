@@ -7,8 +7,8 @@ public class MaskPanel {
 
 	private MaskPanel() {}
 
-	public static void show(final HideHandler hideHandler) {
-		getPhysicalMaskWidget().show(hideHandler);
+	public static void show(final HideHandler hideHandler, final boolean isModal) {
+		getPhysicalMaskWidget().setModal(isModal).show(hideHandler);
 	}
 
 	public static void assureHidden() {

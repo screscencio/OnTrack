@@ -18,10 +18,12 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class AnnotationCreateActionTest extends ModelActionTest {
@@ -31,12 +33,14 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	private UUID annotatedObjectId;
 	private String message;
 	private ActionContext actionContext;
+	private FileRepresentation attachmentFile;
 
 	@Before
 	public void setUp() throws Exception {
 		context = mock(ProjectContext.class);
 		annotatedObjectId = new UUID();
 		author = UserTestUtils.createUser();
+		attachmentFile = FileRepresentationTestUtils.create();
 		message = "Any message";
 		actionContext = Mockito.mock(ActionContext.class);
 
@@ -78,7 +82,6 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		assertEquals(message, captor.getValue().getMessage());
 	}
 
-	// FIXME Mats move this test to another class
 	@Test
 	public void shouldRemoveTheCreatedAnnotationOnUndo() throws Exception {
 		final ModelAction undoAction = execute();
@@ -94,8 +97,24 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		verify(context).removeAnnotation(createdAnnotation, annotatedObjectId);
 	}
 
+	@Test(expected = UnableToCompleteActionException.class)
+	public void shouldNotCompleteWhenMessageIsEmptyAndThereIsNoAttachedFile() throws Exception {
+		new AnnotationCreateAction(annotatedObjectId, "", null).execute(context, actionContext);
+	}
+
+	@Test
+	public void shouldHaveTheAttachmentFileWhenPresent() throws Exception {
+		when(context.findFileRepresentation(attachmentFile.getId())).thenReturn(attachmentFile);
+		execute();
+
+		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
+		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+
+		assertEquals(attachmentFile, captor.getValue().getAttachmentFile());
+	}
+
 	private ModelAction execute() throws UnableToCompleteActionException {
-		return new AnnotationCreateAction(annotatedObjectId, message).execute(context, actionContext);
+		return new AnnotationCreateAction(annotatedObjectId, message, attachmentFile.getId()).execute(context, actionContext);
 	}
 
 	@Override
@@ -110,7 +129,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getInstance() {
-		return new AnnotationCreateAction(annotatedObjectId, message);
+		return new AnnotationCreateAction(annotatedObjectId, message, attachmentFile.getId());
 	}
 
 }

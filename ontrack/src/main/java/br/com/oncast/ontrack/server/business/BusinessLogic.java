@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRep
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
@@ -37,5 +38,7 @@ public interface BusinessLogic {
 
 	void authorize(String userEmail, long projectId, boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException, UnableToHandleActionException,
 			AuthorizationException;
+
+	public abstract void onFileUploadCompleted(final FileRepresentation fileRepresentation) throws UnableToHandleActionException, AuthorizationException;
 
 }

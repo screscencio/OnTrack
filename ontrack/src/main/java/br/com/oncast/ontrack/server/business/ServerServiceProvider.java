@@ -3,8 +3,8 @@ package br.com.oncast.ontrack.server.business;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerImpl;
-import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
+import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
 import br.com.oncast.ontrack.server.services.notification.ClientManager;
@@ -15,6 +15,8 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJ
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerServiceImpl;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
+import br.com.oncast.ontrack.server.services.storage.LocalFileSystemStorageService;
+import br.com.oncast.ontrack.server.services.storage.StorageService;
 
 public class ServerServiceProvider {
 
@@ -35,6 +37,8 @@ public class ServerServiceProvider {
 
 	private ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
 	private FeedbackMailFactory userQuotaRequestMailFactory;
+
+	private StorageService storageService;
 
 	public static ServerServiceProvider getInstance() {
 		if (instance != null) return instance;
@@ -90,7 +94,7 @@ public class ServerServiceProvider {
 		return notificationService = new NotificationServiceImpl(getServerPushServerService(), getClientManagerService(), getSessionManager());
 	}
 
-	private ClientManager getClientManagerService() {
+	public ClientManager getClientManagerService() {
 		if (clientManagerService != null) return clientManagerService;
 		return clientManagerService = new ClientManager(getAuthenticationManager());
 	}
@@ -131,4 +135,13 @@ public class ServerServiceProvider {
 		if (serverPushServerService != null) return serverPushServerService;
 		return serverPushServerService = new ServerPushServerServiceImpl();
 	}
+
+	public StorageService getStorageService() {
+		if (storageService == null) {
+			storageService = new LocalFileSystemStorageService(getAuthenticationManager(), getAuthorizationManager(), getPersistenceService(),
+					getBusinessLogic());
+		}
+		return storageService;
+	}
+
 }

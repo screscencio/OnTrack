@@ -8,6 +8,8 @@ import java.util.Set;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotFoundException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
@@ -145,7 +147,7 @@ public class ProjectContext {
 
 	public User findUser(final String userEmail) throws UserNotFoundException {
 		final User user = project.getUser(userEmail);
-		if (user == null) throw new UserNotFoundException("The user referenced " + userEmail + " was not found.");
+		if (user == null) throw new UserNotFoundException("The user '" + userEmail + "' was not found.");
 
 		return user;
 	}
@@ -177,6 +179,16 @@ public class ProjectContext {
 
 	public void addUser(final User user) {
 		project.addUser(user);
+	}
+
+	public void addFileRepresentation(final FileRepresentation representation) {
+		project.addFileRepresentation(representation);
+	}
+
+	public FileRepresentation findFileRepresentation(final UUID fileRepresentationId) throws FileRepresentationNotFoundException {
+		final FileRepresentation representation = project.findFileRepresentation(fileRepresentationId);
+		if (representation == null) throw new FileRepresentationNotFoundException("The file with id '" + fileRepresentationId + "' was not found");
+		return representation;
 	}
 
 }

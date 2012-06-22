@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.services.actionExecution;
 
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
+import br.com.oncast.ontrack.shared.model.action.FileAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
@@ -19,6 +20,7 @@ public class ActionExecuter {
 		if (action instanceof KanbanAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof AnnotationAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof TeamAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
+		if (action instanceof FileAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 
 		throw new UnableToCompleteActionException("There is no mapped action executer for " + action.getClass() + ".");
 	}

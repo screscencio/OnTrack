@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -26,6 +26,7 @@ public class Project implements Serializable {
 	private Map<Release, Kanban> kanbanMap;
 	private Set<User> users;
 	private Map<UUID, List<Annotation>> annotationsMap;
+	private Set<FileRepresentation> fileRepresentations;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
@@ -38,6 +39,7 @@ public class Project implements Serializable {
 		this.projectRelease = projectRelease;
 		annotationsMap = new HashMap<UUID, List<Annotation>>();
 		users = new HashSet<User>();
+		fileRepresentations = new HashSet<FileRepresentation>();
 	}
 
 	public Scope getProjectScope() {
@@ -82,7 +84,7 @@ public class Project implements Serializable {
 		annotationsMap.get(annotatedObjectId).remove(annotation);
 	}
 
-	public Annotation getAnnotation(final UUID annotationId, final UUID annotatedObjectId) throws AnnotationNotFoundException {
+	public Annotation getAnnotation(final UUID annotationId, final UUID annotatedObjectId) {
 		for (final Annotation annotation : annotationsMap.get(annotatedObjectId)) {
 			if (annotation.getId().equals(annotationId)) return annotation;
 		}
@@ -103,6 +105,17 @@ public class Project implements Serializable {
 
 	public void addUser(final User user) {
 		users.add(user);
+	}
+
+	public void addFileRepresentation(final FileRepresentation representation) {
+		fileRepresentations.add(representation);
+	}
+
+	public FileRepresentation findFileRepresentation(final UUID fileRepresentationId) {
+		for (final FileRepresentation file : fileRepresentations) {
+			if (file.getId().equals(fileRepresentationId)) return file;
+		}
+		return null;
 	}
 
 }

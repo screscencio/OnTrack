@@ -8,7 +8,7 @@ public interface AnnotationService {
 
 	void showAnnotationsFor(Scope scope, PopupCloseListener closeListener);
 
-	void createAnnotationFor(UUID subjectId, String message);
+	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId);
 
 	void toggleVote(UUID annotationId, UUID subjectId);
 

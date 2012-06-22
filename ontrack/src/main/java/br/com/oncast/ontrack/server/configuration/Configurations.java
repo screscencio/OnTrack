@@ -33,4 +33,8 @@ public class Configurations {
 	public String getApplicationBaseUrl() {
 		return properties.getProperty("application.base_url");
 	}
+
+	public String getStorageBaseDir() {
+		return properties.getProperty("storage.base_dir");
+	}
 }

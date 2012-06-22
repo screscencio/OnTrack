@@ -86,6 +86,7 @@ public class PopupConfig {
 	private AlignmentReference alignHorizontallyTo;
 	private VerticalAlignment verticalAlignment;
 	private AlignmentReference alignVerticallyTo;
+	private boolean isModal = false;
 
 	private PopupConfig() {}
 
@@ -212,6 +213,16 @@ public class PopupConfig {
 	}
 
 	/**
+	 * Defines if the popup should be shown in a modal background or on a transparent background, default is transparent
+	 * @param isModal, true if you want a modal background or false otherwise
+	 * @return the self assistant for in-line call convenience.
+	 */
+	public PopupConfig setModal(final boolean isModal) {
+		this.isModal = isModal;
+		return this;
+	}
+
+	/**
 	 * Defines the duration of the popup's animation when showing or hiding.
 	 * @param Animation duration in milliseconds.
 	 * @return the self assistant for in-line call convenience.
@@ -289,7 +300,7 @@ public class PopupConfig {
 			public void onWillHide() {
 				hidePopup();
 			}
-		});
+		}, isModal);
 
 		if (!widgetToPopup.isAttached()) {
 			widgetToPopup.setVisible(false);

@@ -1,14 +1,12 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
+import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget.UpdateListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -18,7 +16,7 @@ import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -31,6 +29,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationTopic extends Composite implements ModelWidget<Annotation> {
+
+	private static final int TIME_REFRESH_INTERVAL = 3000;
 
 	private static AnnotationTopicUiBinder uiBinder = GWT.create(AnnotationTopicUiBinder.class);
 
@@ -82,45 +82,14 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public AnnotationTopic(final Annotation annotation, final UUID subjectId) {
+	public AnnotationTopic(final Annotation annotation, final UUID subjectId, final boolean enableComments) {
 		this.annotation = annotation;
 		this.subjectId = subjectId;
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		final String email = annotation.getAuthor().getEmail();
-		this.container.clear();
-		this.author.setUrl(getGravatarImageUrl(email));
-		this.author.setTitle(email);
-		container.add(author);
-
-		for (final String line : annotation.getMessage().split("\\n")) {
-			container.add(new Label(line));
-		}
-		commentsPanel.setSubjectId(annotation.getId());
-
-		try {
-			ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext().findScope(subjectId);
-			comment.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(final ClickEvent event) {
-					commentsPanel.setVisible(!commentsPanel.isVisible());
-					commentsPanel.setFocus(true);
-				}
-			});
-			commentsPanel.setUpdateListener(new UpdateListener() {
-				@Override
-				public void onChanged() {
-					updateComment();
-				}
-			});
-		}
-		catch (final ScopeNotFoundException e) {
-			comment.setVisible(false);
-			commentsCount.setVisible(false);
-		}
-
+		setupContent();
+		setupCommentsPanel(enableComments);
 		update();
 	}
 
@@ -139,8 +108,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 				updateTime();
 				return shouldRefresh;
 			}
-		}, 3000);
-		commentsPanel.setVisible(false);
+		}, TIME_REFRESH_INTERVAL);
 	}
 
 	@Override
@@ -148,24 +116,60 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		shouldRefresh = false;
 	}
 
-	private String getDateText(final Annotation annotation) {
-		return HumanDateFormatter.getRelativeText(annotation.getDate()) + " (" + HumanDateFormatter.getDifferenceText(annotation.getDate()) + ")";
+	private void setupContent() {
+		final String email = this.annotation.getAuthor().getEmail();
+		this.container.clear();
+		this.author.setUrl(ClientServiceProvider.getInstance().getUserDataService().getAvatarUrl(email));
+
+		ClientServiceProvider.getInstance().getUserDataService().loadProfile(email, new LoadProfileCallback() {
+			@Override
+			public void onProfileLoaded(final PortableContactJsonObject profile) {
+				author.setTitle(profile.getPreferedUsername());
+			}
+
+			@Override
+			public void onProfileUnavailable(final Throwable cause) {
+				author.setTitle(email);
+			}
+		});
+
+		container.add(author);
+		final AttachmentFileWidget attachedFileWidget = new AttachmentFileWidget(annotation.getAttachmentFile());
+		container.add(attachedFileWidget);
+
+		for (final String line : this.annotation.getMessage().split("\\n")) {
+			container.add(new HTMLPanel(SimpleHtmlSanitizer.sanitizeHtml(line)));
+		}
 	}
 
-	private SafeUri getGravatarImageUrl(final String email) {
-		return new SafeUri() {
-			@Override
-			public String asString() {
-				try {
-					final BigInteger hash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(email.trim().toLowerCase().getBytes()));
-					final String md5 = hash.toString(16);
-					return new String("http://www.gravatar.com/avatar/" + md5 + "?s=40&d=mm");
+	private void setupCommentsPanel(final boolean enableComments) {
+		if (enableComments) {
+			commentsPanel.setSubjectId(annotation.getId());
+			comment.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(final ClickEvent event) {
+					commentsPanel.setVisible(!commentsPanel.isVisible());
+					commentsPanel.setFocus(true);
 				}
-				catch (final Exception e) {
-					return "";
+			});
+			commentsPanel.setUpdateListener(new UpdateListener() {
+				@Override
+				public void onChanged() {
+					updateComment();
 				}
-			}
-		};
+			});
+			commentsPanel.setVisible(commentsPanel.getWidgetCount() > 0);
+		}
+		else {
+			comment.setVisible(false);
+			commentsCount.setVisible(false);
+			commentsPanel.setVisible(false);
+		}
+	}
+
+	private String getDateTimeText(final Annotation annotation) {
+		return HumanDateFormatter.getRelativeDate(annotation.getDate()) + " (" + HumanDateFormatter.getDifferenceDate(annotation.getDate()) + ")";
 	}
 
 	@Override
@@ -177,11 +181,16 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	private void updateComment() {
-		this.commentsCount.setText("" + commentsPanel.getWidgetCount());
+		final String previousCount = this.commentsCount.getText();
+		final String currentCount = "" + commentsPanel.getWidgetCount();
+		this.commentsCount.setText(currentCount);
+		if (currentCount.compareTo(previousCount) > 0 && !currentCount.equals("0")) commentsPanel.setVisible(true);
+
+		this.comment.setTitle(commentsPanel.isVisible() ? "Hide Comments" : "Show Comments");
 	}
 
 	public void updateTime() {
-		this.date.setText(getDateText(annotation));
+		this.date.setText(getDateTimeText(annotation));
 		this.date.setTitle(HumanDateFormatter.getAbsoluteText(annotation.getDate()));
 	}
 

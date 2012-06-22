@@ -37,7 +37,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		final AnnotationsPanel panel = getAnnotationPanel();
 		panel.setScope(scope);
 
-		PopupConfig.configPopup().popup(panel).onClose(closeListener).pop();
+		PopupConfig.configPopup().popup(panel).onClose(closeListener).setModal(true).pop();
 	}
 
 	protected AnnotationsPanel getAnnotationPanel() {
@@ -45,8 +45,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void createAnnotationFor(final UUID subjectId, final String message) {
-		doUserAction(new AnnotationCreateAction(subjectId, message));
+	public void createAnnotationFor(final UUID subjectId, final String message, final UUID attachmentId) {
+		doUserAction(new AnnotationCreateAction(subjectId, message, attachmentId));
 	}
 
 	@Override

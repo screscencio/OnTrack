@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import com.google.gwt.dom.client.Style;
-
 public class ErrorMaskPanel {
 	private static BasicMaskPanel maskPanel;
 
@@ -19,11 +17,7 @@ public class ErrorMaskPanel {
 	private static BasicMaskPanel getPhysicalMaskWidget() {
 		if (maskPanel != null) return maskPanel;
 
-		maskPanel = new BasicMaskPanel();
-		final Style style = maskPanel.getStyle();
-		style.setOpacity(0.4);
-		style.setBackgroundColor("black");
-
+		maskPanel = new BasicMaskPanel().setModal(true);
 		return maskPanel;
 	}
 }

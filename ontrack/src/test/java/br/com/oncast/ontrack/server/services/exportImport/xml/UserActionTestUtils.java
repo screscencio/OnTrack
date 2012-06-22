@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
@@ -125,6 +126,7 @@ public class UserActionTestUtils {
 		userActions.add(createAnnotationVoteAction());
 		userActions.add(createAnnotationVoteRemoveAction());
 		userActions.add(createTeamInviteAction());
+		userActions.add(createFileUploadAction());
 		return userActions;
 	}
 
@@ -165,6 +167,10 @@ public class UserActionTestUtils {
 		}
 	}
 
+	public static UserAction createFileUploadAction() throws Exception {
+		return createUserAction(new FileUploadAction(new UUID(), "fileName.extension", "path/to/file"));
+	}
+
 	public static UserAction createTeamInviteAction() throws Exception {
 		return createUserAction(new TeamInviteAction("user@mail.com"));
 	}
@@ -182,7 +188,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createAnnotationCreateAction() throws Exception {
-		return createUserAction(new AnnotationCreateAction(new UUID(), ""));
+		return createUserAction(new AnnotationCreateAction(new UUID(), "", new UUID()));
 	}
 
 	public static UserAction createReleaseDeclareEndDayAction() throws Exception {

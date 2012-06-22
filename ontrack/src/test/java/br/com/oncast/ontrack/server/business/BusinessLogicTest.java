@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -50,12 +51,14 @@ import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -66,6 +69,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
@@ -513,6 +517,26 @@ public class BusinessLogicTest {
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
 		verify(persistence).persistActions(eq(PROJECT_ID), eq(userId), eq(actions), any(Date.class));
+	}
+
+	@Test
+	public void shouldCreateFileUploadActionWhenOnUploadCompletedWereCalled() throws Exception {
+		final FileRepresentation fileRepresentation = FileRepresentationTestUtils.create();
+		business = mock(BusinessLogicImpl.class);
+
+		doCallRealMethod().when(business).onFileUploadCompleted(fileRepresentation);
+		business.onFileUploadCompleted(fileRepresentation);
+
+		final ArgumentCaptor<ModelActionSyncRequest> captor = ArgumentCaptor.forClass(ModelActionSyncRequest.class);
+		verify(business).handleIncomingActionSyncRequest(captor.capture());
+
+		final ModelActionSyncRequest request = captor.getValue();
+		final long projectId = Long.valueOf(fileRepresentation.getProjectId().toStringRepresentation());
+		assertEquals(projectId, request.getProjectId());
+		final ModelAction action = request.getActionList().get(0);
+		assertTrue(action instanceof FileUploadAction);
+		assertEquals(fileRepresentation.getId(), action.getReferenceId());
+		assertTrue(request.shouldNotifyCurrentClient());
 	}
 
 	private ProjectRepresentation setupMocksToCreateProjectWithId(final int projectId) throws PersistenceException, NoResultFoundException {

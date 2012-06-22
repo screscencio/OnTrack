@@ -80,7 +80,26 @@
 		<servlet-name>xmlImporterServlet</servlet-name>
 		<url-pattern>/application/xml/upload</url-pattern>
 	</servlet-mapping>
-
+	
+	<!-- File Storage Definitions and Mappings -->
+	<servlet>
+		<servlet-name>fileUploadServlet</servlet-name>
+		<servlet-class>br.com.oncast.ontrack.server.services.storage.FileUploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>fileUploadServlet</servlet-name>
+		<url-pattern>/application/file/upload</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>fileDownloadServlet</servlet-name>
+		<servlet-class>br.com.oncast.ontrack.server.services.storage.FileDownloadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>fileDownloadServlet</servlet-name>
+		<url-pattern>/application/file/download</url-pattern>
+	</servlet-mapping>
+	
 	<!-- SESSION CONFIGURATION -->
 	<session-config>
 		<session-timeout>20160</session-timeout>

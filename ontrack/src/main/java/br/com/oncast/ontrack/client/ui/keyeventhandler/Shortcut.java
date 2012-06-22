@@ -5,6 +5,8 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
 import br.com.oncast.ontrack.client.utils.jquery.Event;
 
+import com.google.gwt.dom.client.NativeEvent;
+
 public class Shortcut {
 
 	private final int keyCode;
@@ -43,6 +45,10 @@ public class Shortcut {
 
 	public boolean accepts(final Event e) {
 		return e.which() == keyCode && ctrl.matches(e) && shift.matches(e) && alt.matches(e);
+	}
+
+	public boolean accepts(final NativeEvent e) {
+		return e.getKeyCode() == keyCode && ctrl.matches(e) && shift.matches(e) && alt.matches(e);
 	}
 
 }

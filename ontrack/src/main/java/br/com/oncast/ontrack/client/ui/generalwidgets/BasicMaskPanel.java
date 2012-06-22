@@ -62,4 +62,9 @@ public class BasicMaskPanel implements IsWidget {
 		return maskPanel;
 	}
 
+	public BasicMaskPanel setModal(final boolean isModal) {
+		maskPanel.setStyleName("maskPanelModal", isModal);
+		return this;
+	}
+
 }

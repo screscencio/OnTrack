@@ -33,6 +33,11 @@ html,body {
 	z-index: 0;
 }
 
+.maskPanelModal {
+	background: black;
+	opacity: 0.4;
+}
+
 /* Cross browser CSS3-based text-overflow (ie6+, firefox, chrome, opera, safari, etc) */
 .v-ellip,v\:ellip {
 	text-overflow: ellipsis;

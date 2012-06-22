@@ -35,6 +35,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectExcep
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -344,6 +345,21 @@ public class PersistenceServiceTest {
 		snapshot1.setProject(project1);
 		snapshot1.setTimestamp(new Date());
 		persistenceService.persistProjectSnapshot(snapshot1);
+	}
+
+	@Test
+	public void shouldBeAbleToPersistFileRepresentations() throws Exception {
+		final FileRepresentation fileRepresentation = new FileRepresentation("fileName", "fileHash", new UUID());
+		persistenceService.persistOrUpdateFileRepresentation(fileRepresentation);
+	}
+
+	@Test
+	public void shouldBeAbleToRetrieveFileRepresentations() throws Exception {
+		final FileRepresentation fileRepresentation = new FileRepresentation("fileName", "fileHash", new UUID());
+		persistenceService.persistOrUpdateFileRepresentation(fileRepresentation);
+
+		final FileRepresentation retrievedFileRepresentation = persistenceService.retrieveFileRepresentationById(fileRepresentation.getId());
+		DeepEqualityTestUtils.assertObjectEquality(fileRepresentation, retrievedFileRepresentation);
 	}
 
 	private User createAndPersistUser() throws PersistenceException {

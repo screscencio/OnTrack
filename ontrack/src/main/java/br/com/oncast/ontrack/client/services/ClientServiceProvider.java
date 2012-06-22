@@ -26,6 +26,8 @@ import br.com.oncast.ontrack.client.services.notification.ClientNotificationServ
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
+import br.com.oncast.ontrack.client.services.user.UserDataService;
+import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
 import br.com.oncast.ontrack.shared.config.RequestConfigurations;
@@ -70,6 +72,7 @@ public class ClientServiceProvider {
 	private ClientApplicationStateService clientApplicationStateService;
 
 	private AnnotationService annotationService;
+	private UserDataService userDataService;
 
 	private static ClientServiceProvider instance;
 
@@ -187,5 +190,10 @@ public class ClientServiceProvider {
 		if (annotationService != null) return annotationService;
 		return annotationService = new AnnotationServiceImpl(getActionExecutionService(), getContextProviderService(), getAuthenticationService(),
 				getClientNotificationService());
+	}
+
+	public UserDataService getUserDataService() {
+		if (userDataService == null) userDataService = new UserDataServiceImpl();
+		return userDataService;
 	}
 }

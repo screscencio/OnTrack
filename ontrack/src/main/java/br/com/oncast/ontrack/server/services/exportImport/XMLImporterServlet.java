@@ -41,7 +41,6 @@ public class XMLImporterServlet extends HttpServlet {
 			doReply(request, response);
 		}
 		catch (final Exception e) {
-			// TODO Display an user-friendly error message.
 			throw new ServletException(e);
 		}
 	}
