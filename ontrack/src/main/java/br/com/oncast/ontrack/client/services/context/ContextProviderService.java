@@ -1,14 +1,15 @@
 package br.com.oncast.ontrack.client.services.context;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface ContextProviderService {
 
-	public ProjectContext getProjectContext(long projectId);
+	public ProjectContext getProjectContext(UUID projectId);
 
-	public boolean isContextAvailable(long projectId);
+	public boolean isContextAvailable(UUID projectId);
 
-	public void loadProjectContext(long requestedProjectId, ProjectContextLoadCallback projectContextLoadCallback);
+	public void loadProjectContext(UUID requestedProjectId, ProjectContextLoadCallback projectContextLoadCallback);
 
 	public ProjectContext getCurrentProjectContext();
 }

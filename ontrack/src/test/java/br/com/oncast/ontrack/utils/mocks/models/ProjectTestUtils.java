@@ -44,11 +44,11 @@ public class ProjectTestUtils {
 		return getDefaultRepresentation();
 	}
 
-	public static ProjectRepresentation createRepresentation(final long projectId) {
+	public static ProjectRepresentation createRepresentation(final UUID projectId) {
 		return createRepresentation(projectId, DEFAULT_PROJECT_NAME);
 	}
 
-	public static ProjectRepresentation createRepresentation(final long projectId, final String projectName) {
+	public static ProjectRepresentation createRepresentation(final UUID projectId, final String projectName) {
 		return new ProjectRepresentation(projectId, projectName);
 	}
 
@@ -57,11 +57,11 @@ public class ProjectTestUtils {
 	}
 
 	private static ProjectRepresentation getDefaultRepresentation() {
-		return createRepresentation(1);
+		return createRepresentation(new UUID());
 	}
 
 	private static Scope getDefaultScope() {
-		return new Scope(getDefaultRepresentation().getName(), new UUID("0"));
+		return new Scope(getDefaultRepresentation().getName(), UUID.INVALID_UUID);
 	}
 
 	private static Release getDefaultRelease() {

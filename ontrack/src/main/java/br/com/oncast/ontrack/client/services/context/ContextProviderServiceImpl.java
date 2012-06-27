@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
 
@@ -36,7 +37,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	@Override
-	public ProjectContext getProjectContext(final long projectId) {
+	public ProjectContext getProjectContext(final UUID projectId) {
 		if (isContextAvailable(projectId)) return projectContext;
 		throw new RuntimeException("There is no project context avaliable.");
 	}
@@ -47,12 +48,12 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	@Override
-	public boolean isContextAvailable(final long projectId) {
-		return (projectContext != null) && (projectContext.getProjectRepresentation().getId() == projectId);
+	public boolean isContextAvailable(final UUID projectId) {
+		return (projectContext != null) && (projectContext.getProjectRepresentation().getId().equals(projectId));
 	}
 
 	@Override
-	public void loadProjectContext(final long requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
+	public void loadProjectContext(final UUID requestedProjectId, final ProjectContextLoadCallback projectContextLoadCallback) {
 		requestDispatchService.dispatch(new ProjectContextRequest(requestedProjectId),
 				new DispatchCallback<ProjectContextResponse>() {
 

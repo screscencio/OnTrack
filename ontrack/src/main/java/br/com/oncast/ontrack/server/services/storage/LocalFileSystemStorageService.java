@@ -1,11 +1,14 @@
 package br.com.oncast.ontrack.server.services.storage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -25,7 +28,11 @@ import com.google.common.io.Files;
 
 public class LocalFileSystemStorageService implements StorageService {
 
+	private static final String INFO_FILE_SUFFIX = ".info";
+
 	private static final Logger LOGGER = Logger.getLogger(LocalFileSystemStorageService.class);
+
+	private static final String FILE_REFERENCE_COUNTER = "reference_count";
 
 	private File baseDirectory;
 
@@ -37,29 +44,44 @@ public class LocalFileSystemStorageService implements StorageService {
 
 	private final BusinessLogic businessLogic;
 
+	private final Properties properties;
+
 	public LocalFileSystemStorageService(final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager,
 			final PersistenceService persistenceService, final BusinessLogic businessLogic) {
 		this.authenticationService = authenticationManager;
 		this.authorizationManager = authorizationManager;
 		this.persistenceService = persistenceService;
 		this.businessLogic = businessLogic;
+		properties = new Properties();
 	}
 
 	@Override
 	public FileRepresentation store(final UUID projectId, final File file) throws IOException, PersistenceException, UnableToHandleActionException,
 			AuthorizationException {
 		LOGGER.debug("Persisting file '" + file.getName() + "'");
-		final String fileHash = getContentHash(file);
+		final String fileHash = generateContentHash(file);
 
 		final File destinationFile = new File(baseDirectory, fileHash);
 		if (!destinationFile.exists()) {
 			Files.copy(file, destinationFile);
 		}
 
+		updateInfoFile(destinationFile);
+
 		final FileRepresentation fileRepresentation = createFileRepresentation(projectId, file.getName(), destinationFile.getAbsolutePath());
 		businessLogic.onFileUploadCompleted(fileRepresentation);
 		LOGGER.debug("The file '" + fileHash + "'was persisted successfully.");
 		return fileRepresentation;
+	}
+
+	private void updateInfoFile(final File destinationFile) throws IOException {
+		final File infoFile = new File(destinationFile.getAbsolutePath() + INFO_FILE_SUFFIX);
+		if (!infoFile.exists()) infoFile.createNewFile();
+
+		properties.load(new FileInputStream(infoFile));
+		final String counter = properties.getProperty(FILE_REFERENCE_COUNTER, "0");
+		properties.setProperty(FILE_REFERENCE_COUNTER, String.valueOf(Integer.valueOf(counter) + 1));
+		properties.store(new FileOutputStream(infoFile), "");
 	}
 
 	private FileRepresentation createFileRepresentation(final UUID projectId, final String fileName, final String filePath) {
@@ -73,10 +95,7 @@ public class LocalFileSystemStorageService implements StorageService {
 
 		try {
 			final FileRepresentation fileRepresentation = persistenceService.retrieveFileRepresentationById(fileId);
-			final UUID projectId = fileRepresentation.getProjectId();
-			// FIXME change projectId to UUID;
-			final Long longProjectId = Long.valueOf(projectId.toStringRepresentation());
-			authorizationManager.assureProjectAccessAuthorization(longProjectId);
+			authorizationManager.assureProjectAccessAuthorization(fileRepresentation.getProjectId());
 
 			LOGGER.debug("The file '" + fileId + "' retrieved successfully.");
 			return createFile(fileRepresentation);
@@ -108,7 +127,7 @@ public class LocalFileSystemStorageService implements StorageService {
 		return this;
 	}
 
-	private String getContentHash(final File file) throws IOException {
+	private String generateContentHash(final File file) throws IOException {
 		try {
 			final byte[] digest = Files.getDigest(file, MessageDigest.getInstance("SHA-1"));
 			final String sha1Hash = new BigInteger(1, digest).toString();

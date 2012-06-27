@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -111,6 +111,16 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
 
 		assertEquals(attachmentFile, captor.getValue().getAttachmentFile());
+	}
+
+	@Test
+	public void shouldBeAbleToNotHaveAAttachmentFile() throws Exception {
+		new AnnotationCreateAction(annotatedObjectId, message, null).execute(context, actionContext);
+
+		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
+		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+
+		assertNull(captor.getValue().getAttachmentFile());
 	}
 
 	private ModelAction execute() throws UnableToCompleteActionException {

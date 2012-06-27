@@ -30,6 +30,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.xml.XMLNodeTestUtils;
 
@@ -210,9 +211,9 @@ public class XMLWriterTest {
 	public void shouldWriteActionsSeparatedByProjectsToXML() throws Exception {
 		final ArrayList<UserAction> actionList = new ArrayList<UserAction>();
 
-		actionList.addAll(UserActionTestUtils.createRandomUserActionList(1, "Project 1"));
-		actionList.addAll(UserActionTestUtils.createRandomUserActionList(2, "Project 2"));
-		actionList.addAll(UserActionTestUtils.createRandomUserActionList(3, "Project 3"));
+		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID(), "Project 1"));
+		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID(), "Project 2"));
+		actionList.addAll(UserActionTestUtils.createRandomUserActionList(new UUID(), "Project 3"));
 
 		assertEquality(actionList, generateXMLAndReadWithCustomActions(actionList));
 	}

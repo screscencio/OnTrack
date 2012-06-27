@@ -40,8 +40,6 @@ public class FileUploadActionTest extends ModelActionTest {
 
 	private UUID projectUuid;
 
-	private Long projectId;
-
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -49,10 +47,9 @@ public class FileUploadActionTest extends ModelActionTest {
 		fileName = "fileName.extension";
 		fileId = new UUID();
 		filePath = "path/to/file";
-		projectId = 1L;
-		projectUuid = new UUID(String.valueOf(projectId));
+		projectUuid = new UUID();
 
-		when(context.getProjectRepresentation()).thenReturn(ProjectTestUtils.createRepresentation(projectId));
+		when(context.getProjectRepresentation()).thenReturn(ProjectTestUtils.createRepresentation(projectUuid));
 	}
 
 	@Test

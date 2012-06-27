@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -39,7 +40,7 @@ public class ReleaseSelectionWidget extends Composite implements HasCloseHandler
 	@UiField
 	protected FlowPanel rootPanel;
 
-	private final long projectId;
+	private final UUID projectId;
 
 	@UiFactory
 	protected FiltrableCommandMenu createReleaseSelectionCommandMenu() {

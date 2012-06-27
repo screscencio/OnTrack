@@ -13,9 +13,9 @@ import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 @Entity
 @ConvertTo(UserAction.class)
@@ -36,14 +36,15 @@ public class UserActionEntity {
 
 	@ManyToOne(optional = false)
 	@ConversionAlias("projectRepresentation")
-	private ProjectRepresentation projectRepresentation;
+	private ProjectRepresentationEntity projectRepresentation;
 
 	@ConversionAlias("userId")
 	private long userId;
 
 	public UserActionEntity() {}
 
-	public UserActionEntity(final ModelActionEntity actionEntity, final long userId, final ProjectRepresentation projectRepresentation, final Date timestamp) {
+	public UserActionEntity(final ModelActionEntity actionEntity, final long userId, final ProjectRepresentationEntity projectRepresentation,
+			final Date timestamp) {
 		this.actionEntity = actionEntity;
 		this.userId = userId;
 		this.projectRepresentation = projectRepresentation;
@@ -74,11 +75,11 @@ public class UserActionEntity {
 		return timestamp;
 	}
 
-	public ProjectRepresentation getProjectRepresentation() {
+	public ProjectRepresentationEntity getProjectRepresentation() {
 		return projectRepresentation;
 	}
 
-	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
+	public void setProjectRepresentation(final ProjectRepresentationEntity projectRepresentation) {
 		this.projectRepresentation = projectRepresentation;
 	}
 

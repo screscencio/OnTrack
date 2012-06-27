@@ -33,8 +33,8 @@ public class ClientManagerTest {
 	private UUID client3;
 	private UUID client4;
 
-	private long project1;
-	private long project2;
+	private UUID project1;
+	private UUID project2;
 
 	@Mock
 	private AuthenticationManager authenticationManager;
@@ -55,8 +55,8 @@ public class ClientManagerTest {
 		client3 = new UUID("3");
 		client4 = new UUID("4");
 
-		project1 = 1L;
-		project2 = 2L;
+		project1 = new UUID();
+		project2 = new UUID();
 	}
 
 	@Test
@@ -166,7 +166,7 @@ public class ClientManagerTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldNotBeAbleToBindAClientToAProjectWithIdZero() throws Exception {
-		registerAndBindClients(0, client1, client2);
+		registerAndBindClients(UUID.INVALID_UUID, client1, client2);
 	}
 
 	@Test
@@ -265,13 +265,13 @@ public class ClientManagerTest {
 		assertCollectionEquality(asSet(client3), manager.getClientsOfUser(user.getId()));
 	}
 
-	private void bindClients(final long projectId, final UUID... clientIds) {
+	private void bindClients(final UUID projectId, final UUID... clientIds) {
 		for (final UUID clientId : clientIds) {
 			manager.bindClientToProject(clientId, projectId);
 		}
 	}
 
-	private void registerAndBindClients(final long projectId, final UUID... clientIds) {
+	private void registerAndBindClients(final UUID projectId, final UUID... clientIds) {
 		for (final UUID clientId : clientIds) {
 			manager.registerClient(clientId, DEFAULT_SESSION_ID);
 			manager.bindClientToProject(clientId, projectId);

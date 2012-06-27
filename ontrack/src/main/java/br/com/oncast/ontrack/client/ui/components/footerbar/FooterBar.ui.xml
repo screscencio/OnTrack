@@ -125,6 +125,9 @@
 						<misc:ShortcutLabel text="CONTROL ENTER" styleName="{style.shortcut}" />
 						<g:Label text="Insert a Child" styleName="{style.shortcutDescription}" />
 						
+						<misc:ShortcutLabel text="SHIFT A" styleName="{style.shortcut}" />
+						<g:Label text="Annotate" styleName="{style.shortcutDescription}" />
+						
 						<misc:ShortcutLabel text="@" styleName="{style.shortcut}" />
 						<g:Label text="Schedule" styleName="{style.shortcutDescription}" />
 						

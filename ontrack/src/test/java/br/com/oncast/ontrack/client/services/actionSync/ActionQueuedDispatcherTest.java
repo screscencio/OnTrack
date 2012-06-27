@@ -35,8 +35,8 @@ public class ActionQueuedDispatcherTest {
 		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
 		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock,
-					getProjectRepresentationProviderMock(),
-					notificationService);
+				getProjectRepresentationProviderMock(),
+				notificationService);
 	}
 
 	@Test
@@ -144,7 +144,7 @@ public class ActionQueuedDispatcherTest {
 
 	private ProjectRepresentationProvider getProjectRepresentationProviderMock() {
 		final ProjectRepresentationProvider provider = mock(ProjectRepresentationProvider.class);
-		when(provider.getCurrent()).thenReturn(new ProjectRepresentation(1, "Default project"));
+		when(provider.getCurrent()).thenReturn(new ProjectRepresentation(new UUID(), "Default project"));
 
 		return provider;
 	}

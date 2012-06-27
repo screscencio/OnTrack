@@ -78,7 +78,7 @@ import br.com.oncast.ontrack.utils.mocks.requests.RequestTestUtils;
 
 public class BusinessLogicTest {
 
-	private static final long PROJECT_ID = 1;
+	private static final UUID PROJECT_ID = new UUID();
 	private EntityManager entityManager;
 	private ProjectRepresentation projectRepresentation;
 
@@ -120,14 +120,14 @@ public class BusinessLogicTest {
 		when(authenticationManager.findUserByEmail(authenticatedUser.getEmail())).thenReturn(authenticatedUser);
 	}
 
-	private void authenticateAndAuthorizeUser(final User user, final long projectId) throws PersistenceException, NoResultFoundException {
+	private void authenticateAndAuthorizeUser(final User user, final UUID projectId) throws PersistenceException, NoResultFoundException {
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user);
 		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
 		when(persistence.retrieveUserByEmail(user.getEmail())).thenReturn(user);
 		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
 	}
 
-	private void configureToRetrieveSnapshot(final long projectId) throws Exception {
+	private void configureToRetrieveSnapshot(final UUID projectId) throws Exception {
 		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
 		when(persistence.retrieveProjectSnapshot(projectId)).thenReturn(snapshot);
 		when(snapshot.getProject()).thenReturn(ProjectTestUtils.createProject());
@@ -155,11 +155,11 @@ public class BusinessLogicTest {
 				mock(FeedbackMailFactory.class));
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new ScopeMoveUpAction(new UUID("0")));
+		actionList.add(new ScopeMoveUpAction(UUID.INVALID_UUID));
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
-		verify(persistence, times(0)).persistActions(anyLong(), anyLong(), anyList(), any(Date.class));
+		verify(persistence, times(0)).persistActions(any(UUID.class), anyLong(), anyList(), any(Date.class));
 	}
 
 	@Test
@@ -281,7 +281,7 @@ public class BusinessLogicTest {
 
 	@Test
 	public void actionShouldNotUpdateOthersThanRelatedProject() throws Exception {
-		final long OTHER_PROJECT_ID = 2;
+		final UUID OTHER_PROJECT_ID = new UUID();
 		assureProjectRepresentationExistance(OTHER_PROJECT_ID);
 
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
@@ -309,7 +309,7 @@ public class BusinessLogicTest {
 		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.createSomeActions());
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
-		final long OTHER_PROJECT_ID = 2;
+		final UUID OTHER_PROJECT_ID = new UUID();
 		final ProjectRepresentation projectRepresentation2 = assureProjectRepresentationExistance(OTHER_PROJECT_ID);
 
 		final Project project2 = loadProject(OTHER_PROJECT_ID);
@@ -324,21 +324,22 @@ public class BusinessLogicTest {
 
 	@Test
 	public void shouldLoadProjectWithGivenId() throws Exception {
-		assureProjectRepresentationExistance(1);
-		assureProjectRepresentationExistance(2);
-		assureProjectRepresentationExistance(3);
+		final UUID projectId = new UUID();
+		assureProjectRepresentationExistance(projectId);
+		assureProjectRepresentationExistance(projectId);
+		assureProjectRepresentationExistance(projectId);
 
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
-		final Project loadedProject = loadProject(2);
+		final Project loadedProject = loadProject(projectId);
 
-		assertEquals(2, loadedProject.getProjectRepresentation().getId());
+		assertEquals(projectId, loadedProject.getProjectRepresentation().getId());
 		assertEquals(ProjectTestUtils.DEFAULT_PROJECT_NAME, loadedProject.getProjectRepresentation().getName());
 	}
 
 	@Test(expected = ProjectNotFoundException.class)
 	public void shouldNotLoadProjectIfInexistentIdIsGiven() throws Exception {
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
-		final long inexistentProjectId = 123;
+		final UUID inexistentProjectId = new UUID();
 		loadProject(inexistentProjectId);
 	}
 
@@ -346,7 +347,7 @@ public class BusinessLogicTest {
 	public void shouldCreateANewProjectRepresentation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager);
 
-		final int projectId = 4;
+		final UUID projectId = new UUID();
 		setupMocksToCreateProjectWithId(projectId);
 		business.createProject("Name");
 
@@ -380,7 +381,7 @@ public class BusinessLogicTest {
 	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException, NoResultFoundException,
 			AuthorizationException {
 
-		setupMocksToCreateProjectWithId(4);
+		setupMocksToCreateProjectWithId(new UUID());
 		business = BusinessLogicTestUtils.create(persistence, notification, authenticationManager);
 		final ProjectRepresentation representation = business.createProject("new project");
 
@@ -405,7 +406,7 @@ public class BusinessLogicTest {
 	public void bindClientToProjectAfterLoad() throws Exception {
 		final UUID clientId = new UUID("123");
 
-		projectRepresentation = ProjectTestUtils.createRepresentation();
+		projectRepresentation = ProjectTestUtils.createRepresentation(PROJECT_ID);
 		when(persistence.persistOrUpdateProjectRepresentation(projectRepresentation)).thenReturn(projectRepresentation);
 
 		final Session sessionMock = Mockito.mock(Session.class);
@@ -424,16 +425,17 @@ public class BusinessLogicTest {
 	public void shouldAuthorizeCurrentUserAfterProjectCreation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 
-		setupMocksToCreateProjectWithId(4);
+		final UUID projectId = new UUID();
+		setupMocksToCreateProjectWithId(projectId);
 		business.createProject("new Project");
-		verify(authorizationManager).authorize(4, authenticatedUser.getEmail(), false);
+		verify(authorizationManager).authorize(projectId, authenticatedUser.getEmail(), false);
 	}
 
 	@Test
 	public void shouldAuthorizeAdminUserAfterProjectCreation() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 
-		final ProjectRepresentation createdProject = setupMocksToCreateProjectWithId(4);
+		final ProjectRepresentation createdProject = setupMocksToCreateProjectWithId(new UUID());
 
 		business.createProject("new Project");
 		verify(authorizationManager).authorizeAdmin(createdProject);
@@ -452,7 +454,7 @@ public class BusinessLogicTest {
 	@Test
 	public void onlyAuthorizedUserCanExecuteActions() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
-		final ModelActionSyncRequest request = RequestTestUtils.createModelActionSyncRequestWithOneAction();
+		final ModelActionSyncRequest request = RequestTestUtils.createModelActionSyncRequestWithOneAction(PROJECT_ID);
 
 		business.handleIncomingActionSyncRequest(request);
 
@@ -471,7 +473,7 @@ public class BusinessLogicTest {
 	@Test
 	public void onlyAuthorizedUserCanLoadProjectForClient() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager, sessionManager);
-		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest();
+		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest(PROJECT_ID);
 
 		final Session sessionMock = Mockito.mock(Session.class);
 		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
@@ -531,15 +533,14 @@ public class BusinessLogicTest {
 		verify(business).handleIncomingActionSyncRequest(captor.capture());
 
 		final ModelActionSyncRequest request = captor.getValue();
-		final long projectId = Long.valueOf(fileRepresentation.getProjectId().toStringRepresentation());
-		assertEquals(projectId, request.getProjectId());
+		assertEquals(fileRepresentation.getProjectId(), request.getProjectId());
 		final ModelAction action = request.getActionList().get(0);
 		assertTrue(action instanceof FileUploadAction);
 		assertEquals(fileRepresentation.getId(), action.getReferenceId());
 		assertTrue(request.shouldNotifyCurrentClient());
 	}
 
-	private ProjectRepresentation setupMocksToCreateProjectWithId(final int projectId) throws PersistenceException, NoResultFoundException {
+	private ProjectRepresentation setupMocksToCreateProjectWithId(final UUID projectId) throws PersistenceException, NoResultFoundException {
 		final ProjectRepresentation projectRepresentation = ProjectTestUtils.createRepresentation(projectId);
 		authenticateAndAuthorizeUser(authenticatedUser, projectId);
 
@@ -570,11 +571,11 @@ public class BusinessLogicTest {
 		return loadProject(PROJECT_ID);
 	}
 
-	private Project loadProject(final long projectId) throws UnableToLoadProjectException, ProjectNotFoundException {
+	private Project loadProject(final UUID projectId) throws UnableToLoadProjectException, ProjectNotFoundException {
 		return business.loadProject(projectId);
 	}
 
-	private ProjectRepresentation assureProjectRepresentationExistance(final long projectId) throws Exception {
+	private ProjectRepresentation assureProjectRepresentationExistance(final UUID projectId) throws Exception {
 		final ProjectRepresentation newProjectRepresentation = ProjectTestUtils.createRepresentation(projectId);
 		new PersistenceServiceJpaImpl().persistOrUpdateProjectRepresentation(newProjectRepresentation);
 		return newProjectRepresentation;

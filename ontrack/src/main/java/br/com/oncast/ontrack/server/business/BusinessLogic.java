@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectL
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
@@ -30,13 +31,13 @@ public interface BusinessLogic {
 
 	public abstract List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException;
 
-	public Project loadProject(long projectId) throws ProjectNotFoundException, UnableToLoadProjectException;
+	public Project loadProject(UUID uuid) throws ProjectNotFoundException, UnableToLoadProjectException;
 
 	public abstract void sendProjectCreationQuotaRequestEmail();
 
 	public abstract void sendFeedbackEmail(String feedbackText);
 
-	void authorize(String userEmail, long projectId, boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException, UnableToHandleActionException,
+	void authorize(String userEmail, UUID projectId, boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException, UnableToHandleActionException,
 			AuthorizationException;
 
 	public abstract void onFileUploadCompleted(final FileRepresentation fileRepresentation) throws UnableToHandleActionException, AuthorizationException;

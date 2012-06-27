@@ -24,12 +24,13 @@ import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.googlecode.gwt.test.GwtTest;
 
 public class AppActivityMapperTest extends GwtTest {
 
-	private static final int PROJECT_ID = 1;
+	private static final UUID PROJECT_ID = new UUID();
 	private AppActivityMapper appActivityMapper;
 	private Boolean isContextAvailable;
 
@@ -75,7 +76,7 @@ public class AppActivityMapperTest extends GwtTest {
 	public void whenContextProviderIsAvailableAndProjectIdIsZeroShouldCreateAProjectSelectionActivity() {
 		isContextAvailable = true;
 
-		assertTrue(appActivityMapper.getActivity(new PlanningPlace(0)) instanceof ProjectSelectionActivity);
+		assertTrue(appActivityMapper.getActivity(new PlanningPlace(UUID.INVALID_UUID)) instanceof ProjectSelectionActivity);
 	}
 
 	@Test
@@ -96,10 +97,11 @@ public class AppActivityMapperTest extends GwtTest {
 		isContextAvailable = true;
 
 		final ProjectDependentPlace projectDependentPlace = mock(ProjectDependentPlace.class);
-		when(projectDependentPlace.getRequestedProjectId()).thenReturn(1L);
+		final UUID projectId = new UUID();
+		when(projectDependentPlace.getRequestedProjectId()).thenReturn(projectId);
 		appActivityMapper.getActivity(projectDependentPlace);
 
-		verify(contextProvider).isContextAvailable(Mockito.anyInt());
+		verify(contextProvider).isContextAvailable(Mockito.any(UUID.class));
 	}
 
 	@Test
@@ -108,7 +110,7 @@ public class AppActivityMapperTest extends GwtTest {
 
 		appActivityMapper.getActivity(projectIndependentPlace);
 
-		verify(contextProvider, times(0)).isContextAvailable(Mockito.anyInt());
+		verify(contextProvider, times(0)).isContextAvailable(Mockito.any(UUID.class));
 	}
 
 	@Test
@@ -116,7 +118,7 @@ public class AppActivityMapperTest extends GwtTest {
 		isContextAvailable = false;
 
 		final ProjectDependentPlace projectDependentPlace = mock(ProjectDependentPlace.class);
-		when(projectDependentPlace.getRequestedProjectId()).thenReturn(1L);
+		when(projectDependentPlace.getRequestedProjectId()).thenReturn(new UUID());
 
 		assertTrue(appActivityMapper.getActivity(projectDependentPlace) instanceof ContextLoadingActivity);
 	}

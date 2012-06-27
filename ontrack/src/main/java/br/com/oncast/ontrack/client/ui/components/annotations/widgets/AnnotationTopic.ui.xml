@@ -4,9 +4,9 @@
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets">
 	
-	<ui:image field="likeIcon" src="like.png"></ui:image>
-	<ui:image field="likeIconActive" src="like_active.png"></ui:image>
+	<ui:image field="likeIcon" src="like.jpg"></ui:image>
 	<ui:image field="commentIcon" src="comment.png"></ui:image>
+	<ui:image field="clockIcon" src="clock.png"></ui:image>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationTopic.AnnotationTopicStyle">
 	
 		.author {
@@ -32,14 +32,22 @@
 		
 		@sprite .like {
 			gwt-image: 'likeIcon';
+			opacity: 0.3;
 		}
 		
-		@sprite .likeActive {
-			gwt-image: 'likeIconActive';
+		.likeActive {
+			opacity: 1;
 		}
 		
 		@sprite .commentIcon {
 			gwt-image: 'commentIcon';
+			cursor: default;
+			opacity: 0.4;
+		}
+		
+		@sprite .clockIcon {
+			gwt-image: 'clockIcon';
+			opacity: 0.6;
 		}
 		
 		.icon {
@@ -50,6 +58,10 @@
 			margin-bottom: -1px;
 			
 			cursor: pointer;
+		}
+		
+		.clockIcon {
+			cursor: default;
 		}
 		
 		.countLabel {
@@ -82,6 +94,7 @@
 			<g:Label ui:field="likeCount" styleName="{style.detail} {style.countLabel}"/>
 			<g:FocusPanel ui:field="comment" styleName="{style.commentIcon} {style.icon} {style.detail}"/>
 			<g:Label ui:field="commentsCount" styleName="{style.detail} {style.countLabel}"/>
+			<g:FocusPanel styleName="{style.clockIcon} {style.icon} {style.detail}"/>
 			<g:Label ui:field="date" styleName="{style.detail}"/>
 		</g:HTMLPanel>
 		<aw:AnnotationsWidget ui:field="commentsPanel" styleName="{style.commentPanel}"/>

@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.services.notification.ClientNotificationServ
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.ContextProviderServiceMock;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
@@ -26,7 +27,7 @@ public class ActionExecutionFactoryTestUtil {
 
 		when(authenticationService.getCurrentUser()).thenReturn(UserTestUtils.createUser());
 		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
-		when(projectRepresentation.getId()).thenReturn(0L);
+		when(projectRepresentation.getId()).thenReturn(UUID.INVALID_UUID);
 
 		return new ActionExecutionServiceImpl(contextService, notificationService, projectRepresentationProvider, applicationPlaceController,
 				authenticationService);
@@ -41,7 +42,7 @@ public class ActionExecutionFactoryTestUtil {
 
 		when(authenticationService.getCurrentUser()).thenReturn(UserTestUtils.createUser());
 		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
-		when(projectRepresentation.getId()).thenReturn(0L);
+		when(projectRepresentation.getId()).thenReturn(UUID.INVALID_UUID);
 
 		return new ActionExecutionServiceImpl(contextService, notificationService, projectRepresentationProvider, applicationPlaceController,
 				authenticationService);

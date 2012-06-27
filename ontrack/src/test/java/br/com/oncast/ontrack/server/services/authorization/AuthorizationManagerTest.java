@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
+import static br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils.createRepresentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -37,12 +38,13 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class AuthorizationManagerTest {
 
-	private static final int PROJECT_ID = 1;
+	private static final UUID PROJECT_ID = new UUID();
 	private EntityManager entityManager;
 
 	private PersistenceService persistence;
@@ -83,13 +85,13 @@ public class AuthorizationManagerTest {
 		when(authenticationManager.isUserAuthenticated()).thenReturn(true);
 	}
 
-	private void configureToRetrieveSnapshot(final int projectId) throws Exception {
+	private void configureToRetrieveSnapshot(final UUID projectId) throws Exception {
 		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
 		when(persistence.retrieveProjectSnapshot(projectId)).thenReturn(snapshot);
 		when(snapshot.getProject()).thenReturn(ProjectTestUtils.createProject());
 	}
 
-	private void authorizeUser(final User user, final long projectId) throws PersistenceException, NoResultFoundException {
+	private void authorizeUser(final User user, final UUID projectId) throws PersistenceException, NoResultFoundException {
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user);
 		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
 		when(persistence.retrieveUserByEmail(user.getEmail())).thenReturn(user);
@@ -126,7 +128,7 @@ public class AuthorizationManagerTest {
 		final User user = UserTestUtils.createUser(mail);
 
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(user);
-		when(persistence.retrieveProjectAuthorization(user.getId(), PROJECT_ID)).thenReturn(new ProjectAuthorization(user, null));
+		when(persistence.retrieveProjectAuthorization(user.getId(), PROJECT_ID)).thenReturn(new ProjectAuthorization(user, new UUID()));
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
 	}
@@ -199,7 +201,8 @@ public class AuthorizationManagerTest {
 
 	@Test
 	public void assureProjectAccessAuthorizationShouldSucceedWhenUserIsAuthorized() throws Exception {
-		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID)).thenReturn(new ProjectAuthorization(authenticatedUser, null));
+		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID)).thenReturn(
+				new ProjectAuthorization(authenticatedUser, new UUID()));
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureProjectAccessAuthorization(PROJECT_ID);
 		verify(persistence).retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID);
 	}
@@ -208,15 +211,19 @@ public class AuthorizationManagerTest {
 	public void listAuthorizedProjectsReturnsOnlyAuthorizedProjects01() throws Exception {
 
 		final List<ProjectAuthorization> authorizations = ProjectTestUtils.createAuthorizations(3, authenticatedUser);
+		for (final ProjectAuthorization authorization : authorizations) {
+			final UUID projectId = authorization.getProjectId();
+			when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(createRepresentation(projectId));
+		}
+
 		when(persistence.retrieveProjectAuthorizations(authenticatedUser.getId())).thenReturn(authorizations);
 
 		final List<ProjectRepresentation> projects = AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory)
-				.listAuthorizedProjects(
-						authenticatedUser);
+				.listAuthorizedProjects(authenticatedUser);
 
 		assertEquals(projects.size(), authorizations.size());
 		for (final ProjectAuthorization auth : authorizations) {
-			assertTrue(projects.contains(auth.getProject()));
+			assertTrue(projects.contains(createRepresentation(auth.getProjectId())));
 		}
 
 		verify(persistence).retrieveProjectAuthorizations(authenticatedUser.getId());

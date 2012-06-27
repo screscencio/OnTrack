@@ -23,12 +23,11 @@ public class Annotation implements Serializable {
 
 	public Annotation() {}
 
-	public Annotation(final UUID id, final User author, final Date date, final String message, final FileRepresentation attachmentFile) {
+	public Annotation(final UUID id, final User author, final Date date, final String message) {
 		this.id = id;
 		this.author = author;
 		this.date = date;
 		this.message = message;
-		this.attachmentFile = attachmentFile;
 		voters = new HashSet<String>();
 	}
 
@@ -87,6 +86,10 @@ public class Annotation implements Serializable {
 
 	public FileRepresentation getAttachmentFile() {
 		return attachmentFile;
+	}
+
+	public void setAttachmentFile(final FileRepresentation attachmentFile) {
+		this.attachmentFile = attachmentFile;
 	}
 
 }

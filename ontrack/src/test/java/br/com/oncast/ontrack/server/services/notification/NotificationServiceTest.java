@@ -51,7 +51,7 @@ public class NotificationServiceTest {
 		client1 = new UUID("1");
 		client2 = new UUID("2");
 
-		when(clientManager.getClientsAtProject(Mockito.anyLong())).thenReturn(clientsToBeReturnedByTheManager);
+		when(clientManager.getClientsAtProject(Mockito.any(UUID.class))).thenReturn(clientsToBeReturnedByTheManager);
 	}
 
 	@Test

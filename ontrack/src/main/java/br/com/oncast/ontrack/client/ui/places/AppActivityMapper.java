@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationAct
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -39,9 +40,9 @@ public class AppActivityMapper implements ActivityMapper {
 
 		if (place instanceof ProjectDependentPlace) {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
-			final long requestedProjectId = projectDependentPlace.getRequestedProjectId();
+			final UUID requestedProjectId = projectDependentPlace.getRequestedProjectId();
 
-			if (requestedProjectId <= 0) return createProjectSelectionActivity();
+			if (requestedProjectId == null || !requestedProjectId.isValid()) return createProjectSelectionActivity();
 			if (!services.getContextProviderService().isContextAvailable(requestedProjectId)) return createContextLoadingActivity(projectDependentPlace);
 		}
 

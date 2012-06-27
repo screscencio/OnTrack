@@ -32,6 +32,7 @@ import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
@@ -56,7 +57,7 @@ public class BusinessLogicTestUtils {
 	private static void configureAuthorizationMock() {
 		try {
 			authorizationMock = mock(AuthorizationManagerImpl.class);
-			Mockito.doNothing().when(authorizationMock).assureProjectAccessAuthorization(Mockito.anyLong());
+			Mockito.doNothing().when(authorizationMock).assureProjectAccessAuthorization(Mockito.any(UUID.class));
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
@@ -164,8 +165,8 @@ public class BusinessLogicTestUtils {
 
 		final PersistenceService mock = mock(PersistenceService.class);
 
-		when(mock.retrieveProjectSnapshot(anyLong())).thenReturn(new ProjectSnapshot(ProjectTestUtils.createProject(), snapshotTimestamp));
-		when(mock.retrieveActionsSince(anyLong(), anyLong())).thenReturn(actions);
+		when(mock.retrieveProjectSnapshot(any(UUID.class))).thenReturn(new ProjectSnapshot(ProjectTestUtils.createProject(), snapshotTimestamp));
+		when(mock.retrieveActionsSince(any(UUID.class), anyLong())).thenReturn(actions);
 
 		doAnswer(new Answer() {
 			@Override
@@ -176,7 +177,7 @@ public class BusinessLogicTestUtils {
 				}
 				return null;
 			}
-		}).when(mock).persistActions(anyLong(), anyLong(), anyList(), any(Date.class));
+		}).when(mock).persistActions(any(UUID.class), anyLong(), anyList(), any(Date.class));
 
 		when(mock.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenAnswer(new Answer<ProjectRepresentation>() {
 
@@ -186,7 +187,7 @@ public class BusinessLogicTestUtils {
 			}
 		});
 
-		when(mock.retrieveProjectAuthorization(anyLong(), anyLong())).thenReturn(ProjectTestUtils.createAuthorization());
+		when(mock.retrieveProjectAuthorization(anyLong(), any(UUID.class))).thenReturn(ProjectTestUtils.createAuthorization());
 
 		return mock;
 	}

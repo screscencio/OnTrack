@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class XMLExporterService {
 
@@ -27,9 +29,9 @@ public class XMLExporterService {
 		version = OntrackMigrationManager.getCurrentVersion();
 	}
 
-	public void export(final OutputStream outputStream, final Long... projectIds) {
+	public void export(final OutputStream outputStream, final UUID... projectIds) {
 		try {
-			final List<Long> requestedIds = Arrays.asList(projectIds);
+			final List<UUID> requestedIds = Arrays.asList(projectIds);
 			new XMLWriter()
 					.setVersion(version)
 					.setUserList(retrieveAllUsers())
@@ -53,10 +55,10 @@ public class XMLExporterService {
 		return projectList;
 	}
 
-	private List<ProjectXMLNode> findProjectsWithActions(final List<Long> projectIds) throws PersistenceException, NoResultFoundException {
+	private List<ProjectXMLNode> findProjectsWithActions(final List<UUID> projectIds) throws PersistenceException, NoResultFoundException {
 		final List<ProjectXMLNode> projectList = new ArrayList<ProjectXMLNode>();
 
-		for (final Long projectId : projectIds) {
+		for (final UUID projectId : projectIds) {
 			final ProjectRepresentation projectRepresentation = persistanceService.retrieveProjectRepresentation(projectId);
 			projectList.add(new ProjectXMLNode(projectRepresentation, persistanceService.retrieveActionsSince(projectRepresentation.getId(), 0)));
 		}
@@ -94,15 +96,23 @@ public class XMLExporterService {
 		return authNodes;
 	}
 
-	private List<ProjectAuthorizationXMLNode> retrieveProjectAuthorizations(final List<Long> projectIds) throws PersistenceException {
+	private List<ProjectAuthorizationXMLNode> retrieveProjectAuthorizations(final List<UUID> projectIds) throws PersistenceException {
 		final List<ProjectAuthorizationXMLNode> authNodes = new ArrayList<ProjectAuthorizationXMLNode>();
 
 		for (final ProjectAuthorization authorization : persistanceService.retrieveAllProjectAuthorizations()) {
-			if (projectIds.contains(authorization.getProject().getId())) {
+			if (projectIds.contains(authorization.getProjectId())) {
 				authNodes.add(new ProjectAuthorizationXMLNode(authorization));
 			}
 		}
 		return authNodes;
+	}
+
+	public void listProjects(final OutputStream out) throws PersistenceException, IOException {
+		for (final ProjectRepresentation representation : persistanceService.retrieveAllProjectRepresentations()) {
+			out.write(representation.getId().toStringRepresentation().getBytes());
+			out.write(",".getBytes());
+		}
+		out.flush();
 	}
 
 }

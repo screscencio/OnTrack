@@ -10,10 +10,10 @@ import com.google.gwt.place.shared.Prefix;
 
 public class ProgressPlace extends ProjectDependentPlace {
 
-	private final long projectId;
+	private final UUID projectId;
 	private final UUID releaseId;
 
-	public ProgressPlace(final long projectId, final UUID releaseId) {
+	public ProgressPlace(final UUID projectId, final UUID releaseId) {
 		this.projectId = projectId;
 		this.releaseId = releaseId;
 	}
@@ -24,7 +24,7 @@ public class ProgressPlace extends ProjectDependentPlace {
 	}
 
 	@Override
-	public long getRequestedProjectId() {
+	public UUID getRequestedProjectId() {
 		return projectId;
 	}
 
@@ -35,16 +35,16 @@ public class ProgressPlace extends ProjectDependentPlace {
 
 		@Override
 		public ProgressPlace getPlace(final String token) {
-			long projectId;
+			UUID projectId;
 			UUID releaseId;
 			final String[] parameters = token.split(SEPARATOR);
 			try {
-				projectId = Long.parseLong(parameters[0]);
+				projectId = new UUID(parameters[0]);
 				releaseId = new UUID(parameters[1]);
 			}
 			catch (final Exception e) {
-				projectId = 0;
-				releaseId = new UUID("0");
+				projectId = UUID.INVALID_UUID;
+				releaseId = UUID.INVALID_UUID;
 			}
 			return new ProgressPlace(projectId, releaseId);
 		}

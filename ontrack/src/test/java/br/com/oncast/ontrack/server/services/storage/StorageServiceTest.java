@@ -1,18 +1,18 @@
 package br.com.oncast.ontrack.server.services.storage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.util.Properties;
 
 import javax.persistence.NoResultException;
 
@@ -37,6 +37,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -44,7 +45,7 @@ import com.google.common.io.Files;
 public class StorageServiceTest {
 
 	private static final Charset CHARSET = Charsets.UTF_8;
-	private static final Long PROJECT_ID = 1L;
+	private static final UUID PROJECT_ID = new UUID();
 	private StorageService storage;
 	private String fileName;
 	private File file;
@@ -68,7 +69,7 @@ public class StorageServiceTest {
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		projectId = new UUID(String.valueOf(PROJECT_ID));
+		projectId = PROJECT_ID;
 
 		testDirectory = Files.createTempDir();
 		testDirectory.mkdir();
@@ -155,7 +156,7 @@ public class StorageServiceTest {
 	public void shouldNotOverrideFilesWithSameNameInDifferentProjects() throws Exception {
 		final UUID fileHash = store(file);
 
-		setCurrentProject(2L);
+		setCurrentProject(new UUID());
 		final UUID otherFileHash = store(otherFileWithSameName);
 
 		assertEquals(otherFileContent, retrieveFileContent(otherFileHash));
@@ -173,7 +174,7 @@ public class StorageServiceTest {
 	@Test(expected = AuthorizationException.class)
 	public void shouldThrowAuthorizationExceptionWhenTheRequestedFileWasPersistedInDifferentProject() throws Exception {
 		final UUID fileHash = store(file);
-		setCurrentProject(2L);
+		setCurrentProject(new UUID());
 
 		retrieve(fileHash);
 	}
@@ -207,6 +208,28 @@ public class StorageServiceTest {
 		assertEquals(projectId, representation.getProjectId());
 	}
 
+	@Test
+	public void shouldWriteAInformationFileCountingTheReferenceAssociation() throws Exception {
+		final Properties properties = new Properties();
+		final String contentHash = generateContentHash(file);
+		final File infoFile = new File(storageBaseDirectory, contentHash
+				+ ReflectionTestUtils.getStatic(LocalFileSystemStorageService.class, "INFO_FILE_SUFFIX"));
+		final String fileReferenceCounter = (String) ReflectionTestUtils.getStatic(LocalFileSystemStorageService.class, "FILE_REFERENCE_COUNTER");
+
+		for (int i = 1; i <= 10; i++) {
+			store(file);
+			properties.load(new FileInputStream(infoFile));
+			assertEquals(new Integer(i), Integer.valueOf(properties.getProperty(fileReferenceCounter)));
+		}
+	}
+
+	private String generateContentHash(final File file) throws Exception {
+		final Method method = LocalFileSystemStorageService.class.getDeclaredMethod("generateContentHash", File.class);
+		method.setAccessible(true);
+		final String hash = (String) method.invoke(storage, file);
+		return hash;
+	}
+
 	private UUID store(final File file) throws Exception {
 		final ArgumentCaptor<FileRepresentation> captor = ArgumentCaptor.forClass(FileRepresentation.class);
 		doNothing().when(businessLogic).onFileUploadCompleted(captor.capture());
@@ -232,9 +255,9 @@ public class StorageServiceTest {
 		return store(createFileWithContent(testDirectory, name, content));
 	}
 
-	private void setCurrentProject(final Long projectId) throws PersistenceException, AuthorizationException {
+	private void setCurrentProject(final UUID projectId) throws PersistenceException, AuthorizationException {
 		this.projectId = new UUID(String.valueOf(projectId));
-		doThrow(new AuthorizationException()).when(authenticationManager).assureProjectAccessAuthorization(Mockito.anyLong());
+		doThrow(new AuthorizationException()).when(authenticationManager).assureProjectAccessAuthorization(Mockito.any(UUID.class));
 		doNothing().when(authenticationManager).assureProjectAccessAuthorization(projectId);
 	}
 

@@ -18,14 +18,14 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	private static final long serialVersionUID = 1L;
 
+	@Attribute
+	private String message;
+
 	@Element
 	private UUID annotationId;
 
 	@Element
 	private UUID annotatedObjectId;
-
-	@Attribute
-	private String message;
 
 	@Element(required = false)
 	private UUID attachmentId;
@@ -50,8 +50,11 @@ public class AnnotationCreateAction implements AnnotationAction {
 				"A annotation should have a message or an attachment file");
 
 		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
-		final FileRepresentation file = ActionHelper.findFileRepresentation(attachmentId, context);
-		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message, file);
+		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message);
+		if (attachmentId != null) {
+			final FileRepresentation file = ActionHelper.findFileRepresentation(attachmentId, context);
+			annotation.setAttachmentFile(file);
+		}
 
 		context.addAnnotation(annotation, annotatedObjectId);
 		return new AnnotationRemoveAction(annotationId, annotatedObjectId);

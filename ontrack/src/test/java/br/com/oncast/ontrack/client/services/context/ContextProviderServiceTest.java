@@ -26,7 +26,7 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class ContextProviderServiceTest {
 
-	private static final int PROJECT_ID = 1;
+	private static final UUID PROJECT_ID = new UUID();
 
 	@Mock
 	private ProjectRepresentationProviderImpl projectRepresentationProvider;

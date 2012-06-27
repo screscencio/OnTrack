@@ -31,4 +31,18 @@ public class ReflectionTestUtils {
 
 		return classes;
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T get(final Object instance, final String fieldName) throws Exception {
+		final Field field = instance.getClass().getDeclaredField(fieldName);
+		field.setAccessible(true);
+		return (T) field.get(instance);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T getStatic(final Class<?> clazz, final String fieldName) throws Exception {
+		final Field field = clazz.getDeclaredField(fieldName);
+		field.setAccessible(true);
+		return (T) field.get(null);
+	}
 }

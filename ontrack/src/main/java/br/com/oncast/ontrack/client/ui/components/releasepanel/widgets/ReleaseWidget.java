@@ -24,6 +24,7 @@ import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -255,7 +256,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiHandler("kanbanLink")
 	protected void onClick(final ClickEvent event) {
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
-		final long projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
+		final UUID projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
 		provider.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
 	}
 

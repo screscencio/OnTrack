@@ -10,4 +10,8 @@ public class UnableToAuthorizeUserException extends Exception {
 	public UnableToAuthorizeUserException(final String message) {
 		super(message);
 	}
+
+	public UnableToAuthorizeUserException(final String message, final Throwable e) {
+		super(message, e);
+	}
 }

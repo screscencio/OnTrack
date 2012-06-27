@@ -23,13 +23,13 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class XMLImporter {
 
 	private final PersistenceService persistanceService;
 	private OntrackXML ontrackXML;
 	private final HashMap<Long, User> userIdMap = new HashMap<Long, User>();
-	private final HashMap<Long, ProjectRepresentation> projectIdMap = new HashMap<Long, ProjectRepresentation>();
 	private long adminId = -1;
 	private static final Logger LOGGER = Logger.getLogger(XMLImporter.class);
 
@@ -90,14 +90,13 @@ public class XMLImporter {
 
 	private void persistProjects(final List<ProjectXMLNode> projectNodes) throws PersistenceException {
 		for (final ProjectXMLNode projectNode : projectNodes) {
-			final ProjectRepresentation persistedRepresentation = persistanceService.persistOrUpdateProjectRepresentation(projectNode
-					.getProjectRepresentation());
-			persistActions(persistedRepresentation.getId(), projectNode.getActions());
-			projectIdMap.put(projectNode.getId(), persistedRepresentation);
+			final ProjectRepresentation representation = projectNode.getProjectRepresentation();
+			persistanceService.persistOrUpdateProjectRepresentation(representation);
+			persistActions(representation.getId(), projectNode.getActions());
 		}
 	}
 
-	private void persistActions(final long projectId, final List<UserAction> userActions) throws PersistenceException {
+	private void persistActions(final UUID projectId, final List<UserAction> userActions) throws PersistenceException {
 		for (final UserAction userAction : userActions) {
 			final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
 			actions.add(userAction.getModelAction());
@@ -117,7 +116,7 @@ public class XMLImporter {
 
 	private void persistAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizationNodes) throws PersistenceException {
 		for (final ProjectAuthorizationXMLNode authNode : projectAuthorizationNodes) {
-			persistanceService.authorize(userIdMap.get(authNode.getUserId()).getEmail(), projectIdMap.get(authNode.getProjectId()).getId());
+			persistanceService.authorize(userIdMap.get(authNode.getUserId()).getEmail(), authNode.getProjectId());
 		}
 
 	}

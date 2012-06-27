@@ -1,15 +1,9 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
 import static br.com.oncast.ontrack.utils.ListUtils.lastOf;
-import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -50,10 +44,11 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class PersistenceServiceTest {
 
-	private static final int PROJECT_ID = 1;
+	private static final UUID PROJECT_ID = new UUID();
 
 	private static final long USER_ID = 1;
 
@@ -244,21 +239,20 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldPersistProjectRepresentation() throws Exception {
-		persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation("Name"));
-		final ProjectRepresentation foundProjectRepresentation = persistenceService.retrieveProjectRepresentation(2);
+		final ProjectRepresentation projectRepresentation = new ProjectRepresentation("Name");
+		persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
+		final ProjectRepresentation foundProjectRepresentation = persistenceService.retrieveProjectRepresentation(projectRepresentation.getId());
 		assertEquals("Name", foundProjectRepresentation.getName());
 	}
 
-	@Test
-	public void thePersistedProjectRepresentationShouldHaveItsGeneratedIdSet() throws Exception {
+	public void thePersistedProjectRepresentationShouldKeepTheGivenId() throws Exception {
 		final ProjectRepresentation projectRepresentation = new ProjectRepresentation("Name");
-		assertEquals(0, projectRepresentation.getId());
 
 		persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
-		assertEquals(2, projectRepresentation.getId());
 
-		final ProjectRepresentation foundProjectRepresentation = persistenceService.retrieveProjectRepresentation(2);
+		final ProjectRepresentation foundProjectRepresentation = persistenceService.retrieveProjectRepresentation(projectRepresentation.getId());
 		assertEquals("Name", foundProjectRepresentation.getName());
+		assertEquals(projectRepresentation.getId(), foundProjectRepresentation.getId());
 	}
 
 	@Test
@@ -267,7 +261,7 @@ public class PersistenceServiceTest {
 
 		final ArrayList<ProjectRepresentation> projectRepresentations = new ArrayList<ProjectRepresentation>();
 		for (int i = 2; i <= 11; i++) {
-			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(i, "Name" + i);
+			final ProjectRepresentation projectRepresentation = new ProjectRepresentation(new UUID(), "Name" + i);
 			persistenceService.persistOrUpdateProjectRepresentation(projectRepresentation);
 			projectRepresentations.add(projectRepresentation);
 			assertEquals(i, persistenceService.retrieveAllProjectRepresentations().size());
@@ -286,13 +280,33 @@ public class PersistenceServiceTest {
 
 		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
 
-		assertCollectionEquality(Arrays.asList(project1, project3), extractProjectsFromAuthorization(authorizations));
+		final List<ProjectRepresentation> obtainedProjectAuthorizations = extractProjectsFromAuthorization(authorizations);
+		assertTrue(obtainedProjectAuthorizations.contains(project1));
+		assertTrue(obtainedProjectAuthorizations.contains(project3));
 	}
 
-	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorization> authorizations) {
+	@Test
+	public void shouldBeAbleToRetrieveProjectAuthorizationForSpecificUserAndProject() throws Exception {
+		final User user1 = createAndPersistUser();
+		final User user2 = createAndPersistUser();
+		final ProjectRepresentation project1 = createProjectRepresentation("project1");
+		final ProjectRepresentation project2 = createProjectRepresentation("project2");
+
+		authorize(user1, project1);
+		authorize(user2, project2);
+
+		assertNotNull(persistenceService.retrieveProjectAuthorization(user1.getId(), project1.getId()));
+		assertNotNull(persistenceService.retrieveProjectAuthorization(user2.getId(), project2.getId()));
+
+		assertNull(persistenceService.retrieveProjectAuthorization(user1.getId(), project2.getId()));
+		assertNull(persistenceService.retrieveProjectAuthorization(user2.getId(), project1.getId()));
+	}
+
+	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorization> authorizations) throws PersistenceException,
+			NoResultFoundException {
 		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
 		for (final ProjectAuthorization authorization : authorizations) {
-			projects.add(authorization.getProject());
+			projects.add(persistenceService.retrieveProjectRepresentation(authorization.getProjectId()));
 		}
 		return projects;
 	}
@@ -305,7 +319,7 @@ public class PersistenceServiceTest {
 	@Test(expected = PersistenceException.class)
 	public void inexistentProjectCannotBeAuthorized() throws Exception {
 		final User user = createAndPersistUser();
-		persistenceService.authorize(user.getEmail(), 404);
+		persistenceService.authorize(user.getEmail(), new UUID());
 	}
 
 	@Test
@@ -362,8 +376,8 @@ public class PersistenceServiceTest {
 		DeepEqualityTestUtils.assertObjectEquality(fileRepresentation, retrievedFileRepresentation);
 	}
 
-	private User createAndPersistUser() throws PersistenceException {
-		return persistenceService.persistOrUpdateUser(new User("email@provider.com"));
+	private User createAndPersistUser() throws Exception {
+		return persistenceService.persistOrUpdateUser(UserTestUtils.createUser());
 	}
 
 	private void authorize(final User user, final ProjectRepresentation... projects) throws PersistenceException {
@@ -388,7 +402,7 @@ public class PersistenceServiceTest {
 	}
 
 	private ProjectSnapshot createBlankProject() throws UnableToLoadProjectException, ProjectNotFoundException {
-		final Scope projectScope = new Scope("Project", new UUID("0"));
+		final Scope projectScope = new Scope("Project", UUID.INVALID_UUID);
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {

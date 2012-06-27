@@ -2,10 +2,10 @@ package br.com.oncast.ontrack.server.services.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Iterator;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,17 +33,29 @@ public class FileUploadServlet extends HttpServlet {
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		try {
 			final FileUploadFormObject fileUploadForm = parse(request);
+
 			final FileRepresentation fileRepresentation = getStorageService().store(fileUploadForm.getProjectId(),
 					fileUploadForm.getFile(Files.createTempDir()));
-			final ServletOutputStream out = response.getOutputStream();
-			out.write(fileRepresentation.getId().toStringRepresentation().getBytes());
-			out.flush();
-			out.close();
+
+			configureResponse(response);
+
+			writeResponse(response.getOutputStream(), fileRepresentation);
 		}
 		catch (final Exception e) {
 			LOGGER.error("File upload failed", e);
 			throw new ServletException(e);
 		}
+	}
+
+	private void writeResponse(final OutputStream out, final FileRepresentation fileRepresentation) throws IOException {
+		out.write(fileRepresentation.getId().toStringRepresentation().getBytes());
+		out.flush();
+		out.close();
+	}
+
+	private void configureResponse(final HttpServletResponse response) {
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/plain");
 	}
 
 	@SuppressWarnings("rawtypes")

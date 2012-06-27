@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.server.services.exportImport.freemind.FreeMindExpor
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.model.project.Project;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.url.URLBuilder;
 
 public class MindMapExporterServlet extends HttpServlet {
@@ -41,9 +42,9 @@ public class MindMapExporterServlet extends HttpServlet {
 		response.getOutputStream().flush();
 	}
 
-	private Long getProjectId(final HttpServletRequest request) throws ServletException {
+	private UUID getProjectId(final HttpServletRequest request) throws ServletException {
 		try {
-			return Long.parseLong(request.getParameter(URLBuilder.Parameter.PROJECT_ID.getName()));
+			return new UUID(request.getParameter(URLBuilder.Parameter.PROJECT_ID.getName()));
 		}
 		catch (final NumberFormatException e) {
 			throw new ServletException("It was not possible to export to Mind Map: the 'projectId' parameter must be a valid Number");

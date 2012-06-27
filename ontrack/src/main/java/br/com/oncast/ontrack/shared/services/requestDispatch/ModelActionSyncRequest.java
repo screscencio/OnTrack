@@ -7,12 +7,13 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ModelActionSyncRequest implements DispatchRequest<VoidResult> {
 
 	private List<ModelAction> actionList;
 
-	private long projectId;
+	private UUID projectId;
 
 	private boolean shouldNotifyCurrentClient;
 
@@ -25,7 +26,7 @@ public class ModelActionSyncRequest implements DispatchRequest<VoidResult> {
 		this(projectRepresentation.getId(), actionList);
 	}
 
-	public ModelActionSyncRequest(final long projectId, final List<ModelAction> actionList) {
+	public ModelActionSyncRequest(final UUID projectId, final List<ModelAction> actionList) {
 		this.projectId = projectId;
 		this.actionList = actionList;
 		this.shouldNotifyCurrentClient = false;
@@ -44,7 +45,7 @@ public class ModelActionSyncRequest implements DispatchRequest<VoidResult> {
 		return actionList;
 	}
 
-	public long getProjectId() {
+	public UUID getProjectId() {
 		return projectId;
 	}
 

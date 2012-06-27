@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
 	<ui:image field="uploadImg" src="upload.png"></ui:image>
-	<ui:image field="confirmImg" src="confirm.png"></ui:image>
+	<ui:image field="removeImg" src="remove.png"></ui:image>
 	
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetStyle">
 	
@@ -16,8 +16,13 @@
 			gwt-image: 'uploadImg';
 		}
 		
-		@sprite .confirmImg {
-			gwt-image: 'confirmImg';
+		@sprite .removeImg {
+			gwt-image: 'removeImg';
+		}
+		
+		.fileNameLabel {
+			margin-top: 4px;
+			margin-right: 10px;
 		}
 		
 	</ui:style>
@@ -26,7 +31,9 @@
 		<g:HorizontalPanel>
 			<g:TextBox ui:field="fileName" visible="false"/>
 			<g:TextBox ui:field="projectId" visible="false"/>
-			<g:FileUpload ui:field="fileUpload"/>
+			<g:FileUpload ui:field="fileUpload" visible="false"/>
+			
+			<g:Label ui:field="fileNameLabel" styleName="{style.fileNameLabel}"/>
 			<g:FocusPanel ui:field="uploadIcon" styleName="{style.uploadIcon} {style.uploadImg}"/>
 		</g:HorizontalPanel>
 	</g:FormPanel>

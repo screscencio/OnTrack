@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -88,7 +89,7 @@ public class ProgressActivity extends AbstractActivity {
 	}
 
 	private void exitToPlanningPlace() {
-		final long projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
+		final UUID projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
 	}
 

@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.Horizon
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -72,7 +73,7 @@ public class ApplicationMenu extends Composite {
 
 	@UiHandler("backButton")
 	protected void onBackButtonClick(final ClickEvent event) {
-		final long projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
+		final UUID projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
 	}
 

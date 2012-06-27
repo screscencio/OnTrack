@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.places.PlacesPrefixes;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
@@ -9,10 +10,10 @@ import com.google.gwt.place.shared.Prefix;
 
 public class PlanningPlace extends ProjectDependentPlace {
 
-	private final long projectId;
+	private final UUID projectId;
 
-	public PlanningPlace(final long id) {
-		this.projectId = id;
+	public PlanningPlace(final UUID projectId) {
+		this.projectId = projectId;
 	}
 
 	public PlanningPlace(final ProjectRepresentation projectRepresentation) {
@@ -20,7 +21,7 @@ public class PlanningPlace extends ProjectDependentPlace {
 	}
 
 	@Override
-	public long getRequestedProjectId() {
+	public UUID getRequestedProjectId() {
 		return projectId;
 	}
 
@@ -29,13 +30,7 @@ public class PlanningPlace extends ProjectDependentPlace {
 
 		@Override
 		public PlanningPlace getPlace(final String token) {
-			long projectId;
-			try {
-				projectId = Long.parseLong(token);
-			}
-			catch (final NumberFormatException e) {
-				projectId = 0;
-			}
+			final UUID projectId = new UUID(token);
 			return new PlanningPlace(projectId);
 		}
 

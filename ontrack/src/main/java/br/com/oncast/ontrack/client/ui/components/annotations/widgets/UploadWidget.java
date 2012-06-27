@@ -13,16 +13,20 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.storage.FileUploadFormObject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -33,7 +37,7 @@ public class UploadWidget extends Composite {
 	interface UploadWidgetUiBinder extends UiBinder<Widget, UploadWidget> {}
 
 	interface UploadWidgetStyle extends CssResource {
-		String confirmImg();
+		String removeImg();
 	}
 
 	@UiField
@@ -44,6 +48,9 @@ public class UploadWidget extends Composite {
 
 	@UiField
 	protected FileUpload fileUpload;
+
+	@UiField
+	protected Label fileNameLabel;
 
 	@UiField
 	protected TextBox fileName;
@@ -63,6 +70,15 @@ public class UploadWidget extends Composite {
 		fileName.setName(FileUploadFormObject.FieldNames.FILE_NAME);
 		fileUpload.setName(FileUploadFormObject.FieldNames.FILE);
 		projectId.setName(FileUploadFormObject.FieldNames.PROJECT_ID);
+
+		fileUpload.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				final String name = getFilename();
+				fileNameLabel.setText(name);
+				setUploadFieldVisible(!name.isEmpty());
+			}
+		});
 	}
 
 	public void setActionUrl(final String url) {
@@ -75,17 +91,22 @@ public class UploadWidget extends Composite {
 	}
 
 	public void setUploadFieldVisible(final boolean b) {
-		fileUpload.setVisible(b);
-		uploadIcon.setStyleName(style.confirmImg(), b);
+		fileNameLabel.setVisible(b);
+		uploadIcon.setStyleName(style.removeImg(), b);
 	}
+
+	private static native void clickOnInputFile(Element elem) /*-{
+		elem.click();
+	}-*/;
 
 	@UiHandler("uploadIcon")
 	protected void onUploadIconClicked(final ClickEvent e) {
-		setUploadFieldVisible(!isUploadWidgetVisible());
+		if (!isUploadWidgetVisible()) clickOnInputFile(fileUpload.getElement());
+		else setUploadFieldVisible(false);
 	}
 
 	private boolean isUploadWidgetVisible() {
-		return fileUpload.isVisible();
+		return fileNameLabel.isVisible();
 	}
 
 	public String getFilename() {
@@ -100,7 +121,7 @@ public class UploadWidget extends Composite {
 			return;
 		}
 
-		projectId.setValue("" + getCurrentProject().getId());
+		projectId.setValue(getCurrentProject().getId().toStringRepresentation());
 		fileName.setValue(filename);
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener(filename, listener));
 		form.submit();

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,9 +11,10 @@ import javax.persistence.UniqueConstraint;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "user", "project" }))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "user", "projectId" }))
 public class ProjectAuthorization {
 
 	@Id
@@ -23,17 +25,19 @@ public class ProjectAuthorization {
 	@JoinColumn(name = "user", nullable = false, updatable = false)
 	private User user;
 
-	@OneToOne
-	@JoinColumn(name = "project", nullable = false, updatable = false)
-	private ProjectRepresentation project;
+	@Column(name = "projectId", nullable = false, updatable = false)
+	private String projectId;
 
-	@SuppressWarnings("unused")
 	// IMPORTANT A package-visible default constructor is necessary for JPA. Do not remove this.
-	private ProjectAuthorization() {}
+	protected ProjectAuthorization() {}
 
 	public ProjectAuthorization(final User user, final ProjectRepresentation project) {
+		this(user, project.getId());
+	}
+
+	public ProjectAuthorization(final User user, final UUID projectId) {
 		this.user = user;
-		this.project = project;
+		this.projectId = projectId.toStringRepresentation();
 	}
 
 	public long getId() {
@@ -44,8 +48,8 @@ public class ProjectAuthorization {
 		return user;
 	}
 
-	public ProjectRepresentation getProject() {
-		return project;
+	public UUID getProjectId() {
+		return new UUID(projectId);
 	}
 
 }

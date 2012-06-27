@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserX
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
@@ -38,7 +39,7 @@ public class XMLNodeTestUtils {
 	public static List<ProjectXMLNode> createProjectNodes(final int size) {
 		final List<ProjectXMLNode> projects = new ArrayList<ProjectXMLNode>();
 		for (int i = 1; i <= size; i++) {
-			final ProjectXMLNode project = createProjectNode(ProjectTestUtils.createRepresentation(i));
+			final ProjectXMLNode project = createProjectNode(ProjectTestUtils.createRepresentation(new UUID()));
 			projects.add(project);
 		}
 		return projects;

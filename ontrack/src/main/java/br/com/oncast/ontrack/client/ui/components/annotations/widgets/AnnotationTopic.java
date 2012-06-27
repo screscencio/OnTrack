@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.components.annotations.widgets.Annotation
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -134,8 +135,11 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		});
 
 		container.add(author);
-		final AttachmentFileWidget attachedFileWidget = new AttachmentFileWidget(annotation.getAttachmentFile());
-		container.add(attachedFileWidget);
+		final FileRepresentation attachmentFile = annotation.getAttachmentFile();
+		if (attachmentFile != null) {
+			final AttachmentFileWidget attachedFileWidget = new AttachmentFileWidget(attachmentFile);
+			container.add(attachedFileWidget);
+		}
 
 		for (final String line : this.annotation.getMessage().split("\\n")) {
 			container.add(new HTMLPanel(SimpleHtmlSanitizer.sanitizeHtml(line)));

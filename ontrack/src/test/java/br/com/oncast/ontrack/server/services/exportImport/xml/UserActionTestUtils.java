@@ -56,12 +56,12 @@ import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 public class UserActionTestUtils {
 
 	public static final int DEFAULT_USER_ID = Integer.MAX_VALUE;
-	public static final int DEFAULT_PROJECT_ID = 1;
+	public static final UUID DEFAULT_PROJECT_ID = new UUID();
 	public static final String DEFAULT_PROJECT_NAME = "Default project";
 
 	private static long actionCount = 0;
 	private static long userId = DEFAULT_USER_ID;
-	private static long projectId = DEFAULT_PROJECT_ID;
+	private static UUID projectId = DEFAULT_PROJECT_ID;
 	private static String projectName = DEFAULT_PROJECT_NAME;
 
 	public static List<User> createUserList() throws Exception {
@@ -80,7 +80,7 @@ public class UserActionTestUtils {
 		return passwords;
 	}
 
-	public static List<UserAction> createCompleteUserActionList(final int projectId) throws Exception {
+	public static List<UserAction> createCompleteUserActionList(final UUID projectId) throws Exception {
 		setProjectId(projectId);
 		final List<UserAction> actionList = createCompleteUserActionList();
 
@@ -149,7 +149,7 @@ public class UserActionTestUtils {
 		return actionList;
 	}
 
-	public static List<UserAction> createRandomUserActionList(final int projectId, final String projectName) throws Exception {
+	public static List<UserAction> createRandomUserActionList(final UUID projectId, final String projectName) throws Exception {
 		setProjectName(projectName);
 
 		final List<UserAction> actionList = createCompleteUserActionList(projectId);
@@ -370,7 +370,7 @@ public class UserActionTestUtils {
 		UserActionTestUtils.projectName = projectName;
 	}
 
-	private static void setProjectId(final long projectId) {
+	private static void setProjectId(final UUID projectId) {
 		UserActionTestUtils.projectId = projectId;
 	}
 
@@ -384,7 +384,7 @@ public class UserActionTestUtils {
 		UserActionTestUtils.userId = DEFAULT_USER_ID;
 	}
 
-	public static List<UserAction> createRandomUserActionList(final long projectId, final long userId) throws Exception {
+	public static List<UserAction> createRandomUserActionList(final UUID projectId, final long userId) throws Exception {
 		setProjectId(projectId);
 		setUserId(userId);
 		final List<UserAction> actions = createRandomUserActionList();

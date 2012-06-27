@@ -4,31 +4,24 @@ import java.io.IOException;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.utils.serializer.Serializer;
 import br.com.oncast.ontrack.shared.model.project.Project;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 @Entity
 public class ProjectSnapshot {
 
 	@Id
-	@GeneratedValue
-	private long id;
+	private String id;
 
 	@Lob
 	private byte[] serializedProject;
 
 	private long lastAppliedActionId;
-
-	@OneToOne
-	private ProjectRepresentation projectRepresentation;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
@@ -36,16 +29,16 @@ public class ProjectSnapshot {
 	public ProjectSnapshot() {}
 
 	public ProjectSnapshot(final Project project, final Date timestamp) throws IOException {
-		projectRepresentation = project.getProjectRepresentation();
+		this.id = project.getProjectRepresentation().getId().toStringRepresentation();
 		setProject(project);
 		setTimestamp(timestamp);
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final long id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -79,10 +72,6 @@ public class ProjectSnapshot {
 
 	public void setLastAppliedActionId(final long lastAppliedActionId) {
 		this.lastAppliedActionId = lastAppliedActionId;
-	}
-
-	public ProjectRepresentation getProjectRepresentation() {
-		return projectRepresentation;
 	}
 
 }

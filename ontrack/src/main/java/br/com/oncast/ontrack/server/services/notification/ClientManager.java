@@ -16,9 +16,9 @@ public class ClientManager {
 
 	private static final Logger LOGGER = Logger.getLogger(ClientManager.class);
 
-	private static final long UNBOUND_PROJECT_INDEX = 0;
+	private static final UUID UNBOUND_PROJECT_INDEX = UUID.INVALID_UUID;
 
-	private final Map<Long, Set<UUID>> clientsByProject = new HashMap<Long, Set<UUID>>();
+	private final Map<UUID, Set<UUID>> clientsByProject = new HashMap<UUID, Set<UUID>>();
 	private final Map<String, Set<UUID>> clientsBySession = new HashMap<String, Set<UUID>>();
 
 	private final UserSessionMapper userSessionMapper;
@@ -28,31 +28,31 @@ public class ClientManager {
 		authenticationManager.register(userSessionMapper);
 	}
 
-	public void bindClientToProject(final UUID clientId, final long projectId) {
+	public void bindClientToProject(final UUID clientId, final UUID projectId) {
 		if (projectId == UNBOUND_PROJECT_INDEX) throw new IllegalArgumentException("Client was not bound to the project: The given 'projectId' should not be 0");
 
-		LOGGER.debug("Binding client '" + clientId + "' to project '" + projectId + "'.");
 		add(clientId, projectId, clientsByProject);
+		LOGGER.debug("Client '" + clientId + "' was bound to project '" + projectId + "'.");
 	}
 
 	public void unbindClientFromProject(final UUID clientId) {
-		LOGGER.debug("Unbinding client '" + clientId + "' from its project.");
 		add(clientId, UNBOUND_PROJECT_INDEX, clientsByProject);
+		LOGGER.debug("Client '" + clientId + "' was unbound from its project.");
 	}
 
 	public void registerClient(final UUID clientId, final String sessionId) {
-		LOGGER.debug("Registering client (clientId='" + clientId + "', sessionId='" + sessionId + "').");
 		add(clientId, UNBOUND_PROJECT_INDEX, clientsByProject);
 		add(clientId, sessionId, clientsBySession);
+		LOGGER.debug("Client (clientId='" + clientId + "', sessionId='" + sessionId + "') was registered.");
 	}
 
 	public void unregisterClient(final UUID clientId) {
-		LOGGER.debug("Unregistering client '" + clientId + "'.");
 		remove(clientId, clientsByProject);
 		remove(clientId, clientsBySession);
+		LOGGER.debug("Client '" + clientId + "' unregistered.");
 	}
 
-	public Set<UUID> getClientsAtProject(final long projectId) {
+	public Set<UUID> getClientsAtProject(final UUID projectId) {
 		return get(projectId, clientsByProject);
 	}
 

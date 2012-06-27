@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.shared.services.url;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
@@ -22,10 +24,10 @@ public class URLBuilder {
 	private static final String EXPORT_TO_MINDMAP_APPLICATION_SERVLET_URL = "application/mindmap/download";
 	public static final String SERVER_PUSH_COMET_URL = GWT.getModuleBaseURL() + "comet" + Window.Location.getQueryString();
 
-	public static String buildMindMapExportURL(final long projectId) {
+	public static String buildMindMapExportURL(final UUID uuid) {
 		return Window.Location.createUrlBuilder()
 				.setPath(EXPORT_TO_MINDMAP_APPLICATION_SERVLET_URL)
-				.setParameter(Parameter.PROJECT_ID.getName(), String.valueOf(projectId))
+				.setParameter(Parameter.PROJECT_ID.getName(), uuid.toStringRepresentation())
 				.buildString();
 	}
 }

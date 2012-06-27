@@ -41,6 +41,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAutho
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
@@ -98,8 +99,8 @@ public class XMLImporterTest {
 
 	@Test
 	public void shouldPersistProjectRepresentations() throws Exception {
-		final ProjectRepresentation projectRepresentation1 = addProjectWithActionsAndMockPersistedProject(1).getProjectRepresentation();
-		final ProjectRepresentation projectRepresentation2 = addProjectWithActionsAndMockPersistedProject(2).getProjectRepresentation();
+		final ProjectRepresentation projectRepresentation1 = addProjectWithActionsAndMockPersistedProject(new UUID()).getProjectRepresentation();
+		final ProjectRepresentation projectRepresentation2 = addProjectWithActionsAndMockPersistedProject(new UUID()).getProjectRepresentation();
 
 		importer.persistObjects();
 
@@ -108,18 +109,18 @@ public class XMLImporterTest {
 
 	@Test
 	public void shouldPersistProjectRepresentationsBeforePersistingUserActions() throws Exception {
-		addProjectWithActionsAndMockPersistedProject(1);
+		addProjectWithActionsAndMockPersistedProject(new UUID());
 
 		importer.persistObjects();
 
 		final InOrder inOrder = inOrder(persistenceService);
 		inOrder.verify(persistenceService).persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class));
-		inOrder.verify(persistenceService, atLeast(1)).persistActions(anyLong(), anyLong(), anyListOf(ModelAction.class), any(Date.class));
+		inOrder.verify(persistenceService, atLeast(1)).persistActions(any(UUID.class), anyLong(), anyListOf(ModelAction.class), any(Date.class));
 	}
 
 	@Test
 	public void shouldPersistUserActionsWithRelatedProjectRepresentationIdAsProjectId() throws Exception {
-		final int projectId = 1;
+		final UUID projectId = new UUID();
 		final ProjectXMLNode projectXMLNode = addProjectWithActionsAndMockPersistedProject(projectId);
 
 		importer.persistObjects();
@@ -199,8 +200,8 @@ public class XMLImporterTest {
 
 		when(persistenceService.persistOrUpdateUser(any(User.class))).thenReturn(user1, user3);
 
-		final ProjectRepresentation project1 = addProjectWithActionsAndMockPersistedProject(1).getProjectRepresentation();
-		final ProjectRepresentation project2 = addProjectWithActionsAndMockPersistedProject(2).getProjectRepresentation();
+		final ProjectRepresentation project1 = addProjectWithActionsAndMockPersistedProject(new UUID()).getProjectRepresentation();
+		final ProjectRepresentation project2 = addProjectWithActionsAndMockPersistedProject(new UUID()).getProjectRepresentation();
 
 		addProjectAuthorization(user1, project1);
 		addProjectAuthorization(user2, project2);
@@ -209,7 +210,7 @@ public class XMLImporterTest {
 
 		verify(persistenceService).authorize(user1.getEmail(), project1.getId());
 		verify(persistenceService).authorize(user2.getEmail(), project2.getId());
-		verify(persistenceService, never()).authorize(eq(user3.getEmail()), anyLong());
+		verify(persistenceService, never()).authorize(eq(user3.getEmail()), any(UUID.class));
 	}
 
 	@Test
@@ -217,8 +218,8 @@ public class XMLImporterTest {
 		final User user1 = addUserWithoutPassword(1, "user1");
 		final User user2 = addUserWithoutPassword(2, "user2");
 
-		final ProjectRepresentation project1 = addProjectWithActionsAndMockPersistedProject(1).getProjectRepresentation();
-		final ProjectRepresentation project2 = addProjectWithActionsAndMockPersistedProject(2).getProjectRepresentation();
+		final ProjectRepresentation project1 = addProjectWithActionsAndMockPersistedProject(new UUID()).getProjectRepresentation();
+		final ProjectRepresentation project2 = addProjectWithActionsAndMockPersistedProject(new UUID()).getProjectRepresentation();
 
 		addProjectAuthorization(user1, project1);
 		addProjectAuthorization(user2, project2);
@@ -237,42 +238,41 @@ public class XMLImporterTest {
 
 		verify(persistenceService).authorize(persistedUser1.getEmail(), project1.getId());
 		verify(persistenceService).authorize(persistedUser2.getEmail(), project2.getId());
-		verify(persistenceService, never()).authorize(eq(persistedUser3.getEmail()), anyLong());
+		verify(persistenceService, never()).authorize(eq(persistedUser3.getEmail()), any(UUID.class));
 	}
 
 	@Test
-	public void xmlProjectIdIsOnlyUsedForMapInsideXMLAndShouldNotBeUsedForPersisting() throws Exception {
+	public void shouldKeepTheXmlProjectIdInPersistence() throws Exception {
 		final User user1 = addUserWithoutPassword(1, "user1");
-		final ProjectRepresentation project1 = addProjectWithActions(1).getProjectRepresentation();
+		final ProjectRepresentation project1 = addProjectWithActions(new UUID()).getProjectRepresentation();
 		addProjectAuthorization(user1, project1);
 
-		final ProjectRepresentation persistedProject = ProjectTestUtils.createRepresentation(2);
 		when(persistenceService.retrieveUserByEmail(Mockito.anyString())).thenThrow(new NoResultFoundException("", null));
 		when(persistenceService.persistOrUpdateUser(any(User.class))).thenReturn(user1);
-		when(persistenceService.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(persistedProject);
 
 		importer.persistObjects();
 
-		verify(persistenceService).authorize(user1.getEmail(), persistedProject.getId());
+		verify(persistenceService).persistOrUpdateProjectRepresentation(eq(project1));
+		verify(persistenceService).authorize(user1.getEmail(), project1.getId());
 	}
 
 	@Test
 	public void userIdShouldBeUpdatedWithPersistedOnesWhenImportingActions() throws Exception {
 		final long persistedUserId = 3;
-		final long persistedProjectId = 2;
+		final UUID projectId = new UUID();
 
 		final long exportedUserId = 112233;
 		addUserWithoutPassword(exportedUserId, "user1");
-		final ProjectXMLNode node = addProjectWithActions(1, exportedUserId);
+		final ProjectXMLNode node = addProjectWithActions(projectId, exportedUserId);
 
 		when(persistenceService.retrieveUserByEmail(Mockito.anyString())).thenThrow(new NoResultFoundException("", null));
 		when(persistenceService.persistOrUpdateUser(any(User.class))).thenReturn(UserTestUtils.createUser(persistedUserId));
 		when(persistenceService.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(
-				ProjectTestUtils.createRepresentation(persistedProjectId));
+				ProjectTestUtils.createRepresentation(projectId));
 
 		importer.persistObjects();
 
-		verify(persistenceService, times(node.getActions().size())).persistActions(eq(persistedProjectId), eq(persistedUserId), anyListOf(ModelAction.class),
+		verify(persistenceService, times(node.getActions().size())).persistActions(eq(projectId), eq(persistedUserId), anyListOf(ModelAction.class),
 				any(Date.class));
 	}
 
@@ -280,7 +280,7 @@ public class XMLImporterTest {
 		projectAuthorizations.add(new ProjectAuthorizationXMLNode(new ProjectAuthorization(user, project)));
 	}
 
-	private ProjectXMLNode addProjectWithActionsAndMockPersistedProject(final long projectId) throws Exception, PersistenceException {
+	private ProjectXMLNode addProjectWithActionsAndMockPersistedProject(final UUID projectId) throws Exception, PersistenceException {
 		final ProjectRepresentation projectRepresentation = ProjectTestUtils.createRepresentation(projectId);
 		final List<UserAction> actions = UserActionTestUtils.createRandomUserActionList(projectId, USER_ID);
 
@@ -291,11 +291,11 @@ public class XMLImporterTest {
 		return projectXMLNode;
 	}
 
-	private ProjectXMLNode addProjectWithActions(final long projectId) throws Exception, PersistenceException {
+	private ProjectXMLNode addProjectWithActions(final UUID projectId) throws Exception, PersistenceException {
 		return addProjectWithActions(projectId, 15);
 	}
 
-	private ProjectXMLNode addProjectWithActions(final long projectId, final long userId) throws Exception, PersistenceException {
+	private ProjectXMLNode addProjectWithActions(final UUID projectId, final long userId) throws Exception, PersistenceException {
 		final ProjectRepresentation projectRepresentation = ProjectTestUtils.createRepresentation(projectId);
 		final List<UserAction> actions = UserActionTestUtils.createRandomUserActionList(projectId, userId);
 
@@ -341,12 +341,12 @@ public class XMLImporterTest {
 		}
 	}
 
-	private void assertActionsWerePersistedRelatedToThisProject(final List<UserAction> actions, final long projectId)
+	private void assertActionsWerePersistedRelatedToThisProject(final List<UserAction> actions, final UUID projectId)
 			throws PersistenceException {
-		final ArgumentCaptor<Long> argument = ArgumentCaptor.forClass(Long.class);
+		final ArgumentCaptor<UUID> argument = ArgumentCaptor.forClass(UUID.class);
 		verify(persistenceService, times(actions.size())).persistActions(argument.capture(), anyLong(), anyListOf(ModelAction.class),
 				any(Date.class));
-		assertEquals(argument.getValue(), projectId, 0);
+		assertEquals(argument.getValue(), projectId);
 	}
 
 }
