@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.services.storage;
+package br.com.oncast.ontrack.server.services.storage;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,29 +6,24 @@ import java.io.IOException;
 import org.apache.commons.fileupload.FileItem;
 
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.storage.FileUploadFieldNames;
 
 import com.google.common.io.Files;
 
 public class FileUploadFormObject {
-
-	public static interface FieldNames {
-		public static final String FILE_NAME = "fileName";
-		public static final String FILE = "uploadingFile";
-		public static final String PROJECT_ID = "projectId";
-	}
 
 	private byte[] data;
 	private String fileName;
 	private UUID projectId;
 
 	public void parseField(final FileItem fileItem) {
-		if (!fileItem.isFormField() && FieldNames.FILE.equals(fileItem.getFieldName())) {
+		if (!fileItem.isFormField() && FileUploadFieldNames.FILE.equals(fileItem.getFieldName())) {
 			this.data = fileItem.get();
 		}
-		else if (FieldNames.FILE_NAME.equals(fileItem.getFieldName())) {
+		else if (FileUploadFieldNames.FILE_NAME.equals(fileItem.getFieldName())) {
 			this.fileName = fileItem.getString();
 		}
-		else if (FieldNames.PROJECT_ID.equals(fileItem.getFieldName())) {
+		else if (FileUploadFieldNames.PROJECT_ID.equals(fileItem.getFieldName())) {
 			this.projectId = new UUID(fileItem.getString());
 		}
 	}

@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.configuration.Configurations;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.shared.services.storage.FileUploadFormObject;
 
 import com.google.common.io.Files;
 

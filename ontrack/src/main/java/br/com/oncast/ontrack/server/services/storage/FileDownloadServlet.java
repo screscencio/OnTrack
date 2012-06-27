@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.storage.FileUploadFormObject;
+import br.com.oncast.ontrack.shared.services.storage.FileUploadFieldNames;
 
 import com.google.common.io.Files;
 
@@ -26,7 +26,7 @@ public class FileDownloadServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		try {
-			final String fileId = request.getParameter(FileUploadFormObject.FieldNames.FILE_NAME);
+			final String fileId = request.getParameter(FileUploadFieldNames.FILE_NAME);
 			if (fileId == null) throw new RuntimeException("Thre request is NOT complete, maybe there are missing request parameters.");
 
 			final File file = ServerServiceProvider.getInstance().getStorageService().retrieve(new UUID(fileId));

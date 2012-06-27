@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.shared.services.storage.FileUploadFormObject;
+import br.com.oncast.ontrack.shared.services.storage.FileUploadFieldNames;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
@@ -28,7 +28,7 @@ public class AttachmentFileWidget extends Composite {
 		this();
 		downloadLink.setTarget("_blank");
 		downloadLink.setText(fileRepresentation.getFileName());
-		downloadLink.setHref(URL.encode(GWT.getModuleBaseURL() + "file/download?" + FileUploadFormObject.FieldNames.FILE_NAME + "="
+		downloadLink.setHref(URL.encode(GWT.getModuleBaseURL() + "file/download?" + FileUploadFieldNames.FILE_NAME + "="
 				+ fileRepresentation.getId().toStringRepresentation()));
 	}
 }

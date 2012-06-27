@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.storage.FileUploadFormObject;
+import br.com.oncast.ontrack.shared.services.storage.FileUploadFieldNames;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -67,9 +67,9 @@ public class UploadWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		form.setEncoding(FormPanel.ENCODING_MULTIPART);
 		form.setMethod(FormPanel.METHOD_POST);
-		fileName.setName(FileUploadFormObject.FieldNames.FILE_NAME);
-		fileUpload.setName(FileUploadFormObject.FieldNames.FILE);
-		projectId.setName(FileUploadFormObject.FieldNames.PROJECT_ID);
+		fileName.setName(FileUploadFieldNames.FILE_NAME);
+		fileUpload.setName(FileUploadFieldNames.FILE);
+		projectId.setName(FileUploadFieldNames.PROJECT_ID);
 
 		fileUpload.addChangeHandler(new ChangeHandler() {
 			@Override
