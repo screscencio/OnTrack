@@ -29,7 +29,7 @@ public class SendFeedbackMail {
 	public void send() {
 		try {
 			final String mailContent = HtmlMailContent.forSendFeedback(currentUser, feedbackMessage);
-			sender.subject(getSubject()).htmlContent(mailContent).sendToDefaultEmail();
+			sender.subject(getSubject()).replyTo(currentUser).htmlContent(mailContent).sendToDefaultEmail();
 		}
 		catch (final MessagingException e) {
 			throw new RuntimeException("Exception configuring mail service.", e);

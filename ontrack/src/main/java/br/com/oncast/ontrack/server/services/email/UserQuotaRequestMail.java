@@ -23,7 +23,7 @@ public class UserQuotaRequestMail {
 	public void send() {
 		try {
 			final String mailContent = HtmlMailContent.forProjectCreationQuotaRequest(currentUser);
-			sender.subject(createProjectCreationQuotaRequestSubject()).htmlContent(mailContent).sendToDefaultEmail();
+			sender.subject(createProjectCreationQuotaRequestSubject()).replyTo(currentUser).htmlContent(mailContent).sendToDefaultEmail();
 		}
 		catch (final MessagingException e) {
 			throw new RuntimeException("Exception configuring mail service.", e);

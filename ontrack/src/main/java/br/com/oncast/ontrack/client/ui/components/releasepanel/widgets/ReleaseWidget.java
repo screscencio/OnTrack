@@ -112,6 +112,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		@Source("priority-delete.png")
 		ImageResource menuReleaseDelete();
+
+		@Source("annotationIcon.png")
+		ImageResource annotationIcon();
 	}
 
 	@UiField
@@ -128,6 +131,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected EditableLabel descriptionLabel;
+
+	@UiField
+	protected Image annotationIcon;
 
 	@UiField
 	protected Image progressIcon;
@@ -243,6 +249,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				})
 				.pop();
 		isMenuOpen = true;
+	}
+
+	@UiHandler("annotationIcon")
+	protected void showAnnotationPanel(final ClickEvent event) {
+		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(release);
 	}
 
 	@UiHandler("progressIcon")

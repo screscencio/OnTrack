@@ -1,11 +1,14 @@
 package br.com.oncast.ontrack.client.ui.components.annotations;
 
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ScopeDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -27,7 +30,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	interface AnnotationsPanelUiBinder extends UiBinder<Widget, AnnotationsPanel> {}
 
 	@UiField(provided = true)
-	SubjectDetailWidget<Scope> subjectDetails;
+	SubjectDetailWidget subjectDetails;
 
 	@UiField
 	AnnotationsWidget annotations;
@@ -35,9 +38,18 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@UiField
 	FocusPanel rootPanel;
 
-	public AnnotationsPanel() {
-		subjectDetails = new ScopeDetailWidget();
+	private AnnotationsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId) {
+		subjectDetails = detailWidget;
 		initWidget(uiBinder.createAndBindUi(this));
+		annotations.setSubjectId(subjectId);
+	}
+
+	public static AnnotationsPanel forRelease(final Release release) {
+		return new AnnotationsPanel(new ReleaseDetailWidget(release), release.getId());
+	}
+
+	public static AnnotationsPanel forScope(final Scope scope) {
+		return new AnnotationsPanel(new ScopeDetailWidget(scope), scope.getId());
 	}
 
 	@UiHandler("rootPanel")
@@ -60,11 +72,6 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		if (!isVisible()) return;
 
 		CloseEvent.fire(this, this);
-	}
-
-	public void setScope(final Scope scope) {
-		subjectDetails.setSubject(scope);
-		annotations.setSubjectId(scope.getId());
 	}
 
 }

@@ -67,6 +67,13 @@
 				margin-bottom: -2px;
 			}
 			
+			.annotationIcon {
+				margin-bottom: -2px;
+				background-size: 14px;
+				width: 14px !important;
+				height: 14px !important;
+			}
+			
 			.descriptionLabel {
 				position: absolute;
 				top: 0px;
@@ -133,10 +140,6 @@
 				width: 100%;
 			}
 			
-			/* //TODO+++ think a better way to handle border problem */
-			.scopeContainer > tbody > tr:first-child > td > div {
-			}
-			
 			.chartPanel {
                 width: 900px;
                 z-index: 2;
@@ -151,20 +154,15 @@
 		<g:FocusPanel ui:field="menuMouseOverArea">
 			<g:HTMLPanel>
 				<g:HorizontalPanel ui:field="header" styleName="{style.header}" verticalAlignment="middle">
-					<g:cell width="1">
-						<g:Image resource="{resources.containerStateOpened}" ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem}" />
-					</g:cell>
+					<g:Image resource="{resources.containerStateOpened}" ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem}" />
 					<g:cell width="100%" height="100%">
 						<g:FocusPanel styleName="{style.containerStateToogleClickableArea}">
 							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
 						</g:FocusPanel>
 					</g:cell>
-					<g:cell width="1">
-						<g:Image ui:field="progressIcon" resource="{resources.progress0}" styleName="{style.headerItem} {style.progressIcon}"/>
-					</g:cell>
-					<g:cell width="1">
-						<g:Image ui:field="kanbanLink" resource="{resources.kanbanIcon}" styleName="{style.headerItem} {style.kanbanIcon}" />
-					</g:cell>
+					<g:Image ui:field="annotationIcon" resource="{resources.annotationIcon}" styleName="{style.headerItem} {style.annotationIcon}"/>
+					<g:Image ui:field="progressIcon" resource="{resources.progress0}" styleName="{style.headerItem} {style.progressIcon}"/>
+					<g:Image ui:field="kanbanLink" resource="{resources.kanbanIcon}" styleName="{style.headerItem} {style.kanbanIcon}" />
 				</g:HorizontalPanel>
 				<g:Image resource="{resources.menuIcon}" styleName="{style.menuLink}" ui:field="menuIcon" visible="false"/>
 			</g:HTMLPanel>

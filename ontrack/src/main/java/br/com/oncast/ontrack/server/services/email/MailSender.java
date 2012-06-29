@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.email;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -37,6 +38,11 @@ public class MailSender {
 
 	public MailSender subject(final String string) throws MessagingException {
 		message.setSubject(string, "UTF-8");
+		return this;
+	}
+
+	public MailSender replyTo(final String replyTo) throws AddressException, MessagingException {
+		message.setReplyTo(new Address[] { new InternetAddress(replyTo) });
 		return this;
 	}
 

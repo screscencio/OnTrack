@@ -13,12 +13,12 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class AnnotationServiceImpl implements AnnotationService {
 
-	private AnnotationsPanel annotationsPanel;
 	private final ActionExecutionService actionExecutionService;
 	private final ContextProviderService contextProviderService;
 	private final AuthenticationService authenticationService;
@@ -34,14 +34,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public void showAnnotationsFor(final Scope scope, final PopupCloseListener closeListener) {
-		final AnnotationsPanel panel = getAnnotationPanel();
-		panel.setScope(scope);
+		final AnnotationsPanel panel = AnnotationsPanel.forScope(scope);
 
 		PopupConfig.configPopup().popup(panel).onClose(closeListener).setModal(true).pop();
-	}
-
-	protected AnnotationsPanel getAnnotationPanel() {
-		return annotationsPanel == null ? annotationsPanel = new AnnotationsPanel() : annotationsPanel;
 	}
 
 	@Override
@@ -69,5 +64,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	private void doUserAction(final AnnotationAction action) {
 		actionExecutionService.onUserActionExecutionRequest(action);
+	}
+
+	@Override
+	public void showAnnotationsFor(final Release release) {
+		final AnnotationsPanel panel = AnnotationsPanel.forRelease(release);
+
+		PopupConfig.configPopup().popup(panel).setModal(true).pop();
 	}
 }

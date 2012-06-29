@@ -121,6 +121,7 @@ public class UploadWidget extends Composite {
 			return;
 		}
 
+		ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Uploading your file...");
 		projectId.setValue(getCurrentProject().getId().toStringRepresentation());
 		fileName.setValue(filename);
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener(filename, listener));

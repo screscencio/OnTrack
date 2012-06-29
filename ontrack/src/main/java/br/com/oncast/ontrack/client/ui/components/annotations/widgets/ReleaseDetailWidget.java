@@ -6,9 +6,9 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -18,30 +18,30 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeDetailWidget extends Composite implements SubjectDetailWidget {
+public class ReleaseDetailWidget extends Composite implements SubjectDetailWidget {
 
-	private static ScopeDetailWidgetUiBinder uiBinder = GWT.create(ScopeDetailWidgetUiBinder.class);
+	private static ReleaseDetailWidgetUiBinder uiBinder = GWT.create(ReleaseDetailWidgetUiBinder.class);
 
-	interface ScopeDetailWidgetUiBinder extends UiBinder<Widget, ScopeDetailWidget> {}
+	interface ReleaseDetailWidgetUiBinder extends UiBinder<Widget, ReleaseDetailWidget> {}
 
-	public ScopeDetailWidget() {
+	public ReleaseDetailWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
-	}
-
-	public ScopeDetailWidget(final Scope scope) {
-		this();
-		setSubject(scope);
 	}
 
 	@UiField
 	Label title;
 
-	private Scope scope;
+	private Release release;
 
 	private ActionExecutionListener actionExecutionListener;
 
-	private void setSubject(final Scope scope) {
-		this.scope = scope;
+	public ReleaseDetailWidget(final Release release) {
+		this();
+		setSubject(release);
+	}
+
+	private void setSubject(final Release release) {
+		this.release = release;
 		update();
 	}
 
@@ -64,14 +64,14 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
-				if (action instanceof ScopeUpdateAction && action.getReferenceId().equals(scope.getId())) update();
+				if (action instanceof ReleaseRenameAction && action.getReferenceId().equals(release.getId())) update();
 			}
 		};
 		return actionExecutionListener;
 	}
 
 	private void update() {
-		title.setText(scope.getDescription());
+		title.setText(release.getDescription());
 	}
 
 }
