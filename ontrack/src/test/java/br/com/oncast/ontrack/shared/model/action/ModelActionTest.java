@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -55,6 +56,12 @@ public abstract class ModelActionTest {
 		catch (final NoSuchMethodException e) {
 			fail(getActionName() + " should have a constructor with no arguments.");
 		}
+	}
+
+	@Test
+	public void actionsNoArgumentConstructorShouldHaveProtecredVisibility() throws Exception {
+		final Constructor<? extends ModelAction> noArgumentConstructor = getActionType().getDeclaredConstructor();
+		assertTrue(Modifier.isProtected(noArgumentConstructor.getModifiers()));
 	}
 
 	@Test
@@ -175,7 +182,7 @@ public abstract class ModelActionTest {
 	@Test
 	public void actionShouldBeMappedOnActionExecuter() throws Exception {
 		try {
-			ActionExecuter.executeAction(mock(ProjectContext.class), Mockito.mock(ActionContext.class), getInstance());
+			ActionExecuter.executeAction(mock(ProjectContext.class), Mockito.mock(ActionContext.class), getNewInstance());
 		}
 		catch (final UnableToCompleteActionException e) {
 			assertFalse(e.getMessage(), e.getMessage().contains("There is no mapped action executer"));
@@ -185,7 +192,7 @@ public abstract class ModelActionTest {
 
 	@Test
 	public void shouldSetReferenceUUIDBeforeExecution() throws Exception {
-		final ModelAction action = getInstance();
+		final ModelAction action = getNewInstance();
 		assertNotNull(action.getReferenceId());
 	}
 
@@ -259,7 +266,7 @@ public abstract class ModelActionTest {
 		return getActionType().getSimpleName();
 	}
 
-	protected abstract ModelAction getInstance();
+	protected abstract ModelAction getNewInstance();
 
 	protected abstract Class<? extends ModelAction> getActionType();
 

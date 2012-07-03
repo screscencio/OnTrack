@@ -1,24 +1,37 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:style src="../style/default.css">
+	<ui:style src="../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.Separator.SeparatorStyle" >
 
 		.separator {
-			margin: 10px -15px;
-		}
-
-		.border1 {
-			background: COLOR_MENUBOX_SEPARATOR_BORDER_TOP;
+			margin: 10px 0px;
 		}
 		
-		.border2 {
-			background: COLOR_MENUBOX_SEPARATOR_BORDER_BOTTOM;
+		.verticalSeparator {
+			margin: 0px;
+			height: 100%;
+		}
+		
+		.horizontal {
+			height: 0px;
+			width: 100%;
+			
+			border: 0px;
+			border-top: COLOR_MENUBOX_SEPARATOR_BORDER_TOP solid 1px;
+			border-bottom: COLOR_MENUBOX_SEPARATOR_BORDER_BOTTOM solid 1px;
+		}
+		
+		.vertical {
+			height: 100%;
+			width: 0px;
+			
+			border: 0px;
+			border-left: COLOR_MENUBOX_SEPARATOR_BORDER_TOP solid 1px;
+			border-right: COLOR_MENUBOX_SEPARATOR_BORDER_BOTTOM solid 1px;
 		}
 
 	</ui:style>
-
-	<g:HTMLPanel styleName="{style.separator}">
-		<div class="{style.border1} {style.borderDecoration}" />
-		<div class="{style.border2} {style.borderDecoration}" />
+	<g:HTMLPanel ui:field="rootPanel" styleName="{style.separator}">
+		<g:SimplePanel ui:field="border" styleName="{style.borderDecoration} {style.horizontal}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

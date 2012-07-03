@@ -54,7 +54,7 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 	}
 
 	private ModelAction execute() throws UnableToCompleteActionException {
-		return getInstance().execute(context, Mockito.mock(ActionContext.class));
+		return getNewInstance().execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new AnnotationRemoveAction(annotation.getId(), annotatedObjectId);
 	}
 

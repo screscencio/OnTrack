@@ -27,7 +27,7 @@ public class ReleaseDeclareStartDayAction implements ReleaseAction {
 	@IgnoredByDeepEquality
 	private Date date;
 
-	ReleaseDeclareStartDayAction() {}
+	protected ReleaseDeclareStartDayAction() {}
 
 	public ReleaseDeclareStartDayAction(final UUID referenceId, final Date date) {
 		this.referenceId = referenceId;

@@ -151,7 +151,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new KanbanColumnRenameAction(new UUID(), "", "");
 	}
 }

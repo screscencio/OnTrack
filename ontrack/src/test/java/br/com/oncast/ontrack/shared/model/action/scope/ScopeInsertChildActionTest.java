@@ -135,7 +135,7 @@ public class ScopeInsertChildActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ScopeInsertChildAction(new UUID(), "");
 	}
 

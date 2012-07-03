@@ -88,7 +88,7 @@ public class ScopeInsertSiblingDownActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ScopeInsertSiblingDownAction(new UUID(), "");
 	}
 

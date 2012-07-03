@@ -94,7 +94,7 @@ public class ScopeMoveLeftActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ScopeMoveLeftAction(new UUID());
 	}
 }

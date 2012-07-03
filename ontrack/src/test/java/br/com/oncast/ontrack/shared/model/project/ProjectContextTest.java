@@ -2,8 +2,7 @@ package br.com.oncast.ontrack.shared.model.project;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -24,6 +23,8 @@ import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
+import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
@@ -35,6 +36,8 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.AnnotationTestUtils;
+import br.com.oncast.ontrack.utils.ChecklistTestUtils;
+import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
@@ -299,5 +302,94 @@ public class ProjectContextTest {
 
 		assertEquals(user, context.findUser(user.getEmail()));
 		assertEquals(user2, context.findUser(user2.getEmail()));
+	}
+
+	@Test
+	public void shouldBeAbleToRetrieveTheAddedChecklistByItsIdAndTheSubjectId() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		final Checklist addedChecklist = createAndAddChecklist(subjectId);
+		assertEquals(addedChecklist, context.findChecklist(addedChecklist.getId(), subjectId));
+	}
+
+	@Test
+	public void addingTheSameChecklistTwiceShouldNotDuplicate() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		final Checklist checklist = createAndAddChecklist(subjectId);
+		for (int i = 0; i < 10; i++) {
+			context.addChecklist(checklist, subjectId);
+		}
+		assertEquals(checklist, context.findChecklist(checklist.getId(), subjectId));
+		assertEquals(1, context.findChecklistsFor(subjectId).size());
+	}
+
+	@Test
+	public void shouldBeAbleToRetrieveAllCheckblistsForAGivenSubjectId() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		final Checklist checklist1 = createAndAddChecklist(subjectId);
+		final Checklist checklist2 = createAndAddChecklist(subjectId);
+		final Checklist checklist3 = createAndAddChecklist(subjectId);
+
+		assertEquals(checklist1, context.findChecklist(checklist1.getId(), subjectId));
+		assertEquals(checklist2, context.findChecklist(checklist2.getId(), subjectId));
+		assertEquals(checklist3, context.findChecklist(checklist3.getId(), subjectId));
+
+		AssertTestUtils.assertContainsAll(context.findChecklistsFor(subjectId), checklist1, checklist2, checklist3);
+	}
+
+	@Test(expected = ChecklistNotFoundException.class)
+	public void shouldThrowChecklistNotFoundExceptionWhenThereIsNoChecklistForTheGivenIdAndSubjectId() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		context.findChecklist(new UUID(), new UUID());
+	}
+
+	@Test(expected = ChecklistNotFoundException.class)
+	public void shouldThrowChecklistNotFoundExceptionEvenWhenThereIsAChecklistWithTheGivenIdButItIsNotAssociatedWithTheGivenSubjectId() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		final Checklist checklist = createAndAddChecklist(subjectId);
+		context.findChecklist(checklist.getId(), new UUID());
+	}
+
+	@Test(expected = ChecklistNotFoundException.class)
+	public void shouldThrowChecklistNotFoundExceptionEvenWhenThereIsAChecklistAssociatedWithTheGivenSubjectIdButTheChecklistIdIsDifferentFromTheGivenOne()
+			throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		createAndAddChecklist(subjectId);
+
+		context.findChecklist(new UUID(), subjectId);
+	}
+
+	@Test
+	public void shouldReturnAEmptyListWhenThereIsNoChecklistForTheGivenSubject() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		assertTrue(context.findChecklistsFor(new UUID()).isEmpty());
+	}
+
+	@Test
+	public void shouldBeAbleToRemoveAPreviouslyAddedChecklist() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		final Checklist checklist = createAndAddChecklist(subjectId);
+
+		assertEquals(checklist, context.findChecklist(checklist.getId(), subjectId));
+
+		context.removeChecklist(checklist.getId(), subjectId);
+		try {
+			context.findChecklist(checklist.getId(), subjectId);
+			fail("Checklist was not removed from the context.");
+		}
+		catch (final ChecklistNotFoundException e) {
+			assertTrue(true);
+		}
+	}
+
+	private Checklist createAndAddChecklist(final UUID subjectId) {
+		final Checklist checklist1 = ChecklistTestUtils.create();
+		context.addChecklist(checklist1, subjectId);
+		return checklist1;
 	}
 }

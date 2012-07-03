@@ -114,7 +114,7 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ReleaseDeclareEndDayAction(new UUID(), new Date());
 	}
 

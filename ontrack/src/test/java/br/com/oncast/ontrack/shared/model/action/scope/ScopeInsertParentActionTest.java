@@ -114,7 +114,7 @@ public class ScopeInsertParentActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ScopeInsertParentAction(new UUID(), "");
 	}
 }

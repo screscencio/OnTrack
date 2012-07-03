@@ -27,14 +27,9 @@
 		
 	</ui:style>
 
-	<g:FormPanel ui:field="form">
-		<g:HorizontalPanel>
-			<g:TextBox ui:field="fileName" visible="false"/>
-			<g:TextBox ui:field="projectId" visible="false"/>
-			<g:FileUpload ui:field="fileUpload" visible="false"/>
-			
-			<g:Label ui:field="fileNameLabel" styleName="{style.fileNameLabel}"/>
-			<g:FocusPanel ui:field="uploadIcon" styleName="{style.uploadIcon} {style.uploadImg}"/>
-		</g:HorizontalPanel>
-	</g:FormPanel>
+	<g:HorizontalPanel>
+		<g:Label ui:field="fileNameLabel" styleName="{style.fileNameLabel}"/>
+		<g:FocusPanel ui:field="uploadIcon" styleName="{style.uploadIcon} {style.uploadImg}"/>
+		<g:SimplePanel ui:field="formPanel" visible="false"/>
+	</g:HorizontalPanel>
 </ui:UiBinder> 

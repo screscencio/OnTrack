@@ -24,7 +24,7 @@ public class FileUploadAction implements FileAction {
 	@Attribute
 	private String filePath;
 
-	public FileUploadAction() {}
+	protected FileUploadAction() {}
 
 	public FileUploadAction(final FileRepresentation fileRepresentation) {
 		this(fileRepresentation.getId(), fileRepresentation.getFileName(), fileRepresentation.getFilePath());

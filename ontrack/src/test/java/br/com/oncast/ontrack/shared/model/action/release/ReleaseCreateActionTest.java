@@ -266,12 +266,12 @@ public class ReleaseCreateActionTest extends ModelActionTest {
 
 	@Override
 	public void shouldSetReferenceUUIDBeforeExecution() throws Exception {
-		final ReleaseCreateAction action = (ReleaseCreateAction) getInstance();
+		final ReleaseCreateAction action = (ReleaseCreateAction) getNewInstance();
 		assertNotNull(action.getNewReleaseId());
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ReleaseCreateAction("");
 	}
 }

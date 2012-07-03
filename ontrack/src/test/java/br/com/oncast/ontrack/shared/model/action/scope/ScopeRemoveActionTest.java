@@ -231,7 +231,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ScopeRemoveAction(new UUID());
 	}
 }

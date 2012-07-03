@@ -154,7 +154,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ScopeDeclareProgressAction(new UUID(), "");
 	}
 }

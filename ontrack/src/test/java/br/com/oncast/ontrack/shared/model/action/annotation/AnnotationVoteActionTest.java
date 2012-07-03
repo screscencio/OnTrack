@@ -47,7 +47,7 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 
 	@Test
 	public void theReferenceIdShouldBeTheAnnotatedObjectId() throws Exception {
-		assertEquals(annotatedObjectId, getInstance().getReferenceId());
+		assertEquals(annotatedObjectId, getNewInstance().getReferenceId());
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 	}
 
 	private ModelAction execute() throws UnableToCompleteActionException {
-		return getInstance().execute(context, actionContext);
+		return getNewInstance().execute(context, actionContext);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new AnnotationVoteAction(annotation.getId(), annotatedObjectId);
 	}
 

@@ -13,6 +13,8 @@ import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationS
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationServiceImpl;
 import br.com.oncast.ontrack.client.services.authorization.AuthorizationService;
+import br.com.oncast.ontrack.client.services.checklist.ChecklistService;
+import br.com.oncast.ontrack.client.services.checklist.ChecklistServiceImpl;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
@@ -73,6 +75,7 @@ public class ClientServiceProvider {
 
 	private AnnotationService annotationService;
 	private UserDataService userDataService;
+	private ChecklistService checklistService;
 
 	private static ClientServiceProvider instance;
 
@@ -195,5 +198,10 @@ public class ClientServiceProvider {
 	public UserDataService getUserDataService() {
 		if (userDataService == null) userDataService = new UserDataServiceImpl();
 		return userDataService;
+	}
+
+	public ChecklistService getChecklistService() {
+		if (checklistService == null) checklistService = new ChecklistServiceImpl(getActionExecutionService());
+		return checklistService;
 	}
 }

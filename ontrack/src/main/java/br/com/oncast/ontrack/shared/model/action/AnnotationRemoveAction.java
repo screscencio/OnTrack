@@ -21,7 +21,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Element
 	private UUID annotatedObjectId;
 
-	public AnnotationRemoveAction() {}
+	protected AnnotationRemoveAction() {}
 
 	public AnnotationRemoveAction(final UUID id, final UUID annotatedObjectId) {
 		this.annotationId = id;

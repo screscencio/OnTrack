@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 
@@ -21,6 +22,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
@@ -87,6 +89,7 @@ public class PopupConfig {
 	private VerticalAlignment verticalAlignment;
 	private AlignmentReference alignVerticallyTo;
 	private boolean isModal = false;
+	private Widget previousNotificationParent;
 
 	private PopupConfig() {}
 
@@ -299,8 +302,14 @@ public class PopupConfig {
 			@Override
 			public void onWillHide() {
 				hidePopup();
+				if (isModal && previousNotificationParent != null) ClientServiceProvider.getInstance().getClientNotificationService()
+						.setNotificationParentWidget(previousNotificationParent);
 			}
 		}, isModal);
+
+		if (isModal) {
+			previousNotificationParent = ClientServiceProvider.getInstance().getClientNotificationService().setNotificationParentWidget(RootPanel.get());
+		}
 
 		if (!widgetToPopup.isAttached()) {
 			widgetToPopup.setVisible(false);

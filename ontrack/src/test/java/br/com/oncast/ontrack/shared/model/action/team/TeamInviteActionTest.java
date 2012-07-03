@@ -34,19 +34,19 @@ public class TeamInviteActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldNotBeAbleToUndoThisAction() throws Exception {
-		assertNull(getInstance().execute(context, Mockito.mock(ActionContext.class)));
+		assertNull(getNewInstance().execute(context, Mockito.mock(ActionContext.class)));
 	}
 
 	@Test
 	public void shouldAddUserToProjectContext() throws Exception {
-		getInstance().execute(context, Mockito.mock(ActionContext.class));
+		getNewInstance().execute(context, Mockito.mock(ActionContext.class));
 
 		final ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
 		Mockito.verify(context).addUser(captor.capture());
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new TeamInviteAction(invitor);
 	}
 

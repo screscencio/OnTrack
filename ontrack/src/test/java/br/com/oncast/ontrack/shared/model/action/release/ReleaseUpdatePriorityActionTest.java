@@ -178,7 +178,7 @@ public class ReleaseUpdatePriorityActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ReleaseUpdatePriorityAction(new UUID(), 2);
 	}
 }

@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.annotations;
 
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ChecklistsContainerWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ScopeDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
@@ -21,6 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationsPanel extends Composite implements HasCloseHandlers<AnnotationsPanel>, PopupAware {
@@ -33,28 +35,38 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	SubjectDetailWidget subjectDetails;
 
 	@UiField
+	Label subjectTitle;
+
+	@UiField
 	AnnotationsWidget annotations;
 
 	@UiField
 	FocusPanel rootPanel;
 
-	private AnnotationsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId) {
+	@UiField
+	ChecklistsContainerWidget checklist;
+
+	private AnnotationsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription) {
 		subjectDetails = detailWidget;
 		initWidget(uiBinder.createAndBindUi(this));
+
 		annotations.setSubjectId(subjectId);
+		checklist.setSubjectId(subjectId);
+		this.subjectTitle.setText(subjectDescription);
 	}
 
 	public static AnnotationsPanel forRelease(final Release release) {
-		return new AnnotationsPanel(new ReleaseDetailWidget(release), release.getId());
+		return new AnnotationsPanel(new ReleaseDetailWidget(release), release.getId(), release.getDescription());
 	}
 
 	public static AnnotationsPanel forScope(final Scope scope) {
-		return new AnnotationsPanel(new ScopeDetailWidget(scope), scope.getId());
+		return new AnnotationsPanel(new ScopeDetailWidget(scope), scope.getId(), scope.getDescription());
 	}
 
 	@UiHandler("rootPanel")
 	protected void onKeyDown(final KeyDownEvent e) {
 		if (BrowserKeyCodes.KEY_ESCAPE == e.getNativeKeyCode()) hide();
+		else e.stopPropagation();
 	}
 
 	@Override

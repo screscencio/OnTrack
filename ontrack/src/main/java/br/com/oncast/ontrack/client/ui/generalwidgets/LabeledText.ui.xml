@@ -1,0 +1,25 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style>
+		
+		.label {
+			font-weight: bold;
+			display: inline-block;
+			white-space: nowrap;
+		}
+		
+		.value {
+			display: inline-block;
+		}
+		
+	</ui:style>
+	
+	<g:HorizontalPanel>
+		<g:Label styleName="{style.label}" ui:field="label" />
+		<g:cell width="100%" horizontalAlignment="right">
+			<g:Label styleName="{style.value}" ui:field="value" />
+		</g:cell>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

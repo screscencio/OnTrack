@@ -15,11 +15,12 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets {
+public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets, HasText {
 
 	private static PaddedTextBoxUiBinder uiBinder = GWT.create(PaddedTextBoxUiBinder.class);
 
@@ -43,10 +44,12 @@ public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasK
 		textBox.setFocus(true);
 	}
 
+	@Override
 	public void setText(final String text) {
 		textBox.setText(text);
 	}
 
+	@Override
 	public String getText() {
 		return textBox.getText();
 	}

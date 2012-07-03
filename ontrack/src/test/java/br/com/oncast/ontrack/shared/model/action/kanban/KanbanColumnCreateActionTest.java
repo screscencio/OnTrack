@@ -153,7 +153,7 @@ public class KanbanColumnCreateActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new KanbanColumnCreateAction(release.getId(), newColumnDescription, true);
 	}
 }

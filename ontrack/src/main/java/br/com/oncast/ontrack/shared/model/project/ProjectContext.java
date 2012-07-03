@@ -7,6 +7,8 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
+import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotFoundException;
@@ -189,6 +191,25 @@ public class ProjectContext {
 		final FileRepresentation representation = project.findFileRepresentation(fileRepresentationId);
 		if (representation == null) throw new FileRepresentationNotFoundException("The file with id '" + fileRepresentationId + "' was not found");
 		return representation;
+	}
+
+	public void addChecklist(final Checklist checklist, final UUID subjectId) {
+		project.addChecklist(checklist, subjectId);
+	}
+
+	public void removeChecklist(final UUID checklistId, final UUID subjectId) {
+		project.removeChecklist(checklistId, subjectId);
+	}
+
+	public Checklist findChecklist(final UUID checklistId, final UUID subjectId) throws ChecklistNotFoundException {
+		final Checklist checklist = project.findChecklist(checklistId, subjectId);
+		if (checklist == null) throw new ChecklistNotFoundException("The checklist with id '" + checklistId.toStringRepresentation()
+				+ "' and associated with the subject with id '" + subjectId.toStringRepresentation() + "' was not found.");
+		return checklist;
+	}
+
+	public List<Checklist> findChecklistsFor(final UUID subjectId) {
+		return project.findChecklistsFor(subjectId);
 	}
 
 }

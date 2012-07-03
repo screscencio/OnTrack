@@ -5,7 +5,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -49,5 +51,9 @@ public class AssertTestUtils {
 
 	public static <T> void assertCollectionEquality(final Collection<T> expected, final Collection<T> actual) {
 		assertArrayEquals(expected.toArray(), actual.toArray());
+	}
+
+	public static <T> void assertContainsAll(final List<T> actual, final T... expected) {
+		assertTrue(actual.containsAll(Arrays.asList(expected)));
 	}
 }

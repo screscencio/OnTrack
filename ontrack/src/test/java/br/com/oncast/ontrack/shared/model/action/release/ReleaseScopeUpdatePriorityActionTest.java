@@ -150,7 +150,7 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ReleaseScopeUpdatePriorityAction(new UUID(), new UUID(), 2);
 	}
 

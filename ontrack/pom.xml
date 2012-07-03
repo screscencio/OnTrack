@@ -11,6 +11,7 @@
 	<properties>
 		<gwtModule>br.com.oncast.ontrack.Application</gwtModule>
 		<gwtVersion>2.4.0</gwtVersion>
+		<guavaVersion>12.0</guavaVersion>
 		<webappDirectory>${basedir}/war</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -54,6 +55,25 @@
 			<version>0.9</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/war/WEB-INF/lib/RequestDispatch-0.9.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305-gwt</artifactId>
+			<version>1.3.9</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/war/WEB-INF/lib/jsr305-gwt-1.3.9.jar</systemPath>
+	    </dependency>
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>${guavaVersion}</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava-gwt</artifactId>
+		    <version>${guavaVersion}</version>
+		    <scope>provided</scope>
 		</dependency>
 
 		<!-- Communication Related Dependencies. -->

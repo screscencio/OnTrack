@@ -344,7 +344,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ReleaseRemoveAction(new UUID());
 	}
 }

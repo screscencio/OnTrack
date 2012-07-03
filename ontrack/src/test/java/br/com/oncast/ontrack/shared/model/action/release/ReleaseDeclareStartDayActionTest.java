@@ -101,7 +101,7 @@ public class ReleaseDeclareStartDayActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ReleaseDeclareStartDayAction(new UUID(), new Date());
 	}
 }

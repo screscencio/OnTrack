@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -27,6 +30,7 @@ public class Project implements Serializable {
 	private Set<User> users;
 	private Map<UUID, List<Annotation>> annotationsMap;
 	private Set<FileRepresentation> fileRepresentations;
+	private ListMultimap<UUID, Checklist> checklistMap;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
@@ -38,6 +42,7 @@ public class Project implements Serializable {
 		this.projectScope = projectScope;
 		this.projectRelease = projectRelease;
 		annotationsMap = new HashMap<UUID, List<Annotation>>();
+		checklistMap = ArrayListMultimap.create();
 		users = new HashSet<User>();
 		fileRepresentations = new HashSet<FileRepresentation>();
 	}
@@ -116,6 +121,25 @@ public class Project implements Serializable {
 			if (file.getId().equals(fileRepresentationId)) return file;
 		}
 		return null;
+	}
+
+	public void addChecklist(final Checklist checklist, final UUID subjectId) {
+		if (!checklistMap.containsEntry(subjectId, checklist)) checklistMap.put(subjectId, checklist);
+	}
+
+	public Checklist findChecklist(final UUID checklistId, final UUID subjectId) {
+		for (final Checklist checklist : checklistMap.get(subjectId)) {
+			if (checklist.getId().equals(checklistId)) return checklist;
+		}
+		return null;
+	}
+
+	public List<Checklist> findChecklistsFor(final UUID subjectId) {
+		return checklistMap.get(subjectId);
+	}
+
+	public void removeChecklist(final UUID checklistId, final UUID subjectId) {
+		checklistMap.remove(subjectId, new Checklist(checklistId, null));
 	}
 
 }

@@ -1,15 +1,25 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	<ui:style src="../../../style/default.css">
 	
 		.title {
 			text-transform: uppercase;
 		}
 		
+		.detail {
+			margin-top: 3px;
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel>
-		<g:Label styleName="{style.title}" ui:field="title" />
+		<g:Label styleName="{style.title}" text="details" />
+		
+		<misc:LabeledText styleName="{style.detail}" ui:field="parent" label="Parent:" />
+		<misc:LabeledText styleName="{style.detail}" ui:field="effort" label="Total Effort:" />
+		<misc:LabeledText styleName="{style.detail}" ui:field="accomplishedEffort" label="Accomplished Effort:" />
+		<misc:LabeledText styleName="{style.detail}" ui:field="value" label="Total Value:" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

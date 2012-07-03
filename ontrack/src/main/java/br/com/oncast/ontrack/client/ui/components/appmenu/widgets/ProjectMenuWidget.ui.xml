@@ -39,6 +39,10 @@
         	margin-top: 16px;
         }
         
+        .separator {
+			margin: 10px -15px;
+        }
+        
         .switchProjectLabel {
 			margin-bottom: 10px;
         }
@@ -56,7 +60,7 @@
 		        </tr>
 		    </table>
            </g:Anchor>
-		<misc:Separator/>
+		<misc:Separator styleName="{style.separator}" />
 		<g:Label text="Switch project" styleName="{style.switchProjectLabel}"/>
 		<misc:ProjectSelectionWidget ui:field="projectSelectionWidget"/>
 	</layout:ApplicationPopupBoxContainer>

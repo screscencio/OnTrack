@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+	
+	<ui:style>
+		
+		.addChecklist {
+			cursor: pointer;
+			font-weight: bold;
+			
+			display: inline-block;
+			margin-left: 3px;
+		}
+		
+		.newChecklistTitle {
+			display: inline-block;
+			
+			width: 185px;
+		}
+		
+	</ui:style>
+	
+	<g:HTMLPanel>
+		<misc:VerticalModelWidgetContainer ui:field="checklists"/>
+		<misc:DefaultTextedTextBox ui:field="newChecklistTitle" styleName="{style.newChecklistTitle}" defaultText="New Checklist Title"/>
+		<g:Label ui:field="addChecklist" text="+" styleName="{style.addChecklist}"/>
+	</g:HTMLPanel>
+</ui:UiBinder> 

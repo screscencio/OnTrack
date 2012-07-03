@@ -25,22 +25,24 @@
 	</ui:style>
 
 	<layout:ApplicationWidgetContainer debugId="loginPlace">
-		<g:HTMLPanel styleName="{style.contentPanel}">
-			<g:Label text="Username" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
-			<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea">
-				<g:TextBox/>
-			</layout:ValidationInputContainer>
-			
-			<div class="{style.separator}" />
-			
-			<g:Label text="Password" ui:field="passwordLabel" styleName="{style.descriptionLabel}" />
-			<layout:ValidationInputContainer debugId="passwordInput" ui:field="passwordArea">
-				<g:PasswordTextBox/>
-			</layout:ValidationInputContainer>
-			
-			<div class="{style.separator}" />
-			<g:Button debugId="submitButton" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />
-		</g:HTMLPanel>
+		<g:FormPanel>
+			<g:HTMLPanel styleName="{style.contentPanel}">
+				<g:Label text="Username" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
+				<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea">
+					<g:TextBox name="email"/>
+				</layout:ValidationInputContainer>
+				
+				<div class="{style.separator}" />
+				
+				<g:Label text="Password" ui:field="passwordLabel" styleName="{style.descriptionLabel}" />
+				<layout:ValidationInputContainer debugId="passwordInput" ui:field="passwordArea">
+					<g:PasswordTextBox name="password"/>
+				</layout:ValidationInputContainer>
+				
+				<div class="{style.separator}" />
+				<g:Button debugId="submitButton" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />
+			</g:HTMLPanel>
+		</g:FormPanel>
 	</layout:ApplicationWidgetContainer>
 
 </ui:UiBinder> 

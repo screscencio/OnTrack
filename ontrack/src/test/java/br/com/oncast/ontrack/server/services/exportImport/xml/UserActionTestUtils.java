@@ -14,6 +14,8 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
@@ -127,6 +129,7 @@ public class UserActionTestUtils {
 		userActions.add(createAnnotationVoteRemoveAction());
 		userActions.add(createTeamInviteAction());
 		userActions.add(createFileUploadAction());
+		userActions.add(createChecklistCreateAction());
 		return userActions;
 	}
 
@@ -165,6 +168,14 @@ public class UserActionTestUtils {
 		for (int i = 0; i < new Random().nextInt(10); i++) {
 			actionList.remove(0);
 		}
+	}
+
+	public static UserAction createChecklistRemoveAction() throws Exception {
+		return createUserAction(new ChecklistRemoveAction(new UUID(), new UUID()));
+	}
+
+	public static UserAction createChecklistCreateAction() throws Exception {
+		return createUserAction(new ChecklistCreateAction(new UUID(), "checklist title"));
 	}
 
 	public static UserAction createFileUploadAction() throws Exception {

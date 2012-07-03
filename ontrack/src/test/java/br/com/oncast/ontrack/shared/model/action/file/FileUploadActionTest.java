@@ -105,11 +105,11 @@ public class FileUploadActionTest extends ModelActionTest {
 	}
 
 	private ModelAction execute() throws UnableToCompleteActionException {
-		return getInstance().execute(context, actionContext);
+		return getNewInstance().execute(context, actionContext);
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new FileUploadAction(fileId, fileName, filePath);
 	}
 

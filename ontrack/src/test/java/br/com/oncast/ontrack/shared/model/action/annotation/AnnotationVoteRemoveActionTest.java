@@ -46,7 +46,7 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void theReferenceIdShouldBeTheAnnotatedObjectId() throws Exception {
-		assertEquals(annotatedObjectId, getInstance().getReferenceId());
+		assertEquals(annotatedObjectId, getNewInstance().getReferenceId());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
@@ -86,11 +86,11 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 	}
 
 	private ModelAction execute() throws UnableToCompleteActionException {
-		return getInstance().execute(context, actionContext);
+		return getNewInstance().execute(context, actionContext);
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new AnnotationVoteRemoveAction(annotation.getId(), annotatedObjectId);
 	}
 

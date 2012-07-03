@@ -138,7 +138,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new AnnotationCreateAction(annotatedObjectId, message, attachmentFile.getId());
 	}
 

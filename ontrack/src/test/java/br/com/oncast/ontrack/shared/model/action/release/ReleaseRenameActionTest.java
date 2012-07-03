@@ -108,7 +108,7 @@ public class ReleaseRenameActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ReleaseRenameAction(new UUID(), "");
 	}
 }

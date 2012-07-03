@@ -94,7 +94,7 @@ public class KanbanColumnMoveActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new KanbanColumnMoveAction(new UUID(), kanbanColumnDescription, 1);
 	}
 }

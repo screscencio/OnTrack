@@ -115,7 +115,7 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 	}
 
 	@Override
-	protected ModelAction getInstance() {
+	protected ModelAction getNewInstance() {
 		return new ReleaseDeclareEstimatedVelocityAction(new UUID(), 0f);
 	}
 

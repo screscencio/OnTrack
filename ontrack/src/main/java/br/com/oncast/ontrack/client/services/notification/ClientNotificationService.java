@@ -26,20 +26,29 @@ public class ClientNotificationService {
 		notificationContainer = new NotificationContainer();
 	}
 
-	public void setNotificationParentWidget(final Widget widget) {
-		clearNotificationParentWidget();
+	/**
+	 * Set the Notification's ParentWidget, useful to set the notification's position or from where it will appear
+	 * @param the new parent widget
+	 * @return the previous parent widget
+	 */
+	public Widget setNotificationParentWidget(final Widget widget) {
+		final Widget previous = clearNotificationParentWidget();
 		notificationParentPanel = widget;
 		notificationParentPanel.getElement().appendChild(notificationContainer.getElement());
+		return previous;
 	}
 
-	public void clearNotificationParentWidget() {
-		if (notificationParentPanel == null) return;
+	public Widget clearNotificationParentWidget() {
+		if (notificationParentPanel == null) return null;
+
+		final Widget widget = notificationParentPanel;
+
 		notificationContainer.removeFromParent();
 		notificationParentPanel = null;
+		return widget;
 	}
 
 	private void addNotificationToNotificationContainer(final Notification notificationMessage) {
-		notificationContainer.clear();
 		notificationContainer.add(notificationMessage);
 	}
 
