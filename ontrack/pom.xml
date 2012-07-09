@@ -14,12 +14,6 @@
 		<guavaVersion>12.0</guavaVersion>
 		<webappDirectory>${basedir}/war</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<!-- Code analysis -->
-		<coverage.reports.dir>${basedir}/target/coverage-reports</coverage.reports.dir>
-		<sonar.jacoco.reportPath>${coverage.reports.dir}/jacoco-unit.exec</sonar.jacoco.reportPath>
-		<sonar.jacoco.itReportPath>${coverage.reports.dir}/jacoco-it.exec</sonar.jacoco.itReportPath>
-		<sonar.jacoco.jar>${basedir}/lib/jacocoagent.jar</sonar.jacoco.jar>
 	</properties>
 
 	<dependencies>
@@ -494,20 +488,6 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>-Xmx512M -XX:MaxPermSize=128M</argLine>
-					<argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
-					<excludes>
-						<exclude>**/TestUtils.java</exclude>
-						<exclude>**/*TestUtils.java</exclude>
-						<exclude>**/*Mock.java</exclude>
-					</excludes>
 				</configuration>
 			</plugin>
 
