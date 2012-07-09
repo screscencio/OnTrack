@@ -68,4 +68,11 @@ public class Checklist implements Serializable {
 		return new ArrayList<ChecklistItem>(items);
 	}
 
+	public ChecklistItem getItem(final UUID itemId) {
+		for (final ChecklistItem item : items) {
+			if (item.getId().equals(itemId)) return item;
+		}
+		return null;
+	}
+
 }

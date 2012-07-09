@@ -91,7 +91,7 @@ public class ChecklistAddItemActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new ChecklistAddItemAction(checklistId, subjectId, itemDescription);
+		return new ChecklistAddItemAction(subjectId, checklistId, itemDescription);
 	}
 
 	@Override

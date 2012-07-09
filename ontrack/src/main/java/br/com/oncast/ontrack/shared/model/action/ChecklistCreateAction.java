@@ -35,7 +35,7 @@ public class ChecklistCreateAction implements ChecklistAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		context.addChecklist(new Checklist(checklistId, title), subjectId);
-		return new ChecklistRemoveAction(checklistId, subjectId);
+		return new ChecklistRemoveAction(subjectId, checklistId);
 	}
 
 	@Override

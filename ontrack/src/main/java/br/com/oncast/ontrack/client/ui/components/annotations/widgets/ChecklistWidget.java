@@ -74,7 +74,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 				new ModelWidgetFactory<ChecklistItem, ChecklistItemWidget>() {
 					@Override
 					public ChecklistItemWidget createWidget(final ChecklistItem modelBean) {
-						return new ChecklistItemWidget(modelBean);
+						return new ChecklistItemWidget(subjectId, checklist.getId(), modelBean);
 					}
 				},
 				new ModelWidgetContainerListener() {

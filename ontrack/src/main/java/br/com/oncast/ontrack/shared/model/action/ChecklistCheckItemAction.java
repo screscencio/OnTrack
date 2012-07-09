@@ -1,9 +1,8 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistAddItemActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistCheckItemActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
@@ -12,16 +11,13 @@ import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@ConvertTo(ChecklistAddItemActionEntity.class)
-public class ChecklistAddItemAction implements ChecklistAction {
+@ConvertTo(ChecklistCheckItemActionEntity.class)
+public class ChecklistCheckItemAction implements ChecklistAction {
 
 	private static final long serialVersionUID = 1L;
 
 	@Element
 	private UUID checklistId;
-
-	@Attribute
-	private String itemDescription;
 
 	@Element
 	private UUID subjectId;
@@ -29,26 +25,25 @@ public class ChecklistAddItemAction implements ChecklistAction {
 	@Element
 	private UUID itemId;
 
-	protected ChecklistAddItemAction() {}
+	protected ChecklistCheckItemAction() {}
 
-	public ChecklistAddItemAction(final UUID subjectId, final UUID checklistId, final String itemDescription) {
+	public ChecklistCheckItemAction(final UUID subjectId, final UUID checklistId, final UUID itemId) {
 		this.checklistId = checklistId;
-		this.itemId = new UUID();
+		this.itemId = itemId;
 		this.subjectId = subjectId;
-		this.itemDescription = itemDescription;
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Checklist list = ActionHelper.findChecklist(context, checklistId, subjectId);
-		list.addItem(new ChecklistItem(itemId, itemDescription));
-
-		return new ChecklistRemoveItemAction(itemId, checklistId, subjectId);
+		final ChecklistItem item = list.getItem(itemId);
+		item.setChecked(true);
+		return new ChecklistUncheckAction(subjectId, checklistId, itemId);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return checklistId;
+		return itemId;
 	}
 
 }

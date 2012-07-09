@@ -11,7 +11,7 @@
 	</ui:style>
 
 	<g:HorizontalPanel>
-		<g:CheckBox styleName="{style.checkbox}" />
+		<g:CheckBox ui:field="checkbox" styleName="{style.checkbox}" />
 		<g:Label ui:field="description" />
 	</g:HorizontalPanel>
 </ui:UiBinder> 

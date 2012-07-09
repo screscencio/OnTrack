@@ -8,4 +8,6 @@ public interface ChecklistService {
 
 	void addCheckistItem(UUID checklistId, UUID subjectId, String itemDescription);
 
+	void setItemChecked(UUID subjectId, UUID checklistId, UUID itemId, Boolean isChecked);
+
 }

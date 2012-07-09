@@ -11,11 +11,14 @@ public class ChecklistItem implements Serializable {
 	private String description;
 	private UUID id;
 
+	private boolean checked;
+
 	protected ChecklistItem() {}
 
 	public ChecklistItem(final UUID id, final String description) {
 		this.id = id;
 		this.description = description;
+		this.checked = false;
 	}
 
 	public String getDescription() {
@@ -24,6 +27,14 @@ public class ChecklistItem implements Serializable {
 
 	public UUID getId() {
 		return id;
+	}
+
+	public void setChecked(final boolean b) {
+		checked = b;
+	}
+
+	public boolean isChecked() {
+		return checked;
 	}
 
 }
