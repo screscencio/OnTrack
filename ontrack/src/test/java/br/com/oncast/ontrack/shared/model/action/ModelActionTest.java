@@ -14,6 +14,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -131,7 +132,7 @@ public abstract class ModelActionTest {
 	public void entitysNonStaticFieldsShouldHaveGetterAndSetter() throws Exception {
 		final Class<?> type = getEntityType();
 		try {
-			for (final Field field : type.getDeclaredFields()) {
+			for (final Field field : getAllNotInjectedFields(type)) {
 				final String name = field.getName();
 				final String methodSuffix = firstCharToUpperCase(name);
 				type.getDeclaredMethod((isBooleanType(field) ? "is" : "get") + methodSuffix);
@@ -174,8 +175,7 @@ public abstract class ModelActionTest {
 
 	@Test
 	public void entitysFieldsShouldHavePersistenceAnnotations() throws Exception {
-		for (final Field field : getEntityType().getDeclaredFields()) {
-			if (field.getName().contains("$")) return;
+		for (final Field field : getAllNotInjectedFields(getEntityType())) {
 			ModelActionEntityFieldAnnotationsTestUtils.assertField(field);
 		}
 	}
@@ -183,7 +183,7 @@ public abstract class ModelActionTest {
 	@Test
 	public void shouldNotHaveRepeatedColumnName() throws Exception {
 		final HashSet<String> columnNames = new HashSet<String>();
-		for (final Field field : getEntityType().getDeclaredFields()) {
+		for (final Field field : getAllNotInjectedFields(getEntityType())) {
 			final Column column = field.getAnnotation(Column.class);
 			if (column == null) continue;
 
@@ -223,9 +223,19 @@ public abstract class ModelActionTest {
 		fail("UserActionTestUtils.createCompleteUserActionList() should contain a instance of " + getActionType().getSimpleName());
 	}
 
+	private Set<Field> getAllNotInjectedFields(final Class<?> type) {
+		final HashSet<Field> fields = new HashSet<Field>();
+		for (final Field field : type.getDeclaredFields()) {
+			if (field.getName().contains("$")) continue; // IMPORTANT Skips fields injected by jacoco
+
+			fields.add(field);
+		}
+		return fields;
+	}
+
 	private List<Field> getUuidFields() {
 		final List<Field> list = new ArrayList<Field>();
-		for (final Field field : getActionType().getDeclaredFields()) {
+		for (final Field field : getAllNotInjectedFields(getActionType())) {
 			if (field.getType().equals(UUID.class)) list.add(field);
 		}
 		return list;
@@ -244,7 +254,7 @@ public abstract class ModelActionTest {
 	}
 
 	private void assertDontHaveNonStaticFinalFields(final Class<?> type) {
-		for (final Field field : type.getDeclaredFields()) {
+		for (final Field field : getAllNotInjectedFields(type)) {
 			final int modifiers = field.getModifiers();
 			if (Modifier.isStatic(modifiers)) continue;
 
@@ -254,7 +264,7 @@ public abstract class ModelActionTest {
 	}
 
 	private void assertAllNonStaticFieldsHaveMatchingConversionAlias(final Class<?> source, final Class<?> target) {
-		for (final Field field : source.getDeclaredFields()) {
+		for (final Field field : getAllNotInjectedFields(source)) {
 			if (Modifier.isStatic(field.getModifiers())) continue;
 
 			final String aliasName = getAliasName(field);
@@ -270,7 +280,7 @@ public abstract class ModelActionTest {
 	}
 
 	private Field getMatchingAliasField(final String aliasName, final Class<?> target) {
-		for (final Field targetField : target.getDeclaredFields()) {
+		for (final Field targetField : getAllNotInjectedFields(target)) {
 			if (aliasName.equals(getAliasName(targetField))) return targetField;
 		}
 		return null;
