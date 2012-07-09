@@ -24,8 +24,8 @@ public class ModelActionEntityFieldAnnotationsTestUtils {
 			}
 		}
 
-		error("The type " + field.getType().getSimpleName()
-				+ " is unknown by the ModelActionEntityFieldAnnotationsTestUtils, please add a hander for this type or use another type");
+		error("The field '" + field.getName() + "' with type " + field.getType().getSimpleName()
+				+ " is unknown by the ModelActionEntityFieldAnnotationsTestUtils, please add a hander for this type or use a supported type");
 	}
 
 	private static void error(final String message) {

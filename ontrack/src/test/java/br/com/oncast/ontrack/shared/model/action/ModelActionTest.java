@@ -175,6 +175,7 @@ public abstract class ModelActionTest {
 	@Test
 	public void entitysFieldsShouldHavePersistenceAnnotations() throws Exception {
 		for (final Field field : getEntityType().getDeclaredFields()) {
+			if (field.getName().contains("$")) return;
 			ModelActionEntityFieldAnnotationsTestUtils.assertField(field);
 		}
 	}
