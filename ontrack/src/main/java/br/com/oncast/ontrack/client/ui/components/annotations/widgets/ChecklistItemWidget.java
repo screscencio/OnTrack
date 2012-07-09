@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCheckItemAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistUncheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -88,7 +89,8 @@ public class ChecklistItemWidget extends Composite implements ModelWidget<Checkl
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
-				if (action instanceof ChecklistCheckItemAction && action.getReferenceId().equals(checklistItem.getId())) update();
+				if ((action instanceof ChecklistCheckItemAction || action instanceof ChecklistUncheckItemAction)
+						&& action.getReferenceId().equals(checklistItem.getId())) update();
 			}
 		};
 		return actionExecutionListener;

@@ -38,7 +38,7 @@ public class ChecklistCheckItemAction implements ChecklistAction {
 		final Checklist list = ActionHelper.findChecklist(context, checklistId, subjectId);
 		final ChecklistItem item = list.getItem(itemId);
 		item.setChecked(true);
-		return new ChecklistUncheckAction(subjectId, checklistId, itemId);
+		return new ChecklistUncheckItemAction(subjectId, checklistId, itemId);
 	}
 
 	@Override

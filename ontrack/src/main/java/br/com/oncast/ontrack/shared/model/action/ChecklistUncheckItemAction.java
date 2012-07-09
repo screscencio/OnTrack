@@ -1,5 +1,9 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Element;
+
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistUncheckItemActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
@@ -7,17 +11,23 @@ import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class ChecklistUncheckAction implements ChecklistAction {
+@ConvertTo(ChecklistUncheckItemActionEntity.class)
+public class ChecklistUncheckItemAction implements ChecklistAction {
 
 	private static final long serialVersionUID = 1L;
 
-	private final UUID checklistId;
+	@Element
+	private UUID checklistId;
 
-	private final UUID itemId;
+	@Element
+	private UUID itemId;
 
-	private final UUID subjectId;
+	@Element
+	private UUID subjectId;
 
-	public ChecklistUncheckAction(final UUID subjectId, final UUID checklistId, final UUID itemId) {
+	protected ChecklistUncheckItemAction() {}
+
+	public ChecklistUncheckItemAction(final UUID subjectId, final UUID checklistId, final UUID itemId) {
 		this.checklistId = checklistId;
 		this.itemId = itemId;
 		this.subjectId = subjectId;
@@ -33,8 +43,7 @@ public class ChecklistUncheckAction implements ChecklistAction {
 
 	@Override
 	public UUID getReferenceId() {
-		// FIXME Auto-generated catch block
-		return null;
+		return itemId;
 	}
 
 }
