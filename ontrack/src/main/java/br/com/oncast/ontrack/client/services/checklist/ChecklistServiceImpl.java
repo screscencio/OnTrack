@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.services.checklist;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.shared.model.action.ChecklistAddItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -17,4 +18,8 @@ public class ChecklistServiceImpl implements ChecklistService {
 		actionExecutionService.onUserActionExecutionRequest(new ChecklistCreateAction(subjectId, title));
 	}
 
+	@Override
+	public void addCheckistItem(final UUID checklistId, final UUID subjectId, final String itemDescription) {
+		actionExecutionService.onUserActionExecutionRequest(new ChecklistAddItemAction(checklistId, subjectId, itemDescription));
+	}
 }

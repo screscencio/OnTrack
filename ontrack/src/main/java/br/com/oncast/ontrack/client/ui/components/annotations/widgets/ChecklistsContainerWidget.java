@@ -4,6 +4,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
@@ -16,13 +17,14 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -33,13 +35,19 @@ public class ChecklistsContainerWidget extends Composite {
 	interface ChecklistsContainerWidgetUiBinder extends UiBinder<Widget, ChecklistsContainerWidget> {}
 
 	@UiField
-	Label addChecklist;
+	Label addChecklistLabel;
+
+	@UiField
+	HasClickHandlers addButton;
+
+	@UiField
+	DeckPanel addChecklistDeck;
 
 	@UiField
 	VerticalModelWidgetContainer<Checklist, ChecklistWidget> checklists;
 
 	@UiField
-	HasText newChecklistTitle;
+	DefaultTextedTextBox newChecklistTitle;
 
 	private UUID subjectId;
 
@@ -48,7 +56,7 @@ public class ChecklistsContainerWidget extends Composite {
 		return new VerticalModelWidgetContainer<Checklist, ChecklistWidget>(new ModelWidgetFactory<Checklist, ChecklistWidget>() {
 			@Override
 			public ChecklistWidget createWidget(final Checklist modelBean) {
-				return new ChecklistWidget(modelBean);
+				return new ChecklistWidget(subjectId, modelBean);
 			}
 		}, new ModelWidgetContainerListener() {
 
@@ -72,24 +80,48 @@ public class ChecklistsContainerWidget extends Composite {
 		});
 	}
 
+	@Override
+	protected void onLoad() {
+		hideNewChecklistTitle();
+	}
+
 	@UiHandler("newChecklistTitle")
 	void onKeyDown(final KeyDownEvent e) {
-		if (e.getNativeKeyCode() != BrowserKeyCodes.KEY_ENTER) return;
+		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER) createChecklist();
 
+		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) {
+			hideNewChecklistTitle();
+			e.stopPropagation();
+		}
+
+	}
+
+	@UiHandler("addButton")
+	void onAddButtonClick(final ClickEvent e) {
 		createChecklist();
 	}
 
-	@UiHandler("addChecklist")
-	void onClick(final ClickEvent e) {
-		createChecklist();
+	@UiHandler("addChecklistLabel")
+	void onAddChecklistLabelClick(final ClickEvent e) {
+		addChecklistDeck.showWidget(1);
+		newChecklistTitle.setFocus(true);
 	}
 
 	private void createChecklist() {
 		final String checklistTitle = this.newChecklistTitle.getText();
-		if (checklistTitle.trim().isEmpty()) return;
+		if (checklistTitle.trim().isEmpty()) {
+			ClientServiceProvider.getInstance().getClientNotificationService().showWarning("Can't create a checklist with empty title.");
+			newChecklistTitle.setFocus(true);
+			return;
+		}
 
 		getProvider().getChecklistService().addChecklist(subjectId, checklistTitle);
+		hideNewChecklistTitle();
 		newChecklistTitle.setText("");
+	}
+
+	private void hideNewChecklistTitle() {
+		addChecklistDeck.showWidget(0);
 	}
 
 	public void setSubjectId(final UUID subjectId) {

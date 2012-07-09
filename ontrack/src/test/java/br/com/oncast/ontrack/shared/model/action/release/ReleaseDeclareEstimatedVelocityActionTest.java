@@ -16,14 +16,12 @@ import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 
-	private ProjectContext context;
 	private UUID referenceId;
 	private Release release;
 	private Float declaredVelocity;
@@ -31,7 +29,6 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		context = mock(ProjectContext.class);
 		referenceId = new UUID();
 
 		release = mock(Release.class);
@@ -96,10 +93,6 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 		executeDeclaring(0f);
 	}
 
-	private ModelAction execute() throws UnableToCompleteActionException {
-		return new ReleaseDeclareEstimatedVelocityAction(referenceId, declaredVelocity).execute(context, Mockito.mock(ActionContext.class));
-	}
-
 	private void executeDeclaring(final Float declaredVelocity) throws UnableToCompleteActionException {
 		new ReleaseDeclareEstimatedVelocityAction(referenceId, declaredVelocity).execute(context, Mockito.mock(ActionContext.class));
 	}
@@ -116,7 +109,7 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new ReleaseDeclareEstimatedVelocityAction(new UUID(), 0f);
+		return new ReleaseDeclareEstimatedVelocityAction(referenceId, declaredVelocity);
 	}
 
 }

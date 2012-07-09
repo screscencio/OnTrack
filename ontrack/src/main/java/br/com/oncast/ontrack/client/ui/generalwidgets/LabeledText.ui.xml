@@ -16,7 +16,7 @@
 		
 	</ui:style>
 	
-	<g:HorizontalPanel>
+	<g:HorizontalPanel width="100%">
 		<g:Label styleName="{style.label}" ui:field="label" />
 		<g:cell width="100%" horizontalAlignment="right">
 			<g:Label styleName="{style.value}" ui:field="value" />

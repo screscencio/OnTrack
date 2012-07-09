@@ -15,10 +15,44 @@
 			margin: 10px 0px;
 		}
 		
+		.addButton {
+			cursor: pointer;
+			font-weight: bold;
+			
+			margin: 0px 5px;
+		}
+		
+		.newItemDescription {
+			width: 100%;
+		}
+		
+		.addItemLabel {
+			cursor: pointer;
+			font-weight: bold;
+			
+			margin-left: 5px;
+		}
+		
+		.addItemDeck {
+			margin-top: 3px;
+		}
+		
 	</ui:style>
 	
-	<g:HTMLPanel>
-		<g:Label styleName="{style.title}" ui:field="title" />
-		<misc:Separator styleName="{style.separator}"/>
-	</g:HTMLPanel>
+	<g:FocusPanel ui:field="rootPanel">
+		<g:HTMLPanel>
+			<g:Label styleName="{style.title}" ui:field="title" />
+			<misc:VerticalModelWidgetContainer ui:field="items" />
+			<g:DeckPanel ui:field="addItemDeck" styleName="{style.addItemDeck}">
+				<g:Label ui:field="addItemLabel" styleName="{style.addItemLabel}" text="+ add Item"/>
+				<g:HorizontalPanel width="100%" verticalAlignment="middle">
+					<g:Label ui:field="addButton" text="+" styleName="{style.addButton}"/>
+					<g:cell width="100%">
+						<misc:DefaultTextedTextBox ui:field="newItemDescription" styleName="{style.newItemDescription}" defaultText="New Item Description"/>
+					</g:cell>
+				</g:HorizontalPanel>
+			</g:DeckPanel>
+			<misc:Separator styleName="{style.separator}"/>
+		</g:HTMLPanel>
+	</g:FocusPanel>
 </ui:UiBinder> 

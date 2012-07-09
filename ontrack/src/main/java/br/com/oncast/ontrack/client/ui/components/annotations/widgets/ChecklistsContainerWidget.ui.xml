@@ -14,16 +14,42 @@
 		}
 		
 		.newChecklistTitle {
-			display: inline-block;
+			width: 100%;
+		}
+		
+		.addChecklistLabel {
+			width: 100%;
+			text-align: center;
+			font-weight: bold;
+			cursor: pointer;
+		}
+		
+		.addChecklistDeck {
+			margin-top: 3px;
+		}
+
+		.addButton {
+			cursor: pointer;
+			font-weight: bold;
 			
-			width: 185px;
+			margin: 0px 5px;
 		}
 		
 	</ui:style>
 	
 	<g:HTMLPanel>
 		<misc:VerticalModelWidgetContainer ui:field="checklists"/>
-		<misc:DefaultTextedTextBox ui:field="newChecklistTitle" styleName="{style.newChecklistTitle}" defaultText="New Checklist Title"/>
-		<g:Label ui:field="addChecklist" text="+" styleName="{style.addChecklist}"/>
+		
+		<g:DeckPanel ui:field="addChecklistDeck" styleName="{style.addChecklistDeck}">
+			<g:Label ui:field="addChecklistLabel" styleName="{style.addChecklistLabel}" text="+ ADD CHECKLIST"/>
+			
+			<g:HorizontalPanel width="100%" verticalAlignment="middle">
+				<g:Label ui:field="addButton" text="+" styleName="{style.addButton}"/>
+				<g:cell width="100%">
+					<misc:DefaultTextedTextBox ui:field="newChecklistTitle" styleName="{style.newChecklistTitle}" defaultText="New Checklist Title"/>
+				</g:cell>
+			</g:HorizontalPanel>
+		</g:DeckPanel>
+		
 	</g:HTMLPanel>
 </ui:UiBinder> 

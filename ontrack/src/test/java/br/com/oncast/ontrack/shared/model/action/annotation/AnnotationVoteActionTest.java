@@ -1,24 +1,19 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationVoteActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.AnnotationTestUtils;
@@ -26,19 +21,15 @@ import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class AnnotationVoteActionTest extends ModelActionTest {
 
-	private ProjectContext context;
 	private User voter;
 	private UUID annotatedObjectId;
-	private ActionContext actionContext;
 	private Annotation annotation;
 
 	@Before
 	public void setUp() throws Exception {
-		context = mock(ProjectContext.class);
 		annotatedObjectId = new UUID();
 		annotation = AnnotationTestUtils.create();
 		voter = UserTestUtils.createUser();
-		actionContext = Mockito.mock(ActionContext.class);
 
 		when(actionContext.getUserEmail()).thenReturn(voter.getEmail());
 		when(context.findUser(voter.getEmail())).thenReturn(voter);
@@ -87,10 +78,6 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 
 		undoAction.execute(context, actionContext);
 		assertEquals(previousVoteCount, annotation.getVoteCount());
-	}
-
-	private ModelAction execute() throws UnableToCompleteActionException {
-		return getNewInstance().execute(context, actionContext);
 	}
 
 	@Override

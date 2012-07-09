@@ -18,6 +18,7 @@
 		.rootContainer {
 			height: 100%;
 			width: 100%;
+			min-width: 720px;
 			
 			color: COLOR_MENUBOX_TEXT;
 		}
@@ -28,16 +29,17 @@
 		}
 		
 		.detailWidget {
-			height: 100%;
-			width: 200px;
-			
 			padding: POPUP_PADDING;
 		}
 		
 		.annotationsPanel {
 			height: 100%;
+			min-width: 415px;
 			
 			padding: POPUP_PADDING;
+		}
+		
+		.rightPanel {
 		}
 		
 		.checklist {
@@ -59,16 +61,18 @@
 				<misc:Separator styleName="{style.noMargin}"/>
 				<g:cell height="100%">
 					<g:HorizontalPanel height="100%" width="100%">
-						<g:cell width="100%">
+						<g:cell width="62%">
 							<aw:AnnotationsWidget ui:field="annotations" styleName="{style.annotationsPanel}" />
 						</g:cell>
 						<misc:Separator vertical="true"/>
-						<g:VerticalPanel>
-							<aw:SubjectDetailWidget ui:field="subjectDetails" styleName="{style.detailWidget}" />
-							<misc:Separator />
-							<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
-							<misc:Separator />
-						</g:VerticalPanel>
+						<g:cell width="38%">
+							<g:VerticalPanel width="100%" styleName="{style.rightPanel}">
+								<aw:SubjectDetailWidget ui:field="subjectDetails" styleName="{style.detailWidget}" />
+								<misc:Separator />
+								<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
+								<misc:Separator />
+							</g:VerticalPanel>
+						</g:cell>
 					</g:HorizontalPanel>
 				</g:cell>
 			</g:VerticalPanel>

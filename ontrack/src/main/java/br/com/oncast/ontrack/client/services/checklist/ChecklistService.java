@@ -6,4 +6,6 @@ public interface ChecklistService {
 
 	void addChecklist(UUID subjectId, String title);
 
+	void addCheckistItem(UUID checklistId, UUID subjectId, String itemDescription);
+
 }

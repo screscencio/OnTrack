@@ -18,8 +18,11 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
@@ -37,6 +40,21 @@ import br.com.oncast.ontrack.utils.actions.ModelActionEntityFieldAnnotationsTest
 import com.google.gwt.dev.util.collect.HashSet;
 
 public abstract class ModelActionTest {
+
+	@Mock
+	protected ProjectContext context;
+
+	@Mock
+	protected ActionContext actionContext;
+
+	@Before
+	public void initContextMocks() {
+		MockitoAnnotations.initMocks(this);
+	}
+
+	protected ModelAction execute() throws UnableToCompleteActionException {
+		return getNewInstance().execute(context, actionContext);
+	}
 
 	@Test
 	public void actionShouldHaveConvertToAnnotation() throws Exception {

@@ -8,35 +8,23 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistCreateActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
-import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 
 public class ChecklistCreateActionTest extends ModelActionTest {
-
-	@Mock
-	private ProjectContext context;
-	@Mock
-	private ActionContext actionContext;
 
 	private UUID subjectId;
 	private String checklistTitle;
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
 		subjectId = new UUID();
 		checklistTitle = "Some title for checklist";
 	}
@@ -99,10 +87,6 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 		undoAction.execute(context, actionContext);
 
 		verify(context).removeChecklist(captor.getValue().getId(), subjectId);
-	}
-
-	private ModelAction execute() throws UnableToCompleteActionException {
-		return getNewInstance().execute(context, actionContext);
 	}
 
 	@Override

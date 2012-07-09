@@ -3,7 +3,9 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 import java.util.Iterator;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -20,7 +22,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets, HasText {
+public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets, HasText, HasBlurHandlers {
 
 	private static PaddedTextBoxUiBinder uiBinder = GWT.create(PaddedTextBoxUiBinder.class);
 
@@ -98,6 +100,11 @@ public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasK
 	@Override
 	public boolean remove(final Widget w) {
 		return container.remove(w);
+	}
+
+	@Override
+	public HandlerRegistration addBlurHandler(final BlurHandler handler) {
+		return textBox.addBlurHandler(handler);
 	}
 
 }

@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.shared.model.checklist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -11,11 +13,14 @@ public class Checklist implements Serializable {
 	private String title;
 	private UUID id;
 
+	private List<ChecklistItem> items;
+
 	protected Checklist() {}
 
 	public Checklist(final UUID id, final String title) {
 		this.title = title;
 		this.id = id;
+		items = new ArrayList<ChecklistItem>();
 	}
 
 	public String getTitle() {
@@ -45,6 +50,22 @@ public class Checklist implements Serializable {
 		}
 		else if (!id.equals(other.id)) return false;
 		return true;
+	}
+
+	public void addItem(final ChecklistItem item) {
+		if (items.contains(item)) return;
+
+		items.add(item);
+	}
+
+	public void removeItem(final UUID itemId) {
+		for (final ChecklistItem item : items) {
+			if (item.getId().equals(itemId)) items.remove(item);
+		}
+	}
+
+	public List<ChecklistItem> getItems() {
+		return new ArrayList<ChecklistItem>(items);
 	}
 
 }

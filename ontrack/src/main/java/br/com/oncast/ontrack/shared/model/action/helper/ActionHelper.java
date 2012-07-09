@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.shared.model.action.helper;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
+import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -66,6 +68,15 @@ public class ActionHelper {
 			return context.findFileRepresentation(attachmentId);
 		}
 		catch (final FileRepresentationNotFoundException e) {
+			throw new UnableToCompleteActionException(e);
+		}
+	}
+
+	public static Checklist findChecklist(final ProjectContext context, final UUID checklistId, final UUID subjectId) throws UnableToCompleteActionException {
+		try {
+			return context.findChecklist(checklistId, subjectId);
+		}
+		catch (final ChecklistNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
 		}
 	}

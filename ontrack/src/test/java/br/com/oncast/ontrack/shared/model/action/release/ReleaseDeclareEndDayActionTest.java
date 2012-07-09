@@ -17,7 +17,6 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -27,7 +26,6 @@ import br.com.oncast.ontrack.utils.mocks.DateTestUtils;
 
 public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 
-	private ProjectContext context;
 	private UUID referenceId;
 	private Release release;
 	private Date declaredDay;
@@ -35,7 +33,6 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		context = mock(ProjectContext.class);
 		referenceId = new UUID();
 
 		release = mock(Release.class);
@@ -95,10 +92,6 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 		verify(release).declareEndDay(Mockito.eq(previouslyDeclaredDay));
 	}
 
-	private ModelAction execute() throws UnableToCompleteActionException {
-		return new ReleaseDeclareEndDayAction(referenceId, declaredDay).execute(context, Mockito.mock(ActionContext.class));
-	}
-
 	private void executeDeclaring(final Date declaredDay) throws UnableToCompleteActionException {
 		new ReleaseDeclareEndDayAction(referenceId, declaredDay).execute(context, Mockito.mock(ActionContext.class));
 	}
@@ -115,7 +108,7 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new ReleaseDeclareEndDayAction(new UUID(), new Date());
+		return new ReleaseDeclareEndDayAction(referenceId, declaredDay);
 	}
 
 }

@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -15,7 +17,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DefaultTextedTextBox extends Composite implements HasText, HasKeyUpHandlers, HasKeyDownHandlers {
+public class DefaultTextedTextBox extends Composite implements HasText, HasKeyUpHandlers, HasKeyDownHandlers, HasBlurHandlers {
 
 	private static DefaultTextedTextBoxUiBinder uiBinder = GWT.create(DefaultTextedTextBoxUiBinder.class);
 
@@ -83,5 +85,10 @@ public class DefaultTextedTextBox extends Composite implements HasText, HasKeyUp
 
 	public void setEnabled(final boolean enabled) {
 		textBox.setEnabled(enabled);
+	}
+
+	@Override
+	public HandlerRegistration addBlurHandler(final BlurHandler handler) {
+		return textBox.addBlurHandler(handler);
 	}
 }

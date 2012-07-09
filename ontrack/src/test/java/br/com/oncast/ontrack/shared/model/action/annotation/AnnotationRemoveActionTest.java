@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,21 +13,17 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
-import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.AnnotationTestUtils;
 
 public class AnnotationRemoveActionTest extends ModelActionTest {
 
-	private ProjectContext context;
 	private UUID annotatedObjectId;
 	private Annotation annotation;
 
 	@Before
 	public void setUp() throws Exception {
-		context = mock(ProjectContext.class);
 		annotatedObjectId = new UUID();
 		annotation = AnnotationTestUtils.create();
 
@@ -51,10 +46,6 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 	public void shouldRecreateTheSameAnnotationOnUndo() throws Exception {
 		execute().execute(context, Mockito.mock(ActionContext.class));
 		verify(context).addAnnotation(annotation, annotatedObjectId);
-	}
-
-	private ModelAction execute() throws UnableToCompleteActionException {
-		return getNewInstance().execute(context, Mockito.mock(ActionContext.class));
 	}
 
 	@Override
