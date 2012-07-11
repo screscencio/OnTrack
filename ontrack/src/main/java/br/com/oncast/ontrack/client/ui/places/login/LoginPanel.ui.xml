@@ -40,7 +40,7 @@
 				</layout:ValidationInputContainer>
 				
 				<div class="{style.separator}" />
-				<g:SubmitButton debugId="submitButton" name="submit" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />
+				<g:SubmitButton debugId="submitButton" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />
 			</g:HTMLPanel>
 		</g:FormPanel>
 	</layout:ApplicationWidgetContainer>

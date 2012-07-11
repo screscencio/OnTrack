@@ -7,6 +7,7 @@
 	<ui:image field="likeIcon" src="like.jpg"></ui:image>
 	<ui:image field="commentIcon" src="comment.png"></ui:image>
 	<ui:image field="clockIcon" src="clock.png"></ui:image>
+	<ui:image field="removeIcon" src="remove.png"></ui:image>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationTopic.AnnotationTopicStyle">
 	
 		.author {
@@ -28,6 +29,12 @@
 			text-align: right;
 			font-size: FONT_SIZE_TINY;
 			font-style: italic;
+		}
+		
+		@sprite .remove {
+			gwt-image: 'removeIcon';
+			opacity: 0.8;
+			margin-right: 5px;
 		}
 		
 		@sprite .like {
@@ -83,6 +90,10 @@
 			margin: 15px -15px 10px -15px;
 		}
 		
+		.icon > input {
+			cursor: inherit;
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel>
@@ -90,7 +101,8 @@
 			<g:Image ui:field="author" styleName="{style.author}" />
 		</g:HTMLPanel>
 		<g:HTMLPanel styleName="{style.detailContainer}">
-			<g:FocusPanel ui:field="like" styleName="{style.like} {style.icon} {style.detail}" title="Like"/>
+			<g:FocusPanel ui:field="remove" styleName="{style.remove} {style.icon} {style.detail}" title="Remove"/>
+			<g:FocusPanel ui:field="like" styleName="{style.like} {style.icon} {style.detail}"/>
 			<g:Label ui:field="likeCount" styleName="{style.detail} {style.countLabel}"/>
 			<g:FocusPanel ui:field="comment" styleName="{style.commentIcon} {style.icon} {style.detail}"/>
 			<g:Label ui:field="commentsCount" styleName="{style.detail} {style.countLabel}"/>

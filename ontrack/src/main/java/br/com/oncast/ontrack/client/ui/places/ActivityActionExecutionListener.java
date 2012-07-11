@@ -18,7 +18,7 @@ public class ActivityActionExecutionListener implements ActionExecutionListener 
 			final boolean isUserAction) {
 		if (action instanceof TeamInviteAction) {
 			ClientServiceProvider.getInstance().getClientNotificationService()
-					.showInfo("The User '" + action.getReferenceId().toStringRepresentation() + "' joined this project");
+					.showInfo("The User '" + action.getReferenceId().toStringRepresentation() + "' accepted the invitaton for this project");
 		}
 		if (actionExecutionSuccessListeners == null) return;
 		for (final ActionExecutionListener listener : actionExecutionSuccessListeners)

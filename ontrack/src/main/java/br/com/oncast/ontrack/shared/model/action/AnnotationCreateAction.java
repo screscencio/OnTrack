@@ -57,7 +57,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 		}
 
 		context.addAnnotation(annotation, annotatedObjectId);
-		return new AnnotationRemoveAction(annotationId, annotatedObjectId);
+		return new AnnotationRemoveAction(annotatedObjectId, annotationId);
 	}
 
 	@Override

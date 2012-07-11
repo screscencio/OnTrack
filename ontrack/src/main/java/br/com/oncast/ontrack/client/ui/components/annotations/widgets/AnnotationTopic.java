@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
 import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget.UpdateListener;
@@ -57,6 +58,9 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	Label date;
 
 	@UiField
+	FocusPanel remove;
+
+	@UiField
 	Label likeCount;
 
 	@UiField
@@ -89,14 +93,24 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 		initWidget(uiBinder.createAndBindUi(this));
 
+		setupDeleteButton();
 		setupContent();
 		setupCommentsPanel(enableComments);
 		update();
 	}
 
+	private void setupDeleteButton() {
+		remove.setVisible(annotation.getAuthor().equals(getCurrentUser()));
+	}
+
+	@UiHandler("remove")
+	protected void onDeleteClicked(final ClickEvent e) {
+		getAnnotationService().deleteAnnotation(subjectId, annotation.getId());
+	}
+
 	@UiHandler("like")
 	protected void onLikeClicked(final ClickEvent e) {
-		ClientServiceProvider.getInstance().getAnnotationService().toggleVote(annotation.getId(), subjectId);
+		getAnnotationService().toggleVote(subjectId, annotation.getId());
 	}
 
 	@Override
@@ -208,6 +222,10 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	private boolean hasLiked() {
 		return annotation.hasVoted(getCurrentUser().getEmail());
+	}
+
+	private AnnotationService getAnnotationService() {
+		return ClientServiceProvider.getInstance().getAnnotationService();
 	}
 
 	private User getCurrentUser() {

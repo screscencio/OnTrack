@@ -11,8 +11,10 @@ public interface AnnotationService {
 
 	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId);
 
-	void toggleVote(UUID annotationId, UUID subjectId);
+	void toggleVote(UUID subjectId, UUID annotationId);
 
 	void showAnnotationsFor(Release release);
+
+	void deleteAnnotation(UUID subjectId, UUID annotationId);
 
 }

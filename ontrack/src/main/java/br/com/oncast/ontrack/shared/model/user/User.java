@@ -79,7 +79,6 @@ public class User implements Serializable {
 			if (other.email != null) return false;
 		}
 		else if (!email.equals(other.email)) return false;
-		if (id != other.id) return false;
 		return true;
 	}
 

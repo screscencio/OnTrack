@@ -42,7 +42,7 @@ public class UserDataServiceImpl implements UserDataService {
 			return;
 		}
 
-		new JsonpRequestBuilder().requestObject(URL.encode("http://www.gravatar.com/" + getMd5Hex(email) + ".json"),
+		new JsonpRequestBuilder().requestObject(URL.encode("https://secure.gravatar.com/" + getMd5Hex(email) + ".json"),
 				new AsyncCallback<PortableContactJsonObject>() {
 
 					@Override

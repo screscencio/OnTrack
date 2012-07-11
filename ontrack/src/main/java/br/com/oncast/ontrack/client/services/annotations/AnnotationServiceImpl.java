@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -45,7 +46,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void toggleVote(final UUID annotationId, final UUID subjectId) {
+	public void toggleVote(final UUID subjectId, final UUID annotationId) {
 		try {
 			AnnotationAction action;
 			if (hasVoted(annotationId, subjectId)) action = new AnnotationVoteRemoveAction(annotationId, subjectId);
@@ -57,6 +58,18 @@ public class AnnotationServiceImpl implements AnnotationService {
 		}
 	}
 
+	@Override
+	public void showAnnotationsFor(final Release release) {
+		final AnnotationsPanel panel = AnnotationsPanel.forRelease(release);
+
+		PopupConfig.configPopup().popup(panel).setModal(true).pop();
+	}
+
+	@Override
+	public void deleteAnnotation(final UUID subjectId, final UUID annotationId) {
+		doUserAction(new AnnotationRemoveAction(subjectId, annotationId));
+	}
+
 	private boolean hasVoted(final UUID annotationId, final UUID subjectId) throws AnnotationNotFoundException {
 		final Annotation annotation = contextProviderService.getCurrentProjectContext().findAnnotation(annotationId, subjectId);
 		return annotation.hasVoted(authenticationService.getCurrentUser().getEmail());
@@ -66,10 +79,4 @@ public class AnnotationServiceImpl implements AnnotationService {
 		actionExecutionService.onUserActionExecutionRequest(action);
 	}
 
-	@Override
-	public void showAnnotationsFor(final Release release) {
-		final AnnotationsPanel panel = AnnotationsPanel.forRelease(release);
-
-		PopupConfig.configPopup().popup(panel).setModal(true).pop();
-	}
 }

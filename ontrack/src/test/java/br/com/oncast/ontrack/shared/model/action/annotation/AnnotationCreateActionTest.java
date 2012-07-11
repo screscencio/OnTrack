@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -11,7 +12,6 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationCreateActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
@@ -86,7 +86,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 		when(context.findAnnotation(createdAnnotation.getId(), annotatedObjectId)).thenReturn(createdAnnotation);
 
-		undoAction.execute(context, Mockito.mock(ActionContext.class));
+		undoAction.execute(context, actionContext);
 
 		verify(context).removeAnnotation(createdAnnotation, annotatedObjectId);
 	}

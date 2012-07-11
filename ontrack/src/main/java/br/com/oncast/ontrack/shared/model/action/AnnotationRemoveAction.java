@@ -19,26 +19,28 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	private UUID annotationId;
 
 	@Element
-	private UUID annotatedObjectId;
+	private UUID subjectId;
 
 	protected AnnotationRemoveAction() {}
 
-	public AnnotationRemoveAction(final UUID id, final UUID annotatedObjectId) {
-		this.annotationId = id;
-		this.annotatedObjectId = annotatedObjectId;
+	public AnnotationRemoveAction(final UUID subjectId, final UUID annotationId) {
+		this.annotationId = annotationId;
+		this.subjectId = subjectId;
 
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Annotation annotation = ActionHelper.findAnnotation(annotationId, annotatedObjectId, context);
-		context.removeAnnotation(annotation, annotatedObjectId);
-		return new AnnotationCreateAction(annotation, annotatedObjectId);
+		final Annotation annotation = ActionHelper.findAnnotation(annotationId, subjectId, context);
+		if (!annotation.getAuthor().getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
+				"Can't remove a anotation created by another user.");
+		context.removeAnnotation(annotation, subjectId);
+		return new AnnotationCreateAction(annotation, subjectId);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return annotationId;
+		return subjectId;
 	}
 
 }

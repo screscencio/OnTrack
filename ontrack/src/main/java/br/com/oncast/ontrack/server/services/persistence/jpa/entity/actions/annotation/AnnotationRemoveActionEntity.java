@@ -20,7 +20,7 @@ public class AnnotationRemoveActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.STRING_2)
 	@ConvertUsing(StringToUuidConverter.class)
-	private String annotatedObjectId;
+	private String subjectId;
 
 	protected AnnotationRemoveActionEntity() {}
 
@@ -32,12 +32,12 @@ public class AnnotationRemoveActionEntity extends ModelActionEntity {
 		this.annotationId = annotationId;
 	}
 
-	public String getAnnotatedObjectId() {
-		return annotatedObjectId;
+	public String getSubjectId() {
+		return subjectId;
 	}
 
-	public void setAnnotatedObjectId(final String annotatedObjectId) {
-		this.annotatedObjectId = annotatedObjectId;
+	public void setSubjectId(final String annotatedObjectId) {
+		this.subjectId = annotatedObjectId;
 	}
 
 }
