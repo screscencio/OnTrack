@@ -29,6 +29,9 @@ public class ChecklistAddItemAction implements ChecklistAction {
 	@Element
 	private UUID itemId;
 
+	@Attribute
+	private boolean checked;
+
 	protected ChecklistAddItemAction() {}
 
 	public ChecklistAddItemAction(final UUID subjectId, final UUID checklistId, final String itemDescription) {
@@ -36,14 +39,25 @@ public class ChecklistAddItemAction implements ChecklistAction {
 		this.itemId = new UUID();
 		this.subjectId = subjectId;
 		this.itemDescription = itemDescription;
+		this.checked = false;
+	}
+
+	public ChecklistAddItemAction(final UUID subjectId, final UUID checklistId, final ChecklistItem checklistItem) {
+		this.subjectId = subjectId;
+		this.checklistId = checklistId;
+		this.itemId = checklistItem.getId();
+		this.itemDescription = checklistItem.getDescription();
+		this.checked = checklistItem.isChecked();
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Checklist list = ActionHelper.findChecklist(context, checklistId, subjectId);
-		list.addItem(new ChecklistItem(itemId, itemDescription));
+		final Checklist list = ActionHelper.findChecklist(context, subjectId, checklistId);
+		final ChecklistItem item = new ChecklistItem(itemId, itemDescription);
+		item.setChecked(checked);
+		list.addItem(item);
 
-		return new ChecklistRemoveItemAction(itemId, checklistId, subjectId);
+		return new ChecklistRemoveItemAction(subjectId, checklistId, itemId);
 	}
 
 	@Override

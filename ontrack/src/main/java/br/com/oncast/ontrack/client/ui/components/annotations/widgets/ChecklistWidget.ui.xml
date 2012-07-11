@@ -5,10 +5,21 @@
 	
 	<ui:style>
 	
+		.container {
+			margin-bottom: 5px;
+		}
+		
 		.title {
 			text-transform: uppercase;
-			width: 100%;
-			text-align: center;
+			cursor: default;
+		}
+		
+		.remove {
+			color: red;
+			font-weight: bold;
+			
+			cursor: pointer;
+			padding: 0px 2px;
 		}
 		
 		.separator {
@@ -34,14 +45,19 @@
 		}
 		
 		.addItemDeck {
-			margin-top: 3px;
+			margin-top: 5px;
 		}
 		
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootPanel">
 		<g:HTMLPanel>
-			<g:Label styleName="{style.title}" ui:field="title" />
+			<g:HorizontalPanel width="100%" horizontalAlignment="center" styleName="{style.container}">
+				<g:cell width="100%">
+					<g:Label styleName="{style.title}" ui:field="title"/>
+				</g:cell>
+				<g:Label ui:field="remove" text="x" styleName="{style.remove}"/>
+			</g:HorizontalPanel>
 			<misc:VerticalModelWidgetContainer ui:field="items" />
 			<g:DeckPanel ui:field="addItemDeck" styleName="{style.addItemDeck}">
 				<g:Label ui:field="addItemLabel" styleName="{style.addItemLabel}" text="+ add Item"/>

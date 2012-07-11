@@ -10,4 +10,8 @@ public interface ChecklistService {
 
 	void setItemChecked(UUID subjectId, UUID checklistId, UUID itemId, Boolean isChecked);
 
+	void removeItem(UUID subjectId, UUID checklistId, UUID itemId);
+
+	void removeChecklist(UUID subjectId, UUID checklistId);
+
 }

@@ -1,36 +1,50 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Element;
+
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistRemoveItemActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@ConvertTo(ChecklistRemoveItemActionEntity.class)
 public class ChecklistRemoveItemAction implements ChecklistAction {
 
 	private static final long serialVersionUID = 1L;
 
-	private final UUID itemId;
-	private final UUID checklistId;
-	private final UUID subjectId;
+	@Element
+	private UUID itemId;
 
-	public ChecklistRemoveItemAction(final UUID itemId, final UUID checklistId, final UUID subjectId) {
-		this.itemId = itemId;
-		this.checklistId = checklistId;
+	@Element
+	private UUID checklistId;
+
+	@Element
+	private UUID subjectId;
+
+	protected ChecklistRemoveItemAction() {}
+
+	public ChecklistRemoveItemAction(final UUID subjectId, final UUID checklistId, final UUID itemId) {
 		this.subjectId = subjectId;
+		this.checklistId = checklistId;
+		this.itemId = itemId;
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Checklist checklist = ActionHelper.findChecklist(context, checklistId, subjectId);
-		checklist.removeItem(itemId);
-		return null;
+		final Checklist checklist = ActionHelper.findChecklist(context, subjectId, checklistId);
+		final ChecklistItem checklistItem = checklist.removeItem(itemId);
+		if (checklistItem == null) throw new UnableToCompleteActionException("Unable to remove the given item. The item could not be found.");
+
+		return new ChecklistAddItemAction(subjectId, checklistId, checklistItem);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		// FIXME Auto-generated catch block
-		return null;
+		return checklistId;
 	}
 
 }

@@ -25,7 +25,7 @@
 	</ui:style>
 
 	<layout:ApplicationWidgetContainer debugId="loginPlace">
-		<g:FormPanel>
+		<g:FormPanel ui:field="form">
 			<g:HTMLPanel styleName="{style.contentPanel}">
 				<g:Label text="Username" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
 				<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea">
@@ -40,7 +40,7 @@
 				</layout:ValidationInputContainer>
 				
 				<div class="{style.separator}" />
-				<g:Button debugId="submitButton" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />
+				<g:SubmitButton debugId="submitButton" name="submit" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />
 			</g:HTMLPanel>
 		</g:FormPanel>
 	</layout:ApplicationWidgetContainer>

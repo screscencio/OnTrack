@@ -6,14 +6,16 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputCont
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
+import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LoginPanel extends Composite implements LoginView {
@@ -29,15 +31,15 @@ public class LoginPanel extends Composite implements LoginView {
 	protected ValidationInputContainer passwordArea;
 
 	@UiField
-	protected Button loginButton;
+	protected SubmitButton loginButton;
 
-	private final Presenter presenter;
+	@UiField
+	protected FormPanel form;
 
 	private boolean isEmailValid;
 
 	public LoginPanel(final LoginView.Presenter presenter) {
 		initWidget(uiBinder.createAndBindUi(this));
-		this.presenter = presenter;
 		emailArea.setHandler(new ValidationHandler() {
 			@Override
 			public boolean isValid(final String email) {
@@ -46,9 +48,7 @@ public class LoginPanel extends Composite implements LoginView {
 			}
 
 			@Override
-			public void onSubmit() {
-				doAuthenticate();
-			}
+			public void onSubmit() {}
 		});
 
 		passwordArea.setHandler(new ValidationHandler() {
@@ -58,15 +58,20 @@ public class LoginPanel extends Composite implements LoginView {
 			}
 
 			@Override
-			public void onSubmit() {
-				doAuthenticate();
+			public void onSubmit() {}
+		});
+
+		form.setAction("fakeAction.html");
+		form.setMethod("post");
+		form.addSubmitHandler(new SubmitHandler() {
+			@Override
+			public void onSubmit(final SubmitEvent event) {
+				event.cancel();
+				if (!isEmailValid) return;
+
+				presenter.onAuthenticationRequest(emailArea.getText(), passwordArea.getText());
 			}
 		});
-	}
-
-	@UiHandler("loginButton")
-	protected void onClick(final ClickEvent event) {
-		doAuthenticate();
 	}
 
 	@UiHandler("emailArea")
@@ -89,12 +94,6 @@ public class LoginPanel extends Composite implements LoginView {
 
 		emailArea.setFocus(true);
 		event.preventDefault();
-	}
-
-	private void doAuthenticate() {
-		if (!isEmailValid) return;
-
-		presenter.onAuthenticationRequest(emailArea.getText(), passwordArea.getText());
 	}
 
 	@Override

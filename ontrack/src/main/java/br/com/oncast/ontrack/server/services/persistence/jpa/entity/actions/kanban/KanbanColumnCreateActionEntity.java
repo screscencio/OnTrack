@@ -37,7 +37,7 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 	@OneToMany(cascade = CascadeType.ALL)
 	@Column(name = ActionTableColumns.ACTION_LIST)
 	@JoinTable(name = "KanbanColumnCreate_subActionList")
-	private List<ModelActionEntity> subActions;
+	private List<ModelActionEntity> subActionList;
 
 	@ConversionAlias("columnIndex")
 	@Column(name = ActionTableColumns.INT_1)
@@ -51,12 +51,12 @@ public class KanbanColumnCreateActionEntity extends ModelActionEntity {
 		this.columnIndex = columnIndex;
 	}
 
-	public List<ModelActionEntity> getSubActions() {
-		return subActions;
+	public List<ModelActionEntity> getSubActionList() {
+		return subActionList;
 	}
 
-	public void setSubActions(final List<ModelActionEntity> subActions) {
-		this.subActions = subActions;
+	public void setSubActionList(final List<ModelActionEntity> subActionList) {
+		this.subActionList = subActionList;
 	}
 
 	public String getReferenceId() {

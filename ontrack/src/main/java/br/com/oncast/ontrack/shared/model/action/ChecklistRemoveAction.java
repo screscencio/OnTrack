@@ -2,19 +2,26 @@ package br.com.oncast.ontrack.shared.model.action;
 
 import org.simpleframework.xml.Element;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistRemoveActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@ConvertTo(ChecklistRemoveActionEntity.class)
 public class ChecklistRemoveAction implements ChecklistAction {
 
 	private static final long serialVersionUID = 1L;
 
 	@Element
-	private final UUID checklistId;
+	private UUID checklistId;
 
 	@Element
-	private final UUID subjectId;
+	private UUID subjectId;
+
+	protected ChecklistRemoveAction() {}
 
 	public ChecklistRemoveAction(final UUID subjectId, final UUID checklistId) {
 		this.checklistId = checklistId;
@@ -23,14 +30,18 @@ public class ChecklistRemoveAction implements ChecklistAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		context.removeChecklist(checklistId, subjectId);
-		return null;
+		try {
+			final Checklist checklist = context.removeChecklist(subjectId, checklistId);
+			return new ChecklistCreateAction(subjectId, checklist);
+		}
+		catch (final ChecklistNotFoundException e) {
+			throw new UnableToCompleteActionException("Could not remove the requested checklist", e);
+		}
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		// FIXME Auto-generated catch block
-		return null;
+		return subjectId;
 	}
 
 }

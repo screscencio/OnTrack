@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
@@ -18,6 +16,9 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 public class Project implements Serializable {
 
@@ -127,7 +128,7 @@ public class Project implements Serializable {
 		if (!checklistMap.containsEntry(subjectId, checklist)) checklistMap.put(subjectId, checklist);
 	}
 
-	public Checklist findChecklist(final UUID checklistId, final UUID subjectId) {
+	public Checklist findChecklist(final UUID subjectId, final UUID checklistId) {
 		for (final Checklist checklist : checklistMap.get(subjectId)) {
 			if (checklist.getId().equals(checklistId)) return checklist;
 		}
@@ -138,8 +139,8 @@ public class Project implements Serializable {
 		return checklistMap.get(subjectId);
 	}
 
-	public void removeChecklist(final UUID checklistId, final UUID subjectId) {
-		checklistMap.remove(subjectId, new Checklist(checklistId, null));
+	public boolean removeChecklist(final UUID subjectId, final Checklist checklist) {
+		return checklistMap.remove(subjectId, checklist);
 	}
 
 }

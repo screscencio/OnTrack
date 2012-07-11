@@ -1,7 +1,10 @@
 package br.com.oncast.ontrack.shared.model.action.checklist;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -9,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistCreateActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
@@ -32,20 +36,20 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 	@Test
 	public void shouldAddChecklistIntoContext() throws Exception {
 		execute();
-		verify(context).addChecklist(Mockito.any(Checklist.class), Mockito.any(UUID.class));
+		verify(context).addChecklist(Mockito.any(UUID.class), Mockito.any(Checklist.class));
 	}
 
 	@Test
 	public void shouldAddChecklistToTheGivenSubjectId() throws Exception {
 		execute();
-		verify(context).addChecklist(Mockito.any(Checklist.class), Mockito.eq(subjectId));
+		verify(context).addChecklist(Mockito.eq(subjectId), Mockito.any(Checklist.class));
 	}
 
 	@Test
 	public void shouldAddChecklistWithTheGivenTitle() throws Exception {
 		execute();
 		final ArgumentCaptor<Checklist> captor = ArgumentCaptor.forClass(Checklist.class);
-		verify(context).addChecklist(captor.capture(), Mockito.any(UUID.class));
+		verify(context).addChecklist(Mockito.any(UUID.class), captor.capture());
 		assertEquals(checklistTitle, captor.getValue().getTitle());
 	}
 
@@ -53,7 +57,7 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 	public void createdChecklistShouldHaveAUuid() throws Exception {
 		execute();
 		final ArgumentCaptor<Checklist> captor = ArgumentCaptor.forClass(Checklist.class);
-		verify(context).addChecklist(captor.capture(), Mockito.any(UUID.class));
+		verify(context).addChecklist(Mockito.any(UUID.class), captor.capture());
 		assertNotNull(captor.getValue().getId());
 	}
 
@@ -67,7 +71,7 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 		}
 
 		final ArgumentCaptor<Checklist> captor = ArgumentCaptor.forClass(Checklist.class);
-		verify(context, Mockito.times(nOfInvocations)).addChecklist(captor.capture(), Mockito.any(UUID.class));
+		verify(context, Mockito.times(nOfInvocations)).addChecklist(Mockito.any(UUID.class), captor.capture());
 
 		final List<Checklist> allValues = captor.getAllValues();
 		assertEquals(nOfInvocations, allValues.size());
@@ -82,11 +86,13 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 	public void shouldRemoveTheCreatedChecklistOnUndo() throws Exception {
 		final ModelAction undoAction = execute();
 		final ArgumentCaptor<Checklist> captor = ArgumentCaptor.forClass(Checklist.class);
-		verify(context).addChecklist(captor.capture(), Mockito.eq(subjectId));
+		verify(context).addChecklist(Mockito.eq(subjectId), captor.capture());
 
+		final Checklist checklistMock = mock(Checklist.class);
+		when(context.removeChecklist(Mockito.eq(subjectId), Mockito.any(UUID.class))).thenReturn(checklistMock);
 		undoAction.execute(context, actionContext);
 
-		verify(context).removeChecklist(captor.getValue().getId(), subjectId);
+		verify(context).removeChecklist(subjectId, captor.getValue().getId());
 	}
 
 	@Override

@@ -58,10 +58,10 @@ public class Checklist implements Serializable {
 		items.add(item);
 	}
 
-	public void removeItem(final UUID itemId) {
-		for (final ChecklistItem item : items) {
-			if (item.getId().equals(itemId)) items.remove(item);
-		}
+	public ChecklistItem removeItem(final UUID itemId) {
+		final ChecklistItem item = getItem(itemId);
+		items.remove(item);
+		return item;
 	}
 
 	public List<ChecklistItem> getItems() {

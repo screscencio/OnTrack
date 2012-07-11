@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.server.services.session;
 
 import java.io.Serializable;
 
+import org.apache.log4j.Logger;
+
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -13,7 +15,10 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
  * request.
  */
 public class Session implements Serializable {
+
 	private static final long serialVersionUID = 1L;
+
+	private static final Logger LOGGER = Logger.getLogger(Session.class);
 
 	private transient User authenticatedUser;
 
@@ -34,6 +39,12 @@ public class Session implements Serializable {
 	}
 
 	public void setAuthenticatedUser(final User authenticatedUser) {
+		if (authenticatedUser == null) {
+			LOGGER.debug("The user logged out (sessionId = '" + this.sessionId + "')");
+		}
+		else {
+			LOGGER.debug("The user '" + authenticatedUser.getEmail() + "' logged in (sessionId = '" + this.sessionId + "')");
+		}
 		this.authenticatedUser = authenticatedUser;
 	}
 

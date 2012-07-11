@@ -309,7 +309,7 @@ public class ProjectContextTest {
 		context = ProjectTestUtils.createProjectContext();
 		final UUID subjectId = new UUID();
 		final Checklist addedChecklist = createAndAddChecklist(subjectId);
-		assertEquals(addedChecklist, context.findChecklist(addedChecklist.getId(), subjectId));
+		assertEquals(addedChecklist, context.findChecklist(subjectId, addedChecklist.getId()));
 	}
 
 	@Test
@@ -318,9 +318,9 @@ public class ProjectContextTest {
 		final UUID subjectId = new UUID();
 		final Checklist checklist = createAndAddChecklist(subjectId);
 		for (int i = 0; i < 10; i++) {
-			context.addChecklist(checklist, subjectId);
+			context.addChecklist(subjectId, checklist);
 		}
-		assertEquals(checklist, context.findChecklist(checklist.getId(), subjectId));
+		assertEquals(checklist, context.findChecklist(subjectId, checklist.getId()));
 		assertEquals(1, context.findChecklistsFor(subjectId).size());
 	}
 
@@ -332,9 +332,9 @@ public class ProjectContextTest {
 		final Checklist checklist2 = createAndAddChecklist(subjectId);
 		final Checklist checklist3 = createAndAddChecklist(subjectId);
 
-		assertEquals(checklist1, context.findChecklist(checklist1.getId(), subjectId));
-		assertEquals(checklist2, context.findChecklist(checklist2.getId(), subjectId));
-		assertEquals(checklist3, context.findChecklist(checklist3.getId(), subjectId));
+		assertEquals(checklist1, context.findChecklist(subjectId, checklist1.getId()));
+		assertEquals(checklist2, context.findChecklist(subjectId, checklist2.getId()));
+		assertEquals(checklist3, context.findChecklist(subjectId, checklist3.getId()));
 
 		AssertTestUtils.assertContainsAll(context.findChecklistsFor(subjectId), checklist1, checklist2, checklist3);
 	}
@@ -350,7 +350,7 @@ public class ProjectContextTest {
 		context = ProjectTestUtils.createProjectContext();
 		final UUID subjectId = new UUID();
 		final Checklist checklist = createAndAddChecklist(subjectId);
-		context.findChecklist(checklist.getId(), new UUID());
+		context.findChecklist(new UUID(), checklist.getId());
 	}
 
 	@Test(expected = ChecklistNotFoundException.class)
@@ -360,7 +360,7 @@ public class ProjectContextTest {
 		final UUID subjectId = new UUID();
 		createAndAddChecklist(subjectId);
 
-		context.findChecklist(new UUID(), subjectId);
+		context.findChecklist(subjectId, new UUID());
 	}
 
 	@Test
@@ -375,11 +375,11 @@ public class ProjectContextTest {
 		final UUID subjectId = new UUID();
 		final Checklist checklist = createAndAddChecklist(subjectId);
 
-		assertEquals(checklist, context.findChecklist(checklist.getId(), subjectId));
+		assertEquals(checklist, context.findChecklist(subjectId, checklist.getId()));
 
-		context.removeChecklist(checklist.getId(), subjectId);
+		context.removeChecklist(subjectId, checklist.getId());
 		try {
-			context.findChecklist(checklist.getId(), subjectId);
+			context.findChecklist(subjectId, checklist.getId());
 			fail("Checklist was not removed from the context.");
 		}
 		catch (final ChecklistNotFoundException e) {
@@ -389,7 +389,7 @@ public class ProjectContextTest {
 
 	private Checklist createAndAddChecklist(final UUID subjectId) {
 		final Checklist checklist1 = ChecklistTestUtils.create();
-		context.addChecklist(checklist1, subjectId);
+		context.addChecklist(subjectId, checklist1);
 		return checklist1;
 	}
 }

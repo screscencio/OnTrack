@@ -35,8 +35,10 @@ public class ChecklistCheckItemAction implements ChecklistAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Checklist list = ActionHelper.findChecklist(context, checklistId, subjectId);
+		final Checklist list = ActionHelper.findChecklist(context, subjectId, checklistId);
 		final ChecklistItem item = list.getItem(itemId);
+		if (item == null) throw new UnableToCompleteActionException("Unable to check the item. the given item could not be found.");
+
 		item.setChecked(true);
 		return new ChecklistUncheckItemAction(subjectId, checklistId, itemId);
 	}

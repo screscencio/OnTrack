@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListen
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
-import br.com.oncast.ontrack.shared.model.action.ChecklistAddItemAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -46,6 +47,9 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 
 	@UiField
 	Label title;
+
+	@UiField
+	Label remove;
 
 	@UiField
 	VerticalModelWidgetContainer<ChecklistItem, ChecklistItemWidget> items;
@@ -92,12 +96,17 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 
 	@UiHandler("rootPanel")
 	public void onMouseOver(final MouseOverEvent e) {
-		addItemDeck.setVisible(true);
+		remove.getElement().getStyle().setVisibility(Visibility.VISIBLE);
 	}
 
 	@UiHandler("rootPanel")
 	public void onMouseOut(final MouseOutEvent e) {
-		hideAddItemDeck();
+		remove.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+	}
+
+	@UiHandler("remove")
+	public void onRemoveClicked(final ClickEvent e) {
+		getChecklistService().removeChecklist(subjectId, checklist.getId());
 	}
 
 	@UiHandler("addItemLabel")
@@ -130,30 +139,24 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 		}
 
 		getChecklistService().addCheckistItem(checklist.getId(), subjectId, itemDescription);
-		hideNewItemDescription();
 		newItemDescription.setText("");
+		newItemDescription.setFocus(true);
 	}
 
 	private void hideNewItemDescription() {
 		addItemDeck.showWidget(0);
-		hideAddItemDeck();
 	}
 
 	@Override
 	protected void onLoad() {
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
 		hideNewItemDescription();
+		remove.getElement().getStyle().setVisibility(Visibility.HIDDEN);
 	}
 
 	@Override
 	protected void onUnload() {
 		getActionExecutionService().removeActionExecutionListener(getActionExecutionListener());
-	}
-
-	private void hideAddItemDeck() {
-		final boolean isEmpty = items.getWidgetCount() == 0;
-		final boolean isOnCreation = addItemDeck.getVisibleWidget() == 1;
-		addItemDeck.setVisible(isEmpty || isOnCreation);
 	}
 
 	private ActionExecutionService getActionExecutionService() {
@@ -169,7 +172,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
-				if (action instanceof ChecklistAddItemAction && action.getReferenceId().equals(checklist.getId())) updateItems();
+				if (action instanceof ChecklistAction && action.getReferenceId().equals(checklist.getId())) updateItems();
 			}
 		};
 		return actionExecutionListener;

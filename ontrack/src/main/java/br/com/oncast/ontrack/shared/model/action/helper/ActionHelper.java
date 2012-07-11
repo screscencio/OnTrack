@@ -72,9 +72,9 @@ public class ActionHelper {
 		}
 	}
 
-	public static Checklist findChecklist(final ProjectContext context, final UUID checklistId, final UUID subjectId) throws UnableToCompleteActionException {
+	public static Checklist findChecklist(final ProjectContext context, final UUID subjectId, final UUID checklistId) throws UnableToCompleteActionException {
 		try {
-			return context.findChecklist(checklistId, subjectId);
+			return context.findChecklist(subjectId, checklistId);
 		}
 		catch (final ChecklistNotFoundException e) {
 			throw new UnableToCompleteActionException(e);

@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.action.ChecklistAddItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistUncheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
@@ -136,6 +137,8 @@ public class UserActionTestUtils {
 		userActions.add(createChecklistAddItemAction());
 		userActions.add(createChecklistCheckItemAction());
 		userActions.add(createChecklistUncheckItemAction());
+		userActions.add(createChecklistRemoveItemAction());
+		userActions.add(createChecklistRemoveAction());
 		return userActions;
 	}
 
@@ -178,6 +181,10 @@ public class UserActionTestUtils {
 
 	public static UserAction createChecklistRemoveAction() throws Exception {
 		return createUserAction(new ChecklistRemoveAction(new UUID(), new UUID()));
+	}
+
+	public static UserAction createChecklistRemoveItemAction() throws Exception {
+		return createUserAction(new ChecklistRemoveItemAction(new UUID(), new UUID(), new UUID()));
 	}
 
 	public static UserAction createChecklistUncheckItemAction() throws Exception {

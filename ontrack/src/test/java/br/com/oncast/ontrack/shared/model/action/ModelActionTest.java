@@ -105,7 +105,7 @@ public abstract class ModelActionTest {
 
 	@Test
 	public void entitysNameAttributeShouldBeTheActionNameWithountTheActionPostfix() throws Exception {
-		assertEquals(getActionName().replaceAll("Action$", ""), getEntityType().getAnnotation(Entity.class).name());
+		assertEquals(getActionNameWithoutPosfix(), getEntityType().getAnnotation(Entity.class).name());
 	}
 
 	@Test
@@ -144,6 +144,10 @@ public abstract class ModelActionTest {
 		}
 	}
 
+	private String getActionNameWithoutPosfix() {
+		return getActionName().replaceAll("Action$", "");
+	}
+
 	private boolean isBooleanType(final Field field) {
 		return boolean.class.equals(field.getType()) || Boolean.class.equals(field.getType());
 	}
@@ -176,7 +180,7 @@ public abstract class ModelActionTest {
 	@Test
 	public void entitysFieldsShouldHavePersistenceAnnotations() throws Exception {
 		for (final Field field : getAllNotInjectedFields(getEntityType())) {
-			ModelActionEntityFieldAnnotationsTestUtils.assertField(field);
+			ModelActionEntityFieldAnnotationsTestUtils.assertField(getActionNameWithoutPosfix(), field);
 		}
 	}
 

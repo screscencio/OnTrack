@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.action.checklist;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +22,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.ChecklistTestUtils;
 
 public class ChecklistAddItemActionTest extends ModelActionTest {
 
@@ -37,13 +39,13 @@ public class ChecklistAddItemActionTest extends ModelActionTest {
 		subjectId = new UUID();
 		itemDescription = "Some description for checklist item";
 
-		when(context.findChecklist(checklistId, subjectId)).thenReturn(checklist);
+		when(context.findChecklist(subjectId, checklistId)).thenReturn(checklist);
 	}
 
 	@Test
 	public void shouldAddTheChecklistItemToChecklistWithTheGivenId() throws Exception {
 		execute();
-		verify(context).findChecklist(checklistId, subjectId);
+		verify(context).findChecklist(subjectId, checklistId);
 		verify(checklist).addItem(Mockito.any(ChecklistItem.class));
 	}
 
@@ -85,8 +87,28 @@ public class ChecklistAddItemActionTest extends ModelActionTest {
 		final ArgumentCaptor<ChecklistItem> captor = ArgumentCaptor.forClass(ChecklistItem.class);
 		verify(checklist).addItem(captor.capture());
 
+		ChecklistItem itemMock = mock(ChecklistItem.class);
+		when(checklist.removeItem(Mockito.any(UUID.class))).thenReturn(itemMock);
 		undoAction.execute(context, actionContext);
 		verify(checklist).removeItem(captor.getValue().getId());
+	}
+
+	@Test
+	public void shouldKeppCheckedIfACheckedItemIsGiven() throws Exception {
+		final UUID itemId = new UUID();
+		final boolean isChecked = true;
+		final ChecklistItem checklistItem = ChecklistTestUtils.createItem(itemId, itemDescription, isChecked);
+		final ChecklistAddItemAction action = new ChecklistAddItemAction(subjectId, checklistId, checklistItem);
+
+		action.execute(context, actionContext);
+
+		final ArgumentCaptor<ChecklistItem> captor = ArgumentCaptor.forClass(ChecklistItem.class);
+		verify(checklist).addItem(captor.capture());
+
+		final ChecklistItem capturedItem = captor.getValue();
+		assertEquals(itemId, capturedItem.getId());
+		assertEquals(isChecked, capturedItem.isChecked());
+		assertEquals(itemDescription, capturedItem.getDescription());
 	}
 
 	@Override

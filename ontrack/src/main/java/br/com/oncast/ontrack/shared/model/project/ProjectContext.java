@@ -193,16 +193,18 @@ public class ProjectContext {
 		return representation;
 	}
 
-	public void addChecklist(final Checklist checklist, final UUID subjectId) {
+	public void addChecklist(final UUID subjectId, final Checklist checklist) {
 		project.addChecklist(checklist, subjectId);
 	}
 
-	public void removeChecklist(final UUID checklistId, final UUID subjectId) {
-		project.removeChecklist(checklistId, subjectId);
+	public Checklist removeChecklist(final UUID subjectId, final UUID checklistId) throws ChecklistNotFoundException {
+		final Checklist checklist = findChecklist(subjectId, checklistId);
+		project.removeChecklist(subjectId, checklist);
+		return checklist;
 	}
 
-	public Checklist findChecklist(final UUID checklistId, final UUID subjectId) throws ChecklistNotFoundException {
-		final Checklist checklist = project.findChecklist(checklistId, subjectId);
+	public Checklist findChecklist(final UUID subjectId, final UUID checklistId) throws ChecklistNotFoundException {
+		final Checklist checklist = project.findChecklist(subjectId, checklistId);
 		if (checklist == null) throw new ChecklistNotFoundException("The checklist with id '" + checklistId.toStringRepresentation()
 				+ "' and associated with the subject with id '" + subjectId.toStringRepresentation() + "' was not found.");
 		return checklist;

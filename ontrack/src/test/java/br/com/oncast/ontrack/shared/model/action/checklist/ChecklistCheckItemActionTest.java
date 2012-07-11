@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.mode
 import br.com.oncast.ontrack.shared.model.action.ChecklistCheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -31,35 +32,37 @@ public class ChecklistCheckItemActionTest extends ModelActionTest {
 	private ChecklistItem item;
 
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		itemId = new UUID();
 		subjectId = new UUID();
 		checklistId = new UUID();
+		when(context.findChecklist(subjectId, checklistId)).thenReturn(checklist);
+		when(checklist.getItem(itemId)).thenReturn(item);
 	}
 
 	@Test
 	public void shouldCheckTheGivenChecklistItem() throws Exception {
-		when(context.findChecklist(checklistId, subjectId)).thenReturn(checklist);
-		when(checklist.getItem(itemId)).thenReturn(item);
-
 		execute();
 
-		verify(context).findChecklist(checklistId, subjectId);
+		verify(context).findChecklist(subjectId, checklistId);
 		verify(checklist).getItem(itemId);
 		verify(item).setChecked(true);
 	}
 
 	@Test
 	public void shouldUncheckTheGivenItemOnUndo() throws Exception {
-		when(context.findChecklist(checklistId, subjectId)).thenReturn(checklist);
-		when(checklist.getItem(itemId)).thenReturn(item);
-
 		final ModelAction undoAction = execute();
 		verify(item).setChecked(true);
 
 		undoAction.execute(context, actionContext);
 
 		verify(item).setChecked(false);
+	}
+
+	@Test(expected = UnableToCompleteActionException.class)
+	public void shouldNotBeAbleToCheckAnInexistantItem() throws Exception {
+		when(checklist.getItem(itemId)).thenReturn(null);
+		execute();
 	}
 
 	@Override

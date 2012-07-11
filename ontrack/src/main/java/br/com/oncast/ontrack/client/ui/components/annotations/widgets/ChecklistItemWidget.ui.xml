@@ -4,14 +4,29 @@
 	
 	<ui:style>
 	
-		.checkbox {
-			margin-right: 3px;
+		.description {
+			padding-left: 3px;
+			cursor: default;
+		}
+		
+		.remove {
+			padding-right: 5px;
+			padding-left: 2px;
+			cursor: pointer;
+
+			color: red;
+			font-weight: bold;
 		}
 		
 	</ui:style>
 
-	<g:HorizontalPanel>
-		<g:CheckBox ui:field="checkbox" styleName="{style.checkbox}" />
-		<g:Label ui:field="description" />
-	</g:HorizontalPanel>
+	<g:FocusPanel ui:field="focusPanel">
+		<g:HorizontalPanel width="100%">
+			<g:CheckBox ui:field="checkbox" />
+			<g:cell width="100%">
+				<g:Label ui:field="description" styleName="{style.description}"/>
+			</g:cell>
+			<g:Label ui:field="remove" text="x" styleName="{style.remove}"/>
+		</g:HorizontalPanel>
+	</g:FocusPanel>
 </ui:UiBinder> 
