@@ -253,6 +253,33 @@ public class ReleaseChartDataProviderTest {
 		assertEquals(declaredVelocity, ReflectionHelper.getField(ReleaseDeclareEstimatedVelocityAction.class, action, "estimatedVelocity"));
 	}
 
+	@Test
+	public void shouldConsiderDescendantScopesProgressOnAccomplishedEffortCalculation() throws Exception {
+		final WorkingDay startDay1 = WorkingDayFactory.create(2012, 6, 2);
+		final WorkingDay endDay1 = WorkingDayFactory.create(2012, 6, 5);
+		final WorkingDay startDay2 = WorkingDayFactory.create(2012, 6, 2);
+		final WorkingDay endDay2 = WorkingDayFactory.create(2012, 6, 6);
+		final WorkingDay startDay3 = WorkingDayFactory.create(2012, 6, 3);
+		final WorkingDay endDay3 = WorkingDayFactory.create(2012, 6, 3);
+
+		final Scope parent = ScopeTestUtils.createScope();
+		final Scope child1 = ScopeTestUtils.createScope("child1", ProgressState.DONE, 1, startDay1, endDay1);
+		final Scope child3 = ScopeTestUtils.createScope("child2", ProgressState.DONE, 2, startDay2, endDay2);
+		final Scope child2 = ScopeTestUtils.createScope("child3", ProgressState.DONE, 3, startDay3, endDay3);
+
+		parent.add(child1);
+		parent.add(child2);
+		parent.add(child3);
+
+		releaseScopes.add(parent);
+
+		releaseEffortSum = 6F;
+		estimatedStartDay = WorkingDayFactory.create(2012, 6, 2);
+		estimatedEndDay = WorkingDayFactory.create(2012, 6, 7);
+
+		assertAccomplishedEffortsByDate(0, 3, 3, 4, 6);
+	}
+
 	private void setReleaseDuration(final int nDays) {
 		estimatedEndDay = estimatedStartDay.copy().add(nDays - 1);
 	}

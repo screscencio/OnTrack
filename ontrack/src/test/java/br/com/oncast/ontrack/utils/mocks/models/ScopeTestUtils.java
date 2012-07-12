@@ -129,12 +129,12 @@ public class ScopeTestUtils {
 		}
 	}
 
-	public static Scope createScope(final String name, final ProgressState progress, final int effort, final WorkingDay startDay, final WorkingDay endDay) {
+	public static Scope createScope(final String name, final ProgressState progress, final Integer effort, final WorkingDay startDay, final WorkingDay endDay) {
 		final Scope scope = new Scope(name);
-		setProgress(scope, progress);
-		setDelcaredEffort(scope, effort);
-		setStartDate(scope, startDay);
-		setEndDate(scope, endDay);
+		if (progress != null) setProgress(scope, progress);
+		if (effort != null) setDelcaredEffort(scope, effort);
+		if (startDay != null) setStartDate(scope, startDay);
+		if (endDay != null) setEndDate(scope, endDay);
 
 		return scope;
 	}

@@ -8,6 +8,13 @@ import org.dom4j.Element;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Migration;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+/**
+ * Changes:
+ * <ul>
+ * <li>Updates projectId from long to UUID
+ * </ul>
+ * 
+ */
 public class Migration_2012_06_27 extends Migration {
 
 	private List<Element> authorizations;

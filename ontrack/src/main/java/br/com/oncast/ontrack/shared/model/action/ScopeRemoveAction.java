@@ -74,6 +74,7 @@ public class ScopeRemoveAction implements ScopeAction {
 		subActionList.add(new ScopeDeclareProgressAction(referenceId, null));
 		subActionList.add(new ScopeBindReleaseAction(referenceId, null));
 		subActionList.add(new ScopeDeclareEffortAction(referenceId, false, 0));
+		subActionList.add(new ScopeDeclareValueAction(referenceId, false, 0));
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		for (final ModelAction subAction : subActionList) {

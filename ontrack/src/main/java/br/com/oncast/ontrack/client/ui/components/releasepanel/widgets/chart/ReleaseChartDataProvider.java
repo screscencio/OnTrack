@@ -88,6 +88,23 @@ public class ReleaseChartDataProvider {
 		return accomplishedEffortByDate;
 	}
 
+	public boolean hasDeclaredEstimatedVelocity() {
+		return release.hasDeclaredEstimatedVelocity();
+	}
+
+	public Float getCurrentVelocity() {
+		final WorkingDay currentDay = WorkingDay.getEarliest(release.getEndDay(), WorkingDayFactory.create());
+		final WorkingDay startDay = release.getStartDay();
+
+		if (currentDay.isBefore(startDay)) return 0f;
+
+		return getAccomplishedEffortFor(currentDay) / startDay.countTo(currentDay);
+	}
+
+	public float getValueSum() {
+		return release.getValueSum();
+	}
+
 	public void evaluateData() {
 		accomplishedValueByDate = new LinkedHashMap<WorkingDay, Float>();
 		accomplishedEffortByDate = new LinkedHashMap<WorkingDay, Float>();
@@ -103,7 +120,6 @@ public class ReleaseChartDataProvider {
 				accomplishedEffortByDate.put(releaseDay, accomplishedEffort);
 				if (accomplishedEffort >= effortSum) break;
 			}
-
 		}
 	}
 
@@ -125,43 +141,45 @@ public class ReleaseChartDataProvider {
 	}
 
 	private Float getAccomplishedValueFor(final WorkingDay day) {
-		if (day.isAfter(WorkingDayFactory.create())) return null;
-
-		float accomplishedValueSum = 0;
-		for (final Scope scope : release.getAllScopesIncludingDescendantReleases()) {
-			if (scope.getProgress().isDone() && scope.getProgress().getEndDay().isBeforeOrSameDayOf(day)) {
-				accomplishedValueSum += scope.getValue().getInfered();
+		return getAccomplishedPointsForTheDay(day, new PointsProvider() {
+			@Override
+			public float getPointsFrom(final Scope scope) {
+				return scope.getValue().getInfered();
 			}
-		}
-		return accomplishedValueSum;
+		});
 	}
 
 	private Float getAccomplishedEffortFor(final WorkingDay day) {
+		return getAccomplishedPointsForTheDay(day, new PointsProvider() {
+			@Override
+			public float getPointsFrom(final Scope scope) {
+				return scope.getEffort().getInfered();
+			}
+		});
+	}
+
+	private Float getAccomplishedPointsForTheDay(final WorkingDay day, final PointsProvider provider) {
 		if (day.isAfter(WorkingDayFactory.create())) return null;
 
-		float accomplishedEffortSum = 0;
-		for (final Scope scope : release.getAllScopesIncludingDescendantReleases()) {
-			if (scope.getProgress().isDone() && scope.getProgress().getEndDay().isBeforeOrSameDayOf(day)) {
-				accomplishedEffortSum += scope.getEffort().getInfered();
-			}
+		return getAccomplishedPointsSum(release.getAllScopesIncludingDescendantReleases(), day, provider);
+	}
+
+	private float getAccomplishedPoints(final Scope scope, final WorkingDay day, final PointsProvider provider) {
+		if (scope.getProgress().isDone() && scope.getProgress().getEndDay().isBeforeOrSameDayOf(day)) return provider.getPointsFrom(scope);
+
+		return getAccomplishedPointsSum(scope.getChildren(), day, provider);
+	}
+
+	private float getAccomplishedPointsSum(final List<Scope> scopes, final WorkingDay day, final PointsProvider provider) {
+		float effort = 0;
+		for (final Scope child : scopes) {
+			effort += getAccomplishedPoints(child, day, provider);
 		}
-		return accomplishedEffortSum;
+		return effort;
 	}
 
-	public boolean hasDeclaredEstimatedVelocity() {
-		return release.hasDeclaredEstimatedVelocity();
+	private interface PointsProvider {
+		float getPointsFrom(final Scope scope);
 	}
 
-	public Float getCurrentVelocity() {
-		final WorkingDay currentDay = WorkingDay.getEarliest(release.getEndDay(), WorkingDayFactory.create());
-		final WorkingDay startDay = release.getStartDay();
-
-		if (currentDay.isBefore(startDay)) return 0f;
-
-		return getAccomplishedEffortFor(currentDay) / startDay.countTo(currentDay);
-	}
-
-	public float getValueSum() {
-		return release.getValueSum();
-	}
 }
