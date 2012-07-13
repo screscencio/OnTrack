@@ -163,7 +163,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 	}
 
 	@UiHandler("closeIcon")
-	protected void onClick(final ClickEvent event) {
+	protected void onCloseClick(final ClickEvent event) {
 		hide();
 	}
 

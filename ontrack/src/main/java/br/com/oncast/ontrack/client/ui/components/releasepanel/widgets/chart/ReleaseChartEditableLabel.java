@@ -1,10 +1,13 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
+import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -18,7 +21,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
@@ -35,9 +37,6 @@ public class ReleaseChartEditableLabel extends Composite implements HasValue<Flo
 	TextBox valueEdit;
 
 	@UiField
-	FocusPanel focusPanel;
-
-	@UiField
 	Label label;
 
 	@UiField
@@ -47,6 +46,8 @@ public class ReleaseChartEditableLabel extends Composite implements HasValue<Flo
 	Label remove;
 
 	private boolean isRemoveAvailable;
+
+	private NativeEventListener globalNativeMouseUpListener;
 
 	public ReleaseChartEditableLabel() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -71,11 +72,28 @@ public class ReleaseChartEditableLabel extends Composite implements HasValue<Flo
 	@UiHandler("focusPanel")
 	protected void onMouseOver(final MouseOverEvent e) {
 		hideRemoveLabel(false);
+		unregisterGlobalNativeMouseUpListener();
 	}
 
 	@UiHandler("focusPanel")
 	protected void onMouseOut(final MouseOutEvent e) {
 		hideRemoveLabel(true);
+		GlobalNativeEventService.getInstance().addMouseUpListener(getMouseUpListener());
+	}
+
+	private NativeEventListener getMouseUpListener() {
+		if (globalNativeMouseUpListener == null) globalNativeMouseUpListener = new NativeEventListener() {
+			@Override
+			public void onNativeEvent(final NativeEvent nativeEvent) {
+				hideEdit();
+				unregisterGlobalNativeMouseUpListener();
+			}
+		};
+		return globalNativeMouseUpListener;
+	}
+
+	private void unregisterGlobalNativeMouseUpListener() {
+		GlobalNativeEventService.getInstance().removeMouseUpListener(getMouseUpListener());
 	}
 
 	@UiHandler("focusPanel")

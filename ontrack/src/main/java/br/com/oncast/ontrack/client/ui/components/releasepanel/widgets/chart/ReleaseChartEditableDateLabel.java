@@ -4,11 +4,13 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 
 import java.util.Date;
 
+import br.com.oncast.ontrack.client.services.globalEvent.GlobalNativeEventService;
+import br.com.oncast.ontrack.client.services.globalEvent.NativeEventListener;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -20,7 +22,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
@@ -37,9 +38,6 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 	DatePicker datePicker;
 
 	@UiField
-	FocusPanel focusPanel;
-
-	@UiField
 	Label label;
 
 	@UiField
@@ -50,6 +48,8 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 
 	private boolean isRemoveAvailable;
 
+	private NativeEventListener globalNativeMouseUpListener;
+
 	public ReleaseChartEditableDateLabel() {
 		initWidget(uiBinder.createAndBindUi(this));
 		hidePicker();
@@ -57,8 +57,8 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 
 	@UiHandler("value")
 	protected void onValueClick(final ClickEvent e) {
-		datePicker.setVisible(true);
-		focusPanel.setFocus(true);
+		if (datePicker.isVisible()) hidePicker();
+		else datePicker.setVisible(true);
 	}
 
 	@UiHandler("remove")
@@ -72,16 +72,28 @@ public class ReleaseChartEditableDateLabel extends Composite implements HasText,
 	@UiHandler("focusPanel")
 	protected void onMouseOver(final MouseOverEvent e) {
 		hideRemoveLabel(false);
-	}
-
-	@UiHandler("focusPanel")
-	protected void onBlur(final BlurEvent e) {
-		hidePicker();
+		unregisterGlobalNativeMouseUpListener();
 	}
 
 	@UiHandler("focusPanel")
 	protected void onMouseOut(final MouseOutEvent e) {
 		hideRemoveLabel(true);
+		GlobalNativeEventService.getInstance().addMouseUpListener(getMouseUpListener());
+	}
+
+	private NativeEventListener getMouseUpListener() {
+		if (globalNativeMouseUpListener == null) globalNativeMouseUpListener = new NativeEventListener() {
+			@Override
+			public void onNativeEvent(final NativeEvent nativeEvent) {
+				hidePicker();
+				unregisterGlobalNativeMouseUpListener();
+			}
+		};
+		return globalNativeMouseUpListener;
+	}
+
+	private void unregisterGlobalNativeMouseUpListener() {
+		GlobalNativeEventService.getInstance().removeMouseUpListener(getMouseUpListener());
 	}
 
 	@UiHandler("focusPanel")

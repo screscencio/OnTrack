@@ -30,6 +30,7 @@ public class Configurations {
 		return properties.getProperty("email.password");
 	}
 
+	// FIXME change it to GWT.getModuleBaseURL() or GWT.getHostPageBaseURL();
 	public String getApplicationBaseUrl() {
 		return properties.getProperty("application.base_url");
 	}
