@@ -35,7 +35,7 @@ public class ChecklistRemoveItemAction implements ChecklistAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Checklist checklist = ActionHelper.findChecklist(context, subjectId, checklistId);
+		final Checklist checklist = ActionHelper.findChecklist(subjectId, checklistId, context);
 		final ChecklistItem checklistItem = checklist.removeItem(itemId);
 		if (checklistItem == null) throw new UnableToCompleteActionException("Unable to remove the given item. The item could not be found.");
 

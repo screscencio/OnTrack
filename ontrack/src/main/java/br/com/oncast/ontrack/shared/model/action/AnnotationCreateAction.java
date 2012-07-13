@@ -1,7 +1,11 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -25,22 +29,27 @@ public class AnnotationCreateAction implements AnnotationAction {
 	private UUID annotationId;
 
 	@Element
-	private UUID annotatedObjectId;
+	private UUID subjectId;
 
 	@Element(required = false)
 	private UUID attachmentId;
 
+	@ElementList
+	private List<ModelAction> subActions;
+
 	protected AnnotationCreateAction() {}
 
-	public AnnotationCreateAction(final UUID annotatedObjectId, final String message, final UUID attachmentId) {
+	public AnnotationCreateAction(final UUID subjectId, final String message, final UUID attachmentId) {
 		this.message = message;
 		this.attachmentId = attachmentId;
 		this.annotationId = new UUID();
-		this.annotatedObjectId = annotatedObjectId;
+		this.subjectId = subjectId;
+		this.subActions = new ArrayList<ModelAction>();
 	}
 
-	public AnnotationCreateAction(final Annotation annotation, final UUID annotatedObjectId) {
-		this(annotatedObjectId, annotation.getMessage(), null);
+	protected AnnotationCreateAction(final UUID subjectId, final Annotation annotation, final List<ModelAction> subActions) {
+		this(subjectId, annotation.getMessage(), null);
+		this.subActions = subActions;
 		annotationId = annotation.getId();
 	}
 
@@ -49,6 +58,8 @@ public class AnnotationCreateAction implements AnnotationAction {
 		if (message.isEmpty() && attachmentId == null) throw new UnableToCompleteActionException(
 				"A annotation should have a message or an attachment file");
 
+		executeSubActions(context, actionContext);
+
 		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
 		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message);
 		if (attachmentId != null) {
@@ -56,13 +67,19 @@ public class AnnotationCreateAction implements AnnotationAction {
 			annotation.setAttachmentFile(file);
 		}
 
-		context.addAnnotation(annotation, annotatedObjectId);
-		return new AnnotationRemoveAction(annotatedObjectId, annotationId);
+		context.addAnnotation(subjectId, annotation);
+		return new AnnotationRemoveAction(subjectId, annotationId);
+	}
+
+	private void executeSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+		for (final ModelAction subAction : subActions) {
+			subAction.execute(context, actionContext);
+		}
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return annotatedObjectId;
+		return subjectId;
 	}
 
 }

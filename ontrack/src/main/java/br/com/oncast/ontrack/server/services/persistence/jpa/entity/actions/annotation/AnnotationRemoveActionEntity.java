@@ -22,6 +22,9 @@ public class AnnotationRemoveActionEntity extends ModelActionEntity {
 	@ConvertUsing(StringToUuidConverter.class)
 	private String subjectId;
 
+	@Column(name = ActionTableColumns.BOOLEAN_1)
+	private boolean userAction;
+
 	protected AnnotationRemoveActionEntity() {}
 
 	public String getAnnotationId() {
@@ -38,6 +41,14 @@ public class AnnotationRemoveActionEntity extends ModelActionEntity {
 
 	public void setSubjectId(final String annotatedObjectId) {
 		this.subjectId = annotatedObjectId;
+	}
+
+	public boolean isUserAction() {
+		return userAction;
+	}
+
+	public void setUserAction(boolean isUserAction) {
+		this.userAction = isUserAction;
 	}
 
 }

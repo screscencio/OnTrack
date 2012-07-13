@@ -79,26 +79,26 @@ public class Project implements Serializable {
 		return null;
 	}
 
-	public void addAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
-		if (!hasAnnotationsFor(annotatedObjectId)) annotationsMap.put(annotatedObjectId, new ArrayList<Annotation>());
-		annotationsMap.get(annotatedObjectId).add(0, annotation);
+	public void addAnnotation(final UUID subjectId, final Annotation annotation) {
+		if (!hasAnnotationsFor(subjectId)) annotationsMap.put(subjectId, new ArrayList<Annotation>());
+		annotationsMap.get(subjectId).add(0, annotation);
 	}
 
-	public void removeAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
-		if (!annotationsMap.containsKey(annotatedObjectId)) return;
+	public void removeAnnotation(final UUID subjectId, final Annotation annotation) {
+		if (!annotationsMap.containsKey(subjectId)) return;
 
-		annotationsMap.get(annotatedObjectId).remove(annotation);
+		annotationsMap.get(subjectId).remove(annotation);
 	}
 
-	public Annotation getAnnotation(final UUID annotationId, final UUID annotatedObjectId) {
-		for (final Annotation annotation : annotationsMap.get(annotatedObjectId)) {
+	public Annotation getAnnotation(final UUID subjectId, final UUID annotationId) {
+		for (final Annotation annotation : annotationsMap.get(subjectId)) {
 			if (annotation.getId().equals(annotationId)) return annotation;
 		}
 		return null;
 	}
 
-	public boolean hasAnnotationsFor(final UUID annotatedObjectId) {
-		return annotationsMap.containsKey(annotatedObjectId);
+	public boolean hasAnnotationsFor(final UUID subjectId) {
+		return annotationsMap.containsKey(subjectId);
 	}
 
 	public List<Annotation> getAnnotationsFor(final UUID annotatedObjectId) {

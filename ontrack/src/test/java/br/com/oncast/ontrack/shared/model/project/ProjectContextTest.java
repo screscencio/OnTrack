@@ -2,7 +2,8 @@ package br.com.oncast.ontrack.shared.model.project;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -191,62 +192,62 @@ public class ProjectContextTest {
 
 	@Test(expected = AnnotationNotFoundException.class)
 	public void shouldNotFindTheAnnotationWhenTheAnnotationIdIsDifferent() throws Exception {
-		final UUID annotatedObjectId = new UUID();
+		final UUID subjectId = new UUID();
 		final Annotation annotation = AnnotationTestUtils.create();
-		context.addAnnotation(annotation, annotatedObjectId);
+		context.addAnnotation(subjectId, annotation);
 
-		context.findAnnotation(new UUID(), annotatedObjectId);
+		context.findAnnotation(subjectId, new UUID());
 	}
 
 	@Test(expected = AnnotationNotFoundException.class)
 	public void shouldNotFindTheAnnotationWhenTheAnnotatedObjectIdIsDifferent() throws Exception {
-		final UUID annotatedObjectId = new UUID();
+		final UUID subjectId = new UUID();
 		final Annotation annotation = AnnotationTestUtils.create();
-		context.addAnnotation(annotation, annotatedObjectId);
+		context.addAnnotation(subjectId, annotation);
 
-		context.findAnnotation(annotation.getId(), new UUID());
+		context.findAnnotation(new UUID(), annotation.getId());
 	}
 
 	@Test
 	public void shouldBeAbleToFindAnnotationThatAddedPreviouslyById() throws Exception {
-		final UUID annotatedObjectId = new UUID();
+		final UUID subjectId = new UUID();
 		final Annotation annotation = AnnotationTestUtils.create();
 		final Annotation annotation2 = AnnotationTestUtils.create();
-		context.addAnnotation(annotation, annotatedObjectId);
-		context.addAnnotation(annotation2, annotatedObjectId);
+		context.addAnnotation(subjectId, annotation);
+		context.addAnnotation(subjectId, annotation2);
 
-		assertEquals(annotation, context.findAnnotation(annotation.getId(), annotatedObjectId));
-		assertEquals(annotation2, context.findAnnotation(annotation2.getId(), annotatedObjectId));
+		assertEquals(annotation, context.findAnnotation(subjectId, annotation.getId()));
+		assertEquals(annotation2, context.findAnnotation(subjectId, annotation2.getId()));
 	}
 
 	@Test
 	public void shouldNotThrowAnyExceptionsWhenRemovingAAnnotationThatCantBeFound() throws Exception {
-		final UUID annotatedObjectId = new UUID();
+		final UUID subjectId = new UUID();
 		final Annotation annotation = AnnotationTestUtils.create();
 
-		context.removeAnnotation(AnnotationTestUtils.create(), new UUID());
+		context.removeAnnotation(new UUID(), AnnotationTestUtils.create());
 
-		context.addAnnotation(annotation, annotatedObjectId);
+		context.addAnnotation(subjectId, annotation);
 
-		context.removeAnnotation(annotation, new UUID());
-		context.removeAnnotation(AnnotationTestUtils.create(), annotatedObjectId);
+		context.removeAnnotation(new UUID(), annotation);
+		context.removeAnnotation(subjectId, AnnotationTestUtils.create());
 	}
 
 	@Test
 	public void removedAnnotationshouldNotBeFoundById() throws Exception {
-		final UUID annotatedObjectId = new UUID();
+		final UUID subjectId = new UUID();
 		final Annotation annotation = AnnotationTestUtils.create();
 		final Annotation annotation2 = AnnotationTestUtils.create();
-		context.addAnnotation(annotation, annotatedObjectId);
-		context.addAnnotation(annotation2, annotatedObjectId);
+		context.addAnnotation(subjectId, annotation);
+		context.addAnnotation(subjectId, annotation2);
 
-		assertEquals(annotation, context.findAnnotation(annotation.getId(), annotatedObjectId));
-		assertEquals(annotation2, context.findAnnotation(annotation2.getId(), annotatedObjectId));
+		assertEquals(annotation, context.findAnnotation(subjectId, annotation.getId()));
+		assertEquals(annotation2, context.findAnnotation(subjectId, annotation2.getId()));
 
-		context.removeAnnotation(annotation2, annotatedObjectId);
+		context.removeAnnotation(subjectId, annotation2);
 
 		try {
-			context.findAnnotation(annotation2.getId(), annotatedObjectId);
+			context.findAnnotation(subjectId, annotation2.getId());
 			fail();
 		}
 		catch (final AnnotationNotFoundException e) {}
@@ -259,30 +260,30 @@ public class ProjectContextTest {
 
 	@Test
 	public void shouldBeAbleToRetrieveAllAnnotationsForAGivenObjectId() throws Exception {
-		final UUID annotatedObjectId = new UUID();
+		final UUID subjectId = new UUID();
 		final Annotation annotation = AnnotationTestUtils.create();
 		final Annotation annotation2 = AnnotationTestUtils.create();
-		context.addAnnotation(annotation, annotatedObjectId);
-		context.addAnnotation(annotation2, annotatedObjectId);
+		context.addAnnotation(subjectId, annotation);
+		context.addAnnotation(subjectId, annotation2);
 
-		final List<Annotation> annotationsForAnnotatedObject = context.findAnnotationsFor(annotatedObjectId);
+		final List<Annotation> annotationsForAnnotatedObject = context.findAnnotationsFor(subjectId);
 		assertTrue(annotationsForAnnotatedObject.contains(annotation));
 		assertTrue(annotationsForAnnotatedObject.contains(annotation2));
 	}
 
 	@Test
 	public void annotationsAddedLaterShouldComeFirstOnAnnotationsList() throws Exception {
-		final UUID annotatedObjectId = new UUID();
+		final UUID subjectId = new UUID();
 		final Annotation annotation = AnnotationTestUtils.create();
 		final Annotation annotation2 = AnnotationTestUtils.create();
 		final Annotation annotation3 = AnnotationTestUtils.create();
-		context.addAnnotation(annotation, annotatedObjectId);
-		context.addAnnotation(annotation2, annotatedObjectId);
-		context.addAnnotation(annotation3, annotatedObjectId);
+		context.addAnnotation(subjectId, annotation);
+		context.addAnnotation(subjectId, annotation2);
+		context.addAnnotation(subjectId, annotation3);
 
 		assertCollectionEquality(
 				Arrays.asList(annotation3, annotation2, annotation),
-				context.findAnnotationsFor(annotatedObjectId));
+				context.findAnnotationsFor(subjectId));
 	}
 
 	@Test(expected = UserNotFoundException.class)

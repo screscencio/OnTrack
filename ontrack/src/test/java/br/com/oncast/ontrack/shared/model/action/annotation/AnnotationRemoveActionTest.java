@@ -3,6 +3,9 @@ package br.com.oncast.ontrack.shared.model.action.annotation;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -28,32 +31,68 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 		subjectId = new UUID();
 		annotation = AnnotationTestUtils.create();
 
-		when(context.findAnnotation(annotation.getId(), subjectId)).thenReturn(annotation);
+		when(context.findAnnotation(subjectId, annotation.getId())).thenReturn(annotation);
 		when(actionContext.getUserEmail()).thenReturn(annotation.getAuthor().getEmail());
 	}
 
 	@Test
 	public void shouldRemoveTheAnnotationWithTheGivenId() throws Exception {
 		execute();
-		verify(context).removeAnnotation(Mockito.eq(annotation), Mockito.any(UUID.class));
+		verify(context).removeAnnotation(Mockito.any(UUID.class), Mockito.eq(annotation));
 	}
 
 	@Test
 	public void shouldRemoveTheAnnotationOfTheGivenAnnotatedObjectId() throws Exception {
 		execute();
-		verify(context).removeAnnotation(Mockito.any(Annotation.class), Mockito.eq(subjectId));
+		verify(context).removeAnnotation(Mockito.eq(subjectId), Mockito.any(Annotation.class));
 	}
 
 	@Test
 	public void shouldRecreateTheSameAnnotationOnUndo() throws Exception {
 		execute().execute(context, Mockito.mock(ActionContext.class));
-		verify(context).addAnnotation(annotation, subjectId);
+		verify(context).addAnnotation(subjectId, annotation);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveAnnotationsCreatedByOtherUser() throws Exception {
 		when(actionContext.getUserEmail()).thenReturn("Another user's e-mail");
 		execute();
+	}
+
+	@Test
+	public void shouldRemoveAllSubAnnotationsRelatedToTheAnnotation() throws Exception {
+		final List<Annotation> subAnnotationsList = createSubAnnotationsList(3);
+
+		when(context.findAnnotationsFor(annotation.getId())).thenReturn(subAnnotationsList);
+
+		execute();
+		for (final Annotation subAnnotation : subAnnotationsList) {
+			verify(context).removeAnnotation(annotation.getId(), subAnnotation);
+		}
+	}
+
+	@Test
+	public void undoShouldReAddAllRemovedSubAnnotations() throws Exception {
+		final List<Annotation> subAnnotationsList = createSubAnnotationsList(3);
+
+		when(context.findAnnotationsFor(annotation.getId())).thenReturn(subAnnotationsList);
+
+		final ModelAction undoAction = execute();
+
+		undoAction.execute(context, actionContext);
+		for (final Annotation subAnnotation : subAnnotationsList) {
+			verify(context).addAnnotation(annotation.getId(), subAnnotation);
+		}
+	}
+
+	private List<Annotation> createSubAnnotationsList(final int quantity) throws Exception {
+		final List<Annotation> list = new ArrayList<Annotation>();
+		for (int i = 0; i < quantity; i++) {
+			final Annotation subAnnotation = AnnotationTestUtils.create();
+			when(context.findAnnotation(annotation.getId(), subAnnotation.getId())).thenReturn(subAnnotation);
+			list.add(subAnnotation);
+		}
+		return list;
 	}
 
 	@Override

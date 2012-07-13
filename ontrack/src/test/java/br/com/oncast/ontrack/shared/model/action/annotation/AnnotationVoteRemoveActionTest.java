@@ -21,28 +21,28 @@ import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 
 	private User voter;
-	private UUID annotatedObjectId;
+	private UUID subjectId;
 	private Annotation annotation;
 
 	@Before
 	public void setUp() throws Exception {
 		voter = UserTestUtils.createUser();
 		annotation = AnnotationTestUtils.create();
-		annotatedObjectId = new UUID();
+		subjectId = new UUID();
 
 		when(actionContext.getUserEmail()).thenReturn(voter.getEmail());
 		when(context.findUser(voter.getEmail())).thenReturn(voter);
-		when(context.findAnnotation(annotation.getId(), annotatedObjectId)).thenReturn(annotation);
+		when(context.findAnnotation(subjectId, annotation.getId())).thenReturn(annotation);
 	}
 
 	@Test
 	public void theReferenceIdShouldBeTheAnnotatedObjectId() throws Exception {
-		assertEquals(annotatedObjectId, getNewInstance().getReferenceId());
+		assertEquals(subjectId, getNewInstance().getReferenceId());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenThereIsNoAnnotationWithTheGivenId() throws Exception {
-		when(context.findAnnotation(annotation.getId(), annotatedObjectId)).thenThrow(new AnnotationNotFoundException(""));
+		when(context.findAnnotation(subjectId, annotation.getId())).thenThrow(new AnnotationNotFoundException(""));
 		execute();
 	}
 
@@ -78,7 +78,7 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new AnnotationVoteRemoveAction(annotation.getId(), annotatedObjectId);
+		return new AnnotationVoteRemoveAction(annotation.getId(), subjectId);
 	}
 
 	@Override

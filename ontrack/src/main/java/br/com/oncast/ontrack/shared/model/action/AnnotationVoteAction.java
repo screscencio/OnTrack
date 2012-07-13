@@ -30,7 +30,7 @@ public class AnnotationVoteAction implements AnnotationAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Annotation annotation = ActionHelper.findAnnotation(annotationId, annotatedObjectId, context);
+		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context);
 		annotation.vote(actionContext.getUserEmail());
 		return new AnnotationVoteRemoveAction(annotationId, annotatedObjectId);
 	}

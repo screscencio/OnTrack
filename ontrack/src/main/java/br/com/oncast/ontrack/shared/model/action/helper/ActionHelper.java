@@ -54,9 +54,9 @@ public class ActionHelper {
 		}
 	}
 
-	public static Annotation findAnnotation(final UUID id, final UUID annotatedObjectId, final ProjectContext context) throws UnableToCompleteActionException {
+	public static Annotation findAnnotation(final UUID subjectId, final UUID annotationId, final ProjectContext context) throws UnableToCompleteActionException {
 		try {
-			return context.findAnnotation(id, annotatedObjectId);
+			return context.findAnnotation(subjectId, annotationId);
 		}
 		catch (final AnnotationNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
@@ -72,7 +72,7 @@ public class ActionHelper {
 		}
 	}
 
-	public static Checklist findChecklist(final ProjectContext context, final UUID subjectId, final UUID checklistId) throws UnableToCompleteActionException {
+	public static Checklist findChecklist(final UUID subjectId, final UUID checklistId, final ProjectContext context) throws UnableToCompleteActionException {
 		try {
 			return context.findChecklist(subjectId, checklistId);
 		}

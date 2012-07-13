@@ -71,7 +71,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	private boolean hasVoted(final UUID annotationId, final UUID subjectId) throws AnnotationNotFoundException {
-		final Annotation annotation = contextProviderService.getCurrentProjectContext().findAnnotation(annotationId, subjectId);
+		final Annotation annotation = contextProviderService.getCurrentProjectContext().findAnnotation(subjectId, annotationId);
 		return annotation.hasVoted(authenticationService.getCurrentUser().getEmail());
 	}
 

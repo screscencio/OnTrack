@@ -154,29 +154,29 @@ public class ProjectContext {
 		return user;
 	}
 
-	public void addAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
-		project.addAnnotation(annotation, annotatedObjectId);
+	public void addAnnotation(final UUID subjectId, final Annotation annotation) {
+		project.addAnnotation(subjectId, annotation);
 	}
 
-	public void removeAnnotation(final Annotation annotation, final UUID annotatedObjectId) {
-		if (project.hasAnnotationsFor(annotatedObjectId)) project.removeAnnotation(annotation, annotatedObjectId);
+	public void removeAnnotation(final UUID subjectId, final Annotation annotation) {
+		if (project.hasAnnotationsFor(subjectId)) project.removeAnnotation(subjectId, annotation);
 	}
 
-	public Annotation findAnnotation(final UUID annotationId, final UUID annotatedObjectId) throws AnnotationNotFoundException {
-		if (!project.hasAnnotationsFor(annotatedObjectId)) throw new AnnotationNotFoundException("The object with id '" + annotatedObjectId
+	public Annotation findAnnotation(final UUID subjectId, final UUID annotationId) throws AnnotationNotFoundException {
+		if (!project.hasAnnotationsFor(subjectId)) throw new AnnotationNotFoundException("The object with id '" + subjectId
 				+ "' has no annotations");
 
-		final Annotation annotation = project.getAnnotation(annotationId, annotatedObjectId);
-		if (annotation == null) throw new AnnotationNotFoundException("The Object with id '" + annotatedObjectId + "' does not have the annotations with id '"
+		final Annotation annotation = project.getAnnotation(subjectId, annotationId);
+		if (annotation == null) throw new AnnotationNotFoundException("The Object with id '" + subjectId + "' does not have the annotations with id '"
 				+ annotationId + "'");
 
 		return annotation;
 	}
 
-	public List<Annotation> findAnnotationsFor(final UUID annotatedObjectId) {
-		if (!project.hasAnnotationsFor(annotatedObjectId)) return new ArrayList<Annotation>();
+	public List<Annotation> findAnnotationsFor(final UUID subjectId) {
+		if (!project.hasAnnotationsFor(subjectId)) return new ArrayList<Annotation>();
 
-		return project.getAnnotationsFor(annotatedObjectId);
+		return project.getAnnotationsFor(subjectId);
 	}
 
 	public void addUser(final User user) {

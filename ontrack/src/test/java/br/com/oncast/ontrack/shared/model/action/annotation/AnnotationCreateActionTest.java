@@ -47,7 +47,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		annotatedObjectId = new UUID();
 		execute();
 
-		verify(context).addAnnotation(Mockito.any(Annotation.class), Mockito.eq(annotatedObjectId));
+		verify(context).addAnnotation(Mockito.eq(annotatedObjectId), Mockito.any(Annotation.class));
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		execute();
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
-		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
 
 		assertEquals(author, captor.getValue().getAuthor());
 	}
@@ -71,7 +71,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		execute();
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
-		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
 
 		assertEquals(message, captor.getValue().getMessage());
 	}
@@ -81,14 +81,14 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		final ModelAction undoAction = execute();
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
-		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
 		final Annotation createdAnnotation = captor.getValue();
 
-		when(context.findAnnotation(createdAnnotation.getId(), annotatedObjectId)).thenReturn(createdAnnotation);
+		when(context.findAnnotation(annotatedObjectId, createdAnnotation.getId())).thenReturn(createdAnnotation);
 
 		undoAction.execute(context, actionContext);
 
-		verify(context).removeAnnotation(createdAnnotation, annotatedObjectId);
+		verify(context).removeAnnotation(annotatedObjectId, createdAnnotation);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
@@ -102,7 +102,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		execute();
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
-		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
 
 		assertEquals(attachmentFile, captor.getValue().getAttachmentFile());
 	}
@@ -112,7 +112,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		new AnnotationCreateAction(annotatedObjectId, message, null).execute(context, actionContext);
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
-		verify(context).addAnnotation(captor.capture(), Mockito.any(UUID.class));
+		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
 
 		assertNull(captor.getValue().getAttachmentFile());
 	}

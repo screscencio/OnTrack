@@ -1,5 +1,9 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationRemoveActionEntity;
@@ -21,21 +25,41 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Element
 	private UUID subjectId;
 
+	@Attribute
+	private boolean userAction;
+
 	protected AnnotationRemoveAction() {}
 
 	public AnnotationRemoveAction(final UUID subjectId, final UUID annotationId) {
-		this.annotationId = annotationId;
-		this.subjectId = subjectId;
+		this(subjectId, annotationId, true);
+	}
 
+	private AnnotationRemoveAction(final UUID subjectId, final UUID annotationId, final boolean isUserAction) {
+		this.subjectId = subjectId;
+		this.annotationId = annotationId;
+		this.userAction = isUserAction;
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Annotation annotation = ActionHelper.findAnnotation(annotationId, subjectId, context);
-		if (!annotation.getAuthor().getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
+		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
+		if (userAction && !annotation.getAuthor().getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
 				"Can't remove a anotation created by another user.");
-		context.removeAnnotation(annotation, subjectId);
-		return new AnnotationCreateAction(annotation, subjectId);
+
+		final List<ModelAction> rollbackSubActions = removeSubAnnotations(context, actionContext);
+
+		context.removeAnnotation(subjectId, annotation);
+		return new AnnotationCreateAction(subjectId, annotation, rollbackSubActions);
+	}
+
+	private List<ModelAction> removeSubAnnotations(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+		final List<ModelAction> rollbackActions = new ArrayList<ModelAction>();
+
+		final List<Annotation> subAnnotations = context.findAnnotationsFor(annotationId);
+		for (final Annotation subAnnotation : subAnnotations) {
+			rollbackActions.add(new AnnotationRemoveAction(annotationId, subAnnotation.getId(), false).execute(context, actionContext));
+		}
+		return rollbackActions;
 	}
 
 	@Override

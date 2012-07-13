@@ -30,7 +30,7 @@ public class AnnotationVoteRemoveAction implements AnnotationAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final Annotation annotation = ActionHelper.findAnnotation(annotationId, annotatedObjectId, context);
+		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context);
 		if (!annotation.hasVoted(actionContext.getUserEmail())) throw new UnableToCompleteActionException("It's not possible to remove the ungiven vote");
 		annotation.removeVote(actionContext.getUserEmail());
 		return new AnnotationVoteAction(annotationId, annotatedObjectId);
