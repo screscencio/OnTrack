@@ -10,7 +10,6 @@ import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
@@ -26,7 +25,7 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.STRING_2)
 	@ConvertUsing(StringToUuidConverter.class)
-	private String annotatedObjectId;
+	private String subjectId;
 
 	@ConvertUsing(StringToUuidConverter.class)
 	@Column(name = ActionTableColumns.STRING_3)
@@ -35,9 +34,8 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
 	private String message;
 
-	@ConversionAlias("subActions")
-	@Column(name = ActionTableColumns.ACTION_LIST)
 	@OneToMany(cascade = CascadeType.ALL)
+	@Column(name = ActionTableColumns.ACTION_LIST)
 	@JoinTable(name = "AnnotationCreate_subActionList")
 	private List<ModelActionEntity> subActionList;
 
@@ -49,14 +47,6 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 
 	public void setAnnotationId(final String annotationId) {
 		this.annotationId = annotationId;
-	}
-
-	public String getAnnotatedObjectId() {
-		return annotatedObjectId;
-	}
-
-	public void setAnnotatedObjectId(final String annotatedObjectId) {
-		this.annotatedObjectId = annotatedObjectId;
 	}
 
 	public String getMessage() {
@@ -81,6 +71,14 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 
 	public void setSubActionList(final List<ModelActionEntity> subActionList) {
 		this.subActionList = subActionList;
+	}
+
+	public String getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(String subjectId) {
+		this.subjectId = subjectId;
 	}
 
 }

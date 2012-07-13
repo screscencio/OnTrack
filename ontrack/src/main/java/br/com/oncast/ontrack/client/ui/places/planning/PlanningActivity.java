@@ -72,13 +72,10 @@ public class PlanningActivity extends AbstractActivity {
 	}
 
 	private Release getFirstReleaseInProgress(final ProjectContext context) {
-		return context.getProjectRelease().getFirstFutureRelease(new Release.Condition() {
-
-			@Override
-			public boolean eval(final Release release) {
-				return !release.isDone() && release.getEffortSum() > 0;
-			}
-		});
+		for (final Release release : context.getProjectRelease().getAllReleasesInTemporalOrder()) {
+			if (!release.isDone() && release.getEffortSum() > 0) return release;
+		}
+		return null;
 	}
 
 	@Override

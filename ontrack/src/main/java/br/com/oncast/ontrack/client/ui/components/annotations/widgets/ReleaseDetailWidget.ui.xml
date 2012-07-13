@@ -17,7 +17,7 @@
 	<g:HTMLPanel>
 		<g:Label styleName="{style.title}" text="details" />
 		
-		<misc:LabeledText styleName="{style.detail}" ui:field="parent" label="Parent:" />
+		<misc:LabeledText styleName="{style.detail}" ui:field="parent" label="Part of:" />
 		<misc:LabeledText styleName="{style.detail}" ui:field="effort" label="Total Effort:" />
 		<misc:LabeledText styleName="{style.detail}" ui:field="accomplishedEffort" label="Accomplished Effort:" />
 		<misc:LabeledText styleName="{style.detail}" ui:field="value" label="Total Value:" />

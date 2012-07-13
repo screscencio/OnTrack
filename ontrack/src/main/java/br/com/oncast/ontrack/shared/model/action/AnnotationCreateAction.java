@@ -35,7 +35,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 	private UUID attachmentId;
 
 	@ElementList
-	private List<ModelAction> subActions;
+	private List<ModelAction> subActionList;
 
 	protected AnnotationCreateAction() {}
 
@@ -44,12 +44,12 @@ public class AnnotationCreateAction implements AnnotationAction {
 		this.attachmentId = attachmentId;
 		this.annotationId = new UUID();
 		this.subjectId = subjectId;
-		this.subActions = new ArrayList<ModelAction>();
+		this.subActionList = new ArrayList<ModelAction>();
 	}
 
-	protected AnnotationCreateAction(final UUID subjectId, final Annotation annotation, final List<ModelAction> subActions) {
+	protected AnnotationCreateAction(final UUID subjectId, final Annotation annotation, final List<ModelAction> subActionList) {
 		this(subjectId, annotation.getMessage(), null);
-		this.subActions = subActions;
+		this.subActionList = subActionList;
 		annotationId = annotation.getId();
 	}
 
@@ -72,7 +72,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 	}
 
 	private void executeSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		for (final ModelAction subAction : subActions) {
+		for (final ModelAction subAction : subActionList) {
 			subAction.execute(context, actionContext);
 		}
 	}

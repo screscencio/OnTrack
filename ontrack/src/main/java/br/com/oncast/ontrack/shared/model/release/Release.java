@@ -180,7 +180,7 @@ public class Release implements Serializable {
 		return descendatReleases;
 	}
 
-	private List<Release> getAllReleasesInTemporalOrder() {
+	public List<Release> getAllReleasesInTemporalOrder() {
 		final Release root = getRootRelease();
 
 		final List<Release> descendantReleases = root.getDescendantReleasesInTemporalOrder();

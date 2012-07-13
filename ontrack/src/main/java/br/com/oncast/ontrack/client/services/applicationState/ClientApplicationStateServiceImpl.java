@@ -56,6 +56,10 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	}
 
 	private Scope getSelectedScope() {
-		return selectedScope == null ? contextProviderService.getCurrentProjectContext().getProjectScope() : selectedScope;
+		return selectedScope == null ? getDefaultSelectedScope() : selectedScope;
+	}
+
+	private Scope getDefaultSelectedScope() {
+		return contextProviderService.getCurrentProjectContext().getProjectScope();
 	}
 }
