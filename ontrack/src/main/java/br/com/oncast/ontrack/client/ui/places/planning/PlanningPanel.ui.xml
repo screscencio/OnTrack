@@ -9,13 +9,15 @@
     xmlns:rp='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel'
 >
 
-	<ui:style src="../../style/default.css">
+	<ui:image field="sliderLeft" src="slider-left.png"></ui:image>
+	<ui:image field="sliderRight" src="slider-right.png"></ui:image>
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.planning.PlanningPanel.PlanningPanelStyle">
 	
 		.searchBar {
 			position: absolute;
 			top: 15px;
 			left: 10px;
-			right: 420px;
+			right: 10px;
 		}
 		
 		.scopeTree {
@@ -23,7 +25,7 @@
 			
 			top: 10px;
 			left: 16px;
-			right: 426px;
+			right: 16px;
 			bottom: 43px;
 			
 			padding: 5px;
@@ -36,7 +38,7 @@
 		.footerBar {
 			position: absolute;
 			left: 10px;
-			right: 420px;
+			right: 10px;
 			bottom: 10px;
 			height: 33px;
 		}
@@ -52,21 +54,71 @@
 			padding: 10px;
 		}
 		
+		.releaseContainer {
+			position: relative;
+			width: 410px;
+			height: 100%;
+		}
+		
+		.scopeTreeContainer {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+		
+		@sprite .hideReleaseIcon {
+			gwt-image: 'sliderRight';
+		}
+		
+		@sprite .showReleaseIcon {
+			gwt-image: 'sliderLeft';
+		}
+		
+		.toggleReleasePanel {
+			position: relative;
+			width: 10px;
+			height: 45px;
+			z-index: 1;
+			margin-left: -10px;
+			
+			background-size: 15px 15px;
+			background-position: center;
+			background-color: white;
+
+			cursor: pointer;
+			border: 1px solid silver;
+			box-shadow: -2px 3px 5px silver;
+			opacity: 0.6;
+		}
+			
 	</ui:style>
 
 	<layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
-		<g:SimplePanel styleName="{style.popupContainer} {style.scopeTree}">
-			<st:ScopeTree ui:field="scopeTree" />
-		</g:SimplePanel>
-		<g:SimplePanel styleName="{style.searchBar}">
-			<search:SearchBar ui:field="searchBar"/>
-		</g:SimplePanel>
-		<g:SimplePanel styleName="{style.footerBar}">
-			<footer:FooterBar/>
-		</g:SimplePanel>
-		<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
-			<rp:ReleasePanel ui:field="releasePanel" />
-		</g:ScrollPanel>
+		<g:HorizontalPanel width="100%" height="100%">
+			<g:cell width="100%" height="100%">
+				<g:FlowPanel styleName="{style.scopeTreeContainer}">
+					<g:SimplePanel styleName="{style.popupContainer} {style.scopeTree}">
+						<st:ScopeTree ui:field="scopeTree" />
+					</g:SimplePanel>
+					<g:SimplePanel styleName="{style.searchBar}">
+						<search:SearchBar ui:field="searchBar"/>
+					</g:SimplePanel>
+					<g:SimplePanel styleName="{style.footerBar}">
+						<footer:FooterBar/>
+					</g:SimplePanel>
+				</g:FlowPanel>
+			</g:cell>
+			<g:cell verticalAlignment="middle">
+				<g:FocusPanel ui:field="toggleReleasePanel" styleName="{style.toggleReleasePanel} {style.hideReleaseIcon}"/>
+			</g:cell>
+			<g:cell height="1">
+				<g:SimplePanel ui:field="releaseContainer" styleName="{style.releaseContainer}">
+					<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
+						<rp:ReleasePanel ui:field="releasePanel" />
+					</g:ScrollPanel>
+				</g:SimplePanel>
+			</g:cell>
+		</g:HorizontalPanel>
 	</layout:ApplicationMenuAndWidgetContainer>
 
 </ui:UiBinder>

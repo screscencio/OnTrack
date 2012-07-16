@@ -9,12 +9,17 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndW
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PlanningPanel extends Composite implements PlanningView {
@@ -22,6 +27,13 @@ public class PlanningPanel extends Composite implements PlanningView {
 	private static PlanningPanelUiBinder uiBinder = GWT.create(PlanningPanelUiBinder.class);
 
 	interface PlanningPanelUiBinder extends UiBinder<Widget, PlanningPanel> {}
+
+	interface PlanningPanelStyle extends CssResource {
+		String showReleaseIcon();
+	}
+
+	@UiField
+	protected PlanningPanelStyle style;
 
 	@UiField
 	protected ScrollPanel releaseScroll;
@@ -38,6 +50,12 @@ public class PlanningPanel extends Composite implements PlanningView {
 	@UiField
 	protected ApplicationMenuAndWidgetContainer rootPanel;
 
+	@UiField
+	protected SimplePanel releaseContainer;
+
+	@UiField
+	protected FocusPanel toggleReleasePanel;
+
 	private final ScrollAnimation animation = new ScrollAnimation();
 
 	@UiFactory
@@ -51,6 +69,11 @@ public class PlanningPanel extends Composite implements PlanningView {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		searchBar.setTree(scopeTree);
+	}
+
+	@UiHandler("toggleReleasePanel")
+	protected void onShowReleasePanelClick(final ClickEvent e) {
+		toggleReleasePanel();
 	}
 
 	@Override
@@ -104,6 +127,13 @@ public class PlanningPanel extends Composite implements PlanningView {
 		else if (itemBottom > menuBottom) animation.scroll(menuTop, itemTop - menuHeight + itemHeight, 500);
 
 		return itemHeight <= menuHeight;
+	}
+
+	@Override
+	public void toggleReleasePanel() {
+		final boolean wasVisible = releaseContainer.isVisible();
+		releaseContainer.setVisible(!wasVisible);
+		toggleReleasePanel.setStyleName(style.showReleaseIcon(), wasVisible);
 	}
 
 	private int getOffisetTop(final Element widget, final Element scrollPanel) {

@@ -122,4 +122,8 @@ public class PlanningActivity extends AbstractActivity {
 	public void showSearchScope() {
 		view.getSearchBar().focus();
 	}
+
+	public void toggleReleasePanel() {
+		view.toggleReleasePanel();
+	}
 }

@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.places.planning.interation;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.EventProcessor;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.AltModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
@@ -12,6 +13,12 @@ public enum PlanningShortcutMappings implements ShortcutMapping<PlanningActivity
 		@Override
 		public void execute(final PlanningActivity activity) {
 			activity.showSearchScope();
+		}
+	},
+	TOGGLE_RELEASE_PANEL(new Shortcut(BrowserKeyCodes.KEY_R).with(AltModifier.PRESSED)) {
+		@Override
+		public void execute(final PlanningActivity activity) {
+			activity.toggleReleasePanel();
 		}
 	};
 
