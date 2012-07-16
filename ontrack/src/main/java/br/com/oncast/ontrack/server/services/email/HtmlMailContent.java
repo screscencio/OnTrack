@@ -18,9 +18,10 @@ public class HtmlMailContent {
 		return writeMailContent(createProjectAuthorizationContext(project, userEmail, currentUser), template);
 	}
 
-	public static String forNewUserProjectAuthorization(final String userEmail, final ProjectRepresentation project, final String currentUser) {
+	public static String forNewUserProjectAuthorization(final String userEmail, final String generatedPassword, final ProjectRepresentation project,
+			final String currentUser) {
 		final Template template = getTemplate("/br/com/oncast/ontrack/server/services/email/authMailNewUser.html");
-		return writeMailContent(createProjectAuthorizationContext(project, userEmail, currentUser), template);
+		return writeMailContent(createProjectAuthorizationContextWithGeneratedPassword(project, userEmail, generatedPassword, currentUser), template);
 	}
 
 	public static String forProjectCreationQuotaRequest(final String currentUser) {
@@ -45,6 +46,13 @@ public class HtmlMailContent {
 		context.put("projectLink", CustomUrlGenerator.forProject(project));
 		context.put("userEmail", userEmail);
 		context.put("currentUser", currentUser);
+		return context;
+	}
+
+	private static VelocityContext createProjectAuthorizationContextWithGeneratedPassword(final ProjectRepresentation project, final String userEmail,
+			final String generatedPassword, final String currentUser) {
+		final VelocityContext context = createProjectAuthorizationContext(project, userEmail, currentUser);
+		context.put("generatedPassword", generatedPassword);
 		return context;
 	}
 

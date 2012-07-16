@@ -70,7 +70,6 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 		final int invitationQuota = (currentUser == null || currentUser.getProjectInvitationQuota() <= 0) ? 0 : currentUser.getProjectInvitationQuota();
 
 		countdownLabel.setText("You have '" + invitationQuota + "' invitations left.");
-		invitationTextBox.setEnabled(invitationQuota > 0);
 	}
 
 	private void setDefaultText() {

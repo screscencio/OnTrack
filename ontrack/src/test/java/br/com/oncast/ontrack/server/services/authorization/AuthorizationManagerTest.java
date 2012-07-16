@@ -159,7 +159,7 @@ public class AuthorizationManagerTest {
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, true);
 
-		verify(mockMail).sendTo(mail, false);
+		verify(mockMail).sendTo(mail, null);
 	}
 
 	@Test
@@ -177,7 +177,7 @@ public class AuthorizationManagerTest {
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, true);
 
-		verify(mockMail, never()).sendTo(mail, false);
+		verify(mockMail, never()).sendTo(mail, null);
 	}
 
 	@Test

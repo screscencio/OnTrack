@@ -28,10 +28,10 @@ public class ProjectAuthorizationMail {
 		return this;
 	}
 
-	public void sendTo(final String userEmail, final boolean isNewUser) {
+	public void sendTo(final String userEmail, final String generatedPassword) {
 		try {
 			String mailContent;
-			if (isNewUser) mailContent = HtmlMailContent.forNewUserProjectAuthorization(userEmail, project, currentUser);
+			if (generatedPassword != null) mailContent = HtmlMailContent.forNewUserProjectAuthorization(userEmail, generatedPassword, project, currentUser);
 			else mailContent = HtmlMailContent.forProjectAuthorization(userEmail, project, currentUser);
 
 			sender.subject(createAuthorizationSubject()).htmlContent(mailContent).sendTo(userEmail);

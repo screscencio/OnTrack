@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
 import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
@@ -66,18 +68,17 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailNotification)
 			throws UnableToAuthorizeUserException {
 		try {
-			final boolean isNewUser = validateUserAndItsProjectAccessAuthorization(projectId, userEmail);
+			final String generatedPassword = validateUserAndItsProjectAccessAuthorization(projectId, userEmail);
 
 			if (!authenticationManager.isUserAuthenticated()) {
 				persistenceService.authorize(userEmail, projectId);
 				return;
 			}
-
 			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-			validateAndUpdateUserUserInvitaionQuota(userEmail, authenticatedUser);
+			if (generatedPassword != null) validateAndUpdateUserUserInvitaionQuota(userEmail, authenticatedUser);
 			persistenceService.authorize(userEmail, projectId);
 
-			if (shouldSendMailNotification) sendMailNotification(projectId, userEmail, isNewUser, authenticatedUser);
+			if (shouldSendMailNotification) sendMailNotification(projectId, userEmail, generatedPassword, authenticatedUser);
 		}
 		catch (final PersistenceException e) {
 			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail + "' for the project.", e);
@@ -86,24 +87,27 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
 					+ "' for the project: The project wasn't avaiable.", e);
 		}
+		catch (final NoSuchAlgorithmException e) {
+			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
+					+ "' for the project: Password generation went wrong.", e);
+		}
 	}
 
-	private boolean validateUserAndItsProjectAccessAuthorization(final UUID projectId, final String userEmail) throws PersistenceException,
-			UnableToAuthorizeUserException {
-		boolean isNewUser;
+	private String validateUserAndItsProjectAccessAuthorization(final UUID projectId, final String userEmail) throws PersistenceException,
+			UnableToAuthorizeUserException, NoSuchAlgorithmException {
+		String generatedPassword = null;
 		User user;
 		try {
 			user = authenticationManager.findUserByEmail(userEmail);
-			isNewUser = false;
 		}
 		catch (final UserNotFoundException e) {
-			user = authenticationManager.createNewUser(userEmail, "", 0, 0);
-			isNewUser = true;
+			generatedPassword = PasswordHash.generatePassword();
+			user = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
 		}
 
 		if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) logAndThrowUnableToAuthorizeUserException("The user '"
 				+ userEmail + "' is already authorized for the project '" + projectId + "'");
-		return isNewUser;
+		return generatedPassword;
 	}
 
 	void validateAndUpdateUserUserInvitaionQuota(final String userToBeAuthorizedEmail, final User requestingUser)
@@ -119,10 +123,10 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		}
 	}
 
-	private void sendMailNotification(final UUID projectId, final String userEmail, final boolean isNewUser, final User authenticatedUser)
+	private void sendMailNotification(final UUID projectId, final String userEmail, final String generatedPassword, final User authenticatedUser)
 			throws PersistenceException, NoResultFoundException {
 		projectAuthorizationMailFactory.createMail().currentUser(authenticatedUser.getEmail())
-				.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, isNewUser);
+				.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, generatedPassword);
 	}
 
 	@Override

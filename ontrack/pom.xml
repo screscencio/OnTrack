@@ -543,6 +543,8 @@
 				<configuration>
 					<warSourceDirectory>${webappDirectory}</warSourceDirectory>
 					<url>http://localhost:8888/manager</url>
+					<port>8888</port>
+					<fork>true</fork>
 					<path>/</path>
 					<username>manager</username>
 					<password>manager</password>

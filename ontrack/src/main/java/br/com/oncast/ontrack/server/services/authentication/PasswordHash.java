@@ -38,8 +38,16 @@ public class PasswordHash {
 		bytesHash = getHash(password, bSalt);
 	}
 
+	public static String generatePassword() throws NoSuchAlgorithmException {
+		return Base64Utils.toBase64(generateRandomBytes(12));
+	}
+
 	private static byte[] generateSalt() throws NoSuchAlgorithmException {
-		final byte[] bSalt = new byte[8];
+		return generateRandomBytes(8);
+	}
+
+	private static byte[] generateRandomBytes(final int size) throws NoSuchAlgorithmException {
+		final byte[] bSalt = new byte[size];
 		final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 		random.nextBytes(bSalt);
 		return bSalt;
