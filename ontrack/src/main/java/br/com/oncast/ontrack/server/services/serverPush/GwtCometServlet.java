@@ -67,10 +67,11 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	}
 
 	private static void removeCometSession(final String cometSessionId) {
-		cometSessionMap.remove(cometSessionId);
+		final CometSession removedSession = cometSessionMap.remove(cometSessionId);
+		if (removedSession == null) return;
 		LOGGER.debug("Currently active commet sessions: " + cometSessionMap.size());
 
-		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientDisconnected(createGwtCometClientConnection(cometSessionId));
+		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientDisconnected(createGwtCometClientConnection(removedSession));
 	}
 
 	@Override
@@ -118,7 +119,4 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 		return new GwtCometClientConnection(cometSession.getSessionID(), cometSession.getHttpSession().getId());
 	}
 
-	private static ServerPushConnection createGwtCometClientConnection(final String cometSessionId) {
-		return new GwtCometClientConnection(cometSessionId, null);
-	}
 }

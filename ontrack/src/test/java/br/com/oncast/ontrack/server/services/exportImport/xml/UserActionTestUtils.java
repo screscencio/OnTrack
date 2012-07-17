@@ -224,7 +224,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createAnnotationCreateAction() throws Exception {
-		return createUserAction(new AnnotationCreateAction(new UUID(), "", new UUID()));
+		return createUserAction(new AnnotationCreateAction(new UUID(), "message", new UUID()));
 	}
 
 	public static UserAction createReleaseDeclareEndDayAction() throws Exception {
@@ -428,4 +428,7 @@ public class UserActionTestUtils {
 		return actions;
 	}
 
+	public static UserAction createAnnotationCreateAction(final String message) throws Exception {
+		return createUserAction(new AnnotationCreateAction(new UUID(), message, new UUID()));
+	}
 }

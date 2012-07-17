@@ -112,12 +112,12 @@ public class AuthorizationManagerTest {
 		final String mail = "inexistent@mail.com";
 
 		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
-		when(authenticationManager.createNewUser(mail, "", 0, 0)).thenReturn(new User(mail));
+		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(new User(mail));
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
 
 		final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-		verify(authenticationManager).createNewUser(captor.capture(), eq(""), eq(0), eq(0));
+		verify(authenticationManager).createNewUser(captor.capture(), Mockito.anyString(), eq(0), eq(0));
 
 		assertEquals(mail, captor.getValue());
 	}
@@ -133,12 +133,25 @@ public class AuthorizationManagerTest {
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
 	}
 
-	@Test(expected = UnableToAuthorizeUserException.class)
-	public void shouldNotAuthorizeUserInvitationWhenQuotaExceeded() throws Exception {
+	@Test
+	public void shouldAuthorizeAnExistingUserInvitationEvenWhenQuotaExceeded() throws Exception {
 		final String mail = "user@mail.com";
 
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
+		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());
+		authenticatedUser.setProjectInvitationQuota(0);
+
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
+	}
+
+	@Test(expected = UnableToAuthorizeUserException.class)
+	public void shouldNotAuthorizeNewUserInvitationWhenQuotaExceeded() throws Exception {
+		final String mail = "user@mail.com";
+
+		final User requestUser = UserTestUtils.createUser(mail);
+		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
+		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(requestUser);
 		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());
 		authenticatedUser.setProjectInvitationQuota(0);
 
@@ -181,15 +194,27 @@ public class AuthorizationManagerTest {
 	}
 
 	@Test
-	public void authorizeShouldDecreaseInvitationQuotaOfUserThatRequestedTheOperation() throws Exception {
+	public void authorizeShouldDecreaseInvitationQuotaOfUserThatRequestedTheOperationWhenTheInviteeIsANewUser() throws Exception {
+		final String mail = "user@mail.com";
+
+		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
+		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(UserTestUtils.createUser(mail));
+
+		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
+		Assert.assertEquals(0, authenticatedUser.getProjectInvitationQuota());
+		verify(persistence).persistOrUpdateUser(authenticatedUser);
+	}
+
+	@Test
+	public void authorizeShouldNotDecreaseInvitationQuotaOfUserThatRequestedTheOperationWhenTheInviteeIsAnExistingUser() throws Exception {
 		final String mail = "user@mail.com";
 
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
 
 		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
-		Assert.assertEquals(0, authenticatedUser.getProjectInvitationQuota());
-		verify(persistence).persistOrUpdateUser(authenticatedUser);
+		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
 	}
 
 	@Test(expected = AuthorizationException.class)

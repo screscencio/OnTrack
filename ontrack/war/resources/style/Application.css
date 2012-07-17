@@ -13,24 +13,13 @@ html,body {
     outline: 0;
 }
 
-.popupPanel {
-	position: absolute;
-	
-	top: 0px;
-	right: 0px;
-	bottom: 0px;
-	left: 0px;
-	
-	z-index: 1;
-}
-
 .maskPanel {
 	position: absolute;
 	top: 0px;
 	left: 0px;
 	right: 0px;
 	bottom: 0px;
-	z-index: 0;
+	z-index: 10;
 }
 
 .maskPanelModal {

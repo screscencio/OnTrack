@@ -133,7 +133,6 @@ class BusinessLogicImpl implements BusinessLogic {
 	// should be standardized using the server time).
 	private void postProcessIncomingActions(final ProjectContext context, final ActionContext actionContext, final List<ModelAction> actionList)
 			throws UnableToHandleActionException {
-		LOGGER.debug("Post-Processing actions.");
 		try {
 			for (final ModelAction action : actionList) {
 				if (action instanceof ScopeDeclareProgressAction) ((ScopeDeclareProgressAction) action).setTimestamp(actionContext.getTimestamp());

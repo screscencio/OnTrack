@@ -11,6 +11,7 @@ public class PopUpPanel {
 	static List<Widget> addedWidgets;
 
 	public static void add(final Widget widgetToPopup) {
+		widgetToPopup.getElement().getStyle().setZIndex(20);
 		getAddedWidgetsList().add(widgetToPopup);
 		RootPanel.get().add(widgetToPopup);
 	}

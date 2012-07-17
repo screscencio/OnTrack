@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.shared.model.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
@@ -22,7 +21,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	private static final long serialVersionUID = 1L;
 
-	@Attribute
+	@Element(required = false)
 	private String message;
 
 	@Element
@@ -55,7 +54,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		if (message.isEmpty() && attachmentId == null) throw new UnableToCompleteActionException(
+		if ((message == null || message.isEmpty()) && attachmentId == null) throw new UnableToCompleteActionException(
 				"A annotation should have a message or an attachment file");
 
 		executeSubActions(context, actionContext);
