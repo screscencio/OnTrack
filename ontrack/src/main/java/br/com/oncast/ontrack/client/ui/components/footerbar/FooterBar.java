@@ -99,7 +99,7 @@ public class FooterBar extends Composite {
 		}
 
 		@Override
-		// IMPORTANT let empty to override default behavior of calling onComplete after onCancel
+		// IMPORTANT left empty to override default behavior of calling onComplete after onCancel
 		protected void onCancel() {}
 	}
 

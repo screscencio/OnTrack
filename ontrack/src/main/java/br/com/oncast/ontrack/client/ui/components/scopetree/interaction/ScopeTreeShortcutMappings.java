@@ -26,8 +26,10 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseList
 import br.com.oncast.ontrack.client.ui.keyeventhandler.EventProcessor;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutMapping;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.AltModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
@@ -136,6 +138,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 			interactionHandler.onInternalAction(new DeclareValueInternalAction(scope, interactionHandler.getProjectContext()));
 		}
 	},
+
 	OPEN_ANNOTATIONS(new Shortcut(BrowserKeyCodes.KEY_A).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
@@ -145,6 +148,34 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 					interactionHandler.focusTree();
 				}
 			});
+		}
+	},
+
+	TOGGLE_VALUE_COLUMN(new Shortcut(BrowserKeyCodes.KEY_4).with(AltModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			ScopeTreeColumn.VALUE.toggle();
+		}
+	},
+
+	TOGGLE_EFFORT_COLUMN(new Shortcut(BrowserKeyCodes.KEY_3).with(AltModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			ScopeTreeColumn.EFFORT.toggle();
+		}
+	},
+
+	TOGGLE_RELEASE_COLUMN(new Shortcut(BrowserKeyCodes.KEY_2).with(AltModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			ScopeTreeColumn.RELEASE.toggle();
+		}
+	},
+
+	TOGGLE_PROGRESS_COLUMN(new Shortcut(BrowserKeyCodes.KEY_5).with(AltModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			ScopeTreeColumn.PROGRESS.toggle();
 		}
 	};
 

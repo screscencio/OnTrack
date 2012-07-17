@@ -63,29 +63,29 @@
 				</g:cell>
 				
 				<g:cell width="1">
-					<g:Label ui:field="valueColumnInactiveIndicatorLabel" text="Value" styleName="{style.inactiveColumnIndicatorLabel}" width="85px"/>
+					<g:Label ui:field="valueColumnInactiveIndicatorLabel" text="Value" title="Show Values (Alt $)" styleName="{style.inactiveColumnIndicatorLabel}" width="85px"/>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="effortColumnInactiveIndicatorLabel" text="Effort" styleName="{style.inactiveColumnIndicatorLabel}" width="85px"/>
+					<g:Label ui:field="effortColumnInactiveIndicatorLabel" text="Effort" title="Show Efforts (Alt #)" styleName="{style.inactiveColumnIndicatorLabel}" width="85px"/>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="progressColumnInactiveIndicatorLabel" text="Progress" styleName="{style.inactiveColumnIndicatorLabel}" width="80px"/>
+					<g:Label ui:field="progressColumnInactiveIndicatorLabel" text="Progress" title="Show Progress (Alt %)" styleName="{style.inactiveColumnIndicatorLabel}" width="80px"/>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="releaseColumnInactiveIndicatorLabel" text="Release" styleName="{style.inactiveColumnIndicatorLabel}" width="120px" horizontalAlignment="center"/>
+					<g:Label ui:field="releaseColumnInactiveIndicatorLabel" text="Release" title="Show Releases (Alt @)" styleName="{style.inactiveColumnIndicatorLabel}" width="120px" horizontalAlignment="center"/>
 				</g:cell>
 				
 				<g:cell width="1">
-					<g:Label ui:field="valueColumnActiveIndicatorLabel" text="Value" styleName="{style.activeColumnIndicatorLabel}" width="85px"/>
+					<g:Label ui:field="valueColumnActiveIndicatorLabel" text="Value" title="Hide Values (Alt $)" styleName="{style.activeColumnIndicatorLabel}" width="85px"/>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="effortColumnActiveIndicatorLabel" text="Effort" styleName="{style.activeColumnIndicatorLabel}" width="85px"/>
+					<g:Label ui:field="effortColumnActiveIndicatorLabel" text="Effort" title="Hide Efforts (Alt #)" styleName="{style.activeColumnIndicatorLabel}" width="85px"/>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="progressColumnActiveIndicatorLabel" text="Progress" styleName="{style.activeColumnIndicatorLabel}" width="80px"/>
+					<g:Label ui:field="progressColumnActiveIndicatorLabel" text="Progress" title="Hide Progress (Alt %)" styleName="{style.activeColumnIndicatorLabel}" width="80px"/>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="releaseColumnActiveIndicatorLabel" text="Release" styleName="{style.activeColumnIndicatorLabel}" width="120px" horizontalAlignment="center"/>
+					<g:Label ui:field="releaseColumnActiveIndicatorLabel" text="Release" title="Hide Releases (Alt @)" styleName="{style.activeColumnIndicatorLabel}" width="120px" horizontalAlignment="center"/>
 				</g:cell>
 				
 				<g:cell width="1">

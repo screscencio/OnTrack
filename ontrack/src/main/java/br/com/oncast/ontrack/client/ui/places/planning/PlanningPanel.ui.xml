@@ -104,7 +104,7 @@
 						<search:SearchBar ui:field="searchBar"/>
 					</g:SimplePanel>
 					<g:SimplePanel styleName="{style.footerBar}">
-						<footer:FooterBar/>
+						<footer:FooterBar ui:field="footerBar"/>
 					</g:SimplePanel>
 				</g:FlowPanel>
 			</g:cell>

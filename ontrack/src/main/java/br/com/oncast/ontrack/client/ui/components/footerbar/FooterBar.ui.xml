@@ -118,7 +118,7 @@
 		<g:HTMLPanel styleName="{style.footer}">
 			<g:HTMLPanel styleName="{style.scrollContainer}">
 				<g:HTMLPanel ui:field="scroll" styleName="{style.scroll}">
-					<g:HorizontalPanel verticalAlignment="middle" >
+					<g:HorizontalPanel verticalAlignment="middle" ui:field="shortcutContainer">
 						<misc:ShortcutLabel text="ENTER" styleName="{style.shortcut}" />
 						<g:Label text="Insert Below" styleName="{style.shortcutDescription}" />
 						
@@ -128,26 +128,26 @@
 						<misc:ShortcutLabel text="SHIFT A" styleName="{style.shortcut}" />
 						<g:Label text="Annotate" styleName="{style.shortcutDescription}" />
 						
-						<misc:ShortcutLabel text="@" styleName="{style.shortcut}" />
+						<misc:ShortcutLabel text="SHIFT @" styleName="{style.shortcut}" />
 						<g:Label text="Schedule" styleName="{style.shortcutDescription}" />
 						
-						<misc:ShortcutLabel text="#" styleName="{style.shortcut}" />
+						<misc:ShortcutLabel text="SHIFT #" styleName="{style.shortcut}" />
 						<g:Label text="Effort" styleName="{style.shortcutDescription}" />
 						
-						<misc:ShortcutLabel text="$" styleName="{style.shortcut}" />
+						<misc:ShortcutLabel text="SHIFT $" styleName="{style.shortcut}" />
 						<g:Label text="Value" styleName="{style.shortcutDescription}" />
 						
-						<misc:ShortcutLabel text="%" styleName="{style.shortcut}" />
+						<misc:ShortcutLabel text="SHIFT %" styleName="{style.shortcut}" />
 						<g:Label text="Progress" styleName="{style.shortcutDescription}" />
-						
-						<misc:ShortcutLabel text="CONTROL ARROWS" styleName="{style.shortcut}" />
-						<g:Label text="Move" styleName="{style.shortcutDescription}" />
 						
 						<misc:ShortcutLabel text="CONTROL Z" styleName="{style.shortcut} {style.upperAdjust}" />
 						<g:Label text="Undo" styleName="{style.shortcutDescription}" />
 						
 						<misc:ShortcutLabel text="CONTROL F" styleName="{style.shortcut} {style.upperAdjust}" />
 						<g:Label text="Search" styleName="{style.shortcutDescription}" />
+						
+						<misc:ShortcutLabel text="CONTROL ARROWS" styleName="{style.shortcut}" />
+						<g:Label text="Move" styleName="{style.shortcutDescription}" />
 					</g:HorizontalPanel>
 				</g:HTMLPanel>
 				<g:FocusPanel ui:field="rightScrollArea" styleName="{style.scrollArea} {style.scrollRight}"/>

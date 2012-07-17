@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.planning;
 
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
+import br.com.oncast.ontrack.client.ui.components.footerbar.FooterBar;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar.SearchBar;
@@ -55,6 +56,9 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	@UiField
 	protected FocusPanel toggleReleasePanel;
+
+	@UiField
+	FooterBar footerBar;
 
 	private final ScrollAnimation animation = new ScrollAnimation();
 

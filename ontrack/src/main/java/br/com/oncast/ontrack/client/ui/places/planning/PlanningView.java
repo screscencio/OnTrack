@@ -25,4 +25,5 @@ public interface PlanningView extends IsWidget {
 	Widget getNotificationMenu();
 
 	void toggleReleasePanel();
+
 }
