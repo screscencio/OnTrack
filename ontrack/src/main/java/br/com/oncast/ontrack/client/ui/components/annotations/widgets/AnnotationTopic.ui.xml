@@ -33,7 +33,7 @@
 		
 		@sprite .remove {
 			gwt-image: 'removeIcon';
-			opacity: 0.8;
+			opacity: 0.4;
 			margin-right: 5px;
 		}
 		

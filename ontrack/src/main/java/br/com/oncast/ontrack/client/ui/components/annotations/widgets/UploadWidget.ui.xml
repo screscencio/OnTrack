@@ -18,11 +18,13 @@
 		
 		@sprite .removeImg {
 			gwt-image: 'removeImg';
+			opacity: 0.5;
 		}
 		
 		.fileNameLabel {
 			margin-top: 4px;
 			margin-right: 10px;
+			white-space: nowrap;
 		}
 		
 	</ui:style>

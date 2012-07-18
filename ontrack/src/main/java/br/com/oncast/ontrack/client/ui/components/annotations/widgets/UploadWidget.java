@@ -27,12 +27,12 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 
 public class UploadWidget extends Composite {
 
@@ -86,11 +86,8 @@ public class UploadWidget extends Composite {
 	public void setUploadFieldVisible(final boolean b) {
 		fileNameLabel.setVisible(b);
 		uploadIcon.setStyleName(style.removeImg(), b);
+		if (form != null && !b) form.reset();
 	}
-
-	private static native void clickOnInputFile(Element elem) /*-{
-		elem.click();
-	}-*/;
 
 	@UiHandler("uploadIcon")
 	protected void onUploadIconClicked(final ClickEvent e) {
@@ -109,7 +106,7 @@ public class UploadWidget extends Composite {
 
 	public void submitForm(final UploadWidgetListener listener) {
 		final String filename = getFilename();
-		if (!isUploadWidgetVisible() || filename.isEmpty()) {
+		if (filename.isEmpty()) {
 			listener.onUploadCompleted(null);
 			return;
 		}
@@ -208,6 +205,10 @@ public class UploadWidget extends Composite {
 	private ActionExecutionService getActionExecutionService() {
 		return ClientServiceProvider.getInstance().getActionExecutionService();
 	}
+
+	private static native void clickOnInputFile(Element elem) /*-{
+		elem.click();
+	}-*/;
 
 	public interface UploadWidgetListener {
 
