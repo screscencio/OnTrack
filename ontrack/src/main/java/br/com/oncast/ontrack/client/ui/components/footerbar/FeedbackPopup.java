@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.client.ui.components.footerbar;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.feedback.SendFeedbackCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
@@ -40,7 +42,7 @@ public class FeedbackPopup extends Composite implements HasCloseHandlers<Feedbac
 	void onKeyDown(final KeyDownEvent event) {
 		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hide();
 
-		else if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER && event.isControlKeyDown()) submit();
+		else if (new Shortcut(BrowserKeyCodes.KEY_ENTER).with(ControlModifier.PRESSED).accepts(event.getNativeEvent())) submit();
 
 		event.stopPropagation();
 	}

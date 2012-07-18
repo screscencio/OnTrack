@@ -24,7 +24,7 @@
 	</ui:style>
 	
 	<layout:ApplicationPopupBoxContainer addBackgroundStyleNames="{style.container}">
-		<misc:ShortcutLabel text="Ctrl + ENTER to Submit" styleName="{style.helpLabel}"/>
+		<misc:ShortcutLabel text="CONTROL + ENTER to Submit" styleName="{style.helpLabel}"/>
 		<g:TextArea ui:field="feedbackArea" styleName="{style.textBoxDecoration} {style.feedbackArea}"/>
 	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 
