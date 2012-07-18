@@ -558,6 +558,13 @@
 							<goal>redeploy</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>staging-run-war</id>
+						<phase>tomcat6:run-war</phase>
+						<goals>
+							<goal>run-war</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 
