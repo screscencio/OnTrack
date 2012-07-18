@@ -542,9 +542,10 @@
 				<version>2.0-SNAPSHOT</version>
 				<configuration>
 					<warSourceDirectory>${webappDirectory}</warSourceDirectory>
-					<url>http://localhost:8888/manager</url>
+					<url>http://localhost:8888/manager/text</url>
 					<port>8888</port>
 					<fork>true</fork>
+					<tag>${project.name}</tag>
 					<path>/</path>
 					<username>manager</username>
 					<password>manager</password>
