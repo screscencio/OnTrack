@@ -75,7 +75,7 @@ public class FeedbackPopup extends Composite implements HasCloseHandlers<Feedbac
 		feedbackArea.setFocus(true);
 	}
 
-	// TODO remove this workaround
+	// TODO++ remove this workaround
 	private void adjustDimensions() {
 		final Style s = this.getElement().getStyle();
 		s.setTop(Window.getClientHeight() - 206, Unit.PX);

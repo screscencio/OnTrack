@@ -8,6 +8,7 @@
 		.root {
 			width: 100%;
 		}
+		
 		.footer {
 			border: RELEASE_WIDGET_BORDER;
 			padding: 8px;
@@ -38,6 +39,7 @@
 			font-weight: bold;
 			white-space: nowrap;
 		}
+		
 		.upperAdjust {
 			margin-top: -1px;
 		}
@@ -48,6 +50,7 @@
 			
 			white-space: nowrap;
 		}
+		
 		.feedback {
 			position: absolute;
 			top: 3px;
@@ -75,9 +78,11 @@
 			bottom: 0px;
 			width: 30px;
 		}
+		
 		.scrollLeft {
 			left: 0px;
 		}
+		
 		.scrollRight {
 			right: 0px;
 		}

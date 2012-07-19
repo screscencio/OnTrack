@@ -29,7 +29,7 @@
 			<g:HTMLPanel styleName="{style.contentPanel}">
 				<g:Label text="Username" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
 				<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea">
-					<g:TextBox name="username"/>
+					<g:TextBox name="email"/>
 				</layout:ValidationInputContainer>
 				
 				<div class="{style.separator}" />

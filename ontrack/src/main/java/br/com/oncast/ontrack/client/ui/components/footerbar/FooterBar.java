@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.footerbar;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
@@ -66,7 +67,14 @@ public class FooterBar extends Composite {
 	void onClick(final ClickEvent event) {
 		PopupConfig.configPopup()
 				.popup(new FeedbackPopup())
+				.onClose(new PopupCloseListener() {
+					@Override
+					public void onHasClosed() {
+						feedback.setVisible(true);
+					}
+				})
 				.pop();
+		feedback.setVisible(false);
 	}
 
 	private class ShortcutPanelMover extends Animation {
