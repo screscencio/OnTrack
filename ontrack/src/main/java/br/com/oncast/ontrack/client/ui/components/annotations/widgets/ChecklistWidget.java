@@ -92,6 +92,8 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 		this.checklist = checklist;
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
+		hideNewItemDescription();
+		hideRemove();
 	}
 
 	@UiHandler("rootPanel")
@@ -101,6 +103,10 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 
 	@UiHandler("rootPanel")
 	public void onMouseOut(final MouseOutEvent e) {
+		hideRemove();
+	}
+
+	private void hideRemove() {
 		remove.getElement().getStyle().setVisibility(Visibility.HIDDEN);
 	}
 
@@ -111,8 +117,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 
 	@UiHandler("addItemLabel")
 	public void onAddItemLabelClick(final ClickEvent e) {
-		addItemDeck.showWidget(1);
-		newItemDescription.setFocus(true);
+		enterCreateItemMode();
 	}
 
 	@UiHandler("addButton")
@@ -150,12 +155,13 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	@Override
 	protected void onLoad() {
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
-		hideNewItemDescription();
-		remove.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+		newItemDescription.setFocus(true);
 	}
 
 	@Override
 	protected void onUnload() {
+		hideRemove();
+		hideNewItemDescription();
 		getActionExecutionService().removeActionExecutionListener(getActionExecutionListener());
 	}
 
@@ -192,6 +198,11 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	@Override
 	public Checklist getModelObject() {
 		return checklist;
+	}
+
+	public void enterCreateItemMode() {
+		addItemDeck.showWidget(1);
+		newItemDescription.setFocus(true);
 	}
 
 }

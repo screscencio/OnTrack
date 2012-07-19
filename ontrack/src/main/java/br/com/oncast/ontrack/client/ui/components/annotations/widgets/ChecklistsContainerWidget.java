@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -53,19 +54,24 @@ public class ChecklistsContainerWidget extends Composite {
 
 	private ActionExecutionListener actionExecutionListener;
 
+	private boolean justCreatedAnChecklist = false;
+
 	@UiFactory
 	protected VerticalModelWidgetContainer<Checklist, ChecklistWidget> createChecklists() {
 		return new VerticalModelWidgetContainer<Checklist, ChecklistWidget>(new ModelWidgetFactory<Checklist, ChecklistWidget>() {
 			@Override
 			public ChecklistWidget createWidget(final Checklist modelBean) {
-				return new ChecklistWidget(subjectId, modelBean);
+				final ChecklistWidget checklistWidget = new ChecklistWidget(subjectId, modelBean);
+				if (justCreatedAnChecklist) {
+					checklistWidget.enterCreateItemMode();
+					justCreatedAnChecklist = false;
+				}
+				return checklistWidget;
 			}
 		}, new ModelWidgetContainerListener() {
 
 			@Override
-			public void onUpdateComplete(final boolean hasChanged) {
-
-			}
+			public void onUpdateComplete(final boolean hasChanged) {}
 		});
 	}
 
@@ -108,10 +114,12 @@ public class ChecklistsContainerWidget extends Composite {
 
 	private ActionExecutionListener getActionExecutionListener() {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
+
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
 				if (action instanceof ChecklistAction && action.getReferenceId().equals(subjectId)) {
+					justCreatedAnChecklist = isUserAction && (action instanceof ChecklistCreateAction);
 					checklists.update(context.findChecklistsFor(subjectId));
 				}
 			}
