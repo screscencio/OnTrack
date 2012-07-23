@@ -37,9 +37,12 @@
 			min-width: 415px;
 			
 			padding: POPUP_PADDING;
+			overflow-y: auto; 
 		}
 		
 		.rightPanel {
+			height: 100%;
+			overflow-y: auto; 
 		}
 		
 		.checklist {
@@ -66,12 +69,14 @@
 						</g:cell>
 						<misc:Separator vertical="true"/>
 						<g:cell width="38%">
-							<g:VerticalPanel width="100%" styleName="{style.rightPanel}">
-								<aw:SubjectDetailWidget ui:field="subjectDetails" styleName="{style.detailWidget}" />
-								<misc:Separator />
-								<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
-								<misc:Separator />
-							</g:VerticalPanel>
+							<g:FocusPanel styleName="{style.rightPanel}">
+								<g:VerticalPanel width="100%" height="100%">
+									<aw:SubjectDetailWidget ui:field="subjectDetails" styleName="{style.detailWidget}" />
+									<misc:Separator />
+									<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
+									<misc:Separator />
+								</g:VerticalPanel>
+							</g:FocusPanel>
 						</g:cell>
 					</g:HorizontalPanel>
 				</g:cell>
