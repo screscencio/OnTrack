@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationRemoveActionEntity;
@@ -18,8 +20,10 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.AnnotationTestUtils;
+import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
 
 public class AnnotationRemoveActionTest extends ModelActionTest {
 
@@ -83,6 +87,21 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 		for (final Annotation subAnnotation : subAnnotationsList) {
 			verify(context).addAnnotation(annotation.getId(), subAnnotation);
 		}
+	}
+
+	@Test
+	public void undoShouldRestoreTheFileRepresentationOfTheAttachment() throws Exception {
+		final FileRepresentation fileRepresentation = FileRepresentationTestUtils.create();
+		annotation.setAttachmentFile(fileRepresentation);
+		final ModelAction undoAction = execute();
+
+		when(context.findFileRepresentation(fileRepresentation.getId())).thenReturn(fileRepresentation);
+		undoAction.execute(context, actionContext);
+
+		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
+		verify(context).addAnnotation(Mockito.eq(subjectId), captor.capture());
+
+		assertEquals(fileRepresentation, captor.getValue().getAttachmentFile());
 	}
 
 	private List<Annotation> createSubAnnotationsList(final int quantity) throws Exception {

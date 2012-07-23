@@ -47,9 +47,9 @@ public class AnnotationCreateAction implements AnnotationAction {
 	}
 
 	protected AnnotationCreateAction(final UUID subjectId, final Annotation annotation, final List<ModelAction> subActionList) {
-		this(subjectId, annotation.getMessage(), null);
+		this(subjectId, annotation.getMessage(), annotation.getAttachmentFile() == null ? null : annotation.getAttachmentFile().getId());
 		this.subActionList = subActionList;
-		annotationId = annotation.getId();
+		this.annotationId = annotation.getId();
 	}
 
 	@Override

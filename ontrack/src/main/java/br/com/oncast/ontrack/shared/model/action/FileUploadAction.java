@@ -39,8 +39,7 @@ public class FileUploadAction implements FileAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final UUID projectId = new UUID(String.valueOf(context.getProjectRepresentation().getId()));
-		context.addFileRepresentation(new FileRepresentation(fileRepresentationId, fileName, filePath, projectId));
+		context.addFileRepresentation(new FileRepresentation(fileRepresentationId, fileName, filePath, context.getProjectRepresentation().getId()));
 		return null;
 	}
 
