@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:style>
+	<ui:style type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.ChecklistItemWidget.ChecklistWidgetStyle">
 	
 		.description {
 			padding-left: 3px;
@@ -16,6 +16,12 @@
 
 			color: red;
 			font-weight: bold;
+			
+			visibility: hidden;
+		}
+		
+		.removeVisible {
+			visibility: visible;
 		}
 		
 	</ui:style>

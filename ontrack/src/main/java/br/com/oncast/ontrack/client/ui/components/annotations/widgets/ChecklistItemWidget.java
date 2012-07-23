@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -32,6 +33,13 @@ public class ChecklistItemWidget extends Composite implements ModelWidget<Checkl
 	private static ChecklistItemWidgetUiBinder uiBinder = GWT.create(ChecklistItemWidgetUiBinder.class);
 
 	interface ChecklistItemWidgetUiBinder extends UiBinder<Widget, ChecklistItemWidget> {}
+
+	interface ChecklistWidgetStyle extends CssResource {
+		String removeVisible();
+	}
+
+	@UiField
+	ChecklistWidgetStyle style;
 
 	@UiField
 	FocusPanel focusPanel;
@@ -67,12 +75,12 @@ public class ChecklistItemWidget extends Composite implements ModelWidget<Checkl
 
 	@UiHandler("focusPanel")
 	public void onFocusPanelMouseOver(final MouseOverEvent e) {
-		remove.setVisible(true);
+		setRemoveLabelVisibility(true);
 	}
 
 	@UiHandler("focusPanel")
 	public void onFocusPanelMouseOut(final MouseOutEvent e) {
-		remove.setVisible(false);
+		setRemoveLabelVisibility(false);
 	}
 
 	@UiHandler("remove")
@@ -87,7 +95,7 @@ public class ChecklistItemWidget extends Composite implements ModelWidget<Checkl
 
 	@Override
 	protected void onLoad() {
-		remove.setVisible(false);
+		setRemoveLabelVisibility(false);
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
 	}
 
@@ -109,6 +117,10 @@ public class ChecklistItemWidget extends Composite implements ModelWidget<Checkl
 	@Override
 	public ChecklistItem getModelObject() {
 		return checklistItem;
+	}
+
+	private void setRemoveLabelVisibility(final boolean isVisible) {
+		remove.setStyleName(style.removeVisible(), isVisible);
 	}
 
 	private ChecklistService getChecklistService() {
