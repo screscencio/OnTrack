@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -24,18 +25,8 @@ public class ScopeRemoveAction implements ScopeAction {
 	@Element
 	private UUID referenceId;
 
-	@ConversionAlias("subActionList")
-	@ElementList
-	private List<ModelAction> subActionList;
-
 	public ScopeRemoveAction(final UUID selectedScopeId) {
 		this.referenceId = selectedScopeId;
-		this.subActionList = new ArrayList<ModelAction>();
-	}
-
-	public ScopeRemoveAction(final UUID selectedScopeId, final List<ModelAction> subActionList) {
-		this.referenceId = selectedScopeId;
-		this.subActionList = subActionList;
 	}
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
@@ -71,10 +62,20 @@ public class ScopeRemoveAction implements ScopeAction {
 
 	private List<ModelAction> executeSubActions(final ProjectContext context, final ActionContext actionContext, final Scope selectedScope)
 			throws UnableToCompleteActionException {
+		final List<ModelAction> subActionList = new ArrayList<ModelAction>();
+
 		subActionList.add(new ScopeDeclareProgressAction(referenceId, null));
 		subActionList.add(new ScopeBindReleaseAction(referenceId, null));
 		subActionList.add(new ScopeDeclareEffortAction(referenceId, false, 0));
 		subActionList.add(new ScopeDeclareValueAction(referenceId, false, 0));
+
+		for (final Annotation annotation : context.findAnnotationsFor(referenceId)) {
+			subActionList.add(new AnnotationRemoveAction(referenceId, annotation.getId()));
+		}
+
+		for (final Checklist checklist : context.findChecklistsFor(referenceId)) {
+			subActionList.add(new ChecklistRemoveAction(referenceId, checklist.getId()));
+		}
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		for (final ModelAction subAction : subActionList) {
