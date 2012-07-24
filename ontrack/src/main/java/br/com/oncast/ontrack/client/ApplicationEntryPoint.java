@@ -26,7 +26,7 @@ public class ApplicationEntryPoint implements EntryPoint {
 	}
 
 	/**
-	 * Ignores the default browser action for the ESC key down event, that in some cases closes all current HTTP requests (AJAX requests as well).
+	 * Ignores the default browser action for the ESC key down event. In some cases closes all current HTTP requests (AJAX requests as well).
 	 */
 	private void ignoreBrowserDefaultActionForEscapeKey() {
 		GlobalNativeEventService.getInstance().addKeyDownListener(new BrowserEscapeKeyDefaultActionPreventer());
