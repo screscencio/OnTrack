@@ -9,7 +9,7 @@
 	<inherits name="com.google.gwt.user.Debug"/>
 	<inherits name="com.google.gwt.user.theme.standard.StandardResources" />
 
-	<!-- Configurations (should be after core Web Toolkit stuff) -->
+	<!-- Configurations (should be placed after core Web Toolkit stuff) -->
 	<set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true" />
 
 	<!-- Other module inherits -->
