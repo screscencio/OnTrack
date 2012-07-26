@@ -20,6 +20,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -202,7 +204,11 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 
 	public void enterCreateItemMode() {
 		addItemDeck.showWidget(1);
-		newItemDescription.setFocus(true);
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				newItemDescription.setFocus(true);
+			}
+		});
 	}
-
 }

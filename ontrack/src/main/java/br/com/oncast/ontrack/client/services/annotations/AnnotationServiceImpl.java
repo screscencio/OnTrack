@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -34,10 +35,21 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
+	public boolean hasDetails(final UUID subjectId) {
+		final ProjectContext context = contextProviderService.getCurrentProjectContext();
+		return context.hasChecklistsFor(subjectId) || context.hasAnnotationsFor(subjectId);
+	}
+
+	@Override
 	public void showAnnotationsFor(final Scope scope, final PopupCloseListener closeListener) {
 		final AnnotationsPanel panel = AnnotationsPanel.forScope(scope);
 
 		PopupConfig.configPopup().popup(panel).onClose(closeListener).setModal(true).pop();
+	}
+
+	@Override
+	public void showAnnotationsFor(final Scope scope) {
+		showAnnotationsFor(scope, null);
 	}
 
 	@Override

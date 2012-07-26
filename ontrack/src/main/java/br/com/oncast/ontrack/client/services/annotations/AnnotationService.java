@@ -9,6 +9,8 @@ public interface AnnotationService {
 
 	void showAnnotationsFor(Scope scope, PopupCloseListener closeListener);
 
+	void showAnnotationsFor(Scope scope);
+
 	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId);
 
 	void toggleVote(UUID subjectId, UUID annotationId);
@@ -16,5 +18,7 @@ public interface AnnotationService {
 	void showAnnotationsFor(Release release);
 
 	void deleteAnnotation(UUID subjectId, UUID annotationId);
+
+	boolean hasDetails(UUID subjectId);
 
 }

@@ -176,4 +176,8 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	public ScopeTreeItemWidget getScopeTreeItemWidget() {
 		return scopeItemWidget;
 	}
+
+	public void showDetailsIcon(final boolean b) {
+		scopeItemWidget.showDetailsIcon(b);
+	}
 }

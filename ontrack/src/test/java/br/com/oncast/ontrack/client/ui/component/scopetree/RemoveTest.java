@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
@@ -36,17 +37,20 @@ public class RemoveTest extends GwtTest {
 	private ClientNotificationService notificationService;
 
 	@BeforeClass
-	public static void beforeClass() {
+	public static void beforeClass() throws Exception {
 		DeepEqualityTestUtils.setCustomDeepEqualityComparator(Effort.class, new EffortDeepEqualityComparator());
+		ClientServiceProviderTestUtils.configure().mockEssential();
 	}
 
 	@AfterClass
-	public static void afterClass() {
+	public static void afterClass() throws Exception {
 		DeepEqualityTestUtils.removeCustomDeepEqualityComparator(Effort.class);
+		ClientServiceProviderTestUtils.reset();
 	}
 
 	@Before
 	public void setUp() throws Exception {
+
 		scope = getScope();
 		tree = new ScopeTree();
 		tree.setContext(ProjectTestUtils.createProjectContext(scope, null));

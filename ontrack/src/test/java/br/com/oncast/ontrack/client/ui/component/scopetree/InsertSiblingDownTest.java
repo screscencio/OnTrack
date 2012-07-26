@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
@@ -32,12 +33,14 @@ public class InsertSiblingDownTest extends GwtTest {
 	private String newScopeDescription;
 
 	@BeforeClass
-	public static void beforeClass() {
+	public static void beforeClass() throws Exception {
+		ClientServiceProviderTestUtils.configure().mockEssential();
 		DeepEqualityTestUtils.setCustomDeepEqualityComparator(Effort.class, new EffortDeepEqualityComparator());
 	}
 
 	@AfterClass
-	public static void afterClass() {
+	public static void afterClass() throws Exception {
+		ClientServiceProviderTestUtils.reset();
 		DeepEqualityTestUtils.removeCustomDeepEqualityComparator(Effort.class);
 	}
 

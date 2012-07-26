@@ -179,6 +179,14 @@ public class ProjectContext {
 		return project.getAnnotationsFor(subjectId);
 	}
 
+	public boolean hasAnnotationsFor(final UUID subjectId) {
+		return project.hasAnnotationsFor(subjectId);
+	}
+
+	public boolean hasChecklistsFor(final UUID subjectId) {
+		return project.hasChecklistsFor(subjectId);
+	}
+
 	public void addUser(final User user) {
 		project.addUser(user);
 	}

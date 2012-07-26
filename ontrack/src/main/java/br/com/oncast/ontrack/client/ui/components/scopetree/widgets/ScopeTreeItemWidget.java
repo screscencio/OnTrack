@@ -11,6 +11,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
@@ -77,6 +78,10 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiField
 	@IgnoredByDeepEquality
 	protected DeckPanel deckPanel;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected FocusPanel detailsIcon;
 
 	@UiField
 	@IgnoredByDeepEquality
@@ -186,6 +191,8 @@ public class ScopeTreeItemWidget extends Composite {
 
 		registerColumnVisibilityChangeListeners();
 
+		showDetailsIcon(ClientServiceProvider.getInstance().getAnnotationService().hasDetails(scope.getId()));
+
 		deckPanel.showWidget(0);
 	}
 
@@ -206,6 +213,12 @@ public class ScopeTreeItemWidget extends Composite {
 	protected void onKeyUp(final KeyUpEvent event) {
 		if (!isEditing()) return;
 		event.stopPropagation();
+	}
+
+	@UiHandler("detailsIcon")
+	protected void onDetailsClick(final ClickEvent e) {
+		e.stopPropagation();
+		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(scope);
 	}
 
 	public void setValue(final String value) {
@@ -284,6 +297,10 @@ public class ScopeTreeItemWidget extends Composite {
 		updateEffortDisplay();
 		updateValueDisplay();
 		updateReleaseDisplay();
+	}
+
+	public void showDetailsIcon(final boolean b) {
+		this.detailsIcon.setVisible(b);
 	}
 
 	private void updateValueDisplay() {
@@ -448,4 +465,5 @@ public class ScopeTreeItemWidget extends Composite {
 			}
 		});
 	}
+
 }

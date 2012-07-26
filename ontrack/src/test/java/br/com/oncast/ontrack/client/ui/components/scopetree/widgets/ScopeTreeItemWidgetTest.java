@@ -7,9 +7,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
@@ -34,6 +37,16 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 	private ScopeTreeItemWidget childBWidget;
 	private ScopeTreeItemWidget grandChildA1Widget;
 	private ScopeTreeItemWidget grandChildA2Widget;
+
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+		ClientServiceProviderTestUtils.configure().mockEssential();
+	}
+
+	@AfterClass
+	public static void afterClass() throws Exception {
+		ClientServiceProviderTestUtils.reset();
+	}
 
 	@Before
 	public void setUp() {

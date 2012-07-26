@@ -1,8 +1,11 @@
 package br.com.oncast.ontrack.client.ui.component.scopetree;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
@@ -26,6 +29,16 @@ public class MoveUpTest extends GwtTest {
 	private ScopeTree treeAfterManipulation;
 	private ProjectContext projectContext;
 	private ActionExecutionServiceImpl actionExecutionService;
+
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+		ClientServiceProviderTestUtils.configure().mockEssential();
+	}
+
+	@AfterClass
+	public static void afterClass() throws Exception {
+		ClientServiceProviderTestUtils.reset();
+	}
 
 	@Before
 	public void setUp() throws Exception {

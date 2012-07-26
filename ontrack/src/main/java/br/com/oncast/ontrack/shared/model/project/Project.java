@@ -143,4 +143,8 @@ public class Project implements Serializable {
 		return checklistMap.remove(subjectId, checklist);
 	}
 
+	public boolean hasChecklistsFor(final UUID subjectId) {
+		return checklistMap.containsKey(subjectId);
+	}
+
 }

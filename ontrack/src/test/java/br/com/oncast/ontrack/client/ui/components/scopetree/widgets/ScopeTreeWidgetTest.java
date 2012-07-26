@@ -3,9 +3,12 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 import static org.mockito.Mockito.mock;
 import junit.framework.Assert;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -20,6 +23,16 @@ public class ScopeTreeWidgetTest extends GwtTest {
 	private Scope scopeA11;
 	private Scope scopeA12;
 	private Scope scopeA13;
+
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+		ClientServiceProviderTestUtils.configure().mockEssential();
+	}
+
+	@AfterClass
+	public static void afterClass() throws Exception {
+		ClientServiceProviderTestUtils.reset();
+	}
 
 	@Before
 	public void setUp() {
