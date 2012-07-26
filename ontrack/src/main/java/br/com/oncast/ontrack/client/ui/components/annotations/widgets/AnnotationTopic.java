@@ -148,7 +148,6 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 			}
 		});
 
-		container.add(author);
 		final FileRepresentation attachmentFile = annotation.getAttachmentFile();
 		if (attachmentFile != null) {
 			final AttachmentFileWidget attachedFileWidget = new AttachmentFileWidget(attachmentFile);

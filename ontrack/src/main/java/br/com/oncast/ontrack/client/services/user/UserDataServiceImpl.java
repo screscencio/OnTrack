@@ -13,6 +13,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class UserDataServiceImpl implements UserDataService {
 
+	private static final String GRAVATAR_BASE_URL = "https://secure.gravatar.com/";
 	private final Map<String, PortableContactJsonObject> cachedResults;
 
 	public UserDataServiceImpl() {
@@ -25,7 +26,7 @@ public class UserDataServiceImpl implements UserDataService {
 			@Override
 			public String asString() {
 				try {
-					return new String("http://www.gravatar.com/avatar/" + getMd5Hex(email) + "?s=40&d=mm");
+					return new String(GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(email) + "?s=40&d=mm");
 				}
 				catch (final Exception e) {
 					return null;
@@ -42,7 +43,7 @@ public class UserDataServiceImpl implements UserDataService {
 			return;
 		}
 
-		new JsonpRequestBuilder().requestObject(URL.encode("https://secure.gravatar.com/" + getMd5Hex(email) + ".json"),
+		new JsonpRequestBuilder().requestObject(URL.encode(GRAVATAR_BASE_URL + getMd5Hex(email) + ".json"),
 				new AsyncCallback<PortableContactJsonObject>() {
 
 					@Override

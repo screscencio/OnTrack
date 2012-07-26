@@ -11,8 +11,8 @@
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationTopic.AnnotationTopicStyle">
 	
 		.author {
+			vertical-align: top;
 			border: 1px solid COLOR_GRAY_DARK;
-			float: left;
 			
 			width: 40px;
 			height: 40px;
@@ -20,12 +20,12 @@
 		}
 		
 		.container {
-			min-height: 42px;
+			display: inline-block;
+			margin-bottom: 5px;
 		}
 		
 		.detailContainer {
-			float: right;
-			margin-bottom: -5px;
+			margin-bottom: -10px;
 			text-align: right;
 			font-size: FONT_SIZE_TINY;
 			font-style: italic;
@@ -74,7 +74,12 @@
 		.countLabel {
 			margin-right: 5px;
 			font-weight: bold;
+			cursor: default;
 		}
+		
+		.dateLabel {
+			cursor: default;
+		}			
 		
 		.detail {
 			display: inline-block;
@@ -97,18 +102,25 @@
 	</ui:style>
 	
 	<g:HTMLPanel>
-		<g:HTMLPanel ui:field="container" styleName="{style.container}">
+		<g:HorizontalPanel height="100%">
 			<g:Image ui:field="author" styleName="{style.author}" />
-		</g:HTMLPanel>
-		<g:HTMLPanel styleName="{style.detailContainer}">
-			<g:FocusPanel ui:field="remove" styleName="{style.remove} {style.icon} {style.detail}" title="Remove"/>
-			<g:FocusPanel ui:field="like" styleName="{style.like} {style.icon} {style.detail}"/>
-			<g:Label ui:field="likeCount" styleName="{style.detail} {style.countLabel}"/>
-			<g:FocusPanel ui:field="comment" styleName="{style.commentIcon} {style.icon} {style.detail}"/>
-			<g:Label ui:field="commentsCount" styleName="{style.detail} {style.countLabel}"/>
-			<g:FocusPanel styleName="{style.clockIcon} {style.icon} {style.detail}"/>
-			<g:Label ui:field="date" styleName="{style.detail}"/>
-		</g:HTMLPanel>
+			<g:cell width="100%" height="100%">
+				<g:VerticalPanel width="100%" height="100%">
+					<g:cell height="100%">
+						<g:HTMLPanel ui:field="container" styleName="{style.container}" />
+					</g:cell>
+					<g:HTMLPanel styleName="{style.detailContainer}">
+						<g:FocusPanel ui:field="remove" styleName="{style.remove} {style.icon} {style.detail}" title="Remove"/>
+						<g:FocusPanel ui:field="like" styleName="{style.like} {style.icon} {style.detail}"/>
+						<g:Label ui:field="likeCount" styleName="{style.detail} {style.countLabel}"/>
+						<g:FocusPanel ui:field="comment" styleName="{style.commentIcon} {style.icon} {style.detail}"/>
+						<g:Label ui:field="commentsCount" styleName="{style.detail} {style.countLabel}"/>
+						<g:FocusPanel styleName="{style.clockIcon} {style.icon} {style.detail}"/>
+						<g:Label ui:field="date" styleName="{style.detail} {style.dateLabel}"/>
+					</g:HTMLPanel>
+				</g:VerticalPanel>
+			</g:cell>
+		</g:HorizontalPanel>
 		<aw:AnnotationsWidget ui:field="commentsPanel" styleName="{style.commentPanel}"/>
 		<misc:Separator styleName="{style.separator}"/>
 	</g:HTMLPanel>
