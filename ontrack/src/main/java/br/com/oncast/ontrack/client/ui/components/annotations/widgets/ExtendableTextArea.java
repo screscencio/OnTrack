@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BasicAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ValueTransitionAnimation;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
@@ -57,7 +57,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	private float defaultHeight;
 
 	private HeightAnimation heightAnimation;
-	private BasicAnimation fadeAnimation;
+	private ValueTransitionAnimation fadeAnimation;
 
 	private boolean isHelptTextVisible = true;
 
@@ -184,12 +184,12 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 		else getFadeAnimation().animate(VISIBLE_OPACITY, INVISIBLE_OPACITY);
 	}
 
-	private BasicAnimation getFadeAnimation() {
+	private ValueTransitionAnimation getFadeAnimation() {
 		if (fadeAnimation == null) fadeAnimation = new OpacityAnimation(submitHelpText, SUBMIT_HELP_TEXT_ANIMATION_DURATION);
 		return fadeAnimation;
 	}
 
-	private class OpacityAnimation extends BasicAnimation {
+	private class OpacityAnimation extends ValueTransitionAnimation {
 
 		public OpacityAnimation(final Widget widget, final int duration) {
 			super(widget, duration);
@@ -202,7 +202,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	}
 
-	private class HeightAnimation extends BasicAnimation {
+	private class HeightAnimation extends ValueTransitionAnimation {
 		public HeightAnimation(final Widget widget, final int duration) {
 			super(widget, duration);
 		}

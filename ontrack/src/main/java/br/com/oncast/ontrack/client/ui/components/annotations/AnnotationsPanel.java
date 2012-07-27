@@ -6,6 +6,8 @@ import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDet
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ScopeDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.FadeAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.FadeAnimation.AnimationCompletedListener;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -46,6 +48,8 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@UiField
 	ChecklistsContainerWidget checklist;
 
+	private final FadeAnimation animation;
+
 	private AnnotationsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription) {
 		subjectDetails = detailWidget;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -53,6 +57,13 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		annotations.setSubjectId(subjectId);
 		checklist.setSubjectId(subjectId);
 		this.subjectTitle.setText(subjectDescription);
+		animation = new FadeAnimation(this, new AnimationCompletedListener() {
+			@Override
+			public void onCompleted(final boolean isHidden) {
+				if (isHidden) CloseEvent.fire(AnnotationsPanel.this, AnnotationsPanel.this);
+				else annotations.setFocus(true);
+			}
+		});
 	}
 
 	public static AnnotationsPanel forRelease(final Release release) {
@@ -76,14 +87,14 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 	@Override
 	public void show() {
-		annotations.setFocus(true);
+		animation.show();
 	}
 
 	@Override
 	public void hide() {
 		if (!isVisible()) return;
 
-		CloseEvent.fire(this, this);
+		animation.hide();
 	}
 
 }
