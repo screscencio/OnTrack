@@ -348,7 +348,8 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			em.getTransaction().begin();
 			final ProjectRepresentation representation = retrieveProjectRepresentation(projectId);
-			final ProjectAuthorization authorization = new ProjectAuthorization(retrieveUserByEmail(userEmail), representation);
+			final User user = retrieveUserByEmail(userEmail);
+			final ProjectAuthorization authorization = new ProjectAuthorization(user, representation);
 			em.persist(authorization);
 			em.getTransaction().commit();
 		}

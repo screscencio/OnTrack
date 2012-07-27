@@ -180,6 +180,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			UnableToHandleActionException,
 			AuthorizationException {
 		authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
+		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toStringRepresentation() + "'");
 		final List<ModelAction> list = new ArrayList<ModelAction>();
 		list.add(new TeamInviteAction(userEmail));
 		final ModelActionSyncRequest request = new ModelActionSyncRequest(projectId, list).setShouldNotifyCurrentClient(wasRequestedByTheUser);

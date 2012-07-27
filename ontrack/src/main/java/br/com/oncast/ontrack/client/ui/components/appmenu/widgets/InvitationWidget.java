@@ -97,7 +97,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 
 				widget.hide();
-				ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Processing you invitation...");
+				ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Processing your invitation...");
 				PROVIDER.getProjectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
@@ -109,8 +109,9 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 					public void onFailure(final Throwable caught) {
 						if (caught instanceof UnableToAuthorizeUserException) ClientServiceProvider.getInstance().getClientNotificationService()
 								.showWarning("'" + mail + "' already has been invited");
-						else
-						ClientServiceProvider.getInstance().getClientNotificationService().showWarning(caught.getMessage());
+						else {
+							ClientServiceProvider.getInstance().getClientNotificationService().showWarning(caught.getMessage());
+						}
 					}
 				});
 			}

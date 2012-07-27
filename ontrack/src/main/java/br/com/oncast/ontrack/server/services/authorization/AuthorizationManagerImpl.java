@@ -65,8 +65,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	@Override
 	// TODO Refactor the code so that even when the system is the authorization requestant an email can be sent. Refactor email builder for that.
-	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailNotification)
-			throws UnableToAuthorizeUserException {
+	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailNotification) throws UnableToAuthorizeUserException {
 		try {
 			final String generatedPassword = validateUserAndItsProjectAccessAuthorization(projectId, userEmail);
 
@@ -82,10 +81,6 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		}
 		catch (final PersistenceException e) {
 			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail + "' for the project.", e);
-		}
-		catch (final NoResultFoundException e) {
-			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
-					+ "' for the project: The project wasn't avaiable.", e);
 		}
 		catch (final NoSuchAlgorithmException e) {
 			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
@@ -103,6 +98,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		catch (final UserNotFoundException e) {
 			generatedPassword = PasswordHash.generatePassword();
 			user = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
+			LOGGER.debug("Created New User '" + userEmail + "'.");
 		}
 
 		if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) logAndThrowUnableToAuthorizeUserException("The user '"
@@ -123,10 +119,14 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		}
 	}
 
-	private void sendMailNotification(final UUID projectId, final String userEmail, final String generatedPassword, final User authenticatedUser)
-			throws PersistenceException, NoResultFoundException {
-		projectAuthorizationMailFactory.createMail().currentUser(authenticatedUser.getEmail())
-				.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, generatedPassword);
+	private void sendMailNotification(final UUID projectId, final String userEmail, final String generatedPassword, final User authenticatedUser) {
+		try {
+			projectAuthorizationMailFactory.createMail().currentUser(authenticatedUser.getEmail())
+					.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, generatedPassword);
+		}
+		catch (final Exception e) {
+			LOGGER.error("It was not possible to send e-mail notification", e);
+		}
 	}
 
 	@Override
