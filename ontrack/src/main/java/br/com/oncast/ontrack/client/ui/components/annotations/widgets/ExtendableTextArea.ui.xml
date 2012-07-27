@@ -43,6 +43,8 @@
 			
 			color: inherit;
 			font: inherit;
+			
+			resize: none;
 		}
 		
 		.helpText {
