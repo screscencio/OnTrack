@@ -219,7 +219,7 @@ public class ProjectContext {
 	}
 
 	public List<Checklist> findChecklistsFor(final UUID subjectId) {
-		return project.findChecklistsFor(subjectId);
+		return new ArrayList<Checklist>(project.findChecklistsFor(subjectId));
 	}
 
 }

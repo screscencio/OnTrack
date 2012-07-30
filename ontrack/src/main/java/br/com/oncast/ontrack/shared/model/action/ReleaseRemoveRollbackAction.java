@@ -42,13 +42,13 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 
 	@ConversionAlias("subActionRollbackList")
 	@ElementList
-	private List<ScopeBindReleaseAction> subActionRollbackList;
+	private List<ModelAction> subActionRollbackList;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected ReleaseRemoveRollbackAction() {}
 
 	public ReleaseRemoveRollbackAction(final UUID parentReleaseId, final UUID newReleaseId, final String description, final int index,
-			final List<ReleaseRemoveRollbackAction> childActionList, final List<ScopeBindReleaseAction> subActionRollbackList) {
+			final List<ReleaseRemoveRollbackAction> childActionList, final List<ModelAction> subActionRollbackList) {
 		this.parentReleaseId = parentReleaseId;
 		this.newReleaseId = newReleaseId;
 		this.description = description;
@@ -70,7 +70,7 @@ public class ReleaseRemoveRollbackAction implements ReleaseAction {
 	}
 
 	private void executeSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		for (final ScopeBindReleaseAction subAction : subActionRollbackList)
+		for (final ModelAction subAction : subActionRollbackList)
 			subAction.execute(context, actionContext);
 	}
 

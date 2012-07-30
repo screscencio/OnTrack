@@ -330,7 +330,8 @@ public class UserActionTestUtils {
 
 	public static UserAction createReleaseRemoveRollbackAction() throws Exception {
 		final ReleaseRemoveRollbackAction releaseRemoveRollbackAction = new ReleaseRemoveRollbackAction(new UUID(), new UUID(), "", 1,
-				new ArrayList<ReleaseRemoveRollbackAction>(), new ArrayList<ScopeBindReleaseAction>());
+				new ArrayList<ReleaseRemoveRollbackAction>(),
+				new ArrayList<ModelAction>());
 		return createUserAction(releaseRemoveRollbackAction);
 	}
 

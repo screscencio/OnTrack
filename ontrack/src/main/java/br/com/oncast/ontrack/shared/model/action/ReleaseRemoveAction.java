@@ -11,6 +11,8 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -37,8 +39,12 @@ public class ReleaseRemoveAction implements ReleaseAction {
 		final Release selectedRelease = ActionHelper.findRelease(referenceId, context);
 		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException("Unable to remove root level.");
 
+		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		final List<ReleaseRemoveRollbackAction> childActionRollbackList = removeDescendantsReleases(context, actionContext, selectedRelease);
-		final List<ScopeBindReleaseAction> subActionRollbackList = dissociateScopesFromThisRelease(context, actionContext, selectedRelease);
+
+		subActionRollbackList.addAll(dissociateScopesFromThisRelease(context, actionContext, selectedRelease));
+		subActionRollbackList.addAll(removeAnnotations(context, actionContext));
+		subActionRollbackList.addAll(removeChecklists(context, actionContext));
 
 		final Release parentRelease = selectedRelease.getParent();
 		final int index = parentRelease.getChildIndex(selectedRelease);
@@ -46,6 +52,22 @@ public class ReleaseRemoveAction implements ReleaseAction {
 
 		return new ReleaseRemoveRollbackAction(parentRelease.getId(), referenceId, selectedRelease.getDescription(), index, childActionRollbackList,
 				subActionRollbackList);
+	}
+
+	private List<ModelAction> removeAnnotations(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
+		for (final Annotation annotation : context.findAnnotationsFor(referenceId)) {
+			subActionRollbackList.add(new AnnotationRemoveAction(referenceId, annotation.getId()).execute(context, actionContext));
+		}
+		return subActionRollbackList;
+	}
+
+	private List<ModelAction> removeChecklists(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
+		for (final Checklist checklist : context.findChecklistsFor(referenceId)) {
+			subActionRollbackList.add(new ChecklistRemoveAction(referenceId, checklist.getId()).execute(context, actionContext));
+		}
+		return subActionRollbackList;
 	}
 
 	private List<ScopeBindReleaseAction> dissociateScopesFromThisRelease(final ProjectContext context, final ActionContext actionContext, final Release release)

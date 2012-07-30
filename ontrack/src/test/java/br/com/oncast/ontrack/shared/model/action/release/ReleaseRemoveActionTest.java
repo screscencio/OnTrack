@@ -5,7 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -16,20 +18,25 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRemoveActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.AnnotationTestUtils;
+import br.com.oncast.ontrack.utils.ChecklistTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ReleaseRemoveActionTest extends ModelActionTest {
 
@@ -48,13 +55,13 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootReleaseCantBeRemoved() throws UnableToCompleteActionException {
-		new ReleaseRemoveAction(rootRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseRemoveAction(rootRelease.getId()).execute(context, actionContext);
 	}
 
 	@Test
 	public void theRemovedReleaseShouldBeRemovedFromItsParent() throws UnableToCompleteActionException {
 		final Release removedRelease = rootRelease.getChild(2);
-		new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChildren().size());
 		assertFalse(rootRelease.getChildren().contains(removedRelease));
@@ -63,7 +70,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 	@Test
 	public void theRemovedReleaseShouldBeRemovedFromItsParent2() throws UnableToCompleteActionException {
 		final Release removedRelease = rootRelease.getChild(0).getChild(0);
-		new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChild(0).getChildren().size());
 		assertFalse(rootRelease.getChild(0).getChildren().contains(removedRelease));
@@ -74,7 +81,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		final Release removedRelease = rootRelease.getChild(0);
 		final List<Release> removedChildrenReleases = removedRelease.getChildren();
 
-		new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChildren().size());
 		assertFalse(rootRelease.getChildren().contains(removedRelease));
@@ -88,7 +95,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 	@Test(expected = ReleaseNotFoundException.class)
 	public void removedReleaseShouldNotBeInProjectContextAnymore() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release removedRelease = rootRelease.getChild(0);
-		new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		context.findRelease(removedRelease.getId());
 	}
@@ -97,7 +104,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 	public void allDescendantsOfRemovedReleaseShouldNotBeInProjectContextAnymore() throws UnableToCompleteActionException {
 		final Release removedRelease = rootRelease.getChild(0);
 		final List<Release> removedChildrenReleases = removedRelease.getChildren();
-		new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		for (final Release release : removedChildrenReleases) {
 			try {
@@ -123,7 +130,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		assertTrue(removedRelease.getScopeList().contains(scope1));
 		assertTrue(removedRelease.getScopeList().contains(scope2));
 
-		new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertTrue(removedRelease.getScopeList().isEmpty());
 		assertFalse(removedRelease.getScopeList().contains(scope1));
@@ -158,7 +165,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		assertTrue(childRelease.getScopeList().contains(scope3));
 		assertTrue(childRelease.getScopeList().contains(scope4));
 
-		new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertTrue(removedRelease.getScopeList().isEmpty());
 		assertFalse(removedRelease.getScopeList().contains(scope1));
@@ -176,12 +183,12 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 	@Test
 	public void rollbackShouldReinsertRemovedReleaseIntoItsParent() throws UnableToCompleteActionException {
 		final Release removedRelease = rootRelease.getChild(2);
-		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChildren().size());
 		assertFalse(rootRelease.getChildren().contains(removedRelease));
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(3, rootRelease.getChildren().size());
 		assertTrue(rootRelease.getChildren().contains(removedRelease));
@@ -191,13 +198,13 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 	public void rollbackShouldReinsertRemovedReleaseInTheSamePositionItWasBeforeRemoval() throws UnableToCompleteActionException {
 		final int position = 0;
 		final Release removedRelease = rootRelease.getChild(position);
-		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChildren().size());
 		assertFalse(rootRelease.getChildren().contains(removedRelease));
 		assertFalse(rootRelease.getChild(0).getDescription().equals(removedRelease.getDescription()));
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(3, rootRelease.getChildren().size());
 		assertEquals(position, rootRelease.getChildren().indexOf(removedRelease));
@@ -210,12 +217,12 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		final Release childRelease1 = removedRelease.getChild(1);
 		final Release childRelease2 = removedRelease.getChild(2);
 
-		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertEquals(2, rootRelease.getChildren().size());
 		assertFalse(rootRelease.getChildren().contains(removedRelease));
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(3, rootRelease.getChildren().size());
 		assertEquals(0, rootRelease.getChildren().indexOf(removedRelease));
@@ -227,7 +234,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 	@Test
 	public void removedReleaseShouldBeInProjectContextAfterRollback() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release removedRelease = rootRelease.getChild(2);
-		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		try {
 			context.findRelease(removedRelease.getId());
@@ -235,7 +242,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		}
 		catch (final ReleaseNotFoundException e) {}
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(removedRelease, context.findRelease(removedRelease.getId()));
 	}
@@ -243,7 +250,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 	@Test
 	public void allDescendantsOfRemovedReleaseShouldBeInProjectContextAfterRollback() throws UnableToCompleteActionException, ReleaseNotFoundException {
 		final Release removedRelease = rootRelease.getChild(2);
-		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		for (final Release childRelease : removedRelease.getChildren()) {
 			try {
@@ -253,7 +260,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 			catch (final ReleaseNotFoundException e) {}
 		}
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		for (final Release childRelease : removedRelease.getChildren())
 			assertEquals(childRelease, context.findRelease(childRelease.getId()));
@@ -274,7 +281,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		assertTrue(removedRelease.getScopeList().contains(scope1));
 		assertTrue(removedRelease.getScopeList().contains(scope2));
 
-		final ReleaseRemoveRollbackAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, Mockito.mock(ActionContext.class));
+		final ReleaseRemoveRollbackAction rollbackAction = new ReleaseRemoveAction(removedRelease.getId()).execute(context, actionContext);
 
 		assertTrue(removedRelease.getScopeList().isEmpty());
 		assertFalse(removedRelease.getScopeList().contains(scope1));
@@ -282,7 +289,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		assertNull(scope1.getRelease());
 		assertNull(scope2.getRelease());
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		removedRelease = context.findRelease(removedRelease.getId());
 		assertEquals(2, removedRelease.getScopeList().size());
@@ -300,7 +307,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		final Release childRelease2 = removedRelease.getChild(2);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ReleaseRemoveAction(removedRelease.getId()), context, Mockito.mock(ActionContext.class));
+		actionExecutionManager.doUserAction(new ReleaseRemoveAction(removedRelease.getId()), context, actionContext);
 
 		try {
 			context.findRelease(removedRelease.getId());
@@ -311,7 +318,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 		}
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.undoUserAction(context, actionContext);
 
 			assertEquals(3, rootRelease.getChildren().size());
 			assertEquals(0, rootRelease.getChildren().indexOf(removedRelease));
@@ -324,13 +331,87 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 			assertEquals(childRelease1, context.findRelease(childRelease1.getId()));
 			assertEquals(childRelease2, context.findRelease(childRelease2.getId()));
 
-			actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.redoUserAction(context, actionContext);
 
 			assertEquals(2, rootRelease.getChildren().size());
 			assertFalse(rootRelease.getChildren().contains(removedRelease));
 			assertFalse(rootRelease.getChildren().contains(removedRelease));
 
 		}
+	}
+
+	@Test
+	public void shouldRemoveAllRelatedAnntoations() throws Exception {
+		final User user = UserTestUtils.createUser();
+		final UUID releaseId = rootRelease.getChild(0).getId();
+
+		for (int i = 0; i < 6; i++) {
+			context.addAnnotation(releaseId, AnnotationTestUtils.create(user));
+		}
+
+		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
+		new ReleaseRemoveAction(releaseId).execute(context, actionContext);
+
+		assertTrue(context.findAnnotationsFor(releaseId).isEmpty());
+	}
+
+	@Test
+	public void rollbackShouldReAddAllRemovedAnntoations() throws Exception {
+		final User user = UserTestUtils.createUser();
+		context.addUser(user);
+		final UUID releaseId = rootRelease.getChild(0).getId();
+
+		final List<Annotation> annotationsList = new ArrayList<Annotation>();
+		annotationsList.add(AnnotationTestUtils.create(user));
+		annotationsList.add(AnnotationTestUtils.create(user));
+
+		for (final Annotation annotation : annotationsList) {
+			context.addAnnotation(releaseId, annotation);
+		}
+
+		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
+		final ReleaseRemoveRollbackAction rollbackAction = new ReleaseRemoveAction(releaseId).execute(context, actionContext);
+
+		assertTrue(context.findAnnotationsFor(releaseId).isEmpty());
+
+		rollbackAction.execute(context, actionContext);
+
+		assertEquals(annotationsList.size(), context.findAnnotationsFor(releaseId).size());
+		assertTrue(context.findAnnotationsFor(releaseId).containsAll(annotationsList));
+	}
+
+	@Test
+	public void shouldRemoveAllRelatedChecklists() throws Exception {
+		final UUID releaseId = rootRelease.getChild(0).getId();
+
+		for (int i = 0; i < 6; i++)
+			context.addChecklist(releaseId, ChecklistTestUtils.create());
+
+		new ReleaseRemoveAction(releaseId).execute(context, actionContext);
+
+		assertTrue(context.findChecklistsFor(releaseId).isEmpty());
+	}
+
+	@Test
+	public void rollbackShouldReAddAllRemovedChecklists() throws Exception {
+		final UUID releaseId = rootRelease.getChild(0).getId();
+
+		final List<Checklist> checklistsList = new ArrayList<Checklist>();
+		checklistsList.add(ChecklistTestUtils.create());
+		checklistsList.add(ChecklistTestUtils.create());
+
+		for (final Checklist checklist : checklistsList) {
+			context.addChecklist(releaseId, checklist);
+		}
+
+		final ReleaseRemoveRollbackAction rollbackAction = new ReleaseRemoveAction(releaseId).execute(context, actionContext);
+
+		assertTrue(context.findChecklistsFor(releaseId).isEmpty());
+
+		rollbackAction.execute(context, actionContext);
+
+		assertEquals(checklistsList.size(), context.findChecklistsFor(releaseId).size());
+		assertTrue(context.findChecklistsFor(releaseId).containsAll(checklistsList));
 	}
 
 	@Override
