@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -114,7 +115,9 @@ public class UploadWidget extends Composite {
 		ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Uploading your file...");
 		final FormPanel form = getForm();
 		getProjectId().setValue(getCurrentProject().getId().toStringRepresentation());
-		getFileName().setValue(filename);
+
+		// FIXME Lobo review if this is tolerable to correct encoding problems with filename with accents
+		getFileName().setValue(URL.encode(filename));
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener(filename, listener));
 		form.submit();
 	}
@@ -191,6 +194,7 @@ public class UploadWidget extends Composite {
 					final boolean isUserAction) {
 				if (action instanceof FileUploadAction) {
 					final FileUploadAction uploadAction = (FileUploadAction) action;
+					Window.alert(filename + ", " + uploadAction.getFileName() + " ==> " + filename.equals(uploadAction.getFileName()));
 					if (filename.equals(uploadAction.getFileName())) {
 						getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
 						ClientServiceProvider.getInstance().getClientNotificationService().showSuccess("Upload Completed!");

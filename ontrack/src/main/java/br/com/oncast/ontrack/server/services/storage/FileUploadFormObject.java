@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.server.services.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import org.apache.commons.fileupload.FileItem;
 
@@ -16,12 +18,20 @@ public class FileUploadFormObject {
 	private String fileName;
 	private UUID projectId;
 
+	public FileUploadFormObject() {}
+
 	public void parseField(final FileItem fileItem) {
 		if (!fileItem.isFormField() && FileUploadFieldNames.FILE.equals(fileItem.getFieldName())) {
 			this.data = fileItem.get();
 		}
 		else if (FileUploadFieldNames.FILE_NAME.equals(fileItem.getFieldName())) {
-			this.fileName = fileItem.getString();
+			try {
+				// FIXME Lobo review if this is tolerable to correct encoding problems with filename with accents
+				this.fileName = URLDecoder.decode(fileItem.getString(), "UTF-8");
+			}
+			catch (final UnsupportedEncodingException e) {
+				this.fileName = fileItem.getString();
+			}
 		}
 		else if (FileUploadFieldNames.PROJECT_ID.equals(fileItem.getFieldName())) {
 			this.projectId = new UUID(fileItem.getString());
