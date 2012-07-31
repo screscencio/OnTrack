@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.project;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
@@ -378,7 +379,7 @@ public class ProjectContextTest {
 
 		assertEquals(checklist, context.findChecklist(subjectId, checklist.getId()));
 
-		context.removeChecklist(subjectId, checklist.getId());
+		context.removeChecklist(subjectId, checklist);
 		try {
 			context.findChecklist(subjectId, checklist.getId());
 			fail("Checklist was not removed from the context.");
@@ -386,6 +387,58 @@ public class ProjectContextTest {
 		catch (final ChecklistNotFoundException e) {
 			assertTrue(true);
 		}
+	}
+
+	@Test
+	public void shouldNotHaveAnnotationsWhenNoAnnotationWhereAdded() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		assertFalse(context.hasAnnotationsFor(new UUID()));
+	}
+
+	@Test
+	public void shouldHaveAnnotationsWhenThereAreAddedAnnotations() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		context.addAnnotation(subjectId, AnnotationTestUtils.create());
+		assertTrue(context.hasAnnotationsFor(subjectId));
+	}
+
+	@Test
+	public void shouldNotHaveAnnotationsWhenAllTheAnnotationsWhereRemoved() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		final Annotation annotation = AnnotationTestUtils.create();
+
+		context.addAnnotation(subjectId, annotation);
+		context.removeAnnotation(subjectId, annotation);
+
+		assertFalse(context.hasAnnotationsFor(subjectId));
+	}
+
+	@Test
+	public void shouldNotHaveChecklistsWhenNoChecklistWhereAdded() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		assertFalse(context.hasChecklistsFor(new UUID()));
+	}
+
+	@Test
+	public void shouldHaveChecklistsWhenThereAreAddedChecklists() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		context.addChecklist(subjectId, ChecklistTestUtils.create());
+		assertTrue(context.hasChecklistsFor(subjectId));
+	}
+
+	@Test
+	public void shouldNotHaveChecklistsWhenAllTheChecklistsWhereRemoved() throws Exception {
+		context = ProjectTestUtils.createProjectContext();
+		final UUID subjectId = new UUID();
+		final Checklist checklist = ChecklistTestUtils.create();
+
+		context.addChecklist(subjectId, checklist);
+		context.removeChecklist(subjectId, checklist);
+
+		assertFalse(context.hasChecklistsFor(subjectId));
 	}
 
 	private Checklist createAndAddChecklist(final UUID subjectId) {

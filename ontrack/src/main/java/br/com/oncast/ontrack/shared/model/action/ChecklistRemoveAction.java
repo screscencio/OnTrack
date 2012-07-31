@@ -5,8 +5,8 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
-import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -30,13 +30,9 @@ public class ChecklistRemoveAction implements ChecklistAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		try {
-			final Checklist checklist = context.removeChecklist(subjectId, checklistId);
-			return new ChecklistCreateAction(subjectId, checklist);
-		}
-		catch (final ChecklistNotFoundException e) {
-			throw new UnableToCompleteActionException("Could not remove the requested checklist", e);
-		}
+		final Checklist checklist = ActionHelper.findChecklist(subjectId, checklistId, context);
+		context.removeChecklist(subjectId, checklist);
+		return new ChecklistCreateAction(subjectId, checklist);
 	}
 
 	@Override

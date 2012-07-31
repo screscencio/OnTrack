@@ -159,13 +159,10 @@ public class ProjectContext {
 	}
 
 	public void removeAnnotation(final UUID subjectId, final Annotation annotation) {
-		if (project.hasAnnotationsFor(subjectId)) project.removeAnnotation(subjectId, annotation);
+		project.removeAnnotation(subjectId, annotation);
 	}
 
 	public Annotation findAnnotation(final UUID subjectId, final UUID annotationId) throws AnnotationNotFoundException {
-		if (!project.hasAnnotationsFor(subjectId)) throw new AnnotationNotFoundException("The object with id '" + subjectId
-				+ "' has no annotations");
-
 		final Annotation annotation = project.getAnnotation(subjectId, annotationId);
 		if (annotation == null) throw new AnnotationNotFoundException("The Object with id '" + subjectId + "' does not have the annotations with id '"
 				+ annotationId + "'");
@@ -174,17 +171,15 @@ public class ProjectContext {
 	}
 
 	public List<Annotation> findAnnotationsFor(final UUID subjectId) {
-		if (!project.hasAnnotationsFor(subjectId)) return new ArrayList<Annotation>();
-
 		return project.getAnnotationsFor(subjectId);
 	}
 
 	public boolean hasAnnotationsFor(final UUID subjectId) {
-		return project.hasAnnotationsFor(subjectId);
+		return !findAnnotationsFor(subjectId).isEmpty();
 	}
 
 	public boolean hasChecklistsFor(final UUID subjectId) {
-		return project.hasChecklistsFor(subjectId);
+		return !findChecklistsFor(subjectId).isEmpty();
 	}
 
 	public void addUser(final User user) {
@@ -205,10 +200,8 @@ public class ProjectContext {
 		project.addChecklist(checklist, subjectId);
 	}
 
-	public Checklist removeChecklist(final UUID subjectId, final UUID checklistId) throws ChecklistNotFoundException {
-		final Checklist checklist = findChecklist(subjectId, checklistId);
+	public void removeChecklist(final UUID subjectId, final Checklist checklist) {
 		project.removeChecklist(subjectId, checklist);
-		return checklist;
 	}
 
 	public Checklist findChecklist(final UUID subjectId, final UUID checklistId) throws ChecklistNotFoundException {
@@ -219,7 +212,7 @@ public class ProjectContext {
 	}
 
 	public List<Checklist> findChecklistsFor(final UUID subjectId) {
-		return new ArrayList<Checklist>(project.findChecklistsFor(subjectId));
+		return project.findChecklistsFor(subjectId);
 	}
 
 }

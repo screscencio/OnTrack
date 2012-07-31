@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.shared.model.action.checklist;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -87,12 +86,12 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 		final ModelAction undoAction = execute();
 		final ArgumentCaptor<Checklist> captor = ArgumentCaptor.forClass(Checklist.class);
 		verify(context).addChecklist(Mockito.eq(subjectId), captor.capture());
+		final Checklist addedChecklist = captor.getValue();
 
-		final Checklist checklistMock = mock(Checklist.class);
-		when(context.removeChecklist(Mockito.eq(subjectId), Mockito.any(UUID.class))).thenReturn(checklistMock);
+		when(context.findChecklist(subjectId, addedChecklist.getId())).thenReturn(addedChecklist);
 		undoAction.execute(context, actionContext);
 
-		verify(context).removeChecklist(subjectId, captor.getValue().getId());
+		verify(context).removeChecklist(subjectId, addedChecklist);
 	}
 
 	@Override

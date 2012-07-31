@@ -80,7 +80,7 @@ public class Project implements Serializable {
 	}
 
 	public void addAnnotation(final UUID subjectId, final Annotation annotation) {
-		if (!hasAnnotationsFor(subjectId)) annotationsMap.put(subjectId, new ArrayList<Annotation>());
+		if (!annotationsMap.containsKey(subjectId)) annotationsMap.put(subjectId, new ArrayList<Annotation>());
 		annotationsMap.get(subjectId).add(0, annotation);
 	}
 
@@ -91,18 +91,18 @@ public class Project implements Serializable {
 	}
 
 	public Annotation getAnnotation(final UUID subjectId, final UUID annotationId) {
+		if (!annotationsMap.containsKey(subjectId)) return null;
+
 		for (final Annotation annotation : annotationsMap.get(subjectId)) {
 			if (annotation.getId().equals(annotationId)) return annotation;
 		}
 		return null;
 	}
 
-	public boolean hasAnnotationsFor(final UUID subjectId) {
-		return annotationsMap.containsKey(subjectId);
-	}
+	public List<Annotation> getAnnotationsFor(final UUID subjectId) {
+		if (!annotationsMap.containsKey(subjectId)) return new ArrayList<Annotation>();
 
-	public List<Annotation> getAnnotationsFor(final UUID annotatedObjectId) {
-		return new ArrayList<Annotation>(annotationsMap.get(annotatedObjectId));
+		return new ArrayList<Annotation>(annotationsMap.get(subjectId));
 	}
 
 	public void setUserList(final Set<User> userList) {
@@ -136,15 +136,11 @@ public class Project implements Serializable {
 	}
 
 	public List<Checklist> findChecklistsFor(final UUID subjectId) {
-		return checklistMap.get(subjectId);
+		return new ArrayList<Checklist>(checklistMap.get(subjectId));
 	}
 
 	public boolean removeChecklist(final UUID subjectId, final Checklist checklist) {
 		return checklistMap.remove(subjectId, checklist);
-	}
-
-	public boolean hasChecklistsFor(final UUID subjectId) {
-		return checklistMap.containsKey(subjectId);
 	}
 
 }

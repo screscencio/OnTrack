@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.checklist;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,30 +41,30 @@ public class ChecklistRemoveActionTest extends ModelActionTest {
 	public void setup() throws Exception {
 		subjectId = new UUID();
 		checklistId = new UUID();
-		when(context.removeChecklist(subjectId, checklistId)).thenReturn(checklist);
+		when(context.findChecklist(subjectId, checklistId)).thenReturn(checklist);
 	}
 
 	@Test
 	public void shouldRemoveChecklistFromContext() throws Exception {
 		execute();
-		verify(context).removeChecklist(Mockito.any(UUID.class), Mockito.any(UUID.class));
+		verify(context).removeChecklist(Mockito.any(UUID.class), Mockito.any(Checklist.class));
 	}
 
 	@Test
 	public void shouldRemoveChecklistFromTheGivenSubjectId() throws Exception {
 		execute();
-		verify(context).removeChecklist(Mockito.eq(subjectId), Mockito.any(UUID.class));
+		verify(context).removeChecklist(Mockito.eq(subjectId), Mockito.any(Checklist.class));
 	}
 
 	@Test
 	public void shouldRemoveChecklistWithTheGivenId() throws Exception {
 		execute();
-		verify(context).removeChecklist(Mockito.any(UUID.class), Mockito.eq(checklistId));
+		verify(context).removeChecklist(Mockito.any(UUID.class), Mockito.eq(checklist));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveAnInexistantChecklist() throws Exception {
-		when(context.removeChecklist(subjectId, checklistId)).thenThrow(new ChecklistNotFoundException(""));
+		when(context.findChecklist(subjectId, checklistId)).thenThrow(new ChecklistNotFoundException(""));
 		execute();
 	}
 
@@ -92,18 +93,17 @@ public class ChecklistRemoveActionTest extends ModelActionTest {
 		checklistItems.add(ChecklistTestUtils.createItem());
 		checklistItems.add(ChecklistTestUtils.createItem());
 
-		final Checklist newChecklist = Mockito.mock(Checklist.class);
-
 		when(checklist.getId()).thenReturn(checklistId);
 		when(checklist.getItems()).thenReturn(checklistItems);
 
-		when(context.findChecklist(subjectId, checklistId)).thenReturn(newChecklist);
-
 		final ModelAction undoAction = execute();
+
+		final Checklist recreatedChecklist = mock(Checklist.class);
+		when(context.findChecklist(subjectId, checklistId)).thenReturn(recreatedChecklist);
 		undoAction.execute(context, actionContext);
 
 		final ArgumentCaptor<ChecklistItem> captor = ArgumentCaptor.forClass(ChecklistItem.class);
-		verify(newChecklist, times(checklistItems.size())).addItem(captor.capture());
+		verify(recreatedChecklist, times(checklistItems.size())).addItem(captor.capture());
 
 		DeepEqualityTestUtils.assertObjectEquality(checklistItems, captor.getAllValues());
 	}
