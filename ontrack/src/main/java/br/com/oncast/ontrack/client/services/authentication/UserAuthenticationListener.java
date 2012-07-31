@@ -5,5 +5,7 @@ public interface UserAuthenticationListener {
 	void onUserLoggedIn();
 
 	void onUserLoggedOut();
+	
+	void onUserInformationLoaded();
 
 }

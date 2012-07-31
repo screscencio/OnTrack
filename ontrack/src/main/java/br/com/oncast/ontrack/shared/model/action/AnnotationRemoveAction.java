@@ -34,7 +34,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 		this(subjectId, annotationId, true);
 	}
 
-	private AnnotationRemoveAction(final UUID subjectId, final UUID annotationId, final boolean isUserAction) {
+	protected AnnotationRemoveAction(final UUID subjectId, final UUID annotationId, final boolean isUserAction) {
 		this.subjectId = subjectId;
 		this.annotationId = annotationId;
 		this.userAction = isUserAction;

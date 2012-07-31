@@ -36,7 +36,7 @@ public class PlanningPlace extends ProjectDependentPlace {
 
 		@Override
 		public String getToken(final PlanningPlace place) {
-			return place.getRequestedProjectId() + "";
+			return place.getRequestedProjectId().toStringRepresentation();
 		}
 	}
 }

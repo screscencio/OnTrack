@@ -21,6 +21,8 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformat
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
 
+import com.google.gwt.place.shared.Place;
+
 public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final Set<UserAuthenticationListener> userAuthenticatedListeners;
@@ -59,6 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			public void onSuccess(final CurrentUserInformationResponse result) {
 				currentUser = result.getUser();
 				callback.onUserInformationLoaded(currentUser);
+				notifyUserInformationLoadToUserAuthenticationListeners();
 			}
 
 			@Override
@@ -158,6 +161,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		}
 	}
 
+	private void notifyUserInformationLoadToUserAuthenticationListeners() {
+		for (final UserAuthenticationListener listener : userAuthenticatedListeners) {
+			listener.onUserInformationLoaded();
+		}
+	}
+
 	private void notifyLogoutToUserAuthenticationListeners() {
 		for (final UserAuthenticationListener listener : userAuthenticatedListeners) {
 			listener.onUserLoggedOut();
@@ -192,8 +201,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public void onUserLogout() {
+		resetCurrentUsetAndGoTo(new LoginPlace());
+	}
+
+	@Override
+	public void onUserLoginRequired(final Place destinationPlace) {
+		resetCurrentUsetAndGoTo(new LoginPlace(destinationPlace));
+	}
+
+	private void resetCurrentUsetAndGoTo(final Place destinationPlace) {
 		currentUser = null;
 		notifyLogoutToUserAuthenticationListeners();
-		applicationPlaceController.goTo(new LoginPlace());
+		applicationPlaceController.goTo(destinationPlace);
 	}
 }

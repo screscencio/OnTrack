@@ -57,7 +57,7 @@ public class ReleaseRemoveAction implements ReleaseAction {
 	private List<ModelAction> removeAnnotations(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 		for (final Annotation annotation : context.findAnnotationsFor(referenceId)) {
-			subActionRollbackList.add(new AnnotationRemoveAction(referenceId, annotation.getId()).execute(context, actionContext));
+			subActionRollbackList.add(new AnnotationRemoveAction(referenceId, annotation.getId(), false).execute(context, actionContext));
 		}
 		return subActionRollbackList;
 	}

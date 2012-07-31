@@ -33,6 +33,10 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 			@Override
 			public void onUserLoggedIn() {}
+
+			@Override
+			public void onUserInformationLoaded() {}
+
 		});
 	}
 

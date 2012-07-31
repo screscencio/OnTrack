@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,10 +50,28 @@ public class ProjectRepresentationProviderTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
+		when(auth.isUserAvailable()).thenReturn(true);
 	}
 
 	@Test
-	public void updateAvaliableProjectsOnInitialization() throws Exception {
+	public void doesntUpdateAvaliableProjectsOnInitializationIfUserInformationIsUnavailable() throws Exception {
+		when(auth.isUserAvailable()).thenReturn(false);
+		createProvider();
+		assureProjectsWereRequested(0);
+	}
+
+	@Test
+	public void updateAvailableProjectsOnUserInformationLoad() throws Exception {
+		when(auth.isUserAvailable()).thenReturn(false);
+		createProvider();
+		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
+		verify(auth).registerUserAuthenticationListener(captor.capture());
+		captor.getValue().onUserInformationLoaded();
+		assureProjectsWereRequested();
+	}
+
+	@Test
+	public void updateAvaliableProjectsOnInitializationIfUserInformationIsAvailable() throws Exception {
 		createProvider();
 		assureProjectsWereRequested();
 	}

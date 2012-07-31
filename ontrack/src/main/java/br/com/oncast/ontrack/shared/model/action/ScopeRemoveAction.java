@@ -70,7 +70,7 @@ public class ScopeRemoveAction implements ScopeAction {
 		subActionList.add(new ScopeDeclareValueAction(referenceId, false, 0));
 
 		for (final Annotation annotation : context.findAnnotationsFor(referenceId)) {
-			subActionList.add(new AnnotationRemoveAction(referenceId, annotation.getId()));
+			subActionList.add(new AnnotationRemoveAction(referenceId, annotation.getId(), false));
 		}
 
 		for (final Checklist checklist : context.findChecklistsFor(referenceId)) {

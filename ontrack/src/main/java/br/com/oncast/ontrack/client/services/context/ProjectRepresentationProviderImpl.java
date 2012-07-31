@@ -51,6 +51,11 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 				notifyProjectListChange();
 			}
+
+			@Override
+			public void onUserInformationLoaded() {
+				updateAvailableProjectRepresentations();
+			}
 		});
 
 		serverPushClientService.registerServerEventHandler(ProjectCreatedEvent.class, new NewProjectCreatedEventHandler() {
@@ -64,7 +69,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			}
 		});
 
-		updateAvailableProjectRepresentations();
+		if (authenticationService.isUserAvailable()) updateAvailableProjectRepresentations();
 	}
 
 	private void updateAvailableProjectRepresentations() {

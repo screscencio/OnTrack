@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.client.services.authentication;
 
 import br.com.oncast.ontrack.shared.model.user.User;
 
+import com.google.gwt.place.shared.Place;
+
 public interface AuthenticationService {
 
 	void authenticate(String login, String password, UserAuthenticationCallback callback);
@@ -23,4 +25,6 @@ public interface AuthenticationService {
 	boolean isUserAvailable();
 
 	void onUserLogout();
+
+	void onUserLoginRequired(Place destinationPlace);
 }
