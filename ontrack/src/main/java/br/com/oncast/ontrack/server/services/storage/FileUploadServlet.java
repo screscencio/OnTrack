@@ -33,7 +33,7 @@ public class FileUploadServlet extends HttpServlet {
 		try {
 			final FileUploadFormObject fileUploadForm = parse(request);
 
-			final FileRepresentation fileRepresentation = getStorageService().store(fileUploadForm.getProjectId(),
+			final FileRepresentation fileRepresentation = getStorageService().store(fileUploadForm.getFileId(), fileUploadForm.getProjectId(),
 					fileUploadForm.getFile(Files.createTempDir()));
 
 			configureResponse(response);

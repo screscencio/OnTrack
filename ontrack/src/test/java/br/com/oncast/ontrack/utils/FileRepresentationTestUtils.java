@@ -9,8 +9,8 @@ public class FileRepresentationTestUtils {
 	private static int fileRepresentationCounter = 0;
 
 	public static FileRepresentation create() {
-		final int counter = fileRepresentationCounter++;
-		return new FileRepresentation("file_" + counter + ".extension", "path/to/file/" + counter, new UUID(String.valueOf(DEFAULT_PROJECT)));
+		final String fileName = "file_" + ++fileRepresentationCounter + ".extension";
+		return new FileRepresentation(new UUID(), fileName, "path/to/" + fileName, new UUID(String.valueOf(DEFAULT_PROJECT)));
 	}
 
 }

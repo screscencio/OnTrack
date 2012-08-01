@@ -12,7 +12,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface StorageService {
 
-	FileRepresentation store(UUID projectId, File file) throws IOException, PersistenceException, UnableToHandleActionException, AuthorizationException;
+	FileRepresentation store(UUID fileId, UUID projectId, File file) throws IOException, PersistenceException, UnableToHandleActionException,
+			AuthorizationException;
 
 	File retrieve(UUID fileId) throws FileNotFoundException, PersistenceException, AuthorizationException;
 

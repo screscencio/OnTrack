@@ -1,7 +1,13 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
 import static br.com.oncast.ontrack.utils.ListUtils.lastOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -363,13 +369,13 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldBeAbleToPersistFileRepresentations() throws Exception {
-		final FileRepresentation fileRepresentation = new FileRepresentation("fileName", "fileHash", new UUID());
+		final FileRepresentation fileRepresentation = new FileRepresentation(new UUID(), "fileName", "fileHash", new UUID());
 		persistenceService.persistOrUpdateFileRepresentation(fileRepresentation);
 	}
 
 	@Test
 	public void shouldBeAbleToRetrieveFileRepresentations() throws Exception {
-		final FileRepresentation fileRepresentation = new FileRepresentation("fileName", "fileHash", new UUID());
+		final FileRepresentation fileRepresentation = new FileRepresentation(new UUID(), "fileName", "fileHash", new UUID());
 		persistenceService.persistOrUpdateFileRepresentation(fileRepresentation);
 
 		final FileRepresentation retrievedFileRepresentation = persistenceService.retrieveFileRepresentationById(fileRepresentation.getId());

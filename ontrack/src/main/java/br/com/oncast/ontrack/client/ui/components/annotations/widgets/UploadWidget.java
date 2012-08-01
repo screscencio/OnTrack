@@ -22,7 +22,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -71,6 +70,8 @@ public class UploadWidget extends Composite {
 
 	private FlowPanel formContainer;
 
+	private TextBox fileId;
+
 	public UploadWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -115,10 +116,10 @@ public class UploadWidget extends Composite {
 		ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Uploading your file...");
 		final FormPanel form = getForm();
 		getProjectId().setValue(getCurrentProject().getId().toStringRepresentation());
-
-		// FIXME Lobo review if this is tolerable to correct encoding problems with filename with accents
-		getFileName().setValue(URL.encode(filename));
-		getActionExecutionService().addActionExecutionListener(getActionExecutionListener(filename, listener));
+		getFileName().setValue(filename);
+		final UUID uuid = new UUID();
+		getFileId().setValue(uuid.toStringRepresentation());
+		getActionExecutionService().addActionExecutionListener(getActionExecutionListener(uuid, listener));
 		form.submit();
 	}
 
@@ -157,6 +158,15 @@ public class UploadWidget extends Composite {
 		return fileName;
 	}
 
+	private TextBox getFileId() {
+		if (fileId == null) {
+			fileId = new TextBox();
+			fileId.setName(FileUploadFieldNames.FILE_ID);
+			getFormContainer().add(fileId);
+		}
+		return fileId;
+	}
+
 	private FlowPanel getFormContainer() {
 		if (formContainer == null) {
 			formContainer = new FlowPanel();
@@ -187,19 +197,15 @@ public class UploadWidget extends Composite {
 		return ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent();
 	}
 
-	private ActionExecutionListener getActionExecutionListener(final String filename, final UploadWidgetListener listener) {
+	private ActionExecutionListener getActionExecutionListener(final UUID uuid, final UploadWidgetListener listener) {
 		return actionExecutionListener = new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
-				if (action instanceof FileUploadAction) {
-					final FileUploadAction uploadAction = (FileUploadAction) action;
-					Window.alert(filename + ", " + uploadAction.getFileName() + " ==> " + filename.equals(uploadAction.getFileName()));
-					if (filename.equals(uploadAction.getFileName())) {
-						getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
-						ClientServiceProvider.getInstance().getClientNotificationService().showSuccess("Upload Completed!");
-						listener.onUploadCompleted(uploadAction.getReferenceId());
-					}
+				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
+					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
+					ClientServiceProvider.getInstance().getClientNotificationService().showSuccess("Upload Completed!");
+					listener.onUploadCompleted(action.getReferenceId());
 				}
 			}
 

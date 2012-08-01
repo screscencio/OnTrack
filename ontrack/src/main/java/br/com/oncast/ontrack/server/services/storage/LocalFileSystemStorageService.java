@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -24,6 +22,8 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionExce
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 
 public class LocalFileSystemStorageService implements StorageService {
@@ -56,7 +56,8 @@ public class LocalFileSystemStorageService implements StorageService {
 	}
 
 	@Override
-	public FileRepresentation store(final UUID projectId, final File file) throws IOException, PersistenceException, UnableToHandleActionException,
+	public FileRepresentation store(final UUID fileId, final UUID projectId, final File file) throws IOException, PersistenceException,
+			UnableToHandleActionException,
 			AuthorizationException {
 		LOGGER.debug("Persisting file '" + file.getName() + "'");
 		final String fileHash = generateContentHash(file);
@@ -68,7 +69,7 @@ public class LocalFileSystemStorageService implements StorageService {
 
 		updateInfoFile(destinationFile);
 
-		final FileRepresentation fileRepresentation = createFileRepresentation(projectId, file.getName(), destinationFile.getAbsolutePath());
+		final FileRepresentation fileRepresentation = createFileRepresentation(fileId, projectId, file.getName(), destinationFile.getAbsolutePath());
 		businessLogic.onFileUploadCompleted(fileRepresentation);
 		LOGGER.debug("The file '" + fileHash + "'was persisted successfully.");
 		return fileRepresentation;
@@ -84,8 +85,8 @@ public class LocalFileSystemStorageService implements StorageService {
 		properties.store(new FileOutputStream(infoFile), "");
 	}
 
-	private FileRepresentation createFileRepresentation(final UUID projectId, final String fileName, final String filePath) {
-		return new FileRepresentation(fileName, filePath, projectId);
+	private FileRepresentation createFileRepresentation(final UUID fileId, final UUID projectId, final String fileName, final String filePath) {
+		return new FileRepresentation(fileId, fileName, filePath, projectId);
 	}
 
 	@Override
@@ -128,14 +129,7 @@ public class LocalFileSystemStorageService implements StorageService {
 	}
 
 	private String generateContentHash(final File file) throws IOException {
-		try {
-			final byte[] digest = Files.getDigest(file, MessageDigest.getInstance("SHA-1"));
-			final String sha1Hash = new BigInteger(1, digest).toString();
-			return sha1Hash;
-		}
-		catch (final NoSuchAlgorithmException e) {
-			LOGGER.error("File persistence failed.", e);
-			return file.getName();
-		}
+		final HashCode digest = Files.hash(file, Hashing.sha1());
+		return new BigInteger(1, digest.asBytes()).toString();
 	}
 }

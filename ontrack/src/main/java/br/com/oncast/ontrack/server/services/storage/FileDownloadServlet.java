@@ -2,6 +2,8 @@ package br.com.oncast.ontrack.server.services.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -26,7 +28,7 @@ public class FileDownloadServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		try {
-			final String fileId = request.getParameter(FileUploadFieldNames.FILE_NAME);
+			final String fileId = request.getParameter(FileUploadFieldNames.FILE_ID);
 			if (fileId == null) throw new RuntimeException("Thre request is NOT complete, maybe there are missing request parameters.");
 
 			final File file = ServerServiceProvider.getInstance().getStorageService().retrieve(new UUID(fileId));
@@ -49,10 +51,19 @@ public class FileDownloadServlet extends HttpServlet {
 
 		response.setContentType((mimetype != null) ? mimetype : "application/octet-stream");
 		response.setContentLength((int) file.length());
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + encodeFileName(file.getName()) + "\"");
 
 		final ServletOutputStream out = response.getOutputStream();
 
 		Files.copy(file, out);
+	}
+
+	private String encodeFileName(final String fileName) throws UnsupportedEncodingException {
+		final StringBuffer buffer = new StringBuffer();
+		for (final String split : fileName.split(" ")) {
+			buffer.append(URLEncoder.encode(split, "UTF-8"));
+			buffer.append(" ");
+		}
+		return buffer.toString().trim();
 	}
 }

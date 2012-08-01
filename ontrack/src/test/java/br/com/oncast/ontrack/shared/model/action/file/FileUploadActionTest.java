@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.file.FileUploadActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
@@ -77,7 +78,7 @@ public class FileUploadActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldBeAbleToCreateFromAnExistingFileRepresentation() throws Exception {
-		final FileRepresentation fileRepresentation = new FileRepresentation(fileName, filePath, projectUuid);
+		final FileRepresentation fileRepresentation = new FileRepresentation(fileId, fileName, filePath, projectUuid);
 		new FileUploadAction(fileRepresentation).execute(context, actionContext);
 		verify(context).addFileRepresentation(Mockito.eq(fileRepresentation));
 	}

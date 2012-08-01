@@ -18,10 +18,6 @@ public class FileRepresentation implements Serializable {
 
 	public FileRepresentation() {}
 
-	public FileRepresentation(final String fileName, final String filePath, final UUID projectId) {
-		this(new UUID(), fileName, filePath, projectId);
-	}
-
 	public FileRepresentation(final UUID id, final String fileName, final String filePath, final UUID projectId) {
 		this.fileName = fileName;
 		this.filePath = filePath;

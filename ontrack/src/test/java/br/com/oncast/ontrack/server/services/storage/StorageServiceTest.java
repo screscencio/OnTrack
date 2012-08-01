@@ -1,6 +1,9 @@
 package br.com.oncast.ontrack.server.services.storage;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -223,6 +226,16 @@ public class StorageServiceTest {
 		}
 	}
 
+	@Test
+	public void shouldCreateAFileRepresentationWithTheGivenUUID() throws Exception {
+		final UUID fileId = new UUID();
+		storage.store(fileId, projectId, file);
+		final ArgumentCaptor<FileRepresentation> captor = ArgumentCaptor.forClass(FileRepresentation.class);
+		verify(businessLogic).onFileUploadCompleted(captor.capture());
+
+		assertEquals(fileId, captor.getValue().getId());
+	}
+
 	private String generateContentHash(final File file) throws Exception {
 		final Method method = LocalFileSystemStorageService.class.getDeclaredMethod("generateContentHash", File.class);
 		method.setAccessible(true);
@@ -234,7 +247,8 @@ public class StorageServiceTest {
 		final ArgumentCaptor<FileRepresentation> captor = ArgumentCaptor.forClass(FileRepresentation.class);
 		doNothing().when(businessLogic).onFileUploadCompleted(captor.capture());
 
-		final UUID fileId = storage.store(projectId, file).getId();
+		final UUID fileId = new UUID();
+		storage.store(fileId, projectId, file);
 
 		when(persistenceService.retrieveFileRepresentationById(fileId)).thenReturn(captor.getValue());
 		return fileId;
@@ -256,7 +270,7 @@ public class StorageServiceTest {
 	}
 
 	private void setCurrentProject(final UUID projectId) throws PersistenceException, AuthorizationException {
-		this.projectId = new UUID(String.valueOf(projectId));
+		this.projectId = projectId;
 		doThrow(new AuthorizationException()).when(authenticationManager).assureProjectAccessAuthorization(Mockito.any(UUID.class));
 		doNothing().when(authenticationManager).assureProjectAccessAuthorization(projectId);
 	}
