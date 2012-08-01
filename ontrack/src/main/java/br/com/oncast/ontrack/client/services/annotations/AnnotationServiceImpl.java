@@ -4,9 +4,8 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
-import br.com.oncast.ontrack.client.ui.components.annotations.AnnotationsPanel;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
+import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
+import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
@@ -15,8 +14,6 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class AnnotationServiceImpl implements AnnotationService {
@@ -25,13 +22,16 @@ public class AnnotationServiceImpl implements AnnotationService {
 	private final ContextProviderService contextProviderService;
 	private final AuthenticationService authenticationService;
 	private final ClientNotificationService clientNotificationService;
+	private final ApplicationPlaceController applicationPlaceController;
 
 	public AnnotationServiceImpl(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
-			final AuthenticationService authenticationService, final ClientNotificationService clientNotificationService) {
+			final AuthenticationService authenticationService, final ClientNotificationService clientNotificationService,
+			final ApplicationPlaceController applicationPlaceController) {
 		this.actionExecutionService = actionExecutionService;
 		this.contextProviderService = contextProviderService;
 		this.authenticationService = authenticationService;
 		this.clientNotificationService = clientNotificationService;
+		this.applicationPlaceController = applicationPlaceController;
 	}
 
 	@Override
@@ -41,15 +41,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void showAnnotationsFor(final Scope scope, final PopupCloseListener closeListener) {
-		final AnnotationsPanel panel = AnnotationsPanel.forScope(scope);
-
-		PopupConfig.configPopup().popup(panel).onClose(closeListener).setModal(true).pop();
-	}
-
-	@Override
-	public void showAnnotationsFor(final Scope scope) {
-		showAnnotationsFor(scope, null);
+	public void showAnnotationsFor(final UUID subjectId) {
+		final UUID projectId = contextProviderService.getCurrentProjectContext().getProjectRepresentation().getId();
+		applicationPlaceController.goTo(new DetailPlace(projectId, subjectId, applicationPlaceController.getCurrentPlace()));
 	}
 
 	@Override
@@ -68,13 +62,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		catch (final Exception e) {
 			clientNotificationService.showError(e.getMessage());
 		}
-	}
-
-	@Override
-	public void showAnnotationsFor(final Release release) {
-		final AnnotationsPanel panel = AnnotationsPanel.forRelease(release);
-
-		PopupConfig.configPopup().popup(panel).setModal(true).pop();
 	}
 
 	@Override

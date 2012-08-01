@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.places.details.DetailActivity;
+import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.client.ui.places.loading.ContextLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.loading.UserInformationLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
@@ -46,12 +48,17 @@ public class AppActivityMapper implements ActivityMapper {
 			if (!services.getContextProviderService().isContextAvailable(requestedProjectId)) return createContextLoadingActivity(projectDependentPlace);
 		}
 
+		if (place instanceof DetailPlace) return createDetailActivity((DetailPlace) place);
 		if (place instanceof PlanningPlace) return createPlanningActivity((PlanningPlace) place);
 		if (place instanceof ProjectSelectionPlace) return createProjectSelectionActivity();
 		if (place instanceof ProjectCreationPlace) return createProjectCreationPlace((ProjectCreationPlace) place);
 		if (place instanceof ProgressPlace) return createProgressActivity((ProgressPlace) place);
 
 		return null;
+	}
+
+	private Activity createDetailActivity(final DetailPlace place) {
+		return new DetailActivity(place);
 	}
 
 	private Activity createMigrationActivity() {

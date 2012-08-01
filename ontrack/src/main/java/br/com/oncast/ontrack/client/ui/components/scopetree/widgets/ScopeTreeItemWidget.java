@@ -218,7 +218,7 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiHandler("detailsIcon")
 	protected void onDetailsClick(final ClickEvent e) {
 		e.stopPropagation();
-		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(scope);
+		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(scope.getId());
 	}
 
 	public void setValue(final String value) {

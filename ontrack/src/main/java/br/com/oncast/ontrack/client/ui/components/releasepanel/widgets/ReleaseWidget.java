@@ -253,7 +253,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiHandler("annotationIcon")
 	protected void showAnnotationPanel(final ClickEvent event) {
-		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(release);
+		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(release.getId());
 	}
 
 	@UiHandler("progressIcon")
