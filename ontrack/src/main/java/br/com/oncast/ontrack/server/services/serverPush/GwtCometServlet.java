@@ -94,22 +94,25 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	public static class GwtCometServerHttpSessionListener implements HttpSessionListener {
 
 		@Override
-		public void sessionCreated(final HttpSessionEvent event) {}
+		public void sessionCreated(final HttpSessionEvent event) {
+			LOGGER.debug("A new java session [" + event.getSession().getId() + "] was created.");
+		}
 
 		@Override
 		// TODO Analyze storing in the http session a specialized object that could manage comet sessions instead of just storing comet sessions using random
 		// client ids.
 		public void sessionDestroyed(final HttpSessionEvent event) {
-			final List<CometSession> sessionsToBeRemoved = new ArrayList<CometSession>();
+			LOGGER.info("A java session [" + event.getSession().getId() + "] was destroyed.");
 
+			final List<CometSession> cometSessionsToBeRemoved = new ArrayList<CometSession>();
 			for (final CometSession cometSession : cometSessionMap.values()) {
 				if (cometSession.getHttpSession().getId().equals(event.getSession().getId())) {
 					cometSession.invalidate();
-					sessionsToBeRemoved.add(cometSession);
+					cometSessionsToBeRemoved.add(cometSession);
 				}
 			}
 
-			for (final CometSession cometSession : sessionsToBeRemoved) {
+			for (final CometSession cometSession : cometSessionsToBeRemoved) {
 				GwtCometServlet.removeCometSession(cometSession);
 			}
 		}
