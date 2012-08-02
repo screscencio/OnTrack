@@ -126,4 +126,12 @@ public class LoginPanel extends Composite implements LoginView {
 		emailArea.update(false);
 		passwordArea.update(false);
 	}
+
+	@Override
+	public void setUsername(final String username) {
+		if (username.trim().isEmpty()) return;
+
+		emailArea.setText(username);
+		passwordArea.setFocus(true);
+	}
 }

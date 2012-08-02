@@ -1,9 +1,17 @@
 package br.com.oncast.ontrack.client.services.applicationState;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
+import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -12,38 +20,67 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ClientApplicationStateServiceImpl implements ClientApplicationStateService {
 
-	private Scope selectedScope;
 	private final EventBus eventBus;
-	private HandlerRegistration handlerRegistration;
 	private final ContextProviderService contextProviderService;
+	private final ClientStorageService clientStorageService;
 
-	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService) {
+	private final Set<HandlerRegistration> handlerRegistrations;
+
+	private Scope selectedScope;
+
+	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService,
+			final ClientStorageService clientStorageService) {
 		this.eventBus = eventBus;
 		this.contextProviderService = contextProviderService;
+		this.clientStorageService = clientStorageService;
+		handlerRegistrations = new HashSet<HandlerRegistration>();
 	}
 
 	@Override
 	public void startRecording() {
 		registerScopeSelectionEventListener();
+		registerScopeTreeColumnVisibilityChangeListener();
+	}
+
+	private void registerScopeTreeColumnVisibilityChangeListener() {
+		for (final ScopeTreeColumn column : ScopeTreeColumn.values()) {
+			handlerRegistrations.add(column.register(new VisibilityChangeListener() {
+				@Override
+				public void onVisiblityChange(final boolean isVisible) {
+					clientStorageService.storeScopeTreeColumnVisibility(column, isVisible);
+				}
+			}));
+		}
 	}
 
 	private void registerScopeSelectionEventListener() {
-		handlerRegistration = eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+		handlerRegistrations.add(eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 			@Override
 			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
-				selectedScope = event.getTargetScope();
+				setSelectedScope(event);
 			}
-		});
+		}));
 	}
 
 	@Override
 	public void stopRecording() {
-		handlerRegistration.removeHandler();
+		for (final HandlerRegistration handlerRegistration : handlerRegistrations) {
+			handlerRegistration.removeHandler();
+		}
+
+		handlerRegistrations.clear();
 	}
 
 	@Override
 	public void restore() {
 		fireScopeSelectionEvent();
+		restoreScopeTreeColumnVisibility();
+	}
+
+	private void restoreScopeTreeColumnVisibility() {
+		for (final ScopeTreeColumn column : ScopeTreeColumn.values()) {
+			column.setVisibility(clientStorageService.loadScopeTreeColumnVisibility(column));
+		}
 	}
 
 	private void fireScopeSelectionEvent() {
@@ -55,11 +92,26 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		});
 	}
 
-	private Scope getSelectedScope() {
-		return selectedScope == null ? getDefaultSelectedScope() : selectedScope;
+	private void setSelectedScope(final ScopeSelectionEvent event) {
+		selectedScope = event.getTargetScope();
+		storeSelectedScope();
 	}
 
-	private Scope getDefaultSelectedScope() {
-		return contextProviderService.getCurrentProjectContext().getProjectScope();
+	private Scope getSelectedScope() {
+		return selectedScope == null ? loadSelectedScope() : selectedScope;
+	}
+
+	private void storeSelectedScope() {
+		clientStorageService.storeSelectedScopeId(selectedScope.getId());
+	}
+
+	private Scope loadSelectedScope() {
+		final ProjectContext currentContext = contextProviderService.getCurrentProjectContext();
+		try {
+			return currentContext.findScope(clientStorageService.loadSelectedScopeId(currentContext.getProjectScope().getId()));
+		}
+		catch (final ScopeNotFoundException e) {
+			return currentContext.getProjectScope();
+		}
 	}
 }

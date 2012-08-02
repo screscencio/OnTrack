@@ -15,4 +15,6 @@ public interface LoginView {
 	void enable();
 
 	void onIncorrectCredentials();
+
+	void setUsername(String username);
 }

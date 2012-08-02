@@ -23,6 +23,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			@Override
 			public void onUserAuthenticatedSuccessfully(final User user) {
 				view.enable();
+				SERVICE_PROVIDER.getClientStorageService().storeLastUserEmail(user.getEmail());
 				SERVICE_PROVIDER.getApplicationPlaceController().goTo(destinationPlace);
 			}
 
@@ -40,6 +41,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 				view.onIncorrectCredentials();
 				SERVICE_PROVIDER.getClientNotificationService().showError("Incorrect user or password.");
 			}
+
 		};
 	}
 
@@ -47,6 +49,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		panel.setWidget(view.asWidget());
 		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
+		view.setUsername(SERVICE_PROVIDER.getClientStorageService().loadLastUserEmail(""));
 	}
 
 	@Override

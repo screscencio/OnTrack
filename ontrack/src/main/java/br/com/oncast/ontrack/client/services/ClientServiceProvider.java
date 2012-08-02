@@ -28,6 +28,8 @@ import br.com.oncast.ontrack.client.services.notification.ClientNotificationServ
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
+import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
+import br.com.oncast.ontrack.client.services.storage.Html5StorageClientStorageService;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
@@ -76,6 +78,7 @@ public class ClientServiceProvider {
 	private AnnotationService annotationService;
 	private UserDataService userDataService;
 	private ChecklistService checklistService;
+	private ClientStorageService clientStorageService;
 
 	private static ClientServiceProvider instance;
 
@@ -182,7 +185,12 @@ public class ClientServiceProvider {
 
 	public ClientApplicationStateService getClientApplicationStateService() {
 		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(getEventBus(),
-				getContextProviderService()) : clientApplicationStateService;
+				getContextProviderService(), getClientStorageService()) : clientApplicationStateService;
+	}
+
+	public ClientStorageService getClientStorageService() {
+		if (clientStorageService == null) clientStorageService = new Html5StorageClientStorageService(getAuthenticationService());
+		return clientStorageService;
 	}
 
 	public MigrationService getMigrationService() {
