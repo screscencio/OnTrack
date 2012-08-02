@@ -90,6 +90,7 @@ public class PopupConfig {
 	private AlignmentReference alignVerticallyTo;
 	private boolean isModal = false;
 	private Widget previousNotificationParent;
+	private BasicMaskPanel maskPanel;
 
 	private PopupConfig() {}
 
@@ -279,7 +280,7 @@ public class PopupConfig {
 					animation.hide();
 				}
 				shown = false;
-				MaskPanel.assureHidden();
+				maskPanel.hide();
 			}
 		});
 	}
@@ -298,7 +299,7 @@ public class PopupConfig {
 	// way to clean then when user hits navigation commands eg. "Back"
 	private void engagePopup() {
 		if (widgetToPopup == null) throw new IllegalStateException("No popup panel attached to link. Did you forget to call the PopupConfig#popup() method?");
-		MaskPanel.show(new HideHandler() {
+		maskPanel = MaskPanel.show(new HideHandler() {
 			@Override
 			public void onWillHide() {
 				hidePopup();

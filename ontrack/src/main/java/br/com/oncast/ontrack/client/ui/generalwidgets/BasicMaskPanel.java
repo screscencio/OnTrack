@@ -43,6 +43,7 @@ public class BasicMaskPanel implements IsWidget {
 		}
 
 		maskPanel.setVisible(false);
+		RootPanel.get().remove(maskPanel);
 	}
 
 	protected Style getStyle() {

@@ -1,29 +1,34 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MaskPanel {
-	private static BasicMaskPanel maskPanel;
+	private static ArrayList<BasicMaskPanel> showingMaskPanels;
 
 	private MaskPanel() {}
 
-	public static void show(final HideHandler hideHandler, final boolean isModal) {
-		getPhysicalMaskWidget().setModal(isModal).show(hideHandler);
+	public static BasicMaskPanel show(final HideHandler hideHandler, final boolean isModal) {
+		final BasicMaskPanel panel = getPhysicalMaskWidget();
+		getShowingMaskPanels().add(panel);
+		panel.setModal(isModal).show(hideHandler);
+		return panel;
+	}
+
+	private static List<BasicMaskPanel> getShowingMaskPanels() {
+		if (showingMaskPanels == null) showingMaskPanels = new ArrayList<BasicMaskPanel>();
+		return showingMaskPanels;
 	}
 
 	public static void assureHidden() {
-		getPhysicalMaskWidget().hide();
+		for (final BasicMaskPanel panel : getShowingMaskPanels())
+			panel.hide();
+
+		getShowingMaskPanels().clear();
 	}
 
 	private static BasicMaskPanel getPhysicalMaskWidget() {
-		return maskPanel == null ? maskPanel = new BasicMaskPanel() : maskPanel;
+		return new BasicMaskPanel();
 	}
 
-	public static BasicMaskPanel get() {
-		return getPhysicalMaskWidget();
-	}
-
-	public static void add(final Widget widget) {
-		getPhysicalMaskWidget().add(widget);
-	}
 }
