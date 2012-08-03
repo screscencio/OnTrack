@@ -22,6 +22,9 @@
 	<listener>
 		<listener-class>br.com.oncast.ontrack.server.services.serverPush.GwtCometServlet$GwtCometServerHttpSessionListener</listener-class>
 	</listener>
+	<listener>
+		<listener-class>br.com.oncast.ontrack.server.services.session.SessionLifecycleLogger</listener-class>
+	</listener>
 
 	<!-- SERVLET DEFINITIONS AND MAPPINGS -->
 	<!-- ServerPush Service Definitions and Mappings -->

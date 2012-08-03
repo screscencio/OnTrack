@@ -100,16 +100,15 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 		// TODO Analyze storing in the http session a specialized object that could manage comet sessions instead of just storing comet sessions using random
 		// client ids.
 		public void sessionDestroyed(final HttpSessionEvent event) {
-			final List<CometSession> sessionsToBeRemoved = new ArrayList<CometSession>();
-
+			final List<CometSession> cometSessionsToBeRemoved = new ArrayList<CometSession>();
 			for (final CometSession cometSession : cometSessionMap.values()) {
 				if (cometSession.getHttpSession().getId().equals(event.getSession().getId())) {
 					cometSession.invalidate();
-					sessionsToBeRemoved.add(cometSession);
+					cometSessionsToBeRemoved.add(cometSession);
 				}
 			}
 
-			for (final CometSession cometSession : sessionsToBeRemoved) {
+			for (final CometSession cometSession : cometSessionsToBeRemoved) {
 				GwtCometServlet.removeCometSession(cometSession);
 			}
 		}
