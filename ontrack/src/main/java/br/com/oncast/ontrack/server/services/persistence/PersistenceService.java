@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.persistence;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
@@ -10,6 +11,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -64,4 +66,12 @@ public interface PersistenceService {
 	public void persistOrUpdateFileRepresentation(FileRepresentation fileRepresentation) throws PersistenceException;
 
 	public FileRepresentation retrieveFileRepresentationById(UUID fileId) throws NoResultFoundException, PersistenceException;
+
+	public void persistOrUpdateAnnotation(UUID projectId, UUID subjectId, Annotation annotation) throws PersistenceException;
+
+	public Annotation retrieveAnnotationById(UUID projectId, UUID id) throws NoResultFoundException, PersistenceException;
+
+	public List<Annotation> retrieveAnnotationsFromProjectBySubjectId(UUID projectId, UUID subjectId) throws PersistenceException;
+
+	public Set<UUID> retrieveAnnotatedSubjectIdsFromProject(UUID projectId) throws PersistenceException;
 }

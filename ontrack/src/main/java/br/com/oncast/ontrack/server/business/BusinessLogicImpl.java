@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.AnnotationCreatePostProcessor;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -29,6 +30,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionExce
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -139,6 +141,9 @@ class BusinessLogicImpl implements BusinessLogic {
 				if (action instanceof FileUploadAction) {
 					persistenceService.persistOrUpdateFileRepresentation(context.findFileRepresentation(action.getReferenceId()));
 				}
+				// FIXME Merge this with postProcessing
+				if (action instanceof AnnotationCreateAction) new AnnotationCreatePostProcessor().process(persistenceService, context, actionContext,
+						(AnnotationCreateAction) action);
 			}
 		}
 		catch (final Exception e) {

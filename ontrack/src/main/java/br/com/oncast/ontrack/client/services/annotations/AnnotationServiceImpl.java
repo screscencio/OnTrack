@@ -1,5 +1,9 @@
 package br.com.oncast.ontrack.client.services.annotations;
 
+import java.util.Set;
+
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
@@ -15,6 +19,8 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.requestDispatch.AnnotatedSubjectIdsRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.AnnotatedSubjectIdsResponse;
 
 public class AnnotationServiceImpl implements AnnotationService {
 
@@ -23,21 +29,54 @@ public class AnnotationServiceImpl implements AnnotationService {
 	private final AuthenticationService authenticationService;
 	private final ClientNotificationService clientNotificationService;
 	private final ApplicationPlaceController applicationPlaceController;
+	private final DispatchService dispatchService;
+	private Set<UUID> annotatedSubjectIds;
 
 	public AnnotationServiceImpl(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
 			final AuthenticationService authenticationService, final ClientNotificationService clientNotificationService,
-			final ApplicationPlaceController applicationPlaceController) {
+			final ApplicationPlaceController applicationPlaceController, final DispatchService dispatchService) {
 		this.actionExecutionService = actionExecutionService;
 		this.contextProviderService = contextProviderService;
 		this.authenticationService = authenticationService;
 		this.clientNotificationService = clientNotificationService;
 		this.applicationPlaceController = applicationPlaceController;
+		this.dispatchService = dispatchService;
 	}
 
 	@Override
 	public boolean hasDetails(final UUID subjectId) {
 		final ProjectContext context = contextProviderService.getCurrentProjectContext();
-		return context.hasChecklistsFor(subjectId) || context.hasAnnotationsFor(subjectId);
+		return context.hasChecklistsFor(subjectId) || hasAnnotationsFor(subjectId);
+	}
+
+	private boolean hasAnnotationsFor(final UUID subjectId) {
+		if (annotatedSubjectIds != null) return annotatedSubjectIds.contains(subjectId);
+
+		loadAnnotatedSubjectIds(subjectId);
+
+		return false;
+	}
+
+	@Override
+	public void loadAnnotatedSubjectIds(final UUID projectId) {
+		dispatchService.dispatch(new AnnotatedSubjectIdsRequest(projectId), new DispatchCallback<AnnotatedSubjectIdsResponse>() {
+			@Override
+			public void onSuccess(final AnnotatedSubjectIdsResponse result) {
+				annotatedSubjectIds = result.getAnnotatedSubjectIds();
+			}
+
+			@Override
+			public void onTreatedFailure(final Throwable caught) {
+				caught.printStackTrace();
+				clientNotificationService.showError(caught.getMessage());
+			}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				caught.printStackTrace();
+				clientNotificationService.showError(caught.getMessage());
+			}
+		});
 	}
 
 	@Override
@@ -71,7 +110,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	private boolean hasVoted(final UUID annotationId, final UUID subjectId) throws AnnotationNotFoundException {
 		final Annotation annotation = contextProviderService.getCurrentProjectContext().findAnnotation(subjectId, annotationId);
-		return annotation.hasVoted(authenticationService.getCurrentUser().getEmail());
+		return annotation.hasVoted(authenticationService.getCurrentUser());
 	}
 
 	private void doUserAction(final AnnotationAction action) {

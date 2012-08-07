@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(AnnotationVoteRemoveActionEntity.class)
@@ -31,8 +32,9 @@ public class AnnotationVoteRemoveAction implements AnnotationAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context);
-		if (!annotation.hasVoted(actionContext.getUserEmail())) throw new UnableToCompleteActionException("It's not possible to remove the ungiven vote");
-		annotation.removeVote(actionContext.getUserEmail());
+		final User user = ActionHelper.findUser(actionContext.getUserEmail(), context);
+		if (!annotation.hasVoted(user)) throw new UnableToCompleteActionException("It's not possible to remove the ungiven vote");
+		annotation.removeVote(user);
 		return new AnnotationVoteAction(annotationId, annotatedObjectId);
 	}
 

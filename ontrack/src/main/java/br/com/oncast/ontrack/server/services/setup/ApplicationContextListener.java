@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.services.migration.GenerateExportXmlRequest;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationVerificationAspectFilter;
+import br.com.oncast.ontrack.server.services.requestDispatch.AnnotatedSubjectIdsRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.AuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformationRequestHandler;
@@ -24,6 +25,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequ
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.SendFeedbackRequestHandler;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
+import br.com.oncast.ontrack.shared.services.requestDispatch.AnnotatedSubjectIdsRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationRequest;
@@ -52,6 +54,7 @@ public class ApplicationContextListener implements ServletContextListener {
 		DispatchServiceServlet.registerRequestFilter(new AuthenticationVerificationAspectFilter(SERVICE_PROVIDER.getAuthenticationManager()));
 	}
 
+	// TODO +++ Maybe change this registration to Annotation based one;
 	private void setupDispatchHandlers() {
 		try {
 			DispatchServiceServlet.registerRequestHandler(ModelActionSyncRequest.class, new ModelActionSyncRequestHandler());
@@ -66,6 +69,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(ProjectCreationQuotaRequest.class, new ProjectCreationQuotaRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(SendFeedbackRequest.class, new SendFeedbackRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(GenerateExportXmlRequest.class, new GenerateExportXmlRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(AnnotatedSubjectIdsRequest.class, new AnnotatedSubjectIdsRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

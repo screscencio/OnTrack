@@ -4,12 +4,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
 import org.hibernate.collection.PersistentBag;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.BooleanConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.CollectionToListConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.DateConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.FloatConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.IntegerConverter;
@@ -38,6 +40,7 @@ public class GeneralTypeConverter implements TypeConverter {
 		addCustomConverter(String.class, new StringConverter());
 		addCustomConverter(ArrayList.class, new ListConverter<ArrayList>(ArrayList.class));
 		addCustomConverter(LinkedList.class, new ListConverter<LinkedList>(LinkedList.class));
+		addCustomConverter(HashSet.class, new CollectionToListConverter<ArrayList>(ArrayList.class));
 		// IMPORTANT Date is the superclass of Timestamp, so the same converter is really used for both.
 		addCustomConverter(Date.class, new DateConverter());
 		addCustomConverter(Timestamp.class, new DateConverter());

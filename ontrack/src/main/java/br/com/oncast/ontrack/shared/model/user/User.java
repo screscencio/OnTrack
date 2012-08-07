@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+
+@ConvertTo(User.class)
 @Entity
 public class User implements Serializable {
 

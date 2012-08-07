@@ -5,21 +5,28 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.annotation.AnnotationEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+@ConvertTo(AnnotationEntity.class)
 public class Annotation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private UUID id;
+
 	private User author;
+
 	private String message;
+
 	private FileRepresentation attachmentFile;
+
 	private Date date;
 
-	private Set<String> voters;
+	private Set<User> voters;
 
 	public Annotation() {}
 
@@ -28,7 +35,7 @@ public class Annotation implements Serializable {
 		this.author = author;
 		this.date = date;
 		this.message = message;
-		voters = new HashSet<String>();
+		voters = new HashSet<User>();
 	}
 
 	@Override
@@ -72,16 +79,16 @@ public class Annotation implements Serializable {
 		return voters.size();
 	}
 
-	public void vote(final String voterEmail) {
-		voters.add(voterEmail);
+	public void vote(final User voter) {
+		voters.add(voter);
 	}
 
-	public void removeVote(final String voterEmail) {
-		voters.remove(voterEmail);
+	public void removeVote(final User user) {
+		voters.remove(user);
 	}
 
-	public boolean hasVoted(final String voterEmail) {
-		return voters.contains(voterEmail);
+	public boolean hasVoted(final User user) {
+		return voters.contains(user);
 	}
 
 	public FileRepresentation getAttachmentFile() {
