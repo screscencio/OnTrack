@@ -115,7 +115,7 @@ public class XMLImporterTest {
 
 		final InOrder inOrder = inOrder(persistenceService);
 		inOrder.verify(persistenceService).persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class));
-		inOrder.verify(persistenceService, atLeast(1)).persistActions(any(UUID.class), anyLong(), anyListOf(ModelAction.class), any(Date.class));
+		inOrder.verify(persistenceService, atLeast(1)).persistActions(any(UUID.class), anyListOf(ModelAction.class), anyLong(), any(Date.class));
 	}
 
 	@Test
@@ -272,7 +272,7 @@ public class XMLImporterTest {
 
 		importer.persistObjects();
 
-		verify(persistenceService, times(node.getActions().size())).persistActions(eq(projectId), eq(persistedUserId), anyListOf(ModelAction.class),
+		verify(persistenceService, times(node.getActions().size())).persistActions(eq(projectId), anyListOf(ModelAction.class), eq(persistedUserId),
 				any(Date.class));
 	}
 
@@ -344,7 +344,7 @@ public class XMLImporterTest {
 	private void assertActionsWerePersistedRelatedToThisProject(final List<UserAction> actions, final UUID projectId)
 			throws PersistenceException {
 		final ArgumentCaptor<UUID> argument = ArgumentCaptor.forClass(UUID.class);
-		verify(persistenceService, times(actions.size())).persistActions(argument.capture(), anyLong(), anyListOf(ModelAction.class),
+		verify(persistenceService, times(actions.size())).persistActions(argument.capture(), anyListOf(ModelAction.class), anyLong(),
 				any(Date.class));
 		assertEquals(argument.getValue(), projectId);
 	}

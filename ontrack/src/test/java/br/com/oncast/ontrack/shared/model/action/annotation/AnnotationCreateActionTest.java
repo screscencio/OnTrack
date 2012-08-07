@@ -164,7 +164,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private List<ModelAction> getPersistedActions(final PersistenceService persistenceService) throws PersistenceException {
 		final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-		verify(persistenceService).persistActions(Mockito.any(UUID.class), Mockito.anyLong(), captor.capture(), Mockito.any(Date.class));
+		verify(persistenceService).persistActions(Mockito.any(UUID.class), captor.capture(), Mockito.anyLong(), Mockito.any(Date.class));
 		final List<ModelAction> capturedActions = captor.getValue();
 		return capturedActions;
 	}

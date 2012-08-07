@@ -76,12 +76,12 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldOnlyReturnActionsAfterAGivenId() throws Exception {
-		persistenceService.persistActions(PROJECT_ID, USER_ID, ActionTestUtils.createSomeActions(), new Date());
+		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.createSomeActions(), USER_ID, new Date());
 
 		final List<UserAction> userActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
 
 		final List<ModelAction> secondWaveOfActions = ActionTestUtils.getActions2();
-		persistenceService.persistActions(PROJECT_ID, USER_ID, secondWaveOfActions, new Date());
+		persistenceService.persistActions(PROJECT_ID, secondWaveOfActions, USER_ID, new Date());
 
 		final List<UserAction> actionsReceived = persistenceService.retrieveActionsSince(PROJECT_ID, userActions.get(userActions.size() - 1).getId());
 		assertEquals(secondWaveOfActions.size(), actionsReceived.size());
@@ -349,7 +349,7 @@ public class PersistenceServiceTest {
 	@Test
 	public void userIdShouldBeBoundToUserActionCotainer() throws Exception {
 		final long userId = 123;
-		persistenceService.persistActions(PROJECT_ID, userId, ActionTestUtils.createSomeActions(), new Date());
+		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.createSomeActions(), userId, new Date());
 		final List<UserAction> retrievedActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
 
 		assertEquals(userId, lastOf(retrievedActions).getUserId());

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.business;
 
+import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerImpl;
@@ -34,6 +35,7 @@ public class ServerServiceProvider {
 	private SessionManager sessionManager;
 	private ServerPushServerService serverPushServerService;
 	private PersistenceService persistenceService;
+	private ActionPostProcessingService actionPostProcessingService;
 
 	private ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
 	private FeedbackMailFactory userQuotaRequestMailFactory;
@@ -51,8 +53,8 @@ public class ServerServiceProvider {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getNotificationService(), getClientManagerService(),
-					getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory());
+			return businessLogic = new BusinessLogicImpl(getActionPostProcessingService(), getPersistenceService(), getNotificationService(),
+					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory());
 		}
 	}
 
@@ -104,6 +106,14 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (persistenceService != null) return persistenceService;
 			return persistenceService = new PersistenceServiceJpaImpl();
+		}
+	}
+
+	private ActionPostProcessingService getActionPostProcessingService() {
+		if (actionPostProcessingService != null) return actionPostProcessingService;
+		synchronized (this) {
+			if (actionPostProcessingService != null) return actionPostProcessingService;
+			return actionPostProcessingService = new ActionPostProcessingService(getPersistenceService());
 		}
 	}
 

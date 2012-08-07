@@ -101,7 +101,7 @@ public class XMLImporter {
 			final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
 			actions.add(userAction.getModelAction());
 			final User user = userIdMap.get(userAction.getUserId());
-			persistanceService.persistActions(projectId, user == null ? getAdminId() : user.getId(), actions, userAction.getTimestamp());
+			persistanceService.persistActions(projectId, actions, user == null ? getAdminId() : user.getId(), userAction.getTimestamp());
 		}
 	}
 

@@ -40,7 +40,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 
 	@Override
-	public void persistActions(final UUID projectId, final long userId, final List<ModelAction> actionList, final Date timestamp) throws PersistenceException {
+	public void persistActions(final UUID projectId, final List<ModelAction> actionList, final long userId, final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();

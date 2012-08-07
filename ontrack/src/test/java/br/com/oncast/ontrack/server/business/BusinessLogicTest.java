@@ -31,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
+import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -87,6 +88,7 @@ public class BusinessLogicTest {
 	private ClientManager clientManager;
 	private AuthenticationManager authenticationManager;
 	private AuthorizationManager authorizationManager;
+	private ActionPostProcessingService postProcessingService;
 	private NotificationService notification;
 	private SessionManager sessionManager;
 	private User authenticatedUser;
@@ -107,6 +109,7 @@ public class BusinessLogicTest {
 		clientManager = mock(ClientManager.class);
 		notification = mock(NotificationService.class);
 		sessionManager = mock(SessionManager.class);
+		postProcessingService = mock(ActionPostProcessingService.class);
 
 		admin = UserTestUtils.createUser(DefaultAuthenticationCredentials.USER_EMAIL);
 		authenticatedUser = UserTestUtils.createUser(100);
@@ -151,7 +154,8 @@ public class BusinessLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
-		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, authorizationManager, sessionManager,
+		business = new BusinessLogicImpl(postProcessingService, persistence, notification, clientManager, authenticationManager, authorizationManager,
+				sessionManager,
 				mock(FeedbackMailFactory.class));
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
@@ -159,7 +163,7 @@ public class BusinessLogicTest {
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
-		verify(persistence, times(0)).persistActions(any(UUID.class), anyLong(), anyList(), any(Date.class));
+		verify(persistence, times(0)).persistActions(any(UUID.class), anyList(), anyLong(), any(Date.class));
 	}
 
 	@Test
@@ -360,7 +364,8 @@ public class BusinessLogicTest {
 
 	@Test
 	public void scopeDeclareProgressActionShouldHaveItsTimestampResetedByTheServer() throws Exception {
-		business = BusinessLogicTestUtils.createWithJpaPersistence();
+		final ActionPostProcessingService postProcessingService = new ActionPostProcessingService(persistence);
+		business = BusinessLogicTestUtils.createWithJpaPersistence(postProcessingService);
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 
 		final Project project1 = loadProject();
@@ -459,7 +464,7 @@ public class BusinessLogicTest {
 		business.handleIncomingActionSyncRequest(request);
 
 		verify(authorizationManager, atLeastOnce()).assureProjectAccessAuthorization(request.getProjectId());
-		verify(persistence).persistActions(eq(request.getProjectId()), eq(authenticatedUser.getId()), eq(request.getActionList()),
+		verify(persistence).persistActions(eq(request.getProjectId()), eq(request.getActionList()), eq(authenticatedUser.getId()),
 				any(Date.class));
 	}
 
@@ -502,7 +507,7 @@ public class BusinessLogicTest {
 		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
-		verify(persistence).persistActions(eq(PROJECT_ID), eq(authenticatedUser.getId()), eq(actions), any(Date.class));
+		verify(persistence).persistActions(eq(PROJECT_ID), eq(actions), eq(authenticatedUser.getId()), any(Date.class));
 	}
 
 	@Test
@@ -518,7 +523,7 @@ public class BusinessLogicTest {
 
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
-		verify(persistence).persistActions(eq(PROJECT_ID), eq(userId), eq(actions), any(Date.class));
+		verify(persistence).persistActions(eq(PROJECT_ID), eq(actions), eq(userId), any(Date.class));
 	}
 
 	@Test

@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.server.business;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -31,7 +31,6 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectL
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
@@ -50,6 +49,7 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
+	private final ActionPostProcessingService actionPostProcessingService;
 	private final PersistenceService persistenceService;
 	private final NotificationService notificationService;
 	private final ClientManager clientManager;
@@ -58,9 +58,11 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final AuthorizationManager authorizationManager;
 	private final FeedbackMailFactory feedbackMailFactory;
 
-	protected BusinessLogicImpl(final PersistenceService persistenceService, final NotificationService notificationService, final ClientManager clientManager,
+	protected BusinessLogicImpl(final ActionPostProcessingService actionExecutionService, final PersistenceService persistenceService,
+			final NotificationService notificationService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager,
 			final FeedbackMailFactory userQuotaRequestMailFactory) {
+		this.actionPostProcessingService = actionExecutionService;
 		this.persistenceService = persistenceService;
 		this.notificationService = notificationService;
 		this.clientManager = clientManager;
@@ -71,24 +73,25 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
-	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException,
+	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException,
 			AuthorizationException {
 		LOGGER.debug("Processing incoming action batch.");
 		try {
-			authorizationManager.assureProjectAccessAuthorization(modelActionSyncRequest.getProjectId());
+			final UUID projectId = actionSyncRequest.getProjectId();
+			authorizationManager.assureProjectAccessAuthorization(projectId);
 
-			final List<ModelAction> actionList = modelActionSyncRequest.getActionList();
-			final UUID projectId = modelActionSyncRequest.getProjectId();
 			synchronized (this) {
 				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-				final Date actionTimestamp = new Date();
-				final ActionContext actionContext = new ActionContext(authenticatedUser, actionTimestamp);
+				final Date timestamp = new Date();
+
+				final ActionContext actionContext = new ActionContext(authenticatedUser, timestamp);
+				final List<ModelAction> actionList = actionSyncRequest.getActionList();
 				final ProjectContext projectContext = validateIncomingActions(projectId, actionList, actionContext);
-				postProcessIncomingActions(projectContext, actionContext, actionList);
-				persistenceService.persistActions(projectId, authenticatedUser.getId(), actionList, actionTimestamp);
-				modelActionSyncRequest.setActionContext(actionContext);
+				actionPostProcessingService.postProcessActions(projectContext, actionContext, actionList);
+				persistenceService.persistActions(projectId, actionSyncRequest.getActionList(), authenticatedUser.getId(), timestamp);
+				actionSyncRequest.setActionContext(actionContext);
 			}
-			notificationService.notifyActions(modelActionSyncRequest);
+			notificationService.notifyActions(actionSyncRequest);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -99,9 +102,6 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	// TODO Report errors as feedback for development.
 	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.
-	// DECISION It is common sense that this validation is needed at this time (of development). Roberto thinks it should be a provisory solution, as it may be
-	// a major performance bottleneck, but that the solution is good to ensure that BetaTesters are safe while the application matures. Rodrigo thinks it should
-	// be permanent (but maybe passive of refactorings) to guarantee user safety in the long term.
 	private ProjectContext validateIncomingActions(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext)
 			throws UnableToHandleActionException {
 		LOGGER.debug("Validating action upon the project current state.");
@@ -129,21 +129,49 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	// TODO Find a better way to post process actions. (Eg. ScopeDeclareProgressAction come from clients with its own time definitions, and this time stamps
-	// should be standardized using the server time).
-	private void postProcessIncomingActions(final ProjectContext context, final ActionContext actionContext, final List<ModelAction> actionList)
-			throws UnableToHandleActionException {
-		try {
-			for (final ModelAction action : actionList) {
-				if (action instanceof ScopeDeclareProgressAction) ((ScopeDeclareProgressAction) action).setTimestamp(actionContext.getTimestamp());
-				if (action instanceof FileUploadAction) {
-					persistenceService.persistOrUpdateFileRepresentation(context.findFileRepresentation(action.getReferenceId()));
-				}
+	private Project applyActionsToProject(final Project project, final List<UserAction> actionList) throws UnableToCompleteActionException {
+		final ProjectContext projectContext = new ProjectContext(project);
+
+		for (final UserAction action : actionList) {
+			User user;
+			try {
+				user = persistenceService.retrieveUserById(action.getUserId());
+				final ActionContext actionContext = new ActionContext(user, action.getTimestamp());
+				ActionExecuter.executeAction(projectContext, actionContext, action.getModelAction());
+				actionPostProcessingService.postProcessAction(projectContext, actionContext, action.getModelAction());
+			}
+			catch (final Exception e) {
+				LOGGER.error("Unable to apply action to project", e);
+				throw new UnableToCompleteActionException(e);
 			}
 		}
+
+		return project;
+	}
+
+	@Override
+	public void authorize(final String userEmail, final UUID projectId, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
+			UnableToHandleActionException,
+			AuthorizationException {
+		authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
+		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toStringRepresentation() + "'");
+		final List<ModelAction> list = new ArrayList<ModelAction>();
+		list.add(new TeamInviteAction(userEmail));
+		final ModelActionSyncRequest request = new ModelActionSyncRequest(projectId, list).setShouldNotifyCurrentClient(wasRequestedByTheUser);
+		handleIncomingActionSyncRequest(request);
+	}
+
+	@Override
+	public List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException {
+		final User user = authenticationManager.getAuthenticatedUser();
+		LOGGER.debug("Retrieving authorized project list for user '" + user + "'.");
+		try {
+			return authorizationManager.listAuthorizedProjects(user);
+		}
 		catch (final Exception e) {
-			LOGGER.error("Post-Processing of the actions failed.", e);
-			throw new InvalidIncomingAction("Unable to post-process action. The incoming action is invalid.");
+			final String errorMessage = "Unable to retrieve the current user project list.";
+			LOGGER.error(errorMessage, e);
+			throw new UnableToRetrieveProjectListException(errorMessage);
 		}
 	}
 
@@ -172,32 +200,6 @@ class BusinessLogicImpl implements BusinessLogic {
 			final String errorMessage = "Unable to create project '" + projectName + "'.";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToCreateProjectRepresentation(errorMessage);
-		}
-	}
-
-	@Override
-	public void authorize(final String userEmail, final UUID projectId, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
-			UnableToHandleActionException,
-			AuthorizationException {
-		authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
-		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toStringRepresentation() + "'");
-		final List<ModelAction> list = new ArrayList<ModelAction>();
-		list.add(new TeamInviteAction(userEmail));
-		final ModelActionSyncRequest request = new ModelActionSyncRequest(projectId, list).setShouldNotifyCurrentClient(wasRequestedByTheUser);
-		handleIncomingActionSyncRequest(request);
-	}
-
-	@Override
-	public List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException {
-		final User user = authenticationManager.getAuthenticatedUser();
-		LOGGER.debug("Retrieving authorized project list for user '" + user + "'.");
-		try {
-			return authorizationManager.listAuthorizedProjects(user);
-		}
-		catch (final Exception e) {
-			final String errorMessage = "Unable to retrieve the current user project list.";
-			LOGGER.error(errorMessage, e);
-			throw new UnableToRetrieveProjectListException(errorMessage);
 		}
 	}
 
@@ -290,27 +292,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		snapshot.setLastAppliedActionId(lastAppliedActionId);
 
 		persistenceService.persistProjectSnapshot(snapshot);
-	}
-
-	private Project applyActionsToProject(final Project project, final List<UserAction> actionList) throws UnableToCompleteActionException {
-		final ProjectContext context = new ProjectContext(project);
-
-		for (final UserAction action : actionList) {
-			User user;
-			try {
-				user = persistenceService.retrieveUserById(action.getUserId());
-				ActionExecuter.executeAction(context, new ActionContext(user, action.getTimestamp()),
-						action.getModelAction());
-				final ActionContext actionContext = new ActionContext(user, action.getTimestamp());
-				postProcessIncomingActions(context, actionContext, Arrays.asList(action.getModelAction()));
-			}
-			catch (final Exception e) {
-				LOGGER.error("Unable to apply action to project", e);
-				throw new UnableToCompleteActionException(e);
-			}
-		}
-
-		return project;
 	}
 
 	@Override
