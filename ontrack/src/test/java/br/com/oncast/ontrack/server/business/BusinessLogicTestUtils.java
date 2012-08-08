@@ -138,6 +138,13 @@ public class BusinessLogicTestUtils {
 				userQuotaRequestMailFactory);
 	}
 
+	public static BusinessLogic create(final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager,
+			final ActionPostProcessingService postProcessingService) throws Exception {
+		return new BusinessLogicImpl(postProcessingService, getPersistenceMock(), notificationMock, clientManagerMock, authenticationManager,
+				authorizationManager,
+				sessionManager, userQuotaRequestMailFactory);
+	}
+
 	public static BusinessLogic createWithJpaPersistence() {
 		return new BusinessLogicImpl(postProcessingService, getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock,
 				authenticationMock,

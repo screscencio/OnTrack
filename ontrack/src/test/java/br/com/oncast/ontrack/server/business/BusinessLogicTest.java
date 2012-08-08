@@ -383,6 +383,18 @@ public class BusinessLogicTest {
 	}
 
 	@Test
+	public void handleIncomingActionsShouldPostProcessActions() throws Exception {
+		business = BusinessLogicTestUtils.create(authenticationManager, authorizationManager, postProcessingService);
+
+		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
+		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
+
+		business.handleIncomingActionSyncRequest(actionSyncRequest);
+
+		verify(postProcessingService, times(1)).postProcessActions(any(ProjectContext.class), any(ActionContext.class), eq(actions));
+	}
+
+	@Test
 	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException, NoResultFoundException,
 			AuthorizationException {
 
