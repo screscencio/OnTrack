@@ -220,7 +220,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	private boolean hasLiked() {
-		return annotation.hasVoted(getCurrentUser().getEmail());
+		return annotation.hasVoted(getCurrentUser());
 	}
 
 	private AnnotationService getAnnotationService() {

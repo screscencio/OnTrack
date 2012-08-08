@@ -12,4 +12,5 @@ public class UnableToHandleActionException extends BusinessException {
 	public UnableToHandleActionException(final String message) {
 		super(message);
 	}
+
 }

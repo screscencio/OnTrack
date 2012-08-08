@@ -42,6 +42,8 @@ public class ServerServiceProvider {
 
 	private StorageService storageService;
 
+	private AnnotationBusinessLogic annotationBusinessLogic;
+
 	public static ServerServiceProvider getInstance() {
 		if (instance != null) return instance;
 		return instance = new ServerServiceProvider();
@@ -101,7 +103,7 @@ public class ServerServiceProvider {
 		return clientManagerService = new ClientManager(getAuthenticationManager());
 	}
 
-	protected PersistenceService getPersistenceService() {
+	PersistenceService getPersistenceService() {
 		if (persistenceService != null) return persistenceService;
 		synchronized (this) {
 			if (persistenceService != null) return persistenceService;
@@ -152,6 +154,11 @@ public class ServerServiceProvider {
 					getBusinessLogic());
 		}
 		return storageService;
+	}
+
+	public AnnotationBusinessLogic getAnnotationBusinessLogic() {
+		if (annotationBusinessLogic == null) annotationBusinessLogic = new AnnotationBusinessLogicImpl(getPersistenceService());
+		return annotationBusinessLogic;
 	}
 
 }

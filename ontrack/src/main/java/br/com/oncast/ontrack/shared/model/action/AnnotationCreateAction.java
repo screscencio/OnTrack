@@ -57,17 +57,21 @@ public class AnnotationCreateAction implements AnnotationAction {
 		if ((message == null || message.isEmpty()) && attachmentId == null) throw new UnableToCompleteActionException(
 				"A annotation should have a message or an attachment file");
 
+		context.addAnnotation(subjectId, getAnnotation(context, actionContext));
+
 		executeSubActions(context, actionContext);
 
+		return new AnnotationRemoveAction(subjectId, annotationId);
+	}
+
+	public Annotation getAnnotation(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
 		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message);
 		if (attachmentId != null) {
 			final FileRepresentation file = ActionHelper.findFileRepresentation(attachmentId, context);
 			annotation.setAttachmentFile(file);
 		}
-
-		context.addAnnotation(subjectId, annotation);
-		return new AnnotationRemoveAction(subjectId, annotationId);
+		return annotation;
 	}
 
 	private void executeSubActions(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {

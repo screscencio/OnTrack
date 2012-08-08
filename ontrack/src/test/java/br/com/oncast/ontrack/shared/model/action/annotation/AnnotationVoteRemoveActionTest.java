@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationVoteRemoveActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
@@ -54,13 +55,13 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveWhenTheRequestingUserWasntTheOneWhoVoted() throws Exception {
-		annotation.vote(UserTestUtils.createUser().getEmail());
+		annotation.vote(UserTestUtils.createUser());
 		execute();
 	}
 
 	@Test
 	public void shouldRemoveTheVoteCountByOne() throws Exception {
-		annotation.vote(voter.getEmail());
+		annotation.vote(voter);
 		final int previousVoteCount = annotation.getVoteCount();
 		execute();
 		assertEquals(previousVoteCount - 1, annotation.getVoteCount());
@@ -68,7 +69,7 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void undoShouldReAddTheRemovedVote() throws Exception {
-		annotation.vote(voter.getEmail());
+		annotation.vote(voter);
 		final int previousVoteCount = annotation.getVoteCount();
 		final ModelAction undoAction = execute();
 		assertEquals(previousVoteCount - 1, annotation.getVoteCount());

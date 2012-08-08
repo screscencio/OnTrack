@@ -7,10 +7,12 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import br.com.oncast.ontrack.server.business.actionPostProcessments.AnnotationCreatePostProcessor;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -56,6 +58,10 @@ public class ActionPostProcessingService {
 			if (modelAction instanceof FileUploadAction) {
 				persistenceService.persistOrUpdateFileRepresentation(projectContext.findFileRepresentation(modelAction.getReferenceId()));
 			}
+			// FIXME Lobo adapt annotationCreateAction post processor
+			if (modelAction instanceof AnnotationCreateAction) new AnnotationCreatePostProcessor(persistenceService).process(
+					(AnnotationCreateAction) modelAction, actionContext,
+					projectContext);
 
 			final List<ActionPostProcessor<?>> postProcessors = postProcessorsMap.get(modelAction.getClass());
 			if (postProcessors == null) return;

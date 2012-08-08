@@ -28,6 +28,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 		panel.setWidget(view);
 		view.setMainMessage("Syncing...");
 
+		SERVICE_PROVIDER.getAnnotationService().loadAnnotatedSubjectIds(projectDependentPlace.getRequestedProjectId());
 		SERVICE_PROVIDER.getContextProviderService().loadProjectContext(projectDependentPlace.getRequestedProjectId(), new ProjectContextLoadCallback() {
 
 			@Override

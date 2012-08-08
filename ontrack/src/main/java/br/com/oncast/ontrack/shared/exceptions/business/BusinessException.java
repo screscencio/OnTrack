@@ -14,4 +14,5 @@ public abstract class BusinessException extends Exception implements IsSerializa
 	public BusinessException(final String message) {
 		super(message);
 	}
+
 }

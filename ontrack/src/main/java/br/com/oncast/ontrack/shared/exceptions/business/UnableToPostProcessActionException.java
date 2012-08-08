@@ -10,4 +10,5 @@ public class UnableToPostProcessActionException extends UnableToHandleActionExce
 	public UnableToPostProcessActionException(final String message) {
 		super(message);
 	}
+
 }

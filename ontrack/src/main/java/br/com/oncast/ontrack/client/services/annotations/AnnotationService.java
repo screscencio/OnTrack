@@ -14,4 +14,6 @@ public interface AnnotationService {
 
 	void showAnnotationsFor(UUID subjectId);
 
+	void loadAnnotatedSubjectIds(UUID projectId);
+
 }
