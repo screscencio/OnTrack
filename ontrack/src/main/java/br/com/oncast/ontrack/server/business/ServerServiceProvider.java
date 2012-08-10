@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.business;
 
+import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -21,7 +22,7 @@ import br.com.oncast.ontrack.server.services.storage.StorageService;
 
 public class ServerServiceProvider {
 
-	private static ServerServiceProvider instance;
+	private static final ServerServiceProvider INSTANCE = new ServerServiceProvider();
 
 	private BusinessLogic businessLogic;
 	private XMLExporterService xmlExporter;
@@ -44,9 +45,10 @@ public class ServerServiceProvider {
 
 	private AnnotationBusinessLogic annotationBusinessLogic;
 
+	private ActionPostProcessmentsInitializer postProcessmentsInitializer;
+
 	public static ServerServiceProvider getInstance() {
-		if (instance != null) return instance;
-		return instance = new ServerServiceProvider();
+		return INSTANCE;
 	}
 
 	private ServerServiceProvider() {}
@@ -95,12 +97,18 @@ public class ServerServiceProvider {
 
 	private NotificationService getNotificationService() {
 		if (notificationService != null) return notificationService;
-		return notificationService = new NotificationServiceImpl(getServerPushServerService(), getClientManagerService(), getSessionManager());
+		synchronized (this) {
+			if (notificationService != null) return notificationService;
+			return notificationService = new NotificationServiceImpl(getServerPushServerService(), getClientManagerService(), getSessionManager());
+		}
 	}
 
 	public ClientManager getClientManagerService() {
 		if (clientManagerService != null) return clientManagerService;
-		return clientManagerService = new ClientManager(getAuthenticationManager());
+		synchronized (this) {
+			if (clientManagerService != null) return clientManagerService;
+			return clientManagerService = new ClientManager(getAuthenticationManager());
+		}
 	}
 
 	PersistenceService getPersistenceService() {
@@ -145,20 +153,35 @@ public class ServerServiceProvider {
 
 	private ServerPushServerService getServerPushServerService() {
 		if (serverPushServerService != null) return serverPushServerService;
-		return serverPushServerService = new ServerPushServerServiceImpl();
+		synchronized (this) {
+			if (serverPushServerService != null) return serverPushServerService;
+			return serverPushServerService = new ServerPushServerServiceImpl();
+		}
 	}
 
 	public StorageService getStorageService() {
-		if (storageService == null) {
-			storageService = new LocalFileSystemStorageService(getAuthenticationManager(), getAuthorizationManager(), getPersistenceService(),
+		if (storageService != null) return storageService;
+		synchronized (this) {
+			if (storageService != null) return storageService;
+			return storageService = new LocalFileSystemStorageService(getAuthenticationManager(), getAuthorizationManager(), getPersistenceService(),
 					getBusinessLogic());
 		}
-		return storageService;
 	}
 
 	public AnnotationBusinessLogic getAnnotationBusinessLogic() {
-		if (annotationBusinessLogic == null) annotationBusinessLogic = new AnnotationBusinessLogicImpl(getPersistenceService());
-		return annotationBusinessLogic;
+		if (annotationBusinessLogic != null) return annotationBusinessLogic;
+		synchronized (this) {
+			if (annotationBusinessLogic != null) return annotationBusinessLogic;
+			return annotationBusinessLogic = new AnnotationBusinessLogicImpl(getPersistenceService());
+		}
 	}
 
+	public ActionPostProcessmentsInitializer getActionPostProcessmentsInitializer() {
+		if (postProcessmentsInitializer != null) return postProcessmentsInitializer;
+		synchronized (this) {
+			if (postProcessmentsInitializer != null) return postProcessmentsInitializer;
+			return postProcessmentsInitializer = new ActionPostProcessmentsInitializer(getActionPostProcessingService(), getPersistenceService(),
+					getNotificationService());
+		}
+	}
 }

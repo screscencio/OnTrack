@@ -90,6 +90,14 @@ public class ApplicationContextListener implements ServletContextListener {
 	 */
 	private void setupBusinessLogic(final ServletContextEvent event) {
 		SERVICE_PROVIDER.getBusinessLogic();
+		setupActionPostProcessors();
+	}
+
+	/**
+	 * Registers all default action post processors.
+	 */
+	private void setupActionPostProcessors() {
+		SERVICE_PROVIDER.getActionPostProcessmentsInitializer().initialize();
 	}
 
 	/**
