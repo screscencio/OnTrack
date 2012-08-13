@@ -46,7 +46,7 @@
         <div ui:field="notificationDiv" class="{style.notificationPanel}">
             <table height="100%" width="100%">
                 <tr><td>
-		            <span class='{style.notificationText}' ui:field='notificationText'></span>
+		            <div class='{style.notificationText}' ui:field='notificationText'></div>
                 </td></tr>
             </table>
         </div>

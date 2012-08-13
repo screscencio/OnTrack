@@ -37,9 +37,10 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 		this.actionManager = new ActionExecutionManager(new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isClientAction) {
-				notifyActionExecutionListeners(action, context, inferenceInfluencedScopeSet, isClientAction);
+			public void onActionExecution(final ModelAction action, final ProjectContext context,
+					final ActionContext actionContext,
+					final Set<UUID> inferenceInfluencedScopeSet, final boolean isClientAction) {
+				notifyActionExecutionListeners(action, context, actionContext, inferenceInfluencedScopeSet, isClientAction);
 			}
 		});
 		applicationPlaceController.addPlaceChangeListener(new PlaceChangeListener() {
@@ -88,10 +89,11 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 		}
 	}
 
-	private void notifyActionExecutionListeners(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
+	private void notifyActionExecutionListeners(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+			final Set<UUID> inferenceInfluencedScopeSet,
 			final boolean isUserAction) {
 		for (final ActionExecutionListener handler : new ArrayList<ActionExecutionListener>(actionExecutionListeners)) {
-			handler.onActionExecution(action, context, inferenceInfluencedScopeSet, isUserAction);
+			handler.onActionExecution(action, context, actionContext, inferenceInfluencedScopeSet, isUserAction);
 		}
 	}
 

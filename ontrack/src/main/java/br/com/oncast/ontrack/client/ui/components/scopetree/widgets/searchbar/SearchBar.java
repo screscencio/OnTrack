@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
@@ -174,8 +175,8 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-			final boolean isUserAction) {
+	public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+			final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction) updateItems();
 	}
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
@@ -191,7 +192,7 @@ public class ScopeTreeItemWidget extends Composite {
 
 		registerColumnVisibilityChangeListeners();
 
-		showDetailsIcon(ClientServiceProvider.getInstance().getAnnotationService().hasDetails(scope.getId()));
+		showDetailsIcon(getAnnotationService().hasDetails(scope.getId()));
 
 		deckPanel.showWidget(0);
 	}
@@ -218,7 +219,7 @@ public class ScopeTreeItemWidget extends Composite {
 	@UiHandler("detailsIcon")
 	protected void onDetailsClick(final ClickEvent e) {
 		e.stopPropagation();
-		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(scope.getId());
+		getAnnotationService().showAnnotationsFor(scope.getId());
 	}
 
 	public void setValue(final String value) {
@@ -436,6 +437,10 @@ public class ScopeTreeItemWidget extends Composite {
 		});
 		menu.setOrderedItems(itens);
 		return menu;
+	}
+
+	private AnnotationService getAnnotationService() {
+		return ClientServiceProvider.getInstance().getAnnotationService();
 	}
 
 	private void registerColumnVisibilityChangeListeners() {

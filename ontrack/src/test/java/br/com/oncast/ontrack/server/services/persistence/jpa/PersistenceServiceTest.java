@@ -11,6 +11,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -415,8 +416,9 @@ public class PersistenceServiceTest {
 		final User user = createAndPersistUser();
 
 		final List<Annotation> annotationsList = new ArrayList<Annotation>();
-		annotationsList.add(AnnotationTestUtils.create(user));
-		annotationsList.add(AnnotationTestUtils.create(user));
+		for (int i = 0; i < 3; i++) {
+			annotationsList.add(AnnotationTestUtils.create(user));
+		}
 
 		final UUID subjectId = new UUID();
 
@@ -424,13 +426,40 @@ public class PersistenceServiceTest {
 			persistenceService.persistOrUpdateAnnotation(PROJECT_ID, subjectId, annotation);
 		}
 
-		AssertTestUtils.assertCollectionEquality(annotationsList, persistenceService.retrieveAnnotationsFromProjectBySubjectId(PROJECT_ID, subjectId));
+		assertTrue(annotationsList.containsAll(persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId)));
 
 		for (int i = 0; i < 7; i++) {
 			persistenceService.persistOrUpdateAnnotation(PROJECT_ID, new UUID(), AnnotationTestUtils.create(user));
 		}
 
-		AssertTestUtils.assertCollectionEquality(annotationsList, persistenceService.retrieveAnnotationsFromProjectBySubjectId(PROJECT_ID, subjectId));
+		assertTrue(annotationsList.containsAll(persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId)));
+	}
+
+	@Test
+	public void shouldRetrievelAllAnnotationsOfTheGivenSubjectIdInReverseTemporalOrder() throws Exception {
+		final User user = createAndPersistUser();
+
+		final List<Annotation> annotationsList = new ArrayList<Annotation>();
+		for (int i = 0; i < 3; i++) {
+			Thread.sleep(10);
+			annotationsList.add(AnnotationTestUtils.create(user));
+		}
+
+		final UUID subjectId = new UUID();
+
+		for (final Annotation annotation : annotationsList) {
+			persistenceService.persistOrUpdateAnnotation(PROJECT_ID, subjectId, annotation);
+		}
+
+		Collections.reverse(annotationsList);
+
+		AssertTestUtils.assertCollectionEquality(annotationsList, persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId));
+
+		for (int i = 0; i < 7; i++) {
+			persistenceService.persistOrUpdateAnnotation(PROJECT_ID, new UUID(), AnnotationTestUtils.create(user));
+		}
+
+		AssertTestUtils.assertCollectionEquality(annotationsList, persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId));
 	}
 
 	@Test
@@ -438,13 +467,13 @@ public class PersistenceServiceTest {
 		final User user = createAndPersistUser();
 
 		final UUID subjectId = new UUID();
-		assertTrue(persistenceService.retrieveAnnotationsFromProjectBySubjectId(PROJECT_ID, subjectId).isEmpty());
+		assertTrue(persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId).isEmpty());
 
 		for (int i = 0; i < 6; i++) {
 			persistenceService.persistOrUpdateAnnotation(PROJECT_ID, new UUID(), AnnotationTestUtils.create(user));
 		}
 
-		assertTrue(persistenceService.retrieveAnnotationsFromProjectBySubjectId(PROJECT_ID, subjectId).isEmpty());
+		assertTrue(persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId).isEmpty());
 	}
 
 	@Test
@@ -452,13 +481,13 @@ public class PersistenceServiceTest {
 		final User user = createAndPersistUser();
 
 		final UUID subjectId = new UUID();
-		assertTrue(persistenceService.retrieveAnnotationsFromProjectBySubjectId(PROJECT_ID, subjectId).isEmpty());
+		assertTrue(persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId).isEmpty());
 
 		for (int i = 0; i < 8; i++) {
 			persistenceService.persistOrUpdateAnnotation(new UUID(), subjectId, AnnotationTestUtils.create(user));
 		}
 
-		assertTrue(persistenceService.retrieveAnnotationsFromProjectBySubjectId(PROJECT_ID, subjectId).isEmpty());
+		assertTrue(persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId).isEmpty());
 	}
 
 	@Test
@@ -491,6 +520,31 @@ public class PersistenceServiceTest {
 		}
 
 		assertTrue(subjectIds.containsAll(persistenceService.retrieveAnnotatedSubjectIdsFromProject(PROJECT_ID)));
+	}
+
+	@Test
+	public void theUpdateOfAnActionShouldNotDuplicateTheEntries() throws Exception {
+		final User user = createAndPersistUser();
+		final UUID subjectId = new UUID();
+		final Annotation annotation = AnnotationTestUtils.create(user);
+		persistenceService.persistOrUpdateAnnotation(PROJECT_ID, subjectId, annotation);
+		persistenceService.persistOrUpdateAnnotation(PROJECT_ID, subjectId, annotation);
+
+		assertEquals(1, persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId).size());
+	}
+
+	@Test
+	public void shouldNotBeAbleToPersistTheSameAnnotationWithTwoDifferentSubjectId() throws Exception {
+		final User user = createAndPersistUser();
+		final Annotation annotation = AnnotationTestUtils.create(user);
+		final UUID subjectId = new UUID();
+		final UUID subjectId2 = new UUID();
+		persistenceService.persistOrUpdateAnnotation(PROJECT_ID, subjectId, annotation);
+		persistenceService.persistOrUpdateAnnotation(PROJECT_ID, subjectId2, annotation);
+
+		assertEquals(annotation, persistenceService.retrieveAnnotationById(PROJECT_ID, annotation.getId()));
+		assertEquals(1, persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId).size());
+		assertEquals(0, persistenceService.retrieveAnnotationsBySubjectId(PROJECT_ID, subjectId2).size());
 	}
 
 	private User createAndPersistUser() throws Exception {

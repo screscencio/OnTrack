@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListen
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -116,8 +117,8 @@ public class ChecklistsContainerWidget extends Composite {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof ChecklistAction && action.getReferenceId().equals(subjectId)) {
 					justCreatedAnChecklist = isUserAction && (action instanceof ChecklistCreateAction);
 					checklists.update(context.findChecklistsFor(subjectId));

@@ -1,6 +1,13 @@
 package br.com.oncast.ontrack.client.services.annotations;
 
+import java.util.List;
+import java.util.Set;
+
+import br.com.oncast.ontrack.client.services.annotations.AnnotationServiceImpl.AnnotationModificationListener;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface AnnotationService {
 
@@ -10,10 +17,18 @@ public interface AnnotationService {
 
 	void deleteAnnotation(UUID subjectId, UUID annotationId);
 
-	boolean hasDetails(UUID subjectId);
-
 	void showAnnotationsFor(UUID subjectId);
 
-	void loadAnnotatedSubjectIds(UUID projectId);
+	boolean hasDetails(UUID subjectId);
+
+	void loadAnnotationsFor(UUID subjectId, AsyncCallback<List<Annotation>> asyncCallback);
+
+	void loadAnnotatedSubjectIds(AsyncCallback<Set<UUID>> callback);
+
+	boolean isAnnotatedSubjectIdsAvailable();
+
+	void addAnnotationCreationListener(AnnotationModificationListener annotationCreationListener);
+
+	void removeAnnotationCreationListener(AnnotationModificationListener annotationCreationListener);
 
 }

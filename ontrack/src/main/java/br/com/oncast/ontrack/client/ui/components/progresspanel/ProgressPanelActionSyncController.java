@@ -6,6 +6,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
@@ -43,8 +44,8 @@ public class ProgressPanelActionSyncController {
 		this.actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> influencedScopes,
-					final boolean isUserAction) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+					final Set<UUID> influencedScopes, final boolean isUserAction) {
 				handleActionExecution(display, action, context);
 			}
 		};

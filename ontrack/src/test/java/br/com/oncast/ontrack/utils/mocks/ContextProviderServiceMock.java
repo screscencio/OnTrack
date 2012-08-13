@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.utils.mocks;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -34,4 +35,7 @@ public class ContextProviderServiceMock implements ContextProviderService {
 		if (projectContext != null) return projectContext;
 		throw new RuntimeException();
 	}
+
+	@Override
+	public void addContextLoadListener(final ContextChangeListener contextLoadListener) {}
 }

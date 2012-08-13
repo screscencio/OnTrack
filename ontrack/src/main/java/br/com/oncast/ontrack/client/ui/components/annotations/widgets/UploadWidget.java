@@ -5,6 +5,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -200,8 +201,8 @@ public class UploadWidget extends Composite {
 	private ActionExecutionListener getActionExecutionListener(final UUID uuid, final UploadWidgetListener listener) {
 		return actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
 					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
 					ClientServiceProvider.getInstance().getClientNotificationService().showSuccess("Upload Completed!");

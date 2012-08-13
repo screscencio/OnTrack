@@ -34,6 +34,15 @@
 			overflow-y: auto;
 			overflow-x: hidden;
 		}
+		
+		.loadingIndicator {
+            margin: 0px auto;
+            padding: 15px;
+            
+            background: white;
+            border: 2px solid #eaeaea;
+            border-radius: 50%;
+		}
 
 	</ui:style>
 	
@@ -44,7 +53,10 @@
 			<g:SimplePanel styleName="{style.spacer}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">
-					<misc:VerticalModelWidgetContainer ui:field="annotations"/>
+					<g:DeckPanel ui:field="loadingDeck" >
+       					<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
+						<misc:VerticalModelWidgetContainer ui:field="annotationsWidgetContainer"/>
+					</g:DeckPanel>
 				</g:FocusPanel>
 			</g:cell>
 			<g:FocusPanel visible="false" ui:field="uploadIcon"/>

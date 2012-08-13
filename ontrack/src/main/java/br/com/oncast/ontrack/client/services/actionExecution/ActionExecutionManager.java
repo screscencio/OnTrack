@@ -25,12 +25,12 @@ public class ActionExecutionManager {
 	public void doNonUserAction(final ModelAction action, final ProjectContext context, final ActionContext actionContext)
 			throws UnableToCompleteActionException {
 		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, action);
-		executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet(), false);
+		executionListener.onActionExecution(action, context, actionContext, executionContext.getInferenceInfluencedScopeSet(), false);
 	}
 
 	public void doUserAction(final ModelAction action, final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, action);
-		executionListener.onActionExecution(action, context, executionContext.getInferenceInfluencedScopeSet(), true);
+		executionListener.onActionExecution(action, context, actionContext, executionContext.getInferenceInfluencedScopeSet(), true);
 
 		final ModelAction undoAction = executionContext.getReverseAction();
 		undoStack.push(undoAction);
@@ -41,7 +41,7 @@ public class ActionExecutionManager {
 		try {
 			final ModelAction undoAction = undoStack.pop();
 			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, undoAction);
-			executionListener.onActionExecution(undoAction, context, executionContext.getInferenceInfluencedScopeSet(), true);
+			executionListener.onActionExecution(undoAction, context, actionContext, executionContext.getInferenceInfluencedScopeSet(), true);
 			final ModelAction redoAction = executionContext.getReverseAction();
 			redoStack.push(redoAction);
 		}
@@ -58,7 +58,7 @@ public class ActionExecutionManager {
 		try {
 			final ModelAction redoAction = redoStack.pop();
 			final ActionExecutionContext executionContext = ActionExecuter.executeAction(context, actionContext, redoAction);
-			executionListener.onActionExecution(redoAction, context, executionContext.getInferenceInfluencedScopeSet(), true);
+			executionListener.onActionExecution(redoAction, context, actionContext, executionContext.getInferenceInfluencedScopeSet(), true);
 			final ModelAction undoAction = executionContext.getReverseAction();
 			undoStack.push(undoAction);
 		}

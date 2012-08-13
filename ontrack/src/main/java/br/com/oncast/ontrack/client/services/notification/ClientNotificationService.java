@@ -66,6 +66,10 @@ public class ClientNotificationService {
 		makeModalAutoCloseNotification(errorDescriptionMessage, NotificationType.ERROR, DURATION_LONG);
 	}
 
+	public void showLongDurationInfo(final String message) {
+		makeAutoCloseNotification(message, NotificationType.INFO, DURATION_LONG);
+	}
+
 	public void showInfo(final String message) {
 		makeAutoCloseNotification(message, NotificationType.INFO, DURATION_SHORT);
 	}

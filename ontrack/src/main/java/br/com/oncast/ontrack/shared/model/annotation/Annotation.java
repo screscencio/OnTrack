@@ -24,18 +24,21 @@ public class Annotation implements Serializable {
 
 	private FileRepresentation attachmentFile;
 
-	private Date date;
+	private Date creationDate;
 
 	private Set<User> voters;
+
+	private boolean deprecated;
 
 	public Annotation() {}
 
 	public Annotation(final UUID id, final User author, final Date date, final String message) {
 		this.id = id;
 		this.author = author;
-		this.date = date;
+		this.creationDate = date;
 		this.message = message;
 		voters = new HashSet<User>();
+		deprecated = false;
 	}
 
 	@Override
@@ -71,8 +74,8 @@ public class Annotation implements Serializable {
 		return id;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getCreationDate() {
+		return creationDate;
 	}
 
 	public int getVoteCount() {
@@ -97,6 +100,14 @@ public class Annotation implements Serializable {
 
 	public void setAttachmentFile(final FileRepresentation attachmentFile) {
 		this.attachmentFile = attachmentFile;
+	}
+
+	public void setDeprecated(final boolean deprecated) {
+		this.deprecated = deprecated;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
 	}
 
 }

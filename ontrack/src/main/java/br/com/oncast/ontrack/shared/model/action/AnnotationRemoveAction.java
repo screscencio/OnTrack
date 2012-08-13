@@ -62,6 +62,10 @@ public class AnnotationRemoveAction implements AnnotationAction {
 		return rollbackActions;
 	}
 
+	public UUID getAnnotationId() {
+		return annotationId;
+	}
+
 	@Override
 	public UUID getReferenceId() {
 		return subjectId;

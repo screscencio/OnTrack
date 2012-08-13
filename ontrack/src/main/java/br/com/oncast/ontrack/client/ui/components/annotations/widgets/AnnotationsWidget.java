@@ -1,10 +1,13 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
@@ -12,8 +15,11 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContain
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
-import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -25,7 +31,9 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -50,7 +58,10 @@ public class AnnotationsWidget extends Composite {
 	protected UploadWidget uploadWidget;
 
 	@UiField
-	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> annotations;
+	protected DeckPanel loadingDeck;
+
+	@UiField
+	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> annotationsWidgetContainer;
 
 	@UiFactory
 	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> createAnnotationsContainer() {
@@ -69,7 +80,7 @@ public class AnnotationsWidget extends Composite {
 		});
 	}
 
-	private UUID subjectId;
+	private final UUID subjectId;
 
 	private ActionExecutionListener actionsListener;
 
@@ -77,30 +88,43 @@ public class AnnotationsWidget extends Composite {
 
 	private final boolean enableComments;
 
-	public AnnotationsWidget() {
-		this(uiBinder, true);
+	private List<Annotation> annotationList;
+
+	public AnnotationsWidget(final UUID subjectId) {
+		this(uiBinder, subjectId, true);
 	}
 
-	private AnnotationsWidget(final UiBinder<Widget, AnnotationsWidget> binder, final boolean enableComments) {
+	private AnnotationsWidget(final UiBinder<Widget, AnnotationsWidget> binder, final UUID subjectId, final boolean enableComments) {
+		this.subjectId = subjectId;
 		this.enableComments = enableComments;
 		initWidget(binder.createAndBindUi(this));
 		uploadWidget.setActionUrl("/application/file/upload");
 	}
 
-	public static AnnotationsWidget forComments() {
-		return new AnnotationsWidget(commentsUiBinder, false);
+	public static AnnotationsWidget forComments(final UUID subjectId) {
+		return new AnnotationsWidget(commentsUiBinder, subjectId, false);
 	}
 
 	@Override
 	protected void onLoad() {
 		uploadWidget.setVisible(enableComments);
-		getActionExecutionService().addActionExecutionListener(getListener());
-		update();
-	}
+		loadingDeck.showWidget(0);
+		getAnnotationService().loadAnnotationsFor(subjectId, new AsyncCallback<List<Annotation>>() {
+			@Override
+			public void onFailure(final Throwable caught) {
+				caught.printStackTrace();
+				ClientServiceProvider.getInstance().getClientNotificationService().showError(caught.getMessage());
+			}
 
-	public void setSubjectId(final UUID subjectId) {
-		this.subjectId = subjectId;
-		update();
+			@Override
+			public void onSuccess(final List<Annotation> result) {
+				loadingDeck.showWidget(1);
+				annotationList = result;
+				update();
+			}
+		});
+
+		getActionExecutionService().addActionExecutionListener(getListener());
 	}
 
 	@Override
@@ -129,7 +153,7 @@ public class AnnotationsWidget extends Composite {
 	}
 
 	public int getWidgetCount() {
-		return annotations.getWidgetCount();
+		return annotationsWidgetContainer.getWidgetCount();
 	}
 
 	public void setUpdateListener(final UpdateListener listener) {
@@ -151,25 +175,40 @@ public class AnnotationsWidget extends Composite {
 	}
 
 	private void update() {
-		annotations.update(getCurrentProjectContext().findAnnotationsFor(subjectId));
+		annotationsWidgetContainer.update(annotationList);
 	}
 
 	private ActionExecutionListener getListener() {
 		if (actionsListener != null) return actionsListener;
 
 		return actionsListener = new ActionExecutionListener() {
+
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, final Set<UUID> inferenceInfluencedScopeSet,
-					final boolean isUserAction) {
-				if (action instanceof AnnotationAction && action.getReferenceId().equals(subjectId)) {
-					update();
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+				if (action instanceof AnnotationCreateAction && action.getReferenceId().equals(subjectId)) {
+					try {
+						final Annotation annotation = ((AnnotationCreateAction) action).getAnnotation(context, actionContext);
+						if (!annotationList.contains(annotation)) annotationList.add(0, annotation);
+						update();
+					}
+					catch (final UnableToCompleteActionException e) {}
+				}
+				else if (action instanceof AnnotationRemoveAction && action.getReferenceId().equals(subjectId)) {
+					for (final Annotation annotation : new ArrayList<Annotation>(annotationList)) {
+						if (annotation.getId().equals(((AnnotationRemoveAction) action).getAnnotationId())) {
+							annotationList.remove(annotation);
+							update();
+							break;
+						}
+					}
 				}
 			}
 		};
 	}
 
-	private ProjectContext getCurrentProjectContext() {
-		return getProvider().getContextProviderService().getCurrentProjectContext();
+	private AnnotationService getAnnotationService() {
+		return getProvider().getAnnotationService();
 	}
 
 	private ActionExecutionService getActionExecutionService() {

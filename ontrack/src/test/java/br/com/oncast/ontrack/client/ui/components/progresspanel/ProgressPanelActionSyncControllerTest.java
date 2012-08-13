@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.ReleaseMonitor;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
@@ -58,11 +59,13 @@ public class ProgressPanelActionSyncControllerTest {
 	private ProjectContext context;
 	private Release myRelease;
 	private ReleaseMonitor releaseMonitor;
+	private ActionContext actionContext;
 
 	@Before
 	public void setUp() throws Exception {
 		display = Mockito.mock(Display.class);
 		context = mock(ProjectContext.class);
+		actionContext = mock(ActionContext.class);
 		myRelease = createRelease();
 
 		final ActionExecutionService actionExecutionServiceMock = mock(ActionExecutionService.class);
@@ -477,7 +480,7 @@ public class ProgressPanelActionSyncControllerTest {
 	}
 
 	private void onActionExecution(final ModelAction action) throws UnableToCompleteActionException {
-		actionExecutionListener.onActionExecution(action, context, new HashSet<UUID>(), true);
+		actionExecutionListener.onActionExecution(action, context, actionContext, new HashSet<UUID>(), true);
 	}
 
 	private void addToContext(final Release release) throws ReleaseNotFoundException {

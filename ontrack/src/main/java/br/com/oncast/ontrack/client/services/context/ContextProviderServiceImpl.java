@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.services.context;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
@@ -16,11 +19,13 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	private final DispatchService requestDispatchService;
 
 	private ProjectContext projectContext;
+	private final List<ContextChangeListener> contextLoadListeners;
 
 	public ContextProviderServiceImpl(final ProjectRepresentationProviderImpl projectRepresentationProvider,
 			final DispatchService requestDispatchService,
 			final AuthenticationService authenticationService) {
 
+		this.contextLoadListeners = new ArrayList<ContextChangeListener>();
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.requestDispatchService = requestDispatchService;
 
@@ -47,8 +52,27 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	private void setProjectContext(final ProjectContext projectContext) {
+		final boolean wasSameContext = sameContext(projectContext);
 		this.projectContext = projectContext;
+
+		if (wasSameContext) return;
+
 		projectRepresentationProvider.setProjectRepresentation(projectContext == null ? null : projectContext.getProjectRepresentation());
+		notifyProjectChange();
+	}
+
+	private boolean sameContext(final ProjectContext otherContext) {
+		if (this.projectContext == otherContext) return true;
+
+		return this.projectContext != null && this.projectContext.equals(otherContext);
+	}
+
+	private void notifyProjectChange() {
+		final UUID currentProjectId = getCurrentProjectId();
+
+		for (final ContextChangeListener l : contextLoadListeners) {
+			l.onProjectChanged(currentProjectId);
+		}
 	}
 
 	@Override
@@ -83,5 +107,21 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	public ProjectContext getCurrentProjectContext() {
 		if (projectContext == null) throw new RuntimeException("There is no project context avaliable.");
 		return projectContext;
+	}
+
+	@Override
+	public void addContextLoadListener(final ContextChangeListener contextLoadListener) {
+		contextLoadListeners.add(contextLoadListener);
+
+		contextLoadListener.onProjectChanged(getCurrentProjectId());
+	}
+
+	private UUID getCurrentProjectId() {
+		final ProjectContext currentProjectContext = getCurrentProjectContext();
+		return currentProjectContext == null ? null : currentProjectContext.getProjectRepresentation().getId();
+	}
+
+	public interface ContextChangeListener {
+		void onProjectChanged(UUID projetId);
 	}
 }

@@ -121,7 +121,7 @@
 				</g:VerticalPanel>
 			</g:cell>
 		</g:HorizontalPanel>
-		<aw:AnnotationsWidget ui:field="commentsPanel" styleName="{style.commentPanel}"/>
+		<g:SimplePanel ui:field="commentsContainer" />
 		<misc:Separator styleName="{style.separator}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

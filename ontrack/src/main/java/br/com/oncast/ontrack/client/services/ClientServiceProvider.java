@@ -200,7 +200,7 @@ public class ClientServiceProvider {
 	public AnnotationService getAnnotationService() {
 		if (annotationService != null) return annotationService;
 		return annotationService = new AnnotationServiceImpl(getActionExecutionService(), getContextProviderService(), getAuthenticationService(),
-				getClientNotificationService(), getApplicationPlaceController(), getRequestDispatchService());
+				getClientNotificationService(), getApplicationPlaceController(), getRequestDispatchService(), getEventBus());
 	}
 
 	public UserDataService getUserDataService() {

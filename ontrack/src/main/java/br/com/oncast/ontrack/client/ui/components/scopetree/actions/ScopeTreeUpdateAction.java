@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -31,7 +32,7 @@ class ScopeTreeUpdateAction implements ScopeTreeAction {
 
 			final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
 			treeItem.setReferencedScope(scope);
-			treeItem.showDetailsIcon(context.hasAnnotationsFor(scope.getId()) || context.hasChecklistsFor(scope.getId()));
+			treeItem.showDetailsIcon(ClientServiceProvider.getInstance().getAnnotationService().hasDetails(scope.getId()));
 
 			if (isUserInteraction) treeItem.getTree().setSelectedItem(treeItem);
 		}

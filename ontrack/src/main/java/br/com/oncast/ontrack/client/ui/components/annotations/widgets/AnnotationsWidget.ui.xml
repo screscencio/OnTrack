@@ -33,7 +33,11 @@
 		.uploadPanel {
 			margin-left: 15px;
 		}
-
+		
+		.loadingIndicator {
+			text-align: center;
+		}
+		
 	</ui:style>
 	
 	<g:FocusPanel ui:field="focusPanel">
@@ -47,7 +51,12 @@
 			<misc:Separator styleName="{style.separator}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">
-					<misc:VerticalModelWidgetContainer ui:field="annotations"/>
+					<g:DeckPanel ui:field="loadingDeck" >
+						<g:SimplePanel  styleName="{style.loadingIndicator}" >
+	       					<g:Image url="resources/image/misc/loading.gif"/>
+						</g:SimplePanel>
+						<misc:VerticalModelWidgetContainer ui:field="annotationsWidgetContainer"/>
+					</g:DeckPanel>
 				</g:FocusPanel>
 			</g:cell>
 		</g:VerticalPanel>

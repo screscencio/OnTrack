@@ -6,14 +6,15 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -26,14 +27,11 @@ import br.com.oncast.ontrack.shared.model.user.User;
 
 @Entity
 @ConvertTo(Annotation.class)
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "projectId", "subjectId", "id" }))
 public class AnnotationEntity {
 
 	@Id
-	@GeneratedValue
-	@IgnoreByConversion
-	private long sequencialDatabaseId;
-
-	@Column(name = "id", nullable = false)
+	@Column(name = "id", nullable = false, unique = true, updatable = false)
 	@ConvertUsing(StringToUuidConverter.class)
 	private String id;
 
@@ -48,30 +46,25 @@ public class AnnotationEntity {
 	@JoinColumn(name = "attachmentFile", nullable = true, updatable = false)
 	private FileRepresentationEntity attachmentFile;
 
-	@Column(name = "date", nullable = false)
+	@Column(name = "creationDate", nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
-	private Date date;
+	private Date creationDate;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "Annotation_voters")
 	@ConvertUsing(ListToHashSetConverter.class)
 	private List<User> voters;
 
+	@Column(name = "deprecated", nullable = false, updatable = true)
+	private boolean deprecated;
+
 	@IgnoreByConversion
-	@Column(name = "subjectId", nullable = false)
+	@Column(name = "subjectId", nullable = false, updatable = false)
 	private String subjectId;
 
 	@IgnoreByConversion
-	@Column(name = "projectId", nullable = false)
+	@Column(name = "projectId", nullable = false, updatable = false)
 	private String projectId;
-
-	public long getSequencialDatabaseId() {
-		return sequencialDatabaseId;
-	}
-
-	public void setSequencialDatabaseId(final long sequencialDatabaseId) {
-		this.sequencialDatabaseId = sequencialDatabaseId;
-	}
 
 	public String getId() {
 		return id;
@@ -105,12 +98,12 @@ public class AnnotationEntity {
 		this.attachmentFile = attachmentFile;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getCreationDate() {
+		return creationDate;
 	}
 
-	public void setDate(final Date date) {
-		this.date = date;
+	public void setCreationDate(final Date date) {
+		this.creationDate = date;
 	}
 
 	public List<User> getVoters() {
@@ -119,6 +112,14 @@ public class AnnotationEntity {
 
 	public void setVoters(final List<User> voters) {
 		this.voters = voters;
+	}
+
+	public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	public void setDeprecated(final boolean deprecated) {
+		this.deprecated = deprecated;
 	}
 
 	public String getSubjectId() {

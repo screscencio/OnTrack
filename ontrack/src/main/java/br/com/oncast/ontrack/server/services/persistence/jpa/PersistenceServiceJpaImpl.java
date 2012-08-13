@@ -575,11 +575,13 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Annotation> retrieveAnnotationsFromProjectBySubjectId(final UUID projectId, final UUID subjectId) throws PersistenceException {
+	public List<Annotation> retrieveAnnotationsBySubjectId(final UUID projectId, final UUID subjectId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select annotation from " + AnnotationEntity.class.getSimpleName()
-					+ " as annotation where annotation.subjectId = :subjectId and annotation.projectId = :projectId");
+			final Query query = em
+					.createQuery("select annotation from "
+							+ AnnotationEntity.class.getSimpleName()
+							+ " as annotation where annotation.subjectId = :subjectId and annotation.projectId = :projectId and annotation.deprecated = false order by annotation.creationDate desc");
 			query.setParameter("subjectId", subjectId.toStringRepresentation());
 			query.setParameter("projectId", projectId.toStringRepresentation());
 			return (List<Annotation>) TYPE_CONVERTER.convert(query.getResultList());

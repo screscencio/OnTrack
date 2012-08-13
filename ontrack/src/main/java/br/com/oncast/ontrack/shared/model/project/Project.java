@@ -143,4 +143,25 @@ public class Project implements Serializable {
 		return checklistMap.remove(subjectId, checklist);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((projectRepresentation == null) ? 0 : projectRepresentation.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final Project other = (Project) obj;
+		if (projectRepresentation == null) {
+			if (other.projectRepresentation != null) return false;
+		}
+		else if (!projectRepresentation.equals(other.projectRepresentation)) return false;
+		return true;
+	}
+
 }

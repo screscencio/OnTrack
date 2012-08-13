@@ -39,7 +39,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@UiField
 	Label subjectTitle;
 
-	@UiField
+	@UiField(provided = true)
 	AnnotationsWidget annotations;
 
 	@UiField
@@ -52,9 +52,9 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 	private AnnotationsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription) {
 		subjectDetails = detailWidget;
+		annotations = new AnnotationsWidget(subjectId);
 		initWidget(uiBinder.createAndBindUi(this));
 
-		annotations.setSubjectId(subjectId);
 		checklist.setSubjectId(subjectId);
 		this.subjectTitle.setText(subjectDescription);
 		animation = new FadeAnimation(this, new AnimationCompletedListener() {

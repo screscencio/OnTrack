@@ -20,7 +20,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -28,11 +27,12 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationTopic extends Composite implements ModelWidget<Annotation> {
 
-	private static final int TIME_REFRESH_INTERVAL = 3000;
+	private static final int TIME_REFRESH_INTERVAL = 60000;
 
 	private static AnnotationTopicUiBinder uiBinder = GWT.create(AnnotationTopicUiBinder.class);
 
@@ -40,6 +40,8 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	interface AnnotationTopicStyle extends CssResource {
 		public String likeActive();
+
+		public String commentPanel();
 	}
 
 	@UiField
@@ -50,9 +52,6 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	@UiField
 	HTMLPanel container;
-
-	@UiField
-	AnnotationsWidget commentsPanel;
 
 	@UiField
 	Label date;
@@ -72,16 +71,16 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	@UiField
 	FocusPanel comment;
 
+	@UiField
+	SimplePanel commentsContainer;
+
 	private Annotation annotation;
 
 	private UUID subjectId;
 
 	private boolean shouldRefresh = true;
 
-	@UiFactory
-	protected AnnotationsWidget createCommentsPainel() {
-		return AnnotationsWidget.forComments();
-	}
+	private AnnotationsWidget commentsPanel;
 
 	public AnnotationTopic() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -161,7 +160,9 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	private void setupCommentsPanel(final boolean enableComments) {
 		if (enableComments) {
-			commentsPanel.setSubjectId(annotation.getId());
+			commentsPanel = AnnotationsWidget.forComments(annotation.getId());
+			commentsPanel.addStyleName(style.commentPanel());
+			commentsContainer.add(commentsPanel);
 			comment.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -181,12 +182,13 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		else {
 			comment.setVisible(false);
 			commentsCount.setVisible(false);
-			commentsPanel.setVisible(false);
+			commentsContainer.setVisible(false);
 		}
 	}
 
 	private String getDateTimeText(final Annotation annotation) {
-		return HumanDateFormatter.getRelativeDate(annotation.getDate()) + " (" + HumanDateFormatter.getDifferenceDate(annotation.getDate()) + ")";
+		return HumanDateFormatter.getRelativeDate(annotation.getCreationDate()) + " (" + HumanDateFormatter.getDifferenceDate(annotation.getCreationDate())
+				+ ")";
 	}
 
 	@Override
@@ -198,6 +200,8 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	private void updateComment() {
+		if (commentsPanel == null) return;
+
 		final String previousCount = this.commentsCount.getText();
 		final String currentCount = "" + commentsPanel.getWidgetCount();
 		this.commentsCount.setText(currentCount);
@@ -208,7 +212,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	public void updateTime() {
 		this.date.setText(getDateTimeText(annotation));
-		this.date.setTitle(HumanDateFormatter.getAbsoluteText(annotation.getDate()));
+		this.date.setTitle(HumanDateFormatter.getAbsoluteText(annotation.getCreationDate()));
 	}
 
 	private void updateLike() {

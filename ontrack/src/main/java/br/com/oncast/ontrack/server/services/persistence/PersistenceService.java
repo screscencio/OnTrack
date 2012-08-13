@@ -71,7 +71,7 @@ public interface PersistenceService {
 
 	public Annotation retrieveAnnotationById(UUID projectId, UUID id) throws NoResultFoundException, PersistenceException;
 
-	public List<Annotation> retrieveAnnotationsFromProjectBySubjectId(UUID projectId, UUID subjectId) throws PersistenceException;
+	public List<Annotation> retrieveAnnotationsBySubjectId(UUID projectId, UUID subjectId) throws PersistenceException;
 
 	public Set<UUID> retrieveAnnotatedSubjectIdsFromProject(UUID projectId) throws PersistenceException;
 }

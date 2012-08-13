@@ -3,11 +3,8 @@ package br.com.oncast.ontrack.client.services.places;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
-
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeRequestEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -40,8 +37,7 @@ public class ApplicationPlaceController {
 		configured = true;
 
 		final ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
-		final AppPlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
-		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper);
 
 		activityManager.setDisplay(container);
 		historyHandler.register(placeController, eventBus, defaultAppPlace);
