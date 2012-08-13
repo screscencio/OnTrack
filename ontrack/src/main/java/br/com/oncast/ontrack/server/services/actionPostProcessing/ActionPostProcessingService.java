@@ -7,31 +7,19 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import br.com.oncast.ontrack.server.business.actionPostProcessments.AnnotationCreatePostProcessor;
-import br.com.oncast.ontrack.server.business.actionPostProcessments.AnnotationRemovePostProcessor;
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
-import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
-import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
 public class ActionPostProcessingService {
 
 	private static final Logger LOGGER = Logger.getLogger(ActionPostProcessingService.class);
 
-	// FIXME LOBO Remove this
-	private final PersistenceService persistenceService;
-
 	private final Map<Class<?>, List<ActionPostProcessor<?>>> postProcessorsMap = new HashMap<Class<?>, List<ActionPostProcessor<?>>>();
 
-	public ActionPostProcessingService(final PersistenceService persistenceService) {
-		this.persistenceService = persistenceService;
-	}
+	public ActionPostProcessingService() {}
 
 	public <T extends ModelAction> void registerPostProcessor(final ActionPostProcessor<T> postProcessor,
 			@SuppressWarnings("unchecked") final Class<? extends T>... classes) {
@@ -56,19 +44,6 @@ public class ActionPostProcessingService {
 	public <T extends ModelAction> void postProcessAction(final ProjectContext projectContext, final ActionContext actionContext, final T modelAction)
 			throws UnableToPostProcessActionException {
 		try {
-			if (modelAction instanceof ScopeDeclareProgressAction) ((ScopeDeclareProgressAction) modelAction).setTimestamp(actionContext.getTimestamp());
-			if (modelAction instanceof FileUploadAction) {
-				persistenceService.persistOrUpdateFileRepresentation(projectContext.findFileRepresentation(modelAction.getReferenceId()));
-			}
-			// FIXME Lobo adapt annotationCreateAction post processor
-			if (modelAction instanceof AnnotationCreateAction) new AnnotationCreatePostProcessor(persistenceService).process(
-					(AnnotationCreateAction) modelAction, actionContext,
-					projectContext);
-			// FIXME Lobo adapt annotationRemoveAction post processor
-			if (modelAction instanceof AnnotationRemoveAction) new AnnotationRemovePostProcessor(persistenceService).process(
-					(AnnotationRemoveAction) modelAction, actionContext,
-					projectContext);
-
 			final List<ActionPostProcessor<?>> postProcessors = postProcessorsMap.get(modelAction.getClass());
 			if (postProcessors == null) return;
 			for (final ActionPostProcessor<?> processor : postProcessors) {

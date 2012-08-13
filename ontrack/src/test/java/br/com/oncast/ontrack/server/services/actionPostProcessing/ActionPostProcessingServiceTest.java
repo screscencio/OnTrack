@@ -12,9 +12,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -30,13 +28,11 @@ import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 
 public class ActionPostProcessingServiceTest {
 
-	@Mock
-	PersistenceService persistenceService;
 	ActionPostProcessingService postProcessingService;
 
 	@Before
 	public void setUp() throws Exception {
-		postProcessingService = new ActionPostProcessingService(persistenceService);
+		postProcessingService = new ActionPostProcessingService();
 	}
 
 	@After
@@ -44,7 +40,7 @@ public class ActionPostProcessingServiceTest {
 
 	@Test
 	public void postProcessingMultipleActionsShouldPostProcessEachAction() throws UnableToHandleActionException {
-		postProcessingService = spy(new ActionPostProcessingService(persistenceService));
+		postProcessingService = spy(new ActionPostProcessingService());
 
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext projectContext = new ProjectContext(project);
@@ -57,7 +53,7 @@ public class ActionPostProcessingServiceTest {
 
 	@Test
 	public void postProcessingMultipleActionsShouldPostProcessEachActionOnce() throws UnableToHandleActionException {
-		postProcessingService = spy(new ActionPostProcessingService(persistenceService));
+		postProcessingService = spy(new ActionPostProcessingService());
 
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext projectContext = new ProjectContext(project);

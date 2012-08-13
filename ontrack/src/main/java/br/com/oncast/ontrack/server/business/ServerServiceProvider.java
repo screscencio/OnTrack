@@ -123,7 +123,7 @@ public class ServerServiceProvider {
 		if (actionPostProcessingService != null) return actionPostProcessingService;
 		synchronized (this) {
 			if (actionPostProcessingService != null) return actionPostProcessingService;
-			return actionPostProcessingService = new ActionPostProcessingService(getPersistenceService());
+			return actionPostProcessingService = new ActionPostProcessingService();
 		}
 	}
 

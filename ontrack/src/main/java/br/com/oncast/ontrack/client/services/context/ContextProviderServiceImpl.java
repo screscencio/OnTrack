@@ -117,8 +117,9 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	private UUID getCurrentProjectId() {
-		final ProjectContext currentProjectContext = getCurrentProjectContext();
-		return currentProjectContext == null ? null : currentProjectContext.getProjectRepresentation().getId();
+		if (projectContext == null) return null;
+
+		return getCurrentProjectContext().getProjectRepresentation().getId();
 	}
 
 	public interface ContextChangeListener {

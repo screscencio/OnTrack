@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.server.business.actionPostProcessments.ScopeDeclareProgressPostProcessor;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
@@ -364,7 +365,8 @@ public class BusinessLogicTest {
 
 	@Test
 	public void scopeDeclareProgressActionShouldHaveItsTimestampResetedByTheServer() throws Exception {
-		final ActionPostProcessingService postProcessingService = new ActionPostProcessingService(persistence);
+		final ActionPostProcessingService postProcessingService = new ActionPostProcessingService();
+		postProcessingService.registerPostProcessor(new ScopeDeclareProgressPostProcessor(), ScopeDeclareProgressAction.class);
 		business = BusinessLogicTestUtils.createWithJpaPersistence(postProcessingService);
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 
