@@ -1,18 +1,14 @@
 package br.com.oncast.ontrack.client.ui.places.loading;
 
-import java.util.Set;
-
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ContextLoadingActivity extends AbstractActivity {
@@ -37,19 +33,6 @@ public class ContextLoadingActivity extends AbstractActivity {
 			@Override
 			public void onProjectContextLoaded() {
 				validateGatheredData();
-
-				SERVICE_PROVIDER.getAnnotationService().loadAnnotatedSubjectIds(new AsyncCallback<Set<UUID>>() {
-					@Override
-					public void onSuccess(final Set<UUID> result) {
-						validateGatheredData();
-					}
-
-					@Override
-					public void onFailure(final Throwable caught) {
-						caught.printStackTrace();
-						treatFailure(caught.getMessage());
-					}
-				});
 			}
 
 			@Override
@@ -74,7 +57,6 @@ public class ContextLoadingActivity extends AbstractActivity {
 
 	private void validateGatheredData() {
 		if (!SERVICE_PROVIDER.getContextProviderService().isContextAvailable(projectDependentPlace.getRequestedProjectId())) return;
-		if (!SERVICE_PROVIDER.getAnnotationService().isAnnotatedSubjectIdsAvailable()) return;
 
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectDependentPlace);
 	}

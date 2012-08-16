@@ -64,7 +64,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 		return new AnnotationRemoveAction(subjectId, annotationId);
 	}
 
-	public Annotation getAnnotation(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+	private Annotation getAnnotation(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
 		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message);
 		if (attachmentId != null) {

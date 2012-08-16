@@ -76,7 +76,7 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getClientApplicationStateService().restore();
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
-		SERVICE_PROVIDER.getAnnotationService().addAnnotationCreationListener(getAnntoationChangeListener());
+		SERVICE_PROVIDER.getAnnotationService().addAnnotationModificationListener(getAnntoationChangeListener());
 	}
 
 	private AnnotationModificationListener getAnntoationChangeListener() {
@@ -112,7 +112,7 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getClientApplicationStateService().stopRecording();
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
 		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
-		SERVICE_PROVIDER.getAnnotationService().removeAnnotationCreationListener(annotationModificationListener);
+		SERVICE_PROVIDER.getAnnotationService().removeAnnotationModificationListener(annotationModificationListener);
 		scopeSelectionEventHandlerRegistration.removeHandler();
 	}
 

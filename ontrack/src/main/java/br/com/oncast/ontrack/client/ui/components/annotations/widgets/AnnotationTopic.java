@@ -104,12 +104,13 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	@UiHandler("remove")
 	protected void onDeleteClicked(final ClickEvent e) {
-		getAnnotationService().deleteAnnotation(subjectId, annotation.getId());
+		getAnnotationService().removeAnnotation(subjectId, annotation.getId());
 	}
 
 	@UiHandler("like")
 	protected void onLikeClicked(final ClickEvent e) {
-		getAnnotationService().toggleVote(subjectId, annotation.getId());
+		if (annotation.hasVoted(getCurrentUser())) getAnnotationService().removeVote(subjectId, annotation.getId());
+		else getAnnotationService().addVote(subjectId, annotation.getId());
 	}
 
 	@Override

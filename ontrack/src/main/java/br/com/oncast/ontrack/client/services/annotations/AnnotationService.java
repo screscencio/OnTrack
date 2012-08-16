@@ -1,34 +1,29 @@
 package br.com.oncast.ontrack.client.services.annotations;
 
 import java.util.List;
-import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.annotations.AnnotationServiceImpl.AnnotationModificationListener;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 public interface AnnotationService {
 
 	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId);
 
-	void toggleVote(UUID subjectId, UUID annotationId);
+	void removeAnnotation(UUID subjectId, UUID annotationId);
 
-	void deleteAnnotation(UUID subjectId, UUID annotationId);
+	void addVote(UUID subjectId, UUID annotationId);
+
+	void removeVote(UUID subjectId, UUID annotationId);
 
 	void showAnnotationsFor(UUID subjectId);
 
 	boolean hasDetails(UUID subjectId);
 
-	void loadAnnotationsFor(UUID subjectId, AsyncCallback<List<Annotation>> asyncCallback);
+	void addAnnotationModificationListener(AnnotationModificationListener annotationCreationListener);
 
-	void loadAnnotatedSubjectIds(AsyncCallback<Set<UUID>> callback);
+	void removeAnnotationModificationListener(AnnotationModificationListener annotationCreationListener);
 
-	boolean isAnnotatedSubjectIdsAvailable();
-
-	void addAnnotationCreationListener(AnnotationModificationListener annotationCreationListener);
-
-	void removeAnnotationCreationListener(AnnotationModificationListener annotationCreationListener);
+	List<Annotation> getAnnotationsFor(UUID subjectId);
 
 }

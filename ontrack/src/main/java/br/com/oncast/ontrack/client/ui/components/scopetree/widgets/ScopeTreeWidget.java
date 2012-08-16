@@ -5,8 +5,8 @@ import java.util.Map;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailAddedEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailAddedEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailChangeEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailChangeEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
@@ -242,14 +242,14 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			}
 
 		});
-		eventBus.addHandler(ScopeDetailAddedEvent.getType(), new ScopeDetailAddedEventHandler() {
+		eventBus.addHandler(ScopeDetailChangeEvent.getType(), new ScopeDetailChangeEventHandler() {
 			@Override
-			public void onScopeDetailAdded(final ScopeDetailAddedEvent event) {
+			public void onScopeDetailChange(final ScopeDetailChangeEvent event) {
 				final Scope scope = event.getTargetScope();
 
 				try {
 					final ScopeTreeItem item = findScopeTreeItem(scope);
-					item.showDetailsIcon(true);
+					item.showDetailsIcon(event.hasDetails());
 				}
 				catch (final ScopeNotFoundException e) {
 					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
