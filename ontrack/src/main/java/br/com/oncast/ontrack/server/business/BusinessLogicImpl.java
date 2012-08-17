@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
+import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.DontPostProcessActions;
+import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.PostProcessActions;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -73,6 +75,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
+	@PostProcessActions
 	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException,
 			AuthorizationException {
 		LOGGER.debug("Processing incoming action batch.");
@@ -86,8 +89,8 @@ class BusinessLogicImpl implements BusinessLogic {
 
 				final ActionContext actionContext = new ActionContext(authenticatedUser, timestamp);
 				final List<ModelAction> actionList = actionSyncRequest.getActionList();
-				final ProjectContext projectContext = validateIncomingActions(projectId, actionList, actionContext);
-				actionPostProcessingService.postProcessActions(projectContext, actionContext, actionList);
+
+				validateIncomingActions(projectId, actionList, actionContext);
 				persistenceService.persistActions(projectId, actionSyncRequest.getActionList(), authenticatedUser.getId(), timestamp);
 				actionSyncRequest.setActionContext(actionContext);
 			}
@@ -102,6 +105,7 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	// TODO Report errors as feedback for development.
 	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.
+	@PostProcessActions
 	private ProjectContext validateIncomingActions(final UUID projectId, final List<ModelAction> actionList, final ActionContext actionContext)
 			throws UnableToHandleActionException {
 		LOGGER.debug("Validating action upon the project current state.");
@@ -129,6 +133,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
+	@DontPostProcessActions
 	private Project applyActionsToProject(final Project project, final List<UserAction> actionList) throws UnableToCompleteActionException {
 		final ProjectContext projectContext = new ProjectContext(project);
 
@@ -138,7 +143,6 @@ class BusinessLogicImpl implements BusinessLogic {
 				user = persistenceService.retrieveUserById(action.getUserId());
 				final ActionContext actionContext = new ActionContext(user, action.getTimestamp());
 				ActionExecuter.executeAction(projectContext, actionContext, action.getModelAction());
-				actionPostProcessingService.postProcessAction(projectContext, actionContext, action.getModelAction());
 			}
 			catch (final Exception e) {
 				LOGGER.error("Unable to apply action to project", e);
@@ -212,6 +216,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
+	@DontPostProcessActions
 	public Project loadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
 		LOGGER.debug("Loading current state for project id '" + projectId + "'.");
 		try {

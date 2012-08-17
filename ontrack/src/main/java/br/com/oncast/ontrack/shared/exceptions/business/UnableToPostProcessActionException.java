@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.shared.exceptions.business;
 
-public class UnableToPostProcessActionException extends UnableToHandleActionException {
+public class UnableToPostProcessActionException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

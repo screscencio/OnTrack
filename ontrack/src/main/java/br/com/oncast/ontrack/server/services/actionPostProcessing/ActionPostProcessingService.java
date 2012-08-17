@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.ActionExecutionMonitoringAspect;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -19,7 +20,9 @@ public class ActionPostProcessingService {
 
 	private final Map<Class<?>, List<ActionPostProcessor<?>>> postProcessorsMap = new HashMap<Class<?>, List<ActionPostProcessor<?>>>();
 
-	public ActionPostProcessingService() {}
+	public ActionPostProcessingService() {
+		ActionExecutionMonitoringAspect.aspectOf().setActionPostProcessingService(this);
+	}
 
 	public <T extends ModelAction> void registerPostProcessor(final ActionPostProcessor<T> postProcessor,
 			@SuppressWarnings("unchecked") final Class<? extends T>... classes) {
