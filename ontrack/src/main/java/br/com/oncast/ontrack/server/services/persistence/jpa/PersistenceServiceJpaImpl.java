@@ -1,9 +1,7 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,15 +18,12 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.annotation.AnnotationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
-import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -517,110 +512,4 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
-	@Override
-	public void persistOrUpdateAnnotation(final UUID projectId, final UUID subjectId, final Annotation annotation) throws PersistenceException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-			em.getTransaction().begin();
-
-			final AnnotationEntity entity = (AnnotationEntity) TYPE_CONVERTER.convert(annotation);
-
-			entity.setAuthor(retrieveUserByEmail(annotation.getAuthor().getEmail()));
-			entity.setSubjectId(subjectId.toStringRepresentation());
-			entity.setProjectId(projectId.toStringRepresentation());
-
-			em.merge(entity);
-
-			em.getTransaction().commit();
-		}
-		catch (final TypeConverterException e) {
-			throw new PersistenceException("It was not possible to convert the Annotation to its entity", e);
-		}
-		catch (final Exception e) {
-			try {
-				em.getTransaction().rollback();
-			}
-			catch (final Exception f) {
-				e.printStackTrace();
-				throw new PersistenceException("It was not possible to persist the Annotation nor to rollback it.", f);
-			}
-			throw new PersistenceException("It was not possible to persist the Annotation.", e);
-		}
-		finally {
-			em.close();
-		}
-
-	}
-
-	@Override
-	public Annotation retrieveAnnotationById(final UUID projectId, final UUID annotationId) throws NoResultFoundException, PersistenceException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-			final Query query = em.createQuery("select annotation from " + AnnotationEntity.class.getSimpleName()
-					+ " as annotation where annotation.id = :annotationId and annotation.projectId = :projectId");
-			query.setParameter("annotationId", annotationId.toStringRepresentation());
-			query.setParameter("projectId", projectId.toStringRepresentation());
-			return (Annotation) TYPE_CONVERTER.convert(query.getSingleResult());
-		}
-		catch (final NoResultException e) {
-			throw new NoResultFoundException("No file Annotation found for id: " + annotationId, e);
-		}
-		catch (final TypeConverterException e) {
-			throw new PersistenceException("It was not possible to convert the Annotation to it's model", e);
-		}
-		finally {
-			em.close();
-		}
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<Annotation> retrieveAnnotationsBySubjectId(final UUID projectId, final UUID subjectId) throws PersistenceException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-			final Query query = em
-					.createQuery("select annotation from "
-							+ AnnotationEntity.class.getSimpleName()
-							+ " as annotation where annotation.subjectId = :subjectId and annotation.projectId = :projectId and annotation.deprecated = false order by annotation.creationDate desc");
-			query.setParameter("subjectId", subjectId.toStringRepresentation());
-			query.setParameter("projectId", projectId.toStringRepresentation());
-			return (List<Annotation>) TYPE_CONVERTER.convert(query.getResultList());
-		}
-		catch (final TypeConverterException e) {
-			throw new PersistenceException("It was not possible to convert the AnnotationsList to it's model", e);
-		}
-		finally {
-			em.close();
-		}
-	}
-
-	@Override
-	public Set<UUID> retrieveAnnotatedSubjectIdsFromProject(final UUID projectId) throws PersistenceException {
-		final EntityManager em = entityManagerFactory.createEntityManager();
-		try {
-			final Query query = em.createQuery("select subjectId from " + AnnotationEntity.class.getSimpleName()
-					+ " as annotation where annotation.projectId = :projectId");
-			query.setParameter("projectId", projectId.toStringRepresentation());
-
-			final HashSet<UUID> results = convertToUuidList(query.getResultList());
-			return results;
-		}
-		catch (final TypeConverterException e) {
-			throw new PersistenceException("It was not possible to convert the AnnotationsList to it's model", e);
-		}
-		finally {
-			em.close();
-		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	private HashSet<UUID> convertToUuidList(final List list) throws TypeConverterException {
-		final StringToUuidConverter stringToUuidConverter = new StringToUuidConverter();
-		final HashSet<UUID> results = new HashSet<UUID>();
-
-		for (final Object result : list) {
-			results.add((UUID) stringToUuidConverter.convert(result));
-		}
-		return results;
-	}
 }

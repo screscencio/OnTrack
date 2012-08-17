@@ -93,12 +93,11 @@ public class ChecklistsContainerWidget extends Composite {
 
 	@UiHandler("newChecklistTitle")
 	void onKeyDown(final KeyDownEvent e) {
+		e.stopPropagation();
+
 		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER) createChecklist();
 
-		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) {
-			hideNewChecklistTitle();
-			e.stopPropagation();
-		}
+		else if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hideNewChecklistTitle();
 
 	}
 
@@ -117,7 +116,7 @@ public class ChecklistsContainerWidget extends Composite {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof ChecklistAction && action.getReferenceId().equals(subjectId)) {
 					justCreatedAnChecklist = isUserAction && (action instanceof ChecklistCreateAction);

@@ -11,7 +11,9 @@ import java.util.Random;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveDeprecationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAddItemAction;
@@ -139,6 +141,8 @@ public class UserActionTestUtils {
 		userActions.add(createChecklistUncheckItemAction());
 		userActions.add(createChecklistRemoveItemAction());
 		userActions.add(createChecklistRemoveAction());
+		userActions.add(createAnnotationDeprecateAction());
+		userActions.add(createAnnotationRemoveDeprecationAction());
 		return userActions;
 	}
 
@@ -217,6 +221,14 @@ public class UserActionTestUtils {
 
 	public static UserAction createAnnotationVoteAction() throws Exception {
 		return createUserAction(new AnnotationVoteAction(new UUID(), new UUID()));
+	}
+
+	public static UserAction createAnnotationRemoveDeprecationAction() throws Exception {
+		return createUserAction(new AnnotationRemoveDeprecationAction(new UUID(), new UUID()));
+	}
+
+	public static UserAction createAnnotationDeprecateAction() throws Exception {
+		return createUserAction(new AnnotationDeprecateAction(new UUID(), new UUID()));
 	}
 
 	public static UserAction createAnnotationRemoveAction() throws Exception {

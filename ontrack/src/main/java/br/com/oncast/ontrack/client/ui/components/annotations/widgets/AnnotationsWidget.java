@@ -28,7 +28,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationsWidget extends Composite {
@@ -43,13 +42,13 @@ public class AnnotationsWidget extends Composite {
 	interface CommentsWidgetUiBinder extends UiBinder<Widget, AnnotationsWidget> {}
 
 	@UiField
-	protected FocusPanel focusPanel;
-
-	@UiField
 	protected ExtendableTextArea newAnnotationText;
 
 	@UiField
 	protected UploadWidget uploadWidget;
+
+	@UiField
+	protected Widget separator;
 
 	@UiField
 	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> annotationsWidgetContainer;
@@ -111,16 +110,10 @@ public class AnnotationsWidget extends Composite {
 	protected void onNewAnnotationTextKeyDown(final KeyDownEvent e) {
 		if (!new Shortcut(BrowserKeyCodes.KEY_ENTER).with(ControlModifier.PRESSED).accepts(e.getNativeEvent())) return;
 		e.preventDefault();
+		e.stopPropagation();
 
 		addAnnotation();
 		newAnnotationText.setText("");
-	}
-
-	@UiHandler("focusPanel")
-	protected void disableGlobalShortcuts(final KeyDownEvent e) {
-		if (BrowserKeyCodes.KEY_ESCAPE == e.getNativeKeyCode()) return;
-
-		e.stopPropagation();
 	}
 
 	public void setFocus(final boolean b) {
@@ -180,6 +173,13 @@ public class AnnotationsWidget extends Composite {
 
 	public interface UpdateListener {
 		void onChanged();
+	}
+
+	public void setReadOnly(final boolean b) {
+		final boolean visible = !b;
+		uploadWidget.setVisible(enableComments && visible);
+		newAnnotationText.setVisible(visible);
+		separator.setVisible(visible);
 	}
 
 }

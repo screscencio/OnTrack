@@ -33,7 +33,7 @@ public class PlanningActivity extends AbstractActivity {
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private PlanningView view;
-	private HandlerRegistration scopeSelectionEventHandlerRegistration;
+	private List<HandlerRegistration> registrations;
 	private AnnotationModificationListener annotationModificationListener;
 
 	public PlanningActivity() {
@@ -42,6 +42,7 @@ public class PlanningActivity extends AbstractActivity {
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		registrations = new ArrayList<HandlerRegistration>();
 		view = new PlanningPanel();
 		view.setVisible(false);
 
@@ -64,15 +65,15 @@ public class PlanningActivity extends AbstractActivity {
 
 		panel.setWidget(view);
 		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.getNotificationMenu());
-		ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
-		ShortcutService.register(view, this, PlanningShortcutMappings.values());
+		registrations.add(ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
+		registrations.add(ShortcutService.register(view, this, PlanningShortcutMappings.values()));
 
 		view.setVisible(true);
 		final Release firstReleaseInProgress = getFirstReleaseInProgress(projectContext);
 		if (firstReleaseInProgress != null) view.ensureWidgetIsVisible(view.getReleasePanel().getWidgetFor(firstReleaseInProgress));
 		view.getScopeTree().setFocus(true);
 
-		scopeSelectionEventHandlerRegistration = registerScopeSelectionEventHandler();
+		registrations.add(registerScopeSelectionEventHandler());
 		SERVICE_PROVIDER.getClientApplicationStateService().restore();
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
@@ -113,7 +114,10 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
 		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
 		SERVICE_PROVIDER.getAnnotationService().removeAnnotationModificationListener(annotationModificationListener);
-		scopeSelectionEventHandlerRegistration.removeHandler();
+
+		for (final HandlerRegistration registration : registrations) {
+			registration.removeHandler();
+		}
 	}
 
 	private HandlerRegistration registerScopeSelectionEventHandler() {

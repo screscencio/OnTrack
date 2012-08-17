@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -42,6 +43,10 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		public String likeActive();
 
 		public String commentPanel();
+
+		public String deprecatedIcon();
+
+		public String deprecatedContainer();
 	}
 
 	@UiField
@@ -51,13 +56,22 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	Image author;
 
 	@UiField
+	Label deprecatedLabel;
+
+	@UiField
+	Label closedDeprecatedLabel;
+
+	@UiField
+	DeckPanel deckPanel;
+
+	@UiField
 	HTMLPanel container;
 
 	@UiField
 	Label date;
 
 	@UiField
-	FocusPanel remove;
+	FocusPanel deprecate;
 
 	@UiField
 	Label likeCount;
@@ -92,6 +106,8 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 		initWidget(uiBinder.createAndBindUi(this));
 
+		deckPanel.showWidget(annotation.isDeprecated() ? 1 : 0);
+
 		setupDeleteButton();
 		setupContent();
 		setupCommentsPanel(enableComments);
@@ -99,12 +115,23 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	private void setupDeleteButton() {
-		remove.setVisible(annotation.getAuthor().equals(getCurrentUser()));
+		deprecate.setVisible(annotation.getAuthor().equals(getCurrentUser()));
 	}
 
-	@UiHandler("remove")
-	protected void onDeleteClicked(final ClickEvent e) {
-		getAnnotationService().removeAnnotation(subjectId, annotation.getId());
+	@UiHandler("closedDeprecatedLabel")
+	protected void onClosedDeprecatedLabelClick(final ClickEvent e) {
+		deckPanel.showWidget(0);
+	}
+
+	@UiHandler("deprecatedLabel")
+	protected void ondeprecatedLabelClick(final ClickEvent e) {
+		deckPanel.showWidget(1);
+	}
+
+	@UiHandler("deprecate")
+	protected void onDeprecateClicked(final ClickEvent e) {
+		if (annotation.isDeprecated()) getAnnotationService().removeDeprecation(subjectId, annotation.getId());
+		else getAnnotationService().deprecateAnnotation(subjectId, annotation.getId());
 	}
 
 	@UiHandler("like")
@@ -197,7 +224,36 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		updateLike();
 		updateComment();
 		updateTime();
+		updateDeprecation();
 		return false;
+	}
+
+	private void updateDeprecation() {
+		final boolean isDeprecated = annotation.isDeprecated();
+
+		deprecate.setTitle(isDeprecated ? "Remove Deprecation" : "Deprecate");
+
+		deprecate.setStyleName(style.deprecatedIcon(), isDeprecated);
+		container.setStyleName(style.deprecatedContainer(), isDeprecated);
+
+		if (isDeprecated) {
+			final String deprecationText = "[Deprecated by " + removeEmailDomain(annotation.getDeprecationAuthor()) + " since "
+					+ HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp()) + "]";
+			deprecatedLabel.setText(deprecationText);
+			closedDeprecatedLabel.setText(deprecationText + " " + annotation.getMessage());
+
+			final String absoluteDate = HumanDateFormatter.getAbsoluteText(annotation.getDeprecationTimestamp());
+			deprecatedLabel.setTitle(absoluteDate);
+			closedDeprecatedLabel.setTitle(absoluteDate);
+		}
+
+		if (commentsPanel != null) commentsPanel.setReadOnly(isDeprecated);
+
+		deprecatedLabel.setVisible(isDeprecated);
+	}
+
+	private String removeEmailDomain(final User user) {
+		return user.getEmail().replaceAll("@.*$", "");
 	}
 
 	private void updateComment() {

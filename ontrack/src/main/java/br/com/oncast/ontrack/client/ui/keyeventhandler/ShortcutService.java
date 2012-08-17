@@ -21,7 +21,7 @@ public class ShortcutService {
 	 * @param mappings of the shortcuts.
 	 * @return the re
 	 */
-	public static <T> ShortcutRegistration register(final IsWidget widget, final T shortcutParameter, final ShortcutMapping<T>[] mappings) {
+	public static <T> HandlerRegistration register(final IsWidget widget, final T shortcutParameter, final ShortcutMapping<T>[] mappings) {
 		final EventHandler handler = new EventHandler() {
 			@Override
 			public void handle(final Event e) {
@@ -48,6 +48,21 @@ public class ShortcutService {
 				}
 			}
 		});
-		return new ShortcutRegistration(RootPanel.get(), handler, attachRegistration);
+
+		return new HandlerRegistration() {
+
+			@Override
+			public void removeHandler() {
+				attachRegistration.removeHandler();
+
+				// It could be already unbound.
+				try {
+					JQuery.jquery(w).unbindKeyDown(handler);
+				}
+				catch (final Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
 	}
 }

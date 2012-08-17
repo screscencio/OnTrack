@@ -185,7 +185,7 @@ public abstract class ModelActionTest {
 	}
 
 	@Test
-	public void shouldNotHaveRepeatedColumnName() throws Exception {
+	public void shouldNotHaveRepeatedColumnNames() throws Exception {
 		final HashSet<String> columnNames = new HashSet<String>();
 		for (final Field field : getAllNotInjectedFields(getEntityType())) {
 			final Column column = field.getAnnotation(Column.class);

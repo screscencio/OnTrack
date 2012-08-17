@@ -24,6 +24,11 @@
 			margin-bottom: 5px;
 		}
 		
+		.deprecatedContainer {
+			font-style: italic;
+			opacity: 0.6;
+		}
+		
 		.detailContainer {
 			margin-bottom: -10px;
 			text-align: right;
@@ -31,10 +36,14 @@
 			font-style: italic;
 		}
 		
-		@sprite .remove {
+		@sprite .deprecate {
 			gwt-image: 'removeIcon';
 			opacity: 0.4;
 			margin-right: 5px;
+		}
+		
+		.deprecatedIcon {
+			opacity: 1;
 		}
 		
 		@sprite .like {
@@ -99,29 +108,58 @@
 			cursor: inherit;
 		}
 		
+		.deprecatedLabel {
+			font-weight: bold;
+			cursor: pointer;
+			margin-bottom: 5px;
+		}
+		
+		.closedDeprecatedContainer {
+			cursor: pointer;
+			position: relative;
+			width: 100%;
+			height: 15px !important;
+		}
+		
+		.closedDeprecatedLabel {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			left: 0px;
+			bottom: 0px;
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel>
-		<g:HorizontalPanel height="100%">
-			<g:Image ui:field="author" styleName="{style.author}" />
-			<g:cell width="100%" height="100%">
-				<g:VerticalPanel width="100%" height="100%">
-					<g:cell height="100%">
-						<g:HTMLPanel ui:field="container" styleName="{style.container}" />
+		<g:DeckPanel ui:field="deckPanel">
+			<g:HTMLPanel>
+				<g:HorizontalPanel height="100%">
+					<g:Image ui:field="author" styleName="{style.author}" />
+					<g:cell width="100%" height="100%">
+						<g:VerticalPanel width="100%" height="100%">
+							<g:Label ui:field="deprecatedLabel" text="[Deprecated]" styleName="{style.deprecatedLabel}"/>
+							<g:cell height="100%">
+								<g:HTMLPanel ui:field="container" styleName="{style.container}" />
+							</g:cell>
+							<g:HTMLPanel styleName="{style.detailContainer}">
+								<g:FocusPanel ui:field="deprecate" styleName="{style.deprecate} {style.icon} {style.detail}" title="Deprecate"/>
+								<g:FocusPanel ui:field="like" styleName="{style.like} {style.icon} {style.detail}"/>
+								<g:Label ui:field="likeCount" styleName="{style.detail} {style.countLabel}"/>
+								<g:FocusPanel ui:field="comment" styleName="{style.commentIcon} {style.icon} {style.detail}"/>
+								<g:Label ui:field="commentsCount" styleName="{style.detail} {style.countLabel}"/>
+								<g:FocusPanel styleName="{style.clockIcon} {style.icon} {style.detail}"/>
+								<g:Label ui:field="date" styleName="{style.detail} {style.dateLabel}"/>
+							</g:HTMLPanel>
+						</g:VerticalPanel>
 					</g:cell>
-					<g:HTMLPanel styleName="{style.detailContainer}">
-						<g:FocusPanel ui:field="remove" styleName="{style.remove} {style.icon} {style.detail}" title="Remove"/>
-						<g:FocusPanel ui:field="like" styleName="{style.like} {style.icon} {style.detail}"/>
-						<g:Label ui:field="likeCount" styleName="{style.detail} {style.countLabel}"/>
-						<g:FocusPanel ui:field="comment" styleName="{style.commentIcon} {style.icon} {style.detail}"/>
-						<g:Label ui:field="commentsCount" styleName="{style.detail} {style.countLabel}"/>
-						<g:FocusPanel styleName="{style.clockIcon} {style.icon} {style.detail}"/>
-						<g:Label ui:field="date" styleName="{style.detail} {style.dateLabel}"/>
-					</g:HTMLPanel>
-				</g:VerticalPanel>
-			</g:cell>
-		</g:HorizontalPanel>
-		<g:SimplePanel ui:field="commentsContainer" />
+				</g:HorizontalPanel>
+				<g:SimplePanel ui:field="commentsContainer"/>
+			</g:HTMLPanel>
+			<g:SimplePanel styleName="{style.closedDeprecatedContainer}">
+				<g:Label ui:field="closedDeprecatedLabel" styleName="{style.closedDeprecatedLabel} v-ellip"/>
+			</g:SimplePanel>
+		</g:DeckPanel>
 		<misc:Separator styleName="{style.separator}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

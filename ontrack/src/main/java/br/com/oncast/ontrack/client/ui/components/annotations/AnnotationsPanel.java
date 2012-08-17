@@ -77,7 +77,6 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@UiHandler("rootPanel")
 	protected void onKeyDown(final KeyDownEvent e) {
 		if (BrowserKeyCodes.KEY_ESCAPE == e.getNativeKeyCode()) hide();
-		else e.stopPropagation();
 	}
 
 	@Override

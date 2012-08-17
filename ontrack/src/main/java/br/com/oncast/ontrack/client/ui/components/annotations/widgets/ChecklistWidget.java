@@ -130,11 +130,10 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 
 	@UiHandler("newItemDescription")
 	public void onKeyDown(final KeyDownEvent e) {
+		e.stopPropagation();
+
 		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ENTER) addItem();
-		if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) {
-			hideNewItemDescription();
-			e.stopPropagation();
-		}
+		else if (e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hideNewItemDescription();
 
 	}
 
@@ -153,6 +152,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 
 	private void hideNewItemDescription() {
 		addItemDeck.showWidget(0);
+		rootPanel.setFocus(true);
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	private ActionExecutionListener getActionExecutionListener() {
 		if (actionExecutionListener == null) actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof ChecklistAction && action.getReferenceId().equals(checklist.getId())) updateItems();
 			}

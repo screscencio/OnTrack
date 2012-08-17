@@ -14,7 +14,9 @@ import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveDeprecationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -81,8 +83,13 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void removeAnnotation(final UUID subjectId, final UUID annotationId) {
-		doUserAction(new AnnotationRemoveAction(subjectId, annotationId));
+	public void deprecateAnnotation(final UUID subjectId, final UUID annotationId) {
+		doUserAction(new AnnotationDeprecateAction(subjectId, annotationId));
+	}
+
+	@Override
+	public void removeDeprecation(final UUID subjectId, final UUID annotationId) {
+		doUserAction(new AnnotationRemoveDeprecationAction(subjectId, annotationId));
 	}
 
 	private void doUserAction(final AnnotationAction action) {

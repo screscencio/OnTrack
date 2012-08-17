@@ -43,8 +43,6 @@ public class ServerServiceProvider {
 
 	private StorageService storageService;
 
-	private AnnotationBusinessLogic annotationBusinessLogic;
-
 	private ActionPostProcessmentsInitializer postProcessmentsInitializer;
 
 	public static ServerServiceProvider getInstance() {
@@ -165,14 +163,6 @@ public class ServerServiceProvider {
 			if (storageService != null) return storageService;
 			return storageService = new LocalFileSystemStorageService(getAuthenticationManager(), getAuthorizationManager(), getPersistenceService(),
 					getBusinessLogic());
-		}
-	}
-
-	public AnnotationBusinessLogic getAnnotationBusinessLogic() {
-		if (annotationBusinessLogic != null) return annotationBusinessLogic;
-		synchronized (this) {
-			if (annotationBusinessLogic != null) return annotationBusinessLogic;
-			return annotationBusinessLogic = new AnnotationBusinessLogicImpl(getPersistenceService());
 		}
 	}
 

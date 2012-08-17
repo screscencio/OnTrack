@@ -10,19 +10,59 @@ import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 public class AnnotationTestUtils {
 
 	public static Annotation create() throws Exception {
-		return create(new UUID());
+		return new AnnotationBuilder().generate();
 	}
 
 	public static Annotation create(final UUID id) throws Exception {
-		return create(id, UserTestUtils.createUser());
+		return new AnnotationBuilder().setId(id).generate();
 	}
 
 	public static Annotation create(final User author) throws Exception {
-		return create(new UUID(), author);
+		return new AnnotationBuilder().setAuthor(author).generate();
 	}
 
-	private static Annotation create(final UUID id, final User author) {
-		return new Annotation(id, author, new Date(), "Message of annotation '" + id + "'.");
+	public static Annotation create(final Date date) throws Exception {
+		return new AnnotationBuilder().setDate(date).generate();
+	}
+
+	private static class AnnotationBuilder {
+		private UUID id;
+		private User author;
+		private Date date;
+		private String message;
+
+		public AnnotationBuilder() throws Exception {
+			this.id = new UUID();
+			this.author = UserTestUtils.createUser();
+			this.date = new Date();
+			this.message = "Message of annotation '" + id + "'.";
+		}
+
+		public Annotation generate() {
+			return new Annotation(id, author, date, message);
+		}
+
+		public AnnotationBuilder setId(final UUID id) {
+			this.id = id;
+			return this;
+		}
+
+		public AnnotationBuilder setAuthor(final User author) {
+			this.author = author;
+			return this;
+		}
+
+		public AnnotationBuilder setDate(final Date date) {
+			this.date = date;
+			return this;
+		}
+
+		@SuppressWarnings("unused")
+		public AnnotationBuilder setMessage(final String message) {
+			this.message = message;
+			return this;
+		}
+
 	}
 
 }

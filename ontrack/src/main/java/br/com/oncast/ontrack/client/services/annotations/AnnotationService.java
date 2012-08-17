@@ -10,7 +10,7 @@ public interface AnnotationService {
 
 	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId);
 
-	void removeAnnotation(UUID subjectId, UUID annotationId);
+	void deprecateAnnotation(UUID subjectId, UUID annotationId);
 
 	void addVote(UUID subjectId, UUID annotationId);
 
@@ -25,5 +25,7 @@ public interface AnnotationService {
 	void removeAnnotationModificationListener(AnnotationModificationListener annotationCreationListener);
 
 	List<Annotation> getAnnotationsFor(UUID subjectId);
+
+	void removeDeprecation(UUID subjectId, UUID annotationId);
 
 }

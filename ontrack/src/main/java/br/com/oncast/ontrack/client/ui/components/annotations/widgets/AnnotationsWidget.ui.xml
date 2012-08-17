@@ -36,7 +36,7 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="focusPanel">
+	<g:FocusPanel>
 		<g:VerticalPanel height="100%" width="100%">
 			<g:HorizontalPanel width="100%">
 				<g:cell width="100%">
@@ -44,7 +44,7 @@
 				</g:cell>
 				<aw:UploadWidget ui:field="uploadWidget" styleName="{style.uploadPanel}"/>
 			</g:HorizontalPanel>
-			<misc:Separator styleName="{style.separator}"/>
+			<misc:Separator ui:field="separator" styleName="{style.separator}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">
 					<misc:VerticalModelWidgetContainer ui:field="annotationsWidgetContainer"/>

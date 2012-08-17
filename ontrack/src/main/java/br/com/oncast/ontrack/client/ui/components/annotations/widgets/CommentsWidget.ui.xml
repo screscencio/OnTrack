@@ -37,11 +37,11 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="focusPanel">
+	<g:FocusPanel>
 		<g:VerticalPanel height="100%" width="100%">
 			<misc:Separator styleName="{style.separator}"/>
 			<aw:ExtendableTextArea ui:field="newAnnotationText" defaultHeight="26px" maxHeight="100px" helpText="Type to comment this topic" />
-			<g:SimplePanel styleName="{style.spacer}"/>
+			<g:SimplePanel ui:field="separator" styleName="{style.spacer}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">
 					<misc:VerticalModelWidgetContainer ui:field="annotationsWidgetContainer"/>
