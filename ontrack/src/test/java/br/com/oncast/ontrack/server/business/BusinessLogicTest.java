@@ -33,6 +33,7 @@ import org.mockito.Mockito;
 import br.com.oncast.ontrack.server.business.actionPostProcessments.ScopeDeclareProgressPostProcessor;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
+import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -57,6 +58,7 @@ import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -89,7 +91,6 @@ public class BusinessLogicTest {
 	private ClientManager clientManager;
 	private AuthenticationManager authenticationManager;
 	private AuthorizationManager authorizationManager;
-	private ActionPostProcessingService postProcessingService;
 	private NotificationService notification;
 	private SessionManager sessionManager;
 	private User authenticatedUser;
@@ -110,7 +111,6 @@ public class BusinessLogicTest {
 		clientManager = mock(ClientManager.class);
 		notification = mock(NotificationService.class);
 		sessionManager = mock(SessionManager.class);
-		postProcessingService = mock(ActionPostProcessingService.class);
 
 		admin = UserTestUtils.createUser(DefaultAuthenticationCredentials.USER_EMAIL);
 		authenticatedUser = UserTestUtils.createUser(100);
@@ -155,7 +155,8 @@ public class BusinessLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
-		business = new BusinessLogicImpl(postProcessingService, persistence, notification, clientManager, authenticationManager, authorizationManager,
+		business = new BusinessLogicImpl(mock(ActionPostProcessingService.class), persistence, notification, clientManager, authenticationManager,
+				authorizationManager,
 				sessionManager,
 				mock(FeedbackMailFactory.class));
 
@@ -386,6 +387,10 @@ public class BusinessLogicTest {
 
 	@Test
 	public void handleIncomingActionsShouldPostProcessActions() throws Exception {
+		final ActionPostProcessingService postProcessingService = new ActionPostProcessingService();
+		@SuppressWarnings("unchecked") final ActionPostProcessor<ScopeMoveLeftAction> postProcessor = mock(ActionPostProcessor.class);
+		postProcessingService.registerPostProcessor(postProcessor, ScopeMoveLeftAction.class);
+
 		business = BusinessLogicTestUtils.create(authenticationManager, authorizationManager, postProcessingService);
 
 		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
@@ -393,7 +398,7 @@ public class BusinessLogicTest {
 
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
-		verify(postProcessingService, times(1)).postProcessActions(any(ProjectContext.class), any(ActionContext.class), eq(actions));
+		verify(postProcessor, times(1)).process(any(ScopeMoveLeftAction.class), any(ActionContext.class), any(ProjectContext.class));
 	}
 
 	@Test
