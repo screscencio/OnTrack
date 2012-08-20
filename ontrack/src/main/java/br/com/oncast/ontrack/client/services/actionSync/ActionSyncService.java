@@ -14,9 +14,8 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHandler;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
 import com.google.gwt.user.client.Window;
 
@@ -38,30 +37,29 @@ public class ActionSyncService {
 		this.notificationService = notificationService;
 		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, notificationService);
 
-		serverPushClientService.registerServerEventHandler(ServerActionSyncEvent.class, new ServerActionSyncEventHandler() {
+		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
 			@Override
-			public void onEvent(final ServerActionSyncEvent event) {
+			public void onEvent(final ModelActionSyncEvent event) {
 				processServerActionSyncEvent(event);
 			}
 		});
 		this.actionExecutionService.addActionExecutionListener(new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext, final Set<UUID> scopeSet, final boolean isUserAction) {
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext, final Set<UUID> scopeSet,
+					final boolean isUserAction) {
 				handleActionExecution(action, isUserAction);
 			}
 		});
 	}
 
-	private void processServerActionSyncEvent(final ServerActionSyncEvent event) {
-		final ModelActionSyncRequest modelActionSyncRequest = event.getModelActionSyncRequest();
-
-		checkIfRequestIsPertinentToCurrentProject(modelActionSyncRequest);
+	private void processServerActionSyncEvent(final ModelActionSyncEvent event) {
+		checkIfRequestIsPertinentToCurrentProject(event);
 
 		try {
-			final ActionContext actionContext = modelActionSyncRequest.getActionContext();
-			for (final ModelAction modelAction : modelActionSyncRequest.getActionList()) {
+			final ActionContext actionContext = event.getActionContext();
+			for (final ModelAction modelAction : event.getActionList()) {
 				actionExecutionService.onNonUserActionRequest(modelAction, actionContext);
 			}
 		}
@@ -81,8 +79,8 @@ public class ActionSyncService {
 		actionQueuedDispatcher.dispatch(action);
 	}
 
-	private void checkIfRequestIsPertinentToCurrentProject(final ModelActionSyncRequest modelActionSyncRequest) {
-		final UUID requestedProjectId = modelActionSyncRequest.getProjectId();
+	private void checkIfRequestIsPertinentToCurrentProject(final ModelActionSyncEvent event) {
+		final UUID requestedProjectId = event.getProjectId();
 		final UUID currentProjectId = projectRepresentationProvider.getCurrent().getId();
 		if (!requestedProjectId.equals(currentProjectId)) throw new RuntimeException(
 				"This client received an action for project '" + requestedProjectId + "' but it is currently on project '" + currentProjectId

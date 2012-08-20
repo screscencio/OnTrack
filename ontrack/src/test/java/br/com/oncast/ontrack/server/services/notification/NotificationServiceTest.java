@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.server.services.session.Session;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
-import br.com.oncast.ontrack.utils.mocks.requests.RequestTestUtils;
+import br.com.oncast.ontrack.utils.mocks.requests.ModelActionSyncTestUtils;
 
 public class NotificationServiceTest {
 
@@ -67,7 +67,7 @@ public class NotificationServiceTest {
 		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
 		when(sessionMock.getThreadLocalClientId()).thenReturn(originator);
 
-		service.notifyActions(RequestTestUtils.createModelActionSyncRequest());
+		service.notifyActionsToOtherProjectUsers(ModelActionSyncTestUtils.createModelActionSyncEvent());
 
 		final HashSet<UUID> expectedClients = new HashSet<UUID>();
 		expectedClients.add(client1);

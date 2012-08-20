@@ -68,92 +68,85 @@ public class BusinessLogicTestUtils {
 	}
 
 	public static BusinessLogic create() throws Exception {
-		return new BusinessLogicImpl(postProcessingService, getPersistenceMock(), notificationMock, clientManagerMock, authenticationMock, authorizationMock,
+		return new BusinessLogicImpl(getPersistenceMock(), notificationMock, clientManagerMock, authenticationMock, authorizationMock,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notificationMock, clientManagerMock, authenticationMock, authorizationMock,
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationMock, authorizationMock,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final AuthorizationManager authorizationManager) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notificationMock, clientManagerMock, authenticationMock, authorizationManager,
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationMock, authorizationManager,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager,
 			final AuthorizationManager authorizationManager) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notificationMock, clientManagerMock, authenticationManager, authorizationManager,
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationManager, authorizationManager,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager,
 			final AuthorizationManager authorizationManager, final SessionManager sessionManager) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notificationMock, clientManagerMock, authenticationManager, authorizationManager,
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationManager, authorizationManager,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final ProjectAuthorizationMailFactory mailFactory) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notificationMock, clientManagerMock, authenticationMock, authorizationMock,
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationMock, authorizationMock,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager,
 			final ProjectAuthorizationMailFactory mailFactory) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notificationMock, clientManagerMock, authenticationManager, authorizationMock,
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationManager, authorizationMock,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notificationMock, clientManagerMock, authenticationManager, authorizationMock,
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationManager, authorizationMock,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final AuthenticationManager authenticationManager,
 			final SessionManager sessionManager) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notificationMock, clientManagerMock, authenticationManager, authorizationMock,
+		return new BusinessLogicImpl(persistence, notificationMock, clientManagerMock, authenticationManager, authorizationMock,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final NotificationService notification, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notification, clientManager, authenticationManager, authorizationMock, sessionManager,
+		return new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, authorizationMock, sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final PersistenceService persistence, final NotificationService notification,
 			final AuthenticationManager authenticationManager) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notification, clientManagerMock, authenticationManager, authorizationMock,
+		return new BusinessLogicImpl(persistence, notification, clientManagerMock, authenticationManager, authorizationMock,
 				sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic create(final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager,
 			final ActionPostProcessingService postProcessingService) throws Exception {
-		return new BusinessLogicImpl(postProcessingService, getPersistenceMock(), notificationMock, clientManagerMock, authenticationManager,
+		return new BusinessLogicImpl(getPersistenceMock(), notificationMock, clientManagerMock, authenticationManager,
 				authorizationManager,
 				sessionManager, userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic createWithJpaPersistence() {
-		return new BusinessLogicImpl(postProcessingService, getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock,
-				authenticationMock,
-				authorizationMock,
-				sessionManager, userQuotaRequestMailFactory);
-	}
-
-	public static BusinessLogic createWithJpaPersistence(final ActionPostProcessingService postProcessingService2) {
-		return new BusinessLogicImpl(postProcessingService2, getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock,
+		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock,
 				authenticationMock,
 				authorizationMock,
 				sessionManager, userQuotaRequestMailFactory);
@@ -161,12 +154,12 @@ public class BusinessLogicTestUtils {
 
 	public static BusinessLogic create(final PersistenceService persistence, final NotificationService notification, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final SessionManager sessionManager) {
-		return new BusinessLogicImpl(postProcessingService, persistence, notification, clientManager, authenticationManager, authorizationMock, sessionManager,
+		return new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager, authorizationMock, sessionManager,
 				userQuotaRequestMailFactory);
 	}
 
 	public static BusinessLogic createWithJpaPersistence(final NotificationService notificationMock) {
-		return new BusinessLogicImpl(postProcessingService, getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock,
+		return new BusinessLogicImpl(getPersistenceServiceJpaImplMockingAuthorization(), notificationMock, clientManagerMock,
 				authenticationMock,
 				authorizationMock,
 				sessionManager, userQuotaRequestMailFactory);

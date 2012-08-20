@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.notification;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -10,7 +11,7 @@ import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
@@ -43,13 +44,27 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public void notifyActions(final ModelActionSyncRequest modelActionSyncRequest) {
-		final Set<UUID> connectionSet = clientManager.getClientsAtProject(modelActionSyncRequest.getProjectId());
-		if (!modelActionSyncRequest.shouldNotifyCurrentClient()) connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
+	public void notifyActionsToOtherProjectUsers(final ModelActionSyncEvent event) {
+		final Set<UUID> connectionSet = clientManager.getClientsAtProject(event.getProjectId());
+		connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
 
-		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + modelActionSyncRequest.getProjectId()
+		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + event.getProjectId()
 				+ "' to '" + connectionSet.toString() + "'.");
-		serverPushServerService.pushEvent(new ServerActionSyncEvent(modelActionSyncRequest), connectionSet);
+		serverPushServerService.pushEvent(event, connectionSet);
+	}
+
+	@Override
+	public void notifyActionToCurrentUser(final ModelActionSyncEvent event) {
+		final UUID localClientId = sessionManager.getCurrentSession().getThreadLocalClientId();
+
+		if (!clientManager.getClientsAtProject(event.getProjectId()).contains(localClientId)) return;
+
+		final Set<UUID> connectionSet = new HashSet<UUID>();
+		connectionSet.add(localClientId);
+
+		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + event.getProjectId()
+				+ "' to '" + connectionSet.toString() + "'.");
+		serverPushServerService.pushEvent(event, connectionSet);
 	}
 
 	@Override
@@ -69,5 +84,4 @@ public class NotificationServiceImpl implements NotificationService {
 				+ "' to '" + connectionSet.toArray().toString() + "'.");
 		serverPushServerService.pushEvent(new UserInformationChangeEvent(authenticatedUser), connectionSet);
 	}
-
 }
