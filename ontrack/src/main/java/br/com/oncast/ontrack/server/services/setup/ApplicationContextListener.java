@@ -7,7 +7,6 @@ import net.zschech.gwt.comet.server.impl.AsyncServlet;
 import br.com.drycode.api.web.gwt.dispatchService.server.DispatchServiceServlet;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchServiceException;
 import br.com.oncast.ontrack.client.services.feedback.SendFeedbackRequest;
-import br.com.oncast.ontrack.client.services.migration.GenerateExportXmlRequest;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationVerificationAspectFilter;
@@ -15,7 +14,6 @@ import br.com.oncast.ontrack.server.services.requestDispatch.AuthenticationReque
 import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.DeAuthenticationRequestHandler;
-import br.com.oncast.ontrack.server.services.requestDispatch.GenerateExportXmlRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectAuthorizationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
@@ -66,7 +64,6 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(CurrentUserInformationRequest.class, new CurrentUserInformationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ProjectCreationQuotaRequest.class, new ProjectCreationQuotaRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(SendFeedbackRequest.class, new SendFeedbackRequestHandler());
-			DispatchServiceServlet.registerRequestHandler(GenerateExportXmlRequest.class, new GenerateExportXmlRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

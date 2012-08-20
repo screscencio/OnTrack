@@ -7,8 +7,6 @@ import br.com.oncast.ontrack.client.ui.places.loading.ContextLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.loading.UserInformationLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
-import br.com.oncast.ontrack.client.ui.places.migration.MigrationActivity;
-import br.com.oncast.ontrack.client.ui.places.migration.MigrationPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressActivity;
@@ -38,8 +36,6 @@ public class AppActivityMapper implements ActivityMapper {
 
 		if (!services.getAuthenticationService().isUserAvailable()) return createUserInformationLoadingActivity(place);
 
-		if (place instanceof MigrationPlace) return createMigrationActivity();
-
 		if (place instanceof ProjectDependentPlace) {
 			final ProjectDependentPlace projectDependentPlace = (ProjectDependentPlace) place;
 			final UUID requestedProjectId = projectDependentPlace.getRequestedProjectId();
@@ -59,10 +55,6 @@ public class AppActivityMapper implements ActivityMapper {
 
 	private Activity createDetailActivity(final DetailPlace place) {
 		return new DetailActivity(place);
-	}
-
-	private Activity createMigrationActivity() {
-		return new MigrationActivity();
 	}
 
 	private Activity createProgressActivity(final ProgressPlace place) {
