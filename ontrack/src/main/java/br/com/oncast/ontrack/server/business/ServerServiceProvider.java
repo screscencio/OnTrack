@@ -89,7 +89,7 @@ public class ServerServiceProvider {
 		if (xmlImporter != null) return xmlImporter;
 		synchronized (this) {
 			if (xmlImporter != null) return xmlImporter;
-			return xmlImporter = new XMLImporterService(getPersistenceService());
+			return xmlImporter = new XMLImporterService(getPersistenceService(), getBusinessLogic());
 		}
 	}
 

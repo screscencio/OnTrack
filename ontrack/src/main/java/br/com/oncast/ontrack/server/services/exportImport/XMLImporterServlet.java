@@ -72,13 +72,13 @@ public class XMLImporterServlet extends HttpServlet {
 	}
 
 	private File migrate(final File sourceXML) throws Exception {
-		LOGGER.debug("Initializing XML reading");
+		LOGGER.debug("Initializing XML Load");
 		final Document document = XMLUtils.read(sourceXML);
-		LOGGER.debug("Finished XML reading");
+		LOGGER.debug("Finished XML Load");
 
-		LOGGER.debug("Initializing Migration");
+		LOGGER.debug("Initializing XML Migration");
 		OntrackMigrationManager.applyMigrationsOn(document);
-		LOGGER.debug("Finished Migration");
+		LOGGER.debug("Finished XML Migration");
 
 		final File migratedXML = new File(TEMP_DIR, MIGRATED_XML_FILE_NAME);
 		XMLUtils.write(document, migratedXML);
@@ -87,8 +87,8 @@ public class XMLImporterServlet extends HttpServlet {
 	}
 
 	private void updateDatabase(final File xmlFile) throws PersistenceException {
-		LOGGER.debug("Initializing Database update");
+		LOGGER.debug("Initializing XML Import");
 		SERVICE_PROVIDER.getXmlImporterService().importFromFile(xmlFile);
-		LOGGER.debug("Finished Database update");
+		LOGGER.debug("Finished XML Import");
 	}
 }

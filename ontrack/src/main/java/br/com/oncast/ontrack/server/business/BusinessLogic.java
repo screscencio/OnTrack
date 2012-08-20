@@ -42,4 +42,6 @@ public interface BusinessLogic {
 
 	public abstract void onFileUploadCompleted(final FileRepresentation fileRepresentation) throws UnableToHandleActionException, AuthorizationException;
 
+	public abstract void loadProjectForMigration(UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException;
+
 }

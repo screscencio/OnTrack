@@ -27,6 +27,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.Password;
@@ -49,14 +50,19 @@ import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 public class XMLImporterTest {
 
 	private static final long USER_ID = 0;
+
 	@Mock
 	private PersistenceService persistenceService;
+
 	@Mock
 	private OntrackXML ontrackXML;
+
+	@Mock
+	private BusinessLogic businessLogic;
+
 	private List<ProjectXMLNode> projects;
 	private List<UserXMLNode> users;
 	private List<ProjectAuthorizationXMLNode> projectAuthorizations;
-
 	private XMLImporter importer;
 
 	@Before
@@ -93,7 +99,7 @@ public class XMLImporterTest {
 	}
 
 	private void configureImporter() throws Exception {
-		importer = new XMLImporter(persistenceService);
+		importer = new XMLImporter(persistenceService, businessLogic);
 		ReflectionTestUtils.set(importer, "ontrackXML", ontrackXML);
 	}
 
@@ -274,6 +280,20 @@ public class XMLImporterTest {
 
 		verify(persistenceService, times(node.getActions().size())).persistActions(eq(projectId), anyListOf(ModelAction.class), eq(persistedUserId),
 				any(Date.class));
+	}
+
+	@Test
+	public void shouldLoadAllProjects() throws Exception {
+		final UUID projectId = new UUID();
+		addProjectWithActionsAndMockPersistedProject(projectId);
+
+		importer.persistObjects().loadProjects();
+		verify(businessLogic).loadProjectForMigration(projectId);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotBeAbleToLoadProjectsBeforePersistingObjects() throws Exception {
+		importer.loadProjects();
 	}
 
 	private void addProjectAuthorization(final User user, final ProjectRepresentation project) {

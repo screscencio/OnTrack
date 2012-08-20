@@ -222,6 +222,22 @@ class BusinessLogicImpl implements BusinessLogic {
 		try {
 			authorizationManager.assureProjectAccessAuthorization(projectId);
 
+			return doLoadProject(projectId);
+		}
+		catch (final PersistenceException e) {
+			final String errorMessage = "The server could not load the project: A persistence exception occured.";
+			LOGGER.error(errorMessage, e);
+			throw new UnableToLoadProjectException(errorMessage);
+		}
+		catch (final AuthorizationException e) {
+			final String errorMessage = "Access denied to project '" + projectId + "'";
+			LOGGER.error(errorMessage, e);
+			throw new UnableToLoadProjectException(errorMessage);
+		}
+	}
+
+	private Project doLoadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
+		try {
 			final ProjectSnapshot snapshot = loadProjectSnapshot(projectId);
 			final List<UserAction> actionList = persistenceService.retrieveActionsSince(projectId, snapshot.getLastAppliedActionId());
 
@@ -245,11 +261,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 		catch (final UnableToCompleteActionException e) {
 			final String errorMessage = "The project state could not be correctly restored.";
-			LOGGER.error(errorMessage, e);
-			throw new UnableToLoadProjectException(errorMessage);
-		}
-		catch (final AuthorizationException e) {
-			final String errorMessage = "Access denied to project '" + projectId + "'";
 			LOGGER.error(errorMessage, e);
 			throw new UnableToLoadProjectException(errorMessage);
 		}
@@ -323,5 +334,11 @@ class BusinessLogicImpl implements BusinessLogic {
 		final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(fileRepresentation.getProjectId(), actionList);
 		modelActionSyncRequest.setShouldNotifyCurrentClient(true);
 		handleIncomingActionSyncRequest(modelActionSyncRequest);
+	}
+
+	@Override
+	@PostProcessActions
+	public void loadProjectForMigration(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
+		doLoadProject(projectId);
 	}
 }

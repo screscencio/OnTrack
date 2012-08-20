@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
@@ -171,7 +172,8 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	private void readXml(final File file, final PersistenceService persistenceService) throws NoResultFoundException, PersistenceException, Exception {
 		when(persistenceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(UserTestUtils.createUser());
-		final XMLImporter importer = new XMLImporter(persistenceService);
+		final BusinessLogic businessLogic = mock(BusinessLogic.class);
+		final XMLImporter importer = new XMLImporter(persistenceService, businessLogic);
 		importer.loadXML(file).persistObjects();
 	}
 

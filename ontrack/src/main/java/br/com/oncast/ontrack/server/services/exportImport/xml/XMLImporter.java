@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.Password;
@@ -27,15 +28,18 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class XMLImporter {
 
-	private final PersistenceService persistanceService;
+	private final PersistenceService persistenceService;
 	private OntrackXML ontrackXML;
 	private final HashMap<Long, User> userIdMap = new HashMap<Long, User>();
 	private long adminId = -1;
 	private static final Logger LOGGER = Logger.getLogger(XMLImporter.class);
+	private final BusinessLogic businessLogic;
+	private boolean persisted;
 
-	public XMLImporter(final PersistenceService persistenceService) {
-		LOGGER.debug("Initializing XML Import");
-		this.persistanceService = persistenceService;
+	public XMLImporter(final PersistenceService persistenceService, final BusinessLogic businessLogic) {
+		this.persistenceService = persistenceService;
+		this.businessLogic = businessLogic;
+		this.persisted = false;
 	}
 
 	public XMLImporter loadXML(final File file) {
@@ -44,6 +48,7 @@ public class XMLImporter {
 
 		try {
 			ontrackXML = serializer.read(OntrackXML.class, file);
+			persisted = false;
 			LOGGER.debug("Finished Serialization");
 		}
 		catch (final Exception e) {
@@ -52,17 +57,19 @@ public class XMLImporter {
 		return this;
 	}
 
-	public void persistObjects() {
+	public XMLImporter persistObjects() {
 		if (ontrackXML == null) throw new RuntimeException("You must use loadXML method to load xml before use this method.");
 
 		try {
 			persistUsers(ontrackXML.getUsers());
-			LOGGER.debug("Persist User DONE!");
+			LOGGER.debug("Users Persisted!");
 			persistProjects(ontrackXML.getProjects());
-			LOGGER.debug("Persist Projects DONE!");
+			LOGGER.debug("Projects Persisted!");
 			persistAuthorizations(ontrackXML.getProjectAuthorizations());
-			LOGGER.debug("Persist Project Authorizations DONE!");
-			LOGGER.debug("Finished XML Import");
+			LOGGER.debug("Project Authorizations Persisted!");
+
+			this.persisted = true;
+			return this;
 		}
 		catch (final PersistenceException e) {
 			throw new UnableToImportXMLException("The xml import was not concluded. Some operations may be changed the database, but was not rolledback. ", e);
@@ -73,10 +80,10 @@ public class XMLImporter {
 		for (final UserXMLNode userNode : userNodes) {
 			User persistedUser;
 			try {
-				persistedUser = persistanceService.retrieveUserByEmail(userNode.getUser().getEmail());
+				persistedUser = persistenceService.retrieveUserByEmail(userNode.getUser().getEmail());
 			}
 			catch (final NoResultFoundException e) {
-				persistedUser = persistanceService.persistOrUpdateUser(userNode.getUser());
+				persistedUser = persistenceService.persistOrUpdateUser(userNode.getUser());
 				if (userNode.hasPassword()) persistPassword(persistedUser.getId(), userNode.getPassword());
 			}
 			userIdMap.put(userNode.getId(), persistedUser);
@@ -85,13 +92,13 @@ public class XMLImporter {
 
 	private void persistPassword(final long userId, final Password password) throws PersistenceException {
 		password.setUserId(userId);
-		persistanceService.persistOrUpdatePassword(password);
+		persistenceService.persistOrUpdatePassword(password);
 	}
 
 	private void persistProjects(final List<ProjectXMLNode> projectNodes) throws PersistenceException {
 		for (final ProjectXMLNode projectNode : projectNodes) {
 			final ProjectRepresentation representation = projectNode.getProjectRepresentation();
-			persistanceService.persistOrUpdateProjectRepresentation(representation);
+			persistenceService.persistOrUpdateProjectRepresentation(representation);
 			persistActions(representation.getId(), projectNode.getActions());
 		}
 	}
@@ -101,13 +108,13 @@ public class XMLImporter {
 			final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
 			actions.add(userAction.getModelAction());
 			final User user = userIdMap.get(userAction.getUserId());
-			persistanceService.persistActions(projectId, actions, user == null ? getAdminId() : user.getId(), userAction.getTimestamp());
+			persistenceService.persistActions(projectId, actions, user == null ? getAdminId() : user.getId(), userAction.getTimestamp());
 		}
 	}
 
 	private long getAdminId() throws PersistenceException {
 		try {
-			return adminId < 0 ? adminId = persistanceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL).getId() : adminId;
+			return adminId < 0 ? adminId = persistenceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL).getId() : adminId;
 		}
 		catch (final NoResultFoundException e) {
 			return adminId = 1;
@@ -116,9 +123,27 @@ public class XMLImporter {
 
 	private void persistAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizationNodes) throws PersistenceException {
 		for (final ProjectAuthorizationXMLNode authNode : projectAuthorizationNodes) {
-			persistanceService.authorize(userIdMap.get(authNode.getUserId()).getEmail(), authNode.getProjectId());
+			persistenceService.authorize(userIdMap.get(authNode.getUserId()).getEmail(), authNode.getProjectId());
 		}
 
 	}
 
+	public void loadProjects() {
+		if (ontrackXML == null) throw new RuntimeException("You must use loadXML method to load xml before this method.");
+		if (!persisted) throw new RuntimeException("You must use persistObjects method to persist actions before this method.");
+
+		for (final ProjectXMLNode node : ontrackXML.getProjects()) {
+			final UUID projectId = node.getProjectRepresentation().getId();
+			try {
+				businessLogic.loadProjectForMigration(projectId);
+			}
+			catch (final Exception e) {
+				final String message = "Unable to load project '" + projectId.toStringRepresentation() + "' after import.";
+				LOGGER.error(message, e);
+				throw new UnableToImportXMLException(
+						"The xml import was not concluded. Some operations may be changed the database, but was not rolled back. Reason: "
+								+ message, e);
+			}
+		}
+	}
 }
