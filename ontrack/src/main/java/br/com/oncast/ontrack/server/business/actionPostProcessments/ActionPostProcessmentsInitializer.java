@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 
 public class ActionPostProcessmentsInitializer {
 
@@ -23,17 +24,22 @@ public class ActionPostProcessmentsInitializer {
 
 	public synchronized void initialize() {
 		if (initialized) return;
-		postProcessingService.registerPostProcessor(createFileUploadPostProcessing(), FileUploadAction.class);
+		postProcessingService.registerPostProcessor(createFileUploadPostProcessor(), FileUploadAction.class);
 		postProcessingService.registerPostProcessor(createScopeDeclareProgressPostProcessor(), ScopeDeclareProgressAction.class);
+		postProcessingService.registerPostProcessor(createTeamInvitePostProcessor(), TeamInviteAction.class);
 		initialized = true;
+	}
+
+	private ActionPostProcessor<TeamInviteAction> createTeamInvitePostProcessor() {
+		return new TeamInvitePostProcessor(notificationService);
 	}
 
 	private ActionPostProcessor<ScopeDeclareProgressAction> createScopeDeclareProgressPostProcessor() {
 		return new ScopeDeclareProgressPostProcessor();
 	}
 
-	private ActionPostProcessor<FileUploadAction> createFileUploadPostProcessing() {
-		return new FileUploadPostProcessing(persistenceService);
+	private ActionPostProcessor<FileUploadAction> createFileUploadPostProcessor() {
+		return new FileUploadPostProcessor(persistenceService, notificationService);
 	}
 
 }

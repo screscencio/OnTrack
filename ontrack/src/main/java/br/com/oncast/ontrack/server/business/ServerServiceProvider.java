@@ -55,7 +55,7 @@ public class ServerServiceProvider {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(getActionPostProcessingService(), getPersistenceService(), getNotificationService(),
+			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getNotificationService(),
 					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory());
 		}
 	}

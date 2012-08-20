@@ -1,0 +1,428 @@
+---- AspectJ Properties ---
+AspectJ Compiler 1.6.7 built on Friday Jan 1, 2010 at 03:49:38 GMT
+---- Dump Properties ---
+Dump file: ajcore.20120820.115258.253.txt
+Dump reason: java.lang.RuntimeException
+Dump on exception: true
+Dump at exit condition: abort
+---- Exception Information ---
+java.lang.RuntimeException: Problem processing attributes in /home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/classes/br/com/oncast/ontrack/shared/services/actionExecution/ActionExecuterTestUtils$ModelActionMockImpl.class
+	at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:381)
+	at org.aspectj.weaver.bcel.BcelObjectType.<init>(BcelObjectType.java:159)
+	at org.aspectj.weaver.bcel.BcelWorld.buildBcelDelegate(BcelWorld.java:382)
+	at org.aspectj.weaver.bcel.BcelWorld.addSourceObjectType(BcelWorld.java:462)
+	at org.aspectj.weaver.bcel.BcelWorld.addSourceObjectType(BcelWorld.java:428)
+	at org.aspectj.weaver.bcel.BcelWeaver.addIfAspect(BcelWeaver.java:305)
+	at org.aspectj.weaver.bcel.BcelWeaver.addAspectsFromDirectory(BcelWeaver.java:296)
+	at org.aspectj.weaver.bcel.BcelWeaver.addLibraryJarFile(BcelWeaver.java:238)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.initBcelWorld(AjBuildManager.java:863)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performBuild(AjBuildManager.java:245)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.batchBuild(AjBuildManager.java:181)
+	at org.aspectj.ajdt.ajc.AjdtCommand.doCommand(AjdtCommand.java:112)
+	at org.aspectj.ajdt.ajc.AjdtCommand.runCommand(AjdtCommand.java:60)
+	at org.aspectj.tools.ajc.Main.run(Main.java:355)
+	at org.aspectj.tools.ajc.Main.runMain(Main.java:234)
+	at org.codehaus.mojo.aspectj.AbstractAjcCompiler.execute(AbstractAjcCompiler.java:381)
+	at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:490)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:694)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:556)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:535)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalAndHandleFailures(DefaultLifecycleExecutor.java:387)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:348)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:180)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:328)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:138)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:362)
+	at org.apache.maven.cli.compat.CompatibleMain.main(CompatibleMain.java:60)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)
+	at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)
+	at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)
+	at org.codehaus.classworlds.Launcher.main(Launcher.java:375)
+Caused by: org.aspectj.weaver.BCException: Unable to continue, this version of AspectJ supports classes built with weaver version 6.0 but the class br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils$ModelActionMockImpl is version 7.0
+when batch building BuildConfig[null] #Files=187 AopXmls=#0
+
+	at org.aspectj.weaver.bcel.Utility.readAjAttributes(Utility.java:83)
+	at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:378)
+	... 34 more
+---- System Properties ---
+jna.platform.library.path=/usr/lib:/lib
+java.runtime.name=Java(TM) SE Runtime Environment
+sun.boot.library.path=/usr/lib/jvm/java-7-oracle/jre/lib/i386
+java.vm.version=23.1-b03
+java.vm.vendor=Oracle Corporation
+java.vendor.url=http://java.oracle.com/
+path.separator=:
+java.vm.name=Java HotSpot(TM) Server VM
+file.encoding.pkg=sun.io
+user.country=US
+sun.java.launcher=SUN_STANDARD
+sun.os.patch.level=unknown
+java.vm.specification.name=Java Virtual Machine Specification
+user.dir=/home/rhlobo/dev/workspace-java/OnTrack/ontrack
+java.runtime.version=1.7.0_05-b05
+java.awt.graphicsenv=sun.awt.X11GraphicsEnvironment
+java.endorsed.dirs=/usr/lib/jvm/java-7-oracle/jre/lib/endorsed
+os.arch=i386
+java.io.tmpdir=/tmp
+line.separator=
+
+java.vm.specification.vendor=Oracle Corporation
+os.name=Linux
+classworlds.conf=/usr/share/maven2/bin/m2.conf
+sun.jnu.encoding=UTF-8
+java.library.path=/usr/java/packages/lib/i386:/lib:/usr/lib
+java.specification.name=Java Platform API Specification
+java.class.version=51.0
+sun.management.compiler=HotSpot Tiered Compilers
+os.version=3.2.0-29-generic-pae
+user.home=/home/rhlobo
+user.timezone=America/Sao_Paulo
+java.awt.printerjob=sun.print.PSPrinterJob
+file.encoding=UTF-8
+java.specification.version=1.7
+java.class.path=/usr/share/maven2/boot/classworlds.jar
+user.name=rhlobo
+java.vm.specification.version=1.7
+sun.java.command=org.codehaus.classworlds.Launcher "package" "-P" "stag"
+java.home=/usr/lib/jvm/java-7-oracle/jre
+sun.arch.data.model=32
+user.language=en
+java.specification.vendor=Oracle Corporation
+awt.toolkit=sun.awt.X11.XToolkit
+java.vm.info=mixed mode
+java.version=1.7.0_05
+securerandom.source=file:/dev/./urandom
+java.ext.dirs=/usr/lib/jvm/java-7-oracle/jre/lib/ext:/usr/java/packages/lib/ext
+sun.boot.class.path=/usr/lib/jvm/java-7-oracle/jre/lib/resources.jar:/usr/lib/jvm/java-7-oracle/jre/lib/rt.jar:/usr/lib/jvm/java-7-oracle/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-7-oracle/jre/lib/jsse.jar:/usr/lib/jvm/java-7-oracle/jre/lib/jce.jar:/usr/lib/jvm/java-7-oracle/jre/lib/charsets.jar:/usr/lib/jvm/java-7-oracle/jre/lib/jfr.jar:/usr/lib/jvm/java-7-oracle/jre/classes
+java.vendor=Oracle Corporation
+maven.home=/usr/share/maven2
+file.separator=/
+java.vendor.url.bug=http://bugreport.sun.com/bugreport/
+sun.io.unicode.encoding=UnicodeLittle
+sun.cpu.endian=little
+sun.desktop=gnome
+sun.cpu.isalist=
+---- Command Line ---
+-encoding
+UTF-8
+-source
+1.6
+-target
+1.6
+-classpath
+/home/rhlobo/.m2/repository/antlr/antlr/2.7.6/antlr-2.7.6.jar:/home/rhlobo/.m2/repository/asm/asm/3.1/asm-3.1.jar:/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/RequestDispatch-0.9.jar:/home/rhlobo/.m2/repository/c3p0/c3p0/0.9.1.2/c3p0-0.9.1.2.jar:/home/rhlobo/.m2/repository/cglib/cglib/2.2/cglib-2.2.jar:/home/rhlobo/.m2/repository/com/allen-sauer/gwt/dnd/gwt-dnd/3.1.2/gwt-dnd-3.1.2.jar:/home/rhlobo/.m2/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar:/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/jsr305-gwt-1.3.9.jar:/home/rhlobo/.m2/repository/com/google/guava/guava/12.0/guava-12.0.jar:/home/rhlobo/.m2/repository/com/google/guava/guava-gwt/12.0/guava-gwt-12.0.jar:/home/rhlobo/.m2/repository/com/google/gwt/gwt-dev/2.4.0/gwt-dev-2.4.0.jar:/home/rhlobo/.m2/repository/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0.jar:/home/rhlobo/.m2/repository/com/google/gwt/gwt-user/2.4.0/gwt-user-2.4.0.jar:/home/rhlobo/.m2/repository/com/googlecode/gwt-test-utils/gwt-test-utils/0.38/gwt-test-utils-0.38.jar:/home/rhlobo/.m2/repository/commons-beanutils/commons-beanutils/1.8.3/commons-beanutils-1.8.3.jar:/home/rhlobo/.m2/repository/commons-codec/commons-codec/1.5/commons-codec-1.5.jar:/home/rhlobo/.m2/repository/commons-collections/commons-collections/3.1/commons-collections-3.1.jar:/home/rhlobo/.m2/repository/commons-fileupload/commons-fileupload/1.2.2/commons-fileupload-1.2.2.jar:/home/rhlobo/.m2/repository/commons-io/commons-io/2.1/commons-io-2.1.jar:/home/rhlobo/.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar:/home/rhlobo/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/home/rhlobo/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar:/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/gwt-comet-1.2.3-patch.jar:/home/rhlobo/.m2/repository/hsqldb/hsqldb/1.8.0.7/hsqldb-1.8.0.7.jar:/home/rhlobo/.m2/repository/javassist/javassist/3.12.0.GA/javassist-3.12.0.GA.jar:/home/rhlobo/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar:/home/rhlobo/.m2/repository/javax/mail/mail/1.4.4/mail-1.4.4.jar:/home/rhlobo/.m2/repository/javax/transaction/jta/1.1/jta-1.1.jar:/home/rhlobo/.m2/repository/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar:/home/rhlobo/.m2/repository/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA.jar:/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/jaxen-1.1.1.jar:/home/rhlobo/.m2/repository/junit/junit/4.8.1/junit-4.8.1.jar:/home/rhlobo/.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar:/home/rhlobo/.m2/repository/org/antlr/antlr-runtime/3.1.1/antlr-runtime-3.1.1.jar:/home/rhlobo/.m2/repository/org/apache/commons/commons-lang3/3.0/commons-lang3-3.0.jar:/home/rhlobo/.m2/repository/org/apache/velocity/velocity/1.7/velocity-1.7.jar:/home/rhlobo/.m2/repository/org/aspectj/aspectjrt/1.7.0/aspectjrt-1.7.0.jar:/home/rhlobo/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.1/jackson-core-asl-1.9.1.jar:/home/rhlobo/.m2/repository/org/hibernate/hibernate-c3p0/3.6.6.Final/hibernate-c3p0-3.6.6.Final.jar:/home/rhlobo/.m2/repository/org/hibernate/hibernate-commons-annotations/3.2.0.Final/hibernate-commons-annotations-3.2.0.Final.jar:/home/rhlobo/.m2/repository/org/hibernate/hibernate-core/3.6.6.Final/hibernate-core-3.6.6.Final.jar:/home/rhlobo/.m2/repository/org/hibernate/hibernate-entitymanager/3.6.6.Final/hibernate-entitymanager-3.6.6.Final.jar:/home/rhlobo/.m2/repository/org/hibernate/hibernate-validator/4.2.0.Final/hibernate-validator-4.2.0.Final.jar:/home/rhlobo/.m2/repository/org/hibernate/javax/persistence/hibernate-jpa-2.0-api/1.0.1.Final/hibernate-jpa-2.0-api-1.0.1.Final.jar:/home/rhlobo/.m2/repository/org/htmlparser/htmlparser/1.6/htmlparser-1.6.jar:/home/rhlobo/.m2/repository/org/javassist/javassist/3.15.0-GA/javassist-3.15.0-GA.jar:/home/rhlobo/.m2/repository/org/mockito/mockito-all/1.8.5/mockito-all-1.8.5.jar:/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.1.1.jar:/home/rhlobo/.m2/repository/org/reflections/reflections/0.9.5/reflections-0.9.5.jar:/home/rhlobo/.m2/repository/org/simpleframework/simple-xml/2.6.2/simple-xml-2.6.2.jar:/home/rhlobo/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar:/home/rhlobo/.m2/repository/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar:/home/rhlobo/.m2/repository/stax/stax/1.2.0/stax-1.2.0.jar:/home/rhlobo/.m2/repository/stax/stax-api/1.0.1/stax-api-1.0.1.jar:/home/rhlobo/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar:/home/rhlobo/.m2/repository/xpp3/xpp3/1.1.3.3/xpp3-1.1.3.3.jar:/home/rhlobo/dev/workspace-java/OnTrack/ontrack/target/test-classes:/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/classes
+-aspectpath
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/classes
+-d
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/target/test-classes
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/assertions/KanbanTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/actions/ActionExecutionFactoryTestUtil.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/actionPostProcessing/ActionPostProcessingServiceTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceEngineScopeInfluenceTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/services/context/ContextProviderServiceTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseRenameActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/scope/stringrepresentation/ScopeRepresentationParserTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeUpdateActionUndoAndRedoTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseDeclareEstimatedVelocityActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/InsertSiblingUpTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/actionPostProcessing/monitoring/ActionExecutionMonitoringAspectTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/actions/ModelActionEntityFieldAnnotationsTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/checklist/ChecklistAddItemActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/business/DefaultUserExistenceAssurerTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/kanban/KanbanColumnRemoveActionUndeRedoTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/InsertChildTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/checklist/ChecklistCheckItemActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/actions/ActionTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/gwtTestUtilsPatchers/ClientDecimalFormatPatcher.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/sample/migrations2/Migration2_2011_08_01.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertChildActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/FileRepresentationTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertChildAction_ReleaseCreationTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeBindReleaseActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/ContextProviderServiceMock.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceEngineFlow6Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/AnnotationTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/sample/migrations/Migration_2011_10_10.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/migrations/Migration_2011_11_18_Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeRemoveAction_ProgressRemovalTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceEngineFlow6Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/kanban/KanbanColumnRenameActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/deepEquality/DeepEqualityTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/models/PasswordTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/utils/jquery/JQueryNativeImplPatcher.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/UpdateTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/abstractions/MigrationTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeMoveRightAction_ProgressRemovalTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceEngineFlow2Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/progress/ProgressDefinitionManagerTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertSiblingUpAction_ReleaseCreationTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/XMLImporterTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/annotation/AnnotationVoteRemoveActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/services/ClientServiceProviderTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/progress/ProgressTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/kanban/KanbanColumnMoveActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/callback/DispatchCallbackMock.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/scope/stringrepresentation/StringRepresentationSymbolsProvider.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/sample/migrations/Migration_2011_10_05.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/sample/migrations2/subPackage/Migration2_2011_08_10.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/util/converter/mocks/ModelActionMock.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertSiblingUpActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/persistence/jpa/PersistenceServiceTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/team/TeamInviteActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/authorization/AuthorizationManagerImplTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/business/BusinessLogicTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/sample/migrations2/Migration2_2011_10_01.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceEngineFlow1Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/places/AppActivityMapperTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/MoveLeftTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/services/context/ProjectRepresentationProviderTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/gwtTestUtilsPatchers/RuntimeEnvironmentPatcher.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/services/actionSync/ActionQueuedDispatcherTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/XMLWriterTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/sample/migrations2/Migration2_2011_08_05.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/gwtTestUtilsPatchers/SpeedTracerConsolePatcher.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/release/ReleaseDescriptionParserTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/business/actionPostProcessments/ScopeDeclareProgressPostProcessorTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeUpdateActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/components/progresspanel/ProgressPanelActionSyncControllerTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/progress/ProgressInferenceEngineFlow1Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/util/converter/mocks/ModelActionEntityMockWithListOfActions.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/authentication/AuthenticationManagerTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/requests/RequestTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/kanban/KanbanColumnCreateActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeMoveRightActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/ModelActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/util/converter/mocks/ModelActionEntityMock.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/checklist/ChecklistRemoveItemActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceEngineFlow5Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/models/ProjectTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/MoveUpTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/utils/typeConverter/custom/ListToHashSetConverterTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/business/actionPostProcessments/FileUploadPostProcessingTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/kanban/KanbanColumnCreateActionUndeRedoTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/deepEquality/custom/DeepEqualityComparator.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/DateTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeRemoveActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/services/actionExecution/ActionExecuterTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/kanban/KanbanColumnRemoveActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/reflection/ReflectionTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/assertions/AssertTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/migrations/Migration_2011_11_01_Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceEngineScopeInfluenceTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/components/scopetree/interaction/ScopeTreeInstructionGuideTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/MigrationVersionControllerTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/deepEquality/custom/mocks/EffortDeepEqualityComparator.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/MoveRightTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/components/releasepanel/widgets/ReleaseChartDataProviderTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseRemoveActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/checklist/ChecklistRemoveActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceEngineFlow3Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/release/ReleaseFactoryTestUtil.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertSiblingDownAction_ReleaseCreationTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/migrations/Migration_2011_12_01_Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/annotation/AnnotationDeprecateActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/progress/ProgressInferenceEngineTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/storage/StorageServiceTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeMoveLeftActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/ListUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/sample/migrations/Migration_2011_10_01.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/places/login/LoginPlaceTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/components/scopetree/widgets/ScopeTreeWidgetTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/notification/ClientManagerTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/kanban/KanbanTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceEngineFlow1Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/models/UserTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseCreateActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/generalwidgets/FastLabelTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/release/ReleaseTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/BindReleaseTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/identedLogger/IdentedLogger.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/deepEquality/NullIdentedLogger.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/checklist/ChecklistUncheckItemActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/scope/ScopeTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseUpdatePriorityActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/MoveDownTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseScopeUpdatePriorityActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertParentAction_ReleaseCreationTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/models/ReleaseTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/widget/actions/ScopeTreeWidgetActionManagerTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceEngineMoveLeftTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/UserActionTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/services/actionSync/ActionQueuedDispatcherTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceEngineFlow4Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseDeclareEndDayActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeMoveDownActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseDeclareStartDayActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/utils/typeConverter/custom/CollectionToListConverterTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/annotation/AnnotationRemoveActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/annotation/AnnotationCreateActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/annotation/AnnotationRemoveDeprecationActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/authorization/AuthorizationManagerTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/util/migration/MigrationTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/file/FileUploadActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertChildAction_ProgressUndoAndRedoTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/InsertSiblingDownTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/models/ScopeTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceEngineFlow3Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/checklist/ChecklistCreateActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/mocks/xml/XMLNodeTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/components/scopetree/widgets/ScopeTreeItemWidgetTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/RemoveTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertSiblingDownActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/TestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeRemoveAction_ReleaseUnbindingTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/ChecklistTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/effort/EffortInferenceEngineFlow5Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceEngineMoveLeftTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeDeclareProgressActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/progress/ProgressInferenceTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/annotation/AnnotationVoteActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/project/ProjectContextTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/MigrationExecuterTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeMoveUpActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceEngineFlow2Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/deepEquality/DeepEqualityException.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/WorkingDayTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/release/ReleaseScopeOrderTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/kanban/KanbanFactoryTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/FreeMindExporterTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/progress/ProgressTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/util/converter/mocks/ModelActionMockWithListOfActions.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/exportImport/xml/sample/migrations2/subPackage/Migration2_2011_11_10.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/value/ValueInferenceEngineFlow4Test.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/release/ReleaseEstimatorTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/release/ReleaseProgressTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/business/BusinessLogicTestUtils.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/action/scope/ScopeInsertParentActionTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/client/ui/component/scopetree/InsertFatherTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/notification/NotificationServiceTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/utils/deepEquality/custom/ScopeTreeDeepEqualityComparator.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/services/authentication/basic/BasicAuthenticatorTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/server/util/converter/TypeConverterTest.java
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/src/test/java/br/com/oncast/ontrack/shared/model/ModelStateManagerTest.java
+---- Full Classpath ---
+/usr/lib/jvm/java-7-oracle/jre/lib/resources.jar(2476995 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/rt.jar(62847348 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/sunrsasign.jar(missing)
+/usr/lib/jvm/java-7-oracle/jre/lib/jsse.jar(574500 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/jce.jar(108596 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/charsets.jar(3648191 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/jfr.jar(461153 bytes)
+/usr/lib/jvm/java-7-oracle/jre/classes(missing)
+/usr/lib/jvm/java-7-oracle/jre/lib/ext/sunpkcs11.jar(237969 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/ext/zipfs.jar(68654 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/ext/sunec.jar(15817 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/ext/localedata.jar(1023488 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/ext/dnsns.jar(8934 bytes)
+/usr/lib/jvm/java-7-oracle/jre/lib/ext/sunjce_provider.jar(198110 bytes)
+/home/rhlobo/.m2/repository/antlr/antlr/2.7.6/antlr-2.7.6.jar(443432 bytes)
+/home/rhlobo/.m2/repository/asm/asm/3.1/asm-3.1.jar(43033 bytes)
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/RequestDispatch-0.9.jar(23939 bytes)
+/home/rhlobo/.m2/repository/c3p0/c3p0/0.9.1.2/c3p0-0.9.1.2.jar(610790 bytes)
+/home/rhlobo/.m2/repository/cglib/cglib/2.2/cglib-2.2.jar(278682 bytes)
+/home/rhlobo/.m2/repository/com/allen-sauer/gwt/dnd/gwt-dnd/3.1.2/gwt-dnd-3.1.2.jar(135996 bytes)
+/home/rhlobo/.m2/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar(33015 bytes)
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/jsr305-gwt-1.3.9.jar(36359 bytes)
+/home/rhlobo/.m2/repository/com/google/guava/guava/12.0/guava-12.0.jar(1795936 bytes)
+/home/rhlobo/.m2/repository/com/google/guava/guava-gwt/12.0/guava-gwt-12.0.jar(696913 bytes)
+/home/rhlobo/.m2/repository/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0.jar(5433054 bytes)
+/home/rhlobo/.m2/repository/com/google/gwt/gwt-user/2.4.0/gwt-user-2.4.0.jar(12835476 bytes)
+/home/rhlobo/.m2/repository/commons-beanutils/commons-beanutils/1.8.3/commons-beanutils-1.8.3.jar(232019 bytes)
+/home/rhlobo/.m2/repository/commons-codec/commons-codec/1.5/commons-codec-1.5.jar(73098 bytes)
+/home/rhlobo/.m2/repository/commons-collections/commons-collections/3.1/commons-collections-3.1.jar(559366 bytes)
+/home/rhlobo/.m2/repository/commons-fileupload/commons-fileupload/1.2.2/commons-fileupload-1.2.2.jar(59590 bytes)
+/home/rhlobo/.m2/repository/commons-io/commons-io/2.1/commons-io-2.1.jar(163151 bytes)
+/home/rhlobo/.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar(284220 bytes)
+/home/rhlobo/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar(60686 bytes)
+/home/rhlobo/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar(313898 bytes)
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/gwt-comet-1.2.3-patch.jar(31253490 bytes)
+/home/rhlobo/.m2/repository/hsqldb/hsqldb/1.8.0.7/hsqldb-1.8.0.7.jar(643727 bytes)
+/home/rhlobo/.m2/repository/javassist/javassist/3.12.0.GA/javassist-3.12.0.GA.jar(633312 bytes)
+/home/rhlobo/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar(62983 bytes)
+/home/rhlobo/.m2/repository/javax/mail/mail/1.4.4/mail-1.4.4.jar(494924 bytes)
+/home/rhlobo/.m2/repository/javax/transaction/jta/1.1/jta-1.1.jar(15071 bytes)
+/home/rhlobo/.m2/repository/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar(65220 bytes)
+/home/rhlobo/.m2/repository/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA.jar(47433 bytes)
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/jaxen-1.1.1.jar(226915 bytes)
+/home/rhlobo/.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar(481535 bytes)
+/home/rhlobo/.m2/repository/org/apache/commons/commons-lang3/3.0/commons-lang3-3.0.jar(306008 bytes)
+/home/rhlobo/.m2/repository/org/apache/velocity/velocity/1.7/velocity-1.7.jar(449505 bytes)
+/home/rhlobo/.m2/repository/org/aspectj/aspectjrt/1.7.0/aspectjrt-1.7.0.jar(116218 bytes)
+/home/rhlobo/.m2/repository/org/hibernate/hibernate-c3p0/3.6.6.Final/hibernate-c3p0-3.6.6.Final.jar(6411 bytes)
+/home/rhlobo/.m2/repository/org/hibernate/hibernate-commons-annotations/3.2.0.Final/hibernate-commons-annotations-3.2.0.Final.jar(71283 bytes)
+/home/rhlobo/.m2/repository/org/hibernate/hibernate-core/3.6.6.Final/hibernate-core-3.6.6.Final.jar(3113588 bytes)
+/home/rhlobo/.m2/repository/org/hibernate/hibernate-entitymanager/3.6.6.Final/hibernate-entitymanager-3.6.6.Final.jar(421591 bytes)
+/home/rhlobo/.m2/repository/org/hibernate/hibernate-validator/4.2.0.Final/hibernate-validator-4.2.0.Final.jar(366592 bytes)
+/home/rhlobo/.m2/repository/org/hibernate/javax/persistence/hibernate-jpa-2.0-api/1.0.1.Final/hibernate-jpa-2.0-api-1.0.1.Final.jar(102661 bytes)
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.1.1.jar(288284 bytes)
+/home/rhlobo/.m2/repository/org/reflections/reflections/0.9.5/reflections-0.9.5.jar(93213 bytes)
+/home/rhlobo/.m2/repository/org/simpleframework/simple-xml/2.6.2/simple-xml-2.6.2.jar(367499 bytes)
+/home/rhlobo/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar(25496 bytes)
+/home/rhlobo/.m2/repository/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar(9753 bytes)
+/home/rhlobo/.m2/repository/stax/stax/1.2.0/stax-1.2.0.jar(179346 bytes)
+/home/rhlobo/.m2/repository/stax/stax-api/1.0.1/stax-api-1.0.1.jar(26514 bytes)
+/home/rhlobo/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar(109318 bytes)
+/home/rhlobo/.m2/repository/xpp3/xpp3/1.1.3.3/xpp3-1.1.3.3.jar(93395 bytes)
+/home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/classes(7 entries)
+---- Compiler Messages ---
+warning bad version number found in /home/rhlobo/.m2/repository/org/aspectj/aspectjrt/1.7.0/aspectjrt-1.7.0.jar expected 1.6.7 found 1.7.0
+info directory classpath entry does not exist: /usr/lib/jvm/java-7-oracle/jre/lib/sunrsasign.jar
+info zipfile classpath entry does not exist: /usr/lib/jvm/java-7-oracle/jre/classes
+abort ABORT -- (RuntimeException) Problem processing attributes in /home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/classes/br/com/oncast/ontrack/shared/services/actionExecution/ActionExecuterTestUtils$ModelActionMockImpl.class
+Problem processing attributes in /home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/classes/br/com/oncast/ontrack/shared/services/actionExecution/ActionExecuterTestUtils$ModelActionMockImpl.class
+java.lang.RuntimeException: Problem processing attributes in /home/rhlobo/dev/workspace-java/OnTrack/ontrack/war/WEB-INF/classes/br/com/oncast/ontrack/shared/services/actionExecution/ActionExecuterTestUtils$ModelActionMockImpl.class
+	at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:381)
+	at org.aspectj.weaver.bcel.BcelObjectType.<init>(BcelObjectType.java:159)
+	at org.aspectj.weaver.bcel.BcelWorld.buildBcelDelegate(BcelWorld.java:382)
+	at org.aspectj.weaver.bcel.BcelWorld.addSourceObjectType(BcelWorld.java:462)
+	at org.aspectj.weaver.bcel.BcelWorld.addSourceObjectType(BcelWorld.java:428)
+	at org.aspectj.weaver.bcel.BcelWeaver.addIfAspect(BcelWeaver.java:305)
+	at org.aspectj.weaver.bcel.BcelWeaver.addAspectsFromDirectory(BcelWeaver.java:296)
+	at org.aspectj.weaver.bcel.BcelWeaver.addLibraryJarFile(BcelWeaver.java:238)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.initBcelWorld(AjBuildManager.java:863)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performBuild(AjBuildManager.java:245)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.batchBuild(AjBuildManager.java:181)
+	at org.aspectj.ajdt.ajc.AjdtCommand.doCommand(AjdtCommand.java:112)
+	at org.aspectj.ajdt.ajc.AjdtCommand.runCommand(AjdtCommand.java:60)
+	at org.aspectj.tools.ajc.Main.run(Main.java:355)
+	at org.aspectj.tools.ajc.Main.runMain(Main.java:234)
+	at org.codehaus.mojo.aspectj.AbstractAjcCompiler.execute(AbstractAjcCompiler.java:381)
+	at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:490)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:694)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:556)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:535)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalAndHandleFailures(DefaultLifecycleExecutor.java:387)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:348)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:180)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:328)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:138)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:362)
+	at org.apache.maven.cli.compat.CompatibleMain.main(CompatibleMain.java:60)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)
+	at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)
+	at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)
+	at org.codehaus.classworlds.Launcher.main(Launcher.java:375)
+Caused by: org.aspectj.weaver.BCException: Unable to continue, this version of AspectJ supports classes built with weaver version 6.0 but the class br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils$ModelActionMockImpl is version 7.0
+when batch building BuildConfig[null] #Files=187 AopXmls=#0
+
+	at org.aspectj.weaver.bcel.Utility.readAjAttributes(Utility.java:83)
+	at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:378)
+	... 34 more
+
+---- org.aspectj.weaver.bcel.BcelWorld@11d39bf ----
+Shadow mungers:
+Empty
+Type mungers:
+Empty
+Late Type mungers:
+Empty

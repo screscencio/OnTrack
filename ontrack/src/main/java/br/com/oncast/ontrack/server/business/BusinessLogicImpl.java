@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.business;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +10,6 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.DontPostProcessActions;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.PostProcessActions;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
@@ -44,6 +44,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
+import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
@@ -51,7 +52,6 @@ class BusinessLogicImpl implements BusinessLogic {
 
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
-	private final ActionPostProcessingService actionPostProcessingService;
 	private final PersistenceService persistenceService;
 	private final NotificationService notificationService;
 	private final ClientManager clientManager;
@@ -60,11 +60,10 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final AuthorizationManager authorizationManager;
 	private final FeedbackMailFactory feedbackMailFactory;
 
-	protected BusinessLogicImpl(final ActionPostProcessingService actionExecutionService, final PersistenceService persistenceService,
+	protected BusinessLogicImpl(final PersistenceService persistenceService,
 			final NotificationService notificationService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager,
 			final FeedbackMailFactory userQuotaRequestMailFactory) {
-		this.actionPostProcessingService = actionExecutionService;
 		this.persistenceService = persistenceService;
 		this.notificationService = notificationService;
 		this.clientManager = clientManager;
@@ -83,6 +82,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			final UUID projectId = actionSyncRequest.getProjectId();
 			authorizationManager.assureProjectAccessAuthorization(projectId);
 
+			ModelActionSyncEvent modelActionSyncEvent = null;
 			synchronized (this) {
 				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 				final Date timestamp = new Date();
@@ -92,9 +92,9 @@ class BusinessLogicImpl implements BusinessLogic {
 
 				validateIncomingActions(projectId, actionList, actionContext);
 				persistenceService.persistActions(projectId, actionSyncRequest.getActionList(), authenticatedUser.getId(), timestamp);
-				actionSyncRequest.setActionContext(actionContext);
+				modelActionSyncEvent = new ModelActionSyncEvent(projectId, actionList, actionContext);
 			}
-			notificationService.notifyActions(actionSyncRequest);
+			notificationService.notifyActionsToOtherProjectUsers(modelActionSyncEvent);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -159,10 +159,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			AuthorizationException {
 		authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
 		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toStringRepresentation() + "'");
-		final List<ModelAction> list = new ArrayList<ModelAction>();
-		list.add(new TeamInviteAction(userEmail));
-		final ModelActionSyncRequest request = new ModelActionSyncRequest(projectId, list).setShouldNotifyCurrentClient(wasRequestedByTheUser);
-		handleIncomingActionSyncRequest(request);
+		handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, Arrays.asList(new ModelAction[] { new TeamInviteAction(userEmail) })));
 	}
 
 	@Override
@@ -319,9 +316,6 @@ class BusinessLogicImpl implements BusinessLogic {
 	public void onFileUploadCompleted(final FileRepresentation fileRepresentation) throws UnableToHandleActionException, AuthorizationException {
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new FileUploadAction(fileRepresentation));
-
-		final ModelActionSyncRequest modelActionSyncRequest = new ModelActionSyncRequest(fileRepresentation.getProjectId(), actionList);
-		modelActionSyncRequest.setShouldNotifyCurrentClient(true);
-		handleIncomingActionSyncRequest(modelActionSyncRequest);
+		handleIncomingActionSyncRequest(new ModelActionSyncRequest(fileRepresentation.getProjectId(), actionList));
 	}
 }

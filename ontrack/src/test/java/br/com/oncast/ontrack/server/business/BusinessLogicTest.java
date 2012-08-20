@@ -78,7 +78,7 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
-import br.com.oncast.ontrack.utils.mocks.requests.RequestTestUtils;
+import br.com.oncast.ontrack.utils.mocks.requests.ModelActionSyncTestUtils;
 
 public class BusinessLogicTest {
 
@@ -155,7 +155,7 @@ public class BusinessLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
-		business = new BusinessLogicImpl(mock(ActionPostProcessingService.class), persistence, notification, clientManager, authenticationManager,
+		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager,
 				authorizationManager,
 				sessionManager,
 				mock(FeedbackMailFactory.class));
@@ -368,7 +368,7 @@ public class BusinessLogicTest {
 	public void scopeDeclareProgressActionShouldHaveItsTimestampResetedByTheServer() throws Exception {
 		final ActionPostProcessingService postProcessingService = new ActionPostProcessingService();
 		postProcessingService.registerPostProcessor(new ScopeDeclareProgressPostProcessor(), ScopeDeclareProgressAction.class);
-		business = BusinessLogicTestUtils.createWithJpaPersistence(postProcessingService);
+		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 
 		final Project project1 = loadProject();
@@ -469,7 +469,7 @@ public class BusinessLogicTest {
 	@Test(expected = AuthorizationException.class)
 	public void notAuthorizedUserCannotExecuteActions() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authorizationManager);
-		final ModelActionSyncRequest request = RequestTestUtils.createModelActionSyncRequest();
+		final ModelActionSyncRequest request = ModelActionSyncTestUtils.createModelActionSyncRequest();
 		doThrow(new AuthorizationException()).when(authorizationManager).assureProjectAccessAuthorization(request.getProjectId());
 
 		business.handleIncomingActionSyncRequest(request);
@@ -478,7 +478,7 @@ public class BusinessLogicTest {
 	@Test
 	public void onlyAuthorizedUserCanExecuteActions() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
-		final ModelActionSyncRequest request = RequestTestUtils.createModelActionSyncRequestWithOneAction(PROJECT_ID);
+		final ModelActionSyncRequest request = ModelActionSyncTestUtils.createModelActionSyncRequestWithOneAction(PROJECT_ID);
 
 		business.handleIncomingActionSyncRequest(request);
 
@@ -497,7 +497,7 @@ public class BusinessLogicTest {
 	@Test
 	public void onlyAuthorizedUserCanLoadProjectForClient() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager, sessionManager);
-		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest(PROJECT_ID);
+		final ProjectContextRequest request = ModelActionSyncTestUtils.createProjectContextRequest(PROJECT_ID);
 
 		final Session sessionMock = Mockito.mock(Session.class);
 		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
@@ -512,7 +512,7 @@ public class BusinessLogicTest {
 	public void notAuthorizedUserCannotLoadProjectForClient() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 
-		final ProjectContextRequest request = RequestTestUtils.createProjectContextRequest();
+		final ProjectContextRequest request = ModelActionSyncTestUtils.createProjectContextRequest();
 		doThrow(new AuthorizationException()).when(authorizationManager).assureProjectAccessAuthorization(request.getRequestedProjectId());
 
 		business.loadProjectForClient(request);
@@ -561,7 +561,6 @@ public class BusinessLogicTest {
 		final ModelAction action = request.getActionList().get(0);
 		assertTrue(action instanceof FileUploadAction);
 		assertEquals(fileRepresentation.getId(), action.getReferenceId());
-		assertTrue(request.shouldNotifyCurrentClient());
 	}
 
 	private ProjectRepresentation setupMocksToCreateProjectWithId(final UUID projectId) throws PersistenceException, NoResultFoundException {
