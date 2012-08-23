@@ -21,7 +21,7 @@
 	</ui:style>
 
 		<g:DeckPanel ui:field="deckPanel" addStyleNames="{style.editableLabel}">
-			<g:Label ui:field="visualizationLabel" addStyleNames="{style.container} v-ellip" />
+			<g:Label ui:field="visualizationLabel" addStyleNames="{style.container} v-ellip" title="Double click to edit"/>
 			<g:TextBox ui:field="editionBox" addStyleNames="{style.textBoxDecoration} {style.container} {style.editionBox}" />
 		</g:DeckPanel>
 	

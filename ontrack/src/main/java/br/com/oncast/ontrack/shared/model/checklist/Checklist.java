@@ -75,4 +75,8 @@ public class Checklist implements Serializable {
 		return null;
 	}
 
+	public void setTitle(final String newTitle) {
+		this.title = newTitle;
+	}
+
 }

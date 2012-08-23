@@ -21,6 +21,7 @@ import br.com.oncast.ontrack.shared.model.action.ChecklistCheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveItemAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistUncheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
@@ -141,6 +142,7 @@ public class UserActionTestUtils {
 		userActions.add(createChecklistUncheckItemAction());
 		userActions.add(createChecklistRemoveItemAction());
 		userActions.add(createChecklistRemoveAction());
+		userActions.add(createChecklistRenameAction());
 		userActions.add(createAnnotationDeprecateAction());
 		userActions.add(createAnnotationRemoveDeprecationAction());
 		return userActions;
@@ -181,6 +183,10 @@ public class UserActionTestUtils {
 		for (int i = 0; i < new Random().nextInt(10); i++) {
 			actionList.remove(0);
 		}
+	}
+
+	public static UserAction createChecklistRenameAction() throws Exception {
+		return createUserAction(new ChecklistRenameAction(new UUID(), new UUID(), "new name"));
 	}
 
 	public static UserAction createChecklistRemoveAction() throws Exception {

@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.shared.model.action.ChecklistCheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveItemAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistUncheckItemAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -43,6 +44,11 @@ public class ChecklistServiceImpl implements ChecklistService {
 	@Override
 	public void removeChecklist(final UUID subjectId, final UUID checklistId) {
 		doUserAction(new ChecklistRemoveAction(subjectId, checklistId));
+	}
+
+	@Override
+	public void renameChecklist(final UUID subjectId, final UUID checklistId, final String newTitle) {
+		doUserAction(new ChecklistRenameAction(subjectId, checklistId, newTitle));
 	}
 
 	private void doUserAction(final ChecklistAction action) {

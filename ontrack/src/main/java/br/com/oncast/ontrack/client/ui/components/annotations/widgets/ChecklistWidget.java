@@ -7,13 +7,17 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.checklist.ChecklistService;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
+import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
+import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistAddItemAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveItemAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
@@ -29,6 +33,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -49,7 +54,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	FocusPanel rootPanel;
 
 	@UiField
-	Label title;
+	EditableLabel title;
 
 	@UiField
 	Label remove;
@@ -90,6 +95,16 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 				});
 	}
 
+	@UiFactory
+	public EditableLabel createChecklistTitle() {
+		return new EditableLabel(new EditableLabelEditionHandler() {
+			@Override
+			public boolean onEditionRequest(final String text) {
+				return text != null && !text.trim().isEmpty() && !checklist.getTitle().equals(text.trim());
+			}
+		});
+	}
+
 	public ChecklistWidget(final UUID subjectId, final Checklist checklist) {
 		this.subjectId = subjectId;
 		this.checklist = checklist;
@@ -97,6 +112,11 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 		update();
 		hideNewItemDescription();
 		hideRemove();
+	}
+
+	@UiHandler("title")
+	public void onTitleChange(final ValueChangeEvent<String> event) {
+		getChecklistService().renameChecklist(subjectId, checklist.getId(), event.getValue());
 	}
 
 	@UiHandler("rootPanel")
@@ -181,7 +201,9 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
-				if (action instanceof ChecklistAction && action.getReferenceId().equals(checklist.getId())) updateItems();
+				if (action instanceof ChecklistRenameAction && action.getReferenceId().equals(checklist.getId())) updateTitle();
+				else if (action instanceof ChecklistAddItemAction || action instanceof ChecklistRemoveItemAction
+						&& action.getReferenceId().equals(checklist.getId())) updateItems();
 			}
 		};
 		return actionExecutionListener;
@@ -189,9 +211,13 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 
 	@Override
 	public boolean update() {
-		title.setText(checklist.getTitle());
+		updateTitle();
 		updateItems();
 		return false;
+	}
+
+	private void updateTitle() {
+		title.setValue(checklist.getTitle());
 	}
 
 	private void updateItems() {
