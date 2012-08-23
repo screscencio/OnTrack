@@ -217,7 +217,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	}
 
 	private void updateTitle() {
-		title.setValue(checklist.getTitle());
+		title.setValue(checklist.getTitle(), false);
 	}
 
 	private void updateItems() {

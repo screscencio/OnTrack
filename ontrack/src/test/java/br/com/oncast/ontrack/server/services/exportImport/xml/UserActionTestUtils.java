@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAddItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistCreateAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistEditItemDescriptionAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRenameAction;
@@ -141,6 +142,7 @@ public class UserActionTestUtils {
 		userActions.add(createChecklistCheckItemAction());
 		userActions.add(createChecklistUncheckItemAction());
 		userActions.add(createChecklistRemoveItemAction());
+		userActions.add(createChecklistEditItemDescriptionAction());
 		userActions.add(createChecklistRemoveAction());
 		userActions.add(createChecklistRenameAction());
 		userActions.add(createAnnotationDeprecateAction());
@@ -186,7 +188,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createChecklistRenameAction() throws Exception {
-		return createUserAction(new ChecklistRenameAction(new UUID(), new UUID(), "new name"));
+		return createUserAction(new ChecklistRenameAction(new UUID(), new UUID(), "new title"));
 	}
 
 	public static UserAction createChecklistRemoveAction() throws Exception {
@@ -195,6 +197,10 @@ public class UserActionTestUtils {
 
 	public static UserAction createChecklistRemoveItemAction() throws Exception {
 		return createUserAction(new ChecklistRemoveItemAction(new UUID(), new UUID(), new UUID()));
+	}
+
+	public static UserAction createChecklistEditItemDescriptionAction() throws Exception {
+		return createUserAction(new ChecklistEditItemDescriptionAction(new UUID(), new UUID(), new UUID(), "new description"));
 	}
 
 	public static UserAction createChecklistUncheckItemAction() throws Exception {

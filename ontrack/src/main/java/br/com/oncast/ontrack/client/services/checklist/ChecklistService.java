@@ -16,4 +16,6 @@ public interface ChecklistService {
 
 	void renameChecklist(UUID subjectId, UUID checklistId, String newTitle);
 
+	void editItemDescription(UUID subjectId, UUID checklistId, UUID itemId, String value);
+
 }

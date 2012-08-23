@@ -58,4 +58,8 @@ public class ChecklistItem implements Serializable {
 		return true;
 	}
 
+	public void setDescription(final String newDescription) {
+		this.description = newDescription;
+	}
+
 }
