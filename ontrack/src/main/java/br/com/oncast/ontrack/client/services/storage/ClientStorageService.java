@@ -1,6 +1,9 @@
 package br.com.oncast.ontrack.client.services.storage;
 
+import java.util.List;
+
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface ClientStorageService {
@@ -16,5 +19,9 @@ public interface ClientStorageService {
 	String loadLastUserEmail(String defaultValue);
 
 	void storeLastUserEmail(String email);
+
+	void storeReleaseContainerState(Release release, boolean containerState);
+
+	List<UUID> loadModifiedContainerStateReleases();
 
 }

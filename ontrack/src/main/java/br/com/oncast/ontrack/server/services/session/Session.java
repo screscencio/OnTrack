@@ -49,7 +49,7 @@ public class Session implements Serializable {
 	}
 
 	protected void setThreadLocalClientId(final UUID clientId) {
-		loadThreadLocalClientId().set(clientId);
+		loadThreadLocalClientId().set((clientId != null && clientId.isValid()) ? clientId : UUID.INVALID_UUID);
 	}
 
 	public UUID getThreadLocalClientId() {

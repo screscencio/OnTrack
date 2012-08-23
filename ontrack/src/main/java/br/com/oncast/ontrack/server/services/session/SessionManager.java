@@ -22,7 +22,10 @@ public class SessionManager {
 	}
 
 	private UUID extractClientId(final HttpServletRequest request) {
-		return new UUID(request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_HEADER));
+		String clientId = request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME);
+		if (clientId == null) clientId = request.getParameter(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME);
+
+		return clientId == null ? UUID.INVALID_UUID : new UUID(clientId);
 	}
 
 	private Session getOrCreateSession(final HttpSession httpSession) {

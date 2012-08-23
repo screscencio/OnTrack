@@ -201,7 +201,7 @@ public class UploadWidget extends Composite {
 	private ActionExecutionListener getActionExecutionListener(final UUID uuid, final UploadWidgetListener listener) {
 		return actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
 					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);

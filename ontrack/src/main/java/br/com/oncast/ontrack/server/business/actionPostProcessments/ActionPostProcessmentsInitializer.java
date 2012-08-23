@@ -39,7 +39,7 @@ public class ActionPostProcessmentsInitializer {
 	}
 
 	private ActionPostProcessor<FileUploadAction> createFileUploadPostProcessor() {
-		return new FileUploadPostProcessor(persistenceService, notificationService);
+		return new FileUploadPostProcessor(persistenceService);
 	}
 
 }

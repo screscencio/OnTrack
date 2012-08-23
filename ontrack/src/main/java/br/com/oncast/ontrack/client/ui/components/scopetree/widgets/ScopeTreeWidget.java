@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
@@ -36,7 +38,6 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -50,6 +51,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeItemAdoptionListener;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ScopeTreeWidget extends Composite implements HasInstructions, HasFocusHandlers {
 
@@ -103,12 +105,16 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 	private boolean disableSelectionEvent = false;
 
+	private final Set<HandlerRegistration> handlerRegistrations;
+
 	@UiFactory
 	protected Tree createTree() {
 		return new Tree((Resources) GWT.create(Resources.class), true);
 	}
 
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
+		handlerRegistrations = new HashSet<HandlerRegistration>();
+
 		initWidget(uiBinder.createAndBindUi(this));
 
 		tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
@@ -200,22 +206,12 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			}
 		});
 
+	}
+
+	@Override
+	protected void onLoad() {
 		final EventBus eventBus = ClientServiceProvider.getInstance().getEventBus();
-		tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
-			@Override
-			public void onSelection(final SelectionEvent<TreeItem> event) {
-				if (disableSelectionEvent) return;
-				removeBorderFromLastItem();
-
-				final ScopeTreeItem selectedItem = (ScopeTreeItem) event.getSelectedItem();
-				if (selectedItem.isRoot()) return;
-
-				addBorderToSelectedItem();
-				eventBus.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
-			}
-		});
-
-		eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+		handlerRegistrations.add(eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 
 			@Override
 			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
@@ -241,8 +237,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				}
 			}
 
-		});
-		eventBus.addHandler(ScopeDetailChangeEvent.getType(), new ScopeDetailChangeEventHandler() {
+		}));
+		handlerRegistrations.add(eventBus.addHandler(ScopeDetailChangeEvent.getType(), new ScopeDetailChangeEventHandler() {
 			@Override
 			public void onScopeDetailChange(final ScopeDetailChangeEvent event) {
 				final Scope scope = event.getTargetScope();
@@ -255,8 +251,24 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
 				}
 			}
-		});
-		tree.addOpenHandler(new OpenHandler<TreeItem>() {
+		}));
+
+		handlerRegistrations.add(tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+			@Override
+			public void onSelection(final SelectionEvent<TreeItem> event) {
+				if (disableSelectionEvent) return;
+				removeBorderFromLastItem();
+
+				final ScopeTreeItem selectedItem = (ScopeTreeItem) event.getSelectedItem();
+				if (selectedItem.isRoot()) return;
+
+				addBorderToSelectedItem();
+				ClientServiceProvider.getInstance().getEventBus()
+						.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
+			}
+		}));
+
+		handlerRegistrations.add(tree.addOpenHandler(new OpenHandler<TreeItem>() {
 			@Override
 			public void onOpen(final OpenEvent<TreeItem> event) {
 				final ScopeTreeItem item = (ScopeTreeItem) event.getTarget();
@@ -265,7 +277,15 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				tree.setSelectedItem(item, false);
 			}
 
-		});
+		}));
+	}
+
+	@Override
+	protected void onUnload() {
+		for (final HandlerRegistration hr : handlerRegistrations) {
+			hr.removeHandler();
+		}
+		handlerRegistrations.clear();
 	}
 
 	public void add(final ScopeTreeItem item) {
@@ -309,8 +329,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 	public ScopeTreeItem findScopeTreeItem(final Scope scope) throws ScopeNotFoundException {
 		final UUID scopeId = scope.getId();
 
-		final ScopeTreeItem scopeTreeItem = itemMapCache.get(scopeId);
-		if (scopeTreeItem != null) return scopeTreeItem;
+		if (itemMapCache.containsKey(scopeId)) return itemMapCache.get(scopeId);
 
 		if (scope.isRoot()) throw new ScopeNotFoundException("No tree item were found for the scope.");
 
@@ -322,7 +341,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 	}
 
 	@Override
-	public HandlerRegistration addFocusHandler(final FocusHandler handler) {
+	public com.google.gwt.event.shared.HandlerRegistration addFocusHandler(final FocusHandler handler) {
 		return tree.addFocusHandler(handler);
 	}
 

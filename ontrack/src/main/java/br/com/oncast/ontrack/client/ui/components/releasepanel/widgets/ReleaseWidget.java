@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -21,6 +22,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
+import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -221,7 +223,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		scopeContainer.setOwnerRelease(release);
 
 		update();
-		setContainerState(!release.isDone());
+
+		setContainerState(DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
 		setVisible(true);
 	}
 
@@ -370,6 +373,10 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	public void setContainerState(final boolean shouldOpen) {
+		setContainerState(shouldOpen, true);
+	}
+
+	public void setContainerState(final boolean shouldOpen, final boolean shouldFireEvent) {
 		if (isContainerStateOpen == shouldOpen) return;
 
 		containerStateIcon.setResource(shouldOpen ? resources.containerStateOpened() : resources.containerStateClosed());
@@ -382,6 +389,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		laterSeparator.setVisible(shouldShowReleaseContainer && release.hasDirectScopes());
 
 		isContainerStateOpen = shouldOpen;
+
+		if (!shouldFireEvent) return;
+		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ReleaseContainerStateChangeEvent(release, isContainerStateOpen), this);
 	}
 
 	private ReleaseChart getChartPanel() {

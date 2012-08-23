@@ -5,5 +5,6 @@ public interface ClientStorageColumnNames {
 	final String SELECTED_SCOPE_ID = "planning.selectedScopeId";
 	final String SCOPE_TREE_COLUMN_VISIBILITY = "planning.scopeTreeColumnVisibility";
 	final String LAST_USER_EMAIL = "login.lastUserEmail";
+	final String MODIFIED_CONTAINER_STATE_RELEASES = "planning.release.containerState.modified";
 
 }

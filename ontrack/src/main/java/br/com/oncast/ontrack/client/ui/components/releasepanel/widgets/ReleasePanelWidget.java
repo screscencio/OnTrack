@@ -2,6 +2,9 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import java.util.List;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEventHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ItemDroppedListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ReleaseScopeItemDragHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
@@ -20,6 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ReleasePanelWidget extends Composite {
 
@@ -41,6 +45,8 @@ public class ReleasePanelWidget extends Composite {
 	@IgnoredByDeepEquality
 	private ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory = null;
 
+	private HandlerRegistration handlerRegistration;
+
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
 		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager), dragAndDropManager);
@@ -48,6 +54,27 @@ public class ReleasePanelWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		dragAndDropManager.configureBoundaryPanel(RootPanel.get());
 		dragAndDropManager.setDragHandler(createScopeItemDragHandler(releasePanelInteractionHandler));
+	}
+
+	@Override
+	protected void onLoad() {
+		handlerRegistration = ClientServiceProvider.getInstance().getEventBus()
+				.addHandler(ReleaseContainerStateChangeEvent.getType(), new ReleaseContainerStateChangeEventHandler() {
+					@Override
+					public void onReleaseContainerStateChange(final ReleaseContainerStateChangeEvent event) {
+						if (rootRelease == null || event.getSource() instanceof ReleaseWidget) return;
+						final ReleaseWidget widget = getWidgetFor(event.getTargetRelease());
+						widget.setContainerState(event.getTargetContainerState(), false);
+					}
+				});
+	}
+
+	@Override
+	protected void onUnload() {
+		if (handlerRegistration == null) return;
+
+		handlerRegistration.removeHandler();
+		handlerRegistration = null;
 	}
 
 	public void setRelease(final Release rootRelease) {

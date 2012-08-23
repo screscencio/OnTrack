@@ -52,7 +52,7 @@ public class AuthenticationManagerTest {
 		final HttpSession httpSessionMock = mock(HttpSession.class);
 		final HttpServletRequest requestMock = mock(HttpServletRequest.class);
 		when(requestMock.getSession()).thenReturn(httpSessionMock);
-		when(requestMock.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_HEADER)).thenReturn("fakeClientId");
+		when(requestMock.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME)).thenReturn("fakeClientId");
 
 		sessionManager.configureCurrentHttpSession(requestMock);
 		authenticationManager = new AuthenticationManager(persistenceServiceMock, sessionManager);

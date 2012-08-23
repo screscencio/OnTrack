@@ -79,6 +79,8 @@ public class UUID implements Serializable {
 	}
 
 	public boolean isValid() {
+		if (this.id == null) return false;
+
 		if (this.id.length() != ID_LENGHT) return false;
 
 		if (this.id.charAt(CHECK_CHAR_INDEX) != CHECK_CHAR) return false;

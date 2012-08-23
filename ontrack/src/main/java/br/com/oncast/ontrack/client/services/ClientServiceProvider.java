@@ -155,7 +155,8 @@ public class ClientServiceProvider {
 
 			@Override
 			public void configureRequestBuilder(final RequestBuilder requestBuilder) {
-				requestBuilder.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_HEADER, getClientIdentificationProvider().getClientId().toString());
+				requestBuilder
+						.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, getClientIdentificationProvider().getClientId().toString());
 			}
 		});
 	}
@@ -187,7 +188,8 @@ public class ClientServiceProvider {
 	}
 
 	public ClientStorageService getClientStorageService() {
-		if (clientStorageService == null) clientStorageService = new Html5StorageClientStorageService(getAuthenticationService());
+		if (clientStorageService == null) clientStorageService = new Html5StorageClientStorageService(getAuthenticationService(),
+				getProjectRepresentationProvider());
 		return clientStorageService;
 	}
 

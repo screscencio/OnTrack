@@ -57,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public void notifyActionToCurrentUser(final ModelActionSyncEvent event) {
 		final UUID localClientId = sessionManager.getCurrentSession().getThreadLocalClientId();
 
-		if (!clientManager.getClientsAtProject(event.getProjectId()).contains(localClientId)) return;
+		if (localClientId == null || !localClientId.isValid() || !clientManager.getClientsAtProject(event.getProjectId()).contains(localClientId)) return;
 
 		final Set<UUID> connectionSet = new HashSet<UUID>();
 		connectionSet.add(localClientId);

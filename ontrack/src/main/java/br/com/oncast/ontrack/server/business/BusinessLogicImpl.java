@@ -133,7 +133,6 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
-	@DontPostProcessActions
 	private Project applyActionsToProject(final Project project, final List<UserAction> actionList) throws UnableToCompleteActionException {
 		final ProjectContext projectContext = new ProjectContext(project);
 
@@ -215,7 +214,6 @@ class BusinessLogicImpl implements BusinessLogic {
 	@Override
 	@DontPostProcessActions
 	public Project loadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
-		LOGGER.debug("Loading current state for project id '" + projectId + "'.");
 		try {
 			authorizationManager.assureProjectAccessAuthorization(projectId);
 
@@ -234,6 +232,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	private Project doLoadProject(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
+		LOGGER.debug("Loading current state for project id '" + projectId + "'.");
 		try {
 			final ProjectSnapshot snapshot = loadProjectSnapshot(projectId);
 			final List<UserAction> actionList = persistenceService.retrieveActionsSince(projectId, snapshot.getLastAppliedActionId());

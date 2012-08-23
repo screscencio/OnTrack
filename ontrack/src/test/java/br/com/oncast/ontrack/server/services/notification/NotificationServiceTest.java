@@ -2,6 +2,9 @@ package br.com.oncast.ontrack.server.services.notification;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertNotContains;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anySet;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -78,5 +81,16 @@ public class NotificationServiceTest {
 
 		assertCollectionEquality(expectedClients, argument.getValue());
 		assertNotContains(originator, argument.getValue());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void shouldNotSentNotificationsToInvalidUUID() throws Exception {
+		final Session sessionMock = Mockito.mock(Session.class);
+		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
+		when(sessionMock.getThreadLocalClientId()).thenReturn(new UUID(null));
+
+		service.notifyActionToCurrentUser(null);
+		verify(serverPushServerService, never()).pushEvent(any(ServerPushEvent.class), anySet());
 	}
 }

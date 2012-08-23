@@ -4,14 +4,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -34,12 +41,29 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		this.contextProviderService = contextProviderService;
 		this.clientStorageService = clientStorageService;
 		handlerRegistrations = new HashSet<HandlerRegistration>();
+		contextProviderService.addContextLoadListener(new ContextChangeListener() {
+			@Override
+			public void onProjectChanged(final UUID projetId) {
+				selectedScope = null;
+			}
+		});
 	}
 
 	@Override
 	public void startRecording() {
 		registerScopeSelectionEventListener();
 		registerScopeTreeColumnVisibilityChangeListener();
+		registerReleaseContainerStateChangeListener();
+	}
+
+	private void registerReleaseContainerStateChangeListener() {
+		handlerRegistrations.add(eventBus.addHandler(ReleaseContainerStateChangeEvent.getType(), new ReleaseContainerStateChangeEventHandler() {
+			@Override
+			public void onReleaseContainerStateChange(final ReleaseContainerStateChangeEvent releaseContainerStateChangeEvent) {
+				clientStorageService.storeReleaseContainerState(releaseContainerStateChangeEvent.getTargetRelease(),
+						releaseContainerStateChangeEvent.getTargetContainerState());
+			}
+		}));
 	}
 
 	private void registerScopeTreeColumnVisibilityChangeListener() {
@@ -75,6 +99,23 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	public void restore() {
 		fireScopeSelectionEvent();
 		restoreScopeTreeColumnVisibility();
+		fireReleaseContainerStateChangeEvents();
+	}
+
+	private void fireReleaseContainerStateChangeEvents() {
+		final ProjectContext context = contextProviderService.getCurrentProjectContext();
+		for (final UUID releaseId : clientStorageService.loadModifiedContainerStateReleases()) {
+			try {
+				final Release release = context.findRelease(releaseId);
+				Scheduler.get().scheduleEntry(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						eventBus.fireEvent(new ReleaseContainerStateChangeEvent(release, !DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE));
+					}
+				});
+			}
+			catch (final ReleaseNotFoundException e) {}
+		}
 	}
 
 	private void restoreScopeTreeColumnVisibility() {
@@ -93,6 +134,8 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	}
 
 	private void setSelectedScope(final ScopeSelectionEvent event) {
+		if (selectedScope != null && selectedScope.equals(event.getTargetScope())) return;
+
 		selectedScope = event.getTargetScope();
 		storeSelectedScope();
 	}
