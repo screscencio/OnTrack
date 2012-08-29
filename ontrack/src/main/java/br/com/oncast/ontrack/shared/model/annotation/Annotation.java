@@ -60,7 +60,7 @@ public class Annotation implements Serializable {
 	}
 
 	public String getMessage() {
-		return message;
+		return message == null ? "" : message;
 	}
 
 	public UUID getId() {
