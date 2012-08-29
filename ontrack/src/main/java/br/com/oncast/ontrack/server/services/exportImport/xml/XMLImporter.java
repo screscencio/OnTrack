@@ -26,6 +26,9 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
+
 public class XMLImporter {
 
 	private final PersistenceService persistenceService;
@@ -57,6 +60,7 @@ public class XMLImporter {
 		return this;
 	}
 
+	@Trace
 	public XMLImporter persistObjects() {
 		if (ontrackXML == null) throw new RuntimeException("You must use loadXML method to load xml before use this method.");
 
@@ -99,7 +103,9 @@ public class XMLImporter {
 		for (final ProjectXMLNode projectNode : projectNodes) {
 			final ProjectRepresentation representation = projectNode.getProjectRepresentation();
 			persistenceService.persistOrUpdateProjectRepresentation(representation);
-			persistActions(representation.getId(), projectNode.getActions());
+			final List<UserAction> actions = projectNode.getActions();
+			persistActions(representation.getId(), actions);
+			NewRelic.recordMetric("Imported actions for project " + representation.getName(), actions.size());
 		}
 	}
 

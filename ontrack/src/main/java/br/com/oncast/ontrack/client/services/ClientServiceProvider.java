@@ -22,6 +22,8 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
+import br.com.oncast.ontrack.client.services.metric.ClientMetricService;
+import br.com.oncast.ontrack.client.services.metric.ClientMetricServiceNewRelicImpl;
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -77,6 +79,7 @@ public class ClientServiceProvider {
 	private UserDataService userDataService;
 	private ChecklistService checklistService;
 	private ClientStorageService clientStorageService;
+	private ClientMetricService clientMetricService;
 
 	private static ClientServiceProvider instance;
 
@@ -207,5 +210,10 @@ public class ClientServiceProvider {
 	public ChecklistService getChecklistService() {
 		if (checklistService == null) checklistService = new ChecklistServiceImpl(getActionExecutionService());
 		return checklistService;
+	}
+
+	public ClientMetricService getClientMetricService() {
+		if (clientMetricService == null) clientMetricService = new ClientMetricServiceNewRelicImpl();
+		return clientMetricService;
 	}
 }

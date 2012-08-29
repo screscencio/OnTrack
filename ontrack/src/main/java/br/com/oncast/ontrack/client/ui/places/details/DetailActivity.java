@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.components.annotations.AnnotationsPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupOpenListener;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
@@ -25,6 +26,8 @@ public class DetailActivity extends AbstractActivity {
 	private HandlerRegistration register;
 
 	public DetailActivity(final DetailPlace place) {
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
+
 		this.previousPlace = place.getDestinationPlace();
 
 		setDetailPanel(place);
@@ -40,6 +43,11 @@ public class DetailActivity extends AbstractActivity {
 				getApplicationPlaceController().goTo(previousPlace);
 			}
 
+		}).onOpen(new PopupOpenListener() {
+			@Override
+			public void onWillOpen() {
+				ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
+			}
 		}).setModal(true).pop();
 	}
 
