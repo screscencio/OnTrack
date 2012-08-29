@@ -31,6 +31,8 @@ public class ProgressActivity extends AbstractActivity {
 	private HandlerRegistration registration;
 
 	public ProgressActivity(final ProgressPlace place) {
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
+
 		try {
 			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(place.getRequestedProjectId());
 			release = projectContext.findRelease(place.getRequestedReleaseId());
@@ -56,6 +58,8 @@ public class ProgressActivity extends AbstractActivity {
 			});
 		}
 		catch (final ReleaseNotFoundException e) {
+
+			ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 			exitToPlanningPlace();
 		}
 	}
@@ -75,6 +79,8 @@ public class ProgressActivity extends AbstractActivity {
 		progressPanelActionSyncController.registerActionExecutionListener();
 		registration = ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
 		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.getNotificationPanel());
+
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override

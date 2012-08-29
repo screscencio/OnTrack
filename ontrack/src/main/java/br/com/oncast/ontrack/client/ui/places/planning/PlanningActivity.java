@@ -37,6 +37,7 @@ public class PlanningActivity extends AbstractActivity {
 	private AnnotationModificationListener annotationModificationListener;
 
 	public PlanningActivity() {
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		activityActionExecutionListener = new ActivityActionExecutionListener();
 	}
 
@@ -78,6 +79,7 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
 		SERVICE_PROVIDER.getAnnotationService().addAnnotationModificationListener(getAnntoationChangeListener());
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	private AnnotationModificationListener getAnntoationChangeListener() {

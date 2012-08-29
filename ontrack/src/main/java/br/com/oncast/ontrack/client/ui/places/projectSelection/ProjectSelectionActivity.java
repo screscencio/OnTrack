@@ -11,7 +11,9 @@ public class ProjectSelectionActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
-	public ProjectSelectionActivity() {}
+	public ProjectSelectionActivity() {
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
+	}
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
@@ -19,6 +21,8 @@ public class ProjectSelectionActivity extends AbstractActivity {
 		panel.setWidget(view.asWidget());
 		view.focus();
 		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
+
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override
