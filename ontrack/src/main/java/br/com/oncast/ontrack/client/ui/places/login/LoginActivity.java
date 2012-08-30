@@ -16,6 +16,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	private final LoginView view;
 
 	public LoginActivity(final Place destinationPlace) {
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		this.view = new LoginPanel(this);
 
 		this.authenticationCallback = new UserAuthenticationCallback() {
@@ -50,6 +51,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 		panel.setWidget(view.asWidget());
 		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
 		view.setUsername(SERVICE_PROVIDER.getClientStorageService().loadLastUserEmail(""));
+		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override

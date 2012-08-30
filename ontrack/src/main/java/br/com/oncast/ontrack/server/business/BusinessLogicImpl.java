@@ -48,6 +48,8 @@ import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
+import com.newrelic.api.agent.Trace;
+
 class BusinessLogicImpl implements BusinessLogic {
 
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
@@ -73,6 +75,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.feedbackMailFactory = userQuotaRequestMailFactory;
 	}
 
+	@Trace
 	@Override
 	@PostProcessActions
 	public void handleIncomingActionSyncRequest(final ModelActionSyncRequest actionSyncRequest) throws UnableToHandleActionException,
@@ -203,6 +206,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		}
 	}
 
+	@Trace
 	@Override
 	public synchronized Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
 			ProjectNotFoundException {
@@ -329,6 +333,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		handleIncomingActionSyncRequest(new ModelActionSyncRequest(fileRepresentation.getProjectId(), actionList));
 	}
 
+	@Trace
 	@Override
 	@PostProcessActions
 	public void loadProjectForMigration(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
