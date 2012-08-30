@@ -12,3 +12,4 @@ ontrack/gwt-unitCache/
 ontrackExtAcceptance/target/
 .DS_Store
 ontrack/.DS_Store
+.metadata/
