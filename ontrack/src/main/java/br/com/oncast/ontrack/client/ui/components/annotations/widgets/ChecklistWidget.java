@@ -102,7 +102,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 			public boolean onEditionRequest(final String text) {
 				return text != null && !text.trim().isEmpty() && !checklist.getTitle().equals(text.trim());
 			}
-		});
+		}, true);
 	}
 
 	public ChecklistWidget(final UUID subjectId, final Checklist checklist) {
