@@ -38,4 +38,9 @@ public class Configurations {
 	public String getStorageBaseDir() {
 		return properties.getProperty("storage.base_dir");
 	}
+
+	public long getMaxFileSizeInBytes() {
+		final String value = properties.getProperty("storage.file_max_upload_size");
+		return value == null ? -1 : Long.valueOf(value);
+	}
 }

@@ -59,8 +59,7 @@ public class FileUploadServlet extends HttpServlet {
 
 	@SuppressWarnings("rawtypes")
 	private FileUploadFormObject parse(final HttpServletRequest request) throws FileUploadException {
-		final ServletFileUpload handler = new ServletFileUpload(new DiskFileItemFactory());
-		final Iterator iterator = handler.parseRequest(request).iterator();
+		final Iterator iterator = getServletFileUpload().parseRequest(request).iterator();
 
 		final FileUploadFormObject formObject = new FileUploadFormObject();
 		while (iterator.hasNext() && !formObject.isComplete()) {
@@ -68,6 +67,12 @@ public class FileUploadServlet extends HttpServlet {
 		}
 
 		return formObject;
+	}
+
+	private ServletFileUpload getServletFileUpload() {
+		final ServletFileUpload handler = new ServletFileUpload(new DiskFileItemFactory());
+		handler.setFileSizeMax(Configurations.getInstance().getMaxFileSizeInBytes());
+		return handler;
 	}
 
 	private StorageService getStorageService() {
