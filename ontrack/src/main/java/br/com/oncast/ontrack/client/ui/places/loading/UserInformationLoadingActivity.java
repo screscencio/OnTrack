@@ -45,7 +45,7 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 
 		});
 		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
-		
+
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 

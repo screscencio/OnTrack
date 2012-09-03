@@ -46,9 +46,14 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 	private final EditableLabelEditionHandler editionHandler;
 
 	public EditableLabel(final EditableLabelEditionHandler editionHandler) {
+		this(editionHandler, false);
+	}
+
+	public EditableLabel(final EditableLabelEditionHandler editionHandler, final boolean wrapText) {
 		this.editionHandler = editionHandler;
 		initWidget(uiBinder.createAndBindUi(this));
 		deckPanel.showWidget(0);
+		if (wrapText) visualizationLabel.removeStyleName("v-ellip");
 	}
 
 	@Override
