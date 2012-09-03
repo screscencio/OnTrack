@@ -14,8 +14,9 @@ public class ErrorMaskPanel {
 		getPhysicalMaskWidget().hide();
 	}
 
+	// TODO review z-index strategy for maskpanel.
 	private static BasicMaskPanel getPhysicalMaskWidget() {
-		if (maskPanel != null) return maskPanel;
+		if (maskPanel != null) maskPanel.asWidget().removeFromParent();
 
 		maskPanel = new BasicMaskPanel().setModal(true);
 		return maskPanel;
