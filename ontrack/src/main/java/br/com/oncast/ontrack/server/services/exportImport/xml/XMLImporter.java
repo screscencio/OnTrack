@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.exportImport.xml;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +27,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 
 public class XMLImporter {
@@ -46,13 +46,13 @@ public class XMLImporter {
 	}
 
 	public XMLImporter loadXML(final File file) {
-		LOGGER.debug("Initializing Serialization");
+		final long initialTime = getCurrentTime();
 		final Serializer serializer = new Persister();
 
 		try {
 			ontrackXML = serializer.read(OntrackXML.class, file);
 			persisted = false;
-			LOGGER.debug("Finished Serialization");
+			LOGGER.debug("Finished XML Serialization in " + getTimeSpent(initialTime) + " ms");
 		}
 		catch (final Exception e) {
 			throw new UnableToImportXMLException("Unable to deserialize xml file.", e);
@@ -66,11 +66,8 @@ public class XMLImporter {
 
 		try {
 			persistUsers(ontrackXML.getUsers());
-			LOGGER.debug("Users Persisted!");
 			persistProjects(ontrackXML.getProjects());
-			LOGGER.debug("Projects Persisted!");
 			persistAuthorizations(ontrackXML.getProjectAuthorizations());
-			LOGGER.debug("Project Authorizations Persisted!");
 
 			this.persisted = true;
 			return this;
@@ -81,6 +78,8 @@ public class XMLImporter {
 	}
 
 	private void persistUsers(final List<UserXMLNode> userNodes) throws PersistenceException {
+		final long initialTime = getCurrentTime();
+		int newUsersCount = 0;
 		for (final UserXMLNode userNode : userNodes) {
 			User persistedUser;
 			try {
@@ -89,9 +88,11 @@ public class XMLImporter {
 			catch (final NoResultFoundException e) {
 				persistedUser = persistenceService.persistOrUpdateUser(userNode.getUser());
 				if (userNode.hasPassword()) persistPassword(persistedUser.getId(), userNode.getPassword());
+				newUsersCount++;
 			}
 			userIdMap.put(userNode.getId(), persistedUser);
 		}
+		LOGGER.debug("Persisted " + userIdMap.size() + " users (" + newUsersCount + " new) in " + getTimeSpent(initialTime) + " ms.");
 	}
 
 	private void persistPassword(final long userId, final Password password) throws PersistenceException {
@@ -100,13 +101,17 @@ public class XMLImporter {
 	}
 
 	private void persistProjects(final List<ProjectXMLNode> projectNodes) throws PersistenceException {
+		final long startTime = getCurrentTime();
 		for (final ProjectXMLNode projectNode : projectNodes) {
+			final long initialTime = getCurrentTime();
 			final ProjectRepresentation representation = projectNode.getProjectRepresentation();
 			persistenceService.persistOrUpdateProjectRepresentation(representation);
 			final List<UserAction> actions = projectNode.getActions();
 			persistActions(representation.getId(), actions);
-			NewRelic.recordMetric("Imported actions for project " + representation.getName(), actions.size());
+			LOGGER.debug("Persisted project " + representation + " and it's " + actions.size() + " actions in " + getTimeSpent(initialTime)
+					+ " ms.");
 		}
+		LOGGER.debug("Persisted " + projectNodes.size() + " projects in " + getTimeSpent(startTime) + " ms");
 	}
 
 	private void persistActions(final UUID projectId, final List<UserAction> userActions) throws PersistenceException {
@@ -128,9 +133,11 @@ public class XMLImporter {
 	}
 
 	private void persistAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizationNodes) throws PersistenceException {
+		final long initialTime = getCurrentTime();
 		for (final ProjectAuthorizationXMLNode authNode : projectAuthorizationNodes) {
 			persistenceService.authorize(userIdMap.get(authNode.getUserId()).getEmail(), authNode.getProjectId());
 		}
+		LOGGER.debug("Persisted " + projectAuthorizationNodes.size() + " ProjectAuthorizations in " + getTimeSpent(initialTime) + " ms.");
 
 	}
 
@@ -139,12 +146,14 @@ public class XMLImporter {
 		if (!persisted) throw new RuntimeException("You must use persistObjects method to persist actions before this method.");
 
 		for (final ProjectXMLNode node : ontrackXML.getProjects()) {
-			final UUID projectId = node.getProjectRepresentation().getId();
+			final long initialTime = getCurrentTime();
+			final ProjectRepresentation representation = node.getProjectRepresentation();
 			try {
-				businessLogic.loadProjectForMigration(projectId);
+				businessLogic.loadProjectForMigration(representation.getId());
+				LOGGER.debug("Loaded project " + representation + " in " + getTimeSpent(initialTime) + " ms.");
 			}
 			catch (final Exception e) {
-				final String message = "Unable to load project '" + projectId.toStringRepresentation() + "' after import.";
+				final String message = "Unable to load project '" + representation + "' after import.";
 				LOGGER.error(message, e);
 				throw new UnableToImportXMLException(
 						"The xml import was not concluded. Some operations may be changed the database, but was not rolled back. Reason: "
@@ -152,4 +161,13 @@ public class XMLImporter {
 			}
 		}
 	}
+
+	private long getCurrentTime() {
+		return new Date().getTime();
+	}
+
+	private long getTimeSpent(final long initialTime) {
+		return getCurrentTime() - initialTime;
+	}
+
 }

@@ -59,4 +59,5 @@ public class Session implements Serializable {
 	private ThreadLocal<UUID> loadThreadLocalClientId() {
 		return threadLocalClientId == null ? threadLocalClientId = new ThreadLocal<UUID>() : threadLocalClientId;
 	}
+
 }

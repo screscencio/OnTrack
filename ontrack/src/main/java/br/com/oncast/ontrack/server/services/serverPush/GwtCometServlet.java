@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
+import com.newrelic.api.agent.NewRelic;
+
 /**
  * This class should have all of its properties static, because it may have multiple instances.
  */
@@ -43,8 +45,6 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 		}
 		catch (final IllegalStateException e) {
 			// Purposefully ignored exception.
-			// TODO Remove this print stack trace.
-			e.printStackTrace();
 			// TODO Analyze if removing a comet session would be necessary here. This exception is thrown exclusively when the client is disconnected.
 			LOGGER.error("It was not possible to push event to client '" + client + "'.", e);
 		}
@@ -57,9 +57,10 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 
 	private static void addCometSession(final CometSession cometSession) {
 		cometSessionMap.put(cometSession.getSessionID(), cometSession);
-		LOGGER.debug("Currently active commet sessions: " + cometSessionMap.size());
 
 		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientConnected(createGwtCometClientConnection(cometSession));
+		LOGGER.debug(cometSessionMap.size() + " active commet sessions: " + cometSessionMap.keySet().toString());
+		NewRelic.recordMetric("commetActiveSession", cometSessionMap.size());
 	}
 
 	private static void removeCometSession(final CometSession cometSession) {
@@ -69,9 +70,10 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	private static void removeCometSession(final String cometSessionId) {
 		final CometSession removedSession = cometSessionMap.remove(cometSessionId);
 		if (removedSession == null) return;
-		LOGGER.debug("Currently active commet sessions: " + cometSessionMap.size());
 
 		if (serverPushConnectionListener != null) serverPushConnectionListener.onClientDisconnected(createGwtCometClientConnection(removedSession));
+		LOGGER.debug(cometSessionMap.size() + " active commet sessions: " + cometSessionMap.keySet().toString());
+		NewRelic.recordMetric("commetActiveSession", cometSessionMap.size());
 	}
 
 	@Override

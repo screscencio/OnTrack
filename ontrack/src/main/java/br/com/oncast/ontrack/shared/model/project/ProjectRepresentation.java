@@ -67,6 +67,6 @@ public class ProjectRepresentation implements Serializable {
 
 	@Override
 	public String toString() {
-		return id.toStringRepresentation() + " " + name;
+		return name + " (" + id.toStringRepresentation() + ")";
 	}
 }

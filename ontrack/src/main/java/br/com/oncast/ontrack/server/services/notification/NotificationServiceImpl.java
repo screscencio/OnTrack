@@ -8,13 +8,13 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionListener;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
+import br.com.oncast.ontrack.server.utils.PrettyPrinter;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
 public class NotificationServiceImpl implements NotificationService {
 
@@ -48,8 +48,8 @@ public class NotificationServiceImpl implements NotificationService {
 		final Set<UUID> connectionSet = clientManager.getClientsAtProject(event.getProjectId());
 		connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
 
-		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + event.getProjectId()
-				+ "' to '" + connectionSet.toString() + "'.");
+		LOGGER.debug("Multicasting " + PrettyPrinter.getSimpleNamesListString(event.getActionList()) + " to project '" + event.getProjectId()
+				+ "': " + connectionSet.toString() + ".");
 		serverPushServerService.pushEvent(event, connectionSet);
 	}
 
@@ -62,8 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
 		final Set<UUID> connectionSet = new HashSet<UUID>();
 		connectionSet.add(localClientId);
 
-		LOGGER.debug("Multicasting " + ModelActionSyncRequest.class.getSimpleName() + " with projectId '" + event.getProjectId()
-				+ "' to '" + connectionSet.toString() + "'.");
+		LOGGER.debug("Multicasting " + PrettyPrinter.getSimpleNamesListString(event.getActionList()) + " to current user (" + connectionSet.toString() + ").");
 		serverPushServerService.pushEvent(event, connectionSet);
 	}
 
@@ -71,8 +70,8 @@ public class NotificationServiceImpl implements NotificationService {
 	public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {
 		final Set<UUID> connectionSet = clientManager.getClientsOfUser(userId);
 
-		LOGGER.debug("Multicasting " + ProjectRepresentation.class.getSimpleName() + " with name '" + projectRepresentation.getName()
-				+ "' to '" + connectionSet.toArray().toString() + "'.");
+		LOGGER.debug("Multicasting project creation with name '" + projectRepresentation.getName()
+				+ "' to '" + connectionSet.toString() + "'.");
 		serverPushServerService.pushEvent(new ProjectCreatedEvent(projectRepresentation), connectionSet);
 	}
 
@@ -80,8 +79,8 @@ public class NotificationServiceImpl implements NotificationService {
 	public void notifyUserInformationChange(final User authenticatedUser) {
 		final Set<UUID> connectionSet = clientManager.getClientsOfUser(authenticatedUser.getId());
 
-		LOGGER.debug("Multicasting " + User.class.getSimpleName() + " of '" + authenticatedUser.getEmail()
-				+ "' to '" + connectionSet.toArray().toString() + "'.");
+		LOGGER.debug("Multicasting information change for " + User.class.getSimpleName() + " '" + authenticatedUser.getEmail()
+				+ "' to " + connectionSet.toString() + ".");
 		serverPushServerService.pushEvent(new UserInformationChangeEvent(authenticatedUser), connectionSet);
 	}
 }

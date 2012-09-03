@@ -1,0 +1,14 @@
+name: ThreadPool
+version: 1.0
+enabled: true
+
+# Add this file into $CATALINA_HOME/newrelic/extensions/
+
+jmx:
+  - object_name: Catalina:type=Manager,path=/,*
+    metrics:
+      - attribute: activeSessions
+  - object_name: Catalina:type=ThreadPool,*
+    metrics:
+      - attributes: currentThreadsBusy
+      - attribute: currentThreadCount
