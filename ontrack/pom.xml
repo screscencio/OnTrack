@@ -16,20 +16,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
     	<maven.compiler.target>1.6</maven.compiler.target>
-
-		<!-- Code analysis -->
-		
     	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-	    <!-- Sonar -->
 		<coverage.reports.dir>${basedir}/target/coverage-reports</coverage.reports.dir>
-
 	    <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
 	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${coverage.reports.dir}/jacoco-unit.exec</sonar.jacoco.reportPath>
 		<sonar.jacoco.itReportPath>${coverage.reports.dir}/jacoco-it.exec</sonar.jacoco.itReportPath>
 		<sonar.jacoco.jar>${basedir}/lib/jacocoagent.jar</sonar.jacoco.jar>
-		
 	</properties>
 
 	<dependencies>
@@ -345,8 +338,10 @@
 								</goals>
 								<configuration>
 									<tasks>
+                                        <delete file="${project.build.outputDirectory}/log4j.stag.xml" />
                                         <delete file="${project.build.outputDirectory}/environment.stag.properties" />
                                         <delete file="${project.build.outputDirectory}/META-INF/persistence.stag.xml" />
+                                        <delete file="${project.build.outputDirectory}/log4j.prod.xml" />
                                         <delete file="${project.build.outputDirectory}/environment.prod.properties" />
                                         <delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
 									</tasks>
@@ -390,12 +385,16 @@
 								</goals>
 								<configuration>
 									<tasks>
+                                        <delete file="${project.build.outputDirectory}/log4j.xml" />
 										<delete file="${project.build.outputDirectory}/environment.properties" />
 										<delete file="${project.build.outputDirectory}/META-INF/persistence.xml" />
+										<copy file="src/main/resources/log4j.prod.xml" tofile="${project.build.outputDirectory}/log4j.xml" />
 										<copy file="src/main/resources/environment.prod.properties" tofile="${project.build.outputDirectory}/environment.properties" />
 										<copy file="src/main/resources/META-INF/persistence.prod.xml" tofile="${project.build.outputDirectory}/META-INF/persistence.xml" />
+                                        <delete file="${project.build.outputDirectory}/log4j.stag.xml" />
                                         <delete file="${project.build.outputDirectory}/environment.stag.properties" />
                                         <delete file="${project.build.outputDirectory}/META-INF/persistence.stag.xml" />
+                                        <delete file="${project.build.outputDirectory}/log4j.prod.xml" />
                                         <delete file="${project.build.outputDirectory}/environment.prod.properties" />
                                         <delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
 									</tasks>
@@ -420,12 +419,16 @@
 								</goals>
 								<configuration>
 									<tasks>
+                                        <delete file="${project.build.outputDirectory}/log4j.xml" />
 										<delete file="${project.build.outputDirectory}/environment.properties" />
 										<delete file="${project.build.outputDirectory}/META-INF/persistence.xml" />
+										<copy file="src/main/resources/log4j.stag.xml" tofile="${project.build.outputDirectory}/log4j.xml" />
 										<copy file="src/main/resources/environment.stag.properties" tofile="${project.build.outputDirectory}/environment.properties" />
 										<copy file="src/main/resources/META-INF/persistence.stag.xml" tofile="${project.build.outputDirectory}/META-INF/persistence.xml" />
-										<delete file="${project.build.outputDirectory}/environment.stag.properties" />
-										<delete file="${project.build.outputDirectory}/META-INF/persistence.stag.xml" />
+                                        <delete file="${project.build.outputDirectory}/log4j.stag.xml" />
+                                        <delete file="${project.build.outputDirectory}/environment.stag.properties" />
+                                        <delete file="${project.build.outputDirectory}/META-INF/persistence.stag.xml" />
+                                        <delete file="${project.build.outputDirectory}/log4j.prod.xml" />
                                         <delete file="${project.build.outputDirectory}/environment.prod.properties" />
                                         <delete file="${project.build.outputDirectory}/META-INF/persistence.prod.xml" />
 									</tasks>

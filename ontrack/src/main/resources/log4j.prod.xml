@@ -9,16 +9,45 @@
 		</layout>
 	</appender>
 
+	<!-- MAIN APPENDER - Logs out to a file -->
+	<appender name="MainLogFile" class="org.apache.log4j.FileAppender">
+		<param name="File" value="/var/lib/tomcat7/logs/ontrack.all.log" />
+		<param name="Threshold" value="DEBUG" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- APPLICATION SPECIFIC LOG APPENDER - Logs out to a file -->
+	<appender name="AppLogFile" class="org.apache.log4j.FileAppender">
+		<param name="File" value="/var/lib/tomcat7/logs/ontrack.app.log" />
+		<param name="Threshold" value="DEBUG" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- REQUEST APPENDER - Logs out to a file -->
+	<appender name="RequestLogFile" class="org.apache.log4j.FileAppender">
+		<param name="File" value="/var/lib/tomcat7/logs/ontrack.request.log" />
+		<param name="Threshold" value="DEBUG" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+
 	<!-- Application Related Log -->
 	<logger name="br.com.oncast.ontrack">
 		<level value="DEBUG" />
+		<appender-ref ref="AppLogFile" />
 		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Application Related Log -->
 	<logger name="br.com.oncast.ontrack.server.services.log.RequestLogger">
-		<level value="DEBUG" />
-		<appender-ref ref="consoleAppender" />
+		<level value="INFO" />
+		<appender-ref ref="RequestLogFile" />
 	</logger>
 
 	<!-- GwtTest Related Log -->
@@ -31,36 +60,42 @@
 	<logger name="com.mchange">
 		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- GWT's JSP Internals Related Log -->
 	<logger name="org.apache.jasper">
 		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Database Related Log - Log all SQL DML statements as they are executed -->
 	<logger name="org.hibernate.SQL">
 		<level value="INFO" />
 		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Database Related Log - Log all second-level cache activity -->
 	<logger name="org.hibernate.cache">
 		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<!-- Database Related Log - Log everything -->
 	<logger name="org.hibernate">
 		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="MainLogFile" />
 	</logger>
 
 	<root>
 		<!-- <level value="DEBUG" /> -->
-		<priority value="DEBUG" />
+		<priority value="INFO" />
 		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="MainLogFile" />
 	</root>
 
 </log4j:configuration>

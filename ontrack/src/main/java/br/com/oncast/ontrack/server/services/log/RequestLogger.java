@@ -9,7 +9,7 @@ public class RequestLogger {
 	private static final Logger LOGGER = Logger.getLogger(RequestLogger.class);
 
 	public void log(final HttpServletRequest request) {
-		LOGGER.info(new RequestLogBuilder(request).appendRequestedURI().appendClientIpAddress().appendUserAgent().toString());
+		LOGGER.info(new RequestLogBuilder(request).appendClientIpAddress().appendRequestedURI().appendUserAgent().toString());
 	}
 
 }
