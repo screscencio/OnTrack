@@ -23,14 +23,17 @@ public class Annotation implements Serializable {
 
 	private Set<User> voters;
 
-	private ModelStateManager<Boolean> deprecationState;
+	private ModelStateManager<AnnotationType> stateManager;
+
+	private ModelStateManager<DeprecationState> deprecationManager;
 
 	public Annotation() {}
 
 	public Annotation(final UUID id, final User author, final Date date, final String message) {
 		this.id = id;
 		this.message = message;
-		this.deprecationState = new ModelStateManager<Boolean>(false, author, date);
+		this.stateManager = new ModelStateManager<AnnotationType>(AnnotationType.SIMPLE, author, date);
+		this.deprecationManager = new ModelStateManager<DeprecationState>(DeprecationState.VALID, author, date);
 		voters = new HashSet<User>();
 	}
 
@@ -56,7 +59,7 @@ public class Annotation implements Serializable {
 	}
 
 	public User getAuthor() {
-		return deprecationState.getInitialState().getAuthor();
+		return stateManager.getInitialState().getAuthor();
 	}
 
 	public String getMessage() {
@@ -68,7 +71,7 @@ public class Annotation implements Serializable {
 	}
 
 	public Date getCreationDate() {
-		return deprecationState.getInitialState().getTimestamp();
+		return stateManager.getInitialState().getTimestamp();
 	}
 
 	public int getVoteCount() {
@@ -95,38 +98,44 @@ public class Annotation implements Serializable {
 		this.attachmentFile = attachmentFile;
 	}
 
-	public void setDeprecated(final boolean deprecated, final User deprecationAuthor, final Date deprecationTimestamp) {
-		deprecationState.setState(deprecated, deprecationAuthor, deprecationTimestamp);
-	}
-
 	public boolean isDeprecated() {
-		return deprecationState.getCurrentStateValue();
+		return deprecationManager.getCurrentStateValue() == DeprecationState.DEPRECATED;
 	}
 
-	public Date getDeprecationTimestamp() {
-		return getDeprecationTimestampForState(true);
-	}
-
-	public User getDeprecationAuthor() {
-		return getDeprecationAuthorForState(true);
-	}
-
-	public Date getDeprecationRemovalTimestamp() {
-		return getDeprecationTimestampForState(false);
-	}
-
-	public User getDeprecationRemovalAuthor() {
-		return getDeprecationAuthorForState(false);
-	}
-
-	private Date getDeprecationTimestampForState(final boolean b) {
-		final ModelState<Boolean> lastOccurenceOf = deprecationState.getLastOccurenceOf(b);
+	public Date getDeprecationTimestamp(final DeprecationState state) {
+		final ModelState<DeprecationState> lastOccurenceOf = deprecationManager.getLastOccurenceOf(state);
 		return lastOccurenceOf == null ? null : lastOccurenceOf.getTimestamp();
 	}
 
-	private User getDeprecationAuthorForState(final boolean b) {
-		final ModelState<Boolean> lastOccurenceOf = deprecationState.getLastOccurenceOf(b);
-		return lastOccurenceOf == null ? null : deprecationState.getLastOccurenceOf(b).getAuthor();
+	public User getDeprecationAuthor(final DeprecationState state) {
+		final ModelState<DeprecationState> lastOccurenceOf = deprecationManager.getLastOccurenceOf(state);
+		return lastOccurenceOf == null ? null : deprecationManager.getLastOccurenceOf(state).getAuthor();
+	}
+
+	public Date getTimestampForState(final AnnotationType state) {
+		final ModelState<AnnotationType> lastOccurenceOf = stateManager.getLastOccurenceOf(state);
+		return lastOccurenceOf == null ? null : lastOccurenceOf.getTimestamp();
+	}
+
+	public User getAuthorForState(final AnnotationType state) {
+		final ModelState<AnnotationType> lastOccurenceOf = stateManager.getLastOccurenceOf(state);
+		return lastOccurenceOf == null ? null : stateManager.getLastOccurenceOf(state).getAuthor();
+	}
+
+	public AnnotationType getType() {
+		return stateManager.getCurrentStateValue();
+	}
+
+	public void setType(final AnnotationType newState, final User author, final Date timestamp) {
+		stateManager.setState(newState, author, timestamp);
+	}
+
+	public void setDeprecation(final DeprecationState newState, final User author, final Date timestamp) {
+		deprecationManager.setState(newState, author, timestamp);
+	}
+
+	public boolean isImpeded() {
+		return stateManager.getCurrentStateValue() == AnnotationType.OPEN_IMPEDIMENT;
 	}
 
 }

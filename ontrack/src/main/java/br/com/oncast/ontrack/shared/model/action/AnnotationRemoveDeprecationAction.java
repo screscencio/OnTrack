@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -31,7 +32,7 @@ public class AnnotationRemoveDeprecationAction implements AnnotationAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
-		annotation.setDeprecated(false, ActionHelper.findUser(actionContext.getUserEmail(), context), actionContext.getTimestamp());
+		annotation.setDeprecation(DeprecationState.VALID, ActionHelper.findUser(actionContext.getUserEmail(), context), actionContext.getTimestamp());
 		return new AnnotationDeprecateAction(subjectId, annotationId);
 	}
 

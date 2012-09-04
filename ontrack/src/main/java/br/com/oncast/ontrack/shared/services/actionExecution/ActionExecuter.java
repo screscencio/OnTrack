@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
 import br.com.oncast.ontrack.shared.model.action.FileAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
@@ -23,6 +24,7 @@ public class ActionExecuter {
 		if (action instanceof TeamAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof FileAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof ChecklistAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
+		if (action instanceof ImpedimentAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 
 		throw new UnableToCompleteActionException("There is no mapped action executer for " + action.getClass() + ".");
 	}

@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.components.annotations.widgets.Annotation
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -237,12 +238,12 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		container.setStyleName(style.deprecatedContainer(), isDeprecated);
 
 		if (isDeprecated) {
-			final String deprecationText = "[Deprecated by " + removeEmailDomain(annotation.getDeprecationAuthor()) + " since "
-					+ HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp()) + "]";
+			final String deprecationText = "[Deprecated by " + removeEmailDomain(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED)) + " since "
+					+ HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED)) + "]";
 			deprecatedLabel.setText(deprecationText);
 			closedDeprecatedLabel.setText(deprecationText + " " + annotation.getMessage());
 
-			final String absoluteDate = HumanDateFormatter.getAbsoluteText(annotation.getDeprecationTimestamp());
+			final String absoluteDate = HumanDateFormatter.getAbsoluteText(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 			deprecatedLabel.setTitle(absoluteDate);
 			closedDeprecatedLabel.setTitle(absoluteDate);
 		}

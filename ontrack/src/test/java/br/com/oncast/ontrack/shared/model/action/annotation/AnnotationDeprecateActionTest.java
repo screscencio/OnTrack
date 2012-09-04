@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -70,7 +71,7 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 		when(actionContext.getTimestamp()).thenReturn(deprecationDate);
 		execute();
 
-		assertEquals(deprecationDate, annotation.getDeprecationTimestamp());
+		assertEquals(deprecationDate, annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 	}
 
 	@Test
@@ -80,7 +81,7 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 		when(context.findUser(user.getEmail())).thenReturn(user);
 		execute();
 
-		assertEquals(user, annotation.getDeprecationAuthor());
+		assertEquals(user, annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
 	}
 
 	@Test
@@ -98,8 +99,8 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 		when(actionContext.getTimestamp()).thenReturn(deprecationTimestamp);
 		redoAction.execute(context, actionContext);
 
-		assertEquals(deprecationRemovalTimestamp, annotation.getDeprecationRemovalTimestamp());
-		assertEquals(deprecationTimestamp, annotation.getDeprecationTimestamp());
+		assertEquals(deprecationRemovalTimestamp, annotation.getDeprecationTimestamp(DeprecationState.VALID));
+		assertEquals(deprecationTimestamp, annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 
 	}
 

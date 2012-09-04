@@ -25,6 +25,8 @@ import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistUncheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
@@ -58,6 +60,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
@@ -147,6 +150,8 @@ public class UserActionTestUtils {
 		userActions.add(createChecklistRenameAction());
 		userActions.add(createAnnotationDeprecateAction());
 		userActions.add(createAnnotationRemoveDeprecationAction());
+		userActions.add(createImpedimentCreateAction());
+		userActions.add(createImpedimentRemoveAction());
 		return userActions;
 	}
 
@@ -225,6 +230,14 @@ public class UserActionTestUtils {
 
 	public static UserAction createTeamInviteAction() throws Exception {
 		return createUserAction(new TeamInviteAction("user@mail.com"));
+	}
+
+	public static UserAction createImpedimentCreateAction() throws Exception {
+		return createUserAction(new ImpedimentCreateAction(new UUID(), new UUID()));
+	}
+
+	public static UserAction createImpedimentRemoveAction() throws Exception {
+		return createUserAction(new ImpedimentRemoveAction(new UUID(), new UUID(), AnnotationType.SIMPLE));
 	}
 
 	public static UserAction createAnnotationVoteRemoveAction() throws Exception {
