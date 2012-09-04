@@ -11,13 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.configuration.Configurations;
+import br.com.oncast.ontrack.server.services.storage.upload.UploadResponseFactory;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 
 import com.google.common.io.Files;
@@ -26,19 +29,23 @@ public class FileUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(FileUploadServlet.class);
+	private static final String MAX_SIZE_LIMIT = FileUtils.byteCountToDisplaySize(Configurations.getInstance().getMaxFileSizeInBytes());
 	private StorageService storageService;
 
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+		configureResponse(response);
 		try {
 			final FileUploadFormObject fileUploadForm = parse(request);
 
 			final FileRepresentation fileRepresentation = getStorageService().store(fileUploadForm.getFileId(), fileUploadForm.getProjectId(),
 					fileUploadForm.getFile(Files.createTempDir()));
 
-			configureResponse(response);
-
-			writeResponse(response.getOutputStream(), fileRepresentation);
+			writeResponse(response.getOutputStream(), UploadResponseFactory.success(fileRepresentation));
+		}
+		catch (final FileSizeLimitExceededException e) {
+			LOGGER.error("File exceeded max size limit", e);
+			writeResponse(response.getOutputStream(), UploadResponseFactory.fileSizeExeededMaxLimit(MAX_SIZE_LIMIT));
 		}
 		catch (final Exception e) {
 			LOGGER.error("File upload failed", e);
@@ -46,15 +53,15 @@ public class FileUploadServlet extends HttpServlet {
 		}
 	}
 
-	private void writeResponse(final OutputStream out, final FileRepresentation fileRepresentation) throws IOException {
-		out.write(fileRepresentation.getId().toStringRepresentation().getBytes());
+	private void writeResponse(final OutputStream out, final String jsonResponse) throws IOException {
+		out.write(jsonResponse.getBytes());
 		out.flush();
 		out.close();
 	}
 
 	private void configureResponse(final HttpServletResponse response) {
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/plain");
+		response.setContentType("application/json");
 	}
 
 	@SuppressWarnings("rawtypes")

@@ -5,13 +5,16 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.utils.forms.ResponseParser;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.storage.BeanFactory;
 import br.com.oncast.ontrack.shared.services.storage.FileUploadFieldNames;
+import br.com.oncast.ontrack.shared.services.storage.UploadResponse;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -28,16 +31,18 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 public class UploadWidget extends Composite {
 
 	private static UploadWidgetUiBinder uiBinder = GWT.create(UploadWidgetUiBinder.class);
+	private static BeanFactory factory = GWT.create(BeanFactory.class);
 
 	interface UploadWidgetUiBinder extends UiBinder<Widget, UploadWidget> {}
 
@@ -180,14 +185,20 @@ public class UploadWidget extends Composite {
 		if (form == null) {
 			form = new FormPanel();
 			form.setVisible(false);
+			form.setEncoding(FormPanel.ENCODING_MULTIPART);
+			form.setMethod(FormPanel.METHOD_POST);
+			form.setAction(actionUrl);
 
 			formPanel.add(form);
-			form.addSubmitHandler(new SubmitHandler() {
+
+			form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 				@Override
-				public void onSubmit(final SubmitEvent event) {
-					form.setEncoding(FormPanel.ENCODING_MULTIPART);
-					form.setMethod(FormPanel.METHOD_POST);
-					form.setAction(actionUrl);
+				public void onSubmitComplete(final SubmitCompleteEvent event) {
+					final UploadResponse response = AutoBeanCodex.decode(factory, UploadResponse.class, ResponseParser.getPlainTextResult(event)).as();
+					if (response.getStatus().equals("error")) {
+						getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
+						ClientServiceProvider.getInstance().getClientNotificationService().showError(response.getMessage());
+					} // success handled with actionExecutionListener
 				}
 			});
 		}

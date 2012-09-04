@@ -85,6 +85,18 @@
 		    <version>${guavaVersion}</version>
 		    <scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		    <scope>provided</scope>
+		</dependency>
 
 		<!-- Communication Related Dependencies. -->
 		<dependency>
