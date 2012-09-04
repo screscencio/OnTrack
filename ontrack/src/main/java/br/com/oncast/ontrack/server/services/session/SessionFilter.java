@@ -11,15 +11,21 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
+import br.com.oncast.ontrack.server.services.log.RequestLogger;
 
 public class SessionFilter implements Filter {
 
 	private static final ServerServiceProvider SERVER_SERVICE_PROVIDER = ServerServiceProvider.getInstance();
 	private static final SessionManager SESSION_MANAGER = SERVER_SERVICE_PROVIDER.getSessionManager();
+	private static final RequestLogger REQUEST_LOGGER = new RequestLogger();
 
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
-		SESSION_MANAGER.configureCurrentHttpSession((HttpServletRequest) request);
+		final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+
+		REQUEST_LOGGER.log(httpServletRequest);
+		SESSION_MANAGER.configureCurrentHttpSession(httpServletRequest);
+
 		chain.doFilter(request, response);
 	}
 
