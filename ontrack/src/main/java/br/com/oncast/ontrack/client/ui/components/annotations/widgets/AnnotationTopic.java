@@ -4,7 +4,6 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
 import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
-import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget.UpdateListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -14,10 +13,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -25,13 +21,14 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// FIXME Xiz Remover as código comentado e variáveis não utilizadas
 public class AnnotationTopic extends Composite implements ModelWidget<Annotation> {
 
 	private static final int TIME_REFRESH_INTERVAL = 60000;
@@ -69,22 +66,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	HTMLPanel container;
 
 	@UiField
-	Label date;
-
-	@UiField
-	FocusPanel deprecate;
-
-	@UiField
-	Label likeCount;
-
-	@UiField
-	FocusPanel like;
-
-	@UiField
-	Label commentsCount;
-
-	@UiField
-	FocusPanel comment;
+	HTMLPanel menuContainer;
 
 	@UiField
 	SimplePanel commentsContainer;
@@ -101,7 +83,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public AnnotationTopic(final Annotation annotation, final UUID subjectId, final boolean enableComments) {
+	public AnnotationTopic(final Annotation annotation, final UUID subjectId, final MenuBar menuBar) {
 		this.annotation = annotation;
 		this.subjectId = subjectId;
 
@@ -109,15 +91,16 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 		deckPanel.showWidget(annotation.isDeprecated() ? 1 : 0);
 
-		setupDeleteButton();
+		// setupDeleteButton();
 		setupContent();
-		setupCommentsPanel(enableComments);
+		menuContainer.add(menuBar);
+		// setupCommentsPanel(annotation.getType().acceptsComments());
 		update();
 	}
 
-	private void setupDeleteButton() {
-		deprecate.setVisible(annotation.getAuthor().equals(getCurrentUser()));
-	}
+	// private void setupDeleteButton() {
+	// deprecate.setVisible(annotation.getAuthor().equals(getCurrentUser()));
+	// }
 
 	@UiHandler("closedDeprecatedLabel")
 	protected void onClosedDeprecatedLabelClick(final ClickEvent e) {
@@ -129,29 +112,29 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		deckPanel.showWidget(1);
 	}
 
-	@UiHandler("deprecate")
-	protected void onDeprecateClicked(final ClickEvent e) {
-		if (annotation.isDeprecated()) getAnnotationService().removeDeprecation(subjectId, annotation.getId());
-		else getAnnotationService().deprecateAnnotation(subjectId, annotation.getId());
-	}
-
-	@UiHandler("like")
-	protected void onLikeClicked(final ClickEvent e) {
-		if (annotation.hasVoted(getCurrentUser())) getAnnotationService().removeVote(subjectId, annotation.getId());
-		else getAnnotationService().addVote(subjectId, annotation.getId());
-	}
+	// @UiHandler("deprecate")
+	// protected void onDeprecateClicked(final ClickEvent e) {
+	// if (annotation.isDeprecated()) getAnnotationService().removeDeprecation(subjectId, annotation.getId());
+	// else getAnnotationService().deprecateAnnotation(subjectId, annotation.getId());
+	// }
+	//
+	// @UiHandler("like")
+	// protected void onLikeClicked(final ClickEvent e) {
+	// if (annotation.hasVoted(getCurrentUser())) getAnnotationService().removeVote(subjectId, annotation.getId());
+	// else getAnnotationService().addVote(subjectId, annotation.getId());
+	// }
 
 	@Override
 	protected void onLoad() {
 		shouldRefresh = true;
-		Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-
-			@Override
-			public boolean execute() {
-				updateTime();
-				return shouldRefresh;
-			}
-		}, TIME_REFRESH_INTERVAL);
+		// Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+		//
+		// @Override
+		// public boolean execute() {
+		// updateTime();
+		// return shouldRefresh;
+		// }
+		// }, TIME_REFRESH_INTERVAL);
 	}
 
 	@Override
@@ -187,33 +170,33 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		}
 	}
 
-	private void setupCommentsPanel(final boolean enableComments) {
-		if (enableComments) {
-			commentsPanel = AnnotationsWidget.forComments(annotation.getId());
-			commentsPanel.addStyleName(style.commentPanel());
-			commentsContainer.add(commentsPanel);
-			comment.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(final ClickEvent event) {
-					commentsPanel.setVisible(!commentsPanel.isVisible());
-					commentsPanel.setFocus(true);
-				}
-			});
-			commentsPanel.setUpdateListener(new UpdateListener() {
-				@Override
-				public void onChanged() {
-					updateComment();
-				}
-			});
-			commentsPanel.setVisible(commentsPanel.getWidgetCount() > 0);
-		}
-		else {
-			comment.setVisible(false);
-			commentsCount.setVisible(false);
-			commentsContainer.setVisible(false);
-		}
-	}
+	// private void setupCommentsPanel(final boolean enableComments) {
+	// if (enableComments) {
+	// commentsPanel = AnnotationsWidget.forComments(annotation.getId());
+	// commentsPanel.addStyleName(style.commentPanel());
+	// commentsContainer.add(commentsPanel);
+	// comment.addClickHandler(new ClickHandler() {
+	//
+	// @Override
+	// public void onClick(final ClickEvent event) {
+	// commentsPanel.setVisible(!commentsPanel.isVisible());
+	// commentsPanel.setFocus(true);
+	// }
+	// });
+	// commentsPanel.setUpdateListener(new UpdateListener() {
+	// @Override
+	// public void onChanged() {
+	// updateComment();
+	// }
+	// });
+	// commentsPanel.setVisible(commentsPanel.getWidgetCount() > 0);
+	// }
+	// else {
+	// comment.setVisible(false);
+	// commentsCount.setVisible(false);
+	// commentsContainer.setVisible(false);
+	// }
+	// }
 
 	private String getDateTimeText(final Annotation annotation) {
 		return HumanDateFormatter.getRelativeDate(annotation.getCreationDate()) + " (" + HumanDateFormatter.getDifferenceDate(annotation.getCreationDate())
@@ -222,9 +205,9 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	@Override
 	public boolean update() {
-		updateLike();
-		updateComment();
-		updateTime();
+		// updateLike();
+		// updateComment();
+		// updateTime();
 		updateDeprecation();
 		return false;
 	}
@@ -232,16 +215,16 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	private void updateDeprecation() {
 		final boolean isDeprecated = annotation.isDeprecated();
 
-		deprecate.setTitle(isDeprecated ? "Remove Deprecation" : "Deprecate");
-
-		deprecate.setStyleName(style.deprecatedIcon(), isDeprecated);
+		// deprecate.setTitle(isDeprecated ? "Remove Deprecation" : "Deprecate");
+		//
+		// deprecate.setStyleName(style.deprecatedIcon(), isDeprecated);
 		container.setStyleName(style.deprecatedContainer(), isDeprecated);
 
 		if (isDeprecated) {
 			final String deprecationText = "[Deprecated by " + removeEmailDomain(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED)) + " since "
 					+ HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED)) + "]";
 			deprecatedLabel.setText(deprecationText);
-			closedDeprecatedLabel.setText(deprecationText + " " + annotation.getMessage());
+			closedDeprecatedLabel.setText("[Deprecated] " + annotation.getMessage());
 
 			final String absoluteDate = HumanDateFormatter.getAbsoluteText(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 			deprecatedLabel.setTitle(absoluteDate);
@@ -257,33 +240,33 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		return user.getEmail().replaceAll("@.*$", "");
 	}
 
-	private void updateComment() {
-		if (commentsPanel == null) return;
+	// private void updateComment() {
+	// if (commentsPanel == null) return;
+	//
+	// final String previousCount = this.commentsCount.getText();
+	// final String currentCount = "" + commentsPanel.getWidgetCount();
+	// this.commentsCount.setText(currentCount);
+	// if (currentCount.compareTo(previousCount) > 0 && !currentCount.equals("0")) commentsPanel.setVisible(true);
+	//
+	// this.comment.setTitle(commentsPanel.isVisible() ? "Hide Comments" : "Show Comments");
+	// }
 
-		final String previousCount = this.commentsCount.getText();
-		final String currentCount = "" + commentsPanel.getWidgetCount();
-		this.commentsCount.setText(currentCount);
-		if (currentCount.compareTo(previousCount) > 0 && !currentCount.equals("0")) commentsPanel.setVisible(true);
+	// public void updateTime() {
+	// this.date.setText(getDateTimeText(annotation));
+	// this.date.setTitle(HumanDateFormatter.getAbsoluteText(annotation.getCreationDate()));
+	// }
 
-		this.comment.setTitle(commentsPanel.isVisible() ? "Hide Comments" : "Show Comments");
-	}
+	// private void updateLike() {
+	// final boolean hasLiked = hasLiked();
+	// this.like.setStyleName(style.likeActive(), hasLiked);
+	// this.like.setTitle(hasLiked ? "Remove like" : "Like");
+	//
+	// this.likeCount.setText("" + annotation.getVoteCount());
+	// }
 
-	public void updateTime() {
-		this.date.setText(getDateTimeText(annotation));
-		this.date.setTitle(HumanDateFormatter.getAbsoluteText(annotation.getCreationDate()));
-	}
-
-	private void updateLike() {
-		final boolean hasLiked = hasLiked();
-		this.like.setStyleName(style.likeActive(), hasLiked);
-		this.like.setTitle(hasLiked ? "Remove like" : "Like");
-
-		this.likeCount.setText("" + annotation.getVoteCount());
-	}
-
-	private boolean hasLiked() {
-		return annotation.hasVoted(getCurrentUser());
-	}
+	// private boolean hasLiked() {
+	// return annotation.hasVoted(getCurrentUser());
+	// }
 
 	private AnnotationService getAnnotationService() {
 		return ClientServiceProvider.getInstance().getAnnotationService();

@@ -29,10 +29,10 @@ public class Annotation implements Serializable {
 
 	public Annotation() {}
 
-	public Annotation(final UUID id, final User author, final Date date, final String message) {
+	public Annotation(final UUID id, final User author, final Date date, final String message, final AnnotationType type) {
 		this.id = id;
 		this.message = message;
-		this.stateManager = new ModelStateManager<AnnotationType>(AnnotationType.SIMPLE, author, date);
+		this.stateManager = new ModelStateManager<AnnotationType>(type, author, date);
 		this.deprecationManager = new ModelStateManager<DeprecationState>(DeprecationState.VALID, author, date);
 		voters = new HashSet<User>();
 	}

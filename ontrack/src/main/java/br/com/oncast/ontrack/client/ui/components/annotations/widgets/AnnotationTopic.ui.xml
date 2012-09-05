@@ -142,15 +142,7 @@
 							<g:cell height="100%">
 								<g:HTMLPanel ui:field="container" styleName="{style.container}" />
 							</g:cell>
-							<g:HTMLPanel styleName="{style.detailContainer}">
-								<g:FocusPanel ui:field="deprecate" styleName="{style.deprecate} {style.icon} {style.detail}" title="Deprecate"/>
-								<g:FocusPanel ui:field="like" styleName="{style.like} {style.icon} {style.detail}"/>
-								<g:Label ui:field="likeCount" styleName="{style.detail} {style.countLabel}"/>
-								<g:FocusPanel ui:field="comment" styleName="{style.commentIcon} {style.icon} {style.detail}"/>
-								<g:Label ui:field="commentsCount" styleName="{style.detail} {style.countLabel}"/>
-								<g:FocusPanel styleName="{style.clockIcon} {style.icon} {style.detail}"/>
-								<g:Label ui:field="date" styleName="{style.detail} {style.dateLabel}"/>
-							</g:HTMLPanel>
+							<g:HTMLPanel ui:field="menuContainer" styleName="{style.detailContainer}" />
 						</g:VerticalPanel>
 					</g:cell>
 				</g:HorizontalPanel>

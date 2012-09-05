@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
@@ -55,14 +54,7 @@ public class AnnotationsWidget extends Composite {
 
 	@UiFactory
 	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> createAnnotationsContainer() {
-		return new VerticalModelWidgetContainer<Annotation, AnnotationTopic>(new ModelWidgetFactory<Annotation, AnnotationTopic>() {
-
-			@Override
-			public AnnotationTopic createWidget(final Annotation modelBean) {
-				return new AnnotationTopic(modelBean, subjectId, enableComments);
-			}
-
-		}, new ModelWidgetContainerListener() {
+		return new VerticalModelWidgetContainer<Annotation, AnnotationTopic>(new AnnotationTopicWidgetFactory(subjectId), new ModelWidgetContainerListener() {
 			@Override
 			public void onUpdateComplete(final boolean hasChanged) {
 				if (hasChanged && updateListener != null) updateListener.onChanged();

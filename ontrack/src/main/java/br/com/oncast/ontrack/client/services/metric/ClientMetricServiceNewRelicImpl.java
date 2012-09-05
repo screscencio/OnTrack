@@ -1,23 +1,22 @@
 package br.com.oncast.ontrack.client.services.metric;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-
 public class ClientMetricServiceNewRelicImpl implements ClientMetricService {
 
 	@Override
 	public void onBrowserLoadStart() {
-		header();
+		// FIXME Not Working
+		// header();
 	}
 
 	@Override
 	public void onBrowserLoadEnd() {
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				footer();
-			}
-		});
+		// FIXME Not Working
+		// Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+		// @Override
+		// public void execute() {
+		// footer();
+		// }
+		// });
 	}
 
 	public static native void header() /*-{
