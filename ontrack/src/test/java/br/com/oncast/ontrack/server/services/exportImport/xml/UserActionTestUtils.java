@@ -27,6 +27,7 @@ import br.com.oncast.ontrack.shared.model.action.ChecklistUncheckItemAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
@@ -152,6 +153,7 @@ public class UserActionTestUtils {
 		userActions.add(createAnnotationRemoveDeprecationAction());
 		userActions.add(createImpedimentCreateAction());
 		userActions.add(createImpedimentRemoveAction());
+		userActions.add(createImpedimentSolveAction());
 		return userActions;
 	}
 
@@ -238,6 +240,10 @@ public class UserActionTestUtils {
 
 	public static UserAction createImpedimentRemoveAction() throws Exception {
 		return createUserAction(new ImpedimentRemoveAction(new UUID(), new UUID(), AnnotationType.SIMPLE));
+	}
+
+	public static UserAction createImpedimentSolveAction() throws Exception {
+		return createUserAction(new ImpedimentSolveAction(new UUID(), new UUID()));
 	}
 
 	public static UserAction createAnnotationVoteRemoveAction() throws Exception {
