@@ -12,15 +12,17 @@ import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailChangeEvent;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
-import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveDeprecationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -68,8 +70,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void createAnnotationFor(final UUID subjectId, final String message, final UUID attachmentId) {
-		doUserAction(new AnnotationCreateAction(subjectId, message, attachmentId));
+	public void createAnnotationFor(final UUID subjectId, final String message, final UUID attachmentId, final AnnotationType type) {
+		doUserAction(new AnnotationCreateAction(subjectId, message, attachmentId, type));
 	}
 
 	@Override
@@ -92,7 +94,17 @@ public class AnnotationServiceImpl implements AnnotationService {
 		doUserAction(new AnnotationRemoveDeprecationAction(subjectId, annotationId));
 	}
 
-	private void doUserAction(final AnnotationAction action) {
+	@Override
+	public void markAsImpediment(final UUID subjectId, final UUID annotationId) {
+		doUserAction(new ImpedimentCreateAction(subjectId, annotationId));
+	}
+
+	@Override
+	public void markAsSolveImpediment(final UUID subjectId, final UUID annotationId) {
+		doUserAction(new ImpedimentSolveAction(subjectId, annotationId));
+	}
+
+	private void doUserAction(final ModelAction action) {
 		actionExecutionService.onUserActionExecutionRequest(action);
 	}
 

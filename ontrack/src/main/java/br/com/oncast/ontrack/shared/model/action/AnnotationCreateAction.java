@@ -43,10 +43,6 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	protected AnnotationCreateAction() {}
 
-	public AnnotationCreateAction(final UUID subjectId, final String message, final UUID attachmentId) {
-		this(subjectId, message, attachmentId, AnnotationType.SIMPLE);
-	}
-
 	public AnnotationCreateAction(final UUID subjectId, final String message, final UUID attachmentId, final AnnotationType type) {
 		this.message = message;
 		this.attachmentId = attachmentId;

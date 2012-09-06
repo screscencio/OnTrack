@@ -112,7 +112,7 @@ public class Annotation implements Serializable {
 		return lastOccurenceOf == null ? null : deprecationManager.getLastOccurenceOf(state).getAuthor();
 	}
 
-	public Date getTimestampForState(final AnnotationType state) {
+	public Date getTimestampFor(final AnnotationType state) {
 		final ModelState<AnnotationType> lastOccurenceOf = stateManager.getLastOccurenceOf(state);
 		return lastOccurenceOf == null ? null : lastOccurenceOf.getTimestamp();
 	}

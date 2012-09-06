@@ -1,0 +1,41 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:image field="iconImg" src="../remove.png"></ui:image>
+	<ui:style type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationDeprecateWidget.AnnotationDeprecateWidgetStyle">
+	
+		.iconActive, .icon:HOVER {
+			opacity: 1;
+		}
+		
+		@sprite .icon {
+			gwt-image: 'iconImg';
+			opacity: 0.3;
+			
+			background-size: 12px 12px;
+			width: 12px;
+			height: 12px;
+			
+			margin-bottom: -1px;
+			
+			cursor: pointer;
+		}
+		
+		.label {
+			margin-right: 5px;
+			font-weight: bold;
+			cursor: default;
+		}
+		
+		.item {
+			display: inline-block;
+		}
+		
+	</ui:style>
+	
+	<g:HTMLPanel styleName="{style.item}">
+		<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon}"/>
+		<g:Label ui:field="label" styleName="{style.item} {style.label}"/>
+	</g:HTMLPanel>
+</ui:UiBinder> 

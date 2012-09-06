@@ -40,8 +40,9 @@ public class ImpedimentCreateAction implements ImpedimentAction {
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
 		if (annotation.isDeprecated()) throw new UnableToCompleteActionException("Unable to create an impediment when the annotation is deprecated.");
 
+		final AnnotationType previousType = annotation.getType();
 		annotation.setType(AnnotationType.OPEN_IMPEDIMENT, author, timestamp);
-		return new ImpedimentRemoveAction(subjectId, annotationId, AnnotationType.SIMPLE);
+		return new ImpedimentRemoveAction(subjectId, annotationId, previousType);
 	}
 
 	@Override

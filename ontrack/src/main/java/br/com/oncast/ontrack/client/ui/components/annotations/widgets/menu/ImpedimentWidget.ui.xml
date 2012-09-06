@@ -1,0 +1,33 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:image field="iconImg" src="../open_impediment.png"></ui:image>
+	<ui:style>
+	
+		.icon:HOVER {
+			opacity: 1;
+		}
+		
+		@sprite .icon {
+			gwt-image: 'iconImg';
+			opacity: 0.6;
+			
+			background-size: 12px 12px;
+			width: 12px;
+			height: 12px;
+			
+			margin-bottom: -1px;
+			margin-right: 5px;
+			
+			cursor: pointer;
+		}
+		
+		.item {
+			display: inline-block;
+		}
+		
+	</ui:style>
+	
+	<g:FocusPanel ui:field="icon" title="Mark as Impediment" styleName="{style.item} {style.icon}"/>
+</ui:UiBinder> 

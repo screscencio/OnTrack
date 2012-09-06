@@ -42,7 +42,7 @@ public class ImpedimentSolveAction implements ImpedimentAction {
 		if (!annotation.isImpeded()) throw new UnableToCompleteActionException("Unable to solve an impediment when the annotation is not a impediment.");
 
 		annotation.setType(AnnotationType.SOLVED_IMPEDIMENT, author, timestamp);
-		return new ImpedimentRemoveAction(subjectId, annotationId, AnnotationType.OPEN_IMPEDIMENT);
+		return new ImpedimentCreateAction(subjectId, annotationId);
 	}
 
 	@Override

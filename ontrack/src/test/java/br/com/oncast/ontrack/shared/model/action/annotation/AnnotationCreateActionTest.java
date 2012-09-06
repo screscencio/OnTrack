@@ -121,7 +121,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenMessageIsEmptyAndThereIsNoAttachedFile() throws Exception {
-		new AnnotationCreateAction(subjectId, "", null).execute(context, actionContext);
+		new AnnotationCreateAction(subjectId, "", null, AnnotationType.SIMPLE).execute(context, actionContext);
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldBeAbleToNotHaveAAttachmentFile() throws Exception {
-		new AnnotationCreateAction(subjectId, message, null).execute(context, actionContext);
+		new AnnotationCreateAction(subjectId, message, null, AnnotationType.SIMPLE).execute(context, actionContext);
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
 		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
@@ -240,7 +240,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new AnnotationCreateAction(subjectId, message, attachmentFile.getId());
+		return new AnnotationCreateAction(subjectId, message, attachmentFile.getId(), AnnotationType.SIMPLE);
 	}
 
 }
