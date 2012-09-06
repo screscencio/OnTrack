@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -18,8 +19,8 @@ public class ClientManager {
 
 	private static final UUID UNBOUND_PROJECT_INDEX = UUID.INVALID_UUID;
 
-	private final Map<UUID, Set<UUID>> clientsByProject = new HashMap<UUID, Set<UUID>>();
-	private final Map<String, Set<UUID>> clientsBySession = new HashMap<String, Set<UUID>>();
+	private final Map<UUID, Set<ServerPushConnection>> clientsByProject = new HashMap<UUID, Set<ServerPushConnection>>();
+	private final Map<String, Set<ServerPushConnection>> clientsBySession = new HashMap<String, Set<ServerPushConnection>>();
 
 	private final UserSessionMapper userSessionMapper;
 
@@ -28,36 +29,34 @@ public class ClientManager {
 		authenticationManager.register(userSessionMapper);
 	}
 
-	public void bindClientToProject(final UUID clientId, final UUID projectId) {
+	public void bindClientToProject(final ServerPushConnection clientId, final UUID projectId) {
 		if (projectId == UNBOUND_PROJECT_INDEX) throw new IllegalArgumentException("Client was not bound to the project: The given 'projectId' should not be 0");
 
 		add(clientId, projectId, clientsByProject);
 		LOGGER.debug("Client '" + clientId + "' was bound to project '" + projectId + "'.");
 	}
 
-	public void unbindClientFromProject(final UUID clientId) {
+	public void unbindClientFromProject(final ServerPushConnection clientId) {
 		add(clientId, UNBOUND_PROJECT_INDEX, clientsByProject);
 		LOGGER.debug("Client '" + clientId + "' was unbound from its project.");
 	}
 
-	public void registerClient(final UUID clientId, final String sessionId) {
-		add(clientId, UNBOUND_PROJECT_INDEX, clientsByProject);
-		add(clientId, sessionId, clientsBySession);
-		LOGGER.debug("Client (clientId='" + clientId + "', sessionId='" + sessionId + "') was registered.");
+	public void registerClient(final ServerPushConnection connection) {
+		add(connection, UNBOUND_PROJECT_INDEX, clientsByProject);
+		add(connection, connection.getSessionId(), clientsBySession);
+		LOGGER.debug("Client " + connection + " was registered.");
 	}
 
-	public void unregisterClient(final UUID clientId) {
-		remove(clientId, clientsByProject);
-		remove(clientId, clientsBySession);
-		LOGGER.debug("Client '" + clientId + "' unregistered.");
+	public void unregisterClient(final ServerPushConnection connection) {
+		// FIXME Auto-generated catch block
 	}
 
-	public Set<UUID> getClientsAtProject(final UUID projectId) {
+	public Set<ServerPushConnection> getClientsAtProject(final UUID projectId) {
 		return get(projectId, clientsByProject);
 	}
 
-	public Set<UUID> getClientsOfUser(final long userId) {
-		final Set<UUID> clients = new HashSet<UUID>();
+	public Set<ServerPushConnection> getClientsOfUser(final long userId) {
+		final Set<ServerPushConnection> clients = new HashSet<ServerPushConnection>();
 		final Set<String> sessions = userSessionMapper.getSessionsIdFor(userId);
 		for (final String sessionId : sessions) {
 			clients.addAll(clientsBySession.get(sessionId));
@@ -65,9 +64,9 @@ public class ClientManager {
 		return clients;
 	}
 
-	public Set<UUID> getAllClients() {
-		final Set<UUID> allClients = new HashSet<UUID>();
-		for (final Set<UUID> clientIds : clientsByProject.values()) {
+	public Set<ServerPushConnection> getAllClients() {
+		final Set<ServerPushConnection> allClients = new HashSet<ServerPushConnection>();
+		for (final Set<ServerPushConnection> clientIds : clientsByProject.values()) {
 			allClients.addAll(clientIds);
 		}
 		return allClients;

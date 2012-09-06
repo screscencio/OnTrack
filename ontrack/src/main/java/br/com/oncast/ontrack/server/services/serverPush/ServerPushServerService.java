@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.server.services.serverPush;
 
 import java.util.Set;
 
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public interface ServerPushServerService {
@@ -14,7 +13,7 @@ public interface ServerPushServerService {
 	 * @param serverPushEvent the event to be sent.
 	 * @param clients the set of clientIds of the event recipients.
 	 */
-	void pushEvent(ServerPushEvent serverPushEvent, Set<UUID> clients);
+	void pushEvent(ServerPushEvent serverPushEvent, Set<ServerPushConnection> clients);
 
 	void registerConnectionListener(ServerPushConnectionListener listener);
 }

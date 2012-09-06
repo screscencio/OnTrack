@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
+import org.atmosphere.gwt.client.AtmosphereListener;
+
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
+import br.com.oncast.ontrack.client.services.serverPush.atmosphere.OntrackAtmosphereClient;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 import com.google.gwt.user.client.Window;
@@ -17,27 +19,22 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
 
-	public ServerPushClientServiceImpl(final ClientIdentificationProvider clientIdentificationProvider, final ClientNotificationService notificationService) {
-		serverPushClient = new GwtCometClient(clientIdentificationProvider, new ServerPushClientEventListener() {
+	public ServerPushClientServiceImpl(final ClientNotificationService notificationService) {
+		serverPushClient = new OntrackAtmosphereClient(new AtmosphereListener() {
 
 			@Override
-			public void onConnected() {}
+			public void onRefresh() {}
 
 			@Override
-			public void onDisconnected() {}
-
-			@Override
-			public void onEvent(final ServerPushEvent event) {
-				processIncommingEvent(event);
+			public void onMessage(final List<?> messages) {
+				processIncommingEvent(messages);
 			}
 
-			/**
-			 * @see br.com.oncast.ontrack.client.services.serverPush.ServerPushClientEventListener#onError(java.lang.Throwable)
-			 *      This method is implemented using a Timer so that errors are not treated instantly, avoiding errors messages thrown because of
-			 *      browser reload events (or when the user closes the window). When a user reloads the page the server push service crashes.
-			 */
 			@Override
-			public void onError(final Throwable exception) {
+			public void onHeartbeat() {}
+
+			@Override
+			public void onError(final Throwable exception, final boolean connected) {
 				// FIXME Mats think about how to update current model without being annoying to the user
 				notificationService.showErrorWithConfirmation("No internet connection...", new NotificationConfirmationListener() {
 					@Override
@@ -46,6 +43,18 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 					}
 				});
 			}
+
+			@Override
+			public void onDisconnected() {}
+
+			@Override
+			public void onConnected(final int heartbeat, final int connectionID) {}
+
+			@Override
+			public void onBeforeDisconnected() {}
+
+			@Override
+			public void onAfterRefresh() {}
 		});
 		connect();
 	}
@@ -64,6 +73,10 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 		}
 	}
 
+	private void processIncommingEvent(final List<?> messages) {
+		Window.alert("" + messages.size());
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void notifyEventHandler(final ServerPushEventHandler handler, final ServerPushEvent event) {
 		handler.onEvent(event);
@@ -71,6 +84,11 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	private void connect() {
 		serverPushClient.start();
+	}
+
+	@Override
+	public String getConnectionID() {
+		return String.valueOf(serverPushClient.getConnectionId());
 	}
 
 }

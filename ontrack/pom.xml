@@ -12,6 +12,7 @@
 		<gwtModule>br.com.oncast.ontrack.Application</gwtModule>
 		<gwtVersion>2.4.0</gwtVersion>
 		<guavaVersion>12.0</guavaVersion>
+		<atmosphereVersion>1.0.0</atmosphereVersion>
 		<webappDirectory>${basedir}/war</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -99,6 +100,23 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/war/WEB-INF/lib/gwt-comet-1.2.3-patch.jar</systemPath>
 		</dependency>
+       	<dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>atmosphere-runtime</artifactId>
+        	<version>${atmosphereVersion}</version>
+        </dependency>
+      	<dependency>
+	         <groupId>org.atmosphere</groupId>
+	         <artifactId>atmosphere-gwt-client</artifactId>
+	         <version>${atmosphereVersion}</version>
+	         <scope>provided</scope>
+	     </dependency>
+	     <dependency>
+	         <groupId>org.atmosphere</groupId>
+	         <artifactId>atmosphere-gwt-server</artifactId>
+	         <version>${atmosphereVersion}</version>
+	     </dependency>
+		
 
 		<!-- Import / Export Related Dependencies -->
 		<dependency>

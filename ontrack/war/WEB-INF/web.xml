@@ -44,7 +44,19 @@
 		<servlet-name>gwtCometPingService</servlet-name>
 		<url-pattern>/application/gwtCometPingService</url-pattern>
 	</servlet-mapping>
-
+    <servlet>
+        <servlet-name>AtmosphereServlet</servlet-name>
+        <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
+        <init-param>
+		    <!-- prevent deadlocks -->
+		    <param-name>org.atmosphere.disableOnStateEvent</param-name>
+		    <param-value>true</param-value>
+		</init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AtmosphereServlet</servlet-name>
+        <url-pattern>/application/atmosphere</url-pattern>
+    </servlet-mapping>
 	<!-- RequestDispatch Service Definitions and Mappings -->
 	<servlet>
 		<servlet-name>requestDispatchService</servlet-name>

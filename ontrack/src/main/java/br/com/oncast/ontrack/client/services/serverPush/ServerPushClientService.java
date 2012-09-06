@@ -6,4 +6,6 @@ public interface ServerPushClientService {
 
 	public <T extends ServerPushEvent> void registerServerEventHandler(final Class<T> eventClass, final ServerPushEventHandler<T> serverPushEventHandler);
 
+	public String getConnectionID();
+
 }

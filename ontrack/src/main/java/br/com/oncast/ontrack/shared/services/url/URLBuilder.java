@@ -23,6 +23,7 @@ public class URLBuilder {
 
 	private static final String EXPORT_TO_MINDMAP_APPLICATION_SERVLET_URL = "application/mindmap/download";
 	public static final String SERVER_PUSH_COMET_URL = GWT.getModuleBaseURL() + "comet" + Window.Location.getQueryString();
+	public static final String ATMOSPHERE_URL = GWT.getModuleBaseURL() + "atmosphere" + Window.Location.getQueryString();
 
 	public static String buildMindMapExportURL(final UUID uuid) {
 		return Window.Location.createUrlBuilder()

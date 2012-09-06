@@ -1,0 +1,6 @@
+<atmosphere-handlers>
+    <atmosphere-handler context-root="/application/atmosphere"
+                        class-name="br.com.oncast.ontrack.server.services.serverPush.atmosphere.OntrackAtmosphereHandler">
+        <property name="heartbeat" value="20000"/>
+    </atmosphere-handler>
+</atmosphere-handlers>

@@ -52,10 +52,8 @@ class GwtCometClient implements ServerPushClient {
 
 					@Override
 					public void onError(final Throwable exception, final boolean connected) {
-						// IMPORTANT This is a workaround so that Alerts are not shown when manually reloading the application. This is done because
-						// there is no
-						// safe
-						// way to determine if a error was caused by the reload itself and the library errors throw only one type of exception.
+						// IMPORTANT This is a workaround so that Alerts are not shown when manually reloading the application. This is done because there is no
+						// safe way to determine if a error was caused by the reload itself and the library errors throw only one type of exception.
 						new Timer() {
 
 							@Override
@@ -110,5 +108,11 @@ class GwtCometClient implements ServerPushClient {
 	@Override
 	public void stop() {
 		client.stop();
+	}
+
+	@Override
+	public int getConnectionId() {
+		// FIXME Auto-generated catch block
+		return 0;
 	}
 }

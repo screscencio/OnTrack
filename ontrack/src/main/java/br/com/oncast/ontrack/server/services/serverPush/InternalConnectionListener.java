@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.server.services.serverPush;
 
-interface InternalConnectionListener {
+public interface InternalConnectionListener {
 
 	void onClientConnected(ServerPushConnection connection);
 

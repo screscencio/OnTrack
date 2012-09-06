@@ -1,10 +1,12 @@
 package br.com.oncast.ontrack.client.services.serverPush;
 
-interface ServerPushClient {
+public interface ServerPushClient {
 
 	void start();
 
 	boolean isRunning();
 
 	void stop();
+
+	int getConnectionId();
 }

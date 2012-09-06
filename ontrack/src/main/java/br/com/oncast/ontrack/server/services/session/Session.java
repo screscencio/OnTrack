@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
+import br.com.oncast.ontrack.server.services.serverPush.CometClientConnection;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 /**
  * Unique session information holder.<br/>
@@ -24,7 +25,7 @@ public class Session implements Serializable {
 
 	private final String sessionId;
 
-	private transient ThreadLocal<UUID> threadLocalClientId;
+	private transient ThreadLocal<String> threadLocalClientId;
 
 	public Session(final String sessionId) {
 		this.sessionId = sessionId;
@@ -48,16 +49,16 @@ public class Session implements Serializable {
 		this.authenticatedUser = authenticatedUser;
 	}
 
-	protected void setThreadLocalClientId(final UUID clientId) {
-		loadThreadLocalClientId().set((clientId != null && clientId.isValid()) ? clientId : UUID.INVALID_UUID);
+	protected void setThreadLocalClientId(final String clientId) {
+		loadThreadLocalClientId().set((clientId != null && !clientId.isEmpty()) ? clientId : "0");
 	}
 
-	public UUID getThreadLocalClientId() {
-		return loadThreadLocalClientId().get();
+	public ServerPushConnection getThreadLocalClientId() {
+		return new CometClientConnection(loadThreadLocalClientId().get(), getSessionId());
 	}
 
-	private ThreadLocal<UUID> loadThreadLocalClientId() {
-		return threadLocalClientId == null ? threadLocalClientId = new ThreadLocal<UUID>() : threadLocalClientId;
+	private ThreadLocal<String> loadThreadLocalClientId() {
+		return threadLocalClientId == null ? threadLocalClientId = new ThreadLocal<String>() : threadLocalClientId;
 	}
 
 }

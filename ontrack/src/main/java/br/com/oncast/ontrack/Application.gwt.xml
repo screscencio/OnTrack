@@ -21,6 +21,11 @@
 	<inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
 	<inherits name="br.com.drycode.api.web.gwt.dispatchService.DispatchService"/>
 
+	<inherits name="org.atmosphere.gwt.Client"/>
+	<inherits name="com.google.gwt.logging.Logging"/>
+	<set-property name="gwt.logging.logLevel" value="INFO"/>
+	<set-property name="gwt.logging.popupHandler" value="DISABLED"/>
+
 	<!-- Specify the app entry point class -->
 	<entry-point class='br.com.oncast.ontrack.client.ApplicationEntryPoint' />
 

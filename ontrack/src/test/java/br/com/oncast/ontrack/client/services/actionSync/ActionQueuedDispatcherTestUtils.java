@@ -117,5 +117,10 @@ public class ActionQueuedDispatcherTestUtils {
 		private void notifyEventHandler(final ServerPushEventHandler handler, final ServerPushEvent event) {
 			handler.onEvent(event);
 		}
+
+		@Override
+		public String getConnectionID() {
+			return "1";
+		}
 	}
 }

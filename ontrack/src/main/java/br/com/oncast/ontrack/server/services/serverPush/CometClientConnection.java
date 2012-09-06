@@ -1,11 +1,14 @@
 package br.com.oncast.ontrack.server.services.serverPush;
 
-class GwtCometClientConnection implements ServerPushConnection {
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+public class CometClientConnection implements ServerPushConnection {
 
 	private final String clientId;
 	private final String sessionId;
 
-	public GwtCometClientConnection(final String clientId, final String sessionId) {
+	public CometClientConnection(final String clientId, final String sessionId) {
 		this.clientId = clientId;
 		this.sessionId = sessionId;
 	}
@@ -22,16 +25,12 @@ class GwtCometClientConnection implements ServerPushConnection {
 
 	@Override
 	public int hashCode() {
-		return clientId.hashCode();
+		return new HashCodeBuilder().append(clientId).append(sessionId).toHashCode();
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof GwtCometClientConnection)) return false;
-		final GwtCometClientConnection other = (GwtCometClientConnection) obj;
-		return clientId.equals(other.clientId);
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	@Override

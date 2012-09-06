@@ -39,7 +39,7 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 	}
 
 	@Override
-	public void pushEvent(final ServerPushEvent serverPushEvent, final GwtCometClientConnection client) {
+	public void pushEvent(final ServerPushEvent serverPushEvent, final ServerPushConnection client) {
 		try {
 			cometSessionMap.get(client.getClientId()).enqueue(serverPushEvent);
 		}
@@ -116,8 +116,8 @@ public class GwtCometServlet extends CometServlet implements ServerPushApi {
 		}
 	}
 
-	private static GwtCometClientConnection createGwtCometClientConnection(final CometSession cometSession) {
-		return new GwtCometClientConnection(cometSession.getSessionID(), cometSession.getHttpSession().getId());
+	private static CometClientConnection createGwtCometClientConnection(final CometSession cometSession) {
+		return new CometClientConnection(cometSession.getSessionID(), cometSession.getHttpSession().getId());
 	}
 
 }

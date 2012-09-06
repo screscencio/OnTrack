@@ -56,6 +56,13 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr305-gwt-1.3.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/aspectjrt-1.6.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-deps.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-jbossweb-1.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat-1.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat7-1.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-common-1.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-server-1.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/atmosphere-gwt-client-1.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/newrelic-api.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>

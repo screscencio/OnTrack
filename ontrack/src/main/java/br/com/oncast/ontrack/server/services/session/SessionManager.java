@@ -5,7 +5,6 @@ import javax.servlet.http.HttpSession;
 
 import br.com.oncast.ontrack.server.services.session.exceptions.SessionUnavailableException;
 import br.com.oncast.ontrack.shared.config.RequestConfigurations;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 /**
  * Manager for {@link Session} localization and persistence.<br />
@@ -21,11 +20,16 @@ public class SessionManager {
 		LOCAL_SESSION.set(session);
 	}
 
-	private UUID extractClientId(final HttpServletRequest request) {
-		String clientId = request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME);
+	private String extractClientId(final HttpServletRequest request) {
+		String clientId = null;
+		try {
+			Thread.sleep(500);
+		}
+		catch (final InterruptedException e) {}
+		clientId = request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME);
 		if (clientId == null) clientId = request.getParameter(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME);
 
-		return clientId == null ? UUID.INVALID_UUID : new UUID(clientId);
+		return clientId == null ? "0" : clientId;
 	}
 
 	private Session getOrCreateSession(final HttpSession httpSession) {

@@ -5,13 +5,13 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionListener;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.server.utils.PrettyPrinter;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
@@ -30,22 +30,21 @@ public class NotificationServiceImpl implements NotificationService {
 
 		// TODO Maybe move this registration logic to ClientManager
 		this.serverPushServerService.registerConnectionListener(new ServerPushConnectionListener() {
-
 			@Override
-			public void onClientConnected(final UUID clientId, final String sessionId) {
-				clientManager.registerClient(clientId, sessionId);
+			public void onClientConnected(final ServerPushConnection connection) {
+				clientManager.registerClient(connection);
 			}
 
 			@Override
-			public void onClientDisconnected(final UUID clientId) {
-				clientManager.unregisterClient(clientId);
+			public void onClientDisconnected(final ServerPushConnection connection) {
+				clientManager.unregisterClient(connection);
 			}
 		});
 	}
 
 	@Override
 	public void notifyActionsToOtherProjectUsers(final ModelActionSyncEvent event) {
-		final Set<UUID> connectionSet = clientManager.getClientsAtProject(event.getProjectId());
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsAtProject(event.getProjectId());
 		connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
 
 		LOGGER.debug("Multicasting " + PrettyPrinter.getSimpleNamesListString(event.getActionList()) + " to project '" + event.getProjectId()
@@ -55,11 +54,11 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public void notifyActionToCurrentUser(final ModelActionSyncEvent event) {
-		final UUID localClientId = sessionManager.getCurrentSession().getThreadLocalClientId();
+		final ServerPushConnection localClientId = sessionManager.getCurrentSession().getThreadLocalClientId();
 
-		if (localClientId == null || !localClientId.isValid() || !clientManager.getClientsAtProject(event.getProjectId()).contains(localClientId)) return;
+		if (localClientId == null || !clientManager.getClientsAtProject(event.getProjectId()).contains(localClientId)) return;
 
-		final Set<UUID> connectionSet = new HashSet<UUID>();
+		final Set<ServerPushConnection> connectionSet = new HashSet<ServerPushConnection>();
 		connectionSet.add(localClientId);
 
 		LOGGER.debug("Multicasting " + PrettyPrinter.getSimpleNamesListString(event.getActionList()) + " to current user (" + connectionSet.toString() + ").");
@@ -68,7 +67,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {
-		final Set<UUID> connectionSet = clientManager.getClientsOfUser(userId);
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(userId);
 
 		LOGGER.debug("Multicasting project creation with name '" + projectRepresentation.getName()
 				+ "' to '" + connectionSet.toString() + "'.");
@@ -77,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public void notifyUserInformationChange(final User authenticatedUser) {
-		final Set<UUID> connectionSet = clientManager.getClientsOfUser(authenticatedUser.getId());
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(authenticatedUser.getId());
 
 		LOGGER.debug("Multicasting information change for " + User.class.getSimpleName() + " '" + authenticatedUser.getEmail()
 				+ "' to " + connectionSet.toString() + ".");

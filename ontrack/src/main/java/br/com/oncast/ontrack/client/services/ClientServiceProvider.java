@@ -159,7 +159,7 @@ public class ClientServiceProvider {
 			@Override
 			public void configureRequestBuilder(final RequestBuilder requestBuilder) {
 				requestBuilder
-						.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, getClientIdentificationProvider().getClientId().toString());
+						.setHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME, getServerPushClientService().getConnectionID());
 			}
 		});
 	}
@@ -177,7 +177,7 @@ public class ClientServiceProvider {
 
 	private ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientServiceImpl(getClientIdentificationProvider(), getClientNotificationService());
+		return serverPushClientService = new ServerPushClientServiceImpl(getClientNotificationService());
 	}
 
 	public EventBus getEventBus() {
