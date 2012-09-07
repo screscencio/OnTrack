@@ -13,11 +13,11 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SinceWidget extends Composite implements AnnotationMenuItem {
+public class SinceAnnotationMenuItem extends Composite implements AnnotationMenuItem {
 
-	private static SinceWidgetUiBinder uiBinder = GWT.create(SinceWidgetUiBinder.class);
+	private static SinceAnnotationMenuItemUiBinder uiBinder = GWT.create(SinceAnnotationMenuItemUiBinder.class);
 
-	interface SinceWidgetUiBinder extends UiBinder<Widget, SinceWidget> {}
+	interface SinceAnnotationMenuItemUiBinder extends UiBinder<Widget, SinceAnnotationMenuItem> {}
 
 	@UiField
 	FocusPanel icon;
@@ -27,7 +27,7 @@ public class SinceWidget extends Composite implements AnnotationMenuItem {
 
 	private final Annotation annotation;
 
-	public SinceWidget(final Annotation annotation) {
+	public SinceAnnotationMenuItem(final Annotation annotation) {
 		this.annotation = annotation;
 
 		initWidget(uiBinder.createAndBindUi(this));

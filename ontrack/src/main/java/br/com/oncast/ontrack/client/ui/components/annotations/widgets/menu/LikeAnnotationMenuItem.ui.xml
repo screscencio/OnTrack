@@ -2,13 +2,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="iconImg" src="../remove.png"></ui:image>
-	<ui:style type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationDeprecateWidget.AnnotationDeprecateWidgetStyle">
+	<ui:image field="iconImg" src="../like.jpg"></ui:image>
+	<ui:style type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.LikeAnnotationMenuItem.LikeWidgetStyle">
 	
-		.iconActive, .icon:HOVER {
-			opacity: 1;
-		}
-		
 		@sprite .icon {
 			gwt-image: 'iconImg';
 			opacity: 0.3;
@@ -20,6 +16,10 @@
 			margin-bottom: -1px;
 			
 			cursor: pointer;
+		}
+		
+		.iconActive, .icon:HOVER {
+			opacity: 1;
 		}
 		
 		.label {

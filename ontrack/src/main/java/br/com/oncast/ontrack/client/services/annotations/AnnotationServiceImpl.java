@@ -22,7 +22,6 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -70,8 +69,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void createAnnotationFor(final UUID subjectId, final String message, final UUID attachmentId, final AnnotationType type) {
-		doUserAction(new AnnotationCreateAction(subjectId, message, attachmentId, type));
+	public void createAnnotationFor(final UUID subjectId, final String message, final UUID attachmentId) {
+		doUserAction(new AnnotationCreateAction(subjectId, message, attachmentId));
 	}
 
 	@Override

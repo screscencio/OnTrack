@@ -2,10 +2,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
-	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
 	xmlns:menu="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu">
 	
-	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationTopic.AnnotationTopicStyle">
+	<ui:style src="../../../style/default.css">
 	
 		.author {
 			vertical-align: top;
@@ -22,16 +21,10 @@
 		}
 		
 		.detailContainer {
-			margin-bottom: -7px;
+			margin-bottom: -4px;
 			text-align: right;
 			font-size: FONT_SIZE_TINY;
 			font-style: italic;
-		}
-		
-		.commentsPanel {
-			padding: 20px;
-			padding-bottom: 0px;
-			height: auto;
 		}
 		
 		.separator {
@@ -59,27 +52,13 @@
 			bottom: 0px;
 		}
 		
-		.simple, .openImpediment, .solvedImpediment {
-			border-left: 5px solid #CCC;
-			padding: 3px 0px 3px 5px;
-		}
-		
-		@def OPEN_IMPEDIMENT_COLOR #f0542d;
-		.openImpediment {
-			border-left-color: OPEN_IMPEDIMENT_COLOR;
-		}
-		
-		@def SOLVED_IMPEDIMENT_COLOR #44ad85;
-		.solvedImpediment {
-			border-left-color: SOLVED_IMPEDIMENT_COLOR;
-		}
 		
 	</ui:style>
 	
 	<g:HTMLPanel>
 		<g:DeckPanel ui:field="deckPanel">
 			<g:HTMLPanel>
-				<g:HorizontalPanel ui:field="content" height="100%">
+				<g:HorizontalPanel height="100%">
 					<g:Image ui:field="author" styleName="{style.author}" />
 					<g:cell width="100%" height="100%">
 						<g:VerticalPanel width="100%" height="100%">
@@ -91,7 +70,6 @@
 						</g:VerticalPanel>
 					</g:cell>
 				</g:HorizontalPanel>
-				<aw:CommentsWidget ui:field="commentsPanel" styleName="{style.commentsPanel}" />
 			</g:HTMLPanel>
 			<g:SimplePanel styleName="{style.closedDeprecatedContainer}">
 				<g:Label ui:field="closedDeprecatedLabel" styleName="{style.closedDeprecatedLabel} v-ellip"/>

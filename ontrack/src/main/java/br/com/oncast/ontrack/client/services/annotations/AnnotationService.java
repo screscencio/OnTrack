@@ -4,12 +4,11 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.services.annotations.AnnotationServiceImpl.AnnotationModificationListener;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface AnnotationService {
 
-	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId, AnnotationType type);
+	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId);
 
 	void deprecateAnnotation(UUID subjectId, UUID annotationId);
 

@@ -19,17 +19,6 @@
 			margin: 15px -15px 10px -15px;
 		}
 		
-		.annotations {
-			position: absolute;
-			top: 0px;
-			right: 0px;
-			bottom: 0px;
-			left: 0px;
-			
-			overflow-y: auto;
-			overflow-x: hidden;
-		}
-		
 		.uploadPanel {
 			margin-left: 15px;
 		}

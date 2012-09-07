@@ -6,7 +6,6 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
-import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
@@ -14,7 +13,6 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
-import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -29,30 +27,27 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AnnotationsWidget extends Composite {
+public class CommentsWidget extends Composite {
 
-	private static AnnotationsWidgetUiBinder uiBinder = GWT.create(AnnotationsWidgetUiBinder.class);
+	private static CommentsWidgetUiBinder uiBinder = GWT.create(CommentsWidgetUiBinder.class);
 
-	interface AnnotationsWidgetUiBinder extends UiBinder<Widget, AnnotationsWidget> {}
-
-	@UiField
-	protected ExtendableTextArea newAnnotationText;
+	interface CommentsWidgetUiBinder extends UiBinder<Widget, CommentsWidget> {}
 
 	@UiField
-	protected UploadWidget uploadWidget;
+	protected ExtendableTextArea newCommentText;
 
 	@UiField
 	protected Widget separator;
 
 	@UiField
-	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> annotationsWidgetContainer;
+	protected VerticalModelWidgetContainer<Annotation, AnnotationComment> commentsWidgetContainer;
 
 	@UiFactory
-	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> createAnnotationsContainer() {
-		return new VerticalModelWidgetContainer<Annotation, AnnotationTopic>(new ModelWidgetFactory<Annotation, AnnotationTopic>() {
+	protected VerticalModelWidgetContainer<Annotation, AnnotationComment> createAnnotationsContainer() {
+		return new VerticalModelWidgetContainer<Annotation, AnnotationComment>(new ModelWidgetFactory<Annotation, AnnotationComment>() {
 			@Override
-			public AnnotationTopic createWidget(final Annotation modelBean) {
-				return new AnnotationTopic(subjectId, modelBean);
+			public AnnotationComment createWidget(final Annotation modelBean) {
+				return new AnnotationComment(subjectId, modelBean);
 			}
 		});
 	}
@@ -61,10 +56,9 @@ public class AnnotationsWidget extends Composite {
 
 	private ActionExecutionListener actionsListener;
 
-	public AnnotationsWidget(final UUID subjectId) {
+	public CommentsWidget(final UUID subjectId) {
 		this.subjectId = subjectId;
 		initWidget(uiBinder.createAndBindUi(this));
-		uploadWidget.setActionUrl("/application/file/upload");
 	}
 
 	@Override
@@ -79,40 +73,33 @@ public class AnnotationsWidget extends Composite {
 		getActionExecutionService().removeActionExecutionListener(actionsListener);
 	}
 
-	@UiHandler("newAnnotationText")
+	@UiHandler("newCommentText")
 	protected void onNewAnnotationTextKeyDown(final KeyDownEvent e) {
 		if (!new Shortcut(BrowserKeyCodes.KEY_ENTER).with(ControlModifier.PRESSED).accepts(e.getNativeEvent())) return;
 		e.preventDefault();
 		e.stopPropagation();
 
-		addAnnotation();
-		newAnnotationText.setText("");
+		addComment();
+		newCommentText.setText("");
 	}
 
 	public void setFocus(final boolean b) {
-		newAnnotationText.setFocus(b);
+		newCommentText.setFocus(b);
 	}
 
 	public int getWidgetCount() {
-		return annotationsWidgetContainer.getWidgetCount();
+		return commentsWidgetContainer.getWidgetCount();
 	}
 
-	private void addAnnotation() {
-		final String message = newAnnotationText.getText().trim();
-		final String fileName = uploadWidget.getFilename();
-		if (message.trim().isEmpty() && fileName.isEmpty()) return;
+	private void addComment() {
+		final String message = newCommentText.getText().trim();
+		if (message.trim().isEmpty()) return;
 
-		uploadWidget.submitForm(new UploadWidgetListener() {
-			@Override
-			public void onUploadCompleted(final UUID fileRepresentationId) {
-				uploadWidget.setUploadFieldVisible(false);
-				getProvider().getAnnotationService().createAnnotationFor(subjectId, message, fileRepresentationId);
-			}
-		});
+		getProvider().getAnnotationService().createAnnotationFor(subjectId, message, null);
 	}
 
 	private void update() {
-		annotationsWidgetContainer.update(getAnnotationService().getAnnotationsFor(subjectId));
+		commentsWidgetContainer.update(getAnnotationService().getAnnotationsFor(subjectId));
 	}
 
 	private ActionExecutionListener getListener() {
@@ -124,7 +111,6 @@ public class AnnotationsWidget extends Composite {
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof AnnotationAction && action.getReferenceId().equals(subjectId)) update();
-				if (action instanceof ImpedimentAction && action.getReferenceId().equals(subjectId)) update();
 			}
 		};
 	}
@@ -139,6 +125,12 @@ public class AnnotationsWidget extends Composite {
 
 	private ClientServiceProvider getProvider() {
 		return ClientServiceProvider.getInstance();
+	}
+
+	public void setReadOnly(final boolean b) {
+		final boolean visible = !b;
+		newCommentText.setVisible(visible);
+		separator.setVisible(visible);
 	}
 
 }

@@ -34,9 +34,6 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
 	private String message;
 
-	@Column(name = ActionTableColumns.STRING_4)
-	private String annotationType;
-
 	@OneToMany(cascade = CascadeType.ALL)
 	@Column(name = ActionTableColumns.ACTION_LIST)
 	@JoinTable(name = "AnnotationCreate_subActionList")
@@ -82,14 +79,6 @@ public class AnnotationCreateActionEntity extends ModelActionEntity {
 
 	public void setSubjectId(final String subjectId) {
 		this.subjectId = subjectId;
-	}
-
-	public String getAnnotationType() {
-		return annotationType;
-	}
-
-	public void setAnnotationType(String annotationType) {
-		this.annotationType = annotationType;
 	}
 
 }

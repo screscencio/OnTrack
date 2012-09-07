@@ -4,12 +4,12 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
 import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
-import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.CommentsAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.DeprecateAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.LikeAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.SinceAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -17,8 +17,6 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -26,27 +24,15 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AnnotationTopic extends Composite implements ModelWidget<Annotation> {
+public class AnnotationComment extends Composite implements ModelWidget<Annotation> {
 
-	private static AnnotationTopicUiBinder uiBinder = GWT.create(AnnotationTopicUiBinder.class);
+	private static AnnotationCommentUiBinder uiBinder = GWT.create(AnnotationCommentUiBinder.class);
 
-	interface AnnotationTopicUiBinder extends UiBinder<Widget, AnnotationTopic> {}
-
-	interface AnnotationTopicStyle extends CssResource {
-		String openImpediment();
-
-		String solvedImpediment();
-
-		String simple();
-	}
-
-	@UiField
-	AnnotationTopicStyle style;
+	interface AnnotationCommentUiBinder extends UiBinder<Widget, AnnotationComment> {}
 
 	@UiField
 	Image author;
@@ -66,33 +52,25 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	@UiField
 	AnnotationMenuWidget menu;
 
-	@UiField(provided = true)
-	CommentsWidget commentsPanel;
-
-	@UiField
-	HorizontalPanel content;
-
 	private Annotation annotation;
 
 	private UUID subjectId;
 
-	private AnnotationType currentType;
-
-	public AnnotationTopic() {
+	public AnnotationComment() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public AnnotationTopic(final UUID subjectId, final Annotation annotation) {
+	public AnnotationComment(final UUID subjectId, final Annotation annotation) {
 		this.subjectId = subjectId;
 		this.annotation = annotation;
 
-		commentsPanel = new CommentsWidget(annotation.getId());
 		initWidget(uiBinder.createAndBindUi(this));
 
 		deckPanel.showWidget(annotation.isDeprecated() ? 1 : 0);
 
 		updateAuthorImage();
 		updateMessageBody();
+		updateMenu();
 
 		update();
 	}
@@ -141,44 +119,17 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	@Override
 	public boolean update() {
 		updateDeprecation();
-		updateComments();
 
-		if (currentType == null || currentType != annotation.getType()) {
-			createCustomMenu();
-		}
-		else menu.update();
+		menu.update();
 		return false;
 	}
 
-	private void createCustomMenu() {
+	private void updateMenu() {
 		menu.clear();
+
 		menu.add(new DeprecateAnnotationMenuItem(subjectId, annotation));
-
-		addCommentsMenuItem();
-
-		final AnnotationTypeItemsMapper mapper = AnnotationTypeItemsMapper.get(annotation.getType());
-		mapper.populateMenu(menu, subjectId, annotation);
-
-		content.setStyleName(mapper.getContentStyle(style));
-		currentType = annotation.getType();
-	}
-
-	private void updateComments() {
-		commentsPanel.setReadOnly(annotation.isDeprecated());
-		commentsPanel.setVisible(commentsPanel.getWidgetCount() > 0);
-	}
-
-	private void addCommentsMenuItem() {
-		final CommentsAnnotationMenuItem comment = new CommentsAnnotationMenuItem(annotation);
-		comment.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				commentsPanel.setVisible(!commentsPanel.isVisible());
-				commentsPanel.setFocus(true);
-			}
-		});
-		menu.add(comment);
+		menu.add(new LikeAnnotationMenuItem(subjectId, annotation));
+		menu.add(new SinceAnnotationMenuItem(annotation));
 	}
 
 	private void updateDeprecation() {
@@ -187,6 +138,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		if (isDeprecated) updateDeprecatedLabels();
 
 		deprecatedLabel.setVisible(isDeprecated);
+
 	}
 
 	private void updateDeprecatedLabels() {

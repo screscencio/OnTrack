@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action.annotation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -40,7 +39,6 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
-import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
@@ -121,7 +119,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenMessageIsEmptyAndThereIsNoAttachedFile() throws Exception {
-		new AnnotationCreateAction(subjectId, "", null, AnnotationType.SIMPLE).execute(context, actionContext);
+		new AnnotationCreateAction(subjectId, "", null).execute(context, actionContext);
 	}
 
 	@Test
@@ -137,7 +135,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldBeAbleToNotHaveAAttachmentFile() throws Exception {
-		new AnnotationCreateAction(subjectId, message, null, AnnotationType.SIMPLE).execute(context, actionContext);
+		new AnnotationCreateAction(subjectId, message, null).execute(context, actionContext);
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
 		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
@@ -162,23 +160,6 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 		assertTrue(action instanceof AnnotationCreateAction);
 		assertEquals(message, ReflectionTestUtils.<String> get(action, "message"));
-	}
-
-	@Test
-	public void shouldBeAbleToCreateAnAnnotationWithSpecificType() throws Exception {
-		new AnnotationCreateAction(subjectId, message, null, AnnotationType.COMMENT).execute(context, actionContext);
-		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
-		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
-
-		assertEquals(AnnotationType.COMMENT, captor.getValue().getType());
-	}
-
-	@Test(expected = UnableToCompleteActionException.class)
-	public void shouldNotBeAbleToAddAttachmentToAnnotationsWithTypesThatDoesntSupportAttachments() throws Exception {
-		final AnnotationType type = AnnotationType.COMMENT;
-		assertFalse(type.acceptsAttachment());
-
-		new AnnotationCreateAction(subjectId, message, attachmentFile.getId(), type).execute(context, actionContext);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -240,7 +221,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new AnnotationCreateAction(subjectId, message, attachmentFile.getId(), AnnotationType.SIMPLE);
+		return new AnnotationCreateAction(subjectId, message, attachmentFile.getId());
 	}
 
 }

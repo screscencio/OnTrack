@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.shared.model.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
@@ -38,22 +37,18 @@ public class AnnotationCreateAction implements AnnotationAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	@Attribute
-	private String annotationType;
-
 	protected AnnotationCreateAction() {}
 
-	public AnnotationCreateAction(final UUID subjectId, final String message, final UUID attachmentId, final AnnotationType type) {
+	public AnnotationCreateAction(final UUID subjectId, final String message, final UUID attachmentId) {
 		this.message = message;
 		this.attachmentId = attachmentId;
 		this.annotationId = new UUID();
 		this.subjectId = subjectId;
 		this.subActionList = new ArrayList<ModelAction>();
-		this.annotationType = type.name();
 	}
 
 	protected AnnotationCreateAction(final UUID subjectId, final Annotation annotation, final List<ModelAction> subActionList) {
-		this(subjectId, annotation.getMessage(), annotation.getAttachmentFile() == null ? null : annotation.getAttachmentFile().getId(), annotation.getType());
+		this(subjectId, annotation.getMessage(), annotation.getAttachmentFile() == null ? null : annotation.getAttachmentFile().getId());
 		this.subActionList = subActionList;
 		this.annotationId = annotation.getId();
 	}
@@ -72,10 +67,8 @@ public class AnnotationCreateAction implements AnnotationAction {
 
 	private Annotation getAnnotation(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
-		final AnnotationType type = AnnotationType.valueOf(annotationType);
-		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message, type);
+		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message, AnnotationType.SIMPLE);
 		if (attachmentId != null) {
-			if (!type.acceptsAttachment()) throw new UnableToCompleteActionException(type.toString() + " does not accepts attachments");
 			final FileRepresentation file = ActionHelper.findFileRepresentation(attachmentId, context);
 			annotation.setAttachmentFile(file);
 		}

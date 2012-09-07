@@ -12,16 +12,15 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class LikeWidget extends Composite implements AnnotationMenuItem {
+public class DeprecateAnnotationMenuItem extends Composite implements AnnotationMenuItem {
 
-	private static LikeWidgetUiBinder uiBinder = GWT.create(LikeWidgetUiBinder.class);
+	private static DeprecateAnnotationMenuItemUiBinder uiBinder = GWT.create(DeprecateAnnotationMenuItemUiBinder.class);
 
-	interface LikeWidgetUiBinder extends UiBinder<Widget, LikeWidget> {}
+	interface DeprecateAnnotationMenuItemUiBinder extends UiBinder<Widget, DeprecateAnnotationMenuItem> {}
 
-	interface LikeWidgetStyle extends CssResource {
+	interface AnnotationDeprecateWidgetStyle extends CssResource {
 		String iconActive();
 	}
 
@@ -29,38 +28,27 @@ public class LikeWidget extends Composite implements AnnotationMenuItem {
 	FocusPanel icon;
 
 	@UiField
-	Label label;
-
-	@UiField
-	LikeWidgetStyle style;
+	AnnotationDeprecateWidgetStyle style;
 
 	private final UUID subjectId;
 
 	private final Annotation annotation;
 
-	public LikeWidget(final UUID subjectId, final Annotation annotation) {
+	public DeprecateAnnotationMenuItem(final UUID subjectId, final Annotation annotation) {
 		this.subjectId = subjectId;
 		this.annotation = annotation;
-
 		initWidget(uiBinder.createAndBindUi(this));
-
-		update();
-	}
-
-	@Override
-	public void update() {
-		label.setText("" + annotation.getVoteCount());
-		icon.setStyleName(style.iconActive(), hasVoted());
-	}
-
-	private boolean hasVoted() {
-		return annotation.hasVoted(ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser());
 	}
 
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
-		if (hasVoted()) ClientServiceProvider.getInstance().getAnnotationService().removeVote(subjectId, annotation.getId());
-		else ClientServiceProvider.getInstance().getAnnotationService().addVote(subjectId, annotation.getId());
+		if (annotation.isDeprecated()) ClientServiceProvider.getInstance().getAnnotationService().removeDeprecation(subjectId, annotation.getId());
+		else ClientServiceProvider.getInstance().getAnnotationService().deprecateAnnotation(subjectId, annotation.getId());
+	}
+
+	@Override
+	public void update() {
+		icon.setStyleName(style.iconActive(), annotation.isDeprecated());
 	}
 
 }

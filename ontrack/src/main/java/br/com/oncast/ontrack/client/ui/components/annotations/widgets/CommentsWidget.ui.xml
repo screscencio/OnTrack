@@ -16,7 +16,7 @@
 		}
 	
 		.separator {
-			margin: -5px -15px 10px -15px;
+			margin: -14px -15px 10px -15px;
 		}
 		
 		.spacer {
@@ -24,31 +24,18 @@
 			display: block;
 		}
 		
-		.annotations {
-			position: absolute;
-			top: 0px;
-			right: 0px;
-			bottom: 0px;
-			left: 0px;
-			
-			overflow-y: auto;
-			overflow-x: hidden;
-		}
-		
 	</ui:style>
 	
 	<g:FocusPanel>
 		<g:VerticalPanel height="100%" width="100%">
 			<misc:Separator styleName="{style.separator}"/>
-			<aw:ExtendableTextArea ui:field="newAnnotationText" defaultHeight="26px" maxHeight="100px" helpText="Type to comment this topic" />
+			<aw:ExtendableTextArea ui:field="newCommentText" defaultHeight="26px" maxHeight="100px" helpText="Type to comment this topic" />
 			<g:SimplePanel ui:field="separator" styleName="{style.spacer}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">
-					<misc:VerticalModelWidgetContainer ui:field="annotationsWidgetContainer"/>
+					<misc:VerticalModelWidgetContainer ui:field="commentsWidgetContainer"/>
 				</g:FocusPanel>
 			</g:cell>
-			<g:FocusPanel visible="false" ui:field="uploadIcon"/>
-			<aw:UploadWidget ui:field="uploadWidget" />
 		</g:VerticalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

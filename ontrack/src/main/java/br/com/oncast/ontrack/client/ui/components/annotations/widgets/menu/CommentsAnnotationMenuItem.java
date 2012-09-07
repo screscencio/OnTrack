@@ -16,13 +16,13 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CommentsWidget extends Composite implements HasClickHandlers, AnnotationMenuItem {
+public class CommentsAnnotationMenuItem extends Composite implements HasClickHandlers, AnnotationMenuItem {
 
-	private static CommentsWidgetUiBinder uiBinder = GWT.create(CommentsWidgetUiBinder.class);
+	private static CommentsAnnotationMenuItemUiBinder uiBinder = GWT.create(CommentsAnnotationMenuItemUiBinder.class);
 
-	interface CommentsWidgetUiBinder extends UiBinder<Widget, CommentsWidget> {}
+	interface CommentsAnnotationMenuItemUiBinder extends UiBinder<Widget, CommentsAnnotationMenuItem> {}
 
-	public CommentsWidget() {
+	public CommentsAnnotationMenuItem() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -34,7 +34,7 @@ public class CommentsWidget extends Composite implements HasClickHandlers, Annot
 
 	private Annotation annotation;
 
-	public CommentsWidget(final Annotation annotation) {
+	public CommentsAnnotationMenuItem(final Annotation annotation) {
 		this.annotation = annotation;
 		initWidget(uiBinder.createAndBindUi(this));
 		update();

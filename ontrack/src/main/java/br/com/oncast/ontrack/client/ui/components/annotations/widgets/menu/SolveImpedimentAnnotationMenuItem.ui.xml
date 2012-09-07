@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="iconImg" src="../open_impediment.png"></ui:image>
+	<ui:image field="iconImg" src="../solved_impediment.png"></ui:image>
 	<ui:style>
 	
 		.icon:HOVER {
@@ -11,7 +11,7 @@
 		
 		@sprite .icon {
 			gwt-image: 'iconImg';
-			opacity: 0.6;
+			opacity: 0.35;
 			
 			background-size: 12px 12px;
 			width: 12px;
@@ -29,5 +29,5 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="icon" title="Mark as Impediment" styleName="{style.item} {style.icon}"/>
+	<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon}" title="Mark As Solved"/>
 </ui:UiBinder> 

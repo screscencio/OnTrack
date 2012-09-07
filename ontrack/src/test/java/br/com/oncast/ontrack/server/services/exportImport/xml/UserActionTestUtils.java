@@ -473,6 +473,6 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createAnnotationCreateAction(final String message) throws Exception {
-		return createUserAction(new AnnotationCreateAction(new UUID(), message, new UUID(), AnnotationType.SIMPLE));
+		return createUserAction(new AnnotationCreateAction(new UUID(), message, new UUID()));
 	}
 }

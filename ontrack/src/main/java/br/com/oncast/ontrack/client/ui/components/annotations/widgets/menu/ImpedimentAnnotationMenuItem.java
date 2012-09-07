@@ -13,11 +13,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SolveImpedimentWidget extends Composite implements AnnotationMenuItem {
+public class ImpedimentAnnotationMenuItem extends Composite implements AnnotationMenuItem {
 
-	private static SolveImpedimentWidgetUiBinder uiBinder = GWT.create(SolveImpedimentWidgetUiBinder.class);
+	private static ImpedimentWidgetUiBinder uiBinder = GWT.create(ImpedimentWidgetUiBinder.class);
 
-	interface SolveImpedimentWidgetUiBinder extends UiBinder<Widget, SolveImpedimentWidget> {}
+	interface ImpedimentWidgetUiBinder extends UiBinder<Widget, ImpedimentAnnotationMenuItem> {}
 
 	@UiField
 	FocusPanel icon;
@@ -26,15 +26,17 @@ public class SolveImpedimentWidget extends Composite implements AnnotationMenuIt
 
 	private final Annotation annotation;
 
-	public SolveImpedimentWidget(final UUID subjectId, final Annotation annotation) {
+	public ImpedimentAnnotationMenuItem(final UUID subjectId, final Annotation annotation) {
 		this.subjectId = subjectId;
 		this.annotation = annotation;
+
 		initWidget(uiBinder.createAndBindUi(this));
+		update();
 	}
 
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
-		ClientServiceProvider.getInstance().getAnnotationService().markAsSolveImpediment(subjectId, annotation.getId());
+		ClientServiceProvider.getInstance().getAnnotationService().markAsImpediment(subjectId, annotation.getId());
 	}
 
 	@Override

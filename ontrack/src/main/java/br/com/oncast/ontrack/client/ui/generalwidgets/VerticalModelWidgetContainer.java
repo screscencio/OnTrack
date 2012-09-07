@@ -27,6 +27,15 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 
 	private final ModelWidgetContainerListener listener;
 
+	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory) {
+		this.modelWidgetFactory = modelWidgetFactory;
+		this.listener = new NullModelWidgetContainerListener();
+		widgetMap = new HashMap<T, E>();
+		verticalContainer = createVerticalContainer();
+
+		initWidget(uiBinder.createAndBindUi(this));
+	}
+
 	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final ModelWidgetContainerListener listener) {
 		this.modelWidgetFactory = modelWidgetFactory;
 		this.listener = listener;
@@ -116,5 +125,10 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	public void clear() {
 		verticalContainer.clear();
 		widgetMap.clear();
+	}
+
+	private class NullModelWidgetContainerListener implements ModelWidgetContainerListener {
+		@Override
+		public void onUpdateComplete(final boolean hasChanged) {}
 	}
 }
