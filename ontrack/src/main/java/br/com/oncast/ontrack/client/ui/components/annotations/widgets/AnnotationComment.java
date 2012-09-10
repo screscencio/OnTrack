@@ -166,4 +166,8 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 		return annotation;
 	}
 
+	public void setReadOnly(final boolean b) {
+		menu.setReadOnly(b);
+	}
+
 }

@@ -42,4 +42,10 @@ public class AnnotationMenuWidget extends Composite {
 		container.clear();
 	}
 
+	public void setReadOnly(final boolean b) {
+		for (final AnnotationMenuItem item : items) {
+			item.setReadOnly(b);
+		}
+	}
+
 }

@@ -6,4 +6,6 @@ public interface AnnotationMenuItem extends IsWidget {
 
 	void update();
 
+	void setReadOnly(boolean b);
+
 }

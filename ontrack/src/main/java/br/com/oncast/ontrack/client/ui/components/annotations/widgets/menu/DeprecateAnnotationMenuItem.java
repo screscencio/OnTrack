@@ -34,6 +34,8 @@ public class DeprecateAnnotationMenuItem extends Composite implements Annotation
 
 	private final Annotation annotation;
 
+	private boolean readOnly = false;
+
 	public DeprecateAnnotationMenuItem(final UUID subjectId, final Annotation annotation) {
 		this.subjectId = subjectId;
 		this.annotation = annotation;
@@ -42,6 +44,8 @@ public class DeprecateAnnotationMenuItem extends Composite implements Annotation
 
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
+		if (readOnly) return;
+
 		if (annotation.isDeprecated()) ClientServiceProvider.getInstance().getAnnotationService().removeDeprecation(subjectId, annotation.getId());
 		else ClientServiceProvider.getInstance().getAnnotationService().deprecateAnnotation(subjectId, annotation.getId());
 	}
@@ -49,6 +53,11 @@ public class DeprecateAnnotationMenuItem extends Composite implements Annotation
 	@Override
 	public void update() {
 		icon.setStyleName(style.iconActive(), annotation.isDeprecated());
+	}
+
+	@Override
+	public void setReadOnly(final boolean b) {
+		this.readOnly = b;
 	}
 
 }

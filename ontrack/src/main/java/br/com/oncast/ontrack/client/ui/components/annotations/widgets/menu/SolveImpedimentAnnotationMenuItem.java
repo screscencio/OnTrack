@@ -26,6 +26,8 @@ public class SolveImpedimentAnnotationMenuItem extends Composite implements Anno
 
 	private final Annotation annotation;
 
+	private boolean readOnly = false;
+
 	public SolveImpedimentAnnotationMenuItem(final UUID subjectId, final Annotation annotation) {
 		this.subjectId = subjectId;
 		this.annotation = annotation;
@@ -34,10 +36,16 @@ public class SolveImpedimentAnnotationMenuItem extends Composite implements Anno
 
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
+		if (readOnly || annotation.isDeprecated()) return;
 		ClientServiceProvider.getInstance().getAnnotationService().markAsSolveImpediment(subjectId, annotation.getId());
 	}
 
 	@Override
 	public void update() {}
+
+	@Override
+	public void setReadOnly(final boolean b) {
+		this.readOnly = b;
+	}
 
 }

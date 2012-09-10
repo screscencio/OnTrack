@@ -38,6 +38,8 @@ public class LikeAnnotationMenuItem extends Composite implements AnnotationMenuI
 
 	private final Annotation annotation;
 
+	private boolean readOnly = false;
+
 	public LikeAnnotationMenuItem(final UUID subjectId, final Annotation annotation) {
 		this.subjectId = subjectId;
 		this.annotation = annotation;
@@ -59,8 +61,15 @@ public class LikeAnnotationMenuItem extends Composite implements AnnotationMenuI
 
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
+		if (readOnly || annotation.isDeprecated()) return;
+
 		if (hasVoted()) ClientServiceProvider.getInstance().getAnnotationService().removeVote(subjectId, annotation.getId());
 		else ClientServiceProvider.getInstance().getAnnotationService().addVote(subjectId, annotation.getId());
+	}
+
+	@Override
+	public void setReadOnly(final boolean b) {
+		this.readOnly = b;
 	}
 
 }

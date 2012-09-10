@@ -35,10 +35,9 @@ public class ClientMetricServiceNewRelicImpl implements ClientMetricService {
 			var s = d.getElementsByTagName("script")[0];
 			s.parentNode.insertBefore(e, s);
 		})();
-		$wnd.NREUMQ
-				.push([ "nrf2", "beacon-1.newrelic.com", "api-key", appID,
-						"cA1WFkEJX1UBFxpYXF4HFwtdAlZB", 0, 1058,
-						new Date().getTime() ]);
+		$wnd.NREUMQ.push([ "nrf2", "beacon-1.newrelic.com", "api-key",
+				$wnd.appID, "cA1WFkEJX1UBFxpYXF4HFwtdAlZB", 0, 1058,
+				new Date().getTime() ]);
 	}-*/;
 
 }

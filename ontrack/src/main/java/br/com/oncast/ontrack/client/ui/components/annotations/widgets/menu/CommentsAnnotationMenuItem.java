@@ -52,4 +52,7 @@ public class CommentsAnnotationMenuItem extends Composite implements HasClickHan
 		return icon.addClickHandler(handler);
 	}
 
+	@Override
+	public void setReadOnly(final boolean b) {}
+
 }

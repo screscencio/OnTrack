@@ -42,4 +42,7 @@ public class SinceAnnotationMenuItem extends Composite implements AnnotationMenu
 		label.setTitle(HumanDateFormatter.getAbsoluteText(date));
 	}
 
+	@Override
+	public void setReadOnly(final boolean b) {}
+
 }

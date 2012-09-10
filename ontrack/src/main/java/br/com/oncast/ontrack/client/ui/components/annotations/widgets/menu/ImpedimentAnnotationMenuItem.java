@@ -26,6 +26,8 @@ public class ImpedimentAnnotationMenuItem extends Composite implements Annotatio
 
 	private final Annotation annotation;
 
+	private boolean readOnly = false;
+
 	public ImpedimentAnnotationMenuItem(final UUID subjectId, final Annotation annotation) {
 		this.subjectId = subjectId;
 		this.annotation = annotation;
@@ -36,10 +38,16 @@ public class ImpedimentAnnotationMenuItem extends Composite implements Annotatio
 
 	@UiHandler("icon")
 	void onClick(final ClickEvent e) {
+		if (readOnly || annotation.isDeprecated()) return;
 		ClientServiceProvider.getInstance().getAnnotationService().markAsImpediment(subjectId, annotation.getId());
 	}
 
 	@Override
 	public void update() {}
+
+	@Override
+	public void setReadOnly(final boolean b) {
+		this.readOnly = b;
+	}
 
 }

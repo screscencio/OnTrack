@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
+import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
@@ -131,6 +132,11 @@ public class CommentsWidget extends Composite {
 		final boolean visible = !b;
 		newCommentText.setVisible(visible);
 		separator.setVisible(visible);
+
+		final List<Annotation> commentsList = getAnnotationService().getAnnotationsFor(subjectId);
+		for (final Annotation comment : commentsList) {
+			commentsWidgetContainer.getWidgetFor(comment).setReadOnly(b);
+		}
 	}
 
 }

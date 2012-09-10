@@ -93,7 +93,10 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 		updateAuthorImage();
 		updateMessageBody();
+	}
 
+	@Override
+	protected void onLoad() {
 		update();
 	}
 
