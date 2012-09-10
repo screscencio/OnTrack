@@ -58,7 +58,23 @@ public class ImpedimentRemoveActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveImpedimentCreatedByAnotherUser() throws Exception {
-		when(actionContext.getUserEmail()).thenReturn("otherUser'sEmail");
+		when(actionContext.getUserEmail()).thenReturn("otherUser's Email");
+		execute();
+	}
+
+	@Test
+	public void shouldBeAbleToRemoveImpedimentCreatedBySameUserEvenWhenTheAnnotationWasCreatedByAnotherUser() throws Exception {
+		final User annotationAuthor = UserTestUtils.createUser();
+		final User impedimentAuthor = UserTestUtils.createUser();
+
+		annotation = AnnotationTestUtils.create(annotationAuthor);
+		annotation.setType(AnnotationType.OPEN_IMPEDIMENT, impedimentAuthor, new Date());
+		when(context.findAnnotation(subjectId, annotation.getId())).thenReturn(annotation);
+
+		when(actionContext.getUserEmail()).thenReturn(impedimentAuthor.getEmail());
+		when(actionContext.getTimestamp()).thenReturn(new Date());
+		when(context.findUser(impedimentAuthor.getEmail())).thenReturn(impedimentAuthor);
+
 		execute();
 	}
 

@@ -45,8 +45,8 @@ public class ImpedimentRemoveAction implements ImpedimentAction {
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
 
 		if (!annotation.isImpeded()) throw new UnableToCompleteActionException("Unable to remove an impediment when the annotation is not impeded.");
-		if (!annotation.getAuthor().getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
-				"Unable to remove an impediment that was created.");
+		if (!annotation.getAuthorForState(AnnotationType.OPEN_IMPEDIMENT).getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
+				"Unable to remove an impediment that was created by other user.");
 
 		annotation.setType(AnnotationType.valueOf(previousType), author, timestamp);
 		return new ImpedimentCreateAction(subjectId, annotationId);
