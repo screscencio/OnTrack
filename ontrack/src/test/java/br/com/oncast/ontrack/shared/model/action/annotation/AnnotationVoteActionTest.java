@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationVoteActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
@@ -13,6 +16,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -78,6 +82,12 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 
 		undoAction.execute(context, actionContext);
 		assertEquals(previousVoteCount, annotation.getVoteCount());
+	}
+
+	@Test(expected = UnableToCompleteActionException.class)
+	public void shouldNotBeAbleToVoteWhenTheAnnotationIsDeprecated() throws Exception {
+		annotation.setDeprecation(DeprecationState.DEPRECATED, voter, new Date());
+		execute();
 	}
 
 	@Override
