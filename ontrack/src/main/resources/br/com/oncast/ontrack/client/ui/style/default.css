@@ -146,7 +146,8 @@
 @def RELEASE_WIDGET_HEADER_SHADOW_CLOSED inset 0px 1px 0px 0px #dedede, 0 2px 6px #e1e1e1;
 
 /* //IMPORTANT SCOPE_WIDGET_BORDER's value is replicated on 'Application.css' at '.dragdrop-positioner' because of a workaround. */
-@def SCOPE_WIDGET_BORDER 1px solid #bebebe;
+@def SCOPE_WIDGET_BORDER_COLOR #bebebe;
+@def SCOPE_WIDGET_BORDER 1px solid SCOPE_WIDGET_BORDER_COLOR;
 
 .popupContainer {
        color: COLOR_MENUBOX_TEXT;

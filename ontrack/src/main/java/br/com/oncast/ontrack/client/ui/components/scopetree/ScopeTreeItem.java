@@ -180,4 +180,8 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	public void showDetailsIcon(final boolean b) {
 		scopeItemWidget.showDetailsIcon(b);
 	}
+
+	public void showOpenImpedimentIcon(final boolean hasOpenImpediments) {
+		scopeItemWidget.showOpenImpedimentIcon(hasOpenImpediments);
+	}
 }

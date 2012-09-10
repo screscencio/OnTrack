@@ -1,27 +1,27 @@
 package br.com.oncast.ontrack.client.services.annotations;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailChangeEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
-import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveDeprecationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -33,21 +33,16 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	private final ActionExecutionService actionExecutionService;
 	private final ContextProviderService contextProviderService;
-	private final AuthenticationService authenticationService;
 	private final ApplicationPlaceController applicationPlaceController;
 	private ActionExecutionListener actionExecutionListener;
 	private final EventBus eventBus;
-	private final List<AnnotationModificationListener> annotationCreationListeners;
 
 	public AnnotationServiceImpl(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
-			final AuthenticationService authenticationService, final ApplicationPlaceController applicationPlaceController, final EventBus eventBus) {
+			final ApplicationPlaceController applicationPlaceController, final EventBus eventBus) {
 		this.actionExecutionService = actionExecutionService;
 		this.contextProviderService = contextProviderService;
-		this.authenticationService = authenticationService;
 		this.applicationPlaceController = applicationPlaceController;
 		this.eventBus = eventBus;
-
-		this.annotationCreationListeners = new ArrayList<AnnotationModificationListener>();
 
 		actionExecutionService.addActionExecutionListener(getActionExecutionListener());
 	}
@@ -60,7 +55,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	private boolean hasAnnotationsFor(final UUID subjectId) {
-		return getCurrentContext().hasAnnotationsFor(subjectId);
+		return hasMatchingAnnotation(subjectId, AnnotationType.SIMPLE, false);
 	}
 
 	@Override
@@ -115,28 +110,15 @@ public class AnnotationServiceImpl implements AnnotationService {
 					final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 
-				final UUID referenceId = action.getReferenceId();
-
-				final boolean isCreation = action instanceof AnnotationCreateAction;
-				if (isCreation || action instanceof AnnotationRemoveAction) {
-					updateScopeTree(action, context);
-					notifyAnnotationModification(referenceId, actionContext.getUserEmail(), isCreation);
+				if (action instanceof AnnotationAction || action instanceof ImpedimentAction) {
+					fireScopeDetailUpdateEvent(action, context);
 				}
 			}
 
-			private void notifyAnnotationModification(final UUID referenceId, final String authorEmail, final boolean isCreation) {
-				if (authorEmail.equals(authenticationService.getCurrentUser().getEmail())) return;
-
-				final UUID projectId = getCurrentProjectId();
-				for (final AnnotationModificationListener listener : annotationCreationListeners) {
-					listener.onAnnotationModification(projectId, referenceId, authorEmail, isCreation);
-				}
-			}
-
-			private void updateScopeTree(final ModelAction action, final ProjectContext context) {
+			private void fireScopeDetailUpdateEvent(final ModelAction action, final ProjectContext context) {
 				try {
 					final Scope scope = context.findScope(action.getReferenceId());
-					eventBus.fireEvent(new ScopeDetailChangeEvent(scope, hasDetails(scope.getId())));
+					eventBus.fireEvent(new ScopeDetailUpdateEvent(scope, hasDetails(scope.getId()), hasOpenImpediment(scope.getId())));
 				}
 				catch (final ScopeNotFoundException e) {
 					// It's not scope so don't need to update the view
@@ -160,21 +142,15 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void addAnnotationModificationListener(final AnnotationModificationListener listener) {
-		if (this.annotationCreationListeners.contains(listener)) return;
-
-		this.annotationCreationListeners.add(listener);
+	public boolean hasOpenImpediment(final UUID subjectId) {
+		return hasMatchingAnnotation(subjectId, AnnotationType.OPEN_IMPEDIMENT, false);
 	}
 
-	@Override
-	public void removeAnnotationModificationListener(final AnnotationModificationListener listener) {
-		this.annotationCreationListeners.remove(listener);
-	}
-
-	public interface AnnotationModificationListener {
-
-		void onAnnotationModification(UUID projectId, UUID subjectId, String authorEmail, boolean isCreation);
-
+	private boolean hasMatchingAnnotation(final UUID subjectId, final AnnotationType type, final boolean isDeprecated) {
+		for (final Annotation annotation : getCurrentContext().findAnnotationsFor(subjectId)) {
+			if (isDeprecated == annotation.isDeprecated() && type.equals(annotation.getType())) return true;
+		}
+		return false;
 	}
 
 }

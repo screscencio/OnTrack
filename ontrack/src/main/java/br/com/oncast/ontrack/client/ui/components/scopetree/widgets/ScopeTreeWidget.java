@@ -7,8 +7,8 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailChangeEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailChangeEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
@@ -238,14 +238,30 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			}
 
 		}));
-		handlerRegistrations.add(eventBus.addHandler(ScopeDetailChangeEvent.getType(), new ScopeDetailChangeEventHandler() {
+		handlerRegistrations.add(eventBus.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
 			@Override
-			public void onScopeDetailChange(final ScopeDetailChangeEvent event) {
+			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
 				final Scope scope = event.getTargetScope();
 
 				try {
 					final ScopeTreeItem item = findScopeTreeItem(scope);
 					item.showDetailsIcon(event.hasDetails());
+				}
+				catch (final ScopeNotFoundException e) {
+					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
+				}
+			}
+		}));
+
+		handlerRegistrations.add(eventBus.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
+
+			@Override
+			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
+				final Scope scope = event.getTargetScope();
+
+				try {
+					final ScopeTreeItem item = findScopeTreeItem(scope);
+					item.showOpenImpedimentIcon(event.hasOpenImpediments());
 				}
 				catch (final ScopeNotFoundException e) {
 					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
@@ -260,11 +276,12 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				removeBorderFromLastItem();
 
 				final ScopeTreeItem selectedItem = (ScopeTreeItem) event.getSelectedItem();
+				ClientServiceProvider.getInstance().getEventBus()
+						.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
+
 				if (selectedItem.isRoot()) return;
 
 				addBorderToSelectedItem();
-				ClientServiceProvider.getInstance().getEventBus()
-						.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
 			}
 		}));
 

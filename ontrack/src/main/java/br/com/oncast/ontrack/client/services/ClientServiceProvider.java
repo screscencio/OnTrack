@@ -198,7 +198,7 @@ public class ClientServiceProvider {
 
 	public AnnotationService getAnnotationService() {
 		if (annotationService != null) return annotationService;
-		return annotationService = new AnnotationServiceImpl(getActionExecutionService(), getContextProviderService(), getAuthenticationService(),
+		return annotationService = new AnnotationServiceImpl(getActionExecutionService(), getContextProviderService(),
 				getApplicationPlaceController(), getEventBus());
 	}
 

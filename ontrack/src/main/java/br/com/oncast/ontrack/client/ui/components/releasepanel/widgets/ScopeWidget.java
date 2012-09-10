@@ -34,6 +34,8 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		String progressIconUnderwork();
 
 		String selected();
+
+		String statusBarOpenImpediment();
 	}
 
 	@UiField
@@ -52,6 +54,9 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiField
 	SimplePanel progressIcon;
 
+	@UiField
+	FocusPanel statusBar;
+
 	private final Scope scope;
 
 	// IMPORTANT Used to refresh DOM only when needed.
@@ -65,6 +70,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 		this.scope = scope;
 		update();
+		setHasOpenImpediments(ClientServiceProvider.getInstance().getAnnotationService().hasOpenImpediment(scope.getId()));
 	}
 
 	@Override
@@ -119,7 +125,8 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		currentScopeProgress = description;
 
 		final boolean done = progress.isDone();
-		final boolean notStarted = progress.getState() == ProgressState.NOT_STARTED && scope.getEffort().getAccomplishedEffort() == 0 && !isAnyDescendantUnderWork();
+		final boolean notStarted = progress.getState() == ProgressState.NOT_STARTED && scope.getEffort().getAccomplishedEffort() == 0
+				&& !isAnyDescendantUnderWork();
 
 		progressIcon.setStyleName(style.progressIconDone(), done);
 		progressIcon.setStyleName(style.progressIconNotStarted(), notStarted);
@@ -155,6 +162,10 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	public void setSelected(final boolean shouldSelect) {
 		panel.setStyleName(style.selected(), shouldSelect);
+	}
+
+	public void setHasOpenImpediments(final boolean hasOpenImpediments) {
+		statusBar.setStyleName(style.statusBarOpenImpediment(), hasOpenImpediments);
 	}
 
 }

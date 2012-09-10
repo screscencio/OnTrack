@@ -86,6 +86,10 @@ public class ScopeTreeItemWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
+	protected FocusPanel openImpedimentIcon;
+
+	@UiField
+	@IgnoredByDeepEquality
 	protected Label descriptionLabel;
 
 	@UiField
@@ -193,6 +197,7 @@ public class ScopeTreeItemWidget extends Composite {
 		registerColumnVisibilityChangeListeners();
 
 		showDetailsIcon(getAnnotationService().hasDetails(scope.getId()));
+		showOpenImpedimentIcon(getAnnotationService().hasOpenImpediment(scope.getId()));
 
 		deckPanel.showWidget(0);
 	}
@@ -302,6 +307,10 @@ public class ScopeTreeItemWidget extends Composite {
 
 	public void showDetailsIcon(final boolean b) {
 		this.detailsIcon.setVisible(b);
+	}
+
+	public void showOpenImpedimentIcon(final boolean hasOpenImpediment) {
+		openImpedimentIcon.setVisible(hasOpenImpediment);
 	}
 
 	private void updateValueDisplay() {

@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.services.annotations;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.services.annotations.AnnotationServiceImpl.AnnotationModificationListener;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -20,10 +19,6 @@ public interface AnnotationService {
 
 	boolean hasDetails(UUID subjectId);
 
-	void addAnnotationModificationListener(AnnotationModificationListener annotationCreationListener);
-
-	void removeAnnotationModificationListener(AnnotationModificationListener annotationCreationListener);
-
 	List<Annotation> getAnnotationsFor(UUID subjectId);
 
 	void removeDeprecation(UUID subjectId, UUID annotationId);
@@ -31,5 +26,7 @@ public interface AnnotationService {
 	void markAsImpediment(UUID subjectId, UUID annotationId);
 
 	void markAsSolveImpediment(UUID subjectId, UUID annotationId);
+
+	boolean hasOpenImpediment(UUID subjectId);
 
 }
