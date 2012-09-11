@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -77,6 +78,11 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@UiHandler("rootPanel")
 	protected void onKeyDown(final KeyDownEvent e) {
 		if (BrowserKeyCodes.KEY_ESCAPE == e.getNativeKeyCode()) hide();
+	}
+
+	@UiHandler("closeIcon")
+	protected void onCloseClick(final ClickEvent e) {
+		hide();
 	}
 
 	@Override
