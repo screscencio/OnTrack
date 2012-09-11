@@ -49,6 +49,7 @@ import br.com.oncast.ontrack.server.services.serverPush.CometClientConnection;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.server.services.session.Session;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
+import br.com.oncast.ontrack.server.services.threadSync.SyncronizationService;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
@@ -160,7 +161,7 @@ public class BusinessLogicTest {
 		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager,
 				authorizationManager,
 				sessionManager,
-				mock(FeedbackMailFactory.class));
+				mock(FeedbackMailFactory.class), new SyncronizationService());
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(UUID.INVALID_UUID));

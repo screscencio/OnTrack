@@ -48,4 +48,8 @@ public class AnnotationMenuWidget extends Composite {
 		}
 	}
 
+	public void addSeparator() {
+		container.add(new AnnotationMenuItemSeparator());
+	}
+
 }

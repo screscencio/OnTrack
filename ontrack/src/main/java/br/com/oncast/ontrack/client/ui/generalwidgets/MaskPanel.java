@@ -21,7 +21,7 @@ public class MaskPanel {
 	}
 
 	public static void assureHidden() {
-		for (final BasicMaskPanel panel : getShowingMaskPanels())
+		for (final BasicMaskPanel panel : new ArrayList<BasicMaskPanel>(getShowingMaskPanels()))
 			panel.hide();
 
 		getShowingMaskPanels().clear();
