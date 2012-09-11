@@ -18,7 +18,9 @@ import org.mockito.stubbing.Answer;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.ui.places.loading.ContextLoadingActivity;
+import br.com.oncast.ontrack.client.ui.places.loading.ServerPushLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.loading.UserInformationLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
@@ -33,6 +35,7 @@ public class AppActivityMapperTest extends GwtTest {
 	private static final UUID PROJECT_ID = new UUID();
 	private AppActivityMapper appActivityMapper;
 	private Boolean isContextAvailable;
+	private Boolean isServerPushConnected = true;
 
 	@Mock
 	private ContextProviderService contextProvider;
@@ -40,13 +43,17 @@ public class AppActivityMapperTest extends GwtTest {
 	private ClientServiceProvider clientServiceProvider;
 	@Mock
 	private AuthenticationService authenticationService;
+	@Mock
+	private ServerPushClientService serverPushClientService;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
+
 		when(clientServiceProvider.getAuthenticationService()).thenReturn(authenticationService);
-		when(authenticationService.isUserAvailable()).thenReturn(true);
+		when(clientServiceProvider.getServerPushClientService()).thenReturn(serverPushClientService);
 		when(clientServiceProvider.getContextProviderService()).thenReturn(contextProvider);
+		when(authenticationService.isUserAvailable()).thenReturn(true);
 		when(contextProvider.isContextAvailable(PROJECT_ID)).thenAnswer(new Answer<Boolean>() {
 
 			@Override
@@ -55,6 +62,13 @@ public class AppActivityMapperTest extends GwtTest {
 			}
 		});
 
+		when(serverPushClientService.isConnected()).thenAnswer(new Answer<Boolean>() {
+
+			@Override
+			public Boolean answer(final InvocationOnMock arg0) throws Throwable {
+				return isServerPushConnected;
+			}
+		});
 		appActivityMapper = new AppActivityMapper(clientServiceProvider);
 	}
 
@@ -63,6 +77,13 @@ public class AppActivityMapperTest extends GwtTest {
 		isContextAvailable = false;
 
 		assertTrue(appActivityMapper.getActivity(new PlanningPlace(PROJECT_ID)) instanceof ContextLoadingActivity);
+	}
+
+	@Test
+	public void whenServerPushIsNotConnectedShouldCreateServerPushLoadingActivity() {
+		isServerPushConnected = false;
+
+		assertTrue(appActivityMapper.getActivity(new PlanningPlace(PROJECT_ID)) instanceof ServerPushLoadingActivity);
 	}
 
 	@Test

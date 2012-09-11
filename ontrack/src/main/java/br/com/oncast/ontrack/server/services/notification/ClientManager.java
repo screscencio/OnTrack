@@ -48,7 +48,9 @@ public class ClientManager {
 	}
 
 	public void unregisterClient(final ServerPushConnection connection) {
-		// FIXME Auto-generated catch block
+		remove(connection, clientsByProject);
+		remove(connection, clientsBySession);
+		LOGGER.debug("Client " + connection + " unregistered.");
 	}
 
 	public Set<ServerPushConnection> getClientsAtProject(final UUID projectId) {
