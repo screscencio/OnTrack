@@ -1,8 +1,7 @@
 package br.com.oncast.ontrack.utils.assertions;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -49,10 +48,15 @@ public class AssertTestUtils {
 	}
 
 	public static <T> void assertCollectionEquality(final Collection<T> expected, final Collection<T> actual) {
-		assertArrayEquals(expected.toArray(), actual.toArray());
+		assertEquals(expected.size(), actual.size());
+		assertContainsAll(actual, expected);
 	}
 
 	public static <T> void assertContainsAll(final Collection<T> actual, final T... expected) {
-		assertTrue(actual.containsAll(Arrays.asList(expected)));
+		assertContainsAll(actual, Arrays.asList(expected));
+	}
+
+	public static <T> void assertContainsAll(final Collection<T> actual, final Collection<T> expected) {
+		assertTrue(actual.containsAll(expected));
 	}
 }

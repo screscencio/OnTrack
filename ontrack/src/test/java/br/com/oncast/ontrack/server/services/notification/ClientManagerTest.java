@@ -94,18 +94,13 @@ public class ClientManagerTest {
 		assertCollectionEquality(asSet(client1, client2, client4), manager.getAllClients());
 	}
 
-	@Test
-	public void manipulationOnReturnedClientSetShouldNotChangeOriginalClientStructure() throws Exception {
+	@Test(expected = UnsupportedOperationException.class)
+	public void manipulationOnReturnedClientSetShouldNotBeAllowed() throws Exception {
 		registerAndBindClients(project1, client1, client2);
 		registerClients(client3, client4);
 
 		final Set<ServerPushConnection> allClients = manager.getAllClients();
 		allClients.clear();
-		assertCollectionEquality(asSet(client1, client2, client3, client4), manager.getAllClients());
-
-		final Set<ServerPushConnection> clientsForProject1 = manager.getClientsAtProject(project1);
-		clientsForProject1.clear();
-		assertCollectionEquality(asSet(client1, client2), manager.getClientsAtProject(project1));
 	}
 
 	@Test
