@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerServiceI
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.server.services.storage.LocalFileSystemStorageService;
 import br.com.oncast.ontrack.server.services.storage.StorageService;
+import br.com.oncast.ontrack.server.services.threadSync.SyncronizationService;
 
 public class ServerServiceProvider {
 
@@ -45,6 +46,8 @@ public class ServerServiceProvider {
 
 	private ActionPostProcessmentsInitializer postProcessmentsInitializer;
 
+	private SyncronizationService syncronizationService;
+
 	public static ServerServiceProvider getInstance() {
 		return INSTANCE;
 	}
@@ -56,7 +59,8 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
 			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getNotificationService(),
-					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory());
+					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory(),
+					getSyncronizationService());
 		}
 	}
 
@@ -146,6 +150,14 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (userQuotaRequestMailFactory != null) return userQuotaRequestMailFactory;
 			return userQuotaRequestMailFactory = new FeedbackMailFactory();
+		}
+	}
+
+	private SyncronizationService getSyncronizationService() {
+		if (syncronizationService != null) return syncronizationService;
+		synchronized (this) {
+			if (syncronizationService != null) return syncronizationService;
+			return syncronizationService = new SyncronizationService();
 		}
 	}
 
