@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.server.services.setup;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import net.zschech.gwt.comet.server.impl.AsyncServlet;
 import br.com.drycode.api.web.gwt.dispatchService.server.DispatchServiceServlet;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchServiceException;
 import br.com.oncast.ontrack.client.services.feedback.SendFeedbackRequest;
@@ -42,7 +41,6 @@ public class ApplicationContextListener implements ServletContextListener {
 		setupDispatchHandlers();
 		setupAuthenticationAspectIntoDispatchService();
 		setupBusinessLogic(event);
-		setupServerPush(event);
 		assureDefaultUserIsPresent();
 	}
 
@@ -71,9 +69,7 @@ public class ApplicationContextListener implements ServletContextListener {
 	}
 
 	@Override
-	public void contextDestroyed(final ServletContextEvent event) {
-		shutdownServerPush(event);
-	}
+	public void contextDestroyed(final ServletContextEvent event) {}
 
 	/**
 	 * Sets up the business logic and - with it - all direct server services.
@@ -99,25 +95,5 @@ public class ApplicationContextListener implements ServletContextListener {
 	 */
 	private void assureDefaultUserIsPresent() {
 		DefaultUserExistenceAssurer.verify();
-	}
-
-	/**
-	 * Initializes comet related resources associated with an ApplicationContext.
-	 * Without this the comet related resources will be initialized when first used and will not be shutdown cleanly.
-	 * 
-	 * @param event the servlet context event.
-	 */
-	private void setupServerPush(final ServletContextEvent event) {
-		AsyncServlet.initialize(event.getServletContext());
-	}
-
-	/**
-	 * Shuts down comet related resources associated with an ApplicationContext.
-	 * Without this the comet related resources will not be shutdown cleanly.
-	 * 
-	 * @param event the servlet context event.
-	 */
-	private void shutdownServerPush(final ServletContextEvent event) {
-		AsyncServlet.destroy(event.getServletContext());
 	}
 }
