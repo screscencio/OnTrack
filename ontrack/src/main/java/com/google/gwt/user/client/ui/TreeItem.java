@@ -951,7 +951,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 		}
 
 		// IMPORTANT Remove selected item to avoid scroll if the selected item is not visible
-		tree.setSelectedItem(null);
+		final TreeItem previousSelection = tree.getSelectedItem();
+		tree.setSelectedItem(null, false);
 		// We must use 'display' rather than 'visibility' here,
 		// or the children will always take up space.
 		if (animate && (tree != null) && (tree.isAttached())) {
@@ -977,8 +978,8 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
 			tree.maybeUpdateSelection(this, this.open);
 		}
 
-		// IMPORTANT Selecting parent item when collapse or expand to keep the tree navigable by keyboard.
-		tree.setSelectedItem(this);
+		// IMPORTANT restoring previous selection to keep tree navigable by keyboard.
+		tree.setSelectedItem(previousSelection, false);
 	}
 
 	void updateStateRecursive() {

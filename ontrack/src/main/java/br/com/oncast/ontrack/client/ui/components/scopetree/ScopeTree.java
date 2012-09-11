@@ -18,7 +18,6 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -103,9 +102,4 @@ public class ScopeTree implements Component {
 		tree.setFocus(focus);
 	}
 
-	public void setSelectedScope(final Scope scope) throws ScopeNotFoundException {
-		final ScopeTreeItem scopeTreeItem = tree.findScopeTreeItem(scope);
-		scopeTreeItem.setHierarchicalState(true);
-		tree.setSelectedItem(scopeTreeItem);
-	}
 }
