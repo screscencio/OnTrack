@@ -23,6 +23,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.session.Session;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
+import br.com.oncast.ontrack.server.services.threadSync.SyncronizationService;
 import br.com.oncast.ontrack.server.utils.PrettyPrinter;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
@@ -64,10 +65,12 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final AuthorizationManager authorizationManager;
 	private final FeedbackMailFactory feedbackMailFactory;
 
+	private final SyncronizationService syncronizationService;
+
 	protected BusinessLogicImpl(final PersistenceService persistenceService,
 			final NotificationService notificationService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager,
-			final FeedbackMailFactory userQuotaRequestMailFactory) {
+			final FeedbackMailFactory userQuotaRequestMailFactory, final SyncronizationService syncronizationService) {
 		this.persistenceService = persistenceService;
 		this.notificationService = notificationService;
 		this.clientManager = clientManager;
@@ -75,6 +78,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.authorizationManager = authorizationManager;
 		this.sessionManager = sessionManager;
 		this.feedbackMailFactory = userQuotaRequestMailFactory;
+		this.syncronizationService = syncronizationService;
 	}
 
 	@Trace
@@ -88,7 +92,10 @@ class BusinessLogicImpl implements BusinessLogic {
 			authorizationManager.assureProjectAccessAuthorization(projectId);
 
 			ModelActionSyncEvent modelActionSyncEvent = null;
-			synchronized (this) {
+
+			final Object projectLock = syncronizationService.getSyncLockFor(projectId);
+
+			synchronized (projectLock) {
 				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 				final Date timestamp = new Date();
 
