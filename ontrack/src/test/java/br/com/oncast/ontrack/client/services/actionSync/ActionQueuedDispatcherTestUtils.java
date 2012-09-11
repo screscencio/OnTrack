@@ -13,6 +13,7 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchResponse;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
+import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 import br.com.oncast.ontrack.server.services.notification.NotificationService;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -122,5 +123,13 @@ public class ActionQueuedDispatcherTestUtils {
 		public String getConnectionID() {
 			return "1";
 		}
+
+		@Override
+		public boolean isConnected() {
+			return true;
+		}
+
+		@Override
+		public void onConnected(final ServerPushConnectionCallback serverPushConnectionCallback) {}
 	}
 }

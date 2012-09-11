@@ -10,6 +10,7 @@ import org.atmosphere.gwt.client.AtmosphereListener;
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.client.services.serverPush.atmosphere.OntrackAtmosphereClient;
+import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 import com.google.gwt.user.client.Window;
@@ -18,6 +19,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
+	private ServerPushConnectionCallback serverPushConnectionCallback;
 
 	public ServerPushClientServiceImpl(final ClientNotificationService notificationService) {
 		serverPushClient = new OntrackAtmosphereClient(new AtmosphereListener() {
@@ -48,7 +50,10 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			public void onDisconnected() {}
 
 			@Override
-			public void onConnected(final int heartbeat, final int connectionID) {}
+			public void onConnected(final int heartbeat, final int connectionID) {
+				serverPushConnectionCallback.connected();
+				serverPushConnectionCallback = null;
+			}
 
 			@Override
 			public void onBeforeDisconnected() {}
@@ -74,7 +79,9 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	}
 
 	private void processIncommingEvent(final List<?> messages) {
-		Window.alert("" + messages.size());
+		for (final Object object : messages) {
+			if (object instanceof ServerPushEvent) processIncommingEvent((ServerPushEvent) object);
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -91,4 +98,14 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 		return String.valueOf(serverPushClient.getConnectionId());
 	}
 
+	@Override
+	public boolean isConnected() {
+		return serverPushClient.isRunning() && serverPushClient.getConnectionId() > 0;
+	}
+
+	@Override
+	public void onConnected(final ServerPushConnectionCallback serverPushConnectionCallback) {
+		if (isConnected()) serverPushConnectionCallback.connected();
+		else this.serverPushConnectionCallback = serverPushConnectionCallback;
+	}
 }

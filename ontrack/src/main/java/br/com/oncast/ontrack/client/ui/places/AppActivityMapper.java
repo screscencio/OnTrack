@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.places.details.DetailActivity;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.client.ui.places.loading.ContextLoadingActivity;
+import br.com.oncast.ontrack.client.ui.places.loading.ServerPushLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.loading.UserInformationLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
@@ -31,6 +32,7 @@ public class AppActivityMapper implements ActivityMapper {
 
 	@Override
 	public Activity getActivity(final Place place) {
+		if (!services.getServerPushClientService().isConnected()) return connectServerPushLoadingActivity(place);
 
 		if (place instanceof LoginPlace) return createLoginActivity((LoginPlace) place);
 
@@ -51,6 +53,10 @@ public class AppActivityMapper implements ActivityMapper {
 		if (place instanceof ProgressPlace) return createProgressActivity((ProgressPlace) place);
 
 		return null;
+	}
+
+	private Activity connectServerPushLoadingActivity(final Place place) {
+		return new ServerPushLoadingActivity(place);
 	}
 
 	private Activity createDetailActivity(final DetailPlace place) {

@@ -18,7 +18,8 @@ public class OntrackAtmospherePushServer implements ServerPushApi {
 
 	@Override
 	public void pushEvent(final ServerPushEvent serverPushEvent, final ServerPushConnection client) {
-		cometSessionMap.get(client.getClientId()).getBroadcaster().broadcast(serverPushEvent);
+		final GwtAtmosphereResource resource = cometSessionMap.get(client);
+		if (resource != null) resource.getBroadcaster().broadcast(serverPushEvent);
 	}
 
 	@Override

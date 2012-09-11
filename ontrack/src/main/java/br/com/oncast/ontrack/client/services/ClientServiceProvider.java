@@ -21,7 +21,6 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
-import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricService;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricServiceNewRelicImpl;
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
@@ -66,7 +65,6 @@ public class ClientServiceProvider {
 	private ApplicationPlaceController placeController;
 	private ClientNotificationService notificationService;
 
-	private ClientIdentificationProvider clientIdentificationProvider;
 	private ActionSyncService actionSyncService;
 
 	private DispatchService requestDispatchService;
@@ -170,12 +168,7 @@ public class ClientServiceProvider {
 				getProjectRepresentationProvider(), getClientNotificationService());
 	}
 
-	private ClientIdentificationProvider getClientIdentificationProvider() {
-		if (clientIdentificationProvider != null) return clientIdentificationProvider;
-		return clientIdentificationProvider = new ClientIdentificationProvider();
-	}
-
-	private ServerPushClientService getServerPushClientService() {
+	public ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
 		return serverPushClientService = new ServerPushClientServiceImpl(getClientNotificationService());
 	}

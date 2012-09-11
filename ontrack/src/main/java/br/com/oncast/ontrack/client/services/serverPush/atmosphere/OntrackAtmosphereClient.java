@@ -32,6 +32,7 @@ public class OntrackAtmosphereClient implements ServerPushClient {
 		client.stop();
 	}
 
+	@Override
 	public int getConnectionId() {
 		return client.getConnectionID();
 	}

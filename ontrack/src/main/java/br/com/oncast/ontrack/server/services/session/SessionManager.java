@@ -21,12 +21,7 @@ public class SessionManager {
 	}
 
 	private String extractClientId(final HttpServletRequest request) {
-		String clientId = null;
-		try {
-			Thread.sleep(500);
-		}
-		catch (final InterruptedException e) {}
-		clientId = request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME);
+		String clientId = request.getHeader(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME);
 		if (clientId == null) clientId = request.getParameter(RequestConfigurations.CLIENT_IDENTIFICATION_PARAMETER_NAME);
 
 		return clientId == null ? "0" : clientId;
