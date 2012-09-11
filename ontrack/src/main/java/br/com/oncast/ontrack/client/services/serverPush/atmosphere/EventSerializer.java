@@ -6,6 +6,4 @@ import org.atmosphere.gwt.client.SerialTypes;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 @SerialTypes(ServerPushEvent.class)
-public abstract class EventSerializer extends AtmosphereGWTSerializer {
-
-}
+public abstract class EventSerializer extends AtmosphereGWTSerializer {}

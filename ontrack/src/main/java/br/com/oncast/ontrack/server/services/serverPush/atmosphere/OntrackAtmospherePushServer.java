@@ -49,7 +49,6 @@ public class OntrackAtmospherePushServer implements ServerPushApi {
 		resource.getAtmosphereResource().setBroadcaster(BroadcasterFactory.getDefault().get(resourceIdentifier));
 	}
 
-	// TODO move to Value Obejct
 	private ServerPushConnection toResourceIdentifier(final GwtAtmosphereResource resource) {
 		return new CometClientConnection(String.valueOf(resource.getConnectionID()), resource.getSession().getId());
 	}
