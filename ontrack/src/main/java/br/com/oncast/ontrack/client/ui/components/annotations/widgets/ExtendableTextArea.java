@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -61,6 +62,8 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	private boolean isHelptTextVisible = true;
 
+	private HandlerRegistration registration;
+
 	public ExtendableTextArea() {
 		initWidget(uiBinder.createAndBindUi(this));
 		setSubmitHelpTextVisible(false);
@@ -103,7 +106,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	@UiHandler("textArea")
 	protected void onFocus(final FocusEvent event) {
-		if (!textArea.getText().trim().isEmpty()) stretch();
+		stretch();
 	}
 
 	@UiHandler("textArea")
@@ -114,8 +117,6 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 		if (isHelptTextVisible != isEmpty) {
 			isHelptTextVisible = !isHelptTextVisible;
 			helpText.setVisible(isHelptTextVisible);
-			if (isEmpty) shrink();
-			else stretch();
 		}
 		final boolean isSubmitHelpTextVisible = !isEmpty && text.length() < TEXT_LENGHT_TO_HIDE_SUBMIT_HELP;
 		setSubmitHelpTextVisible(isSubmitHelpTextVisible);
@@ -153,6 +154,14 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	public void setFocus(final boolean b) {
 		textArea.setFocus(true);
+		shrink();
+		registration = textArea.addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(final KeyDownEvent event) {
+				stretch();
+				registration.removeHandler();
+			}
+		});
 	}
 
 	private void stretch() {

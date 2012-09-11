@@ -32,13 +32,17 @@ public class SinceAnnotationMenuItem extends Composite implements AnnotationMenu
 
 		initWidget(uiBinder.createAndBindUi(this));
 
+	}
+
+	@Override
+	protected void onLoad() {
 		update();
 	}
 
 	@Override
 	public void update() {
 		final Date date = annotation.getTimestampFor(annotation.getType());
-		label.setText(HumanDateFormatter.getRelativeDate(date) + " (" + HumanDateFormatter.getDifferenceDate(date) + ")");
+		label.setText(HumanDateFormatter.getRelativeDate(date));
 		label.setTitle(HumanDateFormatter.getAbsoluteText(date));
 	}
 

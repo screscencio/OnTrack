@@ -6,6 +6,8 @@ import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCal
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.CommentsAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.DeprecateAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.LikeAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.SinceAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -155,12 +157,16 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 	private void createCustomMenu() {
 		menu.clear();
-		menu.add(new DeprecateAnnotationMenuItem(subjectId, annotation));
 
-		addCommentsMenuItem();
+		menu.add(new DeprecateAnnotationMenuItem(subjectId, annotation));
 
 		final AnnotationTypeItemsMapper mapper = AnnotationTypeItemsMapper.get(annotation.getType());
 		mapper.populateMenu(menu, subjectId, annotation);
+
+		menu.addSeparator();
+		menu.add(new LikeAnnotationMenuItem(subjectId, annotation));
+		addCommentsMenuItem();
+		menu.add(new SinceAnnotationMenuItem(annotation));
 
 		content.setStyleName(mapper.getContentStyle(style));
 		currentType = annotation.getType();
