@@ -12,9 +12,9 @@ import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.google.gwt.thirdparty.guava.common.collect.HashMultimap;
-import com.google.gwt.thirdparty.guava.common.collect.ImmutableSet;
-import com.google.gwt.thirdparty.guava.common.collect.SetMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Sets;
 
 public class ClientManager {
 
@@ -60,7 +60,7 @@ public class ClientManager {
 	}
 
 	public Set<ServerPushConnection> getClientsAtProject(final UUID projectId) {
-		return ImmutableSet.copyOf(clientsByProject.get(projectId));
+		return Sets.newHashSet(clientsByProject.get(projectId));
 	}
 
 	public Set<ServerPushConnection> getClientsOfUser(final long userId) {
@@ -73,7 +73,7 @@ public class ClientManager {
 	}
 
 	public Set<ServerPushConnection> getAllClients() {
-		return ImmutableSet.copyOf(clientsByProject.values());
+		return Sets.newHashSet(clientsByProject.values());
 	}
 
 	private void removeAllValuesInPlace(final SetMultimap<?, ServerPushConnection> multimap, final ServerPushConnection clientId) {
