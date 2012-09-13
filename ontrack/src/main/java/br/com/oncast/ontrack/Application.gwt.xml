@@ -24,6 +24,9 @@
 	<!-- Specify the app entry point class -->
 	<entry-point class='br.com.oncast.ontrack.client.ApplicationEntryPoint' />
 
+	<!-- Supported locales -->
+	<extend-property name="locale" values="pt"/>
+
 	<!-- Specify the paths for translatable code -->
 	<source path='client' excludes="**/*Test.java" />
 	<source path='shared' excludes="**/*Test.java" />

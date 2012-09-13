@@ -1,7 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:search="urn:import:br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar">
+	xmlns:search="urn:import:br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:style src="../../../../style/default.css">
 		
@@ -56,7 +59,9 @@
 		<g:HTMLPanel styleName="{style.searchBar}">
 			<g:HorizontalPanel ui:field="container" styleName="{style.container}" verticalAlignment="middle">
 				<g:cell width="1">
-					<g:Label text="Search"/>
+					<g:Label>
+						<ui:msg description="search scope label">Search</ui:msg>
+					</g:Label>
 				</g:cell>
 				<g:cell width="100%">
 					<search:SearchScopeFiltrableCommandMenu ui:field="search" styleName="{style.search}"/>
@@ -66,7 +71,10 @@
 					<g:Label ui:field="valueColumnInactiveIndicatorLabel" text="Value" title="Show Values (Alt $)" styleName="{style.inactiveColumnIndicatorLabel}" width="85px"/>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="effortColumnInactiveIndicatorLabel" text="Effort" title="Show Efforts (Alt #)" styleName="{style.inactiveColumnIndicatorLabel}" width="85px"/>
+					<g:Label ui:field="effortColumnInactiveIndicatorLabel" title="Show Efforts (Alt #)" styleName="{style.inactiveColumnIndicatorLabel}" width="85px">
+						<ui:msg description="effort column label">Effort</ui:msg>
+						<ui:attribute name='title' description='tooltip text for show effort column'/>
+					</g:Label>
 				</g:cell>
 				<g:cell width="1">
 					<g:Label ui:field="progressColumnInactiveIndicatorLabel" text="Progress" title="Show Progress (Alt %)" styleName="{style.inactiveColumnIndicatorLabel}" width="80px"/>
@@ -79,7 +87,10 @@
 					<g:Label ui:field="valueColumnActiveIndicatorLabel" text="Value" title="Hide Values (Alt $)" styleName="{style.activeColumnIndicatorLabel}" width="85px"/>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="effortColumnActiveIndicatorLabel" text="Effort" title="Hide Efforts (Alt #)" styleName="{style.activeColumnIndicatorLabel}" width="85px"/>
+					<g:Label ui:field="effortColumnActiveIndicatorLabel" title="Hide Efforts (Alt #)" styleName="{style.activeColumnIndicatorLabel}" width="85px">
+						<ui:msg description="effort column label">Effort</ui:msg>
+						<ui:attribute name='title' description='tooltip text for hide effort column'/>
+					</g:Label>
 				</g:cell>
 				<g:cell width="1">
 					<g:Label ui:field="progressColumnActiveIndicatorLabel" text="Progress" title="Hide Progress (Alt %)" styleName="{style.activeColumnIndicatorLabel}" width="80px"/>
