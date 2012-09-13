@@ -5,14 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.identification.ClientIdentificationProvider;
 import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 public class ServerPushClientServiceImpl implements ServerPushClientService {
+
+	private final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
@@ -39,7 +43,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			@Override
 			public void onError(final Throwable exception) {
 				// FIXME Mats think about how to update current model without being annoying to the user
-				notificationService.showErrorWithConfirmation("No internet connection...", new NotificationConfirmationListener() {
+				notificationService.showErrorWithConfirmation(messages.noInternectConnection(), new NotificationConfirmationListener() {
 					@Override
 					public void onConfirmation() {
 						Window.Location.reload();
