@@ -52,24 +52,25 @@ public class SyncronizationServiceTest {
 		final Thread thread2 = new TestThread(uuid1, mock2);
 
 		thread1.start();
-		Thread.sleep(100);
+		final int millis = 50;
+		Thread.sleep(millis);
 		assertTrue(mock1.isLocked());
 
 		thread2.start();
-		Thread.sleep(100);
+		Thread.sleep(millis);
 		assertFalse(mock2.isLocked());
 
 		assertTrue(mock1.isLocked());
 		assertFalse(mock2.isLocked());
 
 		mock1.unlock();
-		Thread.sleep(100);
+		Thread.sleep(millis);
 
 		assertFalse(mock1.isLocked());
 		assertTrue(mock2.isLocked());
 
 		mock2.unlock();
-		Thread.sleep(100);
+		Thread.sleep(millis);
 
 		assertFalse(mock1.isLocked());
 		assertFalse(mock2.isLocked());
