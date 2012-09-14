@@ -94,7 +94,6 @@
 	<root>
 		<!-- <level value="DEBUG" /> -->
 		<priority value="INFO" />
-		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />
 	</root>
 
