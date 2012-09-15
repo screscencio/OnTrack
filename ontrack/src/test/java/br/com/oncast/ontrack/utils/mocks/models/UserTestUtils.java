@@ -12,7 +12,7 @@ public class UserTestUtils {
 	private static User admin;
 	private static int userCount = 0;
 
-	public static User createUser() throws Exception {
+	public static User createUser() {
 		return createUser(++userCount);
 	}
 
@@ -20,13 +20,13 @@ public class UserTestUtils {
 		return new User(email);
 	}
 
-	public static User createUser(final long id, final String email) throws Exception {
+	public static User createUser(final long id, final String email) {
 		final User user = createUser(email);
 		ReflectionTestUtils.set(user, "id", id);
 		return user;
 	}
 
-	public static List<User> createList(final int size) throws Exception {
+	public static List<User> createList(final int size) {
 		final List<User> users = new ArrayList<User>(size);
 
 		for (int i = 1; i <= size; i++) {
@@ -35,13 +35,13 @@ public class UserTestUtils {
 		return users;
 	}
 
-	public static User createUser(final long id) throws Exception {
+	public static User createUser(final long id) {
 		final User user = createUser("user" + id + "@email.com");
 		ReflectionTestUtils.set(user, "id", id);
 		return user;
 	}
 
-	public static User getAdmin() throws Exception {
+	public static User getAdmin() {
 		return admin == null ? admin = createUser(1, DefaultAuthenticationCredentials.USER_EMAIL) : admin;
 	}
 

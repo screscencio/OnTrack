@@ -80,6 +80,13 @@ public class ModelStateManagerTest {
 	}
 
 	@Test
+	public void itShouldBeAbleToSetAStateWithSameTimestampThanThePreviousState() throws Exception {
+		final String newState = "new State";
+		manager.setState(newState, initialAuthor, initialTimestamp);
+		assertEquals(newState, manager.getCurrentStateValue());
+	}
+
+	@Test
 	public void theDurationOfAStateIsTheDifferenceBetweenItsTimestampAndNowWhenThereIsNoNextState() throws Exception {
 		final long duration = new Date().getTime() - initialTimestamp.getTime();
 		assertEquals(duration, manager.getCurrentStateDuration(), 2);

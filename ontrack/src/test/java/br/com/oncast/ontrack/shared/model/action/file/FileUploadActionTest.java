@@ -41,7 +41,7 @@ public class FileUploadActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldCreateAFileRepresentationWithSameName() throws Exception {
-		execute();
+		executeAction();
 
 		final FileRepresentation representation = getAddedFile();
 		assertEquals(fileName, representation.getFileName());
@@ -49,7 +49,7 @@ public class FileUploadActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldCreateAFileRepresentationWithSameId() throws Exception {
-		execute();
+		executeAction();
 
 		final FileRepresentation representation = getAddedFile();
 		assertEquals(fileId, representation.getId());
@@ -57,7 +57,7 @@ public class FileUploadActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldCreateAFileRepresentationWithSameFilePath() throws Exception {
-		execute();
+		executeAction();
 
 		final FileRepresentation representation = getAddedFile();
 		assertEquals(filePath, representation.getFilePath());
@@ -65,7 +65,7 @@ public class FileUploadActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldCreateAFileRepresentationWithSameProject() throws Exception {
-		execute();
+		executeAction();
 
 		final FileRepresentation representation = getAddedFile();
 		assertEquals(projectUuid, representation.getProjectId());
@@ -73,7 +73,7 @@ public class FileUploadActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldNotBeAbleToUndoThisAction() throws Exception {
-		assertNull(execute());
+		assertNull(executeAction());
 	}
 
 	@Test

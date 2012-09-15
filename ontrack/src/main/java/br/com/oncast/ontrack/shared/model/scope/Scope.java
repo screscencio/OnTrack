@@ -2,11 +2,13 @@ package br.com.oncast.ontrack.shared.model.scope;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
@@ -37,16 +39,16 @@ public class Scope implements Serializable {
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Scope() {}
 
-	public Scope(final String description) {
-		this(description, new UUID());
+	public Scope(final String description, User author, Date timestamp) {
+		this(description, new UUID(), author, timestamp);
 	}
 
-	public Scope(final String description, final UUID scopeId) {
+	public Scope(final String description, final UUID scopeId, final User author, final Date timestamp) {
 		this.id = scopeId;
 		this.description = description;
 		this.effort = new Effort();
 		this.value = new Value();
-		this.progress = new Progress();
+		this.progress = new Progress(author, timestamp);
 
 		childrenList = new ArrayList<Scope>();
 	}

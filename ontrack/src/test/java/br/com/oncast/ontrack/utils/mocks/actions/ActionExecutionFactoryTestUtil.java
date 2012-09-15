@@ -25,7 +25,7 @@ public class ActionExecutionFactoryTestUtil {
 		final ClientNotificationService notificationService = mock(ClientNotificationService.class);
 		final AuthenticationService authenticationService = mock(AuthenticationService.class);
 
-		when(authenticationService.getCurrentUser()).thenReturn(UserTestUtils.createUser());
+		when(authenticationService.getCurrentUser()).thenReturn(UserTestUtils.getAdmin());
 		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
 		when(projectRepresentation.getId()).thenReturn(UUID.INVALID_UUID);
 
@@ -40,7 +40,7 @@ public class ActionExecutionFactoryTestUtil {
 		final ApplicationPlaceController applicationPlaceController = mock(ApplicationPlaceController.class);
 		final AuthenticationService authenticationService = mock(AuthenticationService.class);
 
-		when(authenticationService.getCurrentUser()).thenReturn(UserTestUtils.createUser());
+		when(authenticationService.getCurrentUser()).thenReturn(UserTestUtils.getAdmin());
 		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
 		when(projectRepresentation.getId()).thenReturn(UUID.INVALID_UUID);
 

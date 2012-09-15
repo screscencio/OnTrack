@@ -1,12 +1,17 @@
 package br.com.oncast.ontrack.shared.model.action.kanban;
 
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
@@ -29,12 +34,19 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 	private Release release;
 	private String columnDescription;
 
+	@Mock
+	private ActionContext actionContext;
+
 	@Before
 	public void setUp() throws UnableToCompleteActionException {
+		MockitoAnnotations.initMocks(this);
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
 		context = new ProjectContext(ProjectTestUtils.createPopulatedProject());
 		release = context.getProjectRelease().getChild(0);
 		columnDescription = "Blabla";
-		new KanbanColumnCreateAction(release.getId(), columnDescription, false).execute(context, Mockito.mock(ActionContext.class));
+		new KanbanColumnCreateAction(release.getId(), columnDescription, false).execute(context, actionContext);
 	}
 
 	@Test
@@ -42,7 +54,7 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 		Assert.assertFalse("The kanban should be unlocked.", context.getKanban(release).isLocked());
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, NOT_STARTED, columnDescription, DONE);
 
-		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context, Mockito.mock(ActionContext.class));
+		new KanbanColumnRemoveAction(release.getId(), columnDescription, true).execute(context, actionContext);
 
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, NOT_STARTED, DONE);
 		Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
@@ -53,7 +65,7 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 		Assert.assertFalse("The kanban should be unlocked.", context.getKanban(release).isLocked());
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, NOT_STARTED, columnDescription, DONE);
 
-		new KanbanColumnRemoveAction(release.getId(), columnDescription, false).execute(context, Mockito.mock(ActionContext.class));
+		new KanbanColumnRemoveAction(release.getId(), columnDescription, false).execute(context, actionContext);
 
 		Assert.assertFalse("The kanban should be unlocked.", context.getKanban(release).isLocked());
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, NOT_STARTED, DONE);
@@ -66,7 +78,7 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 		Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, NOT_STARTED, columnDescription, DONE);
 
-		new KanbanColumnRemoveAction(release.getId(), columnDescription, false).execute(context, Mockito.mock(ActionContext.class));
+		new KanbanColumnRemoveAction(release.getId(), columnDescription, false).execute(context, actionContext);
 
 		Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, NOT_STARTED, DONE);
@@ -78,9 +90,9 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 		ModelAction rollbackAction;
 
 		for (int i = 0; i < 10; i++) {
-			rollbackAction = action.execute(context, Mockito.mock(ActionContext.class));
+			rollbackAction = action.execute(context, actionContext);
 			ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, NOT_STARTED, DONE);
-			action = rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+			action = rollbackAction.execute(context, actionContext);
 			ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, NOT_STARTED, columnDescription, DONE);
 		}
 	}
@@ -90,16 +102,16 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 		final String columnBefore = columnDescription + "Before";
 		final String columnAfter = columnDescription + "After";
 
-		new KanbanColumnCreateAction(release.getId(), columnBefore, true, 0).execute(context, Mockito.mock(ActionContext.class));
-		new KanbanColumnCreateAction(release.getId(), columnAfter, true).execute(context, Mockito.mock(ActionContext.class));
+		new KanbanColumnCreateAction(release.getId(), columnBefore, true, 0).execute(context, actionContext);
+		new KanbanColumnCreateAction(release.getId(), columnAfter, true).execute(context, actionContext);
 
 		ModelAction action = new KanbanColumnRemoveAction(release.getId(), columnDescription, true);
 		ModelAction rollbackAction;
 
 		for (int i = 0; i < 10; i++) {
-			rollbackAction = action.execute(context, Mockito.mock(ActionContext.class));
+			rollbackAction = action.execute(context, actionContext);
 			ActionTestUtils.assertExpectedKanbanColumns(context, release, 4, NOT_STARTED, columnBefore, columnAfter, DONE);
-			action = rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+			action = rollbackAction.execute(context, actionContext);
 			ActionTestUtils.assertExpectedKanbanColumns(context, release, 5, NOT_STARTED, columnBefore, columnDescription, columnAfter, DONE);
 		}
 	}
@@ -107,8 +119,8 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 	@Test
 	public void doUndoAndRedoShouldMaintainTheReleaseScopesProgresses() throws UnableToCompleteActionException {
 		final List<Scope> scopeList = release.getScopeList();
-		new ScopeDeclareProgressAction(scopeList.get(0).getId(), columnDescription).execute(context, Mockito.mock(ActionContext.class));
-		new ScopeDeclareProgressAction(scopeList.get(1).getId(), columnDescription).execute(context, Mockito.mock(ActionContext.class));
+		new ScopeDeclareProgressAction(scopeList.get(0).getId(), columnDescription).execute(context, actionContext);
+		new ScopeDeclareProgressAction(scopeList.get(1).getId(), columnDescription).execute(context, actionContext);
 		ActionTestUtils.assertProgressForScopes(columnDescription, scopeList.get(0), scopeList.get(1));
 		ActionTestUtils.assertProgressForScopes(NOT_STARTED, scopeList.get(2));
 
@@ -116,10 +128,10 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 		ModelAction rollbackAction;
 
 		for (int i = 0; i < 10; i++) {
-			rollbackAction = action.execute(context, Mockito.mock(ActionContext.class));
+			rollbackAction = action.execute(context, actionContext);
 			ActionTestUtils.assertProgressForScopes(NOT_STARTED, scopeList.get(0), scopeList.get(1), scopeList.get(2));
 
-			action = rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+			action = rollbackAction.execute(context, actionContext);
 			ActionTestUtils.assertProgressForScopes(columnDescription, scopeList.get(0), scopeList.get(1));
 			ActionTestUtils.assertProgressForScopes(NOT_STARTED, scopeList.get(2));
 		}
@@ -128,11 +140,11 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 	@Test
 	public void doUndoAndRedoShouldMaintainTheReleaseScopesProgresses2() throws UnableToCompleteActionException {
 		final String columnBefore = "Before" + columnDescription;
-		new KanbanColumnCreateAction(release.getId(), columnBefore, true, 0).execute(context, Mockito.mock(ActionContext.class));
+		new KanbanColumnCreateAction(release.getId(), columnBefore, true, 0).execute(context, actionContext);
 
 		final List<Scope> scopeList = release.getScopeList();
-		new ScopeDeclareProgressAction(scopeList.get(0).getId(), columnDescription).execute(context, Mockito.mock(ActionContext.class));
-		new ScopeDeclareProgressAction(scopeList.get(1).getId(), columnDescription).execute(context, Mockito.mock(ActionContext.class));
+		new ScopeDeclareProgressAction(scopeList.get(0).getId(), columnDescription).execute(context, actionContext);
+		new ScopeDeclareProgressAction(scopeList.get(1).getId(), columnDescription).execute(context, actionContext);
 		ActionTestUtils.assertProgressForScopes(columnDescription, scopeList.get(0), scopeList.get(1));
 		ActionTestUtils.assertProgressForScopes(NOT_STARTED, scopeList.get(2));
 
@@ -140,11 +152,11 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 		ModelAction rollbackAction;
 
 		for (int i = 0; i < 10; i++) {
-			rollbackAction = action.execute(context, Mockito.mock(ActionContext.class));
+			rollbackAction = action.execute(context, actionContext);
 			ActionTestUtils.assertProgressForScopes(columnBefore, scopeList.get(0), scopeList.get(1));
 			ActionTestUtils.assertProgressForScopes(NOT_STARTED, scopeList.get(2));
 
-			action = rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+			action = rollbackAction.execute(context, actionContext);
 			ActionTestUtils.assertProgressForScopes(columnDescription, scopeList.get(0), scopeList.get(1));
 			ActionTestUtils.assertProgressForScopes(NOT_STARTED, scopeList.get(2));
 		}
@@ -158,10 +170,10 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 		ModelAction rollbackAction;
 
 		for (int i = 0; i < 10; i++) {
-			rollbackAction = action.execute(context, Mockito.mock(ActionContext.class));
+			rollbackAction = action.execute(context, actionContext);
 			Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
 
-			action = rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+			action = rollbackAction.execute(context, actionContext);
 			Assert.assertTrue("The kanban should be locked.", context.getKanban(release).isLocked());
 		}
 	}

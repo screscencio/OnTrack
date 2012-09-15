@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.services.actionExecution;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,12 +13,14 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
 
@@ -47,15 +50,16 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 		}
 
 		final ModelAction reverseAction = action.execute(context, actionContext);
-		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope);
+		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope,
+				ActionHelper.findUser(actionContext.getUserEmail(), context), actionContext.getTimestamp());
 
 		return new ActionExecutionContext(reverseAction, inferenceInfluencedScopeSet);
 	}
 
-	protected static Set<UUID> executeInferenceEngines(final ScopeAction action, final Scope scope) {
+	protected static Set<UUID> executeInferenceEngines(final ScopeAction action, final Scope scope, final User author, final Date timestamp) {
 		final Set<UUID> inferenceInfluencedScopeSet = new HashSet<UUID>();
 		for (final InferenceOverScopeEngine inferenceEngine : inferenceEngines)
-			if (inferenceEngine.shouldProcess(action)) inferenceInfluencedScopeSet.addAll(inferenceEngine.process(scope));
+			if (inferenceEngine.shouldProcess(action)) inferenceInfluencedScopeSet.addAll(inferenceEngine.process(scope, author, timestamp));
 		return inferenceInfluencedScopeSet;
 	}
 

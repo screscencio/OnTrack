@@ -37,21 +37,21 @@ public class ChecklistRenameActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetTheNewTitleToTheGivenChecklist() throws Exception {
-		execute();
+		executeAction();
 		assertEquals(newTitle, checklist.getTitle());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRenameAnInexistentChecklist() throws Exception {
 		when(context.findChecklist(subjectId, checklistId)).thenThrow(new ChecklistNotFoundException(""));
-		execute();
+		executeAction();
 	}
 
 	@Test
 	public void undoShouldReturnTheChecklistsTitleToThePreviousTitle() throws Exception {
 		final String previousTitle = checklist.getTitle();
 
-		execute().execute(context, actionContext);
+		executeAction().execute(context, actionContext);
 
 		assertEquals(previousTitle, checklist.getTitle());
 	}

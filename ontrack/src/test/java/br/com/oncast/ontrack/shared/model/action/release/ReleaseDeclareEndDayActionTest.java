@@ -52,13 +52,13 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldAccessTheReleaseReferencedByTheReferenceId() throws Exception {
-		execute();
+		executeAction();
 		verify(context).findRelease(referenceId);
 	}
 
 	@Test
 	public void shouldDeclareTheGivenEndDayOnReferencedRelease() throws Exception {
-		execute();
+		executeAction();
 		verify(release).declareEndDay(Mockito.eq(WorkingDayFactory.create(declaredDay)));
 	}
 
@@ -73,7 +73,7 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 		when(release.hasDeclaredEndDay()).thenReturn(false);
 		when(release.getEndDay()).thenReturn(previouslyDeclaredDay);
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		verify(release).declareEndDay(Mockito.any(WorkingDay.class));
 
 		undoAction.execute(context, Mockito.mock(ActionContext.class));
@@ -85,7 +85,7 @@ public class ReleaseDeclareEndDayActionTest extends ModelActionTest {
 		when(release.hasDeclaredEndDay()).thenReturn(true);
 		when(release.getEndDay()).thenReturn(previouslyDeclaredDay);
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		verify(release).declareEndDay(Mockito.any(WorkingDay.class));
 
 		undoAction.execute(context, Mockito.mock(ActionContext.class));

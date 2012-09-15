@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
@@ -26,17 +27,24 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
+import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ActionTestUtils {
 
-	public static List<ModelAction> createSomeActions() {
+	public static List<ModelAction> createSomeActions(final User... requiredUsers) {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
-		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(ProjectTestUtils.createProject().getProjectScope().getId(), "1");
+		final UUID rootScope = ProjectTestUtils.createProject().getProjectScope().getId();
+		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(rootScope, "1");
+		for (final User user : requiredUsers) {
+			if (user != null) actions.add(new TeamInviteAction(user));
+		}
 
 		actions.add(insertChild1);
-		actions.add(new ScopeInsertChildAction(ProjectTestUtils.createProject().getProjectScope().getId(), "2"));
+		actions.add(new ScopeInsertChildAction(rootScope, "2"));
 		actions.add(new ScopeInsertSiblingUpAction(insertChild1.getNewScopeId(), "Before 1"));
 		actions.add(new ScopeInsertSiblingDownAction(insertChild1.getNewScopeId(), "After 1"));
 
@@ -44,7 +52,7 @@ public class ActionTestUtils {
 		actions.add(insertChild2);
 		actions.add(new ScopeInsertParentAction(insertChild2.getNewScopeId(), "Parent of 1.1"));
 
-		final ScopeInsertChildAction insertChild3 = new ScopeInsertChildAction(ProjectTestUtils.createProject().getProjectScope().getId(), "3");
+		final ScopeInsertChildAction insertChild3 = new ScopeInsertChildAction(rootScope, "3");
 		actions.add(insertChild3);
 		actions.add(new ScopeMoveRightAction(insertChild3.getNewScopeId()));
 		actions.add(new ScopeMoveLeftAction(insertChild3.getNewScopeId()));
@@ -93,7 +101,7 @@ public class ActionTestUtils {
 
 	public static List<ModelAction> createOneValidAction() {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
-		actions.add(new ScopeInsertChildAction(ProjectTestUtils.createProject().getProjectScope().getId(), "a"));
+		actions.add(new TeamInviteAction(UserTestUtils.getAdmin()));
 		return actions;
 	}
 

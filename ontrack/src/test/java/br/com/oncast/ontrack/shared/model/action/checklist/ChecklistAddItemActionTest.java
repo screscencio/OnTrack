@@ -44,14 +44,14 @@ public class ChecklistAddItemActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldAddTheChecklistItemToChecklistWithTheGivenId() throws Exception {
-		execute();
+		executeAction();
 		verify(context).findChecklist(subjectId, checklistId);
 		verify(checklist).addItem(Mockito.any(ChecklistItem.class));
 	}
 
 	@Test
 	public void addedItemShouldHaveTheGivenDescription() throws Exception {
-		execute();
+		executeAction();
 		final ArgumentCaptor<ChecklistItem> captor = ArgumentCaptor.forClass(ChecklistItem.class);
 		verify(checklist).addItem(captor.capture());
 		assertEquals(itemDescription, captor.getValue().getDescription());
@@ -82,7 +82,7 @@ public class ChecklistAddItemActionTest extends ModelActionTest {
 
 	@Test
 	public void undoShouldRemoveTheAddedItem() throws Exception {
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 
 		final ArgumentCaptor<ChecklistItem> captor = ArgumentCaptor.forClass(ChecklistItem.class);
 		verify(checklist).addItem(captor.capture());

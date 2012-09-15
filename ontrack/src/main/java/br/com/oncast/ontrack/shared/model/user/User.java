@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(User.class)
 @Entity
@@ -17,6 +18,7 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue
+	@IgnoredByDeepEquality
 	private long id;
 
 	@Column(name = "email", unique = true, nullable = false)

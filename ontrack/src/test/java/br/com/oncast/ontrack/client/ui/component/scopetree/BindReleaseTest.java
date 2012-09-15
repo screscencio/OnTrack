@@ -29,6 +29,7 @@ import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityC
 import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 import com.googlecode.gwt.test.GwtTest;
 
@@ -62,10 +63,10 @@ public class BindReleaseTest extends GwtTest {
 	}
 
 	private Scope getScope() {
-		final Scope rootScope = new Scope("Project");
-		firstScope = new Scope("1");
+		final Scope rootScope = ScopeTestUtils.createScope("Project");
+		firstScope = ScopeTestUtils.createScope("1");
 		rootScope.add(firstScope);
-		rootScope.add(new Scope("2"));
+		rootScope.add(ScopeTestUtils.createScope("2"));
 
 		return rootScope;
 	}

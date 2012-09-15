@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +22,6 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.Rel
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
@@ -359,31 +357,27 @@ public class ReleaseChartDataProviderTest {
 		private final Scope scope;
 
 		public Accomplish(final int effort) {
-			scope = createScope(ProgressState.DONE, effort);
+			scope = createScope(ProgressState.UNDER_WORK, effort);
 			releaseScopes.add(scope);
 		}
 
-		public void today() {}
+		public void today() {
+			ScopeTestUtils.setProgress(scope, ProgressState.DONE);
+		}
 
 		public static Accomplish effortPoints(final int effort) {
 			return new Accomplish(effort);
 		}
 
 		public void on(final WorkingDay workingDay) throws Exception {
-			setEndDay(scope, workingDay);
+			ScopeTestUtils.setEndDate(scope, workingDay);
 		}
 
 		private static Scope createScope(final ProgressState progress, final int effort) {
-			final Scope scope = new Scope("Scope " + effort);
+			final Scope scope = ScopeTestUtils.createScope("Scope " + effort);
 			ScopeTestUtils.setProgress(scope, progress);
 			ScopeTestUtils.setDelcaredEffort(scope, effort);
 			return scope;
-		}
-
-		private static void setEndDay(final Scope scope, final WorkingDay endDate) throws NoSuchFieldException, IllegalAccessException {
-			final Field endDateField = Progress.class.getDeclaredField("endDate");
-			endDateField.setAccessible(true);
-			endDateField.set(scope.getProgress(), endDate);
 		}
 
 	}

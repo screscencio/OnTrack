@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 import com.googlecode.gwt.test.GwtTest;
 
@@ -37,10 +38,10 @@ public class ScopeTreeWidgetTest extends GwtTest {
 	@Before
 	public void setUp() {
 		scopeTreeWidget = new ScopeTreeWidget(mock(ScopeTreeWidgetInteractionHandler.class));
-		scopeA1 = new Scope("root");
-		scopeA11 = new Scope("A11");
-		scopeA12 = new Scope("A12");
-		scopeA13 = new Scope("A13");
+		scopeA1 = ScopeTestUtils.createScope("root");
+		scopeA11 = ScopeTestUtils.createScope("A11");
+		scopeA12 = ScopeTestUtils.createScope("A12");
+		scopeA13 = ScopeTestUtils.createScope("A13");
 		scopeA1.add(scopeA11);
 		scopeA1.add(scopeA12);
 	}

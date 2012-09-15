@@ -1,53 +1,48 @@
 package br.com.oncast.ontrack.shared.model.action.team;
 
-import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.team.TeamInviteActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
-import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class TeamInviteActionTest extends ModelActionTest {
 
-	private User invitor;
-
-	@Mock
-	private ProjectContext context;
+	private User invitee;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		invitor = UserTestUtils.createUser();
-	}
-
-	@Test
-	public void shouldNotBeAbleToUndoThisAction() throws Exception {
-		assertNull(getNewInstance().execute(context, Mockito.mock(ActionContext.class)));
+		invitee = UserTestUtils.createUser();
 	}
 
 	@Test
 	public void shouldAddUserToProjectContext() throws Exception {
-		getNewInstance().execute(context, Mockito.mock(ActionContext.class));
+		executeAction();
+		verify(context).addUser(invitee);
+	}
 
-		final ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-		Mockito.verify(context).addUser(captor.capture());
+	@Test
+	public void undoShouldRemoveTheInvitedUserFromContext() throws Exception {
+		final ModelAction undoAction = executeAction();
+
+		when(context.findUser(invitee.getEmail())).thenReturn(invitee);
+		undoAction.execute(context, actionContext);
+		verify(context).removeUser(invitee);
 	}
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new TeamInviteAction(invitor);
+		return new TeamInviteAction(invitee);
 	}
 
 	@Override

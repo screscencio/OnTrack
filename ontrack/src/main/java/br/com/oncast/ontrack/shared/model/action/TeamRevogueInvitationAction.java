@@ -2,36 +2,37 @@ package br.com.oncast.ontrack.shared.model.action;
 
 import org.simpleframework.xml.Element;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.team.TeamInviteActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.team.TeamRevogueInvitationActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@ConvertTo(TeamInviteActionEntity.class)
-public class TeamInviteAction implements TeamAction {
+@ConvertTo(TeamRevogueInvitationActionEntity.class)
+public class TeamRevogueInvitationAction implements TeamAction {
 
 	private static final long serialVersionUID = 1L;
 
 	@Element
 	private UUID inviteeEmail;
 
-	protected TeamInviteAction() {}
+	protected TeamRevogueInvitationAction() {}
 
-	public TeamInviteAction(final User user) {
+	public TeamRevogueInvitationAction(final User user) {
 		this(user.getEmail());
 	}
 
-	public TeamInviteAction(final String inviteeEmail) {
+	public TeamRevogueInvitationAction(final String inviteeEmail) {
 		this.inviteeEmail = new UUID(inviteeEmail);
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final User user = new User(inviteeEmail.toStringRepresentation());
-		context.addUser(user);
-		return new TeamRevogueInvitationAction(inviteeEmail.toStringRepresentation());
+		final User user = ActionHelper.findUser(inviteeEmail.toStringRepresentation(), context);
+		context.removeUser(user);
+		return new TeamInviteAction(inviteeEmail.toStringRepresentation());
 	}
 
 	@Override

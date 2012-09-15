@@ -6,6 +6,9 @@ package br.com.oncast.ontrack.shared.model.progress;
 import java.io.Serializable;
 import java.util.Date;
 
+import br.com.oncast.ontrack.shared.model.ModelState;
+import br.com.oncast.ontrack.shared.model.ModelStateManager;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityByGetter;
@@ -27,22 +30,11 @@ public class Progress implements Serializable {
 				}
 				return false;
 			}
-
-			@Override
-			protected void handleStateChange(final Progress progress) {
-				progress.resetEndDate();
-			}
 		},
 		UNDER_WORK("Under work") {
 			@Override
 			protected boolean matches(final String description) {
 				return (!NOT_STARTED.matches(description) && !DONE.matches(description));
-			}
-
-			@Override
-			protected void handleStateChange(final Progress progress) {
-				progress.start();
-				progress.resetEndDate();
 			}
 		},
 		DONE("Done") {
@@ -53,12 +45,6 @@ public class Progress implements Serializable {
 					if (acceptable.equalsIgnoreCase(description)) return true;
 				}
 				return false;
-			}
-
-			@Override
-			protected void handleStateChange(final Progress progress) {
-				progress.start();
-				progress.end();
 			}
 		};
 
@@ -85,49 +71,37 @@ public class Progress implements Serializable {
 
 		protected abstract boolean matches(String description);
 
-		protected abstract void handleStateChange(Progress progress);
-
 	};
 
 	@DeepEqualityByGetter
 	private String description;
 
 	@IgnoredByDeepEquality
-	private ProgressState state = ProgressState.NOT_STARTED;
+	private ModelStateManager<ProgressState> stateManager;
 
-	@IgnoredByDeepEquality
-	private WorkingDay startDate;
+	// IMPORTANT used by serialization
+	protected Progress() {}
 
-	@IgnoredByDeepEquality
-	private WorkingDay endDate;
-
-	@IgnoredByDeepEquality
-	private Date lastUpdateTimestamp;
-
-	public Progress() {
-		setDescription("");
+	public Progress(final User author, final Date timestamp) {
+		stateManager = new ModelStateManager<ProgressState>(ProgressState.NOT_STARTED, author, timestamp);
+		description = "";
 	}
 
 	public String getDescription() {
-		return (!hasDeclared() || state == ProgressState.UNDER_WORK) ? description : state.getDescription();
+		final ProgressState currentState = stateManager.getCurrentStateValue();
+		return (!hasDeclared() || currentState == ProgressState.UNDER_WORK) ? description : currentState.getDescription();
 	}
 
-	public void setDescription(final String newProgressDescription) {
-		setDescription(newProgressDescription, null);
-	}
-
-	public void setDescription(String newProgressDescription, Date timestamp) {
-		if (timestamp == null) timestamp = new Date();
+	public void setDescription(String newProgressDescription, final User author, final Date timestamp) {
 		if (newProgressDescription == null) newProgressDescription = "";
 
 		description = newProgressDescription;
-		lastUpdateTimestamp = timestamp;
-		setState(ProgressState.getStateForDescription(description));
+		setState(ProgressState.getStateForDescription(description), author, timestamp);
 		ProgressDefinitionManager.getInstance().onProgressDefinition(getDescription());
 	}
 
 	public ProgressState getState() {
-		return state;
+		return stateManager.getCurrentStateValue();
 	}
 
 	public boolean hasDeclared() {
@@ -135,31 +109,23 @@ public class Progress implements Serializable {
 	}
 
 	public boolean isDone() {
-		return state == ProgressState.DONE;
+		return stateManager.getCurrentStateValue() == ProgressState.DONE;
 	}
 
-	public WorkingDay getStartDay() {
-		return startDate != null ? startDate.copy() : null;
+	void setState(final ProgressState newState, final User author, final Date timestamp) {
+		stateManager.setState(newState, author, timestamp);
 	}
 
 	public WorkingDay getEndDay() {
-		return endDate != null ? endDate.copy() : null;
+		if (!isDone()) return null;
+
+		return WorkingDayFactory.create(stateManager.getLastOccurenceOf(ProgressState.DONE).getTimestamp());
 	}
 
-	void setState(final ProgressState newState) {
-		state = newState;
-		state.handleStateChange(this);
+	public WorkingDay getStartDay() {
+		ModelState<ProgressState> startDayState = stateManager.getFirstOccurenceOf(ProgressState.UNDER_WORK);
+		if (startDayState == null) startDayState = stateManager.getFirstOccurenceOf(ProgressState.DONE);
+		return startDayState == null ? null : WorkingDayFactory.create(startDayState.getTimestamp());
 	}
 
-	private void start() {
-		if (startDate == null) startDate = WorkingDayFactory.create(lastUpdateTimestamp);
-	}
-
-	private void end() {
-		endDate = WorkingDayFactory.create(lastUpdateTimestamp);
-	}
-
-	private void resetEndDate() {
-		endDate = null;
-	}
 }

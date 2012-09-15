@@ -47,20 +47,20 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldGetTheAnnotationWithTheGivenIdFromTheGivenContext() throws Exception {
-		execute();
+		executeAction();
 		verify(context).findAnnotation(subjectId, annotation.getId());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToCompleteWhenThereIsNoAnnotationWithTheGivenIdOnTheContext() throws Exception {
 		when(context.findAnnotation(subjectId, annotation.getId())).thenThrow(new AnnotationNotFoundException(""));
-		execute();
+		executeAction();
 	}
 
 	@Test
 	public void shouldIncrementTheAnnotationsVoteCountByOneOnVote() throws Exception {
 		final int previousVoteCount = annotation.getVoteCount();
-		execute();
+		executeAction();
 		assertEquals(previousVoteCount + 1, annotation.getVoteCount());
 	}
 
@@ -68,7 +68,7 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 	public void shouldConsiderOnlyOneVoteFromSameUser() throws Exception {
 		final int previousVoteCount = annotation.getVoteCount();
 		for (int i = 0; i < 10; i++) {
-			execute();
+			executeAction();
 			assertEquals(previousVoteCount + 1, annotation.getVoteCount());
 		}
 	}
@@ -77,7 +77,7 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 	public void undoShouldRemoveTheGivenVote() throws Exception {
 		final int previousVoteCount = annotation.getVoteCount();
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		assertEquals(previousVoteCount + 1, annotation.getVoteCount());
 
 		undoAction.execute(context, actionContext);
@@ -87,7 +87,7 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToVoteWhenTheAnnotationIsDeprecated() throws Exception {
 		annotation.setDeprecation(DeprecationState.DEPRECATED, voter, new Date());
-		execute();
+		executeAction();
 	}
 
 	@Override

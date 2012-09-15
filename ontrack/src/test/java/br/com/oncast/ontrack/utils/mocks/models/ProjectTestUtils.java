@@ -61,7 +61,7 @@ public class ProjectTestUtils {
 	}
 
 	private static Scope getDefaultScope() {
-		return new Scope(getDefaultRepresentation().getName(), UUID.INVALID_UUID);
+		return ScopeTestUtils.createScope(getDefaultRepresentation().getName(), UUID.INVALID_UUID);
 	}
 
 	private static Release getDefaultRelease() {
@@ -117,6 +117,8 @@ public class ProjectTestUtils {
 	}
 
 	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release) {
-		return createProject(projectRepresentation, scope, release, new HashSet<User>());
+		final HashSet<User> userList = new HashSet<User>();
+		userList.add(UserTestUtils.getAdmin());
+		return createProject(projectRepresentation, scope, release, userList);
 	}
 }

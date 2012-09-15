@@ -46,7 +46,6 @@ public class BusinessLogicTestUtils {
 	private static ClientManager clientManagerMock;
 	private static SessionManager sessionManager;
 	private static FeedbackMailFactory userQuotaRequestMailFactory;
-	private static ActionPostProcessingService postProcessingService;
 	private static SyncronizationService syncronizationService;
 
 	static {
@@ -54,7 +53,6 @@ public class BusinessLogicTestUtils {
 		notificationMock = mock(NotificationService.class);
 		clientManagerMock = mock(ClientManager.class);
 		sessionManager = mock(SessionManager.class);
-		postProcessingService = mock(ActionPostProcessingService.class);
 		configureAuthorizationMock();
 		userQuotaRequestMailFactory = mock(FeedbackMailFactory.class);
 		syncronizationService = new SyncronizationService();
@@ -174,6 +172,7 @@ public class BusinessLogicTestUtils {
 			@Override
 			public User retrieveUserById(final long id) throws NoResultFoundException, PersistenceException {
 				try {
+					if (id == 1) return UserTestUtils.getAdmin();
 					return UserTestUtils.createUser(id);
 				}
 				catch (final Exception e) {
@@ -219,7 +218,7 @@ public class BusinessLogicTestUtils {
 
 	private static AuthenticationManager configureAuthenticationManager() {
 		authenticationMock = mock(AuthenticationManager.class);
-		final User user = mock(User.class);
+		final User user = UserTestUtils.getAdmin();
 		when(authenticationMock.getAuthenticatedUser()).thenReturn(user);
 		return authenticationMock;
 	}

@@ -44,7 +44,7 @@ public class ImpedimentRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetAnnotationStateToPreviousState() throws Exception {
-		execute();
+		executeAction();
 
 		assertEquals(AnnotationType.SIMPLE, annotation.getType());
 	}
@@ -53,13 +53,13 @@ public class ImpedimentRemoveActionTest extends ModelActionTest {
 	public void shouldNotBeAbleToRemoveImpedimentWhenAnnotationIsNotImpeded() throws Exception {
 		annotation.setType(AnnotationType.SIMPLE, user, new Date());
 
-		execute();
+		executeAction();
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveImpedimentCreatedByAnotherUser() throws Exception {
 		when(actionContext.getUserEmail()).thenReturn("otherUser's Email");
-		execute();
+		executeAction();
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class ImpedimentRemoveActionTest extends ModelActionTest {
 		when(actionContext.getTimestamp()).thenReturn(new Date());
 		when(context.findUser(impedimentAuthor.getEmail())).thenReturn(impedimentAuthor);
 
-		execute();
+		executeAction();
 	}
 
 	@Test

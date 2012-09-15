@@ -48,7 +48,7 @@ public class ImpedimentCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetTheAnnotationWithImpedimentStatusWhenTheAnnotationAlreadyExists() throws Exception {
-		execute();
+		executeAction();
 
 		verify(context, never()).addAnnotation(any(UUID.class), any(Annotation.class));
 		assertEquals(AnnotationType.OPEN_IMPEDIMENT, annotation.getType());
@@ -58,14 +58,14 @@ public class ImpedimentCreateActionTest extends ModelActionTest {
 	public void shouldNotBeAbleToCreateAnImpedimentFromAnInexistentAnnotation() throws Exception {
 		when(context.findAnnotation(subjectId, annotation.getId())).thenThrow(new AnnotationNotFoundException(""));
 
-		execute();
+		executeAction();
 	}
 
 	@Test
 	public void undoShouldReSetTheAnnotationToPreviousState() throws Exception {
 		final AnnotationType previousState = annotation.getType();
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 
 		undoAction.execute(context, actionContext);
 
@@ -76,7 +76,7 @@ public class ImpedimentCreateActionTest extends ModelActionTest {
 	public void shouldNotBeAbleToCreateImpedimentFromDeprecatedAnnotations() throws Exception {
 		annotation.setDeprecation(DeprecationState.DEPRECATED, user, new Date());
 
-		execute();
+		executeAction();
 	}
 
 	@Override

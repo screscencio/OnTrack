@@ -48,7 +48,7 @@ public class ScopeTree implements Component {
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				try {
-					treeActionFactory.createEquivalentActionFor(action).execute(context, isUserAction);
+					treeActionFactory.createEquivalentActionFor(action).execute(context, actionContext, isUserAction);
 					final HashSet<Scope> inferenceInfluencedScopes = new HashSet<Scope>();
 					for (final UUID id : inferenceInfluencedScopeSet)
 						inferenceInfluencedScopes.add(context.findScope(id));

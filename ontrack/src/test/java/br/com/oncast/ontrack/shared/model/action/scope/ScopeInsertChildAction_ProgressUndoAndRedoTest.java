@@ -1,8 +1,13 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -16,6 +21,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 
@@ -75,18 +81,22 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 		final Scope scope = ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6);
 
 		final Scope child = scope.getChild(1).getChild(0);
-		child.getProgress().setDescription("DONE");
+		ScopeTestUtils.setProgress(child, "DONE");
 		ProgressTestUtils.setProgressState(child, ProgressState.DONE);
 
-		final Scope grandChild = new Scope("b11");
-		grandChild.getProgress().setDescription("DONE");
+		final Scope grandChild = ScopeTestUtils.createScope("b11");
+		ScopeTestUtils.setProgress(grandChild, "DONE");
 		child.add(grandChild);
 
 		return scope;
 	}
 
 	private ModelAction executeAction(final Scope scope, final ModelAction action, final ProjectContext context) throws UnableToCompleteActionException {
-		final ModelAction rollbackAction = action.execute(context, Mockito.mock(ActionContext.class));
+		final ActionContext actionContext = Mockito.mock(ActionContext.class);
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
+		final ModelAction rollbackAction = action.execute(context, actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);
 		return rollbackAction;
 	}

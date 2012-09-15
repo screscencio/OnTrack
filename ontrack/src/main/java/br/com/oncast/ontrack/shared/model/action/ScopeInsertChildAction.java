@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeInsertChildActionEntity.class)
@@ -50,7 +51,8 @@ public class ScopeInsertChildAction implements ScopeInsertAction {
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 
-		selectedScope.add(new Scope("", newScopeId));
+		final User author = ActionHelper.findUserFrom(actionContext, context);
+		selectedScope.add(new Scope("", newScopeId, author, actionContext.getTimestamp()));
 
 		subActionRollbackList.add(scopeUpdateAction.execute(context, actionContext));
 		return new ScopeInsertChildRollbackAction(newScopeId, subActionRollbackList);

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action.helper;
 
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
@@ -79,6 +80,10 @@ public class ActionHelper {
 		catch (final ChecklistNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
 		}
+	}
+
+	public static User findUserFrom(final ActionContext actionContext, final ProjectContext context) throws UnableToCompleteActionException {
+		return findUser(actionContext.getUserEmail(), context);
 	}
 
 }

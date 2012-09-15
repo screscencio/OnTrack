@@ -1,9 +1,15 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -16,15 +22,23 @@ import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepre
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ProgressInferenceEngineFlow1Test {
 
 	private final String FILE_NAME_PREFIX = "Flow1";
 	private Scope rootScope = null;
 	private ProjectContext projectContext;
+	@Mock
+	private ActionContext actionContext;
 
 	@Before
 	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
 		rootScope = ProgressInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX);
 		projectContext = ProjectTestUtils.createProjectContext(rootScope, ReleaseFactoryTestUtil.create("proj"));
 	}
@@ -86,7 +100,7 @@ public class ProgressInferenceEngineFlow1Test {
 	}
 
 	private ModelAction executeAction(final Scope scope, final ModelAction action) throws UnableToCompleteActionException {
-		final ModelAction rollbackAction = action.execute(getProjectContext(), Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = action.execute(getProjectContext(), actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);
 		return rollbackAction;
 	}
@@ -103,7 +117,7 @@ public class ProgressInferenceEngineFlow1Test {
 		final Scope scope = parent.getChild(0);
 
 		scope.getEffort().setDeclared(5);
-		scope.getProgress().setDescription("DONE");
+		ScopeTestUtils.setProgress(scope, "DONE");
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 2), rootScope);
@@ -137,7 +151,7 @@ public class ProgressInferenceEngineFlow1Test {
 		final Scope scope = parent.getChild(1);
 
 		new ScopeInsertChildAction(scope.getId(), "b1 " + StringRepresentationSymbolsProvider.EFFORT_SYMBOL + "5 "
-				+ StringRepresentationSymbolsProvider.PROGRESS_SYMBOL + "DONE").execute(getProjectContext(), Mockito.mock(ActionContext.class));
+				+ StringRepresentationSymbolsProvider.PROGRESS_SYMBOL + "DONE").execute(getProjectContext(), actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 5), rootScope);
@@ -147,7 +161,7 @@ public class ProgressInferenceEngineFlow1Test {
 		final Scope parent = rootScope;
 		final Scope scope = parent.getChild(0);
 
-		scope.getProgress().setDescription("DONE");
+		ScopeTestUtils.setProgress(scope, "DONE");
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), rootScope);
@@ -157,7 +171,7 @@ public class ProgressInferenceEngineFlow1Test {
 		final Scope parent = rootScope.getChild(1);
 		final Scope scope = parent.getChild(0);
 
-		new ScopeRemoveAction(scope.getId()).execute(getProjectContext(), Mockito.mock(ActionContext.class));
+		new ScopeRemoveAction(scope.getId()).execute(getProjectContext(), actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(parent);
 
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 7), rootScope);

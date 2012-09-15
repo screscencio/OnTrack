@@ -151,12 +151,16 @@ class BusinessLogicImpl implements BusinessLogic {
 	private Project applyActionsToProject(final Project project, final List<UserAction> actionList) throws UnableToCompleteActionException {
 		final ProjectContext projectContext = new ProjectContext(project);
 
+		final int totalActions = actionList.size();
+		int appliedActions = 0;
+		LOGGER.debug("Appling " + totalActions + " actions to project " + project.getProjectRepresentation().getName() + ".");
 		for (final UserAction action : actionList) {
 			User user;
 			try {
 				user = persistenceService.retrieveUserById(action.getUserId());
 				final ActionContext actionContext = new ActionContext(user, action.getTimestamp());
 				ActionExecuter.executeAction(projectContext, actionContext, action.getModelAction());
+				LOGGER.debug(++appliedActions + " actions applied (" + appliedActions * 100 / totalActions + "% Completed).");
 			}
 			catch (final Exception e) {
 				LOGGER.error("Unable to apply action to project", e);
@@ -303,7 +307,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		try {
 			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
 
-			final Scope projectScope = new Scope(projectRepresentation.getName(), new UUID("0"));
+			final Scope projectScope = new Scope(projectRepresentation.getName(), new UUID("0"), authenticationManager.getAuthenticatedUser(), new Date(0));
 			final Release projectRelease = new Release(projectRepresentation.getName(), new UUID("release0"));
 
 			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectRepresentation, projectScope,

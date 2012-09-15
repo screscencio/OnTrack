@@ -4,11 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareProgressActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -20,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
@@ -28,7 +27,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
 	@Before
 	public void setUp() {
-		scope = new Scope("scope description");
+		scope = ScopeTestUtils.createScope("scope description");
 		context = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
 	}
 
@@ -39,16 +38,16 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetProgressToAScope() throws UnableToCompleteActionException {
-		new ScopeDeclareProgressAction(scope.getId(), "Not started").execute(context, Mockito.mock(ActionContext.class));
+		new ScopeDeclareProgressAction(scope.getId(), "Not started").execute(context, actionContext);
 
 		assertEquals(ProgressState.NOT_STARTED.getDescription(), scope.getProgress().getDescription());
 	}
 
 	@Test
 	public void shouldResetProgressOfScope() throws UnableToCompleteActionException {
-		scope.getProgress().setDescription("Under work");
+		ScopeTestUtils.setProgress(scope, "Under work");
 
-		new ScopeDeclareProgressAction(scope.getId(), "").execute(context, Mockito.mock(ActionContext.class));
+		new ScopeDeclareProgressAction(scope.getId(), "").execute(context, actionContext);
 
 		assertEquals("", scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.NOT_STARTED);
@@ -56,7 +55,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetProgressOfScopeToUnderWorkIfDescriptionDoesntFitInOthersStatuses() throws UnableToCompleteActionException {
-		new ScopeDeclareProgressAction(scope.getId(), "Anything").execute(context, Mockito.mock(ActionContext.class));
+		new ScopeDeclareProgressAction(scope.getId(), "Anything").execute(context, actionContext);
 
 		assertEquals("Anything", scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.UNDER_WORK);
@@ -64,7 +63,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetProgressOfScopeToUnderWork() throws UnableToCompleteActionException {
-		new ScopeDeclareProgressAction(scope.getId(), "Under work").execute(context, Mockito.mock(ActionContext.class));
+		new ScopeDeclareProgressAction(scope.getId(), "Under work").execute(context, actionContext);
 
 		assertEquals("Under work", scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.UNDER_WORK);
@@ -72,7 +71,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetProgressOfScopeToDone() throws UnableToCompleteActionException {
-		new ScopeDeclareProgressAction(scope.getId(), "Done").execute(context, Mockito.mock(ActionContext.class));
+		new ScopeDeclareProgressAction(scope.getId(), "Done").execute(context, actionContext);
 
 		assertEquals(ProgressState.DONE.getDescription(), scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.DONE);
@@ -83,7 +82,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		final String[] acceptableNotStartedDescriptions = { "NotStarted", "Not Started", "Not started", "not started", "not_started", "Not_Started", "NS",
 				"ns", "N", "n" };
 		for (final String notStartedDespription : acceptableNotStartedDescriptions) {
-			new ScopeDeclareProgressAction(scope.getId(), notStartedDespription).execute(context, Mockito.mock(ActionContext.class));
+			new ScopeDeclareProgressAction(scope.getId(), notStartedDespription).execute(context, actionContext);
 			assertThatProgressIs(ProgressState.NOT_STARTED);
 		}
 	}
@@ -92,7 +91,7 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 	public void shouldSetProgressStatusOfScopeToUnderWorkConsideringVariations() throws UnableToCompleteActionException {
 		final String[] acceptableUnderWorkDescriptions = { "Under work", "Under_work", "under work", "design", "coding", "testing", "acceptance", "anything" };
 		for (final String underWorkDespription : acceptableUnderWorkDescriptions) {
-			new ScopeDeclareProgressAction(scope.getId(), underWorkDespription).execute(context, Mockito.mock(ActionContext.class));
+			new ScopeDeclareProgressAction(scope.getId(), underWorkDespription).execute(context, actionContext);
 			assertThatProgressIs(ProgressState.UNDER_WORK);
 		}
 	}
@@ -101,24 +100,24 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 	public void shouldSetProgressStatusOfScopeToDoneConsideringVariations() throws UnableToCompleteActionException {
 		final String[] acceptableDoneDescriptions = { "Done", "DONE", "done", "DN", "Dn", "dn", "D", "d" };
 		for (final String doneDespription : acceptableDoneDescriptions) {
-			new ScopeDeclareProgressAction(scope.getId(), doneDespription).execute(context, Mockito.mock(ActionContext.class));
+			new ScopeDeclareProgressAction(scope.getId(), doneDespription).execute(context, actionContext);
 			assertThatProgressIs(ProgressState.DONE);
 		}
 	}
 
 	@Test
 	public void shouldRevertChangesAfterARollback() throws UnableToCompleteActionException {
-		scope.getProgress().setDescription("Done");
+		ScopeTestUtils.setProgress(scope, "Done");
 		assertEquals(ProgressState.DONE.getDescription(), scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.DONE);
 
 		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
-		final ModelAction rollbackAction = progressAction.execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = progressAction.execute(context, actionContext);
 
 		assertEquals("Under work", scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.UNDER_WORK);
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(ProgressState.DONE.getDescription(), scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.DONE);
@@ -129,12 +128,12 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		assertThatProgressIs(ProgressState.NOT_STARTED);
 
 		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
-		final ModelAction rollbackAction = progressAction.execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = progressAction.execute(context, actionContext);
 
 		assertEquals("Under work", scope.getProgress().getDescription());
 		assertThatProgressIs(ProgressState.UNDER_WORK);
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertThatProgressIs(ProgressState.NOT_STARTED);
 	}

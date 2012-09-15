@@ -46,7 +46,7 @@ public class ImpedimentSolveActionTest extends ModelActionTest {
 	@Test
 	public void shouldSetTheAnnotationWithSolvedImpedimentStatus() throws Exception {
 		annotation.setType(AnnotationType.OPEN_IMPEDIMENT, user, timestamp);
-		execute();
+		executeAction();
 
 		assertEquals(AnnotationType.SOLVED_IMPEDIMENT, annotation.getType());
 	}
@@ -55,21 +55,21 @@ public class ImpedimentSolveActionTest extends ModelActionTest {
 	public void shouldNotBeAbleToSolveAnAnnotationWithSimpleType() throws Exception {
 		annotation.setType(AnnotationType.SIMPLE, user, new Date());
 
-		execute();
+		executeAction();
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToSolveAnAnnotationAlreadySolved() throws Exception {
 		annotation.setType(AnnotationType.SOLVED_IMPEDIMENT, user, new Date());
 
-		execute();
+		executeAction();
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToSolveImpedimentFromDeprecatedAnnotations() throws Exception {
 		annotation.setDeprecation(DeprecationState.DEPRECATED, user, new Date());
 
-		execute();
+		executeAction();
 	}
 
 	@Override

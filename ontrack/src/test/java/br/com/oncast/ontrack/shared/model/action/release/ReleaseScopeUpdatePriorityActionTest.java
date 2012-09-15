@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 	private ProjectContext context;
@@ -29,10 +30,10 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 
 	@Before
 	public void up() {
-		firstChild = new Scope("firstChild");
-		secondChild = new Scope("secondChild");
-		thirdChild = new Scope("thirdChild");
-		rootScope = new Scope("rootScope");
+		firstChild = ScopeTestUtils.createScope("firstChild");
+		secondChild = ScopeTestUtils.createScope("secondChild");
+		thirdChild = ScopeTestUtils.createScope("thirdChild");
+		rootScope = ScopeTestUtils.createScope("rootScope");
 		rootScope.add(firstChild);
 		rootScope.add(secondChild);
 		rootScope.add(thirdChild);
@@ -90,7 +91,7 @@ public class ReleaseScopeUpdatePriorityActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void decreseScopePriorityOutsideRelease() throws Exception {
-		final Scope scopeOutsideRelease = new Scope("otherScope");
+		final Scope scopeOutsideRelease = ScopeTestUtils.createScope("otherScope");
 		new ReleaseScopeUpdatePriorityAction(release.getId(), scopeOutsideRelease.getId(),
 				release.getScopeIndex(scopeOutsideRelease) + 1).execute(context, Mockito.mock(ActionContext.class));
 	}

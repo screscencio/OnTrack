@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.effort;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class EffortInferenceEngineScopeInfluenceTest {
 
@@ -36,14 +38,14 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(0).getChild(2).getChild(1).getId());
 
 		scope.getChild(0).getChild(2).getEffort().setDeclared(30);
-		assertEquals(expectedInfluencedScopes, new EffortInferenceEngine().process(scope));
+		assertEquals(expectedInfluencedScopes, new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date()));
 	}
 
 	@Test
 	public void shouldReturnAListWithAllInfluencedScopesWhenMovingToLeft() throws UnableToCompleteActionException {
 		final Scope manipulatedScope = scope.getChild(0).getChild(2);
 		manipulatedScope.getEffort().setDeclared(30);
-		new EffortInferenceEngine().process(manipulatedScope.getParent());
+		new EffortInferenceEngine().process(manipulatedScope.getParent(), UserTestUtils.getAdmin(), new Date());
 
 		final ScopeMoveLeftAction moveLeftAction = new ScopeMoveLeftAction(manipulatedScope.getId());
 		moveLeftAction.execute(ProjectTestUtils.createProjectContext(scope, null), Mockito.mock(ActionContext.class));
@@ -51,7 +53,7 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		final Set<UUID> expectedInfluencedScopes = new HashSet<UUID>();
 		expectedInfluencedScopes.add(scope.getChild(0).getId());
 
-		assertEquals(expectedInfluencedScopes, new EffortInferenceEngine().process(scope.getChild(0)));
+		assertEquals(expectedInfluencedScopes, new EffortInferenceEngine().process(scope.getChild(0), UserTestUtils.getAdmin(), new Date()));
 	}
 
 	@Test
@@ -60,7 +62,7 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		influencedScopes.addAll(getAllIdsOf(scope));
 
 		scope.getEffort().setDeclared(100);
-		assertEquals(influencedScopes, new EffortInferenceEngine().process(scope));
+		assertEquals(influencedScopes, new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date()));
 	}
 
 	@Test
@@ -73,10 +75,10 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(0).getChild(3).getId());
 
 		scope.getChild(0).getChild(2).getEffort().setDeclared(30);
-		new EffortInferenceEngine().process(scope.getChild(0));
+		new EffortInferenceEngine().process(scope.getChild(0), UserTestUtils.getAdmin(), new Date());
 
 		scope.getChild(0).getEffort().setDeclared(50);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope);
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
@@ -95,10 +97,10 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(3).getId());
 
 		scope.getChild(0).getEffort().setDeclared(50);
-		new EffortInferenceEngine().process(scope);
+		new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
 
 		scope.getEffort().setDeclared(100);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope);
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
@@ -117,13 +119,13 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(3).getId());
 
 		scope.getChild(0).getChild(2).getEffort().setDeclared(30);
-		new EffortInferenceEngine().process(scope.getChild(0));
+		new EffortInferenceEngine().process(scope.getChild(0), UserTestUtils.getAdmin(), new Date());
 
 		scope.getChild(0).getEffort().setDeclared(50);
-		new EffortInferenceEngine().process(scope);
+		new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
 
 		scope.getEffort().setDeclared(200);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope);
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
@@ -138,10 +140,10 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(2).getChild(1).getChild(1).getId());
 
 		scope.getEffort().setDeclared(100);
-		new EffortInferenceEngine().process(scope);
+		new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
 
 		scope.getChild(2).getChild(1).getChild(0).getEffort().setDeclared(10);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope.getChild(2).getChild(1));
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope.getChild(2).getChild(1), UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}

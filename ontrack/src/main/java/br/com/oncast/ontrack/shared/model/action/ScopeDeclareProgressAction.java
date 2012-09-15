@@ -7,8 +7,6 @@
 
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.Date;
-
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
@@ -36,11 +34,6 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	@Attribute
 	private String newProgressDescription;
 
-	@ConversionAlias("timestamp")
-	@Attribute(required = false)
-	@IgnoredByDeepEquality
-	private Date timestamp;
-
 	@ConversionAlias("subAction")
 	@Element(required = false)
 	@IgnoredByDeepEquality
@@ -66,7 +59,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
 		final ModelAction rollback = processSubActions(context, actionContext, selectedScope);
-		selectedScope.getProgress().setDescription(newProgressDescription, timestamp);
+		selectedScope.getProgress().setDescription(newProgressDescription, ActionHelper.findUserFrom(actionContext, context), actionContext.getTimestamp());
 
 		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollback);
 	}
@@ -103,11 +96,4 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		return false;
 	}
 
-	public void setTimestamp(final Date timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
 }

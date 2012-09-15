@@ -45,7 +45,7 @@ public class ChecklistRemoveItemActionTest extends ModelActionTest {
 	public void shouldRemoveTheChecklistItemFromTheChecklistWithTheGivenId() throws Exception {
 		final ChecklistItem itemMock = mock(ChecklistItem.class);
 		when(checklist.removeItem(itemId)).thenReturn(itemMock);
-		execute();
+		executeAction();
 
 		verify(context).findChecklist(subjectId, checklistId);
 		verify(checklist).removeItem(itemId);
@@ -59,7 +59,7 @@ public class ChecklistRemoveItemActionTest extends ModelActionTest {
 		final ChecklistItem item = ChecklistTestUtils.createItem(itemId, itemDescription, isChecked);
 
 		when(checklist.removeItem(itemId)).thenReturn(item);
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 
 		undoAction.execute(context, actionContext);
 
@@ -75,7 +75,7 @@ public class ChecklistRemoveItemActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveAInexistantItem() throws Exception {
 		when(checklist.removeItem(itemId)).thenReturn(null);
-		execute();
+		executeAction();
 	}
 
 	@Override
