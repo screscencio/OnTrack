@@ -5,7 +5,7 @@
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
-	
+
 	<ui:style src="../../../../style/default.css">
 		
 		.root {
