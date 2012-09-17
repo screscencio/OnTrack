@@ -53,7 +53,13 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		boolean shouldBeInsertedIntoSet = false;
 		final Progress progress = scope.getProgress();
 
-		if (!scope.isLeaf()) {
+		if (scope.isLeaf()) {
+			if (!progress.hasDeclared() && progress.isDone()) {
+				progress.setState(ProgressState.NOT_STARTED, author, timestamp);
+				shouldBeInsertedIntoSet = true;
+			}
+		}
+		else {
 			if (shouldProgressBeMarkedAsUnderWork(scope)) {
 				if (ProgressState.UNDER_WORK != progress.getState()) {
 					progress.setState(ProgressState.UNDER_WORK, author, timestamp);
