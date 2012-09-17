@@ -14,3 +14,4 @@ ontrackExtAcceptance/target/
 .DS_Store
 ontrack/.DS_Store
 .metadata/
+ontrack/hs_err*.log
