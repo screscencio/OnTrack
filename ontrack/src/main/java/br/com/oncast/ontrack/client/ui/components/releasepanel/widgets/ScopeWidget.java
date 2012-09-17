@@ -114,7 +114,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		return true;
 	}
 
-	// TODO+++ centralize progress calculations and removing from here.
+	// TODO +++ add another icon representation when there are Done and NotStarted children only (perhaps percentage).
 	/**
 	 * @return if the progress was updated.
 	 */
@@ -124,22 +124,11 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		if (!description.isEmpty() && description.equals(currentScopeProgress)) return false;
 		currentScopeProgress = description;
 
-		final boolean done = progress.isDone();
-		final boolean notStarted = progress.getState() == ProgressState.NOT_STARTED && scope.getEffort().getAccomplishedEffort() == 0
-				&& !isAnyDescendantUnderWork();
-
-		progressIcon.setStyleName(style.progressIconDone(), done);
-		progressIcon.setStyleName(style.progressIconNotStarted(), notStarted);
-		progressIcon.setStyleName(style.progressIconUnderwork(), progress.getState() == UNDER_WORK || (!done && !notStarted));
+		progressIcon.setStyleName(style.progressIconDone(), progress.getState() == ProgressState.DONE);
+		progressIcon.setStyleName(style.progressIconUnderwork(), progress.getState() == UNDER_WORK);
+		progressIcon.setStyleName(style.progressIconNotStarted(), progress.getState() == ProgressState.NOT_STARTED);
 
 		return true;
-	}
-
-	private boolean isAnyDescendantUnderWork() {
-		for (final Scope descendant : scope.getAllDescendantScopes()) {
-			if (descendant.getProgress().getState() == ProgressState.UNDER_WORK) return true;
-		}
-		return false;
 	}
 
 	public Scope getScope() {

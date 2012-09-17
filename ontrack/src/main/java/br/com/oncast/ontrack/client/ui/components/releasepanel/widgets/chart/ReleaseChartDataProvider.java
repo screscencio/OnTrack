@@ -183,6 +183,7 @@ public class ReleaseChartDataProvider {
 	}
 
 	public WorkingDay getActualEndDay() {
+		if (!release.isDone()) return null;
 		return release.getInferedEndDay();
 	}
 

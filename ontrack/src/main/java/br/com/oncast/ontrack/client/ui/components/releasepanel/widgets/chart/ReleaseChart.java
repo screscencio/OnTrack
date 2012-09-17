@@ -212,14 +212,10 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 		velocity.setRemoveValueAvailable(dataProvider.hasDeclaredEstimatedVelocity());
 
 		final Float actualVelocityValue = dataProvider.getActualVelocity();
-		final boolean hasActualVelociy = actualVelocityValue != null;
-		if (hasActualVelociy) this.actualVelocity.setText(round(actualVelocityValue));
-		this.actualVelocity.setVisible(hasActualVelociy);
+		this.actualVelocity.setText(actualVelocityValue != null ? round(actualVelocityValue) : "-");
 
 		final WorkingDay actualEndDayValue = dataProvider.getActualEndDay();
-		final boolean hasActualEndDay = actualEndDayValue != null;
-		if (hasActualEndDay) this.actualEndDay.setText(HumanDateFormatter.getShortAbsuluteDate(actualEndDayValue.getJavaDate()));
-		this.actualEndDay.setVisible(hasActualEndDay);
+		this.actualEndDay.setText(actualEndDayValue != null ? HumanDateFormatter.getShortAbsuluteDate(actualEndDayValue.getJavaDate()) : "-");
 
 		helpText.setVisible(hasDifferentEstimatives());
 	}

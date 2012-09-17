@@ -53,19 +53,14 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		boolean shouldBeInsertedIntoSet = false;
 		final Progress progress = scope.getProgress();
 
-		if (scope.isLeaf()) {
-			if (!progress.hasDeclared() && progress.isDone()) {
-				progress.setState(ProgressState.NOT_STARTED, author, timestamp);
-				shouldBeInsertedIntoSet = true;
+		if (!scope.isLeaf()) {
+			if (shouldProgressBeMarkedAsUnderWork(scope)) {
+				if (ProgressState.UNDER_WORK != progress.getState()) {
+					progress.setState(ProgressState.UNDER_WORK, author, timestamp);
+					shouldBeInsertedIntoSet = true;
+				}
 			}
-		}
-		else {
-			if (!progress.getDescription().isEmpty() && !progress.hasDeclared()) {
-				progress.setDescription("", author, timestamp);
-				shouldBeInsertedIntoSet = true;
-			}
-
-			if (shouldProgressBeMarketAsCompleted(scope)) {
+			else if (shouldProgressBeMarketAsCompleted(scope)) {
 				if (!progress.isDone()) {
 					progress.setState(ProgressState.DONE, author, timestamp);
 					shouldBeInsertedIntoSet = true;
@@ -89,9 +84,21 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		if (shouldBeInsertedIntoSet) inferenceInfluencedScopeSet.add(scope.getId());
 	}
 
+	private boolean shouldProgressBeMarkedAsUnderWork(final Scope scope) {
+		assert !scope.isLeaf();
+
+		if (scope.getProgress().hasDeclared()) return ProgressState.UNDER_WORK == scope.getProgress().getState();
+
+		for (final Scope child : scope.getChildren())
+			if (ProgressState.UNDER_WORK == child.getProgress().getState()) return true;
+
+		return false;
+	}
+
 	private boolean shouldProgressBeMarketAsCompleted(final Scope scope) {
-		if (scope.isLeaf()) return scope.getProgress().isDone();
-		else if (scope.getProgress().isDone() && scope.getProgress().hasDeclared()) return true;
+		assert !scope.isLeaf();
+
+		if (scope.getProgress().isDone() && scope.getProgress().hasDeclared()) return true;
 
 		for (final Scope child : scope.getChildren())
 			if (!child.getProgress().isDone()) return false;

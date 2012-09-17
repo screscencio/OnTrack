@@ -22,14 +22,18 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.Rel
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
+import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 import com.google.gwt.user.client.rpc.impl.ReflectionHelper;
 import com.ibm.icu.util.Calendar;
@@ -276,6 +280,45 @@ public class ReleaseChartDataProviderTest {
 		estimatedEndDay = WorkingDayFactory.create(2012, 6, 7);
 
 		assertAccomplishedEffortsByDate(0, 3, 3, 4, 6);
+	}
+
+	@Test
+	public void inferenceEngineShouldNotMessWithTheBurnUpDates() throws Exception {
+		final WorkingDay parentCreation = WorkingDayFactory.create(2012, 6, 2);
+		estimatedStartDay = WorkingDayFactory.create(2012, 6, 3);
+
+		final WorkingDay childBAccomplishDay = WorkingDayFactory.create(2012, 6, 5);
+		estimatedEndDay = WorkingDayFactory.create(2012, 6, 6);
+		releaseEffortSum = 10F;
+
+		final Scope parent = ScopeTestUtils.createScope(parentCreation);
+		ScopeTestUtils.setDelcaredEffort(parent, releaseEffortSum);
+
+		final Scope childB = ScopeTestUtils.createScope(parentCreation);
+		parent.add(childB);
+		processInference(parent, parentCreation);
+
+		final Scope childA = ScopeTestUtils.createScope(estimatedStartDay);
+		parent.add(childA);
+		processInference(parent, estimatedStartDay);
+
+		ScopeTestUtils.setProgress(childA, ProgressState.UNDER_WORK, estimatedStartDay);
+		processInference(parent, estimatedStartDay);
+
+		ScopeTestUtils.setProgress(childB, ProgressState.DONE, childBAccomplishDay);
+		processInference(parent, childBAccomplishDay);
+
+		ScopeTestUtils.setProgress(childA, ProgressState.DONE, estimatedEndDay);
+		processInference(parent, estimatedEndDay);
+
+		releaseScopes.add(parent);
+		assertAccomplishedEffortsByDate(0, 0, 5, 10);
+	}
+
+	private void processInference(final Scope scope, final WorkingDay day) {
+		final User admin = UserTestUtils.getAdmin();
+		new ProgressInferenceEngine().process(scope, admin, day.getJavaDate());
+		new EffortInferenceEngine().process(scope, admin, day.getJavaDate());
 	}
 
 	private void setReleaseDuration(final int nDays) {
