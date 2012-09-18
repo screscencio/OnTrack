@@ -1,7 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
+	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 
 	<ui:image field="logo" src="logo.png"/>
 	<ui:image field="backBtnImg" src="go_back_arrow.png"/>
@@ -62,13 +65,21 @@
 		    <div class="{style.backButtonContainer}">
     			<g:Image ui:field="backButton" resource="{backBtnImg}" styleName="{style.backButton}"/>
 		    </div>
-			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItem}" text="Project" biggerFont="true"/>
+			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItem}" text="Project" biggerFont="true">
+				<ui:attribute name="text" description="project menu item text" />
+			</aw:ApplicationMenuItem>
 			<g:HTMLPanel ui:field="itemContainer" styleName="{style.menuItemContainer}">
-    			<aw:ApplicationMenuItem ui:field="releaseMenuItem2" styleName="{style.menuItem}" text="Release" biggerFont="true"/>
+    			<aw:ApplicationMenuItem ui:field="releaseMenuItem2" styleName="{style.menuItem}" text="Release" biggerFont="true">
+    				<ui:attribute name="text" description="release menu item text" />
+    			</aw:ApplicationMenuItem>
 			</g:HTMLPanel>
 			<g:Image resource="{logo}" styleName="{style.logo}"/>
-			<aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="User" />
-			<aw:ApplicationMenuItem ui:field="memberMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="Members" />
+			<aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="User">
+				<ui:attribute name="text" description="user menu item text" />
+			</aw:ApplicationMenuItem>
+			<aw:ApplicationMenuItem ui:field="memberMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="Members">
+				<ui:attribute name="text" description="members menu item text" />
+			</aw:ApplicationMenuItem>
 		</g:HTMLPanel>
 		<g:SimplePanel styleName="{style.border1} {style.borderDecoration}"/>
 		<g:SimplePanel styleName="{style.border2} {style.borderDecoration}"/>
