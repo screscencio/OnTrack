@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -13,6 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +28,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -37,6 +40,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.utils.actions.ModelActionEntityFieldAnnotationsTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 import com.google.gwt.dev.util.collect.HashSet;
 
@@ -49,11 +53,16 @@ public abstract class ModelActionTest {
 	protected ActionContext actionContext;
 
 	@Before
-	public void initContextMocks() {
+	public void initContextMocks() throws Exception {
 		MockitoAnnotations.initMocks(this);
+
+		final String userEmail = DefaultAuthenticationCredentials.USER_EMAIL;
+		when(actionContext.getUserEmail()).thenReturn(userEmail);
+		when(context.findUser(userEmail)).thenReturn(UserTestUtils.getAdmin());
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
 	}
 
-	protected ModelAction execute() throws UnableToCompleteActionException {
+	protected ModelAction executeAction() throws UnableToCompleteActionException {
 		return getNewInstance().execute(context, actionContext);
 	}
 

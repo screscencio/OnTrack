@@ -5,6 +5,7 @@
 /ontrack/war/WEB-INF/deploy/
 /ontrack/war/WEB-INF/classes/
 /ontrack/target/
+/ontrack/extras/
 /tools/bin/
 /tools/*.mm
 /tools/work/
@@ -13,3 +14,4 @@ ontrackExtAcceptance/target/
 .DS_Store
 ontrack/.DS_Store
 .metadata/
+ontrack/hs_err*.log

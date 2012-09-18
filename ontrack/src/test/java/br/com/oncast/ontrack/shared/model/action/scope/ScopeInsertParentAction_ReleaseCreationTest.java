@@ -3,13 +3,19 @@ package br.com.oncast.ontrack.shared.model.action.scope;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
@@ -31,8 +37,15 @@ public class ScopeInsertParentAction_ReleaseCreationTest {
 	private Scope rootScope;
 	private Release rootRelease;
 
+	@Mock
+	private ActionContext actionContext;
+
 	@Before
 	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
 		rootScope = ScopeTestUtils.getScope();
 		rootRelease = ReleaseTestUtils.getRelease();
 		context = ProjectTestUtils.createProjectContext(rootScope, rootRelease);
@@ -41,7 +54,7 @@ public class ScopeInsertParentAction_ReleaseCreationTest {
 	@Test
 	public void shouldBindScopeToRelease() throws UnableToCompleteActionException {
 		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + "R1").execute(context, Mockito.mock(ActionContext.class));
+		new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + "R1").execute(context, actionContext);
 
 		assertTrue(rootRelease.getChild(0).getScopeList().contains(rootScope.getChild(2)));
 	}
@@ -52,7 +65,7 @@ public class ScopeInsertParentAction_ReleaseCreationTest {
 		assertThatReleaseIsNotInContext(releaseDescription);
 
 		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context, Mockito.mock(ActionContext.class));
+		new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context, actionContext);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
@@ -64,7 +77,7 @@ public class ScopeInsertParentAction_ReleaseCreationTest {
 		assertThatReleaseIsInContext(release.getDescription());
 
 		final Scope scope = rootScope.getChild(2);
-		new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + release.getDescription()).execute(context, Mockito.mock(ActionContext.class));
+		new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + release.getDescription()).execute(context, actionContext);
 
 		final Release loadedRelease = assertThatReleaseIsInContext(release.getDescription());
 		assertTrue(loadedRelease.getScopeList().contains(rootScope.getChild(2)));
@@ -78,12 +91,12 @@ public class ScopeInsertParentAction_ReleaseCreationTest {
 
 		final Scope scope = rootScope.getChild(2);
 		final ModelAction rollbackAction = new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context,
-				Mockito.mock(ActionContext.class));
+				actionContext);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 		assertThatReleaseIsNotInContext(releaseDescription);
 	}
 
@@ -94,12 +107,12 @@ public class ScopeInsertParentAction_ReleaseCreationTest {
 
 		final Scope scope = rootScope.getChild(2);
 		final ModelAction rollbackAction = new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription).execute(context,
-				Mockito.mock(ActionContext.class));
+				actionContext);
 
 		final Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertThatReleaseIsInContext(releaseDescription);
 	}
@@ -113,16 +126,16 @@ public class ScopeInsertParentAction_ReleaseCreationTest {
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
 		actionExecutionManager.doUserAction(new ScopeInsertParentAction(scope.getId(), SCOPE_DESCRIPTION + releaseDescription), context,
-				Mockito.mock(ActionContext.class));
+				actionContext);
 
 		Release newRelease = assertThatReleaseIsInContext(releaseDescription);
 		assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
 
 		for (int i = 0; i < 20; i++) {
-			actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.undoUserAction(context, actionContext);
 			assertThatReleaseIsNotInContext(releaseDescription);
 
-			actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.redoUserAction(context, actionContext);
 			newRelease = assertThatReleaseIsInContext(releaseDescription);
 			assertTrue(newRelease.getScopeList().contains(rootScope.getChild(2)));
 		}

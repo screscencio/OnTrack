@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.exportImport.freemind;
 
 import java.io.File;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,6 +10,7 @@ import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 
 // TODO Review by Lobo - This code has been created by Rodrigo Machado and Jaime and has not yet been reviewed.
 public class FreeMindImporter {
@@ -25,7 +27,7 @@ public class FreeMindImporter {
 	}
 
 	public Scope getScope() {
-		final ScopeBuilder builder = ScopeBuilder.scope();
+		final ScopeBuilder builder = ScopeBuilder.scope(new User(), new Date());
 		pullSync(builder, mindMap.root());
 
 		return builder.getScope();
@@ -39,7 +41,7 @@ public class FreeMindImporter {
 			if (extractValue(scope, childNode)) continue;
 			if (extractProgress(scope, childNode)) continue;
 
-			final ScopeBuilder childScope = ScopeBuilder.scope();
+			final ScopeBuilder childScope = ScopeBuilder.scope(new User(), new Date());
 			pullSync(childScope, childNode);
 			scope.add(childScope);
 		}
@@ -47,7 +49,7 @@ public class FreeMindImporter {
 
 	private static boolean extractProgress(final ScopeBuilder scope, final MindNode childNode) {
 		if (childNode.hasIcon(Icon.HOURGLASS)) {
-			scope.declaredProgress(extractDeclaredProgress(childNode));
+			scope.declaredProgress(extractDeclaredProgress(childNode), new User(), new Date());
 			return true;
 		}
 		return false;

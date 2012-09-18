@@ -67,11 +67,15 @@
 					<chart:ReleaseChartEditableDateLabel ui:field="endDate" text="End:"/>
 					<g:SimplePanel styleName="{style.separator}"/>
 					
-					<chart:ReleaseChartEditableLabel ui:field="velocity" text="Estimated Velocity:"/>
+					<chart:ReleaseChartEditableLabel ui:field="velocity" text="Velocity:"/>
 					<g:SimplePanel styleName="{style.separator}"/>
 					
-					<g:Label text="Current Velocity:" styleName="{style.parameterLabel}"/>
-					<g:Label ui:field="currentVelocity" styleName="{style.parameterLabel}"/>
+					<g:Label text="Actual End:" styleName="{style.parameterLabel}"/>
+					<g:Label ui:field="actualEndDay"/>
+					<g:SimplePanel styleName="{style.separator}"/>
+					
+					<g:Label text="Actual Velocity:" styleName="{style.parameterLabel}"/>
+					<g:Label ui:field="actualVelocity" />
 					<g:Label text="ep/day" styleName="{style.unitLabel}"/>
 				</g:HorizontalPanel>
 				<g:Label ui:field="helpText" text="OnTrack has different estimatives. Click 'Infered Ideal Line' to compare" styleName="{style.helpText}"/>

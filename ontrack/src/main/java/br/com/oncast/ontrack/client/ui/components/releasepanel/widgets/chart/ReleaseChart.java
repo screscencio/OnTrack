@@ -34,6 +34,7 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -110,7 +111,10 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 	protected ReleaseChartEditableLabel velocity;
 
 	@UiField
-	protected Label currentVelocity;
+	protected Label actualVelocity;
+
+	@UiField
+	protected Label actualEndDay;
 
 	@UiField
 	protected Label helpText;
@@ -207,7 +211,11 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 		velocity.setValue(dataProvider.getEstimatedVelocity(), false);
 		velocity.setRemoveValueAvailable(dataProvider.hasDeclaredEstimatedVelocity());
 
-		this.currentVelocity.setText(round(dataProvider.getCurrentVelocity()));
+		final Float actualVelocityValue = dataProvider.getActualVelocity();
+		this.actualVelocity.setText(actualVelocityValue != null ? round(actualVelocityValue) : "-");
+
+		final WorkingDay actualEndDayValue = dataProvider.getActualEndDay();
+		this.actualEndDay.setText(actualEndDayValue != null ? HumanDateFormatter.getShortAbsuluteDate(actualEndDayValue.getJavaDate()) : "-");
 
 		helpText.setVisible(hasDifferentEstimatives());
 	}
@@ -461,7 +469,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 	private ActionExecutionListener getActionExecutionListener() {
 		return actionExecutionListener == null ? actionExecutionListener = new ActionExecutionListener() {
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof ReleaseDeclareStartDayAction ||
 						action instanceof ReleaseDeclareEndDayAction ||

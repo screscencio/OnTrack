@@ -4,13 +4,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
@@ -28,8 +34,15 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 	private ProjectContext context;
 	private Release release;
 
+	@Mock
+	private ActionContext actionContext;
+
 	@Before
 	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
 		rootScope = ScopeTestUtils.getScope();
 		final Release rootRelease = ReleaseTestUtils.getRelease();
 		release = rootRelease.getChildren().get(0);
@@ -42,7 +55,7 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 		release.addScope(removedScope);
 		removedScope.setRelease(release);
 
-		new ScopeRemoveAction(removedScope.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ScopeRemoveAction(removedScope.getId()).execute(context, actionContext);
 
 		assertNull(removedScope.getRelease());
 		assertFalse(release.getScopeList().contains(removedScope));
@@ -53,11 +66,11 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 		final Scope removedScope = rootScope.getChild(1);
 		addScopeToRelease(removedScope, release);
 
-		final ScopeRemoveRollbackAction rollbackAction = new ScopeRemoveAction(removedScope.getId()).execute(context, Mockito.mock(ActionContext.class));
+		final ScopeRemoveRollbackAction rollbackAction = new ScopeRemoveAction(removedScope.getId()).execute(context, actionContext);
 		assertNull(removedScope.getRelease());
 		assertFalse(release.getScopeList().contains(removedScope));
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 		assertEquals(release, rootScope.getChild(1).getRelease());
 		assertTrue(release.getScopeList().contains(rootScope.getChild(1)));
 	}
@@ -72,7 +85,7 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 		addScopeToRelease(removedScope2, release);
 		addScopeToRelease(removedScope3, release);
 
-		new ScopeRemoveAction(removedScope.getId()).execute(context, Mockito.mock(ActionContext.class));
+		new ScopeRemoveAction(removedScope.getId()).execute(context, actionContext);
 		assertNull(removedScope1.getRelease());
 		assertFalse(release.getScopeList().contains(removedScope1));
 
@@ -93,7 +106,7 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 		addScopeToRelease(removedScope2, release);
 		addScopeToRelease(removedScope3, release);
 
-		final ScopeRemoveRollbackAction rollbackAction = new ScopeRemoveAction(removedScope.getId()).execute(context, Mockito.mock(ActionContext.class));
+		final ScopeRemoveRollbackAction rollbackAction = new ScopeRemoveAction(removedScope.getId()).execute(context, actionContext);
 		assertNull(removedScope1.getRelease());
 		assertFalse(release.getScopeList().contains(removedScope1));
 		assertNull(removedScope2.getRelease());
@@ -101,7 +114,7 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 		assertNull(removedScope3.getRelease());
 		assertFalse(release.getScopeList().contains(removedScope3));
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(release, rootScope.getChild(0).getChild(0).getChild(0).getRelease());
 		assertTrue(release.getScopeList().contains(removedScope1));
@@ -122,7 +135,7 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 		addScopeToRelease(removedScope3, release);
 
 		final ActionExecutionManager actionExecutionManager = new ActionExecutionManager(Mockito.mock(ActionExecutionListener.class));
-		actionExecutionManager.doUserAction(new ScopeRemoveAction(removedScope.getId()), context, Mockito.mock(ActionContext.class));
+		actionExecutionManager.doUserAction(new ScopeRemoveAction(removedScope.getId()), context, actionContext);
 
 		for (int i = 0; i < 20; i++) {
 			assertNull(removedScope1.getRelease());
@@ -132,7 +145,7 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 			assertNull(removedScope3.getRelease());
 			assertFalse(release.getScopeList().contains(removedScope3));
 
-			actionExecutionManager.undoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.undoUserAction(context, actionContext);
 
 			removedScope1 = rootScope.getChild(0).getChild(0).getChild(0);
 			removedScope2 = rootScope.getChild(0).getChild(0).getChild(1);
@@ -145,7 +158,7 @@ public class ScopeRemoveAction_ReleaseUnbindingTest {
 			assertEquals(release, removedScope3.getRelease());
 			assertTrue(release.getScopeList().contains(removedScope3));
 
-			actionExecutionManager.redoUserAction(context, Mockito.mock(ActionContext.class));
+			actionExecutionManager.redoUserAction(context, actionContext);
 
 			assertNull(removedScope1.getRelease());
 			assertFalse(release.getScopeList().contains(removedScope1));

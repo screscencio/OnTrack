@@ -71,14 +71,14 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	@Test
 	public void shouldAssociateTheAnnotationWithTheAnnotatedObjectsUUID() throws Exception {
 		subjectId = new UUID();
-		execute();
+		executeAction();
 
 		verify(context).addAnnotation(Mockito.eq(subjectId), Mockito.any(Annotation.class));
 	}
 
 	@Test
 	public void shouldAssociateTheAnnotationWithTheUser() throws Exception {
-		execute();
+		executeAction();
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
 		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
@@ -89,12 +89,12 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenTheSpecifiedUserDoesNotExist() throws Exception {
 		when(context.findUser(author.getEmail())).thenThrow(new UserNotFoundException(""));
-		execute();
+		executeAction();
 	}
 
 	@Test
 	public void shouldHaveTheMessage() throws Exception {
-		execute();
+		executeAction();
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
 		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
@@ -104,7 +104,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldRemoveTheCreatedAnnotationOnUndo() throws Exception {
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
 		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());
@@ -125,7 +125,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	@Test
 	public void shouldHaveTheAttachmentFileWhenPresent() throws Exception {
 		when(context.findFileRepresentation(attachmentFile.getId())).thenReturn(attachmentFile);
-		execute();
+		executeAction();
 
 		final ArgumentCaptor<Annotation> captor = ArgumentCaptor.forClass(Annotation.class);
 		verify(context).addAnnotation(Mockito.any(UUID.class), captor.capture());

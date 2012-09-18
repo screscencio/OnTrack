@@ -9,18 +9,6 @@
 		</layout>
 	</appender>
 
-	<!-- Application Related Log -->
-	<logger name="br.com.oncast.ontrack">
-		<level value="DEBUG" />
-		<appender-ref ref="consoleAppender" />
-	</logger>
-
-	<!-- Application Related Log -->
-	<logger name="br.com.oncast.ontrack.server.services.log.RequestLogger">
-		<level value="DEBUG" />
-		<appender-ref ref="consoleAppender" />
-	</logger>
-
 	<!-- GwtTest Related Log -->
 	<logger name="com.octo.gwt.test.internal">
 		<level value="ERROR" />
@@ -58,7 +46,6 @@
 	</logger>
 
 	<root>
-		<!-- <level value="DEBUG" /> -->
 		<priority value="DEBUG" />
 		<appender-ref ref="consoleAppender" />
 	</root>

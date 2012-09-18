@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityComparator;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 import com.googlecode.gwt.test.GwtTest;
 
@@ -60,26 +61,26 @@ public class InsertFatherTest extends GwtTest {
 	}
 
 	private Scope getScope() {
-		rootScope = new Scope("Project");
-		firstScope = new Scope("1");
+		rootScope = ScopeTestUtils.createScope("Project");
+		firstScope = ScopeTestUtils.createScope("1");
 		rootScope.add(firstScope);
-		rootScope.add(new Scope("2"));
+		rootScope.add(ScopeTestUtils.createScope("2"));
 
 		return rootScope;
 	}
 
 	private ProjectContext getModifiedContext() {
-		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope(newScopeDescription).add(new Scope("1")));
-		projectScope.add(new Scope("2"));
+		final Scope projectScope = ScopeTestUtils.createScope("Project");
+		projectScope.add(ScopeTestUtils.createScope(newScopeDescription).add(ScopeTestUtils.createScope("1")));
+		projectScope.add(ScopeTestUtils.createScope("2"));
 
 		return ProjectTestUtils.createProjectContext(projectScope, null);
 	}
 
 	private ProjectContext getUnmodifiedContext() {
-		final Scope unmodifiedScope = new Scope("Project");
-		unmodifiedScope.add(new Scope("1"));
-		unmodifiedScope.add(new Scope("2"));
+		final Scope unmodifiedScope = ScopeTestUtils.createScope("Project");
+		unmodifiedScope.add(ScopeTestUtils.createScope("1"));
+		unmodifiedScope.add(ScopeTestUtils.createScope("2"));
 
 		return ProjectTestUtils.createProjectContext(unmodifiedScope, null);
 	}

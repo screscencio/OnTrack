@@ -41,26 +41,26 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldRemoveTheAnnotationWithTheGivenId() throws Exception {
-		execute();
+		executeAction();
 		verify(context).removeAnnotation(Mockito.any(UUID.class), Mockito.eq(annotation));
 	}
 
 	@Test
 	public void shouldRemoveTheAnnotationOfTheGivenAnnotatedObjectId() throws Exception {
-		execute();
+		executeAction();
 		verify(context).removeAnnotation(Mockito.eq(subjectId), Mockito.any(Annotation.class));
 	}
 
 	@Test
 	public void shouldRecreateTheSameAnnotationOnUndo() throws Exception {
-		execute().execute(context, Mockito.mock(ActionContext.class));
+		executeAction().execute(context, Mockito.mock(ActionContext.class));
 		verify(context).addAnnotation(subjectId, annotation);
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveAnnotationsCreatedByOtherUser() throws Exception {
 		when(actionContext.getUserEmail()).thenReturn("Another user's e-mail");
-		execute();
+		executeAction();
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 
 		when(context.findAnnotationsFor(annotation.getId())).thenReturn(subAnnotationsList);
 
-		execute();
+		executeAction();
 		for (final Annotation subAnnotation : subAnnotationsList) {
 			verify(context).removeAnnotation(annotation.getId(), subAnnotation);
 		}
@@ -81,7 +81,7 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 
 		when(context.findAnnotationsFor(annotation.getId())).thenReturn(subAnnotationsList);
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 
 		undoAction.execute(context, actionContext);
 		for (final Annotation subAnnotation : subAnnotationsList) {
@@ -93,7 +93,7 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 	public void undoShouldRestoreTheFileRepresentationOfTheAttachment() throws Exception {
 		final FileRepresentation fileRepresentation = FileRepresentationTestUtils.create();
 		annotation.setAttachmentFile(fileRepresentation);
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 
 		when(context.findFileRepresentation(fileRepresentation.getId())).thenReturn(fileRepresentation);
 		undoAction.execute(context, actionContext);

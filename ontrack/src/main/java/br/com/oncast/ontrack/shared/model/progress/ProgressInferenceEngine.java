@@ -6,6 +6,7 @@
 
 package br.com.oncast.ontrack.shared.model.progress;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO Possible optimization may be necessary as this algorithm does not make use of "damage-control", because the damage control implementation we had would
@@ -27,9 +29,9 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 	}
 
 	@Override
-	public Set<UUID> process(final Scope scope) {
+	public Set<UUID> process(final Scope scope, final User author, final Date timestamp) {
 		final HashSet<UUID> inferenceInfluencedScopeSet = new HashSet<UUID>();
-		processBottomUp(getRoot(scope), inferenceInfluencedScopeSet);
+		processBottomUp(getRoot(scope), inferenceInfluencedScopeSet, author, timestamp);
 
 		return inferenceInfluencedScopeSet;
 	}
@@ -40,38 +42,39 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		return scope;
 	}
 
-	private void processBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
+	private void processBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet, final User author, final Date timestamp) {
 		for (final Scope child : scope.getChildren())
-			processBottomUp(child, inferenceInfluencedScopeSet);
+			processBottomUp(child, inferenceInfluencedScopeSet, author, timestamp);
 
-		calculateBottomUp(scope, inferenceInfluencedScopeSet);
+		calculateBottomUp(scope, inferenceInfluencedScopeSet, author, timestamp);
 	}
 
-	private void calculateBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet) {
+	private void calculateBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet, final User author, final Date timestamp) {
 		boolean shouldBeInsertedIntoSet = false;
 		final Progress progress = scope.getProgress();
 
 		if (scope.isLeaf()) {
 			if (!progress.hasDeclared() && progress.isDone()) {
-				progress.setState(ProgressState.NOT_STARTED);
+				progress.setState(ProgressState.NOT_STARTED, author, timestamp);
 				shouldBeInsertedIntoSet = true;
 			}
 		}
 		else {
-			if (!progress.getDescription().isEmpty() && !progress.hasDeclared()) {
-				progress.setDescription("");
-				shouldBeInsertedIntoSet = true;
-			}
-
 			if (shouldProgressBeMarketAsCompleted(scope)) {
 				if (!progress.isDone()) {
-					progress.setState(ProgressState.DONE);
+					progress.setState(ProgressState.DONE, author, timestamp);
+					shouldBeInsertedIntoSet = true;
+				}
+			}
+			else if (shouldProgressBeMarkedAsUnderWork(scope)) {
+				if (!progress.isUnderWork()) {
+					progress.setState(ProgressState.UNDER_WORK, author, timestamp);
 					shouldBeInsertedIntoSet = true;
 				}
 			}
 			else {
 				if (!progress.hasDeclared() && progress.isDone()) {
-					progress.setState(ProgressState.NOT_STARTED);
+					progress.setState(ProgressState.NOT_STARTED, author, timestamp);
 					shouldBeInsertedIntoSet = true;
 				}
 			}
@@ -87,14 +90,28 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		if (shouldBeInsertedIntoSet) inferenceInfluencedScopeSet.add(scope.getId());
 	}
 
+	private boolean shouldProgressBeMarkedAsUnderWork(final Scope scope) {
+		assert !scope.isLeaf();
+
+		for (final Scope child : scope.getChildren())
+			if (child.getProgress().isUnderWork()) return true;
+
+		return false;
+	}
+
 	private boolean shouldProgressBeMarketAsCompleted(final Scope scope) {
-		if (scope.isLeaf()) return scope.getProgress().isDone();
-		else if (scope.getProgress().isDone() && scope.getProgress().hasDeclared()) return true;
+		assert !scope.isLeaf();
+
+		if (hasDeclaredState(scope, ProgressState.DONE)) return true;
 
 		for (final Scope child : scope.getChildren())
 			if (!child.getProgress().isDone()) return false;
 
 		return true;
+	}
+
+	private boolean hasDeclaredState(final Scope scope, final ProgressState state) {
+		return scope.getProgress().hasDeclared() && state.matches(scope.getProgress().getDeclaredDescription());
 	}
 
 	private float calculateAccomplishedEffort(final Scope scope) {
@@ -105,4 +122,5 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 
 		return doneSum;
 	}
+
 }

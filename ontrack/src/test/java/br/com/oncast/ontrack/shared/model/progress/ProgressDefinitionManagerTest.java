@@ -49,7 +49,7 @@ public class ProgressDefinitionManagerTest {
 		final String userDefinedProgress = "in design";
 
 		final Scope scope = ScopeTestUtils.getScope();
-		scope.getChild(0).getProgress().setDescription(userDefinedProgress);
+		ScopeTestUtils.setProgress(scope, userDefinedProgress);
 
 		progressDefinitionManager.populate();
 

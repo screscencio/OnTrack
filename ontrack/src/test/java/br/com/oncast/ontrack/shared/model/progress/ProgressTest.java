@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
-import java.lang.reflect.Field;
 import java.util.Date;
 
 import org.junit.Before;
@@ -15,6 +14,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ProgressTest {
 
@@ -22,21 +22,25 @@ public class ProgressTest {
 
 	@Before
 	public void setUp() {
-		progress = new Progress();
+		progress = ProgressTestUtils.create();
 	}
 
 	@Test
 	public void shouldSetStartDateOfProgressWhenUnderWorkIsSet() {
 		assertNull(progress.getStartDay());
-		progress.setState(ProgressState.UNDER_WORK);
+		setState(ProgressState.UNDER_WORK);
 
 		assertEquals(WorkingDayFactory.create(), progress.getStartDay());
+	}
+
+	private void setState(final ProgressState state) {
+		progress.setState(state, UserTestUtils.getAdmin(), new Date());
 	}
 
 	@Test
 	public void shouldSetStartDateOfProgressWhenDoneIsSet() {
 		assertNull(progress.getStartDay());
-		progress.setState(ProgressState.DONE);
+		setState(ProgressState.DONE);
 
 		assertEquals(WorkingDayFactory.create(), progress.getStartDay());
 	}
@@ -44,13 +48,13 @@ public class ProgressTest {
 	@Test
 	public void shouldNotChangeStartDateOfProgressIfItIsAlreadySet() {
 		assertNull(progress.getStartDay());
-		progress.setState(ProgressState.UNDER_WORK);
+		setState(ProgressState.UNDER_WORK);
 
 		final WorkingDay startDate = progress.getStartDay();
 		assertNotNull(startDate);
 
 		for (final ProgressState newState : ProgressState.values()) {
-			progress.setState(newState);
+			setState(newState);
 			assertEquals(startDate, progress.getStartDay());
 		}
 	}
@@ -58,7 +62,7 @@ public class ProgressTest {
 	@Test
 	public void shouldSetEndDateOfProgressWhenDoneIsSet() {
 		assertNull(progress.getEndDay());
-		progress.setState(ProgressState.DONE);
+		setState(ProgressState.DONE);
 
 		assertEquals(WorkingDayFactory.create(), progress.getEndDay());
 	}
@@ -67,11 +71,11 @@ public class ProgressTest {
 	public void shouldSetEndDateOfProgressEvenIfDoneIsAlreadySet() throws InterruptedException {
 		assertNull(progress.getEndDay());
 
-		progress.setState(ProgressState.DONE);
+		setState(ProgressState.DONE);
 		final WorkingDay endDate = progress.getEndDay();
 		assertNotNull(endDate);
 
-		progress.setState(ProgressState.DONE);
+		setState(ProgressState.DONE);
 		assertFalse(endDate == progress.getEndDay());
 	}
 
@@ -79,21 +83,21 @@ public class ProgressTest {
 	public void shouldResetEndDateOfProgressWhenStateChangesToNotStartedOrUnderWork() {
 		assertNull(progress.getEndDay());
 
-		progress.setState(ProgressState.DONE);
+		setState(ProgressState.DONE);
 		assertNotNull(progress.getEndDay());
 
 		for (final ProgressState newState : ProgressState.values()) {
 			if (newState != ProgressState.DONE) {
-				progress.setState(newState);
+				setState(newState);
 				assertNull(progress.getEndDay());
-				progress.setState(ProgressState.DONE);
+				setState(ProgressState.DONE);
 			}
 		}
 	}
 
 	@Test
 	public void getStartDayShouldReturnACopyOfStartDay() throws Exception {
-		progress.setState(ProgressState.DONE);
+		setState(ProgressState.DONE);
 		final WorkingDay startDay = progress.getStartDay();
 		assertNotSame(startDay, progress.getStartDay());
 
@@ -103,7 +107,7 @@ public class ProgressTest {
 
 	@Test
 	public void getEndDayShouldReturnACopyOfEndDay() throws Exception {
-		progress.setState(ProgressState.DONE);
+		setState(ProgressState.DONE);
 		final WorkingDay endDay = progress.getEndDay();
 		assertNotSame(endDay, progress.getEndDay());
 
@@ -111,29 +115,4 @@ public class ProgressTest {
 		assertFalse(endDay.equals(progress.getEndDay()));
 	}
 
-	@Test
-	public void shouldUseTheLastUpdateTimestampToSetTheStartDay() throws Exception {
-		final Date timestamp = new Date(12345);
-		setLastUpdateTimstamp(timestamp);
-		progress.setState(ProgressState.UNDER_WORK);
-
-		final WorkingDay expectedStartDay = WorkingDayFactory.create(timestamp);
-		assertEquals(expectedStartDay, progress.getStartDay());
-	}
-
-	@Test
-	public void shouldUseTheLastUpdateTimestampToSetTheEndDay() throws Exception {
-		final Date timestamp = new Date(12345);
-		setLastUpdateTimstamp(timestamp);
-		progress.setState(ProgressState.DONE);
-
-		final WorkingDay expectedEndDay = WorkingDayFactory.create(timestamp);
-		assertEquals(expectedEndDay, progress.getEndDay());
-	}
-
-	private void setLastUpdateTimstamp(final Date timestamp) throws Exception {
-		final Field field = progress.getClass().getDeclaredField("lastUpdateTimestamp");
-		field.setAccessible(true);
-		field.set(progress, timestamp);
-	}
 }

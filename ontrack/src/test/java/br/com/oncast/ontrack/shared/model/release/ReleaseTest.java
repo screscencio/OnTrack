@@ -6,15 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release.Condition;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -219,7 +216,7 @@ public class ReleaseTest {
 		final Release release = ReleaseTestUtils.getEmptyRelease();
 		final int nScopes = 3;
 		for (int i = 0; i < nScopes; i++) {
-			release.addScope(new Scope("scope"));
+			release.addScope(ScopeTestUtils.createScope("scope"));
 		}
 		assertEquals(nScopes, release.getAllScopesIncludingDescendantReleases().size());
 	}
@@ -237,7 +234,7 @@ public class ReleaseTest {
 		final List<Scope> scopeList = release.getScopeList();
 
 		for (int i = 0; i < scopeList.size(); i++) {
-			setScopeToUnderWorkInDay(scopeList.get(i), WorkingDayFactory.create().add(i));
+			setStartDayOnScope(scopeList.get(i), WorkingDayFactory.create().add(i));
 		}
 
 		assertReleaseStartDateIsEqualsScopeStartDateOnIndex(release, 0);
@@ -250,7 +247,7 @@ public class ReleaseTest {
 
 		final int lastElementIndex = getLastIndex(scopeList);
 		for (int i = lastElementIndex; i >= 0; i--) {
-			setScopeToUnderWorkInDay(scopeList.get(i), WorkingDayFactory.create().add(lastElementIndex - i));
+			setStartDayOnScope(scopeList.get(i), WorkingDayFactory.create().add(lastElementIndex - i));
 		}
 		assertReleaseStartDateIsEqualsScopeStartDateOnIndex(release, 2);
 	}
@@ -260,9 +257,9 @@ public class ReleaseTest {
 		final Release release = ReleaseTestUtils.getReleaseWithScopes();
 
 		final Scope earliestScope = release.getChild(1).getScopeList().get(2);
-		setScopeToUnderWorkInDay(earliestScope, WorkingDayFactory.create(2011, Calendar.OCTOBER, 3));
-		setScopeToUnderWorkInDay(release.getChild(0).getScopeList().get(0), WorkingDayFactory.create(2011, Calendar.OCTOBER, 7));
-		setScopeToUnderWorkInDay(release.getChild(2).getScopeList().get(1), WorkingDayFactory.create(2011, Calendar.OCTOBER, 6));
+		setStartDayOnScope(earliestScope, WorkingDayFactory.create(2011, Calendar.OCTOBER, 3));
+		setStartDayOnScope(release.getChild(0).getScopeList().get(0), WorkingDayFactory.create(2011, Calendar.OCTOBER, 7));
+		setStartDayOnScope(release.getChild(2).getScopeList().get(1), WorkingDayFactory.create(2011, Calendar.OCTOBER, 6));
 
 		assertEquals(earliestScope.getProgress().getStartDay(), release.getStartDay());
 	}
@@ -284,7 +281,7 @@ public class ReleaseTest {
 		final List<Scope> scopeList = release.getScopeList();
 
 		for (int i = 0; i < scopeList.size(); i++) {
-			setScopeToDoneInDay(scopeList.get(i), WorkingDayFactory.create().add(i));
+			setEndDayOnScope(scopeList.get(i), WorkingDayFactory.create().add(i));
 		}
 		assertReleaseEndDateIsEqualsScopeStartDateOnIndex(release, getLastIndex(scopeList));
 	}
@@ -296,7 +293,7 @@ public class ReleaseTest {
 
 		final int lastIndex = getLastIndex(scopeList);
 		for (int i = lastIndex; i >= 0; i--) {
-			setScopeToDoneInDay(scopeList.get(i), WorkingDayFactory.create().add(lastIndex - i));
+			setEndDayOnScope(scopeList.get(i), WorkingDayFactory.create().add(lastIndex - i));
 		}
 		assertReleaseEndDateIsEqualsScopeStartDateOnIndex(release, 0);
 	}
@@ -305,16 +302,16 @@ public class ReleaseTest {
 	public void endDateShouldBeTheScopesLatestEndDateRegardingChildReleases() throws Exception {
 		final Release release = ReleaseTestUtils.getReleaseWithScopes();
 
-		setScopeToDoneInDay(release.getChild(1).getScopeList().get(2), WorkingDayFactory.create(2011, Calendar.OCTOBER, 3));
-		setScopeToDoneInDay(release.getChild(0).getScopeList().get(0), WorkingDayFactory.create(2011, Calendar.OCTOBER, 7));
+		setEndDayOnScope(release.getChild(1).getScopeList().get(2), WorkingDayFactory.create(2011, Calendar.OCTOBER, 3));
+		setEndDayOnScope(release.getChild(0).getScopeList().get(0), WorkingDayFactory.create(2011, Calendar.OCTOBER, 7));
 
 		final List<Scope> scopeList = release.getScopeList();
 		for (final Scope scope : scopeList) {
-			setScopeToDoneInDay(scope, WorkingDayFactory.create(2011, Calendar.OCTOBER, 10));
+			setEndDayOnScope(scope, WorkingDayFactory.create(2011, Calendar.OCTOBER, 10));
 		}
 
 		final Scope latestScope = release.getChild(2).getScopeList().get(1);
-		setScopeToDoneInDay(latestScope, WorkingDayFactory.create(2011, Calendar.OCTOBER, 12));
+		setEndDayOnScope(latestScope, WorkingDayFactory.create(2011, Calendar.OCTOBER, 12));
 
 		assertEquals(latestScope.getProgress().getEndDay(), release.getEndDay());
 	}
@@ -535,14 +532,12 @@ public class ReleaseTest {
 		assertTrue(release.hasDeclaredEstimatedVelocity());
 	}
 
-	private void setScopeToUnderWorkInDay(final Scope scope, final WorkingDay day) throws Exception {
-		ScopeTestUtils.setProgress(scope, ProgressState.UNDER_WORK);
-		setWorkingDayToField(scope, "startDate", day);
+	private void setStartDayOnScope(final Scope scope, final WorkingDay day) throws Exception {
+		ScopeTestUtils.setStartDate(scope, day);
 	}
 
-	private void setScopeToDoneInDay(final Scope scope, final WorkingDay day) throws Exception {
-		ScopeTestUtils.setProgress(scope, ProgressState.DONE);
-		setWorkingDayToField(scope, "endDate", day);
+	private void setEndDayOnScope(final Scope scope, final WorkingDay day) throws Exception {
+		ScopeTestUtils.setEndDate(scope, day);
 	}
 
 	private void assertReleaseStartDateIsEqualsScopeStartDateOnIndex(final Release release, final int index) {
@@ -572,9 +567,4 @@ public class ReleaseTest {
 		return scopeList.size() - 1;
 	}
 
-	private void setWorkingDayToField(final Scope scope, final String fieldName, final WorkingDay date) throws Exception {
-		final Field startDateField = Progress.class.getDeclaredField(fieldName);
-		startDateField.setAccessible(true);
-		startDateField.set(scope.getProgress(), date.copy());
-	}
 }

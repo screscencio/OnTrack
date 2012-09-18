@@ -2,13 +2,17 @@ package br.com.oncast.ontrack.shared.model.effort;
 
 import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getModifiedScope;
 import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getOriginalScope;
+import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.Stack;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
@@ -31,8 +35,15 @@ public class EffortInferenceEngineFlow6Test {
 	private final Stack<ModelAction> rollbackActions = new Stack<ModelAction>();
 	private final Stack<ModelAction> redoActions = new Stack<ModelAction>();
 
+	@Mock
+	private ActionContext actionContext;
+
 	@Before
-	public void setUp() throws UnableToCompleteActionException, ScopeNotFoundException {
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
 		original = getOriginalScope(FILE_NAME_PREFIX);
 		projectContext = ProjectTestUtils.createProjectContext(original, ReleaseFactoryTestUtil.create("proj"));
 		DeepEqualityTestUtils.setRequiredFloatingPointPrecision(0.1);
@@ -85,7 +96,7 @@ public class EffortInferenceEngineFlow6Test {
 
 	private ModelAction executeAction(final ModelAction action) throws UnableToCompleteActionException, ScopeNotFoundException {
 		final Scope effortInferenceBaseScopeForTestingPurposes = ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(projectContext, action);
-		final ModelAction rollbackAction = action.execute(projectContext, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = action.execute(projectContext, actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(effortInferenceBaseScopeForTestingPurposes);
 		return rollbackAction;
 	}

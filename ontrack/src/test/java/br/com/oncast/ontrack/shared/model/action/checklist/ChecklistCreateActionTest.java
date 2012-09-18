@@ -34,19 +34,19 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldAddChecklistIntoContext() throws Exception {
-		execute();
+		executeAction();
 		verify(context).addChecklist(Mockito.any(UUID.class), Mockito.any(Checklist.class));
 	}
 
 	@Test
 	public void shouldAddChecklistToTheGivenSubjectId() throws Exception {
-		execute();
+		executeAction();
 		verify(context).addChecklist(Mockito.eq(subjectId), Mockito.any(Checklist.class));
 	}
 
 	@Test
 	public void shouldAddChecklistWithTheGivenTitle() throws Exception {
-		execute();
+		executeAction();
 		final ArgumentCaptor<Checklist> captor = ArgumentCaptor.forClass(Checklist.class);
 		verify(context).addChecklist(Mockito.any(UUID.class), captor.capture());
 		assertEquals(checklistTitle, captor.getValue().getTitle());
@@ -54,7 +54,7 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void createdChecklistShouldHaveAUuid() throws Exception {
-		execute();
+		executeAction();
 		final ArgumentCaptor<Checklist> captor = ArgumentCaptor.forClass(Checklist.class);
 		verify(context).addChecklist(Mockito.any(UUID.class), captor.capture());
 		assertNotNull(captor.getValue().getId());
@@ -83,7 +83,7 @@ public class ChecklistCreateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldRemoveTheCreatedChecklistOnUndo() throws Exception {
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		final ArgumentCaptor<Checklist> captor = ArgumentCaptor.forClass(Checklist.class);
 		verify(context).addChecklist(Mockito.eq(subjectId), captor.capture());
 		final Checklist addedChecklist = captor.getValue();

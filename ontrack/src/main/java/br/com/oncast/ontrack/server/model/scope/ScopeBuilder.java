@@ -1,18 +1,23 @@
 package br.com.oncast.ontrack.server.model.scope;
 
+import java.util.Date;
+
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 
 public class ScopeBuilder {
-	private final Scope scope = new Scope("");
+	private final Scope scope;
 
-	private ScopeBuilder() {}
-
-	public static ScopeBuilder scope(final String description) {
-		return new ScopeBuilder().description(description);
+	private ScopeBuilder(final User author, final Date timestamp) {
+		scope = new Scope("", author, timestamp);
 	}
 
-	public static ScopeBuilder scope() {
-		return new ScopeBuilder();
+	public static ScopeBuilder scope(final User author, final Date timestamp) {
+		return new ScopeBuilder(author, timestamp);
+	}
+
+	public static ScopeBuilder scope(final String description, final User author, final Date timestamp) {
+		return scope(author, timestamp).description(description);
 	}
 
 	public ScopeBuilder add(final Scope child) {
@@ -70,8 +75,8 @@ public class ScopeBuilder {
 		return this;
 	}
 
-	public ScopeBuilder declaredProgress(final String value) {
-		scope.getProgress().setDescription(value);
+	public ScopeBuilder declaredProgress(final String value, final User author, final Date timestamp) {
+		scope.getProgress().setDescription(value, author, timestamp);
 		return this;
 	}
 

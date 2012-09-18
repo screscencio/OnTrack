@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.server.business;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
@@ -28,9 +27,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.business.actionPostProcessments.ScopeDeclareProgressPostProcessor;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
@@ -59,14 +59,13 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectExcep
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
@@ -86,36 +85,52 @@ import br.com.oncast.ontrack.utils.mocks.requests.ModelActionSyncTestUtils;
 public class BusinessLogicTest {
 
 	private static final UUID PROJECT_ID = new UUID();
+
+	@Mock
+	private PersistenceService persistence;
+
+	@Mock
+	private ClientManager clientManager;
+
+	@Mock
+	private AuthenticationManager authenticationManager;
+
+	@Mock
+	private AuthorizationManager authorizationManager;
+
+	@Mock
+	private NotificationService notification;
+
+	@Mock
+	private SessionManager sessionManager;
+
+	@Mock
+	private ActionContext actionContext;
+
 	private EntityManager entityManager;
 	private ProjectRepresentation projectRepresentation;
-
 	private BusinessLogic business;
-	private PersistenceService persistence;
-	private ClientManager clientManager;
-	private AuthenticationManager authenticationManager;
-	private AuthorizationManager authorizationManager;
-	private NotificationService notification;
-	private SessionManager sessionManager;
 	private User authenticatedUser;
 	private User admin;
 
+	private Project project;
+
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 		projectRepresentation = assureProjectRepresentationExistance(PROJECT_ID);
+		project = ProjectTestUtils.createProject();
 
 		configureMockDefaultBehavior();
 	}
 
 	private void configureMockDefaultBehavior() throws Exception {
-		authenticationManager = mock(AuthenticationManager.class);
-		authorizationManager = mock(AuthorizationManager.class);
-		persistence = mock(PersistenceService.class);
-		clientManager = mock(ClientManager.class);
-		notification = mock(NotificationService.class);
-		sessionManager = mock(SessionManager.class);
-
-		admin = UserTestUtils.createUser(DefaultAuthenticationCredentials.USER_EMAIL);
+		admin = UserTestUtils.getAdmin();
 		authenticatedUser = UserTestUtils.createUser(100);
 		configureToRetrieveAdmin();
 		authenticateAndAuthorizeUser(authenticatedUser, PROJECT_ID);
@@ -132,16 +147,18 @@ public class BusinessLogicTest {
 		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
 		when(persistence.retrieveUserByEmail(user.getEmail())).thenReturn(user);
 		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
+		project.addUser(user);
 	}
 
 	private void configureToRetrieveSnapshot(final UUID projectId) throws Exception {
 		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
 		when(persistence.retrieveProjectSnapshot(projectId)).thenReturn(snapshot);
-		when(snapshot.getProject()).thenReturn(ProjectTestUtils.createProject());
+		when(snapshot.getProject()).thenReturn(project);
 	}
 
 	@After
 	public void tearDown() {
+		entityManager.clear();
 		entityManager.close();
 	}
 
@@ -175,16 +192,22 @@ public class BusinessLogicTest {
 	public void shouldConstructAScopeHierarchyFromActions() throws Exception {
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project = ProjectTestUtils.createProject();
-		final ProjectContext context = new ProjectContext(project);
+		final ProjectContext context = createContext(project);
 
-		for (final ModelAction action : ActionTestUtils.createSomeActions()) {
-			ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action);
+		final List<ModelAction> createSomeActions = createSomeActionsWithRequiredUsers();
+		for (final ModelAction action : createSomeActions) {
+			ActionExecuter.executeAction(context, actionContext, action);
 		}
 
-		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(ActionTestUtils.createSomeActions()));
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(createSomeActions));
 		final Scope projectScope = loadProject().getProjectScope();
 
 		DeepEqualityTestUtils.assertObjectEquality(project.getProjectScope(), projectScope);
+	}
+
+	private ProjectContext createContext(final Project project) {
+		final ProjectContext context = new ProjectContext(project);
+		return context;
 	}
 
 	/**
@@ -195,12 +218,13 @@ public class BusinessLogicTest {
 	public void shouldPersistActionsAndTheirRollbacks() throws Exception {
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project = ProjectTestUtils.createProject();
-		final ProjectContext context = new ProjectContext(project);
+		final ProjectContext context = createContext(project);
 
 		final List<ModelAction> rollbackActions = new ArrayList<ModelAction>();
-		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
+		final List<ModelAction> actions = createSomeActionsWithRequiredUsers();
 		for (final ModelAction action : actions) {
-			rollbackActions.add(ActionExecuter.executeAction(context, Mockito.mock(ActionContext.class), action).getReverseAction());
+			final ModelAction reverseAction = ActionExecuter.executeAction(context, actionContext, action).getReverseAction();
+			if (reverseAction != null) rollbackActions.add(reverseAction);
 		}
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actions));
@@ -209,15 +233,23 @@ public class BusinessLogicTest {
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(rollbackActions));
 	}
 
+	private List<ModelAction> createSomeActionsWithRequiredUsers() {
+		final List<ModelAction> actions = ActionTestUtils.createSomeActions(UserTestUtils.getAdmin(), authenticatedUser);
+		return actions;
+	}
+
 	@Test
 	public void loadProjectShouldGetEarliestSnapshotAndExecuteOnePendentAction() throws Exception {
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
 		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
-		action.execute(new ProjectContext(project1), Mockito.mock(ActionContext.class));
+		final ProjectContext context = new ProjectContext(project1);
+		context.addUser(admin);
+		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+		actionList.add(new TeamInviteAction(admin));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -233,13 +265,15 @@ public class BusinessLogicTest {
 
 		final ModelAction action1 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
-		action1.execute(context, Mockito.mock(ActionContext.class));
+		context.addUser(admin);
+		action1.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+		actionList.add(new TeamInviteAction(admin));
 		actionList.add(action1);
 
 		final ModelAction action2 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "small sister");
-		action2.execute(context, Mockito.mock(ActionContext.class));
+		action2.execute(context, actionContext);
 		actionList.add(action2);
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
@@ -254,12 +288,12 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
-		final ProjectContext context = new ProjectContext(project1);
+		final ProjectContext context = createContext(project1);
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.addAll(ActionTestUtils.createSomeActions());
+		actionList.addAll(createSomeActionsWithRequiredUsers());
 
 		for (final ModelAction action : actionList)
-			action.execute(context, Mockito.mock(ActionContext.class));
+			action.execute(context, actionContext);
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -273,7 +307,7 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
 		final Project project1 = loadProject();
 
-		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.createSomeActions());
+		final List<ModelAction> actionList = executeActionsToProject(project1, createSomeActionsWithRequiredUsers());
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
 		final Project project2 = loadProject();
@@ -297,9 +331,12 @@ public class BusinessLogicTest {
 		final Project project1 = loadProject();
 
 		final ScopeInsertChildAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
-		action.execute(new ProjectContext(project1), Mockito.mock(ActionContext.class));
+		final ProjectContext context = new ProjectContext(project1);
+		context.addUser(admin);
+		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
+		actionList.add(new TeamInviteAction(admin.getEmail()));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -315,14 +352,16 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestUtils.createWithJpaPersistence();
 
 		final Project project1 = loadProject();
-		final List<ModelAction> actionList = executeActionsToProject(project1, ActionTestUtils.createSomeActions());
+		final List<ModelAction> actionList = executeActionsToProject(project1, createSomeActionsWithRequiredUsers());
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
 		final UUID OTHER_PROJECT_ID = new UUID();
 		final ProjectRepresentation projectRepresentation2 = assureProjectRepresentationExistance(OTHER_PROJECT_ID);
 
 		final Project project2 = loadProject(OTHER_PROJECT_ID);
-		final List<ModelAction> actionList2 = executeActionsToProject(project2, ActionTestUtils.getActions2());
+		final List<ModelAction> actions2 = ActionTestUtils.getActions2();
+		actions2.add(0, new TeamInviteAction(admin.getEmail()));
+		final List<ModelAction> actionList2 = executeActionsToProject(project2, actions2);
 		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectRepresentation2, actionList2));
 
 		final Project loadedProject1 = loadProject();
@@ -368,27 +407,6 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	public void scopeDeclareProgressActionShouldHaveItsTimestampResetedByTheServer() throws Exception {
-		final ActionPostProcessingService postProcessingService = new ActionPostProcessingService();
-		postProcessingService.registerPostProcessor(new ScopeDeclareProgressPostProcessor(), ScopeDeclareProgressAction.class);
-		business = BusinessLogicTestUtils.createWithJpaPersistence();
-		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-
-		final Project project1 = loadProject();
-
-		final ScopeDeclareProgressAction action = new ScopeDeclareProgressAction(project1.getProjectScope().getId(),
-				Progress.ProgressState.DONE.getDescription());
-		final Date givenTimestamp = new Date();
-		action.setTimestamp(givenTimestamp);
-
-		Thread.sleep(5);
-		actionList.add(action);
-		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
-
-		assertFalse(givenTimestamp.equals(action.getTimestamp()));
-	}
-
-	@Test
 	public void handleIncomingActionsShouldPostProcessActions() throws Exception {
 		final ActionPostProcessingService postProcessingService = new ActionPostProcessingService();
 		@SuppressWarnings("unchecked") final ActionPostProcessor<ScopeMoveLeftAction> postProcessor = mock(ActionPostProcessor.class);
@@ -396,7 +414,7 @@ public class BusinessLogicTest {
 
 		business = BusinessLogicTestUtils.create(authenticationManager, authorizationManager, postProcessingService);
 
-		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
+		final List<ModelAction> actions = createSomeActionsWithRequiredUsers();
 		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
 
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
@@ -525,7 +543,7 @@ public class BusinessLogicTest {
 	public void actionsShouldBeBoundToAuthenticatedUser() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 
-		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
+		final List<ModelAction> actions = createSomeActionsWithRequiredUsers();
 		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
@@ -536,12 +554,14 @@ public class BusinessLogicTest {
 	public void actionsShouldBeBoundToAuthenticatedUser2() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 
-		final List<ModelAction> actions = ActionTestUtils.createSomeActions();
+		Mockito.reset(authenticationManager);
+
+		final long userId = 123;
+		final User createdUser = UserTestUtils.createUser(userId);
+		final List<ModelAction> actions = ActionTestUtils.createSomeActions(UserTestUtils.getAdmin(), createdUser);
 		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);
 
-		Mockito.reset(authenticationManager);
-		final long userId = 123;
-		authenticateAndAuthorizeUser(UserTestUtils.createUser(userId), PROJECT_ID);
+		authenticateAndAuthorizeUser(createdUser, PROJECT_ID);
 
 		business.handleIncomingActionSyncRequest(actionSyncRequest);
 
@@ -579,12 +599,12 @@ public class BusinessLogicTest {
 	}
 
 	private List<ModelAction> executeActionsToProject(final Project project, final List<ModelAction> actions) throws UnableToCompleteActionException {
-		final ProjectContext context = new ProjectContext(project);
+		final ProjectContext context = createContext(project);
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
 
 		for (final ModelAction action : actions) {
 			actionList.add(action);
-			action.execute(context, Mockito.mock(ActionContext.class));
+			action.execute(context, actionContext);
 		}
 		return actionList;
 	}

@@ -1,8 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout">
-
+	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 
 	<ui:style src="../../style/default.css">
 		.contentPanel {
@@ -27,20 +29,26 @@
 	<layout:ApplicationWidgetContainer debugId="loginPlace">
 		<g:FormPanel ui:field="form" action="fakeAction" method="post">
 			<g:HTMLPanel styleName="{style.contentPanel}">
-				<g:Label text="Username" ui:field="emailLabel" styleName="{style.descriptionLabel}" />
+				<g:Label ui:field="emailLabel" styleName="{style.descriptionLabel}">
+					<ui:msg description="username label">Username</ui:msg>
+				</g:Label>
 				<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea">
 					<g:TextBox name="email"/>
 				</layout:ValidationInputContainer>
 				
 				<div class="{style.separator}" />
 				
-				<g:Label text="Password" ui:field="passwordLabel" styleName="{style.descriptionLabel}" />
+				<g:Label ui:field="passwordLabel" styleName="{style.descriptionLabel}">
+					<ui:msg description="password label">Password</ui:msg>
+				</g:Label>
 				<layout:ValidationInputContainer debugId="passwordInput" ui:field="passwordArea">
 					<g:PasswordTextBox name="password"/>
 				</layout:ValidationInputContainer>
 				
 				<div class="{style.separator}" />
-				<g:SubmitButton debugId="submitButton" text="LOGIN" ui:field="loginButton" styleName="{style.menuboxButton}" />
+				<g:SubmitButton debugId="submitButton" ui:field="loginButton" styleName="{style.menuboxButton}">
+					<ui:msg description="login submit button label">LOGIN</ui:msg>
+				</g:SubmitButton>
 			</g:HTMLPanel>
 		</g:FormPanel>
 	</layout:ApplicationWidgetContainer>

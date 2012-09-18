@@ -395,7 +395,6 @@ public class UserActionTestUtils {
 
 	public static UserAction createScopeDeclareProgressAction() throws Exception {
 		final ScopeDeclareProgressAction scopeDeclareProgressAction = new ScopeDeclareProgressAction(new UUID(), "text");
-		scopeDeclareProgressAction.setTimestamp(new Date());
 		return createUserAction(scopeDeclareProgressAction);
 	}
 

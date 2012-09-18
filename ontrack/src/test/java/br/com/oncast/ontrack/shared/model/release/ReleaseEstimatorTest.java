@@ -2,12 +2,9 @@ package br.com.oncast.ontrack.shared.model.release;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Field;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
@@ -146,7 +143,7 @@ public class ReleaseEstimatorTest {
 	}
 
 	private Scope createDoneScopeWithEffort(final int effort) {
-		final Scope scope = new Scope("Scope" + effort);
+		final Scope scope = ScopeTestUtils.createScope("Scope" + effort);
 		ScopeTestUtils.setProgress(scope, ProgressState.DONE);
 		ScopeTestUtils.setDelcaredEffort(scope, effort);
 
@@ -154,18 +151,12 @@ public class ReleaseEstimatorTest {
 	}
 
 	private Scope createDoneScopeWithEffortAndDaysSpent(final float effort, final WorkingDay date, final int daysSpent) throws Exception {
-		final Scope scope = new Scope("Scope" + effort);
-		ScopeTestUtils.setProgress(scope, ProgressState.DONE);
+		final Scope scope = ScopeTestUtils.createScope("Scope" + effort);
 		ScopeTestUtils.setDelcaredEffort(scope, effort);
 
-		final Field startDateField = Progress.class.getDeclaredField("startDate");
-		startDateField.setAccessible(true);
-		startDateField.set(scope.getProgress(), date.copy());
+		ScopeTestUtils.setStartDate(scope, date);
 
-		final Field endDateField = Progress.class.getDeclaredField("endDate");
-		endDateField.setAccessible(true);
-		endDateField.set(scope.getProgress(), date.copy().add(daysSpent - 1));
-
+		ScopeTestUtils.setEndDate(scope, date.copy().add(daysSpent - 1));
 		return scope;
 	}
 

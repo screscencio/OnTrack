@@ -43,27 +43,27 @@ public class ChecklistEditItemDescriptionActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetTheNewDescriptionToTheGivenChecklistItem() throws Exception {
-		execute();
+		executeAction();
 		assertEquals(newDescription, item.getDescription());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToEditAnItemFromAnInexistentChecklist() throws Exception {
 		when(context.findChecklist(subjectId, checklistId)).thenThrow(new ChecklistNotFoundException(""));
-		execute();
+		executeAction();
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToEditAnInexistentItemFromAnExistentChecklist() throws Exception {
 		checklist.removeItem(itemId);
-		execute();
+		executeAction();
 	}
 
 	@Test
 	public void undoShouldReturnTheChecklistItemsDescriptionToThePreviousDescription() throws Exception {
 		final String previousDescription = item.getDescription();
 
-		execute().execute(context, actionContext);
+		executeAction().execute(context, actionContext);
 
 		assertEquals(previousDescription, item.getDescription());
 	}

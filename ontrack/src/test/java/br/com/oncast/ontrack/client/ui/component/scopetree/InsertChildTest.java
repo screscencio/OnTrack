@@ -19,6 +19,8 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityComparator;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 import com.googlecode.gwt.test.GwtTest;
 
@@ -56,41 +58,42 @@ public class InsertChildTest extends GwtTest {
 
 		newScopeDescription = "description for new scope";
 		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
+		projectContext.addUser(UserTestUtils.getAdmin());
 
 		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 
-	private Scope getScope() {
-		rootScope = new Scope("Project");
-		firstScope = new Scope("1");
+	private Scope getScope() throws Exception {
+		rootScope = ScopeTestUtils.createScope("Project");
+		firstScope = ScopeTestUtils.createScope("1");
 		rootScope.add(firstScope);
-		rootScope.add(new Scope("2"));
+		rootScope.add(ScopeTestUtils.createScope("2"));
 
 		return rootScope;
 	}
 
 	private ProjectContext getModifiedContext() {
-		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("1").add(new Scope(newScopeDescription)));
-		projectScope.add(new Scope("2"));
+		final Scope projectScope = ScopeTestUtils.createScope("Project");
+		projectScope.add(ScopeTestUtils.createScope("1").add(ScopeTestUtils.createScope(newScopeDescription)));
+		projectScope.add(ScopeTestUtils.createScope("2"));
 
 		return ProjectTestUtils.createProjectContext(projectScope, null);
 	}
 
 	private ProjectContext getModifiedContextForRootChild() {
-		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("1"));
-		projectScope.add(new Scope("2"));
-		projectScope.add(new Scope(newScopeDescription));
+		final Scope projectScope = ScopeTestUtils.createScope("Project");
+		projectScope.add(ScopeTestUtils.createScope("1"));
+		projectScope.add(ScopeTestUtils.createScope("2"));
+		projectScope.add(ScopeTestUtils.createScope(newScopeDescription));
 
 		return ProjectTestUtils.createProjectContext(projectScope, null);
 	}
 
 	private ProjectContext getUnmodifiedContext() {
-		final Scope unmodifiedScope = new Scope("Project");
-		unmodifiedScope.add(new Scope("1"));
-		unmodifiedScope.add(new Scope("2"));
+		final Scope unmodifiedScope = ScopeTestUtils.createScope("Project");
+		unmodifiedScope.add(ScopeTestUtils.createScope("1"));
+		unmodifiedScope.add(ScopeTestUtils.createScope("2"));
 
 		return ProjectTestUtils.createProjectContext(unmodifiedScope, null);
 	}

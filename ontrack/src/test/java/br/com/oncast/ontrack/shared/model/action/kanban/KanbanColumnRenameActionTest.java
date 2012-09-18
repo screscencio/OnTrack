@@ -87,17 +87,17 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		when(context.findScope(scope.getId())).thenReturn(scope);
 
 		final Scope scope2 = ScopeTestUtils.createScope();
-		scope2.getProgress().setDescription("other");
+		ScopeTestUtils.setProgress(scope2, "other");
 		release.addScope(scope2);
 		when(context.findScope(scope2.getId())).thenReturn(scope2);
 
 		final Scope scope3 = ScopeTestUtils.createScope();
-		scope3.getProgress().setDescription(columnDescription);
+		ScopeTestUtils.setProgress(scope3, columnDescription);
 		release.addScope(scope3);
 		when(context.findScope(scope3.getId())).thenReturn(scope3);
 
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), columnDescription, newDescription);
-		action.execute(context, Mockito.mock(ActionContext.class));
+		action.execute(context, actionContext);
 
 		assertEquals(ProgressState.NOT_STARTED.getDescription(), scope.getProgress().getDescription());
 		assertEquals("other", scope2.getProgress().getDescription());
@@ -107,7 +107,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 	@Test
 	public void kanbanShouldBeLockedAfterExecution() throws Exception {
 		final KanbanColumnRenameAction action = new KanbanColumnRenameAction(release.getId(), "B", "new B");
-		action.execute(context, Mockito.mock(ActionContext.class));
+		action.execute(context, actionContext);
 
 		verify(kanban).setLocked(true);
 	}
@@ -118,7 +118,7 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		final String columnDescription = "B";
 
 		final Scope scope = ScopeTestUtils.createScope();
-		scope.getProgress().setDescription(columnDescription);
+		ScopeTestUtils.setProgress(scope, columnDescription);
 		release.addScope(scope);
 		when(context.findScope(scope.getId())).thenReturn(scope);
 
@@ -127,12 +127,12 @@ public class KanbanColumnRenameActionTest extends ModelActionTest {
 		int times = 0;
 		for (int i = 0; i < 10; i++) {
 			if (i % 2 == 0) {
-				currentAction = currentAction.execute(context, Mockito.mock(ActionContext.class));
+				currentAction = currentAction.execute(context, actionContext);
 				verify(kanban, times(++times)).renameColumn(columnDescription, newDescription);
 				assertEquals(newDescription, scope.getProgress().getDescription());
 			}
 			else {
-				currentAction = currentAction.execute(context, Mockito.mock(ActionContext.class));
+				currentAction = currentAction.execute(context, actionContext);
 				verify(kanban, times(times)).renameColumn(newDescription, columnDescription);
 				assertEquals(columnDescription, scope.getProgress().getDescription());
 			}

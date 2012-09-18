@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class EffortInferenceEngine implements InferenceOverScopeEngine {
@@ -18,7 +20,7 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 	}
 
 	@Override
-	public Set<UUID> process(final Scope scope) {
+	public Set<UUID> process(final Scope scope, final User user, final Date timestamp) {
 		final Set<UUID> inferenceInfluencedScopeSet = new HashSet<UUID>();
 
 		preProcessBottomUp(scope, 2, inferenceInfluencedScopeSet);

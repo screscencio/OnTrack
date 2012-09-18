@@ -43,7 +43,7 @@ public class ChecklistUncheckItemActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldUncheckTheGivenChecklistItem() throws Exception {
-		execute();
+		executeAction();
 
 		verify(context).findChecklist(subjectId, checklistId);
 		verify(checklist).getItem(itemId);
@@ -52,7 +52,7 @@ public class ChecklistUncheckItemActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldReCheckTheGivenItemOnUndo() throws Exception {
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		verify(item).setChecked(false);
 
 		undoAction.execute(context, actionContext);
@@ -63,7 +63,7 @@ public class ChecklistUncheckItemActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToUncheckAnInexistantItem() throws Exception {
 		when(checklist.getItem(itemId)).thenReturn(null);
-		execute();
+		executeAction();
 	}
 
 	@Override

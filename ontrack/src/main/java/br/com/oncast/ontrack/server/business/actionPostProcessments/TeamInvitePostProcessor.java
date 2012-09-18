@@ -26,7 +26,7 @@ public class TeamInvitePostProcessor implements ActionPostProcessor<TeamInviteAc
 	public void process(final TeamInviteAction action, final ActionContext actionContext, final ProjectContext projectContext)
 			throws UnableToPostProcessActionException {
 		LOGGER.debug("Executing Post processor '" + this.getClass().getSimpleName() + "' for '" + action.getClass().getSimpleName() + "' (" + action.toString()
-				+ ").");
+				+ "). " + action.getReferenceId().toStringRepresentation());
 		final ModelActionSyncEvent syncEvent = new ModelActionSyncEvent(projectContext.getProjectRepresentation().getId(),
 				Arrays.asList(new ModelAction[] { action }), actionContext);
 		notificationService.notifyActionToCurrentUser(syncEvent);

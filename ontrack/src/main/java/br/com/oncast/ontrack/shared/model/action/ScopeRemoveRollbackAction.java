@@ -60,7 +60,7 @@ public class ScopeRemoveRollbackAction implements ScopeInsertAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope parent = ActionHelper.findScope(parentScopeId, context);
-		final Scope newScope = new Scope(description, referenceId);
+		final Scope newScope = new Scope(description, referenceId, ActionHelper.findUserFrom(actionContext, context), actionContext.getTimestamp());
 
 		parent.add(index, newScope);
 

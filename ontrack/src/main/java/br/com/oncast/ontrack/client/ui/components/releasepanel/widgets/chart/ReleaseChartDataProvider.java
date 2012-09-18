@@ -92,11 +92,11 @@ public class ReleaseChartDataProvider {
 		return release.hasDeclaredEstimatedVelocity();
 	}
 
-	public Float getCurrentVelocity() {
+	public Float getActualVelocity() {
 		final WorkingDay currentDay = WorkingDay.getEarliest(release.getEndDay(), WorkingDayFactory.create());
 		final WorkingDay startDay = release.getStartDay();
 
-		if (currentDay.isBefore(startDay)) return 0f;
+		if (currentDay.isBefore(startDay)) return null;
 
 		return getAccomplishedEffortFor(currentDay) / startDay.countTo(currentDay);
 	}
@@ -172,14 +172,19 @@ public class ReleaseChartDataProvider {
 
 	private float getAccomplishedPointsSum(final List<Scope> scopes, final WorkingDay day, final PointsProvider provider) {
 		float effort = 0;
-		for (final Scope child : scopes) {
-			effort += getAccomplishedPoints(child, day, provider);
+		for (final Scope s : scopes) {
+			effort += getAccomplishedPoints(s, day, provider);
 		}
 		return effort;
 	}
 
 	private interface PointsProvider {
 		float getPointsFrom(final Scope scope);
+	}
+
+	public WorkingDay getActualEndDay() {
+		if (!release.isDone()) return null;
+		return release.getInferedEndDay();
 	}
 
 }

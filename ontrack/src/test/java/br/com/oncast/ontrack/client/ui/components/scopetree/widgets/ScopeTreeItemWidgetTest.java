@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.Random;
 
 import org.junit.AfterClass;
@@ -17,6 +18,8 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 import com.google.gwt.user.client.ui.Label;
 import com.googlecode.gwt.test.GwtTest;
@@ -50,11 +53,11 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 
 	@Before
 	public void setUp() {
-		parent = new Scope("parent");
-		childA = new Scope("child A");
-		grandChildA1 = new Scope("grand child A1");
-		grandChildA2 = new Scope("grand child A2");
-		childB = new Scope("child B");
+		parent = ScopeTestUtils.createScope("parent");
+		childA = ScopeTestUtils.createScope("child A");
+		grandChildA1 = ScopeTestUtils.createScope("grand child A1");
+		grandChildA2 = ScopeTestUtils.createScope("grand child A2");
+		childB = ScopeTestUtils.createScope("child B");
 
 		parent.add(childA);
 		childA.add(grandChildA1);
@@ -241,7 +244,7 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 	}
 
 	private void updateEfforts() {
-		EFFORT_INFERENCE_ENGINE.process(parent);
+		EFFORT_INFERENCE_ENGINE.process(parent, UserTestUtils.getAdmin(), new Date());
 	}
 
 	private void assertNotDefinedDeclaredEffortLabel(final ScopeTreeItemWidget widget) {

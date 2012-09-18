@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.mocks.EffortDeepEqualityComparator;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 import com.googlecode.gwt.test.GwtTest;
 
@@ -56,30 +57,30 @@ public class MoveLeftTest extends GwtTest {
 	}
 
 	private Scope getScope() {
-		rootScope = new Scope("Project");
-		firstScope = new Scope("1");
+		rootScope = ScopeTestUtils.createScope("Project");
+		firstScope = ScopeTestUtils.createScope("1");
 		rootScope.add(firstScope);
-		childScope = new Scope("1.1");
+		childScope = ScopeTestUtils.createScope("1.1");
 		firstScope.add(childScope);
-		firstScope.add(new Scope("1.2"));
-		rootScope.add(new Scope("2"));
+		firstScope.add(ScopeTestUtils.createScope("1.2"));
+		rootScope.add(ScopeTestUtils.createScope("2"));
 
 		return rootScope;
 	}
 
 	private ProjectContext getModifiedContext() {
-		final Scope projectScope = new Scope("Project");
-		projectScope.add(new Scope("1").add(new Scope("1.2")));
-		projectScope.add(new Scope("1.1"));
-		projectScope.add(new Scope("2"));
+		final Scope projectScope = ScopeTestUtils.createScope("Project");
+		projectScope.add(ScopeTestUtils.createScope("1").add(ScopeTestUtils.createScope("1.2")));
+		projectScope.add(ScopeTestUtils.createScope("1.1"));
+		projectScope.add(ScopeTestUtils.createScope("2"));
 
 		return ProjectTestUtils.createProjectContext(projectScope, null);
 	}
 
 	private ProjectContext getUnmodifiedContext() {
-		final Scope unmodifiedScope = new Scope("Project");
-		unmodifiedScope.add(new Scope("1").add(new Scope("1.1")).add(new Scope("1.2")));
-		unmodifiedScope.add(new Scope("2"));
+		final Scope unmodifiedScope = ScopeTestUtils.createScope("Project");
+		unmodifiedScope.add(ScopeTestUtils.createScope("1").add(ScopeTestUtils.createScope("1.1")).add(ScopeTestUtils.createScope("1.2")));
+		unmodifiedScope.add(ScopeTestUtils.createScope("2"));
 
 		return ProjectTestUtils.createProjectContext(unmodifiedScope, null);
 	}

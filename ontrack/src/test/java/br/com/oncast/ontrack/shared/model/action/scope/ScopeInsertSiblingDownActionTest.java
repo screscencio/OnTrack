@@ -4,11 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertSiblingDownActionEntity;
-import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownAction;
@@ -18,6 +16,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ScopeInsertSiblingDownActionTest extends ModelActionTest {
 
@@ -29,9 +28,9 @@ public class ScopeInsertSiblingDownActionTest extends ModelActionTest {
 
 	@Before
 	public void setUp() {
-		rootScope = new Scope("root");
-		firstChild = new Scope("child");
-		lastChild = new Scope("last");
+		rootScope = ScopeTestUtils.createScope("root");
+		firstChild = ScopeTestUtils.createScope("child");
+		lastChild = ScopeTestUtils.createScope("last");
 
 		rootScope.add(firstChild);
 		rootScope.add(lastChild);
@@ -47,7 +46,7 @@ public class ScopeInsertSiblingDownActionTest extends ModelActionTest {
 		assertEquals(2, rootScope.getChildren().size());
 
 		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild.getId(), newScopeDescription);
-		insertSiblingDownScopeAction.execute(context, Mockito.mock(ActionContext.class));
+		insertSiblingDownScopeAction.execute(context, actionContext);
 
 		assertEquals(3, rootScope.getChildren().size());
 		assertEquals(firstChild.getParent().getChildren().get(1).getDescription(), newScopeDescription);
@@ -56,7 +55,7 @@ public class ScopeInsertSiblingDownActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void rootCantAddSiblingDown() throws UnableToCompleteActionException {
-		new ScopeInsertSiblingDownAction(rootScope.getId(), "text").execute(context, Mockito.mock(ActionContext.class));
+		new ScopeInsertSiblingDownAction(rootScope.getId(), "text").execute(context, actionContext);
 	}
 
 	@Test
@@ -65,13 +64,13 @@ public class ScopeInsertSiblingDownActionTest extends ModelActionTest {
 		assertEquals(2, rootScope.getChildren().size());
 
 		final ScopeInsertSiblingDownAction insertSiblingDownScopeAction = new ScopeInsertSiblingDownAction(firstChild.getId(), newScopeDescription);
-		final ModelAction rollbackAction = insertSiblingDownScopeAction.execute(context, Mockito.mock(ActionContext.class));
+		final ModelAction rollbackAction = insertSiblingDownScopeAction.execute(context, actionContext);
 
 		assertEquals(3, rootScope.getChildren().size());
 		assertEquals(firstChild.getParent().getChildren().get(1).getDescription(), newScopeDescription);
 		assertEquals(firstChild.getParent().getChildren().get(2), lastChild);
 
-		rollbackAction.execute(context, Mockito.mock(ActionContext.class));
+		rollbackAction.execute(context, actionContext);
 
 		assertEquals(firstChild.getParent().getChildren().get(1), lastChild);
 		assertEquals(2, rootScope.getChildren().size());

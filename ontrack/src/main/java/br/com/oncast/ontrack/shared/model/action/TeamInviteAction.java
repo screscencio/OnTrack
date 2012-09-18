@@ -31,7 +31,7 @@ public class TeamInviteAction implements TeamAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final User user = new User(inviteeEmail.toStringRepresentation());
 		context.addUser(user);
-		return null;
+		return new TeamRevogueInvitationAction(inviteeEmail.toStringRepresentation());
 	}
 
 	@Override

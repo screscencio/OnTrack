@@ -47,25 +47,25 @@ public class AnnotationRemoveDeprecationActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldNotAddTheAnnotation() throws Exception {
-		execute();
+		executeAction();
 		verify(context, never()).addAnnotation(subjectId, annotation);
 	}
 
 	@Test
 	public void shouldMarkTheReferencedAnntoationAsNotDeprecated() throws Exception {
-		execute();
+		executeAction();
 		assertFalse(annotation.isDeprecated());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveDeprecationOfAnInexistanteAnnotation() throws Exception {
 		when(context.findAnnotation(subjectId, annotation.getId())).thenThrow(new AnnotationNotFoundException(""));
-		execute();
+		executeAction();
 	}
 
 	@Test
 	public void undoShouldDeprecateTheAnnotation() throws Exception {
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		undoAction.execute(context, actionContext);
 		assertTrue(annotation.isDeprecated());
 	}
@@ -74,7 +74,7 @@ public class AnnotationRemoveDeprecationActionTest extends ModelActionTest {
 	public void shouldSetDeprecationTimestampOnAnnotation() throws Exception {
 		final Date deprecationRemovalDate = new Date();
 		when(actionContext.getTimestamp()).thenReturn(deprecationRemovalDate);
-		execute();
+		executeAction();
 
 		assertEquals(deprecationTimestamp, annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 		assertEquals(deprecationRemovalDate, annotation.getDeprecationTimestamp(DeprecationState.VALID));
@@ -85,7 +85,7 @@ public class AnnotationRemoveDeprecationActionTest extends ModelActionTest {
 		final User deprecationRemovalAuthor = UserTestUtils.createUser();
 		when(actionContext.getUserEmail()).thenReturn(deprecationRemovalAuthor.getEmail());
 		when(context.findUser(deprecationRemovalAuthor.getEmail())).thenReturn(deprecationRemovalAuthor);
-		execute();
+		executeAction();
 
 		assertEquals(deprecationAuthor, annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
 		assertEquals(deprecationRemovalAuthor, annotation.getDeprecationAuthor(DeprecationState.VALID));

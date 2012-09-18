@@ -1,8 +1,14 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
+
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
@@ -75,9 +81,7 @@ public class ScopeUpdateActionUndoAndRedoTest {
 		ModelAction action = new ScopeUpdateAction(scope.getId(), updatePattern);
 		ModelAction rollbackAction = executeAction(parent, action, context);
 
-		DeepEqualityTestUtils.assertObjectEquality(
-				getModifiedScope(updatePattern),
-				currentScope);
+		DeepEqualityTestUtils.assertObjectEquality(getModifiedScope(updatePattern), currentScope);
 
 		for (int i = 0; i < 10; i++) {
 			action = executeAction(parent, rollbackAction, context);
@@ -102,7 +106,12 @@ public class ScopeUpdateActionUndoAndRedoTest {
 	}
 
 	private ModelAction executeAction(final Scope scope, final ModelAction action, final ProjectContext context) throws UnableToCompleteActionException {
-		final ModelAction rollbackAction = action.execute(context, Mockito.mock(ActionContext.class));
+		final ActionContext actionContext = Mockito.mock(ActionContext.class);
+		MockitoAnnotations.initMocks(this);
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
+		final ModelAction rollbackAction = action.execute(context, actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);
 		return rollbackAction;
 	}

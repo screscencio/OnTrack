@@ -31,6 +31,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.AnnotationTestUtils;
 import br.com.oncast.ontrack.utils.ChecklistTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ScopeRemoveActionTest extends ModelActionTest {
@@ -44,11 +45,11 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 
 	@Before
 	public void setUp() {
-		rootScope = new Scope("root");
-		child1Level1 = new Scope("child1Level1");
-		child2Level1 = new Scope("child2Level1");
-		child1Level2 = new Scope("child1Level2");
-		child1Level3 = new Scope("child2Level2");
+		rootScope = ScopeTestUtils.createScope("root");
+		child1Level1 = ScopeTestUtils.createScope("child1Level1");
+		child2Level1 = ScopeTestUtils.createScope("child2Level1");
+		child1Level2 = ScopeTestUtils.createScope("child1Level2");
+		child1Level3 = ScopeTestUtils.createScope("child2Level2");
 		rootScope.add(child1Level1);
 		rootScope.add(child2Level1);
 		child1Level1.add(child1Level2);
@@ -78,8 +79,8 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void rollbackShouldRecreateEntireScopeHierarchyInTheSameOrder() throws UnableToCompleteActionException {
-		final Scope child1Level32 = new Scope("child1Level3.2");
-		final Scope child1Level33 = new Scope("child1Level3.3");
+		final Scope child1Level32 = ScopeTestUtils.createScope("child1Level3.2");
+		final Scope child1Level33 = ScopeTestUtils.createScope("child1Level3.3");
 		child1Level2.add(child1Level32);
 		child1Level2.add(child1Level33);
 
@@ -246,6 +247,8 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		}
 
 		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
+		context.addUser(user);
+
 		new ScopeRemoveAction(scopeId).execute(context, actionContext);
 
 		assertTrue(context.findAnnotationsFor(scopeId).isEmpty());

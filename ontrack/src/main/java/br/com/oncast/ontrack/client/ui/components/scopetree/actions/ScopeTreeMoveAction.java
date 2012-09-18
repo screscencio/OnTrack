@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -18,7 +19,7 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope parentScope = scope.getParent();
 		final int index = parentScope.getChildIndex(scope);

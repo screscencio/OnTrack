@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -21,7 +22,7 @@ public class ScopeTreeReleaseUpdateAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, final boolean isUserInteraction) throws ModelBeanNotFoundException {
+	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		final Release release = context.findRelease(action.getReferenceId());
 
 		final List<Scope> scopesIncludingDescendantReleases = release.getAllScopesIncludingDescendantReleases();

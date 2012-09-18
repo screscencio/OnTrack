@@ -46,7 +46,7 @@ public class ScopeInsertSiblingDownAction implements ScopeInsertSiblingAction {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for the root node.");
 
-		final Scope newScope = new Scope("", newScopeId);
+		final Scope newScope = new Scope("", newScopeId, ActionHelper.findUserFrom(actionContext, context), actionContext.getTimestamp());
 
 		final Scope parent = selectedScope.getParent();
 		parent.add(parent.getChildIndex(selectedScope) + 1, newScope);

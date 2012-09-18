@@ -135,4 +135,8 @@ public enum HumanDateFormatter {
 		return difference;
 	}
 
+	public static String getShortAbsuluteDate(final Date date) {
+		return format("dd/MM/yy", date);
+	}
+
 }

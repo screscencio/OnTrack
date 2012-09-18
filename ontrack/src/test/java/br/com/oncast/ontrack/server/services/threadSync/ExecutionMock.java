@@ -9,7 +9,7 @@ public class ExecutionMock implements Runnable {
 		lock = true;
 		while (lock) {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(5);
 			}
 			catch (final InterruptedException e) {}
 		}

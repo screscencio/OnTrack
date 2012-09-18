@@ -4,11 +4,14 @@ import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.g
 import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getOriginalScope;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ValueInferenceEngineFlow3Test {
 
@@ -41,7 +44,7 @@ public class ValueInferenceEngineFlow3Test {
 
 	private void shouldApplyInferenceTopDownThroughChildren() {
 		original.getChild(0).getValue().setDeclared(12);
-		valueInferenceEngine.process(original);
+		valueInferenceEngine.process(original, UserTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
@@ -49,9 +52,9 @@ public class ValueInferenceEngineFlow3Test {
 	private void shouldRedistributeInferencesWhenChildrenReceiveValueDeclarations() {
 		final Scope scope = original.getChild(0).getChild(0);
 		scope.getChild(0).getValue().setDeclared(8);
-		valueInferenceEngine.process(scope);
+		valueInferenceEngine.process(scope, UserTestUtils.getAdmin(), new Date());
 		scope.getChild(1).getValue().setDeclared(8);
-		valueInferenceEngine.process(scope);
+		valueInferenceEngine.process(scope, UserTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}
@@ -59,7 +62,7 @@ public class ValueInferenceEngineFlow3Test {
 	private void shouldRedistributeInferencesWhenSiblingReceiveValueDeclarations() {
 		final Scope scope = original.getChild(0);
 		scope.getChild(1).getValue().setDeclared(20);
-		valueInferenceEngine.process(scope);
+		valueInferenceEngine.process(scope, UserTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 3), original);
 	}

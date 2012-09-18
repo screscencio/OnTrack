@@ -1,11 +1,10 @@
 package br.com.oncast.ontrack.utils.mocks.models;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -22,115 +21,106 @@ public class ScopeTestUtils {
 
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getScope() {
-		final Scope root = new Scope("Project");
-		root.add(new Scope("1").add(new Scope("1.1").add(new Scope("1.1.1")).add(new Scope("1.1.2"))).add(new Scope("1.2")));
-		root.add(new Scope("2"));
-		root.add(new Scope("3"));
+		final Scope root = ScopeTestUtils.createScope("Project");
+		root.add(ScopeTestUtils.createScope("1")
+				.add(ScopeTestUtils.createScope("1.1").add(ScopeTestUtils.createScope("1.1.1")).add(ScopeTestUtils.createScope("1.1.2")))
+				.add(ScopeTestUtils.createScope("1.2")));
+		root.add(ScopeTestUtils.createScope("2"));
+		root.add(ScopeTestUtils.createScope("3"));
 
 		return root;
 	}
 
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getScope2() {
-		final Scope projectScope = new Scope("Project");
-		final Scope child = new Scope("aaa");
-		child.add(new Scope("111"));
-		child.add(new Scope("222"));
-		child.add(new Scope("333"));
-		child.add(new Scope("444"));
+		final Scope projectScope = ScopeTestUtils.createScope("Project");
+		final Scope child = ScopeTestUtils.createScope("aaa");
+		child.add(ScopeTestUtils.createScope("111"));
+		child.add(ScopeTestUtils.createScope("222"));
+		child.add(ScopeTestUtils.createScope("333"));
+		child.add(ScopeTestUtils.createScope("444"));
 		projectScope.add(child);
-		projectScope.add(new Scope("bbb"));
-		projectScope.add(new Scope("ccc"));
-		projectScope.add(new Scope("ddd"));
-		projectScope.add(new Scope("eee"));
-		projectScope.add(new Scope("fff"));
+		projectScope.add(ScopeTestUtils.createScope("bbb"));
+		projectScope.add(ScopeTestUtils.createScope("ccc"));
+		projectScope.add(ScopeTestUtils.createScope("ddd"));
+		projectScope.add(ScopeTestUtils.createScope("eee"));
+		projectScope.add(ScopeTestUtils.createScope("fff"));
 
 		return projectScope;
 	}
 
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getSimpleScope() {
-		final Scope root = new Scope("Project");
-		root.add(new Scope("1"));
-		root.add(new Scope("2"));
-		root.add(new Scope("3"));
+		final Scope root = ScopeTestUtils.createScope("Project");
+		root.add(ScopeTestUtils.createScope("1"));
+		root.add(ScopeTestUtils.createScope("2"));
+		root.add(ScopeTestUtils.createScope("3"));
 
 		return root;
 	}
 
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getComplexScope() {
-		final Scope projectScope = new Scope("Project");
-		final Scope child = new Scope("aaa");
-		child.add(new Scope("111"));
-		child.add(new Scope("222"));
-		child.add(new Scope("333").add(new Scope("3.1")).add(new Scope("3.2")));
-		child.add(new Scope("444"));
+		final Scope projectScope = ScopeTestUtils.createScope("Project");
+		final Scope child = ScopeTestUtils.createScope("aaa");
+		child.add(ScopeTestUtils.createScope("111"));
+		child.add(ScopeTestUtils.createScope("222"));
+		child.add(ScopeTestUtils.createScope("333").add(ScopeTestUtils.createScope("3.1")).add(ScopeTestUtils.createScope("3.2")));
+		child.add(ScopeTestUtils.createScope("444"));
 		projectScope.add(child);
 
-		projectScope.add(new Scope("bbb").add(new Scope("b1")));
-		projectScope.add(new Scope("ccc").add(new Scope("c1")).add(new Scope("c2").add(new Scope("c21")).add(new Scope("c22"))));
-		projectScope.add(new Scope("ddd"));
+		projectScope.add(ScopeTestUtils.createScope("bbb").add(ScopeTestUtils.createScope("b1")));
+		projectScope.add(ScopeTestUtils.createScope("ccc").add(ScopeTestUtils.createScope("c1"))
+				.add(ScopeTestUtils.createScope("c2").add(ScopeTestUtils.createScope("c21")).add(ScopeTestUtils.createScope("c22"))));
+		projectScope.add(ScopeTestUtils.createScope("ddd"));
 
 		return projectScope;
 	}
 
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
 	public static Scope getScopeWithEffort() {
-		final Scope root = new Scope("Project");
+		final Scope root = ScopeTestUtils.createScope("Project");
 
-		final Scope scope = new Scope("0");
+		final Scope scope = ScopeTestUtils.createScope("0");
 		scope.getEffort().setDeclared(5);
 		root.add(scope);
 
-		final Scope scope2 = new Scope("1");
+		final Scope scope2 = ScopeTestUtils.createScope("1");
 		scope2.getEffort().setDeclared(10);
 		root.add(scope2);
 
-		final Scope scope3 = new Scope("2");
+		final Scope scope3 = ScopeTestUtils.createScope("2");
 		scope3.getEffort().setDeclared(15);
 		root.add(scope3);
 
-		final Scope scope4 = new Scope("3");
+		final Scope scope4 = ScopeTestUtils.createScope("3");
 		scope4.getEffort().setDeclared(20);
 		root.add(scope4);
 
-		root.add(new Scope("4"));
+		root.add(ScopeTestUtils.createScope("4"));
 
 		return root;
 	}
 
 	public static Scope setProgress(final Scope scope, final ProgressState progress) {
-		scope.getProgress().setDescription(progress.getDescription());
-		return scope;
+		return setProgress(scope, progress, new Date(0));
 	}
 
-	public static Scope setDelcaredEffort(final Scope scope, final float averageVelocity) {
-		scope.getEffort().setDeclared(averageVelocity);
+	public static Scope setDelcaredEffort(final Scope scope, final float effort) {
+		scope.getEffort().setDeclared(effort);
 		return scope;
 	}
 
 	public static void setEndDate(final Scope scope, final WorkingDay day) {
-		setDayOnField(scope, day, "endDate");
+		scope.getProgress().setDescription(ProgressState.DONE.getDescription(), UserTestUtils.getAdmin(), day.getJavaDate());
 	}
 
 	public static void setStartDate(final Scope scope, final WorkingDay day) {
-		setDayOnField(scope, day, "startDate");
-	}
-
-	private static void setDayOnField(final Scope scope, final WorkingDay day, final String fieldName) {
-		try {
-			final Field field = Progress.class.getDeclaredField(fieldName);
-			field.setAccessible(true);
-			field.set(scope.getProgress(), day);
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
-		}
+		scope.getProgress().setDescription(ProgressState.UNDER_WORK.getDescription(), UserTestUtils.getAdmin(), day.getJavaDate());
 	}
 
 	public static Scope createScope(final String name, final ProgressState progress, final Integer effort, final WorkingDay startDay, final WorkingDay endDay) {
-		final Scope scope = new Scope(name);
+		final Scope scope = ScopeTestUtils.createScope(name);
 		if (progress != null) setProgress(scope, progress);
 		if (effort != null) setDelcaredEffort(scope, effort);
 		if (startDay != null) setStartDate(scope, startDay);
@@ -201,16 +191,50 @@ public class ScopeTestUtils {
 	}
 
 	public static Scope createScope(final String description) {
-		return new Scope(description);
+		return createScope(description, new UUID());
 	}
 
 	public static Scope createScope() {
-		return createScope(Scope.class.getSimpleName() + ++scopeCounter);
+		return createScope(getDefaultCounterDescription());
+	}
+
+	private static String getDefaultCounterDescription() {
+		return Scope.class.getSimpleName() + ++scopeCounter;
 	}
 
 	public static Scope createScope(final ProgressState progress) {
 		final Scope scope = createScope();
 		return setProgress(scope, progress);
+	}
+
+	public static Scope createScope(final String description, final UUID id) {
+		return createScope(description, id, new Date(0));
+	}
+
+	public static Scope createScope(final String description, final UUID id, final Date date) {
+		return new Scope(description, id, UserTestUtils.getAdmin(), new Date(0));
+	}
+
+	public static Scope setProgress(final Scope scope, final String progressDescription) {
+		scope.getProgress().setDescription(progressDescription, UserTestUtils.getAdmin(), new Date());
+		return scope;
+	}
+
+	public static Scope createScope(final WorkingDay day) {
+		return createScope(getDefaultCounterDescription(), new UUID(), day.getJavaDate());
+	}
+
+	public static Scope setProgress(final Scope scope, final ProgressState progress, final WorkingDay day) {
+		return setProgress(scope, progress, day.getJavaDate());
+	}
+
+	public static Scope setProgress(final Scope scope, final ProgressState progress, final Date date) {
+		scope.getProgress().setDescription(progress.getDescription(), UserTestUtils.getAdmin(), date);
+		return scope;
+	}
+
+	public static Scope declareProgress(final Scope scope, final ProgressState state) {
+		return setProgress(scope, state.getDescription());
 	}
 
 }

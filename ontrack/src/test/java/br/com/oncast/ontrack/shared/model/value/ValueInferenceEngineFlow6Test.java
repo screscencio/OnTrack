@@ -2,13 +2,17 @@ package br.com.oncast.ontrack.shared.model.value;
 
 import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getModifiedScope;
 import static br.com.oncast.ontrack.shared.model.value.ValueInferenceTestUtils.getOriginalScope;
+import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.Stack;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
@@ -85,7 +89,12 @@ public class ValueInferenceEngineFlow6Test {
 
 	private ModelAction executeAction(final ModelAction action) throws UnableToCompleteActionException, ScopeNotFoundException {
 		final Scope valueInferenceBaseScopeForTestingPurposes = ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(projectContext, action);
-		final ModelAction rollbackAction = action.execute(projectContext, Mockito.mock(ActionContext.class));
+		final ActionContext actionContext = Mockito.mock(ActionContext.class);
+		MockitoAnnotations.initMocks(this);
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+
+		final ModelAction rollbackAction = action.execute(projectContext, actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(valueInferenceBaseScopeForTestingPurposes);
 		return rollbackAction;
 	}

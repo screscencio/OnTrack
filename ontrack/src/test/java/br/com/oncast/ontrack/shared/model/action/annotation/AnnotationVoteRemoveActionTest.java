@@ -47,26 +47,26 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenThereIsNoAnnotationWithTheGivenId() throws Exception {
 		when(context.findAnnotation(subjectId, annotation.getId())).thenThrow(new AnnotationNotFoundException(""));
-		execute();
+		executeAction();
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveWhenThereIsNoVoteAtAll() throws Exception {
 		assertEquals(0, annotation.getVoteCount());
-		execute();
+		executeAction();
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveWhenTheRequestingUserWasntTheOneWhoVoted() throws Exception {
 		annotation.vote(UserTestUtils.createUser());
-		execute();
+		executeAction();
 	}
 
 	@Test
 	public void shouldRemoveTheVoteCountByOne() throws Exception {
 		annotation.vote(voter);
 		final int previousVoteCount = annotation.getVoteCount();
-		execute();
+		executeAction();
 		assertEquals(previousVoteCount - 1, annotation.getVoteCount());
 	}
 
@@ -74,7 +74,7 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 	public void undoShouldReAddTheRemovedVote() throws Exception {
 		annotation.vote(voter);
 		final int previousVoteCount = annotation.getVoteCount();
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		assertEquals(previousVoteCount - 1, annotation.getVoteCount());
 		undoAction.execute(context, actionContext);
 		assertEquals(previousVoteCount, annotation.getVoteCount());
@@ -84,7 +84,7 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 	public void shouldNotBertAbleToRemoveVoteWhenTheAnnotationIsDeprecated() throws Exception {
 		annotation.removeVote(voter);
 		annotation.setDeprecation(DeprecationState.DEPRECATED, voter, new Date());
-		execute();
+		executeAction();
 	}
 
 	@Override

@@ -93,7 +93,6 @@
 	</logger>
 
 	<root>
-		<!-- <level value="DEBUG" /> -->
 		<priority value="DEBUG" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="MainLogFile" />

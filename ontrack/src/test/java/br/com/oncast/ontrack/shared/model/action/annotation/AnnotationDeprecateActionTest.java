@@ -42,25 +42,25 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldNotRemvoeTheAnnotation() throws Exception {
-		execute();
+		executeAction();
 		verify(context, never()).removeAnnotation(subjectId, annotation);
 	}
 
 	@Test
 	public void shouldMarkTheReferencedAnntoationAsDeprecated() throws Exception {
-		execute();
+		executeAction();
 		assertTrue(annotation.isDeprecated());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToDeprecateAnInexistanteAnnotation() throws Exception {
 		when(context.findAnnotation(subjectId, annotation.getId())).thenThrow(new AnnotationNotFoundException(""));
-		execute();
+		executeAction();
 	}
 
 	@Test
 	public void undoShouldRemoveDeprecationOfTheAnnotation() throws Exception {
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		undoAction.execute(context, actionContext);
 		assertFalse(annotation.isDeprecated());
 	}
@@ -69,7 +69,7 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 	public void shouldSetDeprecationTimestampOnAnnotation() throws Exception {
 		final Date deprecationDate = new Date();
 		when(actionContext.getTimestamp()).thenReturn(deprecationDate);
-		execute();
+		executeAction();
 
 		assertEquals(deprecationDate, annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 	}
@@ -79,7 +79,7 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 		final User user = UserTestUtils.createUser();
 		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
 		when(context.findUser(user.getEmail())).thenReturn(user);
-		execute();
+		executeAction();
 
 		assertEquals(user, annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
 	}
@@ -90,7 +90,7 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
 		when(context.findUser(user.getEmail())).thenReturn(user);
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		final Date deprecationRemovalTimestamp = new Date(1515);
 		when(actionContext.getTimestamp()).thenReturn(deprecationRemovalTimestamp);
 		final ModelAction redoAction = undoAction.execute(context, actionContext);

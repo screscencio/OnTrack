@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.shared.model.release;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ReleaseProgressTest {
 
@@ -34,18 +37,18 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void progressShoulbBeZeroIfThereIsNoDoneScope() {
-		scopeHierarchy.getChild(0).getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(0), "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(0f, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
 	public void shouldGetOnlyDoneScopesToCalculateProgressPercentage() {
-		scopeHierarchy.getChild(0).getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
-		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(0), "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(66.6, getProgressPercentage(r1), 0.09);
 	}
@@ -54,22 +57,22 @@ public class ReleaseProgressTest {
 	public void shouldGetAllDoneScopesToCalculateProgressPercentage() {
 		r1.addScope(scopeHierarchy.getChild(2));
 
-		scopeHierarchy.getChild(0).getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
-		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
-		scopeHierarchy.getChild(2).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(0), "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(2), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(83.3, getProgressPercentage(r1), 0.09);
 	}
 
 	@Test
 	public void shouldUpdateProgressPercentageWhenAScopeIsRemovedFromRelease() {
-		scopeHierarchy.getChild(0).getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
-		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(0), "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(66.6, getProgressPercentage(r1), 0.09);
 
@@ -80,10 +83,10 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void shouldUpdateProgressPercentageWhenAScopeIsRemovedFromRelease2() {
-		scopeHierarchy.getChild(0).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
-		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(0), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		assertEquals(100, getProgressPercentage(r1), 0.09);
 
@@ -97,7 +100,7 @@ public class ReleaseProgressTest {
 	public void aReleaseShouldNotBeDoneIfAtLeastOneOfItsChildReleasesAreNotDoneEvenIfAllItsScopeAreDone() {
 		final Release release = ReleaseFactoryTestUtil.create("R1");
 
-		final Scope scope = new Scope("scope");
+		final Scope scope = ScopeTestUtils.createScope("scope");
 		ScopeTestUtils.setProgress(scope, ProgressState.DONE);
 		release.addScope(scope);
 
@@ -114,20 +117,20 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void shouldIncludeSubReleasesInProgressPercentageCalculation() {
-		scopeHierarchy.getChild(0).getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
-		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(0), "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		final Release it1 = ReleaseFactoryTestUtil.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
-		scope2.getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scope2, "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 		final Scope scope3 = scopeHierarchy.getChild(3);
-		scope3.getProgress().setDescription("Not started");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scope3, "Not started");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		it1.addScope(scope2);
 		it1.addScope(scope3);
@@ -137,20 +140,20 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void progressPercentageShouldBe100IfAllScopesAreDone() {
-		scopeHierarchy.getChild(0).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
-		scopeHierarchy.getChild(1).getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(0), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		final Release it1 = ReleaseFactoryTestUtil.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
-		scope2.getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scope2, "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 		final Scope scope3 = scopeHierarchy.getChild(3);
-		scope3.getProgress().setDescription("Done");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scope3, "Done");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		it1.addScope(scope2);
 		it1.addScope(scope3);
@@ -160,20 +163,20 @@ public class ReleaseProgressTest {
 
 	@Test
 	public void progressPercentageShouldBeZeroEvenIfAllScopesAreUnderWork() {
-		scopeHierarchy.getChild(0).getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
-		scopeHierarchy.getChild(1).getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(0), "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
+		ScopeTestUtils.setProgress(scopeHierarchy.getChild(1), "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		final Release it1 = ReleaseFactoryTestUtil.create("It1");
 		r1.addChild(it1);
 
 		final Scope scope2 = scopeHierarchy.getChild(2);
-		scope2.getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scope2, "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 		final Scope scope3 = scopeHierarchy.getChild(3);
-		scope3.getProgress().setDescription("Underwork");
-		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy);
+		ScopeTestUtils.setProgress(scope3, "Underwork");
+		PROGRESS_INFERENCE_ENGINE.process(scopeHierarchy, UserTestUtils.getAdmin(), new Date());
 
 		it1.addScope(scope2);
 		it1.addScope(scope3);
@@ -187,8 +190,8 @@ public class ReleaseProgressTest {
 
 		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
-			child.getProgress().setDescription("DONE");
-			PROGRESS_INFERENCE_ENGINE.process(rootScope);
+			ScopeTestUtils.setProgress(child, "DONE");
+			PROGRESS_INFERENCE_ENGINE.process(rootScope, UserTestUtils.getAdmin(), new Date());
 			release.addScope(child);
 		}
 

@@ -29,6 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ProjectSelectionWidget extends Composite implements HasCloseHandlers<ProjectSelectionWidget>, PopupAware {
 
+	private static final ProjectSelectionWidgetMessages messages = GWT.create(ProjectSelectionWidgetMessages.class);
+
 	private static final int FILTRABLE_MENU_MAX_HEIGHT = 172;
 
 	private static final int FILTRABLE_MENU_MAX_WIDTH = 425;
@@ -93,7 +95,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 	private static FiltrableCommandMenu configureFiltrableMenu(final FiltrableCommandMenu filtrableMenu) {
 		return filtrableMenu.setAlwaysShowMenu(false)
-				.setHelpText("Hit ↓ to show your projects")
+				.setHelpText(messages.selectionHelpText())
 				.setLargePadding();
 	}
 
@@ -109,7 +111,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 			}
 
 			private CommandMenuItem createProjectCreationItem(final String inputText, final int projectCreationQuota) {
-				return new SimpleCommandMenuItem("Create project '" + inputText + "' (" + projectCreationQuota + " creations available)", inputText,
+				return new SimpleCommandMenuItem(messages.createNewProject(inputText, projectCreationQuota), inputText,
 						new Command() {
 
 							@Override
@@ -124,7 +126,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 			}
 
 			private CommandMenuItem createProjectCreationQuotaRequisitionItem() {
-				return new TextAndImageCommandMenuItem(ProjectCreationQuotaRequestResources.INSTANCE.quotaRequestIcon(), "Ask for more projects",
+				return new TextAndImageCommandMenuItem(ProjectCreationQuotaRequestResources.INSTANCE.quotaRequestIcon(), messages.askForMoreProjects(),
 						new Command() {
 							@Override
 							public void execute() {
@@ -135,7 +137,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 			@Override
 			public String getNoItemText() {
-				return "No Projects. Type to create one.";
+				return messages.noProjects();
 			}
 
 		};
@@ -250,11 +252,11 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	protected static void requestProjectCreationQuota() {
-		SERVICE_PROVIDER.getClientNotificationService().showInfo("Processing you invitation...");
+		SERVICE_PROVIDER.getClientNotificationService().showInfo(messages.processingProjectQuotaRequest());
 		ClientServiceProvider.getInstance().getFeedbackService().requestProjectCreationQuota(new ProjectCreationQuotaRequisitionCallback() {
 			@Override
 			public void onRequestSentSucessfully() {
-				SERVICE_PROVIDER.getClientNotificationService().showSuccess("Invitation request was sent!");
+				SERVICE_PROVIDER.getClientNotificationService().showSuccess(messages.projectQuotaRequestSent());
 			}
 
 			@Override

@@ -3,12 +3,15 @@ package br.com.oncast.ontrack.shared.model.effort;
 import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getModifiedScope;
 import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getOriginalScope;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class EffortInferenceEngineFlow5Test {
 
@@ -34,14 +37,14 @@ public class EffortInferenceEngineFlow5Test {
 
 	private void shouldApplyInferenceBottomUpThroughAncestors() {
 		original.getChild(0).getChild(1).getEffort().setDeclared(30);
-		effortInferenceEngine.process(original.getChild(0));
+		effortInferenceEngine.process(original.getChild(0), UserTestUtils.getAdmin(), new Date());
 
 		DeepEqualityTestUtils.assertObjectEquality(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
 
 	private void shouldRedistributeEffortThroughSiblings() {
 		original.getChild(0).getEffort().setDeclared(50);
-		effortInferenceEngine.process(original);
+		effortInferenceEngine.process(original, UserTestUtils.getAdmin(), new Date());
 
 		DeepEqualityTestUtils.assertObjectEquality(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}

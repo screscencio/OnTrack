@@ -104,7 +104,7 @@ public class ReleaseTestUtils {
 		final Release release = ReleaseFactoryTestUtil.create("Mock Release");
 		for (final String description : progressDescriptions) {
 			final Scope scope = ScopeTestUtils.createScope();
-			scope.getProgress().setDescription(description);
+			ScopeTestUtils.setProgress(scope, description);
 			release.addScope(scope);
 		}
 		return release;

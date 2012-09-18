@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +22,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class FreeMindExporterTest {
 	private static final File PROJECT_MM_FILE = new File("src/test/java/br/com/oncast/ontrack/server/services/exportImport/ProjetoTeste.mm");
@@ -103,7 +105,7 @@ public class FreeMindExporterTest {
 	@Test
 	public void exportedMapShouldRepresentEffort() throws FileNotFoundException {
 		scope.getEffort().setDeclared(100);
-		new EffortInferenceEngine().process(scope);
+		new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
 
 		final FreeMindMap exportedMap = exportToMindMap(scope);
 		final MindNode scopeHierarchyContainerNode = exportedMap.root().getChildren().get(1);
@@ -134,7 +136,7 @@ public class FreeMindExporterTest {
 	@Test
 	public void exportedMapShouldRepresentValue() throws FileNotFoundException {
 		scope.getValue().setDeclared(100);
-		new ValueInferenceEngine().process(scope);
+		new ValueInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
 
 		final FreeMindMap exportedMap = exportToMindMap(scope);
 		final MindNode scopeHierarchyContainerNode = exportedMap.root().getChildren().get(1);
@@ -165,7 +167,7 @@ public class FreeMindExporterTest {
 
 	@Test
 	public void exportedMapShouldRepresentProgress() throws FileNotFoundException {
-		scope.getChild(0).getChild(0).getProgress().setDescription("Under work");
+		ScopeTestUtils.setProgress(scope.getChild(0).getChild(0), "Under work");
 
 		final FreeMindMap exportedMap = exportToMindMap(scope);
 		final MindNode progressNode = exportedMap.root().getChildren().get(1).getChildren().get(0).getChildren().get(0).getChildren().get(0);

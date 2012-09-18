@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -96,7 +98,12 @@ public class PersistenceServiceTest {
 		final ProjectSnapshot snapshot1 = loadProjectSnapshot();
 		final Project project1 = snapshot1.getProject();
 
-		new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son").execute(new ProjectContext(project1), Mockito.mock(ActionContext.class));
+		final ActionContext actionContext = Mockito.mock(ActionContext.class);
+		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		final ProjectContext context = new ProjectContext(project1);
+		context.addUser(UserTestUtils.getAdmin());
+		new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son").execute(context, actionContext);
 
 		snapshot1.setProject(project1);
 		snapshot1.setTimestamp(new Date());
@@ -408,7 +415,7 @@ public class PersistenceServiceTest {
 	}
 
 	private ProjectSnapshot createBlankProject() throws UnableToLoadProjectException, ProjectNotFoundException {
-		final Scope projectScope = new Scope("Project", UUID.INVALID_UUID);
+		final Scope projectScope = ScopeTestUtils.createScope("Project", UUID.INVALID_UUID);
 		final Release projectRelease = new Release("proj", new UUID("release0"));
 
 		try {

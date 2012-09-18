@@ -94,15 +94,6 @@ public class ClientManagerTest {
 		assertCollectionEquality(asSet(client1, client2, client4), manager.getAllClients());
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void manipulationOnReturnedClientSetShouldNotBeAllowed() throws Exception {
-		registerAndBindClients(project1, client1, client2);
-		registerClients(client3, client4);
-
-		final Set<ServerPushConnection> allClients = manager.getAllClients();
-		allClients.clear();
-	}
-
 	@Test
 	public void registeredClientsShouldBeListedEvenAfterUnbound() throws Exception {
 		registerClients(client1, client2);

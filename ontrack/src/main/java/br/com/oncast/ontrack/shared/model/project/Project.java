@@ -164,4 +164,8 @@ public class Project implements Serializable {
 		return true;
 	}
 
+	public void removeUser(final User user) {
+		users.remove(user);
+	}
+
 }

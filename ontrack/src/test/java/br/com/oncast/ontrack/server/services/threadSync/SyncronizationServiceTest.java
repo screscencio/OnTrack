@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class SyncronizationServiceTest {
 
+	private static final int SLEEP_INTERVAL = 50;
 	private SyncronizationService syncronizationService;
 
 	@Before
@@ -52,24 +53,26 @@ public class SyncronizationServiceTest {
 		final Thread thread2 = new TestThread(uuid1, mock2);
 
 		thread1.start();
-		Thread.sleep(100);
+
+		Thread.sleep(SLEEP_INTERVAL);
 		assertTrue(mock1.isLocked());
 
 		thread2.start();
-		Thread.sleep(100);
+		Thread.sleep(SLEEP_INTERVAL);
+
 		assertFalse(mock2.isLocked());
 
 		assertTrue(mock1.isLocked());
 		assertFalse(mock2.isLocked());
 
 		mock1.unlock();
-		Thread.sleep(100);
+		Thread.sleep(SLEEP_INTERVAL);
 
 		assertFalse(mock1.isLocked());
 		assertTrue(mock2.isLocked());
 
 		mock2.unlock();
-		Thread.sleep(100);
+		Thread.sleep(SLEEP_INTERVAL);
 
 		assertFalse(mock1.isLocked());
 		assertFalse(mock2.isLocked());
@@ -84,11 +87,11 @@ public class SyncronizationServiceTest {
 		final Thread thread2 = new TestThread(new UUID("2"), mock2);
 
 		thread1.start();
-		Thread.sleep(100);
+		Thread.sleep(SLEEP_INTERVAL);
 		assertTrue(mock1.isLocked());
 
 		thread2.start();
-		Thread.sleep(100);
+		Thread.sleep(SLEEP_INTERVAL);
 		assertTrue(mock2.isLocked());
 
 		assertTrue(mock1.isLocked());
@@ -96,7 +99,7 @@ public class SyncronizationServiceTest {
 
 		mock1.unlock();
 		mock2.unlock();
-		Thread.sleep(100);
+		Thread.sleep(SLEEP_INTERVAL);
 
 		assertFalse(mock1.isLocked());
 		assertFalse(mock2.isLocked());

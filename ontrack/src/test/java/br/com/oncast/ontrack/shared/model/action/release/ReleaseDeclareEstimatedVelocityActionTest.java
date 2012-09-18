@@ -48,13 +48,13 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldAccessTheReleaseReferencedByTheReferenceId() throws Exception {
-		execute();
+		executeAction();
 		verify(context).findRelease(referenceId);
 	}
 
 	@Test
 	public void shouldDeclareTheGivenEndDayOnReferencedRelease() throws Exception {
-		execute();
+		executeAction();
 		verify(release).declareEstimatedVelocity(declaredVelocity);
 	}
 
@@ -69,7 +69,7 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 		when(release.hasDeclaredEstimatedVelocity()).thenReturn(false);
 		when(release.getEstimatedVelocity()).thenReturn(previouslyDeclaredEstimatedVelocity);
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		verify(release).declareEstimatedVelocity(Mockito.anyFloat());
 
 		undoAction.execute(context, Mockito.mock(ActionContext.class));
@@ -81,7 +81,7 @@ public class ReleaseDeclareEstimatedVelocityActionTest extends ModelActionTest {
 		when(release.hasDeclaredEstimatedVelocity()).thenReturn(true);
 		when(release.getEstimatedVelocity()).thenReturn(previouslyDeclaredEstimatedVelocity);
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 		verify(release).declareEstimatedVelocity(Mockito.anyFloat());
 
 		undoAction.execute(context, Mockito.mock(ActionContext.class));

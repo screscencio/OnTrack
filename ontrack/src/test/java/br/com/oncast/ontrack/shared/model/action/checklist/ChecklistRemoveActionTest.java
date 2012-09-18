@@ -46,26 +46,26 @@ public class ChecklistRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldRemoveChecklistFromContext() throws Exception {
-		execute();
+		executeAction();
 		verify(context).removeChecklist(Mockito.any(UUID.class), Mockito.any(Checklist.class));
 	}
 
 	@Test
 	public void shouldRemoveChecklistFromTheGivenSubjectId() throws Exception {
-		execute();
+		executeAction();
 		verify(context).removeChecklist(Mockito.eq(subjectId), Mockito.any(Checklist.class));
 	}
 
 	@Test
 	public void shouldRemoveChecklistWithTheGivenId() throws Exception {
-		execute();
+		executeAction();
 		verify(context).removeChecklist(Mockito.any(UUID.class), Mockito.eq(checklist));
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveAnInexistantChecklist() throws Exception {
 		when(context.findChecklist(subjectId, checklistId)).thenThrow(new ChecklistNotFoundException(""));
-		execute();
+		executeAction();
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class ChecklistRemoveActionTest extends ModelActionTest {
 		when(checklist.getTitle()).thenReturn(checklistTitle);
 		when(checklist.getItems()).thenReturn(new ArrayList<ChecklistItem>());
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 
 		undoAction.execute(context, actionContext);
 
@@ -96,7 +96,7 @@ public class ChecklistRemoveActionTest extends ModelActionTest {
 		when(checklist.getId()).thenReturn(checklistId);
 		when(checklist.getItems()).thenReturn(checklistItems);
 
-		final ModelAction undoAction = execute();
+		final ModelAction undoAction = executeAction();
 
 		final Checklist recreatedChecklist = mock(Checklist.class);
 		when(context.findChecklist(subjectId, checklistId)).thenReturn(recreatedChecklist);

@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal;
 
+import java.util.Date;
+
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -21,7 +24,7 @@ public class InsertSiblingDownInternalAction implements TwoStepInternalAction {
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		treeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 		if (treeItem.isRoot()) throw new UnableToCompleteActionException("It is not possible to create a sibling for the root node.");
-		newTreeItem = new ScopeTreeItem(new Scope(""));
+		newTreeItem = new ScopeTreeItem(new Scope("", ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser(), new Date()));
 
 		final ScopeTreeItem parentItem = treeItem.getParentItem();
 		parentItem.insertItem(parentItem.getChildIndex(treeItem) + 1, newTreeItem);

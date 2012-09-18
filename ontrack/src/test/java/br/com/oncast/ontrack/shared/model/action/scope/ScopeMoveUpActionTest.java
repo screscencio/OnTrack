@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 
 public class ScopeMoveUpActionTest extends ModelActionTest {
 	private Scope rootScope;
@@ -27,9 +28,9 @@ public class ScopeMoveUpActionTest extends ModelActionTest {
 
 	@Before
 	public void setUp() {
-		rootScope = new Scope("root");
-		firstChild = new Scope("child");
-		lastChild = new Scope("last");
+		rootScope = ScopeTestUtils.createScope("root");
+		firstChild = ScopeTestUtils.createScope("child");
+		lastChild = ScopeTestUtils.createScope("last");
 		rootScope.add(firstChild);
 		rootScope.add(lastChild);
 
