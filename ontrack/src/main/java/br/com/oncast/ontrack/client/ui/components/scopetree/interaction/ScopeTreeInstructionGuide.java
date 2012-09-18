@@ -12,8 +12,11 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
+import com.google.gwt.core.client.GWT;
+
 public class ScopeTreeInstructionGuide {
 
+	private final static ScopeTreeInstructionMessages messages = GWT.create(ScopeTreeInstructionMessages.class);
 	private final HasInstructions targetWidget;
 	private ScopeTreeInstructionSteps currentStep = ScopeTreeInstructionSteps.NOT_CONFIGURED;
 
@@ -36,7 +39,7 @@ public class ScopeTreeInstructionGuide {
 				return this;
 			}
 		},
-		NO_SCOPES("CONTROL + ENTER to insert a child item") {
+		NO_SCOPES(messages.insertChild()) {
 			@Override
 			protected ScopeTreeInstructionSteps nextStep(final ModelAction action, final HasInstructions targetWidget) {
 				if (action instanceof ScopeInsertChildAction) return ONE_SCOPE_ONLY.updateWidget(targetWidget);
@@ -44,7 +47,7 @@ public class ScopeTreeInstructionGuide {
 				return this;
 			}
 		},
-		ONE_SCOPE_ONLY("ENTER to insert below", "SHIFT + ENTER to insert above") {
+		ONE_SCOPE_ONLY(messages.insertBelow(), messages.insertAbove()) {
 			@Override
 			protected ScopeTreeInstructionSteps nextStep(final ModelAction action, final HasInstructions targetWidget) {
 				if (action instanceof ScopeInsertSiblingAction) return FEW_SCOPES_ONE_LEVEL_ONLY.updateWidget(targetWidget);
@@ -56,7 +59,7 @@ public class ScopeTreeInstructionGuide {
 				return this;
 			}
 		},
-		FEW_SCOPES_ONE_LEVEL_ONLY("CONTROL + ARROWS to move an Item") {
+		FEW_SCOPES_ONE_LEVEL_ONLY(messages.moveItems()) {
 			public int scopesCount = 2;
 
 			@Override
@@ -82,7 +85,7 @@ public class ScopeTreeInstructionGuide {
 			}
 
 		},
-		TWO_LEVELS("CONTROL + SHIFT + ENTER to insert a parent item") {
+		TWO_LEVELS(messages.insertParent()) {
 			@Override
 			protected ScopeTreeInstructionSteps nextStep(final ModelAction action, final HasInstructions targetWidget) {
 				return END.updateWidget(targetWidget);
