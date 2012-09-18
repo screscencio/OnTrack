@@ -60,7 +60,7 @@ def setup():
 	global ssl3, protocol
 
 	if useHttps :
-		ssl3 = " -3"
+		ssl3 = " -3 -k"
 		protocol = "https"
 	else :
 		ssl3 = ""

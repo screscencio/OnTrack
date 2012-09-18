@@ -151,16 +151,11 @@ class BusinessLogicImpl implements BusinessLogic {
 	private Project applyActionsToProject(final Project project, final List<UserAction> actionList) throws UnableToCompleteActionException {
 		final ProjectContext projectContext = new ProjectContext(project);
 
-		final int totalActions = actionList.size();
-		int appliedActions = 0;
-		LOGGER.debug("Appling " + totalActions + " actions to project " + project.getProjectRepresentation().getName() + ".");
 		for (final UserAction action : actionList) {
-			User user;
 			try {
-				user = persistenceService.retrieveUserById(action.getUserId());
+				final User user = persistenceService.retrieveUserById(action.getUserId());
 				final ActionContext actionContext = new ActionContext(user, action.getTimestamp());
 				ActionExecuter.executeAction(projectContext, actionContext, action.getModelAction());
-				LOGGER.debug(++appliedActions + " actions applied (" + appliedActions * 100 / totalActions + "% Completed).");
 			}
 			catch (final Exception e) {
 				LOGGER.error("Unable to apply action to project", e);
