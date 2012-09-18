@@ -2,7 +2,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
-	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout">
+	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 
 	<ui:style src="../../../style/default.css">
 	   .rootPanel {
@@ -49,8 +52,12 @@
 	
 	<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.semiTransparentContainer}" addContainerStyleNames="{style.container}">
 		<g:FlowPanel ui:field="noReleaseText" styleName="{style.noReleaseContainer}">
-			<g:Label text="No Release yet" styleName="{style.noReleaseLabel}"/>
-			<g:Label text="Select a Scope and hit '@' key to attach the Scope to a Release" styleName="{style.helpLabel}"/>
+			<g:Label styleName="{style.noReleaseLabel}">
+				<ui:msg description="no releases in project message">No Release yet</ui:msg>
+			</g:Label>
+			<g:Label styleName="{style.helpLabel}">
+				<ui:msg description="release creation help message">Select a Scope and hit '@' key to attach the Scope to a Release</ui:msg>
+			</g:Label>
 		</g:FlowPanel>
 		<misc:VerticalModelWidgetContainer ui:field="releaseContainer" styleName="{style.releases}" />
 	</layout:ApplicationPopupBoxContainer>

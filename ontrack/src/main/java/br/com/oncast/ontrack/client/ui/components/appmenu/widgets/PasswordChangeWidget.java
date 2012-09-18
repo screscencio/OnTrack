@@ -5,6 +5,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ES
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserPasswordChangeCallback;
+import br.com.oncast.ontrack.client.ui.components.appmenu.PasswordChangeWidgetMessages;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedPasswordTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationPopupBoxContainer;
@@ -28,6 +29,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PasswordChangeWidget extends Composite implements HasCloseHandlers<PasswordChangeWidget>, PopupAware {
+
+	private static final PasswordChangeWidgetMessages messages = GWT.create(PasswordChangeWidgetMessages.class);
+
 	private static PasswordChangeWidgetUiBinder uiBinder = GWT.create(PasswordChangeWidgetUiBinder.class);
 
 	interface PasswordChangeWidgetUiBinder extends UiBinder<Widget, PasswordChangeWidget> {}
@@ -119,9 +123,9 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 	}
 
 	private void changePassword() {
-		if (newPasswordArea.getText().isEmpty() || retypePasswordArea.getText().isEmpty()) showErrorMessage("The new password cannot be empty.");
-		else if (!areTypedPasswordsEqual()) showErrorMessage("You typed two different passwords.");
-		else if (!PasswordValidator.isValid(newPasswordArea.getText())) showErrorMessage("The new password must have at least 6 characters.");
+		if (newPasswordArea.getText().isEmpty() || retypePasswordArea.getText().isEmpty()) showErrorMessage(messages.newPasswordCantBeEmpty());
+		else if (!areTypedPasswordsEqual()) showErrorMessage(messages.passwordConfirmationFailed());
+		else if (!PasswordValidator.isValid(newPasswordArea.getText())) showErrorMessage(messages.passwordMinCharRequirementFailed());
 		else submitUserPasswordChange();
 	}
 
@@ -143,7 +147,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 
 					@Override
 					public void onUserPasswordChangedSuccessfully() {
-						ClientServiceProvider.getInstance().getClientNotificationService().showSuccess("Password changed succesfully");
+						ClientServiceProvider.getInstance().getClientNotificationService().showSuccess(messages.successfulChange());
 						enable();
 						hide();
 					}
@@ -152,7 +156,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 					public void onUnexpectedFailure(final Throwable caught) {
 						// TODO Improve feedback message.
 						enable();
-						ClientServiceProvider.getInstance().getClientNotificationService().showError("Unexpected error.");
+						ClientServiceProvider.getInstance().getClientNotificationService().showError(messages.unexpectedError());
 
 					}
 
@@ -160,7 +164,7 @@ public class PasswordChangeWidget extends Composite implements HasCloseHandlers<
 					public void onIncorrectUserPasswordFailure() {
 						// TODO Improve feedback message.
 						enable();
-						ClientServiceProvider.getInstance().getClientNotificationService().showError("Incorrect old password.");
+						ClientServiceProvider.getInstance().getClientNotificationService().showError(messages.incorrectOldPassword());
 					}
 				});
 

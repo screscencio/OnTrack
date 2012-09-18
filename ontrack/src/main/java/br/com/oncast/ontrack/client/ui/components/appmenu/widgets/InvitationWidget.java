@@ -27,6 +27,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class InvitationWidget extends Composite implements HasCloseHandlers<InvitationWidget>, PopupAware {
 
+	private static final InvitationWidgetMessages messages = GWT.create(InvitationWidgetMessages.class);
+
 	private static InvitationWidgetUiBinder uiBinder = GWT.create(InvitationWidgetUiBinder.class);
 
 	private static ClientServiceProvider PROVIDER = ClientServiceProvider.getInstance();
@@ -69,7 +71,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
 		final int invitationQuota = (currentUser == null || currentUser.getProjectInvitationQuota() <= 0) ? 0 : currentUser.getProjectInvitationQuota();
 
-		countdownLabel.setText("You have '" + invitationQuota + "' invitations left.");
+		countdownLabel.setText(messages.inivitationQuota(invitationQuota));
 	}
 
 	private void setDefaultText() {
@@ -102,13 +104,13 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 					@Override
 					public void onSuccess() {
 						ClientServiceProvider.getInstance().getClientNotificationService()
-								.showSuccess("'" + mail + "' was invited!");
+								.showSuccess(messages.userInvited(mail));
 					}
 
 					@Override
 					public void onFailure(final Throwable caught) {
 						if (caught instanceof UnableToAuthorizeUserException) ClientServiceProvider.getInstance().getClientNotificationService()
-								.showWarning("'" + mail + "' already has been invited");
+								.showWarning(messages.userAlreadyInvited(mail));
 						else {
 							ClientServiceProvider.getInstance().getClientNotificationService().showWarning(caught.getMessage());
 						}

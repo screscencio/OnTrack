@@ -50,6 +50,8 @@ import com.google.gwt.user.client.ui.Widget;
 // TODO Refactor dividing visualization logic from business logic
 public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
+	private static final ReleaseWidgetMessages messages = GWT.create(ReleaseWidgetMessages.class);
+
 	private static ReleasePanelItemWidgetUiBinder uiBinder = GWT.create(ReleasePanelItemWidgetUiBinder.class);
 
 	interface ReleasePanelItemWidgetUiBinder extends UiBinder<Widget, ReleaseWidget> {}
@@ -283,21 +285,21 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (mouseCommandsMenu != null) return mouseCommandsMenu;
 
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseIncreasePriority(), "Increase priority", new Command() {
+		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseIncreasePriority(), messages.increasePriority(), new Command() {
 
 			@Override
 			public void execute() {
 				releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
 			}
 		}));
-		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDecreasePriority(), "Decrease priority", new Command() {
+		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDecreasePriority(), messages.decreasePriority(), new Command() {
 
 			@Override
 			public void execute() {
 				releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
 			}
 		}));
-		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDelete(), "Delete Release", new Command() {
+		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDelete(), messages.deleteRelease(), new Command() {
 
 			@Override
 			public void execute() {

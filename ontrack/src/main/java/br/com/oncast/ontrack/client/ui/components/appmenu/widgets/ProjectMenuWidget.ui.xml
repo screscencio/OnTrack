@@ -3,7 +3,10 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
-	xmlns:menuWidget="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets">
+	xmlns:menuWidget="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:image field="exportData" src="exportproject.png" />
 	<ui:style src="../../../style/default.css">
@@ -56,12 +59,14 @@
 		            <td width="1" align="center">
 		                <div class="{style.exportDataImg}" />
 		            </td>
-		            <td width="*" align="center">Export data (.mm)</td>
+		            <td width="*" align="center"><ui:msg description="export data label">Export data (.mm)</ui:msg></td>
 		        </tr>
 		    </table>
            </g:Anchor>
 		<misc:Separator styleName="{style.separator}" />
-		<g:Label text="Switch project" styleName="{style.switchProjectLabel}"/>
+		<g:Label  styleName="{style.switchProjectLabel}">
+			<ui:msg description="switch project label">Switch project</ui:msg>
+		</g:Label>
 		<misc:ProjectSelectionWidget ui:field="projectSelectionWidget"/>
 	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 

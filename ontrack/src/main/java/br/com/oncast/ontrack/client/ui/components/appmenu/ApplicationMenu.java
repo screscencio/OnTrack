@@ -27,6 +27,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ApplicationMenu extends Composite {
 
+	private static final ApplicationMenuMessages messages = GWT.create(ApplicationMenuMessages.class);
+
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
 	private static ApplicationMenuWidgetUiBinder uiBinder = GWT.create(ApplicationMenuWidgetUiBinder.class);
@@ -116,7 +118,7 @@ public class ApplicationMenu extends Composite {
 		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu).alignBelow(applicationMenuPanel, 1)
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(userMenuItem, HorizontalAlignment.CENTER));
 
-		userMenu.addItem("Change Password", new Command() {
+		userMenu.addItem(messages.changePassword(), new Command() {
 			@Override
 			public void execute() {
 				popupPassChange.pop();
@@ -124,8 +126,7 @@ public class ApplicationMenu extends Composite {
 		});
 
 		final User currentUser = SERVICE_PROVIDER.getAuthenticationService().getCurrentUser();
-		final String logoutText = "Logout" + ((currentUser != null) ? ", " + currentUser.getEmail() : "");
-		userMenu.addItem(logoutText, new Command() {
+		userMenu.addItem(currentUser == null ? messages.logout() : messages.logout(currentUser.getEmail()), new Command() {
 			@Override
 			public void execute() {
 				logUserOut();

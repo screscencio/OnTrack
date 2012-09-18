@@ -2,7 +2,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:ow="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets"
-	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 
 	<ui:with field="resources" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Resources"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Style">
@@ -171,7 +174,9 @@
 			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
 			<g:HorizontalPanel ui:field="laterSeparator" styleName="{style.laterSeparator}" verticalAlignment="middle">
 				<g:Image resource="{resources.laterImage}" styleName="{style.laterImage}"/>
-				<g:Label text="Later" styleName="{style.laterLabel}"/>
+				<g:Label styleName="{style.laterLabel}">
+					<ui:msg description="later label">Later</ui:msg>
+				</g:Label>
 				<g:cell width="100%">
 					<g:SimplePanel styleName="{style.laterLine}"/>
 				</g:cell>
