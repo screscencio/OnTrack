@@ -599,31 +599,23 @@
 
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat6-maven-plugin</artifactId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.0-SNAPSHOT</version>
 				<configuration>
 					<warSourceDirectory>${webappDirectory}</warSourceDirectory>
-					<url>http://localhost:8888/manager/text</url>
-					<port>8888</port>
-					<fork>true</fork>
-					<tag>${project.name}</tag>
-					<path>/</path>
+					<url>http://54.232.123.50/manager/</url>
+					<port>8080</port>
+					<path>/stag</path>
+					<update>true</update>
 					<username>manager</username>
-					<password>manager</password>
+					<password>FySv25SDnlLzLEe</password>
 				</configuration>
 				<executions>
 					<execution>
-						<id>acceptance-deploy</id>
-						<phase>tomcat6:redeploy</phase>
+						<id>staging-deploy</id>
+						<phase>tomcat7:deploy</phase>
 						<goals>
-							<goal>redeploy</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>staging-run-war</id>
-						<phase>tomcat6:run-war</phase>
-						<goals>
-							<goal>run-war</goal>
+							<goal>deploy</goal>
 						</goals>
 					</execution>
 				</executions>
