@@ -598,24 +598,46 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.0-SNAPSHOT</version>
-				<configuration>
-					<warSourceDirectory>${webappDirectory}</warSourceDirectory>
-					<url>http://54.232.123.50/manager/</url>
-					<port>8080</port>
-					<path>/stag</path>
-					<update>true</update>
-					<username>manager</username>
-					<password>FySv25SDnlLzLEe</password>
-				</configuration>
-				<executions>
+			    <groupId>org.codehaus.cargo</groupId>
+			    <artifactId>cargo-maven2-plugin</artifactId>
+			    <version>1.1.2</version>
+			    <configuration>
+			        <container>
+			            <containerId>tomcat7x</containerId>
+			            <type>remote</type>
+			        </container>
+
+			        <configuration>
+			            <type>runtime</type>
+			            <properties>
+			                <cargo.remote.uri>http://54.232.123.50:8080/manager/text</cargo.remote.uri>
+			                <cargo.remote.username>manager</cargo.remote.username>
+			                <cargo.remote.password>FySv25SDnlLzLEe</cargo.remote.password>
+			            </properties>
+			        </configuration>
+
+			        <deployer>
+			            <type>remote</type>
+			            <deployables>
+			                <deployable>
+			                    <groupId>${project.groupId}</groupId>
+			                    <artifactId>${project.artifactId}</artifactId>
+			                    <type>war</type>
+			                    <properties>
+			                        <context>/</context>
+			                    </properties>
+			                    <pingURL>http://54.232.123.50:8080/</pingURL>
+			                </deployable>
+			            </deployables>
+			        </deployer>
+
+			    </configuration>
+			    <executions>
 					<execution>
-						<id>staging-deploy</id>
-						<phase>tomcat7:deploy</phase>
+						<id>staging-cargo-deploy</id>
+						<phase>cargo:redeploy</phase>
 						<goals>
-							<goal>deploy</goal>
+							<goal>redeploy</goal>
 						</goals>
 					</execution>
 				</executions>
