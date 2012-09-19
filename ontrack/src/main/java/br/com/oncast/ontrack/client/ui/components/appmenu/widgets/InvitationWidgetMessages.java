@@ -1,12 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.LocalizableResource.GenerateKeys;
-import com.google.gwt.i18n.client.Messages;
+import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
-@Generate(format = { "com.google.gwt.i18n.rebind.format.PropertiesFormat" }, locales = { "default" })
-@GenerateKeys
-public interface InvitationWidgetMessages extends Messages {
+public interface InvitationWidgetMessages extends BaseMessages {
 
 	@Description("inivitation quota information message")
 	@DefaultMessage("You have ''{0}'' invitations left.")
