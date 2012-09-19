@@ -284,6 +284,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
+			<version>4.8.1.1</version>
+		</dependency>
+
 		<!-- Testing Related Dependencies. -->
 		<dependency>
 			<groupId>com.googlecode.gwt-test-utils</groupId>
