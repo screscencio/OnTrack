@@ -40,6 +40,8 @@ import com.google.gwt.user.client.ui.Widget;
 // TODO refactor this class and FiltableCommandMenu to extract duplicated code
 public class SearchScopeFiltrableCommandMenu extends Composite {
 
+	private static final SearchScopeMenuMessages messages = GWT.create(SearchScopeMenuMessages.class);
+
 	private static SearchScopeFiltrableCommandMenuUiBinder uiBinder = GWT.create(SearchScopeFiltrableCommandMenuUiBinder.class);
 
 	interface SearchScopeFiltrableCommandMenuUiBinder extends UiBinder<Widget, SearchScopeFiltrableCommandMenu> {}
@@ -90,7 +92,7 @@ public class SearchScopeFiltrableCommandMenu extends Composite {
 		this.itens = itens;
 		menu.setItems(itens);
 
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	public void focus() {
@@ -163,12 +165,12 @@ public class SearchScopeFiltrableCommandMenu extends Composite {
 		result.setVisible(!filterText.isEmpty());
 
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
-		resultInfo.setText("Showing " + filteredItens.size() + " matching results");
+		resultInfo.setText(messages.showingMatchingResults(filteredItens.size()));
 
 		menu.setItems(filteredItens);
 		menu.selectFirstItem();
 
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	private List<CommandMenuItem> getFilteredItens(final String filterText) {
@@ -210,7 +212,7 @@ public class SearchScopeFiltrableCommandMenu extends Composite {
 	 * IMPORTANT Do not use max_height CSS property directly in the ui.xml file, because the first time this ScrollabeCommandMenu is
 	 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
 	 */
-	private void ajustDimentions() {
+	private void adjustDimentions() {
 		scrollPanel.setHeight("");
 		if (scrollPanel.getOffsetHeight() > maxHeight) scrollPanel.setHeight(maxHeight + "px");
 	}
@@ -244,13 +246,13 @@ public class SearchScopeFiltrableCommandMenu extends Composite {
 	@UiHandler("focusPanel")
 	protected void onAttach(final AttachEvent event) {
 		if (!event.isAttached()) return;
-		ajustDimentions();
+		adjustDimentions();
 	}
 
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
-		if (visible) ajustDimentions();
+		if (visible) adjustDimentions();
 	}
 
 	public interface FiltrableCommandMenuListener {
