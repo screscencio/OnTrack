@@ -2,7 +2,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
-	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 
 	<ui:image field="searchIcon" src="search-project.png"/>
 	<ui:style src="../style/default.css">
@@ -90,7 +93,9 @@
 				<g:cell width="100%">
 				 	<g:HTMLPanel styleName="{style.filterBoxContainer}">
 						<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
-						<g:Label ui:field="helpLabel" styleName="{style.helpLabel}">Hit TAB to complete</g:Label>
+						<g:Label ui:field="helpLabel" styleName="{style.helpLabel}">
+							<ui:msg description="filtrable command menu help text">Hit TAB to complete</ui:msg>
+						</g:Label>
 					</g:HTMLPanel>
 				</g:cell>
 			</g:HorizontalPanel>
@@ -101,4 +106,4 @@
 		</layout:ApplicationPopupBoxContainer>
 	</g:FocusPanel>
 
-</ui:UiBinder> 
+</ui:UiBinder>
