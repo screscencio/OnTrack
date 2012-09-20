@@ -30,6 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationComment extends Composite implements ModelWidget<Annotation> {
 
+	private static final DetailPanelMessages messages = GWT.create(DetailPanelMessages.class);
+
 	private static AnnotationCommentUiBinder uiBinder = GWT.create(AnnotationCommentUiBinder.class);
 
 	interface AnnotationCommentUiBinder extends UiBinder<Widget, AnnotationComment> {}
@@ -147,14 +149,14 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 		deprecatedLabel.setText(getDeprecationText());
 		deprecatedLabel.setTitle(absoluteDate);
 
-		closedDeprecatedLabel.setText("[Deprecated] " + annotation.getMessage());
+		closedDeprecatedLabel.setText(messages.deprecated(annotation.getMessage()));
 		closedDeprecatedLabel.setTitle(absoluteDate);
 	}
 
 	private String getDeprecationText() {
-		final String deprecationText = "[Deprecated by " + removeEmailDomain(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED)) + " since "
-				+ HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED)) + "]";
-		return deprecationText;
+		final String username = removeEmailDomain(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
+		final String formattedDate = HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
+		return messages.deprecationDetails(username, formattedDate);
 	}
 
 	private String removeEmailDomain(final User user) {

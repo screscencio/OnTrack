@@ -83,7 +83,9 @@
 					<g:Image ui:field="author" styleName="{style.author}" />
 					<g:cell width="100%" height="100%">
 						<g:VerticalPanel width="100%" height="100%">
-							<g:Label ui:field="deprecatedLabel" text="[Deprecated]" styleName="{style.deprecatedLabel}"/>
+							<g:Label ui:field="deprecatedLabel" styleName="{style.deprecatedLabel}">
+								<ui:msg description="deprecated simple label">[Deprecated]</ui:msg>
+							</g:Label>
 							<g:cell height="100%">
 								<g:HTMLPanel ui:field="messageBody" styleName="{style.messageBody}" />
 							</g:cell>

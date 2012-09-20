@@ -32,6 +32,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ChecklistsContainerWidget extends Composite {
 
+	private static final DetailPanelMessages messages = GWT.create(DetailPanelMessages.class);
+
 	private static ChecklistsContainerWidgetUiBinder uiBinder = GWT.create(ChecklistsContainerWidgetUiBinder.class);
 
 	interface ChecklistsContainerWidgetUiBinder extends UiBinder<Widget, ChecklistsContainerWidget> {}
@@ -130,7 +132,7 @@ public class ChecklistsContainerWidget extends Composite {
 	private void createChecklist() {
 		final String checklistTitle = this.newChecklistTitle.getText();
 		if (checklistTitle.trim().isEmpty()) {
-			ClientServiceProvider.getInstance().getClientNotificationService().showWarning("Can't create a checklist with empty title.");
+			ClientServiceProvider.getInstance().getClientNotificationService().showWarning(messages.emptyChecklistTitleError());
 			newChecklistTitle.setFocus(true);
 			return;
 		}

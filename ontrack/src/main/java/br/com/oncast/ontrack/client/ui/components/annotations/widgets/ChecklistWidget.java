@@ -46,6 +46,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ChecklistWidget extends Composite implements ModelWidget<Checklist> {
 
+	private static final DetailPanelMessages messagtes = GWT.create(DetailPanelMessages.class);
+
 	private static ChecklistWidgetUiBinder uiBinder = GWT.create(ChecklistWidgetUiBinder.class);
 
 	interface ChecklistWidgetUiBinder extends UiBinder<Widget, ChecklistWidget> {}
@@ -160,7 +162,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	private void addItem() {
 		final String itemDescription = newItemDescription.getText().trim();
 		if (itemDescription.isEmpty()) {
-			ClientServiceProvider.getInstance().getClientNotificationService().showWarning("Can't create a item with empty description.");
+			ClientServiceProvider.getInstance().getClientNotificationService().showWarning(messagtes.emptyChecklistItemError());
 			newItemDescription.setFocus(true);
 			return;
 		}
