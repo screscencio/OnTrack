@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MembersWidget extends Composite implements HasCloseHandlers<MembersWidget>, PopupAware {
 
-	private static final InvitationWidgetMessages messages = GWT.create(InvitationWidgetMessages.class);
+	private static final MembersWidgetMessages messages = GWT.create(MembersWidgetMessages.class);
 
 	private static MembersWidgetUiBinder uiBinder = GWT.create(MembersWidgetUiBinder.class);
 

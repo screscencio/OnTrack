@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
-public interface InvitationWidgetMessages extends BaseMessages {
+public interface MembersWidgetMessages extends BaseMessages {
 
 	@Description("inivitation quota information message")
 	@DefaultMessage("You have ''{0}'' invitations left.")
