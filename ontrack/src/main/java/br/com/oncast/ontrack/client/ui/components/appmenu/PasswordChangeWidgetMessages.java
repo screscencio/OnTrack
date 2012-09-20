@@ -1,12 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
-import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.LocalizableResource.GenerateKeys;
-import com.google.gwt.i18n.client.Messages;
+import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
-@Generate(format = { "com.google.gwt.i18n.rebind.format.PropertiesFormat" }, locales = { "default" })
-@GenerateKeys
-public interface PasswordChangeWidgetMessages extends Messages {
+public interface PasswordChangeWidgetMessages extends BaseMessages {
 
 	@Description("empty password error message")
 	@DefaultMessage("The new password cannot be empty.")

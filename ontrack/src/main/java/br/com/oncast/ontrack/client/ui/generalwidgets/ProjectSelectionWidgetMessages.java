@@ -1,12 +1,8 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.LocalizableResource.GenerateKeys;
-import com.google.gwt.i18n.client.Messages;
+import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
-@Generate(format = { "com.google.gwt.i18n.rebind.format.PropertiesFormat" }, locales = { "default" })
-@GenerateKeys
-public interface ProjectSelectionWidgetMessages extends Messages {
+public interface ProjectSelectionWidgetMessages extends BaseMessages {
 
 	@Description("help text of select input")
 	@DefaultMessage("Hit ↓ to show your projects")

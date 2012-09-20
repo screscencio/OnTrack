@@ -3,9 +3,12 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 
 public class ScopeTreeItemWidgetProgressCommandMenuItemFactory implements ScopeTreeItemWidgetCommandMenuItemFactory {
+
+	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
 
 	private final ScopeTreeItemWidgetEditionHandler controller;
 
@@ -15,7 +18,7 @@ public class ScopeTreeItemWidgetProgressCommandMenuItemFactory implements ScopeT
 
 	@Override
 	public SimpleCommandMenuItem createCustomItem(final String inputText) {
-		return new SimpleCommandMenuItem("Mark as '" + inputText + "'", inputText, new Command() {
+		return new SimpleCommandMenuItem(messages.markAs(inputText), inputText, new Command() {
 
 			@Override
 			public void execute() {

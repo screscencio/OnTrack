@@ -1,12 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.LocalizableResource.GenerateKeys;
-import com.google.gwt.i18n.client.Messages;
+import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
-@Generate(format = { "com.google.gwt.i18n.rebind.format.PropertiesFormat" }, locales = { "default" })
-@GenerateKeys
-public interface ReleaseWidgetMessages extends Messages {
+public interface ReleaseWidgetMessages extends BaseMessages {
 
 	@Description("increase release priority menu text")
 	@DefaultMessage("Increase priority")

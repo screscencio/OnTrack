@@ -1,12 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu;
 
-import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.LocalizableResource.GenerateKeys;
-import com.google.gwt.i18n.client.Messages;
+import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
-@Generate(format = { "com.google.gwt.i18n.rebind.format.PropertiesFormat" }, locales = { "default" })
-@GenerateKeys
-public interface ApplicationMenuMessages extends Messages {
+public interface ApplicationMenuMessages extends BaseMessages {
 
 	@Description("change password option text")
 	@DefaultMessage("Change Password")
