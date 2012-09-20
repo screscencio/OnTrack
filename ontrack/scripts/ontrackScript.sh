@@ -1,8 +1,7 @@
 #!/bin/bash
 
-mkdir ~/Development
 mkdir ~/workspace
-mkdir ~/Development/lib
+mkdir -p ~/Development/lib
 
 sudo apt-get install -y openjdk-6-jdk git chromium-browser unzip maven2
 
