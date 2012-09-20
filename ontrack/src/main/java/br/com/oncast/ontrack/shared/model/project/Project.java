@@ -168,4 +168,8 @@ public class Project implements Serializable {
 		users.remove(user);
 	}
 
+	public List<User> getUsers() {
+		return new ArrayList<User>(users);
+	}
+
 }

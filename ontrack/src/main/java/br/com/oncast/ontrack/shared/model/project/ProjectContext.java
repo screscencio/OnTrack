@@ -240,4 +240,8 @@ public class ProjectContext {
 		project.removeUser(user);
 	}
 
+	public List<User> getUsers() {
+		return project.getUsers();
+	}
+
 }

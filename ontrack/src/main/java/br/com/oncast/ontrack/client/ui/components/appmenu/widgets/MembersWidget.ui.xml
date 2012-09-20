@@ -3,6 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.components.appmenu.widgets"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
@@ -31,6 +32,8 @@
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}">
+		<w:MembersListWidget />
+		<misc:Separator />
 		<g:Label styleName="{style.title}">
 			<ui:msg description="invitee label">Invitee:</ui:msg>
 		</g:Label>

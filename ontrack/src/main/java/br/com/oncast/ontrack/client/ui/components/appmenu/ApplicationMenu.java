@@ -4,7 +4,7 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.InvitationWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.MembersWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectMenuWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -103,7 +103,7 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private void createMemberMenu() {
-		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new InvitationWidget())
+		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new MembersWidget())
 				.alignBelow(applicationMenuPanel, 1)
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(memberMenuItem, HorizontalAlignment.CENTER));
 		memberMenuItem.setPopupConfig(invitePopup);

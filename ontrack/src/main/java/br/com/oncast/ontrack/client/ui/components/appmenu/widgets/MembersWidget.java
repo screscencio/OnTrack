@@ -25,15 +25,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class InvitationWidget extends Composite implements HasCloseHandlers<InvitationWidget>, PopupAware {
+public class MembersWidget extends Composite implements HasCloseHandlers<MembersWidget>, PopupAware {
 
 	private static final InvitationWidgetMessages messages = GWT.create(InvitationWidgetMessages.class);
 
-	private static InvitationWidgetUiBinder uiBinder = GWT.create(InvitationWidgetUiBinder.class);
+	private static MembersWidgetUiBinder uiBinder = GWT.create(MembersWidgetUiBinder.class);
 
 	private static ClientServiceProvider PROVIDER = ClientServiceProvider.getInstance();
 
-	interface InvitationWidgetUiBinder extends UiBinder<Widget, InvitationWidget> {}
+	interface MembersWidgetUiBinder extends UiBinder<Widget, MembersWidget> {}
 
 	@UiField
 	protected DefaultTextedTextBox invitationTextBox;
@@ -41,7 +41,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 	@UiField
 	protected Label countdownLabel;
 
-	public InvitationWidget() {
+	public MembersWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -56,7 +56,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 	}
 
 	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<InvitationWidget> handler) {
+	public HandlerRegistration addCloseHandler(final CloseHandler<MembersWidget> handler) {
 		return addHandler(handler, CloseEvent.getType());
 	}
 
@@ -94,7 +94,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 
 		INVITE(KEY_ENTER) {
 			@Override
-			protected void executeImpl(final InvitationWidget widget) {
+			protected void executeImpl(final MembersWidget widget) {
 				final String mail = widget.invitationTextBox.getText();
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 
@@ -120,7 +120,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 		},
 		CANCEL(KEY_ESCAPE) {
 			@Override
-			protected void executeImpl(final InvitationWidget widget) {
+			protected void executeImpl(final MembersWidget widget) {
 				widget.hide();
 			}
 		};
@@ -131,9 +131,9 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 			this.keyCode = keyCode;
 		}
 
-		protected abstract void executeImpl(InvitationWidget widget);
+		protected abstract void executeImpl(MembersWidget widget);
 
-		static boolean handle(final InvitationWidget widget, final KeyDownEvent event) {
+		static boolean handle(final MembersWidget widget, final KeyDownEvent event) {
 			for (final InvitationKeyDownHandler handler : values()) {
 				if (handler.keyCode == event.getNativeKeyCode()) {
 					handler.execute(widget, event);
@@ -144,7 +144,7 @@ public class InvitationWidget extends Composite implements HasCloseHandlers<Invi
 			return false;
 		}
 
-		private void execute(final InvitationWidget widget, final DomEvent<?> event) {
+		private void execute(final MembersWidget widget, final DomEvent<?> event) {
 			executeImpl(widget);
 			consume(event);
 		}
