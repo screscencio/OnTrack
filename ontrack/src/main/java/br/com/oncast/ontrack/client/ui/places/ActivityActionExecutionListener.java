@@ -18,7 +18,7 @@ public class ActivityActionExecutionListener implements ActionExecutionListener 
 	public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
 			final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 		if (action instanceof TeamInviteAction) {
-			ClientServiceProvider.getInstance().getClientNotificationService()
+			ClientServiceProvider.getInstance().getClientAlertingService()
 					.showInfo("The User '" + action.getReferenceId().toStringRepresentation() + "' accepted the invitaton for this project");
 		}
 		if (actionExecutionSuccessListeners == null) return;

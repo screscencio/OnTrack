@@ -75,7 +75,7 @@
 
 /* Component Styles */
 
-@def NOTIFICATION_SHADOW 0px 5px 20px #666666;
+@def ALERT_SHADOW 0px 5px 20px #666666;
 
 @def POPUP_SHADOW 1px 5px 10px #999999;
 @def POPUP_BORDER 1px solid #DDDDDD;

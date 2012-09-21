@@ -1,6 +1,7 @@
-package br.com.oncast.ontrack.server.services.notification;
+package br.com.oncast.ontrack.server.services.multicast;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -15,15 +16,16 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
+import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 
-public class NotificationServiceImpl implements NotificationService {
+public class MulticastServiceImpl implements MulticastService {
 
-	private static final Logger LOGGER = Logger.getLogger(NotificationServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(MulticastServiceImpl.class);
 	private final ServerPushServerService serverPushServerService;
 	private final ClientManager clientManager;
 	private final SessionManager sessionManager;
 
-	public NotificationServiceImpl(final ServerPushServerService serverPushServerService, final ClientManager clientManager, final SessionManager sessionManager) {
+	public MulticastServiceImpl(final ServerPushServerService serverPushServerService, final ClientManager clientManager, final SessionManager sessionManager) {
 		this.serverPushServerService = serverPushServerService;
 		this.clientManager = clientManager;
 		this.sessionManager = sessionManager;
@@ -81,5 +83,10 @@ public class NotificationServiceImpl implements NotificationService {
 		LOGGER.debug("Multicasting information change for " + User.class.getSimpleName() + " '" + authenticatedUser.getEmail()
 				+ "' to " + connectionSet.toString() + ".");
 		serverPushServerService.pushEvent(new UserInformationChangeEvent(authenticatedUser), connectionSet);
+	}
+
+	@Override
+	public void multicastToUsers(final NotificationCreatedEvent notificationCreatedEvent, final List<User> recipients) {
+		// FIXME Notification
 	}
 }

@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 // TODO ++Extract EntityManager logic to a "EntityManagerManager" (Using a better name).
 // TODO Analise using CriteriaApi instead of HQL.
@@ -510,6 +512,17 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		finally {
 			em.close();
 		}
+	}
+
+	@Override
+	public List<Notification> retrieveLatestNotificationsForUser(final User user, final int maxNotifications) {
+		// FIXME Notification
+		return new ArrayList<Notification>();
+	}
+
+	@Override
+	public void persistOrUpdateNotification(final Notification notification) {
+		// FIXME Notification
 	}
 
 }

@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.notification;
+package br.com.oncast.ontrack.server.services.multicast;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertContainsNone;
@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.serverPush.CometClientConnection;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.user.User;

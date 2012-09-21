@@ -6,6 +6,7 @@ import br.com.drycode.api.web.gwt.dispatchService.client.RequestBuilderConfigura
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationServiceImpl;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
@@ -23,7 +24,7 @@ import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricService;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricServiceNewRelicImpl;
-import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
+import br.com.oncast.ontrack.client.services.notification.NotificationService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
@@ -63,7 +64,8 @@ public class ClientServiceProvider {
 	private AuthenticationService authenticationService;
 	private AuthorizationService authorizationService;
 	private ApplicationPlaceController placeController;
-	private ClientNotificationService notificationService;
+	private ClientAlertingService alertService;
+	private NotificationService notificationService;
 
 	private ActionSyncService actionSyncService;
 
@@ -125,17 +127,17 @@ public class ClientServiceProvider {
 	public ProjectRepresentationProvider getProjectRepresentationProvider() {
 		if (projectRepresentationProvider != null) return projectRepresentationProvider;
 		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(getRequestDispatchService(), getServerPushClientService(),
-				getAuthenticationService(), getClientNotificationService());
+				getAuthenticationService(), getClientAlertingService());
 	}
 
-	public ClientNotificationService getClientNotificationService() {
-		if (notificationService != null) return notificationService;
-		return notificationService = new ClientNotificationService();
+	public ClientAlertingService getClientAlertingService() {
+		if (alertService != null) return alertService;
+		return alertService = new ClientAlertingService();
 	}
 
 	public ActionExecutionService getActionExecutionService() {
 		if (actionExecutionService != null) return actionExecutionService;
-		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getClientNotificationService(),
+		return actionExecutionService = new ActionExecutionServiceImpl(getContextProviderService(), getClientAlertingService(),
 				getProjectRepresentationProvider(), getApplicationPlaceController(), getAuthenticationService());
 	}
 
@@ -165,12 +167,12 @@ public class ClientServiceProvider {
 	private ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
-				getProjectRepresentationProvider(), getClientNotificationService());
+				getProjectRepresentationProvider(), getClientAlertingService());
 	}
 
 	public ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientServiceImpl(getClientNotificationService());
+		return serverPushClientService = new ServerPushClientServiceImpl(getClientAlertingService());
 	}
 
 	public EventBus getEventBus() {
@@ -208,5 +210,11 @@ public class ClientServiceProvider {
 	public ClientMetricService getClientMetricService() {
 		if (clientMetricService == null) clientMetricService = new ClientMetricServiceNewRelicImpl();
 		return clientMetricService;
+	}
+
+	public NotificationService getNotificationService() {
+		if (notificationService == null) notificationService = new NotificationService(getRequestDispatchService(), getServerPushClientService(),
+				getAuthenticationService(), getClientAlertingService());
+		return notificationService;
 	}
 }

@@ -5,9 +5,9 @@ import java.util.Set;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
+import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
-import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -25,17 +25,17 @@ public class ActionSyncService {
 
 	private final ActionExecutionService actionExecutionService;
 
-	private final ClientNotificationService notificationService;
+	private final ClientAlertingService alertingService;
 
 	private final ProjectRepresentationProvider projectRepresentationProvider;
 
 	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
 			final ActionExecutionService actionExecutionService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ClientNotificationService notificationService) {
+			final ClientAlertingService alertingService) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.actionExecutionService = actionExecutionService;
-		this.notificationService = notificationService;
-		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, notificationService);
+		this.alertingService = alertingService;
+		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, alertingService);
 
 		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {
 
@@ -64,8 +64,8 @@ public class ActionSyncService {
 			}
 		}
 		catch (final UnableToCompleteActionException e) {
-			notificationService.showErrorWithConfirmation("Some of the lattest changes conflicted.",
-					new NotificationConfirmationListener() {
+			alertingService.showErrorWithConfirmation("Some of the lattest changes conflicted.",
+					new AlertConfirmationListener() {
 						@Override
 						public void onConfirmation() {
 							Window.Location.reload();

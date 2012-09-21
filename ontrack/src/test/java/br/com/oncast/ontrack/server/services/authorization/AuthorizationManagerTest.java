@@ -28,7 +28,7 @@ import br.com.oncast.ontrack.server.services.authentication.AuthenticationManage
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMail;
 import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
-import br.com.oncast.ontrack.server.services.notification.NotificationService;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -315,26 +315,26 @@ public class AuthorizationManagerTest {
 	public void validateAndUpdateUserUserInvitaionQuotaShouldNotifyUserInformationChangeWhenSucceed() throws PersistenceException,
 			UnableToAuthorizeUserException {
 		final String mail = "user@mail.com";
-		final NotificationService notificationService = mock(NotificationService.class);
+		final MulticastService multicastService = mock(MulticastService.class);
 
 		authenticatedUser.setProjectInvitationQuota(1);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, notificationService)
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
 				.validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser);
-		verify(notificationService).notifyUserInformationChange(authenticatedUser);
+		verify(multicastService).notifyUserInformationChange(authenticatedUser);
 	}
 
 	@Test
 	public void validateAndUpdateUserUserInvitaionQuotaShouldNotNotifyUserInformationChangeWhenFailed() {
-		final NotificationService notificationService = mock(NotificationService.class);
+		final MulticastService multicastService = mock(MulticastService.class);
 		final String mail = "user@mail.com";
 
 		authenticatedUser.setProjectInvitationQuota(0);
 		try {
-			AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, notificationService)
+			AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
 					.validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser);
 		}
 		catch (final Exception e) {}
-		verify(notificationService, times(0)).notifyUserInformationChange(authenticatedUser);
+		verify(multicastService, times(0)).notifyUserInformationChange(authenticatedUser);
 	}
 
 	@Test
@@ -358,23 +358,23 @@ public class AuthorizationManagerTest {
 
 	@Test
 	public void validateAndUpdateUserProjectCreationQuotaShouldNotifyUserInformationChangeWhenSucceed() throws PersistenceException, AuthorizationException {
-		final NotificationService notificationService = mock(NotificationService.class);
+		final MulticastService multicastService = mock(MulticastService.class);
 		authenticatedUser.setProjectCreationQuota(1);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, notificationService)
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
 				.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
-		verify(notificationService).notifyUserInformationChange(authenticatedUser);
+		verify(multicastService).notifyUserInformationChange(authenticatedUser);
 	}
 
 	@Test
 	public void validateAndUpdateUserProjectCreationQuotaShouldNotNotifyUserInformationChangeWhenFailed() throws PersistenceException, AuthorizationException {
-		final NotificationService notificationService = mock(NotificationService.class);
+		final MulticastService multicastService = mock(MulticastService.class);
 		authenticatedUser.setProjectCreationQuota(0);
 		try {
-			AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, notificationService)
+			AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
 					.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 		}
 		catch (final Exception e) {}
-		verify(notificationService, times(0)).notifyUserInformationChange(authenticatedUser);
+		verify(multicastService, times(0)).notifyUserInformationChange(authenticatedUser);
 	}
 
 }

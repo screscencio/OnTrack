@@ -8,7 +8,7 @@ import org.mockito.Mock;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProviderTestUtils;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
-import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.ActionNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
@@ -35,7 +35,7 @@ public class RemoveTest extends GwtTest {
 	private ActionExecutionServiceImpl actionExecutionService;
 
 	@Mock
-	private ClientNotificationService notificationService;
+	private ClientAlertingService alertingService;
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -57,7 +57,7 @@ public class RemoveTest extends GwtTest {
 		tree.setContext(ProjectTestUtils.createProjectContext(scope, null));
 
 		projectContext = ProjectTestUtils.createProjectContext(scope, ReleaseFactoryTestUtil.create(""));
-		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext, notificationService);
+		actionExecutionService = ActionExecutionFactoryTestUtil.create(projectContext, alertingService);
 		actionExecutionService.addActionExecutionListener(tree.getActionExecutionListener());
 	}
 

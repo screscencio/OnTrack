@@ -12,5 +12,5 @@ public interface ProgressView extends IsWidget {
 
 	KanbanWigetDisplay getKanbanPanel();
 
-	Widget getNotificationPanel();
+	Widget getAlertingPanel();
 }

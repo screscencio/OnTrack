@@ -6,9 +6,9 @@ import java.util.List;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
-import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -23,14 +23,14 @@ class ActionQueuedDispatcher {
 	private final List<ModelAction> actionList;
 	private List<ModelAction> waitingServerAnswerActionList;
 	private final ProjectRepresentationProvider projectRepresentationProvider;
-	private final ClientNotificationService notificationService;
+	private final ClientAlertingService alertingService;
 
 	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ClientNotificationService notificationService) {
+			final ClientAlertingService alertingService) {
 
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.requestDispatchService = requestDispatchService;
-		this.notificationService = notificationService;
+		this.alertingService = alertingService;
 
 		actionList = new ArrayList<ModelAction>();
 		waitingServerAnswerActionList = new ArrayList<ModelAction>();
@@ -69,10 +69,10 @@ class ActionQueuedDispatcher {
 						// TODO When "Broswer-Reload" is removed, this method should fix "sync lists" according to the error returned.
 						// TODO Analyze refactoring this exception handling into a communication centralized exception handler.
 						if (caught instanceof InvalidIncomingAction || caught instanceof UnableToHandleActionException) {
-							notificationService
+							alertingService
 									.showErrorWithConfirmation(
 											"The project is out of sync. Some changes may have been reverted.",
-											new NotificationConfirmationListener() {
+											new AlertConfirmationListener() {
 												@Override
 												public void onConfirmation() {
 													Window.Location.reload();
@@ -80,7 +80,7 @@ class ActionQueuedDispatcher {
 											});
 						}
 						else {
-							notificationService.showErrorWithConfirmation("Connection lost.", new NotificationConfirmationListener() {
+							alertingService.showErrorWithConfirmation("Connection lost.", new AlertConfirmationListener() {
 								@Override
 								public void onConfirmation() {
 									Window.Location.reload();

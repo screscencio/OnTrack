@@ -130,7 +130,7 @@ public class ChecklistsContainerWidget extends Composite {
 	private void createChecklist() {
 		final String checklistTitle = this.newChecklistTitle.getText();
 		if (checklistTitle.trim().isEmpty()) {
-			ClientServiceProvider.getInstance().getClientNotificationService().showWarning("Can't create a checklist with empty title.");
+			ClientServiceProvider.getInstance().getClientAlertingService().showWarning("Can't create a checklist with empty title.");
 			newChecklistTitle.setFocus(true);
 			return;
 		}

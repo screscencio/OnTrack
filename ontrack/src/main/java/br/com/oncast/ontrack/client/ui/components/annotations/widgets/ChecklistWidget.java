@@ -160,7 +160,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	private void addItem() {
 		final String itemDescription = newItemDescription.getText().trim();
 		if (itemDescription.isEmpty()) {
-			ClientServiceProvider.getInstance().getClientNotificationService().showWarning("Can't create a item with empty description.");
+			ClientServiceProvider.getInstance().getClientAlertingService().showWarning("Can't create a item with empty description.");
 			newItemDescription.setFocus(true);
 			return;
 		}

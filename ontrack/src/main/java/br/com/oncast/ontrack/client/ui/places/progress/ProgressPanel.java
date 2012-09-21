@@ -37,7 +37,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 	}
 
 	@Override
-	public Widget getNotificationPanel() {
+	public Widget getAlertingPanel() {
 		return rootPanel.getContentPanelWidget();
 	}
 }

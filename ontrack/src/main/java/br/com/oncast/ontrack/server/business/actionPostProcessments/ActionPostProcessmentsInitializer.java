@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.server.business.actionPostProcessments;
 
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
-import br.com.oncast.ontrack.server.services.notification.NotificationService;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
@@ -12,13 +12,13 @@ public class ActionPostProcessmentsInitializer {
 	private boolean initialized;
 	private final ActionPostProcessingService postProcessingService;
 	private final PersistenceService persistenceService;
-	private final NotificationService notificationService;
+	private final MulticastService multicastService;
 
 	public ActionPostProcessmentsInitializer(final ActionPostProcessingService actionPostProcessingService, final PersistenceService persistenceService,
-			final NotificationService notificationService) {
+			final MulticastService multicastService) {
 		this.postProcessingService = actionPostProcessingService;
 		this.persistenceService = persistenceService;
-		this.notificationService = notificationService;
+		this.multicastService = multicastService;
 	}
 
 	public synchronized void initialize() {
@@ -29,7 +29,7 @@ public class ActionPostProcessmentsInitializer {
 	}
 
 	private ActionPostProcessor<TeamInviteAction> createTeamInvitePostProcessor() {
-		return new TeamInvitePostProcessor(notificationService);
+		return new TeamInvitePostProcessor(multicastService);
 	}
 
 	private ActionPostProcessor<FileUploadAction> createFileUploadPostProcessor() {

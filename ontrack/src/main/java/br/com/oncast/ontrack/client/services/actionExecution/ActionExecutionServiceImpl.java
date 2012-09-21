@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.places.PlaceChangeListener;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -24,13 +24,13 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	private final ActionExecutionManager actionManager;
 	private final ContextProviderService contextService;
 	private final List<ActionExecutionListener> actionExecutionListeners;
-	private final ClientNotificationService notificationService;
+	private final ClientAlertingService alertingService;
 	private final AuthenticationService authenticationService;
 
-	public ActionExecutionServiceImpl(final ContextProviderService contextService, final ClientNotificationService notificationService,
+	public ActionExecutionServiceImpl(final ContextProviderService contextService, final ClientAlertingService alertingService,
 			final ProjectRepresentationProvider projectRepresentationProvider, final ApplicationPlaceController applicationPlaceController,
 			final AuthenticationService authenticationService) {
-		this.notificationService = notificationService;
+		this.alertingService = alertingService;
 		this.authenticationService = authenticationService;
 		this.actionExecutionListeners = new ArrayList<ActionExecutionListener>();
 		this.contextService = contextService;
@@ -62,7 +62,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 			actionManager.doUserAction(action, contextService.getCurrentProjectContext(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
-			notificationService.showWarning(e.getMessage());
+			alertingService.showWarning(e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -73,7 +73,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 			actionManager.undoUserAction(contextService.getCurrentProjectContext(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
-			notificationService.showWarning(e.getMessage());
+			alertingService.showWarning(e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -84,7 +84,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 			actionManager.redoUserAction(contextService.getCurrentProjectContext(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
-			notificationService.showWarning(e.getMessage());
+			alertingService.showWarning(e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

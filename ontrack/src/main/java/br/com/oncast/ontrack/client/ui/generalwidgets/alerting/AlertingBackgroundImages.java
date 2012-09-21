@@ -1,12 +1,12 @@
-package br.com.oncast.ontrack.client.ui.generalwidgets.notification;
+package br.com.oncast.ontrack.client.ui.generalwidgets.alerting;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface NotificationBackgroundImages extends ClientBundle {
+public interface AlertingBackgroundImages extends ClientBundle {
 
-	static NotificationBackgroundImages INSTANCE = GWT.create(NotificationBackgroundImages.class);
+	static AlertingBackgroundImages INSTANCE = GWT.create(AlertingBackgroundImages.class);
 
 	@Source("error_bg.png")
 	ImageResource errorBgImg();

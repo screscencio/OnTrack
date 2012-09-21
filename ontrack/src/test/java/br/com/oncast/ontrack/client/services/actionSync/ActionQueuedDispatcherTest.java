@@ -13,8 +13,8 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchListener;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchRequestServiceTestImplementation;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.ValueHolder;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
-import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -28,7 +28,7 @@ public class ActionQueuedDispatcherTest {
 	private ActionQueuedDispatcher actionQueuedDispatcher;
 
 	@Mock
-	private ClientNotificationService notificationService;
+	private ClientAlertingService alertingService;
 
 	@Before
 	public void setUp() {
@@ -36,7 +36,7 @@ public class ActionQueuedDispatcherTest {
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
 		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock,
 				getProjectRepresentationProviderMock(),
-				notificationService);
+				alertingService);
 	}
 
 	@Test

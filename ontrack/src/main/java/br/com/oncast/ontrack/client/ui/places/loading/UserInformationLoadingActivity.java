@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.loading;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.authentication.UserInformationLoadCallback;
-import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -44,14 +44,14 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 			}
 
 		});
-		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
+		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
 
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 	}
 
 	private void validateGatheredData() {
@@ -62,7 +62,7 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 	private void treatUnexpectedFailure(final Throwable cause, final String message) {
 		// TODO +++Treat communication failure.
 		cause.printStackTrace();
-		SERVICE_PROVIDER.getClientNotificationService().showErrorWithConfirmation(message, new NotificationConfirmationListener() {
+		SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(message, new AlertConfirmationListener() {
 			@Override
 			public void onConfirmation() {
 				Window.Location.reload();
