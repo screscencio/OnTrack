@@ -35,7 +35,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			public void onUnexpectedFailure(final Throwable caught) {
 				// TODO Improve feedback message.
 				view.enable();
-				SERVICE_PROVIDER.getClientNotificationService().showError(messages.unexpectedError());
+				SERVICE_PROVIDER.getClientAlertingService().showError(messages.unexpectedError());
 			}
 
 			@Override
@@ -43,7 +43,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 				// TODO Improve feedback message.
 				view.enable();
 				view.onIncorrectCredentials();
-				SERVICE_PROVIDER.getClientNotificationService().showError(messages.incorrectUserOrPassword());
+				SERVICE_PROVIDER.getClientAlertingService().showError(messages.incorrectUserOrPassword());
 			}
 
 		};
@@ -52,14 +52,14 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		panel.setWidget(view.asWidget());
-		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
+		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
 		view.setUsername(SERVICE_PROVIDER.getClientStorageService().loadLastUserEmail(""));
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 	}
 
 	@Override

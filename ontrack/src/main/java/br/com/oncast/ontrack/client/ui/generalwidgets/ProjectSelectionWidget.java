@@ -252,16 +252,16 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	protected static void requestProjectCreationQuota() {
-		SERVICE_PROVIDER.getClientNotificationService().showInfo(messages.processingProjectQuotaRequest());
+		SERVICE_PROVIDER.getClientAlertingService().showInfo(messages.processingProjectQuotaRequest());
 		ClientServiceProvider.getInstance().getFeedbackService().requestProjectCreationQuota(new ProjectCreationQuotaRequisitionCallback() {
 			@Override
 			public void onRequestSentSucessfully() {
-				SERVICE_PROVIDER.getClientNotificationService().showSuccess(messages.projectQuotaRequestSent());
+				SERVICE_PROVIDER.getClientAlertingService().showSuccess(messages.projectQuotaRequestSent());
 			}
 
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
-				SERVICE_PROVIDER.getClientNotificationService().showWarning(caught.getMessage());
+				SERVICE_PROVIDER.getClientAlertingService().showWarning(caught.getMessage());
 			}
 		});
 	}

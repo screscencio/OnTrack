@@ -78,7 +78,7 @@ public class ProgressActivity extends AbstractActivity {
 
 		progressPanelActionSyncController.registerActionExecutionListener();
 		registration = ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
-		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.getNotificationPanel());
+		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingPanel());
 
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
@@ -87,7 +87,7 @@ public class ProgressActivity extends AbstractActivity {
 	public void onStop() {
 		progressPanelActionSyncController.unregisterActionExecutionListener();
 		registration.removeHandler();
-		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 	}
 
 	protected void updateViewData() {

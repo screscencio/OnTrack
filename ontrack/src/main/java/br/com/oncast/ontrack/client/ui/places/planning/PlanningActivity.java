@@ -61,7 +61,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.getReleasePanel().setRelease(projectContext.getProjectRelease());
 
 		panel.setWidget(view);
-		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.getNotificationMenu());
+		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingMenu());
 		registrations.add(ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
 		registrations.add(ShortcutService.register(view, this, PlanningShortcutMappings.values()));
 
@@ -89,7 +89,7 @@ public class PlanningActivity extends AbstractActivity {
 	public void onStop() {
 		SERVICE_PROVIDER.getClientApplicationStateService().stopRecording();
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
-		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 
 		for (final HandlerRegistration registration : registrations) {
 			registration.removeHandler();

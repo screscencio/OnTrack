@@ -101,7 +101,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 	}
 
 	@Override
-	public Widget getNotificationMenu() {
+	public Widget getAlertingMenu() {
 		return rootPanel.getContentPanelWidget();
 	}
 

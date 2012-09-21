@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 public interface PersistenceService {
 
@@ -64,5 +65,9 @@ public interface PersistenceService {
 	public void persistOrUpdateFileRepresentation(FileRepresentation fileRepresentation) throws PersistenceException;
 
 	public FileRepresentation retrieveFileRepresentationById(UUID fileId) throws NoResultFoundException, PersistenceException;
+
+	public List<Notification> retrieveLatestNotificationsForUser(User user, int maxNotifications);
+
+	public void persistOrUpdateNotification(Notification notification);
 
 }

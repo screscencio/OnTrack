@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordReque
 import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.DeAuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.NotificationListRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectAuthorizationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationQuotaRequestHandler;
@@ -26,6 +27,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationQuotaRequest;
@@ -62,6 +64,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(CurrentUserInformationRequest.class, new CurrentUserInformationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ProjectCreationQuotaRequest.class, new ProjectCreationQuotaRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(SendFeedbackRequest.class, new SendFeedbackRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(NotificationListRequest.class, new NotificationListRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

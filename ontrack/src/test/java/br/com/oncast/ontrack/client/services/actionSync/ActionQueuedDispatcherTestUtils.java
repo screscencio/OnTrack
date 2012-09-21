@@ -14,28 +14,29 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
-import br.com.oncast.ontrack.server.services.notification.NotificationService;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class ActionQueuedDispatcherTestUtils {
 
 	private ServerPushClientServiceMockImpl serverPushClientService;
-	private NotificationService notificationService;
+	private MulticastService multicastService;
 
 	private ServerPushClientServiceMockImpl getServerPushClientServiceMock() {
 		if (serverPushClientService != null) return serverPushClientService;
 		return serverPushClientService = new ServerPushClientServiceMockImpl();
 	}
 
-	NotificationService getNotificationServiceMock() {
-		if (notificationService != null) return notificationService;
+	MulticastService getMulticastServiceMock() {
+		if (multicastService != null) return multicastService;
 
 		final ServerPushClientServiceMockImpl serverPushClientServiceMock = getServerPushClientServiceMock();
-		return notificationService = new NotificationService() {
+		return multicastService = new MulticastService() {
 
 			@Override
 			public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {}
@@ -52,6 +53,9 @@ public class ActionQueuedDispatcherTestUtils {
 			public void notifyActionToCurrentUser(final ModelActionSyncEvent event) {
 				serverPushClientServiceMock.processIncommingEvent(event);
 			}
+
+			@Override
+			public void multicastToUsers(final NotificationCreatedEvent notificationCreatedEvent, final List<User> recipients) {}
 		};
 	}
 

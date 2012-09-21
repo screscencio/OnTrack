@@ -162,7 +162,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 		}
 		catch (final ScopeNotFoundException e) {
 			e.printStackTrace();
-			ClientServiceProvider.getInstance().getClientNotificationService().showWarning(e.getMessage());
+			ClientServiceProvider.getInstance().getClientAlertingService().showWarning(e.getMessage());
 		}
 	}
 

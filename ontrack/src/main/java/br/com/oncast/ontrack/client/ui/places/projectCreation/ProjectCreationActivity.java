@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.projectCreation;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.context.ProjectCreationListener;
-import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
@@ -41,9 +41,9 @@ public class ProjectCreationActivity extends AbstractActivity {
 					@Override
 					public void onProjectCreationFailure() {
 						// TODO +++Treat failure properly
-						SERVICE_PROVIDER.getClientNotificationService().showErrorWithConfirmation(
+						SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(
 								"Project creation failed. An error occurred.",
-								new NotificationConfirmationListener() {
+								new AlertConfirmationListener() {
 									@Override
 									public void onConfirmation() {
 										Window.Location.reload();
@@ -54,9 +54,9 @@ public class ProjectCreationActivity extends AbstractActivity {
 					@Override
 					public void onUnexpectedFailure() {
 						// TODO +++Treat failure properly
-						SERVICE_PROVIDER.getClientNotificationService().showErrorWithConfirmation(
+						SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(
 								"It was not possible to create the project.\n Verify your connection status.",
-								new NotificationConfirmationListener() {
+								new AlertConfirmationListener() {
 									@Override
 									public void onConfirmation() {
 										Window.Location.reload();
@@ -64,13 +64,13 @@ public class ProjectCreationActivity extends AbstractActivity {
 								});
 					}
 				});
-		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
+		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 	}
 
 	protected void openProject(final ProjectRepresentation projectRepresentation) {

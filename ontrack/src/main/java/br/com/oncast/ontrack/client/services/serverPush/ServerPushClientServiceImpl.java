@@ -8,8 +8,8 @@ import java.util.Map;
 import org.atmosphere.gwt.client.AtmosphereListener;
 
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
-import br.com.oncast.ontrack.client.services.notification.ClientNotificationService;
-import br.com.oncast.ontrack.client.services.notification.NotificationConfirmationListener;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
+import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.serverPush.atmosphere.OntrackAtmosphereClient;
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
@@ -25,7 +25,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	private final ServerPushClient serverPushClient;
 	private ServerPushConnectionCallback serverPushConnectionCallback;
 
-	public ServerPushClientServiceImpl(final ClientNotificationService notificationService) {
+	public ServerPushClientServiceImpl(final ClientAlertingService alertingService) {
 		serverPushClient = new OntrackAtmosphereClient(new AtmosphereListener() {
 
 			@Override
@@ -42,7 +42,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			@Override
 			public void onError(final Throwable exception, final boolean connected) {
 				// FIXME Mats think about how to update current model without being annoying to the user
-				notificationService.showErrorWithConfirmation(messages.noInternectConnection(), new NotificationConfirmationListener() {
+				alertingService.showErrorWithConfirmation(messages.noInternectConnection(), new AlertConfirmationListener() {
 					@Override
 					public void onConfirmation() {
 						Window.Location.reload();

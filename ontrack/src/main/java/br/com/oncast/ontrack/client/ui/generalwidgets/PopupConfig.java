@@ -89,7 +89,7 @@ public class PopupConfig {
 	private VerticalAlignment verticalAlignment;
 	private AlignmentReference alignVerticallyTo;
 	private boolean isModal = false;
-	private Widget previousNotificationParent;
+	private Widget previousAlertingParent;
 	private BasicMaskPanel maskPanel;
 
 	private PopupConfig() {}
@@ -303,13 +303,13 @@ public class PopupConfig {
 			@Override
 			public void onWillHide() {
 				hidePopup();
-				if (isModal && previousNotificationParent != null) ClientServiceProvider.getInstance().getClientNotificationService()
-						.setNotificationParentWidget(previousNotificationParent);
+				if (isModal && previousAlertingParent != null) ClientServiceProvider.getInstance().getClientAlertingService()
+						.setAlertingParentWidget(previousAlertingParent);
 			}
 		}, isModal);
 
 		if (isModal) {
-			previousNotificationParent = ClientServiceProvider.getInstance().getClientNotificationService().setNotificationParentWidget(RootPanel.get());
+			previousAlertingParent = ClientServiceProvider.getInstance().getClientAlertingService().setAlertingParentWidget(RootPanel.get());
 		}
 
 		if (!widgetToPopup.isAttached()) {

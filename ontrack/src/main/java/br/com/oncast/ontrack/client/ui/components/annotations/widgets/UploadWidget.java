@@ -119,7 +119,7 @@ public class UploadWidget extends Composite {
 			return;
 		}
 
-		ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Uploading your file...");
+		ClientServiceProvider.getInstance().getClientAlertingService().showInfo("Uploading your file...");
 		final FormPanel form = getForm();
 		getProjectId().setValue(getCurrentProject().getId().toStringRepresentation());
 		getFileName().setValue(filename);
@@ -197,7 +197,7 @@ public class UploadWidget extends Composite {
 					final UploadResponse response = AutoBeanCodex.decode(factory, UploadResponse.class, ResponseParser.getPlainTextResult(event)).as();
 					if (response.getStatus().equals("error")) {
 						getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
-						ClientServiceProvider.getInstance().getClientNotificationService().showError(response.getMessage());
+						ClientServiceProvider.getInstance().getClientAlertingService().showError(response.getMessage());
 					} // success handled with actionExecutionListener
 				}
 			});
@@ -216,7 +216,7 @@ public class UploadWidget extends Composite {
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
 					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
-					ClientServiceProvider.getInstance().getClientNotificationService().showSuccess("Upload Completed!");
+					ClientServiceProvider.getInstance().getClientAlertingService().showSuccess("Upload Completed!");
 					listener.onUploadCompleted(action.getReferenceId());
 				}
 			}

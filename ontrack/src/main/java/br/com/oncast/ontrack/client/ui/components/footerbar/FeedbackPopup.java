@@ -58,15 +58,15 @@ public class FeedbackPopup extends Composite implements HasCloseHandlers<Feedbac
 		ClientServiceProvider.getInstance().getFeedbackService().sendFeedback(feedbackMessage.replaceAll(NEW_LINE, "<br/>"), new SendFeedbackCallback() {
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
-				ClientServiceProvider.getInstance().getClientNotificationService().showError("Feedback was not sent. Unexpected error");
+				ClientServiceProvider.getInstance().getClientAlertingService().showError("Feedback was not sent. Unexpected error");
 			}
 
 			@Override
 			public void onFeedbackSentSucessfully() {
-				ClientServiceProvider.getInstance().getClientNotificationService().showSuccess("Feedback Sent! Thank you very much.");
+				ClientServiceProvider.getInstance().getClientAlertingService().showSuccess("Feedback Sent! Thank you very much.");
 			}
 		});
-		ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Processing your Feedback...");
+		ClientServiceProvider.getInstance().getClientAlertingService().showInfo("Processing your Feedback...");
 	}
 
 	@Override

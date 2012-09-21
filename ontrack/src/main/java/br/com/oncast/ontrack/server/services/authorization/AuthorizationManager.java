@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface AuthorizationManager {
 
-	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailNotification)
+	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
 			throws UnableToAuthorizeUserException;
 
 	public void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException;

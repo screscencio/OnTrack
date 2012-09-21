@@ -38,8 +38,8 @@ import br.com.oncast.ontrack.server.services.authentication.AuthenticationManage
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
-import br.com.oncast.ontrack.server.services.notification.ClientManager;
-import br.com.oncast.ontrack.server.services.notification.NotificationService;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -99,7 +99,7 @@ public class BusinessLogicTest {
 	private AuthorizationManager authorizationManager;
 
 	@Mock
-	private NotificationService notification;
+	private MulticastService multicast;
 
 	@Mock
 	private SessionManager sessionManager;
@@ -175,7 +175,7 @@ public class BusinessLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidIncomingAction.class)
 	public void invalidActionIsNotPersisted() throws Exception {
-		business = new BusinessLogicImpl(persistence, notification, clientManager, authenticationManager,
+		business = new BusinessLogicImpl(persistence, multicast, clientManager, authenticationManager,
 				authorizationManager,
 				sessionManager,
 				mock(FeedbackMailFactory.class), new SyncronizationService());
@@ -427,10 +427,10 @@ public class BusinessLogicTest {
 			AuthorizationException {
 
 		setupMocksToCreateProjectWithId(new UUID());
-		business = BusinessLogicTestUtils.create(persistence, notification, authenticationManager);
+		business = BusinessLogicTestUtils.create(persistence, multicast, authenticationManager);
 		final ProjectRepresentation representation = business.createProject("new project");
 
-		verify(notification, times(1)).notifyProjectCreation(authenticatedUser.getId(), representation);
+		verify(multicast, times(1)).notifyProjectCreation(authenticatedUser.getId(), representation);
 	}
 
 	@Test
@@ -458,7 +458,7 @@ public class BusinessLogicTest {
 		when(sessionManager.getCurrentSession()).thenReturn(sessionMock);
 		when(sessionMock.getThreadLocalClientId()).thenReturn(clientId);
 
-		business = BusinessLogicTestUtils.create(persistence, notification, clientManager, authenticationManager, sessionManager);
+		business = BusinessLogicTestUtils.create(persistence, multicast, clientManager, authenticationManager, sessionManager);
 
 		final ProjectContextRequest request = new ProjectContextRequest(projectRepresentation.getId());
 		business.loadProjectForClient(request);
