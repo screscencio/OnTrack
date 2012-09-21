@@ -6,6 +6,7 @@ import java.util.List;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
@@ -14,11 +15,13 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionExce
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 class ActionQueuedDispatcher {
 
 	private final DispatchService requestDispatchService;
+	private final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private final List<ModelAction> actionList;
 	private List<ModelAction> waitingServerAnswerActionList;
@@ -71,7 +74,7 @@ class ActionQueuedDispatcher {
 						if (caught instanceof InvalidIncomingAction || caught instanceof UnableToHandleActionException) {
 							alertingService
 									.showErrorWithConfirmation(
-											"The project is out of sync. Some changes may have been reverted.",
+											messages.projectOutOfSync(),
 											new AlertConfirmationListener() {
 												@Override
 												public void onConfirmation() {
@@ -80,7 +83,7 @@ class ActionQueuedDispatcher {
 											});
 						}
 						else {
-							alertingService.showErrorWithConfirmation("Connection lost.", new AlertConfirmationListener() {
+							alertingService.showErrorWithConfirmation(messages.connectionLost(), new AlertConfirmationListener() {
 								@Override
 								public void onConfirmation() {
 									Window.Location.reload();

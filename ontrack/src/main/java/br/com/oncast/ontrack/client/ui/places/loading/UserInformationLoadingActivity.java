@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.Window;
@@ -16,6 +17,9 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class UserInformationLoadingActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+
+	private static UserInformationLoadingMessages messages = GWT.create(UserInformationLoadingMessages.class);
+
 	private final Place destinationPlace;
 
 	public UserInformationLoadingActivity(final Place destinationPlace) {
@@ -29,7 +33,7 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 
 		final ProjectMessageView view = new ProjectMessagePanel();
 		panel.setWidget(view);
-		view.setMainMessage("Loading user data");
+		view.setMainMessage(messages.loadingUserData());
 
 		SERVICE_PROVIDER.getAuthenticationService().loadCurrentUserInformation(new UserInformationLoadCallback() {
 
@@ -40,7 +44,7 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 
 			@Override
 			public void onUnexpectedFailure(final Throwable cause) {
-				treatUnexpectedFailure(cause, "Could not load user information: " + cause.getMessage());
+				treatUnexpectedFailure(cause, messages.couldNotLoadUserInformation());
 			}
 
 		});

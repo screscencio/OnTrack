@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.Window;
@@ -13,6 +14,9 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ServerPushLoadingActivity extends AbstractActivity {
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+
+	private static ServerPushLoadingMessages messages = GWT.create(ServerPushLoadingActivity.class);
+
 	private final Place destinationPlace;
 
 	public ServerPushLoadingActivity(final Place destinationPlace) {
@@ -25,7 +29,7 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 
 		final ProjectMessageView view = new ProjectMessagePanel();
 		panel.setWidget(view);
-		view.setMainMessage("Establishing connection to server...");
+		view.setMainMessage(messages.establishingConnection());
 
 		SERVICE_PROVIDER.getServerPushClientService().onConnected(new ServerPushConnectionCallback() {
 			@Override
@@ -35,7 +39,7 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 
 			@Override
 			public void uncaughtExeption(final Throwable cause) {
-				treatUnexpectedFailure(cause, "Could not connect to server: " + cause.getMessage());
+				treatUnexpectedFailure(cause, messages.couldNotConnectToServer());
 			}
 		});
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());

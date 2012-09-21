@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -16,6 +17,8 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class ProjectCreationActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+
+	private static ProjectCreationMessages messages = GWT.create(ProjectCreationMessages.class);
 
 	private final ProjectCreationPlace projectCreationPlace;
 
@@ -29,7 +32,7 @@ public class ProjectCreationActivity extends AbstractActivity {
 		final ProjectMessageView view = new ProjectMessagePanel();
 		panel.setWidget(view);
 
-		view.setMainMessage("Creating project '" + projectCreationPlace.getProjectName() + "'");
+		view.setMainMessage(messages.creatingProject(projectCreationPlace.getProjectName()));
 		ClientServiceProvider.getInstance().getProjectRepresentationProvider()
 				.createNewProject(projectCreationPlace.getProjectName(), new ProjectCreationListener() {
 
@@ -42,7 +45,7 @@ public class ProjectCreationActivity extends AbstractActivity {
 					public void onProjectCreationFailure() {
 						// TODO +++Treat failure properly
 						SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(
-								"Project creation failed. An error occurred.",
+								messages.projectCreationFailed(),
 								new AlertConfirmationListener() {
 									@Override
 									public void onConfirmation() {
@@ -55,7 +58,7 @@ public class ProjectCreationActivity extends AbstractActivity {
 					public void onUnexpectedFailure() {
 						// TODO +++Treat failure properly
 						SERVICE_PROVIDER.getClientAlertingService().showErrorWithConfirmation(
-								"It was not possible to create the project.\n Verify your connection status.",
+								messages.itWasNotPossibleToCreateTheProject(),
 								new AlertConfirmationListener() {
 									@Override
 									public void onConfirmation() {

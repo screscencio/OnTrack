@@ -1,14 +1,20 @@
 package br.com.oncast.ontrack.shared.services.storage;
 
+import br.com.oncast.ontrack.shared.messageCode.UploadMessageCode;
+
 public interface UploadResponse {
 
-	String getMessage();
+	UploadMessageCode getMessage();
 
-	void setMessage(String message);
+	void setMessage(UploadMessageCode code);
+
+	String getMaxSize();
+
+	void setMaxSize(String maxSize);
 
 	String getStatus();
 
-	void setStatus(String message);
+	void setStatus(String status);
 
 	String getFileId();
 

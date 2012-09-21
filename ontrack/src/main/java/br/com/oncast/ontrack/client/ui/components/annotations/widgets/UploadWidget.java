@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.utils.forms.ResponseParser;
+import br.com.oncast.ontrack.shared.messageCode.UploadMessages;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -40,6 +41,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 public class UploadWidget extends Composite {
+
+	private static UploadMessages messages = GWT.create(UploadMessages.class);
 
 	private static UploadWidgetUiBinder uiBinder = GWT.create(UploadWidgetUiBinder.class);
 	private static BeanFactory factory = GWT.create(BeanFactory.class);
@@ -119,7 +122,7 @@ public class UploadWidget extends Composite {
 			return;
 		}
 
-		ClientServiceProvider.getInstance().getClientAlertingService().showInfo("Uploading your file...");
+		ClientServiceProvider.getInstance().getClientAlertingService().showInfo(messages.uploading());
 		final FormPanel form = getForm();
 		getProjectId().setValue(getCurrentProject().getId().toStringRepresentation());
 		getFileName().setValue(filename);
@@ -197,7 +200,8 @@ public class UploadWidget extends Composite {
 					final UploadResponse response = AutoBeanCodex.decode(factory, UploadResponse.class, ResponseParser.getPlainTextResult(event)).as();
 					if (response.getStatus().equals("error")) {
 						getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
-						ClientServiceProvider.getInstance().getClientAlertingService().showError(response.getMessage());
+						ClientServiceProvider.getInstance().getClientAlertingService()
+								.showError(response.getMessage().selectMessage(messages, response.getMaxSize()));
 					} // success handled with actionExecutionListener
 				}
 			});
@@ -216,7 +220,7 @@ public class UploadWidget extends Composite {
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 				if (action instanceof FileUploadAction && action.getReferenceId().equals(uuid)) {
 					getActionExecutionService().removeActionExecutionListener(actionExecutionListener);
-					ClientServiceProvider.getInstance().getClientAlertingService().showSuccess("Upload Completed!");
+					ClientServiceProvider.getInstance().getClientAlertingService().showSuccess(messages.uploadCompleted());
 					listener.onUploadCompleted(action.getReferenceId());
 				}
 			}

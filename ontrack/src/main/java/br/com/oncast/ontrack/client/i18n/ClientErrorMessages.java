@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.i18n;
 
-
 public interface ClientErrorMessages extends BaseMessages {
 
 	@Description("message shown when server push client receives an error")
@@ -14,5 +13,17 @@ public interface ClientErrorMessages extends BaseMessages {
 	@Description("message shown when unexpected exceptions occur")
 	@DefaultMessage("Unexpected error.")
 	String unexpectedError();
+
+	@Description("message shown when the action was not applied correctly on server")
+	@DefaultMessage("The project is out of sync. Some changes may have been reverted.")
+	String projectOutOfSync();
+
+	@Description("message shown when there is no response from the server on action submition.")
+	@DefaultMessage("Connection lost.")
+	String connectionLost();
+
+	@Description("message shown when the last applied action conflicts.")
+	@DefaultMessage("Some of the lattest changes conflicted.")
+	String someChangesConflicted();
 
 }

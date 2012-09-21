@@ -3,10 +3,11 @@ package br.com.oncast.ontrack.client.services.actionSync;
 import java.util.Set;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -17,9 +18,12 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 public class ActionSyncService {
+
+	private final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private final ActionQueuedDispatcher actionQueuedDispatcher;
 
@@ -64,7 +68,7 @@ public class ActionSyncService {
 			}
 		}
 		catch (final UnableToCompleteActionException e) {
-			alertingService.showErrorWithConfirmation("Some of the lattest changes conflicted.",
+			alertingService.showErrorWithConfirmation(messages.someChangesConflicted(),
 					new AlertConfirmationListener() {
 						@Override
 						public void onConfirmation() {
