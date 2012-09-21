@@ -69,7 +69,7 @@ public class DetailActivity extends AbstractActivity {
 				detailPanel = AnnotationsPanel.forRelease(context.findRelease(place.getSubjectId()));
 			}
 			catch (final ReleaseNotFoundException e1) {
-				provider.getClientNotificationService().showError("It was not possible to show details: The given id was not found");
+				provider.getClientAlertingService().showError("It was not possible to show details: The given id was not found");
 				getApplicationPlaceController().goTo(new PlanningPlace(place.getRequestedProjectId()));
 			}
 		}

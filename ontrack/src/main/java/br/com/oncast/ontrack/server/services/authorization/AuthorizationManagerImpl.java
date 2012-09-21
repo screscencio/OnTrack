@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.server.services.authentication.AuthenticationManage
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
 import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
-import br.com.oncast.ontrack.server.services.notification.NotificationService;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -27,15 +27,15 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	private static final Logger LOGGER = Logger.getLogger(AuthorizationManagerImpl.class);
 	private final AuthenticationManager authenticationManager;
 	private final PersistenceService persistenceService;
-	private final NotificationService notificationService;
+	private final MulticastService multicastService;
 	private final ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
 
 	public AuthorizationManagerImpl(final AuthenticationManager authenticationManager, final PersistenceService persistenceService,
-			final NotificationService notificationService, final ProjectAuthorizationMailFactory projectAuthorizationMailFactory) {
+			final MulticastService multicastService, final ProjectAuthorizationMailFactory projectAuthorizationMailFactory) {
 
 		this.authenticationManager = authenticationManager;
 		this.persistenceService = persistenceService;
-		this.notificationService = notificationService;
+		this.multicastService = multicastService;
 		this.projectAuthorizationMailFactory = projectAuthorizationMailFactory;
 	}
 
@@ -65,7 +65,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	@Override
 	// TODO Refactor the code so that even when the system is the authorization requestant an email can be sent. Refactor email builder for that.
-	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailNotification) throws UnableToAuthorizeUserException {
+	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage) throws UnableToAuthorizeUserException {
 		try {
 			final String generatedPassword = validateUserAndItsProjectAccessAuthorization(projectId, userEmail);
 
@@ -77,7 +77,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			if (generatedPassword != null) validateAndUpdateUserUserInvitaionQuota(userEmail, authenticatedUser);
 			persistenceService.authorize(userEmail, projectId);
 
-			if (shouldSendMailNotification) sendMailNotification(projectId, userEmail, generatedPassword, authenticatedUser);
+			if (shouldSendMailMessage) sendMailMessage(projectId, userEmail, generatedPassword, authenticatedUser);
 		}
 		catch (final PersistenceException e) {
 			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail + "' for the project.", e);
@@ -115,17 +115,17 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 			requestingUser.setProjectInvitationQuota(invitationQuota - 1);
 			persistenceService.persistOrUpdateUser(requestingUser);
-			notificationService.notifyUserInformationChange(requestingUser);
+			multicastService.notifyUserInformationChange(requestingUser);
 		}
 	}
 
-	private void sendMailNotification(final UUID projectId, final String userEmail, final String generatedPassword, final User authenticatedUser) {
+	private void sendMailMessage(final UUID projectId, final String userEmail, final String generatedPassword, final User authenticatedUser) {
 		try {
 			projectAuthorizationMailFactory.createMail().currentUser(authenticatedUser.getEmail())
 					.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, generatedPassword);
 		}
 		catch (final Exception e) {
-			LOGGER.error("It was not possible to send e-mail notification", e);
+			LOGGER.error("It was not possible to send e-mail.", e);
 		}
 	}
 
@@ -136,7 +136,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 		requestingUser.setProjectCreationQuota(projectCreationQuota - 1);
 		persistenceService.persistOrUpdateUser(requestingUser);
-		notificationService.notifyUserInformationChange(requestingUser);
+		multicastService.notifyUserInformationChange(requestingUser);
 	}
 
 	private void logAndThrowUnableToAuthorizeUserException(final String message) throws UnableToAuthorizeUserException {

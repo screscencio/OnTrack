@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.MembersWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationListWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectMenuWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -42,6 +43,9 @@ public class ApplicationMenu extends Composite {
 	protected ApplicationMenuItem projectMenuItem;
 
 	@UiField
+	protected ApplicationMenuItem notificationMenuItem;
+
+	@UiField
 	protected ApplicationMenuItem memberMenuItem;
 
 	@UiField
@@ -59,6 +63,8 @@ public class ApplicationMenu extends Composite {
 		hideBackButton();
 
 		createProjectMenu();
+
+		createNotificationMenu();
 
 		createMemberMenu();
 
@@ -79,6 +85,7 @@ public class ApplicationMenu extends Composite {
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
 	}
 
+	@SuppressWarnings("deprecation")
 	public ApplicationMenu addCustomMenuItem(final ApplicationMenuItem menuItem, final Widget widgetToPopup) {
 		itemContainer.add(menuItem);
 		menuItem.setPopupConfig(PopupConfig.configPopup().popup(widgetToPopup).alignBelow(applicationMenuPanel, 1)
@@ -95,6 +102,7 @@ public class ApplicationMenu extends Composite {
 		projectMenuItem.setText(name);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void createProjectMenu() {
 		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget())
 				.alignBelow(applicationMenuPanel, 1)
@@ -102,6 +110,15 @@ public class ApplicationMenu extends Composite {
 		projectMenuItem.setPopupConfig(config);
 	}
 
+	@SuppressWarnings("deprecation")
+	private void createNotificationMenu() {
+		final PopupConfig notificationPopup = PopupConfig.configPopup().popup(new NotificationListWidget())
+				.alignBelow(applicationMenuPanel, 1)
+				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(notificationMenuItem, HorizontalAlignment.CENTER));
+		notificationMenuItem.setPopupConfig(notificationPopup);
+	}
+
+	@SuppressWarnings("deprecation")
 	private void createMemberMenu() {
 		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new MembersWidget())
 				.alignBelow(applicationMenuPanel, 1)
@@ -109,6 +126,7 @@ public class ApplicationMenu extends Composite {
 		memberMenuItem.setPopupConfig(invitePopup);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void createUserMenu() {
 		final ApplicationSubmenu userMenu = new ApplicationSubmenu();
 
@@ -145,7 +163,7 @@ public class ApplicationMenu extends Composite {
 			@Override
 			public void onFailure(final Throwable caught) {
 				// TODO Threat this error properly. Maybe even call the ErrorService.
-				ClientServiceProvider.getInstance().getClientNotificationService().showError("Logout failed.");
+				ClientServiceProvider.getInstance().getClientAlertingService().showError("Logout failed.");
 			}
 		});
 	}

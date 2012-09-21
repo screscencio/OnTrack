@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.generalwidgets.notification;
+package br.com.oncast.ontrack.client.ui.generalwidgets.alerting;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlideAnimation;
@@ -12,24 +12,24 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Notification extends Composite {
+public class Alert extends Composite {
 
 	private static final int ANIMATION_DURATION = 600;
 
-	private static NotificationUiBinder uiBinder = GWT.create(NotificationUiBinder.class);
+	private static AlertUiBinder uiBinder = GWT.create(AlertUiBinder.class);
 
-	interface NotificationUiBinder extends UiBinder<Widget, Notification> {}
-
-	@UiField
-	HTMLPanel notificationContainer;
+	interface AlertUiBinder extends UiBinder<Widget, Alert> {}
 
 	@UiField
-	DivElement notificationText;
+	HTMLPanel alertContainer;
 
 	@UiField
-	DivElement notificationDiv;
+	DivElement alertText;
 
-	public Notification() {
+	@UiField
+	DivElement alertDiv;
+
+	public Alert() {
 		initWidget(uiBinder.createAndBindUi(this));
 		hide(false, new AnimationCallback() {
 
@@ -43,32 +43,32 @@ public class Notification extends Composite {
 	}
 
 	protected void hide(final boolean animate, final AnimationCallback animationCallback) {
-		final SlideAnimation animation = new SlideAnimation(false, notificationContainer, notificationDiv, animationCallback);
+		final SlideAnimation animation = new SlideAnimation(false, alertContainer, alertDiv, animationCallback);
 		animation.run(animate ? ANIMATION_DURATION : 0);
 	}
 
-	public void show(final String message, final NotificationType type) {
+	public void show(final String message, final AlertType type) {
 		show(message, type, null);
 	}
 
-	public void show(final String message, final NotificationType type, final AnimationCallback animationCallback) {
+	public void show(final String message, final AlertType type, final AnimationCallback animationCallback) {
 		setMessage(message);
 		setBackground(type);
 		new Timer() {
 
 			@Override
 			public void run() {
-				final SlideAnimation animation = new SlideAnimation(true, notificationContainer, notificationDiv, animationCallback);
+				final SlideAnimation animation = new SlideAnimation(true, alertContainer, alertDiv, animationCallback);
 				animation.run(ANIMATION_DURATION);
 			}
 		}.schedule(1);
 	}
 
 	private void setMessage(final String message) {
-		notificationText.setInnerHTML(message);
+		alertText.setInnerHTML(message);
 	}
 
-	private void setBackground(final NotificationType type) {
+	private void setBackground(final AlertType type) {
 		getElement().getFirstChildElement().getStyle().setBackgroundImage("url('" + type.getIconSafeUri().asString() + "')");
 	}
 }

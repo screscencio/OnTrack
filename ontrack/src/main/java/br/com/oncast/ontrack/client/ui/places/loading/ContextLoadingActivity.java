@@ -48,12 +48,12 @@ public class ContextLoadingActivity extends AbstractActivity {
 			}
 		});
 
-		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
+		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 	}
 
 	private void validateGatheredData() {
@@ -64,7 +64,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 	}
 
 	private void treatFailure(final String message) {
-		SERVICE_PROVIDER.getClientNotificationService().showError(message);
+		SERVICE_PROVIDER.getClientAlertingService().showError(message);
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace());
 	}
 

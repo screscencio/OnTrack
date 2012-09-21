@@ -22,7 +22,7 @@ public interface PlanningView extends IsWidget {
 
 	boolean ensureWidgetIsVisible(IsWidget widget);
 
-	Widget getNotificationMenu();
+	Widget getAlertingMenu();
 
 	void toggleReleasePanel();
 

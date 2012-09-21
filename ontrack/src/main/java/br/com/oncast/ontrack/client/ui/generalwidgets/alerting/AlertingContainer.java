@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.generalwidgets.notification;
+package br.com.oncast.ontrack.client.ui.generalwidgets.alerting;
 
 import java.util.Iterator;
 
@@ -10,16 +10,16 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
-public class NotificationContainer extends Composite implements HasWidgets {
+public class AlertingContainer extends Composite implements HasWidgets {
 
-	private static NotificationContainerUiBinder uiBinder = GWT.create(NotificationContainerUiBinder.class);
+	private static AlertingContainerUiBinder uiBinder = GWT.create(AlertingContainerUiBinder.class);
 
-	interface NotificationContainerUiBinder extends UiBinder<Widget, NotificationContainer> {}
+	interface AlertingContainerUiBinder extends UiBinder<Widget, AlertingContainer> {}
 
 	@UiField
 	FlowPanel rootPanel;
 
-	public NotificationContainer() {
+	public AlertingContainer() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 

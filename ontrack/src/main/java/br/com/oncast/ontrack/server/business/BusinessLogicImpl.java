@@ -16,8 +16,8 @@ import br.com.oncast.ontrack.server.services.authentication.AuthenticationManage
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
-import br.com.oncast.ontrack.server.services.notification.ClientManager;
-import br.com.oncast.ontrack.server.services.notification.NotificationService;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -58,7 +58,7 @@ class BusinessLogicImpl implements BusinessLogic {
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
 	private final PersistenceService persistenceService;
-	private final NotificationService notificationService;
+	private final MulticastService multicastService;
 	private final ClientManager clientManager;
 	private final AuthenticationManager authenticationManager;
 	private final SessionManager sessionManager;
@@ -68,11 +68,11 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final SyncronizationService syncronizationService;
 
 	protected BusinessLogicImpl(final PersistenceService persistenceService,
-			final NotificationService notificationService, final ClientManager clientManager,
+			final MulticastService multicastService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager,
 			final FeedbackMailFactory userQuotaRequestMailFactory, final SyncronizationService syncronizationService) {
 		this.persistenceService = persistenceService;
-		this.notificationService = notificationService;
+		this.multicastService = multicastService;
 		this.clientManager = clientManager;
 		this.authenticationManager = authenticationManager;
 		this.authorizationManager = authorizationManager;
@@ -110,7 +110,7 @@ class BusinessLogicImpl implements BusinessLogic {
 						+ " in "
 						+ getTimeSpent(initialTime) + " ms.");
 			}
-			notificationService.notifyActionsToOtherProjectUsers(modelActionSyncEvent);
+			multicastService.notifyActionsToOtherProjectUsers(modelActionSyncEvent);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -206,7 +206,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			if (!authenticatedUser.getEmail().equals(DefaultAuthenticationCredentials.USER_EMAIL)) authorizationManager
 					.authorizeAdmin(persistedProjectRepresentation);
 
-			notificationService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
+			multicastService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
 
 			return persistedProjectRepresentation;
 		}

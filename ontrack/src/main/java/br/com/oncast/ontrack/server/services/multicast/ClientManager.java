@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.server.services.notification;
+package br.com.oncast.ontrack.server.services.multicast;
 
 import java.util.Collection;
 import java.util.HashSet;

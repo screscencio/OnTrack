@@ -132,7 +132,7 @@ public class ChecklistsContainerWidget extends Composite {
 	private void createChecklist() {
 		final String checklistTitle = this.newChecklistTitle.getText();
 		if (checklistTitle.trim().isEmpty()) {
-			ClientServiceProvider.getInstance().getClientNotificationService().showWarning(messages.emptyChecklistTitleError());
+			ClientServiceProvider.getInstance().getClientAlertingService().showWarning(messages.emptyChecklistTitleError());
 			newChecklistTitle.setFocus(true);
 			return;
 		}

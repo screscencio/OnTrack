@@ -9,9 +9,11 @@ import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
 import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLExporterService;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporterService;
-import br.com.oncast.ontrack.server.services.notification.ClientManager;
-import br.com.oncast.ontrack.server.services.notification.NotificationService;
-import br.com.oncast.ontrack.server.services.notification.NotificationServiceImpl;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
+import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.server.services.multicast.MulticastServiceImpl;
+import br.com.oncast.ontrack.server.services.notification.NotificationServerService;
+import br.com.oncast.ontrack.server.services.notification.NotificationServerServiceImpl;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.jpa.PersistenceServiceJpaImpl;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
@@ -29,9 +31,11 @@ public class ServerServiceProvider {
 	private XMLExporterService xmlExporter;
 	private XMLImporterService xmlImporter;
 
+	private NotificationServerServiceImpl notificationServerService;
+
 	private AuthorizationManager authorizationManager;
 	private AuthenticationManager authenticationManager;
-	private NotificationService notificationService;
+	private MulticastService multicastService;
 	private ClientManager clientManagerService;
 
 	private SessionManager sessionManager;
@@ -58,7 +62,7 @@ public class ServerServiceProvider {
 		if (businessLogic != null) return businessLogic;
 		synchronized (this) {
 			if (businessLogic != null) return businessLogic;
-			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getNotificationService(),
+			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getMulticastService(),
 					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory(),
 					getSyncronizationService());
 		}
@@ -68,7 +72,7 @@ public class ServerServiceProvider {
 		if (authorizationManager != null) return authorizationManager;
 		synchronized (this) {
 			if (authorizationManager != null) return authorizationManager;
-			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getNotificationService(),
+			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(),
 					getProjectAuthorizationMailFactory());
 		}
 	}
@@ -97,11 +101,11 @@ public class ServerServiceProvider {
 		}
 	}
 
-	private NotificationService getNotificationService() {
-		if (notificationService != null) return notificationService;
+	private MulticastService getMulticastService() {
+		if (multicastService != null) return multicastService;
 		synchronized (this) {
-			if (notificationService != null) return notificationService;
-			return notificationService = new NotificationServiceImpl(getServerPushServerService(), getClientManagerService(), getSessionManager());
+			if (multicastService != null) return multicastService;
+			return multicastService = new MulticastServiceImpl(getServerPushServerService(), getClientManagerService(), getSessionManager());
 		}
 	}
 
@@ -183,7 +187,15 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (postProcessmentsInitializer != null) return postProcessmentsInitializer;
 			return postProcessmentsInitializer = new ActionPostProcessmentsInitializer(getActionPostProcessingService(), getPersistenceService(),
-					getNotificationService());
+					getMulticastService());
+		}
+	}
+
+	public NotificationServerService getNotificationServerService() {
+		if (notificationServerService != null) return notificationServerService;
+		synchronized (this) {
+			if (notificationServerService != null) return notificationServerService;
+			return notificationServerService = new NotificationServerServiceImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService());
 		}
 	}
 }

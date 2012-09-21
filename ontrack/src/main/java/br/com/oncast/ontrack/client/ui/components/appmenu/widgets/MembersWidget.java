@@ -99,20 +99,20 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 
 				widget.hide();
-				ClientServiceProvider.getInstance().getClientNotificationService().showInfo("Processing your invitation...");
+				ClientServiceProvider.getInstance().getClientAlertingService().showInfo("Processing your invitation...");
 				PROVIDER.getProjectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {
-						ClientServiceProvider.getInstance().getClientNotificationService()
+						ClientServiceProvider.getInstance().getClientAlertingService()
 								.showSuccess(messages.userInvited(mail));
 					}
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						if (caught instanceof UnableToAuthorizeUserException) ClientServiceProvider.getInstance().getClientNotificationService()
+						if (caught instanceof UnableToAuthorizeUserException) ClientServiceProvider.getInstance().getClientAlertingService()
 								.showWarning(messages.userAlreadyInvited(mail));
 						else {
-							ClientServiceProvider.getInstance().getClientNotificationService().showWarning(caught.getMessage());
+							ClientServiceProvider.getInstance().getClientAlertingService().showWarning(caught.getMessage());
 						}
 					}
 				});

@@ -20,13 +20,13 @@ public class ProjectSelectionActivity extends AbstractActivity {
 		final ProjectSelectionView view = new ProjectSelectionPanel();
 		panel.setWidget(view.asWidget());
 		view.focus();
-		SERVICE_PROVIDER.getClientNotificationService().setNotificationParentWidget(view.asWidget());
+		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
 
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override
 	public void onStop() {
-		SERVICE_PROVIDER.getClientNotificationService().clearNotificationParentWidget();
+		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 	}
 }
