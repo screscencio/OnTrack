@@ -16,4 +16,8 @@ public interface ApplicationMenuMessages extends BaseMessages {
 	@DefaultMessage("Logout")
 	String logout();
 
+	@Description("shown when logout fails")
+	@DefaultMessage("Logout failed.")
+	String logoutFailed();
+
 }

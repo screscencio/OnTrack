@@ -16,4 +16,8 @@ public interface MembersWidgetMessages extends BaseMessages {
 	@DefaultMessage("''{0}'' already has been invited")
 	String userAlreadyInvited(String mail);
 
+	@Description("shown to indicate that the invitaion is beeing processed")
+	@DefaultMessage("Processing your invitation...")
+	String processingYourInvitation();
+
 }

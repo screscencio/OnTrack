@@ -99,7 +99,7 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 				if (mail.trim().isEmpty() || !EmailValidator.isValid(mail)) return;
 
 				widget.hide();
-				ClientServiceProvider.getInstance().getClientAlertingService().showInfo("Processing your invitation...");
+				ClientServiceProvider.getInstance().getClientAlertingService().showInfo(messages.processingYourInvitation());
 				PROVIDER.getProjectRepresentationProvider().authorizeUser(mail, new ProjectAuthorizationCallback() {
 					@Override
 					public void onSuccess() {

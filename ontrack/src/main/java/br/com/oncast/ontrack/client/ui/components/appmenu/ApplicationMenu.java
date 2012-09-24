@@ -163,7 +163,7 @@ public class ApplicationMenu extends Composite {
 			@Override
 			public void onFailure(final Throwable caught) {
 				// TODO Threat this error properly. Maybe even call the ErrorService.
-				ClientServiceProvider.getInstance().getClientAlertingService().showError("Logout failed.");
+				ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.logoutFailed());
 			}
 		});
 	}

@@ -29,6 +29,8 @@ public class FeedbackPopup extends Composite implements HasCloseHandlers<Feedbac
 
 	private static FeedbackPopupUiBinder uiBinder = GWT.create(FeedbackPopupUiBinder.class);
 
+	private static FeedbackPopupMessages messages = GWT.create(FeedbackPopupMessages.class);
+
 	interface FeedbackPopupUiBinder extends UiBinder<Widget, FeedbackPopup> {}
 
 	@UiField
@@ -58,15 +60,15 @@ public class FeedbackPopup extends Composite implements HasCloseHandlers<Feedbac
 		ClientServiceProvider.getInstance().getFeedbackService().sendFeedback(feedbackMessage.replaceAll(NEW_LINE, "<br/>"), new SendFeedbackCallback() {
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
-				ClientServiceProvider.getInstance().getClientAlertingService().showError("Feedback was not sent. Unexpected error");
+				ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.feedbackNotSent());
 			}
 
 			@Override
 			public void onFeedbackSentSucessfully() {
-				ClientServiceProvider.getInstance().getClientAlertingService().showSuccess("Feedback Sent! Thank you very much.");
+				ClientServiceProvider.getInstance().getClientAlertingService().showSuccess(messages.feedbackSent());
 			}
 		});
-		ClientServiceProvider.getInstance().getClientAlertingService().showInfo("Processing your Feedback...");
+		ClientServiceProvider.getInstance().getClientAlertingService().showInfo(messages.processingYourFeedback());
 	}
 
 	@Override
