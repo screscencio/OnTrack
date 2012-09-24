@@ -13,6 +13,6 @@ public interface ProjectCreationMessages extends BaseMessages {
 	String itWasNotPossibleToCreateTheProject();
 
 	@Description("displayed when creating a project.")
-	@DefaultMessage("Creating project '{0}'")
+	@DefaultMessage("Creating project ''{0}''")
 	String creatingProject(String projectName);
 }

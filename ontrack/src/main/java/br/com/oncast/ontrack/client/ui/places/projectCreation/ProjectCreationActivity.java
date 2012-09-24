@@ -18,7 +18,7 @@ public class ProjectCreationActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
-	private static ProjectCreationMessages messages = GWT.create(ProjectCreationMessages.class);
+	private final ProjectCreationMessages messages = GWT.create(ProjectCreationMessages.class);
 
 	private final ProjectCreationPlace projectCreationPlace;
 
@@ -32,9 +32,10 @@ public class ProjectCreationActivity extends AbstractActivity {
 		final ProjectMessageView view = new ProjectMessagePanel();
 		panel.setWidget(view);
 
-		view.setMainMessage(messages.creatingProject(projectCreationPlace.getProjectName()));
+		final String projectName = projectCreationPlace.getProjectName();
+		view.setMainMessage(messages.creatingProject(projectName));
 		ClientServiceProvider.getInstance().getProjectRepresentationProvider()
-				.createNewProject(projectCreationPlace.getProjectName(), new ProjectCreationListener() {
+				.createNewProject(projectName, new ProjectCreationListener() {
 
 					@Override
 					public void onProjectCreated(final ProjectRepresentation projectRepresentation) {

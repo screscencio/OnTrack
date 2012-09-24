@@ -15,9 +15,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class ServerPushLoadingActivity extends AbstractActivity {
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
-	private static ServerPushLoadingMessages messages = GWT.create(ServerPushLoadingActivity.class);
+	private final ServerPushLoadingMessages messages = GWT.create(ServerPushLoadingActivity.class);
 
-	private final Place destinationPlace;
+	private Place destinationPlace;
+
+	protected ServerPushLoadingActivity() {}
 
 	public ServerPushLoadingActivity(final Place destinationPlace) {
 		this.destinationPlace = destinationPlace;
