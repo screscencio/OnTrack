@@ -3,7 +3,10 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:chart="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
-	xmlns:t="urn:import:org.moxieapps.gwt.highcharts.client">
+	xmlns:t="urn:import:org.moxieapps.gwt.highcharts.client"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:image field="closeImage" src="stats-close.png"/>
 	
@@ -61,24 +64,38 @@
 			<g:HTMLPanel>
 				<g:FocusPanel ui:field="chartPanel"/>
 				<g:HorizontalPanel>
-					<chart:ReleaseChartEditableDateLabel ui:field="startDate" text="Start:"/>
+					<chart:ReleaseChartEditableDateLabel ui:field="startDate">
+						<ui:msg description="release start day" >Start:</ui:msg>
+					</chart:ReleaseChartEditableDateLabel>
 					<g:SimplePanel styleName="{style.separator}"/>
 					
-					<chart:ReleaseChartEditableDateLabel ui:field="endDate" text="End:"/>
+					<chart:ReleaseChartEditableDateLabel ui:field="endDate">
+						<ui:msg description="release estimated end day" >End:</ui:msg>
+					</chart:ReleaseChartEditableDateLabel>
 					<g:SimplePanel styleName="{style.separator}"/>
 					
-					<chart:ReleaseChartEditableLabel ui:field="velocity" text="Velocity:"/>
+					<chart:ReleaseChartEditableLabel ui:field="velocity">
+						<ui:msg description="release estimated velocity">Velocity:</ui:msg>
+					</chart:ReleaseChartEditableLabel>
 					<g:SimplePanel styleName="{style.separator}"/>
 					
-					<g:Label text="Actual End:" styleName="{style.parameterLabel}"/>
+					<g:Label styleName="{style.parameterLabel}">
+						<ui:msg description="release actual end day">Actual End:</ui:msg>
+					</g:Label>
 					<g:Label ui:field="actualEndDay"/>
 					<g:SimplePanel styleName="{style.separator}"/>
 					
-					<g:Label text="Actual Velocity:" styleName="{style.parameterLabel}"/>
+					<g:Label styleName="{style.parameterLabel}">
+						<ui:msg description="release actual velocity">Actual Velocity: </ui:msg>
+					</g:Label>
 					<g:Label ui:field="actualVelocity" />
-					<g:Label text="ep/day" styleName="{style.unitLabel}"/>
+					<g:Label styleName="{style.unitLabel}">
+						<ui:msg description="unit label for ep per day">ep/day</ui:msg>
+					</g:Label>
 				</g:HorizontalPanel>
-				<g:Label ui:field="helpText" text="OnTrack has different estimatives. Click 'Infered Ideal Line' to compare" styleName="{style.helpText}"/>
+				<g:Label ui:field="helpText" styleName="{style.helpText}">
+					<ui:msg description="help text indicating differente estimatives">OnTrack has different estimatives. Click 'Infered Ideal Line' to compare</ui:msg>
+				</g:Label>
 			</g:HTMLPanel>
 		</g:FocusPanel>
 		<g:Image ui:field="closeIcon" resource="{closeImage}" styleName="{style.closeIcon}"/>

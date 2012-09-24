@@ -68,21 +68,23 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseChart>, PopupAware {
 
+	private static final ReleaseChartMessages messages = GWT.create(ReleaseChartMessages.class);
+
 	private static final String IDEAL_EFFORT_COLOR = "#666666";
 
 	private static final String VALUE_COLOR = "#00AA00";
 
 	private static final String EFFORT_COLOR = "#AA0000";
 
-	private static final String SERIES_IDEAL_BURN_UP_LINE = "Declared Ideal Line";
+	private static final String SERIES_IDEAL_BURN_UP_LINE = messages.declaredIdealLine();
 
-	private static final String SERIES_ACCOMPLISHED_EFFORT = "Effort";
+	private static final String SERIES_ACCOMPLISHED_EFFORT = messages.effort();
 
-	private static final String SERIES_ACCOMPLISHED_VALUE = "Value";
+	private static final String SERIES_ACCOMPLISHED_VALUE = messages.value();
 
 	private static final int MAX_NUMBER_OF_TICKS = 22;
 
-	private static final String SERIES_INFERED_IDEAL_BURN_UP_LINE = "Infered Ideal Line";
+	private static final String SERIES_INFERED_IDEAL_BURN_UP_LINE = messages.inferedIdealLine();
 
 	private static final String INFERED_IDEAL_EFFORT_COLOR = "#bbc2f2";
 
@@ -302,10 +304,10 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 
 								final String toolTipText = toolTipData.getXAsString() + "<br>"
 										+ round(currentPoints) + " "
-										+ (isValuePoints ? "value points" : "effort points") + "<br>"
-										+ "Velocity: "
+										+ (isValuePoints ? messages.valuePoints() : messages.effortPoints()) + "<br>"
+										+ messages.velocity()
 										+ round(currentPoints / currentDayCount) + " "
-										+ (isValuePoints ? "vp" : "ep") + "/day";
+										+ (isValuePoints ? "vp" : "ep") + "/" + messages.day();
 								return toolTipText;
 							}
 
