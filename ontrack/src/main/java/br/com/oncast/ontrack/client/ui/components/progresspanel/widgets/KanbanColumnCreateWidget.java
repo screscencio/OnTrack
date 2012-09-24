@@ -20,6 +20,8 @@ public class KanbanColumnCreateWidget extends Composite {
 
 	private static KanbanColumnCreateWidgetUiBinder uiBinder = GWT.create(KanbanColumnCreateWidgetUiBinder.class);
 
+	private static KanbanColumnCreateWidgetMessages messages = GWT.create(KanbanColumnCreateWidgetMessages.class);
+
 	interface KanbanColumnCreateWidgetUiBinder extends UiBinder<Widget, KanbanColumnCreateWidget> {}
 
 	private final ProgressPanelWidgetInteractionHandler interactionHandler;
@@ -36,12 +38,12 @@ public class KanbanColumnCreateWidget extends Composite {
 		this.interactionHandler = interactionHandler;
 		this.insertionIndex = insertionIndex;
 		initWidget(uiBinder.createAndBindUi(this));
-		create.setTitle("Add new column");
+		create.setTitle(messages.addNewColumn());
 	}
 
 	@UiHandler("create")
 	protected void onClick(final ClickEvent event) {
-		PopupConfig.configPopup().popup(new TextInputPopup("Column Description", "New Column", new EditionHandler() {
+		PopupConfig.configPopup().popup(new TextInputPopup(messages.columnDescription(), messages.newColumn(), new EditionHandler() {
 			@Override
 			public boolean onEdition(final String text) {
 				final String trimmedText = text.trim();

@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel;
 import java.util.List;
 import java.util.Set;
 
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
@@ -33,7 +34,11 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.core.client.GWT;
+
 public class ProgressPanelActionSyncController {
+
+	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private final ActionExecutionService actionExecutionService;
 	private final ActionExecutionListener actionExecutionListener;
@@ -44,7 +49,7 @@ public class ProgressPanelActionSyncController {
 		this.actionExecutionListener = new ActionExecutionListener() {
 
 			@Override
-			public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> influencedScopes, final boolean isUserAction) {
 				handleActionExecution(display, action, context);
 			}
@@ -72,7 +77,7 @@ public class ProgressPanelActionSyncController {
 		}
 		catch (final ModelBeanNotFoundException e) {
 			// TODO ++Resync and Redraw the entire structure to eliminate inconsistencies
-			throw new RuntimeException("It was not possible to update the view because an inconsistency with the model was detected.", e);
+			throw new RuntimeException(messages.modelInconsistency(), e);
 		}
 		finally {
 			releaseMonitor.updateMonitoredReleaseState();

@@ -26,4 +26,8 @@ public interface ClientErrorMessages extends BaseMessages {
 	@DefaultMessage("Some of the lattest changes conflicted.")
 	String someChangesConflicted();
 
+	@Description("message shown when some error happens because of model inconsistency.")
+	@DefaultMessage("It was not possible to update the view because an inconsistency with the model was detected.")
+	String modelInconsistency();
+
 }

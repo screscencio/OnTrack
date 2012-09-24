@@ -31,6 +31,8 @@ public class KanbanColumnWidget extends Composite {
 
 	private static KanbanColumnWidgetUiBinder uiBinder = GWT.create(KanbanColumnWidgetUiBinder.class);
 
+	private static KanbanColumnWidgetMessages messages = GWT.create(KanbanColumnWidgetMessages.class);
+
 	interface KanbanColumnWidgetUiBinder extends UiBinder<Widget, KanbanColumnWidget> {}
 
 	public interface KanbanColumnWidgetStyle extends CssResource {
@@ -100,7 +102,7 @@ public class KanbanColumnWidget extends Composite {
 	@UiHandler("title")
 	protected void onDoubleClick(final DoubleClickEvent event) {
 		if (column.isStaticColumn()) return;
-		PopupConfig.configPopup().popup(new TextInputPopup("New Description", column.getDescription(), new EditionHandler() {
+		PopupConfig.configPopup().popup(new TextInputPopup(messages.newDescription(), column.getDescription(), new EditionHandler() {
 			@Override
 			public boolean onEdition(final String text) {
 				final String trimmedText = text.trim();
