@@ -21,6 +21,7 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUs
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 
 public class AuthorizationManagerImpl implements AuthorizationManager {
 
@@ -115,7 +116,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 			requestingUser.setProjectInvitationQuota(invitationQuota - 1);
 			persistenceService.persistOrUpdateUser(requestingUser);
-			multicastService.notifyUserInformationChange(requestingUser);
+			multicastService.multicastToUser(new UserInformationChangeEvent(requestingUser), requestingUser);
 		}
 	}
 
@@ -136,7 +137,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 		requestingUser.setProjectCreationQuota(projectCreationQuota - 1);
 		persistenceService.persistOrUpdateUser(requestingUser);
-		multicastService.notifyUserInformationChange(requestingUser);
+		multicastService.multicastToUser(new UserInformationChangeEvent(requestingUser), requestingUser);
 	}
 
 	private void logAndThrowUnableToAuthorizeUserException(final String message) throws UnableToAuthorizeUserException {

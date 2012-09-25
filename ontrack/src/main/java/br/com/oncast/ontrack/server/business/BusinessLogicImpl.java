@@ -48,6 +48,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
@@ -110,7 +111,7 @@ class BusinessLogicImpl implements BusinessLogic {
 						+ " in "
 						+ getTimeSpent(initialTime) + " ms.");
 			}
-			multicastService.notifyActionsToOtherProjectUsers(modelActionSyncEvent);
+			multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(modelActionSyncEvent, projectId);
 		}
 		catch (final PersistenceException e) {
 			final String errorMessage = "The server could not handle the incoming action correctly. The action could not be persisted.";
@@ -206,7 +207,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			if (!authenticatedUser.getEmail().equals(DefaultAuthenticationCredentials.USER_EMAIL)) authorizationManager
 					.authorizeAdmin(persistedProjectRepresentation);
 
-			multicastService.notifyProjectCreation(authenticatedUser.getEmail(), persistedProjectRepresentation);
+			multicastService.multicastToUser(new ProjectCreatedEvent(persistedProjectRepresentation), authenticatedUser);
 
 			return persistedProjectRepresentation;
 		}

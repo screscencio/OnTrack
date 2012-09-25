@@ -73,6 +73,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
+import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
@@ -430,7 +431,11 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestUtils.create(persistence, multicast, authenticationManager);
 		final ProjectRepresentation representation = business.createProject("new project");
 
-		verify(multicast, times(1)).notifyProjectCreation(authenticatedUser.getEmail(), representation);
+		final ArgumentCaptor<ProjectCreatedEvent> captor = ArgumentCaptor.forClass(ProjectCreatedEvent.class);
+		verify(multicast, times(1)).multicastToUser(captor.capture(), eq(authenticatedUser));
+
+		final ProjectCreatedEvent createdProject = captor.getValue();
+		assertEquals(representation, createdProject.getProjectRepresentation());
 	}
 
 	@Test

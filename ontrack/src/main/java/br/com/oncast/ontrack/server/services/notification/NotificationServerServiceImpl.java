@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.notification;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -7,6 +8,10 @@ import org.apache.log4j.Logger;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
+import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificationException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveNotificationListException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
@@ -28,14 +33,31 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 	}
 
 	@Override
-	public List<Notification> retrieveCurrentUserNotificationList() {
+	public List<Notification> retrieveCurrentUserNotificationList() throws UnableToRetrieveNotificationListException {
 		final User user = this.authenticationManager.getAuthenticatedUser();
 		LOGGER.debug("Retrieving notifications for user '" + user + "'.");
-		return persistenceService.retrieveLatestNotificationsForUser(user, MAX_NUMBER_OF_NOTIFICATIONS);
+		try {
+			return persistenceService.retrieveLatestNotificationsForUser(user, MAX_NUMBER_OF_NOTIFICATIONS);
+		}
+		catch (final NoResultFoundException e) {
+			return new ArrayList<Notification>();
+		}
+		catch (final PersistenceException e) {
+			final String message = "It was not possible to retrieve the user's notifications.";
+			LOGGER.error(message, e);
+			throw new UnableToRetrieveNotificationListException(message);
+		}
 	}
 
-	public void registerNewNotification(final Notification notification) {
-		this.persistenceService.persistOrUpdateNotification(notification);
+	public void registerNewNotification(final Notification notification) throws UnableToCreateNotificationException {
+		try {
+			this.persistenceService.persistOrUpdateNotification(notification);
+		}
+		catch (final PersistenceException e) {
+			final String message = "Unable to create a new notification exception.";
+			LOGGER.error(message, e);
+			throw new UnableToCreateNotificationException(message);
+		}
 		this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), notification.getRecipients());
 	}
 }

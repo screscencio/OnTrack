@@ -15,10 +15,8 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
-import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
@@ -39,23 +37,20 @@ public class ActionQueuedDispatcherTestUtils {
 		return multicastService = new MulticastService() {
 
 			@Override
-			public void notifyProjectCreation(final String userId, final ProjectRepresentation projectRepresentation) {}
+			public void multicastToUser(final ServerPushEvent event, final User authenticatedUser) {}
 
 			@Override
-			public void notifyUserInformationChange(final User authenticatedUser) {}
+			public void multicastToUsers(final ServerPushEvent event, final List<User> recipients) {}
 
 			@Override
-			public void notifyActionsToOtherProjectUsers(final ModelActionSyncEvent event) {
+			public void multicastToCurrentUserClientInSpecificProject(final ServerPushEvent event, final UUID projectId) {
 				serverPushClientServiceMock.processIncommingEvent(event);
 			}
 
 			@Override
-			public void notifyActionToCurrentUser(final ModelActionSyncEvent event) {
+			public void multicastToAllUsersButCurrentUserClientInSpecificProject(final ServerPushEvent event, final UUID projectId) {
 				serverPushClientServiceMock.processIncommingEvent(event);
 			}
-
-			@Override
-			public void multicastToUsers(final NotificationCreatedEvent notificationCreatedEvent, final List<User> recipients) {}
 		};
 	}
 

@@ -11,12 +11,9 @@ import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionList
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.server.utils.PrettyPrinter;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
-import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
-import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
-import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class MulticastServiceImpl implements MulticastService {
 
@@ -45,48 +42,46 @@ public class MulticastServiceImpl implements MulticastService {
 	}
 
 	@Override
-	public void notifyActionsToOtherProjectUsers(final ModelActionSyncEvent event) {
-		final Set<ServerPushConnection> connectionSet = clientManager.getClientsAtProject(event.getProjectId());
+	public void multicastToAllUsersButCurrentUserClientInSpecificProject(final ServerPushEvent event, final UUID projectId) {
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsAtProject(projectId);
 		connectionSet.remove(sessionManager.getCurrentSession().getThreadLocalClientId());
 
-		LOGGER.debug("Multicasting " + PrettyPrinter.getSimpleNamesListString(event.getActionList()) + " to project '" + event.getProjectId()
-				+ "': " + connectionSet.toString() + ".");
+		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '"
+				+ PrettyPrinter.getSimpleNamesListString(connectionSet) + "'.");
 		serverPushServerService.pushEvent(event, connectionSet);
 	}
 
 	@Override
-	public void notifyActionToCurrentUser(final ModelActionSyncEvent event) {
+	public void multicastToCurrentUserClientInSpecificProject(final ServerPushEvent event, final UUID projectId) {
 		final ServerPushConnection localClientId = sessionManager.getCurrentSession().getThreadLocalClientId();
-
-		if (localClientId == null || !clientManager.getClientsAtProject(event.getProjectId()).contains(localClientId)) return;
+		if (localClientId == null || !clientManager.getClientsAtProject(projectId).contains(localClientId)) return;
 
 		final Set<ServerPushConnection> connectionSet = new HashSet<ServerPushConnection>();
 		connectionSet.add(localClientId);
 
-		LOGGER.debug("Multicasting " + PrettyPrinter.getSimpleNamesListString(event.getActionList()) + " to current user (" + connectionSet.toString() + ").");
+		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '"
+				+ PrettyPrinter.getSimpleNamesListString(connectionSet) + "'.");
 		serverPushServerService.pushEvent(event, connectionSet);
 	}
 
 	@Override
-	public void notifyProjectCreation(final String userEmail, final ProjectRepresentation projectRepresentation) {
-		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(userEmail);
+	public void multicastToUser(final ServerPushEvent event, final User recipient) {
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(recipient.getId());
 
-		LOGGER.debug("Multicasting project creation with name '" + projectRepresentation.getName()
-				+ "' to '" + connectionSet.toString() + "'.");
-		serverPushServerService.pushEvent(new ProjectCreatedEvent(projectRepresentation), connectionSet);
+		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '" + recipient.getEmail() + "'.");
+		serverPushServerService.pushEvent(event, connectionSet);
 	}
 
 	@Override
-	public void notifyUserInformationChange(final User authenticatedUser) {
-		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(authenticatedUser.getEmail());
+	public void multicastToUsers(final ServerPushEvent event, final List<User> recipients) {
+		final Set<ServerPushConnection> connectionSet = new HashSet<ServerPushConnection>();
+		for (final User user : recipients) {
+			final Set<ServerPushConnection> clientsOfUser = clientManager.getClientsOfUser(user.getId());
+			connectionSet.addAll(clientsOfUser);
+		}
 
-		LOGGER.debug("Multicasting information change for " + User.class.getSimpleName() + " '" + authenticatedUser.getEmail()
-				+ "' to " + connectionSet.toString() + ".");
-		serverPushServerService.pushEvent(new UserInformationChangeEvent(authenticatedUser), connectionSet);
-	}
-
-	@Override
-	public void multicastToUsers(final NotificationCreatedEvent notificationCreatedEvent, final List<User> recipients) {
-		// FIXME Notification
+		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '"
+				+ PrettyPrinter.getSimpleNamesListString(recipients) + "'.");
+		serverPushServerService.pushEvent(event, connectionSet);
 	}
 }

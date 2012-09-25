@@ -66,8 +66,8 @@ public interface PersistenceService {
 
 	public FileRepresentation retrieveFileRepresentationById(UUID fileId) throws NoResultFoundException, PersistenceException;
 
-	public List<Notification> retrieveLatestNotificationsForUser(User user, int maxNotifications);
+	public List<Notification> retrieveLatestNotificationsForUser(User user, int maxNotifications) throws NoResultFoundException, PersistenceException;
 
-	public void persistOrUpdateNotification(Notification notification);
+	public Notification persistOrUpdateNotification(Notification notification) throws PersistenceException;
 
 }

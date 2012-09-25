@@ -35,5 +35,4 @@ public class ProjectRepresentationEntity {
 	public void setName(final String name) {
 		this.name = name;
 	}
-
 }

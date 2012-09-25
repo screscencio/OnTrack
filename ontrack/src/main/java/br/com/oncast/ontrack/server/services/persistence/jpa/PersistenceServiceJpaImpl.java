@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAutho
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
@@ -514,15 +514,51 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Notification> retrieveLatestNotificationsForUser(final User user, final int maxNotifications) {
-		// FIXME Notification
-		return new ArrayList<Notification>();
+	public List<Notification> retrieveLatestNotificationsForUser(final User user, final int maxNotifications) throws NoResultFoundException,
+			PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("select notification from " + NotificationEntity.class.getSimpleName()
+					+ " as notification where notification.id = :id");// FIXME Notification
+			query.setParameter("user", user);
+
+			return (List<Notification>) TYPE_CONVERTER.convert(query.getResultList());
+		}
+		catch (final NoResultException e) {
+			throw new NoResultFoundException("No notification found for user: " + user.getEmail(), e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to convert the NotificationEntity to it's model equivalent.", e);
+		}
+		finally {
+			em.close();
+		}
 	}
 
 	@Override
-	public void persistOrUpdateNotification(final Notification notification) {
-		// FIXME Notification
+	public Notification persistOrUpdateNotification(final Notification notification) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.merge((NotificationEntity) TYPE_CONVERTER.convert(notification));
+			em.getTransaction().commit();
+			// TODO ++++ Make this method void, because it is already changing the incoming object with generated id.
+			return notification;
+		}
+		catch (final Exception e) {
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				e.printStackTrace();
+				throw new PersistenceException("It was not possible to persist the notification nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the notification.", e);
+		}
+		finally {
+			em.close();
+		}
 	}
-
 }

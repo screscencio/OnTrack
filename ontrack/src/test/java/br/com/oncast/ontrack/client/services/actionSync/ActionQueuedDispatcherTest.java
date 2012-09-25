@@ -21,7 +21,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
-// TODO Refactor this test for better readability
 public class ActionQueuedDispatcherTest {
 
 	private ActionQueuedDispatcherTestUtils actionSyncServiceTestUtils;

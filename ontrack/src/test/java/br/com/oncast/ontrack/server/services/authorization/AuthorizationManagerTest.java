@@ -39,6 +39,7 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUs
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
@@ -318,9 +319,12 @@ public class AuthorizationManagerTest {
 		final MulticastService multicastService = mock(MulticastService.class);
 
 		authenticatedUser.setProjectInvitationQuota(1);
+
+		final ArgumentCaptor<UserInformationChangeEvent> captor = ArgumentCaptor.forClass(UserInformationChangeEvent.class);
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
 				.validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser);
-		verify(multicastService).notifyUserInformationChange(authenticatedUser);
+		verify(multicastService).multicastToUser(captor.capture(), eq(authenticatedUser));
+		assertEquals(authenticatedUser.getEmail(), captor.getValue().getUserEmail());
 	}
 
 	@Test
@@ -334,7 +338,7 @@ public class AuthorizationManagerTest {
 					.validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser);
 		}
 		catch (final Exception e) {}
-		verify(multicastService, times(0)).notifyUserInformationChange(authenticatedUser);
+		verify(multicastService, times(0)).multicastToUser(new UserInformationChangeEvent(authenticatedUser), authenticatedUser);
 	}
 
 	@Test
@@ -360,9 +364,11 @@ public class AuthorizationManagerTest {
 	public void validateAndUpdateUserProjectCreationQuotaShouldNotifyUserInformationChangeWhenSucceed() throws PersistenceException, AuthorizationException {
 		final MulticastService multicastService = mock(MulticastService.class);
 		authenticatedUser.setProjectCreationQuota(1);
+		final ArgumentCaptor<UserInformationChangeEvent> captor = ArgumentCaptor.forClass(UserInformationChangeEvent.class);
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
 				.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
-		verify(multicastService).notifyUserInformationChange(authenticatedUser);
+		verify(multicastService).multicastToUser(captor.capture(), eq(authenticatedUser));
+		assertEquals(authenticatedUser.getProjectCreationQuota(), captor.getValue().getProjectCreationQuota());
 	}
 
 	@Test
@@ -374,7 +380,7 @@ public class AuthorizationManagerTest {
 					.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 		}
 		catch (final Exception e) {}
-		verify(multicastService, times(0)).notifyUserInformationChange(authenticatedUser);
+		verify(multicastService, times(0)).multicastToUser(new UserInformationChangeEvent(authenticatedUser), authenticatedUser);
 	}
 
 }

@@ -37,4 +37,10 @@ public class ModelActionSyncEvent implements ServerPushEvent {
 	public ActionContext getActionContext() {
 		return actionContext;
 	}
+
+	@Override
+	public String toString() {
+		return "[" + super.toString() + "  @ Project: " + projectId + "; " + actionList.toString() + "]";
+	}
+
 }

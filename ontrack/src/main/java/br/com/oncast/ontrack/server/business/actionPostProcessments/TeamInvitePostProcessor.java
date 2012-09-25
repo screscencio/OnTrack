@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 
 public class TeamInvitePostProcessor implements ActionPostProcessor<TeamInviteAction> {
@@ -27,8 +28,11 @@ public class TeamInvitePostProcessor implements ActionPostProcessor<TeamInviteAc
 			throws UnableToPostProcessActionException {
 		LOGGER.debug("Executing Post processor '" + this.getClass().getSimpleName() + "' for '" + action.getClass().getSimpleName() + "' (" + action.toString()
 				+ "). " + action.getReferenceId().toStringRepresentation());
-		final ModelActionSyncEvent syncEvent = new ModelActionSyncEvent(projectContext.getProjectRepresentation().getId(),
+
+		final UUID projectId = projectContext.getProjectRepresentation().getId();
+		final ModelActionSyncEvent syncEvent = new ModelActionSyncEvent(projectId,
 				Arrays.asList(new ModelAction[] { action }), actionContext);
-		multicastService.notifyActionToCurrentUser(syncEvent);
+
+		multicastService.multicastToCurrentUserClientInSpecificProject(syncEvent, projectId);
 	}
 }
