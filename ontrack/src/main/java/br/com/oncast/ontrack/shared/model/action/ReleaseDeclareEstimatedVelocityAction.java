@@ -5,6 +5,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseDeclareEstimatedVelocityActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -31,7 +32,8 @@ public class ReleaseDeclareEstimatedVelocityAction implements ReleaseAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		if (estimatedVelocity != null && estimatedVelocity < 0.001f) throw new UnableToCompleteActionException("Cant declare estimated velocity as 0.");
+		if (estimatedVelocity != null && estimatedVelocity < 0.001f) throw new UnableToCompleteActionException(
+				ActionExecutionErrorMessageCode.DECLARE_ESTIMATED_VELOCITY_AS_ZERO);
 		final Release release = ActionHelper.findRelease(releaseId, context);
 		final Float previousDeclaration = release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : null;
 

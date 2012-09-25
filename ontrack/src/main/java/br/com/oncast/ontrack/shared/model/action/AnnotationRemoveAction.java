@@ -8,6 +8,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -44,7 +45,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
 		if (userAction && !annotation.getAuthor().getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
-				"Can't remove a anotation created by another user.");
+				ActionExecutionErrorMessageCode.ANNOTATION_REMOVE);
 
 		final List<ModelAction> rollbackSubActions = removeSubAnnotations(context, actionContext);
 

@@ -162,7 +162,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 		}
 		catch (final ScopeNotFoundException e) {
 			e.printStackTrace();
-			ClientServiceProvider.getInstance().getClientAlertingService().showWarning(e.getMessage());
+			ClientServiceProvider.getInstance().getClientAlertingService().showWarning(e.getLocalizedMessage());
 		}
 	}
 
@@ -175,7 +175,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	@Override
-	public void onActionExecution(final ModelAction action, final ProjectContext context, ActionContext actionContext,
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 			final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction) updateItems();
 	}

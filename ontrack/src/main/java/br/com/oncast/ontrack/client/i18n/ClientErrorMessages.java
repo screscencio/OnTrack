@@ -30,4 +30,20 @@ public interface ClientErrorMessages extends BaseMessages {
 	@DefaultMessage("It was not possible to update the view because an inconsistency with the model was detected.")
 	String modelInconsistency();
 
+	@Description("message shown when a user was not found.")
+	@DefaultMessage("The user ''{0}'' was not found")
+	String userNotFound(String userEmail);
+
+	@Description("message shown when the invited user accepts the invitation.")
+	@DefaultMessage("The User ''{0}'' accepted the invitaton for this project")
+	String acceptedInvitation(String userEmail);
+
+	@Description("message shown when the user tries to show details and the given id was not found in the model.")
+	@DefaultMessage("It was not possible to show details: The given id was not found")
+	String errorShowingDetails();
+
+	@Description("message shown when the project list is unavailable for some reason.")
+	@DefaultMessage("Projects list unavailable. Verify your connection.")
+	String projectListUnavailable();
+
 }

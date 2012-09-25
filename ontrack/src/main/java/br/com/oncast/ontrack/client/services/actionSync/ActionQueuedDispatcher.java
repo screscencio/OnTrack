@@ -15,25 +15,25 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionExce
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 class ActionQueuedDispatcher {
 
 	private final DispatchService requestDispatchService;
-	private final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
+	private final ClientErrorMessages messages;
 	private final List<ModelAction> actionList;
 	private List<ModelAction> waitingServerAnswerActionList;
 	private final ProjectRepresentationProvider projectRepresentationProvider;
 	private final ClientAlertingService alertingService;
 
 	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ClientAlertingService alertingService) {
+			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.requestDispatchService = requestDispatchService;
 		this.alertingService = alertingService;
+		this.messages = messages;
 
 		actionList = new ArrayList<ModelAction>();
 		waitingServerAnswerActionList = new ArrayList<ModelAction>();

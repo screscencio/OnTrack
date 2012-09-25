@@ -6,6 +6,7 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRenameActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
@@ -43,7 +44,7 @@ public class KanbanColumnRenameAction implements KanbanAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final String trimmedDescription = newDescription.trim();
-		if (trimmedDescription.isEmpty()) throw new UnableToCompleteActionException("The new column description can't be empty");
+		if (trimmedDescription.isEmpty()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.EMPTY_DESCRIPTION);
 
 		final Release release = ActionHelper.findRelease(releaseId, context);
 		final Kanban kanban = context.getKanban(release);

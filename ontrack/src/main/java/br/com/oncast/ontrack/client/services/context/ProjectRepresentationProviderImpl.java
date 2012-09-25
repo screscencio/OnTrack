@@ -5,6 +5,7 @@ import java.util.Set;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
@@ -21,6 +22,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationResp
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
@@ -31,6 +33,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	private final Set<ProjectRepresentation> availableProjectRepresentations = new HashSet<ProjectRepresentation>();
 	private boolean projectListAvailability;
 	private ProjectRepresentation currentProjectRepresentation;
+	private ClientErrorMessages messages;
 
 	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
 			final AuthenticationService authenticationService, final ClientAlertingService alertingService) {
@@ -91,7 +94,11 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			public void onUntreatedFailure(final Throwable caught) {
 				// TODO +++Treat fatal error. Could not load project list...
 				alertingService
-						.showWarning("Projects list unavailable. Verify your connection.");
+						.showWarning(getMessages().projectListUnavailable());
+			}
+
+			private ClientErrorMessages getMessages() {
+				return messages == null ? messages = GWT.create(ClientErrorMessages.class) : messages;
 			}
 		});
 	}

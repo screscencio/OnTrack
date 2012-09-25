@@ -11,7 +11,7 @@ public class VerticalPanelWithSpacer extends VerticalPanel {
 
 		final Widget spacer = createEmptyWidget();
 		super.add(spacer);
-		setCellHeight(spacer, "*");
+		setCellHeight(spacer, "100%");
 	}
 
 	@Override

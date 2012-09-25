@@ -62,7 +62,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 			actionManager.doUserAction(action, contextService.getCurrentProjectContext(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
-			alertingService.showWarning(e.getMessage());
+			alertingService.showWarning(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -73,7 +73,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 			actionManager.undoUserAction(contextService.getCurrentProjectContext(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
-			alertingService.showWarning(e.getMessage());
+			alertingService.showWarning(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -84,7 +84,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 			actionManager.redoUserAction(contextService.getCurrentProjectContext(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
-			alertingService.showWarning(e.getMessage());
+			alertingService.showWarning(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
 	}

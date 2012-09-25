@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.actions;
 
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
@@ -12,7 +13,11 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 
+import com.google.gwt.core.client.GWT;
+
 class ScopeTreeRemoveAction implements ScopeTreeAction {
+
+	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private final ScopeTreeWidget tree;
 	private final ScopeAction action;
@@ -43,7 +48,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 			}
 		}
 		catch (final UnableToCompleteActionException e) {
-			throw new UserNotFoundException("The user '" + actionContext.getUserEmail() + "' was not found");
+			throw new UserNotFoundException(messages.userNotFound(actionContext.getUserEmail()));
 		}
 	}
 }

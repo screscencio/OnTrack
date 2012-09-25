@@ -5,6 +5,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistEditItemDescriptionActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
@@ -42,7 +43,7 @@ public class ChecklistEditItemDescriptionAction implements ChecklistAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Checklist checklist = ActionHelper.findChecklist(subjectId, checklistId, context);
 		final ChecklistItem item = checklist.getItem(itemId);
-		if (item == null) throw new UnableToCompleteActionException("It's not possible to edit the description on an inexitent Checklist Item.");
+		if (item == null) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CHECKLIST_ITEM_NOT_FOUND);
 		final String oldDescription = item.getDescription();
 		item.setDescription(newDescription);
 		return new ChecklistEditItemDescriptionAction(subjectId, checklistId, itemId, oldDescription);

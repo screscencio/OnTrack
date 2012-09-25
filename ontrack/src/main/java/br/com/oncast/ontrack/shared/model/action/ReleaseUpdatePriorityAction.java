@@ -6,6 +6,7 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseUpdatePriorityActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -36,14 +37,14 @@ public class ReleaseUpdatePriorityAction implements ReleaseAction {
 
 	@Override
 	public ReleaseUpdatePriorityAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		if (targetIndex < 0) throw new UnableToCompleteActionException("It's already the least prioritary release.");
+		if (targetIndex < 0) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.ALREADY_THE_LEAST_PRIORITARY);
 
 		final Release selectedRelease = ActionHelper.findRelease(releaseId, context);
-		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException("Unable to change priority of the root release.");
+		if (selectedRelease.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CHANGE_ROOT_RELEASE_PRIORITY);
 
 		final Release parentRelease = selectedRelease.getParent();
 		if (targetIndex >= parentRelease.getChildren().size()) throw new UnableToCompleteActionException(
-				"It's already the most prioritary release.");
+				ActionExecutionErrorMessageCode.ALREADY_THE_MOST_PRIORITARY);
 
 		final int currentIndex = parentRelease.getChildIndex(selectedRelease);
 		parentRelease.removeChild(selectedRelease);

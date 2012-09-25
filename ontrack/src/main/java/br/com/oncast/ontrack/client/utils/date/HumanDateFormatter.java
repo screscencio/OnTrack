@@ -9,13 +9,25 @@ import static br.com.oncast.ontrack.client.utils.date.DateUnit.YEAR;
 
 import java.util.Date;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 public enum HumanDateFormatter {
-	JUST_NOW(1 * MINUTE) {
+	JUST_NOW(1 * MINUTE, "yyyyMMddHHmm") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return "Just now";
+			return messages.lessThanAMinuteAgo();
+		}
+
+		@Override
+		protected String formatRelativeTime(final Date date) {
+			return messages.justNow();
+		}
+	},
+	MINUTES(1 * HOUR, "yyyyMMddHH") {
+		@Override
+		protected String formatDifferenceTime(final long difference) {
+			return mountDifferenceText(difference, MINUTE, messages.minute(), messages.minutes());
 		}
 
 		@Override
@@ -23,10 +35,10 @@ public enum HumanDateFormatter {
 			return format("h:mm a", date);
 		}
 	},
-	MINUTES(1 * HOUR) {
+	HOURS(1 * DAY, "yyyyMMdd") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return mountDifferenceText(difference, MINUTE, "minute", "minutes");
+			return mountDifferenceText(difference, HOUR, messages.hour(), messages.hours());
 		}
 
 		@Override
@@ -34,21 +46,10 @@ public enum HumanDateFormatter {
 			return format("h:mm a", date);
 		}
 	},
-	HOURS(1 * DAY) {
+	DAYS(1 * WEEK, "yyyyMM") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return mountDifferenceText(difference, HOUR, "hour", "hours");
-		}
-
-		@Override
-		protected String formatRelativeTime(final Date date) {
-			return format("h:mm a", date);
-		}
-	},
-	DAYS(1 * WEEK) {
-		@Override
-		protected String formatDifferenceTime(final long difference) {
-			return mountDifferenceText(difference, DAY, "day", "days");
+			return mountDifferenceText(difference, DAY, messages.day(), messages.days());
 		}
 
 		@Override
@@ -56,10 +57,10 @@ public enum HumanDateFormatter {
 			return format("E, d", date);
 		}
 	},
-	WEEKS(1 * MONTH) {
+	WEEKS(1 * MONTH, "yyyyMM") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return mountDifferenceText(difference, WEEK, "week", "weeks");
+			return mountDifferenceText(difference, WEEK, messages.week(), messages.weeks());
 		}
 
 		@Override
@@ -67,10 +68,10 @@ public enum HumanDateFormatter {
 			return format("E, d", date);
 		}
 	},
-	MONTHS(1 * YEAR) {
+	MONTHS(1 * YEAR, "yyyy") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return mountDifferenceText(difference, MONTH, "month", "months");
+			return mountDifferenceText(difference, MONTH, messages.month(), messages.months());
 		}
 
 		@Override
@@ -78,26 +79,30 @@ public enum HumanDateFormatter {
 			return format("MMM, d", date);
 		}
 	},
-	YEARS(Long.MAX_VALUE) {
+	YEARS(Long.MAX_VALUE, "G") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return mountDifferenceText(difference, YEAR, "year", "years");
+			return mountDifferenceText(difference, YEAR, messages.year(), messages.years());
 		}
 
 		@Override
 		protected String formatRelativeTime(final Date date) {
-			return format("dd/MM/yy", date);
+			return format("MMM, yyyy", date);
 		}
 	};
 
-	private final long maxTimeDifference;
+	private static final HumanDateFormatterMessages messages = GWT.create(HumanDateFormatterMessages.class);
 
-	private HumanDateFormatter(final long maxTimeDifference) {
+	private final long maxTimeDifference;
+	private DateTimeFormat format;
+
+	private HumanDateFormatter(final long maxTimeDifference, final String pattern) {
 		this.maxTimeDifference = maxTimeDifference;
+		this.format = DateTimeFormat.getFormat(pattern);
 	}
 
 	public static String getDifferenceDate(final Date date) {
-		final long difference = getDifference(date);
+		final long difference = new Date().getTime() - date.getTime();
 		for (final HumanDateFormatter formatter : values()) {
 			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference); }
 		}
@@ -105,15 +110,15 @@ public enum HumanDateFormatter {
 	}
 
 	public static String getRelativeDate(final Date date) {
-		final long difference = getDifference(date);
+		final Date currentDate = new Date();
 		for (final HumanDateFormatter formatter : values()) {
-			if (formatter.maxTimeDifference > difference) { return formatter.formatRelativeTime(date); }
+			if (formatter.accepts(currentDate, date)) { return formatter.formatRelativeTime(date); }
 		}
 		return getAbsoluteText(date);
 	}
 
 	public static String getAbsoluteText(final Date date) {
-		return format("EEE, dd/MM/yyyy 'at' hh:mm:ss", date);
+		return format("EEE, dd/MM/yyyy '" + messages.at() + "' hh:mm:ss", date);
 	}
 
 	protected abstract String formatDifferenceTime(final long difference);
@@ -126,13 +131,11 @@ public enum HumanDateFormatter {
 
 	protected String mountDifferenceText(final long difference, final long delimiter, final String singular, final String plural) {
 		final int time = (int) (difference / delimiter);
-		return time + " " + (time <= 1 ? singular : plural) + " ago";
+		return time + " " + (time <= 1 ? singular : plural) + " " + messages.ago();
 	}
 
-	private static long getDifference(final Date date) {
-		final Date currentDate = new Date();
-		final long difference = currentDate.getTime() - date.getTime();
-		return difference;
+	private boolean accepts(final Date currentDate, final Date date) {
+		return format.format(currentDate).equals(format.format(date));
 	}
 
 	public static String getShortAbsuluteDate(final Date date) {

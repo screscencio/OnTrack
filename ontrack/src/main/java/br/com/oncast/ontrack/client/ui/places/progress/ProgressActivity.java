@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
@@ -14,6 +15,7 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -22,6 +24,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class ProgressActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private ProgressPanelActionSyncController progressPanelActionSyncController;
 	private ProgressView view;
@@ -55,7 +58,7 @@ public class ProgressActivity extends AbstractActivity {
 				public void updateReleaseInfo() {
 					updateCustomApplicationMenus();
 				}
-			});
+			}, messages);
 		}
 		catch (final ReleaseNotFoundException e) {
 

@@ -5,6 +5,7 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeInsertParentRollbackActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -41,8 +42,8 @@ public class ScopeInsertParentRollbackAction implements ScopeAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope newScope = ActionHelper.findScope(newScopeId, context);
-		if (newScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to remove the root node.");
-		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException("It is not possible to rollback this action due to inconsistences.");
+		if (newScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_ROOT_NODE);
+		if (newScope.getChildren().size() <= 0) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.ROLLBACK_INCONSITENCY);
 
 		final String pattern = new ScopeRepresentationBuilder(newScope).includeEverything().toString();
 

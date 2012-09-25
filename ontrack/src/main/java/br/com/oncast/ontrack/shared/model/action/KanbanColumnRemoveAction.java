@@ -9,6 +9,7 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
@@ -79,9 +80,8 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 	}
 
 	private void validateExecution(final Kanban kanban) throws UnableToCompleteActionException {
-		if (!kanban.hasColumn(columnDescription)) throw new UnableToCompleteActionException("The column does not exist.");
-		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException("The column '" + columnDescription
-				+ "' is static and can't be removed.");
+		if (!kanban.hasColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.KANBAN_COLUMN_NOT_FOUND);
+		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_STATIC_KANBAN_COLUMN);
 	}
 
 	@Override

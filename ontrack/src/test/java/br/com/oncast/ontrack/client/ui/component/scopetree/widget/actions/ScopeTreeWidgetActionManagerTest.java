@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionMana
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -83,7 +84,8 @@ public class ScopeTreeWidgetActionManagerTest {
 	@Test(expected = UnableToCompleteActionException.class)
 	public void ifActionsThrowExceptionNothingHappens() throws UnableToCompleteActionException, ScopeNotFoundException {
 		exceptionAction = mock(ScopeInsertChildAction.class);
-		doThrow(new UnableToCompleteActionException("")).when(exceptionAction).execute(Mockito.eq(context), Mockito.any(ActionContext.class));
+		doThrow(new UnableToCompleteActionException(ActionExecutionErrorMessageCode.UNKNOWN)).when(exceptionAction).execute(Mockito.eq(context),
+				Mockito.any(ActionContext.class));
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(exceptionAction)).thenReturn(widgetExceptionActionMock);
 
 		actionExecutionManager.doUserAction(exceptionAction, context, actionContext);
@@ -132,7 +134,8 @@ public class ScopeTreeWidgetActionManagerTest {
 		final ScopeAction rollbackAction = mock(ScopeAction.class);
 
 		when(rollbackException.execute(context, actionContext)).thenReturn(rollbackAction);
-		doThrow(new UnableToCompleteActionException("")).when(rollbackWidgetException).execute(context, actionContext, true);
+		doThrow(new UnableToCompleteActionException(ActionExecutionErrorMessageCode.UNKNOWN)).when(rollbackWidgetException).execute(context, actionContext,
+				true);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(rollbackAction)).thenReturn(rollbackWidgetException);
 
 		actionExecutionManager.doUserAction(rollbackException, context, actionContext);
@@ -147,7 +150,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		final ScopeTreeAction normalWidgetException = mock(ScopeTreeAction.class);
 		final ScopeTreeAction execute = mock(ScopeTreeAction.class);
 
-		doThrow(new UnableToCompleteActionException("")).when(execute).execute(context, actionContext, true);
+		doThrow(new UnableToCompleteActionException(ActionExecutionErrorMessageCode.UNKNOWN)).when(execute).execute(context, actionContext, true);
 		when(scopeTreeActionFactoryMock.createEquivalentActionFor(rollbackException)).thenReturn(normalWidgetException).thenReturn(execute);
 
 		actionExecutionManager.doUserAction(rollbackException, context, actionContext);

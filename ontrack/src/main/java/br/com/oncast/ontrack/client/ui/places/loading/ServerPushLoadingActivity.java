@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class ServerPushLoadingActivity extends AbstractActivity {
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
-	private final ServerPushLoadingMessages messages = GWT.create(ServerPushLoadingActivity.class);
+	private final ServerPushLoadingMessages messages = GWT.create(ServerPushLoadingMessages.class);
 
 	private Place destinationPlace;
 

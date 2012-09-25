@@ -5,6 +5,7 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.release.ReleaseRenameActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -40,7 +41,7 @@ public class ReleaseRenameAction implements ReleaseAction {
 			release.setDescription(newReleaseDescription);
 		}
 		catch (final Exception e) {
-			throw new UnableToCompleteActionException("Invalid release description.");
+			throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.INVALID_RELEASE_DESCRIPTION);
 		}
 		return new ReleaseRenameAction(referenceId, oldDescription);
 	}

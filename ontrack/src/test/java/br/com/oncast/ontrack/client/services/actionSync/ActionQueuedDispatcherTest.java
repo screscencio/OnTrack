@@ -10,6 +10,7 @@ import org.mockito.Mock;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchListener;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.DispatchRequestServiceTestImplementation;
 import br.com.oncast.ontrack.client.services.actionSync.ActionQueuedDispatcherTestUtils.ValueHolder;
@@ -30,13 +31,16 @@ public class ActionQueuedDispatcherTest {
 	@Mock
 	private ClientAlertingService alertingService;
 
+	@Mock
+	private ClientErrorMessages messages;
+
 	@Before
 	public void setUp() {
 		actionSyncServiceTestUtils = new ActionQueuedDispatcherTestUtils();
 		requestDispatchServiceMock = actionSyncServiceTestUtils.new DispatchRequestServiceTestImplementation();
 		actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchServiceMock,
 				getProjectRepresentationProviderMock(),
-				alertingService);
+				alertingService, messages);
 	}
 
 	@Test

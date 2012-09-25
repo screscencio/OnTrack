@@ -4,6 +4,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationVoteRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -33,9 +34,9 @@ public class AnnotationVoteRemoveAction implements AnnotationAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context);
 		final User user = ActionHelper.findUser(actionContext.getUserEmail(), context);
-		if (annotation.isDeprecated()) throw new UnableToCompleteActionException("It's not possible to vote on a deprecated Annotation");
-		
-		if (!annotation.hasVoted(user)) throw new UnableToCompleteActionException("It's not possible to remove the ungiven vote");
+		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.VOTE_REMOVE_FROM_DEPRECATED_ANNOTATION);
+
+		if (!annotation.hasVoted(user)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_UNGIVEN_VOTE);
 		annotation.removeVote(user);
 		return new AnnotationVoteAction(annotationId, annotatedObjectId);
 	}

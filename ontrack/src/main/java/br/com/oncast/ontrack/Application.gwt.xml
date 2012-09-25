@@ -30,6 +30,7 @@
 
 	<!-- Supported locales -->
 	<extend-property name="locale" values="pt"/>
+
 <!-- 	 For fast compilation comment the line above and uncomment the line bellow -->
 <!-- 	<set-property name="user.agent" value="safari"/> -->
 

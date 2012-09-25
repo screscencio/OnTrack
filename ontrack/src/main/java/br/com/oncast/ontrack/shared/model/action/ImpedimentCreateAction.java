@@ -6,6 +6,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.impediments.ImpedimentCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -38,7 +39,7 @@ public class ImpedimentCreateAction implements ImpedimentAction {
 		final Date timestamp = actionContext.getTimestamp();
 
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
-		if (annotation.isDeprecated()) throw new UnableToCompleteActionException("Unable to create an impediment when the annotation is deprecated.");
+		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.OPERATION_OVER_DEPRECATED_ANNOTATION);
 
 		final AnnotationType previousType = annotation.getType();
 		annotation.setType(AnnotationType.OPEN_IMPEDIMENT, author, timestamp);

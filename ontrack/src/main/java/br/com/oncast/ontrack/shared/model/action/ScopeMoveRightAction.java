@@ -10,6 +10,7 @@ import org.simpleframework.xml.ElementList;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveRightActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -58,11 +59,11 @@ public class ScopeMoveRightAction implements ScopeMoveAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move the root node.");
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.MOVE_ROOT_NODE);
 
 		final Scope parent = selectedScope.getParent();
 		if (isFirstNode(parent.getChildIndex(selectedScope))) throw new UnableToCompleteActionException(
-				"It's not possible to move right the first node");
+				ActionExecutionErrorMessageCode.MOVE_RIGHT_FIRST_NODE);
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();
 

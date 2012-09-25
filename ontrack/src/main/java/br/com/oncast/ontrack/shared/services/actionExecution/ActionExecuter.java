@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.services.actionExecution;
 
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
@@ -26,7 +27,7 @@ public class ActionExecuter {
 		if (action instanceof ChecklistAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof ImpedimentAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 
-		throw new UnableToCompleteActionException("There is no mapped action executer for " + action.getClass() + ".");
+		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.NO_MAPPED_EXECUTOR, action.getClass().toString());
 	}
 
 }

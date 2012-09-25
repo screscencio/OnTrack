@@ -261,7 +261,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
-				SERVICE_PROVIDER.getClientAlertingService().showWarning(caught.getMessage());
+				SERVICE_PROVIDER.getClientAlertingService().showWarning(caught.getLocalizedMessage());
 			}
 		});
 	}

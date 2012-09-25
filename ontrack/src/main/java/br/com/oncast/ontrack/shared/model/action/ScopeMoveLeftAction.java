@@ -9,6 +9,7 @@ import org.simpleframework.xml.ElementList;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeMoveLeftActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -45,8 +46,8 @@ public class ScopeMoveLeftAction implements ScopeMoveAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
-		if (selectedScope.isRoot()) throw new UnableToCompleteActionException("It is not possible to move the root node.");
-		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException("It is not possible to move left when the parent is the root node.");
+		if (selectedScope.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.MOVE_ROOT_NODE);
+		if (selectedScope.getParent().isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.MOVE_LEFT_ROOT_NODE_SON);
 
 		final Scope parent = selectedScope.getParent();
 		final Scope grandParent = parent.getParent();

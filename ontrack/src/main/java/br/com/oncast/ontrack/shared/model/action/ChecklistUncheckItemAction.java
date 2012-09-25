@@ -4,6 +4,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.checklist.ChecklistUncheckItemActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
@@ -37,7 +38,7 @@ public class ChecklistUncheckItemAction implements ChecklistAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Checklist list = ActionHelper.findChecklist(subjectId, checklistId, context);
 		final ChecklistItem item = list.getItem(itemId);
-		if (item == null) throw new UnableToCompleteActionException("Unable to uncheck the item. The given item was not found.");
+		if (item == null) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CHECKLIST_ITEM_NOT_FOUND);
 		item.setChecked(false);
 		return new ChecklistCheckItemAction(subjectId, checklistId, itemId);
 	}

@@ -8,10 +8,13 @@ import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ContextLoadingActivity extends AbstractActivity {
+
+	private static final ContextLoadingMessages messages = GWT.create(ContextLoadingMessages.class);
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private final ProjectDependentPlace projectDependentPlace;
@@ -27,7 +30,7 @@ public class ContextLoadingActivity extends AbstractActivity {
 
 		final ProjectMessageView view = new ProjectMessagePanel();
 		panel.setWidget(view);
-		view.setMainMessage("Syncing...");
+		view.setMainMessage(messages.syncing());
 
 		SERVICE_PROVIDER.getContextProviderService().loadProjectContext(projectDependentPlace.getRequestedProjectId(), new ProjectContextLoadCallback() {
 
@@ -38,13 +41,13 @@ public class ContextLoadingActivity extends AbstractActivity {
 
 			@Override
 			public void onProjectNotFound() {
-				treatFailure("The requested project was not found.");
+				treatFailure(messages.projectNotFound());
 			}
 
 			@Override
 			public void onUnexpectedFailure(final Throwable cause) {
 				cause.printStackTrace();
-				treatFailure(cause.getMessage());
+				treatFailure(cause.getLocalizedMessage());
 			}
 		});
 

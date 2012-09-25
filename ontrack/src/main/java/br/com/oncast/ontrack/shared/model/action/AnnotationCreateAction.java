@@ -8,6 +8,7 @@ import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.annotation.AnnotationCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -56,7 +57,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if ((message == null || message.isEmpty()) && attachmentId == null) throw new UnableToCompleteActionException(
-				"A annotation should have a message or an attachment file");
+				ActionExecutionErrorMessageCode.ANNOTATION_WITH_EMPTY_MESSAGE_AND_ATTACHMENT);
 
 		context.addAnnotation(subjectId, getAnnotation(context, actionContext));
 

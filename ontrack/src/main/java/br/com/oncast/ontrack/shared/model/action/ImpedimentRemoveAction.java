@@ -7,6 +7,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.impediments.ImpedimentRemoveActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -44,9 +45,9 @@ public class ImpedimentRemoveAction implements ImpedimentAction {
 
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
 
-		if (!annotation.isImpeded()) throw new UnableToCompleteActionException("Unable to remove an impediment when the annotation is not impeded.");
+		if (!annotation.isImpeded()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_IMPEDIMENT_FROM_NOT_IMPEDED_ANNOTATION);
 		if (!annotation.getAuthorForState(AnnotationType.OPEN_IMPEDIMENT).getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
-				"Unable to remove an impediment that was created by other user.");
+				ActionExecutionErrorMessageCode.REMOVE_IMPEDIMENT_OF_ANOTHER_AUTHOR);
 
 		annotation.setType(AnnotationType.valueOf(previousType), author, timestamp);
 		return new ImpedimentCreateAction(subjectId, annotationId);

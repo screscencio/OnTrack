@@ -9,6 +9,7 @@ import org.simpleframework.xml.ElementList;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.kanban.KanbanColumnCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
@@ -73,7 +74,7 @@ public class KanbanColumnCreateAction implements KanbanAction {
 		final Release release = ActionHelper.findRelease(referenceId, context);
 		final Kanban kanban = context.getKanban(release);
 
-		if (kanban.hasNonInferedColumn(columnDescription)) throw new UnableToCompleteActionException("The column is already set.");
+		if (kanban.hasNonInferedColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.KANBAN_COLUMN_ALREADY_SET);
 
 		kanban.appendColumn(columnDescription);
 		if (columnIndex >= 0) kanban.moveColumn(columnDescription, columnIndex);

@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
@@ -72,7 +73,8 @@ public class ProgressPanelActionSyncControllerTest {
 		final ArgumentCaptor<ActionExecutionListener> captor = ArgumentCaptor.forClass(ActionExecutionListener.class);
 		Mockito.doNothing().when(actionExecutionServiceMock).addActionExecutionListener(captor.capture());
 
-		final ProgressPanelActionSyncController actionSyncController = new ProgressPanelActionSyncController(actionExecutionServiceMock, myRelease, display);
+		final ProgressPanelActionSyncController actionSyncController = new ProgressPanelActionSyncController(actionExecutionServiceMock, myRelease, display,
+				mock(ClientErrorMessages.class));
 		releaseMonitor = actionSyncController.new ReleaseMonitor(myRelease);
 		ReflectionTestUtils.set(actionSyncController, "releaseMonitor", releaseMonitor);
 		actionSyncController.registerActionExecutionListener();
