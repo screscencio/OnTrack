@@ -490,7 +490,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		finally {
 			em.close();
 		}
-
 	}
 
 	@Override
@@ -520,9 +519,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select notification from " + NotificationEntity.class.getSimpleName()
-					+ " as notification where notification.id = :id");// FIXME Notification
+			final Query query = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName()
+					+ " as n WHERE :user MEMBER OF n.recipients ORDER BY n.timestamp DESC");
 			query.setParameter("user", user);
+			query.setMaxResults(maxNotifications);
 
 			return (List<Notification>) TYPE_CONVERTER.convert(query.getResultList());
 		}
@@ -552,7 +552,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 				em.getTransaction().rollback();
 			}
 			catch (final Exception f) {
-				e.printStackTrace();
 				throw new PersistenceException("It was not possible to persist the notification nor to rollback it.", f);
 			}
 			throw new PersistenceException("It was not possible to persist the notification.", e);

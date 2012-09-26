@@ -46,6 +46,8 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
@@ -389,6 +391,100 @@ public class PersistenceServiceTest {
 		DeepEqualityTestUtils.assertObjectEquality(fileRepresentation, retrievedFileRepresentation);
 	}
 
+	@Test
+	public void shouldPersistAndRetrieveSingleUserNotification() throws Exception {
+		final User user = createAndPersistUser();
+		final Notification notification = new NotificationBuilder("msg").addReceipient(user).getNotification();
+
+		persistenceService.persistOrUpdateNotification(notification);
+
+		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user, 50);
+		assertEquals(1, latestNotificationsForUser.size());
+		DeepEqualityTestUtils.assertObjectEquality(notification, latestNotificationsForUser.get(0));
+	}
+
+	@Test
+	public void shouldPersistAndRetrieveSingleUserNotificationWhenThereIsMoreNotifications() throws Exception {
+		final User user1 = createAndPersistUser();
+		final Notification notification1 = new NotificationBuilder("msg1").addReceipient(user1).getNotification();
+		persistenceService.persistOrUpdateNotification(notification1);
+
+		final User user2 = createAndPersistUser();
+		final Notification notification2 = new NotificationBuilder("msg2").addReceipient(user2).getNotification();
+		persistenceService.persistOrUpdateNotification(notification2);
+
+		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 50);
+		assertEquals(1, latestNotificationsForUser.size());
+		DeepEqualityTestUtils.assertObjectEquality(notification1, latestNotificationsForUser.get(0));
+	}
+
+	@Test
+	public void shouldPersistAndRetrieveMultipleUserNotifications() throws Exception {
+		final User user1 = createAndPersistUser();
+		final Notification notification1 = new NotificationBuilder("msg1").addReceipient(user1).getNotification();
+		persistenceService.persistOrUpdateNotification(notification1);
+
+		final User user2 = createAndPersistUser();
+		final Notification notification2 = new NotificationBuilder("msg2").addReceipient(user2).getNotification();
+		persistenceService.persistOrUpdateNotification(notification2);
+
+		final User user3 = createAndPersistUser();
+		final Notification notification3 = new NotificationBuilder("msg3").addReceipient(user3).addReceipient(user1).getNotification();
+		persistenceService.persistOrUpdateNotification(notification3);
+
+		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 50);
+		assertEquals(2, latestNotificationsForUser.size());
+		DeepEqualityTestUtils.assertObjectEquality(notification3, latestNotificationsForUser.get(0));
+		DeepEqualityTestUtils.assertObjectEquality(notification1, latestNotificationsForUser.get(1));
+	}
+
+	@Test
+	public void shouldPersistAndRetrieveMultipleUserNotificationsInTheCorrectOrder() throws Exception {
+		final User user1 = createAndPersistUser();
+		final Notification notification1 = new NotificationBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1)).getNotification();
+		persistenceService.persistOrUpdateNotification(notification1);
+
+		final User user2 = createAndPersistUser();
+		final Notification notification2 = new NotificationBuilder("msg2").addReceipient(user1).addReceipient(user2).setTimestamp(new Date(1000))
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification2);
+
+		final User user3 = createAndPersistUser();
+		final Notification notification3 = new NotificationBuilder("msg3").addReceipient(user3).addReceipient(user1).setTimestamp(new Date(100))
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification3);
+
+		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 50);
+
+		assertEquals(3, latestNotificationsForUser.size());
+		DeepEqualityTestUtils.assertObjectEquality(notification2, latestNotificationsForUser.get(0));
+		DeepEqualityTestUtils.assertObjectEquality(notification3, latestNotificationsForUser.get(1));
+		DeepEqualityTestUtils.assertObjectEquality(notification1, latestNotificationsForUser.get(2));
+	}
+
+	@Test
+	public void shouldPersistAndRetrieveMultipleUserNotificationsLimitedByMaxRequested() throws Exception {
+		final User user1 = createAndPersistUser();
+		final Notification notification1 = new NotificationBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1)).getNotification();
+		persistenceService.persistOrUpdateNotification(notification1);
+
+		final User user2 = createAndPersistUser();
+		final Notification notification2 = new NotificationBuilder("msg2").addReceipient(user1).addReceipient(user2).setTimestamp(new Date(1000))
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification2);
+
+		final User user3 = createAndPersistUser();
+		final Notification notification3 = new NotificationBuilder("msg3").addReceipient(user3).addReceipient(user1).setTimestamp(new Date(100))
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification3);
+
+		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 2);
+
+		assertEquals(2, latestNotificationsForUser.size());
+		DeepEqualityTestUtils.assertObjectEquality(notification2, latestNotificationsForUser.get(0));
+		DeepEqualityTestUtils.assertObjectEquality(notification3, latestNotificationsForUser.get(1));
+	}
+
 	private User createAndPersistUser() throws Exception {
 		return persistenceService.persistOrUpdateUser(UserTestUtils.createUser());
 	}
@@ -440,5 +536,4 @@ public class PersistenceServiceTest {
 	private void assureProjectRepresentationExistance() throws Exception {
 		persistenceService.persistOrUpdateProjectRepresentation(ProjectTestUtils.createRepresentation(PROJECT_ID));
 	}
-
 }

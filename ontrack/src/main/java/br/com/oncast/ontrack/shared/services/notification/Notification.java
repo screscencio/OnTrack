@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(NotificationEntity.class)
 public class Notification implements Serializable {
@@ -30,6 +31,7 @@ public class Notification implements Serializable {
 
 	@Attribute
 	@ConversionAlias("timestamp")
+	@IgnoredByDeepEquality
 	private Date timestamp;
 
 	@ElementList
@@ -64,5 +66,22 @@ public class Notification implements Serializable {
 
 	public Date getTimestamp() {
 		return timestamp;
+	}
+
+	protected void setId(final UUID id) {
+		this.id = id;
+	}
+
+	protected void setMessage(final String message) {
+		this.message = message;
+	}
+
+	protected void setTimestamp(final Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	protected void addReceipient(final User user) {
+		if (this.recipients.contains(user)) return;
+		this.recipients.add(user);
 	}
 }

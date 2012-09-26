@@ -11,6 +11,7 @@ import java.util.Map;
 import org.hibernate.collection.PersistentBag;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.BooleanConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.CollectionConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.CollectionToListConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.DateConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.FloatConverter;
@@ -38,8 +39,8 @@ public class GeneralTypeConverter implements TypeConverter {
 		addCustomConverter(Float.class, new FloatConverter());
 		addCustomConverter(Long.class, new LongConverter());
 		addCustomConverter(String.class, new StringConverter());
-		addCustomConverter(ArrayList.class, new ListConverter<ArrayList>(ArrayList.class));
-		addCustomConverter(LinkedList.class, new ListConverter<LinkedList>(LinkedList.class));
+		addCustomConverter(ArrayList.class, new CollectionConverter<ArrayList>(ArrayList.class));
+		addCustomConverter(LinkedList.class, new CollectionConverter<LinkedList>(LinkedList.class));
 		addCustomConverter(HashSet.class, new CollectionToListConverter<ArrayList>(ArrayList.class));
 
 		// IMPORTANT Date is the superclass of Timestamp, so the same converter is really used for both.

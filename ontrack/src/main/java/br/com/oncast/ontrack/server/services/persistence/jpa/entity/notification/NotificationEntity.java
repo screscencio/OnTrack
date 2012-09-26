@@ -8,7 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -19,7 +19,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConve
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
-@Entity(name = "Notification")
+@Entity
 @ConvertTo(Notification.class)
 public class NotificationEntity {
 
@@ -36,7 +36,8 @@ public class NotificationEntity {
 	@ConversionAlias("timestamp")
 	private Date timestamp;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
+	// @OneToMany(cascade = CascadeType.ALL)
 	@ConversionAlias("recipients")
 	private List<User> recipients = new ArrayList<User>();
 

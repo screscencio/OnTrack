@@ -19,7 +19,7 @@ import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEve
 public class NotificationServerServiceImpl implements NotificationServerService {
 
 	private static final Logger LOGGER = Logger.getLogger(NotificationServerServiceImpl.class);
-	private static final int MAX_NUMBER_OF_NOTIFICATIONS = 50;
+	protected static final int MAX_NUMBER_OF_NOTIFICATIONS = 50;
 
 	private final AuthenticationManager authenticationManager;
 	private final PersistenceService persistenceService;
@@ -49,6 +49,7 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 		}
 	}
 
+	@Override
 	public void registerNewNotification(final Notification notification) throws UnableToCreateNotificationException {
 		try {
 			this.persistenceService.persistOrUpdateNotification(notification);
