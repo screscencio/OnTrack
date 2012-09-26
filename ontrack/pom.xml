@@ -554,7 +554,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<runTarget>Application.html</runTarget>
+					<runTarget>Application.jsp</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 					<outputDirectory>${webappDirectory}</outputDirectory>

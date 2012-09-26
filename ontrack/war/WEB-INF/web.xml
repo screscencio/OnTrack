@@ -103,6 +103,6 @@
 
 	<!-- DEFAULT PAGE -->
 	<welcome-file-list>
-		<welcome-file>Application.html</welcome-file>
+		<welcome-file>Application.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>
