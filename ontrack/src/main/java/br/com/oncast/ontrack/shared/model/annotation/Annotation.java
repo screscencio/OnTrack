@@ -112,7 +112,7 @@ public class Annotation implements Serializable {
 		return lastOccurenceOf == null ? null : deprecationManager.getLastOccurenceOf(state).getAuthor();
 	}
 
-	public Date getTimestampFor(final AnnotationType state) {
+	public Date getLastOcuurenceOf(final AnnotationType state) {
 		final ModelState<AnnotationType> lastOccurenceOf = stateManager.getLastOccurenceOf(state);
 		return lastOccurenceOf == null ? null : lastOccurenceOf.getTimestamp();
 	}
@@ -136,6 +136,14 @@ public class Annotation implements Serializable {
 
 	public boolean isImpeded() {
 		return stateManager.getCurrentStateValue() == AnnotationType.OPEN_IMPEDIMENT;
+	}
+
+	public long getDurationOf(final AnnotationType state) {
+		return stateManager.getDurationOfState(state);
+	}
+
+	public long getCurrentStateDuration() {
+		return stateManager.getCurrentStateDuration();
 	}
 
 }

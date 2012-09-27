@@ -19,6 +19,8 @@ public class LikeAnnotationMenuItem extends Composite implements AnnotationMenuI
 
 	private static LikeAnnotationMenuItemUiBinder uiBinder = GWT.create(LikeAnnotationMenuItemUiBinder.class);
 
+	private static final LikeAnnotationMenuItemMessages messages = GWT.create(LikeAnnotationMenuItemMessages.class);
+
 	interface LikeAnnotationMenuItemUiBinder extends UiBinder<Widget, LikeAnnotationMenuItem> {}
 
 	interface LikeWidgetStyle extends CssResource {
@@ -52,7 +54,9 @@ public class LikeAnnotationMenuItem extends Composite implements AnnotationMenuI
 	@Override
 	public void update() {
 		label.setText("" + annotation.getVoteCount());
-		icon.setStyleName(style.iconActive(), hasVoted());
+		final boolean hasVoted = hasVoted();
+		icon.setStyleName(style.iconActive(), hasVoted);
+		icon.setTitle(hasVoted ? messages.removeLike() : messages.like());
 	}
 
 	private boolean hasVoted() {

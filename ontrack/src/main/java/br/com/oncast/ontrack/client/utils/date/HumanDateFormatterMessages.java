@@ -64,8 +64,8 @@ public interface HumanDateFormatterMessages extends BaseMessages {
 	@DefaultMessage("at")
 	String at();
 
-	@Description("less than a minute ago")
-	@DefaultMessage("less than a minute ago")
-	String lessThanAMinuteAgo();
+	@Description("less than a minute")
+	@DefaultMessage("less than a minute")
+	String lessThanAMinute();
 
 }

@@ -27,11 +27,18 @@ public class SinceAnnotationMenuItem extends Composite implements AnnotationMenu
 
 	private final Annotation annotation;
 
-	public SinceAnnotationMenuItem(final Annotation annotation) {
+	private final CustomDuration duration;
+
+	public SinceAnnotationMenuItem(final Annotation annotation, final CustomDuration duration) {
 		this.annotation = annotation;
+		this.duration = duration;
 
 		initWidget(uiBinder.createAndBindUi(this));
 
+	}
+
+	public SinceAnnotationMenuItem(final Annotation annotation) {
+		this(annotation, null);
 	}
 
 	@Override
@@ -41,8 +48,10 @@ public class SinceAnnotationMenuItem extends Composite implements AnnotationMenu
 
 	@Override
 	public void update() {
-		final Date date = annotation.getTimestampFor(annotation.getType());
-		label.setText(HumanDateFormatter.getRelativeDate(date));
+		final Date date = annotation.getLastOcuurenceOf(annotation.getType());
+		final String customDuration = duration == null ? "" : " - " + duration.getDurationText(annotation);
+
+		label.setText(HumanDateFormatter.getRelativeDate(date) + customDuration);
 		label.setTitle(HumanDateFormatter.getAbsoluteText(date));
 	}
 

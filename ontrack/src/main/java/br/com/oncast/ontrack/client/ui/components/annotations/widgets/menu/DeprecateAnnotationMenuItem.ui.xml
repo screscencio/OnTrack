@@ -35,7 +35,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.item}">
-		<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon}"/>
+		<g:FocusPanel ui:field="icon" styleName="{style.item} {style.icon}" />
 		<g:Label ui:field="label" styleName="{style.item} {style.label}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

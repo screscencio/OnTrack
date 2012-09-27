@@ -131,6 +131,7 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 
 		menu.add(new DeprecateAnnotationMenuItem(subjectId, annotation));
 		menu.add(new LikeAnnotationMenuItem(subjectId, annotation));
+		menu.addSeparator();
 		menu.add(new SinceAnnotationMenuItem(annotation));
 	}
 

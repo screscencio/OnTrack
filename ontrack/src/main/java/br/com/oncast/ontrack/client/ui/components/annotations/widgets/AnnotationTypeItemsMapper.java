@@ -1,9 +1,13 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationTopic.AnnotationTopicStyle;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.CustomDuration;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.ImpedimentAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.SinceAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.SolveImpedimentAnnotationMenuItem;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -29,6 +33,17 @@ public enum AnnotationTypeItemsMapper {
 		public String getContentStyle(final AnnotationTopicStyle style) {
 			return style.openImpediment();
 		}
+
+		@Override
+		public AnnotationMenuItem getSinceWidget(final Annotation annotation) {
+			return new SinceAnnotationMenuItem(annotation, new CustomDuration() {
+
+				@Override
+				public String getDurationText(final Annotation annotation) {
+					return "Duration: " + HumanDateFormatter.getDifferenceText(annotation.getCurrentStateDuration());
+				}
+			});
+		}
 	},
 	SOLVED_IMPEDIMENT(AnnotationType.SOLVED_IMPEDIMENT) {
 		@Override
@@ -39,6 +54,17 @@ public enum AnnotationTypeItemsMapper {
 		@Override
 		public String getContentStyle(final AnnotationTopicStyle style) {
 			return style.solvedImpediment();
+		}
+
+		@Override
+		public AnnotationMenuItem getSinceWidget(final Annotation annotation) {
+			return new SinceAnnotationMenuItem(annotation, new CustomDuration() {
+
+				@Override
+				public String getDurationText(final Annotation annotation) {
+					return "Duration: " + HumanDateFormatter.getDifferenceText(annotation.getDurationOf(AnnotationType.OPEN_IMPEDIMENT));
+				}
+			});
 		}
 	};
 
@@ -59,6 +85,10 @@ public enum AnnotationTypeItemsMapper {
 
 	public String getContentStyle(final AnnotationTopicStyle style) {
 		return style.simple();
+	}
+
+	public AnnotationMenuItem getSinceWidget(final Annotation annotation) {
+		return new SinceAnnotationMenuItem(annotation);
 	}
 
 }

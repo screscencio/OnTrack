@@ -18,6 +18,8 @@ public class DeprecateAnnotationMenuItem extends Composite implements Annotation
 
 	private static DeprecateAnnotationMenuItemUiBinder uiBinder = GWT.create(DeprecateAnnotationMenuItemUiBinder.class);
 
+	private static final DeprecateAnnotationMenuItemMessages messages = GWT.create(DeprecateAnnotationMenuItemMessages.class);
+
 	interface DeprecateAnnotationMenuItemUiBinder extends UiBinder<Widget, DeprecateAnnotationMenuItem> {}
 
 	interface AnnotationDeprecateWidgetStyle extends CssResource {
@@ -53,6 +55,7 @@ public class DeprecateAnnotationMenuItem extends Composite implements Annotation
 	@Override
 	public void update() {
 		icon.setStyleName(style.iconActive(), annotation.isDeprecated());
+		icon.setTitle(annotation.isDeprecated() ? messages.removeDeprecation() : messages.deprecate());
 	}
 
 	@Override

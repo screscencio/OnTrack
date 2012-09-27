@@ -16,7 +16,7 @@ public enum HumanDateFormatter {
 	JUST_NOW(1 * MINUTE, "yyyyMMddHHmm") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return messages.lessThanAMinuteAgo();
+			return messages.lessThanAMinute();
 		}
 
 		@Override
@@ -104,7 +104,7 @@ public enum HumanDateFormatter {
 	public static String getDifferenceDate(final Date date) {
 		final long difference = new Date().getTime() - date.getTime();
 		for (final HumanDateFormatter formatter : values()) {
-			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference); }
+			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference) + " " + messages.ago(); }
 		}
 		return getAbsoluteText(date);
 	}
@@ -131,7 +131,7 @@ public enum HumanDateFormatter {
 
 	protected String mountDifferenceText(final long difference, final long delimiter, final String singular, final String plural) {
 		final int time = (int) (difference / delimiter);
-		return time + " " + (time <= 1 ? singular : plural) + " " + messages.ago();
+		return time + " " + (time <= 1 ? singular : plural);
 	}
 
 	private boolean accepts(final Date currentDate, final Date date) {
@@ -140,6 +140,13 @@ public enum HumanDateFormatter {
 
 	public static String getShortAbsuluteDate(final Date date) {
 		return format("dd/MM/yy", date);
+	}
+
+	public static String getDifferenceText(final long difference) {
+		for (final HumanDateFormatter formatter : values()) {
+			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference); }
+		}
+		return difference + " ms";
 	}
 
 }
