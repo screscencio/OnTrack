@@ -13,10 +13,10 @@ public interface MulticastService {
 
 	void notifyActionToCurrentUser(ModelActionSyncEvent syncEvent);
 
-	void notifyProjectCreation(long userId, ProjectRepresentation projectRepresentation);
-
 	void notifyUserInformationChange(User authenticatedUser);
 
 	void multicastToUsers(NotificationCreatedEvent notificationCreatedEvent, List<User> recipients);
+
+	void notifyProjectCreation(String userEmail, ProjectRepresentation projectRepresentation);
 
 }

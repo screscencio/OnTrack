@@ -430,7 +430,7 @@ public class BusinessLogicTest {
 		business = BusinessLogicTestUtils.create(persistence, multicast, authenticationManager);
 		final ProjectRepresentation representation = business.createProject("new project");
 
-		verify(multicast, times(1)).notifyProjectCreation(authenticatedUser.getId(), representation);
+		verify(multicast, times(1)).notifyProjectCreation(authenticatedUser.getEmail(), representation);
 	}
 
 	@Test

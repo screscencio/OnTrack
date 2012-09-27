@@ -68,8 +68,8 @@ public class MulticastServiceImpl implements MulticastService {
 	}
 
 	@Override
-	public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {
-		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(userId);
+	public void notifyProjectCreation(final String userEmail, final ProjectRepresentation projectRepresentation) {
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(userEmail);
 
 		LOGGER.debug("Multicasting project creation with name '" + projectRepresentation.getName()
 				+ "' to '" + connectionSet.toString() + "'.");
@@ -78,7 +78,7 @@ public class MulticastServiceImpl implements MulticastService {
 
 	@Override
 	public void notifyUserInformationChange(final User authenticatedUser) {
-		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(authenticatedUser.getId());
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(authenticatedUser.getEmail());
 
 		LOGGER.debug("Multicasting information change for " + User.class.getSimpleName() + " '" + authenticatedUser.getEmail()
 				+ "' to " + connectionSet.toString() + ".");

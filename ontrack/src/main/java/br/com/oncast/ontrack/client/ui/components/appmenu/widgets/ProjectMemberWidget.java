@@ -8,9 +8,11 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -21,21 +23,37 @@ public class ProjectMemberWidget extends Composite implements ModelWidget<User> 
 
 	interface ProjectMemberWidgetUiBinder extends UiBinder<Widget, ProjectMemberWidget> {}
 
+	interface ProjectMemberWidgetStyle extends CssResource {
+		String active();
+
+		String inactive();
+	}
+
+	@UiField
+	ProjectMemberWidgetStyle style;
+
 	@UiField
 	Label userName;
+
+	@UiField
+	HorizontalPanel container;
 
 	@UiField
 	Image userIcon;
 
 	private User user;
 
+	private UserStatus status;
+
 	public ProjectMemberWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public ProjectMemberWidget(final User modelBean) {
+	public ProjectMemberWidget(final User modelBean, final UserStatus status) {
 		this.user = modelBean;
+		this.status = status;
 		initWidget(uiBinder.createAndBindUi(this));
+		container.setStyleName(status == UserStatus.ACTIVE ? style.active() : style.inactive());
 		update();
 	}
 

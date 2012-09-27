@@ -39,7 +39,7 @@ public class ActionQueuedDispatcherTestUtils {
 		return multicastService = new MulticastService() {
 
 			@Override
-			public void notifyProjectCreation(final long userId, final ProjectRepresentation projectRepresentation) {}
+			public void notifyProjectCreation(final String userId, final ProjectRepresentation projectRepresentation) {}
 
 			@Override
 			public void notifyUserInformationChange(final User authenticatedUser) {}

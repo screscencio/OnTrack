@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
@@ -15,8 +17,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,10 +28,28 @@ public class MembersListWidget extends Composite {
 
 	interface MembersListWidgetUiBinder extends UiBinder<Widget, MembersListWidget> {}
 
-	public MembersListWidget() {
-		initWidget(uiBinder.createAndBindUi(this));
+	@UiField(provided = true)
+	VerticalModelWidgetContainer<User, ProjectMemberWidget> membersList;
 
-		updateMembersList();
+	@UiField(provided = true)
+	VerticalModelWidgetContainer<User, ProjectMemberWidget> activeMembersList;
+
+	public MembersListWidget() {
+		membersList = new VerticalModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
+			@Override
+			public ProjectMemberWidget createWidget(final User modelBean) {
+				return new ProjectMemberWidget(modelBean, UserStatus.INACTIVE);
+			}
+		});
+
+		activeMembersList = new VerticalModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
+			@Override
+			public ProjectMemberWidget createWidget(final User modelBean) {
+				return new ProjectMemberWidget(modelBean, UserStatus.ACTIVE);
+			}
+		});
+
+		initWidget(uiBinder.createAndBindUi(this));
 
 		ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
@@ -41,21 +61,31 @@ public class MembersListWidget extends Composite {
 		});
 	}
 
-	@UiField
-	VerticalModelWidgetContainer<User, ProjectMemberWidget> membersList;
-
-	@UiFactory
-	public VerticalModelWidgetContainer<User, ProjectMemberWidget> getMembersList() {
-		return new VerticalModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
-
-			@Override
-			public ProjectMemberWidget createWidget(final User modelBean) {
-				return new ProjectMemberWidget(modelBean);
-			}
-		});
+	@Override
+	protected void onLoad() {
+		updateMembersList();
 	}
 
 	private void updateMembersList() {
-		membersList.update(ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext().getUsers());
+		final ProjectContext currentProjectContext = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
+
+		ClientServiceProvider.getInstance().getUsersStatusService().getActiveUsers(new AsyncCallback<Set<User>>() {
+
+			@Override
+			public void onSuccess(final Set<User> result) {
+				activeMembersList.update(new ArrayList<User>(result));
+
+				final List<User> users = new ArrayList<User>();
+				for (final User user : currentProjectContext.getUsers()) {
+					if (!result.contains(user)) users.add(user);
+				}
+				membersList.update(users);
+			}
+
+			@Override
+			public void onFailure(final Throwable caught) {
+				membersList.update(currentProjectContext.getUsers());
+			}
+		});
 	}
 }

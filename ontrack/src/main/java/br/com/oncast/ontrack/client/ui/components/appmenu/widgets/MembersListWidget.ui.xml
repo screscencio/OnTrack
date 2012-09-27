@@ -11,6 +11,7 @@
 		}
 	</ui:style>
 	<g:HTMLPanel styleName="{style.container}">
+		<misc:VerticalModelWidgetContainer ui:field="activeMembersList" />
 		<misc:VerticalModelWidgetContainer ui:field="membersList" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

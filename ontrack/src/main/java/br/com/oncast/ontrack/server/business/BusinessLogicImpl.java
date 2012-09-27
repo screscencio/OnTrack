@@ -206,7 +206,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			if (!authenticatedUser.getEmail().equals(DefaultAuthenticationCredentials.USER_EMAIL)) authorizationManager
 					.authorizeAdmin(persistedProjectRepresentation);
 
-			multicastService.notifyProjectCreation(authenticatedUser.getId(), persistedProjectRepresentation);
+			multicastService.notifyProjectCreation(authenticatedUser.getEmail(), persistedProjectRepresentation);
 
 			return persistedProjectRepresentation;
 		}

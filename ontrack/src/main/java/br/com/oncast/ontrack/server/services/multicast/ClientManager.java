@@ -63,9 +63,9 @@ public class ClientManager {
 		return Sets.newHashSet(clientsByProject.get(projectId));
 	}
 
-	public Set<ServerPushConnection> getClientsOfUser(final long userId) {
+	public Set<ServerPushConnection> getClientsOfUser(final String email) {
 		final Set<ServerPushConnection> clients = new HashSet<ServerPushConnection>();
-		final Set<String> sessions = userSessionMapper.getSessionsIdFor(userId);
+		final Set<String> sessions = userSessionMapper.getSessionsIdFor(email);
 		for (final String sessionId : sessions) {
 			clients.addAll(clientsBySession.get(sessionId));
 		}
@@ -84,21 +84,55 @@ public class ClientManager {
 
 	private class UserSessionMapper implements AuthenticationListener {
 
-		private final SetMultimap<Long, String> sessionByUser = HashMultimap.create();
+		private final SetMultimap<String, String> sessionByUser = HashMultimap.create();
 
-		private Set<String> getSessionsIdFor(final long userId) {
-			return sessionByUser.get(userId);
+		private Set<String> getSessionsIdFor(final String userEmail) {
+			return sessionByUser.get(userEmail);
 		}
 
 		@Override
 		public void onUserLoggedIn(final User user, final String sessionId) {
-			sessionByUser.put(user.getId(), sessionId);
+			sessionByUser.put(user.getEmail(), sessionId);
 		}
 
 		@Override
 		public void onUserLoggedOut(final User user, final String sessionId) {
-			sessionByUser.remove(user.getId(), sessionId);
+			sessionByUser.remove(user.getEmail(), sessionId);
+		}
+
+		public Set<String> getOnlineUsers() {
+			final Set<String> onlineUsers = new HashSet<String>();
+
+			for (final String user : sessionByUser.keySet()) {
+				for (final String activeSession : sessionByUser.get(user)) {
+					if (clientsBySession.containsKey(activeSession)) {
+						onlineUsers.add(user);
+					}
+				}
+			}
+			return onlineUsers;
+		}
+
+		public Set<String> selectActiveUsers(final Set<ServerPushConnection> clients) {
+			final Set<String> activeUsers = new HashSet<String>();
+
+			for (final ServerPushConnection c : clients) {
+				for (final String user : sessionByUser.keySet()) {
+					if (sessionByUser.containsEntry(user, c.getSessionId())) {
+						activeUsers.add(user);
+						break;
+					}
+				}
+			}
+			return activeUsers;
 		}
 	}
 
+	public Set<String> getOnlineUsers() {
+		return userSessionMapper.getOnlineUsers();
+	}
+
+	public Set<String> getActiveUsers(final UUID projectId) {
+		return userSessionMapper.selectActiveUsers(getClientsAtProject(projectId));
+	}
 }

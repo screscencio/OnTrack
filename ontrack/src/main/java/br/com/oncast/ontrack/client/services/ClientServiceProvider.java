@@ -32,6 +32,8 @@ import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.services.storage.Html5StorageClientStorageService;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl;
+import br.com.oncast.ontrack.client.services.user.UsersStatusService;
+import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl;
 import br.com.oncast.ontrack.client.ui.places.AppActivityMapper;
 import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
 import br.com.oncast.ontrack.shared.config.RequestConfigurations;
@@ -80,6 +82,7 @@ public class ClientServiceProvider {
 	private ChecklistService checklistService;
 	private ClientStorageService clientStorageService;
 	private ClientMetricService clientMetricService;
+	private UsersStatusService usersStatusService;
 
 	private static ClientServiceProvider instance;
 
@@ -216,5 +219,10 @@ public class ClientServiceProvider {
 		if (notificationService == null) notificationService = new NotificationService(getRequestDispatchService(), getServerPushClientService(),
 				getAuthenticationService(), getClientAlertingService());
 		return notificationService;
+	}
+
+	public UsersStatusService getUsersStatusService() {
+		if (usersStatusService == null) usersStatusService = new UsersStatusServiceImpl(getRequestDispatchService(), getContextProviderService());
+		return usersStatusService;
 	}
 }
