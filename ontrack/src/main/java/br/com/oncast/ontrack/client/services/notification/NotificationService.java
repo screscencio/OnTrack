@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.services.notification;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
@@ -20,7 +22,7 @@ public class NotificationService {
 	private final DispatchService dispatchService;
 	private final ClientAlertingService alertingService;
 	private final Set<NotificationListChangeListener> notificationListChangeListeners = new HashSet<NotificationListChangeListener>();
-	private final Set<Notification> availableNotifications = new HashSet<Notification>();
+	private final List<Notification> availableNotifications = new LinkedList<Notification>();
 	private boolean notificationListAvailability;
 
 	public NotificationService(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
@@ -56,7 +58,7 @@ public class NotificationService {
 			public void onEvent(final NotificationCreatedEvent event) {
 				final Notification newProjectRepresentation = event.getNotification();
 				if (availableNotifications.contains(newProjectRepresentation)) return;
-				availableNotifications.add(newProjectRepresentation);
+				availableNotifications.add(0, newProjectRepresentation);
 
 				notifyNotificationListContentChange();
 			}

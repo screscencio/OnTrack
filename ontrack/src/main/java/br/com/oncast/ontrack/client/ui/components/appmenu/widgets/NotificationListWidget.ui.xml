@@ -7,31 +7,80 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-<ui:style src="../../../style/default.css">
-	
+	<ui:style src="../../../style/default.css">
 		.rootPanel {
 			width: WIDTH_DEFAULT_POPUP;
+			min-width: 250px;
+		}
+
+	   	.notifications {
+	   		width: 100%;
+	   	}
+		
+		.loadingIndicatorPanel {
+			width: 100px;
+			height: 100px;
+			margin: 0px auto;
+			margin-top: 50px;
+			padding-left: -1px;
 		}
 		
-	    .title {
-	    	font-family: FONT_DEFAULT;
-	    }
-		
- 		.helpLabel {
-			width: 100%;
-			text-align: right;
+		.loadingIndicator {
+			margin: 0px auto;
+			padding: 15px;
+			background: white;
+			border: 2px solid #eaeaea;
+			border-radius: 50%;
 		}
 		
-		.countdownLabel {
- 			margin-bottom: -5px;
+		.noNotificationContainer {
+			position: relative;
+			padding: 0px;
+			padding-top: 15px;
+			padding-bottom: 30px;
+			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
 			width: 100%;
+		}
+	   	
+	   	.noNotificationLabel {
+			color: COLOR_GRAY;
+			text-align: center;
+			width: 100%;
+			margin-bottom: 15px;
+			font-size: FONT_SIZE_MEDIUM;
+			font-family: FONT_DEFAULT;
+		}
+		
+		.helpLabel {
+			position: absolute;
+			bottom: 5px;
+			left: 0px;
+			right: 0px;
+			
+			color: COLOR_GRAY_LIGHT;
 			text-align: center;
 		}
-                
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}">
-
+		
+		<g:DeckPanel ui:field="deckPanel">
+			<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
+				<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
+			</g:SimplePanel>
+			<g:DeckPanel ui:field="notificationDeckPanel">
+				<g:FlowPanel styleName="{style.noNotificationContainer}">
+					<g:Label styleName="{style.noNotificationLabel}">
+						<ui:msg description="no notifications in project message">No Notification yet</ui:msg>
+					</g:Label>
+					<g:Label styleName="{style.helpLabel}">
+						<ui:msg description="notification help message">Notifications will arise when relevant events happen</ui:msg>
+					</g:Label>
+				</g:FlowPanel>
+				<misc:VerticalModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
+			</g:DeckPanel>
+		</g:DeckPanel>
+		
 	</layout:ApplicationPopupBoxContainer>
 
 </ui:UiBinder>
