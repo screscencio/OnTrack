@@ -7,8 +7,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:with field="resources" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Resources"/>
-	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget.Style">
+	<ui:style>
 		
 			.rootPanel {
 				position: relative;
@@ -157,23 +156,22 @@
 		<g:FocusPanel ui:field="menuMouseOverArea">
 			<g:HTMLPanel>
 				<g:HorizontalPanel ui:field="header" styleName="{style.header}" verticalAlignment="middle">
-					<g:Image resource="{resources.containerStateOpened}" ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem}" />
+					<g:Image  ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem}" />
 					<g:cell width="100%" height="100%">
 						<g:FocusPanel styleName="{style.containerStateToogleClickableArea}">
-							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
+							
 						</g:FocusPanel>
 					</g:cell>
-					<g:Image ui:field="annotationIcon" resource="{resources.detailIcon}" styleName="{style.headerItem} {style.annotationIcon}"/>
-					<g:Image ui:field="progressIcon" resource="{resources.progress0}" styleName="{style.headerItem} {style.progressIcon}"/>
-					<g:Image ui:field="kanbanLink" resource="{resources.kanbanIcon}" styleName="{style.headerItem} {style.kanbanIcon}" />
+					<g:Image ui:field="detailLink"  styleName="{style.headerItem} {style.annotationIcon}"/>
+					<g:Image ui:field="progressIcon"  styleName="{style.headerItem} {style.progressIcon}"/>
+					<g:Image ui:field="kanbanLink"  styleName="{style.headerItem} {style.kanbanIcon}" />
 				</g:HorizontalPanel>
-				<g:Image resource="{resources.menuIcon}" styleName="{style.menuLink}" ui:field="menuIcon" visible="false"/>
+				<g:Image styleName="{style.menuLink}" ui:field="menuIcon" visible="false"/>
 			</g:HTMLPanel>
 		</g:FocusPanel>
 		<div ui:field="bodyContainer" class="{style.body}">
-			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
 			<g:HorizontalPanel ui:field="laterSeparator" styleName="{style.laterSeparator}" verticalAlignment="middle">
-				<g:Image resource="{resources.laterImage}" styleName="{style.laterImage}"/>
+				<g:Image  styleName="{style.laterImage}"/>
 				<g:Label styleName="{style.laterLabel}">
 					<ui:msg description="later label">Later</ui:msg>
 				</g:Label>
@@ -181,7 +179,6 @@
 					<g:SimplePanel styleName="{style.laterLine}"/>
 				</g:cell>
 			</g:HorizontalPanel>
-			<ow:ScopeWidgetContainer ui:field="scopeContainer" styleName="{style.scopeContainer}" />
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

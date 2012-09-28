@@ -4,8 +4,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -16,24 +14,18 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	private static final NotificationWidgetMessages messages = GWT.create(NotificationWidgetMessages.class);
 
-	private static NotificationPanelItemWidgetUiBinder uiBinder = GWT.create(NotificationPanelItemWidgetUiBinder.class);
+	private static NotificationWidgetUiBinder uiBinder = GWT.create(NotificationWidgetUiBinder.class);
 
-	interface NotificationPanelItemWidgetUiBinder extends UiBinder<Widget, NotificationWidget> {}
-
-	interface Style extends CssResource {}
-
-	@UiField
-	protected Resources resources;
-
-	interface Resources extends ClientBundle {}
-
-	@UiField
-	protected Style style;
+	interface NotificationWidgetUiBinder extends UiBinder<Widget, NotificationWidget> {}
 
 	@UiField
 	protected FocusPanel menuMouseOverArea;
 
-	private final Notification notification;
+	private Notification notification;
+
+	public NotificationWidget() {
+		initWidget(uiBinder.createAndBindUi(this));
+	}
 
 	public NotificationWidget(final Notification notification) {
 		this.notification = notification;
