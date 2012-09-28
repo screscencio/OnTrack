@@ -163,7 +163,7 @@
 							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
 						</g:FocusPanel>
 					</g:cell>
-					<g:Image ui:field="annotationIcon" resource="{resources.annotationIcon}" styleName="{style.headerItem} {style.annotationIcon}"/>
+					<g:Image ui:field="annotationIcon" resource="{resources.detailIcon}" styleName="{style.headerItem} {style.annotationIcon}"/>
 					<g:Image ui:field="progressIcon" resource="{resources.progress0}" styleName="{style.headerItem} {style.progressIcon}"/>
 					<g:Image ui:field="kanbanLink" resource="{resources.kanbanIcon}" styleName="{style.headerItem} {style.kanbanIcon}" />
 				</g:HorizontalPanel>
