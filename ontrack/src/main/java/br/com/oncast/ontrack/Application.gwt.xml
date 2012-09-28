@@ -44,4 +44,18 @@
 	<source path='client' excludes="**/*TestUtils.java" />
 	<source path='shared' excludes="**/*TestUtils.java" />
 
+	<replace-with class="org.atmosphere.gwt.client.impl.IEHTMLFileCometTransport">
+	   <when-type-is class="org.atmosphere.gwt.client.impl.CometTransport"/>
+	   <any>
+	       <when-property-is name="user.agent" value="ie6"/>
+	       <when-property-is name="user.agent" value="ie8"/>
+	   </any>
+	</replace-with>
+	
+	<replace-with class="org.atmosphere.gwt.client.impl.IEXDomainRequestCometTransport">
+	   <when-type-is class="org.atmosphere.gwt.client.impl.CometTransport"/>
+	   <any>
+	       <when-property-is name="user.agent" value="ie9"/>
+	   </any>
+	</replace-with>
 </module>

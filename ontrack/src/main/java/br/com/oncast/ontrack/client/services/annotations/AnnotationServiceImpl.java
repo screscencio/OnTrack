@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -16,6 +17,7 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveDeprecationAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
@@ -23,6 +25,8 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -110,7 +114,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 					final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 
-				if (action instanceof AnnotationAction || action instanceof ImpedimentAction) {
+				if (action instanceof AnnotationAction || action instanceof ImpedimentAction || action instanceof ChecklistAction) {
 					fireScopeDetailUpdateEvent(action, context);
 				}
 			}
@@ -121,7 +125,13 @@ public class AnnotationServiceImpl implements AnnotationService {
 					eventBus.fireEvent(new ScopeDetailUpdateEvent(scope, hasDetails(scope.getId()), hasOpenImpediment(scope.getId())));
 				}
 				catch (final ScopeNotFoundException e) {
-					// It's not scope so don't need to update the view
+					try {
+						final Release release = context.findRelease(action.getReferenceId());
+						eventBus.fireEvent(new ReleaseDetailUpdateEvent(release, hasDetails(release.getId()), hasOpenImpediment(release.getId())));
+					}
+					catch (final ReleaseNotFoundException ex) {
+						// It's not scope nor release so don't need to update the view
+					}
 				}
 			}
 		};

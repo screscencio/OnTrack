@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
@@ -117,8 +118,14 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		@Source("priority-delete.png")
 		ImageResource menuReleaseDelete();
 
+		@Source("../../scopetree/widgets/details.png")
+		ImageResource detailIcon();
+
+		@Source("../../scopetree/widgets/open_impediment.png")
+		ImageResource impedimentIcon();
+
 		@Source("annotationIcon.png")
-		ImageResource annotationIcon();
+		ImageResource detailLink();
 	}
 
 	@UiField
@@ -137,7 +144,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected EditableLabel descriptionLabel;
 
 	@UiField
-	protected Image annotationIcon;
+	protected Image impedimentIcon;
+
+	@UiField
+	protected Image detailIcon;
+
+	@UiField
+	protected Image detailLink;
 
 	@UiField
 	protected Image progressIcon;
@@ -220,6 +233,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		this.containerUpdateListener = createContainerUpdateListener();
 
 		initWidget(uiBinder.createAndBindUi(this));
+		setupDetails();
 		setVisible(false);
 
 		scopeContainer.setOwnerRelease(release);
@@ -228,6 +242,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		setContainerState(DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
 		setVisible(true);
+	}
+
+	private void setupDetails() {
+		final AnnotationService annotationService = ClientServiceProvider.getInstance().getAnnotationService();
+		detailIcon.setVisible(annotationService.hasDetails(release.getId()));
+		impedimentIcon.setVisible(annotationService.hasOpenImpediment(release.getId()));
 	}
 
 	@UiHandler("menuMouseOverArea")
@@ -256,7 +276,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		isMenuOpen = true;
 	}
 
-	@UiHandler("annotationIcon")
+	@UiHandler("detailLink")
 	protected void showAnnotationPanel(final ClickEvent event) {
 		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(release.getId());
 	}
@@ -444,5 +464,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		while (current != null && !(current instanceof ReleaseWidget))
 			current = current.getParent();
 		return (ReleaseWidget) current;
+	}
+
+	public void setDetailIconVisible(final boolean b) {
+		detailIcon.setVisible(b);
+	}
+
+	public void setImpedimentIconVisible(final boolean b) {
+		impedimentIcon.setVisible(b);
 	}
 }

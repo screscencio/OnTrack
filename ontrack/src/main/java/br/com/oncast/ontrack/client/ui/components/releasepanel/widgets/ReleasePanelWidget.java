@@ -1,10 +1,14 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEventHandler;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEvent;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ItemDroppedListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ReleaseScopeItemDragHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
@@ -45,9 +49,10 @@ public class ReleasePanelWidget extends Composite {
 	@IgnoredByDeepEquality
 	private ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory = null;
 
-	private HandlerRegistration handlerRegistration;
+	private final Set<HandlerRegistration> handlerRegistration;
 
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+		handlerRegistration = new HashSet<HandlerRegistration>();
 		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
 		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager), dragAndDropManager);
 
@@ -58,7 +63,7 @@ public class ReleasePanelWidget extends Composite {
 
 	@Override
 	protected void onLoad() {
-		handlerRegistration = ClientServiceProvider.getInstance().getEventBus()
+		handlerRegistration.add(ClientServiceProvider.getInstance().getEventBus()
 				.addHandler(ReleaseContainerStateChangeEvent.getType(), new ReleaseContainerStateChangeEventHandler() {
 					@Override
 					public void onReleaseContainerStateChange(final ReleaseContainerStateChangeEvent event) {
@@ -66,15 +71,27 @@ public class ReleasePanelWidget extends Composite {
 						final ReleaseWidget widget = getWidgetFor(event.getTargetRelease());
 						widget.setContainerState(event.getTargetContainerState(), false);
 					}
-				});
+				}));
+
+		handlerRegistration.add(ClientServiceProvider.getInstance().getEventBus()
+				.addHandler(ReleaseDetailUpdateEvent.getType(), new ReleaseDetailUpdateEventHandler() {
+					@Override
+					public void onReleaseDetailUpdate(final ReleaseDetailUpdateEvent event) {
+						final ReleaseWidget widget = releaseContainer.getWidgetFor(event.getTargetRelease());
+						if (widget == null) return;
+
+						widget.setDetailIconVisible(event.hasDetails());
+						widget.setImpedimentIconVisible(event.hasOpenImpediments());
+					}
+				}));
 	}
 
 	@Override
 	protected void onUnload() {
-		if (handlerRegistration == null) return;
-
-		handlerRegistration.removeHandler();
-		handlerRegistration = null;
+		for (final HandlerRegistration registration : new HashSet<HandlerRegistration>(handlerRegistration)) {
+			registration.removeHandler();
+			handlerRegistration.remove(registration);
+		}
 	}
 
 	public void setRelease(final Release rootRelease) {
