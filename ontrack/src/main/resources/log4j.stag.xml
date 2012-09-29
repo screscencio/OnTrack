@@ -11,7 +11,7 @@
 
 	<!-- MAIN APPENDER - Logs out to a file -->
 	<appender name="MainLogFile" class="org.apache.log4j.FileAppender">
-		<param name="File" value="/var/lib/tomcat7/logs/ontrack.all.log" />
+		<param name="File" value="/var/lib/ontrack/logs/all.log" />
 		<param name="Threshold" value="DEBUG" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
@@ -20,7 +20,7 @@
 
 	<!-- APPLICATION SPECIFIC LOG APPENDER - Logs out to a file -->
 	<appender name="AppLogFile" class="org.apache.log4j.FileAppender">
-		<param name="File" value="/var/lib/tomcat7/logs/ontrack.app.log" />
+		<param name="File" value="/var/lib/ontrack/logs/app.log" />
 		<param name="Threshold" value="DEBUG" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
@@ -29,7 +29,7 @@
 
 	<!-- REQUEST APPENDER - Logs out to a file -->
 	<appender name="RequestLogFile" class="org.apache.log4j.FileAppender">
-		<param name="File" value="/var/lib/tomcat7/logs/ontrack.request.log" />
+		<param name="File" value="/var/lib/ontrack/logs/requests.log" />
 		<param name="Threshold" value="DEBUG" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
