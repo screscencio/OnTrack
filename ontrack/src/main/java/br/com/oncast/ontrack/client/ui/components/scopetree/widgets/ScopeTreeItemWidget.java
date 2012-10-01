@@ -378,7 +378,7 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final Release releaseItem : releaseList)
 			items.add(releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription()));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 155, 264);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 250, 264);
 
 		align(configPopup(), releasePanel)
 				.popup(commandsMenu)
@@ -393,7 +393,7 @@ public class ScopeTreeItemWidget extends Composite {
 		for (final String progressDefinition : list)
 			if (!notStartedDescription.equals(progressDefinition)) items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 155, 264);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 200, 264);
 
 		align(configPopup(), progressLabel)
 				.popup(commandsMenu)
