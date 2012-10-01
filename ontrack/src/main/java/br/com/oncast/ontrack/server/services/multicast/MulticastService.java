@@ -15,5 +15,4 @@ public interface MulticastService {
 	void multicastToCurrentUserClientInSpecificProject(ServerPushEvent event, UUID projectId);
 
 	void multicastToAllUsersButCurrentUserClientInSpecificProject(ServerPushEvent event, UUID projectId);
-
 }

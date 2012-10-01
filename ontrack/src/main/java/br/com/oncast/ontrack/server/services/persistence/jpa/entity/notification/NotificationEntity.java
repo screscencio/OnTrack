@@ -15,9 +15,11 @@ import javax.persistence.TemporalType;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 
 @Entity
 @ConvertTo(Notification.class)
@@ -40,6 +42,10 @@ public class NotificationEntity {
 	// @OneToMany(cascade = CascadeType.ALL)
 	@ConversionAlias("recipients")
 	private List<User> recipients = new ArrayList<User>();
+
+	@ConversionAlias("type")
+	@ConvertUsing(NotificationTypeConveter.class)
+	private NotificationType type;
 
 	public NotificationEntity() {}
 
@@ -73,5 +79,13 @@ public class NotificationEntity {
 
 	public void setRecipients(final List<User> recipients) {
 		this.recipients = recipients;
+	}
+
+	public NotificationType getType() {
+		return type;
+	}
+
+	public void setType(final NotificationType type) {
+		this.type = type;
 	}
 }

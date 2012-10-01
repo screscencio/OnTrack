@@ -12,12 +12,19 @@ import org.simpleframework.xml.ElementList;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(NotificationEntity.class)
 public class Notification implements Serializable {
+
+	public enum NotificationType {
+		TEXT,
+		IMPEDIMENT;
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,21 +43,15 @@ public class Notification implements Serializable {
 
 	@ElementList
 	@ConversionAlias("recipients")
-	private List<User> recipients = new ArrayList<User>();
+	private final List<User> recipients = new ArrayList<User>();
+
+	@Attribute
+	@ConversionAlias("type")
+	@ConvertUsing(NotificationTypeConveter.class)
+	private NotificationType type = NotificationType.TEXT;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected Notification() {}
-
-	protected Notification(final String message, final List<User> recipients) {
-		this(new UUID(), message, new Date(), recipients);
-	}
-
-	protected Notification(final UUID id, final String message, final Date timestamp, final List<User> recipients) {
-		this.id = id;
-		this.message = message;
-		this.timestamp = timestamp;
-		this.recipients = recipients;
-	}
 
 	public UUID getId() {
 		return id;
@@ -68,6 +69,10 @@ public class Notification implements Serializable {
 		return timestamp;
 	}
 
+	public NotificationType getType() {
+		return type;
+	}
+
 	protected void setId(final UUID id) {
 		this.id = id;
 	}
@@ -83,5 +88,9 @@ public class Notification implements Serializable {
 	protected void addReceipient(final User user) {
 		if (this.recipients.contains(user)) return;
 		this.recipients.add(user);
+	}
+
+	protected void setType(final NotificationType type) {
+		this.type = type;
 	}
 }
