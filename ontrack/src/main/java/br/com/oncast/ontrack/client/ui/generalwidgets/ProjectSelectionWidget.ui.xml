@@ -8,7 +8,7 @@
 
 	<ui:style>
 		.projectSwitchingMenu {
-			min-width: 200px;
+			min-width: 245px;
 		}
 		
 		.loadingIndicatorPanel {
