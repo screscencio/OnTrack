@@ -11,7 +11,7 @@
                 position: absolute;
                 top: 0px;
                 right: 0px;
-                width: 150px;
+                width: 160px;
 				z-index: 2;
 				border-bottom: none;
 			}
