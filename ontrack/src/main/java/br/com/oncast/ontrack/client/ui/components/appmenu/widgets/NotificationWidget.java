@@ -7,7 +7,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class NotificationWidget extends Composite implements ModelWidget<Notification> {
@@ -18,14 +18,19 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	interface NotificationWidgetUiBinder extends UiBinder<Widget, NotificationWidget> {}
 
+	private final Notification notification;
+
 	@UiField
-	protected FocusPanel menuMouseOverArea;
+	protected Label message;
 
-	private Notification notification;
+	@UiField
+	protected Label projectName;
 
-	public NotificationWidget() {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
+	@UiField
+	protected Label type;
+
+	@UiField
+	protected Label author;
 
 	public NotificationWidget(final Notification notification) {
 		this.notification = notification;
@@ -40,7 +45,16 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	@Override
 	public boolean update() {
+		final String notificationMessage = notification.getDescription();
+		message.setText(notificationMessage);
+		projectName.setText(notification.getProjectRepresentation().getName());
+		type.setText(notification.getType().toString());
+		author.setText(getAuthorAndTimeStampLabel());
 		return false;
+	}
+
+	private String getAuthorAndTimeStampLabel() {
+		return "created by " + notification.getAuthor().getEmail() + " at " + notification.getTimestamp().toString();
 	}
 
 	public Notification getNotification() {
@@ -51,5 +65,4 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	public Notification getModelObject() {
 		return getNotification();
 	}
-
 }

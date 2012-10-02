@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// FIXME Notification MAKE THE PANEL SCROLLABLE WITH MAX HEIGHT
 public class NotificationListWidget extends Composite implements HasCloseHandlers<NotificationListWidget>, PopupAware {
 
 	private static NotificationWidgetUiBinder uiBinder = GWT.create(NotificationWidgetUiBinder.class);
@@ -105,7 +106,6 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 	}
 
 	private void scrollToLattestNotification() {
-		// FIXME Notification MAKE THE PANEL SCROLLABLE WITH MAX HEIGHT
 		// FIXME Notification SCROLL TO THE LATTEST UNSEEN NOTIFICATION
 	}
 

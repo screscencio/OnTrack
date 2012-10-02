@@ -47,6 +47,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
@@ -394,7 +395,7 @@ public class PersistenceServiceTest {
 	@Test
 	public void shouldPersistAndRetrieveSingleUserNotification() throws Exception {
 		final User user = createAndPersistUser();
-		final Notification notification = new NotificationBuilder("msg").addReceipient(user).getNotification();
+		final Notification notification = getBuilder("msg").addReceipient(user).getNotification();
 
 		persistenceService.persistOrUpdateNotification(notification);
 
@@ -403,14 +404,23 @@ public class PersistenceServiceTest {
 		DeepEqualityTestUtils.assertObjectEquality(notification, latestNotificationsForUser.get(0));
 	}
 
+	private NotificationBuilder getBuilder(final String desc) throws PersistenceException {
+		final ProjectRepresentation project = ProjectTestUtils.createRepresentation(new UUID(""));
+
+		persistenceService.persistOrUpdateProjectRepresentation(project);
+
+		return new NotificationBuilder(NotificationType.IMPEDIMENT, project, UserTestUtils.createUser(1))
+				.setDescription(desc);
+	}
+
 	@Test
 	public void shouldPersistAndRetrieveSingleUserNotificationWhenThereIsMoreNotifications() throws Exception {
 		final User user1 = createAndPersistUser();
-		final Notification notification1 = new NotificationBuilder("msg1").addReceipient(user1).getNotification();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
 		final User user2 = createAndPersistUser();
-		final Notification notification2 = new NotificationBuilder("msg2").addReceipient(user2).getNotification();
+		final Notification notification2 = getBuilder("msg2").addReceipient(user2).getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 50);
@@ -421,15 +431,16 @@ public class PersistenceServiceTest {
 	@Test
 	public void shouldPersistAndRetrieveMultipleUserNotifications() throws Exception {
 		final User user1 = createAndPersistUser();
-		final Notification notification1 = new NotificationBuilder("msg1").addReceipient(user1).getNotification();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
 		final User user2 = createAndPersistUser();
-		final Notification notification2 = new NotificationBuilder("msg2").addReceipient(user2).getNotification();
+		final Notification notification2 = getBuilder("msg2").addReceipient(user2).getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final User user3 = createAndPersistUser();
-		final Notification notification3 = new NotificationBuilder("msg3").addReceipient(user3).addReceipient(user1).getNotification();
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
+				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 
 		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotificationsForUser(user1, 50);
@@ -441,16 +452,19 @@ public class PersistenceServiceTest {
 	@Test
 	public void shouldPersistAndRetrieveMultipleUserNotificationsInTheCorrectOrder() throws Exception {
 		final User user1 = createAndPersistUser();
-		final Notification notification1 = new NotificationBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1)).getNotification();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1))
+				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
 		final User user2 = createAndPersistUser();
-		final Notification notification2 = new NotificationBuilder("msg2").addReceipient(user1).addReceipient(user2).setTimestamp(new Date(1000))
+		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
+				.setTimestamp(new Date(1000))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final User user3 = createAndPersistUser();
-		final Notification notification3 = new NotificationBuilder("msg3").addReceipient(user3).addReceipient(user1).setTimestamp(new Date(100))
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
+				.setTimestamp(new Date(100))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 
@@ -465,16 +479,19 @@ public class PersistenceServiceTest {
 	@Test
 	public void shouldPersistAndRetrieveMultipleUserNotificationsLimitedByMaxRequested() throws Exception {
 		final User user1 = createAndPersistUser();
-		final Notification notification1 = new NotificationBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1)).getNotification();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1))
+				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
 		final User user2 = createAndPersistUser();
-		final Notification notification2 = new NotificationBuilder("msg2").addReceipient(user1).addReceipient(user2).setTimestamp(new Date(1000))
+		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
+				.setTimestamp(new Date(1000))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
 		final User user3 = createAndPersistUser();
-		final Notification notification3 = new NotificationBuilder("msg3").addReceipient(user3).addReceipient(user1).setTimestamp(new Date(100))
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
+				.setTimestamp(new Date(100))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 

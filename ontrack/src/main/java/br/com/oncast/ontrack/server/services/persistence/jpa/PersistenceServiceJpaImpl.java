@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -402,7 +403,25 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			return query.getResultList();
 		}
 		catch (final Exception e) {
-			throw new PersistenceException("It was not possible to retrieve the project representations", e);
+			throw new PersistenceException("It was not possible to retrieve project authorizations", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProjectAuthorization> retrieveAllAuthorizationsForProject(final ProjectRepresentation projectRepresentation) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT authorization FROM " + ProjectAuthorization.class.getSimpleName()
+					+ " AS authorization WHERE authorization.projectId = :projectId");
+			query.setParameter("projectId", projectRepresentation.getId().toStringRepresentation());
+			return query.getResultList();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve this project's authorizations", e);
 		}
 		finally {
 			em.close();
@@ -559,5 +578,17 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		finally {
 			em.close();
 		}
+	}
+
+	@Override
+	public List<User> retrieveProjectUsers(final ProjectRepresentation projectRepresentation) throws PersistenceException {
+		final List<ProjectAuthorization> retrieveAllAuthorizationsForProject = retrieveAllAuthorizationsForProject(projectRepresentation);
+		final List<User> projectUsers = new ArrayList<User>();
+
+		for (final ProjectAuthorization projectAuthorization : retrieveAllAuthorizationsForProject) {
+			projectUsers.add(projectAuthorization.getUser());
+		}
+
+		return projectUsers;
 	}
 }

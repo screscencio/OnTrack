@@ -187,7 +187,7 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (postProcessmentsInitializer != null) return postProcessmentsInitializer;
 			return postProcessmentsInitializer = new ActionPostProcessmentsInitializer(getActionPostProcessingService(), getPersistenceService(),
-					getMulticastService());
+					getMulticastService(), getNotificationServerService());
 		}
 	}
 

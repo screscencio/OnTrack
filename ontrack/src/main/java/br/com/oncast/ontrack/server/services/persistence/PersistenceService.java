@@ -70,4 +70,8 @@ public interface PersistenceService {
 
 	public Notification persistOrUpdateNotification(Notification notification) throws PersistenceException;
 
+	public List<User> retrieveProjectUsers(ProjectRepresentation projectRepresentation) throws PersistenceException;
+
+	List<ProjectAuthorization> retrieveAllAuthorizationsForProject(ProjectRepresentation projectRepresentation) throws PersistenceException;
+
 }
