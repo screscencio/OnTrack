@@ -9,8 +9,27 @@
 			
 			max-height: 282px;
 		}
+		.loadingIndicatorPanel {
+            width: 100px;
+            height: 100px;		
+            margin: 0px auto;
+            margin-top: 50px;
+            padding-left: -1px;
+		}
+		
+		.loadingIndicator {
+            margin: 0px auto;
+            padding: 15px;
+            
+            background: white;
+            border: 2px solid #eaeaea;
+            border-radius: 50%;
+		}
 	</ui:style>
 	<g:HTMLPanel styleName="{style.container}">
+		<g:SimplePanel ui:field="loadingPanel" styleName="{style.loadingIndicatorPanel}" >
+        	<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
+        </g:SimplePanel>
 		<misc:VerticalModelWidgetContainer ui:field="activeMembersList" />
 		<misc:VerticalModelWidgetContainer ui:field="membersList" />
 	</g:HTMLPanel>

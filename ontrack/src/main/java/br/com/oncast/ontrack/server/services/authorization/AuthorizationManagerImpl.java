@@ -59,6 +59,11 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
+	public List<ProjectRepresentation> listAuthorizedProjects(final String userEmail) throws PersistenceException, NoResultFoundException {
+		return listAuthorizedProjects(persistenceService.retrieveUserByEmail(userEmail));
+	}
+
+	@Override
 	public void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException {
 		final String adminEmail = DefaultAuthenticationCredentials.USER_EMAIL;
 		persistenceService.authorize(adminEmail, persistedProjectRepresentation.getId());

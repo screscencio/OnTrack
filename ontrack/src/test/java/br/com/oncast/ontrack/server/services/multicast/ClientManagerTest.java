@@ -5,7 +5,12 @@ import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertConta
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +23,7 @@ import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationListener;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager.UserStatusChangeListener;
 import br.com.oncast.ontrack.server.services.serverPush.CometClientConnection;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -43,6 +49,9 @@ public class ClientManagerTest {
 
 	private AuthenticationListener authenticationListener;
 
+	@Mock
+	private UserStatusChangeListener userStatusChangeListener;
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -59,6 +68,142 @@ public class ClientManagerTest {
 
 		project1 = new UUID();
 		project2 = new UUID();
+
+		manager.addUserStatusChangeListener(userStatusChangeListener);
+	}
+
+	@Test
+	public void shouldNotifyUserOnlineWhenAUserLoggsIn() throws Exception {
+		final User user = UserTestUtils.createUser();
+
+		registerClients(client1);
+		verify(userStatusChangeListener, never()).onUserOnline(user.getEmail());
+
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+		verify(userStatusChangeListener).onUserOnline(user.getEmail());
+	}
+
+	@Test
+	public void shouldNotifyUserOnlineWhenALoggedUserRegisters() throws Exception {
+		final User user = UserTestUtils.createUser();
+
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+		verify(userStatusChangeListener, never()).onUserOnline(user.getEmail());
+
+		registerClients(client1);
+		verify(userStatusChangeListener).onUserOnline(user.getEmail());
+	}
+
+	@Test
+	public void shouldNotifyUserOfflineWhenALoggedUserUnregisters() throws Exception {
+		final User user = UserTestUtils.createUser();
+
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+		registerClients(client1);
+		verify(userStatusChangeListener).onUserOnline(user.getEmail());
+
+		unregisterClients(client1);
+		verify(userStatusChangeListener).onUserOffline(user.getEmail());
+	}
+
+	@Test
+	public void shouldNotNotifyUserOfflineWhenANotLoggedUserUnregisters() throws Exception {
+		registerClients(client1);
+		unregisterClients(client1);
+
+		verifyZeroInteractions(userStatusChangeListener);
+	}
+
+	@Test
+	public void shouldNotNotifyUserOfflineWhenAnUnregisteredUserLoggsOut() throws Exception {
+		final User user = UserTestUtils.createUser();
+
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+		authenticationListener.onUserLoggedOut(user, client1.getSessionId());
+
+		verifyZeroInteractions(userStatusChangeListener);
+	}
+
+	@Test
+	public void shouldNotifyUserOfflineWhenALoggedAndRegisteredUserLoggsOut() throws Exception {
+		final User user = UserTestUtils.createUser();
+
+		registerClients(client1);
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+
+		authenticationListener.onUserLoggedOut(user, client1.getSessionId());
+		verify(userStatusChangeListener).onUserOffline(user.getEmail());
+	}
+
+	@Test
+	public void shouldNotifyUserCloseProjectWhenTheClientIsUnregistered() throws Exception {
+		registerClients(client1);
+		final User user = UserTestUtils.createUser();
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+
+		bindClients(project1, client1);
+		unregisterClients(client1);
+
+		verify(userStatusChangeListener).onUserCloseProject(project1, user.getEmail());
+	}
+
+	@Test
+	public void shouldNotifyUserCloseProjectWhenTheUserIsBoundToAnotherProjectWithoutUnbindingToThePreviousProject() throws Exception {
+		registerClients(client1);
+		final User user = UserTestUtils.createUser();
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+
+		bindClients(project1, client1);
+		verify(userStatusChangeListener).onUserOpenProject(project1, user.getEmail());
+		bindClients(project2, client1);
+		verify(userStatusChangeListener).onUserCloseProject(project1, user.getEmail());
+		verify(userStatusChangeListener).onUserOpenProject(project2, user.getEmail());
+	}
+
+	@Test
+	public void shouldNotifyWhenAUserOpenAProject() throws Exception {
+		registerClients(client1, client2, client3);
+		final User user = UserTestUtils.createUser();
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+
+		verify(userStatusChangeListener, never()).onUserOpenProject(any(UUID.class), anyString());
+
+		bindClients(project1, client1);
+		verify(userStatusChangeListener).onUserOpenProject(project1, user.getEmail());
+	}
+
+	@Test
+	public void shouldNotifyWhenAUserOpenAProjectEvenWhenTheUserIsAlreadyLoggedIn() throws Exception {
+		final User user = UserTestUtils.createUser();
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+
+		registerClients(client1, client2, client3);
+		verify(userStatusChangeListener, never()).onUserOpenProject(any(UUID.class), anyString());
+
+		bindClients(project1, client1);
+		verify(userStatusChangeListener).onUserOpenProject(project1, user.getEmail());
+	}
+
+	@Test
+	public void shouldNotifyWhenAUserClosesAProject() throws Exception {
+		final User user = UserTestUtils.createUser();
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+		registerClients(client1, client2, client3);
+		bindClients(project1, client1);
+
+		unbindClients(client1);
+		verify(userStatusChangeListener).onUserCloseProject(project1, user.getEmail());
+	}
+
+	@Test
+	public void shouldNotifyWhenAUserClosesAProjectEvenWhenThereIsOtherClientsBoundToTheProject() throws Exception {
+		final User user = UserTestUtils.createUser();
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+		registerClients(client1, client2, client3);
+		bindClients(project1, client1, client3);
+
+		unbindClients(client1);
+		verify(userStatusChangeListener).onUserCloseProject(project1, user.getEmail());
 	}
 
 	@Test
@@ -153,20 +298,20 @@ public class ClientManagerTest {
 		bindClients(project1, client1);
 		bindClients(project2, clientWithDifferentSession);
 
-		assertEquals(1, manager.getActiveUsers(project1).size());
-		assertTrue(manager.getActiveUsers(project1).contains(user1.getEmail()));
+		assertEquals(1, manager.getUsersAtProject(project1).size());
+		assertTrue(manager.getUsersAtProject(project1).contains(user1.getEmail()));
 	}
 
 	@Test
-	public void shouldReturnOneActiveUserEvenWhenThereIsMultipleClients() throws Exception {
+	public void shouldReturnOneUserInProjectEvenWhenThereIsMultipleClients() throws Exception {
 		final User user1 = UserTestUtils.createUser();
 
 		registerClients(client1, client2, client3);
 		authenticationListener.onUserLoggedIn(user1, client1.getSessionId());
 		bindClients(project1, client1, client3);
 
-		assertEquals(1, manager.getActiveUsers(project1).size());
-		assertTrue(manager.getActiveUsers(project1).contains(user1.getEmail()));
+		assertEquals(1, manager.getUsersAtProject(project1).size());
+		assertTrue(manager.getUsersAtProject(project1).contains(user1.getEmail()));
 	}
 
 	@Test
@@ -178,11 +323,11 @@ public class ClientManagerTest {
 		bindClients(project1, client1, client3);
 		bindClients(project2, client2);
 
-		assertEquals(1, manager.getActiveUsers(project1).size());
-		assertTrue(manager.getActiveUsers(project1).contains(user1.getEmail()));
+		assertEquals(1, manager.getUsersAtProject(project1).size());
+		assertTrue(manager.getUsersAtProject(project1).contains(user1.getEmail()));
 
-		assertEquals(1, manager.getActiveUsers(project2).size());
-		assertTrue(manager.getActiveUsers(project2).contains(user1.getEmail()));
+		assertEquals(1, manager.getUsersAtProject(project2).size());
+		assertTrue(manager.getUsersAtProject(project2).contains(user1.getEmail()));
 	}
 
 	@Test

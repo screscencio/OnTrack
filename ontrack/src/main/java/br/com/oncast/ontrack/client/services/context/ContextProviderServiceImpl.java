@@ -123,6 +123,6 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	public interface ContextChangeListener {
-		void onProjectChanged(UUID projetId);
+		void onProjectChanged(UUID projectId);
 	}
 }

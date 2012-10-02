@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(User.class)
 @Entity
-public class User implements Serializable {
+public class User implements Serializable, Comparable<User> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -98,6 +98,11 @@ public class User implements Serializable {
 	@Override
 	public String toString() {
 		return email;
+	}
+
+	@Override
+	public int compareTo(final User o) {
+		return email.compareTo(o.getEmail());
 	}
 
 }

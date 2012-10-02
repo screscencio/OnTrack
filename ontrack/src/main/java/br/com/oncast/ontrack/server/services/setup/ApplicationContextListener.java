@@ -45,7 +45,12 @@ public class ApplicationContextListener implements ServletContextListener {
 		setupDispatchHandlers();
 		setupAuthenticationAspectIntoDispatchService();
 		setupBusinessLogic(event);
+		setupUsersStatusManager();
 		assureDefaultUserIsPresent();
+	}
+
+	private void setupUsersStatusManager() {
+		SERVICE_PROVIDER.getUsersStatusManager();
 	}
 
 	private void setupAuthenticationAspectIntoDispatchService() {

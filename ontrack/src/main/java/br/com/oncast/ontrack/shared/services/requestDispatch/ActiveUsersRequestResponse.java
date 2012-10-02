@@ -12,7 +12,6 @@ public class ActiveUsersRequestResponse implements DispatchResponse {
 
 	public ActiveUsersRequestResponse(final Set<String> activeUsers) {
 		this.activeUsers = activeUsers;
-
 	}
 
 	public Set<String> getActiveUsers() {

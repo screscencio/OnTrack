@@ -222,7 +222,8 @@ public class ClientServiceProvider {
 	}
 
 	public UsersStatusService getUsersStatusService() {
-		if (usersStatusService == null) usersStatusService = new UsersStatusServiceImpl(getRequestDispatchService(), getContextProviderService());
+		if (usersStatusService == null) usersStatusService = new UsersStatusServiceImpl(getRequestDispatchService(), getContextProviderService(),
+				getServerPushClientService());
 		return usersStatusService;
 	}
 }

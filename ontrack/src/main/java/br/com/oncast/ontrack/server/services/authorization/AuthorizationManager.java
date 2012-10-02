@@ -23,4 +23,6 @@ public interface AuthorizationManager {
 
 	public void validateAndUpdateUserProjectCreationQuota(User requestingUser) throws PersistenceException, AuthorizationException;
 
+	public List<ProjectRepresentation> listAuthorizedProjects(String userEmail) throws PersistenceException, NoResultFoundException;
+
 }
