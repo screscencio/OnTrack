@@ -31,6 +31,7 @@
         	<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
         </g:SimplePanel>
 		<misc:VerticalModelWidgetContainer ui:field="activeMembersList" />
+		<misc:VerticalModelWidgetContainer ui:field="onlineMembersList" />
 		<misc:VerticalModelWidgetContainer ui:field="membersList" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

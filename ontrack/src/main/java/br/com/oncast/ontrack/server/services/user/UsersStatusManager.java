@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.user;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,8 +45,21 @@ public class UsersStatusManager implements UserStatusChangeListener {
 		clientManager.addUserStatusChangeListener(this);
 	}
 
-	public Set<String> getOnlineUsers() {
-		return clientManager.getOnlineUsers();
+	public Set<String> getOnlineUsers(final UUID projectId) {
+		final Set<String> allOnlineUsers = clientManager.getOnlineUsers();
+		final Set<String> onlineUsers = new HashSet<String>();
+		for (final String userEmail : allOnlineUsers) {
+			try {
+				if (authorizationManager.hasAuthorizationFor(userEmail, projectId)) onlineUsers.add(userEmail);
+			}
+			catch (final NoResultFoundException e) {
+				LOGGER.error("getOnlineUsers failed", e);
+			}
+			catch (final PersistenceException e) {
+				LOGGER.error("getOnlineUsers failed", e);
+			}
+		}
+		return onlineUsers;
 	}
 
 	public Set<String> getUsersAtProject(final UUID projectId) {

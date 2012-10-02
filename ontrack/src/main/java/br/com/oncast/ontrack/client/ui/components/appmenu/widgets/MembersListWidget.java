@@ -1,12 +1,14 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.user.UsersStatusService;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
@@ -36,6 +38,9 @@ public class MembersListWidget extends Composite {
 	@UiField(provided = true)
 	VerticalModelWidgetContainer<User, ProjectMemberWidget> activeMembersList;
 
+	@UiField(provided = true)
+	VerticalModelWidgetContainer<User, ProjectMemberWidget> onlineMembersList;
+
 	@UiField
 	SimplePanel loadingPanel;
 
@@ -43,7 +48,7 @@ public class MembersListWidget extends Composite {
 		membersList = new VerticalModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
 			@Override
 			public ProjectMemberWidget createWidget(final User modelBean) {
-				return new ProjectMemberWidget(modelBean, UserStatus.INACTIVE);
+				return new ProjectMemberWidget(modelBean, UserStatus.OFFLINE);
 			}
 		});
 
@@ -51,6 +56,13 @@ public class MembersListWidget extends Composite {
 			@Override
 			public ProjectMemberWidget createWidget(final User modelBean) {
 				return new ProjectMemberWidget(modelBean, UserStatus.ACTIVE);
+			}
+		});
+
+		onlineMembersList = new VerticalModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
+			@Override
+			public ProjectMemberWidget createWidget(final User modelBean) {
+				return new ProjectMemberWidget(modelBean, UserStatus.ONLINE);
 			}
 		});
 
@@ -63,7 +75,10 @@ public class MembersListWidget extends Composite {
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
-				if (action instanceof TeamAction) updateMembersList(ClientServiceProvider.getInstance().getUsersStatusService().getActiveUsers());
+				if (action instanceof TeamAction) {
+					final UsersStatusService usersStatusService = ClientServiceProvider.getInstance().getUsersStatusService();
+					updateMembersList(usersStatusService.getActiveUsers(), usersStatusService.getOnlineUsers());
+				}
 			}
 		});
 	}
@@ -73,26 +88,33 @@ public class MembersListWidget extends Composite {
 		ClientServiceProvider.getInstance().getUsersStatusService().register(new UsersStatusChangeListener() {
 
 			@Override
-			public void onActiveUsersListUnavailable(final Throwable caught) {
+			public void onUsersStatusListUnavailable(final Throwable caught) {
 				loadingPanel.setVisible(false);
-				updateMembersList(new HashSet<User>());
+				updateMembersList(new TreeSet<User>(), new TreeSet<User>());
 			}
 
 			@Override
-			public void onActiveUsersListLoaded(final Set<User> activeUsers) {
+			public void onUsersStatusListsUpdated(final SortedSet<User> activeUsers, final SortedSet<User> onlineUsers) {
 				loadingPanel.setVisible(false);
-				updateMembersList(activeUsers);
+				updateMembersList(activeUsers, onlineUsers);
 			}
+
 		});
 	}
 
-	private void updateMembersList(final Set<User> activeUsers) {
+	private void updateMembersList(final SortedSet<User> activeUsers, final SortedSet<User> onlineUsers) {
 		final ProjectContext currentProjectContext = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
 		activeMembersList.update(new ArrayList<User>(activeUsers));
 
+		final ArrayList<User> onlineAndNotActiveUsers = new ArrayList<User>();
+		for (final User user : onlineUsers) {
+			if (!activeUsers.contains(user)) onlineAndNotActiveUsers.add(user);
+		}
+		onlineMembersList.update(new ArrayList<User>(onlineAndNotActiveUsers));
+
 		final List<User> users = new ArrayList<User>();
 		for (final User user : currentProjectContext.getUsers()) {
-			if (!activeUsers.contains(user)) users.add(user);
+			if (!activeUsers.contains(user) && !onlineUsers.contains(user)) users.add(user);
 		}
 		membersList.update(users);
 	}

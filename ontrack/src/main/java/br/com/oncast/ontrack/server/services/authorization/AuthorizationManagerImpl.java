@@ -155,4 +155,10 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		throw new UnableToAuthorizeUserException(message, e);
 	}
 
+	@Override
+	public boolean hasAuthorizationFor(final String userEmail, final UUID projectId) throws NoResultFoundException, PersistenceException {
+		final User user = persistenceService.retrieveUserByEmail(userEmail);
+		return persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null;
+	}
+
 }

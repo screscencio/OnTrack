@@ -25,4 +25,6 @@ public interface AuthorizationManager {
 
 	public List<ProjectRepresentation> listAuthorizedProjects(String userEmail) throws PersistenceException, NoResultFoundException;
 
+	public boolean hasAuthorizationFor(String userEmail, UUID projectId) throws NoResultFoundException, PersistenceException;
+
 }

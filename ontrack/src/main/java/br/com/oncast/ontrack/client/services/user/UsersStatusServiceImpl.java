@@ -14,10 +14,12 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ActiveUsersRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ActiveUsersRequestCallback;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ActiveUsersRequestResponse;
+import br.com.oncast.ontrack.shared.services.requestDispatch.UsersStatusRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.UsersStatusRequestResponse;
 import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
+import br.com.oncast.ontrack.shared.services.user.UserOfflineEvent;
+import br.com.oncast.ontrack.shared.services.user.UserOnlineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOpenProjectEvent;
 
 import com.google.gwt.core.client.GWT;
@@ -30,6 +32,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	private final DispatchService requestDispatchService;
 	private final ContextProviderService contextProviderService;
 	private SortedSet<User> activeUsers;
+	private SortedSet<User> onlineUsers;
 	private final Set<UsersStatusChangeListener> listenersList;
 
 	public UsersStatusServiceImpl(final DispatchService requestDispatchService, final ContextProviderService contextProviderService,
@@ -46,7 +49,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 				try {
 					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserEmail());
 					activeUsers.add(user);
-					notifyUsersListUpdate();
+					notifyUsersStatusListsUpdate();
 				}
 				catch (final UserNotFoundException e) {
 					GWT.log("UserOpenProjectEventHandler Failed", e);
@@ -60,7 +63,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 				try {
 					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserEmail());
 					activeUsers.remove(user);
-					notifyUsersListUpdate();
+					notifyUsersStatusListsUpdate();
 				}
 				catch (final UserNotFoundException e) {
 					GWT.log("UserClosedProjectEventHandler Failed", e);
@@ -68,13 +71,27 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			}
 		});
 
-		serverPushClientService.registerServerEventHandler(UserClosedProjectEvent.class, new ServerPushEventHandler<UserClosedProjectEvent>() {
+		serverPushClientService.registerServerEventHandler(UserOnlineEvent.class, new ServerPushEventHandler<UserOnlineEvent>() {
 			@Override
-			public void onEvent(final UserClosedProjectEvent event) {
+			public void onEvent(final UserOnlineEvent event) {
 				try {
 					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserEmail());
-					activeUsers.remove(user);
-					notifyUsersListUpdate();
+					onlineUsers.add(user);
+					notifyUsersStatusListsUpdate();
+				}
+				catch (final UserNotFoundException e) {
+					GWT.log("UserClosedProjectEventHandler Failed", e);
+				}
+			}
+		});
+
+		serverPushClientService.registerServerEventHandler(UserOfflineEvent.class, new ServerPushEventHandler<UserOfflineEvent>() {
+			@Override
+			public void onEvent(final UserOfflineEvent event) {
+				try {
+					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserEmail());
+					onlineUsers.remove(user);
+					notifyUsersStatusListsUpdate();
 				}
 				catch (final UserNotFoundException e) {
 					GWT.log("UserClosedProjectEventHandler Failed", e);
@@ -88,7 +105,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onProjectChanged(final UUID projectId) {
 				if (projectId == null) {
-					activeUsers = null;
+					clearUsersStatus();
 					return;
 				}
 
@@ -103,9 +120,9 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	}
 
 	private void loadActiveUsers(final UUID projectId) {
-		activeUsers = null;
+		clearUsersStatus();
 
-		requestDispatchService.dispatch(new ActiveUsersRequest(projectId), new ActiveUsersRequestCallback() {
+		requestDispatchService.dispatch(new UsersStatusRequest(projectId), new ActiveUsersRequestCallback() {
 
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
@@ -118,10 +135,11 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			}
 
 			@Override
-			public void onSuccess(final ActiveUsersRequestResponse result) {
+			public void onSuccess(final UsersStatusRequestResponse result) {
 				activeUsers = retrieveUsers(result.getActiveUsers());
+				onlineUsers = retrieveUsers(result.getOnlineUsers());
 
-				notifyUsersListUpdate();
+				notifyUsersStatusListsUpdate();
 			}
 
 			private SortedSet<User> retrieveUsers(final Set<String> usersEmails) {
@@ -146,7 +164,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	@Override
 	public HandlerRegistration register(final UsersStatusChangeListener usersStatusChangeListener) {
 		listenersList.add(usersStatusChangeListener);
-		if (hasLoadedActiveUsers()) usersStatusChangeListener.onActiveUsersListLoaded(activeUsers);
+		if (hasLoadedActiveUsers()) usersStatusChangeListener.onUsersStatusListsUpdated(activeUsers, onlineUsers);
 
 		return new HandlerRegistration() {
 			@Override
@@ -166,22 +184,37 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 		return activeUsers != null;
 	}
 
-	public interface UsersStatusChangeListener {
-
-		void onActiveUsersListUnavailable(Throwable caught);
-
-		void onActiveUsersListLoaded(Set<User> activeUsers);
+	@Override
+	public SortedSet<User> getOnlineUsers() {
+		if (!hasLoadedOnlineUsers()) throw new RuntimeException("There is no loaded active users");
+		return activeUsers;
 	}
 
-	private void notifyUsersListUpdate() {
+	private boolean hasLoadedOnlineUsers() {
+		return onlineUsers != null;
+	}
+
+	private void clearUsersStatus() {
+		activeUsers = null;
+		onlineUsers = null;
+	}
+
+	public interface UsersStatusChangeListener {
+
+		void onUsersStatusListUnavailable(Throwable caught);
+
+		void onUsersStatusListsUpdated(SortedSet<User> activeUsers, SortedSet<User> onlineUsers);
+	}
+
+	private void notifyUsersStatusListsUpdate() {
 		for (final UsersStatusChangeListener callback : new HashSet<UsersStatusChangeListener>(listenersList)) {
-			callback.onActiveUsersListLoaded(activeUsers);
+			callback.onUsersStatusListsUpdated(activeUsers, onlineUsers);
 		}
 	}
 
 	private void notifyError(final Throwable caught) {
 		for (final UsersStatusChangeListener callback : new HashSet<UsersStatusChangeListener>(listenersList)) {
-			callback.onActiveUsersListUnavailable(caught);
+			callback.onUsersStatusListUnavailable(caught);
 		}
 	}
 

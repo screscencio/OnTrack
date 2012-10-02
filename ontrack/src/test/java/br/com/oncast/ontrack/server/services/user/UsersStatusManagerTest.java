@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.user;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -12,9 +13,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Set;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -48,7 +49,7 @@ public class UsersStatusManagerTest {
 	@Mock
 	private AuthorizationManager authorizationManager;
 
-	private SortedSet<String> users;
+	private Set<String> users;
 	private UsersStatusManager usersStatusManager;
 	private UserStatusChangeListener userStatusChangeListener;
 	private String userEmail1;
@@ -57,6 +58,8 @@ public class UsersStatusManagerTest {
 	private UUID project2;
 
 	private List<ProjectRepresentation> user1AuthorizedProjects;
+
+	private String userEmail2;
 
 	@Before
 	public void setup() throws Exception {
@@ -70,10 +73,11 @@ public class UsersStatusManagerTest {
 		user1AuthorizedProjects.add(ProjectTestUtils.createRepresentation(project2));
 
 		userEmail1 = "user1";
+		userEmail2 = "user2";
 
-		users = new TreeSet<String>();
+		users = new HashSet<String>();
 		users.add(userEmail1);
-		users.add("user2");
+		users.add(userEmail2);
 		users.add("user3");
 
 		final ArgumentCaptor<UserStatusChangeListener> captor = ArgumentCaptor.forClass(UserStatusChangeListener.class);
@@ -84,6 +88,7 @@ public class UsersStatusManagerTest {
 		userStatusChangeListener = captor.getValue();
 
 		when(authorizationManager.listAuthorizedProjects(userEmail1)).thenReturn(user1AuthorizedProjects);
+		when(authorizationManager.hasAuthorizationFor(anyString(), any(UUID.class))).thenReturn(false);
 	}
 
 	@Test
@@ -133,10 +138,18 @@ public class UsersStatusManagerTest {
 	}
 
 	@Test
-	public void shouldBeAbleToRetrieveAllOnlineUsers() throws Exception {
+	public void shouldBeAbleToRetrieveOnlineUsersThatHasAuthorizationForAGivenProject() throws Exception {
 		when(clientManager.getOnlineUsers()).thenReturn(users);
 
-		assertEquals(users, usersStatusManager.getOnlineUsers());
+		when(authorizationManager.hasAuthorizationFor(userEmail1, project1)).thenReturn(true);
+		when(authorizationManager.hasAuthorizationFor(userEmail2, project1)).thenReturn(true);
+		when(authorizationManager.hasAuthorizationFor(userEmail2, project2)).thenReturn(true);
+
+		final HashSet<String> authorizedUsers = new HashSet<String>();
+		authorizedUsers.add(userEmail1);
+		authorizedUsers.add(userEmail2);
+
+		assertEquals(authorizedUsers, usersStatusManager.getOnlineUsers(project1));
 	}
 
 	@Test

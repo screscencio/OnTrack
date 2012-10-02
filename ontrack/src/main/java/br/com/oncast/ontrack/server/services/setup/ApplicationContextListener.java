@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.client.services.feedback.SendFeedbackRequest;
 import br.com.oncast.ontrack.server.business.DefaultUserExistenceAssurer;
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationVerificationAspectFilter;
-import br.com.oncast.ontrack.server.services.requestDispatch.ActiveUsersRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.UsersStatusRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.AuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformationRequestHandler;
@@ -23,7 +23,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequ
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.SendFeedbackRequestHandler;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ActiveUsersRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.UsersStatusRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationRequest;
@@ -72,7 +72,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(ProjectCreationQuotaRequest.class, new ProjectCreationQuotaRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(SendFeedbackRequest.class, new SendFeedbackRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(NotificationListRequest.class, new NotificationListRequestHandler());
-			DispatchServiceServlet.registerRequestHandler(ActiveUsersRequest.class, new ActiveUsersRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(UsersStatusRequest.class, new UsersStatusRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

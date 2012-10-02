@@ -3,13 +3,13 @@ package br.com.oncast.ontrack.shared.services.requestDispatch;
 import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class ActiveUsersRequest implements DispatchRequest<ActiveUsersRequestResponse> {
+public class UsersStatusRequest implements DispatchRequest<UsersStatusRequestResponse> {
 
 	private UUID projectId;
 
-	protected ActiveUsersRequest() {}
+	protected UsersStatusRequest() {}
 
-	public ActiveUsersRequest(final UUID projectId) {
+	public UsersStatusRequest(final UUID projectId) {
 		this.projectId = projectId;
 	}
 

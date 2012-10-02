@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
+import java.util.HashMap;
+
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
@@ -26,7 +28,9 @@ public class ProjectMemberWidget extends Composite implements ModelWidget<User> 
 	interface ProjectMemberWidgetStyle extends CssResource {
 		String active();
 
-		String inactive();
+		String offline();
+
+		String online();
 	}
 
 	@UiField
@@ -43,7 +47,7 @@ public class ProjectMemberWidget extends Composite implements ModelWidget<User> 
 
 	private User user;
 
-	private UserStatus status;
+	private HashMap<UserStatus, String> statusMap;
 
 	public ProjectMemberWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -51,10 +55,19 @@ public class ProjectMemberWidget extends Composite implements ModelWidget<User> 
 
 	public ProjectMemberWidget(final User modelBean, final UserStatus status) {
 		this.user = modelBean;
-		this.status = status;
 		initWidget(uiBinder.createAndBindUi(this));
-		container.setStyleName(status == UserStatus.ACTIVE ? style.active() : style.inactive());
+
+		setupStatusMap();
+
+		container.setStyleName(statusMap.get(status));
 		update();
+	}
+
+	private void setupStatusMap() {
+		statusMap = new HashMap<UserStatus, String>();
+		statusMap.put(UserStatus.OFFLINE, style.offline());
+		statusMap.put(UserStatus.ONLINE, style.online());
+		statusMap.put(UserStatus.ACTIVE, style.active());
 	}
 
 	@Override

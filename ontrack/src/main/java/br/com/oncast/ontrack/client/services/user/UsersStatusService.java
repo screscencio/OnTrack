@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -11,6 +11,8 @@ public interface UsersStatusService {
 
 	HandlerRegistration register(UsersStatusChangeListener usersStatusChangeListener);
 
-	Set<User> getActiveUsers();
+	SortedSet<User> getActiveUsers();
+
+	SortedSet<User> getOnlineUsers();
 
 }
