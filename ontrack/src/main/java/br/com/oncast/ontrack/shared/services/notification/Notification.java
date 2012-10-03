@@ -39,7 +39,8 @@ public class Notification implements Serializable {
 
 	@ElementList
 	@ConversionAlias("recipients")
-	private List<User> recipients = null;
+	@IgnoredByDeepEquality
+	private List<NotificationRecipient> recipients = null;
 
 	@Element
 	@ConversionAlias("author")
@@ -47,7 +48,7 @@ public class Notification implements Serializable {
 
 	@Element
 	@ConversionAlias("project")
-	private ProjectRepresentation projectRepresentation;
+	private UUID projectId;
 
 	@Element
 	@ConversionAlias("referenceId")
@@ -64,14 +65,30 @@ public class Notification implements Serializable {
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected Notification() {
-		recipients = new ArrayList<User>();
+		recipients = new ArrayList<NotificationRecipient>();
 	}
 
 	public UUID getId() {
 		return id;
 	}
 
-	public List<User> getRecipients() {
+	public List<User> getRecipientsAsUsers() {
+		final List<User> users = new ArrayList<User>();
+		for (final NotificationRecipient recipient : recipients) {
+			users.add(recipient.getUser());
+		}
+		return users;
+	}
+
+	public UUID getProjectId() {
+		return projectId;
+	}
+
+	protected void setProjectId(final UUID projectId) {
+		this.projectId = projectId;
+	}
+
+	public List<NotificationRecipient> getRecipients() {
 		return recipients;
 	}
 
@@ -99,9 +116,9 @@ public class Notification implements Serializable {
 		this.timestamp = timestamp;
 	}
 
-	protected void addReceipient(final User user) {
-		if (this.recipients.contains(user)) return;
-		this.recipients.add(user);
+	protected void addReceipient(final NotificationRecipient recipient) {
+		if (this.recipients.contains(recipient)) return;
+		this.recipients.add(recipient);
 	}
 
 	protected void setType(final NotificationType type) {
@@ -116,12 +133,12 @@ public class Notification implements Serializable {
 		this.author = author;
 	}
 
-	public ProjectRepresentation getProjectRepresentation() {
-		return projectRepresentation;
+	public UUID getProjectReference() {
+		return projectId;
 	}
 
 	protected void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
-		this.projectRepresentation = projectRepresentation;
+		this.projectId = projectRepresentation.getId();
 	}
 
 	public UUID getReferenceId() {
@@ -131,5 +148,4 @@ public class Notification implements Serializable {
 	protected void setReferenceId(final UUID referenceId) {
 		this.referenceId = referenceId;
 	}
-
 }

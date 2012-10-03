@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
@@ -47,7 +49,9 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	public boolean update() {
 		final String notificationMessage = notification.getDescription();
 		message.setText(notificationMessage);
-		projectName.setText(notification.getProjectRepresentation().getName());
+		final ProjectRepresentation projectRepresentation = ClientServiceProvider.getInstance().getProjectRepresentationProvider()
+				.getProjectRepresentation(notification.getProjectReference());
+		projectName.setText(projectRepresentation.getName());
 		type.setText(notification.getType().toString());
 		author.setText(getAuthorAndTimeStampLabel());
 		return false;

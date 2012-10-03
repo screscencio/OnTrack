@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.context.NewProjectCreatedEventHandler;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
@@ -188,6 +189,14 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 	protected void notifyProjectListAvailabilityChange(final ProjectListChangeListener projectListChangeListener) {
 		projectListChangeListener.onProjectListAvailabilityChange(projectListAvailability);
+	}
+
+	@Override
+	public ProjectRepresentation getProjectRepresentation(final UUID projectReference) {
+		for (final ProjectRepresentation projectRepresentation : availableProjectRepresentations) {
+			if (projectRepresentation.getId().equals(projectReference)) return projectRepresentation;
+		}
+		throw new RuntimeException("Project representation not available.");
 	}
 
 }

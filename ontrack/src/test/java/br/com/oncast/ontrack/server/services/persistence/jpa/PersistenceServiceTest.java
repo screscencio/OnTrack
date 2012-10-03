@@ -67,6 +67,8 @@ public class PersistenceServiceTest {
 
 	private EntityManager entityManager;
 
+	private User author;
+
 	@Before
 	public void before() throws Exception {
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
@@ -404,12 +406,13 @@ public class PersistenceServiceTest {
 		DeepEqualityTestUtils.assertObjectEquality(notification, latestNotificationsForUser.get(0));
 	}
 
-	private NotificationBuilder getBuilder(final String desc) throws PersistenceException {
+	private NotificationBuilder getBuilder(final String desc) throws Exception {
 		final ProjectRepresentation project = ProjectTestUtils.createRepresentation(new UUID(""));
 
 		persistenceService.persistOrUpdateProjectRepresentation(project);
 
-		return new NotificationBuilder(NotificationType.IMPEDIMENT, project, UserTestUtils.createUser(1))
+		if (author == null) author = createAndPersistUser();
+		return new NotificationBuilder(NotificationType.IMPEDIMENT, project, author)
 				.setDescription(desc);
 	}
 

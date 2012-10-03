@@ -21,6 +21,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.User
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationRecipientEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
@@ -538,17 +539,17 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName()
-					+ " as n WHERE :user MEMBER OF n.recipients ORDER BY n.timestamp DESC");
-			query.setParameter("user", user);
-			query.setMaxResults(maxNotifications);
-
-			return (List<Notification>) TYPE_CONVERTER.convert(query.getResultList());
+			final Query queryRecipient = em.createQuery("SELECT r.notification FROM " + NotificationRecipientEntity.class.getSimpleName()
+					+ " as r WHERE r.user = :user ORDER BY r.notification.timestamp DESC");
+			queryRecipient.setParameter("user", user);
+			queryRecipient.setMaxResults(maxNotifications);
+			final List<NotificationEntity> resultList = queryRecipient.getResultList();
+			return (List<Notification>) TYPE_CONVERTER.convert(resultList);
 		}
 		catch (final NoResultException e) {
 			throw new NoResultFoundException("No notification found for user: " + user.getEmail(), e);
 		}
-		catch (final Exception e) {
+		catch (final TypeConverterException e) {
 			throw new PersistenceException("It was not possible to convert the NotificationEntity to it's model equivalent.", e);
 		}
 		finally {
@@ -561,12 +562,18 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			em.merge((NotificationEntity) TYPE_CONVERTER.convert(notification));
+			final NotificationEntity notificationEntity = (NotificationEntity) TYPE_CONVERTER.convert(notification);
+			em.merge(notificationEntity);
+			final List<NotificationRecipientEntity> recipients = notificationEntity.getRecipients();
+			for (final NotificationRecipientEntity notificationRecipientEntity : recipients) {
+				notificationRecipientEntity.setNotification(notificationEntity);
+				em.merge(notificationRecipientEntity);
+			}
 			em.getTransaction().commit();
-			// TODO ++++ Make this method void, because it is already changing the incoming object with generated id.
 			return notification;
 		}
 		catch (final Exception e) {
+			e.printStackTrace();
 			try {
 				em.getTransaction().rollback();
 			}

@@ -7,13 +7,14 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
@@ -37,17 +38,18 @@ public class NotificationEntity {
 	@Column(unique = false, nullable = false)
 	private Date timestamp;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@ConversionAlias("recipients")
-	private final List<User> recipients = new ArrayList<User>();
+	private List<NotificationRecipientEntity> recipients = new ArrayList<NotificationRecipientEntity>();
 
 	@ConversionAlias("author")
+	@OneToOne
+	@JoinColumn(name = "user", nullable = false, updatable = false)
 	private User author;
 
 	@ConversionAlias("project")
-	@ManyToOne
-	// @Column(unique = false, nullable = false)
-	private ProjectRepresentationEntity projectRepresentation;
+	@ConvertUsing(StringToUuidConverter.class)
+	private String projectId;
 
 	@ConversionAlias("referenceId")
 	@ConvertUsing(StringToUuidConverter.class)
@@ -89,12 +91,12 @@ public class NotificationEntity {
 		this.author = author;
 	}
 
-	public ProjectRepresentationEntity getProjectRepresentation() {
-		return projectRepresentation;
+	public String getProjectId() {
+		return projectId;
 	}
 
-	public void setProjectRepresentation(final ProjectRepresentationEntity projectRepresentation) {
-		this.projectRepresentation = projectRepresentation;
+	public void setProjectId(final String projectId) {
+		this.projectId = projectId;
 	}
 
 	public String getReferenceId() {
@@ -121,7 +123,15 @@ public class NotificationEntity {
 		this.description = description;
 	}
 
-	public List<User> getRecipients() {
+	public List<NotificationRecipientEntity> getRecipients() {
 		return recipients;
+	}
+
+	public void setRecipients(final List<NotificationRecipientEntity> recipients) {
+		this.recipients = recipients;
+	}
+
+	public void addRecipient(final NotificationRecipientEntity notificationRecipientEntity) {
+		this.recipients.add(notificationRecipientEntity);
 	}
 }
