@@ -9,7 +9,7 @@
 
 	<ui:style src="../../../style/default.css">
 		.rootPanel {
-			width: WIDTH_DEFAULT_POPUP;
+			width: 350px;;
 			min-width: 250px;
 		}
 

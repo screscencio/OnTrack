@@ -1,27 +1,67 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:ow="urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
 	<ui:style>
-		
 			.rootPanel {
 				position: relative;
 				width: 100%;
-				
+
 				margin-bottom: 10px;
 			}
 			
+			.image{
+				width: 40px;
+				height: 40px;
+				padding-right: 10px;
+			}
+			
+			.container {
+				margin-bottom: 5px;
+			}
+			
+			.userName {
+				margin-left: 5px;
+			}
+			
+			.timestamp {
+				position: absolute;
+				right: 0;
+				bottom: 8px;
+				
+				font-size: small;
+				font-style: italic;
+			}
+			
+			.inline {
+				display: inline;
+			}
+			
+			.cell {
+				position: absolute;
+				width: 210px;
+				vertical-alignment: middle;
+			}
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
-		<g:Label ui:field="projectName"/>
-		<g:Label ui:field="type"/>
-		<g:Label ui:field="message" />
-		<g:Label ui:field="author"/>
+		<g:HorizontalPanel ui:field="container" styleName="{style.container}">
+			<g:Image ui:field="userIcon" styleName="{style.image}" />
+			<g:cell  styleName="{style.cell}">
+				<g:HTMLPanel styleName="{style.inline}">
+					<g:Label ui:field="type" styleName="{style.inline}" />
+					<g:Label styleName="{style.inline}"> at </g:Label>
+					<g:Label ui:field="projectName" styleName="{style.inline}" />
+					<g:Label styleName="{style.inline}"> created by </g:Label>
+					<g:Label ui:field="userName"  styleName="{style.inline}"/>
+					<g:Label ui:field="timestamp"  styleName="{style.timestamp}"/>
+				</g:HTMLPanel>
+			</g:cell>
+		</g:HorizontalPanel>
+		<t:Separator />
 	</g:HTMLPanel>
 </ui:UiBinder> 
