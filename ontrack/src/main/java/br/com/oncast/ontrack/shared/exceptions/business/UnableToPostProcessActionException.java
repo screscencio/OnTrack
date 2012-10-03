@@ -11,4 +11,8 @@ public class UnableToPostProcessActionException extends RuntimeException {
 		super(message);
 	}
 
+	public UnableToPostProcessActionException(final String message, final Exception e) {
+		super(message, e);
+	}
+
 }

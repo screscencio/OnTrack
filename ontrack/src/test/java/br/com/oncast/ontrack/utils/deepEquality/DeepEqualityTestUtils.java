@@ -51,6 +51,10 @@ public class DeepEqualityTestUtils {
 	}
 
 	public static void assertObjectEquality(final Object expected, final Object actual) throws DeepEqualityException {
+		if (expected == null) {
+			Assert.assertNull("Expected class is null but actual is not.\n" + LOGGER.getCurrentLogHierarchy(), actual);
+			return;
+		}
 		LOGGER.log("Asserting object equality in " + expected.getClass().getSimpleName());
 		LOGGER.indent();
 		try {

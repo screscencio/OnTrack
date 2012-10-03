@@ -7,17 +7,22 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 
 @Entity
 @ConvertTo(Notification.class)
@@ -28,18 +33,37 @@ public class NotificationEntity {
 	@ConversionAlias("id")
 	private String id;
 
-	@Column(name = "message", unique = false, nullable = false)
-	@ConversionAlias("message")
-	private String message;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	@ConversionAlias("timestamp")
+	@Column(unique = false, nullable = false)
 	private Date timestamp;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	// @OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@ConversionAlias("recipients")
-	private List<User> recipients = new ArrayList<User>();
+	private List<NotificationRecipientEntity> recipients = new ArrayList<NotificationRecipientEntity>();
+
+	@ConversionAlias("author")
+	@OneToOne
+	@JoinColumn(name = "user", nullable = false, updatable = false)
+	private User author;
+
+	@ConversionAlias("project")
+	@ConvertUsing(StringToUuidConverter.class)
+	private String projectId;
+
+	@ConversionAlias("referenceId")
+	@ConvertUsing(StringToUuidConverter.class)
+	@Column(unique = false, nullable = true)
+	private String referenceId;
+
+	@ConversionAlias("type")
+	@ConvertUsing(NotificationTypeConveter.class)
+	@Column(unique = false, nullable = false)
+	private NotificationType type;
+
+	@Column(name = "description", unique = false, nullable = false)
+	@ConversionAlias("description")
+	private String description;
 
 	public NotificationEntity() {}
 
@@ -51,14 +75,6 @@ public class NotificationEntity {
 		this.id = id;
 	}
 
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(final String message) {
-		this.message = message;
-	}
-
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -67,11 +83,55 @@ public class NotificationEntity {
 		this.timestamp = timestamp;
 	}
 
-	public List<User> getRecipients() {
+	public User getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(final User author) {
+		this.author = author;
+	}
+
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(final String projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getReferenceId() {
+		return referenceId;
+	}
+
+	public void setReferenceId(final String referenceId) {
+		this.referenceId = referenceId;
+	}
+
+	public NotificationType getType() {
+		return type;
+	}
+
+	public void setType(final NotificationType type) {
+		this.type = type;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	public List<NotificationRecipientEntity> getRecipients() {
 		return recipients;
 	}
 
-	public void setRecipients(final List<User> recipients) {
+	public void setRecipients(final List<NotificationRecipientEntity> recipients) {
 		this.recipients = recipients;
+	}
+
+	public void addRecipient(final NotificationRecipientEntity notificationRecipientEntity) {
+		this.recipients.add(notificationRecipientEntity);
 	}
 }

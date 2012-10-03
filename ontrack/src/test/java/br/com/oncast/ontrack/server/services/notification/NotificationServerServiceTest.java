@@ -22,9 +22,13 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveNotificationListException;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class NotificationServerServiceTest {
 
@@ -47,7 +51,8 @@ public class NotificationServerServiceTest {
 	public void registerNewNotificationShouldPersistAndMulticast() throws PersistenceException, UnableToCreateNotificationException {
 		final User user1 = createUser();
 		final User user2 = createUser();
-		final Notification notification = new NotificationBuilder("msg").addReceipient(user1).addReceipient(user2).getNotification();
+		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1).addReceipient(user2)
+				.getNotification();
 
 		final ArgumentCaptor<Notification> persistenceCaptor = ArgumentCaptor.forClass(Notification.class);
 		final ArgumentCaptor<NotificationCreatedEvent> multicastEventCaptor = ArgumentCaptor.forClass(NotificationCreatedEvent.class);
@@ -68,6 +73,10 @@ public class NotificationServerServiceTest {
 		assertEquals(user2, capturedNotificationFromMulticastUserList.get(1));
 	}
 
+	private NotificationBuilder getBuilder() {
+		return new NotificationBuilder(NotificationType.IMPEDIMENT, ProjectTestUtils.createRepresentation(new UUID("")), UserTestUtils.createUser(1));
+	}
+
 	@Test
 	public void retrieveCurrentUserNotificationListShouldReturnEmptyListIfThereAreNoNotificationsOnPersistence()
 			throws UnableToRetrieveNotificationListException, NoResultFoundException, PersistenceException {
@@ -84,7 +93,8 @@ public class NotificationServerServiceTest {
 			throws UnableToRetrieveNotificationListException, NoResultFoundException, PersistenceException {
 		final User user1 = createUser();
 		final User user2 = createUser();
-		final Notification notification = new NotificationBuilder("msg").addReceipient(user1).addReceipient(user2).getNotification();
+		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1).addReceipient(user2)
+				.getNotification();
 		final List<Notification> list = new ArrayList<Notification>();
 		list.add(notification);
 
@@ -94,5 +104,4 @@ public class NotificationServerServiceTest {
 
 		assertEquals(list, notificationList);
 	}
-
 }

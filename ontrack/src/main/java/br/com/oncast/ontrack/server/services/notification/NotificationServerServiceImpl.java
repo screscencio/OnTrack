@@ -59,6 +59,6 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 			LOGGER.error(message, e);
 			throw new UnableToCreateNotificationException(message);
 		}
-		this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), notification.getRecipients());
+		this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), notification.getRecipientsAsUsers());
 	}
 }

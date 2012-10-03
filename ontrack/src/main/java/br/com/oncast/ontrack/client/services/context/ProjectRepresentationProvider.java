@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.services.context;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface ProjectRepresentationProvider {
 
@@ -13,5 +14,7 @@ public interface ProjectRepresentationProvider {
 	public abstract void unregisterProjectListChangeListener(ProjectListChangeListener projectListChangeListener);
 
 	public abstract void authorizeUser(String mail, ProjectAuthorizationCallback callback);
+
+	public abstract ProjectRepresentation getProjectRepresentation(UUID projectReference);
 
 }

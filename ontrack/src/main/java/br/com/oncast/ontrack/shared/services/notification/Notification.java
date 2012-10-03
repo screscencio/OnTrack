@@ -12,12 +12,19 @@ import org.simpleframework.xml.ElementList;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(NotificationEntity.class)
 public class Notification implements Serializable {
+
+	public enum NotificationType {
+		IMPEDIMENT;
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -26,62 +33,119 @@ public class Notification implements Serializable {
 	private UUID id;
 
 	@Attribute
-	@ConversionAlias("message")
-	private String message;
-
-	@Attribute
 	@ConversionAlias("timestamp")
 	@IgnoredByDeepEquality
 	private Date timestamp;
 
 	@ElementList
 	@ConversionAlias("recipients")
-	private List<User> recipients = new ArrayList<User>();
+	@IgnoredByDeepEquality
+	private List<NotificationRecipient> recipients = null;
+
+	@Element
+	@ConversionAlias("author")
+	private User author;
+
+	@Element
+	@ConversionAlias("project")
+	private UUID projectId;
+
+	@Element
+	@ConversionAlias("referenceId")
+	private UUID referenceId;
+
+	@Attribute
+	@ConversionAlias("description")
+	private String description;
+
+	@Attribute
+	@ConversionAlias("type")
+	@ConvertUsing(NotificationTypeConveter.class)
+	private NotificationType type = NotificationType.IMPEDIMENT;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
-	protected Notification() {}
-
-	protected Notification(final String message, final List<User> recipients) {
-		this(new UUID(), message, new Date(), recipients);
-	}
-
-	protected Notification(final UUID id, final String message, final Date timestamp, final List<User> recipients) {
-		this.id = id;
-		this.message = message;
-		this.timestamp = timestamp;
-		this.recipients = recipients;
+	protected Notification() {
+		recipients = new ArrayList<NotificationRecipient>();
 	}
 
 	public UUID getId() {
 		return id;
 	}
 
-	public List<User> getRecipients() {
+	public List<User> getRecipientsAsUsers() {
+		final List<User> users = new ArrayList<User>();
+		for (final NotificationRecipient recipient : recipients) {
+			users.add(recipient.getUser());
+		}
+		return users;
+	}
+
+	public UUID getProjectId() {
+		return projectId;
+	}
+
+	protected void setProjectId(final UUID projectId) {
+		this.projectId = projectId;
+	}
+
+	public List<NotificationRecipient> getRecipients() {
 		return recipients;
 	}
 
-	public String getMessage() {
-		return message;
+	public String getDescription() {
+		return description;
 	}
 
 	public Date getTimestamp() {
 		return timestamp;
 	}
 
+	public NotificationType getType() {
+		return type;
+	}
+
 	protected void setId(final UUID id) {
 		this.id = id;
 	}
 
-	protected void setMessage(final String message) {
-		this.message = message;
+	protected void setDescription(final String message) {
+		this.description = message;
 	}
 
 	protected void setTimestamp(final Date timestamp) {
 		this.timestamp = timestamp;
 	}
 
-	protected void addReceipient(final User user) {
-		if (this.recipients.contains(user)) return;
-		this.recipients.add(user);
+	protected void addReceipient(final NotificationRecipient recipient) {
+		if (this.recipients.contains(recipient)) return;
+		this.recipients.add(recipient);
+	}
+
+	protected void setType(final NotificationType type) {
+		this.type = type;
+	}
+
+	public User getAuthor() {
+		return author;
+	}
+
+	protected void setAuthor(final User author) {
+		this.author = author;
+	}
+
+	public UUID getProjectReference() {
+		return projectId;
+	}
+
+	protected void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
+		this.projectId = projectRepresentation.getId();
+	}
+
+	public UUID getReferenceId() {
+		return referenceId;
+	}
+
+	protected void setReferenceId(final UUID referenceId) {
+		this.referenceId = referenceId;
 	}
 }

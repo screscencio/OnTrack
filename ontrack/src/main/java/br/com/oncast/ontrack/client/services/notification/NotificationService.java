@@ -43,7 +43,7 @@ public class NotificationService {
 				notificationListAvailability = false;
 
 				notifyNotificationListContentChange();
-				notifyNotificationListChange();
+				notifyNotificationListAvailabilityChange();
 			}
 
 			@Override
@@ -77,7 +77,7 @@ public class NotificationService {
 				notificationListAvailability = true;
 
 				notifyNotificationListContentChange();
-				notifyNotificationListChange();
+				notifyNotificationListAvailabilityChange();
 			}
 
 			@Override
@@ -92,7 +92,7 @@ public class NotificationService {
 		});
 	}
 
-	private void notifyNotificationListChange() {
+	private void notifyNotificationListAvailabilityChange() {
 		for (final NotificationListChangeListener listener : notificationListChangeListeners)
 			notifyListenerForNotificationListAvailabilityChange(listener);
 	}
