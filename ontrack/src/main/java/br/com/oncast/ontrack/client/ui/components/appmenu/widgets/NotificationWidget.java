@@ -1,14 +1,20 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
+import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
+import br.com.oncast.ontrack.client.services.user.UserDataService;
+import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -20,11 +26,6 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	interface NotificationWidgetUiBinder extends UiBinder<Widget, NotificationWidget> {}
 
-	private final Notification notification;
-
-	@UiField
-	protected Label message;
-
 	@UiField
 	protected Label projectName;
 
@@ -32,10 +33,18 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	protected Label type;
 
 	@UiField
-	protected Label author;
+	protected Label userName;
 
-	public NotificationWidget(final Notification notification) {
-		this.notification = notification;
+	@UiField
+	protected Label timestamp;
+
+	@UiField
+	Image userIcon;
+
+	private final Notification notification;
+
+	public NotificationWidget(final Notification modelBean) {
+		this.notification = modelBean;
 
 		initWidget(uiBinder.createAndBindUi(this));
 		setVisible(false);
@@ -47,26 +56,40 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	@Override
 	public boolean update() {
-		final String notificationMessage = notification.getDescription();
-		message.setText(notificationMessage);
-		final ProjectRepresentation projectRepresentation = ClientServiceProvider.getInstance().getProjectRepresentationProvider()
-				.getProjectRepresentation(notification.getProjectReference());
-		projectName.setText(projectRepresentation.getName());
+
+		fillUserInformation();
+
+		final ProjectRepresentationProvider projectRepresentationProvider = ClientServiceProvider.getInstance().getProjectRepresentationProvider();
+		projectName.setText(projectRepresentationProvider.getProjectRepresentation(notification.getProjectId()).getName());
+
 		type.setText(notification.getType().toString());
-		author.setText(getAuthorAndTimeStampLabel());
-		return false;
-	}
-
-	private String getAuthorAndTimeStampLabel() {
-		return "created by " + notification.getAuthor().getEmail() + " at " + notification.getTimestamp().toString();
-	}
-
-	public Notification getNotification() {
-		return notification;
+		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));
+		return true;
 	}
 
 	@Override
 	public Notification getModelObject() {
-		return getNotification();
+		return notification;
+	}
+
+	private void fillUserInformation() {
+		final String userEmail = notification.getAuthor().getEmail();
+
+		final UserDataService userDataService = ClientServiceProvider.getInstance().getUserDataService();
+		userIcon.setUrl(userDataService.getAvatarUrl(userEmail));
+		userIcon.setTitle(userEmail);
+
+		userName.setText(userEmail);
+
+		userDataService.loadProfile(userEmail, new LoadProfileCallback() {
+
+			@Override
+			public void onProfileUnavailable(final Throwable cause) {}
+
+			@Override
+			public void onProfileLoaded(final PortableContactJsonObject profile) {
+				userName.setText(profile.getDisplayName());
+			}
+		});
 	}
 }
