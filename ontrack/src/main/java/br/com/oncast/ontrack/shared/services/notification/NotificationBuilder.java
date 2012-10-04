@@ -18,6 +18,7 @@ public class NotificationBuilder {
 		notification.setType(type);
 		notification.setProjectRepresentation(projectRepresentation);
 		notification.setAuthor(author);
+		notification.setDescription("");
 	}
 
 	public NotificationBuilder addReceipient(final User receipient) {

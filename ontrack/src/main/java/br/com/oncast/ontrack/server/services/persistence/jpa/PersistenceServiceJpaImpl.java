@@ -21,7 +21,6 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.User
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationRecipientEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.GeneralTypeConverter;
@@ -539,11 +538,12 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query queryRecipient = em.createQuery("SELECT r.notification FROM " + NotificationRecipientEntity.class.getSimpleName()
-					+ " as r WHERE r.user = :user ORDER BY r.notification.timestamp DESC");
-			queryRecipient.setParameter("user", user);
-			queryRecipient.setMaxResults(maxNotifications);
-			final List<NotificationEntity> resultList = queryRecipient.getResultList();
+			final Query queryNotification = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName()
+					+ " n, IN (n.recipients) recipient WHERE recipient.user = :user ORDER BY n.timestamp DESC");
+			queryNotification.setParameter("user", user);
+			queryNotification.setMaxResults(maxNotifications);
+			final List<NotificationEntity> resultList = queryNotification.getResultList();
+
 			return (List<Notification>) TYPE_CONVERTER.convert(resultList);
 		}
 		catch (final NoResultException e) {
@@ -562,13 +562,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			final NotificationEntity notificationEntity = (NotificationEntity) TYPE_CONVERTER.convert(notification);
-			em.merge(notificationEntity);
-			final List<NotificationRecipientEntity> recipients = notificationEntity.getRecipients();
-			for (final NotificationRecipientEntity notificationRecipientEntity : recipients) {
-				notificationRecipientEntity.setNotification(notificationEntity);
-				em.merge(notificationRecipientEntity);
-			}
+			em.merge((NotificationEntity) TYPE_CONVERTER.convert(notification));
 			em.getTransaction().commit();
 			return notification;
 		}

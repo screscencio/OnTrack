@@ -39,6 +39,7 @@ public class NotificationEntity {
 	private Date timestamp;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "recipient_id")
 	@ConversionAlias("recipients")
 	private List<NotificationRecipientEntity> recipients = new ArrayList<NotificationRecipientEntity>();
 
@@ -61,7 +62,7 @@ public class NotificationEntity {
 	@Column(unique = false, nullable = false)
 	private NotificationType type;
 
-	@Column(name = "description", unique = false, nullable = false)
+	@Column(name = "description", unique = false, nullable = true)
 	@ConversionAlias("description")
 	private String description;
 
