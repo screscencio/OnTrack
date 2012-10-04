@@ -54,9 +54,13 @@
 			<g:cell  styleName="{style.cell}">
 				<g:HTMLPanel styleName="{style.inline}">
 					<g:Label ui:field="type" styleName="{style.inline}" />
-					<g:Label styleName="{style.inline}"> at </g:Label>
+					<g:Label  styleName="{style.inline}">
+						<ui:msg description="notification member at message"> at </ui:msg>
+					</g:Label>
 					<g:Label ui:field="projectName" styleName="{style.inline}" />
-					<g:Label styleName="{style.inline}"> created by </g:Label>
+					<g:Label  styleName="{style.inline}">
+						<ui:msg description="notification member created by message"> created by </ui:msg>
+					</g:Label>
 					<g:Label ui:field="userName"  styleName="{style.inline}"/>
 					<g:Label ui:field="timestamp"  styleName="{style.timestamp}"/>
 				</g:HTMLPanel>

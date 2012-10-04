@@ -11,6 +11,11 @@
 		.rootPanel {
 			width: 350px;;
 			min-width: 250px;
+			
+			overflow-y: auto;
+			overflow-x: hidden;
+			
+			max-height: 282px;
 		}
 
 	   	.notifications {
