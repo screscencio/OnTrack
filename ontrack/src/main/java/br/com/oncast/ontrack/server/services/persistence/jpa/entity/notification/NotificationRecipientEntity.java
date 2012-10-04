@@ -1,8 +1,6 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -10,7 +8,6 @@ import javax.persistence.OneToOne;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
-import br.com.oncast.ontrack.server.utils.typeConverter.annotations.IgnoreByConversion;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.NotificationRecipient;
@@ -29,10 +26,6 @@ public class NotificationRecipientEntity {
 	@JoinColumn(name = "user", nullable = false, updatable = false)
 	private User user;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@IgnoreByConversion
-	private NotificationEntity notification;
-
 	public NotificationRecipientEntity() {}
 
 	public String getId() {
@@ -50,13 +43,4 @@ public class NotificationRecipientEntity {
 	public void setUser(final User user) {
 		this.user = user;
 	}
-
-	public NotificationEntity getNotification() {
-		return notification;
-	}
-
-	public void setNotification(final NotificationEntity notification) {
-		this.notification = notification;
-	}
-
 }
