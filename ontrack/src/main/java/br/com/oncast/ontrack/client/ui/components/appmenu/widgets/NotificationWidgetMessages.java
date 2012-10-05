@@ -12,4 +12,8 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("Notifications will arise when relevant events happen")
 	String noNotificationsHelpMessage();
 
+	@Description("impediment")
+	@DefaultMessage("Impediment")
+	String impedimentNotificationMessage();
+
 }

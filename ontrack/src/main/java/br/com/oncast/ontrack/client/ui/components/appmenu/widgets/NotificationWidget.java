@@ -75,7 +75,7 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 		final ProjectRepresentation project = ClientServiceProvider.getInstance().getProjectRepresentationProvider()
 				.getProjectRepresentation(notification.getProjectId());
 
-		type.setHTML(LinkFactory.getLinkForAnnotation(project.getId(), notification.getReferenceId(), notification.getType().toString()));
+		type.setHTML(LinkFactory.getLinkForAnnotation(project.getId(), notification.getReferenceId(), notification.getType().selectMessage(messages)));
 		projectName.setHTML(LinkFactory.getLinkForProject(project));
 		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));
 

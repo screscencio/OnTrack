@@ -9,11 +9,13 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidgetMessages;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
+import br.com.oncast.ontrack.shared.messageCode.BaseMessageCode;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -22,8 +24,13 @@ import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 @ConvertTo(NotificationEntity.class)
 public class Notification implements Serializable {
 
-	public enum NotificationType {
-		IMPEDIMENT;
+	public enum NotificationType implements BaseMessageCode<NotificationWidgetMessages> {
+		IMPEDIMENT() {
+			@Override
+			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
+				return messages.impedimentNotificationMessage();
+			}
+		}
 	}
 
 	private static final long serialVersionUID = 1L;
