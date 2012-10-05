@@ -53,6 +53,8 @@ public class ImpedimentNotificationCreationPostProcessor implements ActionPostPr
 			final User author = persistenceService.retrieveUserByEmail(actionContext.getUserEmail());
 
 			final NotificationBuilder notificationBuilder = new NotificationBuilder(NotificationType.IMPEDIMENT, projectRepresentation, author);
+			notificationBuilder.setReferenceId(action.getReferenceId());
+
 			for (final User user : projectUsers) {
 				notificationBuilder.addReceipient(user);
 			}
