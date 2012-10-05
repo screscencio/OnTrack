@@ -5,23 +5,25 @@
 	<persistence-unit name="ontrackPU">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		
+		<!-- Staging VERSION -->
+		
 		<properties>
-			<!-- HSQLDB -->
-			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
-			<property name="javax.persistence.jdbc.user" value="sa" />
+            <!-- MySQL -->
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.user" value="ontrack" />
 			<property name="javax.persistence.jdbc.password" value="" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:aname" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ontrack" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.max_fetch_depth" value="3" />
-			<property name="hibernate.archive.autodetection" value="class, hbm" />
+            <property name="hibernate.archive.autodetection" value="class, hbm" />
             <property name="hibernate.c3p0.min_size" value="1" />
             <property name="hibernate.c3p0.max_size" value="100" />
             <property name="hibernate.c3p0.timeout" value="0" />
             <property name="hibernate.c3p0.max_statements" value="0" />
             <property name="hibernate.c3p0.idle_test_period" value="3600" />
-            <property name="hibernate.connection.characterEncoding" value="UTF-8" />
-			<!-- /HSQLDB -->
+			<property name="hibernate.connection.characterEncoding" value="UTF-8" />
+            <!-- MySQL -->
 		</properties>
 	</persistence-unit>
 </persistence>
