@@ -1,13 +1,13 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.client.utils.link.LinkFactory;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
@@ -15,6 +15,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -27,10 +28,10 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	interface NotificationWidgetUiBinder extends UiBinder<Widget, NotificationWidget> {}
 
 	@UiField
-	protected Label projectName;
+	protected InlineHTML projectName;
 
 	@UiField
-	protected Label type;
+	protected InlineHTML type;
 
 	@UiField
 	protected Label userName;
@@ -59,11 +60,13 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 		fillUserInformation();
 
-		final ProjectRepresentationProvider projectRepresentationProvider = ClientServiceProvider.getInstance().getProjectRepresentationProvider();
-		projectName.setText(projectRepresentationProvider.getProjectRepresentation(notification.getProjectId()).getName());
+		final ProjectRepresentation project = ClientServiceProvider.getInstance().getProjectRepresentationProvider()
+				.getProjectRepresentation(notification.getProjectId());
 
-		type.setText(notification.getType().toString());
+		type.setHTML(LinkFactory.getLinkForAnnotation(project.getId(), notification.getReferenceId(), notification.getType().toString()));
+		projectName.setHTML(LinkFactory.getLinkForProject(project));
 		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));
+
 		return true;
 	}
 

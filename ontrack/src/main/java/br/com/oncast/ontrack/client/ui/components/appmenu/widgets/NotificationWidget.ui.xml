@@ -53,11 +53,11 @@
 			<g:Image ui:field="userIcon" styleName="{style.image}" />
 			<g:cell  styleName="{style.cell}">
 				<g:HTMLPanel styleName="{style.inline}">
-					<g:Label ui:field="type" styleName="{style.inline}" />
+					<g:InlineHTML ui:field="type" styleName="{style.inline}" />
 					<g:Label  styleName="{style.inline}">
 						<ui:msg description="notification member at message"> at </ui:msg>
 					</g:Label>
-					<g:Label ui:field="projectName" styleName="{style.inline}" />
+					<g:InlineHTML ui:field="projectName" styleName="{style.inline}" />
 					<g:Label  styleName="{style.inline}">
 						<ui:msg description="notification member created by message"> created by </ui:msg>
 					</g:Label>
