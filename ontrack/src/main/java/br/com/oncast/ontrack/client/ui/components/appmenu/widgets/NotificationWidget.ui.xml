@@ -55,7 +55,7 @@
 				<g:HTMLPanel styleName="{style.inline}">
 					<g:InlineHTML ui:field="type" styleName="{style.inline}" />
 					<g:Label  styleName="{style.inline}">
-						<ui:msg description="notification member at message"> at </ui:msg>
+						<ui:msg description="notification member at message"> at project </ui:msg>
 					</g:Label>
 					<g:InlineHTML ui:field="projectName" styleName="{style.inline}" />
 					<g:Label  styleName="{style.inline}">
