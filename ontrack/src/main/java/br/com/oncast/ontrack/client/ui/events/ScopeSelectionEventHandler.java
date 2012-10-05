@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.ui.components.scopetree.events;
+package br.com.oncast.ontrack.client.ui.events;
 
 import com.google.gwt.event.shared.EventHandler;
 

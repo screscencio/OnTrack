@@ -92,7 +92,7 @@ public class ScopeTree implements Component {
 		tree.add(rootItem);
 		rootItem.mountTwoLevels();
 		rootItem.setState(true);
-		tree.setSelectedItem(rootItem);
+		tree.setSelectedItem(rootItem, true);
 
 		instructionGuide.onSetContext(context);
 	}

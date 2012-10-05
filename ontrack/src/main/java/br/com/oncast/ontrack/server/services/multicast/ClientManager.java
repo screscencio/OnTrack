@@ -146,13 +146,15 @@ public class ClientManager {
 		private void verifyAndNotifyUserOnline(final String userEmail, final String sessionId) {
 			if (!clientsBySession.containsKey(sessionId)) return;
 
-			for (final UserStatusChangeListener l : listeners) {
-				l.onUserOnline(userEmail);
-			}
+			notifyUserOnline(userEmail);
 		}
 
 		@Override
 		public void onUserLoggedOut(final User user, final String sessionId) {
+			for (final ServerPushConnection c : clientsBySession.get(sessionId)) {
+				unbindClientFromProject(c);
+			}
+
 			sessionByUser.remove(user.getEmail(), sessionId);
 
 			verifyAndNotifyUserOffline(user.getEmail(), sessionId);
@@ -161,9 +163,7 @@ public class ClientManager {
 		private void verifyAndNotifyUserOffline(final String userEmail, final String sessionId) {
 			if (!clientsBySession.containsKey(sessionId)) return;
 
-			for (final UserStatusChangeListener l : listeners) {
-				l.onUserOffline(userEmail);
-			}
+			notifyUserOffline(userEmail);
 		}
 
 		public Set<String> getOnlineUsers() {
@@ -240,6 +240,10 @@ public class ClientManager {
 		for (final UserStatusChangeListener l : listeners) {
 			l.onUserOffline(userEmail);
 		}
+	}
+
+	public UUID getCurrentProject(final ServerPushConnection clientId) {
+		return getKeyFor(clientsByProject, clientId);
 	}
 
 }

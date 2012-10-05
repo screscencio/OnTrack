@@ -33,10 +33,14 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -136,6 +140,14 @@ public class ScopeTreeItemWidget extends Composite {
 	@IgnoredByDeepEquality
 	protected FocusPanel focusPanel;
 
+	@UiField
+	@IgnoredByDeepEquality
+	protected FocusPanel borderPanel;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected Label selectedMembers;
+
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
 
@@ -153,10 +165,34 @@ public class ScopeTreeItemWidget extends Composite {
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetValueCommandMenuItemFactory valueCommandMenuItemFactory;
 
+	@IgnoredByDeepEquality
+	private final List<Selection> selectionsList;
+
+	@IgnoredByDeepEquality
+	private final Animation fadeAnimation;
+
+	@IgnoredByDeepEquality
+	private final Timer fadeAnimationTimer;
+
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 
 		initWidget(uiBinder.createAndBindUi(this));
 		setScope(scope);
+
+		selectionsList = new ArrayList<Selection>();
+		fadeAnimation = new Animation() {
+			@Override
+			protected void onUpdate(final double progress) {
+				selectedMembers.getElement().getStyle().setOpacity(1 - progress);
+			}
+		};
+
+		fadeAnimationTimer = new Timer() {
+			@Override
+			public void run() {
+				fadeAnimation.run(1000);
+			}
+		};
 
 		this.editionHandler = editionHandler;
 		this.releaseCommandMenuItemFactory = new ScopeTreeItemWidgetReleaseCommandMenuItemFactory(editionHandler);
@@ -478,6 +514,89 @@ public class ScopeTreeItemWidget extends Composite {
 				valuePanel.setVisible(isVisible);
 			}
 		});
+	}
+
+	private class Selection {
+
+		private final User user;
+		private String color;
+
+		public Selection(final User user, final String selectionColor) {
+			this.user = user;
+			this.color = selectionColor;
+		}
+
+		public Selection(final User user) {
+			this.user = user;
+		}
+
+		public User getUser() {
+			return user;
+		}
+
+		public String getColor() {
+			return color;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((user == null) ? 0 : user.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(final Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final Selection other = (Selection) obj;
+			if (user == null) {
+				if (other.user != null) return false;
+			}
+			return user.equals(other.user);
+		}
+
+	}
+
+	public void addSelectedMember(final User member, final String selectionColor) {
+		selectionsList.add(new Selection(member, selectionColor));
+
+		updateSelection();
+
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				fadeAnimation.cancel();
+				fadeAnimationTimer.cancel();
+				selectedMembers.getElement().getStyle().setOpacity(1);
+				fadeAnimationTimer.schedule(5000);
+			}
+		});
+	}
+
+	public void removeSelectedMember(final User member) {
+		selectionsList.remove(new Selection(member));
+		updateSelection();
+	}
+
+	private void updateSelection() {
+		String selectionColor = "transparent";
+		String membersText = "";
+
+		if (!selectionsList.isEmpty()) {
+			selectionColor = selectionsList.get(0).getColor();
+			for (final Selection s : selectionsList) {
+				final String email = s.getUser().getEmail();
+				if (!membersText.contains(email)) membersText += email + ", ";
+			}
+			membersText = membersText.substring(0, membersText.length() - ", ".length());
+		}
+
+		borderPanel.getElement().getStyle().setBorderColor(selectionColor);
+		selectedMembers.getElement().getStyle().setBackgroundColor(selectionColor);
+		selectedMembers.setText(membersText);
 	}
 
 }

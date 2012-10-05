@@ -9,8 +9,6 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
@@ -27,6 +25,12 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.HasInstructions;
+import br.com.oncast.ontrack.client.ui.events.ScopeAddMemberSelectionEvent;
+import br.com.oncast.ontrack.client.ui.events.ScopeAddMemberSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEvent;
+import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -239,6 +243,34 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			}
 
 		}));
+		handlerRegistrations.add(eventBus.addHandler(ScopeAddMemberSelectionEvent.getType(), new ScopeAddMemberSelectionEventHandler() {
+			@Override
+			public void onMemberSelectedScope(final ScopeAddMemberSelectionEvent event) {
+				final Scope scope = event.getTargetScope();
+
+				try {
+					final ScopeTreeItem item = findScopeTreeItem(scope);
+					item.addSelectedMember(event.getMember(), event.getSelectionColor());
+				}
+				catch (final ScopeNotFoundException e) {
+					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
+				}
+			}
+		}));
+		handlerRegistrations.add(eventBus.addHandler(ScopeRemoveMemberSelectionEvent.getType(), new ScopeRemoveMemberSelectionEventHandler() {
+			@Override
+			public void clearSelection(final ScopeRemoveMemberSelectionEvent event) {
+				final Scope scope = event.getTargetScope();
+
+				try {
+					final ScopeTreeItem item = findScopeTreeItem(scope);
+					item.removeSelectedMember(event.getMember());
+				}
+				catch (final ScopeNotFoundException e) {
+					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
+				}
+			}
+		}));
 		handlerRegistrations.add(eventBus.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
 			@Override
 			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
@@ -326,13 +358,13 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		return (ScopeTreeItem) tree.getSelectedItem();
 	}
 
-	public void setSelectedItem(final ScopeTreeItem selected) {
-		tree.setSelectedItem(selected);
+	public void setSelectedItem(final ScopeTreeItem selected, final boolean fireEvents) {
+		tree.setSelectedItem(selected, fireEvents);
 	}
 
 	public void setFocus(final boolean focus) {
 		tree.setFocus(focus);
-		if (tree.getSelectedItem() == null && getItemCount() > 0) setSelectedItem(getItem(0));
+		if (tree.getSelectedItem() == null && getItemCount() > 0) setSelectedItem(getItem(0), true);
 	}
 
 	public ScopeTreeItem getItem(final int index) {

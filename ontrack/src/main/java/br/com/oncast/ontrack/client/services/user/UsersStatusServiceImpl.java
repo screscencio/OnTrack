@@ -26,6 +26,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.web.bindery.event.shared.EventBus;
 
 public class UsersStatusServiceImpl implements UsersStatusService {
 
@@ -36,13 +37,18 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	private final Set<UsersStatusChangeListener> listenersList;
 
 	public UsersStatusServiceImpl(final DispatchService requestDispatchService, final ContextProviderService contextProviderService,
-			final ServerPushClientService serverPushClientService) {
+			final ServerPushClientService serverPushClientService, final EventBus eventBus) {
 		this.requestDispatchService = requestDispatchService;
 		this.contextProviderService = contextProviderService;
+
 		listenersList = new HashSet<UsersStatusChangeListener>();
 
 		contextProviderService.addContextLoadListener(getContextChangeListener());
 
+		registerServerPushEventHandlers(contextProviderService, serverPushClientService);
+	}
+
+	private void registerServerPushEventHandlers(final ContextProviderService contextProviderService, final ServerPushClientService serverPushClientService) {
 		serverPushClientService.registerServerEventHandler(UserOpenProjectEvent.class, new ServerPushEventHandler<UserOpenProjectEvent>() {
 			@Override
 			public void onEvent(final UserOpenProjectEvent event) {

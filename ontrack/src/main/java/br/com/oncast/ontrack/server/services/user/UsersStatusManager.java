@@ -13,12 +13,14 @@ import br.com.oncast.ontrack.server.services.multicast.ClientManager.UserStatusC
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOfflineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOnlineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOpenProjectEvent;
+import br.com.oncast.ontrack.shared.services.user.UserSelectedScopeEvent;
 import br.com.oncast.ontrack.shared.services.user.UserStatusEvent;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -110,4 +112,8 @@ public class UsersStatusManager implements UserStatusChangeListener {
 		}
 	}
 
+	public void onUserSelectedScope(final String userEmail, final ServerPushConnection clientId, final UUID selectedScopeId) {
+		final UUID projectId = clientManager.getCurrentProject(clientId);
+		multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(new UserSelectedScopeEvent(userEmail, selectedScopeId), projectId);
+	}
 }

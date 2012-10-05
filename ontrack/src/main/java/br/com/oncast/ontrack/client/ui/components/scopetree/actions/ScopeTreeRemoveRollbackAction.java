@@ -19,7 +19,7 @@ public class ScopeTreeRemoveRollbackAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope referencedScope = context.findScope(action.getNewScopeId());
 		final Scope parentScope = referencedScope.getParent();
 
@@ -35,7 +35,7 @@ public class ScopeTreeRemoveRollbackAction implements ScopeTreeAction {
 
 		if (isUserInteraction) {
 			newTreeItem.setHierarchicalState(true);
-			tree.setSelectedItem(newTreeItem);
+			tree.setSelectedItem(newTreeItem, true);
 		}
 	}
 }

@@ -149,9 +149,29 @@
 				position: relative;
 			}
 			
+			.selectedMembers {
+				position: absolute;
+				top: -15px;
+				right: -3px;
+				font-size: 11px;
+				
+				padding: 0px 3px;
+			}
+			.borderPanel {
+				position: absolute;
+				top: -3px;
+				right: -3px;
+				left: -3px;
+				bottom: -9px;
+				border: 1px solid transparent;
+			}
+			
 		</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel" styleName="{style.editableLabel}">
+		<g:HTMLPanel>
+		<g:Label ui:field="selectedMembers" styleName="{style.selectedMembers}"/>
+		<g:FocusPanel ui:field="borderPanel" styleName="{style.borderPanel}"/>
 		<g:DeckPanel ui:field="deckPanel" styleName="{style.editableLabel}">
 			<g:FlowPanel styleName="{style.visualizationPanel}">
 				<g:HorizontalPanel width="100%" height="20px">
@@ -186,5 +206,6 @@
 			</g:FlowPanel>
 			<g:TextBox ui:field="editionBox" styleName="{style.textBoxDecoration} {style.editionBox}" />
 		</g:DeckPanel>
+		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder>

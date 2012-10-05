@@ -20,8 +20,6 @@ public class DeclareProgressInternalAction implements OneStepInternalAction {
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
-
-		tree.setSelectedItem(null);
 		selectedTreeItem.getScopeTreeItemWidget().showProgressMenu(context.getProgressDefinitions(scope));
 	}
 }

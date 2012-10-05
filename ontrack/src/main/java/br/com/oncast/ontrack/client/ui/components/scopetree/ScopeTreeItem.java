@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
@@ -183,5 +184,13 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	public void showOpenImpedimentIcon(final boolean hasOpenImpediments) {
 		scopeItemWidget.showOpenImpedimentIcon(hasOpenImpediments);
+	}
+
+	public void addSelectedMember(final User member, final String selectionColor) {
+		scopeItemWidget.addSelectedMember(member, selectionColor);
+	}
+
+	public void removeSelectedMember(final User member) {
+		scopeItemWidget.removeSelectedMember(member);
 	}
 }

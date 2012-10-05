@@ -24,7 +24,7 @@ public class NodeEditionInternalAction implements TwoStepInternalAction {
 
 	@Override
 	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
-		tree.setSelectedItem(selectedTreeItem);
+		tree.setSelectedItem(selectedTreeItem, false);
 	}
 
 	@Override

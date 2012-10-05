@@ -44,7 +44,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 				tree.setSelectedItem(((parentItem.getChildCount() > 0) ? parentItem.getChild((parentItem.getChildCount() - 1 < childIndex) ? parentItem
 						.getChildCount() - 1
 						: childIndex)
-						: parentItem));
+						: parentItem), true);
 			}
 		}
 		catch (final UnableToCompleteActionException e) {

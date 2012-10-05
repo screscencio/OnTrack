@@ -20,7 +20,6 @@ public class DeclareEffortInternalAction implements OneStepInternalAction {
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
-		tree.setSelectedItem(null);
 		selectedTreeItem.getScopeTreeItemWidget().showEffortMenu(projectContext.getFibonacciScaleForEffort());
 	}
 }

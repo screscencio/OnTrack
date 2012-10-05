@@ -8,8 +8,8 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEventHandler;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;

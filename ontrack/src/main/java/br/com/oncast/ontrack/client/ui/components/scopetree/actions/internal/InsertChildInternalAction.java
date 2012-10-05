@@ -30,14 +30,14 @@ public class InsertChildInternalAction implements TwoStepInternalAction {
 		selectedTreeItem.addItem(newTreeItem);
 		if (!selectedTreeItem.getState()) selectedTreeItem.setState(true, false);
 
-		tree.setSelectedItem(newTreeItem);
+		tree.setSelectedItem(newTreeItem, false);
 		newTreeItem.enterEditMode();
 	}
 
 	@Override
 	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		newTreeItem.remove();
-		tree.setSelectedItem(selectedTreeItem);
+		tree.setSelectedItem(selectedTreeItem, false);
 	}
 
 	@Override

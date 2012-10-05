@@ -73,6 +73,35 @@ public class ClientManagerTest {
 	}
 
 	@Test
+	public void shouldNotitfyBothUserOfflineAndUserCLosedProjectWhenTheUserLoggsOut() throws Exception {
+		final User user = UserTestUtils.createUser();
+
+		registerClients(client1);
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+		bindClients(project1, client1);
+
+		authenticationListener.onUserLoggedOut(user, client1.getSessionId());
+
+		verify(userStatusChangeListener).onUserOffline(user.getEmail());
+		verify(userStatusChangeListener).onUserCloseProject(project1, user.getEmail());
+
+	}
+
+	@Test
+	public void shouldNotifyBothUserOfflineAndUserCLosedProjectWhenTheLastRegisteredClientCloses() throws Exception {
+		final User user = UserTestUtils.createUser();
+
+		registerClients(client1);
+		authenticationListener.onUserLoggedIn(user, client1.getSessionId());
+		bindClients(project1, client1);
+
+		unregisterClients(client1);
+		verify(userStatusChangeListener).onUserOffline(user.getEmail());
+		verify(userStatusChangeListener).onUserCloseProject(project1, user.getEmail());
+
+	}
+
+	@Test
 	public void shouldNotifyUserOnlineWhenAUserLoggsIn() throws Exception {
 		final User user = UserTestUtils.createUser();
 

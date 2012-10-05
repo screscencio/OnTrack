@@ -10,8 +10,8 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWi
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;

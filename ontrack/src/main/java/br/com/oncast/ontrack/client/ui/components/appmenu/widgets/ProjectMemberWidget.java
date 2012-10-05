@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import java.util.HashMap;
-
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
@@ -26,8 +24,6 @@ public class ProjectMemberWidget extends Composite implements ModelWidget<User> 
 	interface ProjectMemberWidgetUiBinder extends UiBinder<Widget, ProjectMemberWidget> {}
 
 	interface ProjectMemberWidgetStyle extends CssResource {
-		String active();
-
 		String offline();
 
 		String online();
@@ -47,32 +43,21 @@ public class ProjectMemberWidget extends Composite implements ModelWidget<User> 
 
 	private User user;
 
-	private HashMap<UserStatus, String> statusMap;
-
 	public ProjectMemberWidget() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public ProjectMemberWidget(final User modelBean, final UserStatus status) {
-		this.user = modelBean;
+	public ProjectMemberWidget(final User user, final UserStatus status) {
+		this.user = user;
 		initWidget(uiBinder.createAndBindUi(this));
 
-		setupStatusMap();
+		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
+		final UserDataService userDataService = provider.getUserDataService();
 
-		container.setStyleName(statusMap.get(status));
-		update();
-	}
+		container.setStyleName(status == UserStatus.OFFLINE ? style.offline() : style.online());
 
-	private void setupStatusMap() {
-		statusMap = new HashMap<UserStatus, String>();
-		statusMap.put(UserStatus.OFFLINE, style.offline());
-		statusMap.put(UserStatus.ONLINE, style.online());
-		statusMap.put(UserStatus.ACTIVE, style.active());
-	}
-
-	@Override
-	public boolean update() {
-		final UserDataService userDataService = ClientServiceProvider.getInstance().getUserDataService();
+		if (status == UserStatus.ACTIVE) userIcon.getElement().getStyle()
+				.setBorderColor(provider.getMembersScopeSelectionService().getSelectionColor(user));
 		userIcon.setUrl(userDataService.getAvatarUrl(user.getEmail()));
 		userIcon.setTitle(user.getEmail());
 
@@ -88,7 +73,11 @@ public class ProjectMemberWidget extends Composite implements ModelWidget<User> 
 				userName.setText(profile.getDisplayName());
 			}
 		});
-		return true;
+	}
+
+	@Override
+	public boolean update() {
+		return false;
 	}
 
 	@Override

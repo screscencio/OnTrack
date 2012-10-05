@@ -19,7 +19,7 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 	}
 
 	@Override
-	public void execute(final ProjectContext context, ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
+	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ScopeNotFoundException {
 		final Scope scope = context.findScope(action.getReferenceId());
 		final Scope parentScope = scope.getParent();
 		final int index = parentScope.getChildIndex(scope);
@@ -34,7 +34,7 @@ class ScopeTreeMoveAction implements ScopeTreeAction {
 
 		if (isUserInteraction) {
 			treeItem.setHierarchicalState(true);
-			tree.setSelectedItem(treeItem);
+			tree.setSelectedItem(treeItem, true);
 		}
 
 		// TODO Is this necessary? The tree already receives a set of the modified scopes by the inference engines (effort, progress, ...).

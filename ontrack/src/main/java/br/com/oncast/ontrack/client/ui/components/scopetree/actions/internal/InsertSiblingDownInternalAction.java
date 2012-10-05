@@ -30,14 +30,14 @@ public class InsertSiblingDownInternalAction implements TwoStepInternalAction {
 		final ScopeTreeItem parentItem = treeItem.getParentItem();
 		parentItem.insertItem(parentItem.getChildIndex(treeItem) + 1, newTreeItem);
 
-		tree.setSelectedItem(newTreeItem);
+		tree.setSelectedItem(newTreeItem, false);
 		newTreeItem.enterEditMode();
 	}
 
 	@Override
 	public void rollback(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		newTreeItem.remove();
-		tree.setSelectedItem(treeItem);
+		tree.setSelectedItem(treeItem, false);
 	}
 
 	@Override

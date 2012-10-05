@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeSelectionEvent;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
