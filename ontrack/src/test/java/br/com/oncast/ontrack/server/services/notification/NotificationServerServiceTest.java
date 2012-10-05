@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
@@ -51,6 +52,10 @@ public class NotificationServerServiceTest {
 	public void registerNewNotificationShouldPersistAndMulticast() throws PersistenceException, UnableToCreateNotificationException {
 		final User user1 = createUser();
 		final User user2 = createUser();
+		final ArrayList<User> userList = new ArrayList<User>();
+		userList.add(user1);
+		userList.add(user2);
+		when(persistenceService.retrieveUsersByEmails(Mockito.any(List.class))).thenReturn(userList);
 		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1).addReceipient(user2)
 				.getNotification();
 
