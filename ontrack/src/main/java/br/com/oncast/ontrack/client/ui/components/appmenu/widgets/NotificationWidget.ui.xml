@@ -6,7 +6,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:style>
+	<ui:style  type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidget.NotificationWidgetStyle">
 			.rootPanel {
 				position: relative;
 				width: 100%;
@@ -21,7 +21,7 @@
 			}
 			
 			.container {
-				margin-bottom: 5px;
+				margin-bottom: 1px;
 			}
 			
 			.userName {
@@ -30,7 +30,7 @@
 			
 			.timestamp {
 				position: absolute;
-				right: 0;
+				right: 12px;
 				bottom: 8px;
 				
 				font-size: small;
@@ -46,6 +46,11 @@
 				width: 210px;
 				vertical-alignment: middle;
 			}
+			
+			.impediment {
+				border-right: solid 5px #f0542D;
+			}
+		
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">

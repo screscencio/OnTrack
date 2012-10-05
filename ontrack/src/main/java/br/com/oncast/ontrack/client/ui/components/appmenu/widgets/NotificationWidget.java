@@ -11,9 +11,11 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
@@ -27,6 +29,13 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	interface NotificationWidgetUiBinder extends UiBinder<Widget, NotificationWidget> {}
 
+	interface NotificationWidgetStyle extends CssResource {
+		String impediment();
+	}
+
+	@UiField
+	NotificationWidgetStyle style;
+
 	@UiField
 	protected InlineHTML projectName;
 
@@ -38,6 +47,9 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	@UiField
 	protected Label timestamp;
+
+	@UiField
+	HorizontalPanel container;
 
 	@UiField
 	Image userIcon;
@@ -67,6 +79,7 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 		projectName.setHTML(LinkFactory.getLinkForProject(project));
 		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));
 
+		container.setStyleName(style.impediment());
 		return true;
 	}
 
