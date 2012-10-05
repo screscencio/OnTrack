@@ -59,6 +59,15 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 			LOGGER.error(message, e);
 			throw new UnableToCreateNotificationException(message);
 		}
-		this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), notification.getRecipientsAsUsers());
+		final List<String> recipientsAsUserMails = notification.getRecipientsAsUserMails();
+		try {
+			final List<User> usersByEmails = persistenceService.retrieveUsersByEmails(recipientsAsUserMails);
+			this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), usersByEmails);
+		}
+		catch (final PersistenceException e) {
+			final String message = "Unable to multicast new notification: Unable to retrieve recipient list.";
+			LOGGER.error(message, e);
+			throw new UnableToCreateNotificationException(message);
+		}
 	}
 }

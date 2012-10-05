@@ -76,12 +76,11 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	}
 
 	private void fillUserInformation() {
-		final String userEmail = notification.getAuthor().getEmail();
+		final String userEmail = notification.getAuthorMail();
 
 		final UserDataService userDataService = ClientServiceProvider.getInstance().getUserDataService();
 		userIcon.setUrl(userDataService.getAvatarUrl(userEmail));
 		userIcon.setTitle(userEmail);
-
 		userName.setText(userEmail);
 
 		userDataService.loadProfile(userEmail, new LoadProfileCallback() {

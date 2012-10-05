@@ -184,6 +184,24 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> retrieveUsersByEmails(final List<String> recipientsAsUserMails) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT user FROM " + User.class.getSimpleName() + " AS user WHERE user.email IN (:emails)");
+			query.setParameter("emails", recipientsAsUserMails);
+
+			return query.getResultList();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("It was not possible to retrieve the requested users.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
 	@Override
 	public User retrieveUserById(final long id) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
@@ -540,7 +558,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final Query queryNotification = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName()
 					+ " n, IN (n.recipients) recipient WHERE recipient.user = :user ORDER BY n.timestamp DESC");
-			queryNotification.setParameter("user", user);
+			queryNotification.setParameter("user", user.getEmail());
 			queryNotification.setMaxResults(maxNotifications);
 			final List<NotificationEntity> resultList = queryNotification.getResultList();
 

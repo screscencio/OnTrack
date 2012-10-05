@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -20,7 +19,6 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 
@@ -44,9 +42,7 @@ public class NotificationEntity {
 	private List<NotificationRecipientEntity> recipients = new ArrayList<NotificationRecipientEntity>();
 
 	@ConversionAlias("author")
-	@OneToOne
-	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private User author;
+	private String author;
 
 	@ConversionAlias("project")
 	@ConvertUsing(StringToUuidConverter.class)
@@ -84,11 +80,11 @@ public class NotificationEntity {
 		this.timestamp = timestamp;
 	}
 
-	public User getAuthor() {
+	public String getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(final User author) {
+	public void setAuthor(final String author) {
 		this.author = author;
 	}
 

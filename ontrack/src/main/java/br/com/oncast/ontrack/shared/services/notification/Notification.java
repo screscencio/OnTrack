@@ -44,7 +44,7 @@ public class Notification implements Serializable {
 
 	@Element
 	@ConversionAlias("author")
-	private User author;
+	private String authorMail;
 
 	@Element
 	@ConversionAlias("project")
@@ -72,10 +72,10 @@ public class Notification implements Serializable {
 		return id;
 	}
 
-	public List<User> getRecipientsAsUsers() {
-		final List<User> users = new ArrayList<User>();
+	public List<String> getRecipientsAsUserMails() {
+		final List<String> users = new ArrayList<String>();
 		for (final NotificationRecipient recipient : recipients) {
-			users.add(recipient.getUser());
+			users.add(recipient.getUserMail());
 		}
 		return users;
 	}
@@ -125,12 +125,12 @@ public class Notification implements Serializable {
 		this.type = type;
 	}
 
-	public User getAuthor() {
-		return author;
+	public String getAuthorMail() {
+		return authorMail;
 	}
 
 	protected void setAuthor(final User author) {
-		this.author = author;
+		this.authorMail = author.getEmail();
 	}
 
 	public UUID getProjectReference() {

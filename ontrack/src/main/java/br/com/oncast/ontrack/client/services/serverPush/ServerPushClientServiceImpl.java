@@ -41,6 +41,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 			@Override
 			public void onError(final Throwable exception, final boolean connected) {
+				exception.printStackTrace();
 				alertingService.showErrorWithConfirmation(messages.noInternectConnection(), new AlertConfirmationListener() {
 					@Override
 					public void onConfirmation() {

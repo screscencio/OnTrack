@@ -21,13 +21,13 @@ public class NotificationRecipient implements Serializable {
 
 	@Element
 	@ConversionAlias("user")
-	private User user;
+	private String user;
 
 	protected NotificationRecipient() {}
 
 	public NotificationRecipient(final User receipient) {
 		id = new UUID();
-		user = receipient;
+		user = receipient.getEmail();
 	}
 
 	public UUID getId() {
@@ -38,11 +38,11 @@ public class NotificationRecipient implements Serializable {
 		this.id = id;
 	}
 
-	public User getUser() {
+	public String getUserMail() {
 		return user;
 	}
 
-	public void setUser(final User user) {
+	public void setUserMail(final String user) {
 		this.user = user;
 	}
 

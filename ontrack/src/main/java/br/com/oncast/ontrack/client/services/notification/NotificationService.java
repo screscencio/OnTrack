@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
-import br.com.oncast.ontrack.shared.services.notification.NewNotificationEventHandler;
+import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEventHandler;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
@@ -52,13 +52,13 @@ public class NotificationService {
 			}
 		});
 
-		serverPushClientService.registerServerEventHandler(NotificationCreatedEvent.class, new NewNotificationEventHandler() {
+		serverPushClientService.registerServerEventHandler(NotificationCreatedEvent.class, new NotificationCreatedEventHandler() {
 
 			@Override
 			public void onEvent(final NotificationCreatedEvent event) {
-				final Notification newProjectRepresentation = event.getNotification();
-				if (availableNotifications.contains(newProjectRepresentation)) return;
-				availableNotifications.add(0, newProjectRepresentation);
+				final Notification newNotification = event.getNotification();
+				if (availableNotifications.contains(newNotification)) return;
+				availableNotifications.add(0, newNotification);
 
 				notifyNotificationListContentChange();
 			}

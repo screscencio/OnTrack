@@ -74,4 +74,6 @@ public interface PersistenceService {
 
 	List<ProjectAuthorization> retrieveAllAuthorizationsForProject(ProjectRepresentation projectRepresentation) throws PersistenceException;
 
+	public List<User> retrieveUsersByEmails(List<String> recipientsAsUserMails) throws PersistenceException;
+
 }

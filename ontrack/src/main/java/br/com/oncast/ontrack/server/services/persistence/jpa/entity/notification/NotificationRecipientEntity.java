@@ -2,14 +2,11 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.notificatio
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.NotificationRecipient;
 
 @Entity
@@ -22,9 +19,7 @@ public class NotificationRecipientEntity {
 	private String id;
 
 	@ConversionAlias("user")
-	@OneToOne
-	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private User user;
+	private String user;
 
 	public NotificationRecipientEntity() {}
 
@@ -36,11 +31,11 @@ public class NotificationRecipientEntity {
 		this.id = id;
 	}
 
-	public User getUser() {
+	public String getUser() {
 		return user;
 	}
 
-	public void setUser(final User user) {
+	public void setUser(final String user) {
 		this.user = user;
 	}
 }

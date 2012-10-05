@@ -505,6 +505,23 @@ public class PersistenceServiceTest {
 		DeepEqualityTestUtils.assertObjectEquality(notification3, latestNotificationsForUser.get(1));
 	}
 
+	@Test
+	public void shouldRetrieveMultipleUsers() throws Exception {
+		final User user1 = createAndPersistUser();
+		final User user2 = createAndPersistUser();
+		final User user3 = createAndPersistUser();
+
+		final List<String> userMails = new ArrayList<String>();
+		userMails.add(user1.getEmail());
+		userMails.add(user3.getEmail());
+
+		final List<User> usersByEmails = persistenceService.retrieveUsersByEmails(userMails);
+
+		assertEquals(2, usersByEmails.size());
+		DeepEqualityTestUtils.assertObjectEquality(user1, usersByEmails.get(0));
+		DeepEqualityTestUtils.assertObjectEquality(user3, usersByEmails.get(1));
+	}
+
 	private User createAndPersistUser() throws Exception {
 		return persistenceService.persistOrUpdateUser(UserTestUtils.createUser());
 	}
