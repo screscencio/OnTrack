@@ -12,7 +12,7 @@
 	<ui:style src="../../../style/default.css">
 
         .rootPanel {
-			width: 245px;
+			width: 285px;
         }
         
         .container {
