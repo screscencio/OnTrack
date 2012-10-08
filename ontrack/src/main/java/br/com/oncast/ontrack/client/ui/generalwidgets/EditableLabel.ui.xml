@@ -1,5 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+			xmlns:g="urn:import:com.google.gwt.user.client.ui"
+			ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+			ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+			ui:generateLocales="default">
+			
 	<ui:style src="../style/default.css" >
 	
 		.editableLabel {
@@ -21,7 +26,9 @@
 	</ui:style>
 
 		<g:DeckPanel ui:field="deckPanel" addStyleNames="{style.editableLabel}">
-			<g:Label ui:field="visualizationLabel" addStyleNames="{style.container} v-ellip" title="Double click to edit"/>
+			<g:Label ui:field="visualizationLabel" addStyleNames="{style.container} v-ellip" title="Double click to edit" >
+				<ui:attribute name='title' description='tooltip double click to edit'/>
+			</g:Label>
 			<g:TextBox ui:field="editionBox" addStyleNames="{style.textBoxDecoration} {style.container} {style.editionBox}" />
 		</g:DeckPanel>
 	
