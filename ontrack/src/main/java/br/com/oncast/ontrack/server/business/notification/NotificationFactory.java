@@ -2,16 +2,22 @@ package br.com.oncast.ontrack.server.business.notification;
 
 import java.util.List;
 
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
+import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
@@ -24,22 +30,45 @@ public class NotificationFactory {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation,
 					final User author) {
-				final NotificationBuilder notificationBuilder = new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, projectRepresentation, author);
-				notificationBuilder.setReferenceId(action.getReferenceId());
 
-				return notificationBuilder;
+				return initializeBuilder(action, projectRepresentation, author, NotificationType.IMPEDIMENT_CREATED);
 			}
 		},
 		IMPEDIMENT_COMPLETITION(ImpedimentSolveAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation,
 					final User author) {
-				final NotificationBuilder notificationBuilder = new NotificationBuilder(NotificationType.IMPEDIMENT_SOLVED, projectRepresentation, author);
-				notificationBuilder.setReferenceId(action.getReferenceId());
 
-				return notificationBuilder;
+				return initializeBuilder(action, projectRepresentation, author, NotificationType.IMPEDIMENT_SOLVED);
 			}
+		},
+		PROGRESS_DECLARED(ScopeDeclareProgressAction.class) {
+			@Override
+			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation,
+					final User author) {
+
+				return initializeBuilder(action, projectRepresentation, author, NotificationType.PROGRESS_DECLARED).setDescription(
+						getScopeDescriptionFor(action, projectRepresentation));
+			}
+
 		};
+
+		private static NotificationBuilder initializeBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation,
+				final User author, final NotificationType type) {
+
+			return new NotificationBuilder(type, projectRepresentation, author).setReferenceId(action.getReferenceId());
+		}
+
+		private static String getScopeDescriptionFor(final ModelAction action, final ProjectRepresentation projectRepresentation) {
+			try {
+				final Project project = ServerServiceProvider.getInstance().getBusinessLogic().loadProject(projectRepresentation.getId());
+
+				return new ProjectContext(project).findScope(action.getReferenceId()).getDescription();
+			}
+			catch (ProjectNotFoundException | ScopeNotFoundException | UnableToLoadProjectException e) {
+				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e);
+			}
+		}
 
 		private final Class<? extends ModelAction> clazz;
 

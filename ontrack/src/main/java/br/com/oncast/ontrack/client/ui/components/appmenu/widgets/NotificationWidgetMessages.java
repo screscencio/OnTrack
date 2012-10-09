@@ -12,12 +12,16 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("Notifications will arise when relevant events happen")
 	String noNotificationsHelpMessage();
 
-	@Description("impediment")
-	@DefaultMessage("Impediment")
-	String impedimentNotificationMessage();
+	@Description("impediment created")
+	@DefaultMessage("Impediment created")
+	String impedimentCreatedNotificationMessage();
 
 	@Description("impediment solved")
 	@DefaultMessage("Impediment solved")
 	String impedimentSolvedNotificationMessage();
+
+	@Description("progress declared")
+	@DefaultMessage("Progress declared")
+	String progressDeclaredNotificationMessage();
 
 }

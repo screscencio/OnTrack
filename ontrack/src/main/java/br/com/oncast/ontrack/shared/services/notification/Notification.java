@@ -28,13 +28,19 @@ public class Notification implements Serializable {
 		IMPEDIMENT_CREATED() {
 			@Override
 			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
-				return messages.impedimentNotificationMessage();
+				return messages.impedimentCreatedNotificationMessage();
 			}
 		},
 		IMPEDIMENT_SOLVED() {
 			@Override
 			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
 				return messages.impedimentSolvedNotificationMessage();
+			}
+		},
+		PROGRESS_DECLARED() {
+			@Override
+			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
+				return messages.progressDeclaredNotificationMessage();
 			}
 		};
 

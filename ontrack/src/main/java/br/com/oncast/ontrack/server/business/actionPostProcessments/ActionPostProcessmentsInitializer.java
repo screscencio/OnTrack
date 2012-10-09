@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 
 public class ActionPostProcessmentsInitializer {
@@ -33,7 +34,7 @@ public class ActionPostProcessmentsInitializer {
 		postProcessingService.registerPostProcessor(createFileUploadPostProcessor(), FileUploadAction.class);
 		postProcessingService.registerPostProcessor(createTeamInvitePostProcessor(), TeamInviteAction.class);
 		postProcessingService.registerPostProcessor(createImpedimentNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
-				ImpedimentSolveAction.class);
+				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class);
 		initialized = true;
 	}
 
