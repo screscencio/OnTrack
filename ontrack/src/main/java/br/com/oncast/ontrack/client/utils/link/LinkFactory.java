@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.utils.link;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -10,22 +11,35 @@ import com.google.gwt.user.client.Window;
 public class LinkFactory {
 
 	private static final String START_A_TAG = "<a href=\"";
-	private static final String END_A_TAG = "\" target=\"_blank\" >";
+	private static final String CLOSE_HREF = "\"";
+	private static final String END_A_TAG = ">";
+	private static final String NEW_TAB_LINK = " target=\"_blank\"";
 	private static final String CLOSE_A_TAG = "</a>";
 
 	private static final String PROJECT_URL_CONSTANT = "#Planning:";
 	private static final String ANNOTATION_URL_CONSTANT = "#Detail:";
 
 	public static SafeHtml getLinkForProject(final ProjectRepresentation project) {
-		final String projectLink = START_A_TAG + getProjectHrefLink(project.getId()) + END_A_TAG + project.getName() + CLOSE_A_TAG;
+		final String projectLink = START_A_TAG + getProjectHrefLink(project.getId()) + CLOSE_HREF + NEW_TAB_LINK + END_A_TAG + project.getName() + CLOSE_A_TAG;
 
 		return getSafeHTMLFor(projectLink);
 	}
 
 	public static SafeHtml getLinkForAnnotation(final UUID projectId, final UUID referencedId, final String text) {
-		final String annotationLink = START_A_TAG + getAnnotationHrefLink(projectId, referencedId) + END_A_TAG + text + CLOSE_A_TAG;
+		final ProjectRepresentation currentProject = ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent();
+		final StringBuilder builder = new StringBuilder();
 
-		return getSafeHTMLFor(annotationLink);
+		builder.append(START_A_TAG);
+		builder.append(getAnnotationHrefLink(projectId, referencedId));
+		builder.append(CLOSE_HREF);
+
+		if (!currentProject.getId().equals(projectId)) builder.append(NEW_TAB_LINK);
+
+		builder.append(END_A_TAG);
+		builder.append(text);
+		builder.append(CLOSE_A_TAG);
+
+		return getSafeHTMLFor(builder.toString());
 	}
 
 	private static String getBaseURL() {
