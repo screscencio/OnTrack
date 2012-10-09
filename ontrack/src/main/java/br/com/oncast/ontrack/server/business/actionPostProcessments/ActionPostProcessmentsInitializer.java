@@ -38,7 +38,7 @@ public class ActionPostProcessmentsInitializer {
 	}
 
 	private ActionPostProcessor<ModelAction> createImpedimentNotificationCreationPostProcessor() {
-		return new ImpedimentNotificationCreationPostProcessor(notificationServerService, persistenceService);
+		return new NotificationCreationPostProcessor(notificationServerService, persistenceService);
 	}
 
 	private ActionPostProcessor<TeamInviteAction> createTeamInvitePostProcessor() {

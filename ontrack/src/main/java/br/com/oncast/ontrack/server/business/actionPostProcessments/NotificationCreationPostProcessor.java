@@ -12,12 +12,12 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
-public class ImpedimentNotificationCreationPostProcessor implements ActionPostProcessor<ModelAction> {
+public class NotificationCreationPostProcessor implements ActionPostProcessor<ModelAction> {
 
 	private final NotificationServerService notificationServerService;
 	private final NotificationFactory notificationFactory;
 
-	public ImpedimentNotificationCreationPostProcessor(final NotificationServerService notificationServerService, final PersistenceService persistenceService) {
+	public NotificationCreationPostProcessor(final NotificationServerService notificationServerService, final PersistenceService persistenceService) {
 		this.notificationServerService = notificationServerService;
 		this.notificationFactory = new NotificationFactory(persistenceService);
 	}
