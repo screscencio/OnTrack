@@ -10,14 +10,16 @@ import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
@@ -47,10 +49,16 @@ public class NotificationFactory {
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation,
 					final User author) {
 
-				return initializeBuilder(action, projectRepresentation, author, NotificationType.PROGRESS_DECLARED).setDescription(
-						getScopeDescriptionFor(action, projectRepresentation));
+				return initializeBuilder(action, projectRepresentation, author, NotificationType.PROGRESS_DECLARED);
 			}
+		},
+		ANNOTATION_CREATED(AnnotationCreateAction.class) {
+			@Override
+			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation,
+					final User author) {
 
+				return initializeBuilder(action, projectRepresentation, author, NotificationType.ANNOTATION_CREATED);
+			}
 		};
 
 		private static NotificationBuilder initializeBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation,
@@ -61,17 +69,18 @@ public class NotificationFactory {
 
 		private static String getScopeDescriptionFor(final ModelAction action, final ProjectRepresentation projectRepresentation) {
 			try {
+
 				final Project project = ServerServiceProvider.getInstance().getBusinessLogic().loadProject(projectRepresentation.getId());
 
-				return new ProjectContext(project).findScope(action.getReferenceId()).getDescription();
+				return ActionHelper.findScope(action.getReferenceId(), new ProjectContext(project)).getDescription();
 			}
 			catch (final ProjectNotFoundException e1) {
 				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e1);
 			}
-			catch (final ScopeNotFoundException e2) {
+			catch (final UnableToLoadProjectException e2) {
 				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e2);
 			}
-			catch (final UnableToLoadProjectException e3) {
+			catch (final UnableToCompleteActionException e3) {
 				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e3);
 			}
 		}

@@ -24,4 +24,8 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("Progress declared")
 	String progressDeclaredNotificationMessage();
 
+	@Description("annotation created notification")
+	@DefaultMessage("Annotation created")
+	String annotationCreatedNotificationMessage();
+
 }

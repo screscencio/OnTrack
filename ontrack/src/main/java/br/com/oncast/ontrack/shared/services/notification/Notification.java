@@ -42,6 +42,12 @@ public class Notification implements Serializable {
 			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
 				return messages.progressDeclaredNotificationMessage();
 			}
+		},
+		ANNOTATION_CREATED() {
+			@Override
+			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
+				return messages.annotationCreatedNotificationMessage();
+			}
 		};
 
 		@Override

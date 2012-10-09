@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProc
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.notification.NotificationServerService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
@@ -34,7 +35,7 @@ public class ActionPostProcessmentsInitializer {
 		postProcessingService.registerPostProcessor(createFileUploadPostProcessor(), FileUploadAction.class);
 		postProcessingService.registerPostProcessor(createTeamInvitePostProcessor(), TeamInviteAction.class);
 		postProcessingService.registerPostProcessor(createNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
-				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class);
+				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class, AnnotationCreateAction.class);
 		initialized = true;
 	}
 
