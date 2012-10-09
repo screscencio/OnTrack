@@ -6,7 +6,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:style  type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidget.NotificationWidgetStyle">
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidget.NotificationWidgetStyle">
 			.rootPanel {
 				position: relative;
 				width: 100%;
@@ -48,9 +48,17 @@
 			}
 			
 			.impediment {
-				border-right: solid 5px #f0542D;
+				border-right: OPEN_IMPEDIMENT_BORDER;
 			}
-		
+
+			.impedimentSolved {
+				border-right: SOLVED_IMPEDIMENT_BORDER;
+			}
+
+			.normal {
+				border-right: NO_IMPEDIMENT_BORDER;
+			}
+
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
@@ -64,7 +72,7 @@
 					</g:Label>
 					<g:InlineHTML ui:field="projectName" styleName="{style.inline}" />
 					<g:Label  styleName="{style.inline}">
-						<ui:msg description="notification member created by message"> created by </ui:msg>
+						<ui:msg description="notification member created by message"> by </ui:msg>
 					</g:Label>
 					<g:Label ui:field="userName"  styleName="{style.inline}"/>
 					<g:Label ui:field="timestamp"  styleName="{style.timestamp}"/>

@@ -31,6 +31,10 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	interface NotificationWidgetStyle extends CssResource {
 		String impediment();
+
+		String impedimentSolved();
+
+		String normal();
 	}
 
 	@UiField
@@ -79,7 +83,17 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 		projectName.setHTML(LinkFactory.getLinkForProject(project));
 		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));
 
-		container.setStyleName(style.impediment());
+		switch (notification.getType()) {
+			case IMPEDIMENT_CREATED:
+				container.setStyleName(style.impediment());
+				break;
+			case IMPEDIMENT_SOLVED:
+				container.setStyleName(style.impedimentSolved());
+				break;
+			default:
+				container.setStyleName(style.normal());
+				break;
+		}
 		return true;
 	}
 

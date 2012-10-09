@@ -60,18 +60,16 @@
 		}
 		
 		.simple, .openImpediment, .solvedImpediment {
-			border-left: 5px solid transparent;
+			border-left: NO_IMPEDIMENT_BORDER;
 			padding: 3px 0px 3px 5px;
 		}
 		
-		@def OPEN_IMPEDIMENT_COLOR #f0542d;
 		.openImpediment {
-			border-left-color: OPEN_IMPEDIMENT_COLOR;
+			border-left: OPEN_IMPEDIMENT_BORDER;
 		}
 		
-		@def SOLVED_IMPEDIMENT_COLOR #44ad85;
 		.solvedImpediment {
-			border-left-color: SOLVED_IMPEDIMENT_COLOR;
+			border-left: SOLVED_IMPEDIMENT_BORDER;
 		}
 		
 	</ui:style>

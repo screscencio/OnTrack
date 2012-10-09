@@ -33,12 +33,12 @@ public class ActionPostProcessmentsInitializer {
 		if (initialized) return;
 		postProcessingService.registerPostProcessor(createFileUploadPostProcessor(), FileUploadAction.class);
 		postProcessingService.registerPostProcessor(createTeamInvitePostProcessor(), TeamInviteAction.class);
-		postProcessingService.registerPostProcessor(createImpedimentNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
+		postProcessingService.registerPostProcessor(createNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
 				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class);
 		initialized = true;
 	}
 
-	private ActionPostProcessor<ModelAction> createImpedimentNotificationCreationPostProcessor() {
+	private ActionPostProcessor<ModelAction> createNotificationCreationPostProcessor() {
 		return new NotificationCreationPostProcessor(notificationServerService, persistenceService);
 	}
 
