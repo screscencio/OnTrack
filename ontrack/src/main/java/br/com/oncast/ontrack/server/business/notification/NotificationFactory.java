@@ -65,8 +65,14 @@ public class NotificationFactory {
 
 				return new ProjectContext(project).findScope(action.getReferenceId()).getDescription();
 			}
-			catch (ProjectNotFoundException | ScopeNotFoundException | UnableToLoadProjectException e) {
-				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e);
+			catch (final ProjectNotFoundException e1) {
+				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e1);
+			}
+			catch (final ScopeNotFoundException e2) {
+				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e2);
+			}
+			catch (final UnableToLoadProjectException e3) {
+				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e3);
 			}
 		}
 
