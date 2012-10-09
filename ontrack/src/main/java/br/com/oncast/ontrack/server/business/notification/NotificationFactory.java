@@ -15,11 +15,10 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
-import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
@@ -72,7 +71,7 @@ public class NotificationFactory {
 
 				final Project project = ServerServiceProvider.getInstance().getBusinessLogic().loadProject(projectRepresentation.getId());
 
-				return ActionHelper.findScope(action.getReferenceId(), new ProjectContext(project)).getDescription();
+				return new ProjectContext(project).findScope(action.getReferenceId()).getDescription();
 			}
 			catch (final ProjectNotFoundException e1) {
 				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e1);
@@ -80,7 +79,7 @@ public class NotificationFactory {
 			catch (final UnableToLoadProjectException e2) {
 				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e2);
 			}
-			catch (final UnableToCompleteActionException e3) {
+			catch (final ScopeNotFoundException e3) {
 				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e3);
 			}
 		}
