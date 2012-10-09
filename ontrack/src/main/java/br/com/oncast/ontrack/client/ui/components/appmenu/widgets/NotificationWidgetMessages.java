@@ -16,4 +16,8 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("Impediment")
 	String impedimentNotificationMessage();
 
+	@Description("impediment solved")
+	@DefaultMessage("Impediment solved")
+	String impedimentSolvedNotificationMessage();
+
 }

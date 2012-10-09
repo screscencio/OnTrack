@@ -79,7 +79,7 @@ public class NotificationServerServiceTest {
 	}
 
 	private NotificationBuilder getBuilder() {
-		return new NotificationBuilder(NotificationType.IMPEDIMENT, ProjectTestUtils.createRepresentation(new UUID("")), UserTestUtils.createUser(1));
+		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, ProjectTestUtils.createRepresentation(new UUID("")), UserTestUtils.createUser(1));
 	}
 
 	@Test

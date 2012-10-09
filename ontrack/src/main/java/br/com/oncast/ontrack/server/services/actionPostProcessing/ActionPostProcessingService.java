@@ -31,6 +31,8 @@ public class ActionPostProcessingService {
 	}
 
 	public <T extends ModelAction> void registerPostProcessor(final ActionPostProcessor<T> postProcessor, final Class<? extends T> clazz) {
+		if (clazz.isInterface()) throw new RuntimeException("Not possible to register post processor for '" + clazz.getSimpleName()
+				+ "': ActionPostProcessingService does not accept interfaces yet.");
 		if (!postProcessorsMap.containsKey(clazz)) postProcessorsMap.put(clazz, new ArrayList<ActionPostProcessor<?>>());
 
 		final List<ActionPostProcessor<?>> postProcessorList = postProcessorsMap.get(clazz);

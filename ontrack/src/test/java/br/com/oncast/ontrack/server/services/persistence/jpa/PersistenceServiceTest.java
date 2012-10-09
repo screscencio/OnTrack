@@ -412,7 +412,7 @@ public class PersistenceServiceTest {
 		persistenceService.persistOrUpdateProjectRepresentation(project);
 
 		if (author == null) author = createAndPersistUser();
-		return new NotificationBuilder(NotificationType.IMPEDIMENT, project, author)
+		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, project, author)
 				.setDescription(desc);
 	}
 

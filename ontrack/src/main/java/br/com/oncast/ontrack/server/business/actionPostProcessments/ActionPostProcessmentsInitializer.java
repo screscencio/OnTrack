@@ -7,6 +7,8 @@ import br.com.oncast.ontrack.server.services.notification.NotificationServerServ
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
+import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 
 public class ActionPostProcessmentsInitializer {
@@ -25,15 +27,17 @@ public class ActionPostProcessmentsInitializer {
 		this.notificationServerService = notificationServerService;
 	}
 
+	@SuppressWarnings("unchecked")
 	public synchronized void initialize() {
 		if (initialized) return;
 		postProcessingService.registerPostProcessor(createFileUploadPostProcessor(), FileUploadAction.class);
 		postProcessingService.registerPostProcessor(createTeamInvitePostProcessor(), TeamInviteAction.class);
-		postProcessingService.registerPostProcessor(createImpedimentNotificationCreationPostProcessor(), ImpedimentCreateAction.class);
+		postProcessingService.registerPostProcessor(createImpedimentNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
+				ImpedimentSolveAction.class);
 		initialized = true;
 	}
 
-	private ActionPostProcessor<ImpedimentCreateAction> createImpedimentNotificationCreationPostProcessor() {
+	private ActionPostProcessor<ModelAction> createImpedimentNotificationCreationPostProcessor() {
 		return new ImpedimentNotificationCreationPostProcessor(notificationServerService, persistenceService);
 	}
 

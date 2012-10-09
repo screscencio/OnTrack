@@ -25,12 +25,21 @@ import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 public class Notification implements Serializable {
 
 	public enum NotificationType implements BaseMessageCode<NotificationWidgetMessages> {
-		IMPEDIMENT() {
+		IMPEDIMENT_CREATED() {
 			@Override
 			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
 				return messages.impedimentNotificationMessage();
 			}
-		}
+		},
+		IMPEDIMENT_SOLVED() {
+			@Override
+			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
+				return messages.impedimentSolvedNotificationMessage();
+			}
+		};
+
+		@Override
+		public abstract String selectMessage(final NotificationWidgetMessages messages, final String... args);
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -68,7 +77,7 @@ public class Notification implements Serializable {
 	@Attribute
 	@ConversionAlias("type")
 	@ConvertUsing(NotificationTypeConveter.class)
-	private NotificationType type = NotificationType.IMPEDIMENT;
+	private NotificationType type = NotificationType.IMPEDIMENT_CREATED;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected Notification() {
