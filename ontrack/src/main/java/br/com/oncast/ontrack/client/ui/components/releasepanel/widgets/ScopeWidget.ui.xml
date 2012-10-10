@@ -65,6 +65,7 @@
 		.progressIcon {
 			margin-right: 10px;
 			margin-top: 4px;
+			cursor: pointer;
 		}
 		
 		@sprite .progressIconDone {
@@ -103,7 +104,7 @@
 				<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 	   		</g:cell>
 	   		<g:cell width="1">
-	   			<g:SimplePanel ui:field="progressIcon" styleName="{style.progressIconNotStarted} {style.progressIcon}"/>
+	   			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIconNotStarted} {style.progressIcon}"/>
 	   		</g:cell>
 	   		<g:FocusPanel ui:field="statusBar" styleName="{style.statusBar}"/>
 		</g:HorizontalPanel>

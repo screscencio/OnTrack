@@ -1,26 +1,46 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
 import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.CommandMenuMessages;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeWidget extends Composite implements ModelWidget<Scope> {
+
+	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
 
 	private static ScopeWidgetUiBinder uiBinder = GWT.create(ScopeWidgetUiBinder.class);
 
@@ -52,7 +72,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	FocusPanel draggableAnchor;
 
 	@UiField
-	SimplePanel progressIcon;
+	FocusPanel progressIcon;
 
 	@UiField
 	FocusPanel statusBar;
@@ -144,8 +164,81 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		return draggableAnchor;
 	}
 
+	@UiHandler("progressIcon")
+	public void onProgressIconClick(final ClickEvent e) {
+		fireScopeSelectionEvent(); // Showing the item that will be changed.
+		e.stopPropagation();
+		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+		final ProjectContext context = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
+
+		final String notStartedDescription = ProgressState.NOT_STARTED.getDescription();
+		items.add(createItem("Not Started", notStartedDescription));
+		for (final String progressDefinition : context.getProgressDefinitions(scope))
+			if (!notStartedDescription.equals(progressDefinition)) items.add(createItem(progressDefinition,
+					progressDefinition));
+
+		final FiltrableCommandMenu commandsMenu = new FiltrableCommandMenu(getProgressCommandMenuItemFactory(), 200, 264);
+		commandsMenu.setOrderedItems(items);
+		// Scheduled because of selection event steels focus if not
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				PopupConfig.configPopup()
+						.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.RIGHT))
+						.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.BOTTOM))
+						.popup(commandsMenu)
+						.onClose(new PopupCloseListener() {
+							@Override
+							public void onHasClosed() {
+								fireScopeSelectionEvent(); // Return focus to scopeTree;
+							}
+						})
+						.pop();
+			}
+		});
+	}
+
+	public SimpleCommandMenuItem createItem(final String itemText, final String progressToDeclare) {
+		return new SimpleCommandMenuItem(itemText, progressToDeclare, new Command() {
+
+			@Override
+			public void execute() {
+				declareProgress(progressToDeclare);
+			}
+		});
+	}
+
+	private void declareProgress(final String progressDescription) {
+		ClientServiceProvider.getInstance().getActionExecutionService()
+				.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), progressDescription));
+	}
+
+	private CustomCommandMenuItemFactory getProgressCommandMenuItemFactory() {
+		return new CustomCommandMenuItemFactory() {
+
+			@Override
+			public String getNoItemText() {
+				return null;
+			}
+
+			@Override
+			public CommandMenuItem createCustomItem(final String inputText) {
+				return new SimpleCommandMenuItem(messages.markAs(inputText), inputText, new Command() {
+					@Override
+					public void execute() {
+						declareProgress(inputText);
+					}
+				});
+			}
+		};
+	}
+
 	@UiHandler("panel")
 	public void onScopeWidgetClick(final ClickEvent e) {
+		fireScopeSelectionEvent();
+	}
+
+	private void fireScopeSelectionEvent() {
 		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 	}
 
