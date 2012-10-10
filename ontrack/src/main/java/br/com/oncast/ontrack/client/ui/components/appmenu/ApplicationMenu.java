@@ -12,14 +12,15 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -58,17 +59,38 @@ public class ApplicationMenu extends Composite {
 	protected Image backButton;
 
 	public ApplicationMenu() {
+		this(true);
+	}
+
+	public ApplicationMenu(final boolean enableProjectDependantMenus) {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		hideBackButton();
 
-		createProjectMenu();
+		if (enableProjectDependantMenus) createProjectMenu();
+		projectMenuItem.setVisible(enableProjectDependantMenus);
 
 		createNotificationMenu();
 
-		createMemberMenu();
+		if (enableProjectDependantMenus) createMemberMenu();
+		memberMenuItem.setVisible(enableProjectDependantMenus);
 
 		createUserMenu();
+
+		backButton.addClickHandler(enableProjectDependantMenus ? new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				final UUID projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
+				SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
+			}
+		} : new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace(), true);
+			}
+		});
+
+		backButton.setTitle(enableProjectDependantMenus ? messages.backToProject() : messages.backToProjectSelection());
 	}
 
 	private void hideBackButton() {
@@ -77,12 +99,6 @@ public class ApplicationMenu extends Composite {
 
 	public void setBackButtonVisibility(final boolean shouldBeVisible) {
 		backButton.setVisible(shouldBeVisible);
-	}
-
-	@UiHandler("backButton")
-	protected void onBackButtonClick(final ClickEvent event) {
-		final UUID projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
-		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -167,4 +183,5 @@ public class ApplicationMenu extends Composite {
 			}
 		});
 	}
+
 }

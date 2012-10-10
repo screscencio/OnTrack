@@ -28,4 +28,8 @@ public interface ProjectSelectionWidgetMessages extends BaseMessages {
 	@DefaultMessage("Project quota request was sent!")
 	String projectQuotaRequestSent();
 
+	@Description("project selection item that redirects to OrganizationPlace")
+	@DefaultMessage("See all projects summary")
+	String allProjectsSummary();
+
 }

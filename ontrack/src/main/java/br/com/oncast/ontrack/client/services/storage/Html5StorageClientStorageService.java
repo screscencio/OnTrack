@@ -95,6 +95,16 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		return modifiedReleases;
 	}
 
+	@Override
+	public void storeDefaultPlaceToken(final String placeToken) {
+		setItem(ClientStorageColumnNames.DEFAULT_PLACE, placeToken);
+	}
+
+	@Override
+	public String loadDefaultPlaceToken() {
+		return getItem(ClientStorageColumnNames.DEFAULT_PLACE);
+	}
+
 	private List<String> getList(final String key) {
 		if (!resultsListCache.containsKey(key)) {
 			String item = getItem(key);
@@ -127,6 +137,20 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		storage.setItem(getCurrentUserProjectStorageKey(key), value);
 	}
 
+	@SuppressWarnings("unused")
+	private String getUserSpecificItem(final String key) {
+		if (storage == null) return null;
+
+		return storage.getItem(getCurrentUserStorageKey(key));
+	}
+
+	@SuppressWarnings("unused")
+	private void setUserSpecificItem(final String key, final String value) {
+		if (storage == null) return;
+
+		storage.setItem(getCurrentUserStorageKey(key), value);
+	}
+
 	private String getItem(final String key) {
 		if (storage == null) return null;
 
@@ -141,6 +165,11 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	private String getApplicationKey(final String key) {
 		return PREFIX + key;
+	}
+
+	private String getCurrentUserStorageKey(final String key) {
+		if (!authenticationService.isUserAvailable()) throw new RuntimeException("There is no user available for user dependant storage operation");
+		return getApplicationKey(authenticationService.getCurrentUser().getEmail() + SEPARATOR + key);
 	}
 
 	private String getCurrentUserProjectStorageKey(final String key) {

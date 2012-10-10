@@ -21,10 +21,15 @@ public class ApplicationMenuAndWidgetContainer extends Composite implements HasW
 	@UiField
 	protected FlowPanel widgetContainer;
 
-	@UiField
+	@UiField(provided = true)
 	protected ApplicationMenu applicationMenu;
 
 	public ApplicationMenuAndWidgetContainer() {
+		this(true);
+	}
+
+	public ApplicationMenuAndWidgetContainer(final boolean enableProjectDependantMenus) {
+		this.applicationMenu = new ApplicationMenu(enableProjectDependantMenus);
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 

@@ -113,7 +113,7 @@ public class ClientServiceProvider {
 		getAuthorizationService().registerAuthorizationExceptionGlobalHandler();
 		getActionSyncService();
 		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
-				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class));
+				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), getClientStorageService());
 		getMembersScopeSelectionService();
 	}
 

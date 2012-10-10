@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.client.services.places;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
+
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
@@ -19,6 +21,8 @@ public class ApplicationPlaceController {
 	private final EventBus eventBus;
 	private boolean configured;
 	private final Set<PlaceChangeListener> placeChangeListeners;
+	private PlaceHistoryMapper placeHistoryMapper;
+	private ClientStorageService clientStorageService;
 
 	public ApplicationPlaceController(final EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -27,12 +31,19 @@ public class ApplicationPlaceController {
 	}
 
 	public void goTo(final Place place) {
+		goTo(place, false);
+	}
+
+	public void goTo(final Place place, final boolean saveAsDefaultPlace) {
+		clientStorageService.storeDefaultPlaceToken(placeHistoryMapper.getToken(place));
 		placeController.goTo(place);
 	}
 
 	public void configure(final AcceptsOneWidget container, final Place defaultAppPlace, final ActivityMapper activityMapper,
-			final PlaceHistoryMapper placeHistoryMapper) {
+			final PlaceHistoryMapper placeHistoryMapper, final ClientStorageService clientStorageService) {
 
+		this.placeHistoryMapper = placeHistoryMapper;
+		this.clientStorageService = clientStorageService;
 		if (configured) throw new RuntimeException("The placeController is already configured.");
 		configured = true;
 
@@ -40,7 +51,9 @@ public class ApplicationPlaceController {
 		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper);
 
 		activityManager.setDisplay(container);
-		historyHandler.register(placeController, eventBus, defaultAppPlace);
+		final String defaultPlaceToken = clientStorageService.loadDefaultPlaceToken();
+		final Place place = defaultPlaceToken == null ? defaultAppPlace : placeHistoryMapper.getPlace(defaultPlaceToken);
+		historyHandler.register(placeController, eventBus, place);
 		historyHandler.handleCurrentHistory();
 
 		eventBus.addHandler(PlaceChangeRequestEvent.TYPE, new PlaceChangeRequestEvent.Handler() {

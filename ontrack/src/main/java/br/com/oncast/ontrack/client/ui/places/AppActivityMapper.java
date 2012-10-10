@@ -8,6 +8,8 @@ import br.com.oncast.ontrack.client.ui.places.loading.ServerPushLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.loading.UserInformationLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
+import br.com.oncast.ontrack.client.ui.places.organization.OrganizationActivity;
+import br.com.oncast.ontrack.client.ui.places.organization.OrganizationPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressActivity;
@@ -51,8 +53,13 @@ public class AppActivityMapper implements ActivityMapper {
 		if (place instanceof ProjectSelectionPlace) return createProjectSelectionActivity();
 		if (place instanceof ProjectCreationPlace) return createProjectCreationPlace((ProjectCreationPlace) place);
 		if (place instanceof ProgressPlace) return createProgressActivity((ProgressPlace) place);
+		if (place instanceof OrganizationPlace) return createOrganizationActivity((OrganizationPlace) place);
 
 		return null;
+	}
+
+	private Activity createOrganizationActivity(final OrganizationPlace place) {
+		return new OrganizationActivity(place);
 	}
 
 	private Activity connectServerPushLoadingActivity(final Place place) {

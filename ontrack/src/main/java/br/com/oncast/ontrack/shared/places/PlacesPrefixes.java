@@ -5,4 +5,5 @@ public class PlacesPrefixes {
 	public final static String PROGRESS = "Progress";
 	public static final String MIGRATION = "Migration";
 	public static final String DETAIL = "Detail";
+	public static final String ORGANIZATION = "Organization";
 }

@@ -24,4 +24,8 @@ public interface ClientStorageService {
 
 	List<UUID> loadModifiedContainerStateReleases();
 
+	void storeDefaultPlaceToken(String placeToken);
+
+	String loadDefaultPlaceToken();
+
 }
