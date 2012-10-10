@@ -38,5 +38,4 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 			throw new UnableToPostProcessActionException("It was not possible to create new notification: Unable to retrieve project user list.", e);
 		}
 	}
-
 }

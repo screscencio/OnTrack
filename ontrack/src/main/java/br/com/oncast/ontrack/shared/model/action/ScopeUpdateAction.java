@@ -35,7 +35,6 @@ public class ScopeUpdateAction implements ScopeAction {
 	@ElementList
 	private List<ModelAction> subActionList;
 
-	// TODO +Only create necessary subActions
 	public ScopeUpdateAction(final UUID referenceId, final String newPattern) {
 		this.referenceId = referenceId;
 
@@ -43,10 +42,10 @@ public class ScopeUpdateAction implements ScopeAction {
 		newDescription = parser.getScopeDescription();
 
 		subActionList = new ArrayList<ModelAction>();
-		subActionList.add(new ScopeBindReleaseAction(referenceId, parser.getReleaseDescription()));
-		subActionList.add(new ScopeDeclareEffortAction(referenceId, parser.hasDeclaredEffort(), parser.getDeclaredEffort()));
-		subActionList.add(new ScopeDeclareValueAction(referenceId, parser.hasDeclaredValue(), parser.getDeclaredValue()));
-		subActionList.add(new ScopeDeclareProgressAction(referenceId, parser.getProgressDescription()));
+		if (parser.hasReleaseDescription()) subActionList.add(new ScopeBindReleaseAction(referenceId, parser.getReleaseDescription()));
+		if (parser.hasDeclaredEffort()) subActionList.add(new ScopeDeclareEffortAction(referenceId, parser.hasDeclaredEffort(), parser.getDeclaredEffort()));
+		if (parser.hasDeclaredValue()) subActionList.add(new ScopeDeclareValueAction(referenceId, parser.hasDeclaredValue(), parser.getDeclaredValue()));
+		if (parser.hasProgressDescription()) subActionList.add(new ScopeDeclareProgressAction(referenceId, parser.getProgressDescription()));
 	}
 
 	public ScopeUpdateAction(final UUID referenceId, final String newDescription, final List<ModelAction> subActionList) {

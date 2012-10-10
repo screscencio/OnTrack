@@ -20,6 +20,7 @@ public class ScopeRepresentationParser {
 	private float declaredValue;
 	private boolean hasDeclaredValue;
 	private String progressDescription;
+	private boolean hasProgressDescription;
 
 	private static final String TAGS = StringRepresentationSymbols.getConcatenedSymbols();
 
@@ -54,6 +55,10 @@ public class ScopeRepresentationParser {
 		return releaseDescription == null ? "" : releaseDescription;
 	}
 
+	public boolean hasReleaseDescription() {
+		return releaseDescription != null;
+	}
+
 	public float getDeclaredEffort() {
 		return declaredEffort;
 	}
@@ -72,6 +77,10 @@ public class ScopeRepresentationParser {
 
 	public String getProgressDescription() {
 		return progressDescription;
+	}
+
+	public boolean hasProgressDescription() {
+		return hasProgressDescription;
 	}
 
 	private String preparePattern(final String tagsRepresentation) {
@@ -128,6 +137,7 @@ public class ScopeRepresentationParser {
 		if (result == null) return;
 
 		final String stringResult = result.getGroup(1);
+		hasProgressDescription = stringResult != null;
 		progressDescription = stringResult == null ? null : stringResult.trim();
 	}
 }
