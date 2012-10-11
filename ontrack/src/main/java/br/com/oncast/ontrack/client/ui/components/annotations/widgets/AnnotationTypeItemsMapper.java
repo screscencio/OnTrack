@@ -40,7 +40,7 @@ public enum AnnotationTypeItemsMapper {
 
 				@Override
 				public String getDurationText(final Annotation annotation) {
-					return "Duration: " + HumanDateFormatter.getDifferenceText(annotation.getCurrentStateDuration());
+					return HumanDateFormatter.getDifferenceText(annotation.getCurrentStateDuration());
 				}
 			});
 		}
@@ -62,7 +62,7 @@ public enum AnnotationTypeItemsMapper {
 
 				@Override
 				public String getDurationText(final Annotation annotation) {
-					return "Duration: " + HumanDateFormatter.getDifferenceText(annotation.getDurationOf(AnnotationType.OPEN_IMPEDIMENT));
+					return HumanDateFormatter.getDifferenceText(annotation.getDurationOf(AnnotationType.OPEN_IMPEDIMENT));
 				}
 			});
 		}
