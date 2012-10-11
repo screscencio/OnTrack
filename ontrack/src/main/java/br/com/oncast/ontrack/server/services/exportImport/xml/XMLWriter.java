@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Ontra
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 public class XMLWriter {
 
@@ -36,13 +37,19 @@ public class XMLWriter {
 
 	public XMLWriter setProjectList(final List<ProjectXMLNode> projectList) {
 		ontrackXML.setProjects(projectList);
-		LOGGER.debug("Setted Projects List DONE!");
+		LOGGER.debug("Projects List DONE!");
 		return this;
 	}
 
 	public XMLWriter setProjectAuthorizationList(final List<ProjectAuthorizationXMLNode> projectAuthorizations) {
 		ontrackXML.setProjectAuthorizations(projectAuthorizations);
-		LOGGER.debug("Setted Project Authorizations DONE!");
+		LOGGER.debug("Project Authorizations DONE!");
+		return this;
+	}
+
+	public XMLWriter setNotifications(final List<Notification> notifications) {
+		ontrackXML.setNotifications(notifications);
+		LOGGER.debug("Notifications DONE!");
 		return this;
 	}
 

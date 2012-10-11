@@ -575,6 +575,63 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Notification> retrieveLatestNotifications(final Date initialDate) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query queryNotification = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName()
+					+ " n WHERE n.timestamp > :initialdate ORDER BY n.timestamp DESC");
+			queryNotification.setParameter("initialdate", initialDate);
+			final List<NotificationEntity> resultList = queryNotification.getResultList();
+
+			return (List<Notification>) TYPE_CONVERTER.convert(resultList);
+		}
+		catch (final TypeConverterException e) {
+			throw new PersistenceException("It was not possible to convert the NotificationEntity to it's model equivalent.", e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("Not able to retrieve notifications.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Notification> retrieveLatestProjectNotifications(final List<UUID> projectIds, final Date initialDate) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final List<String> projectStringIds = getStringListFromUUIDList(projectIds);
+
+			final Query queryNotification = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName()
+					+ " n WHERE n.projectId IN (:projects) AND n.timestamp > :initialdate ORDER BY n.timestamp DESC");
+			queryNotification.setParameter("projects", projectStringIds);
+			queryNotification.setParameter("initialdate", initialDate);
+			final List<NotificationEntity> resultList = queryNotification.getResultList();
+
+			return (List<Notification>) TYPE_CONVERTER.convert(resultList);
+		}
+		catch (final TypeConverterException e) {
+			throw new PersistenceException("It was not possible to convert the NotificationEntity to it's model equivalent.", e);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("Not able to retrieve notifications for projects: " + projectIds.toString(), e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	private List<String> getStringListFromUUIDList(final List<UUID> projectIds) {
+		final List<String> projectStringIds = new ArrayList<String>();
+		for (final UUID uuid : projectIds) {
+			projectStringIds.add(uuid.toStringRepresentation());
+		}
+		return projectStringIds;
+	}
+
 	@Override
 	public Notification persistOrUpdateNotification(final Notification notification) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
@@ -610,4 +667,5 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 		return projectUsers;
 	}
+
 }

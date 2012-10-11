@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
@@ -18,6 +20,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAutho
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 public class XMLExporterService {
 
@@ -37,6 +40,7 @@ public class XMLExporterService {
 					.setUserList(retrieveAllUsers())
 					.setProjectList(requestedIds.isEmpty() ? findAllProjectsWithActions() : findProjectsWithActions(requestedIds))
 					.setProjectAuthorizationList(requestedIds.isEmpty() ? retrieveAllProjectAuthorizations() : retrieveProjectAuthorizations(requestedIds))
+					.setNotifications(requestedIds.isEmpty() ? retrieveLatestNotifications() : retrieveLatestNotificationsForProjects(requestedIds))
 					.export(outputStream);
 		}
 		catch (final NoResultFoundException e) {
@@ -75,6 +79,20 @@ public class XMLExporterService {
 		}
 
 		return userXMLNodeList;
+	}
+
+	private List<Notification> retrieveLatestNotificationsForProjects(final List<UUID> projectIds) throws PersistenceException {
+		return persistanceService.retrieveLatestProjectNotifications(projectIds, getInitialFetchDate());
+	}
+
+	private List<Notification> retrieveLatestNotifications() throws PersistenceException {
+		return persistanceService.retrieveLatestNotifications(getInitialFetchDate());
+	}
+
+	private Date getInitialFetchDate() {
+		final Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+		return cal.getTime();
 	}
 
 	private UserXMLNode associatePasswordTo(final User user) throws PersistenceException {

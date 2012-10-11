@@ -8,6 +8,7 @@ import java.util.List;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
 
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidgetMessages;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
@@ -21,6 +22,7 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
+@Root(name = "notification")
 @ConvertTo(NotificationEntity.class)
 public class Notification implements Serializable {
 

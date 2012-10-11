@@ -26,6 +26,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.newrelic.api.agent.Trace;
 
@@ -68,6 +69,7 @@ public class XMLImporter {
 			persistUsers(ontrackXML.getUsers());
 			persistProjects(ontrackXML.getProjects());
 			persistAuthorizations(ontrackXML.getProjectAuthorizations());
+			persistNotifications(ontrackXML.getNotifications());
 
 			this.persisted = true;
 			return this;
@@ -75,6 +77,14 @@ public class XMLImporter {
 		catch (final PersistenceException e) {
 			throw new UnableToImportXMLException("The xml import was not concluded. Some operations may be changed the database, but was not rolledback. ", e);
 		}
+	}
+
+	private void persistNotifications(final List<Notification> notifications) throws PersistenceException {
+		final long initialTime = getCurrentTime();
+		for (final Notification notification : notifications) {
+			persistenceService.persistOrUpdateNotification(notification);
+		}
+		LOGGER.debug("Persisted " + notifications.size() + " notifications in " + getTimeSpent(initialTime) + " ms.");
 	}
 
 	private void persistUsers(final List<UserXMLNode> userNodes) throws PersistenceException {

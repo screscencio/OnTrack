@@ -31,6 +31,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAutho
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.xml.XMLNodeTestUtils;
 
@@ -237,7 +238,7 @@ public class XMLWriterTest {
 		final List<UserXMLNode> userNodes = XMLNodeTestUtils.createUserNodes(3);
 		final List<ProjectAuthorizationXMLNode> authNodes = XMLNodeTestUtils.createAuthorizationNodes(projectNodes, userNodes);
 
-		final OntrackXML ontrackXML = generateXMLAndRead(projectNodes, userNodes, authNodes);
+		final OntrackXML ontrackXML = generateXMLAndRead(projectNodes, userNodes, authNodes, new ArrayList<Notification>());
 
 		assertCollectionEquality(authNodes, ontrackXML.getProjectAuthorizations());
 	}
@@ -311,11 +312,11 @@ public class XMLWriterTest {
 		final List<UserXMLNode> users = getAllUsersWithPassword();
 		final List<ProjectAuthorizationXMLNode> authorizations = extractAuthorizations(users, projects);
 
-		return generateXMLAndRead(projects, users, authorizations);
+		return generateXMLAndRead(projects, users, authorizations, new ArrayList<Notification>());
 	}
 
 	private OntrackXML generateXMLAndRead(final List<ProjectXMLNode> projectNodes, final List<UserXMLNode> userNodes,
-			final List<ProjectAuthorizationXMLNode> authorizationNodes) throws FileNotFoundException, Exception {
+			final List<ProjectAuthorizationXMLNode> authorizationNodes, final List<Notification> notifications) throws FileNotFoundException, Exception {
 
 		final File ontrackFile = new File(ONTRACK_XML);
 
@@ -324,6 +325,7 @@ public class XMLWriterTest {
 				.setUserList(userNodes)
 				.setProjectList(projectNodes)
 				.setProjectAuthorizationList(authorizationNodes)
+				.setNotifications(notifications)
 				.export(new FileOutputStream(ontrackFile));
 
 		final Serializer serializer = new Persister();

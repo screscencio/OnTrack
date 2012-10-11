@@ -47,6 +47,11 @@ public class NotificationBuilder {
 		return this;
 	}
 
+	public NotificationBuilder setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
+		notification.setProjectRepresentation(projectRepresentation);
+		return this;
+	}
+
 	public Notification getNotification() {
 		return notification;
 	}

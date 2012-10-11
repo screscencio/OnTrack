@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.monitoring.DontPostProcessActions;
@@ -67,11 +68,13 @@ class BusinessLogicImpl implements BusinessLogic {
 	private final FeedbackMailFactory feedbackMailFactory;
 
 	private final SyncronizationService syncronizationService;
+	private final ActionPostProcessmentsInitializer postProcessmentsControler;
 
 	protected BusinessLogicImpl(final PersistenceService persistenceService,
 			final MulticastService multicastService, final ClientManager clientManager,
 			final AuthenticationManager authenticationManager, final AuthorizationManager authorizationManager, final SessionManager sessionManager,
-			final FeedbackMailFactory userQuotaRequestMailFactory, final SyncronizationService syncronizationService) {
+			final FeedbackMailFactory userQuotaRequestMailFactory, final SyncronizationService syncronizationService,
+			final ActionPostProcessmentsInitializer postProcessmentsControler) {
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
 		this.clientManager = clientManager;
@@ -80,6 +83,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		this.sessionManager = sessionManager;
 		this.feedbackMailFactory = userQuotaRequestMailFactory;
 		this.syncronizationService = syncronizationService;
+		this.postProcessmentsControler = postProcessmentsControler;
 	}
 
 	@Trace
@@ -118,7 +122,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			LOGGER.error(errorMessage, e);
 			throw new UnableToHandleActionException(errorMessage);
 		}
-	}
+	} // FIXME Auto-generated catch block
 
 	// TODO Report errors as feedback for development.
 	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.
@@ -354,7 +358,9 @@ class BusinessLogicImpl implements BusinessLogic {
 	@Override
 	@PostProcessActions
 	public void loadProjectForMigration(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
+		postProcessmentsControler.getNotificationCreationPostProcessor().deactivate();
 		doLoadProject(projectId);
+		postProcessmentsControler.getNotificationCreationPostProcessor().activate();
 	}
 
 	private long getCurrentTime() {

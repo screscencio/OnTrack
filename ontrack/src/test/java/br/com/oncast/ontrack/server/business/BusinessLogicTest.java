@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
@@ -108,6 +109,9 @@ public class BusinessLogicTest {
 	@Mock
 	private ActionContext actionContext;
 
+	@Mock
+	private ActionPostProcessmentsInitializer postProcessmentsInitializer;
+
 	private EntityManager entityManager;
 	private ProjectRepresentation projectRepresentation;
 	private BusinessLogic business;
@@ -179,7 +183,7 @@ public class BusinessLogicTest {
 		business = new BusinessLogicImpl(persistence, multicast, clientManager, authenticationManager,
 				authorizationManager,
 				sessionManager,
-				mock(FeedbackMailFactory.class), new SyncronizationService());
+				mock(FeedbackMailFactory.class), new SyncronizationService(), postProcessmentsInitializer);
 
 		final ArrayList<ModelAction> actionList = new ArrayList<ModelAction>();
 		actionList.add(new ScopeMoveUpAction(UUID.INVALID_UUID));
