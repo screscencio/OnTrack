@@ -15,6 +15,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class SinceAnnotationMenuItem extends Composite implements AnnotationMenuItem {
 
+	private static SinceAnnotationMenuItemMessages messages = GWT.create(SinceAnnotationMenuItemMessages.class);
+
 	private static SinceAnnotationMenuItemUiBinder uiBinder = GWT.create(SinceAnnotationMenuItemUiBinder.class);
 
 	interface SinceAnnotationMenuItemUiBinder extends UiBinder<Widget, SinceAnnotationMenuItem> {}
@@ -49,7 +51,7 @@ public class SinceAnnotationMenuItem extends Composite implements AnnotationMenu
 	@Override
 	public void update() {
 		final Date date = annotation.getLastOcuurenceOf(annotation.getType());
-		final String customDuration = duration == null ? "" : " - " + duration.getDurationText(annotation);
+		final String customDuration = duration == null ? "" : " - " + messages.duration() + duration.getDurationText(annotation);
 
 		label.setText(HumanDateFormatter.getRelativeDate(date) + customDuration);
 		label.setTitle(HumanDateFormatter.getAbsoluteText(date));
