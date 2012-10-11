@@ -87,9 +87,13 @@ public class Notification implements Serializable {
 	private String description;
 
 	@Attribute
+	@ConversionAlias("referenceDescription")
+	private String referenceDescription;
+
+	@Attribute
 	@ConversionAlias("type")
 	@ConvertUsing(NotificationTypeConveter.class)
-	private NotificationType type = NotificationType.IMPEDIMENT_CREATED;
+	private NotificationType type = null;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected Notification() {
@@ -175,5 +179,13 @@ public class Notification implements Serializable {
 
 	protected void setReferenceId(final UUID referenceId) {
 		this.referenceId = referenceId;
+	}
+
+	public String getReferenceDescription() {
+		return referenceDescription;
+	}
+
+	public void setReferenceDescription(final String referenceDescription) {
+		this.referenceDescription = referenceDescription;
 	}
 }

@@ -62,6 +62,10 @@ public class NotificationEntity {
 	@ConversionAlias("description")
 	private String description;
 
+	@Column(name = "referenceDescription", unique = false, nullable = true)
+	@ConversionAlias("referenceDescription")
+	private String referenceDescription;
+
 	public NotificationEntity() {}
 
 	public String getId() {
@@ -130,5 +134,13 @@ public class NotificationEntity {
 
 	public void addRecipient(final NotificationRecipientEntity notificationRecipientEntity) {
 		this.recipients.add(notificationRecipientEntity);
+	}
+
+	public String getReferenceDescription() {
+		return referenceDescription;
+	}
+
+	public void setReferenceDescription(String referenceDescription) {
+		this.referenceDescription = referenceDescription;
 	}
 }

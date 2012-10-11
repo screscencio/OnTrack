@@ -19,6 +19,7 @@ public class NotificationBuilder {
 		notification.setProjectRepresentation(projectRepresentation);
 		notification.setAuthor(author);
 		notification.setDescription("");
+		notification.setReferenceDescription("");
 	}
 
 	public NotificationBuilder addReceipient(final User receipient) {
@@ -38,6 +39,11 @@ public class NotificationBuilder {
 
 	public NotificationBuilder setDescription(final String description) {
 		notification.setDescription(description);
+		return this;
+	}
+
+	public NotificationBuilder setReferenceDescription(final String referenceDescription) {
+		notification.setReferenceDescription(referenceDescription);
 		return this;
 	}
 

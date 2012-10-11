@@ -44,8 +44,9 @@ public class NotificationFactory {
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
 					final User author) {
 
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.PROGRESS_DECLARED).setDescription(
-						getScopeDescriptionFor(action, projectContext));
+				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.PROGRESS_DECLARED)
+						.setReferenceDescription(getScopeDescriptionFor(action, projectContext))
+						.setDescription("");
 			}
 		},
 		ANNOTATION_CREATED(AnnotationCreateAction.class) {
