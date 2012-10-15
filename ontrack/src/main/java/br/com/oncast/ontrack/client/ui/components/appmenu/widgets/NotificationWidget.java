@@ -6,8 +6,6 @@ import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
-import br.com.oncast.ontrack.client.utils.link.LinkFactory;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
@@ -41,16 +39,13 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	NotificationWidgetStyle style;
 
 	@UiField
-	protected InlineHTML projectName;
-
-	@UiField
-	protected InlineHTML type;
-
-	@UiField
-	protected Label userName;
+	protected InlineHTML notificationMessage;
 
 	@UiField
 	protected Label timestamp;
+
+	@UiField
+	protected Label user;
 
 	@UiField
 	HorizontalPanel container;
@@ -59,6 +54,8 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	Image userIcon;
 
 	private final Notification notification;
+
+	private UserDataService userDataService;
 
 	public NotificationWidget(final Notification modelBean) {
 		this.notification = modelBean;
@@ -76,13 +73,21 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 		fillUserInformation();
 
-		final ProjectRepresentation project = ClientServiceProvider.getInstance().getProjectRepresentationProvider()
-				.getProjectRepresentation(notification.getProjectId());
+		notificationMessage.setHTML(notification.getType().selectMessage(messages, notification));
 
-		type.setHTML(LinkFactory.getLinkForAnnotation(project.getId(), notification.getReferenceId(), notification.getType().selectMessage(messages)));
-		projectName.setHTML(LinkFactory.getLinkForProject(project));
 		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));
 
+		setStyleByType();
+
+		return true;
+	}
+
+	@Override
+	public Notification getModelObject() {
+		return notification;
+	}
+
+	private void setStyleByType() {
 		switch (notification.getType()) {
 			case IMPEDIMENT_CREATED:
 				container.setStyleName(style.impediment());
@@ -94,21 +99,16 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 				container.setStyleName(style.normal());
 				break;
 		}
-		return true;
-	}
-
-	@Override
-	public Notification getModelObject() {
-		return notification;
 	}
 
 	private void fillUserInformation() {
 		final String userEmail = notification.getAuthorMail();
 
-		final UserDataService userDataService = ClientServiceProvider.getInstance().getUserDataService();
+		user.setText(userEmail);
+
+		userDataService = ClientServiceProvider.getInstance().getUserDataService();
 		userIcon.setUrl(userDataService.getAvatarUrl(userEmail));
 		userIcon.setTitle(userEmail);
-		userName.setText(userEmail);
 
 		userDataService.loadProfile(userEmail, new LoadProfileCallback() {
 
@@ -117,8 +117,9 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 			@Override
 			public void onProfileLoaded(final PortableContactJsonObject profile) {
-				userName.setText(profile.getDisplayName());
+				user.setText(profile.getDisplayName());
 			}
 		});
+
 	}
 }

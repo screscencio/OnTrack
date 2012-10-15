@@ -10,13 +10,15 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+import br.com.oncast.ontrack.client.i18n.NotificationMessageCode;
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidgetMessages;
+import br.com.oncast.ontrack.client.utils.link.LinkFactory;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
-import br.com.oncast.ontrack.shared.messageCode.BaseMessageCode;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -26,34 +28,58 @@ import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 @ConvertTo(NotificationEntity.class)
 public class Notification implements Serializable {
 
-	public enum NotificationType implements BaseMessageCode<NotificationWidgetMessages> {
+	public enum NotificationType implements NotificationMessageCode {
 		IMPEDIMENT_CREATED() {
 			@Override
-			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
-				return messages.impedimentCreatedNotificationMessage();
+			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
+				return messages.impedimentCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification),
+						notification.getReferenceDescription(),
+						getProjectLinkFor(notification));
 			}
 		},
 		IMPEDIMENT_SOLVED() {
 			@Override
-			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
-				return messages.impedimentSolvedNotificationMessage();
+			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
+				return messages.impedimentSolvedNotificationWidgetMessage(getAnnotationLinkFor(notification),
+						notification.getReferenceDescription(),
+						getProjectLinkFor(notification));
 			}
 		},
 		PROGRESS_DECLARED() {
 			@Override
-			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
-				return messages.progressDeclaredNotificationMessage();
+			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
+				if (notification.getDescription().equals("Done")) return messages.progressDoneNotificationWidgetMessage(
+						notification.getReferenceDescription(),
+						getProjectLinkFor(notification));
+				if (notification.getDescription().isEmpty()) return messages.progressNotStartedNotificationWidgetMessage(
+						notification.getReferenceDescription(),
+						getProjectLinkFor(notification));
+				return messages.progressUnderworkNotificationWidgetMessage(notification.getReferenceDescription(),
+						getProjectLinkFor(notification));
 			}
 		},
 		ANNOTATION_CREATED() {
 			@Override
-			public String selectMessage(final NotificationWidgetMessages messages, final String... args) {
-				return messages.annotationCreatedNotificationMessage();
+			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
+				return messages.annotationCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification),
+						notification.getReferenceDescription(),
+						getProjectLinkFor(notification));
 			}
 		};
 
 		@Override
-		public abstract String selectMessage(final NotificationWidgetMessages messages, final String... args);
+		public abstract String selectMessage(final NotificationWidgetMessages messages, final Notification notification);
+
+		private static String getProjectLinkFor(final Notification notification) {
+			final ProjectRepresentation project = ClientServiceProvider.getInstance().getProjectRepresentationProvider()
+					.getProjectRepresentation(notification.getProjectId());
+
+			return LinkFactory.getLinkForProject(project).asString();
+		}
+
+		private static String getAnnotationLinkFor(final Notification notification) {
+			return LinkFactory.getLinkForAnnotation(notification.getProjectId(), notification.getReferenceId(), notification.getDescription()).asString();
+		}
 	}
 
 	private static final long serialVersionUID = 1L;

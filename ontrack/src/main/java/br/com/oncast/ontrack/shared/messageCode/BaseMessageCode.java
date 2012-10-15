@@ -4,6 +4,6 @@ import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
 public interface BaseMessageCode<T extends BaseMessages> {
 
-	String selectMessage(T messages, String... args);
+	String selectMessage(T messages, final String... args);
 
 }
