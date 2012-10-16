@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.shared.services.notification;
 import java.io.Serializable;
 
 import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationRecipientEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -11,7 +10,6 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@Root(name = "recipient")
 @ConvertTo(NotificationRecipientEntity.class)
 public class NotificationRecipient implements Serializable {
 

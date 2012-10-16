@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.server.utils.typeConverter.custom;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.TypeConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
-import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 
 public class NotificationTypeConveter implements TypeConverter {
 

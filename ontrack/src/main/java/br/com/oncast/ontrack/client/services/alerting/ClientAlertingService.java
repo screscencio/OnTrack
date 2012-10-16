@@ -4,8 +4,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ErrorMaskPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.HideHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MaskPanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.Alert;
-import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.AlertingContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.AlertType;
+import br.com.oncast.ontrack.client.ui.generalwidgets.alerting.AlertingContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 
 import com.google.gwt.user.client.Timer;

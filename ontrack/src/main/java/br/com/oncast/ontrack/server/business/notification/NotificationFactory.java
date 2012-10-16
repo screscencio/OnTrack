@@ -17,8 +17,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 
 public class NotificationFactory {
 

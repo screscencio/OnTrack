@@ -5,7 +5,6 @@ import java.util.Date;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 
 public class NotificationBuilder {
 
