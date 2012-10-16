@@ -29,13 +29,11 @@ public class DetailPlace extends ProjectDependentPlace {
 	@Prefix(PlacesPrefixes.DETAIL)
 	public static class Tokenizer implements PlaceTokenizer<DetailPlace> {
 
-		private static final String SEPARATOR = ":";
-
 		@Override
 		public DetailPlace getPlace(final String token) {
 			UUID projectId;
 			UUID subjectId;
-			final String[] parameters = token.split(SEPARATOR);
+			final String[] parameters = token.split(PlacesPrefixes.ARGUMENT_SEPARATOR);
 			try {
 				projectId = new UUID(parameters[0]);
 				subjectId = new UUID(parameters[1]);
@@ -49,7 +47,7 @@ public class DetailPlace extends ProjectDependentPlace {
 
 		@Override
 		public String getToken(final DetailPlace place) {
-			return place.getRequestedProjectId() + SEPARATOR + place.getSubjectId();
+			return place.getRequestedProjectId() + PlacesPrefixes.ARGUMENT_SEPARATOR + place.getSubjectId();
 		}
 	}
 

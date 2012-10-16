@@ -5,7 +5,6 @@ import java.util.Date;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 
 public class NotificationBuilder {
 
@@ -19,6 +18,7 @@ public class NotificationBuilder {
 		notification.setProjectRepresentation(projectRepresentation);
 		notification.setAuthor(author);
 		notification.setDescription("");
+		notification.setReferenceDescription("");
 	}
 
 	public NotificationBuilder addReceipient(final User receipient) {
@@ -38,6 +38,16 @@ public class NotificationBuilder {
 
 	public NotificationBuilder setDescription(final String description) {
 		notification.setDescription(description);
+		return this;
+	}
+
+	public NotificationBuilder setReferenceDescription(final String referenceDescription) {
+		notification.setReferenceDescription(referenceDescription);
+		return this;
+	}
+
+	public NotificationBuilder setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
+		notification.setProjectRepresentation(projectRepresentation);
 		return this;
 	}
 

@@ -31,8 +31,10 @@ public class PlanningActivity extends AbstractActivity {
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private PlanningView view;
 	private List<HandlerRegistration> registrations;
+	private final PlanningPlace place;
 
-	public PlanningActivity() {
+	public PlanningActivity(final PlanningPlace place) {
+		this.place = place;
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		activityActionExecutionListener = new ActivityActionExecutionListener();
 	}
@@ -72,7 +74,8 @@ public class PlanningActivity extends AbstractActivity {
 
 		registrations.add(registerScopeSelectionEventHandler());
 		registrations.add(registerScopeImpedimentUpdateEventHandler());
-		SERVICE_PROVIDER.getClientApplicationStateService().restore();
+
+		SERVICE_PROVIDER.getClientApplicationStateService().restore(place.getSelectedScopeId());
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();

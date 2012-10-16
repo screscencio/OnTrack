@@ -12,20 +12,28 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("Notifications will arise when relevant events happen")
 	String noNotificationsHelpMessage();
 
-	@Description("impediment created")
-	@DefaultMessage("Impediment created")
-	String impedimentCreatedNotificationMessage();
+	@Description("annotation created notification widget")
+	@DefaultMessage("created an annotation ''{0}'' on item ''{1}'' at ''{2}''")
+	String annotationCreatedNotificationWidgetMessage(String annotationDescription, String scopeDescription, String project);
 
-	@Description("impediment solved")
-	@DefaultMessage("Impediment solved")
-	String impedimentSolvedNotificationMessage();
+	@Description("impediment created notification widget")
+	@DefaultMessage("created the impediment ''{0}'' on item ''{1}'' at ''{2}''")
+	String impedimentCreatedNotificationWidgetMessage(String annotationDescription, String scopeDescription, String project);
 
-	@Description("progress declared")
-	@DefaultMessage("Progress declared")
-	String progressDeclaredNotificationMessage();
+	@Description("impediment solved notification widget")
+	@DefaultMessage("solved the impediment ''{0}'' on item ''{1}'' at ''{2}''")
+	String impedimentSolvedNotificationWidgetMessage(String annotationDescription, String scopeDescription, String project);
 
-	@Description("annotation created notification")
-	@DefaultMessage("Annotation created")
-	String annotationCreatedNotificationMessage();
+	@Description("progress not started notification widget")
+	@DefaultMessage("marked as not started the item ''{0}'' at ''{1}''")
+	String progressNotStartedNotificationWidgetMessage(String scopeDescription, String project);
+
+	@Description("progress underwork notification widget")
+	@DefaultMessage("marked as underwork the item ''{0}'' at ''{1}''")
+	String progressUnderworkNotificationWidgetMessage(String scopeDescription, String project);
+
+	@Description("progress done notification widget")
+	@DefaultMessage("marked as done the item ''{0}'' at ''{1}''")
+	String progressDoneNotificationWidgetMessage(String scopeDescription, String project);
 
 }

@@ -25,9 +25,9 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveNotifica
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 

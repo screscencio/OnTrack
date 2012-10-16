@@ -67,7 +67,7 @@ public class ServerServiceProvider {
 			if (businessLogic != null) return businessLogic;
 			return businessLogic = new BusinessLogicImpl(getPersistenceService(), getMulticastService(),
 					getClientManagerService(), getAuthenticationManager(), getAuthorizationManager(), getSessionManager(), getFeedbackMailFactory(),
-					getSyncronizationService());
+					getSyncronizationService(), getActionPostProcessmentsInitializer());
 		}
 	}
 

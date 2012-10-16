@@ -1,10 +1,13 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
+
+import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 @Root
 public class OntrackXML {
@@ -20,6 +23,9 @@ public class OntrackXML {
 
 	@ElementList
 	private List<ProjectAuthorizationXMLNode> projectAuthorizations;
+
+	@ElementList
+	private List<Notification> notifications = new ArrayList<Notification>();
 
 	public void setUsers(final List<UserXMLNode> users) {
 		this.users = users;
@@ -51,5 +57,13 @@ public class OntrackXML {
 
 	public List<ProjectAuthorizationXMLNode> getProjectAuthorizations() {
 		return projectAuthorizations;
+	}
+
+	public void setNotifications(final List<Notification> notifications) {
+		this.notifications = notifications;
+	}
+
+	public List<Notification> getNotifications() {
+		return notifications;
 	}
 }

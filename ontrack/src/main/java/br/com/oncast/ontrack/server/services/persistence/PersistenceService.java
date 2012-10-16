@@ -76,4 +76,8 @@ public interface PersistenceService {
 
 	public List<User> retrieveUsersByEmails(List<String> recipientsAsUserMails) throws PersistenceException;
 
+	public List<Notification> retrieveLatestNotifications(Date initialDate) throws PersistenceException;
+
+	public List<Notification> retrieveLatestProjectNotifications(List<UUID> projectIds, Date initialDate) throws PersistenceException;
+
 }

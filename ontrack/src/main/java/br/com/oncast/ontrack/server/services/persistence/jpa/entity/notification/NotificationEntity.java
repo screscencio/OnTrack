@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 
 @Entity
 @ConvertTo(Notification.class)
@@ -61,6 +61,10 @@ public class NotificationEntity {
 	@Column(name = "description", unique = false, nullable = true)
 	@ConversionAlias("description")
 	private String description;
+
+	@Column(name = "referenceDescription", unique = false, nullable = true)
+	@ConversionAlias("referenceDescription")
+	private String referenceDescription;
 
 	public NotificationEntity() {}
 
@@ -130,5 +134,13 @@ public class NotificationEntity {
 
 	public void addRecipient(final NotificationRecipientEntity notificationRecipientEntity) {
 		this.recipients.add(notificationRecipientEntity);
+	}
+
+	public String getReferenceDescription() {
+		return referenceDescription;
+	}
+
+	public void setReferenceDescription(String referenceDescription) {
+		this.referenceDescription = referenceDescription;
 	}
 }

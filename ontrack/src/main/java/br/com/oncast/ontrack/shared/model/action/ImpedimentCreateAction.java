@@ -51,4 +51,7 @@ public class ImpedimentCreateAction implements ImpedimentAction {
 		return subjectId;
 	}
 
+	public UUID getAnnotationId() {
+		return annotationId;
+	}
 }

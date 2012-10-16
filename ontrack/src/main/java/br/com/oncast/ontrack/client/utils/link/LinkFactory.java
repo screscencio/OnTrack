@@ -42,12 +42,33 @@ public class LinkFactory {
 		return getSafeHTMLFor(builder.toString());
 	}
 
+	public static SafeHtml getScopeLinkFor(final UUID projectId, final UUID referencedId, final String text) {
+		final ProjectRepresentation currentProject = ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent();
+		final StringBuilder builder = new StringBuilder();
+
+		builder.append(START_A_TAG);
+		builder.append(getScopeHrefLink(projectId, referencedId));
+		builder.append(CLOSE_HREF);
+
+		if (!currentProject.getId().equals(projectId)) builder.append(NEW_TAB_LINK);
+
+		builder.append(END_A_TAG);
+		builder.append(text);
+		builder.append(CLOSE_A_TAG);
+
+		return getSafeHTMLFor(builder.toString());
+	}
+
 	private static String getBaseURL() {
 		return Window.Location.getHref().substring(0, Window.Location.getHref().indexOf('#'));
 	}
 
 	private static String getProjectHrefLink(final UUID projectId) {
 		return getBaseURL() + PROJECT_URL_CONSTANT + projectId;
+	}
+
+	private static String getScopeHrefLink(final UUID projectId, final UUID referencedId) {
+		return getBaseURL() + PROJECT_URL_CONSTANT + projectId + ":" + referencedId;
 	}
 
 	private static String getAnnotationHrefLink(final UUID projectId, final UUID referencedId) {
@@ -59,4 +80,5 @@ public class LinkFactory {
 		safeHtmlBuilder.appendHtmlConstant(html);
 		return safeHtmlBuilder.toSafeHtml();
 	}
+
 }

@@ -87,4 +87,8 @@ public class AnnotationCreateAction implements AnnotationAction {
 		return subjectId;
 	}
 
+	public UUID getAnnotationId() {
+		return annotationId;
+	}
+
 }

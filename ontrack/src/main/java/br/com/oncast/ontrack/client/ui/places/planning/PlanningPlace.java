@@ -11,13 +11,19 @@ import com.google.gwt.place.shared.Prefix;
 public class PlanningPlace extends ProjectDependentPlace {
 
 	private final UUID projectId;
+	private final UUID selectedScopeId;
+
+	public PlanningPlace(final UUID projectId, final UUID selectedScopeId) {
+		this.projectId = projectId;
+		this.selectedScopeId = selectedScopeId;
+	}
 
 	public PlanningPlace(final UUID projectId) {
-		this.projectId = projectId;
+		this(projectId, UUID.INVALID_UUID);
 	}
 
 	public PlanningPlace(final ProjectRepresentation projectRepresentation) {
-		this.projectId = projectRepresentation.getId();
+		this(projectRepresentation.getId());
 	}
 
 	@Override
@@ -25,18 +31,33 @@ public class PlanningPlace extends ProjectDependentPlace {
 		return projectId;
 	}
 
+	public UUID getSelectedScopeId() {
+		return selectedScopeId;
+	}
+
 	@Prefix(PlacesPrefixes.PLANNING)
 	public static class Tokenizer implements PlaceTokenizer<PlanningPlace> {
 
 		@Override
 		public PlanningPlace getPlace(final String token) {
-			final UUID projectId = new UUID(token);
-			return new PlanningPlace(projectId);
+			UUID projectId;
+			UUID selectedScopeId;
+			final String[] parameters = token.split(PlacesPrefixes.ARGUMENT_SEPARATOR);
+			try {
+				projectId = new UUID(parameters[0]);
+				selectedScopeId = parameters.length > 1 ? new UUID(parameters[1]) : UUID.INVALID_UUID;
+			}
+			catch (final Exception e) {
+				projectId = UUID.INVALID_UUID;
+				selectedScopeId = UUID.INVALID_UUID;
+			}
+			return new PlanningPlace(projectId, selectedScopeId);
 		}
 
 		@Override
 		public String getToken(final PlanningPlace place) {
-			return place.getRequestedProjectId().toStringRepresentation();
+			final String stringRepresentation = place.getRequestedProjectId().toStringRepresentation();
+			return stringRepresentation;
 		}
 	}
 }

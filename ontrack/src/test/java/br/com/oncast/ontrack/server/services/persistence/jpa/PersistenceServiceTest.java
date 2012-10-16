@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,8 +48,8 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
@@ -503,6 +504,75 @@ public class PersistenceServiceTest {
 		assertEquals(2, latestNotificationsForUser.size());
 		DeepEqualityTestUtils.assertObjectEquality(notification2, latestNotificationsForUser.get(0));
 		DeepEqualityTestUtils.assertObjectEquality(notification3, latestNotificationsForUser.get(1));
+	}
+
+	@Test
+	public void shouldPersistAndRetrieveLatestNotificationsLimitedByDate() throws Exception {
+		final User user1 = createAndPersistUser();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date())
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification1);
+
+		final User user2 = createAndPersistUser();
+		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
+				.setTimestamp(getInitialFetchDate(1))
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification2);
+
+		final User user3 = createAndPersistUser();
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
+				.setTimestamp(getInitialFetchDate(3))
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification3);
+
+		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestNotifications(getInitialFetchDate(2));
+
+		assertEquals(2, latestNotificationsForUser.size());
+		DeepEqualityTestUtils.assertObjectEquality(notification1, latestNotificationsForUser.get(0));
+		DeepEqualityTestUtils.assertObjectEquality(notification2, latestNotificationsForUser.get(1));
+	}
+
+	@Test
+	public void shouldPersistAndRetrieveLatestNotificationsLimitedByDateAndProject() throws Exception {
+		final ProjectRepresentation projectRepresentation1 = ProjectTestUtils.createRepresentation(new UUID("1"));
+		final ProjectRepresentation projectRepresentation2 = ProjectTestUtils.createRepresentation(new UUID("2"));
+		final ProjectRepresentation projectRepresentation3 = ProjectTestUtils.createRepresentation(new UUID("3"));
+
+		final User user1 = createAndPersistUser();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date()).setProjectRepresentation(projectRepresentation3)
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification1);
+
+		final User user2 = createAndPersistUser();
+		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
+				.setTimestamp(getInitialFetchDate(1)).setProjectRepresentation(projectRepresentation2)
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification2);
+
+		final User user3 = createAndPersistUser();
+		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
+				.setTimestamp(getInitialFetchDate(3)).setProjectRepresentation(projectRepresentation1)
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification3);
+
+		final User user4 = createAndPersistUser();
+		final Notification notification4 = getBuilder("msg4").addReceipient(user4).addReceipient(user1)
+				.setTimestamp(getInitialFetchDate(0)).setProjectRepresentation(projectRepresentation1)
+				.getNotification();
+		persistenceService.persistOrUpdateNotification(notification4);
+
+		final List<UUID> list = Arrays.asList(new UUID[] { projectRepresentation2.getId(), projectRepresentation1.getId() });
+		final List<Notification> latestNotificationsForUser = persistenceService.retrieveLatestProjectNotifications(list, getInitialFetchDate(2));
+
+		assertEquals(2, latestNotificationsForUser.size());
+		DeepEqualityTestUtils.assertObjectEquality(notification4, latestNotificationsForUser.get(0));
+		DeepEqualityTestUtils.assertObjectEquality(notification2, latestNotificationsForUser.get(1));
+	}
+
+	private Date getInitialFetchDate(final int numberOfMonthsAgo) {
+		final Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -numberOfMonthsAgo);
+		return cal.getTime();
 	}
 
 	@Test
