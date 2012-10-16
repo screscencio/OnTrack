@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
@@ -25,6 +27,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -69,9 +72,14 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	private ScopeTreeWidget tree;
 
+	private boolean shouldUpdate = true;
+
+	private final Map<Scope, SearchScopeResultCommandMenuItem> scopeMenuCache;
+
 	public SearchBar() {
 		initWidget(uiBinder.createAndBindUi(this));
 		registerScopeTreeColumnVisibilityChangeListeners();
+		scopeMenuCache = new HashMap<Scope, SearchScopeResultCommandMenuItem>();
 	}
 
 	@UiHandler({ "valueColumnActiveIndicatorLabel", "valueColumnInactiveIndicatorLabel" })
@@ -92,6 +100,14 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	@UiHandler({ "releaseColumnActiveIndicatorLabel", "releaseColumnInactiveIndicatorLabel" })
 	void onToggleReleaseClick(final ClickEvent event) {
 		ScopeTreeColumn.RELEASE.toggle();
+	}
+
+	@UiHandler("search")
+	void onSearchFocus(final FocusEvent e) {
+		if (!shouldUpdate) return;
+
+		updateItems();
+		shouldUpdate = false;
 	}
 
 	private void registerScopeTreeColumnVisibilityChangeListeners() {
@@ -129,7 +145,6 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	public void setTree(final ScopeTree scopeTree) {
 		tree = (ScopeTreeWidget) scopeTree.asWidget();
-		updateItems();
 	}
 
 	private void updateItems() {
@@ -141,13 +156,14 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	private List<CommandMenuItem> asCommandMenuItens(final List<Scope> scopeList) {
 		final List<CommandMenuItem> menuItens = new ArrayList<CommandMenuItem>();
 		for (final Scope scope : scopeList) {
-			menuItens.add(new SeachScopeResultCommandMenuItem(scope, new Command() {
+			if (!scopeMenuCache.containsKey(scope)) scopeMenuCache.put(scope, new SearchScopeResultCommandMenuItem(scope, new Command() {
 
 				@Override
 				public void execute() {
 					selectItem(tree, scope);
 				}
 			}));
+			menuItens.add(scopeMenuCache.get(scope));
 		}
 		return menuItens;
 	}
@@ -177,6 +193,6 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	@Override
 	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 			final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
-		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction) updateItems();
+		if (action instanceof ScopeUpdateAction || action instanceof ScopeInsertAction || action instanceof ScopeRemoveAction) shouldUpdate = true;
 	}
 }

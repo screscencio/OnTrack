@@ -4,12 +4,23 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuItem;
 
-public class SeachScopeResultCommandMenuItem implements CommandMenuItem {
+public class SearchScopeResultCommandMenuItem implements CommandMenuItem {
+
+	public interface SearchScopeResultCommandMenuItemTemplates extends SafeHtmlTemplates {
+		@Template("<div class='searchScopeResult-container'>" +
+				"<span class='searchScopeResult-description'>{0}</span>" +
+				"<span class='searchScopeResult-partOf'>{1}: </span>" +
+				"<span class='searchScopeResult-parentDescription'>{2}</span>" +
+				"</div>")
+		SafeHtml searchResultItem(String scopeDescription, String partOfString, String parentDescription);
+	}
+
+	private static final SearchScopeResultCommandMenuItemTemplates TEMPLATES = GWT.create(SearchScopeResultCommandMenuItemTemplates.class);
 
 	private static final SearchScopeMenuMessages messages = GWT.create(SearchScopeMenuMessages.class);
 
@@ -17,7 +28,7 @@ public class SeachScopeResultCommandMenuItem implements CommandMenuItem {
 	private final Command command;
 	private MenuItem menuItem;
 
-	public SeachScopeResultCommandMenuItem(final Scope scope, final Command command) {
+	public SearchScopeResultCommandMenuItem(final Scope scope, final Command command) {
 		this.scope = scope;
 		this.command = command;
 	}
@@ -35,14 +46,8 @@ public class SeachScopeResultCommandMenuItem implements CommandMenuItem {
 	@Override
 	public MenuItem getMenuItem() {
 		if (menuItem != null) return menuItem;
-		final SafeHtml safeHtml = new SafeHtmlBuilder().appendHtmlConstant(
-				"<div class='searchScopeResult-container'>" +
-						"<span class='searchScopeResult-description'>" + scope.getDescription() + "</span>" +
-						"<span class='searchScopeResult-partOf'>" + messages.partOf() + ": </span>" +
-						"<span class='searchScopeResult-parentDescription'>" + scope.getParent().getDescription() + "</span>" +
-						"</div>"
-				)
-				.toSafeHtml();
+
+		final SafeHtml safeHtml = TEMPLATES.searchResultItem(scope.getDescription(), messages.partOf(), scope.getParent().getDescription());
 		return menuItem = new MenuItem(safeHtml, command);
 	}
 

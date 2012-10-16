@@ -18,6 +18,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ItemSelectionHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -26,6 +28,7 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -38,7 +41,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO refactor this class and FiltableCommandMenu to extract duplicated code
-public class SearchScopeFiltrableCommandMenu extends Composite {
+public class SearchScopeFiltrableCommandMenu extends Composite implements HasFocusHandlers {
 
 	private static final SearchScopeMenuMessages messages = GWT.create(SearchScopeMenuMessages.class);
 
@@ -260,6 +263,11 @@ public class SearchScopeFiltrableCommandMenu extends Composite {
 		void onItemSelected(CommandMenuItem selectedItem);
 
 		void onCancel();
+	}
+
+	@Override
+	public HandlerRegistration addFocusHandler(final FocusHandler handler) {
+		return filterArea.addFocusHandler(handler);
 	}
 
 }
