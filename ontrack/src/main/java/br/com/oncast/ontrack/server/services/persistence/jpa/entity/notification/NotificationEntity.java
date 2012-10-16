@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
-import br.com.oncast.ontrack.shared.services.notification.Notification.NotificationType;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 
 @Entity
 @ConvertTo(Notification.class)

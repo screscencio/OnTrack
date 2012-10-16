@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Ontra
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.transform.CustomMatcher;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 public class XMLWriter {
@@ -56,7 +57,7 @@ public class XMLWriter {
 	public void export(final OutputStream outputStream) {
 		LOGGER.debug("Finished parsing OntrackXML");
 		LOGGER.debug("Initializing XML Serialization");
-		final Serializer serializer = new Persister();
+		final Serializer serializer = new Persister(new CustomMatcher());
 
 		try {
 			serializer.write(ontrackXML, outputStream);

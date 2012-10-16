@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
+import static br.com.oncast.ontrack.utils.mocks.models.UserTestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -26,13 +27,18 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Ontra
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
+import br.com.oncast.ontrack.server.services.exportImport.xml.transform.CustomMatcher;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
+import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 import br.com.oncast.ontrack.utils.mocks.xml.XMLNodeTestUtils;
 
 public class XMLWriterTest {
@@ -244,6 +250,37 @@ public class XMLWriterTest {
 	}
 
 	@Test
+	public void shouldWriteProjectNotificationsToXML() throws Exception {
+		final List<ProjectXMLNode> projectNodes = XMLNodeTestUtils.createProjectNodes(2);
+		final List<UserXMLNode> userNodes = XMLNodeTestUtils.createUserNodes(3);
+		final List<ProjectAuthorizationXMLNode> authNodes = XMLNodeTestUtils.createAuthorizationNodes(projectNodes, userNodes);
+		final List<Notification> notifications = createNotifications();
+
+		final OntrackXML ontrackXML = generateXMLAndRead(projectNodes, userNodes, authNodes, notifications);
+
+		DeepEqualityTestUtils.assertObjectEquality(notifications, ontrackXML.getNotifications());
+	}
+
+	private List<Notification> createNotifications() {
+		final List<Notification> notifications = new ArrayList<Notification>();
+
+		notifications.add(createNotification("msg1", NotificationType.IMPEDIMENT_CREATED));
+		notifications.add(createNotification("msg2", NotificationType.IMPEDIMENT_SOLVED));
+		notifications.add(createNotification("msg3", NotificationType.ANNOTATION_CREATED));
+
+		return notifications;
+	}
+
+	private Notification createNotification(final String description, final NotificationType type) {
+		final User user1 = createUser();
+		final User user2 = createUser();
+		final Notification notification = new NotificationBuilder(type, ProjectTestUtils.createRepresentation(new UUID("1")), UserTestUtils.createUser(1))
+				.setDescription(description).addReceipient(user1).addReceipient(user2)
+				.getNotification();
+		return notification;
+	}
+
+	@Test
 	@Ignore("Run this everytime you write a migration and want to generate a xml file with data simulating an export. Remember to comment the deletion of generated file inside @After method.")
 	public void generateCompleteXML() throws Exception {
 		final ArrayList<UserAction> actionList = new ArrayList<UserAction>();
@@ -328,7 +365,7 @@ public class XMLWriterTest {
 				.setNotifications(notifications)
 				.export(new FileOutputStream(ontrackFile));
 
-		final Serializer serializer = new Persister();
+		final Serializer serializer = new Persister(new CustomMatcher());
 		final File source = new File(ONTRACK_XML);
 
 		final OntrackXML ontrackXML = serializer.read(OntrackXML.class, source);

@@ -8,12 +8,7 @@ import java.util.List;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.Root;
 
-import br.com.oncast.ontrack.client.i18n.NotificationMessageCode;
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidgetMessages;
-import br.com.oncast.ontrack.client.utils.link.LinkFactory;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -24,71 +19,12 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
-@Root(name = "notification")
 @ConvertTo(NotificationEntity.class)
 public class Notification implements Serializable {
 
-	public enum NotificationType implements NotificationMessageCode {
-		IMPEDIMENT_CREATED() {
-			@Override
-			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-				return messages.impedimentCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification),
-						notification.getReferenceDescription(),
-						getProjectLinkFor(notification));
-			}
-		},
-		IMPEDIMENT_SOLVED() {
-			@Override
-			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-				return messages.impedimentSolvedNotificationWidgetMessage(getAnnotationLinkFor(notification),
-						notification.getReferenceDescription(),
-						getProjectLinkFor(notification));
-			}
-		},
-		PROGRESS_DECLARED() {
-			@Override
-			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-				final String descriptionLink = getScopeLinkFor(notification);
-				final String projectLink = getProjectLinkFor(notification);
-
-				if (notification.getDescription().equals("Done")) return messages.progressDoneNotificationWidgetMessage(descriptionLink, projectLink);
-
-				if (notification.getDescription().isEmpty()) return messages.progressNotStartedNotificationWidgetMessage(descriptionLink, projectLink);
-
-				return messages.progressUnderworkNotificationWidgetMessage(descriptionLink, projectLink);
-			}
-		},
-		ANNOTATION_CREATED() {
-			@Override
-			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-				return messages.annotationCreatedNotificationWidgetMessage(getAnnotationLinkFor(notification),
-						notification.getReferenceDescription(),
-						getProjectLinkFor(notification));
-			}
-		};
-
-		@Override
-		public abstract String selectMessage(final NotificationWidgetMessages messages, final Notification notification);
-
-		private static String getProjectLinkFor(final Notification notification) {
-			final ProjectRepresentation project = ClientServiceProvider.getInstance().getProjectRepresentationProvider()
-					.getProjectRepresentation(notification.getProjectId());
-
-			return LinkFactory.getLinkForProject(project).asString();
-		}
-
-		private static String getAnnotationLinkFor(final Notification notification) {
-			return LinkFactory.getLinkForAnnotation(notification.getProjectId(), notification.getReferenceId(), notification.getDescription()).asString();
-		}
-
-		private static String getScopeLinkFor(final Notification notification) {
-			return LinkFactory.getScopeLinkFor(notification.getProjectId(), notification.getReferenceId(), notification.getReferenceDescription()).asString();
-		}
-	}
-
 	private static final long serialVersionUID = 1L;
 
-	@Element
+	@Element(required = false)
 	@ConversionAlias("id")
 	private UUID id;
 
@@ -102,7 +38,7 @@ public class Notification implements Serializable {
 	@IgnoredByDeepEquality
 	private List<NotificationRecipient> recipients = null;
 
-	@Element
+	@Attribute
 	@ConversionAlias("author")
 	private String authorMail;
 
@@ -110,22 +46,22 @@ public class Notification implements Serializable {
 	@ConversionAlias("project")
 	private UUID projectId;
 
-	@Element
+	@Element(required = false)
 	@ConversionAlias("referenceId")
 	private UUID referenceId;
 
-	@Attribute
+	@Attribute(required = false)
 	@ConversionAlias("description")
 	private String description;
 
-	@Attribute
+	@Attribute(required = false)
 	@ConversionAlias("referenceDescription")
 	private String referenceDescription;
 
-	@Attribute
+	@Element
 	@ConversionAlias("type")
 	@ConvertUsing(NotificationTypeConveter.class)
-	private NotificationType type = null;
+	private NotificationType type;
 
 	// IMPORTANT A package-visible default constructor is necessary for serialization. Do not remove this.
 	protected Notification() {

@@ -11,9 +11,9 @@ import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
-import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEventHandler;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
+import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListResponse;
 

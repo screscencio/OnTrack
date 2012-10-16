@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.Proje
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.UserXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.exceptions.UnableToImportXMLException;
+import br.com.oncast.ontrack.server.services.exportImport.xml.transform.CustomMatcher;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -48,7 +49,7 @@ public class XMLImporter {
 
 	public XMLImporter loadXML(final File file) {
 		final long initialTime = getCurrentTime();
-		final Serializer serializer = new Persister();
+		final Serializer serializer = new Persister(new CustomMatcher());
 
 		try {
 			ontrackXML = serializer.read(OntrackXML.class, file);
