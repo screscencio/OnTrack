@@ -21,6 +21,9 @@ public class NotificationRecipientEntity {
 	@ConversionAlias("user")
 	private String user;
 
+	@ConversionAlias("readState")
+	private boolean readState;
+
 	public NotificationRecipientEntity() {}
 
 	public String getId() {
@@ -37,5 +40,13 @@ public class NotificationRecipientEntity {
 
 	public void setUser(final String user) {
 		this.user = user;
+	}
+
+	public boolean isReadState() {
+		return readState;
+	}
+
+	public void setReadState(final boolean readState) {
+		this.readState = readState;
 	}
 }

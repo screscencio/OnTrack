@@ -131,4 +131,9 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		@Override
 		public void onUpdateComplete(final boolean hasChanged) {}
 	}
+
+	@SuppressWarnings("unchecked")
+	public E getWidget(final int i) {
+		return (E) verticalContainer.getWidget(i);
+	}
 }

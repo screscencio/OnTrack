@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.services.notification;
 
 import java.io.Serializable;
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationRecipientEntity;
@@ -22,6 +23,10 @@ public class NotificationRecipient implements Serializable {
 	@Element
 	@ConversionAlias("user")
 	private String user;
+
+	@Attribute
+	@ConversionAlias("readState")
+	private boolean readState;
 
 	protected NotificationRecipient() {}
 
@@ -65,5 +70,13 @@ public class NotificationRecipient implements Serializable {
 		}
 		else if (!id.equals(other.id)) return false;
 		return true;
+	}
+
+	public void setReadState(final boolean read) {
+		this.readState = read;
+	}
+
+	public boolean getReadState() {
+		return readState;
 	}
 }

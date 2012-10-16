@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformat
 import br.com.oncast.ontrack.server.services.requestDispatch.DeAuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.NotificationListRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.NotificationReadStateRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectAuthorizationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationQuotaRequestHandler;
@@ -30,6 +31,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformat
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationQuotaRequest;
@@ -76,6 +78,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(NotificationListRequest.class, new NotificationListRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(UsersStatusRequest.class, new UsersStatusRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(UserScopeSelectionMulticastRequest.class, new UserScopeSelectionMulticastRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(NotificationReadStateRequest.class, new NotificationReadStateRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);
