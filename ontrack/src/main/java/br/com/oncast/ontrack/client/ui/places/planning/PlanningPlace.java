@@ -56,9 +56,7 @@ public class PlanningPlace extends ProjectDependentPlace {
 
 		@Override
 		public String getToken(final PlanningPlace place) {
-			String stringRepresentation = place.getRequestedProjectId().toStringRepresentation();
-			if (place.getSelectedScopeId().isValid()) stringRepresentation += PlacesPrefixes.ARGUMENT_SEPARATOR
-					+ place.getSelectedScopeId().toStringRepresentation();
+			final String stringRepresentation = place.getRequestedProjectId().toStringRepresentation();
 			return stringRepresentation;
 		}
 	}

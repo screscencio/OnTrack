@@ -75,7 +75,6 @@ public class PlanningActivity extends AbstractActivity {
 		registrations.add(registerScopeSelectionEventHandler());
 		registrations.add(registerScopeImpedimentUpdateEventHandler());
 
-		// FIXME LOBO PLACE aqui é passado o scope selecionado.
 		SERVICE_PROVIDER.getClientApplicationStateService().restore(place.getSelectedScopeId());
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
