@@ -86,8 +86,8 @@ public class AppActivityMapper implements ActivityMapper {
 		return new LoginActivity(loginPlace.getDestinationPlace());
 	}
 
-	private PlanningActivity createPlanningActivity(final ProjectDependentPlace place) {
-		return new PlanningActivity();
+	private PlanningActivity createPlanningActivity(final PlanningPlace place) {
+		return new PlanningActivity(place);
 	}
 
 	private ContextLoadingActivity createContextLoadingActivity(final ProjectDependentPlace projectDependentPlace) {

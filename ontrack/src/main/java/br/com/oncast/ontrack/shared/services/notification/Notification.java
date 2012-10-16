@@ -48,14 +48,14 @@ public class Notification implements Serializable {
 		PROGRESS_DECLARED() {
 			@Override
 			public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
-				if (notification.getDescription().equals("Done")) return messages.progressDoneNotificationWidgetMessage(
-						notification.getReferenceDescription(),
-						getProjectLinkFor(notification));
-				if (notification.getDescription().isEmpty()) return messages.progressNotStartedNotificationWidgetMessage(
-						notification.getReferenceDescription(),
-						getProjectLinkFor(notification));
-				return messages.progressUnderworkNotificationWidgetMessage(notification.getReferenceDescription(),
-						getProjectLinkFor(notification));
+				final String descriptionLink = getScopeLinkFor(notification);
+				final String projectLink = getProjectLinkFor(notification);
+
+				if (notification.getDescription().equals("Done")) return messages.progressDoneNotificationWidgetMessage(descriptionLink, projectLink);
+
+				if (notification.getDescription().isEmpty()) return messages.progressNotStartedNotificationWidgetMessage(descriptionLink, projectLink);
+
+				return messages.progressUnderworkNotificationWidgetMessage(descriptionLink, projectLink);
 			}
 		},
 		ANNOTATION_CREATED() {
@@ -79,6 +79,10 @@ public class Notification implements Serializable {
 
 		private static String getAnnotationLinkFor(final Notification notification) {
 			return LinkFactory.getLinkForAnnotation(notification.getProjectId(), notification.getReferenceId(), notification.getDescription()).asString();
+		}
+
+		private static String getScopeLinkFor(final Notification notification) {
+			return LinkFactory.getScopeLinkFor(notification.getProjectId(), notification.getReferenceId(), notification.getReferenceDescription()).asString();
 		}
 	}
 

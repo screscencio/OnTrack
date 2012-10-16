@@ -6,4 +6,5 @@ public class PlacesPrefixes {
 	public static final String MIGRATION = "Migration";
 	public static final String DETAIL = "Detail";
 	public static final String ORGANIZATION = "Organization";
+	public static final String ARGUMENT_SEPARATOR = ":";
 }

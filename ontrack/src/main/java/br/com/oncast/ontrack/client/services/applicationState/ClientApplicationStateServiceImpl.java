@@ -102,6 +102,15 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		fireReleaseContainerStateChangeEvents();
 	}
 
+	@Override
+	public void restore(final UUID scopeSelectedId) {
+		try {
+			selectedScope = contextProviderService.getCurrentProjectContext().findScope(scopeSelectedId);
+		}
+		catch (final ScopeNotFoundException e) {}
+		restore();
+	}
+
 	private void fireReleaseContainerStateChangeEvents() {
 		final ProjectContext context = contextProviderService.getCurrentProjectContext();
 		for (final UUID releaseId : clientStorageService.loadModifiedContainerStateReleases()) {

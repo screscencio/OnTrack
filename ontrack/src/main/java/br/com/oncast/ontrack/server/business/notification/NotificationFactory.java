@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -32,12 +33,12 @@ public class NotificationFactory {
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
 					final User author) {
 
-				final Scope scope = getScopeById(action, projectContext);
+				final String referenceDescription = getReferenceDescription(action, projectContext);
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((ImpedimentCreateAction) action).getAnnotationId());
 
 				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.IMPEDIMENT_CREATED)
 						.setDescription(annotation.getMessage())
-						.setReferenceDescription(scope.getDescription());
+						.setReferenceDescription(referenceDescription);
 			}
 		},
 		IMPEDIMENT_COMPLETITION(ImpedimentSolveAction.class) {
@@ -45,12 +46,12 @@ public class NotificationFactory {
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
 					final User author) {
 
-				final Scope scope = getScopeById(action, projectContext);
+				final String referenceDescription = getReferenceDescription(action, projectContext);
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((ImpedimentSolveAction) action).getAnnotationId());
 
 				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.IMPEDIMENT_SOLVED)
 						.setDescription(annotation.getMessage())
-						.setReferenceDescription(scope.getDescription());
+						.setReferenceDescription(referenceDescription);
 			}
 		},
 		PROGRESS_DECLARED(ScopeDeclareProgressAction.class) {
@@ -69,12 +70,12 @@ public class NotificationFactory {
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
 					final User author) {
 
-				final Scope scope = getScopeById(action, projectContext);
+				final String referenceDescription = getReferenceDescription(action, projectContext);
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((AnnotationCreateAction) action).getAnnotationId());
 
 				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.ANNOTATION_CREATED)
 						.setDescription(annotation.getMessage())
-						.setReferenceDescription(scope.getDescription());
+						.setReferenceDescription(referenceDescription);
 			}
 		};
 
@@ -90,6 +91,20 @@ public class NotificationFactory {
 			}
 			catch (final ScopeNotFoundException e3) {
 				throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e3);
+			}
+		}
+
+		private static String getReferenceDescription(final ModelAction action, final ProjectContext projectContext) {
+			try {
+				return projectContext.findScope(action.getReferenceId()).getDescription();
+			}
+			catch (final ScopeNotFoundException e3) {
+				try {
+					return projectContext.findRelease(action.getReferenceId()).getDescription();
+				}
+				catch (final ReleaseNotFoundException e) {
+					throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e3);
+				}
 			}
 		}
 
