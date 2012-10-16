@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
@@ -33,6 +34,8 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 		String impedimentSolved();
 
 		String normal();
+
+		String read();
 	}
 
 	@UiField
@@ -79,7 +82,29 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 		setStyleByType();
 
+		updateReadStateStyle();
+
 		return true;
+	}
+
+	private void updateReadStateStyle() {
+		container.removeStyleName(style.read());
+		if (getReadState()) container.addStyleName(style.read());
+	}
+
+	public void updateReadState(final boolean readState) {
+		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
+		if (currentUser == null) return;
+
+		notification.getRecipient(currentUser).setReadState(readState);
+		updateReadStateStyle();
+	}
+
+	public boolean getReadState() {
+		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
+		if (currentUser == null) throw new RuntimeException("There is no user logged in.");
+
+		return notification.getRecipient(currentUser).getReadState();
 	}
 
 	@Override

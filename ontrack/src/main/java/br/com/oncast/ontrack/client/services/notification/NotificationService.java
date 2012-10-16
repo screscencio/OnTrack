@@ -16,6 +16,8 @@ import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEve
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListResponse;
+import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateResponse;
 
 public class NotificationService {
 
@@ -67,6 +69,26 @@ public class NotificationService {
 		if (authenticationService.isUserAvailable()) updateAvailableNotifications();
 	}
 
+	public void updateNotificationReadState(final Notification notification, final boolean readState, final NotificationReadStateUpdateCallback callback) {
+		dispatchService.dispatch(new NotificationReadStateRequest(notification, readState), new DispatchCallback<NotificationReadStateResponse>() {
+
+			@Override
+			public void onSuccess(final NotificationReadStateResponse result) {
+				callback.notificationReadStateUpdated();
+			}
+
+			@Override
+			public void onTreatedFailure(final Throwable caught) {
+				callback.onError();
+			}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				callback.onError();
+			}
+		});
+	}
+
 	private void updateAvailableNotifications() {
 		dispatchService.dispatch(new NotificationListRequest(), new DispatchCallback<NotificationListResponse>() {
 
@@ -86,8 +108,7 @@ public class NotificationService {
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
 				// TODO +++Treat fatal error. Could not load project list...
-				alertingService
-						.showWarning("Notification list unavailable. Verify your connection.");
+				alertingService.showWarning("Notification list unavailable. Verify your connection.");
 			}
 		});
 	}

@@ -156,4 +156,12 @@ public class Notification implements Serializable {
 	public void setReferenceDescription(final String referenceDescription) {
 		this.referenceDescription = referenceDescription;
 	}
+
+	public NotificationRecipient getRecipient(final User user) {
+		for (final NotificationRecipient notificationRecipient : getRecipients()) {
+			if (notificationRecipient.getUserMail().equals(user.getEmail())) return notificationRecipient;
+		}
+		return null;
+	}
+
 }

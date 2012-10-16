@@ -74,7 +74,7 @@
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}">
-		<g:SimplePanel styleName="{style.scrollContainer}">
+		<g:ScrollPanel ui:field="scrollContainer" styleName="{style.scrollContainer}">
 			<g:DeckPanel ui:field="deckPanel">
 				<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
 					<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
@@ -91,7 +91,7 @@
 					<misc:VerticalModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
 				</g:DeckPanel>
 			</g:DeckPanel>
-		</g:SimplePanel>		
+		</g:ScrollPanel>		
 	</layout:ApplicationPopupBoxContainer>
 
 </ui:UiBinder>
