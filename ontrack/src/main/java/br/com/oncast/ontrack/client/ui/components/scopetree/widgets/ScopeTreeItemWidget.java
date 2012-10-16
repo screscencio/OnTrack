@@ -175,7 +175,6 @@ public class ScopeTreeItemWidget extends Composite {
 	private final Timer fadeAnimationTimer;
 
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
-
 		initWidget(uiBinder.createAndBindUi(this));
 		setScope(scope);
 

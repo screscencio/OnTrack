@@ -56,8 +56,7 @@ public class ClientAlertingService {
 		alertingContainer.remove(alertingMessage);
 	}
 
-	// FIXME MATS - Mat, as chamadas para este metodo são os que devem se tornar popUps como o que a gente viu com o Gmail. Não sei se o lugar a implementar
-	// esse popUp seria nesta classe, mas mesmo que sim não deveria mais usar o esquema com a notificação existente.
+	// TODO make this message alert like modal popup
 	public void showErrorWithConfirmation(final String errorMessage, final AlertConfirmationListener confirmationListener) {
 		makeConfirmationAlert(errorMessage, AlertType.ERROR, confirmationListener);
 	}

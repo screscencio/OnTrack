@@ -1,7 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import junit.framework.Assert;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -46,37 +47,34 @@ public class ScopeTreeWidgetTest extends GwtTest {
 		scopeA1.add(scopeA12);
 	}
 
-	@Test(expected = ScopeNotFoundException.class)
+	@Test
 	public void shouldNotFindItemInCache() throws ScopeNotFoundException {
-		scopeTreeWidget.findScopeTreeItem(scopeA1);
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA1).isFake());
 	}
 
-	@Test(expected = ScopeNotFoundException.class)
+	@Test
 	public void shouldNotFindItemInCache2() throws ScopeNotFoundException {
-		scopeTreeWidget.findScopeTreeItem(scopeA11);
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA11).isFake());
 	}
 
-	@Test(expected = ScopeNotFoundException.class)
+	@Test
 	public void shouldNotFindItemInCache3() throws ScopeNotFoundException {
-		scopeTreeWidget.findScopeTreeItem(scopeA12);
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA12).isFake());
 	}
 
-	@Test(expected = ScopeNotFoundException.class)
+	@Test
 	public void shouldNotFindItemInCache4() throws ScopeNotFoundException {
-		scopeTreeWidget.findScopeTreeItem(scopeA13);
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA13).isFake());
 	}
 
-	@Test(expected = ScopeNotFoundException.class)
-	public void shouldNotFindItemInCache5() throws ScopeNotFoundException {
+	@Test
+	public void shouldAddFakeItemRepresentingChildrem() throws ScopeNotFoundException {
 		final ScopeTreeItem treeItem = new ScopeTreeItem(scopeA1);
 		scopeTreeWidget.add(treeItem);
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA1);
-			scopeTreeWidget.findScopeTreeItem(scopeA11);
-			scopeTreeWidget.findScopeTreeItem(scopeA12);
-		}
-		catch (final Exception e) {}
-		scopeTreeWidget.findScopeTreeItem(scopeA13);
+		assertFalse(scopeTreeWidget.findScopeTreeItem(scopeA1).isFake());
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA11).isFake());
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA12).isFake());
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA13).isFake());
 	}
 
 	@Test
@@ -133,27 +131,9 @@ public class ScopeTreeWidgetTest extends GwtTest {
 		scopeTreeWidget.findScopeTreeItem(scopeA11);
 		scopeTreeWidget.findScopeTreeItem(scopeA12);
 		scopeTreeWidget.clear();
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA1);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA11);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA12);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA1).isFake());
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA11).isFake());
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA12).isFake());
 	}
 
 	@Test
@@ -164,20 +144,8 @@ public class ScopeTreeWidgetTest extends GwtTest {
 		scopeTreeWidget.findScopeTreeItem(scopeA11);
 		scopeTreeWidget.findScopeTreeItem(scopeA12);
 		treeItem.remove();
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA11);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA12);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA11).isFake());
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA12).isFake());
 	}
 
 	@Test
@@ -187,28 +155,28 @@ public class ScopeTreeWidgetTest extends GwtTest {
 		scopeTreeWidget.findScopeTreeItem(scopeA1);
 	}
 
-	@Test(expected = ScopeNotFoundException.class)
+	@Test
 	public void shouldAddAndThenRemoveNewItemFromCache1() throws ScopeNotFoundException {
 		final ScopeTreeItem treeItem = new ScopeTreeItem(scopeA1);
 		scopeTreeWidget.add(treeItem);
 		scopeTreeWidget.remove(treeItem);
-		scopeTreeWidget.findScopeTreeItem(scopeA1);
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA1).isFake());
 	}
 
-	@Test(expected = ScopeNotFoundException.class)
+	@Test
 	public void shouldAddAndThenRemoveNewItemFromCache2() throws ScopeNotFoundException {
 		final ScopeTreeItem treeItem = new ScopeTreeItem(scopeA1);
 		scopeTreeWidget.add(treeItem);
 		scopeTreeWidget.remove(treeItem);
-		scopeTreeWidget.findScopeTreeItem(scopeA11);
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA11).isFake());
 	}
 
-	@Test(expected = ScopeNotFoundException.class)
+	@Test
 	public void shouldAddAndThenRemoveNewItemFromCache3() throws ScopeNotFoundException {
 		final ScopeTreeItem treeItem = new ScopeTreeItem(scopeA1);
 		scopeTreeWidget.add(treeItem);
 		scopeTreeWidget.remove(treeItem);
-		scopeTreeWidget.findScopeTreeItem(scopeA12);
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA12).isFake());
 	}
 
 	@Test
@@ -217,13 +185,7 @@ public class ScopeTreeWidgetTest extends GwtTest {
 		scopeTreeWidget.add(treeItem);
 		scopeTreeWidget.findScopeTreeItem(scopeA1);
 		scopeTreeWidget.remove(treeItem);
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA1);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA1).isFake());
 	}
 
 	@Test
@@ -234,27 +196,9 @@ public class ScopeTreeWidgetTest extends GwtTest {
 		scopeTreeWidget.findScopeTreeItem(scopeA11);
 		scopeTreeWidget.findScopeTreeItem(scopeA12);
 		scopeTreeWidget.remove(treeItem);
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA1);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA11);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
-		try {
-			scopeTreeWidget.findScopeTreeItem(scopeA12);
-			Assert.fail("An exception should have be thrown.");
-		}
-		catch (final Exception e) {
-			// Purposefuly ignoring exception.
-		}
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA1).isFake());
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA11).isFake());
+		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA12).isFake());
 	}
 
 	@Override

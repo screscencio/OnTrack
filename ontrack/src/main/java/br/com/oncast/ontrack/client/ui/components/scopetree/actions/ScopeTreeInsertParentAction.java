@@ -26,6 +26,8 @@ class ScopeTreeInsertParentAction implements ScopeTreeAction {
 
 		final ScopeTreeItem treeItem = tree.findScopeTreeItem(scope);
 		final ScopeTreeItem grandParentTreeItem = tree.findScopeTreeItem(grandParentScope);
+		if (grandParentTreeItem.isFake()) return;
+
 		final ScopeTreeItem newTreeItem = new ScopeTreeItem(newScope);
 
 		final int index = grandParentScope.getChildIndex(newScope);

@@ -22,7 +22,6 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -169,17 +168,11 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	private static void selectItem(final ScopeTreeWidget treeWidget, final Scope scope) {
-		try {
-			final ScopeTreeItem item = treeWidget.findScopeTreeItem(scope);
-			final Tree tree = item.getTree();
-			tree.setSelectedItem(null, false);
-			item.setHierarchicalState(true);
-			tree.setSelectedItem(item);
-		}
-		catch (final ScopeNotFoundException e) {
-			e.printStackTrace();
-			ClientServiceProvider.getInstance().getClientAlertingService().showWarning(e.getLocalizedMessage());
-		}
+		final ScopeTreeItem item = treeWidget.findScopeTreeItem(scope);
+		final Tree tree = item.getTree();
+		tree.setSelectedItem(null, false);
+		item.setHierarchicalState(true);
+		tree.setSelectedItem(item);
 	}
 
 	public void focus() {

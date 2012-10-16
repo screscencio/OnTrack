@@ -57,7 +57,6 @@ public class PlanningActivity extends AbstractActivity {
 
 		view.getScopeTree().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setActionExecutionRequestHandler(actionExecutionService);
-		view.getSearchBar().setActionExecutionRequestHandler(actionExecutionService);
 
 		view.getScopeTree().setContext(projectContext);
 		view.getReleasePanel().setRelease(projectContext.getProjectRelease());

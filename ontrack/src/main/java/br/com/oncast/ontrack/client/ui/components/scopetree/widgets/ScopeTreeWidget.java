@@ -32,7 +32,6 @@ import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEventHan
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -182,6 +181,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			@Override
 			public void onTreeItemAdopted(final TreeItem treeItem) {
 				final ScopeTreeItem scopeTreeItem = ((ScopeTreeItem) treeItem);
+				if (scopeTreeItem.isFake()) return;
+
 				addToCache(scopeTreeItem);
 				updateNoScopeLabelVisibility();
 			}
@@ -189,6 +190,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			@Override
 			public void onTreeItemAbandoned(final TreeItem treeItem) {
 				final ScopeTreeItem scopeTreeItem = ((ScopeTreeItem) treeItem);
+				if (scopeTreeItem.isFake()) return;
+
 				removeFromCache(scopeTreeItem);
 				updateNoScopeLabelVisibility();
 			}
@@ -225,21 +228,14 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				final Scope scope = event.getTargetScope();
 				disableSelectionEvent = true;
 
-				try {
-					final ScopeTreeItem item = findScopeTreeItem(scope);
+				final ScopeTreeItem item = findAndMountScopeTreeItem(scope);
 
-					item.setHierarchicalState(true);
+				item.setHierarchicalState(true);
 
-					tree.setSelectedItem(item, false);
-					removeBorderFromLastItem();
-					addBorderToSelectedItem();
-				}
-				catch (final ScopeNotFoundException e) {
-					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
-				}
-				finally {
-					disableSelectionEvent = false;
-				}
+				tree.setSelectedItem(item, false);
+				removeBorderFromLastItem();
+				addBorderToSelectedItem();
+				disableSelectionEvent = false;
 			}
 
 		}));
@@ -248,13 +244,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			public void onMemberSelectedScope(final ScopeAddMemberSelectionEvent event) {
 				final Scope scope = event.getTargetScope();
 
-				try {
-					final ScopeTreeItem item = findScopeTreeItem(scope);
-					item.addSelectedMember(event.getMember(), event.getSelectionColor());
-				}
-				catch (final ScopeNotFoundException e) {
-					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
-				}
+				final ScopeTreeItem item = findScopeTreeItem(scope);
+				item.addSelectedMember(event.getMember(), event.getSelectionColor());
 			}
 		}));
 		handlerRegistrations.add(eventBus.addHandler(ScopeRemoveMemberSelectionEvent.getType(), new ScopeRemoveMemberSelectionEventHandler() {
@@ -262,13 +253,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			public void clearSelection(final ScopeRemoveMemberSelectionEvent event) {
 				final Scope scope = event.getTargetScope();
 
-				try {
-					final ScopeTreeItem item = findScopeTreeItem(scope);
-					item.removeSelectedMember(event.getMember());
-				}
-				catch (final ScopeNotFoundException e) {
-					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
-				}
+				final ScopeTreeItem item = findScopeTreeItem(scope);
+				item.removeSelectedMember(event.getMember());
 			}
 		}));
 		handlerRegistrations.add(eventBus.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
@@ -276,29 +262,9 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
 				final Scope scope = event.getTargetScope();
 
-				try {
-					final ScopeTreeItem item = findScopeTreeItem(scope);
-					item.showDetailsIcon(event.hasDetails());
-				}
-				catch (final ScopeNotFoundException e) {
-					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
-				}
-			}
-		}));
-
-		handlerRegistrations.add(eventBus.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
-
-			@Override
-			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
-				final Scope scope = event.getTargetScope();
-
-				try {
-					final ScopeTreeItem item = findScopeTreeItem(scope);
-					item.showOpenImpedimentIcon(event.hasOpenImpediments());
-				}
-				catch (final ScopeNotFoundException e) {
-					throw new RuntimeException("Scope '" + scope.getDescription() + "' not found in ScopeTreeWidget", e);
-				}
+				final ScopeTreeItem item = findScopeTreeItem(scope);
+				item.showDetailsIcon(event.hasDetails());
+				item.showOpenImpedimentIcon(event.hasOpenImpediments());
 			}
 		}));
 
@@ -314,7 +280,6 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 				ClientServiceProvider.getInstance().getEventBus()
 						.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
-
 			}
 		}));
 
@@ -322,7 +287,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 			@Override
 			public void onOpen(final OpenEvent<TreeItem> event) {
 				final ScopeTreeItem item = (ScopeTreeItem) event.getTarget();
-				mountTwoLevels(item);
+				if (mountTwoLevels(item)) item.setState(true, false);
 				tree.setSelectedItem(null, false);
 				tree.setSelectedItem(item, false);
 			}
@@ -375,17 +340,19 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		return tree.getItemCount();
 	}
 
-	// TODO+++ improve performance
-	public ScopeTreeItem findScopeTreeItem(final Scope scope) throws ScopeNotFoundException {
+	public ScopeTreeItem findScopeTreeItem(final Scope scope) {
+		final UUID scopeId = scope.getId();
+		return itemMapCache.containsKey(scopeId) ? itemMapCache.get(scopeId) : FakeScopeTreeItem.get();
+	}
+
+	private ScopeTreeItem findAndMountScopeTreeItem(final Scope scope) {
 		final UUID scopeId = scope.getId();
 
 		if (itemMapCache.containsKey(scopeId)) return itemMapCache.get(scopeId);
 
-		if (scope.isRoot()) throw new ScopeNotFoundException("No tree item were found for the scope.");
+		if (scope.isRoot()) return FakeScopeTreeItem.get();
 
-		mountTwoLevels(findScopeTreeItem(scope.getParent()));
-
-		if (!itemMapCache.containsKey(scopeId)) throw new ScopeNotFoundException("No tree item were found for the scope.");
+		findAndMountScopeTreeItem(scope.getParent()).mountTwoLevels();
 
 		return itemMapCache.get(scopeId);
 	}
@@ -422,11 +389,12 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		instructionPanel.clear();
 	}
 
-	private void mountTwoLevels(final ScopeTreeItem item) {
+	private boolean mountTwoLevels(final ScopeTreeItem item) {
 		final boolean wasDisabledBefore = disableSelectionEvent;
 		disableSelectionEvent = true;
-		item.mountTwoLevels();
+		final boolean wasFake = item.mountTwoLevels();
 		disableSelectionEvent = wasDisabledBefore;
+		return wasFake;
 	}
 
 }

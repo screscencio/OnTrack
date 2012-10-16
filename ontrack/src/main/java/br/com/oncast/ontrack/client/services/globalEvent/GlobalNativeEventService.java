@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -28,15 +27,7 @@ public class GlobalNativeEventService {
 
 			@Override
 			public void onPreviewNativeEvent(final NativePreviewEvent event) {
-				// FIXME this line breaks sometimes, this is to show more informations to help fixing the problem
-				try {
-					event.getTypeInt();
-				}
-				catch (final Exception e) {
-					GWT.log("" + event, e);
-					return;
-				}
-
+				// TODO the line below breaks some times because of event type class mismatch
 				final int eventType = event.getTypeInt();
 
 				switch (eventType) {

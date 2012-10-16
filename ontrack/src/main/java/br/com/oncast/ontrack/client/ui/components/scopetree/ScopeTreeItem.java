@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import java.util.HashMap;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
@@ -10,11 +9,11 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.FakeScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.Tree;
@@ -22,10 +21,13 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
-	@IgnoredByDeepEquality
-	private final HashMap<Scope, ScopeTreeItem> scopeItemCacheMap = new HashMap<Scope, ScopeTreeItem>();
+	private ScopeTreeItemWidget scopeItemWidget;
 
-	private final ScopeTreeItemWidget scopeItemWidget;
+	private boolean hasFakeItens;
+
+	protected ScopeTreeItem() {
+		super();
+	}
 
 	public ScopeTreeItem(final Scope scope) {
 		super();
@@ -80,52 +82,33 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		}));
 
 		addStyleName("ScopeTreeItem");
-		setReferencedScope(scope);
+
+		if (scope.getChildCount() != 0) {
+			super.insertItem(0, FakeScopeTreeItem.get());
+			this.hasFakeItens = true;
+		}
 	}
 
-	public void mountTwoLevels() {
-		assureChildrenWasAdded();
-		for (int i = 0; i < getChildCount(); i++)
-			getChild(i).assureChildrenWasAdded();
+	public boolean mountTwoLevels() {
+		if (hasFakeItens) {
+			super.removeItems();
+			insertChildren();
+			this.hasFakeItens = false;
+			return true;
+		}
+		return false;
 	}
 
-	@Override
-	public void insertItem(final int beforeIndex, final TreeItem item) throws IndexOutOfBoundsException {
-		super.insertItem(beforeIndex, item);
-		final ScopeTreeItem scopeItem = (ScopeTreeItem) item;
-		scopeItemCacheMap.put(scopeItem.getReferencedScope(), scopeItem);
+	public boolean isFake() {
+		return false;
 	}
 
-	// TODO+++ improve performance
-	@Override
-	public void removeItem(final TreeItem item) {
-		super.removeItem(item);
-		scopeItemCacheMap.remove(((ScopeTreeItem) item).getReferencedScope());
-	}
-
-	// TODO+++ improve performance
-	private void assureChildrenWasAdded() {
+	private void insertChildren() {
 		final List<Scope> children = this.getReferencedScope().getChildren();
 		for (int i = 0; i < children.size(); i++) {
 			final Scope childScope = children.get(i);
-			final ScopeTreeItem childItem = scopeItemCacheMap.get(childScope);
-			if (childItem == null) {
-				final ScopeTreeItem item = new ScopeTreeItem(childScope);
-				this.insertItem(i, item);
-				scopeItemCacheMap.put(childScope, item);
-				continue;
-			}
-
-			if (this.getChildIndex(childItem) != i) {
-				this.removeItem(childItem);
-				this.insertItem(i, childItem);
-			}
-		}
-
-		for (int i = children.size(); i < this.getChildCount(); i++) {
-			final ScopeTreeItem childItem = this.getChild(i);
-			this.removeItem(childItem);
-			scopeItemCacheMap.remove(childItem.getReferencedScope());
+			final ScopeTreeItem item = new ScopeTreeItem(childScope);
+			this.insertItem(i, item);
 		}
 	}
 

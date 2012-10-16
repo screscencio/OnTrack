@@ -25,6 +25,7 @@ class ScopeTreeInsertChildAction implements ScopeTreeAction {
 		final Scope newScope = context.findScope(action.getNewScopeId());
 
 		final ScopeTreeItem parentTreeItem = tree.findScopeTreeItem(scope);
+		if (parentTreeItem.isFake()) return;
 		final ScopeTreeItem newItem = new ScopeTreeItem(newScope);
 
 		parentTreeItem.insertItem(scope.getChildIndex(newScope), newItem);
