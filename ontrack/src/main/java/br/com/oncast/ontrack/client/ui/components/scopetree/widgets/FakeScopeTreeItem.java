@@ -1,0 +1,85 @@
+package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
+
+import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
+
+import com.google.gwt.user.client.ui.IsTreeItem;
+import com.google.gwt.user.client.ui.TreeItem;
+
+public class FakeScopeTreeItem extends ScopeTreeItem implements IsTreeItem {
+
+	private static FakeScopeTreeItem instance;
+
+	private FakeScopeTreeItem() {}
+
+	public static ScopeTreeItem get() {
+		return instance == null ? instance = new FakeScopeTreeItem() : instance;
+	}
+
+	@Override
+	public boolean isFake() {
+		return true;
+	};
+
+	@Override
+	public boolean mountTwoLevels() {
+		return false;
+	}
+
+	@Override
+	public void insertItem(final int beforeIndex, final TreeItem item) throws IndexOutOfBoundsException {}
+
+	@Override
+	public void removeItem(final TreeItem item) {}
+
+	@Override
+	protected void select() {}
+
+	@Override
+	public boolean isRoot() {
+		return false;
+	}
+
+	@Override
+	public void enterEditMode() {}
+
+	@Override
+	public ScopeTreeItem getChild(final int index) {
+		return this;
+	}
+
+	@Override
+	public ScopeTreeItem getParentItem() {
+		return this;
+	}
+
+	@Override
+	public void setReferencedScope(final Scope scope) {}
+
+	@Override
+	public Scope getReferencedScope() {
+		return null;
+	}
+
+	@Override
+	public void setHierarchicalState(final boolean state) {}
+
+	@Override
+	public ScopeTreeItemWidget getScopeTreeItemWidget() {
+		return null;
+	}
+
+	@Override
+	public void showDetailsIcon(final boolean b) {}
+
+	@Override
+	public void showOpenImpedimentIcon(final boolean hasOpenImpediments) {}
+
+	@Override
+	public void addSelectedMember(final User member, final String selectionColor) {}
+
+	@Override
+	public void removeSelectedMember(final User member) {}
+
+}
