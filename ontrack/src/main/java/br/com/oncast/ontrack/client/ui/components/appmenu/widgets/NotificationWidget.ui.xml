@@ -11,6 +11,7 @@
 			.rootPanel {
 				position: relative;
 				width: 100%;
+				color : #666;
 
 				margin-bottom: 10px;
 			}
@@ -18,7 +19,8 @@
 			.image{
 				width: 40px;
 				height: 40px;
-				padding-right: 10px;
+				margin-right: 10px;
+				margin: 0px 5px;
 			}
 			
 			.container {
@@ -30,11 +32,9 @@
 			}
 			
 			.timestamp {
-				width: 100%;
 				text-align: right;
-				margin-top: 5px;
-				margin-bottom: -5px;		
-
+				margin: 5px 5px -5px 0px;
+				
 				font-size: small;
 				font-style: italic;
 			}
@@ -50,19 +50,20 @@
 			}
 			
 			.impediment {
-				border-right: OPEN_IMPEDIMENT_BORDER;
+				border-left: OPEN_IMPEDIMENT_BORDER;
+				margin-left: -5px;
 			}
 
 			.impedimentSolved {
-				border-right: SOLVED_IMPEDIMENT_BORDER;
+				border-left: SOLVED_IMPEDIMENT_BORDER;
+				margin-left: -5px;
 			}
 
-			.normal {
-				border-right: NO_IMPEDIMENT_BORDER;
-			}
+			.normal {}
 			
 			.read {
-				opacity: 0.7;
+				opacity: 0.5;
+				color: #999;
 			}
 
 		</ui:style>
@@ -70,7 +71,7 @@
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<g:HorizontalPanel ui:field="container" styleName="{style.container}">
 			<g:Image ui:field="userIcon" styleName="{style.image}" />
-			<g:cell  styleName="{style.cell}">
+			<g:cell styleName="{style.cell}">
 				<g:HTMLPanel styleName="{style.inline}">
 					<g:Label ui:field="user" styleName="{style.inline}"/>
 					<g:InlineHTML ui:field="notificationMessage" styleName="{style.inline}" />
@@ -80,4 +81,4 @@
 		</g:HorizontalPanel>
 		<t:Separator />
 	</g:HTMLPanel>
-</ui:UiBinder> 
+</ui:UiBinder> 	
