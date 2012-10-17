@@ -24,7 +24,7 @@ public class OntrackXML {
 	@ElementList
 	private List<ProjectAuthorizationXMLNode> projectAuthorizations;
 
-	@ElementList
+	@ElementList(required = false)
 	private List<Notification> notifications = new ArrayList<Notification>();
 
 	public void setUsers(final List<UserXMLNode> users) {
