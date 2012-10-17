@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMen
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.MembersWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationListWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectMenuWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -44,7 +45,7 @@ public class ApplicationMenu extends Composite {
 	protected ApplicationMenuItem projectMenuItem;
 
 	@UiField
-	protected ApplicationMenuItem notificationMenuItem;
+	protected NotificationMenuItem notificationMenuItem;
 
 	@UiField
 	protected ApplicationMenuItem memberMenuItem;

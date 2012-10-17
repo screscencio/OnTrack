@@ -30,10 +30,11 @@
 			}
 			
 			.timestamp {
-				position: absolute;
-				right: 12px;
-				bottom: 8px;
-				
+				width: 100%;
+				text-align: right;
+				margin-top: 5px;
+				margin-bottom: -5px;		
+
 				font-size: small;
 				font-style: italic;
 			}

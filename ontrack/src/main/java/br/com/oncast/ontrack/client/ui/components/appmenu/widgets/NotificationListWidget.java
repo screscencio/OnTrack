@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.notification.NotificationClientUtils;
 import br.com.oncast.ontrack.client.services.notification.NotificationListChangeListener;
 import br.com.oncast.ontrack.client.services.notification.NotificationReadStateUpdateCallback;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
@@ -33,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 // FIXME Notification MAKE THE PANEL SCROLLABLE WITH MAX HEIGHT
 public class NotificationListWidget extends Composite implements HasCloseHandlers<NotificationListWidget>, PopupAware {
 
-	private static final int NOTIFICATION_READ_STATE_DELAY_MILLIS = 1000;
+	private static final int NOTIFICATION_READ_STATE_DELAY_MILLIS = 1500;
 
 	private static NotificationWidgetUiBinder uiBinder = GWT.create(NotificationWidgetUiBinder.class);
 
@@ -62,35 +63,7 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 		@Override
 		public void run() {
-			final int widgetCount = notificationContainer.getWidgetCount();
-			for (int i = 0; i < widgetCount; i++) {
-				final NotificationWidget widget = notificationContainer.getWidget(i);
-				final Element element = widget.getElement();
-
-				final int listVisibleTop = scrollContainer.getVerticalScrollPosition();
-				final int listVisibleBottom = listVisibleTop + scrollContainer.getElement().getClientHeight();
-
-				final int elementTop = element.getOffsetTop();
-				final int elementBottom = elementTop + element.getOffsetHeight();
-
-				if (elementTop < listVisibleTop) continue;
-				if (elementBottom > listVisibleBottom) break;
-				if (widget.getReadState()) continue;
-
-				final Notification notification = widget.getModelObject();
-				NOTIFICATION_SERVICE.updateNotificationReadState(notification, true, new NotificationReadStateUpdateCallback() {
-
-					@Override
-					public void onError() {
-						widget.updateReadState(false);
-					}
-
-					@Override
-					public void notificationReadStateUpdated() {
-						widget.updateReadState(true);
-					}
-				});
-			}
+			markVisibleNotificationsAsRead();
 		}
 	};
 
@@ -178,5 +151,38 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 	@UiHandler("scrollContainer")
 	protected void onScroll(final ScrollEvent event) {
 		timer.schedule(NOTIFICATION_READ_STATE_DELAY_MILLIS);
+	}
+
+	private void markVisibleNotificationsAsRead() {
+		if (!this.isVisible()) return;
+		final int widgetCount = notificationContainer.getWidgetCount();
+		for (int i = 0; i < widgetCount; i++) {
+			final NotificationWidget widget = notificationContainer.getWidget(i);
+			final Element element = widget.getElement();
+
+			final int listVisibleTop = scrollContainer.getVerticalScrollPosition();
+			final int listVisibleBottom = listVisibleTop + scrollContainer.getElement().getClientHeight();
+
+			final int elementTop = element.getOffsetTop();
+			final int elementBottom = elementTop + element.getOffsetHeight();
+
+			if (elementTop < listVisibleTop) continue;
+			if (elementBottom > listVisibleBottom) break;
+			if (NotificationClientUtils.getRecipientForCurrentUser(widget.getModelObject()).getReadState()) continue;
+
+			final Notification notification = widget.getModelObject();
+			NOTIFICATION_SERVICE.updateNotificationReadState(notification, true, new NotificationReadStateUpdateCallback() {
+
+				@Override
+				public void onError() {
+					widget.updateReadState(false);
+				}
+
+				@Override
+				public void notificationReadStateUpdated() {
+					widget.updateReadState(true);
+				}
+			});
+		}
 	}
 }

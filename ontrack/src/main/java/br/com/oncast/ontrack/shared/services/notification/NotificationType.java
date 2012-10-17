@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.i18n.NotificationMessageCode;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationWidgetMessages;
 import br.com.oncast.ontrack.client.utils.link.LinkFactory;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
 public enum NotificationType implements NotificationMessageCode {
@@ -29,11 +30,11 @@ public enum NotificationType implements NotificationMessageCode {
 			final String descriptionLink = getScopeLinkFor(notification);
 			final String projectLink = getProjectLinkFor(notification);
 
-			if (notification.getDescription().equals("Done")) return messages.progressDoneNotificationWidgetMessage(descriptionLink, projectLink);
+			final ProgressState progressState = ProgressState.getStateForDescription(notification.getDescription());
+			if (progressState == ProgressState.DONE) return messages.progressDoneNotificationWidgetMessage(descriptionLink, projectLink);
+			if (progressState == ProgressState.NOT_STARTED) return messages.progressNotStartedNotificationWidgetMessage(descriptionLink, projectLink);
 
-			if (notification.getDescription().isEmpty()) return messages.progressNotStartedNotificationWidgetMessage(descriptionLink, projectLink);
-
-			return messages.progressUnderworkNotificationWidgetMessage(descriptionLink, projectLink);
+			return messages.progressUnderworkNotificationWidgetMessage(notification.getDescription(), descriptionLink, projectLink);
 		}
 	},
 	ANNOTATION_CREATED() {
