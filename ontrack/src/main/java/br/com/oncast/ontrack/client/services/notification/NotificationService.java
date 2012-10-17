@@ -24,6 +24,7 @@ public class NotificationService {
 	private final DispatchService dispatchService;
 	private final ClientAlertingService alertingService;
 	private final Set<NotificationListChangeListener> notificationListChangeListeners = new HashSet<NotificationListChangeListener>();
+	private final Set<NotificationReadStateChangeListener> notificationReadStateChangeListeners = new HashSet<NotificationReadStateChangeListener>();
 	private final List<Notification> availableNotifications = new LinkedList<Notification>();
 	private boolean notificationListAvailability;
 
@@ -75,6 +76,7 @@ public class NotificationService {
 			@Override
 			public void onSuccess(final NotificationReadStateResponse result) {
 				callback.notificationReadStateUpdated();
+				notifyNotificationReadStateChangeListeners(notification, readState);
 			}
 
 			@Override
@@ -140,5 +142,15 @@ public class NotificationService {
 
 	public void unregisterNotificationListChangeListener(final NotificationListChangeListener notificationListChangeListener) {
 		notificationListChangeListeners.remove(notificationListChangeListener);
+	}
+
+	public void registerNotificationReadStateChangeListener(final NotificationReadStateChangeListener notificationReadStateChangeListener) {
+		notificationReadStateChangeListeners.add(notificationReadStateChangeListener);
+	}
+
+	protected void notifyNotificationReadStateChangeListeners(final Notification notification, final boolean readState) {
+		for (final NotificationReadStateChangeListener listener : notificationReadStateChangeListeners) {
+			listener.readStateChanged(notification, readState);
+		}
 	}
 }

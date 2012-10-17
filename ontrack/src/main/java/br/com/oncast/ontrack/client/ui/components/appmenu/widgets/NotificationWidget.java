@@ -1,12 +1,12 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.notification.NotificationClientUtils;
 import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
@@ -79,6 +79,7 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 		notificationMessage.setHTML(notification.getType().selectMessage(messages, notification));
 
 		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));
+		timestamp.setTitle(HumanDateFormatter.getShortAbsuluteDate(notification.getTimestamp()));
 
 		setStyleByType();
 
@@ -89,22 +90,12 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	private void updateReadStateStyle() {
 		container.removeStyleName(style.read());
-		if (getReadState()) container.addStyleName(style.read());
+		if (NotificationClientUtils.getRecipientForCurrentUser(notification).getReadState()) container.addStyleName(style.read());
 	}
 
 	public void updateReadState(final boolean readState) {
-		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
-		if (currentUser == null) return;
-
-		notification.getRecipient(currentUser).setReadState(readState);
+		NotificationClientUtils.getRecipientForCurrentUser(notification).setReadState(readState);
 		updateReadStateStyle();
-	}
-
-	public boolean getReadState() {
-		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
-		if (currentUser == null) throw new RuntimeException("There is no user logged in.");
-
-		return notification.getRecipient(currentUser).getReadState();
 	}
 
 	@Override

@@ -62,7 +62,7 @@ public class NotificationFactory {
 				final Scope scope = getScopeById(action, projectContext);
 				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.PROGRESS_DECLARED)
 						.setReferenceDescription(scope.getDescription())
-						.setDescription(scope.getProgress().getDeclaredDescription());
+						.setDescription(scope.getProgress().getDescription());
 			}
 		},
 		ANNOTATION_CREATED(AnnotationCreateAction.class) {

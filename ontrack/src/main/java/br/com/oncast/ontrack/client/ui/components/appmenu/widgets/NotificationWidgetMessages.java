@@ -29,8 +29,8 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	String progressNotStartedNotificationWidgetMessage(String scopeDescription, String project);
 
 	@Description("progress underwork notification widget")
-	@DefaultMessage("marked as underwork the item ''{0}'' at ''{1}''")
-	String progressUnderworkNotificationWidgetMessage(String scopeDescription, String project);
+	@DefaultMessage("marked as ''{0}'' the item ''{1}'' at ''{2}''")
+	String progressUnderworkNotificationWidgetMessage(String progressDescription, String scopeDescription, String project);
 
 	@Description("progress done notification widget")
 	@DefaultMessage("marked as done the item ''{0}'' at ''{1}''")
