@@ -13,6 +13,7 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
+import br.com.oncast.ontrack.client.services.user.Selection;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
@@ -178,7 +179,8 @@ public class ScopeTreeItemWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		setScope(scope);
 
-		selectionsList = new ArrayList<Selection>();
+		selectionsList = ClientServiceProvider.getInstance().getMembersScopeSelectionService().getSelectionsFor(scope);
+
 		fadeAnimation = new Animation() {
 			@Override
 			protected void onUpdate(final double progress) {
@@ -235,6 +237,9 @@ public class ScopeTreeItemWidget extends Composite {
 		showOpenImpedimentIcon(getAnnotationService().hasOpenImpediment(scope.getId()));
 
 		deckPanel.showWidget(0);
+
+		updateSelection();
+		showSelectedMembersLabel();
 	}
 
 	@UiHandler("editionBox")
@@ -515,55 +520,14 @@ public class ScopeTreeItemWidget extends Composite {
 		});
 	}
 
-	private class Selection {
-
-		private final User user;
-		private String color;
-
-		public Selection(final User user, final String selectionColor) {
-			this.user = user;
-			this.color = selectionColor;
-		}
-
-		public Selection(final User user) {
-			this.user = user;
-		}
-
-		public User getUser() {
-			return user;
-		}
-
-		public String getColor() {
-			return color;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((user == null) ? 0 : user.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(final Object obj) {
-			if (this == obj) return true;
-			if (obj == null) return false;
-			if (getClass() != obj.getClass()) return false;
-			final Selection other = (Selection) obj;
-			if (user == null) {
-				if (other.user != null) return false;
-			}
-			return user.equals(other.user);
-		}
-
-	}
-
 	public void addSelectedMember(final User member, final String selectionColor) {
 		selectionsList.add(new Selection(member, selectionColor));
 
 		updateSelection();
+		showSelectedMembersLabel();
+	}
 
+	private void showSelectedMembersLabel() {
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {

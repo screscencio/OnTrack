@@ -1,6 +1,9 @@
 package br.com.oncast.ontrack.client.services.user;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
@@ -111,5 +114,20 @@ public class MembersScopeSelectionServiceImpl implements MembersScopeSelectionSe
 	public synchronized String getSelectionColor(final User user) {
 		if (!colorMap.containsKey(user)) colorMap.put(user, colorPicker.pick());
 		return colorMap.get(user);
+	}
+
+	@Override
+	public List<Selection> getSelectionsFor(final Scope scope) {
+		final List<Selection> selections = new ArrayList<Selection>();
+		if (!selectionMap.containsValue(scope)) return selections;
+
+		for (final Entry<User, Scope> e : selectionMap.entrySet()) {
+			if (e.getValue().equals(scope)) {
+				final User user = e.getKey();
+				selections.add(new Selection(user, getSelectionColor(user)));
+			}
+		}
+
+		return selections;
 	}
 }
