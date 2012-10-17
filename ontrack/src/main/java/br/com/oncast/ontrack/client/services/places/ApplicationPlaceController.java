@@ -31,10 +31,6 @@ public class ApplicationPlaceController {
 	}
 
 	public void goTo(final Place place) {
-		goTo(place, false);
-	}
-
-	public void goTo(final Place place, final boolean saveAsDefaultPlace) {
 		clientStorageService.storeDefaultPlaceToken(placeHistoryMapper.getToken(place));
 		placeController.goTo(place);
 	}

@@ -86,7 +86,7 @@ public class ApplicationMenu extends Composite {
 		} : new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace(), true);
+				SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace());
 			}
 		});
 

@@ -204,7 +204,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		final Command cmd = new Command() {
 			@Override
 			public void execute() {
-				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new OrganizationPlace(), true);
+				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new OrganizationPlace());
 			}
 		};
 
