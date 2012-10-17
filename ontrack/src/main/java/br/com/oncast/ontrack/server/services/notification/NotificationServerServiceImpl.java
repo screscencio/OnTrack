@@ -12,9 +12,11 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveNotificationListException;
+import br.com.oncast.ontrack.shared.exceptions.business.UnableToUpdateNotificationException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
+import br.com.oncast.ontrack.shared.services.notification.NotificationRecipient;
 
 public class NotificationServerServiceImpl implements NotificationServerService {
 
@@ -70,4 +72,28 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 			throw new UnableToCreateNotificationException(message);
 		}
 	}
+
+	@Override
+	public void updateNotificationCurrentUserReadState(final Notification notification, final boolean read) throws UnableToUpdateNotificationException {
+		final User user = this.authenticationManager.getAuthenticatedUser();
+		final NotificationRecipient recipient = notification.getRecipient(user);
+
+		if (recipient == null) {
+			final String message = "Unable to update notification: The current user is not in the notification recipients.";
+			LOGGER.error(message);
+			throw new UnableToUpdateNotificationException(message);
+		}
+
+		recipient.setReadState(read);
+
+		try {
+			persistenceService.persistOrUpdateNotification(notification);
+		}
+		catch (final PersistenceException e) {
+			final String message = "Unable to update notification: Unable to persist it.";
+			LOGGER.error(message, e);
+			throw new UnableToUpdateNotificationException(message);
+		}
+	}
+
 }
