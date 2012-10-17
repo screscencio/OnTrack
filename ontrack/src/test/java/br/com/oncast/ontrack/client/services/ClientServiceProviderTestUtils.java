@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
+import br.com.oncast.ontrack.client.services.user.MembersScopeSelectionService;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -54,6 +55,13 @@ public class ClientServiceProviderTestUtils {
 		public ClientServiceProviderTestConfiguration mockEssential() {
 			mockEventBus();
 			mockAnnotationService();
+			mockMembersScopeSelectionService();
+			return this;
+		}
+
+		private ClientServiceProviderTestConfiguration mockMembersScopeSelectionService() {
+			final MembersScopeSelectionService service = mock(MembersScopeSelectionService.class);
+			when(mock.getMembersScopeSelectionService()).thenReturn(service);
 			return this;
 		}
 
