@@ -231,7 +231,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createTeamInviteAction() throws Exception {
-		return createUserAction(new TeamInviteAction("user@mail.com"));
+		return createUserAction(new TeamInviteAction(UserTestUtils.createUser()));
 	}
 
 	public static UserAction createImpedimentCreateAction() throws Exception {

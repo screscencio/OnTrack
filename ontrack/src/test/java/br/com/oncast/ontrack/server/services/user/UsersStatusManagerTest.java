@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.server.services.user;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -49,17 +48,17 @@ public class UsersStatusManagerTest {
 	@Mock
 	private AuthorizationManager authorizationManager;
 
-	private Set<String> users;
+	private Set<UUID> users;
 	private UsersStatusManager usersStatusManager;
 	private UserStatusChangeListener userStatusChangeListener;
-	private String userEmail1;
+
+	private UUID userId1;
+	private UUID userId2;
 
 	private UUID project1;
 	private UUID project2;
 
 	private List<ProjectRepresentation> user1AuthorizedProjects;
-
-	private String userEmail2;
 
 	@Before
 	public void setup() throws Exception {
@@ -72,13 +71,13 @@ public class UsersStatusManagerTest {
 		user1AuthorizedProjects.add(ProjectTestUtils.createRepresentation(project1));
 		user1AuthorizedProjects.add(ProjectTestUtils.createRepresentation(project2));
 
-		userEmail1 = "user1";
-		userEmail2 = "user2";
+		userId1 = new UUID();
+		userId2 = new UUID();
 
-		users = new HashSet<String>();
-		users.add(userEmail1);
-		users.add(userEmail2);
-		users.add("user3");
+		users = new HashSet<UUID>();
+		users.add(userId1);
+		users.add(userId2);
+		users.add(new UUID());
 
 		final ArgumentCaptor<UserStatusChangeListener> captor = ArgumentCaptor.forClass(UserStatusChangeListener.class);
 		doNothing().when(clientManager).addUserStatusChangeListener(captor.capture());
@@ -87,25 +86,25 @@ public class UsersStatusManagerTest {
 
 		userStatusChangeListener = captor.getValue();
 
-		when(authorizationManager.listAuthorizedProjects(userEmail1)).thenReturn(user1AuthorizedProjects);
-		when(authorizationManager.hasAuthorizationFor(anyString(), any(UUID.class))).thenReturn(false);
+		when(authorizationManager.listAuthorizedProjects(userId1)).thenReturn(user1AuthorizedProjects);
+		when(authorizationManager.hasAuthorizationFor(any(UUID.class), any(UUID.class))).thenReturn(false);
 	}
 
 	@Test
 	public void shouldMulticastUserOnlineEventToAllUsersInAllAuthorizedProjectsWhenAUserGetsOnline() throws Exception {
-		userStatusChangeListener.onUserOnline(userEmail1);
+		userStatusChangeListener.onUserOnline(userId1);
 
 		verifyForAllAuthorizedProjectsForUser1(UserOnlineEvent.class);
 	}
 
 	@Test
 	public void shouldNotMulticastUserOnlineEventMoreThanOnce() throws Exception {
-		userStatusChangeListener.onUserOnline(userEmail1);
+		userStatusChangeListener.onUserOnline(userId1);
 
 		verifyForAllAuthorizedProjectsForUser1(UserOnlineEvent.class);
 
 		for (int i = 0; i < 8; i++) {
-			userStatusChangeListener.onUserOnline(userEmail1);
+			userStatusChangeListener.onUserOnline(userId1);
 		}
 
 		verifyNoMoreInteractions(multicastService);
@@ -113,25 +112,25 @@ public class UsersStatusManagerTest {
 
 	@Test
 	public void shouldMulticastUserOfflineEventToAllUsersInAllAuthorizedProjectsWhenAUserGetsOffline() throws Exception {
-		userStatusChangeListener.onUserOnline(userEmail1);
+		userStatusChangeListener.onUserOnline(userId1);
 		verifyForAllAuthorizedProjectsForUser1(UserOnlineEvent.class);
 		reset(multicastService);
 
-		userStatusChangeListener.onUserOffline(userEmail1);
+		userStatusChangeListener.onUserOffline(userId1);
 		verifyForAllAuthorizedProjectsForUser1(UserOfflineEvent.class);
 	}
 
 	@Test
 	public void shouldNotMulticastUserOfflineEventMoreThanOnce() throws Exception {
-		userStatusChangeListener.onUserOnline(userEmail1);
+		userStatusChangeListener.onUserOnline(userId1);
 		verifyForAllAuthorizedProjectsForUser1(UserOnlineEvent.class);
 		reset(multicastService);
 
-		userStatusChangeListener.onUserOffline(userEmail1);
+		userStatusChangeListener.onUserOffline(userId1);
 		verifyForAllAuthorizedProjectsForUser1(UserOfflineEvent.class);
 
 		for (int i = 0; i < 8; i++) {
-			userStatusChangeListener.onUserOffline(userEmail1);
+			userStatusChangeListener.onUserOffline(userId1);
 		}
 
 		verifyNoMoreInteractions(multicastService);
@@ -141,13 +140,13 @@ public class UsersStatusManagerTest {
 	public void shouldBeAbleToRetrieveOnlineUsersThatHasAuthorizationForAGivenProject() throws Exception {
 		when(clientManager.getOnlineUsers()).thenReturn(users);
 
-		when(authorizationManager.hasAuthorizationFor(userEmail1, project1)).thenReturn(true);
-		when(authorizationManager.hasAuthorizationFor(userEmail2, project1)).thenReturn(true);
-		when(authorizationManager.hasAuthorizationFor(userEmail2, project2)).thenReturn(true);
+		when(authorizationManager.hasAuthorizationFor(userId1, project1)).thenReturn(true);
+		when(authorizationManager.hasAuthorizationFor(userId2, project1)).thenReturn(true);
+		when(authorizationManager.hasAuthorizationFor(userId2, project2)).thenReturn(true);
 
-		final HashSet<String> authorizedUsers = new HashSet<String>();
-		authorizedUsers.add(userEmail1);
-		authorizedUsers.add(userEmail2);
+		final HashSet<UUID> authorizedUsers = new HashSet<UUID>();
+		authorizedUsers.add(userId1);
+		authorizedUsers.add(userId2);
 
 		assertEquals(authorizedUsers, usersStatusManager.getOnlineUsers(project1));
 	}
@@ -161,87 +160,87 @@ public class UsersStatusManagerTest {
 
 	@Test
 	public void shouldMulticastProjectWhenAUserOpenAProject() throws Exception {
-		userStatusChangeListener.onUserOpenProject(project1, userEmail1);
+		userStatusChangeListener.onUserOpenProject(project1, userId1);
 
-		verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserEmail(UserOpenProjectEvent.class, userEmail1)),
+		verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserOpenProjectEvent.class, userId1)),
 				eq(project1));
 	}
 
 	@Test
 	public void shouldNotMulticastProjectWhenAUserOpenTheSameProjectMoreThanOnce() throws Exception {
 		for (int i = 0; i < 10; i++) {
-			userStatusChangeListener.onUserOpenProject(project1, userEmail1);
+			userStatusChangeListener.onUserOpenProject(project1, userId1);
 		}
 
-		verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserEmail(UserOpenProjectEvent.class, userEmail1)),
+		verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserOpenProjectEvent.class, userId1)),
 				eq(project1));
 	}
 
 	@Test
 	public void shouldNotMulticastProjectWhenAUserClosesAProjectThatWasNotOpenedBefore() throws Exception {
-		userStatusChangeListener.onUserCloseProject(project1, userEmail1);
+		userStatusChangeListener.onUserCloseProject(project1, userId1);
 
 		verify(multicastService, never())
-				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserEmail(UserClosedProjectEvent.class, userEmail1)), eq(project1));
+				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
 	}
 
 	@Test
 	public void shouldMulticastProjectWhenAUserClosesAProject() throws Exception {
-		userStatusChangeListener.onUserOpenProject(project1, userEmail1);
+		userStatusChangeListener.onUserOpenProject(project1, userId1);
 		reset(multicastService);
 
-		userStatusChangeListener.onUserCloseProject(project1, userEmail1);
+		userStatusChangeListener.onUserCloseProject(project1, userId1);
 
 		verify(multicastService)
-				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserEmail(UserClosedProjectEvent.class, userEmail1)), eq(project1));
+				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
 	}
 
 	@Test
 	public void shouldNotMulticastProjectWhenAUserClosesAProjectMoreThanOnce() throws Exception {
-		userStatusChangeListener.onUserOpenProject(project1, userEmail1);
+		userStatusChangeListener.onUserOpenProject(project1, userId1);
 		reset(multicastService);
 
 		for (int i = 0; i < 10; i++) {
-			userStatusChangeListener.onUserCloseProject(project1, userEmail1);
+			userStatusChangeListener.onUserCloseProject(project1, userId1);
 		}
 
 		verify(multicastService)
-				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserEmail(UserClosedProjectEvent.class, userEmail1)), eq(project1));
+				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
 	}
 
 	@Test
 	public void shouldNotMulticastProjectUntilTheLastUserClosesTheProject() throws Exception {
 		final int timesThatAUserOpenedAProject = 7;
 		for (int i = 0; i < timesThatAUserOpenedAProject; i++) {
-			userStatusChangeListener.onUserOpenProject(project1, userEmail1);
+			userStatusChangeListener.onUserOpenProject(project1, userId1);
 		}
 		reset(multicastService);
 
 		for (int i = 0; i < timesThatAUserOpenedAProject; i++) {
 			verify(multicastService, never())
-					.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserEmail(UserClosedProjectEvent.class, userEmail1)), eq(project1));
-			userStatusChangeListener.onUserCloseProject(project1, userEmail1);
+					.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
+			userStatusChangeListener.onUserCloseProject(project1, userId1);
 		}
 
 		verify(multicastService)
-				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserEmail(UserClosedProjectEvent.class, userEmail1)), eq(project1));
+				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
 	}
 
 	private void verifyForAllAuthorizedProjectsForUser1(final Class<? extends UserStatusEvent> clazz) {
 		for (final ProjectRepresentation r : user1AuthorizedProjects) {
-			verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserEmail(clazz, userEmail1)),
+			verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(clazz, userId1)),
 					eq(r.getId()));
 		}
 	}
 
-	private <T extends UserStatusEvent> Matcher<T> hasUserEmail(final Class<T> class1, final String userEmail) {
-		assert userEmail != null;
+	private <T extends UserStatusEvent> Matcher<T> hasUserId(final Class<T> class1, final UUID userId) {
+		assert userId != null;
 
 		return new ArgumentMatcher<T>() {
 			@Override
 			public boolean matches(final Object argument) {
 				final UserStatusEvent event = (UserStatusEvent) argument;
-				return userEmail.equals(event.getUserEmail());
+				return userId.equals(event.getUserId());
 			}
 		};
 	}

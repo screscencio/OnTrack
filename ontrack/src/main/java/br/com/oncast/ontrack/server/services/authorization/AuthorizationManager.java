@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface AuthorizationManager {
 
-	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
+	public User authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
 			throws UnableToAuthorizeUserException;
 
 	public void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException;
@@ -23,8 +23,8 @@ public interface AuthorizationManager {
 
 	public void validateAndUpdateUserProjectCreationQuota(User requestingUser) throws PersistenceException, AuthorizationException;
 
-	public List<ProjectRepresentation> listAuthorizedProjects(String userEmail) throws PersistenceException, NoResultFoundException;
+	public List<ProjectRepresentation> listAuthorizedProjects(UUID userId) throws PersistenceException, NoResultFoundException;
 
-	public boolean hasAuthorizationFor(String userEmail, UUID projectId) throws NoResultFoundException, PersistenceException;
+	public boolean hasAuthorizationFor(UUID userId, UUID projectId) throws NoResultFoundException, PersistenceException;
 
 }

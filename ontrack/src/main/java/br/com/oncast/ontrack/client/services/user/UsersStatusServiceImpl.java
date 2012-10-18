@@ -53,7 +53,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onEvent(final UserOpenProjectEvent event) {
 				try {
-					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserEmail());
+					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					activeUsers.add(user);
 					notifyUsersStatusListsUpdate();
 				}
@@ -67,7 +67,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onEvent(final UserClosedProjectEvent event) {
 				try {
-					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserEmail());
+					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					activeUsers.remove(user);
 					notifyUsersStatusListsUpdate();
 				}
@@ -81,7 +81,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onEvent(final UserOnlineEvent event) {
 				try {
-					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserEmail());
+					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					onlineUsers.add(user);
 					notifyUsersStatusListsUpdate();
 				}
@@ -95,7 +95,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onEvent(final UserOfflineEvent event) {
 				try {
-					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserEmail());
+					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					onlineUsers.remove(user);
 					notifyUsersStatusListsUpdate();
 				}
@@ -148,14 +148,14 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 				notifyUsersStatusListsUpdate();
 			}
 
-			private SortedSet<User> retrieveUsers(final Set<String> usersEmails) {
+			private SortedSet<User> retrieveUsers(final Set<UUID> usersIds) {
 				final SortedSet<User> users = new TreeSet<User>();
 
 				final ProjectContext context = contextProviderService.getCurrentProjectContext();
 
-				for (final String userEmail : usersEmails) {
+				for (final UUID userId : usersIds) {
 					try {
-						users.add(context.findUser(userEmail));
+						users.add(context.findUser(userId));
 					}
 					catch (final UserNotFoundException e) {
 						GWT.log("LoadActiveUsers failed", e);

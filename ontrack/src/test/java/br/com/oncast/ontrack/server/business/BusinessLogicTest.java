@@ -3,7 +3,9 @@ package br.com.oncast.ontrack.server.business;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -29,13 +31,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.email.FeedbackMailFactory;
 import br.com.oncast.ontrack.server.services.multicast.ClientManager;
@@ -123,35 +126,45 @@ public class BusinessLogicTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		admin = UserTestUtils.getAdmin();
 
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 		projectRepresentation = assureProjectRepresentationExistance(PROJECT_ID);
 		project = ProjectTestUtils.createProject();
 
 		configureMockDefaultBehavior();
+
+		when(actionContext.getUserId()).thenReturn(admin.getId());
+		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
 	}
 
 	private void configureMockDefaultBehavior() throws Exception {
-		admin = UserTestUtils.getAdmin();
 		authenticatedUser = UserTestUtils.createUser();
 		configureToRetrieveAdmin();
 		authenticateAndAuthorizeUser(authenticatedUser, PROJECT_ID);
 		configureToRetrieveSnapshot(PROJECT_ID);
+
+		when(authorizationManager.authorize(any(UUID.class), anyString(), anyBoolean())).thenAnswer(new Answer<User>() {
+			@Override
+			public User answer(final InvocationOnMock invocation) throws Throwable {
+				return UserTestUtils.createUser((String) invocation.getArguments()[1]);
+			}
+		});
 	}
 
 	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException, UserNotFoundException {
-		when(persistence.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(admin);
-		when(authenticationManager.findUserByEmail(authenticatedUser.getEmail())).thenReturn(authenticatedUser);
+		when(persistence.retrieveUserById(admin.getId())).thenReturn(admin);
+		when(authenticationManager.findUserByEmail(admin.getEmail())).thenReturn(admin);
 	}
 
 	private void authenticateAndAuthorizeUser(final User user, final UUID projectId) throws PersistenceException, NoResultFoundException {
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user);
 		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
-		when(persistence.retrieveUserByEmail(user.getEmail())).thenReturn(user);
+		when(persistence.retrieveUserById(user.getId())).thenReturn(user);
 		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
+
 		project.addUser(user);
+		when(actionContext.getUserId()).thenReturn(user.getId());
 	}
 
 	private void configureToRetrieveSnapshot(final UUID projectId) throws Exception {
@@ -198,12 +211,12 @@ public class BusinessLogicTest {
 		final Project project = ProjectTestUtils.createProject();
 		final ProjectContext context = createContext(project);
 
-		final List<ModelAction> createSomeActions = createSomeActionsWithRequiredUsers();
-		for (final ModelAction action : createSomeActions) {
+		final List<ModelAction> someActions = createSomeActionsWithRequiredUsers();
+		for (final ModelAction action : someActions) {
 			ActionExecuter.executeAction(context, actionContext, action);
 		}
 
-		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(createSomeActions));
+		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(someActions));
 		final Scope projectScope = loadProject().getProjectScope();
 
 		DeepEqualityTestUtils.assertObjectEquality(project.getProjectScope(), projectScope);
@@ -340,7 +353,7 @@ public class BusinessLogicTest {
 		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(admin.getEmail()));
+		actionList.add(new TeamInviteAction(admin));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -364,7 +377,7 @@ public class BusinessLogicTest {
 
 		final Project project2 = loadProject(OTHER_PROJECT_ID);
 		final List<ModelAction> actions2 = ActionTestUtils.getActions2();
-		actions2.add(0, new TeamInviteAction(admin.getEmail()));
+		actions2.add(0, new TeamInviteAction(admin));
 		final List<ModelAction> actionList2 = executeActionsToProject(project2, actions2);
 		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectRepresentation2, actionList2));
 

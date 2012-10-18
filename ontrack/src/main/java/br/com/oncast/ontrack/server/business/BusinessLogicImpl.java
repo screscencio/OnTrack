@@ -175,9 +175,9 @@ class BusinessLogicImpl implements BusinessLogic {
 	public void authorize(final String userEmail, final UUID projectId, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
 			UnableToHandleActionException,
 			AuthorizationException {
-		authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
+		final User user = authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
 		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toStringRepresentation() + "'");
-		handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, Arrays.asList(new ModelAction[] { new TeamInviteAction(userEmail) })));
+		handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, Arrays.asList(new ModelAction[] { new TeamInviteAction(user) })));
 	}
 
 	@Override

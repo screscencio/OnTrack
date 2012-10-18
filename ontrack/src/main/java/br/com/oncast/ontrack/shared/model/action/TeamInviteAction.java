@@ -22,11 +22,6 @@ public class TeamInviteAction implements TeamAction {
 
 	protected TeamInviteAction() {}
 
-	public TeamInviteAction(final String inviteeEmail) {
-		this.inviteeEmail = inviteeEmail;
-		this.userId = new UUID();
-	}
-
 	public TeamInviteAction(final User user) {
 		this.inviteeEmail = user.getEmail();
 		this.userId = user.getId();

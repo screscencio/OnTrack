@@ -32,8 +32,8 @@ public class UsersStatusManager implements UserStatusChangeListener {
 
 	private final ClientManager clientManager;
 	private final MulticastService multicastService;
-	private final ListMultimap<UUID, String> openedProjectsRegistry;
-	private final List<String> onlineUsersRegistry;
+	private final ListMultimap<UUID, UUID> openedProjectsRegistry;
+	private final List<UUID> onlineUsersRegistry;
 	private final AuthorizationManager authorizationManager;
 
 	public UsersStatusManager(final ClientManager clientManager, final MulticastService multicastService, final AuthorizationManager authorizationManager) {
@@ -42,17 +42,17 @@ public class UsersStatusManager implements UserStatusChangeListener {
 		this.authorizationManager = authorizationManager;
 
 		openedProjectsRegistry = ArrayListMultimap.create();
-		onlineUsersRegistry = new ArrayList<String>();
+		onlineUsersRegistry = new ArrayList<UUID>();
 
 		clientManager.addUserStatusChangeListener(this);
 	}
 
-	public Set<String> getOnlineUsers(final UUID projectId) {
-		final Set<String> allOnlineUsers = clientManager.getOnlineUsers();
-		final Set<String> onlineUsers = new HashSet<String>();
-		for (final String userEmail : allOnlineUsers) {
+	public Set<UUID> getOnlineUsers(final UUID projectId) {
+		final Set<UUID> allOnlineUsers = clientManager.getOnlineUsers();
+		final Set<UUID> onlineUsers = new HashSet<UUID>();
+		for (final UUID userId : allOnlineUsers) {
 			try {
-				if (authorizationManager.hasAuthorizationFor(userEmail, projectId)) onlineUsers.add(userEmail);
+				if (authorizationManager.hasAuthorizationFor(userId, projectId)) onlineUsers.add(userId);
 			}
 			catch (final NoResultFoundException e) {
 				LOGGER.error("getOnlineUsers failed", e);
@@ -64,34 +64,33 @@ public class UsersStatusManager implements UserStatusChangeListener {
 		return onlineUsers;
 	}
 
-	public Set<String> getUsersAtProject(final UUID projectId) {
+	public Set<UUID> getUsersAtProject(final UUID projectId) {
 		return clientManager.getUsersAtProject(projectId);
 	}
 
 	@Override
-	public void onUserOpenProject(final UUID projectId, final String userEmail) {
-		if (!openedProjectsRegistry.containsEntry(projectId, userEmail)) multicastForSpecificProject(projectId, new UserOpenProjectEvent(userEmail));
+	public void onUserOpenProject(final UUID projectId, final UUID userId) {
+		if (!openedProjectsRegistry.containsEntry(projectId, userId)) multicastForSpecificProject(projectId, new UserOpenProjectEvent(userId));
 
-		openedProjectsRegistry.put(projectId, userEmail);
+		openedProjectsRegistry.put(projectId, userId);
 	}
 
 	@Override
-	public void onUserCloseProject(final UUID projectId, final String userEmail) {
-		if (openedProjectsRegistry.remove(projectId, userEmail) && !openedProjectsRegistry.containsEntry(projectId, userEmail)) multicastForSpecificProject(
+	public void onUserCloseProject(final UUID projectId, final UUID userId) {
+		if (openedProjectsRegistry.remove(projectId, userId) && !openedProjectsRegistry.containsEntry(projectId, userId)) multicastForSpecificProject(
 				projectId,
-				new UserClosedProjectEvent(userEmail));
+				new UserClosedProjectEvent(userId));
 	}
 
 	@Override
-	public void onUserOnline(final String userEmail) {
-		if (!onlineUsersRegistry.contains(userEmail)) multicastForAuthorizedProjects(new UserOnlineEvent(userEmail));
-		onlineUsersRegistry.add(userEmail);
+	public void onUserOnline(final UUID userId) {
+		if (!onlineUsersRegistry.contains(userId)) multicastForAuthorizedProjects(new UserOnlineEvent(userId));
+		onlineUsersRegistry.add(userId);
 	}
 
 	@Override
-	public void onUserOffline(final String userEmail) {
-		if (onlineUsersRegistry.remove(userEmail) && !onlineUsersRegistry.contains(userEmail)) multicastForAuthorizedProjects(new UserOfflineEvent(
-				userEmail));
+	public void onUserOffline(final UUID userId) {
+		if (onlineUsersRegistry.remove(userId) && !onlineUsersRegistry.contains(userId)) multicastForAuthorizedProjects(new UserOfflineEvent(userId));
 	}
 
 	private void multicastForSpecificProject(final UUID projectId, final UserStatusEvent event) {
@@ -100,7 +99,7 @@ public class UsersStatusManager implements UserStatusChangeListener {
 
 	private void multicastForAuthorizedProjects(final UserStatusEvent event) {
 		try {
-			for (final ProjectRepresentation representation : authorizationManager.listAuthorizedProjects(event.getUserEmail())) {
+			for (final ProjectRepresentation representation : authorizationManager.listAuthorizedProjects(event.getUserId())) {
 				multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(event, representation.getId());
 			}
 		}
@@ -112,8 +111,8 @@ public class UsersStatusManager implements UserStatusChangeListener {
 		}
 	}
 
-	public void onUserSelectedScope(final String userEmail, final ServerPushConnection clientId, final UUID selectedScopeId) {
+	public void onUserSelectedScope(final UUID userId, final ServerPushConnection clientId, final UUID selectedScopeId) {
 		final UUID projectId = clientManager.getCurrentProject(clientId);
-		multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(new UserSelectedScopeEvent(userEmail, selectedScopeId), projectId);
+		multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(new UserSelectedScopeEvent(userId, selectedScopeId), projectId);
 	}
 }

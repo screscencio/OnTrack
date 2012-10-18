@@ -27,7 +27,6 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -105,7 +104,7 @@ public class PersistenceServiceTest {
 		final Project project1 = snapshot1.getProject();
 
 		final ActionContext actionContext = Mockito.mock(ActionContext.class);
-		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
 		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
 		final ProjectContext context = new ProjectContext(project1);
 		context.addUser(UserTestUtils.getAdmin());

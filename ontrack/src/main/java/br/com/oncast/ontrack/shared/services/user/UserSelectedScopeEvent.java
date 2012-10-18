@@ -5,23 +5,23 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public class UserSelectedScopeEvent implements UserStatusEvent {
 
 	private static final long serialVersionUID = 1L;
-	private String userEmail;
+	private UUID userId;
 	private UUID scopeId;
 
 	protected UserSelectedScopeEvent() {}
 
-	public UserSelectedScopeEvent(final String userEmail, final UUID scopeId) {
-		this.userEmail = userEmail;
+	public UserSelectedScopeEvent(final UUID userId, final UUID scopeId) {
+		this.userId = userId;
 		this.scopeId = scopeId;
-	}
-
-	@Override
-	public String getUserEmail() {
-		return userEmail;
 	}
 
 	public UUID getScopeId() {
 		return scopeId;
+	}
+
+	@Override
+	public UUID getUserId() {
+		return userId;
 	}
 
 }

@@ -34,8 +34,8 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 		annotation = AnnotationTestUtils.create();
 		subjectId = new UUID();
 
-		when(actionContext.getUserEmail()).thenReturn(voter.getEmail());
-		when(context.findUser(voter.getEmail())).thenReturn(voter);
+		when(actionContext.getUserId()).thenReturn(voter.getId());
+		when(context.findUser(voter.getId())).thenReturn(voter);
 		when(context.findAnnotation(subjectId, annotation.getId())).thenReturn(annotation);
 	}
 

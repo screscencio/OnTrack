@@ -289,7 +289,7 @@ public class ProjectContextTest {
 
 	@Test(expected = UserNotFoundException.class)
 	public void shouldNotFoundAUserThatWasntAdded() throws Exception {
-		context.findUser("inexistant@mail.com");
+		context.findUser(new UUID());
 	}
 
 	@Test
@@ -302,8 +302,8 @@ public class ProjectContextTest {
 
 		context = ProjectTestUtils.createProjectContext(scopeMock, releaseMock, userList);
 
-		assertEquals(user, context.findUser(user.getEmail()));
-		assertEquals(user2, context.findUser(user2.getEmail()));
+		assertEquals(user, context.findUser(user.getId()));
+		assertEquals(user2, context.findUser(user2.getId()));
 	}
 
 	@Test

@@ -31,7 +31,7 @@ public class XMLNodeTestUtils {
 	public static List<UserXMLNode> createUserNodes(final int size) throws Exception {
 		final List<UserXMLNode> userNodes = new ArrayList<UserXMLNode>();
 		for (int i = 1; i <= size; i++) {
-			userNodes.add(XMLNodeTestUtils.createUserNode(UserTestUtils.createUser(i)));
+			userNodes.add(XMLNodeTestUtils.createUserNode(UserTestUtils.createUser()));
 		}
 		return userNodes;
 	}

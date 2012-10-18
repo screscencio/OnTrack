@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionManager;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
@@ -31,6 +30,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ScopeTreeWidgetActionManagerTest {
 
@@ -54,7 +54,7 @@ public class ScopeTreeWidgetActionManagerTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
 		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
 
 		final ActionExecutionListener actionExecutionListener = mock(ActionExecutionListener.class);

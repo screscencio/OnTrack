@@ -148,7 +148,7 @@ public class NotificationFactory {
 
 			final ProjectRepresentation projectRepresentation = projectContext.getProjectRepresentation();
 			final List<User> projectUsers = persistenceService.retrieveProjectUsers(projectRepresentation);
-			final User author = persistenceService.retrieveUserByEmail(actionContext.getUserEmail());
+			final User author = persistenceService.retrieveUserById(actionContext.getUserId());
 
 			final NotificationBuilder notificationBuilder = creator.createNotificationBuilder(action, projectContext, author);
 
@@ -159,7 +159,7 @@ public class NotificationFactory {
 			return notificationBuilder.getNotification();
 		}
 		catch (final NoResultFoundException e) {
-			throw new UnableToPostProcessActionException("The author user '" + actionContext.getUserEmail() + "' could not be retrieved from the persistence.",
+			throw new UnableToPostProcessActionException("The author user '" + actionContext.getUserId() + "' could not be retrieved from the persistence.",
 					e);
 		}
 	}

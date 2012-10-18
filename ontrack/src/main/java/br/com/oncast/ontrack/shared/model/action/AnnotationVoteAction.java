@@ -34,7 +34,7 @@ public class AnnotationVoteAction implements AnnotationAction {
 		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context);
 		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.OPERATION_OVER_DEPRECATED_ANNOTATION);
 
-		annotation.vote(ActionHelper.findUser(actionContext.getUserEmail(), context));
+		annotation.vote(ActionHelper.findUser(actionContext.getUserId(), context));
 		return new AnnotationVoteRemoveAction(annotationId, annotatedObjectId);
 	}
 

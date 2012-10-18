@@ -7,7 +7,6 @@ import java.util.Date;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -22,6 +21,7 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuterTestU
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 
@@ -93,7 +93,7 @@ public class ScopeInsertChildAction_ProgressUndoAndRedoTest {
 
 	private ModelAction executeAction(final Scope scope, final ModelAction action, final ProjectContext context) throws UnableToCompleteActionException {
 		final ActionContext actionContext = Mockito.mock(ActionContext.class);
-		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
 		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
 
 		final ModelAction rollbackAction = action.execute(context, actionContext);

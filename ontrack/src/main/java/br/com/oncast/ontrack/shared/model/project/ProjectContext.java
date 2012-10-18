@@ -147,12 +147,12 @@ public class ProjectContext {
 		return releases;
 	}
 
-	public User findUser(final String userEmail) throws UserNotFoundException {
-		final User user = project.getUser(userEmail);
-		if (user == null) throw new UserNotFoundException("The user '" + userEmail + "' was not found.");
-
-		return user;
-	}
+	// public User findUser(final String userEmail) throws UserNotFoundException {
+	// final User user = project.getUser(userEmail);
+	// if (user == null) throw new UserNotFoundException("The user '" + userEmail + "' was not found.");
+	//
+	// return user;
+	// }
 
 	public void addAnnotation(final UUID subjectId, final Annotation annotation) {
 		project.addAnnotation(subjectId, annotation);

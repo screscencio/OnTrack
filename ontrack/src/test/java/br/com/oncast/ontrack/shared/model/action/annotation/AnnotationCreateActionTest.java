@@ -22,7 +22,6 @@ import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLImporter;
 import br.com.oncast.ontrack.server.services.exportImport.xml.XMLWriter;
@@ -64,8 +63,8 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 		attachmentFile = FileRepresentationTestUtils.create();
 		message = "Any message";
 
-		when(actionContext.getUserEmail()).thenReturn(author.getEmail());
-		when(context.findUser(author.getEmail())).thenReturn(author);
+		when(actionContext.getUserId()).thenReturn(author.getId());
+		when(context.findUser(author.getId())).thenReturn(author);
 	}
 
 	@Test
@@ -88,7 +87,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotCompleteWhenTheSpecifiedUserDoesNotExist() throws Exception {
-		when(context.findUser(author.getEmail())).thenThrow(new UserNotFoundException(""));
+		when(context.findUser(author.getId())).thenThrow(new UserNotFoundException(""));
 		executeAction();
 	}
 
@@ -171,7 +170,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	}
 
 	private void readXml(final File file, final PersistenceService persistenceService) throws NoResultFoundException, PersistenceException, Exception {
-		when(persistenceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(UserTestUtils.createUser());
+		when(persistenceService.retrieveUserById(UserTestUtils.getAdmin().getId())).thenReturn(UserTestUtils.getAdmin());
 		final BusinessLogic businessLogic = mock(BusinessLogic.class);
 		final XMLImporter importer = new XMLImporter(persistenceService, businessLogic);
 		importer.loadXML(file).persistObjects();

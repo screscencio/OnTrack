@@ -274,7 +274,7 @@ public class XMLWriterTest {
 	private Notification createNotification(final String description, final NotificationType type) {
 		final User user1 = createUser();
 		final User user2 = createUser();
-		final Notification notification = new NotificationBuilder(type, ProjectTestUtils.createRepresentation(new UUID("1")), UserTestUtils.createUser(1))
+		final Notification notification = new NotificationBuilder(type, ProjectTestUtils.createRepresentation(new UUID("1")), UserTestUtils.createUser())
 				.setDescription(description).addReceipient(user1).addReceipient(user2)
 				.getNotification();
 		return notification;

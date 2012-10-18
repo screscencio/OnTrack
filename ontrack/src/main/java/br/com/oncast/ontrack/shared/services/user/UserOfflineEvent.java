@@ -1,18 +1,21 @@
 package br.com.oncast.ontrack.shared.services.user;
 
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
 public class UserOfflineEvent implements UserStatusEvent {
 
 	private static final long serialVersionUID = 1L;
-	private String userEmail;
+
+	private UUID userId;
 
 	protected UserOfflineEvent() {}
 
-	public UserOfflineEvent(final String userEmail) {
-		this.userEmail = userEmail;
+	public UserOfflineEvent(final UUID userId) {
+		this.userId = userId;
 	}
 
 	@Override
-	public String getUserEmail() {
-		return userEmail;
+	public UUID getUserId() {
+		return userId;
 	}
 }

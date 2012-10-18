@@ -13,7 +13,7 @@ public class UserTestUtils {
 	private static int userCount = 0;
 
 	public static User createUser() {
-		return createUser(++userCount);
+		return createUser(new UUID(), "user" + ++userCount + "@email.com");
 	}
 
 	public static User createUser(final String email) {
@@ -25,10 +25,6 @@ public class UserTestUtils {
 		return user;
 	}
 
-	public static User createUser(final long id, final String email) {
-		return createUser(new UUID("" + id), email);
-	}
-
 	public static List<User> createList(final int size) {
 		final List<User> users = new ArrayList<User>(size);
 
@@ -38,16 +34,12 @@ public class UserTestUtils {
 		return users;
 	}
 
-	public static User createUser(final long id) {
-		return createUser(new UUID("" + id));
-	}
-
 	public static User getAdmin() {
 		return admin == null ? admin = createUser(new UUID(), DefaultAuthenticationCredentials.USER_EMAIL) : admin;
 	}
 
 	public static User createUser(final UUID id) {
-		return createUser(id, "user" + id + "@email.com");
+		return createUser(id, "user_" + id + "@email.com");
 	}
 
 }

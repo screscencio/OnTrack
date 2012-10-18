@@ -83,8 +83,8 @@ public class AnnotationRemoveDeprecationActionTest extends ModelActionTest {
 	@Test
 	public void shouldSetDeprecationAuthorOnAnnotation() throws Exception {
 		final User deprecationRemovalAuthor = UserTestUtils.createUser();
-		when(actionContext.getUserEmail()).thenReturn(deprecationRemovalAuthor.getEmail());
-		when(context.findUser(deprecationRemovalAuthor.getEmail())).thenReturn(deprecationRemovalAuthor);
+		when(actionContext.getUserId()).thenReturn(deprecationRemovalAuthor.getId());
+		when(context.findUser(deprecationRemovalAuthor.getId())).thenReturn(deprecationRemovalAuthor);
 		executeAction();
 
 		assertEquals(deprecationAuthor, annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));

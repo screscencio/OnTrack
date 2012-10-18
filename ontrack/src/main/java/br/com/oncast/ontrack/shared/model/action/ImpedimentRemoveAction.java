@@ -40,13 +40,13 @@ public class ImpedimentRemoveAction implements ImpedimentAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
+		final User author = ActionHelper.findUser(actionContext.getUserId(), context);
 		final Date timestamp = actionContext.getTimestamp();
 
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
 
 		if (!annotation.isImpeded()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_IMPEDIMENT_FROM_NOT_IMPEDED_ANNOTATION);
-		if (!annotation.getAuthorForState(AnnotationType.OPEN_IMPEDIMENT).getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
+		if (!annotation.getAuthorForState(AnnotationType.OPEN_IMPEDIMENT).getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(
 				ActionExecutionErrorMessageCode.REMOVE_IMPEDIMENT_OF_ANOTHER_AUTHOR);
 
 		annotation.setType(AnnotationType.valueOf(previousType), author, timestamp);

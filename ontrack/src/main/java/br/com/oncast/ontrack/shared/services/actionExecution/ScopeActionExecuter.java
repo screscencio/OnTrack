@@ -51,7 +51,7 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 
 		final ModelAction reverseAction = action.execute(context, actionContext);
 		final Set<UUID> inferenceInfluencedScopeSet = executeInferenceEngines((ScopeAction) action, scope,
-				ActionHelper.findUser(actionContext.getUserEmail(), context), actionContext.getTimestamp());
+				ActionHelper.findUser(actionContext.getUserId(), context), actionContext.getTimestamp());
 
 		return new ActionExecutionContext(reverseAction, inferenceInfluencedScopeSet);
 	}

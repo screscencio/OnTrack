@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
@@ -39,6 +38,7 @@ import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
 import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class ReleaseScopeOrderTest {
 
@@ -70,7 +70,7 @@ public class ReleaseScopeOrderTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		when(actionContext.getUserEmail()).thenReturn(DefaultAuthenticationCredentials.USER_EMAIL);
+		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
 		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
 	}
 

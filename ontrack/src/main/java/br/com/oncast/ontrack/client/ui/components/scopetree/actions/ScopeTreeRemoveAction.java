@@ -30,7 +30,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 	@Override
 	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		try {
-			final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
+			final User author = ActionHelper.findUser(actionContext.getUserId(), context);
 			final ScopeTreeItem treeItem = tree.findScopeTreeItem(new Scope("", action.getReferenceId(), author, actionContext.getTimestamp()));
 
 			final ScopeTreeItem parentItem = treeItem.getParentItem();
@@ -48,7 +48,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 			}
 		}
 		catch (final UnableToCompleteActionException e) {
-			throw new UserNotFoundException(messages.userNotFound(actionContext.getUserEmail()));
+			throw new UserNotFoundException(messages.userNotFound(actionContext.getUserId().toStringRepresentation()));
 		}
 	}
 }

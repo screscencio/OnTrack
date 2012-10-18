@@ -72,12 +72,12 @@ public class Project implements Serializable {
 		kanbanMap.put(release, kanban);
 	}
 
-	public User getUser(final String userEmail) {
-		for (final User user : users) {
-			if (user.getEmail().equals(userEmail)) return user;
-		}
-		return null;
-	}
+	// public User getUser(final String userEmail) {
+	// for (final User user : users) {
+	// if (user.getEmail().equals(userEmail)) return user;
+	// }
+	// return null;
+	// }
 
 	public User getUser(final UUID userId) {
 		for (final User user : users) {

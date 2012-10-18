@@ -246,7 +246,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 			context.addAnnotation(scopeId, annotation);
 		}
 
-		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
+		when(actionContext.getUserId()).thenReturn(user.getId());
 		context.addUser(user);
 
 		new ScopeRemoveAction(scopeId).execute(context, actionContext);

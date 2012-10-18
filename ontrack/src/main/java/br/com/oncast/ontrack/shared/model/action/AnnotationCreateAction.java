@@ -67,7 +67,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 	}
 
 	private Annotation getAnnotation(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
+		final User author = ActionHelper.findUser(actionContext.getUserId(), context);
 		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message, AnnotationType.SIMPLE);
 		if (attachmentId != null) {
 			final FileRepresentation file = ActionHelper.findFileRepresentation(attachmentId, context);

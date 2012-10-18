@@ -349,7 +349,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 			context.addAnnotation(releaseId, AnnotationTestUtils.create(user));
 		}
 
-		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
+		when(actionContext.getUserId()).thenReturn(user.getId());
 		new ReleaseRemoveAction(releaseId).execute(context, actionContext);
 
 		assertTrue(context.findAnnotationsFor(releaseId).isEmpty());
@@ -369,7 +369,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 			context.addAnnotation(releaseId, annotation);
 		}
 
-		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
+		when(actionContext.getUserId()).thenReturn(user.getId());
 		final ReleaseRemoveRollbackAction rollbackAction = new ReleaseRemoveAction(releaseId).execute(context, actionContext);
 
 		assertTrue(context.findAnnotationsFor(releaseId).isEmpty());

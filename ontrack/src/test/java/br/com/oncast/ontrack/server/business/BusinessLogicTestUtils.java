@@ -1,8 +1,10 @@
 package br.com.oncast.ontrack.server.business;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -64,6 +66,12 @@ public class BusinessLogicTestUtils {
 	private static void configureAuthorizationMock() {
 		try {
 			authorizationMock = mock(AuthorizationManagerImpl.class);
+			when(authorizationMock.authorize(any(UUID.class), anyString(), anyBoolean())).thenAnswer(new Answer<User>() {
+				@Override
+				public User answer(final InvocationOnMock invocation) throws Throwable {
+					return UserTestUtils.createUser((String) invocation.getArguments()[1]);
+				}
+			});
 			Mockito.doNothing().when(authorizationMock).assureProjectAccessAuthorization(Mockito.any(UUID.class));
 		}
 		catch (final Exception e) {

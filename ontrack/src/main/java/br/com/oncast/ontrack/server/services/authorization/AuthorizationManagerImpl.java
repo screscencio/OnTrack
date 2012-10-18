@@ -59,31 +59,44 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public List<ProjectRepresentation> listAuthorizedProjects(final String userEmail) throws PersistenceException, NoResultFoundException {
-		return listAuthorizedProjects(persistenceService.retrieveUserByEmail(userEmail));
+	public List<ProjectRepresentation> listAuthorizedProjects(final UUID userId) throws PersistenceException, NoResultFoundException {
+		return listAuthorizedProjects(persistenceService.retrieveUserById(userId));
 	}
 
 	@Override
 	public void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException {
-		final String adminEmail = DefaultAuthenticationCredentials.USER_EMAIL;
-		persistenceService.authorize(adminEmail, persistedProjectRepresentation.getId());
+		persistenceService.authorize(DefaultAuthenticationCredentials.USER_EMAIL, persistedProjectRepresentation.getId());
 	}
 
 	@Override
-	// TODO Refactor the code so that even when the system is the authorization requestant an email can be sent. Refactor email builder for that.
-	public void authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage) throws UnableToAuthorizeUserException {
+	public User authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage) throws UnableToAuthorizeUserException {
+		User user = null;
+
 		try {
-			final String generatedPassword = validateUserAndItsProjectAccessAuthorization(projectId, userEmail);
+			User authenticatedUser = null;
+			String generatedPassword = null;
 
-			if (!authenticationManager.isUserAuthenticated()) {
-				persistenceService.authorize(userEmail, projectId);
-				return;
+			try {
+				user = authenticationManager.findUserByEmail(userEmail);
+
+				if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) {
+					logAndThrowUnableToAuthorizeUserException("The user '" + userEmail + "' is already authorized for the project '" + projectId + "'");
+				}
 			}
-			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-			if (generatedPassword != null) validateAndUpdateUserUserInvitaionQuota(userEmail, authenticatedUser);
-			persistenceService.authorize(userEmail, projectId);
+			catch (final UserNotFoundException e) {
+				generatedPassword = PasswordHash.generatePassword();
+				user = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
+				LOGGER.debug("Created New User '" + userEmail + "'.");
 
+				if (authenticationManager.isUserAuthenticated()) {
+					authenticatedUser = authenticationManager.getAuthenticatedUser();
+					validateAndUpdateUserUserInvitaionQuota(userEmail, authenticatedUser);
+				}
+			}
+
+			persistenceService.authorize(userEmail, projectId);
 			if (shouldSendMailMessage) sendMailMessage(projectId, userEmail, generatedPassword, authenticatedUser);
+
 		}
 		catch (final PersistenceException e) {
 			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail + "' for the project.", e);
@@ -92,24 +105,8 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
 					+ "' for the project: Password generation went wrong.", e);
 		}
-	}
+		return user;
 
-	private String validateUserAndItsProjectAccessAuthorization(final UUID projectId, final String userEmail) throws PersistenceException,
-			UnableToAuthorizeUserException, NoSuchAlgorithmException {
-		String generatedPassword = null;
-		User user;
-		try {
-			user = authenticationManager.findUserByEmail(userEmail);
-		}
-		catch (final UserNotFoundException e) {
-			generatedPassword = PasswordHash.generatePassword();
-			user = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
-			LOGGER.debug("Created New User '" + userEmail + "'.");
-		}
-
-		if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) logAndThrowUnableToAuthorizeUserException("The user '"
-				+ userEmail + "' is already authorized for the project '" + projectId + "'");
-		return generatedPassword;
 	}
 
 	void validateAndUpdateUserUserInvitaionQuota(final String userToBeAuthorizedEmail, final User requestingUser)
@@ -127,7 +124,8 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	private void sendMailMessage(final UUID projectId, final String userEmail, final String generatedPassword, final User authenticatedUser) {
 		try {
-			projectAuthorizationMailFactory.createMail().currentUser(authenticatedUser.getEmail())
+			projectAuthorizationMailFactory.createMail()
+					.currentUser(authenticatedUser == null ? DefaultAuthenticationCredentials.USER_EMAIL : authenticatedUser.getEmail())
 					.setProject(persistenceService.retrieveProjectRepresentation(projectId)).sendTo(userEmail, generatedPassword);
 		}
 		catch (final Exception e) {
@@ -156,8 +154,8 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public boolean hasAuthorizationFor(final String userEmail, final UUID projectId) throws NoResultFoundException, PersistenceException {
-		final User user = persistenceService.retrieveUserByEmail(userEmail);
+	public boolean hasAuthorizationFor(final UUID userId, final UUID projectId) throws NoResultFoundException, PersistenceException {
+		final User user = persistenceService.retrieveUserById(userId);
 		return persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null;
 	}
 

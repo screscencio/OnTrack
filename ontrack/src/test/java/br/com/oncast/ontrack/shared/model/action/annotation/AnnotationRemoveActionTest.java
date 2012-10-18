@@ -36,7 +36,7 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 		annotation = AnnotationTestUtils.create();
 
 		when(context.findAnnotation(subjectId, annotation.getId())).thenReturn(annotation);
-		when(actionContext.getUserEmail()).thenReturn(annotation.getAuthor().getEmail());
+		when(actionContext.getUserId()).thenReturn(annotation.getAuthor().getId());
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class AnnotationRemoveActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveAnnotationsCreatedByOtherUser() throws Exception {
-		when(actionContext.getUserEmail()).thenReturn("Another user's e-mail");
+		when(actionContext.getUserId()).thenReturn(new UUID());
 		executeAction();
 	}
 

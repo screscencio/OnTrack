@@ -37,12 +37,12 @@ public class ActionTestUtils {
 	public static List<ModelAction> createSomeActions(final User... requiredUsers) {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
-		final UUID rootScope = ProjectTestUtils.createProject().getProjectScope().getId();
-		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(rootScope, "1");
 		for (final User user : requiredUsers) {
-			if (user != null) actions.add(new TeamInviteAction(user.getEmail()));
+			if (user != null) actions.add(new TeamInviteAction(user));
 		}
 
+		final UUID rootScope = ProjectTestUtils.createProject().getProjectScope().getId();
+		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(rootScope, "1");
 		actions.add(insertChild1);
 		actions.add(new ScopeInsertChildAction(rootScope, "2"));
 		actions.add(new ScopeInsertSiblingUpAction(insertChild1.getNewScopeId(), "Before 1"));
@@ -101,7 +101,7 @@ public class ActionTestUtils {
 
 	public static List<ModelAction> createOneValidAction() {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
-		actions.add(new TeamInviteAction(UserTestUtils.getAdmin().getEmail()));
+		actions.add(new TeamInviteAction(UserTestUtils.getAdmin()));
 		return actions;
 	}
 

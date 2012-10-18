@@ -35,7 +35,7 @@ public class ImpedimentSolveAction implements ImpedimentAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final User author = ActionHelper.findUser(actionContext.getUserEmail(), context);
+		final User author = ActionHelper.findUser(actionContext.getUserId(), context);
 		final Date timestamp = actionContext.getTimestamp();
 
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);

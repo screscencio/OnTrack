@@ -112,7 +112,7 @@ public class MembersScopeSelectionServiceImplTest {
 
 	@Test
 	public void shouldFireScopeAddMemberSelectionEventWhenUserScopeSelectionIsSentByTheServer() throws Exception {
-		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), scope1.getId()));
+		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), scope1.getId()));
 		assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, scope1);
 	}
 
@@ -125,8 +125,8 @@ public class MembersScopeSelectionServiceImplTest {
 	@Test
 	public void shouldFireEventToClearPreviousSelectionBeforeSelectingAnotherScope() throws Exception {
 		final Scope scope2 = createScope();
-		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), scope1.getId()));
-		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), scope2.getId()));
+		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), scope1.getId()));
+		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), scope2.getId()));
 
 		assertEventCalled(ScopeRemoveMemberSelectionEvent.class, user1, scope1);
 		assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, scope2);
@@ -135,7 +135,7 @@ public class MembersScopeSelectionServiceImplTest {
 	@Test
 	public void shouldNotFireEventToRemovePreviousSelectionBeforeSelectingAnotherScopeWhenThereWasNoPreviousSelection() throws Exception {
 		final Scope scope2 = createScope();
-		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), scope2.getId()));
+		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), scope2.getId()));
 
 		assertEventNotCalled(ScopeRemoveMemberSelectionEvent.class, user1, scope1);
 		assertEventNotCalled(ScopeRemoveMemberSelectionEvent.class, user1, scope2);
@@ -144,8 +144,8 @@ public class MembersScopeSelectionServiceImplTest {
 
 	@Test
 	public void shouldFireScopeRemoveMemberSelectionEventWhenTheMemberClosesTheProject() throws Exception {
-		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), scope1.getId()));
-		userClosedProjectEventHandler.onEvent(new UserClosedProjectEvent(user1.getEmail()));
+		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), scope1.getId()));
+		userClosedProjectEventHandler.onEvent(new UserClosedProjectEvent(user1.getId()));
 
 		assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, scope1);
 		assertEventCalled(ScopeRemoveMemberSelectionEvent.class, user1, scope1);
@@ -153,14 +153,14 @@ public class MembersScopeSelectionServiceImplTest {
 
 	@Test
 	public void shouldNotFireScopeRemoveMemberSelectionEventWhenTheMemberClosesTheProjectButThereWereNoPreviousSelection() throws Exception {
-		userClosedProjectEventHandler.onEvent(new UserClosedProjectEvent(user1.getEmail()));
+		userClosedProjectEventHandler.onEvent(new UserClosedProjectEvent(user1.getId()));
 
 		assertEventNotCalled(ScopeRemoveMemberSelectionEvent.class, user1, null);
 	}
 
 	@Test
 	public void memberSelectionShouldSendTheColorRepresentingTheMember() throws Exception {
-		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), createScope().getId()));
+		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), createScope().getId()));
 		final ScopeAddMemberSelectionEvent event = assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, null);
 		assertNotNull(event.getSelectionColor());
 		assertFalse(event.getSelectionColor().isEmpty());
@@ -168,11 +168,11 @@ public class MembersScopeSelectionServiceImplTest {
 
 	@Test
 	public void memberSelectionShouldSendTheSameColorForSameMember() throws Exception {
-		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), createScope().getId()));
+		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), createScope().getId()));
 		final String user1Color = assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, null).getSelectionColor();
 
 		for (int i = 0; i < 10; i++) {
-			userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), createScope().getId()));
+			userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), createScope().getId()));
 			assertEquals(user1Color, assertEventCall(ScopeAddMemberSelectionEvent.class, user1, null, atLeastOnce()).getSelectionColor());
 		}
 
@@ -181,12 +181,12 @@ public class MembersScopeSelectionServiceImplTest {
 
 	@Test
 	public void differentMembersShouldHaveDifferentColors() throws Exception {
-		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getEmail(), createScope().getId()));
+		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), createScope().getId()));
 		assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, null);
 
 		for (int i = 0; i < 10; i++) {
 			final User differentUser = createUser();
-			userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(differentUser.getEmail(), createScope().getId()));
+			userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(differentUser.getId(), createScope().getId()));
 			assertEventCall(ScopeAddMemberSelectionEvent.class, differentUser, null, atLeastOnce());
 		}
 
@@ -230,7 +230,7 @@ public class MembersScopeSelectionServiceImplTest {
 
 			@Override
 			public void describeTo(final Description description) {
-				description.appendText(clazz.getSimpleName() + "(" + member.getEmail() + ", " + (scope == null ? "anyScope" : scope.getDescription()) + ")");
+				description.appendText(clazz.getSimpleName() + "(" + member.getId() + ", " + (scope == null ? "anyScope" : scope.getDescription()) + ")");
 			}
 		}));
 
@@ -239,7 +239,7 @@ public class MembersScopeSelectionServiceImplTest {
 
 	private User createUser() throws UserNotFoundException {
 		final User user = UserTestUtils.createUser();
-		when(currentContext.findUser(user.getEmail())).thenReturn(user);
+		when(currentContext.findUser(user.getId())).thenReturn(user);
 		return user;
 	}
 

@@ -44,7 +44,7 @@ public class AnnotationRemoveAction implements AnnotationAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
-		if (userAction && !annotation.getAuthor().getEmail().equals(actionContext.getUserEmail())) throw new UnableToCompleteActionException(
+		if (userAction && !annotation.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(
 				ActionExecutionErrorMessageCode.ANNOTATION_REMOVE);
 
 		final List<ModelAction> rollbackSubActions = removeSubAnnotations(context, actionContext);

@@ -19,15 +19,6 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ActionHelper {
 
-	public static User findUser(final String userEmail, final ProjectContext context) throws UnableToCompleteActionException {
-		try {
-			return context.findUser(userEmail);
-		}
-		catch (final UserNotFoundException e) {
-			throw new UnableToCompleteActionException(e);
-		}
-	}
-
 	public static Release findRelease(final UUID referenceId, final ProjectContext context) throws UnableToCompleteActionException {
 		try {
 			return context.findRelease(referenceId);
@@ -83,7 +74,7 @@ public class ActionHelper {
 	}
 
 	public static User findUserFrom(final ActionContext actionContext, final ProjectContext context) throws UnableToCompleteActionException {
-		return findUser(actionContext.getUserEmail(), context);
+		return findUser(actionContext.getUserId(), context);
 	}
 
 	public static User findUser(final UUID userId, final ProjectContext context) throws UnableToCompleteActionException {

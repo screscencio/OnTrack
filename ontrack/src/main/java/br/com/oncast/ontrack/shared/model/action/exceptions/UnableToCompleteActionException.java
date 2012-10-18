@@ -25,4 +25,11 @@ public class UnableToCompleteActionException extends Exception {
 	public String getLocalizedMessage() {
 		return ActionExecutionErrorMessageTranslator.translate(this.code, errorMessageArgs);
 	}
+
+	@Override
+	public String toString() {
+		final String s = getClass().getName();
+		final String message = getMessage();
+		return (message != null) ? (s + ": " + message) : s;
+	}
 }

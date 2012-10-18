@@ -66,9 +66,9 @@ public class MulticastServiceImpl implements MulticastService {
 
 	@Override
 	public void multicastToUser(final ServerPushEvent event, final User recipient) {
-		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(recipient.getEmail());
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsOfUser(recipient.getId());
 
-		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '" + recipient.getEmail() + "'.");
+		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '" + recipient.getId() + "'.");
 		serverPushServerService.pushEvent(event, connectionSet);
 	}
 
@@ -76,7 +76,7 @@ public class MulticastServiceImpl implements MulticastService {
 	public void multicastToUsers(final ServerPushEvent event, final List<User> recipients) {
 		final Set<ServerPushConnection> connectionSet = new HashSet<ServerPushConnection>();
 		for (final User user : recipients) {
-			final Set<ServerPushConnection> clientsOfUser = clientManager.getClientsOfUser(user.getEmail());
+			final Set<ServerPushConnection> clientsOfUser = clientManager.getClientsOfUser(user.getId());
 			connectionSet.addAll(clientsOfUser);
 		}
 

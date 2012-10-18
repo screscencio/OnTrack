@@ -38,9 +38,9 @@ public class ImpedimentSolveActionTest extends ModelActionTest {
 		timestamp = new Date();
 		when(context.findAnnotation(subjectId, annotation.getId())).thenReturn(annotation);
 
-		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
+		when(actionContext.getUserId()).thenReturn(user.getId());
 		when(actionContext.getTimestamp()).thenReturn(new Date());
-		when(context.findUser(user.getEmail())).thenReturn(user);
+		when(context.findUser(user.getId())).thenReturn(user);
 	}
 
 	@Test

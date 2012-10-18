@@ -73,7 +73,7 @@ public class MembersScopeSelectionServiceImpl implements MembersScopeSelectionSe
 			public void onEvent(final UserSelectedScopeEvent event) {
 				try {
 					final ProjectContext context = contextProviderService.getCurrentProjectContext();
-					final User member = context.findUser(event.getUserEmail());
+					final User member = context.findUser(event.getUserId());
 
 					removePreviousSelection(member);
 
@@ -93,7 +93,7 @@ public class MembersScopeSelectionServiceImpl implements MembersScopeSelectionSe
 			public void onEvent(final UserClosedProjectEvent event) {
 				try {
 					final ProjectContext context = contextProviderService.getCurrentProjectContext();
-					final User member = context.findUser(event.getUserEmail());
+					final User member = context.findUser(event.getUserId());
 					removePreviousSelection(member);
 				}
 				catch (final UserNotFoundException e) {

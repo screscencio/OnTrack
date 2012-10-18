@@ -41,9 +41,9 @@ public class ImpedimentCreateActionTest extends ModelActionTest {
 		annotation = AnnotationTestUtils.create(user);
 		when(context.findAnnotation(subjectId, annotation.getId())).thenReturn(annotation);
 
-		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
+		when(actionContext.getUserId()).thenReturn(user.getId());
 		when(actionContext.getTimestamp()).thenReturn(new Date());
-		when(context.findUser(user.getEmail())).thenReturn(user);
+		when(context.findUser(user.getId())).thenReturn(user);
 	}
 
 	@Test

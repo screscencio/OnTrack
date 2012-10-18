@@ -28,7 +28,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.exportImport.xml.UserActionTestUtils;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
@@ -56,9 +55,9 @@ public abstract class ModelActionTest {
 	public void initContextMocks() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		final String userEmail = DefaultAuthenticationCredentials.USER_EMAIL;
-		when(actionContext.getUserEmail()).thenReturn(userEmail);
-		when(context.findUser(userEmail)).thenReturn(UserTestUtils.getAdmin());
+		final UUID userId = UserTestUtils.getAdmin().getId();
+		when(actionContext.getUserId()).thenReturn(userId);
+		when(context.findUser(userId)).thenReturn(UserTestUtils.getAdmin());
 		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
 	}
 
@@ -239,7 +238,7 @@ public abstract class ModelActionTest {
 	private Set<Field> getAllNotInjectedFields(final Class<?> type) {
 		final HashSet<Field> fields = new HashSet<Field>();
 		for (final Field field : type.getDeclaredFields()) {
-			if (field.getName().contains("$")) continue; // IMPORTANT Skips fields injected by jacoco
+			if (field.getName().contains("$")) continue; // IMPORTANT This skips fields injected by jacoco
 
 			fields.add(field);
 		}

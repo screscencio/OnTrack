@@ -77,8 +77,8 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 	@Test
 	public void shouldSetDeprecationAuthorOnAnnotation() throws Exception {
 		final User user = UserTestUtils.createUser();
-		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
-		when(context.findUser(user.getEmail())).thenReturn(user);
+		when(actionContext.getUserId()).thenReturn(user.getId());
+		when(context.findUser(user.getId())).thenReturn(user);
 		executeAction();
 
 		assertEquals(user, annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
@@ -87,8 +87,8 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 	@Test
 	public void shouldNotOverridePreviousDeprecationRemovalTimestamp() throws Exception {
 		final User user = UserTestUtils.createUser();
-		when(actionContext.getUserEmail()).thenReturn(user.getEmail());
-		when(context.findUser(user.getEmail())).thenReturn(user);
+		when(actionContext.getUserId()).thenReturn(user.getId());
+		when(context.findUser(user.getId())).thenReturn(user);
 
 		final ModelAction undoAction = executeAction();
 		final Date deprecationRemovalTimestamp = new Date(1515);

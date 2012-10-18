@@ -75,9 +75,9 @@ public class ClientManager {
 		return Sets.newHashSet(clientsByProject.get(projectId));
 	}
 
-	public Set<ServerPushConnection> getClientsOfUser(final String email) {
+	public Set<ServerPushConnection> getClientsOfUser(final UUID userId) {
 		final Set<ServerPushConnection> clients = new HashSet<ServerPushConnection>();
-		final Set<String> sessions = userSessionMapper.getSessionsIdFor(email);
+		final Set<String> sessions = userSessionMapper.getSessionsIdFor(userId);
 		for (final String sessionId : sessions) {
 			clients.addAll(clientsBySession.get(sessionId));
 		}
@@ -89,18 +89,18 @@ public class ClientManager {
 	}
 
 	private void notifyOpenedProject(final ServerPushConnection clientId, final UUID projectId) {
-		final String userEmail = userSessionMapper.getUserEmailFor(clientId.getSessionId());
+		final UUID userId = userSessionMapper.getUserIdFor(clientId.getSessionId());
 		for (final UserStatusChangeListener l : listeners) {
-			l.onUserOpenProject(projectId, userEmail);
+			l.onUserOpenProject(projectId, userId);
 		}
 	}
 
 	private void notifyClosedProject(final ServerPushConnection clientId, final UUID previousProjectId) {
 		if (previousProjectId == null || previousProjectId.equals(UNBOUND_PROJECT_INDEX)) return;
 
-		final String userEmail = userSessionMapper.getUserEmailFor(clientId.getSessionId());
+		final UUID userId = userSessionMapper.getUserIdFor(clientId.getSessionId());
 		for (final UserStatusChangeListener l : listeners) {
-			l.onUserCloseProject(previousProjectId, userEmail);
+			l.onUserCloseProject(previousProjectId, userId);
 		}
 	}
 
@@ -126,27 +126,27 @@ public class ClientManager {
 
 	private class UserSessionMapper implements AuthenticationListener {
 
-		private final SetMultimap<String, String> sessionByUser = HashMultimap.create();
+		private final SetMultimap<UUID, String> sessionByUser = HashMultimap.create();
 
-		private Set<String> getSessionsIdFor(final String userEmail) {
-			return sessionByUser.get(userEmail);
+		private Set<String> getSessionsIdFor(final UUID userId) {
+			return sessionByUser.get(userId);
 		}
 
-		public String getUserEmailFor(final String sessionId) {
+		public UUID getUserIdFor(final String sessionId) {
 			return getKeyFor(sessionByUser, sessionId);
 		}
 
 		@Override
 		public void onUserLoggedIn(final User user, final String sessionId) {
-			sessionByUser.put(user.getEmail(), sessionId);
+			sessionByUser.put(user.getId(), sessionId);
 
-			verifyAndNotifyUserOnline(user.getEmail(), sessionId);
+			verifyAndNotifyUserOnline(user.getId(), sessionId);
 		}
 
-		private void verifyAndNotifyUserOnline(final String userEmail, final String sessionId) {
+		private void verifyAndNotifyUserOnline(final UUID userId, final String sessionId) {
 			if (!clientsBySession.containsKey(sessionId)) return;
 
-			notifyUserOnline(userEmail);
+			notifyUserOnline(userId);
 		}
 
 		@Override
@@ -155,21 +155,21 @@ public class ClientManager {
 				unbindClientFromProject(c);
 			}
 
-			sessionByUser.remove(user.getEmail(), sessionId);
+			sessionByUser.remove(user.getId(), sessionId);
 
-			verifyAndNotifyUserOffline(user.getEmail(), sessionId);
+			verifyAndNotifyUserOffline(user.getId(), sessionId);
 		}
 
-		private void verifyAndNotifyUserOffline(final String userEmail, final String sessionId) {
+		private void verifyAndNotifyUserOffline(final UUID userId, final String sessionId) {
 			if (!clientsBySession.containsKey(sessionId)) return;
 
-			notifyUserOffline(userEmail);
+			notifyUserOffline(userId);
 		}
 
-		public Set<String> getOnlineUsers() {
-			final Set<String> onlineUsers = new HashSet<String>();
+		public Set<UUID> getOnlineUsers() {
+			final Set<UUID> onlineUsers = new HashSet<UUID>();
 
-			for (final String user : sessionByUser.keySet()) {
+			for (final UUID user : sessionByUser.keySet()) {
 				for (final String activeSession : sessionByUser.get(user)) {
 					if (clientsBySession.containsKey(activeSession)) {
 						onlineUsers.add(user);
@@ -179,11 +179,11 @@ public class ClientManager {
 			return onlineUsers;
 		}
 
-		public Set<String> getUsers(final Set<ServerPushConnection> clients) {
-			final Set<String> users = new HashSet<String>();
+		public Set<UUID> getUsers(final Set<ServerPushConnection> clients) {
+			final Set<UUID> users = new HashSet<UUID>();
 
 			for (final ServerPushConnection c : clients) {
-				for (final String user : sessionByUser.keySet()) {
+				for (final UUID user : sessionByUser.keySet()) {
 					if (sessionByUser.containsEntry(user, c.getSessionId())) {
 						users.add(user);
 						break;
@@ -194,11 +194,11 @@ public class ClientManager {
 		}
 	}
 
-	public Set<String> getOnlineUsers() {
+	public Set<UUID> getOnlineUsers() {
 		return userSessionMapper.getOnlineUsers();
 	}
 
-	public Set<String> getUsersAtProject(final UUID projectId) {
+	public Set<UUID> getUsersAtProject(final UUID projectId) {
 		return userSessionMapper.getUsers(getClientsAtProject(projectId));
 	}
 
@@ -207,38 +207,38 @@ public class ClientManager {
 	}
 
 	public interface UserStatusChangeListener {
-		void onUserOpenProject(UUID projectId, String userEmail);
+		void onUserOpenProject(UUID projectId, UUID userId);
 
-		void onUserCloseProject(UUID projectId, String userEmail);
+		void onUserCloseProject(UUID projectId, UUID userId);
 
-		void onUserOnline(String userEmail);
+		void onUserOnline(UUID userId);
 
-		void onUserOffline(String userEmail);
+		void onUserOffline(UUID userId);
 	}
 
 	private void verifyAndNotifyUserOnline(final ServerPushConnection clientId) {
-		final String userEmail = userSessionMapper.getUserEmailFor(clientId.getSessionId());
-		if (userEmail == null) return;
+		final UUID userId = userSessionMapper.getUserIdFor(clientId.getSessionId());
+		if (userId == null) return;
 
-		notifyUserOnline(userEmail);
+		notifyUserOnline(userId);
 	}
 
-	private void notifyUserOnline(final String userEmail) {
+	private void notifyUserOnline(final UUID userId) {
 		for (final UserStatusChangeListener l : listeners) {
-			l.onUserOnline(userEmail);
+			l.onUserOnline(userId);
 		}
 	}
 
 	private void verifyAndNotifyUserOffline(final ServerPushConnection clientId) {
-		final String userEmail = userSessionMapper.getUserEmailFor(clientId.getSessionId());
-		if (userEmail == null) return;
+		final UUID userId = userSessionMapper.getUserIdFor(clientId.getSessionId());
+		if (userId == null) return;
 
-		notifyUserOffline(userEmail);
+		notifyUserOffline(userId);
 	}
 
-	private void notifyUserOffline(final String userEmail) {
+	private void notifyUserOffline(final UUID userId) {
 		for (final UserStatusChangeListener l : listeners) {
-			l.onUserOffline(userEmail);
+			l.onUserOffline(userId);
 		}
 	}
 

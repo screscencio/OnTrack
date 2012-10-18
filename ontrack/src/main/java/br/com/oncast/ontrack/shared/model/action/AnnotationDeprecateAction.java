@@ -32,7 +32,7 @@ public class AnnotationDeprecateAction implements AnnotationAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(subjectId, annotationId, context);
-		annotation.setDeprecation(DeprecationState.DEPRECATED, ActionHelper.findUser(actionContext.getUserEmail(), context), actionContext.getTimestamp());
+		annotation.setDeprecation(DeprecationState.DEPRECATED, ActionHelper.findUser(actionContext.getUserId(), context), actionContext.getTimestamp());
 		return new AnnotationRemoveDeprecationAction(subjectId, annotationId);
 	}
 
