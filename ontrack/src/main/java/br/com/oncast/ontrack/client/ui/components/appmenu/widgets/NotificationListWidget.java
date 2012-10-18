@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-// FIXME Notification MAKE THE PANEL SCROLLABLE WITH MAX HEIGHT
 public class NotificationListWidget extends Composite implements HasCloseHandlers<NotificationListWidget>, PopupAware {
 
 	private static final int NOTIFICATION_READ_STATE_DELAY_MILLIS = 1500;
@@ -154,7 +153,7 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 	}
 
 	private void markVisibleNotificationsAsRead() {
-		if (!this.isVisible()) return;
+		if (!this.isVisible() || !this.isAttached()) return;
 		final int widgetCount = notificationContainer.getWidgetCount();
 		for (int i = 0; i < widgetCount; i++) {
 			final NotificationWidget widget = notificationContainer.getWidget(i);
@@ -162,7 +161,6 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 			final int listVisibleTop = scrollContainer.getVerticalScrollPosition();
 			final int listVisibleBottom = listVisibleTop + scrollContainer.getElement().getClientHeight();
-
 			final int elementTop = element.getOffsetTop();
 			final int elementBottom = elementTop + element.getOffsetHeight();
 

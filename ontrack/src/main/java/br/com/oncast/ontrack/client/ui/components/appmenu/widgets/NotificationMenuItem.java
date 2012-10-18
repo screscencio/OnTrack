@@ -29,7 +29,9 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 		@Override
 		public void onNotificationListAvailabilityChange(final boolean availability) {
 			if (!availability) setSuffix("(?)");
-			else calculateUnreadNotifications();
+			else {
+				calculateUnreadNotifications();
+			}
 		}
 
 		private void calculateUnreadNotifications() {
@@ -78,7 +80,7 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 	}
 
 	private void updateText(final String text) {
-		notificationMenuItem.setText(text + suffix);
+		notificationMenuItem.setText(text + " " + suffix);
 	}
 
 	public void setPopupConfig(final PopupConfig popup) {
