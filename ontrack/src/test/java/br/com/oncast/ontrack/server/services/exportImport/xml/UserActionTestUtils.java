@@ -69,12 +69,12 @@ import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
 public class UserActionTestUtils {
 
-	public static final int DEFAULT_USER_ID = Integer.MAX_VALUE;
+	public static final UUID DEFAULT_USER_ID = new UUID();
 	public static final UUID DEFAULT_PROJECT_ID = new UUID();
 	public static final String DEFAULT_PROJECT_NAME = "Default project";
 
 	private static long actionCount = 0;
-	private static long userId = DEFAULT_USER_ID;
+	private static UUID userId = DEFAULT_USER_ID;
 	private static UUID projectId = DEFAULT_PROJECT_ID;
 	private static String projectName = DEFAULT_PROJECT_NAME;
 
@@ -88,7 +88,7 @@ public class UserActionTestUtils {
 		for (final User user : userList) {
 			final Password password = new Password();
 			password.setUserId(user.getId());
-			password.setPassword("password" + user.getId());
+			password.setPassword("password" + user.getId().toStringRepresentation());
 			passwords.add(password);
 		}
 		return passwords;
@@ -453,7 +453,7 @@ public class UserActionTestUtils {
 		UserActionTestUtils.projectId = projectId;
 	}
 
-	private static void setUserId(final long userId) {
+	private static void setUserId(final UUID userId) {
 		UserActionTestUtils.userId = userId;
 	}
 
@@ -463,7 +463,7 @@ public class UserActionTestUtils {
 		UserActionTestUtils.userId = DEFAULT_USER_ID;
 	}
 
-	public static List<UserAction> createRandomUserActionList(final UUID projectId, final long userId) throws Exception {
+	public static List<UserAction> createRandomUserActionList(final UUID projectId, final UUID userId) throws Exception {
 		setProjectId(projectId);
 		setUserId(userId);
 		final List<UserAction> actions = createRandomUserActionList();

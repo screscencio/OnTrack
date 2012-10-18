@@ -86,4 +86,13 @@ public class ActionHelper {
 		return findUser(actionContext.getUserEmail(), context);
 	}
 
+	public static User findUser(final UUID userId, final ProjectContext context) throws UnableToCompleteActionException {
+		try {
+			return context.findUser(userId);
+		}
+		catch (final UserNotFoundException e) {
+			throw new UnableToCompleteActionException(e);
+		}
+	}
+
 }

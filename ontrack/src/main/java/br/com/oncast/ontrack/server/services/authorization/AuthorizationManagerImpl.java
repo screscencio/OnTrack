@@ -42,7 +42,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	@Override
 	public void assureProjectAccessAuthorization(final UUID projectId) throws PersistenceException, AuthorizationException {
-		final long currentUserId = authenticationManager.getAuthenticatedUser().getId();
+		final UUID currentUserId = authenticationManager.getAuthenticatedUser().getId();
 		final ProjectAuthorization retrieveProjectAuthorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
 		if (retrieveProjectAuthorization == null) throw new AuthorizationException("Not authorized to access project '" + projectId + "'.");
 	}

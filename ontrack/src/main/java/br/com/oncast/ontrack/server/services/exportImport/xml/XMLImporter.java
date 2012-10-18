@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.server.services.exportImport.xml;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -12,7 +11,6 @@ import org.simpleframework.xml.core.Persister;
 
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
@@ -25,7 +23,6 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
@@ -35,8 +32,6 @@ public class XMLImporter {
 
 	private final PersistenceService persistenceService;
 	private OntrackXML ontrackXML;
-	private final HashMap<Long, User> userIdMap = new HashMap<Long, User>();
-	private long adminId = -1;
 	private static final Logger LOGGER = Logger.getLogger(XMLImporter.class);
 	private final BusinessLogic businessLogic;
 	private boolean persisted;
@@ -75,7 +70,7 @@ public class XMLImporter {
 			this.persisted = true;
 			return this;
 		}
-		catch (final PersistenceException e) {
+		catch (final Exception e) {
 			throw new UnableToImportXMLException("The xml import was not concluded. Some operations may be changed the database, but was not rolledback. ", e);
 		}
 	}
@@ -92,21 +87,14 @@ public class XMLImporter {
 		final long initialTime = getCurrentTime();
 		int newUsersCount = 0;
 		for (final UserXMLNode userNode : userNodes) {
-			User persistedUser;
-			try {
-				persistedUser = persistenceService.retrieveUserByEmail(userNode.getUser().getEmail());
-			}
-			catch (final NoResultFoundException e) {
-				persistedUser = persistenceService.persistOrUpdateUser(userNode.getUser());
-				if (userNode.hasPassword()) persistPassword(persistedUser.getId(), userNode.getPassword());
-				newUsersCount++;
-			}
-			userIdMap.put(userNode.getId(), persistedUser);
+			persistenceService.persistOrUpdateUser(userNode.getUser());
+			if (userNode.hasPassword()) persistPassword(userNode.getUser().getId(), userNode.getPassword());
+			newUsersCount++;
 		}
-		LOGGER.debug("Persisted " + userIdMap.size() + " users (" + newUsersCount + " new) in " + getTimeSpent(initialTime) + " ms.");
+		LOGGER.debug("Persisted " + newUsersCount + " new users in " + getTimeSpent(initialTime) + " ms.");
 	}
 
-	private void persistPassword(final long userId, final Password password) throws PersistenceException {
+	private void persistPassword(final UUID userId, final Password password) throws PersistenceException {
 		password.setUserId(userId);
 		persistenceService.persistOrUpdatePassword(password);
 	}
@@ -129,24 +117,14 @@ public class XMLImporter {
 		for (final UserAction userAction : userActions) {
 			final ArrayList<ModelAction> actions = new ArrayList<ModelAction>();
 			actions.add(userAction.getModelAction());
-			final User user = userIdMap.get(userAction.getUserId());
-			persistenceService.persistActions(projectId, actions, user == null ? getAdminId() : user.getId(), userAction.getTimestamp());
+			persistenceService.persistActions(projectId, actions, userAction.getUserId(), userAction.getTimestamp());
 		}
 	}
 
-	private long getAdminId() throws PersistenceException {
-		try {
-			return adminId < 0 ? adminId = persistenceService.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL).getId() : adminId;
-		}
-		catch (final NoResultFoundException e) {
-			return adminId = 1;
-		}
-	}
-
-	private void persistAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizationNodes) throws PersistenceException {
+	private void persistAuthorizations(final List<ProjectAuthorizationXMLNode> projectAuthorizationNodes) throws PersistenceException, NoResultFoundException {
 		final long initialTime = getCurrentTime();
 		for (final ProjectAuthorizationXMLNode authNode : projectAuthorizationNodes) {
-			persistenceService.authorize(userIdMap.get(authNode.getUserId()).getEmail(), authNode.getProjectId());
+			persistenceService.authorize(authNode.getUserId(), authNode.getProjectId());
 		}
 		LOGGER.debug("Persisted " + projectAuthorizationNodes.size() + " ProjectAuthorizations in " + getTimeSpent(initialTime) + " ms.");
 

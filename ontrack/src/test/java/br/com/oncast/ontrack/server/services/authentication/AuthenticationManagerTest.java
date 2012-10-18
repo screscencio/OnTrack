@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.server.services.authentication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -28,6 +28,7 @@ import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationExce
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class AuthenticationManagerTest {
 
@@ -62,14 +63,12 @@ public class AuthenticationManagerTest {
 	}
 
 	private void configureUser() {
-		user = new User();
-		user.setId(123456);
-		user.setEmail("user@mail.com");
+		user = new User(new UUID(), "user@mail.com");
 	}
 
 	private void setDefaultMockBehavior() throws NoResultFoundException, PersistenceException {
 		when(persistenceServiceMock.retrieveUserByEmail(anyString())).thenReturn(user);
-		when(persistenceServiceMock.retrievePasswordForUser(anyInt())).thenReturn(passwordMock);
+		when(persistenceServiceMock.retrievePasswordForUser(any(UUID.class))).thenReturn(passwordMock);
 		when(passwordMock.authenticate(anyString())).thenReturn(true);
 	}
 
@@ -194,7 +193,7 @@ public class AuthenticationManagerTest {
 
 	private void forcePersistenceToFail() throws Exception {
 		when(persistenceServiceMock.retrieveUserByEmail(anyString())).thenThrow(new AuthenticationException());
-		when(persistenceServiceMock.retrievePasswordForUser(anyInt())).thenThrow(new AuthenticationException());
+		when(persistenceServiceMock.retrievePasswordForUser(any(UUID.class))).thenThrow(new AuthenticationException());
 	}
 
 	private void forcePasswordToBeIncorrect() {

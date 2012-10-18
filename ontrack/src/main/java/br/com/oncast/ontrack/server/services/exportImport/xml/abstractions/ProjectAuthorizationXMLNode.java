@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -10,22 +9,22 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @Root(name = "projectAuthorization")
 public class ProjectAuthorizationXMLNode {
 
-	@Attribute
-	private long userId;
+	@Element
+	private UUID userId;
 
 	@Element
 	private UUID projectId;
 
-	@SuppressWarnings("unused")
 	// IMPORTANT The Simple Framework needs a default constructor for instantiate classes.
+	@SuppressWarnings("unused")
 	private ProjectAuthorizationXMLNode() {}
 
 	public ProjectAuthorizationXMLNode(final ProjectAuthorization authorization) {
-		userId = authorization.getUser().getId();
+		userId = authorization.getUserId();
 		projectId = authorization.getProjectId();
 	}
 
-	public long getUserId() {
+	public UUID getUserId() {
 		return userId;
 	}
 
@@ -38,7 +37,7 @@ public class ProjectAuthorizationXMLNode {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((projectId == null) ? 0 : projectId.hashCode());
-		result = prime * result + (int) (userId ^ (userId >>> 32));
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
@@ -52,7 +51,10 @@ public class ProjectAuthorizationXMLNode {
 			if (other.projectId != null) return false;
 		}
 		else if (!projectId.equals(other.projectId)) return false;
-		if (userId != other.userId) return false;
+		if (userId == null) {
+			if (other.userId != null) return false;
+		}
+		else if (!userId.equals(other.userId)) return false;
 		return true;
 	}
 

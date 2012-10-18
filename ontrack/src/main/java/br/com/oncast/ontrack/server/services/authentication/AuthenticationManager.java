@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationExce
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.PasswordValidator;
 
 // TODO ++++Increment password strength validation, reflecting it on the UI as well so the user can create it without getting bored/angry.
@@ -80,9 +81,9 @@ public class AuthenticationManager {
 		final String formattedUserEmail = formatUserEmail(email);
 
 		try {
-			final User user = new User(formattedUserEmail, projectInvitationQuota, projectCreationQuota);
+			final User user = new User(new UUID(), formattedUserEmail, projectInvitationQuota, projectCreationQuota);
 			final User newUser = persistenceService.persistOrUpdateUser(user);
-			createPasswordForUser(newUser, password);
+			if (password != null && !password.isEmpty()) createPasswordForUser(newUser, password);
 			return newUser;
 		}
 		catch (final PersistenceException e) {
@@ -151,7 +152,7 @@ public class AuthenticationManager {
 			return newPassword;
 		}
 		catch (final PersistenceException e) {
-			final String message = "Could not create an empty password for the user with e-mail " + user.getEmail();
+			final String message = "Could not create a password for the user with e-mail " + user.getEmail();
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
 		}

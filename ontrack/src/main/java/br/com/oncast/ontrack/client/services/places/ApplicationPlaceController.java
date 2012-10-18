@@ -74,4 +74,5 @@ public class ApplicationPlaceController {
 			listener.onPlaceChange(newPlace);
 		}
 	}
+
 }

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -136,7 +135,7 @@ public class BusinessLogicTest {
 
 	private void configureMockDefaultBehavior() throws Exception {
 		admin = UserTestUtils.getAdmin();
-		authenticatedUser = UserTestUtils.createUser(100);
+		authenticatedUser = UserTestUtils.createUser();
 		configureToRetrieveAdmin();
 		authenticateAndAuthorizeUser(authenticatedUser, PROJECT_ID);
 		configureToRetrieveSnapshot(PROJECT_ID);
@@ -190,7 +189,7 @@ public class BusinessLogicTest {
 
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
-		verify(persistence, times(0)).persistActions(any(UUID.class), anyList(), anyLong(), any(Date.class));
+		verify(persistence, times(0)).persistActions(any(UUID.class), anyList(), any(UUID.class), any(Date.class));
 	}
 
 	@Test
@@ -565,7 +564,7 @@ public class BusinessLogicTest {
 
 		Mockito.reset(authenticationManager);
 
-		final long userId = 123;
+		final UUID userId = new UUID();
 		final User createdUser = UserTestUtils.createUser(userId);
 		final List<ModelAction> actions = ActionTestUtils.createSomeActions(UserTestUtils.getAdmin(), createdUser);
 		final ModelActionSyncRequest actionSyncRequest = new ModelActionSyncRequest(projectRepresentation, actions);

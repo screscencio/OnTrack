@@ -35,7 +35,7 @@ public class TeamInviteActionTest extends ModelActionTest {
 	public void undoShouldRemoveTheInvitedUserFromContext() throws Exception {
 		final ModelAction undoAction = executeAction();
 
-		when(context.findUser(invitee.getEmail())).thenReturn(invitee);
+		when(context.findUser(invitee.getId())).thenReturn(invitee);
 		undoAction.execute(context, actionContext);
 		verify(context).removeUser(invitee);
 	}

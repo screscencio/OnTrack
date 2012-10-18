@@ -59,8 +59,6 @@ public class XMLNodeTestUtils {
 	}
 
 	private static User extractUser(final UserXMLNode userNode) {
-		final User user = userNode.getUser();
-		user.setId(userNode.getId());
-		return user;
+		return userNode.getUser();
 	}
 }

@@ -40,7 +40,7 @@ public class ActionTestUtils {
 		final UUID rootScope = ProjectTestUtils.createProject().getProjectScope().getId();
 		final ScopeInsertChildAction insertChild1 = new ScopeInsertChildAction(rootScope, "1");
 		for (final User user : requiredUsers) {
-			if (user != null) actions.add(new TeamInviteAction(user));
+			if (user != null) actions.add(new TeamInviteAction(user.getEmail()));
 		}
 
 		actions.add(insertChild1);
@@ -101,7 +101,7 @@ public class ActionTestUtils {
 
 	public static List<ModelAction> createOneValidAction() {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
-		actions.add(new TeamInviteAction(UserTestUtils.getAdmin()));
+		actions.add(new TeamInviteAction(UserTestUtils.getAdmin().getEmail()));
 		return actions;
 	}
 

@@ -376,9 +376,7 @@ public class XMLWriterTest {
 		final List<ProjectAuthorizationXMLNode> auth = new ArrayList<ProjectAuthorizationXMLNode>();
 		for (final ProjectXMLNode project : projects) {
 			for (final UserXMLNode user : users) {
-				final User entity = new User(user.getUser().getEmail());
-				entity.setId(user.getId());
-				auth.add(new ProjectAuthorizationXMLNode(new ProjectAuthorization(entity, project.getProjectRepresentation())));
+				auth.add(new ProjectAuthorizationXMLNode(new ProjectAuthorization(user.getUser(), project.getProjectRepresentation())));
 			}
 		}
 		return auth;
@@ -408,7 +406,7 @@ public class XMLWriterTest {
 
 	private Password getPasswordFor(final User user) {
 		for (final Password password : passwordList) {
-			if (password.getUserId() == user.getId()) return password;
+			if (password.getUserId().equals(user.getId())) return password;
 		}
 		return null;
 	}

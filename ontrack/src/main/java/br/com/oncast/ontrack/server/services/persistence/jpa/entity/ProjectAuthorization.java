@@ -4,8 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -14,16 +12,15 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "user", "projectId" }))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "userId", "projectId" }))
 public class ProjectAuthorization {
 
 	@Id
 	@GeneratedValue
 	private long id;
 
-	@OneToOne
-	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private User user;
+	@Column(name = "userId", nullable = false, updatable = false)
+	private String userId;
 
 	@Column(name = "projectId", nullable = false, updatable = false)
 	private String projectId;
@@ -32,11 +29,11 @@ public class ProjectAuthorization {
 	protected ProjectAuthorization() {}
 
 	public ProjectAuthorization(final User user, final ProjectRepresentation project) {
-		this(user, project.getId());
+		this(user.getId(), project.getId());
 	}
 
-	public ProjectAuthorization(final User user, final UUID projectId) {
-		this.user = user;
+	public ProjectAuthorization(final UUID userId, final UUID projectId) {
+		this.userId = userId.toStringRepresentation();
 		this.projectId = projectId.toStringRepresentation();
 	}
 
@@ -44,8 +41,8 @@ public class ProjectAuthorization {
 		return id;
 	}
 
-	public User getUser() {
-		return user;
+	public UUID getUserId() {
+		return new UUID(userId);
 	}
 
 	public UUID getProjectId() {

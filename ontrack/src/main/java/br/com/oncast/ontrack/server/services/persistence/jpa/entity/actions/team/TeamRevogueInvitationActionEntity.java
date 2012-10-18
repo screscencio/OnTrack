@@ -16,16 +16,16 @@ public class TeamRevogueInvitationActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.STRING_1)
 	@ConvertUsing(StringToUuidConverter.class)
-	private String inviteeEmail;
+	private String userId;
 
 	public TeamRevogueInvitationActionEntity() {}
 
-	public String getInviteeEmail() {
-		return inviteeEmail;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setInviteeEmail(final String inviteeEmail) {
-		this.inviteeEmail = inviteeEmail;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 }

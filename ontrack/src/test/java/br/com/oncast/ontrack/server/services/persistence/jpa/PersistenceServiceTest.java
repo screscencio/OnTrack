@@ -62,7 +62,7 @@ public class PersistenceServiceTest {
 
 	private static final UUID PROJECT_ID = new UUID();
 
-	private static final long USER_ID = 1;
+	private static final UUID USER_ID = UserTestUtils.getAdmin().getId();
 
 	private PersistenceService persistenceService;
 
@@ -146,20 +146,19 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldPersistUser() throws PersistenceException, NoResultFoundException {
-		final User user = new User();
 		final String email = "user1@email.com";
-		user.setEmail(email);
+		final User user = UserTestUtils.createUser(email);
 		persistenceService.persistOrUpdateUser(user);
 
-		final User newUser = persistenceService.retrieveUserByEmail(email);
-		assertEquals(user.getEmail(), newUser.getEmail());
+		final User persistedUser = persistenceService.retrieveUserByEmail(email);
+		assertEquals(user.getEmail(), persistedUser.getEmail());
 	}
 
 	@Test
 	public void shouldUpdateUser() throws PersistenceException, NoResultFoundException {
-		final User user = new User();
 		final String email = "user1@email.com";
-		user.setEmail(email);
+		final User user = UserTestUtils.createUser(email);
+
 		persistenceService.persistOrUpdateUser(user);
 
 		final User newUser = persistenceService.retrieveUserByEmail(email);
@@ -175,9 +174,8 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldPersistPasswordForAnExistentUser() throws PersistenceException, NoResultFoundException {
-		User user = new User();
 		final String email = "user1@email.com";
-		user.setEmail(email);
+		User user = UserTestUtils.createUser(email);
 		persistenceService.persistOrUpdateUser(user);
 
 		user = persistenceService.retrieveUserByEmail(email);
@@ -192,9 +190,9 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldUpdateAndExistentPassword() throws PersistenceException, NoResultFoundException {
-		User user = new User();
 		final String email = "user1@email.com";
-		user.setEmail(email);
+		User user = UserTestUtils.createUser(email);
+
 		persistenceService.persistOrUpdateUser(user);
 
 		user = persistenceService.retrieveUserByEmail(email);
@@ -217,9 +215,9 @@ public class PersistenceServiceTest {
 
 	@Test(expected = NoResultFoundException.class)
 	public void shouldThrowNoResultFoundExceptionWhenUserDontHaveAPassword() throws PersistenceException, NoResultFoundException {
-		User user = new User();
 		final String email = "user1@email.com";
-		user.setEmail(email);
+		User user = UserTestUtils.createUser(email);
+
 		persistenceService.persistOrUpdateUser(user);
 
 		user = persistenceService.retrieveUserByEmail(email);
@@ -228,7 +226,7 @@ public class PersistenceServiceTest {
 
 	@Test(expected = NoResultFoundException.class)
 	public void shouldThrowNoResultFoundExceptionWhenUserNotExist() throws PersistenceException, NoResultFoundException {
-		persistenceService.retrievePasswordForUser(213);
+		persistenceService.retrievePasswordForUser(new UUID());
 	}
 
 	@Test(expected = NoResultFoundException.class)
@@ -238,17 +236,13 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldRetrieveAllUsers() throws Exception {
-		final User user1 = new User();
-		user1.setEmail("user@user1");
+		final User user1 = UserTestUtils.createUser("user@user1");
 		persistenceService.persistOrUpdateUser(user1);
-		final User user2 = new User();
-		user2.setEmail("user@user2");
+		final User user2 = UserTestUtils.createUser("user@user2");
 		persistenceService.persistOrUpdateUser(user2);
-		final User user3 = new User();
-		user3.setEmail("user@user3");
+		final User user3 = UserTestUtils.createUser("user@user3");
 		persistenceService.persistOrUpdateUser(user3);
-		final User user4 = new User();
-		user4.setEmail("user@user4");
+		final User user4 = UserTestUtils.createUser("user@user4");
 		persistenceService.persistOrUpdateUser(user4);
 
 		final List<User> userList = persistenceService.retrieveAllUsers();
@@ -361,7 +355,7 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void userIdShouldBeBoundToUserActionCotainer() throws Exception {
-		final long userId = 123;
+		final UUID userId = new UUID();
 		persistenceService.persistActions(PROJECT_ID, ActionTestUtils.createSomeActions(), userId, new Date());
 		final List<UserAction> retrievedActions = persistenceService.retrieveActionsSince(PROJECT_ID, 0);
 
@@ -578,18 +572,19 @@ public class PersistenceServiceTest {
 	@Test
 	public void shouldRetrieveMultipleUsers() throws Exception {
 		final User user1 = createAndPersistUser();
+		createAndPersistUser();
 		final User user2 = createAndPersistUser();
-		final User user3 = createAndPersistUser();
+		createAndPersistUser();
 
 		final List<String> userMails = new ArrayList<String>();
 		userMails.add(user1.getEmail());
-		userMails.add(user3.getEmail());
+		userMails.add(user2.getEmail());
 
 		final List<User> usersByEmails = persistenceService.retrieveUsersByEmails(userMails);
 
 		assertEquals(2, usersByEmails.size());
 		DeepEqualityTestUtils.assertObjectEquality(user1, usersByEmails.get(0));
-		DeepEqualityTestUtils.assertObjectEquality(user3, usersByEmails.get(1));
+		DeepEqualityTestUtils.assertObjectEquality(user2, usersByEmails.get(1));
 	}
 
 	private User createAndPersistUser() throws Exception {

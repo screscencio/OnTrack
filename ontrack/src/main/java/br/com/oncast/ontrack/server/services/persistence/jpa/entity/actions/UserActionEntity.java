@@ -16,6 +16,8 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.mode
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.project.ProjectRepresentationEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 
 @Entity
 @ConvertTo(UserAction.class)
@@ -38,12 +40,13 @@ public class UserActionEntity {
 	@ConversionAlias("projectRepresentation")
 	private ProjectRepresentationEntity projectRepresentation;
 
+	@ConvertUsing(StringToUuidConverter.class)
 	@ConversionAlias("userId")
-	private long userId;
+	private String userId;
 
 	public UserActionEntity() {}
 
-	public UserActionEntity(final ModelActionEntity actionEntity, final long userId, final ProjectRepresentationEntity projectRepresentation,
+	public UserActionEntity(final ModelActionEntity actionEntity, final String userId, final ProjectRepresentationEntity projectRepresentation,
 			final Date timestamp) {
 		this.actionEntity = actionEntity;
 		this.userId = userId;
@@ -83,11 +86,11 @@ public class UserActionEntity {
 		this.projectRepresentation = projectRepresentation;
 	}
 
-	public long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final long userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 }

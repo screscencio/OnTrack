@@ -14,8 +14,11 @@ import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 @ConvertTo(TeamInviteAction.class)
 public class TeamInviteActionEntity extends ModelActionEntity {
 
-	@Column(name = ActionTableColumns.STRING_1)
 	@ConvertUsing(StringToUuidConverter.class)
+	@Column(name = ActionTableColumns.STRING_1)
+	private String userId;
+
+	@Column(name = ActionTableColumns.STRING_2)
 	private String inviteeEmail;
 
 	public TeamInviteActionEntity() {}
@@ -26,6 +29,14 @@ public class TeamInviteActionEntity extends ModelActionEntity {
 
 	public void setInviteeEmail(final String inviteeEmail) {
 		this.inviteeEmail = inviteeEmail;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 }

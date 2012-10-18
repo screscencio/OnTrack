@@ -1,16 +1,18 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml.abstractions;
 
 import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @Root(name = "user")
 public class UserXMLNode {
 
-	@Attribute
-	private long id;
+	@Element
+	private UUID id;
 
 	@Attribute
 	private String email;
@@ -38,7 +40,7 @@ public class UserXMLNode {
 		projectInvitationQuota = user.getProjectInvitationQuota();
 	}
 
-	public long getId() {
+	public UUID getId() {
 		return id;
 	}
 
@@ -55,7 +57,7 @@ public class UserXMLNode {
 	}
 
 	public User getUser() {
-		final User user = new User(email);
+		final User user = new User(id, email);
 		user.setProjectCreationQuota(projectCreationQuota);
 		user.setProjectInvitationQuota(projectInvitationQuota);
 		return user;

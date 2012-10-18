@@ -122,7 +122,7 @@ class BusinessLogicImpl implements BusinessLogic {
 			LOGGER.error(errorMessage, e);
 			throw new UnableToHandleActionException(errorMessage);
 		}
-	} // FIXME Auto-generated catch block
+	}
 
 	// TODO Report errors as feedback for development.
 	// TODO Re-think validation strategy as loading the project every time may be a performance bottleneck.

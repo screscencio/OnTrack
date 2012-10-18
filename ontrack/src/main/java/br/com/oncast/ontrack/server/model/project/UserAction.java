@@ -7,6 +7,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 public class UserAction {
@@ -24,9 +25,9 @@ public class UserAction {
 	@IgnoredByDeepEquality
 	private ProjectRepresentation projectRepresentation;
 
-	@Attribute
+	@Element
 	@IgnoredByDeepEquality
-	private long userId;
+	private UUID userId;
 
 	public UserAction() {}
 
@@ -46,7 +47,7 @@ public class UserAction {
 		return projectRepresentation;
 	}
 
-	public long getUserId() {
+	public UUID getUserId() {
 		return userId;
 	}
 }

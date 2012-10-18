@@ -18,7 +18,7 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 public interface PersistenceService {
 
-	public void persistActions(final UUID projectId, final List<ModelAction> actionList, long userId, final Date timestamp)
+	public void persistActions(final UUID projectId, final List<ModelAction> actionList, UUID userId, final Date timestamp)
 			throws PersistenceException;
 
 	public ProjectSnapshot retrieveProjectSnapshot(UUID projectId) throws PersistenceException, NoResultFoundException;
@@ -29,13 +29,13 @@ public interface PersistenceService {
 
 	public User retrieveUserByEmail(String email) throws NoResultFoundException, PersistenceException;
 
-	public User retrieveUserById(long userId) throws NoResultFoundException, PersistenceException;
+	public User retrieveUserById(UUID userId) throws NoResultFoundException, PersistenceException;
 
 	public User persistOrUpdateUser(User user) throws PersistenceException;
 
 	public List<User> retrieveAllUsers() throws PersistenceException;
 
-	public Password retrievePasswordForUser(long userId) throws NoResultFoundException, PersistenceException;
+	public Password retrievePasswordForUser(UUID userId) throws NoResultFoundException, PersistenceException;
 
 	public void persistOrUpdatePassword(Password passwordForUser) throws PersistenceException;
 
@@ -49,7 +49,7 @@ public interface PersistenceService {
 
 	public void authorize(String userEmail, UUID projectId) throws PersistenceException;
 
-	public List<ProjectAuthorization> retrieveProjectAuthorizations(final long userId) throws PersistenceException;
+	public List<ProjectAuthorization> retrieveProjectAuthorizations(final UUID userId) throws PersistenceException;
 
 	public List<ProjectAuthorization> retrieveAllProjectAuthorizations() throws PersistenceException;
 
@@ -60,7 +60,7 @@ public interface PersistenceService {
 	 * @return the project authorization if found, <tt>null</tt> otherwise.
 	 * @throws PersistenceException in case persistence layer fails.
 	 */
-	public ProjectAuthorization retrieveProjectAuthorization(long userId, UUID projectId) throws PersistenceException;
+	public ProjectAuthorization retrieveProjectAuthorization(UUID userId, UUID projectId) throws PersistenceException;
 
 	public void persistOrUpdateFileRepresentation(FileRepresentation fileRepresentation) throws PersistenceException;
 
@@ -79,5 +79,7 @@ public interface PersistenceService {
 	public List<Notification> retrieveLatestNotifications(Date initialDate) throws PersistenceException;
 
 	public List<Notification> retrieveLatestProjectNotifications(List<UUID> projectIds, Date initialDate) throws PersistenceException;
+
+	public void authorize(UUID userId, UUID projectId) throws PersistenceException;
 
 }

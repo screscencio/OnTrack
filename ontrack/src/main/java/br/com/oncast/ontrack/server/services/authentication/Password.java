@@ -2,13 +2,14 @@ package br.com.oncast.ontrack.server.services.authentication;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.user.PasswordEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(PasswordEntity.class)
 public class Password {
 
 	private long id;
 
-	private long userId;
+	private UUID userId;
 
 	private String passwordHash;
 
@@ -16,7 +17,7 @@ public class Password {
 
 	public Password() {}
 
-	public Password(final long userId, final String password) {
+	public Password(final UUID userId, final String password) {
 		setUserId(userId);
 		setPassword(password);
 	}
@@ -29,11 +30,11 @@ public class Password {
 		return id;
 	}
 
-	public void setUserId(final long userId) {
+	public void setUserId(final UUID userId) {
 		this.userId = userId;
 	}
 
-	public long getUserId() {
+	public UUID getUserId() {
 		return userId;
 	}
 

@@ -173,9 +173,9 @@ public class BusinessLogicTestUtils {
 	private static PersistenceServiceJpaImpl getPersistenceServiceJpaImplMockingAuthorization() {
 		return new PersistenceServiceJpaImpl() {
 			@Override
-			public User retrieveUserById(final long id) throws NoResultFoundException, PersistenceException {
+			public User retrieveUserById(final UUID id) throws NoResultFoundException, PersistenceException {
 				try {
-					if (id == 1) return UserTestUtils.getAdmin();
+					if (id.equals(UserTestUtils.getAdmin().getId())) return UserTestUtils.getAdmin();
 					return UserTestUtils.createUser(id);
 				}
 				catch (final Exception e) {
@@ -204,7 +204,7 @@ public class BusinessLogicTestUtils {
 				}
 				return null;
 			}
-		}).when(mock).persistActions(any(UUID.class), anyList(), anyLong(), any(Date.class));
+		}).when(mock).persistActions(any(UUID.class), anyList(), any(UUID.class), any(Date.class));
 
 		when(mock.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenAnswer(new Answer<ProjectRepresentation>() {
 
@@ -214,7 +214,7 @@ public class BusinessLogicTestUtils {
 			}
 		});
 
-		when(mock.retrieveProjectAuthorization(anyLong(), any(UUID.class))).thenReturn(ProjectTestUtils.createAuthorization());
+		when(mock.retrieveProjectAuthorization(any(UUID.class), any(UUID.class))).thenReturn(ProjectTestUtils.createAuthorization());
 
 		return mock;
 	}

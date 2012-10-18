@@ -144,7 +144,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	}
 
 	@Test
-	public void xmlSerializationAndDeseiralizationShouldSupportNewLines() throws Exception {
+	public void xmlSerializationAndDeseiralizationShouldSupportNewLinesOnAnnotationText() throws Exception {
 		message = "asd\nasd\nasd";
 		final List<ProjectXMLNode> projects = createProjectXMLNodeList(UserActionTestUtils.createAnnotationCreateAction(message));
 
@@ -165,7 +165,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private List<ModelAction> getPersistedActions(final PersistenceService persistenceService) throws PersistenceException {
 		final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-		verify(persistenceService).persistActions(Mockito.any(UUID.class), captor.capture(), Mockito.anyLong(), Mockito.any(Date.class));
+		verify(persistenceService).persistActions(Mockito.any(UUID.class), captor.capture(), Mockito.any(UUID.class), Mockito.any(Date.class));
 		final List<ModelAction> capturedActions = captor.getValue();
 		return capturedActions;
 	}

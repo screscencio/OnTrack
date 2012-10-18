@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 
 @Entity
 @ConvertTo(Password.class)
@@ -21,8 +23,9 @@ public class PasswordEntity {
 	private String passwordHash;
 	private String passwordSalt;
 
+	@ConvertUsing(StringToUuidConverter.class)
 	@Column(name = "userId", unique = true, nullable = false)
-	private long userId;
+	private String userId;
 
 	public long getId() {
 		return id;
@@ -48,11 +51,11 @@ public class PasswordEntity {
 		this.passwordSalt = passwordSalt;
 	}
 
-	public long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final long userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 }

@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO Review by Lobo - This code has been created by Rodrigo Machado and Jaime and has not yet been reviewed.
 public class FreeMindImporter {
@@ -27,10 +28,14 @@ public class FreeMindImporter {
 	}
 
 	public Scope getScope() {
-		final ScopeBuilder builder = ScopeBuilder.scope(new User(), new Date());
+		final ScopeBuilder builder = ScopeBuilder.scope(getUser(), new Date());
 		pullSync(builder, mindMap.root());
 
 		return builder.getScope();
+	}
+
+	private static User getUser() {
+		return new User(new UUID(), "robot@ontrack.com");
 	}
 
 	private static void pullSync(final ScopeBuilder scope, final MindNode node) {
@@ -41,7 +46,7 @@ public class FreeMindImporter {
 			if (extractValue(scope, childNode)) continue;
 			if (extractProgress(scope, childNode)) continue;
 
-			final ScopeBuilder childScope = ScopeBuilder.scope(new User(), new Date());
+			final ScopeBuilder childScope = ScopeBuilder.scope(getUser(), new Date());
 			pullSync(childScope, childNode);
 			scope.add(childScope);
 		}
@@ -49,7 +54,7 @@ public class FreeMindImporter {
 
 	private static boolean extractProgress(final ScopeBuilder scope, final MindNode childNode) {
 		if (childNode.hasIcon(Icon.HOURGLASS)) {
-			scope.declaredProgress(extractDeclaredProgress(childNode), new User(), new Date());
+			scope.declaredProgress(extractDeclaredProgress(childNode), getUser(), new Date());
 			return true;
 		}
 		return false;

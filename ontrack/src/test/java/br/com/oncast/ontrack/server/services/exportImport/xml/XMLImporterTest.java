@@ -4,7 +4,6 @@ import static br.com.oncast.ontrack.utils.mocks.models.UserTestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
@@ -49,7 +48,7 @@ import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 public class XMLImporterTest {
 
-	private static final long USER_ID = 0;
+	private static final UUID USER_ID = new UUID();
 
 	@Mock
 	private PersistenceService persistenceService;
@@ -121,7 +120,7 @@ public class XMLImporterTest {
 
 		final InOrder inOrder = inOrder(persistenceService);
 		inOrder.verify(persistenceService).persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class));
-		inOrder.verify(persistenceService, atLeast(1)).persistActions(any(UUID.class), anyListOf(ModelAction.class), anyLong(), any(Date.class));
+		inOrder.verify(persistenceService, atLeast(1)).persistActions(any(UUID.class), anyListOf(ModelAction.class), any(UUID.class), any(Date.class));
 	}
 
 	@Test
@@ -151,9 +150,6 @@ public class XMLImporterTest {
 	public void shouldPersistPasswordsWithRelatedUserId() throws Exception {
 		final User user = addUserWithPassword();
 
-		when(persistenceService.retrieveUserByEmail(user.getEmail())).thenThrow(new NoResultFoundException("", null));
-		when(persistenceService.persistOrUpdateUser(any(User.class))).thenReturn(user);
-
 		importer.persistObjects();
 
 		final ArgumentCaptor<Password> argument = ArgumentCaptor.forClass(Password.class);
@@ -175,13 +171,11 @@ public class XMLImporterTest {
 	}
 
 	@Test
-	public void shouldNotPersistAUserWhenThereIsAPersistedUserWithSameEmail() throws Exception {
+	public void shouldUpdateTheUser() throws Exception {
 		final User user = addUserWithoutPassword();
-		when(persistenceService.retrieveUserByEmail(user.getEmail())).thenReturn(user);
-
 		importer.persistObjects();
 
-		verify(persistenceService, never()).persistOrUpdateUser(any(User.class));
+		verify(persistenceService).persistOrUpdateUser(user);
 	}
 
 	@Test
@@ -214,37 +208,10 @@ public class XMLImporterTest {
 
 		importer.persistObjects();
 
-		verify(persistenceService).authorize(user1.getEmail(), project1.getId());
-		verify(persistenceService).authorize(user2.getEmail(), project2.getId());
+		verify(persistenceService).authorize(user1.getId(), project1.getId());
+		verify(persistenceService).authorize(user2.getId(), project2.getId());
 		verify(persistenceService, never()).authorize(eq(user3.getEmail()), any(UUID.class));
-	}
-
-	@Test
-	public void xmlUserIdIsOnlyUsedForMapInsideXMLAndShouldNotBeUsedForPersisting() throws Exception {
-		final User user1 = addUserWithoutPassword(1, "user1");
-		final User user2 = addUserWithoutPassword(2, "user2");
-
-		final ProjectRepresentation project1 = addProjectWithActionsAndMockPersistedProject(new UUID()).getProjectRepresentation();
-		final ProjectRepresentation project2 = addProjectWithActionsAndMockPersistedProject(new UUID()).getProjectRepresentation();
-
-		addProjectAuthorization(user1, project1);
-		addProjectAuthorization(user2, project2);
-
-		final User persistedUser1 = UserTestUtils.createUser(4, "user1");
-		final User persistedUser2 = UserTestUtils.createUser(5, "user2");
-		final User persistedUser3 = UserTestUtils.createUser(6, "user3");
-
-		when(persistenceService.retrieveUserByEmail("user1")).thenThrow(new NoResultFoundException("", null));
-		when(persistenceService.retrieveUserByEmail("user2")).thenReturn(persistedUser2);
-		when(persistenceService.retrieveUserByEmail("user3")).thenThrow(new NoResultFoundException("", null));
-
-		when(persistenceService.persistOrUpdateUser(any(User.class))).thenReturn(persistedUser1, persistedUser3);
-
-		importer.persistObjects();
-
-		verify(persistenceService).authorize(persistedUser1.getEmail(), project1.getId());
-		verify(persistenceService).authorize(persistedUser2.getEmail(), project2.getId());
-		verify(persistenceService, never()).authorize(eq(persistedUser3.getEmail()), any(UUID.class));
+		verify(persistenceService, never()).authorize(eq(user3.getId()), any(UUID.class));
 	}
 
 	@Test
@@ -259,26 +226,24 @@ public class XMLImporterTest {
 		importer.persistObjects();
 
 		verify(persistenceService).persistOrUpdateProjectRepresentation(eq(project1));
-		verify(persistenceService).authorize(user1.getEmail(), project1.getId());
+		verify(persistenceService).authorize(user1.getId(), project1.getId());
 	}
 
 	@Test
-	public void userIdShouldBeUpdatedWithPersistedOnesWhenImportingActions() throws Exception {
-		final long persistedUserId = 3;
+	public void userIdShouldBeThePersistedWhenImportingActions() throws Exception {
 		final UUID projectId = new UUID();
 
-		final long exportedUserId = 112233;
+		final UUID exportedUserId = new UUID();
 		addUserWithoutPassword(exportedUserId, "user1");
 		final ProjectXMLNode node = addProjectWithActions(projectId, exportedUserId);
 
 		when(persistenceService.retrieveUserByEmail(Mockito.anyString())).thenThrow(new NoResultFoundException("", null));
-		when(persistenceService.persistOrUpdateUser(any(User.class))).thenReturn(UserTestUtils.createUser(persistedUserId));
 		when(persistenceService.persistOrUpdateProjectRepresentation(any(ProjectRepresentation.class))).thenReturn(
 				ProjectTestUtils.createRepresentation(projectId));
 
 		importer.persistObjects();
 
-		verify(persistenceService, times(node.getActions().size())).persistActions(eq(projectId), anyListOf(ModelAction.class), eq(persistedUserId),
+		verify(persistenceService, times(node.getActions().size())).persistActions(eq(projectId), anyListOf(ModelAction.class), eq(exportedUserId),
 				any(Date.class));
 	}
 
@@ -312,10 +277,10 @@ public class XMLImporterTest {
 	}
 
 	private ProjectXMLNode addProjectWithActions(final UUID projectId) throws Exception, PersistenceException {
-		return addProjectWithActions(projectId, 15);
+		return addProjectWithActions(projectId, new UUID());
 	}
 
-	private ProjectXMLNode addProjectWithActions(final UUID projectId, final long userId) throws Exception, PersistenceException {
+	private ProjectXMLNode addProjectWithActions(final UUID projectId, final UUID userId) throws Exception, PersistenceException {
 		final ProjectRepresentation projectRepresentation = ProjectTestUtils.createRepresentation(projectId);
 		final List<UserAction> actions = UserActionTestUtils.createRandomUserActionList(projectId, userId);
 
@@ -326,6 +291,10 @@ public class XMLImporterTest {
 	}
 
 	private User addUserWithoutPassword(final long id, final String email) throws Exception {
+		return addUserWithoutPassword(new UUID(), email);
+	}
+
+	private User addUserWithoutPassword(final UUID id, final String email) throws Exception {
 		final User user = createUser(id, email);
 		final UserXMLNode node = new UserXMLNode(user);
 
@@ -334,7 +303,7 @@ public class XMLImporterTest {
 	}
 
 	private User addUserWithoutPassword() throws Exception {
-		final User user = createUser(1L, "email1");
+		final User user = createUser();
 		final UserXMLNode node = new UserXMLNode(user);
 
 		users.add(node);
@@ -342,7 +311,7 @@ public class XMLImporterTest {
 	}
 
 	private User addUserWithPassword() throws Exception {
-		final User user = createUser(1L, "email1");
+		final User user = createUser();
 
 		final Password password = new Password();
 		password.setPasswordHash("hash");
@@ -364,7 +333,7 @@ public class XMLImporterTest {
 	private void assertActionsWerePersistedRelatedToThisProject(final List<UserAction> actions, final UUID projectId)
 			throws PersistenceException {
 		final ArgumentCaptor<UUID> argument = ArgumentCaptor.forClass(UUID.class);
-		verify(persistenceService, times(actions.size())).persistActions(argument.capture(), anyListOf(ModelAction.class), anyLong(),
+		verify(persistenceService, times(actions.size())).persistActions(argument.capture(), anyListOf(ModelAction.class), any(UUID.class),
 				any(Date.class));
 		assertEquals(argument.getValue(), projectId);
 	}

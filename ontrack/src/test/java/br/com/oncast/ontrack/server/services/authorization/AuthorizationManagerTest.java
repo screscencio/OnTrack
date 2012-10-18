@@ -72,7 +72,7 @@ public class AuthorizationManagerTest {
 		mailFactory = mock(ProjectAuthorizationMailFactory.class);
 
 		admin = UserTestUtils.createUser(DefaultAuthenticationCredentials.USER_EMAIL);
-		authenticatedUser = UserTestUtils.createUser(100);
+		authenticatedUser = UserTestUtils.createUser(new UUID());
 		authenticatedUser.setProjectInvitationQuota(1);
 
 		configureToRetrieveAdmin();
@@ -113,7 +113,7 @@ public class AuthorizationManagerTest {
 		final String mail = "inexistent@mail.com";
 
 		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
-		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(new User(mail));
+		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(UserTestUtils.createUser(mail));
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
 
@@ -129,7 +129,7 @@ public class AuthorizationManagerTest {
 		final User user = UserTestUtils.createUser(mail);
 
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(user);
-		when(persistence.retrieveProjectAuthorization(user.getId(), PROJECT_ID)).thenReturn(new ProjectAuthorization(user, new UUID()));
+		when(persistence.retrieveProjectAuthorization(user.getId(), PROJECT_ID)).thenReturn(new ProjectAuthorization(new UUID(), new UUID()));
 
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
 	}
@@ -228,7 +228,7 @@ public class AuthorizationManagerTest {
 	@Test
 	public void assureProjectAccessAuthorizationShouldSucceedWhenUserIsAuthorized() throws Exception {
 		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID)).thenReturn(
-				new ProjectAuthorization(authenticatedUser, new UUID()));
+				new ProjectAuthorization(authenticatedUser.getId(), new UUID()));
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureProjectAccessAuthorization(PROJECT_ID);
 		verify(persistence).retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID);
 	}

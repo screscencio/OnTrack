@@ -9,7 +9,6 @@ public class RuntimeEnvironment {
 		return isMac;
 	}
 
-	// FIXME RODRIGO: Test this method on all supported browsers.
 	private static native boolean evaluateWhetherIsMac() /*-{
 		if (!navigator.platform)
 			return false;

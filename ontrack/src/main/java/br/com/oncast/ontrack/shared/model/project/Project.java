@@ -79,6 +79,13 @@ public class Project implements Serializable {
 		return null;
 	}
 
+	public User getUser(final UUID userId) {
+		for (final User user : users) {
+			if (user.getId().equals(userId)) return user;
+		}
+		return null;
+	}
+
 	public void addAnnotation(final UUID subjectId, final Annotation annotation) {
 		if (!annotationsMap.containsKey(subjectId)) annotationsMap.put(subjectId, new ArrayList<Annotation>());
 		annotationsMap.get(subjectId).add(0, annotation);

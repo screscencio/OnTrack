@@ -244,4 +244,11 @@ public class ProjectContext {
 		return project.getUsers();
 	}
 
+	public User findUser(final UUID userId) throws UserNotFoundException {
+		final User user = project.getUser(userId);
+		if (user == null) throw new UserNotFoundException("The user '" + userId.toStringRepresentation() + "' was not found.");
+
+		return user;
+	}
+
 }

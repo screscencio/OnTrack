@@ -16,28 +16,28 @@ public class TeamRevogueInvitationAction implements TeamAction {
 	private static final long serialVersionUID = 1L;
 
 	@Element
-	private UUID inviteeEmail;
+	private UUID userId;
 
 	protected TeamRevogueInvitationAction() {}
 
 	public TeamRevogueInvitationAction(final User user) {
-		this(user.getEmail());
+		this(user.getId());
 	}
 
-	public TeamRevogueInvitationAction(final String inviteeEmail) {
-		this.inviteeEmail = new UUID(inviteeEmail);
+	public TeamRevogueInvitationAction(final UUID userId) {
+		this.userId = userId;
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final User user = ActionHelper.findUser(inviteeEmail.toStringRepresentation(), context);
+		final User user = ActionHelper.findUser(userId, context);
 		context.removeUser(user);
-		return new TeamInviteAction(inviteeEmail.toStringRepresentation());
+		return new TeamInviteAction(user);
 	}
 
 	@Override
 	public UUID getReferenceId() {
-		return inviteeEmail;
+		return userId;
 	}
 
 }

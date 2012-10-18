@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.UserEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.UserActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.file.FileRepresentationEntity;
@@ -43,14 +44,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
 
 	@Override
-	public void persistActions(final UUID projectId, final List<ModelAction> actionList, final long userId, final Date timestamp) throws PersistenceException {
+	public void persistActions(final UUID projectId, final List<ModelAction> actionList, final UUID userId, final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
 			final ProjectRepresentationEntity projectRepresentationEntity = convertProjectRepresentationToEntity(retrieveProjectRepresentation(projectId));
 			for (final ModelAction modelAction : actionList) {
 				final ModelActionEntity entity = convertActionToEntity(modelAction);
-				final UserActionEntity container = new UserActionEntity(entity, userId, projectRepresentationEntity, timestamp);
+				final UserActionEntity container = new UserActionEntity(entity, userId.toStringRepresentation(), projectRepresentationEntity, timestamp);
 				em.persist(container);
 			}
 			em.getTransaction().commit();
@@ -142,12 +143,12 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public User persistOrUpdateUser(final User user) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-
+			final UserEntity entity = (UserEntity) TYPE_CONVERTER.convert(user);
 			em.getTransaction().begin();
-			final User mergedUser = em.merge(user);
+			final UserEntity mergedUser = em.merge(entity);
 			em.getTransaction().commit();
 			// TODO ++++ Make this method void and change the incoming object with id.
-			return mergedUser;
+			return (User) TYPE_CONVERTER.convert(mergedUser);
 		}
 		catch (final Exception e) {
 			try {
@@ -168,10 +169,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public User retrieveUserByEmail(final String email) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select user from " + User.class.getSimpleName() + " as user where user.email = :email");
+			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where user.email = :email");
 			query.setParameter("email", email);
 
-			return (User) query.getSingleResult();
+			return (User) TYPE_CONVERTER.convert(query.getSingleResult());
 		}
 		catch (final NoResultException e) {
 			throw new NoResultFoundException("No user found with e-mail: " + email, e);
@@ -189,10 +190,10 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public List<User> retrieveUsersByEmails(final List<String> recipientsAsUserMails) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("SELECT user FROM " + User.class.getSimpleName() + " AS user WHERE user.email IN (:emails)");
+			final Query query = em.createQuery("SELECT user FROM " + UserEntity.class.getSimpleName() + " AS user WHERE user.email IN (:emails)");
 			query.setParameter("emails", recipientsAsUserMails);
 
-			return query.getResultList();
+			return (List<User>) TYPE_CONVERTER.convert(query.getResultList());
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve the requested users.", e);
@@ -203,13 +204,13 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public User retrieveUserById(final long id) throws NoResultFoundException, PersistenceException {
+	public User retrieveUserById(final UUID id) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select user from " + User.class.getSimpleName() + " as user where user.id = :id");
-			query.setParameter("id", id);
+			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where user.id = :id");
+			query.setParameter("id", id.toStringRepresentation());
 
-			return (User) query.getSingleResult();
+			return (User) TYPE_CONVERTER.convert(query.getSingleResult());
 		}
 		catch (final NoResultException e) {
 			throw new NoResultFoundException("No user found with id: " + id, e);
@@ -227,9 +228,9 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	public List<User> retrieveAllUsers() throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select user from " + User.class.getSimpleName() + " as user");
+			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user");
 
-			return query.getResultList();
+			return (List<User>) TYPE_CONVERTER.convert(query.getResultList());
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve users.", e);
@@ -265,11 +266,11 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public Password retrievePasswordForUser(final long userId) throws NoResultFoundException, PersistenceException {
+	public Password retrievePasswordForUser(final UUID userId) throws NoResultFoundException, PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password where password.userId = :userId");
-			query.setParameter("userId", userId);
+			query.setParameter("userId", userId.toStringRepresentation());
 
 			return convertEntityToPassword((PasswordEntity) query.getSingleResult());
 		}
@@ -394,14 +395,41 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@Override
+	// TODO Consider renaming this to persistProjectAuthorization and change its parameter to receive a ProjectAuthorization.
+	public void authorize(final UUID userId, final UUID projectId) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			final ProjectRepresentation representation = retrieveProjectRepresentation(projectId);
+			final User user = retrieveUserById(userId);
+			final ProjectAuthorization authorization = new ProjectAuthorization(user, representation);
+			em.persist(authorization);
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				e.printStackTrace();
+				throw new PersistenceException("It was not possible to persist the project authorization nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to persist the project authorization.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProjectAuthorization> retrieveProjectAuthorizations(final long userId) throws PersistenceException {
+	public List<ProjectAuthorization> retrieveProjectAuthorizations(final UUID userId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select authorization from " + ProjectAuthorization.class.getSimpleName()
-					+ " as authorization where authorization.user.id = :userId");
-			query.setParameter("userId", userId);
+					+ " as authorization where authorization.userId = :userId");
+			query.setParameter("userId", userId.toStringRepresentation());
 			return query.getResultList();
 		}
 		catch (final Exception e) {
@@ -447,12 +475,12 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	}
 
 	@Override
-	public ProjectAuthorization retrieveProjectAuthorization(final long userId, final UUID projectId) throws PersistenceException {
+	public ProjectAuthorization retrieveProjectAuthorization(final UUID userId, final UUID projectId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select authorization from " + ProjectAuthorization.class.getSimpleName()
-					+ " as authorization where authorization.user.id = :userId and authorization.projectId = :projectId");
-			query.setParameter("userId", userId);
+					+ " as authorization where authorization.userId = :userId and authorization.projectId = :projectId");
+			query.setParameter("userId", userId.toStringRepresentation());
 			query.setParameter("projectId", projectId.toStringRepresentation());
 			return (ProjectAuthorization) query.getSingleResult();
 		}
@@ -662,10 +690,14 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final List<User> projectUsers = new ArrayList<User>();
 
 		for (final ProjectAuthorization projectAuthorization : retrieveAllAuthorizationsForProject) {
-			projectUsers.add(projectAuthorization.getUser());
+			try {
+				projectUsers.add(retrieveUserById(projectAuthorization.getUserId()));
+			}
+			catch (final NoResultFoundException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return projectUsers;
 	}
-
 }
