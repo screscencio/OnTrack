@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.client.services.applicationState;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
@@ -20,6 +22,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.web.bindery.event.shared.EventBus;
@@ -30,16 +33,19 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	private final EventBus eventBus;
 	private final ContextProviderService contextProviderService;
 	private final ClientStorageService clientStorageService;
+	private final ClientAlertingService alertingService;
+	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private final Set<HandlerRegistration> handlerRegistrations;
 
 	private Scope selectedScope;
 
 	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService,
-			final ClientStorageService clientStorageService) {
+			final ClientStorageService clientStorageService, final ClientAlertingService alertingService) {
 		this.eventBus = eventBus;
 		this.contextProviderService = contextProviderService;
 		this.clientStorageService = clientStorageService;
+		this.alertingService = alertingService;
 		handlerRegistrations = new HashSet<HandlerRegistration>();
 		contextProviderService.addContextLoadListener(new ContextChangeListener() {
 			@Override
@@ -105,10 +111,13 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	@Override
 	public void restore(final UUID scopeSelectedId) {
 		try {
+			if (scopeSelectedId == null) return;
 			selectedScope = contextProviderService.getCurrentProjectContext().findScope(scopeSelectedId);
+			restore();
 		}
-		catch (final ScopeNotFoundException e) {}
-		restore();
+		catch (final ScopeNotFoundException e) {
+			alertingService.showError(messages.errorSelectingScope());
+		}
 	}
 
 	private void fireReleaseContainerStateChangeEvents() {

@@ -39,11 +39,15 @@ public interface ClientErrorMessages extends BaseMessages {
 	String acceptedInvitation(String userEmail);
 
 	@Description("message shown when the user tries to show details and the given id was not found in the model.")
-	@DefaultMessage("It was not possible to show details: The given id was not found")
+	@DefaultMessage("It was not possible to show details: The referenced entity does not exist")
 	String errorShowingDetails();
 
 	@Description("message shown when the project list is unavailable for some reason.")
 	@DefaultMessage("Projects list unavailable. Verify your connection.")
 	String projectListUnavailable();
+
+	@Description("message shown when the user tries to show planning with a selected scope and the given id was not found.")
+	@DefaultMessage("It was not possible to select the requested scope: It does not exist")
+	String errorSelectingScope();
 
 }
