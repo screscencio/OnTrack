@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.team.TeamInviteActionEntity;
@@ -17,7 +18,7 @@ public class TeamInviteAction implements TeamAction {
 	@Element
 	private UUID userId;
 
-	@Element
+	@Attribute
 	private String inviteeEmail;
 
 	protected TeamInviteAction() {}

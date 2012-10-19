@@ -11,7 +11,6 @@ import org.simpleframework.xml.core.Persister;
 
 import br.com.oncast.ontrack.server.business.BusinessLogic;
 import br.com.oncast.ontrack.server.model.project.UserAction;
-import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackXML;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
@@ -23,6 +22,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
@@ -87,16 +87,16 @@ public class XMLImporter {
 		final long initialTime = getCurrentTime();
 		int newUsersCount = 0;
 		for (final UserXMLNode userNode : userNodes) {
-			persistenceService.persistOrUpdateUser(userNode.getUser());
-			if (userNode.hasPassword()) persistPassword(userNode.getUser().getId(), userNode.getPassword());
+			final User user = userNode.getUser();
+			LOGGER.debug(user);
+			LOGGER.debug(user.getEmail());
+			LOGGER.debug(user.getId().toStringRepresentation());
+
+			persistenceService.persistOrUpdateUser(user);
+			if (userNode.hasPassword()) persistenceService.persistOrUpdatePassword(userNode.getPassword());
 			newUsersCount++;
 		}
 		LOGGER.debug("Persisted " + newUsersCount + " new users in " + getTimeSpent(initialTime) + " ms.");
-	}
-
-	private void persistPassword(final UUID userId, final Password password) throws PersistenceException {
-		password.setUserId(userId);
-		persistenceService.persistOrUpdatePassword(password);
 	}
 
 	private void persistProjects(final List<ProjectXMLNode> projectNodes) throws PersistenceException {

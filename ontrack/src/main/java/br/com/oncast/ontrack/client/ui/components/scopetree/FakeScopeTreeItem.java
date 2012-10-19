@@ -1,6 +1,6 @@
-package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
+package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -9,12 +9,10 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 public class FakeScopeTreeItem extends ScopeTreeItem implements IsTreeItem {
 
-	private static FakeScopeTreeItem instance;
-
 	private FakeScopeTreeItem() {}
 
 	public static ScopeTreeItem get() {
-		return instance == null ? instance = new FakeScopeTreeItem() : instance;
+		return new FakeScopeTreeItem();
 	}
 
 	@Override

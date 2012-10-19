@@ -35,7 +35,7 @@ public class UserTestUtils {
 	}
 
 	public static User getAdmin() {
-		return admin == null ? admin = createUser(new UUID(), DefaultAuthenticationCredentials.USER_EMAIL) : admin;
+		return admin == null ? admin = createUser(DefaultAuthenticationCredentials.USER_ID, DefaultAuthenticationCredentials.USER_EMAIL) : admin;
 	}
 
 	public static User createUser(final UUID id) {

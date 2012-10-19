@@ -245,9 +245,8 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final PasswordEntity passwordEntity = (PasswordEntity) TYPE_CONVERTER.convert(passwordForUser);
 			em.getTransaction().begin();
-			final PasswordEntity mergedEntity = em.merge(passwordEntity);
+			em.merge(passwordEntity);
 			em.getTransaction().commit();
-			passwordForUser.setId(mergedEntity.getId());
 		}
 		catch (final Exception e) {
 			try {

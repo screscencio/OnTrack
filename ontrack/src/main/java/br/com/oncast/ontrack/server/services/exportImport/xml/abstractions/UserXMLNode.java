@@ -71,6 +71,7 @@ public class UserXMLNode {
 		if (!hasPassword()) return null;
 
 		final Password password = new Password();
+		password.setUserId(id);
 		password.setPasswordHash(passwordHash);
 		password.setPasswordSalt(passwordSalt);
 		return password;

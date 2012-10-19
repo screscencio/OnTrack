@@ -78,10 +78,14 @@ public class AuthenticationManager {
 	}
 
 	public User createNewUser(final String email, final String password, final int projectInvitationQuota, final int projectCreationQuota) {
+		return createNewUser(new UUID(), email, password, projectInvitationQuota, projectCreationQuota);
+	}
+
+	public User createNewUser(final UUID id, final String email, final String password, final int projectInvitationQuota, final int projectCreationQuota) {
 		final String formattedUserEmail = formatUserEmail(email);
 
 		try {
-			final User user = new User(new UUID(), formattedUserEmail, projectInvitationQuota, projectCreationQuota);
+			final User user = new User(id, formattedUserEmail, projectInvitationQuota, projectCreationQuota);
 			final User newUser = persistenceService.persistOrUpdateUser(user);
 			if (password != null && !password.isEmpty()) createPasswordForUser(newUser, password);
 			return newUser;

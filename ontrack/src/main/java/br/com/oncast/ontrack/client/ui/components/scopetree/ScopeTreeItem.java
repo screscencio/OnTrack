@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
-import java.util.List;
-
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
@@ -9,7 +7,6 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionCancelEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionEndEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
-import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.FakeScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -25,9 +22,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	private boolean hasFakeItens;
 
-	protected ScopeTreeItem() {
-		super();
-	}
+	ScopeTreeItem() {}
 
 	public ScopeTreeItem(final Scope scope) {
 		super();
@@ -83,7 +78,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 		addStyleName("ScopeTreeItem");
 
-		if (scope.getChildCount() != 0) {
+		if (scope.getChildCount() > 0) {
 			super.insertItem(0, FakeScopeTreeItem.get());
 			this.hasFakeItens = true;
 		}
@@ -104,11 +99,9 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 	}
 
 	private void insertChildren() {
-		final List<Scope> children = this.getReferencedScope().getChildren();
-		for (int i = 0; i < children.size(); i++) {
-			final Scope childScope = children.get(i);
+		for (final Scope childScope : this.getReferencedScope().getChildren()) {
 			final ScopeTreeItem item = new ScopeTreeItem(childScope);
-			this.insertItem(i, item);
+			this.addItem(item);
 		}
 	}
 

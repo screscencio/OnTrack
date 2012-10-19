@@ -7,8 +7,6 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(PasswordEntity.class)
 public class Password {
 
-	private long id;
-
 	private UUID userId;
 
 	private String passwordHash;
@@ -20,14 +18,6 @@ public class Password {
 	public Password(final UUID userId, final String password) {
 		setUserId(userId);
 		setPassword(password);
-	}
-
-	public void setId(final long id) {
-		this.id = id;
-	}
-
-	public long getId() {
-		return id;
 	}
 
 	public void setUserId(final UUID userId) {
@@ -85,7 +75,6 @@ public class Password {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		final Password other = (Password) obj;
-		if (id != other.id) return false;
 		if (passwordHash == null) {
 			if (other.passwordHash != null) return false;
 		}
