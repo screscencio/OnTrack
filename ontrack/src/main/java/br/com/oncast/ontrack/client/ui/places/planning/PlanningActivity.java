@@ -36,7 +36,7 @@ public class PlanningActivity extends AbstractActivity {
 	public PlanningActivity(final PlanningPlace place) {
 		this.place = place;
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
-		activityActionExecutionListener = new ActivityActionExecutionListener();
+		activityActionExecutionListener = new ActivityActionExecutionListener(SERVICE_PROVIDER.getClientErrorMessages());
 	}
 
 	@Override

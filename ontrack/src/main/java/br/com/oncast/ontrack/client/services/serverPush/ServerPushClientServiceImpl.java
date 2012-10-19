@@ -14,18 +14,15 @@ import br.com.oncast.ontrack.client.services.serverPush.atmosphere.OntrackAtmosp
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 public class ServerPushClientServiceImpl implements ServerPushClientService {
-
-	private final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
 	private ServerPushConnectionCallback serverPushConnectionCallback;
 
-	public ServerPushClientServiceImpl(final ClientAlertingService alertingService) {
+	public ServerPushClientServiceImpl(final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 		serverPushClient = new OntrackAtmosphereClient(new AtmosphereListener() {
 
 			@Override

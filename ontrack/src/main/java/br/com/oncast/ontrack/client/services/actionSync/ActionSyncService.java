@@ -18,12 +18,11 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.actionSync.ServerActionSyncEventHandler;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 public class ActionSyncService {
 
-	private final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
+	private final ClientErrorMessages messages;
 
 	private final ActionQueuedDispatcher actionQueuedDispatcher;
 
@@ -35,10 +34,11 @@ public class ActionSyncService {
 
 	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
 			final ActionExecutionService actionExecutionService, final ProjectRepresentationProvider projectRepresentationProvider,
-			final ClientAlertingService alertingService) {
+			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 		this.projectRepresentationProvider = projectRepresentationProvider;
 		this.actionExecutionService = actionExecutionService;
 		this.alertingService = alertingService;
+		this.messages = messages;
 		this.actionQueuedDispatcher = new ActionQueuedDispatcher(requestDispatchService, projectRepresentationProvider, alertingService, messages);
 
 		serverPushClientService.registerServerEventHandler(ModelActionSyncEvent.class, new ServerActionSyncEventHandler() {

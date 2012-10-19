@@ -21,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
@@ -46,6 +47,9 @@ public class ProjectRepresentationProviderTest {
 
 	@Mock
 	private ClientAlertingService alertingService;
+
+	@Mock
+	private ClientErrorMessages clientErrorMessages;
 
 	@Before
 	public void setUp() {
@@ -167,7 +171,7 @@ public class ProjectRepresentationProviderTest {
 	}
 
 	private ProjectRepresentationProviderImpl createProvider() {
-		return new ProjectRepresentationProviderImpl(dispatch, serverPush, auth, alertingService);
+		return new ProjectRepresentationProviderImpl(dispatch, serverPush, auth, alertingService, clientErrorMessages);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -22,7 +22,6 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.web.bindery.event.shared.EventBus;
@@ -34,18 +33,19 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	private final ContextProviderService contextProviderService;
 	private final ClientStorageService clientStorageService;
 	private final ClientAlertingService alertingService;
-	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
+	private final ClientErrorMessages messages;
 
 	private final Set<HandlerRegistration> handlerRegistrations;
 
 	private Scope selectedScope;
 
 	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService,
-			final ClientStorageService clientStorageService, final ClientAlertingService alertingService) {
+			final ClientStorageService clientStorageService, final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 		this.eventBus = eventBus;
 		this.contextProviderService = contextProviderService;
 		this.clientStorageService = clientStorageService;
 		this.alertingService = alertingService;
+		this.messages = messages;
 		handlerRegistrations = new HashSet<HandlerRegistration>();
 		contextProviderService.addContextLoadListener(new ContextChangeListener() {
 			@Override

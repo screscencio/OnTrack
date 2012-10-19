@@ -1,19 +1,16 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationCallback;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class LoginActivity extends AbstractActivity implements LoginView.Presenter {
 
-	private final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private final UserAuthenticationCallback authenticationCallback;
 	private final LoginView view;
@@ -35,7 +32,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 			public void onUnexpectedFailure(final Throwable caught) {
 				// TODO Improve feedback message.
 				view.enable();
-				SERVICE_PROVIDER.getClientAlertingService().showError(messages.unexpectedError());
+				SERVICE_PROVIDER.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().unexpectedError());
 			}
 
 			@Override
@@ -43,7 +40,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 				// TODO Improve feedback message.
 				view.enable();
 				view.onIncorrectCredentials();
-				SERVICE_PROVIDER.getClientAlertingService().showError(messages.incorrectUserOrPassword());
+				SERVICE_PROVIDER.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().incorrectUserOrPassword());
 			}
 
 		};

@@ -12,13 +12,14 @@ import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.google.gwt.core.client.GWT;
-
 public class ActivityActionExecutionListener implements ActionExecutionListener {
 
 	private List<ActionExecutionListener> actionExecutionSuccessListeners;
+	private final ClientErrorMessages messages;
 
-	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
+	public ActivityActionExecutionListener(final ClientErrorMessages messages) {
+		this.messages = messages;
+	}
 
 	@Override
 	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,

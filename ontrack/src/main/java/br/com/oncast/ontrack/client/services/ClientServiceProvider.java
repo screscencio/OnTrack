@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.services;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchServiceDefault;
 import br.com.drycode.api.web.gwt.dispatchService.client.RequestBuilderConfigurator;
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
@@ -88,6 +89,8 @@ public class ClientServiceProvider {
 	private UsersStatusService usersStatusService;
 	private MembersScopeSelectionService membersScopeSelectionService;
 
+	private ClientErrorMessages clientErrorMessages;
+
 	private static ClientServiceProvider instance;
 
 	// TODO let this method be private and make it call before other public methods.
@@ -135,7 +138,7 @@ public class ClientServiceProvider {
 	public ProjectRepresentationProvider getProjectRepresentationProvider() {
 		if (projectRepresentationProvider != null) return projectRepresentationProvider;
 		return projectRepresentationProvider = new ProjectRepresentationProviderImpl(getRequestDispatchService(), getServerPushClientService(),
-				getAuthenticationService(), getClientAlertingService());
+				getAuthenticationService(), getClientAlertingService(), getClientErrorMessages());
 	}
 
 	public ClientAlertingService getClientAlertingService() {
@@ -175,12 +178,12 @@ public class ClientServiceProvider {
 	private ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
-				getProjectRepresentationProvider(), getClientAlertingService());
+				getProjectRepresentationProvider(), getClientAlertingService(), getClientErrorMessages());
 	}
 
 	public ServerPushClientService getServerPushClientService() {
 		if (serverPushClientService != null) return serverPushClientService;
-		return serverPushClientService = new ServerPushClientServiceImpl(getClientAlertingService());
+		return serverPushClientService = new ServerPushClientServiceImpl(getClientAlertingService(), getClientErrorMessages());
 	}
 
 	public EventBus getEventBus() {
@@ -190,7 +193,7 @@ public class ClientServiceProvider {
 
 	public ClientApplicationStateService getClientApplicationStateService() {
 		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(getEventBus(),
-				getContextProviderService(), getClientStorageService(), getClientAlertingService()) : clientApplicationStateService;
+				getContextProviderService(), getClientStorageService(), getClientAlertingService(), getClientErrorMessages()) : clientApplicationStateService;
 	}
 
 	public ClientStorageService getClientStorageService() {
@@ -236,6 +239,10 @@ public class ClientServiceProvider {
 		if (membersScopeSelectionService == null) membersScopeSelectionService = new MembersScopeSelectionServiceImpl(getRequestDispatchService(),
 				getContextProviderService(), getServerPushClientService(), getEventBus(), getUsersStatusService(), new ColorPicker());
 		return membersScopeSelectionService;
+	}
+
+	public ClientErrorMessages getClientErrorMessages() {
+		return clientErrorMessages == null ? clientErrorMessages = GWT.create(ClientErrorMessages.class) : clientErrorMessages;
 	}
 
 }

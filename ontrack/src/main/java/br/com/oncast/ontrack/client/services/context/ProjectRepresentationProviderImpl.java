@@ -23,7 +23,6 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationResp
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
@@ -37,10 +36,11 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	private ClientErrorMessages messages;
 
 	public ProjectRepresentationProviderImpl(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
-			final AuthenticationService authenticationService, final ClientAlertingService alertingService) {
+			final AuthenticationService authenticationService, final ClientAlertingService alertingService, final ClientErrorMessages messages) {
 
 		this.dispatchService = dispatchService;
 		this.alertingService = alertingService;
+		this.messages = messages;
 
 		authenticationService.registerUserAuthenticationListener(new UserAuthenticationListener() {
 			@Override
@@ -95,12 +95,9 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			public void onUntreatedFailure(final Throwable caught) {
 				// TODO +++Treat fatal error. Could not load project list...
 				alertingService
-						.showWarning(getMessages().projectListUnavailable());
+						.showWarning(messages.projectListUnavailable());
 			}
 
-			private ClientErrorMessages getMessages() {
-				return messages == null ? messages = GWT.create(ClientErrorMessages.class) : messages;
-			}
 		});
 	}
 

@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.Component;
@@ -21,12 +21,9 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTree implements Component {
-
-	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private final ScopeTreeWidget tree;
 
@@ -66,7 +63,7 @@ public class ScopeTree implements Component {
 				}
 				catch (final ModelBeanNotFoundException e) {
 					// TODO ++Resync and Redraw the entire structure to eliminate inconsistencies
-					throw new RuntimeException(messages.modelInconsistency(), e);
+					throw new RuntimeException(ClientServiceProvider.getInstance().getClientErrorMessages().modelInconsistency(), e);
 				}
 			}
 		};

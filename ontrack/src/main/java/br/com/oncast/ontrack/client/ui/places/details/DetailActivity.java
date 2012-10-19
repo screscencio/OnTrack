@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places.details;
 
-import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.ui.components.annotations.AnnotationsPanel;
@@ -15,14 +14,11 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class DetailActivity extends AbstractActivity {
-
-	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private AnnotationsPanel detailPanel;
 	private HandlerRegistration register;
@@ -70,7 +66,7 @@ public class DetailActivity extends AbstractActivity {
 				detailPanel = AnnotationsPanel.forRelease(context.findRelease(place.getSubjectId()));
 			}
 			catch (final ReleaseNotFoundException e1) {
-				provider.getClientAlertingService().showError(messages.errorShowingDetails());
+				provider.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().errorShowingDetails());
 				getApplicationPlaceController().goTo(new PlanningPlace(place.getRequestedProjectId()));
 				return false;
 			}
