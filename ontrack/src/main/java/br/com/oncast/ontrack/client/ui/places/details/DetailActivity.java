@@ -18,7 +18,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class DetailActivity extends AbstractActivity {
@@ -26,25 +25,23 @@ public class DetailActivity extends AbstractActivity {
 	private static final ClientErrorMessages messages = GWT.create(ClientErrorMessages.class);
 
 	private AnnotationsPanel detailPanel;
-	private final Place previousPlace;
 	private HandlerRegistration register;
+	private final DetailPlace place;
 
 	public DetailActivity(final DetailPlace place) {
+		this.place = place;
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
-
-		this.previousPlace = place.getDestinationPlace();
-
-		setDetailPanel(place);
 	}
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		if (!setDetailPanel(place)) return;
 		register = ShortcutService.register(detailPanel, ClientServiceProvider.getInstance().getActionExecutionService(), UndoRedoShortCutMapping.values());
 
 		PopupConfig.configPopup().popup(this.detailPanel).onClose(new PopupCloseListener() {
 			@Override
 			public void onHasClosed() {
-				getApplicationPlaceController().goTo(previousPlace);
+				getApplicationPlaceController().goTo(place.getDestinationPlace());
 			}
 
 		}).onOpen(new PopupOpenListener() {
@@ -60,7 +57,7 @@ public class DetailActivity extends AbstractActivity {
 		register.removeHandler();
 	}
 
-	private void setDetailPanel(final DetailPlace place) {
+	private boolean setDetailPanel(final DetailPlace place) {
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
 		final ProjectContext context = provider.getContextProviderService().getProjectContext(place.getRequestedProjectId());
 
@@ -75,8 +72,10 @@ public class DetailActivity extends AbstractActivity {
 			catch (final ReleaseNotFoundException e1) {
 				provider.getClientAlertingService().showError(messages.errorShowingDetails());
 				getApplicationPlaceController().goTo(new PlanningPlace(place.getRequestedProjectId()));
+				return false;
 			}
 		}
+		return true;
 	}
 
 	private ApplicationPlaceController getApplicationPlaceController() {

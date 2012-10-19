@@ -190,7 +190,7 @@ public class ClientServiceProvider {
 
 	public ClientApplicationStateService getClientApplicationStateService() {
 		return clientApplicationStateService == null ? clientApplicationStateService = new ClientApplicationStateServiceImpl(getEventBus(),
-				getContextProviderService(), getClientStorageService()) : clientApplicationStateService;
+				getContextProviderService(), getClientStorageService(), getClientAlertingService()) : clientApplicationStateService;
 	}
 
 	public ClientStorageService getClientStorageService() {
