@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.utils.deepEquality;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -135,6 +136,10 @@ public class DeepEqualityTestUtils {
 
 				@Override
 				public void introspect(final Field field) throws Exception {
+					if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers())) {
+						LOGGER.log("Ignoring field: '" + field.getName() + "'");
+						return;
+					}
 					if (field.isAnnotationPresent(IgnoredByDeepEquality.class)) {
 						LOGGER.log("Ignoring field: '" + field.getName() + "'");
 						return;

@@ -582,8 +582,9 @@ public class PersistenceServiceTest {
 		final List<User> usersByEmails = persistenceService.retrieveUsersByEmails(userMails);
 
 		assertEquals(2, usersByEmails.size());
-		DeepEqualityTestUtils.assertObjectEquality(user1, usersByEmails.get(0));
-		DeepEqualityTestUtils.assertObjectEquality(user2, usersByEmails.get(1));
+
+		assertTrue(usersByEmails.contains(user1));
+		assertTrue(usersByEmails.contains(user2));
 	}
 
 	private User createAndPersistUser() throws Exception {

@@ -147,7 +147,6 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.getTransaction().begin();
 			final UserEntity mergedUser = em.merge(entity);
 			em.getTransaction().commit();
-			// TODO ++++ Make this method void and change the incoming object with id.
 			return (User) TYPE_CONVERTER.convert(mergedUser);
 		}
 		catch (final Exception e) {
