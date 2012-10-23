@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,10 +52,18 @@ public class ReleasePanelWidget extends Composite {
 
 	private final Set<HandlerRegistration> handlerRegistration;
 
+	private final boolean kanbanSpecific;
+
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+		this(releasePanelInteractionHandler, false);
+	}
+
+	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
+		this.kanbanSpecific = kanbanSpecific;
 		handlerRegistration = new HashSet<HandlerRegistration>();
 		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
-		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager), dragAndDropManager);
+		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager), dragAndDropManager,
+				kanbanSpecific);
 
 		initWidget(uiBinder.createAndBindUi(this));
 		dragAndDropManager.configureBoundaryPanel(RootPanel.get());
@@ -100,7 +109,11 @@ public class ReleasePanelWidget extends Composite {
 	}
 
 	public void update() {
-		final List<Release> children = rootRelease.getChildren();
+		List<Release> children = rootRelease.getChildren();
+		if (kanbanSpecific) {
+			children = new ArrayList<Release>();
+			children.add(rootRelease);
+		}
 		noReleaseText.setVisible(children.isEmpty());
 		releaseContainer.update(children);
 	}

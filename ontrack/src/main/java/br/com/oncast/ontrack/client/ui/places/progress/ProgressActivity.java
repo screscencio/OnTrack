@@ -36,7 +36,7 @@ public class ProgressActivity extends AbstractActivity {
 		try {
 			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(place.getRequestedProjectId());
 			release = projectContext.findRelease(place.getRequestedReleaseId());
-			view = new ProgressPanel();
+			view = new ProgressPanel(release);
 			view.getKanbanPanel().setActionExecutionService(SERVICE_PROVIDER.getActionExecutionService());
 
 			progressPanelActionSyncController = new ProgressPanelActionSyncController(SERVICE_PROVIDER.getActionExecutionService(), release, new Display() {

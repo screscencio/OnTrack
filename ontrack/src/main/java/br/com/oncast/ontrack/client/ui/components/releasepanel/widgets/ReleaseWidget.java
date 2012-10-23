@@ -214,14 +214,23 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private boolean isMenuOpen = false;
 
+	private boolean kanbanSpecific;
+
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
 			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
+		this(release, releaseWidgetFactory, scopeWidgetFactory, releasePanelInteractionHandler, false);
+	}
+
+	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
+			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
+			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
 		this.release = release;
 
 		this.releaseWidgetFactory = releaseWidgetFactory;
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
+		this.kanbanSpecific = kanbanSpecific;
 		this.editionHandler = new EditableLabelEditionHandler() {
 			@Override
 			public boolean onEditionRequest(final String newReleaseName) {
@@ -252,12 +261,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiHandler("menuMouseOverArea")
 	protected void onMouseOver(final MouseOverEvent event) {
-		menuIcon.setVisible(true);
+		menuIcon.setVisible(!kanbanSpecific);
 	}
 
 	@UiHandler("menuMouseOverArea")
 	protected void onMouseOut(final MouseOutEvent event) {
-		menuIcon.setVisible(isMenuOpen);
+		menuIcon.setVisible(isMenuOpen && !kanbanSpecific);
 	}
 
 	@UiHandler("menuIcon")
@@ -343,7 +352,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private boolean updateChildReleaseWidgets() {
-		kanbanLink.setVisible(release.hasDirectScopes());
+		kanbanLink.setVisible(release.hasDirectScopes() && !kanbanSpecific);
 		releaseContainer.setVisible(isContainerStateOpen && release.hasChildren());
 		return releaseContainer.update(release.getChildren());
 	}
