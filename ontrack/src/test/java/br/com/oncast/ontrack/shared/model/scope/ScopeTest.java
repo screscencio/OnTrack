@@ -66,4 +66,43 @@ public class ScopeTest {
 		Assert.assertNull(foundScope);
 	}
 
+	@Test
+	public void whenScopeIsLeafGetAllLeafsShouldReturnAListContainsOnlyItself() throws Exception {
+		final Scope scope = ScopeTestUtils.createScope();
+		final List<Scope> allLeafs = scope.getAllLeafs();
+		Assert.assertEquals(1, allLeafs.size());
+
+		Assert.assertTrue(allLeafs.contains(scope));
+	}
+
+	@Test
+	public void whenScopeHasOneChildGetAllLeafsShouldReturnAListContainingOnlyChild() throws Exception {
+		final Scope scope = ScopeTestUtils.createScope();
+		final Scope child = ScopeTestUtils.createScope();
+		scope.add(child);
+
+		final List<Scope> allLeafs = scope.getAllLeafs();
+		Assert.assertEquals(1, allLeafs.size());
+
+		Assert.assertTrue(allLeafs.contains(child));
+	}
+
+	@Test
+	public void getAllLeafsShouldReturnAllLeafDescendents() throws Exception {
+		final Scope scope = ScopeTestUtils.createScope();
+		final Scope child1 = ScopeTestUtils.createScope();
+		final Scope child2 = ScopeTestUtils.createScope();
+
+		final Scope grandchild = ScopeTestUtils.createScope();
+		scope.add(child1);
+		scope.add(child2);
+		child1.add(grandchild);
+
+		final List<Scope> allLeafs = scope.getAllLeafs();
+		Assert.assertEquals(2, allLeafs.size());
+
+		Assert.assertTrue(allLeafs.contains(grandchild));
+		Assert.assertTrue(allLeafs.contains(child2));
+	}
+
 }

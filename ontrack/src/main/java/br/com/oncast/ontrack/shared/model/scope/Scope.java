@@ -39,7 +39,7 @@ public class Scope implements Serializable {
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Scope() {}
 
-	public Scope(final String description, User author, Date timestamp) {
+	public Scope(final String description, final User author, final Date timestamp) {
 		this(description, new UUID(), author, timestamp);
 	}
 
@@ -172,6 +172,16 @@ public class Scope implements Serializable {
 		for (final Scope scope : childrenList) {
 			l.add(scope);
 			l.addAll(scope.getAllDescendantScopes());
+		}
+		return l;
+	}
+
+	public List<Scope> getAllLeafs() {
+		final ArrayList<Scope> l = new ArrayList<Scope>();
+		if (this.isLeaf()) l.add(this);
+		for (final Scope scope : childrenList) {
+			if (scope.isLeaf()) l.add(scope);
+			else l.addAll(scope.getAllLeafs());
 		}
 		return l;
 	}

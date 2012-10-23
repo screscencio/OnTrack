@@ -61,6 +61,7 @@ public class ProgressPanelActionSyncControllerTest {
 	private Release myRelease;
 	private ReleaseMonitor releaseMonitor;
 	private ActionContext actionContext;
+	private Scope rootScope;
 
 	@Before
 	public void setUp() throws Exception {
@@ -68,6 +69,7 @@ public class ProgressPanelActionSyncControllerTest {
 		context = mock(ProjectContext.class);
 		actionContext = mock(ActionContext.class);
 		myRelease = createRelease();
+		rootScope = createScope();
 
 		final ActionExecutionService actionExecutionServiceMock = mock(ActionExecutionService.class);
 		final ArgumentCaptor<ActionExecutionListener> captor = ArgumentCaptor.forClass(ActionExecutionListener.class);
@@ -82,12 +84,113 @@ public class ProgressPanelActionSyncControllerTest {
 	}
 
 	@Test
+	public void insertingChildInAScopeBoundToMyReleaseShouldUpdateTheDisplay() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+		final Scope child = createScope();
+		scope.add(child);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, child.getId(), scope.getId()));
+		shouldOnlyBeUpdated(1);
+	}
+
+	@Test
+	public void removeChildInAScopeBoundToMyReleaseShouldUpdateTheDisplay() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+		final Scope child = createScope();
+		scope.add(child);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, child.getId(), scope.getId()));
+
+		scope.remove(child);
+
+		onActionExecution(createScoperemoveAction(ScopeRemoveAction.class, child.getId()));
+
+		shouldOnlyBeUpdated(2);
+	}
+
+	@Test
+	public void removeChildWithGrandchildInAScopeBoundToMyReleaseShouldUpdateTheDisplay() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+		final Scope child = createScope();
+		scope.add(child);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, child.getId(), scope.getId()));
+
+		final Scope grandchild = createScope();
+		child.add(grandchild);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, grandchild.getId(), child.getId()));
+
+		scope.remove(child);
+
+		onActionExecution(createScoperemoveAction(ScopeRemoveAction.class, child.getId()));
+
+		shouldOnlyBeUpdated(3);
+	}
+
+	@Test
+	public void insertingGrandChildInAScopeBoundToMyReleaseShouldUpdateTheDisplay() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+		final Scope child = createScope();
+		scope.add(child);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, child.getId(), scope.getId()));
+
+		final Scope grandchild = createScope();
+		child.add(grandchild);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, grandchild.getId(), child.getId()));
+		shouldOnlyBeUpdated(2);
+	}
+
+	@Test
+	public void insertingSiblingChildInAScopeWithChildBoundToMyReleaseShouldUpdateTheDisplay() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+		final Scope child = createScope();
+		scope.add(child);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, child.getId(), scope.getId()));
+
+		final Scope grandchild = createScope();
+		child.add(grandchild);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, grandchild.getId(), child.getId()));
+
+		final Scope sibling = createScope();
+		scope.add(sibling);
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingDownAction.class, sibling.getId(), child.getId()));
+
+		shouldOnlyBeUpdated(3);
+	}
+
+	@Test
+	public void insertingSiblingInAChildScopeBoundToMyReleaseShouldUpdateTheDisplay() throws Exception {
+		final Scope scope = createScope();
+		myRelease.addScope(scope);
+		final Scope child1 = createScope();
+		scope.add(child1);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, child1.getId(), scope.getId()));
+
+		final Scope child2 = createScope();
+		scope.add(child2);
+
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingDownAction.class, child2.getId(), child1.getId()));
+		shouldOnlyBeUpdated(2);
+	}
+
+	@Test
 	public void shouldDoNothingWhenAScopeInsertChildActionWithCreatedScopeNotOnReleaseOccurs() throws Exception {
 		final Scope scope = createScope();
 		final Release releaseNotBeingShown = createRelease();
 		releaseNotBeingShown.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, scope.getId(), rootScope.getId()));
 		shouldBeIgnored();
 	}
 
@@ -96,8 +199,8 @@ public class ProgressPanelActionSyncControllerTest {
 		final Scope scope = createScope();
 		myRelease.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, scope.getId(), myRelease.getId()));
-		shouldOnlyBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeInsertChildAction.class, scope.getId(), rootScope.getId()));
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -106,7 +209,7 @@ public class ProgressPanelActionSyncControllerTest {
 		final Release releaseNotBeingShown = createRelease();
 		releaseNotBeingShown.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeInsertParentAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		onActionExecution(createScopeInsertionAction(ScopeInsertParentAction.class, scope.getId(), rootScope.getId()));
 		shouldBeIgnored();
 	}
 
@@ -115,8 +218,8 @@ public class ProgressPanelActionSyncControllerTest {
 		final Scope scope = createScope();
 		myRelease.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeInsertParentAction.class, scope.getId(), myRelease.getId()));
-		shouldOnlyBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeInsertParentAction.class, scope.getId(), rootScope.getId()));
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -125,7 +228,7 @@ public class ProgressPanelActionSyncControllerTest {
 		final Release releaseNotBeingShown = createRelease();
 		releaseNotBeingShown.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeRemoveRollbackAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		onActionExecution(createScopeInsertionAction(ScopeRemoveRollbackAction.class, scope.getId(), rootScope.getId()));
 		shouldBeIgnored();
 	}
 
@@ -134,8 +237,8 @@ public class ProgressPanelActionSyncControllerTest {
 		final Scope scope = createScope();
 		myRelease.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeRemoveRollbackAction.class, scope.getId(), myRelease.getId()));
-		shouldOnlyBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeRemoveRollbackAction.class, scope.getId(), rootScope.getId()));
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -144,7 +247,7 @@ public class ProgressPanelActionSyncControllerTest {
 		final Release releaseNotBeingShown = createRelease();
 		releaseNotBeingShown.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingDownAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingDownAction.class, scope.getId(), rootScope.getId()));
 		shouldBeIgnored();
 	}
 
@@ -153,8 +256,8 @@ public class ProgressPanelActionSyncControllerTest {
 		final Scope scope = createScope();
 		myRelease.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingDownAction.class, scope.getId(), myRelease.getId()));
-		shouldOnlyBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingDownAction.class, scope.getId(), rootScope.getId()));
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -163,7 +266,7 @@ public class ProgressPanelActionSyncControllerTest {
 		final Release releaseNotBeingShown = createRelease();
 		releaseNotBeingShown.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingUpAction.class, scope.getId(), releaseNotBeingShown.getId()));
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingUpAction.class, scope.getId(), rootScope.getId()));
 		shouldBeIgnored();
 	}
 
@@ -172,8 +275,8 @@ public class ProgressPanelActionSyncControllerTest {
 		final Scope scope = createScope();
 		myRelease.addScope(scope);
 
-		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingUpAction.class, scope.getId(), myRelease.getId()));
-		shouldOnlyBeUpdated();
+		onActionExecution(createScopeInsertionAction(ScopeInsertSiblingUpAction.class, scope.getId(), rootScope.getId()));
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -192,7 +295,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ReleaseScopeUpdatePriorityAction.class, myRelease.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -211,7 +314,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ScopeRemoveAction.class, scope.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -230,7 +333,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ScopeUpdateAction.class, scope.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -249,7 +352,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ScopeInsertSiblingUpRollbackAction.class, scope.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -268,7 +371,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ScopeInsertSiblingDownRollbackAction.class, scope.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -287,7 +390,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ScopeInsertParentRollbackAction.class, scope.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -306,7 +409,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ScopeInsertChildRollbackAction.class, scope.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -325,7 +428,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ScopeBindReleaseAction.class, scope.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -344,7 +447,7 @@ public class ProgressPanelActionSyncControllerTest {
 		myRelease.addScope(scope);
 
 		onActionExecution(createAction(ScopeDeclareProgressAction.class, scope.getId()));
-		shouldOnlyBeUpdated();
+		shouldOnlyBeUpdated(1);
 	}
 
 	@Test
@@ -508,6 +611,13 @@ public class ProgressPanelActionSyncControllerTest {
 		return mock;
 	}
 
+	private <T extends ScopeRemoveAction> ScopeRemoveAction createScoperemoveAction(final Class<T> clazz, final UUID scopeReferenceId) {
+		final T mock = Mockito.mock(clazz);
+		when(mock.getReferenceId()).thenReturn(scopeReferenceId);
+
+		return mock;
+	}
+
 	private Release createRelease() throws ReleaseNotFoundException {
 		final Release release = ReleaseTestUtils.createRelease();
 		addToContext(release);
@@ -520,8 +630,8 @@ public class ProgressPanelActionSyncControllerTest {
 		return scope;
 	}
 
-	private void shouldOnlyBeUpdated() {
-		verify(display, times(1)).update();
+	private void shouldOnlyBeUpdated(final int times) {
+		verify(display, times(times)).update();
 		verify(display, never()).exit();
 		verify(display, never()).updateReleaseInfo();
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEventHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEvent;
@@ -16,8 +17,32 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListen
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.KanbanAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
@@ -46,6 +71,9 @@ public class ReleasePanelWidget extends Composite {
 
 	private Release rootRelease;
 
+	@IgnoredByDeepEquality
+	private final ActionExecutionListener actionExecutionListener;
+
 	// IMPORTANT: This field cannot be 'final' because some tests need to set it to a new value through reflection. Do not remove the 'null' attribution.
 	@IgnoredByDeepEquality
 	private ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory = null;
@@ -68,6 +96,34 @@ public class ReleasePanelWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		dragAndDropManager.configureBoundaryPanel(RootPanel.get());
 		dragAndDropManager.setDragHandler(createScopeItemDragHandler(releasePanelInteractionHandler));
+
+		actionExecutionListener = new ActionExecutionListener() {
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
+
+				if (action instanceof ScopeUpdateAction ||
+						action instanceof ScopeRemoveAction ||
+						action instanceof ScopeInsertAction ||
+						action instanceof ScopeInsertParentRollbackAction ||
+						action instanceof ScopeInsertChildRollbackAction ||
+						action instanceof ScopeInsertSiblingUpRollbackAction ||
+						action instanceof ScopeInsertSiblingDownRollbackAction ||
+						action instanceof ScopeMoveLeftAction ||
+						action instanceof ScopeMoveRightAction ||
+						action instanceof ScopeRemoveRollbackAction ||
+						action instanceof ScopeDeclareProgressAction ||
+						action instanceof ScopeDeclareEffortAction ||
+						action instanceof ScopeDeclareValueAction ||
+						action instanceof ScopeBindReleaseAction ||
+						action instanceof ReleaseRemoveAction ||
+						action instanceof ReleaseRemoveRollbackAction ||
+						action instanceof ReleaseUpdatePriorityAction ||
+						action instanceof ReleaseScopeUpdatePriorityAction ||
+						action instanceof ReleaseRenameAction ||
+						action instanceof KanbanAction) update();
+			}
+		};
 	}
 
 	@Override
@@ -109,10 +165,12 @@ public class ReleasePanelWidget extends Composite {
 	}
 
 	public void update() {
-		List<Release> children = rootRelease.getChildren();
+		final List<Release> children = new ArrayList<Release>();
 		if (kanbanSpecific) {
-			children = new ArrayList<Release>();
 			children.add(rootRelease);
+		}
+		else {
+			children.addAll(rootRelease.getChildren());
 		}
 		noReleaseText.setVisible(children.isEmpty());
 		releaseContainer.update(children);
@@ -150,5 +208,9 @@ public class ReleasePanelWidget extends Composite {
 				releasePanelInteractionHandler.onScopeDragAndDropRequest(droppedScope, targetRelease, newScopePosition);
 			}
 		};
+	}
+
+	public ActionExecutionListener getActionExecutionListener() {
+		return actionExecutionListener;
 	}
 }

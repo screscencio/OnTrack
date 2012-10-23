@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class KanbanPanel extends Composite implements KanbanWigetDisplay {
+public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 
 	private static KanbanPanelUiBinder uiBinder = GWT.create(KanbanPanelUiBinder.class);
 
@@ -75,7 +75,7 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 		board.clear();
 		draggableColumns.clear();
 		final List<KanbanColumn> columns = kanban.getColumns();
-		final Map<KanbanColumn, List<Scope>> scopesByColumn = getScopesByColumn(columns, release.getScopeList());
+		final Map<KanbanColumn, List<Scope>> scopesByColumn = getScopesByColumn(columns, getTasks());
 		int insertionIndex = 0;
 		for (final KanbanColumn column : columns) {
 			final KanbanColumnWidget kanbanColumnWidget = new KanbanColumnWidget(column, scopeWidgetFactory, interactionHandler, insertionIndex)
@@ -93,6 +93,15 @@ public class KanbanPanel extends Composite implements KanbanWigetDisplay {
 			}
 		}
 		board.insert(draggableColumns, 1);
+	}
+
+	private List<Scope> getTasks() {
+		final List<Scope> scopeList = release.getScopeList();
+		final List<Scope> tasks = new ArrayList<Scope>();
+		for (final Scope scope : scopeList) {
+			tasks.addAll(scope.getAllLeafs());
+		}
+		return tasks;
 	}
 
 	private Map<KanbanColumn, List<Scope>> getScopesByColumn(final List<KanbanColumn> columns, final List<Scope> scopeList) {

@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.Prog
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.TextInputPopup.EditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
@@ -110,7 +111,8 @@ public class KanbanColumnWidget extends Composite {
 				interactionHandler.onKanbanColumnRename(column, text);
 				return true;
 			}
-		})).alignBelow(title).alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(title, HorizontalAlignment.CENTER))
+		})).alignVertical(VerticalAlignment.TOP, new AlignmentReference(title, VerticalAlignment.BOTTOM))
+				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(title, HorizontalAlignment.CENTER))
 				.pop();
 	}
 

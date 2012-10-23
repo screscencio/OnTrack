@@ -4,7 +4,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
-public interface KanbanWigetDisplay {
+public interface KanbanWidgetDisplay {
 
 	public void configureKanbanPanel(final Kanban kanban, final Release release);
 

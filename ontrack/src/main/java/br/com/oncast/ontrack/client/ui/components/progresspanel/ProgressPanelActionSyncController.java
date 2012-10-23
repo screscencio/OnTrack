@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -111,6 +112,9 @@ public class ProgressPanelActionSyncController {
 					throws ModelBeanNotFoundException {
 				final Scope scope = context.findScope(((ScopeInsertAction) action).getNewScopeId());
 				if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) display.update();
+
+				final Scope parent = context.findScope(((ScopeInsertAction) action).getReferenceId());
+				if (releaseMonitor.getRelease().equals(parent.getRelease()) || releaseMonitor.releaseContainedScope(parent)) display.update();
 			}
 
 			@Override
@@ -125,8 +129,13 @@ public class ProgressPanelActionSyncController {
 			@Override
 			protected void handleActionImpl(final ProjectContext context, final ModelAction action, final ReleaseMonitor releaseMonitor, final Display display)
 					throws ModelBeanNotFoundException {
-				final Scope scope = context.findScope(action.getReferenceId());
-				if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) display.update();
+				try {
+					final Scope scope = context.findScope(action.getReferenceId());
+					if (releaseMonitor.getRelease().equals(scope.getRelease()) || releaseMonitor.releaseContainedScope(scope)) display.update();
+				}
+				catch (final ModelBeanNotFoundException e) {
+					if (releaseMonitor.releaseContainedScope(action.getReferenceId())) display.update();
+				}
 			}
 
 			@Override
@@ -246,8 +255,19 @@ public class ProgressPanelActionSyncController {
 			return release;
 		}
 
+		public boolean releaseContainedScope(final UUID uuid) {
+			for (final Scope scope : scopeListCopy) {
+				if (scope.getId().equals(uuid)) return true;
+			}
+			return false;
+		}
+
 		private void updateMonitoredReleaseState() {
-			scopeListCopy = release.getScopeList();
+			scopeListCopy = new ArrayList<Scope>();
+
+			for (final Scope scope : release.getScopeList()) {
+				scopeListCopy.addAll(scope.getAllDescendantScopes());
+			}
 		}
 	}
 }
