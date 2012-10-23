@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.server.services.exportImport.xml.migrations;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 
@@ -27,12 +28,17 @@ public class Migration_2012_10_19 extends Migration {
 	private static final String INVITEE_EMAIL = "inviteeEmail";
 	private static final String TEAM_INVITE_ACTION = "br.com.oncast.ontrack.shared.model.action.TeamInviteAction";
 	private Map<String, String> idMap;
-	private Map<String, String> emailMap;
+	private static final Map<String, String> emailMap;
+	private static final Logger LOGGER = Logger.getLogger(Migration_2012_10_19.class);
+
+	static {
+		emailMap = new HashMap<String, String>();
+		emailMap.put(DefaultAuthenticationCredentials.USER_EMAIL, DefaultAuthenticationCredentials.USER_ID.toStringRepresentation());
+	}
 
 	@Override
 	protected void execute() throws Exception {
 		idMap = new HashMap<String, String>();
-		emailMap = new HashMap<String, String>();
 		replaceLongForUUID();
 		updateTeamInviteAction();
 		updateUserActions();
@@ -72,17 +78,16 @@ public class Migration_2012_10_19 extends Migration {
 	private void replaceLongForUUID() {
 		for (final Element user : getElements("//user")) {
 			final String email = user.attributeValue("email");
-			final String newId = (DefaultAuthenticationCredentials.USER_EMAIL.equals(email) ?
-					DefaultAuthenticationCredentials.USER_ID : new UUID())
-					.toStringRepresentation();
+			if (!emailMap.containsKey(email)) emailMap.put(email, new UUID().toStringRepresentation());
+
+			final String newId = emailMap.get(email);
 
 			final Attribute id = user.attribute(ID);
 			idMap.put(id.getValue(), newId);
-			emailMap.put(email, newId);
+			LOGGER.debug(email + ": " + id.getValue() + ": " + newId);
 
 			user.remove(id);
 			user.addElement(ID).addAttribute(ID, newId);
 		}
 	}
-
 }
