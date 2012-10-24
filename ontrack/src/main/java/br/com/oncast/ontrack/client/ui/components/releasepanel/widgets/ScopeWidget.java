@@ -85,10 +85,18 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeProgress;
 
+	private final boolean kanbanSpecific;
+
 	public ScopeWidget(final Scope scope) {
+		this(scope, false);
+	}
+
+	public ScopeWidget(final Scope scope, final boolean kanbanSpecific) {
 		initWidget(uiBinder.createAndBindUi(this));
 
+		this.kanbanSpecific = kanbanSpecific;
 		this.scope = scope;
+		draggableAnchor.getElement().getStyle().setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(scope));
 		update();
 		setHasOpenImpediments(ClientServiceProvider.getInstance().getAnnotationService().hasOpenImpediment(scope.getId()));
 	}

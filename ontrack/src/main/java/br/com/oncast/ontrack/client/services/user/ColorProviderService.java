@@ -5,10 +5,12 @@ import java.util.List;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 
-public interface MembersScopeSelectionService {
+public interface ColorProviderService {
 
-	String getSelectionColor(User user);
+	String getSelectionColorFor(User user);
 
-	List<Selection> getSelectionsFor(Scope scope);
+	String getColorFor(Scope scope);
+
+	List<Selection> getMembersSelectionsFor(Scope scope);
 
 }

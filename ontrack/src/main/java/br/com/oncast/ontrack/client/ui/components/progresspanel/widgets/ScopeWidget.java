@@ -1,7 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -37,8 +39,21 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	public ScopeWidget(final Scope scope, final ProgressPanelWidgetInteractionHandler progressPanelInteractionHandler) {
 		initWidget(uiBinder.createAndBindUi(this));
 
+		final Scope story = findStory(scope);
+		draggableAnchor.getElement().getStyle().setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(story));
 		this.scope = scope;
 		updateDescription();
+	}
+
+	private Scope findStory(final Scope scope) {
+		Release release = scope.getRelease();
+		Scope currentScope = scope;
+
+		while (scope.isLeaf() && release == null && !currentScope.isRoot()) {
+			currentScope = currentScope.getParent();
+			release = currentScope.getRelease();
+		}
+		return currentScope;
 	}
 
 	@Override
