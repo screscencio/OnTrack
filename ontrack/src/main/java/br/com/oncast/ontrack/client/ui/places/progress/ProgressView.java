@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanWidgetDisplay;
 
@@ -13,4 +14,8 @@ public interface ProgressView extends IsWidget {
 	KanbanWidgetDisplay getKanbanPanel();
 
 	Widget getAlertingPanel();
+
+	void registerActionExecutionHandler(ActionExecutionService actionExecutionService);
+
+	void unregisterActionExecutionHandler(ActionExecutionService actionExecutionService);
 }

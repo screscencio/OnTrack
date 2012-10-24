@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanWidgetDisplay;
@@ -30,17 +29,28 @@ public class ProgressPanel extends Composite implements ProgressView {
 	@UiField
 	protected KanbanWidgetDisplay kanbanPanel;
 
+	private final ReleasePanelInteractionHandler interactionHandler;
+
 	public ProgressPanel(final Release release) {
-		final ReleasePanelInteractionHandler interactionHandler = new ReleasePanelInteractionHandler();
+		interactionHandler = new ReleasePanelInteractionHandler();
 		releaseWidget = new ReleasePanelWidget(interactionHandler, true);
 
 		initWidget(uiBinder.createAndBindUi(this));
 
 		releaseWidget.setRelease(release);
 
-		final ActionExecutionService actionExecutionService = ClientServiceProvider.getInstance().getActionExecutionService();
+	}
+
+	@Override
+	public void registerActionExecutionHandler(final ActionExecutionService actionExecutionService) {
 		interactionHandler.configureActionExecutionRequestHandler(actionExecutionService);
 		actionExecutionService.addActionExecutionListener(releaseWidget.getActionExecutionListener());
+	}
+
+	@Override
+	public void unregisterActionExecutionHandler(final ActionExecutionService actionExecutionService) {
+		actionExecutionService.removeActionExecutionListener(releaseWidget.getActionExecutionListener());
+		interactionHandler.deconfigure();
 	}
 
 	@Override

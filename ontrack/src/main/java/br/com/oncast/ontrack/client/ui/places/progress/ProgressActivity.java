@@ -3,8 +3,8 @@ package br.com.oncast.ontrack.client.ui.places.progress;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.Display;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
@@ -23,7 +23,7 @@ public class ProgressActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
-	private ProgressPanelActionSyncController progressPanelActionSyncController;
+	private KanbanActionSyncController kanbanActionSyncController;
 	private ProgressView view;
 	private ProjectContext projectContext;
 	private Release release;
@@ -39,7 +39,7 @@ public class ProgressActivity extends AbstractActivity {
 			view = new ProgressPanel(release);
 			view.getKanbanPanel().setActionExecutionService(SERVICE_PROVIDER.getActionExecutionService());
 
-			progressPanelActionSyncController = new ProgressPanelActionSyncController(SERVICE_PROVIDER.getActionExecutionService(), release, new Display() {
+			kanbanActionSyncController = new KanbanActionSyncController(SERVICE_PROVIDER.getActionExecutionService(), release, new Display() {
 
 				@Override
 				public void update() {
@@ -76,7 +76,9 @@ public class ProgressActivity extends AbstractActivity {
 
 		panel.setWidget(view);
 
-		progressPanelActionSyncController.registerActionExecutionListener();
+		kanbanActionSyncController.registerActionExecutionListener();
+		view.registerActionExecutionHandler(SERVICE_PROVIDER.getActionExecutionService());
+
 		registration = ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingPanel());
 
@@ -85,7 +87,8 @@ public class ProgressActivity extends AbstractActivity {
 
 	@Override
 	public void onStop() {
-		progressPanelActionSyncController.unregisterActionExecutionListener();
+		view.unregisterActionExecutionHandler(SERVICE_PROVIDER.getActionExecutionService());
+		kanbanActionSyncController.unregisterActionExecutionListener();
 		registration.removeHandler();
 		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 	}

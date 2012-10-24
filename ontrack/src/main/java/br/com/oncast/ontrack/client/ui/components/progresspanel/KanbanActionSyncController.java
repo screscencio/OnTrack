@@ -35,14 +35,14 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class ProgressPanelActionSyncController {
+public class KanbanActionSyncController {
 
 	private final ActionExecutionService actionExecutionService;
 	private final ActionExecutionListener actionExecutionListener;
 	private ReleaseMonitor releaseMonitor;
 	private final ClientErrorMessages messages;
 
-	public ProgressPanelActionSyncController(final ActionExecutionService actionExecutionService, final Release release, final Display display,
+	public KanbanActionSyncController(final ActionExecutionService actionExecutionService, final Release release, final Display display,
 			final ClientErrorMessages messages) {
 		this.messages = messages;
 		this.actionExecutionService = actionExecutionService;

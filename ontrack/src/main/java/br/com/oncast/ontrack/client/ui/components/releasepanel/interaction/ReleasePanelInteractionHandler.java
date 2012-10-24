@@ -19,6 +19,10 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 		this.applicationActionHandler = actionExecutionRequestHandler;
 	}
 
+	public void deconfigure() {
+		this.applicationActionHandler = null;
+	}
+
 	@Override
 	public void onReleaseDeletionRequest(final Release release) {
 		assureConfigured();

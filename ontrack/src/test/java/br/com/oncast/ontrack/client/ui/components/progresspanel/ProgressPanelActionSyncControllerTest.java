@@ -16,8 +16,8 @@ import org.mockito.Mockito;
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.Display;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.ProgressPanelActionSyncController.ReleaseMonitor;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.Display;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.ReleaseMonitor;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseCreateAction;
@@ -75,7 +75,7 @@ public class ProgressPanelActionSyncControllerTest {
 		final ArgumentCaptor<ActionExecutionListener> captor = ArgumentCaptor.forClass(ActionExecutionListener.class);
 		Mockito.doNothing().when(actionExecutionServiceMock).addActionExecutionListener(captor.capture());
 
-		final ProgressPanelActionSyncController actionSyncController = new ProgressPanelActionSyncController(actionExecutionServiceMock, myRelease, display,
+		final KanbanActionSyncController actionSyncController = new KanbanActionSyncController(actionExecutionServiceMock, myRelease, display,
 				mock(ClientErrorMessages.class));
 		releaseMonitor = actionSyncController.new ReleaseMonitor(myRelease);
 		ReflectionTestUtils.set(actionSyncController, "releaseMonitor", releaseMonitor);
