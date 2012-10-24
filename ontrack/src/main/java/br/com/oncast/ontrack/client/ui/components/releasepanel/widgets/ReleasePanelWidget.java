@@ -90,7 +90,8 @@ public class ReleasePanelWidget extends Composite {
 		this.kanbanSpecific = kanbanSpecific;
 		handlerRegistration = new HashSet<HandlerRegistration>();
 		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
-		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager), dragAndDropManager,
+		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager, kanbanSpecific),
+				dragAndDropManager,
 				kanbanSpecific);
 
 		initWidget(uiBinder.createAndBindUi(this));

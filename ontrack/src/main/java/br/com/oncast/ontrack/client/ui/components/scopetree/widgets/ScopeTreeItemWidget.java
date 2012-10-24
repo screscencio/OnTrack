@@ -179,7 +179,7 @@ public class ScopeTreeItemWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		setScope(scope);
 
-		selectionsList = ClientServiceProvider.getInstance().getMembersScopeSelectionService().getSelectionsFor(scope);
+		selectionsList = ClientServiceProvider.getInstance().getColorProviderService().getMembersSelectionsFor(scope);
 
 		fadeAnimation = new Animation() {
 			@Override

@@ -99,7 +99,7 @@ public class MembersScopeSelectionServiceImplTest {
 		final ArgumentCaptor<ServerPushEventHandler> userClosedProjectEventHandlerCaptor = ArgumentCaptor.forClass(ServerPushEventHandler.class);
 		doNothing().when(serverPushClientService).registerServerEventHandler(eq(UserClosedProjectEvent.class), userClosedProjectEventHandlerCaptor.capture());
 
-		new MembersScopeSelectionServiceImpl(requestDispatchService, contextProviderService, serverPushClientService,
+		new ColorProviderServiceImpl(requestDispatchService, contextProviderService, serverPushClientService,
 				eventBus, usersStatusServiceImpl, colorPicker);
 
 		userClosedProjectEventHandler = userClosedProjectEventHandlerCaptor.getValue();

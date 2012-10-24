@@ -32,8 +32,8 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceI
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.services.storage.Html5StorageClientStorageService;
 import br.com.oncast.ontrack.client.services.user.ColorPicker;
-import br.com.oncast.ontrack.client.services.user.MembersScopeSelectionService;
-import br.com.oncast.ontrack.client.services.user.MembersScopeSelectionServiceImpl;
+import br.com.oncast.ontrack.client.services.user.ColorProviderService;
+import br.com.oncast.ontrack.client.services.user.ColorProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl;
 import br.com.oncast.ontrack.client.services.user.UsersStatusService;
@@ -87,7 +87,7 @@ public class ClientServiceProvider {
 	private ClientStorageService clientStorageService;
 	private ClientMetricService clientMetricService;
 	private UsersStatusService usersStatusService;
-	private MembersScopeSelectionService membersScopeSelectionService;
+	private ColorProviderService colorProviderService;
 
 	private ClientErrorMessages clientErrorMessages;
 
@@ -117,7 +117,7 @@ public class ClientServiceProvider {
 		getActionSyncService();
 		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), getClientStorageService());
-		getMembersScopeSelectionService();
+		getColorProviderService();
 	}
 
 	private AuthorizationService getAuthorizationService() {
@@ -235,10 +235,10 @@ public class ClientServiceProvider {
 		return usersStatusService;
 	}
 
-	public MembersScopeSelectionService getMembersScopeSelectionService() {
-		if (membersScopeSelectionService == null) membersScopeSelectionService = new MembersScopeSelectionServiceImpl(getRequestDispatchService(),
+	public ColorProviderService getColorProviderService() {
+		if (colorProviderService == null) colorProviderService = new ColorProviderServiceImpl(getRequestDispatchService(),
 				getContextProviderService(), getServerPushClientService(), getEventBus(), getUsersStatusService(), new ColorPicker());
-		return membersScopeSelectionService;
+		return colorProviderService;
 	}
 
 	public ClientErrorMessages getClientErrorMessages() {

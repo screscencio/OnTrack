@@ -27,21 +27,23 @@ import br.com.oncast.ontrack.shared.services.user.UserSelectedScopeEvent;
 import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class MembersScopeSelectionServiceImpl implements MembersScopeSelectionService {
+public class ColorProviderServiceImpl implements ColorProviderService {
 
-	private HashMap<User, Scope> selectionMap;
-	private HashMap<User, String> colorMap;
+	private HashMap<User, Scope> userSelectionMap;
+	private HashMap<User, String> userColorMap;
+	private HashMap<Scope, String> scopeColorMap;
 
 	private final ColorPicker colorPicker;
 	private final EventBus eventBus;
 
-	public MembersScopeSelectionServiceImpl(final DispatchService requestDispatchService, final ContextProviderService contextProviderService,
+	public ColorProviderServiceImpl(final DispatchService requestDispatchService, final ContextProviderService contextProviderService,
 			final ServerPushClientService serverPushClientService, final EventBus eventBus, final UsersStatusService usersStatusServiceImpl,
 			final ColorPicker colorPicker) {
 		this.colorPicker = colorPicker;
 		this.eventBus = eventBus;
-		selectionMap = new HashMap<User, Scope>();
-		colorMap = new HashMap<User, String>();
+		userSelectionMap = new HashMap<User, Scope>();
+		userColorMap = new HashMap<User, String>();
+		scopeColorMap = new HashMap<Scope, String>();
 
 		eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 			private Scope selectedScope;
@@ -78,8 +80,8 @@ public class MembersScopeSelectionServiceImpl implements MembersScopeSelectionSe
 					removePreviousSelection(member);
 
 					final Scope scope = context.findScope(event.getScopeId());
-					selectionMap.put(member, scope);
-					eventBus.fireEvent(new ScopeAddMemberSelectionEvent(member, scope, getSelectionColor(member)));
+					userSelectionMap.put(member, scope);
+					eventBus.fireEvent(new ScopeAddMemberSelectionEvent(member, scope, getSelectionColorFor(member)));
 				}
 				catch (final ModelBeanNotFoundException e) {
 					GWT.log("Error handling UserSelectedScopeEvent!", e);
@@ -104,30 +106,36 @@ public class MembersScopeSelectionServiceImpl implements MembersScopeSelectionSe
 	}
 
 	private void removePreviousSelection(final User member) {
-		final Scope previousSelection = selectionMap.remove(member);
+		final Scope previousSelection = userSelectionMap.remove(member);
 		if (previousSelection != null) {
 			eventBus.fireEvent(new ScopeRemoveMemberSelectionEvent(member, previousSelection));
 		}
 	}
 
 	@Override
-	public synchronized String getSelectionColor(final User user) {
-		if (!colorMap.containsKey(user)) colorMap.put(user, colorPicker.pick());
-		return colorMap.get(user);
+	public synchronized String getSelectionColorFor(final User user) {
+		if (!userColorMap.containsKey(user)) userColorMap.put(user, colorPicker.pick());
+		return userColorMap.get(user);
 	}
 
 	@Override
-	public List<Selection> getSelectionsFor(final Scope scope) {
+	public List<Selection> getMembersSelectionsFor(final Scope scope) {
 		final List<Selection> selections = new ArrayList<Selection>();
-		if (!selectionMap.containsValue(scope)) return selections;
+		if (!userSelectionMap.containsValue(scope)) return selections;
 
-		for (final Entry<User, Scope> e : selectionMap.entrySet()) {
+		for (final Entry<User, Scope> e : userSelectionMap.entrySet()) {
 			if (e.getValue().equals(scope)) {
 				final User user = e.getKey();
-				selections.add(new Selection(user, getSelectionColor(user)));
+				selections.add(new Selection(user, getSelectionColorFor(user)));
 			}
 		}
 
 		return selections;
+	}
+
+	@Override
+	public String getColorFor(final Scope scope) {
+		if (!scopeColorMap.containsKey(scope)) scopeColorMap.put(scope, colorPicker.pick());
+		return scopeColorMap.get(scope);
 	}
 }
