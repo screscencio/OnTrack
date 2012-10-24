@@ -5,7 +5,6 @@ import br.com.oncast.ontrack.shared.model.action.KanbanColumnCreateAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
-import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -17,11 +16,7 @@ public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInter
 	private Release currentRelease;
 
 	@Override
-	public void onDragAndDropPriorityRequest(final Scope scope, final int newPriority) {
-		assureConfigured();
-		actionExecutionRequestHandler.onUserActionExecutionRequest(new ReleaseScopeUpdatePriorityAction(scope.getRelease().getId(),
-				scope.getId(), newPriority));
-	}
+	public void onDragAndDropPriorityRequest(final Scope scope, final int newPriority) {}
 
 	@Override
 	public void onDragAndDropProgressRequest(final Scope scope, final String newProgress) {

@@ -29,10 +29,7 @@ public class KanbanScopeItemDragHandler extends DragHandlerAdapter {
 		final ScopeWidget draggedScope = (ScopeWidget) event.getContext().draggable;
 		final KanbanColumn kanbanColumn = ((KanbanScopeContainer) dropTarget.getParent()).getKanbanColumn();
 
-		if (isPriorityChange(draggedScope.getModelObject(), kanbanColumn.getDescription())) {
-			interactionHandler.onDragAndDropPriorityRequest(draggedScope.getModelObject(), calculateNewPriority(dropTarget, draggedScope));
-		}
-		else {
+		if (!isPriorityChange(draggedScope.getModelObject(), kanbanColumn.getDescription())) {
 			interactionHandler.onDragAndDropProgressRequest(draggedScope.getModelObject(), kanbanColumn.getDescription());
 		}
 	}
@@ -40,9 +37,5 @@ public class KanbanScopeItemDragHandler extends DragHandlerAdapter {
 	private boolean isPriorityChange(final Scope scope, final String title) {
 		if (scope.getProgress().getState() == ProgressState.NOT_STARTED && ProgressState.getStateForDescription(title) == ProgressState.NOT_STARTED) return true;
 		return scope.getProgress().getDescription().equals(title);
-	}
-
-	private int calculateNewPriority(final VerticalPanel dropTarget, final ScopeWidget draggedScope) {
-		return new KanbanPriorityCalculator(draggedScope.getModelObject().getRelease(), dropTarget).getNewPriority(draggedScope);
 	}
 }
