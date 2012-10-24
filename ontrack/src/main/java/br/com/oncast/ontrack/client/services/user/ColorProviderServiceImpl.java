@@ -29,6 +29,7 @@ import com.google.web.bindery.event.shared.EventBus;
 
 public class ColorProviderServiceImpl implements ColorProviderService {
 
+	private static final double SCOPE_COLOR_ALPHA = 0.4;
 	private HashMap<User, Scope> userSelectionMap;
 	private HashMap<User, String> userColorMap;
 	private HashMap<Scope, String> scopeColorMap;
@@ -135,7 +136,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 
 	@Override
 	public String getColorFor(final Scope scope) {
-		if (!scopeColorMap.containsKey(scope)) scopeColorMap.put(scope, colorPicker.pick());
+		if (!scopeColorMap.containsKey(scope)) scopeColorMap.put(scope, colorPicker.pick(SCOPE_COLOR_ALPHA));
 		return scopeColorMap.get(scope);
 	}
 }
