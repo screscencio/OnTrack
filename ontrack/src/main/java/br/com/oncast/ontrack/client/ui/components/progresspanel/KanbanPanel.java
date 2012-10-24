@@ -99,7 +99,7 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 		final List<Scope> scopeList = release.getScopeList();
 		final List<Scope> tasks = new ArrayList<Scope>();
 		for (final Scope scope : scopeList) {
-			tasks.addAll(scope.getAllLeafs());
+			if (scope.getProgress().isUnderWork()) tasks.addAll(scope.getAllLeafs());
 		}
 		return tasks;
 	}
