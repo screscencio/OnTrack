@@ -58,11 +58,11 @@ public class NotificationEntity {
 	@Column(unique = false, nullable = false)
 	private NotificationType type;
 
-	@Column(name = "description", unique = false, nullable = true)
+	@Column(name = "description", unique = false, nullable = true, length = 400)
 	@ConversionAlias("description")
 	private String description;
 
-	@Column(name = "referenceDescription", unique = false, nullable = true)
+	@Column(name = "referenceDescription", unique = false, nullable = true, length = 400)
 	@ConversionAlias("referenceDescription")
 	private String referenceDescription;
 
@@ -140,7 +140,7 @@ public class NotificationEntity {
 		return referenceDescription;
 	}
 
-	public void setReferenceDescription(String referenceDescription) {
+	public void setReferenceDescription(final String referenceDescription) {
 		this.referenceDescription = referenceDescription;
 	}
 }
