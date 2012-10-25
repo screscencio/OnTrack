@@ -168,7 +168,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	private static void selectItem(final ScopeTreeWidget treeWidget, final Scope scope) {
-		final ScopeTreeItem item = treeWidget.findScopeTreeItem(scope);
+		final ScopeTreeItem item = treeWidget.findAndMountScopeTreeItem(scope);
 		final Tree tree = item.getTree();
 		tree.setSelectedItem(null, false);
 		item.setHierarchicalState(true);

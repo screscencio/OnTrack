@@ -346,7 +346,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		return itemMapCache.containsKey(scopeId) ? itemMapCache.get(scopeId) : FakeScopeTreeItem.get();
 	}
 
-	private ScopeTreeItem findAndMountScopeTreeItem(final Scope scope) {
+	public ScopeTreeItem findAndMountScopeTreeItem(final Scope scope) {
 		final UUID scopeId = scope.getId();
 
 		if (itemMapCache.containsKey(scopeId)) return itemMapCache.get(scopeId);
