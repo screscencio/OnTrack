@@ -65,6 +65,7 @@ public class DragAndDropManager {
 	}
 
 	public void addDropHandler(final DropController controller) {
+		assureConfigured();
 		dragController.registerDropController(controller);
 	}
 }

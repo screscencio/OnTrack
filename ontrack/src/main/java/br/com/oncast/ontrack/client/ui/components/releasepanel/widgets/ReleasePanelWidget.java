@@ -93,7 +93,6 @@ public class ReleasePanelWidget extends Composite {
 		dragAndDropManager = new DragAndDropManager();
 		this.releaseSpecific = releaseSpecific;
 		handlerRegistration = new HashSet<HandlerRegistration>();
-		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
 		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager, releaseSpecific),
 				dragAndDropManager,
 				releaseSpecific);

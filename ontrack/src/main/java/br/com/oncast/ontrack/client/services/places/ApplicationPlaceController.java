@@ -49,7 +49,7 @@ public class ApplicationPlaceController {
 		activityManager.setDisplay(container);
 		final String defaultPlaceToken = clientStorageService.loadDefaultPlaceToken();
 		final Place place = defaultPlaceToken == null ? defaultAppPlace : placeHistoryMapper.getPlace(defaultPlaceToken);
-		historyHandler.register(placeController, eventBus, place);
+		historyHandler.register(placeController, eventBus, place == null ? defaultAppPlace : place);
 		historyHandler.handleCurrentHistory();
 
 		eventBus.addHandler(PlaceChangeRequestEvent.TYPE, new PlaceChangeRequestEvent.Handler() {
