@@ -25,11 +25,10 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 
 	private final ModelWidgetFactory<T, E> modelWidgetFactory;
 
-	private final ModelWidgetContainerListener listener;
+	private ModelWidgetContainerListener listener = new NullModelWidgetContainerListener();
 
 	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory) {
 		this.modelWidgetFactory = modelWidgetFactory;
-		this.listener = new NullModelWidgetContainerListener();
 		widgetMap = new HashMap<T, E>();
 		verticalContainer = createVerticalContainer();
 
@@ -37,12 +36,8 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	}
 
 	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final ModelWidgetContainerListener listener) {
-		this.modelWidgetFactory = modelWidgetFactory;
+		this(modelWidgetFactory);
 		this.listener = listener;
-		widgetMap = new HashMap<T, E>();
-		verticalContainer = createVerticalContainer();
-
-		initWidget(uiBinder.createAndBindUi(this));
 	}
 
 	// IMPORTANT this is protected to be able to override and provide any VerticalPanel.
@@ -71,6 +66,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 
 			hasChanged |= modelWidget.update();
 		}
+
 		for (int i = modelBeanList.size(); i < verticalContainer.getWidgetCount(); i++) {
 			@SuppressWarnings("unchecked") final E modelWidget = (E) verticalContainer.getWidget(i);
 			verticalContainer.remove(i);
@@ -127,13 +123,14 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		widgetMap.clear();
 	}
 
-	private class NullModelWidgetContainerListener implements ModelWidgetContainerListener {
-		@Override
-		public void onUpdateComplete(final boolean hasChanged) {}
-	}
-
 	@SuppressWarnings("unchecked")
 	public E getWidget(final int i) {
 		return (E) verticalContainer.getWidget(i);
+	}
+
+	private class NullModelWidgetContainerListener implements ModelWidgetContainerListener {
+
+		@Override
+		public void onUpdateComplete(final boolean hasChanged) {}
 	}
 }

@@ -7,20 +7,14 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ScopeWidget> {
 
 	private final DragAndDropManager dragAndDropManager;
-	private final boolean kanbanSpecific;
 
 	public ScopeWidgetFactory(final DragAndDropManager dragAndDropManager) {
-		this(dragAndDropManager, false);
-	}
-
-	public ScopeWidgetFactory(final DragAndDropManager dragAndDropManager, final boolean kanbanSpecific) {
 		this.dragAndDropManager = dragAndDropManager;
-		this.kanbanSpecific = kanbanSpecific;
 	}
 
 	@Override
 	public ScopeWidget createWidget(final Scope scope) {
-		final ScopeWidget newScopeWidget = new ScopeWidget(scope, kanbanSpecific);
+		final ScopeWidget newScopeWidget = new ScopeWidget(scope);
 
 		dragAndDropManager.monitorNewDraggableItem(newScopeWidget, newScopeWidget.getDraggableAnchor());
 

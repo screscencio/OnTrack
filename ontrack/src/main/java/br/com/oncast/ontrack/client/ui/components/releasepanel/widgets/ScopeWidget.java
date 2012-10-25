@@ -18,6 +18,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BgColorAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -35,6 +37,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -77,6 +80,9 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiField
 	FocusPanel statusBar;
 
+	@UiField
+	HorizontalPanel internalPanel;
+
 	private final Scope scope;
 
 	// IMPORTANT Used to refresh DOM only when needed.
@@ -85,16 +91,9 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeProgress;
 
-	private final boolean kanbanSpecific;
-
 	public ScopeWidget(final Scope scope) {
-		this(scope, false);
-	}
-
-	public ScopeWidget(final Scope scope, final boolean kanbanSpecific) {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		this.kanbanSpecific = kanbanSpecific;
 		this.scope = scope;
 		draggableAnchor.getElement().getStyle().setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(scope));
 		update();
@@ -155,6 +154,11 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		progressIcon.setStyleName(style.progressIconDone(), progress.getState() == ProgressState.DONE);
 		progressIcon.setStyleName(style.progressIconUnderwork(), progress.getState() == UNDER_WORK);
 		progressIcon.setStyleName(style.progressIconNotStarted(), progress.getState() == ProgressState.NOT_STARTED);
+
+		if (!description.isEmpty()) {
+			final Color color = (progress.getState() == ProgressState.DONE) ? Color.GREEN : Color.BLUE;
+			new BgColorAnimation(internalPanel, color).animate(800);
+		}
 
 		return true;
 	}

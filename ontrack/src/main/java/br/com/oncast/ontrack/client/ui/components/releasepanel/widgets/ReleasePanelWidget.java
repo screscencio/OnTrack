@@ -80,19 +80,19 @@ public class ReleasePanelWidget extends Composite {
 
 	private final Set<HandlerRegistration> handlerRegistration;
 
-	private final boolean kanbanSpecific;
+	private final boolean releaseSpecific;
 
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this(releasePanelInteractionHandler, false);
 	}
 
-	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
-		this.kanbanSpecific = kanbanSpecific;
+	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean releaseSpecific) {
+		this.releaseSpecific = releaseSpecific;
 		handlerRegistration = new HashSet<HandlerRegistration>();
 		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
-		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager, kanbanSpecific),
+		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager),
 				dragAndDropManager,
-				kanbanSpecific);
+				releaseSpecific);
 
 		initWidget(uiBinder.createAndBindUi(this));
 		dragAndDropManager.configureBoundaryPanel(RootPanel.get());
@@ -167,7 +167,7 @@ public class ReleasePanelWidget extends Composite {
 
 	public void update() {
 		final List<Release> children = new ArrayList<Release>();
-		if (kanbanSpecific) {
+		if (releaseSpecific) {
 			children.add(rootRelease);
 		}
 		else {
