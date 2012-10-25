@@ -63,4 +63,8 @@ public class DragAndDropManager {
 		assureConfigured();
 		dragController.makeDraggable(draggableWidget, draggableAreaWidget);
 	}
+
+	public void addDropHandler(final DropController controller) {
+		dragController.registerDropController(controller);
+	}
 }

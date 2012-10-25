@@ -43,4 +43,12 @@ public class ColorPicker {
 	public String pick() {
 		return availableColors.get(index++ % availableColors.size());
 	}
+
+	public String pick(final double alpha) {
+		final String colorString = availableColors.get(index++ % availableColors.size());
+		final int r = Integer.parseInt(colorString.substring(1, 3), 16);
+		final int g = Integer.parseInt(colorString.substring(3, 5), 16);
+		final int b = Integer.parseInt(colorString.substring(5, 7), 16);
+		return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+	}
 }

@@ -7,7 +7,7 @@
 >
 
     <ui:data field="bgPixelImg" src="../../semitransparentPixel.png" />
-	<ui:style src="../../style/default.css">
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.progress.ProgressPanel.ProgressPanelStyle">
 	
 	   @url bgPixelUrl bgPixelImg;
 		
@@ -49,6 +49,10 @@
 			position: relative;
 			width: 410px;
 			height: 100%;
+		}
+		
+		.kanbanPanelOnDragTarget{
+			background-color: COLOR_YELLOW;
 		}
 		
 	</ui:style>

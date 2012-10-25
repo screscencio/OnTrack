@@ -18,4 +18,6 @@ public interface ReleasePanelWidgetInteractionHandler {
 	void onScopeDecreasePriorityRequest(Scope scope);
 
 	void onReleaseRenameRequest(Release release, String newReleaseName);
+
+	void onScopeUnderworkdDropRequest(Scope droppedScope);
 }

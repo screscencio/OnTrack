@@ -1,7 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
-import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +27,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -42,6 +41,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeWidget extends Composite implements ModelWidget<Scope> {
+
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
 	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
 
@@ -91,13 +92,19 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeProgress;
 
+	private final boolean shouldShowScopeColor;
+
 	public ScopeWidget(final Scope scope) {
+		this(scope, false);
+	}
+
+	public ScopeWidget(final Scope scope, final boolean shouldShowScopeColor) {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
-		draggableAnchor.getElement().getStyle().setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(scope));
+		this.shouldShowScopeColor = shouldShowScopeColor;
 		update();
-		setHasOpenImpediments(ClientServiceProvider.getInstance().getAnnotationService().hasOpenImpediment(scope.getId()));
+		setHasOpenImpediments(SERVICE_PROVIDER.getAnnotationService().hasOpenImpediment(scope.getId()));
 	}
 
 	@Override
@@ -151,13 +158,20 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		if (!description.isEmpty() && description.equals(currentScopeProgress)) return false;
 		currentScopeProgress = description;
 
-		progressIcon.setStyleName(style.progressIconDone(), progress.getState() == ProgressState.DONE);
-		progressIcon.setStyleName(style.progressIconUnderwork(), progress.getState() == UNDER_WORK);
+		progressIcon.setStyleName(style.progressIconDone(), progress.isDone());
+		progressIcon.setStyleName(style.progressIconUnderwork(), progress.isUnderWork());
 		progressIcon.setStyleName(style.progressIconNotStarted(), progress.getState() == ProgressState.NOT_STARTED);
 
 		if (!description.isEmpty()) {
 			final Color color = (progress.getState() == ProgressState.DONE) ? Color.GREEN : Color.BLUE;
 			new BgColorAnimation(internalPanel, color).animate(800);
+		}
+
+		if (shouldShowScopeColor) {
+			final Style s = draggableAnchor.getElement().getStyle();
+
+			if (progress.isUnderWork()) s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope));
+			else s.clearBackgroundColor();
 		}
 
 		return true;
@@ -181,7 +195,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		fireScopeSelectionEvent(); // Showing the item that will be changed.
 		e.stopPropagation();
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
-		final ProjectContext context = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
+		final ProjectContext context = SERVICE_PROVIDER.getContextProviderService().getCurrentProjectContext();
 
 		final String notStartedDescription = ProgressState.NOT_STARTED.getDescription();
 		items.add(createItem("Not Started", notStartedDescription));
@@ -221,7 +235,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	}
 
 	private void declareProgress(final String progressDescription) {
-		ClientServiceProvider.getInstance().getActionExecutionService()
+		SERVICE_PROVIDER.getActionExecutionService()
 				.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), progressDescription));
 	}
 
@@ -251,7 +265,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	}
 
 	private void fireScopeSelectionEvent() {
-		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
+		SERVICE_PROVIDER.getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 	}
 
 	public void setSelected(final boolean shouldSelect) {

@@ -8,6 +8,8 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -81,5 +83,11 @@ public class ReleasePanelInteractionHandler implements ReleasePanelWidgetInterac
 	private void assureConfigured() {
 		if (applicationActionHandler == null) throw new RuntimeException(
 				"This class was not yet configured.");
+	}
+
+	@Override
+	public void onScopeUnderworkdDropRequest(final Scope scope) {
+		assureConfigured();
+		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), ProgressState.UNDER_WORK.getDescription()));
 	}
 }

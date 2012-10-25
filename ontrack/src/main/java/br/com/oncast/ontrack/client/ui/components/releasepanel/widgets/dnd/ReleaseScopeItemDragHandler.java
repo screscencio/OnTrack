@@ -22,14 +22,16 @@ public class ReleaseScopeItemDragHandler extends DragHandlerAdapter {
 		final DropController dropTargetController = event.getContext().finalDropController;
 		if (isDropTargetInvalid(dropTargetController)) return;
 
-		final VerticalPanel targetReleaseArea = (VerticalPanel) dropTargetController.getDropTarget();
-		final ScopeWidgetContainer targetScopeContainer = (ScopeWidgetContainer) targetReleaseArea.getParent();
+		if (dropTargetController.getDropTarget() instanceof VerticalPanel) {
+			final VerticalPanel targetReleaseArea = (VerticalPanel) dropTargetController.getDropTarget();
+			final ScopeWidgetContainer targetScopeContainer = (ScopeWidgetContainer) targetReleaseArea.getParent();
 
-		targetScopeContainer.addToWidgetMapping(draggedScopeWidget.getScope(), draggedScopeWidget);
+			targetScopeContainer.addToWidgetMapping(draggedScopeWidget.getScope(), draggedScopeWidget);
 
-		itemDroppedListener.onItemDropped(draggedScopeWidget.getModelObject(), targetScopeContainer.getOwnerRelease(),
-				targetReleaseArea.getWidgetIndex(draggedScopeWidget));
-
+			itemDroppedListener.onItemDropped(draggedScopeWidget.getModelObject(), targetScopeContainer.getOwnerRelease(),
+					targetReleaseArea.getWidgetIndex(draggedScopeWidget));
+		}
+		else itemDroppedListener.onItemDropped(draggedScopeWidget.getScope());
 	}
 
 	private boolean isDropTargetInvalid(final DropController dropController) {
