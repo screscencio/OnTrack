@@ -19,7 +19,7 @@ public class PlanningPlace extends ProjectDependentPlace {
 	}
 
 	public PlanningPlace(final UUID projectId) {
-		this(projectId, UUID.INVALID_UUID);
+		this(projectId, null);
 	}
 
 	public PlanningPlace(final ProjectRepresentation projectRepresentation) {
@@ -49,15 +49,14 @@ public class PlanningPlace extends ProjectDependentPlace {
 			}
 			catch (final Exception e) {
 				projectId = UUID.INVALID_UUID;
-				selectedScopeId = UUID.INVALID_UUID;
+				selectedScopeId = null;
 			}
 			return new PlanningPlace(projectId, selectedScopeId);
 		}
 
 		@Override
 		public String getToken(final PlanningPlace place) {
-			final String stringRepresentation = place.getRequestedProjectId().toStringRepresentation();
-			return stringRepresentation;
+			return place.getRequestedProjectId().toStringRepresentation();
 		}
 	}
 }

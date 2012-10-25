@@ -111,8 +111,9 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	@Override
 	public void restore(final UUID scopeSelectedId) {
 		try {
-			if (scopeSelectedId == null) return;
-			selectedScope = contextProviderService.getCurrentProjectContext().findScope(scopeSelectedId);
+			if (scopeSelectedId != null) {
+				selectedScope = contextProviderService.getCurrentProjectContext().findScope(scopeSelectedId);
+			}
 			restore();
 		}
 		catch (final ScopeNotFoundException e) {
