@@ -55,7 +55,7 @@ public class ScopeTreeWidgetActionManagerTest {
 		MockitoAnnotations.initMocks(this);
 
 		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 
 		final ActionExecutionListener actionExecutionListener = mock(ActionExecutionListener.class);
 		actionExecutionManager = new ActionExecutionManager(actionExecutionListener);

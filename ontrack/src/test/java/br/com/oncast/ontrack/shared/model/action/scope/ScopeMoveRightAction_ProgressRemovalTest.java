@@ -42,7 +42,7 @@ public class ScopeMoveRightAction_ProgressRemovalTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 
 		rootScope = ScopeTestUtils.createScope("root");
 		firstChild = ScopeTestUtils.createScope("first");

@@ -216,7 +216,7 @@ public class ScopeTestUtils {
 	}
 
 	public static Scope setProgress(final Scope scope, final String progressDescription) {
-		scope.getProgress().setDescription(progressDescription, UserTestUtils.getAdmin(), new Date());
+		scope.getProgress().setDescription(progressDescription, UserTestUtils.getAdmin(), new Date(0));
 		return scope;
 	}
 

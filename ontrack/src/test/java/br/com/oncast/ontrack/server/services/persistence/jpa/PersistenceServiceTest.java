@@ -105,7 +105,7 @@ public class PersistenceServiceTest {
 
 		final ActionContext actionContext = Mockito.mock(ActionContext.class);
 		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 		final ProjectContext context = new ProjectContext(project1);
 		context.addUser(UserTestUtils.getAdmin());
 		new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son").execute(context, actionContext);

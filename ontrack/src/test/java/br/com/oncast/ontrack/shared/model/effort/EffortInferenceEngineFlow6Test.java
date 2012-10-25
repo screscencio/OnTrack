@@ -42,7 +42,7 @@ public class EffortInferenceEngineFlow6Test {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 
 		original = getOriginalScope(FILE_NAME_PREFIX);
 		projectContext = ProjectTestUtils.createProjectContext(original, ReleaseFactoryTestUtil.create("proj"));

@@ -58,9 +58,12 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 				progress.setState(ProgressState.NOT_STARTED, author, timestamp);
 				shouldBeInsertedIntoSet = true;
 			}
+			else if (progress.hasDeclared()) {
+				progress.setDescription(progress.getDeclaredDescription(), author, timestamp);
+			}
 		}
 		else {
-			if (shouldProgressBeMarketAsCompleted(scope)) {
+			if (shouldProgressBeMarketAsCompleted(scope, author, timestamp)) {
 				if (!progress.isDone()) {
 					progress.setState(ProgressState.DONE, author, timestamp);
 					shouldBeInsertedIntoSet = true;
@@ -99,10 +102,14 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		return false;
 	}
 
-	private boolean shouldProgressBeMarketAsCompleted(final Scope scope) {
+	private boolean shouldProgressBeMarketAsCompleted(final Scope scope, final User author, final Date timestamp) {
 		assert !scope.isLeaf();
 
-		if (hasDeclaredState(scope, ProgressState.DONE)) return true;
+		if (hasDeclaredState(scope, ProgressState.DONE)) {
+			for (final Scope child : scope.getChildren())
+				child.getProgress().setState(ProgressState.DONE, author, timestamp);
+			return true;
+		}
 
 		for (final Scope child : scope.getChildren())
 			if (!child.getProgress().isDone()) return false;

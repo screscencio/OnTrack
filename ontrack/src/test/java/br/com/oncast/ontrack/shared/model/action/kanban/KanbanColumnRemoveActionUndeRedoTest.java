@@ -41,7 +41,7 @@ public class KanbanColumnRemoveActionUndeRedoTest {
 	public void setUp() throws UnableToCompleteActionException {
 		MockitoAnnotations.initMocks(this);
 		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 
 		context = new ProjectContext(ProjectTestUtils.createPopulatedProject());
 		release = context.getProjectRelease().getChild(0);

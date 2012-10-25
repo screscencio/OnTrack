@@ -37,7 +37,7 @@ public class ProgressInferenceEngineFlow1Test {
 		MockitoAnnotations.initMocks(this);
 
 		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 
 		rootScope = ProgressInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX);
 		projectContext = ProjectTestUtils.createProjectContext(rootScope, ReleaseFactoryTestUtil.create("proj"));

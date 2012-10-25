@@ -22,6 +22,61 @@ public class ProgressInferenceEngineTest {
 	private static final EffortInferenceEngine EFFORT_INFERENCE_ENGINE = new EffortInferenceEngine();
 
 	@Test
+	public void whenTheParentScopeIsReSetAsNotStartedItShouldReSetAllChildrenToPreviousState() throws Exception {
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
+		final Scope child1 = rootScope.getChild(1);
+		final Scope child2 = rootScope.getChild(2);
+
+		ScopeTestUtils.setProgress(child1, ProgressState.UNDER_WORK);
+		processProgressInference(child1);
+		ScopeTestUtils.setProgress(child2, ProgressState.DONE);
+		processProgressInference(child2);
+
+		ScopeTestUtils.setProgress(rootScope, ProgressState.DONE);
+		processProgressInference(rootScope);
+
+		for (final Scope child : rootScope.getChildren()) {
+			assertTrue(child.getProgress().isDone());
+		}
+
+		ScopeTestUtils.setProgress(rootScope, ProgressState.NOT_STARTED);
+		processProgressInference(rootScope);
+
+		assertEquals(ProgressState.NOT_STARTED, rootScope.getChild(0).getProgress().getState());
+		assertEquals(ProgressState.UNDER_WORK, child1.getProgress().getState());
+		assertEquals(ProgressState.DONE, child2.getProgress().getState());
+
+	}
+
+	@Test
+	public void whenTheParentScopeIsSetAsDoneItShouldSetAllChildrenToDoneEvenWhenItHasDeclaredProgress() throws Exception {
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
+		for (final Scope child : rootScope.getChildren()) {
+			ScopeTestUtils.setProgress(child, ProgressState.UNDER_WORK);
+			processProgressInference(child);
+		}
+
+		ScopeTestUtils.setProgress(rootScope, ProgressState.DONE);
+		processProgressInference(rootScope);
+
+		for (final Scope child : rootScope.getChildren()) {
+			assertTrue(child.getProgress().isDone());
+		}
+	}
+
+	@Test
+	public void whenTheParentScopeIsSetAsDoneItShouldSetAllChildrenToDone() throws Exception {
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
+
+		ScopeTestUtils.setProgress(rootScope, ProgressState.DONE);
+		processProgressInference(rootScope);
+
+		for (final Scope child : rootScope.getChildren()) {
+			assertTrue(child.getProgress().isDone());
+		}
+	}
+
+	@Test
 	public void aScopeProgressPercentageShouldBeZeroIfAllItsChildrenAreDone() {
 		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
@@ -205,11 +260,11 @@ public class ProgressInferenceEngineTest {
 	}
 
 	private void procressEffortInference(final Scope rootScope) {
-		EFFORT_INFERENCE_ENGINE.process(rootScope, UserTestUtils.getAdmin(), new Date());
+		EFFORT_INFERENCE_ENGINE.process(rootScope, UserTestUtils.getAdmin(), new Date(0));
 	}
 
 	private void processProgressInference(final Scope scope) {
-		processProgressInference(scope, WorkingDayFactory.create());
+		processProgressInference(scope, WorkingDayFactory.create(new Date(0)));
 	}
 
 }

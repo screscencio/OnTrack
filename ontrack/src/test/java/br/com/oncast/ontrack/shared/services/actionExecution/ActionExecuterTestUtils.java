@@ -45,7 +45,7 @@ public class ActionExecuterTestUtils extends ScopeActionExecuter {
 	}
 
 	public static Set<UUID> executeInferenceEnginesForTestingPurposes(final Scope scope) {
-		return ActionExecuterTestUtils.executeInferenceEngines(new ModelActionMockImpl(), scope, UserTestUtils.getAdmin(), new Date());
+		return ActionExecuterTestUtils.executeInferenceEngines(new ModelActionMockImpl(), scope, UserTestUtils.getAdmin(), new Date(0));
 	}
 
 	public static Scope getInferenceBaseScopeForTestingPurposes(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {

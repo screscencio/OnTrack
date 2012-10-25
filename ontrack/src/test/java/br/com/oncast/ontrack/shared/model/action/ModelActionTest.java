@@ -58,7 +58,7 @@ public abstract class ModelActionTest {
 		final UUID userId = UserTestUtils.getAdmin().getId();
 		when(actionContext.getUserId()).thenReturn(userId);
 		when(context.findUser(userId)).thenReturn(UserTestUtils.getAdmin());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 	}
 
 	protected ModelAction executeAction() throws UnableToCompleteActionException {

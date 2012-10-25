@@ -135,7 +135,7 @@ public class BusinessLogicTest {
 		configureMockDefaultBehavior();
 
 		when(actionContext.getUserId()).thenReturn(admin.getId());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 	}
 
 	private void configureMockDefaultBehavior() throws Exception {

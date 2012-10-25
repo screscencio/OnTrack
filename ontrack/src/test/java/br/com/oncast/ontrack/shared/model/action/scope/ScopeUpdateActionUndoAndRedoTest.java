@@ -109,7 +109,7 @@ public class ScopeUpdateActionUndoAndRedoTest {
 		final ActionContext actionContext = Mockito.mock(ActionContext.class);
 		MockitoAnnotations.initMocks(this);
 		when(actionContext.getUserId()).thenReturn(UserTestUtils.getAdmin().getId());
-		when(actionContext.getTimestamp()).thenReturn(new Date(Long.MAX_VALUE));
+		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 
 		final ModelAction rollbackAction = action.execute(context, actionContext);
 		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);

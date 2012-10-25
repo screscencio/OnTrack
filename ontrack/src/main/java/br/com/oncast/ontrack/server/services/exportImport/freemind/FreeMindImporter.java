@@ -28,7 +28,7 @@ public class FreeMindImporter {
 	}
 
 	public Scope getScope() {
-		final ScopeBuilder builder = ScopeBuilder.scope(getUser(), new Date());
+		final ScopeBuilder builder = ScopeBuilder.scope(getUser(), new Date(0));
 		pullSync(builder, mindMap.root());
 
 		return builder.getScope();
@@ -46,7 +46,7 @@ public class FreeMindImporter {
 			if (extractValue(scope, childNode)) continue;
 			if (extractProgress(scope, childNode)) continue;
 
-			final ScopeBuilder childScope = ScopeBuilder.scope(getUser(), new Date());
+			final ScopeBuilder childScope = ScopeBuilder.scope(getUser(), new Date(0));
 			pullSync(childScope, childNode);
 			scope.add(childScope);
 		}
@@ -54,7 +54,7 @@ public class FreeMindImporter {
 
 	private static boolean extractProgress(final ScopeBuilder scope, final MindNode childNode) {
 		if (childNode.hasIcon(Icon.HOURGLASS)) {
-			scope.declaredProgress(extractDeclaredProgress(childNode), getUser(), new Date());
+			scope.declaredProgress(extractDeclaredProgress(childNode), getUser(), new Date(0));
 			return true;
 		}
 		return false;
