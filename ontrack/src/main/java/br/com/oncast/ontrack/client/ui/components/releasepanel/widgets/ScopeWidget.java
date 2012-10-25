@@ -162,7 +162,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		progressIcon.setStyleName(style.progressIconUnderwork(), progress.isUnderWork());
 		progressIcon.setStyleName(style.progressIconNotStarted(), progress.getState() == ProgressState.NOT_STARTED);
 
-		if (!description.isEmpty()) {
+		if (!description.isEmpty() && progress.getState() != ProgressState.NOT_STARTED) {
 			final Color color = (progress.getState() == ProgressState.DONE) ? Color.GREEN : Color.BLUE;
 			new BgColorAnimation(internalPanel, color).animate(800);
 		}
