@@ -41,4 +41,7 @@ public class AnnotationDeprecateAction implements AnnotationAction {
 		return subjectId;
 	}
 
+	public UUID getAnnotationId() {
+		return annotationId;
+	}
 }

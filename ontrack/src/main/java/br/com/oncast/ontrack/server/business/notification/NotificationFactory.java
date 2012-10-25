@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
+import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -74,6 +75,19 @@ public class NotificationFactory {
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((AnnotationCreateAction) action).getAnnotationId());
 
 				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.ANNOTATION_CREATED)
+						.setDescription(annotation.getMessage())
+						.setReferenceDescription(referenceDescription);
+			}
+		},
+		ANNOTATION_DEPRECATED(AnnotationDeprecateAction.class) {
+			@Override
+			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
+					final User author) {
+
+				final String referenceDescription = getReferenceDescription(action, projectContext);
+				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((AnnotationDeprecateAction) action).getAnnotationId());
+
+				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.ANNOTATION_DEPRECATED)
 						.setDescription(annotation.getMessage())
 						.setReferenceDescription(referenceDescription);
 			}

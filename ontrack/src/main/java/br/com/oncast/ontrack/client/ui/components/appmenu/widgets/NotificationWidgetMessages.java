@@ -36,4 +36,8 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("marked as done the item ''{0}'' at ''{1}''")
 	String progressDoneNotificationWidgetMessage(String scopeDescription, String project);
 
+	@Description("annotation deprecated notification widget")
+	@DefaultMessage("deprecated an annotation ''{0}'' on item ''{1}'' at ''{2}''")
+	String annotationDeprecatedNotificationWidgetMessage(String annotationLinkFor, String referenceDescription, String projectLinkFor);
+
 }

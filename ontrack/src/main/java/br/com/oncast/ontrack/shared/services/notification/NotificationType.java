@@ -44,6 +44,14 @@ public enum NotificationType implements NotificationMessageCode {
 					notification.getReferenceDescription(),
 					getProjectLinkFor(notification));
 		}
+	},
+	ANNOTATION_DEPRECATED() {
+		@Override
+		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
+			return messages.annotationDeprecatedNotificationWidgetMessage(getAnnotationLinkFor(notification),
+					notification.getReferenceDescription(),
+					getProjectLinkFor(notification));
+		}
 	};
 
 	@Override
