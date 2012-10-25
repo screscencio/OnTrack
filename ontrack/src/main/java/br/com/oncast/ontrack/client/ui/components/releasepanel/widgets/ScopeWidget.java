@@ -96,7 +96,8 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 		this.kanbanSpecific = kanbanSpecific;
 		this.scope = scope;
-		draggableAnchor.getElement().getStyle().setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(scope));
+		if (kanbanSpecific) draggableAnchor.getElement().getStyle()
+				.setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(scope));
 		update();
 		setHasOpenImpediments(ClientServiceProvider.getInstance().getAnnotationService().hasOpenImpediment(scope.getId()));
 	}

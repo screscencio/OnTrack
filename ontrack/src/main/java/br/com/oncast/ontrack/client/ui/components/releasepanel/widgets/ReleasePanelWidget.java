@@ -45,6 +45,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -82,14 +83,16 @@ public class ReleasePanelWidget extends Composite {
 
 	private final boolean kanbanSpecific;
 
+	private final DragAndDropManager dragAndDropManager;
+
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this(releasePanelInteractionHandler, false);
 	}
 
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
+		dragAndDropManager = new DragAndDropManager();
 		this.kanbanSpecific = kanbanSpecific;
 		handlerRegistration = new HashSet<HandlerRegistration>();
-		final DragAndDropManager dragAndDropManager = new DragAndDropManager();
 		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager, kanbanSpecific),
 				dragAndDropManager,
 				kanbanSpecific);
@@ -208,10 +211,19 @@ public class ReleasePanelWidget extends Composite {
 			public void onItemDropped(final Scope droppedScope, final Release targetRelease, final int newScopePosition) {
 				releasePanelInteractionHandler.onScopeDragAndDropRequest(droppedScope, targetRelease, newScopePosition);
 			}
+
+			@Override
+			public void onItemDropped(final Scope droppedScope) {
+				if (kanbanSpecific) releasePanelInteractionHandler.onScopeUnderworkdDropRequest(droppedScope);
+			}
 		};
 	}
 
 	public ActionExecutionListener getActionExecutionListener() {
 		return actionExecutionListener;
+	}
+
+	public void addDropHandler(final DropController controller) {
+		dragAndDropManager.addDropHandler(controller);
 	}
 }
