@@ -70,8 +70,13 @@ public class NotificationFactory {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
 					final User author) {
-
-				final String referenceDescription = getReferenceDescription(action, projectContext);
+				String referenceDescription = "";
+				try {
+					referenceDescription = getReferenceDescription(action, projectContext);
+				}
+				catch (final RuntimeException e) {
+					return null;
+				}
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((AnnotationCreateAction) action).getAnnotationId());
 
 				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.ANNOTATION_CREATED)
@@ -117,7 +122,7 @@ public class NotificationFactory {
 					return projectContext.findRelease(action.getReferenceId()).getDescription();
 				}
 				catch (final ReleaseNotFoundException e) {
-					throw new UnableToPostProcessActionException("It was not possible to create new notification builder.", e3);
+					throw new RuntimeException("Description not found.", e3);
 				}
 			}
 		}
@@ -165,6 +170,8 @@ public class NotificationFactory {
 			final User author = persistenceService.retrieveUserById(actionContext.getUserId());
 
 			final NotificationBuilder notificationBuilder = creator.createNotificationBuilder(action, projectContext, author);
+
+			if (notificationBuilder == null) return null;
 
 			for (final User user : projectUsers) {
 				notificationBuilder.addReceipient(user);
