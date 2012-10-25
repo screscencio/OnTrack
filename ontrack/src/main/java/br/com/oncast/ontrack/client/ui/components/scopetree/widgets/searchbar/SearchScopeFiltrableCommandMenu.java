@@ -17,8 +17,10 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ItemSelectionHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -41,7 +43,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO refactor this class and FiltableCommandMenu to extract duplicated code
-public class SearchScopeFiltrableCommandMenu extends Composite implements HasFocusHandlers {
+public class SearchScopeFiltrableCommandMenu extends Composite implements HasFocusHandlers, HasBlurHandlers {
 
 	private static final SearchScopeMenuMessages messages = GWT.create(SearchScopeMenuMessages.class);
 
@@ -268,6 +270,11 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	@Override
 	public HandlerRegistration addFocusHandler(final FocusHandler handler) {
 		return filterArea.addFocusHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addBlurHandler(final BlurHandler handler) {
+		return filterArea.addBlurHandler(handler);
 	}
 
 }

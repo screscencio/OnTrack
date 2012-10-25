@@ -40,17 +40,29 @@
 		.activeColumnIndicatorLabel, .inactiveColumnIndicatorLabel {
 			cursor: pointer;
 			margin: 0px 1px;
-			
+			overflow: hidden;
 		}
 		
 		.inactiveColumnIndicatorLabel {
 			color: #9e9e9e;
-			margin-left: 5px;
-			margin-right: -3px;
 		}
 		
 		.activeColumnIndicatorLabel {
 			color: #7e7f9f;
+		}
+		
+		.valueColumn {
+			width: 85px;
+		}
+		.effortColumn {
+			width: 85px;
+		}
+		.progressColumn {
+			width: 80px;
+		}
+		.releaseColumn {
+			width: 120px;
+			text-align: center;
 		}
 		
 	</ui:style>
@@ -68,50 +80,50 @@
 				</g:cell>
 				
 				<g:cell width="1">
-					<g:Label ui:field="valueColumnInactiveIndicatorLabel" title="Show Values (Alt $)" styleName="{style.inactiveColumnIndicatorLabel}" width="85px">
+					<g:Label ui:field="valueColumnInactiveIndicatorLabel" title="Show Values (Alt $)" styleName="{style.valueColumn} {style.inactiveColumnIndicatorLabel}">
 						<ui:msg description="value column label">Value</ui:msg>
 						<ui:attribute name='title' description='tooltip text for show value column'/>
 					</g:Label>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="effortColumnInactiveIndicatorLabel" title="Show Efforts (Alt #)" styleName="{style.inactiveColumnIndicatorLabel}" width="85px">
+					<g:Label ui:field="effortColumnInactiveIndicatorLabel" title="Show Efforts (Alt #)" styleName="{style.effortColumn} {style.inactiveColumnIndicatorLabel}">
 						<ui:msg description="effort column label">Effort</ui:msg>
 						<ui:attribute name='title' description='tooltip text for show effort column'/>
 					</g:Label>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="progressColumnInactiveIndicatorLabel" title="Show Progress (Alt %)" styleName="{style.inactiveColumnIndicatorLabel}" width="80px">
+					<g:Label ui:field="progressColumnInactiveIndicatorLabel" title="Show Progress (Alt %)" styleName="{style.progressColumn} {style.inactiveColumnIndicatorLabel}">
 						<ui:msg description="progress column label">Progress</ui:msg>
 						<ui:attribute name='title' description='tooltip text for show progress column'/>
 					</g:Label>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="releaseColumnInactiveIndicatorLabel" title="Show Releases (Alt @)" styleName="{style.inactiveColumnIndicatorLabel}" width="120px" horizontalAlignment="center">
+					<g:Label ui:field="releaseColumnInactiveIndicatorLabel" title="Show Releases (Alt @)" styleName="{style.releaseColumn} {style.inactiveColumnIndicatorLabel}">
 						<ui:msg description="release column label">Release</ui:msg>
 						<ui:attribute name='title' description='tooltip text for show release column'/>
 					</g:Label>
 				</g:cell>
 				
 				<g:cell width="1">
-					<g:Label ui:field="valueColumnActiveIndicatorLabel" title="Hide Values (Alt $)" styleName="{style.activeColumnIndicatorLabel}" width="85px">
+					<g:Label ui:field="valueColumnActiveIndicatorLabel" title="Hide Values (Alt $)" styleName="{style.valueColumn} {style.activeColumnIndicatorLabel}">
 						<ui:msg description="value column label">Value</ui:msg>
 						<ui:attribute name='title' description='tooltip text for hide value column'/>
 					</g:Label>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="effortColumnActiveIndicatorLabel" title="Hide Efforts (Alt #)" styleName="{style.activeColumnIndicatorLabel}" width="85px">
+					<g:Label ui:field="effortColumnActiveIndicatorLabel" title="Hide Efforts (Alt #)" styleName="{style.effortColumn} {style.activeColumnIndicatorLabel}">
 						<ui:msg description="effort column label">Effort</ui:msg>
 						<ui:attribute name='title' description='tooltip text for hide effort column'/>
 					</g:Label>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="progressColumnActiveIndicatorLabel" title="Hide Progress (Alt %)" styleName="{style.activeColumnIndicatorLabel}" width="80px">
+					<g:Label ui:field="progressColumnActiveIndicatorLabel" title="Hide Progress (Alt %)" styleName="{style.progressColumn} {style.activeColumnIndicatorLabel}">
 						<ui:msg description="effort column label">Progress</ui:msg>
 						<ui:attribute name='title' description='tooltip text for hide progress column'/>
 					</g:Label>
 				</g:cell>
 				<g:cell width="1">
-					<g:Label ui:field="releaseColumnActiveIndicatorLabel" title="Hide Releases (Alt @)" styleName="{style.activeColumnIndicatorLabel}" width="120px" horizontalAlignment="center">
+					<g:Label ui:field="releaseColumnActiveIndicatorLabel" title="Hide Releases (Alt @)" styleName="{style.releaseColumn} {style.activeColumnIndicatorLabel}">
 						<ui:msg description="effort column label">Release</ui:msg>
 						<ui:attribute name='title' description='tooltip text for hide release column'/>
 					</g:Label>
