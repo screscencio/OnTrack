@@ -36,6 +36,7 @@ public class Kanban extends SimpleKanban implements Serializable {
 		isLocked = false;
 		notStartedColumn = new KanbanColumn(Progress.DEFAULT_NOT_STARTED_NAME, true);
 		doneColumn = new KanbanColumn(ProgressState.DONE.getDescription(), true);
+		fullKanban.appendColumn(ProgressState.UNDER_WORK.getDescription());
 	}
 
 	public boolean isLocked() {
