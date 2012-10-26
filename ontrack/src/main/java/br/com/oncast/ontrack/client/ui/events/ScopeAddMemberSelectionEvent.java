@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.events;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -10,12 +11,12 @@ public class ScopeAddMemberSelectionEvent extends GwtEvent<ScopeAddMemberSelecti
 	public static Type<ScopeAddMemberSelectionEventHandler> TYPE;
 	private final Scope scope;
 	private final User member;
-	private final String selectionColor;
+	private final Color selectionColor;
 
-	public ScopeAddMemberSelectionEvent(final User member, final Scope scope, final String selectionColor) {
+	public ScopeAddMemberSelectionEvent(final User member, final Scope scope, final Color color) {
 		this.member = member;
 		this.scope = scope;
-		this.selectionColor = selectionColor;
+		this.selectionColor = color;
 	}
 
 	public static Type<ScopeAddMemberSelectionEventHandler> getType() {
@@ -42,7 +43,7 @@ public class ScopeAddMemberSelectionEvent extends GwtEvent<ScopeAddMemberSelecti
 		return member;
 	}
 
-	public String getSelectionColor() {
+	public Color getSelectionColor() {
 		return selectionColor;
 	}
 

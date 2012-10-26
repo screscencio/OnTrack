@@ -170,7 +170,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		if (shouldShowScopeColor) {
 			final Style s = draggableAnchor.getElement().getStyle();
 
-			if (progress.isUnderWork()) s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope));
+			if (progress.isUnderWork()) s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope).toCssRepresentation());
 			else s.clearBackgroundColor();
 		}
 

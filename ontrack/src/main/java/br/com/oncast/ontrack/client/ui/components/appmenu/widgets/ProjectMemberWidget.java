@@ -57,7 +57,7 @@ public class ProjectMemberWidget extends Composite implements ModelWidget<User> 
 		container.setStyleName(status == UserStatus.OFFLINE ? style.offline() : style.online());
 
 		if (status == UserStatus.ACTIVE) userIcon.getElement().getStyle()
-				.setBorderColor(provider.getColorProviderService().getSelectionColorFor(user));
+				.setBorderColor(provider.getColorProviderService().getSelectionColorFor(user).toCssRepresentation());
 		userIcon.setUrl(userDataService.getAvatarUrl(user.getEmail()));
 		userIcon.setTitle(user.getEmail());
 
