@@ -224,14 +224,6 @@ public class ScopeTreeItemWidget extends Composite {
 			}
 		});
 
-		releaseTag.setCloseButtonClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				editionHandler.onEditionEnd(new ScopeRepresentationBuilder(scope).includeEverything().excludeReleaseReference().toString());
-			}
-		});
-
 		registerColumnVisibilityChangeListeners();
 
 		showDetailsIcon(getAnnotationService().hasDetails(scope.getId()));
