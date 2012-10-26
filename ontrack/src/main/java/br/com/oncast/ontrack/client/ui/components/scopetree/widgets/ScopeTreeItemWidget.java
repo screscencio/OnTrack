@@ -413,9 +413,22 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 250, 264);
 
+		commandsMenu.addCloseHandler(createCloseHandler());
+
 		align(configPopup(), releasePanel)
 				.popup(commandsMenu)
 				.pop();
+	}
+
+	private CloseHandler<FiltrableCommandMenu> createCloseHandler() {
+		return new CloseHandler<FiltrableCommandMenu>() {
+
+			@Override
+			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
+				focusPanel.setFocus(true);
+			}
+
+		};
 	}
 
 	public void showProgressMenu(final List<String> list) {
@@ -427,6 +440,8 @@ public class ScopeTreeItemWidget extends Composite {
 			if (!notStartedDescription.equals(progressDefinition)) items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 200, 264);
+
+		commandsMenu.addCloseHandler(createCloseHandler());
 
 		align(configPopup(), progressLabel)
 				.popup(commandsMenu)
@@ -441,6 +456,9 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 264);
+
+		commandsMenu.addCloseHandler(createCloseHandler());
+
 		commandsMenu.setHelpText("");
 		align(configPopup(), effortPanel)
 				.popup(commandsMenu)
@@ -455,6 +473,9 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(valueCommandMenuItemFactory.createItem(value, value));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 100, 264);
+
+		commandsMenu.addCloseHandler(createCloseHandler());
+
 		commandsMenu.setHelpText("");
 		align(configPopup(), valuePanel)
 				.popup(commandsMenu)
