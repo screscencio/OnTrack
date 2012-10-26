@@ -40,7 +40,8 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		final Scope story = findStory(scope);
-		draggableAnchor.getElement().getStyle().setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(story));
+		draggableAnchor.getElement().getStyle()
+				.setBackgroundColor(ClientServiceProvider.getInstance().getColorProviderService().getColorFor(story).toCssRepresentation());
 		this.scope = scope;
 		updateDescription();
 	}

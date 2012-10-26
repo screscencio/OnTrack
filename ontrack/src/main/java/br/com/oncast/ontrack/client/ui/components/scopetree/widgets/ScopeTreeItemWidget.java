@@ -25,6 +25,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
@@ -520,7 +521,7 @@ public class ScopeTreeItemWidget extends Composite {
 		});
 	}
 
-	public void addSelectedMember(final User member, final String selectionColor) {
+	public void addSelectedMember(final User member, final Color selectionColor) {
 		selectionsList.add(new Selection(member, selectionColor));
 
 		updateSelection();
@@ -545,7 +546,7 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	private void updateSelection() {
-		String selectionColor = "transparent";
+		Color selectionColor = Color.TRANSPARENT;
 		String membersText = "";
 
 		if (!selectionsList.isEmpty()) {
@@ -557,8 +558,8 @@ public class ScopeTreeItemWidget extends Composite {
 			membersText = membersText.substring(0, membersText.length() - ", ".length());
 		}
 
-		borderPanel.getElement().getStyle().setBorderColor(selectionColor);
-		selectedMembers.getElement().getStyle().setBackgroundColor(selectionColor);
+		borderPanel.getElement().getStyle().setBorderColor(selectionColor.toCssRepresentation());
+		selectedMembers.getElement().getStyle().setBackgroundColor(selectionColor.toCssRepresentation());
 		selectedMembers.setText(membersText);
 	}
 
