@@ -74,9 +74,10 @@ public class KanbanColumnCreateAction implements KanbanAction {
 		final Release release = ActionHelper.findRelease(referenceId, context);
 		final Kanban kanban = context.getKanban(release);
 
-		if (kanban.hasNonInferedColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.KANBAN_COLUMN_ALREADY_SET);
+		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.KANBAN_COLUMN_ALREADY_SET);
 
-		kanban.appendColumn(columnDescription);
+		if (!kanban.hasNonInferedColumn(columnDescription)) kanban.appendColumn(columnDescription);
+
 		if (columnIndex >= 0) kanban.moveColumn(columnDescription, columnIndex);
 		if (shouldLockKanban) kanban.setLocked(true);
 		if (subActions != null) ActionExecutionHelper.executeSubActions(subActions, context, actionContext);

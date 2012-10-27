@@ -269,11 +269,12 @@ public class KanbanTest {
 		assertColumns(baseKanban, NOT_STARTED, "A", "b", "C", DONE);
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void renameShouldNotAllowDuplications() throws Exception {
+	@Test
+	public void renameToAnExistantColumnShouldOnlyRemoveThePreviousColumn() throws Exception {
 		final Kanban baseKanban = new Kanban();
 		appendColumns(baseKanban, "A", "B", "C");
 		baseKanban.renameColumn("B", "C");
+		assertColumns(baseKanban, NOT_STARTED, "A", "C", DONE);
 	}
 
 	private void prependColumns(final Kanban kanban, final String... columns) {

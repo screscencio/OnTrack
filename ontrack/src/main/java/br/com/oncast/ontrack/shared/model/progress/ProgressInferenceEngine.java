@@ -30,10 +30,52 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 
 	@Override
 	public Set<UUID> process(final Scope scope, final User author, final Date timestamp) {
-		final HashSet<UUID> inferenceInfluencedScopeSet = new HashSet<UUID>();
-		processBottomUp(getRoot(scope), inferenceInfluencedScopeSet, author, timestamp);
+		final HashSet<UUID> updatedScopes = new HashSet<UUID>();
 
-		return inferenceInfluencedScopeSet;
+		propagateToDescendants(scope, updatedScopes, author, timestamp);
+		propagateToAncestors(scope, updatedScopes, author, timestamp);
+
+		processBottomUp(getRoot(scope), updatedScopes);
+
+		return updatedScopes;
+	}
+
+	private void propagateToAncestors(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
+		if (scope.isRoot()) return;
+
+		final Scope parent = scope.getParent();
+		ProgressState state = ProgressState.DONE;
+		for (final Scope sibling : parent.getChildren()) {
+			if (hasState(sibling, ProgressState.UNDER_WORK)) {
+				state = ProgressState.UNDER_WORK;
+				break;
+			}
+			if (hasState(sibling, ProgressState.NOT_STARTED)) state = ProgressState.NOT_STARTED;
+		}
+		if (setState(parent, state, updatedScopes, author, timestamp)) propagateToAncestors(parent, updatedScopes, author, timestamp);
+	}
+
+	private boolean hasState(final Scope scope, final ProgressState state) {
+		return scope.getProgress().getState().equals(state);
+	}
+
+	private void propagateToDescendants(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
+		final ProgressState state = scope.getProgress().getState();
+		for (final Scope child : scope.getChildren()) {
+			if (setState(child, state, updatedScopes, author, timestamp)) propagateToDescendants(child, updatedScopes, author, timestamp);
+		}
+	}
+
+	private boolean setState(final Scope scope, final ProgressState newState, final HashSet<UUID> inferenceInfluencedScopeSet, final User author,
+			final Date timestamp) {
+		final Progress progress = scope.getProgress();
+		final ProgressState previousState = progress.getState();
+		if (newState == ProgressState.NOT_STARTED) progress.updateStateToCurrentDescription(author, timestamp);
+		else progress.setState(newState, author, timestamp);
+
+		final boolean updated = !previousState.equals(newState);
+		if (updated) inferenceInfluencedScopeSet.add(scope.getId());
+		return updated;
 	}
 
 	private Scope getRoot(Scope scope) {
@@ -42,83 +84,21 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		return scope;
 	}
 
-	private void processBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet, final User author, final Date timestamp) {
+	private void processBottomUp(final Scope scope, final HashSet<UUID> updatedScopes) {
 		for (final Scope child : scope.getChildren())
-			processBottomUp(child, inferenceInfluencedScopeSet, author, timestamp);
+			processBottomUp(child, updatedScopes);
 
-		calculateBottomUp(scope, inferenceInfluencedScopeSet, author, timestamp);
+		calculateBottomUp(scope, updatedScopes);
 	}
 
-	private void calculateBottomUp(final Scope scope, final HashSet<UUID> inferenceInfluencedScopeSet, final User author, final Date timestamp) {
-		boolean shouldBeInsertedIntoSet = false;
-		final Progress progress = scope.getProgress();
-
-		if (scope.isLeaf()) {
-			if (!progress.hasDeclared() && progress.isDone()) {
-				progress.setState(ProgressState.NOT_STARTED, author, timestamp);
-				shouldBeInsertedIntoSet = true;
-			}
-			else if (progress.hasDeclared()) {
-				progress.setDescription(progress.getDeclaredDescription(), author, timestamp);
-			}
-		}
-		else {
-			if (shouldProgressBeMarketAsCompleted(scope, author, timestamp)) {
-				if (!progress.isDone()) {
-					progress.setState(ProgressState.DONE, author, timestamp);
-					shouldBeInsertedIntoSet = true;
-				}
-			}
-			else if (shouldProgressBeMarkedAsUnderWork(scope)) {
-				if (!progress.isUnderWork()) {
-					progress.setState(ProgressState.UNDER_WORK, author, timestamp);
-					shouldBeInsertedIntoSet = true;
-				}
-			}
-			else {
-				if (!progress.hasDeclared() && progress.isDone()) {
-					progress.setState(ProgressState.NOT_STARTED, author, timestamp);
-					shouldBeInsertedIntoSet = true;
-				}
-			}
-		}
-
-		final float newAccomplishedEffort = progress.isDone() ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
+	private void calculateBottomUp(final Scope scope, final HashSet<UUID> updatedScopes) {
+		final float newAccomplishedEffort = scope.getProgress().isDone() ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
 
 		if (Math.abs(newAccomplishedEffort - scope.getEffort().getAccomplishedEffort()) > EPSILON) {
 			scope.getEffort().setAccomplishedEffort(newAccomplishedEffort);
-			shouldBeInsertedIntoSet = true;
+			updatedScopes.add(scope.getId());
 		}
 
-		if (shouldBeInsertedIntoSet) inferenceInfluencedScopeSet.add(scope.getId());
-	}
-
-	private boolean shouldProgressBeMarkedAsUnderWork(final Scope scope) {
-		assert !scope.isLeaf();
-
-		for (final Scope child : scope.getChildren())
-			if (child.getProgress().isUnderWork()) return true;
-
-		return false;
-	}
-
-	private boolean shouldProgressBeMarketAsCompleted(final Scope scope, final User author, final Date timestamp) {
-		assert !scope.isLeaf();
-
-		if (hasDeclaredState(scope, ProgressState.DONE)) {
-			for (final Scope child : scope.getChildren())
-				child.getProgress().setState(ProgressState.DONE, author, timestamp);
-			return true;
-		}
-
-		for (final Scope child : scope.getChildren())
-			if (!child.getProgress().isDone()) return false;
-
-		return true;
-	}
-
-	private boolean hasDeclaredState(final Scope scope, final ProgressState state) {
-		return scope.getProgress().hasDeclared() && state.matches(scope.getProgress().getDeclaredDescription());
 	}
 
 	private float calculateAccomplishedEffort(final Scope scope) {

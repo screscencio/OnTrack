@@ -117,10 +117,18 @@ public class Kanban extends SimpleKanban implements Serializable {
 	public void renameColumn(final String columnDescription, final String newDescription) {
 		final KanbanColumn columnToRename = getColumn(columnDescription);
 		if (columnToRename == null) throw new RuntimeException("The column with description '" + columnDescription + "' was not found.");
+		if (columnToRename.isStaticColumn()) throw new RuntimeException("It's not possible to rename a static column");
+
 		if (columnToRename.getDescription().equals(newDescription)) return;
 
 		final KanbanColumn desiredColumn = getColumn(newDescription);
-		if (desiredColumn != null && !columnToRename.equals(desiredColumn)) throw new RuntimeException("Cannot rename into an existing column");
+		if (desiredColumn != null && desiredColumn.isStaticColumn()) throw new RuntimeException("It's not possible to rename to a static column");
+
+		if (desiredColumn != null && !columnToRename.equals(desiredColumn)) {
+			fullKanban.removeColumn(columnDescription);
+			if (kanbanWithoutInferenceContainsColumn(columnDescription)) kanbanWithoutInference.removeColumn(columnDescription);
+			return;
+		}
 		fullKanban.renameColumn(columnDescription, newDescription);
 
 		if (!kanbanWithoutInferenceContainsColumn(columnDescription)) return;
