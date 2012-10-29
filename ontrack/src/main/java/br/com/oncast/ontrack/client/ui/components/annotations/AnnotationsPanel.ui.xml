@@ -100,5 +100,4 @@
 			</g:VerticalPanel>
 		</g:HTMLPanel>
 	</g:FocusPanel>
-	
 </ui:UiBinder> 

@@ -93,7 +93,6 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		initWidget(uiBinder.createAndBindUi(this));
 
 		checklist.setSubjectId(subjectId);
-
 		this.subjectTitle.setValue(subjectDescription);
 	}
 
