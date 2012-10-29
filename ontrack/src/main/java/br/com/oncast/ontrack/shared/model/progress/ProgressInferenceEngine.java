@@ -60,7 +60,9 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 	}
 
 	private void propagateToDescendants(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
-		final ProgressState state = scope.getProgress().getState();
+		ProgressState state = scope.getProgress().getState();
+		if (!state.equals(ProgressState.DONE)) state = ProgressState.NOT_STARTED;
+
 		for (final Scope child : scope.getChildren()) {
 			if (setState(child, state, updatedScopes, author, timestamp)) propagateToDescendants(child, updatedScopes, author, timestamp);
 		}
@@ -70,7 +72,7 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 			final Date timestamp) {
 		final Progress progress = scope.getProgress();
 		final ProgressState previousState = progress.getState();
-		if (newState == ProgressState.NOT_STARTED) progress.updateStateToCurrentDescription(author, timestamp);
+		if (newState.equals(ProgressState.NOT_STARTED)) progress.updateStateToCurrentDescription(author, timestamp);
 		else progress.setState(newState, author, timestamp);
 
 		final boolean updated = !previousState.equals(newState);
@@ -88,24 +90,23 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		for (final Scope child : scope.getChildren())
 			processBottomUp(child, updatedScopes);
 
-		calculateBottomUp(scope, updatedScopes);
+		calculateBottomUpEffort(scope, updatedScopes);
 	}
 
-	private void calculateBottomUp(final Scope scope, final HashSet<UUID> updatedScopes) {
+	private void calculateBottomUpEffort(final Scope scope, final HashSet<UUID> updatedScopes) {
 		final float newAccomplishedEffort = scope.getProgress().isDone() ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
 
-		if (Math.abs(newAccomplishedEffort - scope.getEffort().getAccomplishedEffort()) > EPSILON) {
-			scope.getEffort().setAccomplishedEffort(newAccomplishedEffort);
+		if (Math.abs(newAccomplishedEffort - scope.getEffort().getAccomplished()) > EPSILON) {
+			scope.getEffort().setAccomplished(newAccomplishedEffort);
 			updatedScopes.add(scope.getId());
 		}
-
 	}
 
 	private float calculateAccomplishedEffort(final Scope scope) {
 		float doneSum = 0;
 
 		for (final Scope child : scope.getChildren())
-			doneSum += child.getEffort().getAccomplishedEffort();
+			doneSum += child.getEffort().getAccomplished();
 
 		return doneSum;
 	}

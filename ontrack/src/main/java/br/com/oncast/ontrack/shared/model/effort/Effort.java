@@ -72,11 +72,11 @@ public class Effort implements Serializable {
 		this.bottomUpValue = bottomUpValue;
 	}
 
-	public float getAccomplishedEffort() {
+	public float getAccomplished() {
 		return accomplishedEffort;
 	}
 
-	public void setAccomplishedEffort(final float accomplishedEffort) {
+	public void setAccomplished(final float accomplishedEffort) {
 		this.accomplishedEffort = accomplishedEffort;
 	}
 
@@ -84,7 +84,7 @@ public class Effort implements Serializable {
 		final float inferedEffort = getInfered();
 		if (inferedEffort == 0) return 0;
 
-		return 100 * getAccomplishedEffort() / inferedEffort;
+		return 100 * getAccomplished() / inferedEffort;
 	}
 
 	@Override

@@ -25,6 +25,25 @@ public class ProgressInferenceEngineTest {
 	private static final EffortInferenceEngine EFFORT_INFERENCE_ENGINE = new EffortInferenceEngine();
 
 	@Test
+	public void declaringAParentAsUnderWorkShouldNotChangeTheChildsStates() throws Exception {
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
+		for (final Scope child : rootScope.getChildren()) {
+			declare(child, ProgressState.DONE);
+		}
+		declare(rootScope.getChild(0), ProgressState.UNDER_WORK);
+		assertTrue(rootScope.getProgress().isUnderWork());
+
+		declare(rootScope, ProgressState.DONE);
+		declare(rootScope, ProgressState.UNDER_WORK);
+		assertTrue(rootScope.getProgress().isUnderWork());
+
+		assertEquals(ProgressState.UNDER_WORK, rootScope.getChild(0).getProgress().getState());
+		for (int i = 1; i < rootScope.getChildCount(); i++) {
+			assertEquals(ProgressState.DONE, rootScope.getChild(i).getProgress().getState());
+		}
+	}
+
+	@Test
 	public void doneShouldPropagateToAncestors() throws Exception {
 		final Scope rootScope = ScopeTestUtils.createScope();
 

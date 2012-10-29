@@ -9,6 +9,10 @@ import java.util.Set;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.effort.EffortInferenceEngine;
@@ -61,7 +65,12 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 	}
 
 	protected static Scope getInferenceBaseScope(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {
-		final Scope s = context.findScope(action.getReferenceId());
-		return s;
+		final Scope scope = context.findScope(action.getReferenceId());
+		if (!scope.isRoot() &&
+				action instanceof ScopeRemoveAction ||
+				action instanceof ScopeInsertSiblingDownRollbackAction ||
+				action instanceof ScopeInsertSiblingUpRollbackAction ||
+				action instanceof ScopeInsertChildRollbackAction) return scope.getParent();
+		return scope;
 	}
 }
