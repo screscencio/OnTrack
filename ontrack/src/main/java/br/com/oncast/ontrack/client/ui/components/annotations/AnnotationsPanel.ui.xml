@@ -3,7 +3,10 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
-	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets">
+	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:image field="closeImage" src="../releasepanel/widgets/chart/stats-close.png" />
 	<ui:style src="../../style/default.css" >
@@ -35,6 +38,10 @@
 		.subjectTitle {
 			text-transform: uppercase;
 			padding: POPUP_PADDING;
+		}
+		
+		.subjectTitle:hover {
+			cursor: pointer;
 		}
 		
 		.detailWidget {
@@ -70,7 +77,7 @@
 		<g:HTMLPanel ui:field="container" styleName="{style.rootContainer} {style.popupContainer}">
 			<g:FocusPanel ui:field="closeIcon" styleName="{style.closeIcon}"/>
 			<g:VerticalPanel height="100%" width="100%">
-				<g:Label ui:field="subjectTitle" styleName="{style.subjectTitle}" />
+				<misc:EditableLabel ui:field="subjectTitle" styleName="{style.subjectTitle}" />
 				<misc:Separator styleName="{style.noMargin}"/>
 				<g:cell height="100%">
 					<g:HorizontalPanel height="100%" width="100%">
