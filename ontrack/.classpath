@@ -38,7 +38,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang3-3.0.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/reflections-0.9.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxen-1.1.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dnd-3.1.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dnd-3.1.2.jar" sourcepath="/home/rhlobo/.m2/repository/com/allen-sauer/gwt/dnd/gwt-dnd/3.1.2/gwt-dnd-3.1.2-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/RequestDispatch-0.9.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
@@ -50,7 +50,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/velocity-1.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr305-1.3.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-gwt-12.0.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-test-utils-0.38.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-test-utils-0.38.jar" sourcepath="/home/rhlobo/.m2/repository/com/googlecode/gwt-test-utils/gwt-test-utils/0.38/gwt-test-utils-0.38-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-12.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr305-gwt-1.3.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/aspectjrt-1.6.7.jar"/>

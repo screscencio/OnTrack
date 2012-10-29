@@ -2,20 +2,16 @@ package br.com.oncast.ontrack.client.ui.generalwidgets.animation;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public class FadeAnimation extends ValueTransitionAnimation {
+public class FadeAnimation extends ValueTransitionAnimation implements ShowAnimation, HideAnimation {
 
 	private static final int DURATION = 700;
 	private static final int HIDDEN = 0;
 	private static final int VISIBLE = 1;
 
-	private final AnimationCompletedListener listener;
+	private AnimationCallback listener;
 
-	public FadeAnimation(final Widget widget, final AnimationCompletedListener listener) {
+	public FadeAnimation(final Widget widget) {
 		super(widget, DURATION);
-		this.listener = listener == null ? new AnimationCompletedListener() {
-			@Override
-			public void onCompleted(final boolean isHidden) {}
-		} : listener;
 	}
 
 	@Override
@@ -26,19 +22,29 @@ public class FadeAnimation extends ValueTransitionAnimation {
 	@Override
 	protected void onComplete() {
 		super.onComplete();
-		listener.onCompleted(getTo() == HIDDEN);
+		if (listener != null) listener.onComplete();
 	};
 
+	@Override
 	public void hide() {
 		this.animate(VISIBLE, HIDDEN);
 	}
 
+	@Override
 	public void show() {
 		this.animate(HIDDEN, VISIBLE);
 	}
 
-	public interface AnimationCompletedListener {
-		void onCompleted(boolean isHidden);
+	@Override
+	public void hide(final AnimationCallback listener) {
+		this.listener = listener;
+		hide();
+	}
+
+	@Override
+	public void show(final AnimationCallback listener) {
+		this.listener = listener;
+		show();
 	}
 
 }

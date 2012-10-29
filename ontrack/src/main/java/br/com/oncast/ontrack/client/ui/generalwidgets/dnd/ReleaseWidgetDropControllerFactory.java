@@ -6,7 +6,7 @@ import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class VerticalPanelDropControllerFactory implements DropControllerFactory {
+public class ReleaseWidgetDropControllerFactory implements DropControllerFactory {
 
 	@Override
 	public DropController create(final CellPanel panel) {

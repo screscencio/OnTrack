@@ -81,7 +81,7 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 			final KanbanColumnWidget kanbanColumnWidget = new KanbanColumnWidget(column, scopeWidgetFactory, interactionHandler, insertionIndex)
 					.addScopes(scopesByColumn.get(column));
 			insertionIndex++;
-			scopeDragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getVerticalContainer(),
+			scopeDragAndDropMangager.monitorDropTarget(kanbanColumnWidget.getScopeContainter().getCallPanel(),
 					new KanbanPositioningDropControllerFactory(kanbanColumnWidget, release));
 
 			if (!column.isStaticColumn()) {

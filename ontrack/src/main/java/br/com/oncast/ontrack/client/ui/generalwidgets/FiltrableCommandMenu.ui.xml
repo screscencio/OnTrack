@@ -14,10 +14,11 @@
 			width: auto;
 			margin: -1px;
 		}
+		
 		.background {
 			border: none;
 			margin: 1px;
-		}type filter text
+		}
 		
 		.container {
 			background-color: white;

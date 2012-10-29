@@ -7,8 +7,8 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite {
@@ -19,7 +19,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	interface VerticalModelWidgetContainerUiBinder extends UiBinder<Widget, VerticalModelWidgetContainer> {}
 
 	@UiField(provided = true)
-	protected VerticalPanel verticalContainer;
+	protected AnimatedVerticalContainer verticalContainer;
 
 	private final Map<T, E> widgetMap;
 
@@ -28,9 +28,13 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	private ModelWidgetContainerListener listener = new NullModelWidgetContainerListener();
 
 	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory) {
+		this(modelWidgetFactory, new AnimatedVerticalContainer());
+	}
+
+	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final AnimatedVerticalContainer verticalContainer) {
 		this.modelWidgetFactory = modelWidgetFactory;
+		this.verticalContainer = verticalContainer;
 		widgetMap = new HashMap<T, E>();
-		verticalContainer = createVerticalContainer();
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -40,9 +44,10 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		this.listener = listener;
 	}
 
-	// IMPORTANT this is protected to be able to override and provide any VerticalPanel.
-	protected VerticalPanel createVerticalContainer() {
-		return new VerticalPanel();
+	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final AnimatedVerticalContainer verticalContainer,
+			final ModelWidgetContainerListener listener) {
+		this(modelWidgetFactory, verticalContainer);
+		this.listener = listener;
 	}
 
 	public boolean update(final List<T> modelBeanList) {
@@ -102,8 +107,8 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		return verticalContainer.getWidgetCount();
 	}
 
-	public VerticalPanel getVerticalContainer() {
-		return verticalContainer;
+	public CellPanel getCallPanel() {
+		return verticalContainer.getCellPanel();
 	}
 
 	public E getWidgetFor(final T modelBean) {

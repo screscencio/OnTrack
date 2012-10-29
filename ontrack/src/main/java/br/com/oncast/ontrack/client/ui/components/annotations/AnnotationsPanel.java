@@ -6,8 +6,8 @@ import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDet
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ScopeDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.FadeAnimation;
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.FadeAnimation.AnimationCompletedListener;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -49,8 +49,6 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@UiField
 	ChecklistsContainerWidget checklist;
 
-	private final FadeAnimation animation;
-
 	private AnnotationsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription) {
 		subjectDetails = detailWidget;
 		annotations = new AnnotationsWidget(subjectId);
@@ -58,13 +56,6 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 		checklist.setSubjectId(subjectId);
 		this.subjectTitle.setText(subjectDescription);
-		animation = new FadeAnimation(this, new AnimationCompletedListener() {
-			@Override
-			public void onCompleted(final boolean isHidden) {
-				if (isHidden) CloseEvent.fire(AnnotationsPanel.this, AnnotationsPanel.this);
-				else annotations.setFocus(true);
-			}
-		});
 	}
 
 	public static AnnotationsPanel forRelease(final Release release) {
@@ -92,14 +83,26 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 	@Override
 	public void show() {
-		animation.show();
+		new FadeAnimation(this).show(new AnimationCallback() {
+
+			@Override
+			public void onComplete() {
+				annotations.setFocus(true);
+			}
+		});
 	}
 
 	@Override
 	public void hide() {
 		if (!isVisible()) return;
 
-		animation.hide();
+		new FadeAnimation(this).hide(new AnimationCallback() {
+
+			@Override
+			public void onComplete() {
+				CloseEvent.fire(AnnotationsPanel.this, AnnotationsPanel.this);
+			}
+		});
 	}
 
 }
