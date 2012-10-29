@@ -29,6 +29,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -262,6 +263,11 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiHandler("panel")
 	public void onScopeWidgetClick(final ClickEvent e) {
 		fireScopeSelectionEvent();
+	}
+
+	@UiHandler("panel")
+	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
+		SERVICE_PROVIDER.getAnnotationService().showAnnotationsFor(scope.getId());
 	}
 
 	private void fireScopeSelectionEvent() {
