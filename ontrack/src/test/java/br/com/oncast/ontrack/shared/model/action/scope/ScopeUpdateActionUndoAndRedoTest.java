@@ -79,14 +79,14 @@ public class ScopeUpdateActionUndoAndRedoTest {
 		DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), currentScope);
 
 		ModelAction action = new ScopeUpdateAction(scope.getId(), updatePattern);
-		ModelAction rollbackAction = executeAction(parent, action, context);
+		ModelAction rollbackAction = executeAction(scope, action, context);
 
 		DeepEqualityTestUtils.assertObjectEquality(getModifiedScope(updatePattern), currentScope);
 
 		for (int i = 0; i < 10; i++) {
 			action = executeAction(parent, rollbackAction, context);
 			DeepEqualityTestUtils.assertObjectEquality(ProgressInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), currentScope);
-			rollbackAction = executeAction(parent, action, context);
+			rollbackAction = executeAction(scope, action, context);
 			DeepEqualityTestUtils.assertObjectEquality(
 					getModifiedScope(updatePattern),
 					currentScope);

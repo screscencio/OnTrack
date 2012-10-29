@@ -54,7 +54,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 
 	private PopupConfig popup;
 
-	private boolean isOpen;
+	private boolean isOpen = false;
 
 	@UiHandler("rootPanel")
 	void onClick(final ClickEvent e) {
@@ -62,7 +62,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 	}
 
 	public void toggleMenu() {
-		if (isOpen) popup.pop();
+		if (!isOpen) popup.pop();
 		else popup.hidePopup();
 	}
 

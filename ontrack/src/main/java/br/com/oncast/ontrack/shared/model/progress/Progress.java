@@ -100,7 +100,7 @@ public class Progress implements Serializable {
 		if (newProgressDescription == null) newProgressDescription = "";
 
 		description = newProgressDescription;
-		updateStateToCurrentDescription(author, timestamp);
+		updateStateToDeclared(author, timestamp);
 		ProgressDefinitionManager.getInstance().onProgressDefinition(getDescription());
 	}
 
@@ -136,7 +136,7 @@ public class Progress implements Serializable {
 		return startDayState == null ? null : WorkingDayFactory.create(startDayState.getTimestamp());
 	}
 
-	void updateStateToCurrentDescription(final User author, final Date timestamp) {
+	void updateStateToDeclared(final User author, final Date timestamp) {
 		setState(ProgressState.getStateForDescription(description), author, timestamp);
 	}
 

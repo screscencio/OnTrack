@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.shared.model.progress;
 
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -16,6 +19,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.TestUtils;
+import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 
@@ -25,21 +29,93 @@ public class ProgressInferenceEngineTest {
 	private static final EffortInferenceEngine EFFORT_INFERENCE_ENGINE = new EffortInferenceEngine();
 
 	@Test
+	public void insertingASiblingOfADoneScopeShouldUpdateAccomplishedEffort() throws Exception {
+		final Scope parent = ScopeTestUtils.createScope();
+		declare(parent, 20);
+		final Scope child1 = ScopeTestUtils.createScope();
+		final Scope child2 = ScopeTestUtils.createScope();
+		insertChild(parent, child1);
+		declare(child1, DONE);
+		assertProgress(DONE, parent);
+
+		final Set<UUID> updatedScopes = insertSibling(child1, child2);
+
+		assertProgress(DONE, child1);
+		assertProgress(NOT_STARTED, parent);
+		assertAccomplishedEffort(0, child2);
+		assertAccomplishedEffort(10, child1);
+		assertAccomplishedEffort(10, parent);
+		AssertTestUtils.assertContainsAll(updatedScopes, child1.getId(), parent.getId());
+	}
+
+	@Test
+	public void declatrtingDoneToLastNotDoneScopeShouldPropagateDoneToAncestors() throws Exception {
+		final Scope rootScope = ScopeTestUtils.getSimpleScope();
+
+		rootScope.getEffort().setDeclared(9);
+		procressEffortInference(rootScope);
+
+		for (final Scope child : rootScope.getChildren()) {
+			declare(child, ProgressState.DONE);
+		}
+
+		assertEquals(100, rootScope.getEffort().getAccomplishedPercentual(), 0);
+		final Scope child1 = rootScope.getChild(1);
+		declare(child1, ProgressState.NOT_STARTED);
+		assertEquals(66.6, rootScope.getEffort().getAccomplishedPercentual(), 0.1);
+
+		final Scope grandChild1 = ScopeTestUtils.createScope();
+		insertChild(child1, grandChild1);
+		procressEffortInference(grandChild1);
+		assertEquals(3.0, grandChild1.getEffort().getInfered(), 0);
+
+		final Scope grandChild2 = ScopeTestUtils.createScope();
+		insertChild(child1, grandChild2);
+		procressEffortInference(grandChild2);
+		assertEquals(1.5, grandChild2.getEffort().getInfered(), 0);
+
+		Set<UUID> updatedScopes = declare(grandChild1, DONE);
+		assertEquals(83.3, rootScope.getEffort().getAccomplishedPercentual(), 0.1);
+		assertEquals(3, updatedScopes.size());
+		assertTrue(updatedScopes.contains(grandChild1.getId()));
+		assertTrue(updatedScopes.contains(child1.getId()));
+		assertTrue(updatedScopes.contains(rootScope.getId()));
+
+		updatedScopes = declare(grandChild2, DONE);
+		assertEquals(100, rootScope.getEffort().getAccomplishedPercentual(), 0);
+		assertEquals(DONE, child1.getProgress().getState());
+		assertEquals(DONE, rootScope.getProgress().getState());
+
+		assertEquals(3, updatedScopes.size());
+		assertTrue(updatedScopes.contains(grandChild2.getId()));
+		assertTrue(updatedScopes.contains(child1.getId()));
+		assertTrue(updatedScopes.contains(rootScope.getId()));
+
+		updatedScopes = declare(rootScope, NOT_STARTED);
+		assertEquals(DONE, child1.getProgress().getState());
+		assertEquals(DONE, rootScope.getProgress().getState());
+
+		assertEquals(2, updatedScopes.size());
+		assertTrue(updatedScopes.contains(child1.getId()));
+		assertTrue(updatedScopes.contains(rootScope.getId()));
+	}
+
+	@Test
 	public void declaringAParentAsUnderWorkShouldNotChangeTheChildsStates() throws Exception {
 		final Scope rootScope = ScopeTestUtils.getSimpleScope();
 		for (final Scope child : rootScope.getChildren()) {
 			declare(child, ProgressState.DONE);
 		}
-		declare(rootScope.getChild(0), ProgressState.UNDER_WORK);
-		assertTrue(rootScope.getProgress().isUnderWork());
+		declare(rootScope.getChild(0), UNDER_WORK);
+		assertEquals(UNDER_WORK, rootScope.getProgress().getState());
 
-		declare(rootScope, ProgressState.DONE);
-		declare(rootScope, ProgressState.UNDER_WORK);
-		assertTrue(rootScope.getProgress().isUnderWork());
+		declare(rootScope, DONE);
+		declare(rootScope, UNDER_WORK);
+		assertEquals(UNDER_WORK, rootScope.getProgress().getState());
 
-		assertEquals(ProgressState.UNDER_WORK, rootScope.getChild(0).getProgress().getState());
+		assertEquals(UNDER_WORK, rootScope.getChild(0).getProgress().getState());
 		for (int i = 1; i < rootScope.getChildCount(); i++) {
-			assertEquals(ProgressState.DONE, rootScope.getChild(i).getProgress().getState());
+			assertEquals(DONE, rootScope.getChild(i).getProgress().getState());
 		}
 	}
 
@@ -50,7 +126,7 @@ public class ProgressInferenceEngineTest {
 		Scope scope = rootScope;
 		for (int i = 0; i < 15; i++) {
 			final Scope child = ScopeTestUtils.createScope();
-			scope.add(child);
+			insertChild(scope, child);
 			scope = child;
 		}
 
@@ -70,7 +146,7 @@ public class ProgressInferenceEngineTest {
 		Scope scope = rootScope;
 		for (int i = 0; i < 15; i++) {
 			final Scope child = ScopeTestUtils.createScope();
-			scope.add(child);
+			insertChild(scope, child);
 			scope = child;
 		}
 
@@ -89,7 +165,7 @@ public class ProgressInferenceEngineTest {
 		Scope scope = rootScope;
 		for (int i = 0; i < 15; i++) {
 			final Scope child = ScopeTestUtils.createScope();
-			scope.add(child);
+			insertChild(scope, child);
 			scope = child;
 		}
 
@@ -108,20 +184,20 @@ public class ProgressInferenceEngineTest {
 		final Scope child1 = rootScope.getChild(1);
 		final Scope child2 = rootScope.getChild(2);
 
-		declare(child1, ProgressState.UNDER_WORK);
-		declare(child2, ProgressState.DONE);
+		declare(child1, UNDER_WORK);
+		declare(child2, DONE);
 
-		declare(rootScope, ProgressState.DONE);
+		declare(rootScope, DONE);
 
 		for (final Scope child : rootScope.getChildren()) {
 			assertTrue(child.getProgress().isDone());
 		}
 
-		declare(rootScope, ProgressState.NOT_STARTED);
+		declare(rootScope, NOT_STARTED);
 
-		assertEquals(ProgressState.NOT_STARTED, rootScope.getChild(0).getProgress().getState());
-		assertEquals(ProgressState.UNDER_WORK, child1.getProgress().getState());
-		assertEquals(ProgressState.DONE, child2.getProgress().getState());
+		assertEquals(NOT_STARTED, rootScope.getChild(0).getProgress().getState());
+		assertEquals(UNDER_WORK, child1.getProgress().getState());
+		assertEquals(DONE, child2.getProgress().getState());
 
 	}
 
@@ -165,8 +241,8 @@ public class ProgressInferenceEngineTest {
 		final Scope scope = ScopeTestUtils.createScope();
 		final Scope child = ScopeTestUtils.createScope();
 		final Scope grandChild = ScopeTestUtils.createScope();
-		scope.add(child);
-		child.add(grandChild);
+		insertChild(scope, child);
+		insertChild(child, grandChild);
 
 		final Set<UUID> influencedScopes = declare(grandChild, ProgressState.DONE);
 
@@ -310,11 +386,11 @@ public class ProgressInferenceEngineTest {
 		final Scope parent = ScopeTestUtils.createScope(parentCreation);
 
 		final Scope childB = ScopeTestUtils.createScope(parentCreation);
-		parent.add(childB);
+		insertChild(parent, childB);
 		processProgressInference(childB, parentCreation);
 
 		final Scope childA = ScopeTestUtils.createScope(startDay);
-		parent.add(childA);
+		insertChild(parent, childA);
 		processProgressInference(childA, startDay);
 
 		ScopeTestUtils.setProgress(childA, ProgressState.UNDER_WORK, startDay);
@@ -334,6 +410,33 @@ public class ProgressInferenceEngineTest {
 	private Set<UUID> declare(final Scope child, final ProgressState state) {
 		ScopeTestUtils.declareProgress(child, state);
 		return processProgressInference(child);
+	}
+
+	private void declare(final Scope root, final float effort) {
+		root.getEffort().setDeclared(effort);
+		procressEffortInference(root);
+	}
+
+	private void assertAccomplishedEffort(final float effort, final Scope scope) {
+		assertEquals(effort, scope.getEffort().getAccomplished(), 0.1);
+	}
+
+	private void assertProgress(final ProgressState state, final Scope scope) {
+		assertEquals(state, scope.getProgress().getState());
+	}
+
+	private Set<UUID> insertSibling(final Scope sibling, final Scope newScope) {
+		assert !sibling.isRoot();
+
+		sibling.getParent().add(newScope);
+		procressEffortInference(sibling);
+		return processProgressInference(sibling);
+	}
+
+	private void insertChild(final Scope parent, final Scope child) {
+		parent.add(child);
+		processProgressInference(parent);
+		procressEffortInference(parent);
 	}
 
 	private Set<UUID> processProgressInference(final Scope scope, final WorkingDay day) {

@@ -6,6 +6,10 @@
 
 package br.com.oncast.ontrack.shared.model.progress;
 
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.DONE;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.UNDER_WORK;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,52 +36,13 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 	public Set<UUID> process(final Scope scope, final User author, final Date timestamp) {
 		final HashSet<UUID> updatedScopes = new HashSet<UUID>();
 
+		if (scope.isLeaf()) setState(scope, NOT_STARTED, updatedScopes, author, timestamp);
 		propagateToDescendants(scope, updatedScopes, author, timestamp);
 		propagateToAncestors(scope, updatedScopes, author, timestamp);
 
-		processBottomUp(getRoot(scope), updatedScopes);
+		processBottomUpAccomplishedEffort(getRoot(scope), updatedScopes);
 
 		return updatedScopes;
-	}
-
-	private void propagateToAncestors(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
-		if (scope.isRoot()) return;
-
-		final Scope parent = scope.getParent();
-		ProgressState state = ProgressState.DONE;
-		for (final Scope sibling : parent.getChildren()) {
-			if (hasState(sibling, ProgressState.UNDER_WORK)) {
-				state = ProgressState.UNDER_WORK;
-				break;
-			}
-			if (hasState(sibling, ProgressState.NOT_STARTED)) state = ProgressState.NOT_STARTED;
-		}
-		if (setState(parent, state, updatedScopes, author, timestamp)) propagateToAncestors(parent, updatedScopes, author, timestamp);
-	}
-
-	private boolean hasState(final Scope scope, final ProgressState state) {
-		return scope.getProgress().getState().equals(state);
-	}
-
-	private void propagateToDescendants(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
-		ProgressState state = scope.getProgress().getState();
-		if (!state.equals(ProgressState.DONE)) state = ProgressState.NOT_STARTED;
-
-		for (final Scope child : scope.getChildren()) {
-			if (setState(child, state, updatedScopes, author, timestamp)) propagateToDescendants(child, updatedScopes, author, timestamp);
-		}
-	}
-
-	private boolean setState(final Scope scope, final ProgressState newState, final HashSet<UUID> inferenceInfluencedScopeSet, final User author,
-			final Date timestamp) {
-		final Progress progress = scope.getProgress();
-		final ProgressState previousState = progress.getState();
-		if (newState.equals(ProgressState.NOT_STARTED)) progress.updateStateToCurrentDescription(author, timestamp);
-		else progress.setState(newState, author, timestamp);
-
-		final boolean updated = !previousState.equals(newState);
-		if (updated) inferenceInfluencedScopeSet.add(scope.getId());
-		return updated;
 	}
 
 	private Scope getRoot(Scope scope) {
@@ -86,15 +51,62 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		return scope;
 	}
 
-	private void processBottomUp(final Scope scope, final HashSet<UUID> updatedScopes) {
+	private void propagateToAncestors(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
+		if (scope.isRoot()) return;
+
+		final Scope parent = scope.getParent();
+		ProgressState state = DONE;
+		for (final Scope sibling : parent.getChildren()) {
+			if (state.equals(UNDER_WORK) || is(sibling, UNDER_WORK)) {
+				state = UNDER_WORK;
+			}
+			else if (is(sibling, NOT_STARTED)) state = NOT_STARTED;
+		}
+
+		if (setState(parent, state, updatedScopes, author, timestamp)) propagateToAncestors(parent, updatedScopes, author, timestamp);
+	}
+
+	private void propagateToDescendants(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
+		if (scope.isLeaf()) return;
+
+		ProgressState state = scope.getProgress().getState();
+		if (!state.equals(DONE)) state = NOT_STARTED;
+
+		boolean allDone = true;
+
+		for (final Scope child : scope.getChildren()) {
+			if (setState(child, state, updatedScopes, author, timestamp)) propagateToDescendants(child, updatedScopes, author, timestamp);
+			allDone &= is(child, DONE);
+		}
+
+		if (!scope.isLeaf() && is(scope, NOT_STARTED) && allDone) setState(scope, DONE, updatedScopes, author, timestamp);
+	}
+
+	private boolean setState(final Scope scope, final ProgressState newState, final HashSet<UUID> updatedScopes, final User author,
+			final Date timestamp) {
+		final Progress progress = scope.getProgress();
+		final ProgressState previousState = progress.getState();
+		if (newState.equals(NOT_STARTED)) progress.updateStateToDeclared(author, timestamp);
+		else progress.setState(newState, author, timestamp);
+
+		final boolean updated = !is(scope, previousState);
+		if (updated) updatedScopes.add(scope.getId());
+		return updated;
+	}
+
+	private boolean is(final Scope scope, final ProgressState state) {
+		return scope.getProgress().getState().equals(state);
+	}
+
+	private void processBottomUpAccomplishedEffort(final Scope scope, final HashSet<UUID> updatedScopes) {
 		for (final Scope child : scope.getChildren())
-			processBottomUp(child, updatedScopes);
+			processBottomUpAccomplishedEffort(child, updatedScopes);
 
 		calculateBottomUpEffort(scope, updatedScopes);
 	}
 
 	private void calculateBottomUpEffort(final Scope scope, final HashSet<UUID> updatedScopes) {
-		final float newAccomplishedEffort = scope.getProgress().isDone() ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
+		final float newAccomplishedEffort = is(scope, DONE) ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
 
 		if (Math.abs(newAccomplishedEffort - scope.getEffort().getAccomplished()) > EPSILON) {
 			scope.getEffort().setAccomplished(newAccomplishedEffort);
