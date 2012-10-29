@@ -280,6 +280,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	public void setHasOpenImpediments(final boolean hasOpenImpediments) {
 		statusBar.setStyleName(style.statusBarOpenImpediment(), hasOpenImpediments);
+
 		final Color color = hasOpenImpediments ? Color.RED : Color.GRAY;
 		new BgColorAnimation(internalPanel, color).animate();
 	}
