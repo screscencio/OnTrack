@@ -185,4 +185,20 @@ public class ApplicationMenu extends Composite {
 		});
 	}
 
+	public void openProjectsMenuItem() {
+		projectMenuItem.toggleMenu();
+	}
+
+	public void openNotificationsMenuItem() {
+		notificationMenuItem.openMenu();
+	}
+
+	public void openMembersMenuItem() {
+		memberMenuItem.toggleMenu();
+	}
+
+	public void openUserMenuItem() {
+		userMenuItem.toggleMenu();
+	}
+
 }

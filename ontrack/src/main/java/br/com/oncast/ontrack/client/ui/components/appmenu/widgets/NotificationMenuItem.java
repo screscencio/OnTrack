@@ -86,4 +86,8 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 	public void setPopupConfig(final PopupConfig popup) {
 		notificationMenuItem.setPopupConfig(popup);
 	}
+
+	public void openMenu() {
+		notificationMenuItem.toggleMenu();
+	}
 }

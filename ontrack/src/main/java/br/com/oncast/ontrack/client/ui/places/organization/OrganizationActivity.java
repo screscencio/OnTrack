@@ -3,12 +3,18 @@ package br.com.oncast.ontrack.client.ui.places.organization;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.organization.OrganizationPanel;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
+import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class OrganizationActivity extends AbstractActivity {
+
+	private HandlerRegistration registration;
 
 	public OrganizationActivity(final OrganizationPlace place) {}
 
@@ -21,8 +27,15 @@ public class OrganizationActivity extends AbstractActivity {
 		menu.clearCustomMenuItems();
 		menu.setBackButtonVisibility(true);
 
-		ClientServiceProvider.getInstance().getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
+		registration = ShortcutService.register(RootPanel.get(), ClientServiceProvider.getInstance().getActionExecutionService(),
+				UndoRedoShortCutMapping.values());
 
+		ClientServiceProvider.getInstance().getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
+	}
+
+	@Override
+	public void onStop() {
+		registration.removeHandler();
 	}
 
 }
