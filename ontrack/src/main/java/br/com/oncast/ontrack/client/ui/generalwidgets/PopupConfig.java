@@ -332,7 +332,7 @@ public class PopupConfig {
 		animation.show();
 	}
 
-	private void hidePopup() {
+	public void hidePopup() {
 		if (shown) {
 			if (widgetToPopup instanceof PopupAware) ((PopupAware) widgetToPopup).hide();
 			else {
