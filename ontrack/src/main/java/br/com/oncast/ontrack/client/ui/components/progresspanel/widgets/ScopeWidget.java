@@ -7,8 +7,10 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -55,6 +57,11 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 			release = currentScope.getRelease();
 		}
 		return currentScope;
+	}
+
+	@UiHandler("panel")
+	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
+		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(scope.getId());
 	}
 
 	@Override

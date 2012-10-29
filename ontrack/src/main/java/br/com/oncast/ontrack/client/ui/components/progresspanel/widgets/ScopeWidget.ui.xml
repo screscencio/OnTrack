@@ -23,6 +23,7 @@
 		
 		.panel:hover {
             background-color: KANBAN_SCOPE_HOVER_BACKGROUND;
+            cursor: pointer;
 		}
 		
 		.internalPanel {
