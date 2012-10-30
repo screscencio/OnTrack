@@ -5,9 +5,9 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.FadeAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.OpacityAnimation;
 
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
@@ -21,12 +21,12 @@ public class AnimatedVerticalContainer extends Composite {
 
 		@Override
 		public ShowAnimation createShowAnimation(final Widget widget) {
-			return new FadeAnimation(widget.asWidget());
+			return new OpacityAnimation(widget.asWidget());
 		}
 
 		@Override
 		public HideAnimation createHideAnimation(final Widget widget) {
-			return new FadeAnimation(widget.asWidget());
+			return new OpacityAnimation(widget.asWidget());
 		}
 	};
 
@@ -45,7 +45,7 @@ public class AnimatedVerticalContainer extends Composite {
 	}
 
 	public AnimatedVerticalContainer(final AnimationFactory animationFactory) {
-		this(new VerticalPanel(), DEFAULT_ANIMATION_FACTORY);
+		this(new VerticalPanel(), animationFactory);
 	}
 
 	public AnimatedVerticalContainer(final VerticalPanel verticalPanel, final AnimationFactory animationFactory) {
@@ -54,11 +54,18 @@ public class AnimatedVerticalContainer extends Composite {
 	}
 
 	public void insert(final IsWidget widget, final int index) {
-		final int beforeIndex = index == 0 ? 0 : container.getWidgetIndex(widgets.get(index - 1)) + 1;
+		final int beforeIndex = getContainerIndex(index);
 
-		container.insert(widget, beforeIndex);
 		widgets.add(index, widget);
+		container.insert(widget, beforeIndex);
 		animationFactory.createShowAnimation(widget.asWidget()).show();
+	}
+
+	private int getContainerIndex(final int index) {
+		if (index == 0) return 0;
+		if (index == widgets.size()) return container.getWidgetCount();
+
+		return container.getWidgetIndex(widgets.get(index));
 	}
 
 	public void remove(final int index) {
