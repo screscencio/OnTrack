@@ -5,6 +5,7 @@ public class Color {
 	public static Color GREEN = new Color(212, 250, 22);
 	public static Color YELLOW = new Color(250, 231, 22);
 	public static Color BLUE = new Color(154, 203, 230);
+	public static Color GRAY = new Color(200, 200, 180);
 	public static Color RED = new Color(240, 84, 45);
 
 	private int r;

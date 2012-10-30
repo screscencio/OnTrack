@@ -6,8 +6,8 @@ import java.util.List;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.OpacityAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
 
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
