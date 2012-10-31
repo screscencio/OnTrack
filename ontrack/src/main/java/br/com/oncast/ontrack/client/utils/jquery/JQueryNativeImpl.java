@@ -11,6 +11,21 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 	}-*/;
 
 	@Override
+	public native void slideUp(int duration) /*-{
+		this.slideUp(duration);
+	}-*/;
+
+	@Override
+	public native void slideDown(int duration) /*-{
+		this.slideDown(duration);
+	}-*/;
+
+	@Override
+	public native void hide() /*-{
+		this.hide();
+	}-*/;
+
+	@Override
 	public native void bind(String eventType, EventHandler handler) /*-{
 		this
 				.bind(

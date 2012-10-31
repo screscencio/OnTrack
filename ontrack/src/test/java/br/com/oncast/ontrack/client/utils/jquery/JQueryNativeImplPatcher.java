@@ -14,6 +14,15 @@ public class JQueryNativeImplPatcher {
 
 			@Override
 			public void unbind(final String string, final EventHandler handler) {}
+
+			@Override
+			public void slideUp(final int duration) {}
+
+			@Override
+			public void slideDown(final int duration) {}
+
+			@Override
+			public void hide() {}
 		};
 	}
 }

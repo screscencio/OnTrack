@@ -6,8 +6,8 @@ import java.util.List;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.OpacityAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlidingOpacityAnimation;
 
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
@@ -21,12 +21,12 @@ public class AnimatedVerticalContainer extends Composite {
 
 		@Override
 		public ShowAnimation createShowAnimation(final Widget widget) {
-			return new OpacityAnimation(widget.asWidget());
+			return new SlidingOpacityAnimation(widget.asWidget());
 		}
 
 		@Override
 		public HideAnimation createHideAnimation(final Widget widget) {
-			return new OpacityAnimation(widget.asWidget());
+			return new SlidingOpacityAnimation(widget.asWidget());
 		}
 	};
 
@@ -54,18 +54,29 @@ public class AnimatedVerticalContainer extends Composite {
 	}
 
 	public void insert(final IsWidget widget, final int index) {
-		final int beforeIndex = getContainerIndex(index);
-
 		widgets.add(index, widget);
-		container.insert(widget, beforeIndex);
+		container.insert(widget, getContainerIndex(widget));
 		animationFactory.createShowAnimation(widget.asWidget()).show();
 	}
 
-	private int getContainerIndex(final int index) {
-		if (index == 0) return 0;
-		if (index == widgets.size()) return container.getWidgetCount();
+	public void move(final IsWidget widget, final int index) {
+		if (widgets.indexOf(widget) == index) return;
 
-		return container.getWidgetIndex(widgets.get(index));
+		widgets.remove(widget);
+		container.remove(widget);
+		widgets.add(index, widget);
+		container.insert(widget, getContainerIndex(widget));
+	}
+
+	private int getContainerIndex(final IsWidget widget) {
+		final int containerSize = container.getWidgetCount();
+		final int listIndex = widgets.indexOf(widget);
+		final int size = widgets.size();
+
+		if (containerSize == 0) return 0;
+		if (listIndex + 1 == size) return containerSize;
+
+		return container.getWidgetIndex(widgets.get(listIndex + 1));
 	}
 
 	public void remove(final int index) {

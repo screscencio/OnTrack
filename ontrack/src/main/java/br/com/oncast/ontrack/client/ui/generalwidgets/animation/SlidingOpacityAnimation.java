@@ -1,11 +1,13 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.animation;
 
+import br.com.oncast.ontrack.client.utils.jquery.JQuery;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.user.client.ui.Widget;
 
-public class OpacityAnimation extends Animation implements ShowAnimation, HideAnimation {
+public class SlidingOpacityAnimation extends Animation implements ShowAnimation, HideAnimation {
 
-	private static final int DEFAULT_ANIMATION_DURATION = 1000;
+	private static final int DEFAULT_ANIMATION_DURATION = 1200;
 	private final Widget widget;
 	private final int duration;
 	private AnimationCallback listener;
@@ -13,11 +15,11 @@ public class OpacityAnimation extends Animation implements ShowAnimation, HideAn
 	private double opacity_start;
 	private double opacity_end;
 
-	public OpacityAnimation(final Widget widget) {
+	public SlidingOpacityAnimation(final Widget widget) {
 		this(widget, DEFAULT_ANIMATION_DURATION);
 	}
 
-	public OpacityAnimation(final Widget widget, final int duration) {
+	public SlidingOpacityAnimation(final Widget widget, final int duration) {
 		this.widget = widget;
 		this.duration = duration;
 	}
@@ -39,6 +41,7 @@ public class OpacityAnimation extends Animation implements ShowAnimation, HideAn
 		opacity_start = 0.;
 		opacity_end = 1.;
 
+		JQuery.jquery(widget.getElement()).hide().slideDown(8 * duration / 10);
 		run(duration);
 	}
 
@@ -47,7 +50,8 @@ public class OpacityAnimation extends Animation implements ShowAnimation, HideAn
 		opacity_start = 1.;
 		opacity_end = 0.;
 
-		run(duration);
+		JQuery.jquery(widget.getElement()).slideUp(duration);
+		run(8 * duration / 10);
 	}
 
 	@Override

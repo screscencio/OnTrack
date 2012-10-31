@@ -63,16 +63,20 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 				continue;
 			}
 
-			if (verticalContainer.getWidgetIndex(modelWidget) != i) {
-				verticalContainer.remove(modelWidget);
-				verticalContainer.insert(modelWidget, i);
+			final int widgetIndex = verticalContainer.getWidgetIndex(modelWidget);
+			if (widgetIndex != i) {
+				for (int j = widgetIndex - 1; j >= i; j--) {
+					@SuppressWarnings("unchecked") final E missPlacedWidget = (E) verticalContainer.getWidget(j);
+					if (!modelBeanList.contains(missPlacedWidget.getModelObject())) verticalContainer.remove(j);
+				}
+				verticalContainer.move(modelWidget, i);
 				hasChanged = true;
 			}
 
 			hasChanged |= modelWidget.update();
 		}
 
-		for (int i = modelBeanList.size(); i < verticalContainer.getWidgetCount(); i++) {
+		for (int i = verticalContainer.getWidgetCount() - 1; i >= modelBeanList.size(); i--) {
 			@SuppressWarnings("unchecked") final E modelWidget = (E) verticalContainer.getWidget(i);
 			verticalContainer.remove(i);
 			widgetMap.remove(modelWidget.getModelObject());

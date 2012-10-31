@@ -30,6 +30,21 @@ public final class JQuery {
 		nat.unbind("keydown", handler);
 	}
 
+	public JQuery hide() {
+		nat.hide();
+		return this;
+	}
+
+	public JQuery slideUp(final int duration) {
+		nat.slideUp(duration);
+		return this;
+	}
+
+	public JQuery slideDown(final int duration) {
+		nat.slideDown(duration);
+		return this;
+	}
+
 	public static JQuery jquery(final Element element) {
 		return new JQuery(element);
 	}
