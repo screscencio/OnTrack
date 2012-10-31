@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class SlidingOpacityAnimation extends Animation implements ShowAnimation, HideAnimation {
 
-	private static final int DEFAULT_ANIMATION_DURATION = 1200;
+	private static final int DEFAULT_ANIMATION_DURATION = 800;
 	private final Widget widget;
 	private final int duration;
 	private AnimationCallback listener;
@@ -41,7 +41,7 @@ public class SlidingOpacityAnimation extends Animation implements ShowAnimation,
 		opacity_start = 0.;
 		opacity_end = 1.;
 
-		JQuery.jquery(widget.getElement()).hide().slideDown(8 * duration / 10);
+		getWidgetJqueryElement().clearQueue().hide().slideDown(8 * duration / 10);
 		run(duration);
 	}
 
@@ -50,8 +50,8 @@ public class SlidingOpacityAnimation extends Animation implements ShowAnimation,
 		opacity_start = 1.;
 		opacity_end = 0.;
 
-		JQuery.jquery(widget.getElement()).slideUp(duration);
-		run(8 * duration / 10);
+		getWidgetJqueryElement().clearQueue().slideUp(8 * duration / 10);
+		run(duration);
 	}
 
 	@Override
@@ -74,7 +74,12 @@ public class SlidingOpacityAnimation extends Animation implements ShowAnimation,
 	@Override
 	protected void onComplete() {
 		super.onComplete();
+		getWidgetJqueryElement().clearQueue();
 		widget.getElement().getStyle().setOpacity(opacity_end);
 		if (listener != null) listener.onComplete();
+	}
+
+	private JQuery getWidgetJqueryElement() {
+		return JQuery.jquery(widget.getElement());
 	}
 }

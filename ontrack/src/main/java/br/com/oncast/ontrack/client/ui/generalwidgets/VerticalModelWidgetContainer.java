@@ -87,11 +87,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 		return hasChanged;
 	}
 
-	public E createChildModelWidget(final T modelBean) {
-		return createChildModelWidgetAt(modelBean, verticalContainer.getWidgetCount());
-	}
-
-	public E createChildModelWidgetAt(final T modelBean, final int index) {
+	private E createChildModelWidgetAt(final T modelBean, final int index) {
 		final E modelWidget = modelWidgetFactory.createWidget(modelBean);
 		verticalContainer.insert(modelWidget, index);
 		widgetMap.put(modelBean, modelWidget);

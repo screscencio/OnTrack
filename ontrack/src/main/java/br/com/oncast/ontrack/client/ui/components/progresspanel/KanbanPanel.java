@@ -39,6 +39,7 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 	protected HorizontalPanel board;
 
 	protected HorizontalPanel draggableColumns;
+
 	private Kanban kanban;
 	private Release release;
 	final DragAndDropManager scopeDragAndDropMangager;

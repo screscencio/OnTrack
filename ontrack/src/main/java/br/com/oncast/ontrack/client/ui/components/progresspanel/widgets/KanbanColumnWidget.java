@@ -122,8 +122,7 @@ public class KanbanColumnWidget extends Composite {
 	}
 
 	public KanbanColumnWidget addScopes(final List<Scope> scopes) {
-		for (final Scope scope : scopes)
-			scopeContainer.createChildModelWidget(scope);
+		scopeContainer.update(scopes);
 		return this;
 	}
 

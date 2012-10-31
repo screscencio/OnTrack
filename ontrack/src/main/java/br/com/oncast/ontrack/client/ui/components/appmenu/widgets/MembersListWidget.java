@@ -110,7 +110,7 @@ public class MembersListWidget extends Composite {
 		for (final User user : onlineUsers) {
 			if (!activeUsers.contains(user)) onlineAndNotActiveUsers.add(user);
 		}
-		onlineMembersList.update(new ArrayList<User>(onlineAndNotActiveUsers));
+		onlineMembersList.update(onlineAndNotActiveUsers);
 
 		final List<User> users = new ArrayList<User>();
 		for (final User user : currentProjectContext.getUsers()) {

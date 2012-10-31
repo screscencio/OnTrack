@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallbac
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlidingOpacityAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlideAndFadeAnimation;
 
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
@@ -21,12 +21,12 @@ public class AnimatedVerticalContainer extends Composite {
 
 		@Override
 		public ShowAnimation createShowAnimation(final Widget widget) {
-			return new SlidingOpacityAnimation(widget.asWidget());
+			return new SlideAndFadeAnimation(widget.asWidget());
 		}
 
 		@Override
 		public HideAnimation createHideAnimation(final Widget widget) {
-			return new SlidingOpacityAnimation(widget.asWidget());
+			return new SlideAndFadeAnimation(widget.asWidget());
 		}
 	};
 
