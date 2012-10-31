@@ -45,7 +45,7 @@ public class PlanningPlace extends ProjectDependentPlace {
 			final String[] parameters = token.split(PlacesPrefixes.ARGUMENT_SEPARATOR);
 			try {
 				projectId = new UUID(parameters[0]);
-				selectedScopeId = parameters.length > 1 ? new UUID(parameters[1]) : UUID.INVALID_UUID;
+				selectedScopeId = parameters.length > 1 ? new UUID(parameters[1]) : null;
 			}
 			catch (final Exception e) {
 				projectId = UUID.INVALID_UUID;

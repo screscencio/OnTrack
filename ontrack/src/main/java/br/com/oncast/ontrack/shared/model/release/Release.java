@@ -317,7 +317,7 @@ public class Release implements Serializable {
 		float accomplishedEffortSum = 0;
 
 		for (final Scope scope : getAllScopesIncludingDescendantReleases())
-			accomplishedEffortSum += scope.getEffort().getAccomplishedEffort();
+			accomplishedEffortSum += scope.getEffort().getAccomplished();
 
 		return accomplishedEffortSum;
 	}

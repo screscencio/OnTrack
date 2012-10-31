@@ -55,13 +55,10 @@ public class ShortcutService {
 			public void removeHandler() {
 				attachRegistration.removeHandler();
 
-				// It could be already unbound.
 				try {
 					JQuery.jquery(w).unbindKeyDown(handler);
 				}
-				catch (final Exception e) {
-					e.printStackTrace();
-				}
+				catch (final Exception e) {}
 			}
 		};
 	}

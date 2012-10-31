@@ -25,6 +25,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
@@ -223,14 +224,6 @@ public class ScopeTreeItemWidget extends Composite {
 			}
 		});
 
-		releaseTag.setCloseButtonClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				editionHandler.onEditionEnd(new ScopeRepresentationBuilder(scope).includeEverything().excludeReleaseReference().toString());
-			}
-		});
-
 		registerColumnVisibilityChangeListeners();
 
 		showDetailsIcon(getAnnotationService().hasDetails(scope.getId()));
@@ -420,9 +413,22 @@ public class ScopeTreeItemWidget extends Composite {
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 250, 264);
 
+		commandsMenu.addCloseHandler(createCloseHandler());
+
 		align(configPopup(), releasePanel)
 				.popup(commandsMenu)
 				.pop();
+	}
+
+	private CloseHandler<FiltrableCommandMenu> createCloseHandler() {
+		return new CloseHandler<FiltrableCommandMenu>() {
+
+			@Override
+			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
+				focusPanel.setFocus(true);
+			}
+
+		};
 	}
 
 	public void showProgressMenu(final List<String> list) {
@@ -434,6 +440,8 @@ public class ScopeTreeItemWidget extends Composite {
 			if (!notStartedDescription.equals(progressDefinition)) items.add(progressCommandMenuItemFactory.createItem(progressDefinition, progressDefinition));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, progressCommandMenuItemFactory, 200, 264);
+
+		commandsMenu.addCloseHandler(createCloseHandler());
 
 		align(configPopup(), progressLabel)
 				.popup(commandsMenu)
@@ -448,6 +456,9 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(effortCommandMenuItemFactory.createItem(effort, effort));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, effortCommandMenuItemFactory, 100, 264);
+
+		commandsMenu.addCloseHandler(createCloseHandler());
+
 		commandsMenu.setHelpText("");
 		align(configPopup(), effortPanel)
 				.popup(commandsMenu)
@@ -462,6 +473,9 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(valueCommandMenuItemFactory.createItem(value, value));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 100, 264);
+
+		commandsMenu.addCloseHandler(createCloseHandler());
+
 		commandsMenu.setHelpText("");
 		align(configPopup(), valuePanel)
 				.popup(commandsMenu)
@@ -520,7 +534,7 @@ public class ScopeTreeItemWidget extends Composite {
 		});
 	}
 
-	public void addSelectedMember(final User member, final String selectionColor) {
+	public void addSelectedMember(final User member, final Color selectionColor) {
 		selectionsList.add(new Selection(member, selectionColor));
 
 		updateSelection();
@@ -545,7 +559,7 @@ public class ScopeTreeItemWidget extends Composite {
 	}
 
 	private void updateSelection() {
-		String selectionColor = "transparent";
+		Color selectionColor = Color.TRANSPARENT;
 		String membersText = "";
 
 		if (!selectionsList.isEmpty()) {
@@ -557,8 +571,8 @@ public class ScopeTreeItemWidget extends Composite {
 			membersText = membersText.substring(0, membersText.length() - ", ".length());
 		}
 
-		borderPanel.getElement().getStyle().setBorderColor(selectionColor);
-		selectedMembers.getElement().getStyle().setBackgroundColor(selectionColor);
+		borderPanel.getElement().getStyle().setBorderColor(selectionColor.toCssRepresentation());
+		selectedMembers.getElement().getStyle().setBackgroundColor(selectionColor.toCssRepresentation());
 		selectedMembers.setText(membersText);
 	}
 

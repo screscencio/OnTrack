@@ -3,7 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-	<ui:image field="close" src="close-release.png"></ui:image>
 	<ui:image field="leftBg" src="tag-release.png"></ui:image>
 	<ui:style>
 		.tag {
@@ -40,21 +39,6 @@
 			text-align: justify;
         }
 
-		@sprite .closeLabel {
-			gwt-image: 'close';
-			background-position: center;
-
-			cursor: pointer;
-
-			height: 11px;
-			width: 11px;
-
-			background-color: #fada9b;
-
-			border: 1px solid #f7c559;
-			border-left: none;
-		}
-		
 	</ui:style>
 	
 	<g:FocusPanel>
@@ -66,9 +50,6 @@
 				<g:SimplePanel styleName="{style.container}">
 					<t:FastLabel styleName="{style.tagLabel} v-ellip" ui:field="tagLabel" />
 				</g:SimplePanel>
-			</g:cell>
-			<g:cell width="1">
-				<g:FocusPanel ui:field="closeLabel" styleName="{style.closeLabel}"/>
 			</g:cell>
 		</g:HorizontalPanel>
 	</g:FocusPanel>

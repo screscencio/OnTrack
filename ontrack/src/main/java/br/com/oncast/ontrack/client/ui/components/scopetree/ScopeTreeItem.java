@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -162,7 +163,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		scopeItemWidget.showOpenImpedimentIcon(hasOpenImpediments);
 	}
 
-	public void addSelectedMember(final User member, final String selectionColor) {
+	public void addSelectedMember(final User member, final Color selectionColor) {
 		scopeItemWidget.addSelectedMember(member, selectionColor);
 	}
 

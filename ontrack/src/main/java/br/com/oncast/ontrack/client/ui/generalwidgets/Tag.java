@@ -7,7 +7,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -19,11 +18,6 @@ public class Tag extends Composite implements HasText {
 
 	@UiField
 	protected FastLabel tagLabel;
-
-	@UiField
-	protected FocusPanel closeLabel;
-
-	private ClickHandler closeClickHandler;
 
 	private ClickHandler clickHandler;
 
@@ -70,10 +64,6 @@ public class Tag extends Composite implements HasText {
 		super.setTitle(title);
 	}
 
-	public void setCloseButtonClickHandler(final ClickHandler clickHandler) {
-		this.closeClickHandler = clickHandler;
-	}
-
 	public void setClickHandler(final ClickHandler clickHandler) {
 		this.clickHandler = clickHandler;
 	}
@@ -82,11 +72,5 @@ public class Tag extends Composite implements HasText {
 	protected void addTagClickHandler(final ClickEvent event) {
 		if (clickHandler == null) return;
 		clickHandler.onClick(event);
-	}
-
-	@UiHandler("closeLabel")
-	protected void addCloseClickHandler(final ClickEvent event) {
-		if (closeClickHandler == null) return;
-		closeClickHandler.onClick(event);
 	}
 }

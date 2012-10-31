@@ -54,13 +54,16 @@ public class ApplicationMenuItem extends Composite implements HasText {
 
 	private PopupConfig popup;
 
+	private boolean isOpen = false;
+
 	@UiHandler("rootPanel")
 	void onClick(final ClickEvent e) {
-		openPopup();
+		toggleMenu();
 	}
 
-	private void openPopup() {
-		popup.pop();
+	public void toggleMenu() {
+		if (!isOpen) popup.pop();
+		else popup.hidePopup();
 	}
 
 	@Override
@@ -80,13 +83,16 @@ public class ApplicationMenuItem extends Composite implements HasText {
 			public void onWillOpen() {
 				arrow.addStyleName(style.arrowUp());
 				textLabel.addStyleName(style.menuItemSelected());
+				isOpen = true;
 			}
 		});
 		popup.onClose(new PopupCloseListener() {
+
 			@Override
 			public void onHasClosed() {
 				arrow.removeStyleName(style.arrowUp());
 				textLabel.removeStyleName(style.menuItemSelected());
+				isOpen = false;
 			}
 		});
 		popup.setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
