@@ -16,17 +16,17 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 
 	@Override
 	public void show() {
-		getWidgetJqueryElement().clearQueue().fadeTo(1, 0).hide().slideDown(DEFAULT_SLIDE_DURATION).fadeTo(DEFAULT_FADE_DURATION, 1);
+		show(null);
 	}
 
 	@Override
 	public void show(final AnimationCallback callback) {
-		getWidgetJqueryElement().clearQueue().fadeTo(1, 0).hide().slideDown(DEFAULT_SLIDE_DURATION).fadeTo(DEFAULT_FADE_DURATION, 1, callback);
+		getWidgetJqueryElement().clearQueue().hide().fadeTo(1, 0).slideDown(DEFAULT_SLIDE_DURATION).fadeTo(DEFAULT_FADE_DURATION, 1, callback);
 	}
 
 	@Override
 	public void hide() {
-		getWidgetJqueryElement().clearQueue().fadeTo(DEFAULT_FADE_DURATION, 0).slideUp(DEFAULT_SLIDE_DURATION);
+		hide(null);
 	}
 
 	@Override
