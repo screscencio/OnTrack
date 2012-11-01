@@ -29,6 +29,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -170,7 +171,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		if (shouldShowScopeColor) {
 			final Style s = draggableAnchor.getElement().getStyle();
 
-			if (progress.isUnderWork()) s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope));
+			if (progress.isUnderWork()) s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope).toCssRepresentation());
 			else s.clearBackgroundColor();
 		}
 
@@ -264,6 +265,11 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		fireScopeSelectionEvent();
 	}
 
+	@UiHandler("panel")
+	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
+		SERVICE_PROVIDER.getAnnotationService().showAnnotationsFor(scope.getId());
+	}
+
 	private void fireScopeSelectionEvent() {
 		SERVICE_PROVIDER.getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 	}
@@ -274,6 +280,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	public void setHasOpenImpediments(final boolean hasOpenImpediments) {
 		statusBar.setStyleName(style.statusBarOpenImpediment(), hasOpenImpediments);
+
 		final Color color = hasOpenImpediments ? Color.RED : Color.GRAY;
 		new BgColorAnimation(internalPanel, color).animate();
 	}

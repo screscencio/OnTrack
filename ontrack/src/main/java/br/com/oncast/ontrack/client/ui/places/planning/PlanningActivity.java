@@ -6,6 +6,7 @@ import java.util.List;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
@@ -64,6 +65,7 @@ public class PlanningActivity extends AbstractActivity {
 		panel.setWidget(view);
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingMenu());
 		registrations.add(ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
+		registrations.add(ShortcutService.register(view, view.getApplicationMenu(), ApplicationMenuShortcutMapping.values()));
 		registrations.add(ShortcutService.register(view, this, PlanningShortcutMappings.values()));
 
 		view.setVisible(true);
@@ -77,7 +79,7 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getClientApplicationStateService().restore(place.getSelectedScopeId());
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
+		SERVICE_PROVIDER.getClientMetricService().onBrowserLoadEnd();
 	}
 
 	private Release getFirstReleaseInProgress(final ProjectContext context) {

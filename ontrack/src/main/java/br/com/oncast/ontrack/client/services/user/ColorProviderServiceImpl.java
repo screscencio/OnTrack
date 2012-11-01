@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.client.ui.events.ScopeAddMemberSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -31,8 +32,8 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 
 	private static final double SCOPE_COLOR_ALPHA = 0.4;
 	private HashMap<User, Scope> userSelectionMap;
-	private HashMap<User, String> userColorMap;
-	private HashMap<Scope, String> scopeColorMap;
+	private HashMap<User, Color> userColorMap;
+	private HashMap<Scope, Color> scopeColorMap;
 
 	private final ColorPicker colorPicker;
 	private final EventBus eventBus;
@@ -43,8 +44,8 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 		this.colorPicker = colorPicker;
 		this.eventBus = eventBus;
 		userSelectionMap = new HashMap<User, Scope>();
-		userColorMap = new HashMap<User, String>();
-		scopeColorMap = new HashMap<Scope, String>();
+		userColorMap = new HashMap<User, Color>();
+		scopeColorMap = new HashMap<Scope, Color>();
 
 		eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 			private Scope selectedScope;
@@ -114,7 +115,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 	}
 
 	@Override
-	public synchronized String getSelectionColorFor(final User user) {
+	public synchronized Color getSelectionColorFor(final User user) {
 		if (!userColorMap.containsKey(user)) userColorMap.put(user, colorPicker.pick());
 		return userColorMap.get(user);
 	}
@@ -135,7 +136,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 	}
 
 	@Override
-	public String getColorFor(final Scope scope) {
+	public Color getColorFor(final Scope scope) {
 		if (!scopeColorMap.containsKey(scope)) scopeColorMap.put(scope, colorPicker.pick(SCOPE_COLOR_ALPHA));
 		return scopeColorMap.get(scope);
 	}

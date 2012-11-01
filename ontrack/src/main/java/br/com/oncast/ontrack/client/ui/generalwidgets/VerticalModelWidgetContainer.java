@@ -83,7 +83,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 			hasChanged = true;
 		}
 
-		listener.onUpdateComplete(hasChanged);
+		if (listener != null) listener.onUpdateComplete(hasChanged);
 		return hasChanged;
 	}
 

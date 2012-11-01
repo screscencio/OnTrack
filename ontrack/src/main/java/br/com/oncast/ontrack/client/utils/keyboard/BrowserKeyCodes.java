@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.utils.keyboard;
 
-
 public class BrowserKeyCodes {
 
 	private BrowserKeyCodes() {}
@@ -33,12 +32,6 @@ public class BrowserKeyCodes {
 
 	public static final int KEY_F2 = 113;
 
-	public static final int KEY_F = 70;
-
-	public static final int KEY_Y = 89;
-
-	public static final int KEY_Z = 90;
-
 	public static final int KEY_LEFT = 37;
 
 	public static final int KEY_UP = 38;
@@ -67,13 +60,25 @@ public class BrowserKeyCodes {
 	 */
 	public static final int KEY_5 = 53;
 
-	public static final int KEY_U = 85;
-
-	public static final int KEY_SLASH = 191;
-
 	public static final int KEY_A = 65;
 
+	public static final int KEY_F = 70;
+
+	public static final int KEY_M = 77;
+
+	public static final int KEY_N = 78;
+
+	public static final int KEY_P = 80;
+
 	public static final int KEY_R = 82;
+
+	public static final int KEY_U = 85;
+
+	public static final int KEY_Y = 89;
+
+	public static final int KEY_Z = 90;
+
+	public static final int KEY_SLASH = 191;
 
 	public static boolean isArrowKey(final int nativeKeyCode) {
 		if (nativeKeyCode == KEY_LEFT || nativeKeyCode == KEY_UP || nativeKeyCode == KEY_RIGHT || nativeKeyCode == KEY_DOWN) return true;

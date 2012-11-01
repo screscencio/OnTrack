@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.services.user;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
@@ -36,6 +35,7 @@ import br.com.oncast.ontrack.client.ui.events.ScopeMemberSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -88,7 +88,7 @@ public class MembersScopeSelectionServiceImplTest {
 		MockitoAnnotations.initMocks(this);
 
 		when(contextProviderService.getCurrentProjectContext()).thenReturn(currentContext);
-		when(colorPicker.pick()).thenReturn("a color");
+		when(colorPicker.pick()).thenReturn(new Color("#ffaaee"));
 
 		user1 = createUser();
 		scope1 = createScope();
@@ -163,13 +163,12 @@ public class MembersScopeSelectionServiceImplTest {
 		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), createScope().getId()));
 		final ScopeAddMemberSelectionEvent event = assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, null);
 		assertNotNull(event.getSelectionColor());
-		assertFalse(event.getSelectionColor().isEmpty());
 	}
 
 	@Test
 	public void memberSelectionShouldSendTheSameColorForSameMember() throws Exception {
 		userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), createScope().getId()));
-		final String user1Color = assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, null).getSelectionColor();
+		final Color user1Color = assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, null).getSelectionColor();
 
 		for (int i = 0; i < 10; i++) {
 			userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(user1.getId(), createScope().getId()));

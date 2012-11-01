@@ -57,6 +57,9 @@ public class AssertTestUtils {
 	}
 
 	public static <T> void assertContainsAll(final Collection<T> actual, final Collection<T> expected) {
-		assertTrue(actual.containsAll(expected));
+		for (final T i : expected) {
+			assertTrue("The item " + i.toString() + " is missing", actual.contains(i));
+		}
+		assertEquals("There are more elements than expected: " + actual.toString(), expected.size(), actual.size());
 	}
 }

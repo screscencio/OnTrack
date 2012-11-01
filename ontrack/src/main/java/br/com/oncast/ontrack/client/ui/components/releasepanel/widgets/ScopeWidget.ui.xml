@@ -28,6 +28,7 @@
 		
 		.panel:hover {
 			background-color: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_CLOSED;
+			cursor: pointer;
 		}
 		
 		.selected {

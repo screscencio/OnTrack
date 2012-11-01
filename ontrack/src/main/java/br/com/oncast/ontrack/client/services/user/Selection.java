@@ -1,13 +1,14 @@
 package br.com.oncast.ontrack.client.services.user;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 public class Selection {
 
 	private final User user;
-	private String color;
+	private Color color;
 
-	public Selection(final User user, final String selectionColor) {
+	public Selection(final User user, final Color selectionColor) {
 		this.user = user;
 		this.color = selectionColor;
 	}
@@ -20,7 +21,7 @@ public class Selection {
 		return user;
 	}
 
-	public String getColor() {
+	public Color getColor() {
 		return color;
 	}
 

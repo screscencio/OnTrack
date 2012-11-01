@@ -80,6 +80,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 
 	@UiHandler("visualizationLabel")
 	protected void onDoubleClick(final DoubleClickEvent event) {
+		event.preventDefault();
 		switchToEdit();
 	}
 

@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 
@@ -75,7 +76,7 @@ public class FakeScopeTreeItem extends ScopeTreeItem implements IsTreeItem {
 	public void showOpenImpedimentIcon(final boolean hasOpenImpediments) {}
 
 	@Override
-	public void addSelectedMember(final User member, final String selectionColor) {}
+	public void addSelectedMember(final User member, final Color selectionColor) {}
 
 	@Override
 	public void removeSelectedMember(final User member) {}

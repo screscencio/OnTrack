@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
@@ -28,9 +31,11 @@ public class ProgressActivity extends AbstractActivity {
 	private ProjectContext projectContext;
 	private Release release;
 
-	private HandlerRegistration registration;
+	private final List<HandlerRegistration> registrations;
 
 	public ProgressActivity(final ProgressPlace place) {
+		registrations = new ArrayList<HandlerRegistration>();
+
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 
 		try {
@@ -79,7 +84,8 @@ public class ProgressActivity extends AbstractActivity {
 		kanbanActionSyncController.registerActionExecutionListener();
 		view.registerActionExecutionHandler(SERVICE_PROVIDER.getActionExecutionService());
 
-		registration = ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values());
+		registrations.add(ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
+		registrations.add(ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingPanel());
 
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
@@ -89,7 +95,9 @@ public class ProgressActivity extends AbstractActivity {
 	public void onStop() {
 		view.unregisterActionExecutionHandler(SERVICE_PROVIDER.getActionExecutionService());
 		kanbanActionSyncController.unregisterActionExecutionListener();
-		registration.removeHandler();
+		for (final HandlerRegistration registration : registrations) {
+			registration.removeHandler();
+		}
 		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
 	}
 
