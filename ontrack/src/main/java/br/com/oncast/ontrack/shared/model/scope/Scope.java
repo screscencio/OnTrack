@@ -180,8 +180,7 @@ public class Scope implements Serializable {
 		final ArrayList<Scope> l = new ArrayList<Scope>();
 		if (this.isLeaf()) l.add(this);
 		for (final Scope scope : childrenList) {
-			if (scope.isLeaf()) l.add(scope);
-			else l.addAll(scope.getAllLeafs());
+			l.addAll(scope.getAllLeafs());
 		}
 		return l;
 	}

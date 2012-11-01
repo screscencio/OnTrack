@@ -22,8 +22,10 @@ public class KanbanFactory {
 	private static void addColumnsFrom(final Kanban kanban, final Release release) {
 		final HashSet<String> addedColumns = new HashSet<String>();
 		for (final Scope scope : release.getScopeList()) {
-			final String description = scope.getProgress().getDescription();
-			if (addedColumns.add(description)) kanban.appendColumn(description);
+			for (final Scope task : scope.getAllLeafs()) {
+				final String description = task.getProgress().getDescription();
+				if (addedColumns.add(description)) kanban.appendColumn(description);
+			}
 		}
 	}
 

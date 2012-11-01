@@ -50,14 +50,13 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 		}, new AnimatedHorizontalContainer());
 	}
 
-	private final Kanban kanban;
+	private Kanban kanban;
 	private final Release release;
 	final DragAndDropManager scopeDragAndDropMangager;
 	final DragAndDropManager kanbanColumnDragAndDropMangager;
 	private final ProgressPanelInteractionHandler interactionHandler;
 
 	public KanbanPanel(final Kanban kanban, final Release release) {
-		this.kanban = kanban;
 		this.release = release;
 
 		scopeDragAndDropMangager = new DragAndDropManager();
@@ -77,11 +76,12 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns.getCallPanel(), new KanbanColumnDropControllerFactory());
 		addStyleName("kanban");
 
-		update();
+		update(kanban);
 	}
 
 	@Override
-	public void update() {
+	public void update(final Kanban kanban) {
+		this.kanban = kanban;
 		notStartedColumn.update();
 		draggableColumns.update(kanban.getNonStaticColumns());
 		doneColumn.update();
@@ -91,5 +91,4 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 	public void setActionExecutionService(final ActionExecutionService actionExecutionService) {
 		interactionHandler.configureActionExecutionRequestHandler(actionExecutionService);
 	}
-
 }

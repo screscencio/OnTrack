@@ -13,7 +13,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInteractionHandler {
 
 	private ActionExecutionRequestHandler actionExecutionRequestHandler;
-	private Release currentRelease;
+	private final Release currentRelease;
 
 	public ProgressPanelInteractionHandler(final Release release) {
 		currentRelease = release;
@@ -50,9 +50,5 @@ public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInter
 
 	public void configureActionExecutionRequestHandler(final ActionExecutionRequestHandler actionExecutionRequestHandler) {
 		this.actionExecutionRequestHandler = actionExecutionRequestHandler;
-	}
-
-	public void configureCurrentRelease(final Release release) {
-		currentRelease = release;
 	}
 }

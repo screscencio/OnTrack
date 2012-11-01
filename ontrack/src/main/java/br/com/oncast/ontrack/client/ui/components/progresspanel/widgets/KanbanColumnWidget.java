@@ -158,7 +158,6 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 			for (final Scope task : scope.getAllLeafs()) {
 				final Progress progress = task.getProgress();
 				final String progressDescription = progress.getState() == NOT_STARTED ? DEFAULT_NOT_STARTED_NAME : progress.getDescription();
-
 				if (progressDescription.equals(column.getDescription())) tasks.add(task);
 			}
 		}
