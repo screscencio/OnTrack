@@ -7,10 +7,9 @@ import br.com.oncast.ontrack.client.services.notification.NotificationClientUtil
 import br.com.oncast.ontrack.client.services.notification.NotificationListChangeListener;
 import br.com.oncast.ontrack.client.services.notification.NotificationReadStateUpdateCallback;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
@@ -56,7 +55,7 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected VerticalModelWidgetContainer<Notification, NotificationWidget> notificationContainer;
+	protected ModelWidgetContainer<Notification, NotificationWidget> notificationContainer;
 
 	private final Timer timer = new Timer() {
 
@@ -67,17 +66,13 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 	};
 
 	@UiFactory
-	protected VerticalModelWidgetContainer<Notification, NotificationWidget> createNotificationContainer() {
-		return new VerticalModelWidgetContainer<Notification, NotificationWidget>(new ModelWidgetFactory<Notification, NotificationWidget>() {
+	protected ModelWidgetContainer<Notification, NotificationWidget> createNotificationContainer() {
+		return new ModelWidgetContainer<Notification, NotificationWidget>(new ModelWidgetFactory<Notification, NotificationWidget>() {
 
 			@Override
 			public NotificationWidget createWidget(final Notification modelBean) {
 				return new NotificationWidget(modelBean);
 			}
-		}, new ModelWidgetContainerListener() {
-
-			@Override
-			public void onUpdateComplete(final boolean hasChanged) {}
 		});
 	}
 

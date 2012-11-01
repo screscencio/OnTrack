@@ -11,43 +11,32 @@ import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite {
+public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite {
 
-	private static VerticalModelWidgetContainerUiBinder uiBinder = GWT.create(VerticalModelWidgetContainerUiBinder.class);
+	private static ModelWidgetContainerUiBinder uiBinder = GWT.create(ModelWidgetContainerUiBinder.class);
 
 	@SuppressWarnings("rawtypes")
-	interface VerticalModelWidgetContainerUiBinder extends UiBinder<Widget, VerticalModelWidgetContainer> {}
+	interface ModelWidgetContainerUiBinder extends UiBinder<Widget, ModelWidgetContainer> {}
 
 	@UiField(provided = true)
-	protected AnimatedVerticalContainer verticalContainer;
+	protected AnimatedCellContainer<?> cellContainer;
 
 	private final Map<T, E> widgetMap;
 
 	private final ModelWidgetFactory<T, E> modelWidgetFactory;
 
-	private ModelWidgetContainerListener listener = new NullModelWidgetContainerListener();
+	private final ModelWidgetContainerListener listener = new NullModelWidgetContainerListener();
 
-	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory) {
+	public ModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory) {
 		this(modelWidgetFactory, new AnimatedVerticalContainer());
 	}
 
-	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final AnimatedVerticalContainer verticalContainer) {
+	public ModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final AnimatedCellContainer<?> cellContainer) {
 		this.modelWidgetFactory = modelWidgetFactory;
-		this.verticalContainer = verticalContainer;
 		widgetMap = new HashMap<T, E>();
+		this.cellContainer = cellContainer;
 
 		initWidget(uiBinder.createAndBindUi(this));
-	}
-
-	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final ModelWidgetContainerListener listener) {
-		this(modelWidgetFactory);
-		this.listener = listener;
-	}
-
-	public VerticalModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final AnimatedVerticalContainer verticalContainer,
-			final ModelWidgetContainerListener listener) {
-		this(modelWidgetFactory, verticalContainer);
-		this.listener = listener;
 	}
 
 	public boolean update(final List<T> modelBeanList) {
@@ -63,22 +52,22 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 				continue;
 			}
 
-			final int widgetIndex = verticalContainer.getWidgetIndex(modelWidget);
+			final int widgetIndex = cellContainer.getWidgetIndex(modelWidget);
 			if (widgetIndex != i) {
 				for (int j = widgetIndex - 1; j >= i; j--) {
-					@SuppressWarnings("unchecked") final E missPlacedWidget = (E) verticalContainer.getWidget(j);
-					if (!modelBeanList.contains(missPlacedWidget.getModelObject())) verticalContainer.remove(j);
+					@SuppressWarnings("unchecked") final E missPlacedWidget = (E) cellContainer.getWidget(j);
+					if (!modelBeanList.contains(missPlacedWidget.getModelObject())) cellContainer.remove(j);
 				}
-				verticalContainer.move(modelWidget, i);
+				cellContainer.move(modelWidget, i);
 				hasChanged = true;
 			}
 
 			hasChanged |= modelWidget.update();
 		}
 
-		for (int i = verticalContainer.getWidgetCount() - 1; i >= modelBeanList.size(); i--) {
-			@SuppressWarnings("unchecked") final E modelWidget = (E) verticalContainer.getWidget(i);
-			verticalContainer.remove(i);
+		for (int i = cellContainer.getWidgetCount() - 1; i >= modelBeanList.size(); i--) {
+			@SuppressWarnings("unchecked") final E modelWidget = (E) cellContainer.getWidget(i);
+			cellContainer.remove(i);
 			widgetMap.remove(modelWidget.getModelObject());
 			hasChanged = true;
 		}
@@ -89,7 +78,7 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 
 	private E createChildModelWidgetAt(final T modelBean, final int index) {
 		final E modelWidget = modelWidgetFactory.createWidget(modelBean);
-		verticalContainer.insert(modelWidget, index);
+		cellContainer.insert(modelWidget, index);
 		widgetMap.put(modelBean, modelWidget);
 
 		return modelWidget;
@@ -104,11 +93,11 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	}
 
 	public int getWidgetCount() {
-		return verticalContainer.getWidgetCount();
+		return cellContainer.getWidgetCount();
 	}
 
 	public CellPanel getCallPanel() {
-		return verticalContainer.getCellPanel();
+		return cellContainer.getCellPanel();
 	}
 
 	public E getWidgetFor(final T modelBean) {
@@ -118,19 +107,19 @@ public class VerticalModelWidgetContainer<T, E extends ModelWidget<T>> extends C
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if (!(obj instanceof VerticalModelWidgetContainer)) return false;
+		if (!(obj instanceof ModelWidgetContainer)) return false;
 
-		return widgetMap.equals(((VerticalModelWidgetContainer<?, ?>) obj).widgetMap);
+		return widgetMap.equals(((ModelWidgetContainer<?, ?>) obj).widgetMap);
 	}
 
 	public void clear() {
-		verticalContainer.clear();
+		cellContainer.clear();
 		widgetMap.clear();
 	}
 
 	@SuppressWarnings("unchecked")
 	public E getWidget(final int i) {
-		return (E) verticalContainer.getWidget(i);
+		return (E) cellContainer.getWidget(i);
 	}
 
 	private class NullModelWidgetContainerListener implements ModelWidgetContainerListener {

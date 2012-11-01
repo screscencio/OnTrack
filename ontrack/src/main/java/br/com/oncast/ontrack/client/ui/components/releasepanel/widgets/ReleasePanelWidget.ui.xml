@@ -59,6 +59,6 @@
 				<ui:msg description="release creation help message">Select a Scope and hit '@' key to attach the Scope to a Release</ui:msg>
 			</g:Label>
 		</g:FlowPanel>
-		<misc:VerticalModelWidgetContainer ui:field="releaseContainer" styleName="{style.releases}" />
+		<misc:ModelWidgetContainer ui:field="releaseContainer" styleName="{style.releases}" />
 	</layout:ApplicationPopupBoxContainer>
 </ui:UiBinder> 

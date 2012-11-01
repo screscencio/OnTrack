@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
@@ -45,11 +45,11 @@ public class AnnotationsWidget extends Composite {
 	protected Widget separator;
 
 	@UiField
-	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> annotationsWidgetContainer;
+	protected ModelWidgetContainer<Annotation, AnnotationTopic> annotationsWidgetContainer;
 
 	@UiFactory
-	protected VerticalModelWidgetContainer<Annotation, AnnotationTopic> createAnnotationsContainer() {
-		return new VerticalModelWidgetContainer<Annotation, AnnotationTopic>(new ModelWidgetFactory<Annotation, AnnotationTopic>() {
+	protected ModelWidgetContainer<Annotation, AnnotationTopic> createAnnotationsContainer() {
+		return new ModelWidgetContainer<Annotation, AnnotationTopic>(new ModelWidgetFactory<Annotation, AnnotationTopic>() {
 			@Override
 			public AnnotationTopic createWidget(final Annotation modelBean) {
 				return new AnnotationTopic(subjectId, modelBean);

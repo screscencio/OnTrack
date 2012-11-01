@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSync
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
@@ -41,7 +42,8 @@ public class ProgressActivity extends AbstractActivity {
 		try {
 			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(place.getRequestedProjectId());
 			release = projectContext.findRelease(place.getRequestedReleaseId());
-			view = new ProgressPanel(release);
+			final Kanban kanban = projectContext.getKanban(release);
+			view = new ProgressPanel(release, kanban);
 			view.getKanbanPanel().setActionExecutionService(SERVICE_PROVIDER.getActionExecutionService());
 
 			kanbanActionSyncController = new KanbanActionSyncController(SERVICE_PROVIDER.getActionExecutionService(), release, new Display() {
@@ -102,7 +104,7 @@ public class ProgressActivity extends AbstractActivity {
 	}
 
 	protected void updateViewData() {
-		view.getKanbanPanel().configureKanbanPanel(projectContext.getKanban(release), release);
+		view.getKanbanPanel().update();
 	}
 
 	private void exitToPlanningPlace() {

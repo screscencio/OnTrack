@@ -1,5 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
+import static br.com.oncast.ontrack.shared.model.progress.Progress.DEFAULT_NOT_STARTED_NAME;
+import static br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState.NOT_STARTED;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
@@ -7,11 +11,13 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.TextInpu
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
@@ -28,7 +34,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class KanbanColumnWidget extends Composite {
+public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanColumn> {
 
 	private static KanbanColumnWidgetUiBinder uiBinder = GWT.create(KanbanColumnWidgetUiBinder.class);
 
@@ -64,19 +70,19 @@ public class KanbanColumnWidget extends Composite {
 	@UiField
 	protected KanbanScopeContainer scopeContainer;
 
-	private ModelWidgetContainerListener containerUpdateListener;
-
-	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
-
 	private final KanbanColumn column;
 
 	private final ProgressPanelWidgetInteractionHandler interactionHandler;
 
 	private final int insertionIndex;
 
+	private final DragAndDropManager dragAndDropManager;
+
+	private final Release release;
+
 	@UiFactory
 	protected KanbanScopeContainer createScopeContainer() {
-		return new KanbanScopeContainer(scopeWidgetFactory, containerUpdateListener);
+		return new KanbanScopeContainer(column, new KanbanScopeWidgetFactory(dragAndDropManager, interactionHandler));
 	}
 
 	@UiFactory
@@ -84,20 +90,21 @@ public class KanbanColumnWidget extends Composite {
 		return new KanbanColumnCreateWidget(interactionHandler, insertionIndex);
 	}
 
-	public KanbanColumnWidget(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
-			final ProgressPanelWidgetInteractionHandler interactionHandler, final int insertionIndex) {
+	public KanbanColumnWidget(final Release release, final int insertionIndex, final KanbanColumn column, final DragAndDropManager dragAndDropManager,
+			final ProgressPanelWidgetInteractionHandler interactionHandler) {
+		this.release = release;
 		this.column = column;
-		this.scopeWidgetFactory = scopeWidgetFactory;
+		this.dragAndDropManager = dragAndDropManager;
 		this.interactionHandler = interactionHandler;
 		this.insertionIndex = insertionIndex;
 		initWidget(uiBinder.createAndBindUi(this));
-		scopeContainer.setKanbanColumn(column);
-		this.title.setText(column.getDescription());
 		if (column.isStaticColumn()) {
 			draggableAnchor.setVisible(false);
 			deleteButton.setVisible(false);
 			if (ProgressState.DONE.getDescription().equals(column.getDescription())) createColumn.setVisible(false);
 		}
+
+		update();
 	}
 
 	@UiHandler("title")
@@ -121,11 +128,6 @@ public class KanbanColumnWidget extends Composite {
 		interactionHandler.onKanbanColumnRemove(column);
 	}
 
-	public KanbanColumnWidget addScopes(final List<Scope> scopes) {
-		scopeContainer.update(scopes);
-		return this;
-	}
-
 	public KanbanScopeContainer getScopeContainter() {
 		return scopeContainer;
 	}
@@ -140,5 +142,31 @@ public class KanbanColumnWidget extends Composite {
 
 	public void setHighlight(final boolean shouldHighlight) {
 		highlightBlock.setStyleName(style.highlight(), shouldHighlight);
+	}
+
+	@Override
+	public boolean update() {
+		this.title.setText(column.getDescription());
+		return scopeContainer.update(getTasks());
+	}
+
+	private List<Scope> getTasks() {
+		final List<Scope> tasks = new ArrayList<Scope>();
+		for (final Scope scope : release.getScopeList()) {
+			if (!scope.getProgress().isUnderWork()) continue;
+
+			for (final Scope task : scope.getAllLeafs()) {
+				final Progress progress = task.getProgress();
+				final String progressDescription = progress.getState() == NOT_STARTED ? DEFAULT_NOT_STARTED_NAME : progress.getDescription();
+
+				if (progressDescription.equals(column.getDescription())) tasks.add(task);
+			}
+		}
+		return tasks;
+	}
+
+	@Override
+	public KanbanColumn getModelObject() {
+		return column;
 	}
 }

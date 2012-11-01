@@ -62,7 +62,7 @@
 				</g:cell>
 				<g:Label ui:field="remove" text="x" styleName="{style.remove}"/>
 			</g:HorizontalPanel>
-			<misc:VerticalModelWidgetContainer ui:field="items" />
+			<misc:ModelWidgetContainer ui:field="items" />
 			<g:DeckPanel ui:field="addItemDeck" styleName="{style.addItemDeck}">
 				<g:Label ui:field="addItemLabel" styleName="{style.addItemLabel}">
 					<ui:msg description="add item label">+ add item</ui:msg>

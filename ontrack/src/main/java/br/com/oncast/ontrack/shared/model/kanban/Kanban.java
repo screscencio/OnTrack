@@ -46,12 +46,24 @@ public class Kanban extends SimpleKanban implements Serializable {
 		isLocked = bool;
 	}
 
+	public KanbanColumn getDoneColumn() {
+		return doneColumn;
+	}
+
+	public KanbanColumn getNotStartedColumn() {
+		return notStartedColumn;
+	}
+
 	@Override
 	public List<KanbanColumn> getColumns() {
 		final List<KanbanColumn> columns = fullKanban.getColumns();
 		columns.add(0, notStartedColumn);
 		columns.add(doneColumn);
 		return columns;
+	}
+
+	public List<KanbanColumn> getNonStaticColumns() {
+		return fullKanban.getColumns();
 	}
 
 	public boolean hasNonInferedColumn(final String columnDescription) {
@@ -173,5 +185,9 @@ public class Kanban extends SimpleKanban implements Serializable {
 
 	private boolean kanbanWithoutInferenceContainsColumn(final String columnDescription) {
 		return kanbanWithoutInference.getColumn(columnDescription) != null;
+	}
+
+	public int size() {
+		return getColumns().size();
 	}
 }

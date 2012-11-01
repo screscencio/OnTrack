@@ -15,43 +15,37 @@ public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInter
 	private ActionExecutionRequestHandler actionExecutionRequestHandler;
 	private Release currentRelease;
 
+	public ProgressPanelInteractionHandler(final Release release) {
+		currentRelease = release;
+	}
+
 	@Override
 	public void onDragAndDropPriorityRequest(final Scope scope, final int newPriority) {}
 
 	@Override
 	public void onDragAndDropProgressRequest(final Scope scope, final String newProgress) {
-		assureConfigured();
 		actionExecutionRequestHandler.onUserActionExecutionRequest(new ScopeDeclareProgressAction(scope.getId(), newProgress));
 	}
 
 	@Override
 	public void onKanbanColumnMove(final KanbanColumn column, final int index) {
-		assureConfigured();
 		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnMoveAction(currentRelease.getId(), column.getDescription(), index));
 	}
 
 	@Override
 	public void onKanbanColumnRemove(final KanbanColumn column) {
-		assureConfigured();
 		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnRemoveAction(currentRelease.getId(), column.getDescription()));
 	}
 
 	@Override
 	public void onKanbanColumnRename(final KanbanColumn column, final String newDescription) {
-		assureConfigured();
 		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnRenameAction(currentRelease.getId(), column.getDescription(),
 				newDescription));
 	}
 
 	@Override
 	public void onKanbanColumnCreate(final String description, final int index) {
-		assureConfigured();
 		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnCreateAction(currentRelease.getId(), description, true, index));
-	}
-
-	private void assureConfigured() {
-		if (currentRelease == null) throw new RuntimeException(
-				"This class was not yet configured.");
 	}
 
 	public void configureActionExecutionRequestHandler(final ActionExecutionRequestHandler actionExecutionRequestHandler) {

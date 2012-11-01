@@ -5,9 +5,8 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
@@ -48,7 +47,7 @@ public class ChecklistsContainerWidget extends Composite {
 	DeckPanel addChecklistDeck;
 
 	@UiField
-	VerticalModelWidgetContainer<Checklist, ChecklistWidget> checklists;
+	ModelWidgetContainer<Checklist, ChecklistWidget> checklists;
 
 	@UiField
 	DefaultTextedTextBox newChecklistTitle;
@@ -60,8 +59,8 @@ public class ChecklistsContainerWidget extends Composite {
 	private boolean justCreatedAnChecklist = false;
 
 	@UiFactory
-	protected VerticalModelWidgetContainer<Checklist, ChecklistWidget> createChecklists() {
-		return new VerticalModelWidgetContainer<Checklist, ChecklistWidget>(new ModelWidgetFactory<Checklist, ChecklistWidget>() {
+	protected ModelWidgetContainer<Checklist, ChecklistWidget> createChecklists() {
+		return new ModelWidgetContainer<Checklist, ChecklistWidget>(new ModelWidgetFactory<Checklist, ChecklistWidget>() {
 			@Override
 			public ChecklistWidget createWidget(final Checklist modelBean) {
 				final ChecklistWidget checklistWidget = new ChecklistWidget(subjectId, modelBean);
@@ -71,10 +70,6 @@ public class ChecklistsContainerWidget extends Composite {
 				}
 				return checklistWidget;
 			}
-		}, new ModelWidgetContainerListener() {
-
-			@Override
-			public void onUpdateComplete(final boolean hasChanged) {}
 		});
 	}
 

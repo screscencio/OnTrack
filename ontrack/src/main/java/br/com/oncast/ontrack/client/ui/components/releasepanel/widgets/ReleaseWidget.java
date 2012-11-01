@@ -17,7 +17,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
@@ -175,12 +174,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
-		return new ReleaseWidgetContainer(releaseWidgetFactory, containerUpdateListener);
+		return new ReleaseWidgetContainer(releaseWidgetFactory);
 	}
 
 	@UiFactory
 	protected ScopeWidgetContainer createScopeContainer() {
-		return new ScopeWidgetContainer(scopeWidgetFactory, containerUpdateListener);
+		return new ScopeWidgetContainer(scopeWidgetFactory);
 	}
 
 	@UiFactory
@@ -193,8 +192,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
 
 	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
-
-	private final ModelWidgetContainerListener containerUpdateListener;
 
 	private boolean isContainerStateOpen = true;
 
@@ -238,8 +235,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				return false;
 			}
 		};
-
-		this.containerUpdateListener = createContainerUpdateListener();
 
 		initWidget(uiBinder.createAndBindUi(this));
 		setupDetails();
@@ -337,14 +332,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		}));
 		mouseCommandsMenu = new MouseCommandsMenu(itens);
 		return mouseCommandsMenu;
-	}
-
-	// TODO Is this necessary ?
-	private ModelWidgetContainerListener createContainerUpdateListener() {
-		return new ModelWidgetContainerListener() {
-			@Override
-			public void onUpdateComplete(final boolean hasChanged) {}
-		};
 	}
 
 	private boolean updateScopeWidgets() {

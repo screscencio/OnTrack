@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.organization.widgets.ProjectSummaryWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndWidgetContainer;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 
@@ -26,7 +26,7 @@ public class OrganizationPanel extends Composite {
 	interface OrganizationPanelUiBinder extends UiBinder<Widget, OrganizationPanel> {}
 
 	@UiField(provided = true)
-	VerticalModelWidgetContainer<ProjectRepresentation, ProjectSummaryWidget> projects;
+	ModelWidgetContainer<ProjectRepresentation, ProjectSummaryWidget> projects;
 
 	@UiField
 	ApplicationMenuAndWidgetContainer rootPanel;
@@ -37,7 +37,7 @@ public class OrganizationPanel extends Composite {
 	}
 
 	public OrganizationPanel() {
-		projects = new VerticalModelWidgetContainer<ProjectRepresentation, ProjectSummaryWidget>(
+		projects = new ModelWidgetContainer<ProjectRepresentation, ProjectSummaryWidget>(
 				new ModelWidgetFactory<ProjectRepresentation, ProjectSummaryWidget>() {
 
 					@Override

@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.user.UsersStatusService;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
@@ -33,33 +33,33 @@ public class MembersListWidget extends Composite {
 	interface MembersListWidgetUiBinder extends UiBinder<Widget, MembersListWidget> {}
 
 	@UiField(provided = true)
-	VerticalModelWidgetContainer<User, ProjectMemberWidget> membersList;
+	ModelWidgetContainer<User, ProjectMemberWidget> membersList;
 
 	@UiField(provided = true)
-	VerticalModelWidgetContainer<User, ProjectMemberWidget> activeMembersList;
+	ModelWidgetContainer<User, ProjectMemberWidget> activeMembersList;
 
 	@UiField(provided = true)
-	VerticalModelWidgetContainer<User, ProjectMemberWidget> onlineMembersList;
+	ModelWidgetContainer<User, ProjectMemberWidget> onlineMembersList;
 
 	@UiField
 	SimplePanel loadingPanel;
 
 	public MembersListWidget() {
-		membersList = new VerticalModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
+		membersList = new ModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
 			@Override
 			public ProjectMemberWidget createWidget(final User modelBean) {
 				return new ProjectMemberWidget(modelBean, UserStatus.OFFLINE);
 			}
 		});
 
-		activeMembersList = new VerticalModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
+		activeMembersList = new ModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
 			@Override
 			public ProjectMemberWidget createWidget(final User modelBean) {
 				return new ProjectMemberWidget(modelBean, UserStatus.ACTIVE);
 			}
 		});
 
-		onlineMembersList = new VerticalModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
+		onlineMembersList = new ModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
 			@Override
 			public ProjectMemberWidget createWidget(final User modelBean) {
 				return new ProjectMemberWidget(modelBean, UserStatus.ONLINE);

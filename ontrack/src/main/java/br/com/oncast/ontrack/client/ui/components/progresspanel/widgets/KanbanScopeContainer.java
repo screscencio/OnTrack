@@ -1,21 +1,21 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedVerticalContainer;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.VerticalPanelWithSpacer;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
-public class KanbanScopeContainer extends VerticalModelWidgetContainer<Scope, ScopeWidget> {
+public class KanbanScopeContainer extends ModelWidgetContainer<Scope, ScopeWidget> {
 
-	private KanbanColumn kanbanColumn;
+	private final KanbanColumn kanbanColumn;
 
-	public KanbanScopeContainer(final ModelWidgetFactory<Scope, ScopeWidget> modelWidgetFactory, final ModelWidgetContainerListener listener) {
-		super(modelWidgetFactory, createVerticalContainer(), listener);
+	public KanbanScopeContainer(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> modelWidgetFactory) {
+		super(modelWidgetFactory, createVerticalContainer());
+		this.kanbanColumn = column;
 	}
 
 	private static AnimatedVerticalContainer createVerticalContainer() {
@@ -26,10 +26,6 @@ public class KanbanScopeContainer extends VerticalModelWidgetContainer<Scope, Sc
 
 	public KanbanColumn getKanbanColumn() {
 		return kanbanColumn;
-	}
-
-	public void setKanbanColumn(final KanbanColumn kanbanColumn) {
-		this.kanbanColumn = kanbanColumn;
 	}
 
 }

@@ -13,9 +13,8 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDet
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ItemDroppedListener;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ReleaseScopeItemDragHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
@@ -65,7 +64,7 @@ public class ReleasePanelWidget extends Composite {
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected VerticalModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
+	protected ModelWidgetContainer<Release, ReleaseWidget> releaseContainer;
 
 	@UiField
 	protected FlowPanel noReleaseText;
@@ -194,11 +193,8 @@ public class ReleasePanelWidget extends Composite {
 	}
 
 	@UiFactory
-	protected VerticalModelWidgetContainer<Release, ReleaseWidget> createReleaseContainer() {
-		return new VerticalModelWidgetContainer<Release, ReleaseWidget>(releaseWidgetFactory, new ModelWidgetContainerListener() {
-			@Override
-			public void onUpdateComplete(final boolean hasChanged) {}
-		});
+	protected ModelWidgetContainer<Release, ReleaseWidget> createReleaseContainer() {
+		return new ModelWidgetContainer<Release, ReleaseWidget>(releaseWidgetFactory);
 	}
 
 	private ReleaseScopeItemDragHandler createScopeItemDragHandler(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {

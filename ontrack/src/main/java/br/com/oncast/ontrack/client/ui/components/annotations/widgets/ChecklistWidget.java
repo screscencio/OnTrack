@@ -10,9 +10,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainerListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAddItemAction;
@@ -62,7 +61,7 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	Label remove;
 
 	@UiField
-	VerticalModelWidgetContainer<ChecklistItem, ChecklistItemWidget> items;
+	ModelWidgetContainer<ChecklistItem, ChecklistItemWidget> items;
 
 	@UiField
 	HasClickHandlers addButton;
@@ -83,17 +82,13 @@ public class ChecklistWidget extends Composite implements ModelWidget<Checklist>
 	private final UUID subjectId;
 
 	@UiFactory
-	public VerticalModelWidgetContainer<ChecklistItem, ChecklistItemWidget> createItemContainer() {
-		return new VerticalModelWidgetContainer<ChecklistItem, ChecklistItemWidget>(
+	public ModelWidgetContainer<ChecklistItem, ChecklistItemWidget> createItemContainer() {
+		return new ModelWidgetContainer<ChecklistItem, ChecklistItemWidget>(
 				new ModelWidgetFactory<ChecklistItem, ChecklistItemWidget>() {
 					@Override
 					public ChecklistItemWidget createWidget(final ChecklistItem modelBean) {
 						return new ChecklistItemWidget(subjectId, checklist.getId(), modelBean);
 					}
-				},
-				new ModelWidgetContainerListener() {
-					@Override
-					public void onUpdateComplete(final boolean hasChanged) {}
 				});
 	}
 

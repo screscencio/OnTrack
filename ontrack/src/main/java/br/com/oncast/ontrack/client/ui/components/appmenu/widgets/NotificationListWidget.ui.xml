@@ -88,7 +88,7 @@
 							<ui:msg description="notification help message">Notifications will arise when relevant events happen</ui:msg>
 						</g:Label>
 					</g:FlowPanel>
-					<misc:VerticalModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
+					<misc:ModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
 				</g:DeckPanel>
 			</g:DeckPanel>
 		</g:ScrollPanel>		

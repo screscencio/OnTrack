@@ -3,11 +3,11 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	<ui:style>
-		.verticalContainer {
+		.cellContainer {
 			width: 100%;
 			min-height: 10px;
 		}
 	</ui:style>
 
-	<misc:AnimatedVerticalContainer ui:field="verticalContainer" styleName="{style.verticalContainer}" />
+	<misc:AnimatedCellContainer ui:field="cellContainer" styleName="{style.cellContainer}" />
 </ui:UiBinder> 

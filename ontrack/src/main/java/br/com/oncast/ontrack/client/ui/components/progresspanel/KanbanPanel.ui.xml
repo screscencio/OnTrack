@@ -1,5 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+ xmlns:g="urn:import:com.google.gwt.user.client.ui"
+ xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+ xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel.widgets">
 
 	<ui:style src="../../style/default.css">
 	
@@ -20,6 +23,10 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.boardContainer}">
-		<g:HorizontalPanel ui:field="board" styleName="{style.board}" verticalAlignment="top" />
+		<g:HorizontalPanel styleName="{style.board}" verticalAlignment="top">
+			<w:KanbanColumnWidget ui:field="notStartedColumn"/>
+			<gw:ModelWidgetContainer ui:field="draggableColumns"/>
+			<w:KanbanColumnWidget ui:field="doneColumn"/>
+		</g:HorizontalPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 
