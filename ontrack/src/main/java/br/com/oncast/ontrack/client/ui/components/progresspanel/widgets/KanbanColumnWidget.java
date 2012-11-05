@@ -8,6 +8,7 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.TextInputPopup.EditionHandler;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanPositioningDropControllerFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -97,7 +98,11 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 		this.dragAndDropManager = dragAndDropManager;
 		this.interactionHandler = interactionHandler;
 		this.insertionIndex = insertionIndex;
+
 		initWidget(uiBinder.createAndBindUi(this));
+
+		dragAndDropManager.monitorDropTarget(scopeContainer.getCallPanel(), new KanbanPositioningDropControllerFactory(this, release));
+
 		if (column.isStaticColumn()) {
 			draggableAnchor.setVisible(false);
 			deleteButton.setVisible(false);
