@@ -44,6 +44,11 @@
 		<level value="WARN" />
 		<appender-ref ref="consoleAppender" />
 	</logger>
+	
+	<logger name="br.com.oncast.ontrack.server.services.log.RequestLogger">
+		<level value="ERROR" />
+		<appender-ref ref="consoleAppender" />
+	</logger>
 
 	<root>
 		<priority value="DEBUG" />
