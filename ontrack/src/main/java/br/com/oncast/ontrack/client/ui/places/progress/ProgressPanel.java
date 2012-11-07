@@ -49,7 +49,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		releaseWidget.setRelease(release);
-		releaseWidget.addDropHandler(new ProgressReleaseDropManager(kanbanPanel, interactionHandler, style.kanbanPanelOnDragTarget()));
+		releaseWidget.registerDropController(new ProgressReleaseDropManager(kanbanPanel, interactionHandler, style.kanbanPanelOnDragTarget()));
 	}
 
 	@Override

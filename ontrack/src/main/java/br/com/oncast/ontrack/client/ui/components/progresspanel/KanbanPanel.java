@@ -42,15 +42,13 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 		return new ModelWidgetContainer<KanbanColumn, KanbanColumnWidget>(new ModelWidgetFactory<KanbanColumn, KanbanColumnWidget>() {
 			@Override
 			public KanbanColumnWidget createWidget(final KanbanColumn modelBean) {
-				final int index = kanban.indexOf(modelBean.getDescription());
-				final KanbanColumnWidget w = new KanbanColumnWidget(release, index, modelBean, scopeDragAndDropMangager, interactionHandler);
+				final KanbanColumnWidget w = new KanbanColumnWidget(release, modelBean, scopeDragAndDropMangager, interactionHandler);
 				kanbanColumnDragAndDropMangager.monitorNewDraggableItem(w, w.getDraggableAnchor());
 				return w;
 			}
 		}, new AnimatedHorizontalContainer());
 	}
 
-	private Kanban kanban;
 	private final Release release;
 	final DragAndDropManager scopeDragAndDropMangager;
 	final DragAndDropManager kanbanColumnDragAndDropMangager;
@@ -61,18 +59,18 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 
 		scopeDragAndDropMangager = new DragAndDropManager();
 		scopeDragAndDropMangager.configureBoundaryPanel(RootPanel.get());
-		interactionHandler = new ProgressPanelInteractionHandler(release);
-		scopeDragAndDropMangager.setDragHandler(new KanbanScopeItemDragHandler(interactionHandler));
+		interactionHandler = new ProgressPanelInteractionHandler(release, kanban);
+		scopeDragAndDropMangager.addDragHandler(new KanbanScopeItemDragHandler(interactionHandler));
 
-		notStartedColumn = new KanbanColumnWidget(release, 0, kanban.getNotStartedColumn(), scopeDragAndDropMangager,
+		notStartedColumn = new KanbanColumnWidget(release, kanban.getNotStartedColumn(), scopeDragAndDropMangager,
 				interactionHandler);
-		doneColumn = new KanbanColumnWidget(release, kanban.size(), kanban.getDoneColumn(), scopeDragAndDropMangager, interactionHandler);
+		doneColumn = new KanbanColumnWidget(release, kanban.getDoneColumn(), scopeDragAndDropMangager, interactionHandler);
 
 		initWidget(uiBinder.createAndBindUi(this));
 
 		kanbanColumnDragAndDropMangager = new DragAndDropManager();
 		kanbanColumnDragAndDropMangager.configureBoundaryPanel(RootPanel.get());
-		kanbanColumnDragAndDropMangager.setDragHandler(new KanbanColumnDragHandler(interactionHandler));
+		kanbanColumnDragAndDropMangager.addDragHandler(new KanbanColumnDragHandler(interactionHandler));
 		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns.getCallPanel(), new KanbanColumnDropControllerFactory());
 		addStyleName("kanban");
 
@@ -81,7 +79,6 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 
 	@Override
 	public void update(final Kanban kanban) {
-		this.kanban = kanban;
 		notStartedColumn.update();
 		draggableColumns.update(kanban.getNonStaticColumns());
 		doneColumn.update();

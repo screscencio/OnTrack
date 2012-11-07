@@ -14,7 +14,7 @@ public class NoHideShowAnimation implements ShowAnimation, HideAnimation {
 
 	@Override
 	public void hide() {
-		getWidgetJqueryElement().clearQueue().hide();
+		getWidgetJqueryElement().stop(true).hide();
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class NoHideShowAnimation implements ShowAnimation, HideAnimation {
 
 	@Override
 	public void show() {
-		getWidgetJqueryElement().clearQueue().show();
+		getWidgetJqueryElement().stop(true).show();
 	}
 
 	@Override

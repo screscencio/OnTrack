@@ -20,4 +20,6 @@ interface JQueryNative {
 	public void hide();
 
 	public void show();
+
+	public void stop(boolean clearQueue);
 }

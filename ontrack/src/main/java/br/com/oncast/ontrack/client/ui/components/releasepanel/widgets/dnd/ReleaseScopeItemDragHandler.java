@@ -26,7 +26,7 @@ public class ReleaseScopeItemDragHandler extends DragHandlerAdapter {
 			final VerticalPanel targetReleaseArea = (VerticalPanel) dropTargetController.getDropTarget();
 			final ScopeWidgetContainer targetScopeContainer = (ScopeWidgetContainer) targetReleaseArea.getParent().getParent();
 
-			targetScopeContainer.addToWidgetMapping(draggedScopeWidget.getScope(), draggedScopeWidget);
+			targetScopeContainer.addToWidgetMapping(draggedScopeWidget);
 
 			itemDroppedListener.onItemDropped(draggedScopeWidget.getModelObject(), targetScopeContainer.getOwnerRelease(),
 					targetReleaseArea.getWidgetIndex(draggedScopeWidget));

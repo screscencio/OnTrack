@@ -106,4 +106,9 @@ public final class JQuery {
 		return jQueryCallback;
 	}
 
+	public JQuery stop(final boolean clearQueue) {
+		nat.stop(clearQueue);
+		return this;
+	}
+
 }

@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.shared.model.action.KanbanColumnMoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanColumnRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -14,9 +15,11 @@ public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInter
 
 	private ActionExecutionRequestHandler actionExecutionRequestHandler;
 	private final Release currentRelease;
+	private final Kanban kanban;
 
-	public ProgressPanelInteractionHandler(final Release release) {
+	public ProgressPanelInteractionHandler(final Release release, final Kanban kanban) {
 		currentRelease = release;
+		this.kanban = kanban;
 	}
 
 	@Override
@@ -44,8 +47,9 @@ public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInter
 	}
 
 	@Override
-	public void onKanbanColumnCreate(final String description, final int index) {
-		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnCreateAction(currentRelease.getId(), description, true, index));
+	public void onKanbanColumnCreate(final String description, final String previousColumnDescription) {
+		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnCreateAction(currentRelease.getId(), description, true, kanban
+				.indexOf(previousColumnDescription) + 1));
 	}
 
 	public void configureActionExecutionRequestHandler(final ActionExecutionRequestHandler actionExecutionRequestHandler) {

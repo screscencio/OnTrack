@@ -31,7 +31,7 @@ public class DragAndDropManager {
 		dragController.setBehaviorMultipleSelection(false);
 	}
 
-	public void setDragHandler(final DragHandler dragHandler) {
+	public void addDragHandler(final DragHandler dragHandler) {
 		dragController.addDragHandler(dragHandler);
 	}
 
@@ -64,7 +64,7 @@ public class DragAndDropManager {
 		dragController.makeDraggable(draggableWidget, draggableAreaWidget);
 	}
 
-	public void addDropHandler(final DropController controller) {
+	public void registerDropController(final DropController controller) {
 		assureConfigured();
 		dragController.registerDropController(controller);
 	}

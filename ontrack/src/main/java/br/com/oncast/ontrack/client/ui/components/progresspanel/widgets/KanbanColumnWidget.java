@@ -26,7 +26,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -62,42 +61,29 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 	@UiField
 	protected Label deleteButton;
 
-	@UiField
+	@UiField(provided = true)
 	protected KanbanColumnCreateWidget createColumn;
 
 	@UiField
 	protected Panel highlightBlock;
 
-	@UiField
+	@UiField(provided = true)
 	protected KanbanScopeContainer scopeContainer;
 
 	private final KanbanColumn column;
 
 	private final ProgressPanelWidgetInteractionHandler interactionHandler;
 
-	private final int insertionIndex;
-
-	private final DragAndDropManager dragAndDropManager;
-
 	private final Release release;
 
-	@UiFactory
-	protected KanbanScopeContainer createScopeContainer() {
-		return new KanbanScopeContainer(column, new KanbanScopeWidgetFactory(dragAndDropManager, interactionHandler));
-	}
-
-	@UiFactory
-	protected KanbanColumnCreateWidget createNewColumnWidget() {
-		return new KanbanColumnCreateWidget(interactionHandler, insertionIndex);
-	}
-
-	public KanbanColumnWidget(final Release release, final int insertionIndex, final KanbanColumn column, final DragAndDropManager dragAndDropManager,
+	public KanbanColumnWidget(final Release release, final KanbanColumn column, final DragAndDropManager dragAndDropManager,
 			final ProgressPanelWidgetInteractionHandler interactionHandler) {
 		this.release = release;
 		this.column = column;
-		this.dragAndDropManager = dragAndDropManager;
 		this.interactionHandler = interactionHandler;
-		this.insertionIndex = insertionIndex;
+
+		this.scopeContainer = new KanbanScopeContainer(column, new KanbanScopeWidgetFactory(dragAndDropManager, interactionHandler));
+		this.createColumn = new KanbanColumnCreateWidget(interactionHandler, column.getDescription());
 
 		initWidget(uiBinder.createAndBindUi(this));
 

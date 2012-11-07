@@ -26,7 +26,7 @@ public class KanbanColumnCreateWidget extends Composite {
 
 	private final ProgressPanelWidgetInteractionHandler interactionHandler;
 
-	private final int insertionIndex;
+	private final String previousColumnDescription;
 
 	@UiField
 	FocusPanel rootPanel;
@@ -34,9 +34,9 @@ public class KanbanColumnCreateWidget extends Composite {
 	@UiField
 	Image create;
 
-	public KanbanColumnCreateWidget(final ProgressPanelWidgetInteractionHandler interactionHandler, final int insertionIndex) {
+	public KanbanColumnCreateWidget(final ProgressPanelWidgetInteractionHandler interactionHandler, final String preciousColumnDescription) {
 		this.interactionHandler = interactionHandler;
-		this.insertionIndex = insertionIndex;
+		this.previousColumnDescription = preciousColumnDescription;
 		initWidget(uiBinder.createAndBindUi(this));
 		create.setTitle(messages.addNewColumn());
 	}
@@ -48,7 +48,7 @@ public class KanbanColumnCreateWidget extends Composite {
 			public boolean onEdition(final String text) {
 				final String trimmedText = text.trim();
 				if (trimmedText.isEmpty()) return false;
-				interactionHandler.onKanbanColumnCreate(text, insertionIndex);
+				interactionHandler.onKanbanColumnCreate(text, previousColumnDescription);
 				return true;
 			}
 		})).alignBelow(create).alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(create, HorizontalAlignment.CENTER))

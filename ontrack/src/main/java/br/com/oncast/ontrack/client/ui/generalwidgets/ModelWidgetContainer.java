@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CellPanel;
@@ -81,15 +84,46 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 		cellContainer.insert(modelWidget, index);
 		widgetMap.put(modelBean, modelWidget);
 
+		new DetachNotificationHanler(modelWidget);
 		return modelWidget;
+	}
+
+	private class DetachNotificationHanler implements Handler {
+
+		private final HandlerRegistration registration;
+		private final E modelWidget;
+
+		public DetachNotificationHanler(final E modelWidget) {
+			this.modelWidget = modelWidget;
+			this.registration = modelWidget.asWidget().addAttachHandler(this);
+		}
+
+		@Override
+		public void onAttachOrDetach(final AttachEvent event) {
+			if (!event.isAttached()) {
+				removeFromWidgetMapping(modelWidget.getModelObject());
+				registration.removeHandler();
+			}
+		}
 	}
 
 	/**
 	 * Inserts a widget into internal widget map. This have to be done when some external agent, e.g., drag and drop,
 	 * inserts a new child widget for this panel directly at DOM.
 	 */
-	public void addToWidgetMapping(final T modelBean, final E widget) {
-		widgetMap.put(modelBean, widget);
+	public void addToWidgetMapping(final E widget) {
+		widgetMap.put(widget.getModelObject(), widget);
+		cellContainer.addToWidgetMapping(widget);
+		new DetachNotificationHanler(widget);
+	}
+
+	/**
+	 * Removes a model from internal widget map. This have to be done when some external agent, e.g., drag and drop,
+	 * removes a child widget for this panel directly from DOM.
+	 */
+	public void removeFromWidgetMapping(final T modelBean) {
+		final E widget = widgetMap.remove(modelBean);
+		cellContainer.removeFromWidgetMapping(widget);
 	}
 
 	public int getWidgetCount() {

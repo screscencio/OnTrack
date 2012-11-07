@@ -38,6 +38,9 @@ public class JQueryNativeImplPatcher {
 
 			@Override
 			public void fadeTo(final int duration, final double opacity, final JQueryCallback createCallback) {}
+
+			@Override
+			public void stop(final boolean clearQueue) {}
 		};
 	}
 }

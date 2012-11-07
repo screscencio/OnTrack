@@ -430,4 +430,12 @@ public class Release implements Serializable {
 	public Float getEstimatedVelocity() {
 		return declaredEstimatedVelocity;
 	}
+
+	public List<Scope> getTasks() {
+		final List<Scope> tasks = new ArrayList<Scope>();
+		for (final Scope story : scopeList) {
+			tasks.addAll(story.getAllLeafs());
+		}
+		return tasks;
+	}
 }

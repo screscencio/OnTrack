@@ -22,7 +22,7 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 	@Override
 	public void show(final AnimationCallback callback) {
 		final JQuery $ = getWidgetJqueryElement();
-		$.clearQueue().fadeTo(0, 0, new AnimationCallback() {
+		$.stop(true).fadeTo(0, 0, new AnimationCallback() {
 
 			@Override
 			public void onComplete() {
@@ -45,7 +45,7 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 	@Override
 	public void hide(final AnimationCallback callback) {
 		final JQuery $ = getWidgetJqueryElement();
-		$.clearQueue().fadeTo(DEFAULT_FADE_DURATION, 0, new AnimationCallback() {
+		$.stop(true).fadeTo(DEFAULT_FADE_DURATION, 0, new AnimationCallback() {
 
 			@Override
 			public void onComplete() {

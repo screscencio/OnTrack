@@ -15,9 +15,12 @@ public class AnimatedVerticalContainer extends AnimatedCellContainer<VerticalPan
 		super(container);
 	}
 
-	// TODO It's being used only for Tests remove it if possible
-	AnimatedVerticalContainer(final AnimationFactory animationFactory) {
-		super(new VerticalPanel(), animationFactory);
+	public AnimatedVerticalContainer(final AnimationFactory animationFactory) {
+		this(new VerticalPanel(), animationFactory);
+	}
+
+	public AnimatedVerticalContainer(final VerticalPanel container, final AnimationFactory animationFactory) {
+		super(container, animationFactory);
 	}
 
 	@Override

@@ -66,6 +66,11 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 	}-*/;
 
 	@Override
+	public native void stop(boolean clearQueue) /*-{
+		this.stop(clearQueue);
+	}-*/;
+
+	@Override
 	public native void bind(String eventType, EventHandler handler) /*-{
 		this
 				.bind(

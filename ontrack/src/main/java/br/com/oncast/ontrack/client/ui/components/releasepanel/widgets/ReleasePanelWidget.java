@@ -98,7 +98,7 @@ public class ReleasePanelWidget extends Composite {
 
 		initWidget(uiBinder.createAndBindUi(this));
 		dragAndDropManager.configureBoundaryPanel(RootPanel.get());
-		dragAndDropManager.setDragHandler(createScopeItemDragHandler(releasePanelInteractionHandler));
+		dragAndDropManager.addDragHandler(createScopeItemDragHandler(releasePanelInteractionHandler));
 
 		actionExecutionListener = new ActionExecutionListener() {
 			@Override
@@ -219,7 +219,7 @@ public class ReleasePanelWidget extends Composite {
 		return actionExecutionListener;
 	}
 
-	public void addDropHandler(final DropController controller) {
-		dragAndDropManager.addDropHandler(controller);
+	public void registerDropController(final DropController controller) {
+		dragAndDropManager.registerDropController(controller);
 	}
 }

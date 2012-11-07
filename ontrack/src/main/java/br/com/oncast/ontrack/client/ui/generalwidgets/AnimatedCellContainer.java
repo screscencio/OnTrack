@@ -20,18 +20,18 @@ public abstract class AnimatedCellContainer<T extends CellPanel> extends Composi
 
 		@Override
 		public ShowAnimation createShowAnimation(final Widget widget) {
-			return new SlideAndFadeAnimation(widget.asWidget());
+			return new SlideAndFadeAnimation(widget);
 		}
 
 		@Override
 		public HideAnimation createHideAnimation(final Widget widget) {
-			return new SlideAndFadeAnimation(widget.asWidget());
+			return new SlideAndFadeAnimation(widget);
 		}
 	};
 
 	private final AnimationFactory animationFactory;
 
-	protected List<IsWidget> widgets = new ArrayList<IsWidget>();
+	protected List<IsWidget> widgets;
 
 	protected final T container;
 
@@ -40,8 +40,11 @@ public abstract class AnimatedCellContainer<T extends CellPanel> extends Composi
 	}
 
 	public AnimatedCellContainer(final T container, final AnimationFactory animationFactory) {
-		initWidget(this.container = container);
+		initWidget(container);
+
+		this.container = container;
 		this.animationFactory = animationFactory;
+		widgets = new ArrayList<IsWidget>();
 	}
 
 	public Widget getWidget(final int index) {
@@ -55,7 +58,7 @@ public abstract class AnimatedCellContainer<T extends CellPanel> extends Composi
 	}
 
 	public void move(final IsWidget widget, final int index) {
-		if (widgets.indexOf(widget) == index) return;
+		if (getWidgetIndex(widget) == index) return;
 
 		widgets.remove(widget);
 		container.remove(widget);
@@ -81,15 +84,16 @@ public abstract class AnimatedCellContainer<T extends CellPanel> extends Composi
 
 	public void remove(final IsWidget widget) {
 		if (!widgets.remove(widget)) return;
+
 		removeWidgetFromContainer(widget);
 	}
 
 	private void removeWidgetFromContainer(final IsWidget widget) {
 		animationFactory.createHideAnimation(widget.asWidget()).hide(new AnimationCallback() {
-
 			@Override
 			public void onComplete() {
 				if (widgets.contains(widget)) return;
+
 				container.remove(widget);
 			}
 		});
@@ -110,6 +114,24 @@ public abstract class AnimatedCellContainer<T extends CellPanel> extends Composi
 
 	public int getWidgetIndex(final IsWidget widget) {
 		return widgets.indexOf(widget);
+	}
+
+	void addToWidgetMapping(final IsWidget widget) {
+		widgets.add(getCacheIndex(widget), widget);
+	}
+
+	private int getCacheIndex(final IsWidget widget) {
+		int containerIndex = container.getWidgetIndex(widget);
+		while (containerIndex-- > 0) {
+			final Widget beforeWidget = container.getWidget(containerIndex);
+			if (widgets.contains(beforeWidget)) return widgets.indexOf(beforeWidget) + 1;
+		}
+
+		return 0;
+	}
+
+	void removeFromWidgetMapping(final IsWidget widget) {
+		widgets.remove(widget);
 	}
 
 	protected abstract void insertIntoContainer(final IsWidget widget, final int beforeIndex);

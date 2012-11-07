@@ -13,7 +13,7 @@ public interface ProgressPanelWidgetInteractionHandler {
 
 	void onKanbanColumnRemove(final KanbanColumn column);
 
-	void onKanbanColumnCreate(final String description, final int index);
+	void onKanbanColumnCreate(final String description, final String previousColumnDescription);
 
 	void onKanbanColumnRename(KanbanColumn column, String newDescription);
 }
