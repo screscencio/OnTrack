@@ -14,11 +14,11 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInteractionHandler {
 
 	private ActionExecutionRequestHandler actionExecutionRequestHandler;
-	private final Release currentRelease;
+	private final Release release;
 	private final Kanban kanban;
 
 	public ProgressPanelInteractionHandler(final Release release, final Kanban kanban) {
-		currentRelease = release;
+		this.release = release;
 		this.kanban = kanban;
 	}
 
@@ -32,23 +32,23 @@ public class ProgressPanelInteractionHandler implements ProgressPanelWidgetInter
 
 	@Override
 	public void onKanbanColumnMove(final KanbanColumn column, final int index) {
-		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnMoveAction(currentRelease.getId(), column.getDescription(), index));
+		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnMoveAction(release.getId(), column.getDescription(), index));
 	}
 
 	@Override
 	public void onKanbanColumnRemove(final KanbanColumn column) {
-		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnRemoveAction(currentRelease.getId(), column.getDescription()));
+		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnRemoveAction(release.getId(), column.getDescription()));
 	}
 
 	@Override
 	public void onKanbanColumnRename(final KanbanColumn column, final String newDescription) {
-		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnRenameAction(currentRelease.getId(), column.getDescription(),
+		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnRenameAction(release.getId(), column.getDescription(),
 				newDescription));
 	}
 
 	@Override
 	public void onKanbanColumnCreate(final String description, final String previousColumnDescription) {
-		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnCreateAction(currentRelease.getId(), description, true, kanban
+		this.actionExecutionRequestHandler.onUserActionExecutionRequest(new KanbanColumnCreateAction(release.getId(), description, true, kanban
 				.indexOf(previousColumnDescription) + 1));
 	}
 

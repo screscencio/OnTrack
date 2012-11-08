@@ -46,24 +46,12 @@ public class Kanban extends SimpleKanban implements Serializable {
 		isLocked = bool;
 	}
 
-	public KanbanColumn getDoneColumn() {
-		return doneColumn;
-	}
-
-	public KanbanColumn getNotStartedColumn() {
-		return notStartedColumn;
-	}
-
 	@Override
 	public List<KanbanColumn> getColumns() {
 		final List<KanbanColumn> columns = fullKanban.getColumns();
 		columns.add(0, notStartedColumn);
 		columns.add(doneColumn);
 		return columns;
-	}
-
-	public List<KanbanColumn> getNonStaticColumns() {
-		return fullKanban.getColumns();
 	}
 
 	public boolean hasNonInferedColumn(final String columnDescription) {
@@ -129,18 +117,10 @@ public class Kanban extends SimpleKanban implements Serializable {
 	public void renameColumn(final String columnDescription, final String newDescription) {
 		final KanbanColumn columnToRename = getColumn(columnDescription);
 		if (columnToRename == null) throw new RuntimeException("The column with description '" + columnDescription + "' was not found.");
-		if (columnToRename.isStaticColumn()) throw new RuntimeException("It's not possible to rename a static column");
-
 		if (columnToRename.getDescription().equals(newDescription)) return;
 
 		final KanbanColumn desiredColumn = getColumn(newDescription);
-		if (desiredColumn != null && desiredColumn.isStaticColumn()) throw new RuntimeException("It's not possible to rename to a static column");
-
-		if (desiredColumn != null && !columnToRename.equals(desiredColumn)) {
-			fullKanban.removeColumn(columnDescription);
-			if (kanbanWithoutInferenceContainsColumn(columnDescription)) kanbanWithoutInference.removeColumn(columnDescription);
-			return;
-		}
+		if (desiredColumn != null && !columnToRename.equals(desiredColumn)) throw new RuntimeException("Cannot rename into an existing column");
 		fullKanban.renameColumn(columnDescription, newDescription);
 
 		if (!kanbanWithoutInferenceContainsColumn(columnDescription)) return;
@@ -187,7 +167,15 @@ public class Kanban extends SimpleKanban implements Serializable {
 		return kanbanWithoutInference.getColumn(columnDescription) != null;
 	}
 
-	public int size() {
-		return getColumns().size();
+	public KanbanColumn getNotStartedColumn() {
+		return notStartedColumn;
+	}
+
+	public KanbanColumn getDoneColumn() {
+		return doneColumn;
+	}
+
+	public List<KanbanColumn> getNonStaticColumns() {
+		return fullKanban.getColumns();
 	}
 }

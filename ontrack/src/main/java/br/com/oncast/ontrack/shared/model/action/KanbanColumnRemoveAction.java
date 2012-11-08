@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +54,10 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 		final Release release = ActionHelper.findRelease(referenceId, context);
 		final Kanban kanban = context.getKanban(release);
 
-		validateExecution(kanban);
+		if (!kanban.hasColumn(columnDescription)) return new KanbanColumnCreateAction(referenceId, columnDescription, shouldLockKanban, 0,
+				new ArrayList<ModelAction>());
+		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_STATIC_KANBAN_COLUMN);
+
 		final List<ModelAction> rollbackActions = moveColumnScopes(columnDescription, kanban.getColumnPredeceding(columnDescription).getDescription(), release,
 				context, actionContext);
 		final int oldColumnIndex = kanban.indexOf(columnDescription);
@@ -67,7 +71,7 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 	private List<ModelAction> moveColumnScopes(final String originColumn, final String destinationColumn, final Release release, final ProjectContext context,
 			final ActionContext actionContext)
 			throws UnableToCompleteActionException {
-		final List<Scope> scopes = release.getScopeList();
+		final List<Scope> scopes = release.getTasks();
 		if (scopes.isEmpty()) return null;
 
 		final List<ModelAction> rollbackActions = new LinkedList<ModelAction>();
@@ -77,11 +81,6 @@ public class KanbanColumnRemoveAction implements KanbanAction {
 		}
 
 		return rollbackActions;
-	}
-
-	private void validateExecution(final Kanban kanban) throws UnableToCompleteActionException {
-		if (!kanban.hasColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.KANBAN_COLUMN_NOT_FOUND);
-		if (kanban.isStaticColumn(columnDescription)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_STATIC_KANBAN_COLUMN);
 	}
 
 	@Override
