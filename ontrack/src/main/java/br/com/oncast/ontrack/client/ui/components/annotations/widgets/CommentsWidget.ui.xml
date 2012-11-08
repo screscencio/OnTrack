@@ -38,7 +38,7 @@
 			<g:SimplePanel ui:field="separator" styleName="{style.spacer}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">
-					<misc:VerticalModelWidgetContainer ui:field="commentsWidgetContainer"/>
+					<misc:ModelWidgetContainer ui:field="commentsWidgetContainer"/>
 				</g:FocusPanel>
 			</g:cell>
 		</g:VerticalPanel>

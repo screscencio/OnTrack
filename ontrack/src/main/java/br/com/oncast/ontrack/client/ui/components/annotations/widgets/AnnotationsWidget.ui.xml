@@ -41,7 +41,7 @@
 			<misc:Separator ui:field="separator" styleName="{style.separator}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">
-					<misc:VerticalModelWidgetContainer ui:field="annotationsWidgetContainer"/>
+					<misc:ModelWidgetContainer ui:field="annotationsWidgetContainer"/>
 				</g:FocusPanel>
 			</g:cell>
 		</g:VerticalPanel>

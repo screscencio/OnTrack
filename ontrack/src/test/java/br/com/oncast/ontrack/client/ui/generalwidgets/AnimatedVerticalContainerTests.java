@@ -17,8 +17,8 @@ import com.googlecode.gwt.test.GwtTest;
 
 public class AnimatedVerticalContainerTests extends GwtTest {
 
-	public static final int ANIMATION_DURATION = 1;
-	private static final int SLEEP_DELAY = 100;
+	public static final int ANIMATION_DURATION = 10;
+	private static final int SLEEP_DELAY = 50;
 	AnimatedVerticalContainer container;
 
 	private final AnimationFactory animationMockFactory = new AnimationMockFactory(ANIMATION_DURATION);

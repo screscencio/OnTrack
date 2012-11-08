@@ -11,6 +11,66 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 	}-*/;
 
 	@Override
+	public native void slideUp(final int duration, final JQueryCallback callback) /*-{
+		var jscallback = function() {
+			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
+		}
+		this.slideUp(duration, jscallback);
+	}-*/;
+
+	@Override
+	public native void slideDown(final int duration, final JQueryCallback callback) /*-{
+		var jscallback = function() {
+			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
+		}
+		this.slideDown(duration, jscallback);
+	}-*/;
+
+	@Override
+	public native void fadeIn(final int duration, final JQueryCallback callback) /*-{
+		var jscallback = function() {
+			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
+		}
+		this.fadeIn(duration, jscallback);
+	}-*/;
+
+	@Override
+	public native void fadeOut(final int duration, final JQueryCallback callback) /*-{
+		var jscallback = function() {
+			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
+		}
+		this.fadeOut(duration, jscallback);
+	}-*/;
+
+	@Override
+	public native void fadeTo(final int duration, final double opacity, final JQueryCallback callback) /*-{
+		var jscallback = function() {
+			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
+		}
+		this.fadeTo(duration, opacity, jscallback);
+	}-*/;
+
+	@Override
+	public native void show() /*-{
+		this.show();
+	}-*/;
+
+	@Override
+	public native void hide() /*-{
+		this.hide();
+	}-*/;
+
+	@Override
+	public native void clearQueue() /*-{
+		this.clearQueue();
+	}-*/;
+
+	@Override
+	public native void stop(boolean clearQueue) /*-{
+		this.stop(clearQueue);
+	}-*/;
+
+	@Override
 	public native void bind(String eventType, EventHandler handler) /*-{
 		this
 				.bind(
@@ -29,4 +89,5 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 						+ "."
 						+ handler.@br.com.oncast.ontrack.client.utils.jquery.EventHandler::registrationId);
 	}-*/;
+
 }

@@ -164,7 +164,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		progressIcon.setStyleName(style.progressIconNotStarted(), progress.getState() == ProgressState.NOT_STARTED);
 
 		if (!description.isEmpty() && progress.getState() != ProgressState.NOT_STARTED) {
-			final Color color = (progress.getState() == ProgressState.DONE) ? Color.GREEN : Color.BLUE;
+			final Color color = (progress.getState() == ProgressState.DONE) ? Color.GREEN : Color.GRAY;
 			new BgColorAnimation(internalPanel, color).animate();
 		}
 
@@ -280,7 +280,8 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	public void setHasOpenImpediments(final boolean hasOpenImpediments) {
 		statusBar.setStyleName(style.statusBarOpenImpediment(), hasOpenImpediments);
-		final Color color = hasOpenImpediments ? Color.RED : Color.BLUE;
+
+		final Color color = hasOpenImpediments ? Color.RED : Color.GRAY;
 		new BgColorAnimation(internalPanel, color).animate();
 	}
 

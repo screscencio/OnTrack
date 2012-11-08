@@ -1,8 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 
+import java.util.List;
+
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -13,7 +14,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 final class KanbanPositioningDragController extends VerticalPanelDropController {
 	private Widget refPositioner;
-	private boolean isPriorityChange;
 	private int dropIndex;
 	private final KanbanColumnWidget kanbanColumnWidget;
 	private final Release release;
@@ -28,10 +28,7 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 	public void onEnter(final DragContext context) {
 		super.onEnter(context);
 		final ScopeWidget draggedScope = (ScopeWidget) context.draggable;
-		isPriorityChange = isPriorityChange(draggedScope.getModelObject(), kanbanColumnWidget.getKanbanColumn().getDescription());
-		if (!isPriorityChange) {
-			dropIndex = findIndex(draggedScope);
-		}
+		dropIndex = findIndex(draggedScope);
 	}
 
 	@Override
@@ -44,7 +41,6 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 	@Override
 	public void onMove(final DragContext context) {
 		super.onMove(context);
-		if (isPriorityChange) return;
 		((VerticalPanel) dropTarget).remove(refPositioner);
 		dropTarget.insert(refPositioner, dropIndex);
 		kanbanColumnWidget.setHighlight(true);
@@ -52,11 +48,13 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 
 	private int findIndex(final ScopeWidget draggedScope) {
 		int index = 0;
-		final int draggedPriority = release.getScopeIndex(draggedScope.getModelObject());
+		final List<Scope> tasks = release.getTasks();
+		final int draggedPriority = tasks.indexOf(draggedScope.getModelObject());
 		for (final Widget widget : (VerticalPanel) dropTarget) {
 			if (!(widget instanceof ScopeWidget)) continue;
+
 			final ScopeWidget w = (ScopeWidget) widget;
-			if (release.getScopeIndex(w.getModelObject()) > draggedPriority) return index;
+			if (tasks.indexOf(w.getModelObject()) >= draggedPriority) return index;
 			index++;
 		}
 		return index;
@@ -67,8 +65,4 @@ final class KanbanPositioningDragController extends VerticalPanelDropController 
 		return refPositioner = super.newPositioner(context);
 	}
 
-	private boolean isPriorityChange(final Scope scope, final String title) {
-		if (scope.getProgress().getState() == ProgressState.NOT_STARTED && ProgressState.getStateForDescription(title) == ProgressState.NOT_STARTED) return true;
-		return scope.getProgress().getDescription().equals(title);
-	}
 }

@@ -39,29 +39,18 @@ public class KanbanColumnCreateActionTest extends ModelActionTest {
 				ProgressState.DONE.getDescription());
 	}
 
-	@Test
-	public void shouldDoNothingWhenTryingToCreateNewKanbanColumnThatAlreadyExistsInSamePosition() throws Exception {
+	@Test(expected = UnableToCompleteActionException.class)
+	public void executionShouldFailWhenTryingToCreateNewKanbanColumnThatAlreadyExists() throws UnableToCompleteActionException {
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
-		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context, Mockito.mock(ActionContext.class));
-
+		try {
+			new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context, Mockito.mock(ActionContext.class));
+		}
+		catch (final Exception e) {
+			throw new RuntimeException();
+		}
 		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
 				ProgressState.DONE.getDescription());
 		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context, Mockito.mock(ActionContext.class));
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
-				ProgressState.DONE.getDescription());
-	}
-
-	@Test
-	public void shouldMoveTheColumnPositionWhenTryingToCreateNewKanbanColumnThatAlreadyExistsInOtherPosition() throws Exception {
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 2, Progress.DEFAULT_NOT_STARTED_NAME, ProgressState.DONE.getDescription());
-		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true).execute(context, Mockito.mock(ActionContext.class));
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 3, Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
-				ProgressState.DONE.getDescription());
-
-		new KanbanColumnCreateAction(release.getId(), "another one", true).execute(context, Mockito.mock(ActionContext.class));
-		new KanbanColumnCreateAction(release.getId(), newColumnDescription, true, 2).execute(context, Mockito.mock(ActionContext.class));
-		ActionTestUtils.assertExpectedKanbanColumns(context, release, 4, "another one", Progress.DEFAULT_NOT_STARTED_NAME, newColumnDescription,
-				ProgressState.DONE.getDescription());
 	}
 
 	@Test

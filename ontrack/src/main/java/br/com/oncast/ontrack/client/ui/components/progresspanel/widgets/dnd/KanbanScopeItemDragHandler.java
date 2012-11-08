@@ -27,7 +27,10 @@ public class KanbanScopeItemDragHandler extends DragHandlerAdapter {
 
 		final VerticalPanel dropTarget = (VerticalPanel) finalDropController.getDropTarget();
 		final ScopeWidget draggedScope = (ScopeWidget) event.getContext().draggable;
-		final KanbanColumn kanbanColumn = ((KanbanScopeContainer) dropTarget.getParent()).getKanbanColumn();
+		final KanbanScopeContainer scopeContainer = (KanbanScopeContainer) dropTarget.getParent().getParent();
+		final KanbanColumn kanbanColumn = scopeContainer.getKanbanColumn();
+
+		scopeContainer.addToWidgetMapping(draggedScope);
 
 		if (!isPriorityChange(draggedScope.getModelObject(), kanbanColumn.getDescription())) {
 			interactionHandler.onDragAndDropProgressRequest(draggedScope.getModelObject(), kanbanColumn.getDescription());

@@ -4,9 +4,9 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
 
 public class LinkFactory {
 
@@ -60,7 +60,7 @@ public class LinkFactory {
 	}
 
 	private static String getBaseURL() {
-		return Window.Location.getHref().substring(0, Window.Location.getHref().indexOf('#'));
+		return GWT.getModuleBaseURL();
 	}
 
 	private static String getProjectHrefLink(final UUID projectId) {

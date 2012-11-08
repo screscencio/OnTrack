@@ -19,7 +19,7 @@
 	
 	<layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
 		<g:HTMLPanel styleName="{style.projectsContainer}">
-			<w:VerticalModelWidgetContainer ui:field="projects"/>
+			<w:ModelWidgetContainer ui:field="projects"/>
 		</g:HTMLPanel>
 	</layout:ApplicationMenuAndWidgetContainer>
 </ui:UiBinder> 

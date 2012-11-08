@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
-import br.com.oncast.ontrack.client.ui.generalwidgets.VerticalModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
@@ -41,11 +41,11 @@ public class CommentsWidget extends Composite {
 	protected Widget separator;
 
 	@UiField
-	protected VerticalModelWidgetContainer<Annotation, AnnotationComment> commentsWidgetContainer;
+	protected ModelWidgetContainer<Annotation, AnnotationComment> commentsWidgetContainer;
 
 	@UiFactory
-	protected VerticalModelWidgetContainer<Annotation, AnnotationComment> createAnnotationsContainer() {
-		return new VerticalModelWidgetContainer<Annotation, AnnotationComment>(new ModelWidgetFactory<Annotation, AnnotationComment>() {
+	protected ModelWidgetContainer<Annotation, AnnotationComment> createAnnotationsContainer() {
+		return new ModelWidgetContainer<Annotation, AnnotationComment>(new ModelWidgetFactory<Annotation, AnnotationComment>() {
 			@Override
 			public AnnotationComment createWidget(final Annotation modelBean) {
 				return new AnnotationComment(subjectId, modelBean);

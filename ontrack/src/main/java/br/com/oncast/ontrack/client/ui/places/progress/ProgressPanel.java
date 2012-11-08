@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanWidgetDisp
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndWidgetContainer;
+import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
 import com.google.gwt.core.client.GWT;
@@ -35,19 +36,20 @@ public class ProgressPanel extends Composite implements ProgressView {
 	@UiField(provided = true)
 	protected ReleasePanelWidget releaseWidget;
 
-	@UiField
+	@UiField(provided = true)
 	protected KanbanPanel kanbanPanel;
 
 	private final ReleasePanelInteractionHandler interactionHandler;
 
-	public ProgressPanel(final Release release) {
+	public ProgressPanel(final Release release, final Kanban kanban) {
 		interactionHandler = new ReleasePanelInteractionHandler();
 		releaseWidget = new ReleasePanelWidget(interactionHandler, true);
+		kanbanPanel = new KanbanPanel(kanban, release);
 
 		initWidget(uiBinder.createAndBindUi(this));
 
 		releaseWidget.setRelease(release);
-		releaseWidget.addDropHandler(new ProgressReleaseDropManager(kanbanPanel, interactionHandler, style.kanbanPanelOnDragTarget()));
+		releaseWidget.registerDropController(new ProgressReleaseDropManager(kanbanPanel, interactionHandler, style.kanbanPanelOnDragTarget()));
 	}
 
 	@Override

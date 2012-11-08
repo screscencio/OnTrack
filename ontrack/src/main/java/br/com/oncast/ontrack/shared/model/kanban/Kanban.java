@@ -174,4 +174,16 @@ public class Kanban extends SimpleKanban implements Serializable {
 	private boolean kanbanWithoutInferenceContainsColumn(final String columnDescription) {
 		return kanbanWithoutInference.getColumn(columnDescription) != null;
 	}
+
+	public KanbanColumn getNotStartedColumn() {
+		return notStartedColumn;
+	}
+
+	public KanbanColumn getDoneColumn() {
+		return doneColumn;
+	}
+
+	public List<KanbanColumn> getNonStaticColumns() {
+		return fullKanban.getColumns();
+	}
 }

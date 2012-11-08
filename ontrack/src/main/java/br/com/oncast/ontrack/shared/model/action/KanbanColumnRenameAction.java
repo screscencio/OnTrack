@@ -53,7 +53,7 @@ public class KanbanColumnRenameAction implements KanbanAction {
 			kanban.renameColumn(columnDescription, newDescription);
 		}
 		catch (final RuntimeException e) {
-			throw new UnableToCompleteActionException(e);
+			throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.KANBAN_COLUMN_ALREADY_SET);
 		}
 		for (final Scope scope : release.getScopeList()) {
 			if (scope.getProgress().getDescription().equals(columnDescription)) new ScopeDeclareProgressAction(scope.getId(), newDescription).execute(context,

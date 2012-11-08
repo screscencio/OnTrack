@@ -41,7 +41,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel>
-		<misc:VerticalModelWidgetContainer ui:field="checklists"/>
+		<misc:ModelWidgetContainer ui:field="checklists"/>
 		
 		<g:DeckPanel ui:field="addChecklistDeck" styleName="{style.addChecklistDeck}">
 			<g:Label ui:field="addChecklistLabel" styleName="{style.addChecklistLabel}">

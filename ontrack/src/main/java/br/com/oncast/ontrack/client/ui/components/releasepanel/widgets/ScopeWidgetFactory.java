@@ -22,4 +22,5 @@ public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ScopeWidget
 
 		return newScopeWidget;
 	}
+
 }

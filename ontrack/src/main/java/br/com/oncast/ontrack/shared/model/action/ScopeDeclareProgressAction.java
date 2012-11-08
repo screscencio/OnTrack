@@ -72,15 +72,22 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 
 	private ModelAction assureKanbanColumnExistence(final ProjectContext context, final ActionContext actionContext, final Scope scope)
 			throws UnableToCompleteActionException {
-		Release release = scope.getRelease();
-		Scope currentScope = scope;
+		if (!scope.isLeaf()) return null;
 
-		while (scope.isLeaf() && release == null && !currentScope.isRoot()) {
+		final Release release = getScopeRelease(scope);
+		if (release == null || context.getKanban(release).hasNonInferedColumn(newProgressDescription)) return null;
+
+		return (new KanbanColumnCreateAction(release.getId(), newProgressDescription, false)).execute(context, actionContext);
+	}
+
+	private Release getScopeRelease(final Scope scope) {
+		Scope currentScope = scope;
+		Release release = scope.getRelease();
+		while (release == null && !currentScope.isRoot()) {
 			currentScope = currentScope.getParent();
 			release = currentScope.getRelease();
 		}
-		if (release == null || context.getKanban(release).hasNonInferedColumn(newProgressDescription)) return null;
-		return (new KanbanColumnCreateAction(release.getId(), newProgressDescription, false)).execute(context, actionContext);
+		return release;
 	}
 
 	@Override
