@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController;
@@ -86,7 +87,7 @@ public class ProgressActivity extends AbstractActivity {
 		kanbanActionSyncController.registerActionExecutionListener();
 		view.registerActionExecutionHandler(SERVICE_PROVIDER.getActionExecutionService());
 
-		registrations.add(ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
+		registrations.add(ShortcutService.register(RootPanel.get(), view.getApplicationMenu(), ApplicationMenuShortcutMapping.values()));
 		registrations.add(ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingPanel());
 
