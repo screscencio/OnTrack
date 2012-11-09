@@ -47,11 +47,13 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 	}
 
 	protected ApplicationMenuItem notificationMenuItem;
-	protected String suffix = "";
-	private String text = "";
+	private final NotificationMenuItemHeaderWidget notificationMenuItemHeader;
 
 	public NotificationMenuItem() {
 		initWidget(notificationMenuItem = new ApplicationMenuItem());
+
+		notificationMenuItemHeader = new NotificationMenuItemHeaderWidget();
+		notificationMenuItem.setMenuHeaderWidget(notificationMenuItemHeader);
 		final NotificationService notificationService = ClientServiceProvider.getInstance().getNotificationService();
 		final NotificationMenuListenerImplementation listener = new NotificationMenuListenerImplementation();
 		notificationService.registerNotificationListChangeListener(listener);
@@ -70,17 +72,11 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 
 	@Override
 	public void setText(final String text) {
-		this.text = text;
-		updateText(text);
+		notificationMenuItemHeader.setText(text);
 	}
 
-	protected void setSuffix(final String suffix) {
-		this.suffix = suffix;
-		updateText(text);
-	}
-
-	private void updateText(final String text) {
-		notificationMenuItem.setText(text + " " + suffix);
+	protected void setSuffix(final String string) {
+		notificationMenuItemHeader.setNotificationCountIndicator(string);
 	}
 
 	public void setPopupConfig(final PopupConfig popup) {

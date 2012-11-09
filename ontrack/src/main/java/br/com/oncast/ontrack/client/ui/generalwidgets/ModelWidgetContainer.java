@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CellPanel;
@@ -83,28 +80,7 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 		final E modelWidget = modelWidgetFactory.createWidget(modelBean);
 		cellContainer.insert(modelWidget, index);
 		widgetMap.put(modelBean, modelWidget);
-
-		new DetachNotificationHanler(modelWidget);
 		return modelWidget;
-	}
-
-	private class DetachNotificationHanler implements Handler {
-
-		private final HandlerRegistration registration;
-		private final E modelWidget;
-
-		public DetachNotificationHanler(final E modelWidget) {
-			this.modelWidget = modelWidget;
-			this.registration = modelWidget.asWidget().addAttachHandler(this);
-		}
-
-		@Override
-		public void onAttachOrDetach(final AttachEvent event) {
-			if (!event.isAttached()) {
-				removeFromWidgetMapping(modelWidget.getModelObject());
-				registration.removeHandler();
-			}
-		}
 	}
 
 	/**
@@ -114,7 +90,6 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 	public void addToWidgetMapping(final E widget) {
 		widgetMap.put(widget.getModelObject(), widget);
 		cellContainer.addToWidgetMapping(widget);
-		new DetachNotificationHanler(widget);
 	}
 
 	/**

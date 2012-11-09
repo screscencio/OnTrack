@@ -42,7 +42,7 @@
 
 	<g:FocusPanel ui:field="rootPanel">
 		<g:HorizontalPanel styleName="{style.hoverPanel}">
-			<g:Label ui:field="textLabel" styleName="{style.menuItem}" />
+			<g:SimplePanel ui:field="menuHeader" styleName="{style.menuItem}" />
 			<g:Label ui:field="arrow" styleName="{style.arrowDown}" />
 		</g:HorizontalPanel>
 	</g:FocusPanel>

@@ -15,13 +15,11 @@
 		}
 		
 		.scrollContainer {
-			padding: 15px;
-			margin: -15px;
+			padding-left: 5px;
+			margin-top: 10px;
 			
 			overflow-y: auto;
 			overflow-x: hidden;
-			
-			max-height: 282px;
 		}
 
 	   	.notifications {
@@ -71,27 +69,79 @@
 			color: COLOR_GRAY_LIGHT;
 			text-align: center;
 		}
+
+		.stackHeader {
+			cursor: pointer;
+		}
+		
+		.stackHeaderLabel {
+			text-transform: uppercase;
+			display: inline-block;
+			color: COLOR_BLUE_LIGHT;
+		}
+		
+		.stackSeparator {
+			margin-top: 7px;
+			margin-left: 5px;
+		}
+		
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}">
-		<g:ScrollPanel ui:field="scrollContainer" styleName="{style.scrollContainer}">
-			<g:DeckPanel ui:field="deckPanel">
+			<g:DeckPanel ui:field="deckPanel" height="350px">
 				<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
 					<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
 				</g:SimplePanel>
-				<g:DeckPanel ui:field="notificationDeckPanel">
-					<g:FlowPanel styleName="{style.noNotificationContainer}">
-						<g:Label styleName="{style.noNotificationLabel}">
-							<ui:msg description="no notifications in project message">No Notification yet</ui:msg>
-						</g:Label>
-						<g:Label styleName="{style.helpLabel}">
-							<ui:msg description="notification help message">Notifications will arise when relevant events happen</ui:msg>
-						</g:Label>
-					</g:FlowPanel>
-					<misc:ModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
-				</g:DeckPanel>
+				<g:StackLayoutPanel ui:field="stackPanel">
+					<g:stack>
+						<g:customHeader size="15">
+							<g:HorizontalPanel styleName="{style.stackHeader}">
+								<g:Label ui:field="notificationHeaderLabel" styleName="{style.stackHeaderLabel}">Notitications</g:Label>
+								<g:cell width="100%">
+									<misc:Separator styleName="{style.stackSeparator}"></misc:Separator>
+								</g:cell>
+							</g:HorizontalPanel>
+						</g:customHeader>
+						<g:ScrollPanel ui:field="notificationScrollContainer" styleName="{style.scrollContainer}">
+							<g:DeckPanel ui:field="notificationDeckPanel">
+								<g:FlowPanel styleName="{style.noNotificationContainer}">
+									<g:Label styleName="{style.noNotificationLabel}">
+										<ui:msg description="no notifications in project message">No Notification yet</ui:msg>
+									</g:Label>
+									<g:Label styleName="{style.helpLabel}">
+										<ui:msg description="notification help message">Notifications will arise when relevant events happen</ui:msg>
+									</g:Label>
+								</g:FlowPanel>
+								<misc:ModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
+							</g:DeckPanel>
+						</g:ScrollPanel>	
+					</g:stack>
+					
+					<g:stack>
+						<g:customHeader size="15">
+							<g:HorizontalPanel styleName="{style.stackHeader}">
+								<g:Label styleName="{style.stackHeaderLabel}">Activities</g:Label>
+								<g:cell width="100%">
+									<misc:Separator styleName="{style.stackSeparator}"></misc:Separator>
+								</g:cell>
+							</g:HorizontalPanel>
+						</g:customHeader>
+						<g:ScrollPanel ui:field="activityScrollContainer" styleName="{style.scrollContainer}">
+							<g:DeckPanel ui:field="activityDeckPanel">
+								<g:FlowPanel styleName="{style.noNotificationContainer}">
+									<g:Label styleName="{style.noNotificationLabel}">
+										<ui:msg description="no activities in project message">No Activities yet</ui:msg>
+									</g:Label>
+									<g:Label styleName="{style.helpLabel}">
+										<ui:msg description="activity help message">Activities will arise when any event happen in this project</ui:msg>
+									</g:Label>
+								</g:FlowPanel>
+								<misc:ModelWidgetContainer ui:field="activityContainer" styleName="{style.notifications}" />
+							</g:DeckPanel>
+						</g:ScrollPanel>
+					</g:stack>	
+				</g:StackLayoutPanel>
 			</g:DeckPanel>
-		</g:ScrollPanel>		
 	</layout:ApplicationPopupBoxContainer>
 
 </ui:UiBinder>

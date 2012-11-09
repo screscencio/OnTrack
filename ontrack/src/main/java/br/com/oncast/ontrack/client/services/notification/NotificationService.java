@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEventHandler;
+import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateRequest;
@@ -27,6 +28,13 @@ public class NotificationService {
 	private final Set<NotificationReadStateChangeListener> notificationReadStateChangeListeners = new HashSet<NotificationReadStateChangeListener>();
 	private final List<Notification> availableNotifications = new LinkedList<Notification>();
 	private boolean notificationListAvailability;
+
+	private static final Set<NotificationType> IMPORTANT_NOTIFICATIONS = new HashSet<NotificationType>();
+
+	static {
+		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_SOLVED);
+		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_CREATED);
+	}
 
 	public NotificationService(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
 			final AuthenticationService authenticationService, final ClientAlertingService alertingService) {
@@ -152,5 +160,9 @@ public class NotificationService {
 		for (final NotificationReadStateChangeListener listener : notificationReadStateChangeListeners) {
 			listener.readStateChanged(notification, readState);
 		}
+	}
+
+	public boolean isImportant(final Notification notification) {
+		return IMPORTANT_NOTIFICATIONS.contains(notification.getType());
 	}
 }

@@ -3,16 +3,16 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeContainer;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.ModelWidgetContainerDragHandler;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
-import com.allen_sauer.gwt.dnd.client.DragHandlerAdapter;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class KanbanScopeItemDragHandler extends DragHandlerAdapter {
+public class KanbanScopeItemDragHandler extends ModelWidgetContainerDragHandler<Scope> {
 
 	private final ProgressPanelWidgetInteractionHandler interactionHandler;
 
@@ -22,6 +22,8 @@ public class KanbanScopeItemDragHandler extends DragHandlerAdapter {
 
 	@Override
 	public void onDragEnd(final DragEndEvent event) {
+		super.onDragEnd(event); // IMPORTANT This keeps ModelWidgetContainer synchronized
+
 		final DropController finalDropController = event.getContext().finalDropController;
 		if (finalDropController == null) return;
 
@@ -29,8 +31,6 @@ public class KanbanScopeItemDragHandler extends DragHandlerAdapter {
 		final ScopeWidget draggedScope = (ScopeWidget) event.getContext().draggable;
 		final KanbanScopeContainer scopeContainer = (KanbanScopeContainer) dropTarget.getParent().getParent();
 		final KanbanColumn kanbanColumn = scopeContainer.getKanbanColumn();
-
-		scopeContainer.addToWidgetMapping(draggedScope);
 
 		if (!isPriorityChange(draggedScope.getModelObject(), kanbanColumn.getDescription())) {
 			interactionHandler.onDragAndDropProgressRequest(draggedScope.getModelObject(), kanbanColumn.getDescription());

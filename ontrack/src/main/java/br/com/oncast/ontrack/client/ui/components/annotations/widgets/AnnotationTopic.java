@@ -166,6 +166,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 
 		menu.addSeparator();
 		menu.add(new LikeAnnotationMenuItem(subjectId, annotation));
+
 		addCommentsMenuItem();
 		menu.addSeparator();
 		menu.add(mapper.getSinceWidget(annotation));
@@ -182,9 +183,10 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	private void addCommentsMenuItem() {
 		final CommentsAnnotationMenuItem comment = new CommentsAnnotationMenuItem(annotation);
 		comment.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
+				if (annotation.isDeprecated() && commentsPanel.getWidgetCount() == 0) return;
+
 				commentsPanel.setVisible(!commentsPanel.isVisible());
 				commentsPanel.setFocus(true);
 			}

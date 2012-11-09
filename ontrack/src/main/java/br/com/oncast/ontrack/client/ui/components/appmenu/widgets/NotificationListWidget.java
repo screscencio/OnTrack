@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
@@ -14,13 +15,13 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class NotificationListWidget extends Composite implements HasCloseHandlers<NotificationListWidget>, PopupAware {
@@ -48,42 +50,64 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 	@UiField
 	@IgnoredByDeepEquality
-	protected DeckPanel notificationDeckPanel;
-
-	@UiField
-	protected ScrollPanel scrollContainer;
+	protected StackLayoutPanel stackPanel;
 
 	@UiField
 	@IgnoredByDeepEquality
+	protected DeckPanel notificationDeckPanel;
+
+	@UiField
+	@IgnoredByDeepEquality
+	protected DeckPanel activityDeckPanel;
+
+	@UiField
+	protected ScrollPanel notificationScrollContainer;
+
+	@UiField
+	protected ScrollPanel activityScrollContainer;
+
+	@UiField(provided = true)
+	@IgnoredByDeepEquality
 	protected ModelWidgetContainer<Notification, NotificationWidget> notificationContainer;
 
-	private final Timer timer = new Timer() {
+	@UiField(provided = true)
+	@IgnoredByDeepEquality
+	protected ModelWidgetContainer<Notification, NotificationWidget> activityContainer;
 
+	private final Timer timer = new Timer() {
 		@Override
 		public void run() {
 			markVisibleNotificationsAsRead();
 		}
 	};
 
-	@UiFactory
-	protected ModelWidgetContainer<Notification, NotificationWidget> createNotificationContainer() {
-		return new ModelWidgetContainer<Notification, NotificationWidget>(new ModelWidgetFactory<Notification, NotificationWidget>() {
-
+	public NotificationListWidget() {
+		this.activityContainer = new ModelWidgetContainer<Notification, NotificationWidget>(new ModelWidgetFactory<Notification, NotificationWidget>() {
 			@Override
 			public NotificationWidget createWidget(final Notification modelBean) {
 				return new NotificationWidget(modelBean);
 			}
 		});
-	}
 
-	public NotificationListWidget() {
+		this.notificationContainer = new ModelWidgetContainer<Notification, NotificationWidget>(new ModelWidgetFactory<Notification, NotificationWidget>() {
+			@Override
+			public NotificationWidget createWidget(final Notification modelBean) {
+				return new NotificationWidget(modelBean);
+			}
+		});
+
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.notificationListChangeListener = new NotificationListChangeListener() {
 
 			@Override
-			public void onNotificationListChanged(final List<Notification> notifications) {
+			public void onNotificationListChanged(final List<Notification> activities) {
+				final List<Notification> notifications = new ArrayList<Notification>();
+				for (final Notification n : activities) {
+					if (NOTIFICATION_SERVICE.isImportant(n)) notifications.add(n);
+				}
 				updateNotificationItens(notifications);
+				updateActivitiesItens(activities);
 			}
 
 			@Override
@@ -91,6 +115,7 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 				if (availability) hideLoadingIndicator();
 				else showLoadingIndicator();
 			}
+
 		};
 		showLoadingIndicator();
 		registerNotificationListChangeListener();
@@ -121,8 +146,14 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 		scrollToLattestNotification();
 	}
 
+	private void updateActivitiesItens(final List<Notification> activities) {
+		activityContainer.update(activities);
+		activityDeckPanel.showWidget((activities.size() > 0) ? 1 : 0);
+		activityScrollContainer.setVerticalScrollPosition(0);
+	}
+
 	private void scrollToLattestNotification() {
-		scrollContainer.setVerticalScrollPosition(0);
+		notificationScrollContainer.setVerticalScrollPosition(0);
 		timer.schedule(NOTIFICATION_READ_STATE_DELAY_MILLIS);
 	}
 
@@ -142,8 +173,13 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 		NOTIFICATION_SERVICE.unregisterNotificationListChangeListener(notificationListChangeListener);
 	}
 
-	@UiHandler("scrollContainer")
+	@UiHandler("notificationScrollContainer")
 	protected void onScroll(final ScrollEvent event) {
+		timer.schedule(NOTIFICATION_READ_STATE_DELAY_MILLIS);
+	}
+
+	@UiHandler("notificationHeaderLabel")
+	protected void onNotificationHeaderClick(final ClickEvent e) {
 		timer.schedule(NOTIFICATION_READ_STATE_DELAY_MILLIS);
 	}
 
@@ -154,8 +190,8 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 			final NotificationWidget widget = notificationContainer.getWidget(i);
 			final Element element = widget.getElement();
 
-			final int listVisibleTop = scrollContainer.getVerticalScrollPosition();
-			final int listVisibleBottom = listVisibleTop + scrollContainer.getElement().getClientHeight();
+			final int listVisibleTop = notificationScrollContainer.getVerticalScrollPosition();
+			final int listVisibleBottom = listVisibleTop + notificationScrollContainer.getElement().getClientHeight();
 			final int elementTop = element.getOffsetTop();
 			final int elementBottom = elementTop + element.getOffsetHeight();
 

@@ -7,8 +7,8 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
-import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;

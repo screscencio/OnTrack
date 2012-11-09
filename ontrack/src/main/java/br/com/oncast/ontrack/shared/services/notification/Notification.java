@@ -164,4 +164,9 @@ public class Notification implements Serializable {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return "Notification(" + description + ")";
+	}
+
 }

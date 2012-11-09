@@ -74,6 +74,8 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	}
 
 	private void processIncommingEvent(final ServerPushEvent event) {
+		if (!eventHandlersMap.containsKey(event.getClass())) return;
+
 		for (final ServerPushEventHandler<?> handler : eventHandlersMap.get(event.getClass())) {
 			notifyEventHandler(handler, event);
 		}
