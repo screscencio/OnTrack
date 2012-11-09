@@ -19,6 +19,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,7 +32,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 	interface PlanningPanelStyle extends CssResource {
 		String showReleaseIcon();
 
-		String hideReleaseIcon();
+		String mainContainerExpanded();
 	}
 
 	@UiField
@@ -57,6 +58,9 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	@UiField
 	FooterBar footerBar;
+
+	@UiField
+	Panel mainContainer;
 
 	private final ScrollAnimation animation = new ScrollAnimation();
 
@@ -136,7 +140,8 @@ public class PlanningPanel extends Composite implements PlanningView {
 		final boolean wasVisible = releasePanel.isVisible();
 		releasePanel.setVisible(!wasVisible);
 		toggleReleaseBtn.setStyleName(style.showReleaseIcon(), wasVisible);
-		toggleReleaseBtn.setStyleName(style.hideReleaseIcon(), !wasVisible);
+		mainContainer.setStyleName(style.mainContainerExpanded(), wasVisible);
+
 	}
 
 	private int getOffisetTop(final Element widget, final Element scrollPanel) {

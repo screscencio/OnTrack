@@ -10,11 +10,24 @@
 	<ui:image field="sliderLeft" src="slider-left.png"></ui:image>
 	<ui:image field="sliderRight" src="slider-right.png"></ui:image>
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.planning.PlanningPanel.PlanningPanelStyle">
+	
+		.mainContainer {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 405px;
+			bottom: 0px;
+		}
+		
+		.mainContainerExpanded {
+			right: 0px;
+		}
+
 		.searchBar {
 			position: absolute;
 			top: 15px;
 			left: 10px;
-			right: 420px;
+			right: 15px;
 		}
 			
 		.scopeTree {
@@ -22,7 +35,7 @@
 			
 			top: 10px;
 			left: 16px;
-			right: 426px;
+			right: 21px;
 			bottom: 43px;
 			
 			padding: 5px;
@@ -35,7 +48,7 @@
 		.footerBar {
 			position: absolute;
 			left: 10px;
-			right: 420px;
+			right: 15px;
 			bottom: 10px;
 			height: 33px;
 		}
@@ -53,18 +66,17 @@
 		
 		@sprite .hideReleaseIcon {
 			gwt-image: 'sliderRight';
-			right: 416px;
 		}
 		
 		@sprite .showReleaseIcon {
 			gwt-image: 'sliderLeft';
-			right: 0px;
 		}
 				
 		.toggleReleaseBtn {
 			height: auto;
 			position: absolute;
 			top: 63px;
+			right: 11px;
 			bottom: 48px;
 			width: 7px;
 			z-index: 1;
@@ -74,22 +86,24 @@
 			cursor: pointer;
 			border: 1px solid silver;
 			box-shadow: -2px 3px 5px silver;
-			opacity: 0.6;
+			opacity: 0.5;
 		}
 
 		</ui:style>
 
 	<layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
-		<g:SimplePanel styleName="{style.popupContainer} {style.scopeTree}">
-			<st:ScopeTree ui:field="scopeTree" />
-		</g:SimplePanel>
-		<g:SimplePanel styleName="{style.searchBar}">
-			<search:SearchBar ui:field="searchBar" />
-		</g:SimplePanel>
-		<g:SimplePanel styleName="{style.footerBar}">
-			<footer:FooterBar ui:field="footerBar" />
-		</g:SimplePanel>
-		<g:FocusPanel ui:field="toggleReleaseBtn" styleName="{style.toggleReleaseBtn} {style.hideReleaseIcon}" />
+		<g:FlowPanel ui:field="mainContainer" styleName="{style.mainContainer}">
+			<g:SimplePanel styleName="{style.popupContainer} {style.scopeTree}">
+				<st:ScopeTree ui:field="scopeTree" />
+			</g:SimplePanel>
+			<g:SimplePanel styleName="{style.searchBar}">
+				<search:SearchBar ui:field="searchBar" />
+			</g:SimplePanel>
+			<g:SimplePanel styleName="{style.footerBar}">
+				<footer:FooterBar ui:field="footerBar" />
+			</g:SimplePanel>
+			<g:FocusPanel ui:field="toggleReleaseBtn" styleName="{style.toggleReleaseBtn} {style.hideReleaseIcon}" />
+		</g:FlowPanel>
 		<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
 			<rp:ReleasePanel ui:field="releasePanel" />
 		</g:ScrollPanel>
