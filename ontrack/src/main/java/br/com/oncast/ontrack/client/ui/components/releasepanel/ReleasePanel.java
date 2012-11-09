@@ -54,4 +54,12 @@ public class ReleasePanel implements Component {
 	public ReleaseWidget getWidgetFor(final Release release) {
 		return releasePanelWidget.getWidgetFor(release);
 	}
+
+	public void setVisible(final boolean visibility) {
+		asWidget().setVisible(visibility);
+	}
+
+	public boolean isVisible() {
+		return asWidget().isVisible();
+	}
 }
