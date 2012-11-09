@@ -261,12 +261,12 @@ public class KanbanTest {
 		assertColumns(baseKanban, NOT_STARTED, "A", "b", "C", DONE);
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void shouldNotBeAbleToRenameAColumnThatTheKanbanNotContains() throws Exception {
+	@Test
+	public void shouldDoNothingWhenTryingToRenameAColumnThatTheKanbanNotContains() throws Exception {
 		final Kanban baseKanban = new Kanban();
 		appendColumns(baseKanban, "A", "B", "C");
 		baseKanban.renameColumn("D", "b");
-		assertColumns(baseKanban, NOT_STARTED, "A", "b", "C", DONE);
+		assertColumns(baseKanban, NOT_STARTED, "A", "B", "C", DONE);
 	}
 
 	@Test

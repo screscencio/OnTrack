@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.kanban;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -39,6 +40,18 @@ public class KanbanColumnMoveActionTest extends ModelActionTest {
 		context = mock(ProjectContext.class);
 		Mockito.when(context.findRelease(release.getId())).thenReturn(release);
 		Mockito.when(context.getKanban(release)).thenReturn(kanban);
+	}
+
+	@Test
+	public void whenMovindAColumnThatDoesNotExistsItShouldCreateANewOneWithTheGivenName() throws Exception {
+		final int desiredIndex = 0;
+
+		final String newColumnDescription = "new column";
+		final ModelAction action = new KanbanColumnMoveAction(releaseId, newColumnDescription, desiredIndex);
+		action.execute(context, Mockito.mock(ActionContext.class));
+
+		assertNotNull(kanban.getColumn(newColumnDescription));
+		assertEquals(desiredIndex, kanban.indexOf(newColumnDescription));
 	}
 
 	@Test

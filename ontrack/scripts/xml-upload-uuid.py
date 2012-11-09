@@ -5,7 +5,6 @@ baseUrl = 'localhost:8888'
 useHttps = False
 user = "admin@ontrack.com"
 password = "ontrackpoulain"
-baseDir = "./"
 command = 'curl --basic%s -u %s:%s -F "ontrack=@%s;type=text/xml" %s/application/xml/upload > %s'
 
 def executeCommand(command) :
@@ -39,15 +38,14 @@ def execute(filesPath):
 	message = "[SUCCESS] Operation finished successfully"
 	try :
 		for entry in filesPath :
-			upload(entry)
-			printTimeSpent(startTime)
+			if(os.path.isdir(entry)) :
+				uploadDir(entry)
+			else :
+				upload(entry)
+				printTimeSpent(startTime)
 
 		if not filesPath :
-			expression = re.compile(r"^ontrack_[A-Z\-0-9]+\.xml$")
-			for entry in os.listdir(baseDir):
-				if expression.match(entry) :
-					upload(baseDir + entry)
-					printTimeSpent(startTime)
+			uploadDir(os.curdir)
 
 	except Exception as e:
 		printTimeSpent(startTime)
@@ -55,6 +53,13 @@ def execute(filesPath):
 		message += "\n" + str(e)
 
 	print message
+
+def uploadDir(dirPath) :
+	expression = re.compile(r"^ontrack_[A-Z\-0-9]+\.xml$")
+	for entry in os.listdir(os.path.join(dirPath)):
+		if expression.match(entry) :
+			upload(os.path.join(os.curdir, entry))
+			printTimeSpent(startTime)
 
 def setup():
 	global ssl3, protocol
@@ -70,22 +75,25 @@ def setup():
 def usage():
 	print '''
 		Usage :
-		python xml-upload.py [options...]
+		  python xml-upload.py [options...] [files...]
+
+		Files: 
+		  Specifies files that will be uploaded or directories that contains those files [./]
+		  When Specifying a directory the files should match the pattern ^ontrack_[A-Z\-0-9]+\.xml$ otherwise it will be ignored.
 
 		Options:
-		 -b, --base-url \t\tthe base to be used for xml upload; [localhost:8888]
-		 -h, --help \t\tshow this help
-		 -s, --use-https \t\tuse https connection
-		 -u, --user \t\tuser to be used on basic authentication [admin@ontrack.com]
-		 -p, --password \t\tpassword to be used on basic authentication [ontrackpoulain]
-		 -d, --base-dir \t\tthe directory containning the xmls to upload
+		  -b, --base-url \t\tthe base to be used for xml upload; [localhost:8888]
+		  -h, --help \t\tshow this help
+		  -s, --use-https \t\tuse https connection
+		  -u, --user \t\tuser to be used on basic authentication [admin@ontrack.com]
+		  -p, --password \t\tpassword to be used on basic authentication [ontrackpoulain]
 	'''
 
 def main():
-	global baseUrl, useHttps, user, password, baseDir
+	global baseUrl, useHttps, user, password
 
 	try:
-		opts, arg = getopt.getopt(sys.argv[1:], "hb:su:p:d:", ["help", "base-url", "use-https", "user", "password", "base-dir"])
+		opts, arg = getopt.getopt(sys.argv[1:], "hb:su:p:", ["help", "base-url", "use-https", "user", "password"])
 	except getopt.error, msg:
 		print str(msg)
 		usage()
@@ -107,11 +115,6 @@ def main():
 
 		if o in ("-p", "--password") :
 			password = a
-
-		if o in ("-d", "--base-dir") :
-			baseDir = a
-			if baseDir[-1] != "/" :
-				baseDir += "/"
 
 	setup()
 	execute(arg)

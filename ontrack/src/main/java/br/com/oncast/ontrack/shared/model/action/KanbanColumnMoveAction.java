@@ -43,6 +43,8 @@ public class KanbanColumnMoveAction implements KanbanAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Kanban kanban = context.getKanban(ActionHelper.findRelease(releaseId, context));
 		try {
+			if (kanban.getColumn(columnDescription) == null) return new KanbanColumnCreateAction(releaseId, columnDescription, true, desiredIndex).execute(
+					context, actionContext);
 			final int previousIndex = kanban.indexOf(columnDescription);
 			kanban.moveColumn(columnDescription, desiredIndex);
 			kanban.setLocked(true);

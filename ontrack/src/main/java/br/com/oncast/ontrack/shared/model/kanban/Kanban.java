@@ -116,10 +116,9 @@ public class Kanban extends SimpleKanban implements Serializable {
 	@Override
 	public void renameColumn(final String columnDescription, final String newDescription) {
 		final KanbanColumn columnToRename = getColumn(columnDescription);
-		if (columnToRename == null) throw new RuntimeException("The column with description '" + columnDescription + "' was not found.");
-		if (columnToRename.isStaticColumn()) throw new RuntimeException("It's not possible to rename a static column");
+		if (columnToRename == null || columnToRename.getDescription().equals(newDescription)) return;
 
-		if (columnToRename.getDescription().equals(newDescription)) return;
+		if (columnToRename.isStaticColumn()) throw new RuntimeException("It's not possible to rename a static column");
 
 		final KanbanColumn desiredColumn = getColumn(newDescription);
 		if (desiredColumn != null && desiredColumn.isStaticColumn()) throw new RuntimeException("It's not possible to rename to a static column");
