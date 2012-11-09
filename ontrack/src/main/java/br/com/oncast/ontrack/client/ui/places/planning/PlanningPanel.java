@@ -20,7 +20,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PlanningPanel extends Composite implements PlanningView {
@@ -31,6 +30,8 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	interface PlanningPanelStyle extends CssResource {
 		String showReleaseIcon();
+
+		String hideReleaseIcon();
 	}
 
 	@UiField
@@ -52,10 +53,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 	protected ApplicationMenuAndWidgetContainer rootPanel;
 
 	@UiField
-	protected SimplePanel releaseContainer;
-
-	@UiField
-	protected FocusPanel toggleReleasePanel;
+	protected FocusPanel toggleReleaseBtn;
 
 	@UiField
 	FooterBar footerBar;
@@ -75,7 +73,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 		searchBar.setTree(scopeTree);
 	}
 
-	@UiHandler("toggleReleasePanel")
+	@UiHandler("toggleReleaseBtn")
 	protected void onShowReleasePanelClick(final ClickEvent e) {
 		toggleReleasePanel();
 	}
@@ -135,9 +133,10 @@ public class PlanningPanel extends Composite implements PlanningView {
 
 	@Override
 	public void toggleReleasePanel() {
-		final boolean wasVisible = releaseContainer.isVisible();
-		releaseContainer.setVisible(!wasVisible);
-		toggleReleasePanel.setStyleName(style.showReleaseIcon(), wasVisible);
+		final boolean wasVisible = releasePanel.isVisible();
+		releasePanel.setVisible(!wasVisible);
+		toggleReleaseBtn.setStyleName(style.showReleaseIcon(), wasVisible);
+		toggleReleaseBtn.setStyleName(style.hideReleaseIcon(), !wasVisible);
 	}
 
 	private int getOffisetTop(final Element widget, final Element scrollPanel) {

@@ -1,31 +1,28 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder 
-    xmlns:ui="urn:ui:com.google.gwt.uibinder" 
-    xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:layout='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout'
 	xmlns:search='urn:import:br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar'
 	xmlns:footer='urn:import:br.com.oncast.ontrack.client.ui.components.footerbar'
-	xmlns:st='urn:import:br.com.oncast.ontrack.client.ui.components.scopetree' 
-    xmlns:rp='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel'
->
+	xmlns:st='urn:import:br.com.oncast.ontrack.client.ui.components.scopetree'
+	xmlns:rp='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel'>
 
 	<ui:image field="sliderLeft" src="slider-left.png"></ui:image>
 	<ui:image field="sliderRight" src="slider-right.png"></ui:image>
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.planning.PlanningPanel.PlanningPanelStyle">
-	
 		.searchBar {
 			position: absolute;
 			top: 15px;
 			left: 10px;
-			right: 10px;
+			right: 420px;
 		}
-		
+			
 		.scopeTree {
 			position: absolute;
 			
 			top: 10px;
 			left: 16px;
-			right: 16px;
+			right: 426px;
 			bottom: 43px;
 			
 			padding: 5px;
@@ -38,7 +35,7 @@
 		.footerBar {
 			position: absolute;
 			left: 10px;
-			right: 10px;
+			right: 420px;
 			bottom: 10px;
 			height: 33px;
 		}
@@ -54,71 +51,48 @@
 			padding: 10px;
 		}
 		
-		.releaseContainer {
-			position: relative;
-			width: 410px;
-			height: 100%;
-		}
-		
-		.scopeTreeContainer {
-			position: relative;
-			width: 100%;
-			height: 100%;
-		}
-		
 		@sprite .hideReleaseIcon {
 			gwt-image: 'sliderRight';
+			right: 416px;
 		}
 		
 		@sprite .showReleaseIcon {
 			gwt-image: 'sliderLeft';
+			right: 0px;
 		}
-		
-		.toggleReleasePanel {
-			position: relative;
-			width: 10px;
-			height: 45px;
+				
+		.toggleReleaseBtn {
+			height: auto;
+			position: absolute;
+			top: 63px;
+			bottom: 48px;
+			width: 7px;
 			z-index: 1;
-			margin-left: -10px;
-			
 			background-size: 15px 15px;
 			background-position: center;
 			background-color: white;
-
 			cursor: pointer;
 			border: 1px solid silver;
 			box-shadow: -2px 3px 5px silver;
 			opacity: 0.6;
 		}
-			
-	</ui:style>
+
+		</ui:style>
 
 	<layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
-		<g:HorizontalPanel width="100%" height="100%">
-			<g:cell width="100%" height="100%">
-				<g:FlowPanel styleName="{style.scopeTreeContainer}">
-					<g:SimplePanel styleName="{style.popupContainer} {style.scopeTree}">
-						<st:ScopeTree ui:field="scopeTree" />
-					</g:SimplePanel>
-					<g:SimplePanel styleName="{style.searchBar}">
-						<search:SearchBar ui:field="searchBar"/>
-					</g:SimplePanel>
-					<g:SimplePanel styleName="{style.footerBar}">
-						<footer:FooterBar ui:field="footerBar"/>
-					</g:SimplePanel>
-				</g:FlowPanel>
-			</g:cell>
-			<g:cell verticalAlignment="middle">
-				<g:FocusPanel ui:field="toggleReleasePanel" styleName="{style.toggleReleasePanel} {style.hideReleaseIcon}"/>
-			</g:cell>
-			<g:cell height="1">
-				<g:SimplePanel ui:field="releaseContainer" styleName="{style.releaseContainer}">
-					<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
-						<rp:ReleasePanel ui:field="releasePanel" />
-					</g:ScrollPanel>
-				</g:SimplePanel>
-			</g:cell>
-		</g:HorizontalPanel>
+		<g:SimplePanel styleName="{style.popupContainer} {style.scopeTree}">
+			<st:ScopeTree ui:field="scopeTree" />
+		</g:SimplePanel>
+		<g:SimplePanel styleName="{style.searchBar}">
+			<search:SearchBar ui:field="searchBar" />
+		</g:SimplePanel>
+		<g:SimplePanel styleName="{style.footerBar}">
+			<footer:FooterBar ui:field="footerBar" />
+		</g:SimplePanel>
+		<g:FocusPanel ui:field="toggleReleaseBtn" styleName="{style.toggleReleaseBtn} {style.hideReleaseIcon}" />
+		<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
+			<rp:ReleasePanel ui:field="releasePanel" />
+		</g:ScrollPanel>
 	</layout:ApplicationMenuAndWidgetContainer>
 
 </ui:UiBinder>
