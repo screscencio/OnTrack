@@ -121,7 +121,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 	@Override
 	public void show() {
-		new FadeAnimation(this).show(new AnimationCallback() {
+		new FadeAnimation(this, 600).show(new AnimationCallback() {
 
 			@Override
 			public void onComplete() {
@@ -134,7 +134,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	public void hide() {
 		if (!isVisible()) return;
 
-		new FadeAnimation(this).hide(new AnimationCallback() {
+		new FadeAnimation(this, 300).hide(new AnimationCallback() {
 
 			@Override
 			public void onComplete() {

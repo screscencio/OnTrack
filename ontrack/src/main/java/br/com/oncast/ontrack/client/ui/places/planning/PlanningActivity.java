@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortc
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -32,10 +33,12 @@ public class PlanningActivity extends AbstractActivity {
 	private final ActivityActionExecutionListener activityActionExecutionListener;
 	private PlanningView view;
 	private List<HandlerRegistration> registrations;
-	private final PlanningPlace place;
+	private final UUID selectedScopeId;
+	private final UUID requestedProjectId;
 
 	public PlanningActivity(final PlanningPlace place) {
-		this.place = place;
+		requestedProjectId = place.getRequestedProjectId();
+		selectedScopeId = place.getSelectedScopeId();
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		activityActionExecutionListener = new ActivityActionExecutionListener(SERVICE_PROVIDER.getClientErrorMessages());
 	}
@@ -76,7 +79,7 @@ public class PlanningActivity extends AbstractActivity {
 		registrations.add(registerScopeSelectionEventHandler());
 		registrations.add(registerScopeImpedimentUpdateEventHandler());
 
-		SERVICE_PROVIDER.getClientApplicationStateService().restore(place.getSelectedScopeId());
+		SERVICE_PROVIDER.getClientApplicationStateService().restore(selectedScopeId);
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
 		SERVICE_PROVIDER.getClientMetricService().onBrowserLoadEnd();
@@ -156,5 +159,22 @@ public class PlanningActivity extends AbstractActivity {
 
 	public void toggleReleasePanel() {
 		view.toggleReleasePanel();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final PlanningActivity other = (PlanningActivity) obj;
+		if (requestedProjectId == null) {
+			if (other.requestedProjectId != null) return false;
+		}
+		else if (!requestedProjectId.equals(other.requestedProjectId)) return false;
+		if (selectedScopeId == null) {
+			if (other.selectedScopeId != null) return false;
+		}
+		else if (!selectedScopeId.equals(other.selectedScopeId)) return false;
+		return true;
 	}
 }

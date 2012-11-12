@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
+import br.com.oncast.ontrack.client.ui.places.AppActivityManager;
 
-import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeRequestEvent;
@@ -43,10 +43,10 @@ public class ApplicationPlaceController {
 		if (configured) throw new RuntimeException("The placeController is already configured.");
 		configured = true;
 
-		final ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
-		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper);
-
+		final AppActivityManager activityManager = new AppActivityManager(activityMapper, eventBus);
 		activityManager.setDisplay(container);
+
+		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(placeHistoryMapper);
 		final String defaultPlaceToken = clientStorageService.loadDefaultPlaceToken();
 		final Place place = defaultPlaceToken == null ? defaultAppPlace : placeHistoryMapper.getPlace(defaultPlaceToken);
 		historyHandler.register(placeController, eventBus, place == null ? defaultAppPlace : place);

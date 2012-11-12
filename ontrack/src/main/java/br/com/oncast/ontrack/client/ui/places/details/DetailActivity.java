@@ -29,8 +29,7 @@ public class DetailActivity extends AbstractActivity {
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 	}
 
-	@Override
-	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+	public void start() {
 		if (!setDetailPanel(place)) return;
 		register = ShortcutService.register(detailPanel, ClientServiceProvider.getInstance().getActionExecutionService(), UndoRedoShortCutMapping.values());
 
@@ -46,6 +45,11 @@ public class DetailActivity extends AbstractActivity {
 				ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 			}
 		}).setModal(true).pop();
+	}
+
+	@Override
+	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
+		start();
 	}
 
 	@Override
