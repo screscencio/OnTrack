@@ -12,10 +12,22 @@ import com.google.gwt.json.client.JSONString;
 
 public class SpeedTracerConsole {
 
-	public static native void log(String msg) /*-{
+	public static native void markTimeline(String msg) /*-{
 		var logger = $wnd.console;
 		if (logger && logger.markTimeline) {
 			logger.markTimeline(msg);
+		}
+	}-*/;
+
+	public static native void log(String message) /*-{
+		var logger = $wnd.console;
+		if (logger) {
+			var date = new Date();
+			var dateStr = ('0' + date.getHours()).substr(-2, 2) + ':'
+					+ ('0' + date.getMinutes()).substr(-2, 2) + ':'
+					+ ('0' + date.getSeconds()).substr(-2, 2) + ':'
+					+ ('00' + date.getMilliseconds()).substr(-3, 3);
+			logger.log("[" + dateStr + "] " + message);
 		}
 	}-*/;
 
@@ -39,7 +51,7 @@ public class SpeedTracerConsole {
 			this.initTime = new Date().getTime();
 			this.data = data;
 			this.identationLevel = ++counter;
-			log(getName() + getDataString());
+			markTimeline(getName() + getDataString());
 		}
 
 		private String getDataString() {
@@ -62,7 +74,7 @@ public class SpeedTracerConsole {
 
 		public void end() {
 			counter--;
-			log(getName() + ": " + getDuration() + " ms");
+			markTimeline(getName() + ": " + getDuration() + " ms");
 		}
 
 		JSONObject toJson() {
