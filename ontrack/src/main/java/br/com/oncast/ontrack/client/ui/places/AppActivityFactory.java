@@ -30,7 +30,7 @@ public class AppActivityFactory {
 		return new ServerPushLoadingActivity(place);
 	}
 
-	protected Activity getDetailActivity(final DetailPlace place) {
+	protected DetailActivity getDetailActivity(final DetailPlace place) {
 		return new DetailActivity(place);
 	}
 

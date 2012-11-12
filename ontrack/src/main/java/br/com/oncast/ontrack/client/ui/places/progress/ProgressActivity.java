@@ -35,14 +35,19 @@ public class ProgressActivity extends AbstractActivity {
 
 	private final List<HandlerRegistration> registrations;
 
-	public ProgressActivity(final ProgressPlace place) {
-		registrations = new ArrayList<HandlerRegistration>();
+	private final UUID requestedProjectId;
+	private final UUID requestedReleaseId;
 
+	public ProgressActivity(final ProgressPlace place) {
+		requestedProjectId = place.getRequestedProjectId();
+		requestedReleaseId = place.getRequestedReleaseId();
+
+		registrations = new ArrayList<HandlerRegistration>();
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 
 		try {
-			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(place.getRequestedProjectId());
-			release = projectContext.findRelease(place.getRequestedReleaseId());
+			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(requestedProjectId);
+			release = projectContext.findRelease(requestedReleaseId);
 			final Kanban kanban = projectContext.getKanban(release);
 			view = new ProgressPanel(release, kanban);
 			view.getKanbanPanel().setActionExecutionService(SERVICE_PROVIDER.getActionExecutionService());
@@ -120,4 +125,22 @@ public class ProgressActivity extends AbstractActivity {
 	private ApplicationMenuItem createReleaseMenuItem() {
 		return new ApplicationMenuItem(release.getFullDescription(), true);
 	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final ProgressActivity other = (ProgressActivity) obj;
+		if (requestedProjectId == null) {
+			if (other.requestedProjectId != null) return false;
+		}
+		else if (!requestedProjectId.equals(other.requestedProjectId)) return false;
+		if (requestedReleaseId == null) {
+			if (other.requestedReleaseId != null) return false;
+		}
+		else if (!requestedReleaseId.equals(other.requestedReleaseId)) return false;
+		return true;
+	}
+
 }

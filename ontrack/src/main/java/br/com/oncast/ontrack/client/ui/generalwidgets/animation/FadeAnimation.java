@@ -11,7 +11,11 @@ public class FadeAnimation extends ValueTransitionAnimation implements ShowAnima
 	private AnimationCallback listener;
 
 	public FadeAnimation(final Widget widget) {
-		super(widget, DURATION);
+		this(widget, DURATION);
+	}
+
+	public FadeAnimation(final Widget widget, final int duration) {
+		super(widget, duration);
 	}
 
 	@Override

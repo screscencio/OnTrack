@@ -41,7 +41,11 @@ public class AppActivityMapper implements ActivityMapper {
 					.getContextLoadingActivity(projectDependentPlace);
 		}
 
-		if (place instanceof DetailPlace) return activityFactory.getDetailActivity((DetailPlace) place);
+		if (place instanceof DetailPlace) {
+			activityFactory.getDetailActivity((DetailPlace) place).start();
+			return null;
+		}
+
 		if (place instanceof PlanningPlace) return activityFactory.getPlanningActivity((PlanningPlace) place);
 		if (place instanceof ProjectSelectionPlace) return activityFactory.getProjectSelectionActivity();
 		if (place instanceof ProjectCreationPlace) return activityFactory.getProjectCreationPlace((ProjectCreationPlace) place);
