@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWid
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
+import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertAction;
@@ -30,6 +31,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -118,6 +120,11 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	@UiHandler("search")
 	void onSearchBlur(final BlurEvent e) {
 		getScopeTreeColumnsExpandAnimation().expand();
+	}
+
+	@UiHandler("search")
+	protected void onKeyDown(final KeyDownEvent e) {
+		if (BrowserKeyCodes.KEY_ESCAPE == e.getNativeKeyCode()) tree.setFocus(true);
 	}
 
 	private MultipleWidgetsWidthExpandAnimation getScopeTreeColumnsExpandAnimation() {

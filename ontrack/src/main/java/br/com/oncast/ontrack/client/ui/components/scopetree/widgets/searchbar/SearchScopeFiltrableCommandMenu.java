@@ -22,7 +22,9 @@ import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
+import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -43,7 +45,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO refactor this class and FiltableCommandMenu to extract duplicated code
-public class SearchScopeFiltrableCommandMenu extends Composite implements HasFocusHandlers, HasBlurHandlers {
+public class SearchScopeFiltrableCommandMenu extends Composite implements HasFocusHandlers, HasBlurHandlers, HasKeyDownHandlers {
 
 	private static final SearchScopeMenuMessages messages = GWT.create(SearchScopeMenuMessages.class);
 
@@ -275,6 +277,11 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	@Override
 	public HandlerRegistration addBlurHandler(final BlurHandler handler) {
 		return filterArea.addBlurHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addKeyDownHandler(final KeyDownHandler handler) {
+		return filterArea.addKeyDownHandler(handler);
 	}
 
 }
