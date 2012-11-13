@@ -143,4 +143,12 @@ public interface RichTextToolbarMessages extends BaseMessages {
 	@Description("richtexttoolbar yellow")
 	@DefaultMessage("Yellow")
 	String yellow();
+
+	@Description("richtexttoolbar background")
+	@DefaultMessage("Background")
+	String background();
+
+	@Description("richtexttoolbar foreground")
+	@DefaultMessage("Foreground")
+	String foreground();
 }

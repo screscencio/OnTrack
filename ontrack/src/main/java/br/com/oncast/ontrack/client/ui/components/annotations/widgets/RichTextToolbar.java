@@ -300,8 +300,8 @@ public class RichTextToolbar extends Composite {
 		}
 
 		if (basic != null) {
-			bottomPanel.add(backColors = createColorList("Background"));
-			bottomPanel.add(foreColors = createColorList("Foreground"));
+			bottomPanel.add(backColors = createColorList(messages.background()));
+			bottomPanel.add(foreColors = createColorList(messages.foreground()));
 			bottomPanel.add(fonts = createFontList());
 			bottomPanel.add(fontSizes = createFontSizes());
 
