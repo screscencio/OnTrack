@@ -23,5 +23,7 @@ interface JQueryNative {
 
 	public void stop(boolean clearQueue);
 
-	public void customFallInAbsolutePositioning(int duration, JQueryCallback createCallback);
+	public void customDropDownAbsolutePositioning(int duration, JQueryCallback createCallback);
+
+	public void customDropUpAbsolutePositioning(int duration, JQueryCallback createCallback);
 }
