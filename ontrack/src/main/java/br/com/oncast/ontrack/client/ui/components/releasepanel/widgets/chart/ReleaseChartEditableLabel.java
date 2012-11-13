@@ -11,9 +11,13 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.HasMouseOutHandlers;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -21,13 +25,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleaseChartEditableLabel extends Composite implements HasValue<Float>, HasText {
+public class ReleaseChartEditableLabel extends Composite implements HasValue<Float>, HasText, HasMouseOverHandlers, HasMouseOutHandlers {
 
 	private static ReleaseChartEditableLabelUiBinder uiBinder = GWT.create(ReleaseChartEditableLabelUiBinder.class);
 
@@ -44,6 +49,9 @@ public class ReleaseChartEditableLabel extends Composite implements HasValue<Flo
 
 	@UiField
 	Label remove;
+
+	@UiField
+	FocusPanel focusPanel;
 
 	private boolean isRemoveAvailable;
 
@@ -93,6 +101,8 @@ public class ReleaseChartEditableLabel extends Composite implements HasValue<Flo
 	}
 
 	private void unregisterGlobalNativeMouseUpListener() {
+		if (globalNativeMouseUpListener == null) return;
+
 		GlobalNativeEventService.getInstance().removeMouseUpListener(getMouseUpListener());
 	}
 
@@ -164,5 +174,15 @@ public class ReleaseChartEditableLabel extends Composite implements HasValue<Flo
 
 	public void setRemoveValueAvailable(final boolean isAvailable) {
 		isRemoveAvailable = isAvailable;
+	}
+
+	@Override
+	public HandlerRegistration addMouseOutHandler(final MouseOutHandler handler) {
+		return focusPanel.addMouseOutHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addMouseOverHandler(final MouseOverHandler handler) {
+		return focusPanel.addMouseOverHandler(handler);
 	}
 }

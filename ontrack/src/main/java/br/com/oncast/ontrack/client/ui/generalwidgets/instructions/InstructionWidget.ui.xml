@@ -1,0 +1,47 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style src="../../style/default.css">
+		
+		.root {
+			position: relative;
+
+			padding: 5px;
+			background-color: COLOR_YELLOW;
+			color: COLOR_YELLOW_DARKEST;
+			border: MENUBOX_BUTTOM_BORDER;
+			cursor: pointer;
+		}
+		
+		.dismissLabel {
+			position: absolute;
+			top: -16px;
+			right: 0px;
+			cursor: pointer;
+		}
+		
+		.dismissLabel:HOVER {
+			color: COLOR_YELLOW;
+		}
+		
+		.infoLabel {
+			margin-top: 5px;
+			margin-bottom: -3px;
+			text-align: right;
+			opacity: 0.5
+		}
+		
+	</ui:style>
+	
+	<g:FocusPanel ui:field="root" styleName="{style.root}">
+		<g:HTMLPanel>
+			<g:DeckPanel ui:field="deck">
+				<g:Label ui:field="title"/>
+				<g:HTMLPanel ui:field="tips"/>
+			</g:DeckPanel>
+			<g:Label ui:field="infoLabel" styleName="{style.infoLabel}" />
+			<g:Label ui:field="dismiss" styleName="{style.dismissLabel}" />
+		</g:HTMLPanel>
+	</g:FocusPanel>
+</ui:UiBinder> 

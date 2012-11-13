@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
 public class ReleaseEstimator {
 
+	public static final float MIN_VELOCITY = 0.1F;
 	private static final int DURATION_OF_START_DAY = 1;
 	private static final short NUMBER_OF_REQUIRED_SCOPES = 30;
 
@@ -50,6 +51,10 @@ public class ReleaseEstimator {
 	}
 
 	public float getInferedEstimatedVelocityOnDay(final WorkingDay day) {
+		return Math.max(MIN_VELOCITY, getRawInferedEstimatedVelocityOnDay(day));
+	}
+
+	private float getRawInferedEstimatedVelocityOnDay(final WorkingDay day) {
 		final List<Scope> sampleScopes = rootRelease.getAllScopesIncludingDescendantReleases();
 
 		final List<Scope> consideredSampleScopes = getDoneScopesSortedByLatestEndDateUntilDay(sampleScopes, day);

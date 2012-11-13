@@ -8,6 +8,7 @@
 
 @def COLOR_YELLOW #F5CC6F;
 @def COLOR_YELLOW_DARK #CC9900;
+@def COLOR_YELLOW_DARKEST #996600;
 
 @def COLOR_BLUE_LIGHT #9BA2D2;
 @def COLOR_BLUE #4D5781;
@@ -92,8 +93,8 @@
 @def COLOR_MENU_BORDER_TOP #B4AA67;
 @def COLOR_MENU_BORDER_BOTTOM #EAE9DE;
 
-@def COLOR_MENU_LINK #996600;
-@def COLOR_MENU_LINK_HOVER #CC9900;
+@def COLOR_MENU_LINK COLOR_YELLOW_DARKEST;
+@def COLOR_MENU_LINK_HOVER COLOR_YELLOW_DARK;
 .colorMenuBackgroundGradient {
 	background: #f7cf75;
 	background: literal('-moz-linear-gradient(top,  #f7cf75 0%, #f0c662 100%)');

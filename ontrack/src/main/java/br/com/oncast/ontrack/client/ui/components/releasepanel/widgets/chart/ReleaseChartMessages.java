@@ -36,4 +36,12 @@ public interface ReleaseChartMessages extends BaseMessages {
 	@DefaultMessage("day")
 	String day();
 
+	@Description("title for low estimated velocity help")
+	@DefaultMessage("Estimated velocity is too low")
+	String lowEstimatedVelocityWarningTitle();
+
+	@Description("tips for fixing low estimated velocity")
+	@DefaultMessage(" - You can better estimate the scopes (higher) by selecting the scope and pressing SHIFT + #;\n - You can tell us the velocity by double clicking in the 'Estimated Velocity';\n - You can update the progress (%) of scopes more often")
+	String lowEstimatedVelocityTips();
+
 }

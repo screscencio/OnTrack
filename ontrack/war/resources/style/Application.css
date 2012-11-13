@@ -13,6 +13,11 @@ html,body {
     outline: 0;
 }
 
+.hasWarningInstructions {
+	background: #FFE09B;
+	border-radius: 2px;
+}
+
 .maskPanel {
 	position: absolute;
 	top: 0px;

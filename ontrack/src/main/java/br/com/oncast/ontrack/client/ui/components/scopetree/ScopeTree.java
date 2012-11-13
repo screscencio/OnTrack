@@ -56,7 +56,7 @@ public class ScopeTree implements Component {
 
 					ScopeTreeEffortUpdateEngine.process(tree, inferenceInfluencedScopes);
 
-					instructionGuide.onActionExecution(action);
+					if (isUserAction) instructionGuide.onActionExecution(action);
 				}
 				catch (final RuntimeException e) {
 					// This happens when the incoming action is not important for ScopeTree

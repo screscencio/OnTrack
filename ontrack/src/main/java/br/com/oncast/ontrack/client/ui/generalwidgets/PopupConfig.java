@@ -267,7 +267,7 @@ public class PopupConfig {
 	 * {@link #link(Widget)}.
 	 */
 	public void pop() {
-		MaskPanel.assureHidden();
+		// MaskPanel.assureHidden();
 		engagePopup();
 	}
 

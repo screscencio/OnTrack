@@ -43,6 +43,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
@@ -210,8 +211,10 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 		endDate.setValue(dataProvider.getEstimatedEndDay().getJavaDate(), false);
 		endDate.setRemoveValueAvailable(dataProvider.hasDeclaredEndDay());
 
-		velocity.setValue(dataProvider.getEstimatedVelocity(), false);
+		final float estimatedVelocity = dataProvider.getEstimatedVelocity();
+		velocity.setValue(estimatedVelocity, false);
 		velocity.setRemoveValueAvailable(dataProvider.hasDeclaredEstimatedVelocity());
+		if (estimatedVelocity < ReleaseEstimator.MIN_VELOCITY) showWarning();
 
 		final Float actualVelocityValue = dataProvider.getActualVelocity();
 		this.actualVelocity.setText(actualVelocityValue != null ? round(actualVelocityValue) : "-");
@@ -220,6 +223,11 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 		this.actualEndDay.setText(actualEndDayValue != null ? HumanDateFormatter.getShortAbsuluteDate(actualEndDayValue.getJavaDate()) : "-");
 
 		helpText.setVisible(hasDifferentEstimatives());
+	}
+
+	private void showWarning() {
+		ClientServiceProvider.getInstance().getClientInstructionService()
+				.addWarningTip(velocity, messages.lowEstimatedVelocityWarningTitle(), messages.lowEstimatedVelocityTips());
 	}
 
 	private boolean hasDifferentEstimatives() {
