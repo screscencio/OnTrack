@@ -90,4 +90,29 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 						+ handler.@br.com.oncast.ontrack.client.utils.jquery.EventHandler::registrationId);
 	}-*/;
 
+	@Override
+	public native void customFallInAbsolutePositioning(final int duration, final JQueryCallback callback) /*-{
+		var jscallback = function() {
+			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
+		}
+
+		var cheight = this.outerHeight();
+		var ctop = this.css("top");
+		var cbottom = this.css("bottom");
+		var wind = $wnd.$($wnd);
+
+		this.css({
+			top : wind.scrollTop() - (cheight / 3),
+			bottom : wind.height(),
+			opacity : 1,
+			display : 'block'
+		});
+
+		this.animate({
+			top : ctop,
+			bottom : cbottom,
+			opacity : 1
+		}, duration, jscallback);
+
+	}-*/;
 }

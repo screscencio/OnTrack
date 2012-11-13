@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.utils.jquery;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -108,6 +109,17 @@ public final class JQuery {
 
 	public JQuery stop(final boolean clearQueue) {
 		nat.stop(clearQueue);
+		return this;
+	}
+
+	public JQuery customFallInAbsolutePositioning(final int duration, final AnimationCallback callback) {
+		new Timer() {
+
+			@Override
+			public void run() {
+				nat.customFallInAbsolutePositioning(duration, createCallback(callback));
+			}
+		}.schedule(10);
 		return this;
 	}
 

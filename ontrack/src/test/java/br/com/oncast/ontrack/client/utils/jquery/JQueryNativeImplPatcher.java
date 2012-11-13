@@ -41,6 +41,9 @@ public class JQueryNativeImplPatcher {
 
 			@Override
 			public void stop(final boolean clearQueue) {}
+
+			@Override
+			public void customFallInAbsolutePositioning(final int duration, final JQueryCallback createCallback) {}
 		};
 	}
 }

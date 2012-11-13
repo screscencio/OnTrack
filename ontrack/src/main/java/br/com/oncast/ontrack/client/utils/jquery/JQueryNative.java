@@ -22,4 +22,6 @@ interface JQueryNative {
 	public void show();
 
 	public void stop(boolean clearQueue);
+
+	public void customFallInAbsolutePositioning(int duration, JQueryCallback createCallback);
 }
