@@ -112,15 +112,19 @@ public final class JQuery {
 		return this;
 	}
 
-	public JQuery customFallInAbsolutePositioning(final int duration, final AnimationCallback callback) {
+	public JQuery customDropDownAbsolutePositioning(final int duration, final AnimationCallback callback) {
 		new Timer() {
 
 			@Override
 			public void run() {
-				nat.customFallInAbsolutePositioning(duration, createCallback(callback));
+				nat.customDropDownAbsolutePositioning(duration, createCallback(callback));
 			}
 		}.schedule(10);
 		return this;
 	}
 
+	public JQuery customDropUpAbsolutePositioning(final int duration, final AnimationCallback callback) {
+		nat.customDropUpAbsolutePositioning(duration, createCallback(callback));
+		return this;
+	}
 }

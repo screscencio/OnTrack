@@ -11,7 +11,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
-import br.com.oncast.ontrack.client.ui.generalwidgets.animation.FadeAnimation;
 import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -122,7 +121,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 	@Override
 	public void show() {
-		JQuery.jquery(rootPanel).clearQueue().customFallInAbsolutePositioning(600, new AnimationCallback() {
+		JQuery.jquery(rootPanel).clearQueue().customDropDownAbsolutePositioning(600, new AnimationCallback() {
 
 			@Override
 			public void onComplete() {
@@ -135,7 +134,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	public void hide() {
 		if (!isVisible()) return;
 
-		new FadeAnimation(this, 300).hide(new AnimationCallback() {
+		JQuery.jquery(rootPanel).clearQueue().customDropUpAbsolutePositioning(400, new AnimationCallback() {
 
 			@Override
 			public void onComplete() {
