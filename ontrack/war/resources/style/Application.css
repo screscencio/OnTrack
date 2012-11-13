@@ -10,7 +10,7 @@ html,body {
 }
 
 * {
-    outline: 0;
+	outline: 0;
 }
 
 .hasWarningTips {
@@ -54,7 +54,7 @@ html,body {
 
 .gwt-Tree .gwt-TreeItem {
 	height: 21px;
-    margin: 1px;
+	margin: 1px;
 }
 
 .gwt-Tree .gwt-TreeItem>div {
@@ -64,13 +64,13 @@ html,body {
 .gwt-Tree .gwt-TreeItem:hover {
 	background-color: #F5F5F5;
 	border: 1px solid #F5F5F5;
-    margin: 0px;
+	margin: 0px;
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
 	background-color: #ffe8b3;
 	border: 1px solid #ddcda7;
-    margin: 0px;
+	margin: 0px;
 }
 
 .ScopeTreeItem {
@@ -78,18 +78,18 @@ html,body {
 }
 
 .ScopeTreeItem-selected {
-    background-color: #f6f6f6;
-    border: 1px solid #e5e5e5;
+	background-color: #f6f6f6;
+	border: 1px solid #e5e5e5;
 }
 
 /* Drag n Drop */
 .dragdrop-movable-panel {
-    cursor: move !important;
+	cursor: move !important;
 }
 
 .dragdrop-positioner {
-    background: #cccccc;
-    border: 1px #c5c5c5;
+	background: #cccccc;
+	border: 1px #c5c5c5;
 }
 
 .kanban .dragdrop-positioner {
@@ -109,8 +109,9 @@ html,body {
 	min-width: 207px;
 }
 
-.kanban .dragdrop-selected, .kanban .dragdrop-dragging, .kanban .dragdrop-proxy {
-    min-width: 207px;
+.kanban .dragdrop-selected,.kanban .dragdrop-dragging,.kanban .dragdrop-proxy
+	{
+	min-width: 207px;
 }
 
 .kanbanColumn-draggable-positioner {
@@ -119,11 +120,11 @@ html,body {
 }
 
 .kanbanColumn.dragdrop-dragging {
-    -moz-box-shadow: 2px 4px 10px #999;
-    -webkit-box-shadow: 2px 4px 10px #999;
-    box-shadow: 2px 4px 10px #999;
-    margin-top: -2px;
-    margin-left: -1px;
+	-moz-box-shadow: 2px 4px 10px #999;
+	-webkit-box-shadow: 2px 4px 10px #999;
+	box-shadow: 2px 4px 10px #999;
+	margin-top: -2px;
+	margin-left: -1px;
 }
 
 .dragdrop-draggable {
@@ -156,24 +157,25 @@ html,body {
 }
 
 .gwt-MenuBar-topMenu {
-	  box-shadow: -2px 2px 5px #444;
-	 -moz-box-shadow: -2px 2px 5px #444;    
-	 -webkit-box-shadow: -2px 2px 5px #444;
+	box-shadow: -2px 2px 5px #444;
+	-moz-box-shadow: -2px 2px 5px #444;
+	-webkit-box-shadow: -2px 2px 5px #444;
 }
 
 .footerCommandsMenu>div {
 	box-shadow: none;
-	-moz-box-shadow: none;    
+	-moz-box-shadow: none;
 	-webkit-box-shadow: none;
 	width: auto;
 }
+
 .footerCommandsMenu img {
 	margin-bottom: -2px;
 }
 
 .footerCommandsMenu .gwt-MenuBar .gwt-MenuItem {
 	border-top: 1px solid #DDD;
-	border-bottom: none;	
+	border-bottom: none;
 	padding: 5px;
 	white-space: nowrap;
 	font-size: 9pt;
@@ -189,11 +191,11 @@ html,body {
 
 .searchScopeResult-description {
 	display: block;
-	
 	text-transform: uppercase;
 	font-weight: bold;
 	font-size: 11pt;
 }
+
 .searchScopeResult-partOf {
 	margin-left: 25px;
 	display: inline;
@@ -211,7 +213,6 @@ html,body {
 	color: #999999;
 	background: #FAFAFA;
 	background-color: #FAFAFA;
-	
 	border-top: 1px solid white;
 	border-bottom: 1px solid #CCCCCC;
 }
@@ -236,7 +237,7 @@ html,body {
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
-	background-color:#E8E8E8;
+	background-color: #E8E8E8;
 	text-shadow: none;
 }
 
@@ -250,6 +251,7 @@ html,body {
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItemSeparator .menuSeparatorInner {
+	
 }
 
 .gwt-MenuBar .gwt-MenuItemSeparator {
@@ -334,12 +336,10 @@ html,body {
 
 /* DatePicker */
 .gwt-DatePicker {
-	background: #d3d3d3;	
+	background: #d3d3d3;
 	border: 1px solid #999;
 	box-shadow: 1px 1px 3px #999;
-	
 	padding: 10px;
-	
 	-webkit-user-select: none;
 }
 
@@ -351,16 +351,15 @@ html,body {
 .datePickerMonth {
 	background: white;
 	border: 1px solid #999;
-	
 	color: #5c5b5c;
 }
 
-.datePickerPreviousButton, .datePickerNextButton {
+.datePickerPreviousButton,.datePickerNextButton {
 	cursor: pointer;
 	color: #4d5781;
 }
 
-.datePickerPreviousButton:HOVER, .datePickerNextButton:HOVER {
+.datePickerPreviousButton:HOVER,.datePickerNextButton:HOVER {
 	background: #E8E8E8;
 }
 
@@ -382,10 +381,8 @@ html,body {
 .datePickerDay {
 	background: white;
 	color: #5c5b5c;
-
 	border: 1px solid #999;
 	padding: 1px;
-	
 	cursor: default;
 }
 
@@ -407,38 +404,43 @@ html,body {
 }
 
 .datePickerDayIsDisabled {
+	
 }
 
 .datePickerDayIsHighlighted {
-	background:#E8E8E8;
+	background: #E8E8E8;
 	color: #4d5781;
 }
 
 .datePickerDayIsValueAndHighlighted {
+	
 }
 
 /* Button */
 button {
+	
 }
 
 button:hover {
+	
 }
 
-button:active, button:focus {
+button:active,button:focus {
+	
 }
 
-button[disabled], button[disabled]:hover, input[disabled], input[disabled]:hover {
+button[disabled],button[disabled]:hover,input[disabled],input[disabled]:hover
+	{
+	
 }
 
 /* TextArea */
-.gwt-TextBox, .gwt-PasswordTextBox  {
+.gwt-TextBox,.gwt-PasswordTextBox {
 	height: 21px;
-
 	padding-top: 3px;
-    padding-bottom: 3px;
+	padding-bottom: 3px;
 	font-weight: normal;
 	font-size: 13px;
-	
 	outline: none;
 	border: 1px solid #a5a5a5;
 	border-radius: 1px;
@@ -447,15 +449,109 @@ button[disabled], button[disabled]:hover, input[disabled], input[disabled]:hover
 	-khtml-border-radius: 1px;
 }
 
-.gwt-TextBox[disabled], .gwt-PasswordTextBox[disabled] {
+.gwt-TextBox[disabled],.gwt-PasswordTextBox[disabled] {
 	opacity: 0.3;
 }
 
-.gwt-TextBox:focus, .gwt-PasswordTextBox:focus {
-	/*
+.gwt-TextBox:focus,.gwt-PasswordTextBox:focus { /*
 	border: 1px solid gray;
 	-moz-box-shadow: 0px 0px 5px #a5a5a5;
 	-webkit-box-shadow: 0px 0px 5px #a5a5a5;
 	box-shadow: 0px 0px 5px #a5a5a5;
 	*/
+	
+}
+
+.gwt-RichTextArea {
+	position:relative;
+	width: 100%;
+	height: 100%;
+	border: none;
+	
+	min-height: 30px;
+}
+
+.hasRichTextToolbar {
+	border: 0px;
+}
+
+.gwt-RichTextToolbar {
+	background: #DFDFDF;
+	border-bottom: 1px solid #BBBBBB;
+	padding: 3px;
+	margin: 0px;
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-up {
+	padding: 0px 1px 0px 0px;
+	margin-right: 4px;
+	margin-bottom: 4px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-up-hovering {
+	margin-right: 4px;Toggle
+	margin-bottom: 4px;
+	padding: 0px 1px 0px 0px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-down {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 0px 0px 1px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-down-hovering {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 0px 0px 1px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-ToggleButton-up {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 1px 0px 0px;
+	border: 1px solid #bbb;
+	border-bottom: 1px solid #a0a0a0;
+}
+
+.gwt-RichTextToolbar .gwt-ToggleButton-up-hovering {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 1px 0px 0px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-ToggleButton-down {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 0px 0px 1px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-ToggleButton-down-hovering {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 0px 0px 1px;
+	border-width: 1px;
+}
+
+.gwt-ToggleButton:hover {
+	cursor: pointer;
+}
+
+.gwt-PushButton:hover {
+	cursor: pointer;
+}
+
+.gwt-ListBox:hover {
+	cursor: pointer;
+}
+
+.cw-RichText {
+	border: 1px solid #BBBBBB;
+	border-spacing: 0px;
 }

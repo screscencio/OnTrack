@@ -20,7 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -29,6 +28,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,6 +46,8 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		String solvedImpediment();
 
 		String simple();
+
+		String richTextArea();
 	}
 
 	@UiField
@@ -122,9 +124,10 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 			messageBody.add(attachedFileWidget);
 		}
 
-		for (final String line : this.annotation.getMessage().split("\\n")) {
-			messageBody.add(new HTMLPanel(SimpleHtmlSanitizer.sanitizeHtml(line)));
-		}
+		final InlineHTML richText = new InlineHTML();
+		richText.setHTML(this.annotation.getMessage());
+		richText.setStyleName(style.richTextArea());
+		messageBody.add(richText);
 	}
 
 	private void updateAuthorImage() {
