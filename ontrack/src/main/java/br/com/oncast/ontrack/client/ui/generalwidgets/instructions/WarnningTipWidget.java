@@ -23,13 +23,13 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class InstructionWidget extends Composite implements PopupAware, HasCloseHandlers<InstructionWidget> {
+public class WarnningTipWidget extends Composite implements PopupAware, HasCloseHandlers<WarnningTipWidget> {
 
-	private static InstructionWidgetUiBinder uiBinder = GWT.create(InstructionWidgetUiBinder.class);
+	private static WarnningTipWidgetUiBinder uiBinder = GWT.create(WarnningTipWidgetUiBinder.class);
 
-	private static InstructionWidgetMessages messages = GWT.create(InstructionWidgetMessages.class);
+	private static WarnningTipWidgetMessages messages = GWT.create(WarnningTipWidgetMessages.class);
 
-	interface InstructionWidgetUiBinder extends UiBinder<Widget, InstructionWidget> {}
+	interface WarnningTipWidgetUiBinder extends UiBinder<Widget, WarnningTipWidget> {}
 
 	@UiField
 	FocusPanel root;
@@ -59,7 +59,7 @@ public class InstructionWidget extends Composite implements PopupAware, HasClose
 
 	private boolean disableAutoHide = false;
 
-	public InstructionWidget(final String title, final String tips, final DismissListener listener) {
+	public WarnningTipWidget(final String title, final String tips, final DismissListener listener) {
 		this.listener = listener;
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -115,13 +115,13 @@ public class InstructionWidget extends Composite implements PopupAware, HasClose
 	}
 
 	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<InstructionWidget> handler) {
+	public HandlerRegistration addCloseHandler(final CloseHandler<WarnningTipWidget> handler) {
 		return addHandler(handler, CloseEvent.getType());
 	}
 
 	private void setVisibleWidgetInDeck(final int index) {
 		deck.showWidget(index);
-		infoLabel.setText(index == 0 ? messages.moreInfo() : messages.lessInfo());
+		infoLabel.setText(index == 0 ? messages.sugestions() : messages.back());
 	}
 
 	private void showTips() {

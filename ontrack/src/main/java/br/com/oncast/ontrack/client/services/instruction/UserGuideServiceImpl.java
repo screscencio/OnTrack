@@ -7,8 +7,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
-import br.com.oncast.ontrack.client.ui.generalwidgets.instructions.InstructionWidget;
-import br.com.oncast.ontrack.client.ui.generalwidgets.instructions.InstructionWidget.DismissListener;
+import br.com.oncast.ontrack.client.ui.generalwidgets.instructions.WarnningTipWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.instructions.WarnningTipWidget.DismissListener;
 
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
@@ -21,7 +21,9 @@ import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public class ClientInstructionServiceImpl implements ClientInstructionService {
+public class UserGuideServiceImpl implements UserGuidService {
+
+	private static final String HAS_WARNING_TIPS_STYLE = "hasWarningTips";
 
 	@Override
 	public void addWarningTip(final IsWidget widget, final String title, final String tips) {
@@ -30,18 +32,18 @@ public class ClientInstructionServiceImpl implements ClientInstructionService {
 
 		final Set<HandlerRegistration> registrations = new HashSet<HandlerRegistration>();
 
-		widget.asWidget().addStyleName("hasWarningInstructions");
-		final InstructionWidget instructionWidget = new InstructionWidget(title, tips, new DismissListener() {
+		widget.asWidget().addStyleName(HAS_WARNING_TIPS_STYLE);
+		final WarnningTipWidget tip = new WarnningTipWidget(title, tips, new DismissListener() {
 			@Override
 			public void onDismissRequested() {
-				widget.asWidget().removeStyleName("hasWarningInstructions");
+				widget.asWidget().removeStyleName(HAS_WARNING_TIPS_STYLE);
 				for (final HandlerRegistration reg : registrations) {
 					reg.removeHandler();
 				}
 			}
 		});
 		final PopupConfig config = PopupConfig.configPopup()
-				.popup(instructionWidget)
+				.popup(tip)
 				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(widget.asWidget(), HorizontalAlignment.RIGHT, -100))
 				.alignVertical(VerticalAlignment.BOTTOM, new AlignmentReference(widget.asWidget(), VerticalAlignment.TOP, 5));
 
@@ -55,7 +57,7 @@ public class ClientInstructionServiceImpl implements ClientInstructionService {
 		registrations.add(((HasMouseOutHandlers) widget).addMouseOutHandler(new MouseOutHandler() {
 			@Override
 			public void onMouseOut(final MouseOutEvent event) {
-				instructionWidget.scheduleFadeAnimation();
+				tip.scheduleFadeAnimation();
 			}
 		}));
 

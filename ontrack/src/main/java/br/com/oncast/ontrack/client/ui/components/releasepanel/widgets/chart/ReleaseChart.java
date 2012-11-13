@@ -226,7 +226,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 	}
 
 	private void showWarning() {
-		ClientServiceProvider.getInstance().getClientInstructionService()
+		ClientServiceProvider.getInstance().getUserGuideService()
 				.addWarningTip(velocity, messages.lowEstimatedVelocityWarningTitle(), messages.lowEstimatedVelocityTips());
 	}
 

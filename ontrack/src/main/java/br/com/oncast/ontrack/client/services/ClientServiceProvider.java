@@ -23,8 +23,8 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
-import br.com.oncast.ontrack.client.services.instruction.ClientInstructionService;
-import br.com.oncast.ontrack.client.services.instruction.ClientInstructionServiceImpl;
+import br.com.oncast.ontrack.client.services.instruction.UserGuidService;
+import br.com.oncast.ontrack.client.services.instruction.UserGuideServiceImpl;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricService;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricServiceNewRelicImpl;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
@@ -92,7 +92,7 @@ public class ClientServiceProvider {
 	private ColorProviderService colorProviderService;
 
 	private ClientErrorMessages clientErrorMessages;
-	private ClientInstructionService clientInstructionService;
+	private UserGuidService userGuidService;
 
 	private static ClientServiceProvider instance;
 
@@ -248,8 +248,8 @@ public class ClientServiceProvider {
 		return clientErrorMessages == null ? clientErrorMessages = GWT.create(ClientErrorMessages.class) : clientErrorMessages;
 	}
 
-	public ClientInstructionService getClientInstructionService() {
-		return clientInstructionService == null ? clientInstructionService = new ClientInstructionServiceImpl() : clientInstructionService;
+	public UserGuidService getUserGuideService() {
+		return userGuidService == null ? userGuidService = new UserGuideServiceImpl() : userGuidService;
 	}
 
 }
