@@ -34,8 +34,11 @@
 				<g:cell width="100%">
 					<aw:ExtendableTextArea ui:field="newAnnotationText" />
 				</g:cell>
-				<g:cell verticalAlignment="bottom">
-					<aw:UploadWidget ui:field="uploadWidget" styleName="{style.uploadPanel}"/>
+				<g:cell verticalAlignment="bottom"  horizontalAlignment="center">
+					<g:VerticalPanel horizontalAlignment="center">
+						<aw:UploadWidget ui:field="uploadWidget" styleName="{style.uploadPanel}"/>
+						<g:Button ui:field="createNotificationButton" />
+					</g:VerticalPanel>
 				</g:cell>
 			</g:HorizontalPanel>
 			<misc:Separator ui:field="separator" styleName="{style.separator}"/>

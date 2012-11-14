@@ -6,9 +6,15 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PaddedTextBox;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -25,7 +31,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ExtendableTextArea extends Composite implements HasText, HasKeyDownHandlers {
+public class ExtendableTextArea extends Composite implements HasText, HasKeyDownHandlers, HasFocusHandlers, HasBlurHandlers {
 
 	private static ExtendableTextAreaUiBinder uiBinder = GWT.create(ExtendableTextAreaUiBinder.class);
 
@@ -91,7 +97,15 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	@UiHandler("paddedTextBox")
 	public void onPaddedTextBoxFocusHandler(final FocusEvent event) {
 		deckPanel.showWidget(0);
-		textArea.setFocus(true);
+
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+			@Override
+			public void execute() {
+				textArea.setFocus(true);
+			}
+		});
+
 	}
 
 	@UiHandler("richTextArea")
@@ -111,7 +125,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	@Override
 	public void setText(final String text) {
-		textArea.setText(text);
+		textArea.setHTML(text);
 	}
 
 	@Override
@@ -132,5 +146,15 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	private void hideRichTextArea() {
 		deckPanel.showWidget(1);
 		GlobalNativeEventService.getInstance().removeMouseUpListener(clickListener);
+	}
+
+	@Override
+	public HandlerRegistration addBlurHandler(final BlurHandler handler) {
+		return textArea.addBlurHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addFocusHandler(final FocusHandler handler) {
+		return textArea.addFocusHandler(handler);
 	}
 }
