@@ -13,8 +13,10 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
+import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -25,9 +27,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -55,22 +55,29 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	HorizontalPanel container;
 
 	@UiField
+	HorizontalPanel columnContainer;
+
+	@UiField
 	Label valueColumnActiveIndicatorLabel;
+
 	@UiField
 	Label valueColumnInactiveIndicatorLabel;
 
 	@UiField
 	Label effortColumnActiveIndicatorLabel;
+
 	@UiField
 	Label effortColumnInactiveIndicatorLabel;
 
 	@UiField
 	Label progressColumnActiveIndicatorLabel;
+
 	@UiField
 	Label progressColumnInactiveIndicatorLabel;
 
 	@UiField
 	Label releaseColumnActiveIndicatorLabel;
+
 	@UiField
 	Label releaseColumnInactiveIndicatorLabel;
 
@@ -79,8 +86,6 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	private boolean shouldUpdate = true;
 
 	private final Map<Scope, SearchScopeResultCommandMenuItem> scopeMenuCache;
-
-	private MultipleWidgetsWidthExpandAnimation animation;
 
 	public SearchBar() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -110,7 +115,11 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	@UiHandler("search")
 	void onSearchFocus(final FocusEvent e) {
-		getScopeTreeColumnsExpandAnimation().shrink();
+		JQuery.jquery(columnContainer).stop(true).slideLeftHide(300, new AnimationCallback() {
+
+			@Override
+			public void onComplete() {}
+		});
 		if (!shouldUpdate) return;
 
 		updateItems();
@@ -119,7 +128,11 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	@UiHandler("search")
 	void onSearchBlur(final BlurEvent e) {
-		getScopeTreeColumnsExpandAnimation().expand();
+		JQuery.jquery(columnContainer).stop(true).slideRightShow(300, new AnimationCallback() {
+
+			@Override
+			public void onComplete() {}
+		});
 	}
 
 	@UiHandler("search")
@@ -127,98 +140,17 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 		if (BrowserKeyCodes.KEY_ESCAPE == e.getNativeKeyCode()) tree.setFocus(true);
 	}
 
-	private MultipleWidgetsWidthExpandAnimation getScopeTreeColumnsExpandAnimation() {
-		if (animation == null) animation = new MultipleWidgetsWidthExpandAnimation(300,
-				releaseColumnActiveIndicatorLabel,
-				releaseColumnInactiveIndicatorLabel,
-				valueColumnActiveIndicatorLabel,
-				valueColumnInactiveIndicatorLabel,
-				effortColumnActiveIndicatorLabel,
-				effortColumnInactiveIndicatorLabel,
-				progressColumnActiveIndicatorLabel,
-				progressColumnInactiveIndicatorLabel);
-		return animation;
-	}
-
-	private class MultipleWidgetsWidthExpandAnimation extends Animation {
-
-		private final HashMap<Widget, Integer> initialWidthMap;
-		private final HashMap<Widget, Boolean> initialVisibilityMap;
-		private final ArrayList<Widget> widgetsList;
-		private final int duration;
-		private boolean expanding;
-
-		public MultipleWidgetsWidthExpandAnimation(final int duration, final Widget... widgets) {
-			this.duration = duration;
-			initialWidthMap = new HashMap<Widget, Integer>();
-			initialVisibilityMap = new HashMap<Widget, Boolean>();
-			widgetsList = new ArrayList<Widget>();
-
-			for (final Widget widget : widgets) {
-				final boolean visible = widget.isVisible();
-				widget.setVisible(true);
-				initialWidthMap.put(widget, widget.getOffsetWidth());
-				widget.setVisible(visible);
-
-				widgetsList.add(widget);
-			}
-		}
-
-		@Override
-		protected void onUpdate(double progress) {
-			if (!expanding) progress = 1 - progress;
-
-			for (final Widget widget : widgetsList) {
-				widget.getElement().getStyle().setWidth(initialWidthMap.get(widget) * interpolate(progress), Unit.PX);
-			}
-		}
-
-		@Override
-		protected void onStart() {
-			if (!expanding) return;
-
-			for (final Widget widget : widgetsList) {
-				widget.setVisible(initialVisibilityMap.get(widget));
-			}
-		}
-
-		@Override
-		protected void onComplete() {
-			if (expanding) return;
-
-			for (final Widget widget : widgetsList) {
-				widget.getElement().getStyle().setWidth(initialWidthMap.get(widget), Unit.PX);
-				widget.setVisible(false);
-			}
-		}
-
-		public void expand() {
-			this.expanding = true;
-			this.run(duration);
-		}
-
-		public void shrink() {
-			for (final Widget widget : widgetsList) {
-				initialVisibilityMap.put(widget, widget.isVisible());
-			}
-
-			this.expanding = false;
-			this.run(duration);
-		}
-
-	}
-
 	private void registerScopeTreeColumnVisibilityChangeListeners() {
 		ScopeTreeColumn.RELEASE.register(new VisibilityChangeListener() {
+
 			@Override
 			public void onVisiblityChange(final boolean isVisible) {
 				releaseColumnActiveIndicatorLabel.setVisible(isVisible);
 				releaseColumnInactiveIndicatorLabel.setVisible(!isVisible);
 			}
-
 		});
-
 		ScopeTreeColumn.PROGRESS.register(new VisibilityChangeListener() {
+
 			@Override
 			public void onVisiblityChange(final boolean isVisible) {
 				progressColumnActiveIndicatorLabel.setVisible(isVisible);
@@ -226,6 +158,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 			}
 		});
 		ScopeTreeColumn.EFFORT.register(new VisibilityChangeListener() {
+
 			@Override
 			public void onVisiblityChange(final boolean isVisible) {
 				effortColumnActiveIndicatorLabel.setVisible(isVisible);
@@ -233,6 +166,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 			}
 		});
 		ScopeTreeColumn.VALUE.register(new VisibilityChangeListener() {
+
 			@Override
 			public void onVisiblityChange(final boolean isVisible) {
 				valueColumnActiveIndicatorLabel.setVisible(isVisible);

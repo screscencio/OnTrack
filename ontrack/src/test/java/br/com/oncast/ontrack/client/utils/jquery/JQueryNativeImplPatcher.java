@@ -47,6 +47,12 @@ public class JQueryNativeImplPatcher {
 
 			@Override
 			public void customDropUpAbsolutePositioning(final int duration, final JQueryCallback createCallback) {}
+
+			@Override
+			public void slideLeftHide(final int duration, final JQueryCallback callback) {}
+
+			@Override
+			public void slideRightShow(final int duration, final JQueryCallback callback) {}
 		};
 	}
 }

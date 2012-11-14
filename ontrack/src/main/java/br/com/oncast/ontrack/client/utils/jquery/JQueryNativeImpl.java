@@ -146,4 +146,24 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 
 	}-*/;
 
+	@Override
+	public native void slideLeftHide(int duration, JQueryCallback callback) /*-{
+		var jscallback = function() {
+			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
+		}
+		this.animate({
+			width : 'show'
+		}, jscallback);
+	}-*/;
+
+	@Override
+	public native void slideRightShow(int duration, JQueryCallback callback) /*-{
+		var jscallback = function() {
+			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
+		}
+		this.animate({
+			width : 'hide'
+		}, jscallback);
+	}-*/;
+
 }

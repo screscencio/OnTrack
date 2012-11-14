@@ -13,7 +13,7 @@ interface JQueryNative {
 
 	public void fadeOut(int duration, JQueryCallback callback);
 
-	public void fadeTo(int duration, double opacity, JQueryCallback createCallback);
+	public void fadeTo(int duration, double opacity, JQueryCallback callback);
 
 	public void clearQueue();
 
@@ -23,7 +23,11 @@ interface JQueryNative {
 
 	public void stop(boolean clearQueue);
 
-	public void customDropDownAbsolutePositioning(int duration, JQueryCallback createCallback);
+	public void customDropDownAbsolutePositioning(int duration, JQueryCallback callback);
 
-	public void customDropUpAbsolutePositioning(int duration, JQueryCallback createCallback);
+	public void customDropUpAbsolutePositioning(int duration, JQueryCallback callback);
+
+	public void slideLeftHide(int duration, JQueryCallback callback);
+
+	public void slideRightShow(int duration, JQueryCallback callback);
 }

@@ -127,4 +127,14 @@ public final class JQuery {
 		nat.customDropUpAbsolutePositioning(duration, createCallback(callback));
 		return this;
 	}
+
+	public JQuery slideLeftHide(final int duration, final AnimationCallback callback) {
+		nat.slideLeftHide(duration, createCallback(callback));
+		return this;
+	}
+
+	public JQuery slideRightShow(final int duration, final AnimationCallback callback) {
+		nat.slideRightShow(duration, createCallback(callback));
+		return this;
+	}
 }
