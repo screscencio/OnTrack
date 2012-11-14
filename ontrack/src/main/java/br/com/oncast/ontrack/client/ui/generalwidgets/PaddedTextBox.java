@@ -5,7 +5,9 @@ import java.util.Iterator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -22,7 +24,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets, HasText, HasBlurHandlers {
+public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets, HasText, HasBlurHandlers, HasFocusHandlers {
 
 	private static PaddedTextBoxUiBinder uiBinder = GWT.create(PaddedTextBoxUiBinder.class);
 
@@ -105,6 +107,11 @@ public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasK
 	@Override
 	public HandlerRegistration addBlurHandler(final BlurHandler handler) {
 		return textBox.addBlurHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addFocusHandler(final FocusHandler handler) {
+		return textBox.addFocusHandler(handler);
 	}
 
 }

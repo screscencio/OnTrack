@@ -32,9 +32,7 @@
 	<g:FocusPanel>
 		<g:VerticalPanel height="100%" width="100%">
 			<misc:Separator styleName="{style.separator}"/>
-			<aw:ExtendableTextArea ui:field="newCommentText" defaultHeight="26px" maxHeight="100px" helpText="Type to comment this topic">
-				<ui:attribute name="helpText" description="comment on topic help text" />
-			</aw:ExtendableTextArea>
+			<aw:ExtendableTextArea ui:field="newCommentText" />
 			<g:SimplePanel ui:field="separator" styleName="{style.spacer}"/>
 			<g:cell height="100%">
 				<g:FocusPanel styleName="{style.container}">

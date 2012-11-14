@@ -32,11 +32,14 @@
 		<g:VerticalPanel height="100%" width="100%">
 			<g:HorizontalPanel width="100%">
 				<g:cell width="100%">
-					<aw:ExtendableTextArea ui:field="newAnnotationText" defaultHeight="26px"  maxHeight="100px" helpText="Type to create a new topic">
-						<ui:attribute name="helpText" description="new annotation help text" />
-					</aw:ExtendableTextArea>
+					<aw:ExtendableTextArea ui:field="newAnnotationText" />
 				</g:cell>
-				<aw:UploadWidget ui:field="uploadWidget" styleName="{style.uploadPanel}"/>
+				<g:cell verticalAlignment="bottom"  horizontalAlignment="center">
+					<g:VerticalPanel horizontalAlignment="center">
+						<aw:UploadWidget ui:field="uploadWidget" styleName="{style.uploadPanel}"/>
+						<g:Button ui:field="createNotificationButton" />
+					</g:VerticalPanel>
+				</g:cell>
 			</g:HorizontalPanel>
 			<misc:Separator ui:field="separator" styleName="{style.separator}"/>
 			<g:cell height="100%">

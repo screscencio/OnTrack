@@ -21,11 +21,16 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -35,6 +40,8 @@ public class AnnotationsWidget extends Composite {
 
 	interface AnnotationsWidgetUiBinder extends UiBinder<Widget, AnnotationsWidget> {}
 
+	private static final AnnotationsWidgetMessages messages = GWT.create(AnnotationsWidgetMessages.class);
+
 	@UiField
 	protected ExtendableTextArea newAnnotationText;
 
@@ -43,6 +50,9 @@ public class AnnotationsWidget extends Composite {
 
 	@UiField
 	protected Widget separator;
+
+	@UiField(provided = true)
+	protected Button createNotificationButton;
 
 	@UiField
 	protected ModelWidgetContainer<Annotation, AnnotationTopic> annotationsWidgetContainer;
@@ -63,6 +73,15 @@ public class AnnotationsWidget extends Composite {
 
 	public AnnotationsWidget(final UUID subjectId) {
 		this.subjectId = subjectId;
+		createNotificationButton = new Button(messages.createAnnotation(), new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				addAnnotation();
+			}
+		});
+
+		createNotificationButton.setVisible(false);
 		initWidget(uiBinder.createAndBindUi(this));
 		uploadWidget.setActionUrl("/application/file/upload");
 	}
@@ -77,6 +96,16 @@ public class AnnotationsWidget extends Composite {
 	@Override
 	protected void onUnload() {
 		getActionExecutionService().removeActionExecutionListener(actionsListener);
+	}
+
+	@UiHandler("newAnnotationText")
+	protected void onNewAnnotationTextOpen(final FocusEvent event) {
+		createNotificationButton.setVisible(true);
+	}
+
+	@UiHandler("newAnnotationText")
+	protected void onNewAnnotationTextClosed(final BlurEvent event) {
+		createNotificationButton.setVisible(false);
 	}
 
 	@UiHandler("newAnnotationText")
