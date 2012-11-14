@@ -39,6 +39,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -55,7 +56,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	HorizontalPanel container;
 
 	@UiField
-	HorizontalPanel columnContainer;
+	SimplePanel columnContainer;
 
 	@UiField
 	Label valueColumnActiveIndicatorLabel;
@@ -115,7 +116,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	@UiHandler("search")
 	void onSearchFocus(final FocusEvent e) {
-		JQuery.jquery(columnContainer).stop(true).slideLeftHide(300, new AnimationCallback() {
+		JQuery.jquery(columnContainer).stop(true).slideLeftHide(400, new AnimationCallback() {
 
 			@Override
 			public void onComplete() {}
@@ -128,7 +129,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	@UiHandler("search")
 	void onSearchBlur(final BlurEvent e) {
-		JQuery.jquery(columnContainer).stop(true).slideRightShow(300, new AnimationCallback() {
+		JQuery.jquery(columnContainer).slideRightShow(300, new AnimationCallback() {
 
 			@Override
 			public void onComplete() {}

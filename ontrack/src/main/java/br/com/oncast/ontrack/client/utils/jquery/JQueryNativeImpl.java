@@ -152,8 +152,8 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
 		}
 		this.animate({
-			width : 'show'
-		}, jscallback);
+			width : 'hide'
+		}, duration, jscallback);
 	}-*/;
 
 	@Override
@@ -162,8 +162,8 @@ final class JQueryNativeImpl extends JavaScriptObject implements JQueryNative {
 			callback.@br.com.oncast.ontrack.client.utils.jquery.JQueryCallback::onComplete()();
 		}
 		this.animate({
-			width : 'hide'
-		}, jscallback);
+			width : 'show'
+		}, duration, jscallback);
 	}-*/;
 
 }
