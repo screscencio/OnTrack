@@ -51,6 +51,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.resources.client.CssResource;
@@ -246,6 +247,11 @@ public class ScopeTreeItemWidget extends Composite {
 			event.preventDefault();
 			if (!isEnter || !editionBox.getText().trim().isEmpty()) switchToVisualization(isEnter);
 		}
+	}
+
+	@UiHandler("borderPanel")
+	protected void onMouseOver(final MouseMoveEvent event) {
+		if (!selectionsList.isEmpty()) showSelectedMembersLabel();
 	}
 
 	@UiHandler("editionBox")

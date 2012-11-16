@@ -53,11 +53,22 @@
 		.activeColumnIndicatorLabel {
 			color: #7e7f9f;
 		}
-		
-		.valueColumn {}
-		.effortColumn {}
-		.progressColumn {}
-		.releaseColumn {}
+
+		.valueColumn {
+		 	 width: 85px;
+	 	}
+
+	 	.effortColumn {
+		 	 width: 85px;
+	 	}
+
+	 	.progressColumn {
+		 	 width: 80px;
+	 	}
+
+	 	.releaseColumn {
+		 	 width: 120px;
+	 	}
 		
 	</ui:style>
 	
