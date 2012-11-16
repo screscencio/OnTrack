@@ -95,6 +95,7 @@ public class ProgressActivity extends AbstractActivity {
 		registrations.add(ShortcutService.register(RootPanel.get(), view.getApplicationMenu(), ApplicationMenuShortcutMapping.values()));
 		registrations.add(ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingPanel());
+		registrations.add(ShortcutService.configureShortcutHelpPanel(view.getAlertingPanel()));
 
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
