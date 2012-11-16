@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.Sc
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetValueCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
@@ -264,6 +265,12 @@ public class ScopeTreeItemWidget extends Composite {
 	protected void onDetailsClick(final ClickEvent e) {
 		e.stopPropagation();
 		getAnnotationService().showAnnotationsFor(scope.getId());
+	}
+
+	@UiHandler("releaseTag")
+	protected void onTagClick(final ClickEvent e) {
+		e.stopPropagation();
+		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), releaseTag);
 	}
 
 	public void setValue(final String value) {

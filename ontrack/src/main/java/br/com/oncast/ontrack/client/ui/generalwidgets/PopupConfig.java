@@ -265,10 +265,19 @@ public class PopupConfig {
 	/**
 	 * Makes the popup pop up, i.e., shows the popup to the user. Note that you may link the popup to a click event of a widget, take a look at
 	 * {@link #link(Widget)}.
+	 * See also {@link #toggle()}
 	 */
 	public void pop() {
-		// MaskPanel.assureHidden();
 		engagePopup();
+	}
+
+	/**
+	 * Makes the popup {@link #pop()} if not shown or {@link #hidePopup()} if it's already shown
+	 * .
+	 */
+	public void toggle() {
+		if (shown) hidePopup();
+		else pop();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -280,7 +289,7 @@ public class PopupConfig {
 					animation.hide();
 				}
 				shown = false;
-				maskPanel.hide();
+				if (maskPanel != null) maskPanel.hide();
 			}
 		});
 	}
@@ -305,6 +314,7 @@ public class PopupConfig {
 				hidePopup();
 				if (isModal && previousAlertingParent != null) ClientServiceProvider.getInstance().getClientAlertingService()
 						.setAlertingParentWidget(previousAlertingParent);
+				maskPanel = null;
 			}
 		}, isModal);
 
@@ -345,8 +355,14 @@ public class PopupConfig {
 	private void disengagePopup() {
 		if (closeListener != null) closeListener.onHasClosed();
 
-		closeHandler.removeHandler();
-		resizeHandler.removeHandler();
+		if (closeHandler != null) {
+			closeHandler.removeHandler();
+			closeHandler = null;
+		}
+		if (resizeHandler != null) {
+			resizeHandler.removeHandler();
+			resizeHandler = null;
+		}
 
 		if (!leaveWidgetInDomOnClose) {
 			widgetToPopup.removeFromParent();
@@ -410,6 +426,10 @@ public class PopupConfig {
 				return;
 			}
 
+			setupAndRun();
+		}
+
+		private void setupAndRun() {
 			setupContainer();
 			setupWidget();
 
@@ -424,10 +444,7 @@ public class PopupConfig {
 				return;
 			}
 
-			setupContainer();
-			setupWidget();
-
-			run(animationDuration);
+			setupAndRun();
 		}
 
 		private void setupContainer() {

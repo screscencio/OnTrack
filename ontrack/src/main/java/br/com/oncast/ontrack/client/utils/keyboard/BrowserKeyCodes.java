@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.utils.keyboard;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BrowserKeyCodes {
 
 	private BrowserKeyCodes() {}
@@ -84,4 +87,88 @@ public class BrowserKeyCodes {
 		if (nativeKeyCode == KEY_LEFT || nativeKeyCode == KEY_UP || nativeKeyCode == KEY_RIGHT || nativeKeyCode == KEY_DOWN) return true;
 		return false;
 	}
+
+	public static String getString(final int keyCode) {
+		return KeyRepresentationMapper.getString(keyCode);
+	}
+
+	public static String getString(final int keyCode, final boolean shiftPressed) {
+		return KeyRepresentationMapper.getString(keyCode, shiftPressed);
+	}
+
+	private static final class KeyRepresentationMapper {
+		private static final Map<Integer, String> keysRepresentations = new HashMap<Integer, String>();
+		private static final Map<Integer, String> shiftedKeysRepresentations = new HashMap<Integer, String>();
+
+		static {
+
+			// Same string representation with or without the shift key pressed
+			keysRepresentations.put(KEY_ALT, "ALT");
+			keysRepresentations.put(KEY_BACKSPACE, "BACKSPACE");
+			keysRepresentations.put(KEY_CTRL, "CONTROL");
+			keysRepresentations.put(KEY_DELETE, "Delete");
+			keysRepresentations.put(KEY_END, "End");
+			keysRepresentations.put(KEY_ENTER, "ENTER");
+			keysRepresentations.put(KEY_ESCAPE, "Esc");
+			keysRepresentations.put(KEY_HOME, "Home");
+			keysRepresentations.put(KEY_PAGEDOWN, "Page Down");
+			keysRepresentations.put(KEY_PAGEUP, "Page Up");
+			keysRepresentations.put(KEY_SHIFT, "SHIFT");
+			keysRepresentations.put(KEY_TAB, "TAB");
+			keysRepresentations.put(KEY_INSERT, "Insert");
+			keysRepresentations.put(KEY_F2, "F2");
+			keysRepresentations.put(KEY_LEFT, "LEFT");
+			keysRepresentations.put(KEY_UP, "UP");
+			keysRepresentations.put(KEY_RIGHT, "RIGHT");
+			keysRepresentations.put(KEY_DOWN, "DOWN");
+
+			// The string representation without SHIFT key pressed
+			keysRepresentations.put(KEY_2, "2");
+			keysRepresentations.put(KEY_3, "3");
+			keysRepresentations.put(KEY_4, "4");
+			keysRepresentations.put(KEY_5, "5");
+			keysRepresentations.put(KEY_SLASH, "/");
+			keysRepresentations.put(KEY_A, "a");
+			keysRepresentations.put(KEY_F, "f");
+			keysRepresentations.put(KEY_M, "m");
+			keysRepresentations.put(KEY_N, "n");
+			keysRepresentations.put(KEY_P, "p");
+			keysRepresentations.put(KEY_R, "r");
+			keysRepresentations.put(KEY_U, "u");
+			keysRepresentations.put(KEY_Y, "y");
+			keysRepresentations.put(KEY_Z, "z");
+
+			// The string representation with SHIFT key pressed
+			shiftedKeysRepresentations.put(KEY_2, "@");
+			shiftedKeysRepresentations.put(KEY_3, "#");
+			shiftedKeysRepresentations.put(KEY_4, "$");
+			shiftedKeysRepresentations.put(KEY_5, "%");
+			shiftedKeysRepresentations.put(KEY_SLASH, "?");
+			shiftedKeysRepresentations.put(KEY_A, "A");
+			shiftedKeysRepresentations.put(KEY_F, "F");
+			shiftedKeysRepresentations.put(KEY_M, "M");
+			shiftedKeysRepresentations.put(KEY_N, "N");
+			shiftedKeysRepresentations.put(KEY_P, "P");
+			shiftedKeysRepresentations.put(KEY_R, "R");
+			shiftedKeysRepresentations.put(KEY_U, "U");
+			shiftedKeysRepresentations.put(KEY_Y, "Y");
+			shiftedKeysRepresentations.put(KEY_Z, "Z");
+
+		}
+
+		private static String getString(final int keyCode) {
+			if (!keysRepresentations.containsKey(keyCode)) throw new RuntimeException("The given keyCode is not mapped yet");
+
+			return keysRepresentations.get(keyCode);
+		}
+
+		private static String getString(final int keyCode, final boolean shiftPressed) {
+			if (!keysRepresentations.containsKey(keyCode)) throw new RuntimeException("The given keyCode is not mapped yet");
+
+			if (!shiftPressed) return getString(keyCode);
+
+			return shiftedKeysRepresentations.containsKey(keyCode) ? shiftedKeysRepresentations.get(keyCode) : keysRepresentations.get(keyCode);
+		}
+	}
+
 }

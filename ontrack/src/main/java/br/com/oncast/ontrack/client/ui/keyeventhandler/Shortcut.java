@@ -51,4 +51,20 @@ public class Shortcut {
 		return e.getKeyCode() == keyCode && ctrl.matches(e) && shift.matches(e) && alt.matches(e);
 	}
 
+	public int getKeyCode() {
+		return keyCode;
+	}
+
+	public ShiftModifier getShift() {
+		return shift;
+	}
+
+	public ControlModifier getCtrl() {
+		return ctrl;
+	}
+
+	public AltModifier getAlt() {
+		return alt;
+	}
+
 }
