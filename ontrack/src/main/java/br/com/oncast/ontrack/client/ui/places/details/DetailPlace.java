@@ -14,11 +14,13 @@ public class DetailPlace extends ProjectDependentPlace {
 	private final UUID projectId;
 	private final UUID subjectId;
 	private final Place destinationPlace;
+	private final boolean hasLoadedPlace;
 
-	public DetailPlace(final UUID projectId, final UUID subjectId, final Place destinationPlace) {
+	public DetailPlace(final UUID projectId, final UUID subjectId, final Place destinationPlace, final boolean hasLoadedPlace) {
 		this.projectId = projectId;
 		this.subjectId = subjectId;
 		this.destinationPlace = destinationPlace;
+		this.hasLoadedPlace = hasLoadedPlace;
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class DetailPlace extends ProjectDependentPlace {
 				projectId = UUID.INVALID_UUID;
 				subjectId = UUID.INVALID_UUID;
 			}
-			return new DetailPlace(projectId, subjectId, new PlanningPlace(projectId));
+			return new DetailPlace(projectId, subjectId, new PlanningPlace(projectId), false);
 		}
 
 		@Override
@@ -57,6 +59,10 @@ public class DetailPlace extends ProjectDependentPlace {
 
 	public Place getDestinationPlace() {
 		return destinationPlace;
+	}
+
+	public boolean hasLoadedPlace() {
+		return hasLoadedPlace;
 	}
 
 }

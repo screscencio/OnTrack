@@ -64,7 +64,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public void showAnnotationsFor(final UUID subjectId) {
-		applicationPlaceController.goTo(new DetailPlace(getCurrentProjectId(), subjectId, applicationPlaceController.getCurrentPlace()));
+		applicationPlaceController.goTo(new DetailPlace(getCurrentProjectId(), subjectId, applicationPlaceController.getCurrentPlace(), true));
 	}
 
 	@Override

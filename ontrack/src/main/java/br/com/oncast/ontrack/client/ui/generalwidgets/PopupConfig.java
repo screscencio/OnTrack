@@ -4,6 +4,7 @@ import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Style;
@@ -90,6 +91,7 @@ public class PopupConfig {
 	private AlignmentReference alignVerticallyTo;
 	private boolean isModal = false;
 	private Widget previousAlertingParent;
+	private Widget previousShortcutHelpParent;
 	private BasicMaskPanel maskPanel;
 
 	private PopupConfig() {}
@@ -312,14 +314,20 @@ public class PopupConfig {
 			@Override
 			public void onWillHide() {
 				hidePopup();
-				if (isModal && previousAlertingParent != null) ClientServiceProvider.getInstance().getClientAlertingService()
-						.setAlertingParentWidget(previousAlertingParent);
+				if (isModal) {
+					if (previousAlertingParent != null)
+					ClientServiceProvider.getInstance().getClientAlertingService()
+							.setAlertingParentWidget(previousAlertingParent);
+					if (previousShortcutHelpParent != null)
+					ShortcutService.setShortcutHelpPanelParentWidget(previousShortcutHelpParent);
+				}
 				maskPanel = null;
 			}
 		}, isModal);
 
 		if (isModal) {
 			previousAlertingParent = ClientServiceProvider.getInstance().getClientAlertingService().setAlertingParentWidget(RootPanel.get());
+			previousShortcutHelpParent = ShortcutService.setShortcutHelpPanelParentWidget(RootPanel.get());
 		}
 
 		if (!widgetToPopup.isAttached()) {

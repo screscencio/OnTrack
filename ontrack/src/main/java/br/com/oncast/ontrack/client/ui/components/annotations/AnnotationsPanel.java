@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallback;
+import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -106,6 +107,9 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 	@UiHandler("rootPanel")
 	protected void onKeyDown(final KeyDownEvent e) {
+		for (final UndoRedoShortCutMapping m : UndoRedoShortCutMapping.values())
+			if (m.getShortcut().accepts(e.getNativeEvent())) return;
+		e.stopPropagation();
 		if (BrowserKeyCodes.KEY_ESCAPE == e.getNativeKeyCode()) hide();
 	}
 

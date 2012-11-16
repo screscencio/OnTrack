@@ -31,7 +31,8 @@ public class DetailActivity extends AbstractActivity {
 
 	public void start() {
 		if (!setDetailPanel(place)) return;
-		register = ShortcutService.register(detailPanel, ClientServiceProvider.getInstance().getActionExecutionService(), UndoRedoShortCutMapping.values());
+		if (!place.hasLoadedPlace()) register = ShortcutService.register(detailPanel, ClientServiceProvider.getInstance().getActionExecutionService(),
+				UndoRedoShortCutMapping.values());
 
 		PopupConfig.configPopup().popup(this.detailPanel).onClose(new PopupCloseListener() {
 			@Override
@@ -54,7 +55,7 @@ public class DetailActivity extends AbstractActivity {
 
 	@Override
 	public void onStop() {
-		register.removeHandler();
+		if (register != null) register.removeHandler();
 	}
 
 	private boolean setDetailPanel(final DetailPlace place) {

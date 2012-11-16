@@ -113,4 +113,10 @@ public class ShortcutService {
 		shortcutHelpPanelParentWidget = parentWidget;
 		return register(RootPanel.get(), null, ShortcutHelpPanelShortcutMappings.values());
 	}
+
+	public static Widget setShortcutHelpPanelParentWidget(final Widget parentWidget) {
+		final Widget previous = shortcutHelpPanelParentWidget;
+		shortcutHelpPanelParentWidget = parentWidget;
+		return previous;
+	}
 }
