@@ -300,6 +300,32 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 			return messages.findScopeAtReleaseWidget();
 		}
 
+	},
+
+	SELECT_PREVIOUS_SELECTED_SCOPE(new Shortcut(BrowserKeyCodes.KEY_LEFT).with(AltModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			ClientServiceProvider.getInstance().getClientApplicationStateService().jumpToPreviousSelection();
+		}
+
+		@Override
+		public String getDescription() {
+			return messages.selectPreviousSelectedScope();
+		}
+
+	},
+
+	SELECT_NEXT_SELECTED_SCOPE(new Shortcut(BrowserKeyCodes.KEY_RIGHT).with(AltModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			ClientServiceProvider.getInstance().getClientApplicationStateService().jumpToNextSelection();
+		}
+
+		@Override
+		public String getDescription() {
+			return messages.selectNextSelectedScope();
+		}
+
 	};
 
 	private final Shortcut shortcut;

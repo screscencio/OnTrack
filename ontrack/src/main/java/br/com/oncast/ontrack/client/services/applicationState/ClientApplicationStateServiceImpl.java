@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.services.applicationState;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
@@ -37,7 +38,8 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 
 	private final Set<HandlerRegistration> handlerRegistrations;
 
-	private Scope selectedScope;
+	private final Stack<Scope> previousSelectedScopes;
+	private final Stack<Scope> nextSelectedScopes;
 
 	public ClientApplicationStateServiceImpl(final EventBus eventBus, final ContextProviderService contextProviderService,
 			final ClientStorageService clientStorageService, final ClientAlertingService alertingService, final ClientErrorMessages messages) {
@@ -46,11 +48,15 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 		this.clientStorageService = clientStorageService;
 		this.alertingService = alertingService;
 		this.messages = messages;
+		this.previousSelectedScopes = new Stack<Scope>();
+		this.nextSelectedScopes = new Stack<Scope>();
+
 		handlerRegistrations = new HashSet<HandlerRegistration>();
 		contextProviderService.addContextLoadListener(new ContextChangeListener() {
 			@Override
 			public void onProjectChanged(final UUID projetId) {
-				selectedScope = null;
+				previousSelectedScopes.clear();
+				nextSelectedScopes.clear();
 			}
 		});
 	}
@@ -112,7 +118,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	public void restore(final UUID scopeSelectedId) {
 		try {
 			if (scopeSelectedId != null) {
-				selectedScope = contextProviderService.getCurrentProjectContext().findScope(scopeSelectedId);
+				previousSelectedScopes.add(contextProviderService.getCurrentProjectContext().findScope(scopeSelectedId));
 			}
 			restore();
 		}
@@ -153,27 +159,50 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	}
 
 	private void setSelectedScope(final ScopeSelectionEvent event) {
-		if (selectedScope != null && selectedScope.equals(event.getTargetScope())) return;
+		if (getSelectedScope().equals(event.getTargetScope())) return;
 
-		selectedScope = event.getTargetScope();
+		nextSelectedScopes.clear();
+
+		previousSelectedScopes.add(event.getTargetScope());
 		storeSelectedScope();
 	}
 
 	private Scope getSelectedScope() {
-		return selectedScope == null ? loadSelectedScope() : selectedScope;
+		return previousSelectedScopes.isEmpty() ? loadSelectedScope() : previousSelectedScopes.peek();
 	}
 
 	private void storeSelectedScope() {
-		clientStorageService.storeSelectedScopeId(selectedScope.getId());
+		clientStorageService.storeSelectedScopeId(previousSelectedScopes.peek().getId());
 	}
 
 	private Scope loadSelectedScope() {
 		final ProjectContext currentContext = contextProviderService.getCurrentProjectContext();
+		Scope selectedScope = null;
 		try {
-			return currentContext.findScope(clientStorageService.loadSelectedScopeId(currentContext.getProjectScope().getId()));
+			selectedScope = currentContext.findScope(clientStorageService.loadSelectedScopeId(currentContext.getProjectScope().getId()));
 		}
 		catch (final ScopeNotFoundException e) {
-			return currentContext.getProjectScope();
+			selectedScope = currentContext.getProjectScope();
 		}
+		previousSelectedScopes.add(selectedScope);
+		return selectedScope;
+	}
+
+	@Override
+	public void jumpToPreviousSelection() {
+		if (previousSelectedScopes.isEmpty()) return;
+
+		nextSelectedScopes.add(previousSelectedScopes.pop());
+		fireScopeSelectionEvent();
+		storeSelectedScope();
+	}
+
+	@Override
+	public void jumpToNextSelection() {
+		if (nextSelectedScopes.isEmpty()) return;
+
+		previousSelectedScopes.add(nextSelectedScopes.pop());
+		fireScopeSelectionEvent();
+		storeSelectedScope();
 	}
 }

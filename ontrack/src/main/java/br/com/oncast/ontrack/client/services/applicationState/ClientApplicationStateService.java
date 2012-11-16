@@ -12,4 +12,8 @@ public interface ClientApplicationStateService {
 
 	void restore(UUID scopeSelectedId);
 
+	void jumpToPreviousSelection();
+
+	void jumpToNextSelection();
+
 }

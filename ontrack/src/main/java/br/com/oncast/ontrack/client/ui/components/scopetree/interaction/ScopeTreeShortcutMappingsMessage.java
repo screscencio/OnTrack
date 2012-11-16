@@ -84,4 +84,12 @@ public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 	@Description("Description for find scope inside a release shortcut")
 	String findScopeAtReleaseWidget();
 
+	@DefaultMessage("Jump to previous selection")
+	@Description("select previous selected scope shortcut")
+	String selectPreviousSelectedScope();
+
+	@DefaultMessage("Jump to next selection")
+	@Description("select next selected scope shortcut")
+	String selectNextSelectedScope();
+
 }
