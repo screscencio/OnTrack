@@ -1,16 +1,17 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Tag extends Composite implements HasText {
+public class Tag extends Composite implements HasText, HasClickHandlers {
 
 	private static ReleaseTagUiBinder uiBinder = GWT.create(ReleaseTagUiBinder.class);
 
@@ -19,7 +20,8 @@ public class Tag extends Composite implements HasText {
 	@UiField
 	protected FastLabel tagLabel;
 
-	private ClickHandler clickHandler;
+	@UiField
+	protected FocusPanel container;
 
 	private Boolean visible;
 
@@ -64,13 +66,8 @@ public class Tag extends Composite implements HasText {
 		super.setTitle(title);
 	}
 
-	public void setClickHandler(final ClickHandler clickHandler) {
-		this.clickHandler = clickHandler;
-	}
-
-	@UiHandler("tagLabel")
-	protected void addTagClickHandler(final ClickEvent event) {
-		if (clickHandler == null) return;
-		clickHandler.onClick(event);
+	@Override
+	public HandlerRegistration addClickHandler(final ClickHandler handler) {
+		return container.addClickHandler(handler);
 	}
 }
