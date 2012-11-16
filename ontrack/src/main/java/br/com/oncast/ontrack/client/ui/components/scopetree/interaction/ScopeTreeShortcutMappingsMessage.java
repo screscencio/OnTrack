@@ -80,4 +80,8 @@ public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 	@Description("Description for toggle effort column shortcut")
 	String toggleEffortColumn();
 
+	@DefaultMessage("Find scope inside a release")
+	@Description("Description for find scope inside a release shortcut")
+	String findScopeAtReleaseWidget();
+
 }

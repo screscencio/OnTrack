@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWi
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
@@ -139,12 +140,11 @@ public class PlanningActivity extends AbstractActivity {
 				selectedScope = releaseWidget.getScopeContainer().getWidgetFor(scope);
 				selectedScope.setSelected(true);
 
-				if (event.getSource() instanceof Tag) {
+				if (event.getSource() instanceof Tag || event.getSource() instanceof ScopeTreeShortcutMappings) {
 					releaseWidget.setHierarchicalContainerState(true);
 					view.ensureWidgetIsVisible(selectedScope);
 				}
 			}
-
 		});
 	}
 
