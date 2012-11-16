@@ -71,6 +71,7 @@ public class PlanningActivity extends AbstractActivity {
 		registrations.add(ShortcutService.register(view, SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
 		registrations.add(ShortcutService.register(view, view.getApplicationMenu(), ApplicationMenuShortcutMapping.values()));
 		registrations.add(ShortcutService.register(view, this, PlanningShortcutMappings.values()));
+		registrations.add(ShortcutService.configureShortcutHelpPanel(view.getAlertingMenu()));
 
 		view.setVisible(true);
 		final Release firstReleaseInProgress = getFirstReleaseInProgress(projectContext);
