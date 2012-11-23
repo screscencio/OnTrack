@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.shared.model.kanban;
 
-import static br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils.createReleaseForKanbanWithColumns;
+import static br.com.oncast.ontrack.utils.model.ReleaseTestUtils.createReleaseForKanbanWithColumns;
 
 import java.util.ArrayList;
 

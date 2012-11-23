@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.Prog
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanColumnDragHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.KanbanScopeItemDragHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedHorizontalContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
@@ -19,6 +19,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,7 +47,7 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 				kanbanColumnDragAndDropMangager.monitorNewDraggableItem(w, w.getDraggableAnchor());
 				return w;
 			}
-		}, new AnimatedHorizontalContainer());
+		}, new AnimatedContainer(new HorizontalPanel()));
 	}
 
 	private final Release release;
@@ -71,7 +72,7 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 		kanbanColumnDragAndDropMangager = new DragAndDropManager();
 		kanbanColumnDragAndDropMangager.configureBoundaryPanel(RootPanel.get());
 		kanbanColumnDragAndDropMangager.addDragHandler(new KanbanColumnDragHandler(interactionHandler));
-		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns.getCallPanel(), new KanbanColumnDropControllerFactory());
+		kanbanColumnDragAndDropMangager.monitorDropTarget(draggableColumns.getContainningPanel(), new KanbanColumnDropControllerFactory());
 		addStyleName("kanban");
 
 		update(kanban);

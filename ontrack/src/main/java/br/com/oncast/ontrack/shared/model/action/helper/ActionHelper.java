@@ -13,6 +13,10 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.tags.HasTags;
+import br.com.oncast.ontrack.shared.model.tags.Tag;
+import br.com.oncast.ontrack.shared.model.tags.TagType;
+import br.com.oncast.ontrack.shared.model.tags.exceptions.TagNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -82,6 +86,16 @@ public class ActionHelper {
 			return context.findUser(userId);
 		}
 		catch (final UserNotFoundException e) {
+			throw new UnableToCompleteActionException(e);
+		}
+	}
+
+	public static <T extends Tag> T findTag(final HasTags subject, final TagType tagType, final UUID tagId, final ProjectContext context)
+			throws UnableToCompleteActionException {
+		try {
+			return context.findTag(subject, tagType, tagId);
+		}
+		catch (final TagNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
 		}
 	}

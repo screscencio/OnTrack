@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.mode
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveActionEntity;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
+import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -26,13 +28,14 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tags.UserTag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.AnnotationTestUtils;
-import br.com.oncast.ontrack.utils.ChecklistTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
+import br.com.oncast.ontrack.utils.model.ChecklistTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ScopeRemoveActionTest extends ModelActionTest {
 
@@ -270,6 +273,26 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		new ScopeRemoveAction(scopeId).execute(context, actionContext);
 
 		assertTrue(context.findChecklistsFor(scopeId).isEmpty());
+	}
+
+	@Test
+	public void shouldRemoveAllUserAssociationsOfTheScope() throws Exception {
+		final List<User> usersList = new ArrayList<User>();
+
+		usersList.add(UserTestUtils.createUser());
+		usersList.add(UserTestUtils.createUser());
+
+		final UUID scopeId = child1Level1.getId();
+
+		for (final User user : usersList) {
+			context.addUser(user);
+			new ScopeAddAssociatedUserAction(scopeId, user.getId()).execute(context, actionContext);
+		}
+		assertTrue(context.hasTags(child1Level1, UserTag.getType()));
+
+		new ScopeRemoveAction(scopeId).execute(context, actionContext);
+
+		assertFalse(context.hasTags(child1Level1, UserTag.getType()));
 	}
 
 	@Override

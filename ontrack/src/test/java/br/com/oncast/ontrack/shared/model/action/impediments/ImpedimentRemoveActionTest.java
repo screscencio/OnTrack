@@ -18,8 +18,8 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.AnnotationTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ImpedimentRemoveActionTest extends ModelActionTest {
 

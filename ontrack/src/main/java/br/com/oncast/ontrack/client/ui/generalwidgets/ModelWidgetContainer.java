@@ -7,8 +7,9 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.CellPanel;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite {
@@ -19,7 +20,7 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 	interface ModelWidgetContainerUiBinder extends UiBinder<Widget, ModelWidgetContainer> {}
 
 	@UiField(provided = true)
-	protected AnimatedCellContainer<?> cellContainer;
+	protected AnimatedContainer cellContainer;
 
 	private final Map<T, E> widgetMap;
 
@@ -28,10 +29,10 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 	private final ModelWidgetContainerListener listener = new NullModelWidgetContainerListener();
 
 	public ModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory) {
-		this(modelWidgetFactory, new AnimatedVerticalContainer());
+		this(modelWidgetFactory, new AnimatedContainer(new VerticalPanel()));
 	}
 
-	public ModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final AnimatedCellContainer<?> cellContainer) {
+	public ModelWidgetContainer(final ModelWidgetFactory<T, E> modelWidgetFactory, final AnimatedContainer cellContainer) {
 		this.modelWidgetFactory = modelWidgetFactory;
 		widgetMap = new HashMap<T, E>();
 		this.cellContainer = cellContainer;
@@ -105,8 +106,8 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 		return cellContainer.getWidgetCount();
 	}
 
-	public CellPanel getCallPanel() {
-		return cellContainer.getCellPanel();
+	public ComplexPanel getContainningPanel() {
+		return cellContainer.getContainningPanel();
 	}
 
 	public E getWidgetFor(final T modelBean) {

@@ -25,7 +25,7 @@ public class ActionPostProcessingService {
 	}
 
 	public <T extends ModelAction> void registerPostProcessor(final ActionPostProcessor<T> postProcessor,
-			@SuppressWarnings("unchecked") final Class<? extends T>... classes) {
+			final Class<? extends T>... classes) {
 		for (final Class<? extends T> clazz : classes)
 			registerPostProcessor(postProcessor, clazz);
 	}

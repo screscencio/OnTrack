@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedVerticalContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.VerticalPanelWithSpacer;
@@ -18,10 +18,10 @@ public class KanbanScopeContainer extends ModelWidgetContainer<Scope, ScopeWidge
 		this.kanbanColumn = column;
 	}
 
-	private static AnimatedVerticalContainer createVerticalContainer() {
+	private static AnimatedContainer createVerticalContainer() {
 		final VerticalPanelWithSpacer verticalPanelWithSpacer = new VerticalPanelWithSpacer();
 		verticalPanelWithSpacer.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-		return new AnimatedVerticalContainer(verticalPanelWithSpacer);
+		return new AnimatedContainer(verticalPanelWithSpacer);
 	}
 
 	public KanbanColumn getKanbanColumn() {

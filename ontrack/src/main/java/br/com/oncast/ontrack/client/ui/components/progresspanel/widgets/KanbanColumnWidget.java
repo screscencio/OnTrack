@@ -87,7 +87,7 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		dragAndDropManager.monitorDropTarget(scopeContainer.getCallPanel(), new KanbanPositioningDropControllerFactory(this, release));
+		dragAndDropManager.monitorDropTarget(scopeContainer.getContainningPanel(), new KanbanPositioningDropControllerFactory(this, release));
 
 		if (column.isStaticColumn()) {
 			draggableAnchor.setVisible(false);

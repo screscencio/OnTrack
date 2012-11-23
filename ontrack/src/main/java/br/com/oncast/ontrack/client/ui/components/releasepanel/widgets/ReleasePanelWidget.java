@@ -16,6 +16,7 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.Relea
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -24,6 +25,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -36,6 +38,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAct
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -85,14 +88,19 @@ public class ReleasePanelWidget extends Composite {
 	private final DragAndDropManager dragAndDropManager;
 
 	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
-		this(releasePanelInteractionHandler, false);
+		this(releasePanelInteractionHandler, null, null, false);
 	}
 
-	public ReleasePanelWidget(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean releaseSpecific) {
+	public ReleasePanelWidget(
+			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler,
+			final DragAndDropManager userDragAndDropManager,
+			final DropControllerFactory userDropControllerFactory,
+			final boolean releaseSpecific) {
 		dragAndDropManager = new DragAndDropManager();
 		this.releaseSpecific = releaseSpecific;
 		handlerRegistration = new HashSet<HandlerRegistration>();
-		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager, releaseSpecific),
+		releaseWidgetFactory = new ReleaseWidgetFactory(releasePanelInteractionHandler, new ScopeWidgetFactory(dragAndDropManager, userDragAndDropManager,
+				userDropControllerFactory, releaseSpecific),
 				dragAndDropManager,
 				releaseSpecific);
 
@@ -119,6 +127,8 @@ public class ReleasePanelWidget extends Composite {
 						action instanceof ScopeDeclareEffortAction ||
 						action instanceof ScopeDeclareValueAction ||
 						action instanceof ScopeBindReleaseAction ||
+						action instanceof ScopeRemoveAssociatedUserAction ||
+						action instanceof ScopeAddAssociatedUserAction ||
 						action instanceof ReleaseRemoveAction ||
 						action instanceof ReleaseRemoveRollbackAction ||
 						action instanceof ReleaseUpdatePriorityAction ||

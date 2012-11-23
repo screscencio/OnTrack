@@ -49,8 +49,8 @@ import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundExce
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 public class ProgressPanelActionSyncControllerTest {
@@ -73,7 +73,7 @@ public class ProgressPanelActionSyncControllerTest {
 
 		final ActionExecutionService actionExecutionServiceMock = mock(ActionExecutionService.class);
 		final ArgumentCaptor<ActionExecutionListener> captor = ArgumentCaptor.forClass(ActionExecutionListener.class);
-		Mockito.doNothing().when(actionExecutionServiceMock).addActionExecutionListener(captor.capture());
+		when(actionExecutionServiceMock.addActionExecutionListener(captor.capture())).thenReturn(null);
 
 		final KanbanActionSyncController actionSyncController = new KanbanActionSyncController(actionExecutionServiceMock, myRelease, display,
 				mock(ClientErrorMessages.class));

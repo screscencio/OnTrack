@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.place.shared.Place;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ActionExecutionServiceImpl implements ActionExecutionService {
 
@@ -102,9 +103,16 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	}
 
 	@Override
-	public void addActionExecutionListener(final ActionExecutionListener actionExecutionListener) {
-		if (this.actionExecutionListeners.contains(actionExecutionListener)) return;
-		this.actionExecutionListeners.add(actionExecutionListener);
+	public HandlerRegistration addActionExecutionListener(final ActionExecutionListener actionExecutionListener) {
+		if (!this.actionExecutionListeners.contains(actionExecutionListener)) {
+			this.actionExecutionListeners.add(actionExecutionListener);
+		}
+		return new HandlerRegistration() {
+			@Override
+			public void removeHandler() {
+				actionExecutionListeners.remove(actionExecutionListener);
+			}
+		};
 	}
 
 	@Override

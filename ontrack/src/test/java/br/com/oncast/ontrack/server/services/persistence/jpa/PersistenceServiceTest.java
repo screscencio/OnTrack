@@ -53,9 +53,9 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class PersistenceServiceTest {
 

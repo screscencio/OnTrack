@@ -28,7 +28,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import com.google.gwt.user.client.ui.Label;
 import com.googlecode.gwt.test.GwtTest;

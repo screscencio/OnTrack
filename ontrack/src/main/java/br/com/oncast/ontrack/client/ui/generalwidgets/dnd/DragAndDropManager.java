@@ -8,7 +8,6 @@ import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -20,7 +19,7 @@ public class DragAndDropManager {
 
 	private PickupDragController dragController;
 
-	private final Map<CellPanel, DropController> dropTargetMap = new java.util.HashMap<CellPanel, DropController>();
+	private final Map<Widget, DropController> dropTargetMap = new java.util.HashMap<Widget, DropController>();
 
 	/**
 	 * Configure a draggable area (boundaryPanel) on which the draggable items can be moved over.
@@ -39,7 +38,7 @@ public class DragAndDropManager {
 		if (dragController == null) throw new RuntimeException("The drag and drop manager must be configured before handling widget creation.");
 	}
 
-	public void monitorDropTarget(final CellPanel panel, final DropControllerFactory factory) {
+	public void monitorDropTarget(final Widget panel, final DropControllerFactory factory) {
 		panel.addAttachHandler(new Handler() {
 
 			@Override

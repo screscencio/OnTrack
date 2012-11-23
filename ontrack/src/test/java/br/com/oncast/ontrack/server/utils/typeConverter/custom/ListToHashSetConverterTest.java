@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
+import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
 
 public class ListToHashSetConverterTest {
 

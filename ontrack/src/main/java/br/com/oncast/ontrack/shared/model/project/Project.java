@@ -14,11 +14,17 @@ import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tags.HasTags;
+import br.com.oncast.ontrack.shared.model.tags.Tag;
+import br.com.oncast.ontrack.shared.model.tags.TagType;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.SetMultimap;
 
 public class Project implements Serializable {
 
@@ -32,6 +38,7 @@ public class Project implements Serializable {
 	private Map<UUID, List<Annotation>> annotationsMap;
 	private Set<FileRepresentation> fileRepresentations;
 	private ListMultimap<UUID, Checklist> checklistMap;
+	private Map<HasTags, SetMultimap<TagType, Tag>> tagsMap;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
@@ -46,6 +53,7 @@ public class Project implements Serializable {
 		checklistMap = ArrayListMultimap.create();
 		users = new HashSet<User>();
 		fileRepresentations = new HashSet<FileRepresentation>();
+		tagsMap = new HashMap<HasTags, SetMultimap<TagType, Tag>>();
 	}
 
 	public Scope getProjectScope() {
@@ -172,4 +180,45 @@ public class Project implements Serializable {
 		return new ArrayList<User>(users);
 	}
 
+	public void addTag(final Tag tag) {
+		final HasTags subject = tag.getSubject();
+		if (!hasTags(subject)) {
+			final HashMultimap<TagType, Tag> multimap = HashMultimap.create();
+			tagsMap.put(subject, multimap);
+		}
+		tagsMap.get(subject).put(tag.getTagType(), tag);
+	}
+
+	public void removeTag(final Tag tag) {
+		if (!hasTags(tag.getSubject())) return;
+
+		tagsMap.get(tag.getSubject()).remove(tag.getTagType(), tag);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Tag> List<T> getTagsList(final HasTags subject, final TagType type) {
+		if (!hasTags(subject)) return ImmutableList.of();
+
+		return (List<T>) ImmutableList.copyOf(tagsMap.get(subject).get(type));
+	}
+
+	public boolean hasTags(final HasTags subject, final TagType type) {
+		return !getTagsList(subject, type).isEmpty();
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Tag> T findTag(final HasTags subject, final TagType type, final UUID tagId) {
+		if (tagId == null) throw new IllegalArgumentException("tagId can not be null");
+		if (!hasTags(subject)) return null;
+
+		for (final Tag tag : tagsMap.get(subject).get(type)) {
+			if (tag.getId().equals(tagId)) return (T) tag;
+		}
+		return null;
+	}
+
+	public boolean hasTags(final HasTags subject) {
+		if (!tagsMap.containsKey(subject)) return false;
+		return !tagsMap.get(subject).isEmpty();
+	}
 }

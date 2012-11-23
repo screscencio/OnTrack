@@ -6,6 +6,8 @@ import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
@@ -24,6 +26,14 @@ public class ReleasePanel implements Component {
 
 	public ReleasePanel() {
 		releasePanelWidget = new ReleasePanelWidget(releasePanelInteractionHandler = new ReleasePanelInteractionHandler());
+	}
+
+	public ReleasePanel(final DragAndDropManager userDragAndDropManager, final DropControllerFactory userDropControllerFactory) {
+		releasePanelWidget = new ReleasePanelWidget(
+				releasePanelInteractionHandler = new ReleasePanelInteractionHandler(),
+				userDragAndDropManager,
+				userDropControllerFactory,
+				false);
 	}
 
 	public void setRelease(final Release release) {

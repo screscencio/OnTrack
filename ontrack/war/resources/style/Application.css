@@ -106,7 +106,6 @@ html,body {
 	filter: alpha(opacity \= 100);
 	opacity: 1;
 	border-width: 1px !important;
-	min-width: 207px;
 }
 
 .kanban .dragdrop-selected,.kanban .dragdrop-dragging,.kanban .dragdrop-proxy

@@ -32,8 +32,8 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import com.google.gwt.user.client.rpc.impl.ReflectionHelper;
 import com.ibm.icu.util.Calendar;

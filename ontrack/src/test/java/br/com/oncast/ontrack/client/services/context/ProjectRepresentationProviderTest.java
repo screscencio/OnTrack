@@ -32,7 +32,7 @@ import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 import br.com.oncast.ontrack.utils.mocks.callback.DispatchCallbackMock;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
 public class ProjectRepresentationProviderTest {
 

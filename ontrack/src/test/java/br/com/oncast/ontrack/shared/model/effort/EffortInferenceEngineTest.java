@@ -8,12 +8,11 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class EffortInferenceEngineTest {
 
@@ -34,29 +33,9 @@ public class EffortInferenceEngineTest {
 		assertEquals(expectedEffort, scope.getEffort().getInfered(), 0.1);
 	}
 
-	private void assertAccomplishedEffort(final float expectedEffort, final Scope scope) {
-		assertEquals(expectedEffort, scope.getEffort().getAccomplished(), 0.1);
-	}
-
-	private void assertProgress(final ProgressState expectedState, final Scope scope) {
-		assertEquals(expectedState, scope.getProgress().getState());
-	}
-
-	private Set<UUID> declare(final Scope scope, final ProgressState state) {
-		ScopeTestUtils.declareProgress(scope, state);
-		return processAllInferenceEngines(scope);
-	}
-
 	private Set<UUID> declare(final Scope scope, final float effort) {
 		scope.getEffort().setDeclared(effort);
 		return processAllInferenceEngines(scope);
-	}
-
-	private Set<UUID> insertSibling(final Scope sibling, final Scope newScope) {
-		assert !sibling.isRoot();
-
-		sibling.getParent().add(newScope);
-		return processAllInferenceEngines(sibling);
 	}
 
 	private Set<UUID> insertChild(final Scope parent, final Scope child) {

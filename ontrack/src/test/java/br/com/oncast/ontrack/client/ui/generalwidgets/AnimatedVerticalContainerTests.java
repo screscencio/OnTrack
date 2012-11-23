@@ -9,6 +9,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgetsa.animation.AnimationMockFactory;
 
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -19,13 +20,13 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 
 	public static final int ANIMATION_DURATION = 10;
 	private static final int SLEEP_DELAY = 50;
-	AnimatedVerticalContainer container;
+	AnimatedContainer container;
 
 	private final AnimationFactory animationMockFactory = new AnimationMockFactory(ANIMATION_DURATION);
 
 	@Before
 	public void setUp() throws Exception {
-		container = new AnimatedVerticalContainer(animationMockFactory);
+		container = new AnimatedContainer(new VerticalPanel(), animationMockFactory);
 	}
 
 	@Test
@@ -208,7 +209,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		populateContainer();
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		Assert.assertTrue(panel.getWidgetCount() == list.size());
@@ -219,7 +220,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		populateContainer();
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		for (final IsWidget isWidget : list) {
@@ -232,7 +233,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		populateContainer();
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		for (int i = 0; i < list.size(); i++) {
@@ -247,7 +248,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		container.remove(1);
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		Assert.assertTrue(panel.getWidgetCount() == list.size());
@@ -260,7 +261,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		container.remove(1);
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		for (final IsWidget isWidget : list) {
@@ -275,7 +276,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		container.remove(1);
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		for (int i = 0; i < list.size(); i++) {
@@ -293,7 +294,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		container.remove(1);
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		Assert.assertTrue(panel.getWidgetCount() == list.size());
@@ -309,7 +310,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		container.remove(1);
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		for (final IsWidget isWidget : list) {
@@ -327,7 +328,7 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		container.remove(1);
 		Thread.sleep(SLEEP_DELAY);
 
-		final VerticalPanel panel = container.container;
+		final ComplexPanel panel = container.container;
 		final List<IsWidget> list = container.widgets;
 
 		for (int i = 0; i < list.size(); i++) {

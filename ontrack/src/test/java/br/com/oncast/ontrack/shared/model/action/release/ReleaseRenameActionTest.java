@@ -17,9 +17,9 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 public class ReleaseRenameActionTest extends ModelActionTest {
 

@@ -15,6 +15,8 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tags.Tag;
+import br.com.oncast.ontrack.shared.model.tags.UserTag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeRemoveActionEntity.class)
@@ -76,6 +78,10 @@ public class ScopeRemoveAction implements ScopeAction {
 
 		for (final Checklist checklist : context.findChecklistsFor(referenceId)) {
 			subActionList.add(new ChecklistRemoveAction(referenceId, checklist.getId()));
+		}
+
+		for (final Tag tag : context.getTags(selectedScope, UserTag.getType())) {
+			subActionList.add(new ScopeRemoveAssociatedUserAction(referenceId, tag.getId()));
 		}
 
 		final List<ModelAction> subActionRollbackList = new ArrayList<ModelAction>();

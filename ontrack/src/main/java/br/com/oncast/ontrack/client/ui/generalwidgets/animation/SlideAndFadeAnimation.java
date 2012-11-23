@@ -9,9 +9,16 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 	private final Widget widget;
 	private static final int DEFAULT_SLIDE_DURATION = 400;
 	private static final int DEFAULT_FADE_DURATION = 600;
+	private final int hiddenOpacity = 0;
+	private final double shownOpacity;
 
 	public SlideAndFadeAnimation(final Widget widget) {
+		this(widget, 1);
+	}
+
+	public SlideAndFadeAnimation(final Widget widget, final double shownOpacity) {
 		this.widget = widget;
+		this.shownOpacity = shownOpacity;
 	}
 
 	@Override
@@ -22,7 +29,7 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 	@Override
 	public void show(final AnimationCallback callback) {
 		final JQuery $ = getWidgetJqueryElement();
-		$.stop(true).fadeTo(0, 0, new AnimationCallback() {
+		$.stop(true).fadeTo(0, hiddenOpacity, new AnimationCallback() {
 
 			@Override
 			public void onComplete() {
@@ -30,7 +37,7 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 
 					@Override
 					public void onComplete() {
-						$.fadeTo(DEFAULT_FADE_DURATION, 1, callback);
+						$.fadeTo(DEFAULT_FADE_DURATION, shownOpacity, callback);
 					}
 				});
 			}
@@ -45,7 +52,7 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 	@Override
 	public void hide(final AnimationCallback callback) {
 		final JQuery $ = getWidgetJqueryElement();
-		$.stop(true).fadeTo(DEFAULT_FADE_DURATION, 0, new AnimationCallback() {
+		$.stop(true).fadeTo(DEFAULT_FADE_DURATION, hiddenOpacity, new AnimationCallback() {
 
 			@Override
 			public void onComplete() {

@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.utils;
+package br.com.oncast.ontrack.utils.model;
 
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;

@@ -98,17 +98,5 @@ public class SpeedTracerConsole {
 			return new Date().getTime() - initTime;
 		}
 
-		private static class Counter {
-			private int count = 0;
-
-			public int increase() {
-				return ++count;
-			}
-
-			public void decrease() {
-				count -= 1;
-			}
-
-		}
 	}
 }

@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
-import static br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils.createRepresentation;
+import static br.com.oncast.ontrack.utils.model.ProjectTestUtils.createRepresentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -39,8 +39,8 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class AuthorizationManagerTest {
 

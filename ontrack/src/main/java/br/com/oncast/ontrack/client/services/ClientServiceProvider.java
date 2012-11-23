@@ -36,6 +36,8 @@ import br.com.oncast.ontrack.client.services.storage.Html5StorageClientStorageSe
 import br.com.oncast.ontrack.client.services.user.ColorPicker;
 import br.com.oncast.ontrack.client.services.user.ColorProviderService;
 import br.com.oncast.ontrack.client.services.user.ColorProviderServiceImpl;
+import br.com.oncast.ontrack.client.services.user.UserAssociationService;
+import br.com.oncast.ontrack.client.services.user.UserAssociationServiceImpl;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl;
 import br.com.oncast.ontrack.client.services.user.UsersStatusService;
@@ -93,6 +95,7 @@ public class ClientServiceProvider {
 
 	private ClientErrorMessages clientErrorMessages;
 	private UserGuidService userGuidService;
+	private UserAssociationService userAssociationService;
 
 	private static ClientServiceProvider instance;
 
@@ -250,6 +253,11 @@ public class ClientServiceProvider {
 
 	public UserGuidService getUserGuideService() {
 		return userGuidService == null ? userGuidService = new UserGuideServiceImpl() : userGuidService;
+	}
+
+	public UserAssociationService getUserAssociationService() {
+		return userAssociationService == null ? userAssociationService = new UserAssociationServiceImpl(getActionExecutionService(),
+				getContextProviderService()) : userAssociationService;
 	}
 
 }

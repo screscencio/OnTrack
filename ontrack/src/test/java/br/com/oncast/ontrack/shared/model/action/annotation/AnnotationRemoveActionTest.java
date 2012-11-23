@@ -22,8 +22,8 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.AnnotationTestUtils;
-import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
+import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
 
 public class AnnotationRemoveActionTest extends ModelActionTest {
 

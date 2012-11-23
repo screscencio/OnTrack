@@ -79,12 +79,12 @@ import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
-import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 import br.com.oncast.ontrack.utils.mocks.requests.ModelActionSyncTestUtils;
+import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class BusinessLogicTest {
 

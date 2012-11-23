@@ -15,4 +15,6 @@ public interface UsersStatusService {
 
 	SortedSet<User> getOnlineUsers();
 
+	UserStatus getStatus(User user);
+
 }

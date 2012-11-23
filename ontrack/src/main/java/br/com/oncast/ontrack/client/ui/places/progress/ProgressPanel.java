@@ -43,7 +43,8 @@ public class ProgressPanel extends Composite implements ProgressView {
 
 	public ProgressPanel(final Release release, final Kanban kanban) {
 		interactionHandler = new ReleasePanelInteractionHandler();
-		releaseWidget = new ReleasePanelWidget(interactionHandler, true);
+		// FIXME Mats add DnD handlers here
+		releaseWidget = new ReleasePanelWidget(interactionHandler, null, null, true);
 		kanbanPanel = new KanbanPanel(kanban, release);
 
 		initWidget(uiBinder.createAndBindUi(this));

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.annotation.Annotation;
@@ -23,6 +24,7 @@ import javax.persistence.Entity;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -36,10 +38,11 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.utils.actions.ModelActionEntityFieldAnnotationsTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import com.google.gwt.dev.util.collect.HashSet;
 
@@ -63,6 +66,21 @@ public abstract class ModelActionTest {
 
 	protected ModelAction executeAction() throws UnableToCompleteActionException {
 		return getNewInstance().execute(context, actionContext);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T extends Tag> T captureAddedTag() {
+		final ArgumentCaptor<Tag> captor = ArgumentCaptor.forClass(Tag.class);
+		verify(context).addTag(captor.capture());
+		final Tag value = captor.getValue();
+		return (T) value;
+	}
+
+	protected Tag captureRemovedTag() {
+		final ArgumentCaptor<Tag> captor = ArgumentCaptor.forClass(Tag.class);
+		verify(context).removeTag(captor.capture());
+		final Tag value = captor.getValue();
+		return value;
 	}
 
 	@Test

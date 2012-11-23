@@ -9,12 +9,13 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlideAndFadeAnimation;
 
-import com.google.gwt.user.client.ui.CellPanel;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-public abstract class AnimatedCellContainer<T extends CellPanel> extends Composite {
+public class AnimatedContainer extends Composite {
 
 	private final static AnimationFactory DEFAULT_ANIMATION_FACTORY = new AnimationFactory() {
 
@@ -33,13 +34,16 @@ public abstract class AnimatedCellContainer<T extends CellPanel> extends Composi
 
 	protected List<IsWidget> widgets;
 
-	protected final T container;
+	protected final ComplexPanel container;
 
-	public AnimatedCellContainer(final T container) {
+	public AnimatedContainer(final ComplexPanel container) {
 		this(container, DEFAULT_ANIMATION_FACTORY);
 	}
 
-	public AnimatedCellContainer(final T container, final AnimationFactory animationFactory) {
+	public AnimatedContainer(final ComplexPanel container, final AnimationFactory animationFactory) {
+		if (!(container instanceof InsertPanel.ForIsWidget)) throw new IllegalArgumentException(
+				"Only widget that implements InsertPanel.ForIsWidget is accepted");
+
 		initWidget(container);
 
 		this.container = container;
@@ -99,7 +103,7 @@ public abstract class AnimatedCellContainer<T extends CellPanel> extends Composi
 		});
 	}
 
-	public CellPanel getCellPanel() {
+	public ComplexPanel getContainningPanel() {
 		return container;
 	}
 
@@ -134,5 +138,7 @@ public abstract class AnimatedCellContainer<T extends CellPanel> extends Composi
 		widgets.remove(widget);
 	}
 
-	protected abstract void insertIntoContainer(final IsWidget widget, final int beforeIndex);
+	private void insertIntoContainer(final IsWidget widget, final int beforeIndex) {
+		((InsertPanel.ForIsWidget) container).insert(widget, beforeIndex);
+	}
 }

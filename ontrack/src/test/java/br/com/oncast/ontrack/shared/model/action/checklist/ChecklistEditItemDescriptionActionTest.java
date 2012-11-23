@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.ChecklistTestUtils;
+import br.com.oncast.ontrack.utils.model.ChecklistTestUtils;
 
 public class ChecklistEditItemDescriptionActionTest extends ModelActionTest {
 

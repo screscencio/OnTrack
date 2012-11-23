@@ -31,7 +31,7 @@ public class ReleaseWidgetFactory implements ModelWidgetFactory<Release, Release
 	@Override
 	public ReleaseWidget createWidget(final Release release) {
 		widget = new ReleaseWidget(release, this, scopeWidgetFactory, releasePanelInteractionHandler, kanbanSpecific);
-		dragAndDropManager.monitorDropTarget(widget.getScopeContainer().getCallPanel(), new ReleaseWidgetDropControllerFactory());
+		dragAndDropManager.monitorDropTarget(widget.getScopeContainer().getContainningPanel(), new ReleaseWidgetDropControllerFactory());
 
 		return widget;
 	}

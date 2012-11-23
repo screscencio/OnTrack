@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 
 public class KanbanColumnMoveActionTest extends ModelActionTest {
 

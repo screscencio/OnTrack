@@ -3,10 +3,17 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.footerbar.FooterBar;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.ReleasePanel;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ScopeWidgetDropController;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar.SearchBar;
+import br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndWidgetContainer;
+import br.com.oncast.ontrack.client.ui.places.planning.dnd.UserAssociationDragHandler;
 
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -20,6 +27,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,7 +49,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 	@UiField
 	protected ScrollPanel releaseScroll;
 
-	@UiField
+	@UiField(provided = true)
 	protected ReleasePanel releasePanel;
 
 	@UiField
@@ -62,6 +70,9 @@ public class PlanningPanel extends Composite implements PlanningView {
 	@UiField
 	Panel mainContainer;
 
+	@UiField(provided = true)
+	DraggableMembersListWidget members;
+
 	private final ScrollAnimation animation = new ScrollAnimation();
 
 	@UiFactory
@@ -72,6 +83,17 @@ public class PlanningPanel extends Composite implements PlanningView {
 	}
 
 	public PlanningPanel() {
+		final DragAndDropManager userDragAndDropManager = new DragAndDropManager();
+		userDragAndDropManager.configureBoundaryPanel(RootPanel.get());
+		userDragAndDropManager.addDragHandler(new UserAssociationDragHandler());
+		final DropControllerFactory userDropControllerFactory = new DropControllerFactory() {
+			@Override
+			public DropController create(final Widget panel) {
+				return new ScopeWidgetDropController((ScopeWidget) panel);
+			}
+		};
+		releasePanel = new ReleasePanel(userDragAndDropManager, userDropControllerFactory);
+		members = new DraggableMembersListWidget(userDragAndDropManager);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		searchBar.setTree(scopeTree);

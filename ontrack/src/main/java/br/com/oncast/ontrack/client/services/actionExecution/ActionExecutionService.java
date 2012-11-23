@@ -4,6 +4,8 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 
+import com.google.web.bindery.event.shared.HandlerRegistration;
+
 public interface ActionExecutionService extends ActionExecutionRequestHandler {
 
 	// TODO Analyze adding this method to ActionExecutionRequestHandler as 'onNonUserActionExecutionRequest'
@@ -18,7 +20,7 @@ public interface ActionExecutionService extends ActionExecutionRequestHandler {
 	@Override
 	public void onUserActionRedoRequest();
 
-	public void addActionExecutionListener(final ActionExecutionListener actionExecutionListener);
+	public HandlerRegistration addActionExecutionListener(final ActionExecutionListener actionExecutionListener);
 
 	public void removeActionExecutionListener(final ActionExecutionListener actionExecutionListener);
 

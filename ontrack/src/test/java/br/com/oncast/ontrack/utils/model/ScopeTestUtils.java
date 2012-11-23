@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.utils.mocks.models;
+package br.com.oncast.ontrack.utils.model;
 
 import java.util.Arrays;
 import java.util.Date;

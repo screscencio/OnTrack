@@ -19,7 +19,7 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.ChecklistItem;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.ChecklistTestUtils;
+import br.com.oncast.ontrack.utils.model.ChecklistTestUtils;
 
 public class ChecklistRemoveItemActionTest extends ModelActionTest {
 

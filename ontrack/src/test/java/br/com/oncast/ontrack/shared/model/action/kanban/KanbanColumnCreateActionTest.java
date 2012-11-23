@@ -16,7 +16,7 @@ import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
 public class KanbanColumnCreateActionTest extends ModelActionTest {
 

@@ -4,25 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.CommandMenuMessages;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BgColorAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.User;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -35,13 +41,17 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeWidget extends Composite implements ModelWidget<Scope> {
+
+	private static final int VISIBLE_USERS_COUNT = 2;
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
@@ -85,6 +95,12 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiField
 	HorizontalPanel internalPanel;
 
+	@UiField(provided = true)
+	ModelWidgetContainer<User, DraggableMemberWidget> associatedUsers;
+
+	@UiField
+	Label hiddenAssociatedUsersIndicator;
+
 	private final Scope scope;
 
 	// IMPORTANT Used to refresh DOM only when needed.
@@ -95,11 +111,14 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	private final boolean shouldShowScopeColor;
 
+	private FlowPanel associatedUsersContainer;
+
 	public ScopeWidget(final Scope scope) {
-		this(scope, false);
+		this(scope, false, null);
 	}
 
-	public ScopeWidget(final Scope scope, final boolean shouldShowScopeColor) {
+	public ScopeWidget(final Scope scope, final boolean shouldShowScopeColor, final DragAndDropManager userDragAndDropMananger) {
+		associatedUsers = createAssociatedUsersListWidget(userDragAndDropMananger);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
@@ -110,7 +129,18 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	@Override
 	public boolean update() {
+		updateAssociatedUsers();
 		return updateDescription() | updateProgress() | updateTitle();
+	}
+
+	private void updateAssociatedUsers() {
+		final List<User> associatedUsersList = ClientServiceProvider.getInstance().getUserAssociationService().getAssociatedUsers(scope);
+		associatedUsers.update(associatedUsersList);
+		final int userCount = associatedUsersList.size();
+		associatedUsers.setVisible(userCount > 0);
+		hiddenAssociatedUsersIndicator.setVisible(userCount > VISIBLE_USERS_COUNT);
+		hiddenAssociatedUsersIndicator.setText("+\n" + (userCount - VISIBLE_USERS_COUNT));
+		associatedUsersContainer.setWidth(userCount > 1 ? (VISIBLE_USERS_COUNT * 38) + "px" : "");
 	}
 
 	private boolean updateTitle() {
@@ -285,4 +315,19 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 		new BgColorAnimation(internalPanel, color).animate();
 	}
 
+	public ComplexPanel getAssociatedUsersContainer() {
+		return associatedUsers.getContainningPanel();
+	}
+
+	private ModelWidgetContainer<User, DraggableMemberWidget> createAssociatedUsersListWidget(final DragAndDropManager userDragAndDropMananger) {
+		associatedUsersContainer = new FlowPanel();
+		return new ModelWidgetContainer<User, DraggableMemberWidget>(new ModelWidgetFactory<User, DraggableMemberWidget>() {
+			@Override
+			public DraggableMemberWidget createWidget(final User modelBean) {
+				final DraggableMemberWidget widget = new DraggableMemberWidget(modelBean);
+				if (userDragAndDropMananger != null) userDragAndDropMananger.monitorNewDraggableItem(widget, widget.getDraggableItem());
+				return widget;
+			}
+		}, new AnimatedContainer(associatedUsersContainer));
+	}
 }

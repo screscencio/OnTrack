@@ -5,8 +5,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class KanbanPositioningDropControllerFactory implements DropControllerFactory {
 
@@ -19,7 +19,7 @@ public class KanbanPositioningDropControllerFactory implements DropControllerFac
 	}
 
 	@Override
-	public DropController create(final CellPanel panel) {
+	public DropController create(final Widget panel) {
 		if (!(panel instanceof VerticalPanel)) throw new RuntimeException("Impossible to create LOLVerticalPanelDropController for class '" + panel.getClass()
 				+ "'");
 		return new KanbanPositioningDragController((VerticalPanel) panel, release, kanbanColumn);

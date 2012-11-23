@@ -19,8 +19,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.TestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ReleaseTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 public class ReleaseTest {
 

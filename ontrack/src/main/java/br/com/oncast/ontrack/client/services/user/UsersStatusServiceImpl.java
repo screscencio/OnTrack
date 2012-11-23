@@ -224,4 +224,11 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 		}
 	}
 
+	@Override
+	public UserStatus getStatus(final User user) {
+		if (getActiveUsers().contains(user)) return UserStatus.ACTIVE;
+		if (getOnlineUsers().contains(user)) return UserStatus.ONLINE;
+		return UserStatus.OFFLINE;
+	}
+
 }

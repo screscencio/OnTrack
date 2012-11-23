@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.utils.mocks.requests;
 
 import static br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils.createOneValidAction;
 import static br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils.createSomeActions;
-import static br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils.createRepresentation;
+import static br.com.oncast.ontrack.utils.model.ProjectTestUtils.createRepresentation;
 
 import org.mockito.Mockito;
 

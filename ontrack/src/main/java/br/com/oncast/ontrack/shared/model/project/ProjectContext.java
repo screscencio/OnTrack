@@ -24,6 +24,10 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.tags.HasTags;
+import br.com.oncast.ontrack.shared.model.tags.Tag;
+import br.com.oncast.ontrack.shared.model.tags.TagType;
+import br.com.oncast.ontrack.shared.model.tags.exceptions.TagNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -242,6 +246,29 @@ public class ProjectContext {
 		if (user == null) throw new UserNotFoundException("The user '" + userId.toStringRepresentation() + "' was not found.");
 
 		return user;
+	}
+
+	public void addTag(final Tag tag) {
+		project.addTag(tag);
+	}
+
+	public void removeTag(final Tag tag) {
+		project.removeTag(tag);
+	}
+
+	public <T extends Tag> List<T> getTags(final HasTags subject, final TagType tagType) {
+		return project.getTagsList(subject, tagType);
+	}
+
+	public boolean hasTags(final HasTags subject, final TagType tagType) {
+		return project.hasTags(subject, tagType);
+	}
+
+	public <T extends Tag> T findTag(final HasTags subject, final TagType tagType, final UUID tagId) throws TagNotFoundException {
+		final T tag = project.findTag(subject, tagType, tagId);
+		if (tag == null) throw new TagNotFoundException("The tag was not found");
+
+		return tag;
 	}
 
 }

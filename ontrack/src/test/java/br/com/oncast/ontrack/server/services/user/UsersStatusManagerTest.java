@@ -35,7 +35,7 @@ import br.com.oncast.ontrack.shared.services.user.UserOfflineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOnlineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOpenProjectEvent;
 import br.com.oncast.ontrack.shared.services.user.UserStatusEvent;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
 public class UsersStatusManagerTest {
 

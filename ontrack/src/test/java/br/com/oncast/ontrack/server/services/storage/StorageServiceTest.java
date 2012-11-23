@@ -38,8 +38,8 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.FileRepresentationTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 import com.google.common.base.Charsets;

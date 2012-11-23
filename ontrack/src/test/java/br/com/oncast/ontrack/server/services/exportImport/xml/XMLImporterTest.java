@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
-import static br.com.oncast.ontrack.utils.mocks.models.UserTestUtils.createUser;
+import static br.com.oncast.ontrack.utils.model.UserTestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
@@ -42,8 +42,8 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 import br.com.oncast.ontrack.utils.reflection.ReflectionTestUtils;
 
 public class XMLImporterTest {

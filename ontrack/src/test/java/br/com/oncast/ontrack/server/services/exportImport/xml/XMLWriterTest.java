@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
-import static br.com.oncast.ontrack.utils.mocks.models.UserTestUtils.createUser;
+import static br.com.oncast.ontrack.utils.model.UserTestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -37,9 +37,9 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.mocks.models.UserTestUtils;
 import br.com.oncast.ontrack.utils.mocks.xml.XMLNodeTestUtils;
+import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class XMLWriterTest {
 

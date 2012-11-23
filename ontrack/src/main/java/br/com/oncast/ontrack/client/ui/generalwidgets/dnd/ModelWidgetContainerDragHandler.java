@@ -7,7 +7,6 @@ import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.Widget;
 
 @SuppressWarnings("unchecked")
@@ -34,21 +33,35 @@ public abstract class ModelWidgetContainerDragHandler<T> implements DragHandler 
 	@Override
 	public void onDragEnd(final DragEndEvent event) {
 		try {
-			final ModelWidget<T> widget = (ModelWidget<T>) event.getContext().draggable;
-			final DropController dropTargetController = event.getContext().finalDropController;
-			if (isDropTargetInvalid(dropTargetController) && lastWidgetContainer != null) {
-				lastWidgetContainer.addToWidgetMapping(widget);
-				lastWidgetContainer = null;
+			final ModelWidget<T> widget = getDraggableModelWidget(event);
+			if (hasCancelled(event)) {
+				addToPreviousContainer(widget);
 				return;
 			}
 
-			getModelWidgetContainer(widget).addToWidgetMapping(widget);
+			addToCurrentContainer(widget);
 		}
 		catch (final ClassCastException e) {}
 	}
 
-	private boolean isDropTargetInvalid(final DropController dropController) {
-		return dropController == null;
+	private ModelWidget<T> getDraggableModelWidget(final DragEndEvent event) {
+		final ModelWidget<T> widget = (ModelWidget<T>) event.getContext().draggable;
+		return widget;
+	}
+
+	private void addToPreviousContainer(final ModelWidget<T> widget) {
+		if (lastWidgetContainer == null) return;
+
+		lastWidgetContainer.addToWidgetMapping(widget);
+		lastWidgetContainer = null;
+	}
+
+	protected void addToCurrentContainer(final ModelWidget<T> widget) {
+		getModelWidgetContainer(widget).addToWidgetMapping(widget);
+	}
+
+	private boolean hasCancelled(final DragEndEvent event) {
+		return event.getContext().finalDropController == null;
 	}
 
 	private ModelWidgetContainer<T, ModelWidget<T>> getModelWidgetContainer(final ModelWidget<T> modelWidget) {

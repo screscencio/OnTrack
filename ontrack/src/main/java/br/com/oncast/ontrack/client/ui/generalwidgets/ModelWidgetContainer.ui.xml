@@ -9,5 +9,5 @@
 		}
 	</ui:style>
 
-	<misc:AnimatedCellContainer ui:field="cellContainer" styleName="{style.cellContainer}" />
+	<misc:AnimatedContainer ui:field="cellContainer" styleName="{style.cellContainer}" />
 </ui:UiBinder> 
