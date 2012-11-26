@@ -10,6 +10,14 @@
 		<filter-name>sessionFilter</filter-name>
 		<url-pattern>/application/*</url-pattern>
 	</filter-mapping>
+	<filter>
+		<filter-name>safareCacheWorkaroundFilter</filter-name>
+		<filter-class>br.com.oncast.ontrack.server.services.safareCacheWorkaroundFilter.SafareCacheWorkaroundFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>safareCacheWorkaroundFilter</filter-name>
+		<url-pattern>/application/*</url-pattern>
+	</filter-mapping>
 
 	<!-- LISTENERS -->
 	<!-- ApplicationInitializationService -->

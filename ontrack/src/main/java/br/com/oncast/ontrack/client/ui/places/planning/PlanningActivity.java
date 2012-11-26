@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWi
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.helper.ScopeTreeMouseHelper;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
@@ -37,12 +38,14 @@ public class PlanningActivity extends AbstractActivity {
 	private List<HandlerRegistration> registrations;
 	private final UUID selectedScopeId;
 	private final UUID requestedProjectId;
+	private final ScopeTreeMouseHelper mouseHelper;
 
 	public PlanningActivity(final PlanningPlace place) {
 		requestedProjectId = place.getRequestedProjectId();
 		selectedScopeId = place.getSelectedScopeId();
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		activityActionExecutionListener = new ActivityActionExecutionListener(SERVICE_PROVIDER.getClientErrorMessages());
+		mouseHelper = new ScopeTreeMouseHelper();
 	}
 
 	@Override
@@ -85,6 +88,8 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getClientApplicationStateService().restore(selectedScopeId);
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
+		mouseHelper.register(eventBus, actionExecutionService, view.getScopeTree().getScopeTreeInternalActionHandler(), projectContext);
+
 		SERVICE_PROVIDER.getClientMetricService().onBrowserLoadEnd();
 	}
 
@@ -97,6 +102,7 @@ public class PlanningActivity extends AbstractActivity {
 
 	@Override
 	public void onStop() {
+		mouseHelper.unregister();
 		SERVICE_PROVIDER.getClientApplicationStateService().stopRecording();
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
 		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();

@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequ
 import br.com.oncast.ontrack.client.ui.components.Component;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.ScopeTreeActionFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.effort.ScopeTreeEffortUpdateEngine;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeInternalActionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInstructionGuide;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
@@ -101,6 +102,10 @@ public class ScopeTree implements Component {
 
 	public void setFocus(final boolean focus) {
 		tree.setFocus(focus);
+	}
+
+	public ScopeTreeInternalActionHandler getScopeTreeInternalActionHandler() {
+		return treeInteractionHandler;
 	}
 
 }
