@@ -1,13 +1,18 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -16,11 +21,15 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeWidget extends Composite implements ModelWidget<Scope> {
+public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWidget<Scope> {
 
-	private static ScopeWidgetUiBinder uiBinder = GWT.create(ScopeWidgetUiBinder.class);
+	private static KanbanScopeWidgetUiBinder uiBinder = GWT.create(KanbanScopeWidgetUiBinder.class);
 
-	interface ScopeWidgetUiBinder extends UiBinder<Widget, ScopeWidget> {}
+	interface KanbanScopeWidgetUiBinder extends UiBinder<Widget, KanbanScopeWidget> {}
+
+	interface KanbanScopeWidgetStyle extends CssResource {
+		String selected();
+	}
 
 	@UiField
 	FocusPanel panel;
@@ -32,13 +41,23 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 	@UiField
 	FocusPanel draggableAnchor;
 
+	@UiField
+	KanbanScopeWidgetStyle style;
+
 	private final Scope scope;
 
 	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeDescription;
 
+	private boolean selected = false;
+
+	@UiField(provided = true)
+	ScopeAssociatedMembersWidget associatedUsers;
+
 	// IMPORTANT Used to refresh DOM only when needed.
-	public ScopeWidget(final Scope scope, final ProgressPanelWidgetInteractionHandler progressPanelInteractionHandler) {
+	public KanbanScopeWidget(final Scope scope, final ProgressPanelWidgetInteractionHandler progressPanelInteractionHandler,
+			final DragAndDropManager userDragAndDropMananger) {
+		associatedUsers = new ScopeAssociatedMembersWidget(scope, userDragAndDropMananger);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		final Scope story = findStory(scope);
@@ -66,6 +85,7 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	@Override
 	public boolean update() {
+		associatedUsers.update();
 		return updateDescription();
 	}
 
@@ -93,6 +113,22 @@ public class ScopeWidget extends Composite implements ModelWidget<Scope> {
 
 	public Widget getDraggableAnchor() {
 		return draggableAnchor;
+	}
+
+	@Override
+	public void setSelected(final boolean b) {
+		panel.setStyleName(style.selected(), b);
+		selected = b;
+	}
+
+	@Override
+	public void addAssociatedUsers(final DraggableMemberWidget memberWidget) {
+		associatedUsers.add(memberWidget);
+	}
+
+	@Override
+	public boolean isSelected() {
+		return selected;
 	}
 
 }

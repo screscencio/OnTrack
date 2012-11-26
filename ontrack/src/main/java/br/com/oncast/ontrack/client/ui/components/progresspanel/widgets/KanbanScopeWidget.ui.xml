@@ -1,8 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gs="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope">
 
     <ui:data field="draggableImage" src="../../move_scope.png"/>
-	<ui:style src="../../../style/default.css">
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidget.KanbanScopeWidgetStyle">
 	
         @url draggableImageUrl draggableImage;
     
@@ -11,7 +13,7 @@
 			
 			margin: 0px 0px 3px 0px;
 			min-height: 28px;
-			width: 207px;
+			width: 209px;
 
 			background: KANBAN_SCOPE_BACKGROUND;
 
@@ -33,16 +35,11 @@
         }
         
 		.descriptionLabel {
-			padding-top: 7px;
-			padding-bottom: 7px;
-			padding-left: 16px;
-			padding-right: 10px;
+			padding: 10px;
 			overflow: visible;
 			overflow-x: visible;
 			overflow-y: hidden;
 			font-stretch: extra-expanded;
-			line-height: 120%;
-			text-align: center;
             color: COLOR_MENUBOX_TEXT;
             font-family: FONT_DEFAULT;
             font-size: FONT_SIZE_SMALL;
@@ -66,17 +63,22 @@
             background-repeat: repeat-y;
         }
         
+        .selected {
+			background: COLOR_YELLOW;
+		}
+        
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel} kanbanColumn">
 		<g:HorizontalPanel styleName="{style.internalPanel}" verticalAlignment="middle">
-            <g:cell width="1">
-                <g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
-                    <g:SimplePanel styleName="{style.draggableImage}"/>
-                </g:FocusPanel>
-            </g:cell>
+            <g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
+                <g:SimplePanel styleName="{style.draggableImage}"/>
+            </g:FocusPanel>
             <g:cell width="100%">
-                <g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
+	            <g:FlowPanel>
+	                <g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
+	                 <gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
+	            </g:FlowPanel>
             </g:cell>
         </g:HorizontalPanel>
 	</g:FocusPanel>

@@ -9,7 +9,7 @@
 			height: 40px;
 
 			border-left: 4px solid #888;
-			margin-right: 4px;
+			margin-right: 2px;
 		}
 	
 		.container {

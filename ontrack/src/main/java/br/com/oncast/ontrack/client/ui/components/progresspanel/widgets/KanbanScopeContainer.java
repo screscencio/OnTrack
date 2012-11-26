@@ -9,11 +9,11 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
-public class KanbanScopeContainer extends ModelWidgetContainer<Scope, ScopeWidget> {
+public class KanbanScopeContainer extends ModelWidgetContainer<Scope, KanbanScopeWidget> {
 
 	private final KanbanColumn kanbanColumn;
 
-	public KanbanScopeContainer(final KanbanColumn column, final ModelWidgetFactory<Scope, ScopeWidget> modelWidgetFactory) {
+	public KanbanScopeContainer(final KanbanColumn column, final ModelWidgetFactory<Scope, KanbanScopeWidget> modelWidgetFactory) {
 		super(modelWidgetFactory, createVerticalContainer());
 		this.kanbanColumn = column;
 	}

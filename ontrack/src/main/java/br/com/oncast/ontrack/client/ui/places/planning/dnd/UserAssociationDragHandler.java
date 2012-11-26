@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.planning.dnd;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.user.UserAssociationService;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.ModelWidgetContainerDragHandler;

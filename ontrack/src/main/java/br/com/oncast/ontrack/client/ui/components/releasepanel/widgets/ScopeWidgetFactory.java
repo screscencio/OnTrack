@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
-public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ScopeWidget> {
+public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ReleaseScopeWidget> {
 
 	private final DragAndDropManager scopeItemDragAndDropManager;
 	private final boolean shouldShowScopeColor;
@@ -24,8 +24,8 @@ public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ScopeWidget
 	}
 
 	@Override
-	public ScopeWidget createWidget(final Scope scope) {
-		final ScopeWidget newScopeWidget = new ScopeWidget(scope, shouldShowScopeColor, userDragAndDropMananger);
+	public ReleaseScopeWidget createWidget(final Scope scope) {
+		final ReleaseScopeWidget newScopeWidget = new ReleaseScopeWidget(scope, shouldShowScopeColor, userDragAndDropMananger);
 
 		scopeItemDragAndDropManager.monitorNewDraggableItem(newScopeWidget, newScopeWidget.getDraggableAnchor());
 		if (userDragAndDropMananger != null && userDropControllerFactory != null) userDragAndDropMananger.monitorDropTarget(newScopeWidget,

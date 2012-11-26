@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionList
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
@@ -116,7 +116,7 @@ public class PlanningActivity extends AbstractActivity {
 
 				final ReleaseWidget releaseWidget = view.getReleasePanel().getWidgetFor(release);
 
-				final ScopeWidget scopeWidget = releaseWidget.getScopeContainer().getWidgetFor(scope);
+				final ReleaseScopeWidget scopeWidget = releaseWidget.getScopeContainer().getWidgetFor(scope);
 				scopeWidget.setHasOpenImpediments(event.hasOpenImpediments());
 			}
 
@@ -125,7 +125,7 @@ public class PlanningActivity extends AbstractActivity {
 
 	private HandlerRegistration registerScopeSelectionEventHandler() {
 		return ClientServiceProvider.getInstance().getEventBus().addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
-			private ScopeWidget selectedScope;
+			private ReleaseScopeWidget selectedScope;
 
 			@Override
 			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {

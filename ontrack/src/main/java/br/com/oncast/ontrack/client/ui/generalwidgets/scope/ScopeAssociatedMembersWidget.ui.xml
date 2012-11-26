@@ -1,0 +1,58 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+	<ui:style>
+	
+		.associatedUsers {
+			background: #fafafa;
+
+			padding: 3px 1px 0px 3px;
+		}
+		
+		.associatedUsers:HOVER {
+			border: 1px solid #BEBEBE;
+			margin: -1px;
+			
+			margin-bottom: 1px;
+		}
+		
+		.associatedUsers img {
+			width: 30px;
+			height: 30px;
+		}
+		
+		.associatedUsersContainer {
+			position: relative;
+			
+			max-height: 36px;
+			overflow: hidden;
+		}
+		
+		.associatedUsersContainer:HOVER {
+			z-index: 1;
+			overflow: visible;
+		}
+		
+		.hiddenUsersIndicatorLabel {
+			background: #bebebe;
+			color: #fafafa;
+			
+			text-align: center;
+			vertical-align: middle;
+			
+			width: 10px;
+			white-space: pre;
+			padding-right: 1px;
+		}
+		
+	</ui:style>
+	
+	<g:HorizontalPanel verticalAlignment="middle">
+		<g:HTMLPanel styleName="{style.associatedUsersContainer}">
+			<gw:ModelWidgetContainer ui:field="associatedUsers" styleName="{style.associatedUsers}"/>
+		</g:HTMLPanel>
+		<g:Label ui:field="hiddenAssociatedUsersIndicator" styleName="{style.hiddenUsersIndicatorLabel}" />
+	</g:HorizontalPanel>
+	
+</ui:UiBinder> 

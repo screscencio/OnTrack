@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 
 import br.com.oncast.ontrack.client.ui.components.progresspanel.interaction.ProgressPanelWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeContainer;
-import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.ModelWidgetContainerDragHandler;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -28,7 +28,7 @@ public class KanbanScopeItemDragHandler extends ModelWidgetContainerDragHandler<
 		if (finalDropController == null) return;
 
 		final VerticalPanel dropTarget = (VerticalPanel) finalDropController.getDropTarget();
-		final ScopeWidget draggedScope = (ScopeWidget) event.getContext().draggable;
+		final KanbanScopeWidget draggedScope = (KanbanScopeWidget) event.getContext().draggable;
 		final KanbanScopeContainer scopeContainer = (KanbanScopeContainer) dropTarget.getParent().getParent();
 		final KanbanColumn kanbanColumn = scopeContainer.getKanbanColumn();
 

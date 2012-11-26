@@ -6,11 +6,11 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 // IMPORTANT This class should only be used to bypass the GWT limitation in which a class cannot have more that one 'UiFactory' for the same type.
-public class ScopeWidgetContainer extends ModelWidgetContainer<Scope, ScopeWidget> {
+public class ScopeWidgetContainer extends ModelWidgetContainer<Scope, ReleaseScopeWidget> {
 
 	private Release release;
 
-	public ScopeWidgetContainer(final ModelWidgetFactory<Scope, ScopeWidget> modelWidgetFactory) {
+	public ScopeWidgetContainer(final ModelWidgetFactory<Scope, ReleaseScopeWidget> modelWidgetFactory) {
 		super(modelWidgetFactory);
 		this.addStyleName("scopeWidgetContainer");
 	}

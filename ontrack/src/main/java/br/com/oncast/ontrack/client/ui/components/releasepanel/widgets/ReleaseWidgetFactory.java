@@ -9,18 +9,18 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class ReleaseWidgetFactory implements ModelWidgetFactory<Release, ReleaseWidget> {
 
 	private final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler;
-	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
+	private final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory;
 	private ReleaseWidget widget;
 	private final DragAndDropManager dragAndDropManager;
 	private final boolean kanbanSpecific;
 
 	public ReleaseWidgetFactory(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler,
-			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory, final DragAndDropManager dragAndDropManager) {
+			final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory, final DragAndDropManager dragAndDropManager) {
 		this(releasePanelInteractionHandler, scopeWidgetFactory, dragAndDropManager, false);
 	}
 
 	public ReleaseWidgetFactory(final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler,
-			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory, final DragAndDropManager dragAndDropManager, final boolean kanbanSpecific) {
+			final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory, final DragAndDropManager dragAndDropManager, final boolean kanbanSpecific) {
 
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
 		this.scopeWidgetFactory = scopeWidgetFactory;

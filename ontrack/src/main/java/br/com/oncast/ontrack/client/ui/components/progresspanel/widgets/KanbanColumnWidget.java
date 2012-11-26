@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.Vertica
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
@@ -77,12 +78,14 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 	private final Release release;
 
 	public KanbanColumnWidget(final Release release, final KanbanColumn column, final DragAndDropManager dragAndDropManager,
-			final ProgressPanelWidgetInteractionHandler interactionHandler) {
+			final ProgressPanelWidgetInteractionHandler interactionHandler, final DragAndDropManager userDragAndDropManager,
+			final DropControllerFactory userDropControllerFactory) {
 		this.release = release;
 		this.column = column;
 		this.interactionHandler = interactionHandler;
 
-		this.scopeContainer = new KanbanScopeContainer(column, new KanbanScopeWidgetFactory(dragAndDropManager, interactionHandler));
+		this.scopeContainer = new KanbanScopeContainer(column, new KanbanScopeWidgetFactory(dragAndDropManager, interactionHandler, userDragAndDropManager,
+				userDropControllerFactory));
 		this.createColumn = new KanbanColumnCreateWidget(interactionHandler, column.getDescription());
 
 		initWidget(uiBinder.createAndBindUi(this));

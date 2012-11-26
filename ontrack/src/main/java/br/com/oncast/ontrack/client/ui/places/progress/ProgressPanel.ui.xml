@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
     xmlns:layout='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout'
+    xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
 	xmlns:pp='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel'
 	xmlns:rw='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets'
 >
@@ -35,8 +36,7 @@
 		}
 		
 		.releasePanel {
-			position: absolute !important;
-			top: 0px;
+			top: 35px;
 			right: 0px;
 			bottom: 0px;
 			width: 400px;
@@ -55,15 +55,25 @@
 			background-color: COLOR_YELLOW;
 		}
 		
+		.projectMembers {
+			position: absolute;
+			top: 2px;
+			left: 10px;
+			height: 40px;;
+			width: 400px;
+			overflow: hidden;
+		}
+		
 	</ui:style>
 
     <layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
     	<g:HorizontalPanel height="100%">
-    		<g:SimplePanel styleName="{style.releaseContainer}">
+    		<g:FlowPanel>
+				<gw:DraggableMembersListWidget ui:field="members" styleName="{style.projectMembers}"/>
 				<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
-			    	<rw:ReleasePanelWidget ui:field="releaseWidget" />
+					<rw:ReleasePanelWidget ui:field="releaseWidget" />
 				</g:ScrollPanel>
-			</g:SimplePanel>
+			</g:FlowPanel>
 			<g:cell width="100%">
 				<g:SimplePanel styleName="{style.kanbanContainer}">
 					<pp:KanbanPanel ui:field="kanbanPanel" addStyleNames="{style.kanbanPanel}" />

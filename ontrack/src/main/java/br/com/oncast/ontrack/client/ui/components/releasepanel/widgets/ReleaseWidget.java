@@ -191,7 +191,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory;
 
-	private final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory;
+	private final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory;
 
 	private boolean isContainerStateOpen = true;
 
@@ -214,13 +214,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private boolean kanbanSpecific;
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
-			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
+			final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler) {
 		this(release, releaseWidgetFactory, scopeWidgetFactory, releasePanelInteractionHandler, false);
 	}
 
 	public ReleaseWidget(final Release release, final ModelWidgetFactory<Release, ReleaseWidget> releaseWidgetFactory,
-			final ModelWidgetFactory<Scope, ScopeWidget> scopeWidgetFactory,
+			final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
 		this.release = release;
 

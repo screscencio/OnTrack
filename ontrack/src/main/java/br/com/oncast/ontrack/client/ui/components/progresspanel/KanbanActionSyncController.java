@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -28,6 +29,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingDownRollbackA
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -149,6 +151,8 @@ public class KanbanActionSyncController {
 				if (action instanceof ScopeInsertChildRollbackAction) return true;
 				if (action instanceof ScopeBindReleaseAction) return true;
 				if (action instanceof ScopeDeclareProgressAction) return true;
+				if (action instanceof ScopeAddAssociatedUserAction) return true;
+				if (action instanceof ScopeRemoveAssociatedUserAction) return true;
 
 				return false;
 			}

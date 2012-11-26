@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd;
 
-import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.ScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidget;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -14,7 +14,7 @@ public class KanbanPriorityCalculator {
 		this.dropTarget = dropTarget;
 	}
 
-	public int getNewPriority(final ScopeWidget scopeWidget) {
+	public int getNewPriority(final KanbanScopeWidget scopeWidget) {
 		final int widgetIndex = dropTarget.getWidgetIndex(scopeWidget);
 
 		final int currentPriority = getPriorityOfWidget(scopeWidget);
@@ -39,10 +39,10 @@ public class KanbanPriorityCalculator {
 	private int getPriorityOfWidgetAtIndex(final int index) {
 		if (index < 0) return Integer.MAX_VALUE;
 		if (index >= dropTarget.getWidgetCount()) return Integer.MIN_VALUE;
-		return getPriorityOfWidget((ScopeWidget) dropTarget.getWidget(index));
+		return getPriorityOfWidget((KanbanScopeWidget) dropTarget.getWidget(index));
 	}
 
-	private int getPriorityOfWidget(final ScopeWidget scopeWidget) {
+	private int getPriorityOfWidget(final KanbanScopeWidget scopeWidget) {
 		return release.getScopeIndex(scopeWidget.getModelObject());
 	}
 }

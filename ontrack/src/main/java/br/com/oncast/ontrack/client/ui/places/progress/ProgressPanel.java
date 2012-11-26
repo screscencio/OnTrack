@@ -1,20 +1,28 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.ui.components.ScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanPanel;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanWidgetDisplay;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ScopeWidgetDropController;
+import br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
+import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndWidgetContainer;
+import br.com.oncast.ontrack.client.ui.places.planning.dnd.UserAssociationDragHandler;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ProgressPanel extends Composite implements ProgressView {
@@ -39,13 +47,25 @@ public class ProgressPanel extends Composite implements ProgressView {
 	@UiField(provided = true)
 	protected KanbanPanel kanbanPanel;
 
+	@UiField(provided = true)
+	protected DraggableMembersListWidget members;
+
 	private final ReleasePanelInteractionHandler interactionHandler;
 
 	public ProgressPanel(final Release release, final Kanban kanban) {
 		interactionHandler = new ReleasePanelInteractionHandler();
-		// FIXME Mats add DnD handlers here
-		releaseWidget = new ReleasePanelWidget(interactionHandler, null, null, true);
-		kanbanPanel = new KanbanPanel(kanban, release);
+		final DragAndDropManager userDragAndDropManager = new DragAndDropManager();
+		userDragAndDropManager.configureBoundaryPanel(RootPanel.get());
+		userDragAndDropManager.addDragHandler(new UserAssociationDragHandler());
+		final DropControllerFactory userDropControllerFactory = new DropControllerFactory() {
+			@Override
+			public DropController create(final Widget panel) {
+				return new ScopeWidgetDropController((ScopeWidget) panel);
+			}
+		};
+		members = new DraggableMembersListWidget(userDragAndDropManager);
+		releaseWidget = new ReleasePanelWidget(interactionHandler, userDragAndDropManager, userDropControllerFactory, true);
+		kanbanPanel = new KanbanPanel(kanban, release, userDragAndDropManager, userDropControllerFactory);
 
 		initWidget(uiBinder.createAndBindUi(this));
 
