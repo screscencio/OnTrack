@@ -18,13 +18,14 @@ import br.com.oncast.ontrack.server.utils.introspector.Introspector;
 import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
 import br.com.oncast.ontrack.utils.deepEquality.custom.ScopeTreeDeepEqualityComparator;
 import br.com.oncast.ontrack.utils.identedLogger.IdentedLogger;
+import br.com.oncast.ontrack.utils.identedLogger.ErrorOnlyIdentedLogger;
 
 // TODO Implement a logger that informs where the error occurred.
 public class DeepEqualityTestUtils {
 
 	private static double requiredFloatingPointPrecision = 0.01;
 	private static Map<Class<?>, DeepEqualityComparator<?>> customComparatorMap = new HashMap<Class<?>, DeepEqualityComparator<?>>();
-	private static IdentedLogger LOGGER = new IdentedLogger(System.out);
+	private static IdentedLogger LOGGER = new ErrorOnlyIdentedLogger();
 
 	static {
 		// TODO +Externalize this so that specific application comparators are registered by the application itself.

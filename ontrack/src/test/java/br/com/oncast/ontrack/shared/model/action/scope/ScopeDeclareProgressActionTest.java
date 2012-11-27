@@ -1,6 +1,10 @@
 package br.com.oncast.ontrack.shared.model.action.scope;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,9 +20,12 @@ import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
+import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ScopeDeclareProgressActionTest extends ModelActionTest {
 
@@ -136,6 +143,38 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		rollbackAction.execute(context, actionContext);
 
 		assertThatProgressIs(ProgressState.NOT_STARTED);
+	}
+
+	@Test
+	public void whenDeclaringAScopeAsUnderWorkAndNoUserIsAssociatedItShouldAssociateTheActionAuthor() throws Exception {
+		final User author = UserTestUtils.createUser();
+
+		when(actionContext.getUserId()).thenReturn(author.getId());
+		context.addUser(author);
+
+		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
+		progressAction.execute(context, actionContext);
+
+		final List<UserAssociationTag> tags = context.getTags(scope, UserAssociationTag.getType());
+		final User associatedUser = tags.get(0).getUser();
+		assertEquals(author, associatedUser);
+	}
+
+	@Test
+	public void undoShouldRemoveCreatedAssociations() throws Exception {
+		final User author = UserTestUtils.createUser();
+
+		when(actionContext.getUserId()).thenReturn(author.getId());
+		context.addUser(author);
+
+		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
+		final ModelAction undoAction = progressAction.execute(context, actionContext);
+
+		final User associatedUser = context.<UserAssociationTag> getTags(scope, UserAssociationTag.getType()).get(0).getUser();
+		assertEquals(author, associatedUser);
+
+		undoAction.execute(context, actionContext);
+		assertTrue(context.getTags(scope, UserAssociationTag.getType()).isEmpty());
 	}
 
 	private void assertThatProgressIs(final Progress.ProgressState status) {

@@ -18,7 +18,7 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 
 	public SlideAndFadeAnimation(final Widget widget, final double shownOpacity) {
 		this.widget = widget;
-		this.shownOpacity = shownOpacity;
+		this.shownOpacity = shownOpacity == 0 ? 1 : shownOpacity;
 	}
 
 	@Override

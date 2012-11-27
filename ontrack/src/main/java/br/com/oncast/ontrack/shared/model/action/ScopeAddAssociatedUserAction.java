@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.TagFactory;
-import br.com.oncast.ontrack.shared.model.tags.UserTag;
+import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -35,7 +35,7 @@ public class ScopeAddAssociatedUserAction implements ScopeAction {
 		this.tagId = new UUID();
 	}
 
-	protected ScopeAddAssociatedUserAction(final UserTag tag) {
+	protected ScopeAddAssociatedUserAction(final UserAssociationTag tag) {
 		this.scopeId = tag.getSubject().getId();
 		this.userId = tag.getUser().getId();
 		this.tagId = tag.getId();
@@ -48,7 +48,7 @@ public class ScopeAddAssociatedUserAction implements ScopeAction {
 
 		context.addTag(TagFactory.createUserTag(tagId, scope, user));
 
-		return new ScopeRemoveAssociatedUserAction(scopeId, tagId);
+		return new ScopeRemoveAssociatedUserAction(scopeId, userId);
 	}
 
 	@Override

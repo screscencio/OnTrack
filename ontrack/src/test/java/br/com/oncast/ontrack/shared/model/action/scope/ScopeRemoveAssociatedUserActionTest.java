@@ -6,6 +6,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,32 +21,42 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.tags.TagFactory;
-import br.com.oncast.ontrack.shared.model.tags.UserTag;
+import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 
-	private UUID scopeId;
-	private UUID tagId;
 	private Scope scope;
-	private UserTag tag;
+	private UUID scopeId;
+
+	private User user;
+	private UUID userId;
+
+	private UserAssociationTag tag;
 
 	@Before
 	public void setup() throws Exception {
 		scope = ScopeTestUtils.createScope();
 		scopeId = scope.getId();
-		tagId = new UUID();
-		tag = TagFactory.createUserTag(tagId, scope, UserTestUtils.createUser());
+
+		user = UserTestUtils.createUser();
+		userId = user.getId();
+
+		tag = TagFactory.createUserTag(new UUID(), scope, user);
 
 		when(context.findScope(scopeId)).thenReturn(scope);
-		when(context.findTag(scope, UserTag.getType(), tagId)).thenReturn(tag);
+		when(context.findUser(userId)).thenReturn(user);
+		final List<Tag> list = new ArrayList<Tag>();
+		list.add(tag);
+		when(context.getTags(scope, UserAssociationTag.getType())).thenReturn(list);
 	}
 
 	@Test
 	public void doesNotChangesAnyInference() throws Exception {
-		final ScopeAction action = new ScopeRemoveAssociatedUserAction(scopeId, tagId);
+		final ScopeAction action = new ScopeRemoveAssociatedUserAction(scopeId, userId);
 		assertFalse(action.changesEffortInference());
 		assertFalse(action.changesProgressInference());
 		assertFalse(action.changesValueInference());
@@ -54,11 +67,11 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 		executeAction();
 
 		final Tag value = captureRemovedTag();
-		assertTrue(value instanceof UserTag);
-		final UserTag tag = (UserTag) value;
+		assertTrue(value instanceof UserAssociationTag);
+		final UserAssociationTag tag = (UserAssociationTag) value;
 
 		assertEquals(scope, tag.getSubject());
-		assertEquals(tagId, tag.getId());
+		assertEquals(userId, tag.getUser().getId());
 	}
 
 	@Test
@@ -72,7 +85,7 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new ScopeRemoveAssociatedUserAction(scopeId, tagId);
+		return new ScopeRemoveAssociatedUserAction(scopeId, userId);
 	}
 
 	@Override

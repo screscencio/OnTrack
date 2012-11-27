@@ -37,11 +37,11 @@ public class ScopeRemoveRollbackActionEntity extends ModelActionEntity {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@Column(name = "modelActionEntity_secundarySubActionList")
-	@JoinTable(name = "modelActionEntity_secundarySubActionList")
+	@JoinTable(name = "ScopeRemoveRollbackAction_secundarySubActionList")
 	private List<ModelActionEntity> childActionList;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@Column(name = "modelActionEntity_subActionList")
+	@Column(name = ActionTableColumns.ACTION_LIST)
 	@JoinTable(name = "ScopeRemoveRollbackAction_subActionList")
 	private List<ModelActionEntity> subActionList;
 

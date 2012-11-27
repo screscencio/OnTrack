@@ -42,7 +42,6 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 
 	public boolean update(final List<T> modelBeanList) {
 		boolean hasChanged = false;
-
 		for (int i = 0; i < modelBeanList.size(); i++) {
 			final T modelBean = modelBeanList.get(i);
 

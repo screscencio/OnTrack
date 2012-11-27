@@ -56,12 +56,14 @@
 		
 		.releasePanel {
 			position: absolute;
-			top: 35px;
+			top: 45px;
 			right: 0px;
 			bottom: 0px;
 			width: 400px;
 			overflow: hidden;
-			padding: 10px;
+			overflow-y: auto;
+			padding: 0px;
+			padding-right: 10px;
 		}
 		
 		.projectMembers {

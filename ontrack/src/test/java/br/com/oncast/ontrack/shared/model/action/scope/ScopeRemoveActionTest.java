@@ -28,7 +28,7 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.UserTag;
+import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
@@ -288,11 +288,11 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 			context.addUser(user);
 			new ScopeAddAssociatedUserAction(scopeId, user.getId()).execute(context, actionContext);
 		}
-		assertTrue(context.hasTags(child1Level1, UserTag.getType()));
+		assertTrue(context.hasTags(child1Level1, UserAssociationTag.getType()));
 
 		new ScopeRemoveAction(scopeId).execute(context, actionContext);
 
-		assertFalse(context.hasTags(child1Level1, UserTag.getType()));
+		assertFalse(context.hasTags(child1Level1, UserAssociationTag.getType()));
 	}
 
 	@Override

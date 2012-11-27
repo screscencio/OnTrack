@@ -1,8 +1,8 @@
 package br.com.oncast.ontrack.utils.deepEquality;
 
-import br.com.oncast.ontrack.utils.identedLogger.IdentedLogger;
+import br.com.oncast.ontrack.utils.identedLogger.IdentedLoggerImpl;
 
-public class NullIdentedLogger extends IdentedLogger {
+public class NullIdentedLogger extends IdentedLoggerImpl {
 
 	public NullIdentedLogger() {
 		super(null);

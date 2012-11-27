@@ -6,9 +6,9 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public class UserTag implements Tag, Serializable {
+public class UserAssociationTag implements Tag, Serializable {
 
-	private static final long serialVersionUID = UserTag.class.hashCode();
+	private static final long serialVersionUID = 1L;
 
 	private Scope scope;
 
@@ -16,9 +16,9 @@ public class UserTag implements Tag, Serializable {
 
 	private UUID id;
 
-	public UserTag() {}
+	public UserAssociationTag() {}
 
-	public UserTag(final UUID tagId, final Scope scope, final User user) {
+	public UserAssociationTag(final UUID tagId, final Scope scope, final User user) {
 		this.id = tagId;
 		this.scope = scope;
 		this.user = user;
@@ -56,7 +56,7 @@ public class UserTag implements Tag, Serializable {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		final UserTag other = (UserTag) obj;
+		final UserAssociationTag other = (UserAssociationTag) obj;
 		if (id == null) {
 			if (other.id != null) return false;
 		}

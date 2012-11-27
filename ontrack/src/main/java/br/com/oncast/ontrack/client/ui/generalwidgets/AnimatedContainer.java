@@ -68,6 +68,7 @@ public class AnimatedContainer extends Composite {
 		container.remove(widget);
 		widgets.add(index, widget);
 		insertIntoContainer(widget, getContainerIndex(widget));
+		if (!widget.asWidget().isVisible()) animationFactory.createShowAnimation(widget.asWidget()).show();
 	}
 
 	private int getContainerIndex(final IsWidget widget) {

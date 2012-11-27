@@ -6,8 +6,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class TagFactory {
 
-	public static UserTag createUserTag(final UUID tagId, final Scope scope, final User user) {
-		return new UserTag(tagId, scope, user);
+	public static UserAssociationTag createUserTag(final UUID tagId, final Scope scope, final User user) {
+		return new UserAssociationTag(tagId, scope, user);
 	}
 
 }

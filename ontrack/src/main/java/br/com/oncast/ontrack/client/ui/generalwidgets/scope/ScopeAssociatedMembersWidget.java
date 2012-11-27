@@ -54,6 +54,11 @@ public class ScopeAssociatedMembersWidget extends Composite {
 	}
 
 	public void update() {
+		if (scope.getProgress().isDone()) {
+			this.setVisible(false);
+			return;
+		}
+
 		final List<User> associatedUsersList = ClientServiceProvider.getInstance().getUserAssociationService().getAssociatedUsers(scope);
 		associatedUsers.update(associatedUsersList);
 		final int userCount = associatedUsersList.size();

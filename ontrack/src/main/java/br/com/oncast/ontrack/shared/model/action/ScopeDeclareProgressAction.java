@@ -7,19 +7,24 @@
 
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareProgressActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 @ConvertTo(ScopeDeclareProgressActionEntity.class)
 public class ScopeDeclareProgressAction implements ScopeAction {
@@ -34,19 +39,17 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	@Attribute
 	private String newProgressDescription;
 
-	@ConversionAlias("subAction")
-	@Element(required = false)
-	@IgnoredByDeepEquality
-	private ModelAction rollbackSubAction;
+	@ConversionAlias("subActionList")
+	@ElementList
+	private List<ModelAction> subActionList;
 
 	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription) {
-		this.referenceId = referenceId;
-		this.newProgressDescription = newProgressDescription == null ? "" : newProgressDescription;
+		this(referenceId, newProgressDescription, new ArrayList<ModelAction>());
 	}
 
-	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription, final ModelAction rollbackAction) {
+	public ScopeDeclareProgressAction(final UUID referenceId, final String newProgressDescription, final List<ModelAction> rollbackActions) {
 		this.referenceId = referenceId;
-		rollbackSubAction = rollbackAction;
+		subActionList = rollbackActions;
 		this.newProgressDescription = newProgressDescription == null ? "" : newProgressDescription;
 	}
 
@@ -58,26 +61,41 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 		final Scope selectedScope = ActionHelper.findScope(referenceId, context);
 		final String oldProgressDescription = selectedScope.getProgress().getDescription();
 
-		final ModelAction rollback = processSubActions(context, actionContext, selectedScope);
+		final List<ModelAction> rollbackActions = processSubActions(context, actionContext, selectedScope);
 		selectedScope.getProgress().setDescription(newProgressDescription, ActionHelper.findUserFrom(actionContext, context), actionContext.getTimestamp());
 
-		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollback);
+		return new ScopeDeclareProgressAction(referenceId, oldProgressDescription, rollbackActions);
 	}
 
-	private ModelAction processSubActions(final ProjectContext context, final ActionContext actionContext, final Scope scope)
+	private List<ModelAction> processSubActions(final ProjectContext context, final ActionContext actionContext, final Scope scope)
 			throws UnableToCompleteActionException {
-		return (rollbackSubAction != null) ? rollbackSubAction.execute(context, actionContext) : assureKanbanColumnExistence(context, actionContext,
-				scope);
+		final List<ModelAction> rollbackActions = new ArrayList<ModelAction>();
+
+		if (subActionList.isEmpty()) {
+			checkUserAssociation(context, actionContext, scope);
+			assureKanbanColumnExistence(context, scope);
+		}
+
+		for (final ModelAction action : subActionList) {
+			rollbackActions.add(action.execute(context, actionContext));
+		}
+
+		return rollbackActions;
 	}
 
-	private ModelAction assureKanbanColumnExistence(final ProjectContext context, final ActionContext actionContext, final Scope scope)
-			throws UnableToCompleteActionException {
-		if (!scope.isLeaf()) return null;
+	private void checkUserAssociation(final ProjectContext context, final ActionContext actionContext, final Scope scope) {
+		if (!ProgressState.UNDER_WORK.matches(newProgressDescription) || context.hasTags(scope, UserAssociationTag.getType())) return;
+
+		subActionList.add(new ScopeAddAssociatedUserAction(referenceId, actionContext.getUserId()));
+	}
+
+	private void assureKanbanColumnExistence(final ProjectContext context, final Scope scope) throws UnableToCompleteActionException {
+		if (!scope.isLeaf()) return;
 
 		final Release release = getScopeRelease(scope);
-		if (release == null || context.getKanban(release).hasNonInferedColumn(newProgressDescription)) return null;
+		if (release == null || context.getKanban(release).hasNonInferedColumn(newProgressDescription)) return;
 
-		return (new KanbanColumnCreateAction(release.getId(), newProgressDescription, false)).execute(context, actionContext);
+		subActionList.add(new KanbanColumnCreateAction(release.getId(), newProgressDescription, false));
 	}
 
 	private Release getScopeRelease(final Scope scope) {

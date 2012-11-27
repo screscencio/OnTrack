@@ -6,6 +6,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +20,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.Tag;
-import br.com.oncast.ontrack.shared.model.tags.UserTag;
+import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
@@ -53,8 +56,8 @@ public class ScopeAddAssociatedUserActionTest extends ModelActionTest {
 		executeAction();
 
 		final Tag value = captureAddedTag();
-		assertTrue(value instanceof UserTag);
-		final UserTag tag = (UserTag) value;
+		assertTrue(value instanceof UserAssociationTag);
+		final UserAssociationTag tag = (UserAssociationTag) value;
 
 		assertEquals(scope, tag.getSubject());
 		assertEquals(user, tag.getUser());
@@ -63,9 +66,11 @@ public class ScopeAddAssociatedUserActionTest extends ModelActionTest {
 	@Test
 	public void undoShouldRemoveTheAssociation() throws Exception {
 		final ModelAction undoAction = executeAction();
-		final UserTag tag = captureAddedTag();
+		final UserAssociationTag tag = captureAddedTag();
 
-		when(context.findTag(scope, UserTag.getType(), tag.getId())).thenReturn(tag);
+		final List<Tag> list = new ArrayList<Tag>();
+		list.add(tag);
+		when(context.getTags(scope, UserAssociationTag.getType())).thenReturn(list);
 		undoAction.execute(context, actionContext);
 		verify(context).removeTag(tag);
 	}

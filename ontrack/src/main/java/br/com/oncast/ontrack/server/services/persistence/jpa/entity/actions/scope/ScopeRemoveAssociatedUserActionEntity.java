@@ -20,7 +20,7 @@ public class ScopeRemoveAssociatedUserActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.STRING_2)
 	@ConvertUsing(StringToUuidConverter.class)
-	private String associationId;
+	private String userId;
 
 	public String getScopeId() {
 		return scopeId;
@@ -30,12 +30,12 @@ public class ScopeRemoveAssociatedUserActionEntity extends ModelActionEntity {
 		this.scopeId = scopeId;
 	}
 
-	public String getAssociationId() {
-		return associationId;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setAssociationId(final String associationId) {
-		this.associationId = associationId;
+	public void setUserId(final String userId) {
+		this.userId = userId;
 	}
 
 }

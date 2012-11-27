@@ -8,7 +8,7 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.UserTag;
+import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.User;
 
 public class UserAssociationServiceImpl implements UserAssociationService {
@@ -24,8 +24,8 @@ public class UserAssociationServiceImpl implements UserAssociationService {
 	@Override
 	public List<User> getAssociatedUsers(final Scope scope) {
 		final List<User> users = new ArrayList<User>();
-		final List<UserTag> tags = contextProviderService.getCurrentProjectContext().getTags(scope, UserTag.getType());
-		for (final UserTag tag : tags) {
+		final List<UserAssociationTag> tags = contextProviderService.getCurrentProjectContext().getTags(scope, UserAssociationTag.getType());
+		for (final UserAssociationTag tag : tags) {
 			users.add(tag.getUser());
 		}
 		return users;
@@ -41,13 +41,9 @@ public class UserAssociationServiceImpl implements UserAssociationService {
 
 	@Override
 	public void onUserRemoveAssociationRequest(final Scope scope, final User user) {
-		final List<UserTag> tags = contextProviderService.getCurrentProjectContext().getTags(scope, UserTag.getType());
-		for (final UserTag tag : tags) {
-			if (tag.getUser().equals(user)) {
-				actionExecutionService.onUserActionExecutionRequest(new ScopeRemoveAssociatedUserAction(scope.getId(), tag.getId()));
-				return;
-			}
-		}
+		if (!hasAssociatedUser(scope, user)) return;
+
+		actionExecutionService.onUserActionExecutionRequest(new ScopeRemoveAssociatedUserAction(scope.getId(), user.getId()));
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class Progress implements Serializable {
 	public enum ProgressState {
 		NOT_STARTED("") {
 			@Override
-			protected boolean matches(final String description) {
+			public boolean matches(final String description) {
 				final String[] acceptableDescriptions = { "not started", "notstarted", "not_started", "ns", "n", "" };
 				for (final String acceptable : acceptableDescriptions) {
 					if (acceptable.equalsIgnoreCase(description)) return true;
@@ -33,13 +33,13 @@ public class Progress implements Serializable {
 		},
 		UNDER_WORK("Under work") {
 			@Override
-			protected boolean matches(final String description) {
+			public boolean matches(final String description) {
 				return (!NOT_STARTED.matches(description) && !DONE.matches(description));
 			}
 		},
 		DONE("Done") {
 			@Override
-			protected boolean matches(final String description) {
+			public boolean matches(final String description) {
 				final String[] acceptableDescriptions = { "done", "dn", "d" };
 				for (final String acceptable : acceptableDescriptions) {
 					if (acceptable.equalsIgnoreCase(description)) return true;
@@ -69,7 +69,7 @@ public class Progress implements Serializable {
 			return getDescription();
 		}
 
-		protected abstract boolean matches(String description);
+		public abstract boolean matches(String description);
 
 	};
 
