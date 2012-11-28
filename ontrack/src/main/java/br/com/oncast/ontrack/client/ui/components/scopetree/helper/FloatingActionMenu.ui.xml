@@ -2,18 +2,104 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+	<ui:image field="imgPopArrow" src="arrow_pop_btn.png"/>
+	<ui:image field="imgEdit" src="edit_pop_btn.png"/>
+	<ui:image field="imgNChild" src="add1_pop_btn.png"/>
+	<ui:image field="imgNSibling" src="add_pop_btn.png"/>
+	<ui:image field="imgDelete" src="close_pop_btn.png"/>
+	<ui:image field="imgDetail" src="comment_pop_btn.png"/>
+	<ui:image field="imgRelease" src="release_pop_btn.png"/>
+	<ui:image field="imgEffort" src="effort_pop_btn.png"/>
+	<ui:image field="imgProgress" src="progress_pop_btn.png"/>
+	<ui:image field="imgValue" src="value_pop_btn.png"/>
+
 	<ui:style>
+	
+		.panel {
+			padding: 5px 5px 5px 2px;
+			Background-color: #ffffff; 
+			border: 1px solid #c8c8c8;
+			position: relative;
+		}
+				
+		.spacer {
+			width: 7px;
+		}
+
+		@sprite .btnEdit {
+			gwt-image: 'imgEdit';
+		}
+
+		@sprite .btnNChild {
+			gwt-image: 'imgNChild';
+		}
+
+		@sprite .btnNSibling {
+			gwt-image: 'imgNSibling';
+		}
+
+		@sprite .btnDelete {
+			gwt-image: 'imgDelete';
+		}
+
+		@sprite .btnDetail {
+			gwt-image: 'imgDetail';
+		}
+
+		@sprite .btnRelease {
+			gwt-image: 'imgRelease';
+		}
+
+		@sprite .btnEffort {
+			gwt-image: 'imgEffort';
+		}
+
+		@sprite .btnProgress {
+			gwt-image: 'imgProgress';
+		}
+
+		@sprite .btnValue {
+			gwt-image: 'imgValue';
+		}
+
+		@sprite .imgPopArrow {
+			gwt-image: 'imgPopArrow';
+		}
+		
+		.imgPopArrow {
+			position: absolute;
+			top: -7px;
+			left: 143px;
+		}
+
+		.btn {
+			cursor: pointer;
+			height: 30px;
+			width: 30px;
+			background-color: #ffffff; 
+			border: solid 1px #c8c8c8;
+			margin-left: 3px;
+			background-position: center;
+		}
+
+		.btn:hover {
+			background-color: #e8e8e8;
+		}
+
 	</ui:style>
 
-	<g:HorizontalPanel>
-		<g:Button text="E" ui:field="btnEdit" />
-		<g:Button text="C" ui:field="btnNChild" />
-		<g:Button text="S" ui:field="btnNSibli" />
-		<g:Button text="D" ui:field="btnDelete" />
-		<g:Label text=" " />
-		<g:Button text="A*" ui:field="btnDetail" />
-		<g:Button text="@" ui:field="btnRelease" />
-		<g:Button text="#" ui:field="btnEffort" />
-		<g:Button text="%" ui:field="btnProgress" />
+	<g:HorizontalPanel styleName="{style.panel}">
+		<g:Image styleName="{style.imgPopArrow}" />
+		<g:Button ui:field="btnNSibli" styleName="{style.btnNSibling} {style.btn}" />
+		<g:Button ui:field="btnNChild" styleName="{style.btnNChild} {style.btn}" />
+		<g:Button ui:field="btnEdit" styleName="{style.btnEdit} {style.btn}" />
+		<g:Button ui:field="btnDetail" styleName="{style.btnDetail} {style.btn}" />
+		<g:Label styleName="{style.spacer}" />
+		<g:Button ui:field="btnRelease" styleName="{style.btnRelease} {style.btn}" />
+		<g:Button ui:field="btnEffort" styleName="{style.btnEffort} {style.btn}" />
+		<g:Button ui:field="btnProgress" styleName="{style.btnProgress} {style.btn}" />
+		<g:Button ui:field="btnValue" styleName="{style.btnValue} {style.btn}" />
+		<g:Label styleName="{style.spacer}" />
+		<g:Button ui:field="btnDelete" styleName="{style.btnDelete} {style.btn}" />
 	</g:HorizontalPanel>
 </ui:UiBinder>

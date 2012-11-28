@@ -20,9 +20,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-// FIXME LOBO I18N MESSAGES AND BUTTONS
-// FIXME LOBO IF IS ROOT HIDE CERTAIN BUTTONS
-// FIXME SHOW ON MOUSE MOVE
+// FIXME LOBO I18N MESSAGES (titles)
 public class FloatingActionMenu extends Composite {
 
 	private static FloatingActionMenuUiBinder uiBinder = GWT.create(FloatingActionMenuUiBinder.class);
