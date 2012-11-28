@@ -322,6 +322,15 @@ public class Release implements Serializable {
 		return accomplishedEffortSum;
 	}
 
+	public float getAccomplishedValueSum() {
+		float accomplishedValueSum = 0;
+
+		for (final Scope scope : getAllScopesIncludingDescendantReleases())
+			accomplishedValueSum += scope.getValue().getAccomplished();
+
+		return accomplishedValueSum;
+	}
+
 	public boolean isDone() {
 		if (scopeList.isEmpty() && childrenList.isEmpty()) return false;
 
@@ -438,4 +447,5 @@ public class Release implements Serializable {
 		}
 		return tasks;
 	}
+
 }

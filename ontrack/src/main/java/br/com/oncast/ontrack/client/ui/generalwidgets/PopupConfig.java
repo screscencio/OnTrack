@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -25,7 +24,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -159,16 +157,6 @@ public class PopupConfig {
 	}
 
 	/**
-	 * @deprecated use {@link #alignHorizontal(HorizontalAlignment, AlignmentReference)} instead
-	 * @param reference widget for alignment.
-	 * @return
-	 */
-	@Deprecated
-	public PopupConfig alignRight(final UIObject widget) {
-		return alignHorizontal(RIGHT, new AlignmentReference(widget, RIGHT));
-	}
-
-	/**
 	 * Defines the horizontal alignment of the widget to popup.<br>
 	 * Note that the popup configuration may override this definition in case it realizes the popup widget will not fit. The popup configuration will try the
 	 * following to determine the popup widget horizontal alignment:
@@ -186,29 +174,6 @@ public class PopupConfig {
 		this.alignHorizontallyTo = alignmentReference;
 
 		return this;
-	}
-
-	/**
-	 * Defines that the popup widget must be placed bellow a reference widget.<br />
-	 * Just like {@link #alignRight(Widget)}, the popup configuration may override this definition and place the popup on a more convenient place in case it
-	 * does not fit bellow the reference widget. These are the rules to determining the popup vertical alignment:
-	 * <ol>
-	 * <li>Put popup widget immediately bellow the reference widget;</li>
-	 * <li>Put popup widget immediately above the reference widget, in case the first rule does not apply;</li>
-	 * <li>Use the closes possible placement to the first rule in case none of the two first apply.</li>
-	 * </ol>
-	 * There are times you want to offset the popup widget a little up or down. In such cases, use the {@link #alignVertical(Widget, int)} method.
-	 * @param widget the reference widget.
-	 * @return the self assistant for in-line call convenience.
-	 */
-	@Deprecated
-	public PopupConfig alignBelow(final UIObject widget) {
-		return alignBelow(widget, 0);
-	}
-
-	@Deprecated
-	public PopupConfig alignBelow(final UIObject widget, final int offset) {
-		return alignVertical(VerticalAlignment.TOP, new AlignmentReference(widget, VerticalAlignment.BOTTOM, offset));
 	}
 
 	public PopupConfig alignVertical(final VerticalAlignment alignment, final AlignmentReference alignTo) {

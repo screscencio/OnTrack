@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 
 import com.google.gwt.user.client.Command;
@@ -35,7 +38,7 @@ public class BreadcrumbWidget extends MenuBar {
 			public void execute() {}
 		});
 
-		final PopupConfig config = PopupConfig.configPopup().popup(widgetToPopup).alignBelow(item).alignRight(item);
+		final PopupConfig config = PopupConfig.configPopup().popup(widgetToPopup).alignVertical(VerticalAlignment.TOP, new AlignmentReference(item, VerticalAlignment.BOTTOM, 0)).alignHorizontal(RIGHT, new AlignmentReference(item, RIGHT));
 		item.setCommand(new Command() {
 			@Override
 			public void execute() {

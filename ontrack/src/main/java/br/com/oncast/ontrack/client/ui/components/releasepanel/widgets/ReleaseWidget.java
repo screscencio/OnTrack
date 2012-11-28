@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets;
 
+import static br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment.RIGHT;
 import static br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.configPopup;
 
 import java.util.ArrayList;
@@ -8,8 +9,7 @@ import java.util.List;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartPopup;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -24,7 +24,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuIte
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -207,7 +206,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private MouseCommandsMenu mouseCommandsMenu;
 
-	private ReleaseChart chartPanel;
+	private ReleaseChartPopup chartPanel;
 
 	private boolean isMenuOpen = false;
 
@@ -267,8 +266,8 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiHandler("menuIcon")
 	protected void showMenu(final ClickEvent event) {
 		configPopup().popup(getMouseActionMenu())
-				.alignRight(menuIcon)
-				.alignBelow(menuIcon)
+				.alignHorizontal(RIGHT, new AlignmentReference(menuIcon, RIGHT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(menuIcon, VerticalAlignment.BOTTOM, 0))
 				.onClose(new PopupCloseListener() {
 					@Override
 					public void onHasClosed() {
@@ -412,22 +411,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ReleaseContainerStateChangeEvent(release, isContainerStateOpen), this);
 	}
 
-	private ReleaseChart getChartPanel() {
+	private ReleaseChartPopup getChartPanel() {
 		if (chartPanel != null) return chartPanel;
-		chartPanel = new ReleaseChart(new ReleaseChartDataProvider(release, getReleaseEstimator(), ClientServiceProvider.getInstance()
-				.getActionExecutionService()));
+		chartPanel = new ReleaseChartPopup(release);
 		chartPanel.addStyleName(style.chartPanel());
 		return chartPanel;
-	}
-
-	private ReleaseEstimator getReleaseEstimator() {
-		// XXX Burnup: Locate the root Release in a more direct fashion.
-		// TODO+++ [Performance] Use one instance per project.
-		Release r = getRelease();
-		while (r.getParent() != null)
-			r = r.getParent();
-
-		return new ReleaseEstimator(r);
 	}
 
 	public Release getRelease() {

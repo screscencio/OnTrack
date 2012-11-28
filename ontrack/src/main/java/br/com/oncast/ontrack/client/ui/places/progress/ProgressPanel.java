@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanPanel;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanWidgetDisplay;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.ReleasePanelInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ScopeWidgetDropController;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
@@ -50,6 +51,9 @@ public class ProgressPanel extends Composite implements ProgressView {
 	@UiField(provided = true)
 	protected DraggableMembersListWidget members;
 
+	@UiField(provided = true)
+	protected ReleaseChart chart;
+
 	private final ReleasePanelInteractionHandler interactionHandler;
 
 	public ProgressPanel(final Release release, final Kanban kanban) {
@@ -67,10 +71,13 @@ public class ProgressPanel extends Composite implements ProgressView {
 		releaseWidget = new ReleasePanelWidget(interactionHandler, userDragAndDropManager, userDropControllerFactory, true);
 		kanbanPanel = new KanbanPanel(kanban, release, userDragAndDropManager, userDropControllerFactory);
 
+		chart = new ReleaseChart(release, false);
+
 		initWidget(uiBinder.createAndBindUi(this));
 
 		releaseWidget.setRelease(release);
 		releaseWidget.registerDropController(new ProgressReleaseDropManager(kanbanPanel, interactionHandler, style.kanbanPanelOnDragTarget()));
+		chart.updateData();
 	}
 
 	@Override

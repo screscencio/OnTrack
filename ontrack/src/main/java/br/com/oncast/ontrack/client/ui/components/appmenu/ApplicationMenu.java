@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChange
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectMenuWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
@@ -102,10 +103,10 @@ public class ApplicationMenu extends Composite {
 		backButton.setVisible(shouldBeVisible);
 	}
 
-	@SuppressWarnings("deprecation")
 	public ApplicationMenu addCustomMenuItem(final ApplicationMenuItem menuItem, final Widget widgetToPopup) {
 		itemContainer.add(menuItem);
-		menuItem.setPopupConfig(PopupConfig.configPopup().popup(widgetToPopup).alignBelow(applicationMenuPanel, 1)
+		menuItem.setPopupConfig(PopupConfig.configPopup().popup(widgetToPopup)
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(menuItem, HorizontalAlignment.CENTER)));
 		return this;
 	}
@@ -119,38 +120,36 @@ public class ApplicationMenu extends Composite {
 		projectMenuItem.setText(name);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void createProjectMenu() {
 		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget())
-				.alignBelow(applicationMenuPanel, 1)
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(projectMenuItem, HorizontalAlignment.CENTER));
 		projectMenuItem.setPopupConfig(config);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void createNotificationMenu() {
 		final PopupConfig notificationPopup = PopupConfig.configPopup().popup(new NotificationListWidget())
-				.alignBelow(applicationMenuPanel, 1)
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(notificationMenuItem, HorizontalAlignment.CENTER));
 		notificationMenuItem.setPopupConfig(notificationPopup);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void createMemberMenu() {
 		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new MembersWidget())
-				.alignBelow(applicationMenuPanel, 1)
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(memberMenuItem, HorizontalAlignment.CENTER));
 		memberMenuItem.setPopupConfig(invitePopup);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void createUserMenu() {
 		final ApplicationSubmenu userMenu = new ApplicationSubmenu();
 
-		final PopupConfig popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget()).alignBelow(applicationMenuPanel, 1)
+		final PopupConfig popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget())
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(userMenuItem, HorizontalAlignment.CENTER))
 				.setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
-		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu).alignBelow(applicationMenuPanel, 1)
+		final PopupConfig popup = PopupConfig.configPopup().popup(userMenu)
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(userMenuItem, HorizontalAlignment.CENTER));
 
 		userMenu.addItem(messages.changePassword(), new Command() {

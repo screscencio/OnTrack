@@ -5,6 +5,7 @@
     xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
 	xmlns:pp='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel'
 	xmlns:rw='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets'
+	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'
 >
 
     <ui:data field="bgPixelImg" src="../../semitransparentPixel.png" />
@@ -12,12 +13,49 @@
 	
 	   @url bgPixelUrl bgPixelImg;
 		
+		.projectMembers {
+			position: absolute;
+			top: 5px;
+			left: 5px;
+			height: 40px;;
+			width: 400px;
+			overflow: hidden;
+		}
+		
+		.releasePanel {
+			position: absolute;
+			top: 50px;
+			left: 0px;
+			bottom: 0px;
+			width: 400px;
+			overflow: auto;
+			overflow-x: hidden;
+			padding: 0px 5px 10px 5px;
+		}
+		
+		.kanbanContainer {
+			position: absolute;
+			top: 5px;
+			left: 415px;
+			bottom: 5px;
+			right: 5px;
+		}
+		
+		.releaseChart {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			
+			width: 400px;
+			height: 200px;
+		}
+		
 		.kanbanPanel {
 			position: absolute;
-			top: 10px;
-			left: 10px;
-			right: 10px;
-			bottom: 10px;
+			top: 205px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
 			overflow: auto;
 			
 			-webkit-box-shadow: POPUP_SHADOW;
@@ -29,56 +67,20 @@
 		    background-repeat: repeat;
 		}
 		
-		.kanbanContainer {
-			position:relative;
-			width: 100%;
-			height: 100%;
-		}
-		
-		.releasePanel {
-			top: 35px;
-			right: 0px;
-			bottom: 0px;
-			width: 400px;
-			overflow: auto;
-			overflow-x: hidden;
-			padding: 10px;
-		}
-		
-		.releaseContainer {
-			position: relative;
-			width: 410px;
-			height: 100%;
-		}
-		
 		.kanbanPanelOnDragTarget{
 			background-color: COLOR_YELLOW;
-		}
-		
-		.projectMembers {
-			position: absolute;
-			top: 2px;
-			left: 10px;
-			height: 40px;;
-			width: 400px;
-			overflow: hidden;
 		}
 		
 	</ui:style>
 
     <layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
-    	<g:HorizontalPanel height="100%">
-    		<g:FlowPanel>
-				<gw:DraggableMembersListWidget ui:field="members" styleName="{style.projectMembers}"/>
-				<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
-					<rw:ReleasePanelWidget ui:field="releaseWidget" />
-				</g:ScrollPanel>
-			</g:FlowPanel>
-			<g:cell width="100%">
-				<g:SimplePanel styleName="{style.kanbanContainer}">
-					<pp:KanbanPanel ui:field="kanbanPanel" addStyleNames="{style.kanbanPanel}" />
-				</g:SimplePanel>
-			</g:cell>
-    	</g:HorizontalPanel>
+		<gw:DraggableMembersListWidget ui:field="members" styleName="{style.projectMembers}"/>
+		<g:SimplePanel styleName="{style.releasePanel}">
+			<rw:ReleasePanelWidget ui:field="releaseWidget" />
+		</g:SimplePanel>
+		<g:HTMLPanel styleName="{style.kanbanContainer}">
+			<chart:ReleaseChart ui:field="chart" styleName="{style.releaseChart}"/>
+			<pp:KanbanPanel ui:field="kanbanPanel" addStyleNames="{style.kanbanPanel}" />
+		</g:HTMLPanel>
    </layout:ApplicationMenuAndWidgetContainer>
 </ui:UiBinder>

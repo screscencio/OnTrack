@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +34,7 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
-import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
-import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -43,6 +42,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEndDayAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
@@ -50,24 +50,13 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseChart>, PopupAware {
+public class ReleaseChart extends Composite {
 
 	private static final ReleaseChartMessages messages = GWT.create(ReleaseChartMessages.class);
 
@@ -89,160 +78,79 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 
 	private static final String INFERED_IDEAL_EFFORT_COLOR = "#bbc2f2";
 
-	private static ChartPanelUiBinder uiBinder = GWT.create(ChartPanelUiBinder.class);
+	private static ReleaseChartUiBinder uiBinder = GWT.create(ReleaseChartUiBinder.class);
 
-	interface ChartPanelUiBinder extends UiBinder<Widget, ReleaseChart> {}
+	interface ReleaseChartUiBinder extends UiBinder<Widget, ReleaseChart> {}
+
+	@UiField
+	FocusPanel chartPanel;
 
 	protected Chart chart;
-
-	@UiField
-	protected FocusPanel clickableChartPanel;
-
-	@UiField
-	protected FocusPanel chartPanel;
-
-	@UiField
-	protected Image closeIcon;
-
-	@UiField
-	protected ReleaseChartEditableDateLabel startDate;
-
-	@UiField
-	protected ReleaseChartEditableDateLabel endDate;
-
-	@UiField
-	protected ReleaseChartEditableLabel velocity;
-
-	@UiField
-	protected Label actualVelocity;
-
-	@UiField
-	protected Label actualEndDay;
-
-	@UiField
-	protected Label helpText;
 
 	private final ReleaseChartDataProvider dataProvider;
 
 	private ActionExecutionListener actionExecutionListener;
 
-	public ReleaseChart(final ReleaseChartDataProvider dataProvider) {
-		this.dataProvider = dataProvider;
-		initWidget(uiBinder.createAndBindUi(this));
+	private final boolean completeMode;
 
+	private ReleaseChartUpdateListener updateListener;
+
+	private final Release release;
+
+	private Series accomplishedEffortSeries;
+
+	private Series accomplishedValueSeries;
+
+	private float previousEffort;
+
+	private float previousValue;
+
+	public ReleaseChart(final Release release, final boolean completeMode) {
+		this.release = release;
+		this.completeMode = completeMode;
+		this.dataProvider = new ReleaseChartDataProvider(release, getReleaseEstimator(), ClientServiceProvider.getInstance().getActionExecutionService());
+
+		initWidget(uiBinder.createAndBindUi(this));
 		chart = createBasicChart();
 		chartPanel.add(chart);
 	}
 
-	@UiHandler("chartPanel")
-	public void onAttach(final AttachEvent event) {
-		if (event.isAttached()) {
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					chart.setSize(chartPanel.getElement().getClientWidth(), chartPanel.getElement().getClientHeight(), false);
-				}
-			});
-		}
-	}
-
-	@UiHandler("startDate")
-	protected void onStartDateChange(final ValueChangeEvent<Date> event) {
-		dataProvider.declareStartDate(event.getValue());
-	}
-
-	@UiHandler("endDate")
-	protected void onEndDateChange(final ValueChangeEvent<Date> event) {
-		dataProvider.declareEndDate(event.getValue());
-	}
-
-	@UiHandler("velocity")
-	protected void onVelocityChange(final ValueChangeEvent<Float> event) {
-		dataProvider.declareEstimatedVelocity(event.getValue());
-	}
-
-	@UiHandler("clickableChartPanel")
-	protected void onKeyDown(final KeyDownEvent e) {
-		if (!(e.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE)) return;
-
-		hide();
-		e.preventDefault();
-		e.stopPropagation();
-	}
-
-	@UiHandler("closeIcon")
-	protected void onCloseClick(final ClickEvent event) {
-		hide();
+	private ReleaseEstimator getReleaseEstimator() {
+		final Release rootRelease = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext().getProjectRelease();
+		return new ReleaseEstimator(rootRelease);
 	}
 
 	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<ReleaseChart> handler) {
-		return addHandler(handler, CloseEvent.getType());
+	protected void onAttach() {
+		super.onAttach();
+		getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				chart.setSize(chartPanel.getElement().getClientWidth(), chartPanel.getElement().getClientHeight(), false);
+			}
+		});
 	}
 
 	@Override
-	public void show() {
-		updateData();
+	protected void onDetach() {
+		if (actionExecutionListener != null) getActionExecutionService().removeActionExecutionListener(getActionExecutionListener());
 
-		startDate.hidePicker();
-		endDate.hidePicker();
-
-		ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
-
-		clickableChartPanel.setFocus(true);
-	}
-
-	@Override
-	public void hide() {
-		if (!this.isVisible()) return;
-
-		ClientServiceProvider.getInstance().getActionExecutionService().removeActionExecutionListener(getActionExecutionListener());
-		CloseEvent.fire(this, this);
+		super.onDetach();
 	}
 
 	public void updateData() {
-		dataProvider.evaluateData();
-
-		updateChart();
-
-		startDate.setValue(dataProvider.getEstimatedStartDay().getJavaDate(), false);
-		startDate.setRemoveValueAvailable(dataProvider.hasDeclaredStartDay());
-
-		endDate.setValue(dataProvider.getEstimatedEndDay().getJavaDate(), false);
-		endDate.setRemoveValueAvailable(dataProvider.hasDeclaredEndDay());
-
-		final float estimatedVelocity = dataProvider.getEstimatedVelocity();
-		velocity.setValue(estimatedVelocity, false);
-		velocity.setRemoveValueAvailable(dataProvider.hasDeclaredEstimatedVelocity());
-		if (estimatedVelocity < ReleaseEstimator.MIN_VELOCITY) showWarning();
-
-		final Float actualVelocityValue = dataProvider.getActualVelocity();
-		this.actualVelocity.setText(actualVelocityValue != null ? round(actualVelocityValue) : "-");
-
-		final WorkingDay actualEndDayValue = dataProvider.getActualEndDay();
-		this.actualEndDay.setText(actualEndDayValue != null ? HumanDateFormatter.getShortAbsuluteDate(actualEndDayValue.getJavaDate()) : "-");
-
-		helpText.setVisible(hasDifferentEstimatives());
-	}
-
-	private void showWarning() {
-		ClientServiceProvider.getInstance().getUserGuideService()
-				.addWarningTip(velocity, messages.lowEstimatedVelocityWarningTitle(), messages.lowEstimatedVelocityTips());
-	}
-
-	private boolean hasDifferentEstimatives() {
-		return !dataProvider.getEstimatedEndDay().equals(dataProvider.getInferedEstimatedEndDay());
-	}
-
-	private void updateChart() {
 		chart.removeAllSeries();
 
+		dataProvider.evaluateData();
+		updateAccomplishedAmounts();
 		final List<WorkingDay> releaseDays = dataProvider.getReleaseDays();
 		configureXAxis(releaseDays);
-		chart.addSeries(createBurnUpLine(releaseDays, dataProvider.getAccomplishedEffortPointsByDate()), false, false);
-		final Series valueLine = createValueLine(releaseDays, dataProvider.getAccomplishedValuePointsByDate());
-		chart.addSeries(valueLine, false, false);
-		if (dataProvider.getValueSum() == 0f) valueLine.hide();
+		accomplishedEffortSeries = createBurnUpLine(releaseDays, dataProvider.getAccomplishedEffortPointsByDate());
+		chart.addSeries(accomplishedEffortSeries, false, false);
+		accomplishedValueSeries = createValueLine(releaseDays, dataProvider.getAccomplishedValuePointsByDate());
+		chart.addSeries(accomplishedValueSeries, false, false);
+		if (dataProvider.getValueSum() == 0f) accomplishedValueSeries.hide();
 		chart.addSeries(
 				createIdealLine(
 						SERIES_IDEAL_BURN_UP_LINE,
@@ -253,7 +161,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 						dataProvider.getEffortSum()),
 				false,
 				false);
-		if (!dataProvider.getEstimatedEndDay().equals(dataProvider.getInferedEstimatedEndDay())) {
+		if (completeMode && !dataProvider.getEstimatedEndDay().equals(dataProvider.getInferedEstimatedEndDay())) {
 			final Series inferedIdealLine = createIdealLine(
 					SERIES_INFERED_IDEAL_BURN_UP_LINE,
 					INFERED_IDEAL_EFFORT_COLOR,
@@ -269,6 +177,13 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 		}
 
 		chart.redraw();
+
+		if (updateListener != null) updateListener.onUpdate(dataProvider);
+	}
+
+	private void updateAccomplishedAmounts() {
+		previousEffort = release.getAccomplishedEffortSum();
+		previousValue = release.getAccomplishedValueSum();
 	}
 
 	private Chart createBasicChart() {
@@ -277,16 +192,16 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 				.setType(Series.Type.LINE)
 				.setChartTitleText("")
 				.setLegend(new Legend()
-						.setEnabled(true)
+						.setEnabled(completeMode)
 						.setAlign(Legend.Align.LEFT)
 						.setVerticalAlign(Legend.VerticalAlign.TOP)
 						.setY(-8)
 						.setFloating(true)
 						.setBorderWidth(0)
 				)
-				.setMarginTop(25)
-				.setMarginLeft(30)
-				.setMarginRight(30)
+				.setMarginTop(completeMode ? 25 : 5)
+				.setMarginLeft(completeMode ? 30 : null)
+				.setMarginRight(completeMode ? 30 : null)
 				.setBorderRadius(0)
 				.setCredits(new Credits().setEnabled(false))
 				.setSeriesPlotOptions(new SeriesPlotOptions()
@@ -326,13 +241,14 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 				.setType(Type.LINEAR)
 				.setTickWidth(0)
 				.setLabels(new XAxisLabels()
+						.setEnabled(completeMode)
 						.setAlign(Align.CENTER)
 						.setRotation(-45)
 						.setX(-16)
-						.setY(27)
-				);
+						.setY(27));
 
 		newChart.getYAxis(0)
+				.setGridLineWidth(completeMode ? 1 : 0)
 				.setAxisTitleText("")
 				.setShowFirstLabel(false)
 				.setAllowDecimals(false)
@@ -341,6 +257,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 				.setMin(0)
 				.setLabels(new YAxisLabels()
 						.setAlign(Labels.Align.RIGHT)
+						.setEnabled(completeMode)
 						.setX(27)
 						.setY(13)
 						.setStyle(new Style()
@@ -352,8 +269,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 							public String format(final AxisLabelsData axisLabelsData) {
 								return round((float) axisLabelsData.getValueAsDouble());
 							}
-						})
-				);
+						}));
 
 		newChart.getYAxis(1)
 				.setAxisTitleText("")
@@ -362,6 +278,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 				.setGridLineWidth(0)
 				.setMin(0)
 				.setLabels(new YAxisLabels()
+						.setEnabled(completeMode)
 						.setAlign(Labels.Align.LEFT)
 						.setX(-28)
 						.setY(16)
@@ -374,8 +291,7 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 							public String format(final AxisLabelsData axisLabelsData) {
 								return round((float) axisLabelsData.getValueAsDouble());
 							}
-						})
-				);
+						}));
 
 		return newChart;
 	}
@@ -448,17 +364,26 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 	private Series populateSeries(final Map<WorkingDay, Float> values, final List<WorkingDay> releaseDays, final Series serie) {
 		if (values.isEmpty()) return serie;
 
-		serie.addPoint(0, 0);
+		serie.setPoints(createPoints(values, releaseDays, serie));
+
+		return serie;
+	}
+
+	private Point[] createPoints(final Map<WorkingDay, Float> values, final List<WorkingDay> releaseDays, final Series serie) {
+		final List<Point> points = new ArrayList<Point>();
+
+		points.add(new Point(0, 0));
 
 		WorkingDay lastDayAccounted = null;
 		for (final WorkingDay workingDay : values.keySet()) {
 			lastDayAccounted = workingDay;
-			serie.addPoint(releaseDays.indexOf(workingDay), values.get(workingDay));
+			points.add(new Point(releaseDays.indexOf(workingDay), values.get(workingDay)));
 		}
-		if (lastDayAccounted != null) serie.addPoint(createLastPoint(releaseDays.indexOf(lastDayAccounted), values.get(lastDayAccounted), serie.getOptions()
-				.get("name").toString()));
-
-		return serie;
+		if (lastDayAccounted != null) {
+			points.add(createLastPoint(releaseDays.indexOf(lastDayAccounted), values.get(lastDayAccounted), serie.getOptions().get("name")
+					.toString()));
+		}
+		return points.toArray(new Point[points.size()]);
 	}
 
 	private Point createLastPoint(final Number x, final Number y, final String name) {
@@ -476,6 +401,10 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 		}
 	}
 
+	private String round(final float currentPoints) {
+		return ClientDecimalFormat.roundFloat(currentPoints, 1);
+	}
+
 	private ActionExecutionListener getActionExecutionListener() {
 		return actionExecutionListener == null ? actionExecutionListener = new ActionExecutionListener() {
 			@Override
@@ -484,11 +413,65 @@ public class ReleaseChart extends Composite implements HasCloseHandlers<ReleaseC
 				if (action instanceof ReleaseDeclareStartDayAction ||
 						action instanceof ReleaseDeclareEndDayAction ||
 						action instanceof ReleaseDeclareEstimatedVelocityAction) updateData();
+
+				else updateAmountSeries();
 			}
+
+			private void updateAmountSeries() {
+				final float accomplishedEffortSum = release.getAccomplishedEffortSum();
+				final float accomplishedValueSum = release.getAccomplishedValueSum();
+
+				if (previousEffort == accomplishedEffortSum && previousValue == accomplishedValueSum) return;
+
+				dataProvider.evaluateData();
+				if (previousEffort != accomplishedEffortSum) updateEffortSeries();
+				if (previousValue != accomplishedValueSum) updateValueSeries();
+
+				chart.redraw();
+			}
+
+			private void updateValueSeries() {
+				accomplishedValueSeries.remove();
+				chart.addSeries(accomplishedValueSeries = createValueLine(dataProvider.getReleaseDays(), dataProvider.getAccomplishedValuePointsByDate()),
+						false, false);
+				previousValue = release.getAccomplishedValueSum();
+			}
+
+			private void updateEffortSeries() {
+				accomplishedEffortSeries.remove();
+				chart.addSeries(accomplishedEffortSeries = createBurnUpLine(dataProvider.getReleaseDays(), dataProvider.getAccomplishedEffortPointsByDate()),
+						false, false);
+				previousEffort = release.getAccomplishedEffortSum();
+			}
+
 		} : actionExecutionListener;
 	}
 
-	private String round(final float currentPoints) {
-		return ClientDecimalFormat.roundFloat(currentPoints, 1);
+	private ActionExecutionService getActionExecutionService() {
+		return ClientServiceProvider.getInstance().getActionExecutionService();
 	}
+
+	public ReleaseChart setUpdateListener(final ReleaseChartUpdateListener listener) {
+		this.updateListener = listener;
+		return this;
+	}
+
+	public interface ReleaseChartUpdateListener {
+
+		void onUpdate(ReleaseChartDataProvider dataProvider);
+
+	}
+
+	public void declareStartDate(final Date date) {
+		dataProvider.declareStartDate(date);
+	}
+
+	public void declareEndDate(final Date date) {
+		dataProvider.declareEndDate(date);
+	}
+
+	public void declareEstimatedVelocity(final Float velocity) {
+		dataProvider.declareEstimatedVelocity(velocity);
+	}
+
 }
