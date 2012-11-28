@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareValueInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertChildInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InsertSiblingDownInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.NodeEditionInternalAction;
@@ -18,9 +19,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-// FIXME LOBO I18N MESSAGES (titles)
 public class FloatingActionMenu extends Composite {
 
 	private static FloatingActionMenuUiBinder uiBinder = GWT.create(FloatingActionMenuUiBinder.class);
@@ -43,6 +44,10 @@ public class FloatingActionMenu extends Composite {
 	Button btnEffort;
 	@UiField
 	Button btnProgress;
+	@UiField
+	Button btnValue;
+	@UiField
+	Label spacer;
 
 	private Scope scope;
 	private final FloatingMenuActionHandler actionHandler;
@@ -60,6 +65,7 @@ public class FloatingActionMenu extends Composite {
 		final boolean visibility = !scope.isRoot();
 		btnNSibli.setVisible(visibility);
 		btnDelete.setVisible(visibility);
+		spacer.setVisible(visibility);
 	}
 
 	@UiHandler("btnEdit")
@@ -96,7 +102,7 @@ public class FloatingActionMenu extends Composite {
 	@UiHandler("btnRelease")
 	protected void onReleaseBindClick(final ClickEvent event) {
 		if (scope == null) return;
-		actionHandler.onInternalAction(new BindReleaseInternalAction(projectContext, scope));
+		actionHandler.onInternalAction(new BindReleaseInternalAction(scope, projectContext));
 	}
 
 	@UiHandler("btnEffort")
@@ -108,7 +114,13 @@ public class FloatingActionMenu extends Composite {
 	@UiHandler("btnProgress")
 	protected void onProgressDeclareClick(final ClickEvent event) {
 		if (scope == null) return;
-		actionHandler.onInternalAction(new DeclareProgressInternalAction(projectContext, scope));
+		actionHandler.onInternalAction(new DeclareProgressInternalAction(scope, projectContext));
+	}
+
+	@UiHandler("btnValue")
+	protected void onValueDeclareClick(final ClickEvent event) {
+		if (scope == null) return;
+		actionHandler.onInternalAction(new DeclareValueInternalAction(scope, projectContext));
 	}
 
 }

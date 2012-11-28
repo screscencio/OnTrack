@@ -114,6 +114,7 @@ public class ScopeTreeMouseHelper {
 	}
 
 	protected void updateFloatingHelperWidgetVisibility() {
+		System.out.println("Got here " + System.currentTimeMillis());
 		if (scopeTreeItemWidget == null || !mouseHasMoved) {
 			if (!floatingMenu.isVisible()) return;
 			floatingMenu.setVisible(false);

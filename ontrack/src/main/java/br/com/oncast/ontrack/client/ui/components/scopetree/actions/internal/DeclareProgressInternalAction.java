@@ -12,7 +12,7 @@ public class DeclareProgressInternalAction implements OneStepInternalAction {
 	private final Scope scope;
 	private final ProjectContext context;
 
-	public DeclareProgressInternalAction(final ProjectContext context, final Scope scope) {
+	public DeclareProgressInternalAction(final Scope scope, final ProjectContext context) {
 		this.context = context;
 		this.scope = scope;
 	}

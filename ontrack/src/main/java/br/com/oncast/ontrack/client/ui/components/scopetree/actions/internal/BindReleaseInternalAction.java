@@ -12,7 +12,7 @@ public class BindReleaseInternalAction implements OneStepInternalAction {
 	private final Scope scope;
 	private ScopeTreeItem selectedTreeItem;
 
-	public BindReleaseInternalAction(final ProjectContext context, final Scope scope) {
+	public BindReleaseInternalAction(final Scope scope, final ProjectContext context) {
 		this.context = context;
 		this.scope = scope;
 	}
