@@ -16,6 +16,7 @@ public class GlobalNativeEventService {
 	private final Set<NativeEventListener> keyDownListeners = new HashSet<NativeEventListener>();
 	private final Set<NativeEventListener> clickListeners = new HashSet<NativeEventListener>();
 	private final Set<NativeEventListener> mouseUpListeners = new HashSet<NativeEventListener>();
+	private final Set<NativeEventListener> mouseMoveListeners = new HashSet<NativeEventListener>();
 
 	public static GlobalNativeEventService getInstance() {
 		if (instance != null) return instance;
@@ -52,6 +53,12 @@ public class GlobalNativeEventService {
 					case Event.ONMOUSEUP: {
 						final NativeEvent nativeEvent = event.getNativeEvent();
 						for (final NativeEventListener listener : new ArrayList<NativeEventListener>(mouseUpListeners))
+							listener.onNativeEvent(nativeEvent);
+					}
+						break;
+					case Event.ONMOUSEMOVE: {
+						final NativeEvent nativeEvent = event.getNativeEvent();
+						for (final NativeEventListener listener : new ArrayList<NativeEventListener>(mouseMoveListeners))
 							listener.onNativeEvent(nativeEvent);
 					}
 						break;
@@ -92,4 +99,11 @@ public class GlobalNativeEventService {
 		mouseUpListeners.remove(listener);
 	}
 
+	public void addMouseMoveListener(final NativeEventListener listener) {
+		mouseMoveListeners.add(listener);
+	}
+
+	public void removeMouseMoveListener(final NativeEventListener listener) {
+		mouseMoveListeners.remove(listener);
+	}
 }

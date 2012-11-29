@@ -43,4 +43,12 @@ public class Configurations {
 		final String value = properties.getProperty("storage.file_max_upload_size");
 		return value == null ? -1 : Long.valueOf(value);
 	}
+
+	public String getAdminUsername() {
+		return properties.getProperty("admin.user");
+	}
+
+	public String getAdminPassword() {
+		return properties.getProperty("admin.password");
+	}
 }

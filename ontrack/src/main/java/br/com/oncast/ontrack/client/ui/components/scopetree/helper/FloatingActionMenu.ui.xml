@@ -1,0 +1,106 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:with type="br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappingsMessage" field="messages" />
+	<ui:image field="imgPopArrow" src="arrow_pop_btn.png"/>
+	<ui:image field="imgEdit" src="edit_pop_btn.png"/>
+	<ui:image field="imgNChild" src="add1_pop_btn.png"/>
+	<ui:image field="imgNSibling" src="add_pop_btn.png"/>
+	<ui:image field="imgDelete" src="close_pop_btn.png"/>
+	<ui:image field="imgDetail" src="comment_pop_btn.png"/>
+	<ui:image field="imgRelease" src="release_pop_btn.png"/>
+	<ui:image field="imgEffort" src="effort_pop_btn.png"/>
+	<ui:image field="imgProgress" src="progress_pop_btn.png"/>
+	<ui:image field="imgValue" src="value_pop_btn.png"/>
+
+	<ui:style>
+	
+		.panel {
+			padding: 5px 5px 5px 2px;
+			Background-color: #ffffff; 
+			border: 1px solid #c8c8c8;
+			position: relative;
+		}
+				
+		.spacer {
+			width: 7px;
+		}
+
+		@sprite .btnEdit {
+			gwt-image: 'imgEdit';
+		}
+
+		@sprite .btnNChild {
+			gwt-image: 'imgNChild';
+		}
+
+		@sprite .btnNSibling {
+			gwt-image: 'imgNSibling';
+		}
+
+		@sprite .btnDelete {
+			gwt-image: 'imgDelete';
+		}
+
+		@sprite .btnDetail {
+			gwt-image: 'imgDetail';
+		}
+
+		@sprite .btnRelease {
+			gwt-image: 'imgRelease';
+		}
+
+		@sprite .btnEffort {
+			gwt-image: 'imgEffort';
+		}
+
+		@sprite .btnProgress {
+			gwt-image: 'imgProgress';
+		}
+
+		@sprite .btnValue {
+			gwt-image: 'imgValue';
+		}
+
+		@sprite .imgPopArrow {
+			gwt-image: 'imgPopArrow';
+		}
+		
+		.imgPopArrow {
+			position: absolute;
+			top: -7px;
+			left: 143px;
+		}
+
+		.btn {
+			cursor: pointer;
+			height: 30px;
+			width: 30px;
+			background-color: #ffffff; 
+			border: solid 1px #c8c8c8;
+			margin-left: 3px;
+			background-position: center;
+		}
+
+		.btn:hover {
+			background-color: #e8e8e8;
+		}
+
+	</ui:style>
+
+	<g:HorizontalPanel styleName="{style.panel}">
+		<g:Image styleName="{style.imgPopArrow}" />
+		<g:Button ui:field="btnNSibli" styleName="{style.btnNSibling} {style.btn}" title="{messages.insertSiblingDown}" />
+		<g:Button ui:field="btnNChild" styleName="{style.btnNChild} {style.btn}" title="{messages.insertChild}" />
+		<g:Button ui:field="btnEdit" styleName="{style.btnEdit} {style.btn}" title="{messages.updateScope}" />
+		<g:Button ui:field="btnDetail" styleName="{style.btnDetail} {style.btn}" title="{messages.showAnnotations}" />
+		<g:Label styleName="{style.spacer}" />
+		<g:Button ui:field="btnRelease" styleName="{style.btnRelease} {style.btn}" title="{messages.bindRelease}" />
+		<g:Button ui:field="btnEffort" styleName="{style.btnEffort} {style.btn}" title="{messages.declareEffort}" />
+		<g:Button ui:field="btnValue" styleName="{style.btnValue} {style.btn}" title="{messages.declareValue}" />
+		<g:Button ui:field="btnProgress" styleName="{style.btnProgress} {style.btn}" title="{messages.declareProgress}" />
+		<g:Label styleName="{style.spacer}" ui:field="spacer" />
+		<g:Button ui:field="btnDelete" styleName="{style.btnDelete} {style.btn}" title="{messages.deleteScope}" />
+	</g:HorizontalPanel>
+</ui:UiBinder>

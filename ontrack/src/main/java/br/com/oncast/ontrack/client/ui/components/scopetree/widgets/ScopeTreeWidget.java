@@ -32,6 +32,7 @@ import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
+import br.com.oncast.ontrack.client.ui.events.ScopeTreeItemSelectionEvent;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -281,6 +282,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 				ClientServiceProvider.getInstance().getEventBus()
 						.fireEventFromSource(new ScopeSelectionEvent(selectedItem.getReferencedScope()), ScopeTreeWidget.this);
+				ClientServiceProvider.getInstance().getEventBus()
+						.fireEventFromSource(new ScopeTreeItemSelectionEvent(selectedItem.getScopeTreeItemWidget()), ScopeTreeWidget.this);
 			}
 		}));
 

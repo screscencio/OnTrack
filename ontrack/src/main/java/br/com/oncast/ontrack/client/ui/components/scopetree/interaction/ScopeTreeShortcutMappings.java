@@ -175,7 +175,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	BIND_RELEASE(new Shortcut(KEY_2).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			interactionHandler.onInternalAction(new BindReleaseInternalAction(interactionHandler.getProjectContext(), scope));
+			interactionHandler.onInternalAction(new BindReleaseInternalAction(scope, interactionHandler.getProjectContext()));
 		}
 
 		@Override
@@ -188,7 +188,7 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	BIND_PROGRESS(new Shortcut(KEY_5).with(ShiftModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			interactionHandler.onInternalAction(new DeclareProgressInternalAction(interactionHandler.getProjectContext(), scope));
+			interactionHandler.onInternalAction(new DeclareProgressInternalAction(scope, interactionHandler.getProjectContext()));
 		}
 
 		@Override

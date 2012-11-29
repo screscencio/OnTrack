@@ -12,7 +12,6 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidg
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.OperationNotAllowedException;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -101,8 +100,8 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	}
 
 	@Override
-	public void onUserActionExecutionRequest(final ScopeAction scopeMoveUpAction) {
-		applicationActionHandler.onUserActionExecutionRequest(scopeMoveUpAction);
+	public void onUserActionExecutionRequest(final ModelAction action) {
+		applicationActionHandler.onUserActionExecutionRequest(action);
 	}
 
 	@Override

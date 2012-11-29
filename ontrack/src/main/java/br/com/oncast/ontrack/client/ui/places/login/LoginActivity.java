@@ -30,14 +30,12 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
-				// TODO Improve feedback message.
 				view.enable();
 				SERVICE_PROVIDER.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().unexpectedError());
 			}
 
 			@Override
 			public void onIncorrectCredentialsFailure() {
-				// TODO Improve feedback message.
 				view.enable();
 				view.onIncorrectCredentials();
 				SERVICE_PROVIDER.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().incorrectUserOrPassword());
