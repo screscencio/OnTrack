@@ -11,7 +11,7 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ActiveUsersRequestCallback;
@@ -32,8 +32,8 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 
 	private final DispatchService requestDispatchService;
 	private final ContextProviderService contextProviderService;
-	private SortedSet<User> activeUsers;
-	private SortedSet<User> onlineUsers;
+	private SortedSet<UserRepresentation> activeUsers;
+	private SortedSet<UserRepresentation> onlineUsers;
 	private final Set<UsersStatusChangeListener> listenersList;
 
 	public UsersStatusServiceImpl(final DispatchService requestDispatchService, final ContextProviderService contextProviderService,
@@ -53,7 +53,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onEvent(final UserOpenProjectEvent event) {
 				try {
-					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
+					final UserRepresentation user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					activeUsers.add(user);
 					notifyUsersStatusListsUpdate();
 				}
@@ -67,7 +67,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onEvent(final UserClosedProjectEvent event) {
 				try {
-					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
+					final UserRepresentation user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					activeUsers.remove(user);
 					notifyUsersStatusListsUpdate();
 				}
@@ -81,7 +81,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onEvent(final UserOnlineEvent event) {
 				try {
-					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
+					final UserRepresentation user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					onlineUsers.add(user);
 					notifyUsersStatusListsUpdate();
 				}
@@ -95,7 +95,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 			@Override
 			public void onEvent(final UserOfflineEvent event) {
 				try {
-					final User user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
+					final UserRepresentation user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					onlineUsers.remove(user);
 					notifyUsersStatusListsUpdate();
 				}
@@ -148,8 +148,8 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 				notifyUsersStatusListsUpdate();
 			}
 
-			private SortedSet<User> retrieveUsers(final Set<UUID> usersIds) {
-				final SortedSet<User> users = new TreeSet<User>();
+			private SortedSet<UserRepresentation> retrieveUsers(final Set<UUID> usersIds) {
+				final SortedSet<UserRepresentation> users = new TreeSet<UserRepresentation>();
 
 				final ProjectContext context = contextProviderService.getCurrentProjectContext();
 
@@ -181,7 +181,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	}
 
 	@Override
-	public SortedSet<User> getActiveUsers() {
+	public SortedSet<UserRepresentation> getActiveUsers() {
 		if (!hasLoadedActiveUsers()) throw new RuntimeException("There is no loaded active users");
 		return activeUsers;
 	}
@@ -191,7 +191,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	}
 
 	@Override
-	public SortedSet<User> getOnlineUsers() {
+	public SortedSet<UserRepresentation> getOnlineUsers() {
 		if (!hasLoadedOnlineUsers()) throw new RuntimeException("There is no loaded active users");
 		return activeUsers;
 	}
@@ -209,7 +209,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 
 		void onUsersStatusListUnavailable(Throwable caught);
 
-		void onUsersStatusListsUpdated(SortedSet<User> activeUsers, SortedSet<User> onlineUsers);
+		void onUsersStatusListsUpdated(SortedSet<UserRepresentation> activeUsers, SortedSet<UserRepresentation> onlineUsers);
 	}
 
 	private void notifyUsersStatusListsUpdate() {
@@ -225,7 +225,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	}
 
 	@Override
-	public UserStatus getStatus(final User user) {
+	public UserStatus getStatus(final UserRepresentation user) {
 		if (getActiveUsers().contains(user)) return UserStatus.ACTIVE;
 		if (getOnlineUsers().contains(user)) return UserStatus.ONLINE;
 		return UserStatus.OFFLINE;

@@ -8,7 +8,7 @@ import java.util.Date;
 
 import br.com.oncast.ontrack.shared.model.ModelState;
 import br.com.oncast.ontrack.shared.model.ModelStateManager;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityByGetter;
@@ -82,7 +82,7 @@ public class Progress implements Serializable {
 	// IMPORTANT used by serialization
 	protected Progress() {}
 
-	public Progress(final User author, final Date timestamp) {
+	public Progress(final UserRepresentation author, final Date timestamp) {
 		stateManager = new ModelStateManager<ProgressState>(ProgressState.NOT_STARTED, author, timestamp);
 		description = "";
 	}
@@ -96,7 +96,7 @@ public class Progress implements Serializable {
 		return description;
 	}
 
-	public void setDescription(String newProgressDescription, final User author, final Date timestamp) {
+	public void setDescription(String newProgressDescription, final UserRepresentation author, final Date timestamp) {
 		if (newProgressDescription == null) newProgressDescription = "";
 
 		description = newProgressDescription;
@@ -120,7 +120,7 @@ public class Progress implements Serializable {
 		return stateManager.getCurrentStateValue() == ProgressState.UNDER_WORK;
 	}
 
-	void setState(final ProgressState newState, final User author, final Date timestamp) {
+	void setState(final ProgressState newState, final UserRepresentation author, final Date timestamp) {
 		stateManager.setState(newState, author, timestamp);
 	}
 
@@ -136,7 +136,7 @@ public class Progress implements Serializable {
 		return startDayState == null ? null : WorkingDayFactory.create(startDayState.getTimestamp());
 	}
 
-	void updateStateToDeclared(final User author, final Date timestamp) {
+	void updateStateToDeclared(final UserRepresentation author, final Date timestamp) {
 		setState(ProgressState.getStateForDescription(description), author, timestamp);
 	}
 

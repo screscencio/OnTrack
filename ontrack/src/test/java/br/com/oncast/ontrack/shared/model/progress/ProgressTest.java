@@ -14,7 +14,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 public class ProgressTest {
 
@@ -34,7 +34,7 @@ public class ProgressTest {
 	}
 
 	private void setState(final ProgressState state) {
-		progress.setState(state, UserTestUtils.getAdmin(), new Date());
+		progress.setState(state, UserRepresentationTestUtils.getAdmin(), new Date());
 	}
 
 	@Test

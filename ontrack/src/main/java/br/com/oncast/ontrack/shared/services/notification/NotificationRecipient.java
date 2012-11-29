@@ -8,7 +8,7 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationRecipientEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(NotificationRecipientEntity.class)
@@ -21,8 +21,8 @@ public class NotificationRecipient implements Serializable {
 	private UUID id;
 
 	@Element
-	@ConversionAlias("user")
-	private String user;
+	@ConversionAlias("userId")
+	private UUID userId;
 
 	@Attribute
 	@ConversionAlias("readState")
@@ -30,9 +30,9 @@ public class NotificationRecipient implements Serializable {
 
 	protected NotificationRecipient() {}
 
-	public NotificationRecipient(final User receipient) {
+	public NotificationRecipient(final UserRepresentation receipient) {
 		id = new UUID();
-		user = receipient.getEmail();
+		setUserId(receipient.getId());
 	}
 
 	public UUID getId() {
@@ -41,14 +41,6 @@ public class NotificationRecipient implements Serializable {
 
 	public void setId(final UUID id) {
 		this.id = id;
-	}
-
-	public String getUserMail() {
-		return user;
-	}
-
-	public void setUserMail(final String user) {
-		this.user = user;
 	}
 
 	@Override
@@ -78,5 +70,13 @@ public class NotificationRecipient implements Serializable {
 
 	public boolean getReadState() {
 		return readState;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public void setUserId(final UUID userId) {
+		this.userId = userId;
 	}
 }

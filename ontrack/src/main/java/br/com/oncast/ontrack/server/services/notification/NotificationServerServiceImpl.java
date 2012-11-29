@@ -14,6 +14,8 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificati
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveNotificationListException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToUpdateNotificationException;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 import br.com.oncast.ontrack.shared.services.notification.NotificationRecipient;
@@ -39,7 +41,7 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 		final User user = this.authenticationManager.getAuthenticatedUser();
 		LOGGER.debug("Retrieving notifications for user '" + user + "'.");
 		try {
-			return persistenceService.retrieveLatestNotificationsForUser(user, MAX_NUMBER_OF_NOTIFICATIONS);
+			return persistenceService.retrieveLatestNotificationsForUser(new UserRepresentation(user.getId()), MAX_NUMBER_OF_NOTIFICATIONS);
 		}
 		catch (final NoResultFoundException e) {
 			return new ArrayList<Notification>();
@@ -61,10 +63,10 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 			LOGGER.error(message, e);
 			throw new UnableToCreateNotificationException(message);
 		}
-		final List<String> recipientsAsUserMails = notification.getRecipientsAsUserMails();
+		final List<UUID> recipientsAsUserMails = notification.getRecipientsAsUserIds();
 		try {
-			final List<User> usersByEmails = persistenceService.retrieveUsersByEmails(recipientsAsUserMails);
-			this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), usersByEmails);
+			final List<User> usersByIds = persistenceService.retrieveUsersByIds(recipientsAsUserMails);
+			this.multicastService.multicastToUsers(new NotificationCreatedEvent(notification), usersByIds);
 		}
 		catch (final PersistenceException e) {
 			final String message = "Unable to multicast new notification: Unable to retrieve recipient list.";

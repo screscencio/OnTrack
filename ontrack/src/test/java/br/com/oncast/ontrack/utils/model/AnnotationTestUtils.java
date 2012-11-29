@@ -4,8 +4,9 @@ import java.util.Date;
 
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 public class AnnotationTestUtils {
 
@@ -17,7 +18,7 @@ public class AnnotationTestUtils {
 		return new AnnotationBuilder().setId(id).generate();
 	}
 
-	public static Annotation create(final User author) throws Exception {
+	public static Annotation create(final UserRepresentation author) throws Exception {
 		return new AnnotationBuilder().setAuthor(author).generate();
 	}
 
@@ -27,13 +28,13 @@ public class AnnotationTestUtils {
 
 	private static class AnnotationBuilder {
 		private UUID id;
-		private User author;
+		private UserRepresentation author;
 		private Date date;
 		private String message;
 
 		public AnnotationBuilder() throws Exception {
 			this.id = new UUID();
-			this.author = UserTestUtils.createUser();
+			this.author = UserRepresentationTestUtils.createUser();
 			this.date = new Date();
 			this.message = "Message of annotation '" + id + "'.";
 		}
@@ -47,7 +48,7 @@ public class AnnotationTestUtils {
 			return this;
 		}
 
-		public AnnotationBuilder setAuthor(final User author) {
+		public AnnotationBuilder setAuthor(final UserRepresentation author) {
 			this.author = author;
 			return this;
 		}

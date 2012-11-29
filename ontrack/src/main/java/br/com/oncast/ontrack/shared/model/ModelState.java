@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.shared.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class ModelState<T> implements Serializable {
 
@@ -11,11 +11,11 @@ public class ModelState<T> implements Serializable {
 
 	private T value;
 	private Date timestamp;
-	private User author;
+	private UserRepresentation author;
 
 	protected ModelState() {}
 
-	public ModelState(final T stateValue, final User author, final Date timestamp) {
+	public ModelState(final T stateValue, final UserRepresentation author, final Date timestamp) {
 		this.value = stateValue;
 		this.author = author;
 		this.timestamp = timestamp;
@@ -29,11 +29,11 @@ public class ModelState<T> implements Serializable {
 		return timestamp;
 	}
 
-	public User getAuthor() {
+	public UserRepresentation getAuthor() {
 		return author;
 	}
 
-	public static <T> ModelState<T> create(final T stateValue, final User author, final Date timestamp) {
+	public static <T> ModelState<T> create(final T stateValue, final UserRepresentation author, final Date timestamp) {
 		return new ModelState<T>(stateValue, author, timestamp);
 	}
 

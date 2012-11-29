@@ -6,22 +6,12 @@ import org.simpleframework.xml.Root;
 
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @Root(name = "user")
 public class UserXMLNode {
 
 	@Element
-	private UUID id;
-
-	@Attribute
-	private String email;
-
-	@Attribute
-	private int projectCreationQuota;
-
-	@Attribute
-	private int projectInvitationQuota;
+	private User userData;
 
 	@Attribute(required = false)
 	private String passwordHash;
@@ -34,33 +24,11 @@ public class UserXMLNode {
 	private UserXMLNode() {}
 
 	public UserXMLNode(final User user) {
-		id = user.getId();
-		email = user.getEmail();
-		projectCreationQuota = user.getProjectCreationQuota();
-		projectInvitationQuota = user.getProjectInvitationQuota();
-	}
-
-	public UUID getId() {
-		return id;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public int getProjectCreationQuota() {
-		return projectCreationQuota;
-	}
-
-	public int getProjectInvitationQuota() {
-		return projectInvitationQuota;
+		setUserData(user);
 	}
 
 	public User getUser() {
-		final User user = new User(id, email);
-		user.setProjectCreationQuota(projectCreationQuota);
-		user.setProjectInvitationQuota(projectInvitationQuota);
-		return user;
+		return userData;
 	}
 
 	public boolean hasPassword() {
@@ -71,7 +39,7 @@ public class UserXMLNode {
 		if (!hasPassword()) return null;
 
 		final Password password = new Password();
-		password.setUserId(id);
+		password.setUserId(userData.getId());
 		password.setPasswordHash(passwordHash);
 		password.setPasswordSalt(passwordSalt);
 		return password;
@@ -80,5 +48,13 @@ public class UserXMLNode {
 	public void setPassword(final Password password) {
 		passwordHash = password.getPasswordHash();
 		passwordSalt = password.getPasswordSalt();
+	}
+
+	public User getUserData() {
+		return userData;
+	}
+
+	public void setUserData(final User userData) {
+		this.userData = userData;
 	}
 }

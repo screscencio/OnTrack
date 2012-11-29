@@ -28,7 +28,7 @@ import br.com.oncast.ontrack.shared.model.tags.HasTags;
 import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.tags.TagType;
 import br.com.oncast.ontrack.shared.model.tags.exceptions.TagNotFoundException;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -179,7 +179,7 @@ public class ProjectContext {
 		return !findChecklistsFor(subjectId).isEmpty();
 	}
 
-	public void addUser(final User user) {
+	public void addUser(final UserRepresentation user) {
 		project.addUser(user);
 	}
 
@@ -233,16 +233,16 @@ public class ProjectContext {
 		return true;
 	}
 
-	public void removeUser(final User user) {
+	public void removeUser(final UserRepresentation user) {
 		project.removeUser(user);
 	}
 
-	public List<User> getUsers() {
+	public List<UserRepresentation> getUsers() {
 		return project.getUsers();
 	}
 
-	public User findUser(final UUID userId) throws UserNotFoundException {
-		final User user = project.getUser(userId);
+	public UserRepresentation findUser(final UUID userId) throws UserNotFoundException {
+		final UserRepresentation user = project.getUser(userId);
 		if (user == null) throw new UserNotFoundException("The user '" + userId.toStringRepresentation() + "' was not found.");
 
 		return user;

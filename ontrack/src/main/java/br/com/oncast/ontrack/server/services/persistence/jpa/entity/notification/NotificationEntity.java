@@ -42,7 +42,8 @@ public class NotificationEntity {
 	private List<NotificationRecipientEntity> recipients = new ArrayList<NotificationRecipientEntity>();
 
 	@ConversionAlias("author")
-	private String author;
+	@ConvertUsing(StringToUuidConverter.class)
+	private String authorId;
 
 	@ConversionAlias("project")
 	@ConvertUsing(StringToUuidConverter.class)
@@ -82,14 +83,6 @@ public class NotificationEntity {
 
 	public void setTimestamp(final Date timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	public String getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(final String author) {
-		this.author = author;
 	}
 
 	public String getProjectId() {
@@ -142,5 +135,13 @@ public class NotificationEntity {
 
 	public void setReferenceDescription(final String referenceDescription) {
 		this.referenceDescription = referenceDescription;
+	}
+
+	public String getAuthorId() {
+		return authorId;
+	}
+
+	public void setAuthorId(String authorId) {
+		this.authorId = authorId;
 	}
 }

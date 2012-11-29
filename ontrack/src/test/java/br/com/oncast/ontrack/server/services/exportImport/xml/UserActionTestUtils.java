@@ -66,6 +66,7 @@ import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
@@ -243,7 +244,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createTeamInviteAction() throws Exception {
-		return createUserAction(new TeamInviteAction(UserTestUtils.createUser()));
+		return createUserAction(new TeamInviteAction(UserRepresentationTestUtils.createUser()));
 	}
 
 	public static UserAction createImpedimentCreateAction() throws Exception {

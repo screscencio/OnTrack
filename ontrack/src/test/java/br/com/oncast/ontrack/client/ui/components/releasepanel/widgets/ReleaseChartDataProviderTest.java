@@ -28,12 +28,12 @@ import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import com.google.gwt.user.client.rpc.impl.ReflectionHelper;
 import com.ibm.icu.util.Calendar;
@@ -316,7 +316,7 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	private void processInference(final Scope scope, final WorkingDay day) {
-		final User admin = UserTestUtils.getAdmin();
+		final UserRepresentation admin = UserRepresentationTestUtils.getAdmin();
 		new ProgressInferenceEngine().process(scope, admin, day.getJavaDate());
 		new EffortInferenceEngine().process(scope, admin, day.getJavaDate());
 	}

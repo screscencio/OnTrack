@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
@@ -66,7 +67,7 @@ public interface PersistenceService {
 
 	public FileRepresentation retrieveFileRepresentationById(UUID fileId) throws NoResultFoundException, PersistenceException;
 
-	public List<Notification> retrieveLatestNotificationsForUser(User user, int maxNotifications) throws NoResultFoundException, PersistenceException;
+	public List<Notification> retrieveLatestNotificationsForUser(UserRepresentation user, int maxNotifications) throws NoResultFoundException, PersistenceException;
 
 	public Notification persistOrUpdateNotification(Notification notification) throws PersistenceException;
 
@@ -74,7 +75,7 @@ public interface PersistenceService {
 
 	List<ProjectAuthorization> retrieveAllAuthorizationsForProject(ProjectRepresentation projectRepresentation) throws PersistenceException;
 
-	public List<User> retrieveUsersByEmails(List<String> recipientsAsUserMails) throws PersistenceException;
+	public List<User> retrieveUsersByIds(List<UUID> userIds) throws PersistenceException;
 
 	public List<Notification> retrieveLatestNotifications(Date initialDate) throws PersistenceException;
 

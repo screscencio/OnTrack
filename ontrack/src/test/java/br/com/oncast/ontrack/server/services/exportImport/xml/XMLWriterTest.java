@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.server.services.exportImport.xml;
 
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertCollectionEquality;
-import static br.com.oncast.ontrack.utils.model.UserTestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -32,14 +31,15 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.mocks.xml.XMLNodeTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class XMLWriterTest {
 
@@ -272,9 +272,9 @@ public class XMLWriterTest {
 	}
 
 	private Notification createNotification(final String description, final NotificationType type) {
-		final User user1 = createUser();
-		final User user2 = createUser();
-		final Notification notification = new NotificationBuilder(type, ProjectTestUtils.createRepresentation(new UUID("1")), UserTestUtils.createUser())
+		final UserRepresentation user1 = UserRepresentationTestUtils.createUser();
+		final UserRepresentation user2 = UserRepresentationTestUtils.createUser();
+		final Notification notification = new NotificationBuilder(type, ProjectTestUtils.createRepresentation(new UUID("1")), new UUID())
 				.setDescription(description).addReceipient(user1).addReceipient(user2)
 				.getNotification();
 		return notification;

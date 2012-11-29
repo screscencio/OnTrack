@@ -102,7 +102,9 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 	}
 
 	private void updateAuthorImage() {
-		final String email = this.annotation.getAuthor().getEmail();
+		final User user = ClientServiceProvider.getInstance().getUserDataService()
+				.retrieveRealUser(annotation.getAuthor());
+		final String email = user.getEmail();
 		this.author.setUrl(ClientServiceProvider.getInstance().getUserDataService().getAvatarUrl(email));
 
 		ClientServiceProvider.getInstance().getUserDataService().loadProfile(email, new LoadProfileCallback() {
@@ -155,7 +157,9 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 	}
 
 	private String getDeprecationText() {
-		final String username = removeEmailDomain(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
+		final User user = ClientServiceProvider.getInstance().getUserDataService()
+				.retrieveRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
+		final String username = removeEmailDomain(user);
 		final String formattedDate = HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
 		return messages.deprecationDetails(username, formattedDate);
 	}

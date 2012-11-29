@@ -1,34 +1,23 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectMemberWidget.ProjectMemberWidgetStyle">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:u="urn:import:br.com.oncast.ontrack.client.ui.components.user">
+	<ui:style>
 	
 		.container {
 			margin-bottom: 5px;
 		}
 		
-		.image {
-			width: 40px;
-			height: 40px;
-			
-			border-left: 4px solid #888;
-		}
-	
 		.userName {
 			margin-left: 5px;
 			width: 153px;
+			text-transform: capitalize;
 		}
 		
-		.online {
-			opacity: 1;
-		}
 		
-		.offline {
-			opacity: 0.4;
-		}
 	</ui:style>
 	<g:HorizontalPanel ui:field="container" styleName="{style.container}">
-		<g:Image ui:field="userIcon" styleName="{style.image}" />
+		<u:UserWidget ui:field="userWidget"/>
 		<g:cell width="100%" verticalAlignment="middle">
 			<g:Label ui:field="userName" styleName="{style.userName} v-ellip" />
 		</g:cell>

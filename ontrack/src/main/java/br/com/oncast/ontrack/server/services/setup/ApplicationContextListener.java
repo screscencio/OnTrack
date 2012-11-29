@@ -22,6 +22,8 @@ import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationQuot
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.SendFeedbackRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.UserDataRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.UserDataUpdateRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.UserScopeSelectionMulticastRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.UsersStatusRequestHandler;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
@@ -37,6 +39,8 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationQuotaRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserScopeSelectionMulticastRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UsersStatusRequest;
 
@@ -77,6 +81,8 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(SendFeedbackRequest.class, new SendFeedbackRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(NotificationListRequest.class, new NotificationListRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(UsersStatusRequest.class, new UsersStatusRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(UserDataUpdateRequest.class, new UserDataUpdateRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(UserDataRequest.class, new UserDataRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(UserScopeSelectionMulticastRequest.class, new UserScopeSelectionMulticastRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(NotificationReadStateRequest.class, new NotificationReadStateRequestHandler());
 		}

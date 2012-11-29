@@ -1,23 +1,23 @@
 package br.com.oncast.ontrack.client.services.user;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class Selection {
 
-	private final User user;
+	private final UserRepresentation user;
 	private Color color;
 
-	public Selection(final User user, final Color selectionColor) {
+	public Selection(final UserRepresentation user, final Color selectionColor) {
 		this.user = user;
 		this.color = selectionColor;
 	}
 
-	public Selection(final User user) {
+	public Selection(final UserRepresentation user) {
 		this.user = user;
 	}
 
-	public User getUser() {
+	public UserRepresentation getUser() {
 		return user;
 	}
 

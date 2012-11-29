@@ -18,7 +18,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO Possible optimization may be necessary as this algorithm does not make use of "damage-control", because the damage control implementation we had would
@@ -33,7 +33,7 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 	}
 
 	@Override
-	public Set<UUID> process(final Scope scope, final User author, final Date timestamp) {
+	public Set<UUID> process(final Scope scope, final UserRepresentation author, final Date timestamp) {
 		final HashSet<UUID> updatedScopes = new HashSet<UUID>();
 
 		if (scope.isLeaf()) setState(scope, NOT_STARTED, updatedScopes, author, timestamp);
@@ -51,7 +51,7 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		return scope;
 	}
 
-	private void propagateToAncestors(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
+	private void propagateToAncestors(final Scope scope, final HashSet<UUID> updatedScopes, final UserRepresentation author, final Date timestamp) {
 		if (scope.isRoot()) return;
 
 		final Scope parent = scope.getParent();
@@ -66,7 +66,7 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		if (setState(parent, state, updatedScopes, author, timestamp)) propagateToAncestors(parent, updatedScopes, author, timestamp);
 	}
 
-	private void propagateToDescendants(final Scope scope, final HashSet<UUID> updatedScopes, final User author, final Date timestamp) {
+	private void propagateToDescendants(final Scope scope, final HashSet<UUID> updatedScopes, final UserRepresentation author, final Date timestamp) {
 		if (scope.isLeaf()) return;
 
 		ProgressState state = scope.getProgress().getState();
@@ -82,7 +82,7 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		if (!scope.isLeaf() && is(scope, NOT_STARTED) && allDone) setState(scope, DONE, updatedScopes, author, timestamp);
 	}
 
-	private boolean setState(final Scope scope, final ProgressState newState, final HashSet<UUID> updatedScopes, final User author,
+	private boolean setState(final Scope scope, final ProgressState newState, final HashSet<UUID> updatedScopes, final UserRepresentation author,
 			final Date timestamp) {
 		final Progress progress = scope.getProgress();
 		final ProgressState previousState = progress.getState();

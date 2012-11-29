@@ -20,8 +20,8 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.TestUtils;
 import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ProgressInferenceEngineTest {
 
@@ -440,11 +440,11 @@ public class ProgressInferenceEngineTest {
 	}
 
 	private Set<UUID> processProgressInference(final Scope scope, final WorkingDay day) {
-		return PROGRESS_INFERENCE_ENGINE.process(scope, UserTestUtils.getAdmin(), day.getJavaDate());
+		return PROGRESS_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), day.getJavaDate());
 	}
 
 	private Set<UUID> procressEffortInference(final Scope rootScope) {
-		return EFFORT_INFERENCE_ENGINE.process(rootScope, UserTestUtils.getAdmin(), new Date(0));
+		return EFFORT_INFERENCE_ENGINE.process(rootScope, UserRepresentationTestUtils.getAdmin(), new Date(0));
 	}
 
 	private Set<UUID> processProgressInference(final Scope scope) {

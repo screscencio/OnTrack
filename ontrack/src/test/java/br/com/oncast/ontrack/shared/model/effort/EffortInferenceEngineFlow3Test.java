@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 public class EffortInferenceEngineFlow3Test {
 
@@ -44,7 +44,7 @@ public class EffortInferenceEngineFlow3Test {
 
 	private void shouldApplyInferenceTopDownThroughChildren() {
 		original.getChild(0).getEffort().setDeclared(12);
-		effortInferenceEngine.process(original, UserTestUtils.getAdmin(), new Date());
+		effortInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
@@ -52,9 +52,9 @@ public class EffortInferenceEngineFlow3Test {
 	private void shouldRedistributeInferencesWhenChildrenReceiveEffortDeclarations() {
 		final Scope scope = original.getChild(0).getChild(0);
 		scope.getChild(0).getEffort().setDeclared(8);
-		effortInferenceEngine.process(scope, UserTestUtils.getAdmin(), new Date());
+		effortInferenceEngine.process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 		scope.getChild(1).getEffort().setDeclared(8);
-		effortInferenceEngine.process(scope, UserTestUtils.getAdmin(), new Date());
+		effortInferenceEngine.process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}
@@ -62,7 +62,7 @@ public class EffortInferenceEngineFlow3Test {
 	private void shouldRedistributeInferencesWhenSiblingReceiveEffortDeclarations() {
 		final Scope scope = original.getChild(0);
 		scope.getChild(1).getEffort().setDeclared(20);
-		effortInferenceEngine.process(scope, UserTestUtils.getAdmin(), new Date());
+		effortInferenceEngine.process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 3), original);
 	}

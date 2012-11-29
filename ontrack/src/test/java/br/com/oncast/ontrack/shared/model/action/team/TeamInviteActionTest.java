@@ -12,17 +12,17 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.team
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 public class TeamInviteActionTest extends ModelActionTest {
 
-	private User invitee;
+	private UserRepresentation invitee;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		invitee = UserTestUtils.createUser();
+		invitee = UserRepresentationTestUtils.createUser();
 	}
 
 	@Test

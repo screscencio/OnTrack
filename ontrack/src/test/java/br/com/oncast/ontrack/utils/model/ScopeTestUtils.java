@@ -112,11 +112,11 @@ public class ScopeTestUtils {
 	}
 
 	public static void setEndDate(final Scope scope, final WorkingDay day) {
-		scope.getProgress().setDescription(ProgressState.DONE.getDescription(), UserTestUtils.getAdmin(), day.getJavaDate());
+		scope.getProgress().setDescription(ProgressState.DONE.getDescription(), UserRepresentationTestUtils.getAdmin(), day.getJavaDate());
 	}
 
 	public static void setStartDate(final Scope scope, final WorkingDay day) {
-		scope.getProgress().setDescription(ProgressState.UNDER_WORK.getDescription(), UserTestUtils.getAdmin(), day.getJavaDate());
+		scope.getProgress().setDescription(ProgressState.UNDER_WORK.getDescription(), UserRepresentationTestUtils.getAdmin(), day.getJavaDate());
 	}
 
 	public static Scope createScope(final String name, final ProgressState progress, final Integer effort, final WorkingDay startDay, final WorkingDay endDay) {
@@ -212,11 +212,11 @@ public class ScopeTestUtils {
 	}
 
 	public static Scope createScope(final String description, final UUID id, final Date date) {
-		return new Scope(description, id, UserTestUtils.getAdmin(), new Date(0));
+		return new Scope(description, id, UserRepresentationTestUtils.getAdmin(), new Date(0));
 	}
 
 	public static Scope setProgress(final Scope scope, final String progressDescription) {
-		scope.getProgress().setDescription(progressDescription, UserTestUtils.getAdmin(), new Date(0));
+		scope.getProgress().setDescription(progressDescription, UserRepresentationTestUtils.getAdmin(), new Date(0));
 		return scope;
 	}
 
@@ -229,7 +229,7 @@ public class ScopeTestUtils {
 	}
 
 	public static Scope setProgress(final Scope scope, final ProgressState progress, final Date date) {
-		scope.getProgress().setDescription(progress.getDescription(), UserTestUtils.getAdmin(), date);
+		scope.getProgress().setDescription(progress.getDescription(), UserRepresentationTestUtils.getAdmin(), date);
 		return scope;
 	}
 

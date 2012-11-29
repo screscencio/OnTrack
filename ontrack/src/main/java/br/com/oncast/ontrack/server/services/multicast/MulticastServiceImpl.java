@@ -11,9 +11,11 @@ import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnectionList
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.server.utils.PrettyPrinter;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
 
 public class MulticastServiceImpl implements MulticastService {
 
@@ -83,5 +85,18 @@ public class MulticastServiceImpl implements MulticastService {
 		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '"
 				+ PrettyPrinter.getSimpleNamesListString(recipients) + "'.");
 		serverPushServerService.pushEvent(event, connectionSet);
+	}
+
+	@Override
+	public void multicastToAllProjectsInUserAuthorizationList(final UserDataUpdateEvent event, final List<ProjectRepresentation> projectsList) {
+		final Set<ServerPushConnection> connectionSet = new HashSet<ServerPushConnection>();
+
+		for (final ProjectRepresentation projectRepresentation : projectsList)
+			connectionSet.addAll(clientManager.getClientsAtProject(projectRepresentation.getId()));
+
+		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '"
+				+ PrettyPrinter.getSimpleNamesListString(connectionSet) + "'.");
+		serverPushServerService.pushEvent(event, connectionSet);
+
 	}
 }

@@ -18,14 +18,14 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class AnnotationVoteActionTest extends ModelActionTest {
 
-	private User voter;
+	private UserRepresentation voter;
 	private UUID subjectId;
 	private Annotation annotation;
 
@@ -33,7 +33,7 @@ public class AnnotationVoteActionTest extends ModelActionTest {
 	public void setUp() throws Exception {
 		subjectId = new UUID();
 		annotation = AnnotationTestUtils.create();
-		voter = UserTestUtils.createUser();
+		voter = UserRepresentationTestUtils.createUser();
 
 		when(actionContext.getUserId()).thenReturn(voter.getId());
 		when(context.findUser(voter.getId())).thenReturn(voter);

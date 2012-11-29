@@ -22,6 +22,8 @@ import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.server.services.storage.LocalFileSystemStorageService;
 import br.com.oncast.ontrack.server.services.storage.StorageService;
 import br.com.oncast.ontrack.server.services.threadSync.SyncronizationService;
+import br.com.oncast.ontrack.server.services.user.UserDataManager;
+import br.com.oncast.ontrack.server.services.user.UserDataManagerImpl;
 import br.com.oncast.ontrack.server.services.user.UsersStatusManager;
 
 public class ServerServiceProvider {
@@ -54,6 +56,7 @@ public class ServerServiceProvider {
 	private SyncronizationService syncronizationService;
 
 	private UsersStatusManager usersStatusManager;
+	private UserDataManager userDataManager;
 
 	public static ServerServiceProvider getInstance() {
 		return INSTANCE;
@@ -207,6 +210,14 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (usersStatusManager != null) return usersStatusManager;
 			return usersStatusManager = new UsersStatusManager(getClientManagerService(), getMulticastService(), getAuthorizationManager());
+		}
+	}
+
+	public UserDataManager getUsersDataManager() {
+		if (userDataManager != null) return userDataManager;
+		synchronized (this) {
+			if (userDataManager != null) return userDataManager;
+			return userDataManager = new UserDataManagerImpl(getPersistenceService(), getMulticastService(), getAuthorizationManager());
 		}
 	}
 }

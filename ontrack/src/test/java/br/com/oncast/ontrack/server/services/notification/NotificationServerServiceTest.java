@@ -28,8 +28,8 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 import br.com.oncast.ontrack.shared.services.notification.NotificationType;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class NotificationServerServiceTest {
 
@@ -55,8 +55,9 @@ public class NotificationServerServiceTest {
 		final ArrayList<User> userList = new ArrayList<User>();
 		userList.add(user1);
 		userList.add(user2);
-		when(persistenceService.retrieveUsersByEmails(Mockito.any(List.class))).thenReturn(userList);
-		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1).addReceipient(user2)
+		when(persistenceService.retrieveUsersByIds(Mockito.any(List.class))).thenReturn(userList);
+		final Notification notification = getBuilder().setDescription("msg1").addReceipient(UserRepresentationTestUtils.createUser(user1))
+				.addReceipient(UserRepresentationTestUtils.createUser(user2))
 				.getNotification();
 
 		final ArgumentCaptor<Notification> persistenceCaptor = ArgumentCaptor.forClass(Notification.class);
@@ -79,7 +80,8 @@ public class NotificationServerServiceTest {
 	}
 
 	private NotificationBuilder getBuilder() {
-		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, ProjectTestUtils.createRepresentation(new UUID("")), UserTestUtils.createUser());
+		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, ProjectTestUtils.createRepresentation(new UUID("")),
+				new UUID());
 	}
 
 	@Test
@@ -87,7 +89,9 @@ public class NotificationServerServiceTest {
 			throws UnableToRetrieveNotificationListException, NoResultFoundException, PersistenceException {
 		final User user1 = createUser();
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user1);
-		when(persistenceService.retrieveLatestNotificationsForUser(user1, NotificationServerServiceImpl.MAX_NUMBER_OF_NOTIFICATIONS)).thenThrow(
+		when(
+				persistenceService.retrieveLatestNotificationsForUser(UserRepresentationTestUtils.createUser(user1),
+						NotificationServerServiceImpl.MAX_NUMBER_OF_NOTIFICATIONS)).thenThrow(
 				new NoResultFoundException("", null));
 		final List<Notification> notificationList = notificationServerService.retrieveCurrentUserNotificationList();
 		assertEquals(0, notificationList.size());
@@ -98,13 +102,16 @@ public class NotificationServerServiceTest {
 			throws UnableToRetrieveNotificationListException, NoResultFoundException, PersistenceException {
 		final User user1 = createUser();
 		final User user2 = createUser();
-		final Notification notification = getBuilder().setDescription("msg1").addReceipient(user1).addReceipient(user2)
+		final Notification notification = getBuilder().setDescription("msg1").addReceipient(UserRepresentationTestUtils.createUser(user1))
+				.addReceipient(UserRepresentationTestUtils.createUser(user2))
 				.getNotification();
 		final List<Notification> list = new ArrayList<Notification>();
 		list.add(notification);
 
 		when(authenticationManager.getAuthenticatedUser()).thenReturn(user1);
-		when(persistenceService.retrieveLatestNotificationsForUser(user1, NotificationServerServiceImpl.MAX_NUMBER_OF_NOTIFICATIONS)).thenReturn(list);
+		when(
+				persistenceService.retrieveLatestNotificationsForUser(UserRepresentationTestUtils.createUser(user1),
+						NotificationServerServiceImpl.MAX_NUMBER_OF_NOTIFICATIONS)).thenReturn(list);
 		final List<Notification> notificationList = notificationServerService.retrieveCurrentUserNotificationList();
 
 		assertEquals(list, notificationList);

@@ -4,11 +4,11 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public interface ColorProviderService {
 
-	Color getSelectionColorFor(User user);
+	Color getSelectionColorFor(UserRepresentation user);
 
 	Color getColorFor(Scope scope);
 

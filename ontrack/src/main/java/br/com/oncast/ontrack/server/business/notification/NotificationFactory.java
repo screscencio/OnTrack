@@ -2,9 +2,6 @@ package br.com.oncast.ontrack.server.business.notification;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
@@ -20,7 +17,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
@@ -32,12 +29,12 @@ public class NotificationFactory {
 		IMPEDIMENT_CREATION(ImpedimentCreateAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
-					final User author) {
+					final UUID authorId) {
 
 				final String referenceDescription = getReferenceDescription(action, projectContext);
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((ImpedimentCreateAction) action).getAnnotationId());
 
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.IMPEDIMENT_CREATED)
+				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.IMPEDIMENT_CREATED)
 						.setDescription(annotation.getMessage())
 						.setReferenceDescription(referenceDescription);
 			}
@@ -45,12 +42,12 @@ public class NotificationFactory {
 		IMPEDIMENT_COMPLETITION(ImpedimentSolveAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
-					final User author) {
+					final UUID authorId) {
 
 				final String referenceDescription = getReferenceDescription(action, projectContext);
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((ImpedimentSolveAction) action).getAnnotationId());
 
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.IMPEDIMENT_SOLVED)
+				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.IMPEDIMENT_SOLVED)
 						.setDescription(annotation.getMessage())
 						.setReferenceDescription(referenceDescription);
 			}
@@ -58,10 +55,10 @@ public class NotificationFactory {
 		PROGRESS_DECLARED(ScopeDeclareProgressAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
-					final User author) {
+					final UUID authorId) {
 
 				final Scope scope = getScopeById(action, projectContext);
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.PROGRESS_DECLARED)
+				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.PROGRESS_DECLARED)
 						.setReferenceDescription(scope.getDescription())
 						.setDescription(scope.getProgress().getDescription());
 			}
@@ -69,7 +66,7 @@ public class NotificationFactory {
 		ANNOTATION_CREATED(AnnotationCreateAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
-					final User author) {
+					final UUID authorId) {
 				String referenceDescription = "";
 				try {
 					referenceDescription = getReferenceDescription(action, projectContext);
@@ -79,7 +76,7 @@ public class NotificationFactory {
 				}
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((AnnotationCreateAction) action).getAnnotationId());
 
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.ANNOTATION_CREATED)
+				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.ANNOTATION_CREATED)
 						.setDescription(annotation.getMessage())
 						.setReferenceDescription(referenceDescription);
 			}
@@ -87,21 +84,21 @@ public class NotificationFactory {
 		ANNOTATION_DEPRECATED(AnnotationDeprecateAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
-					final User author) {
+					final UUID authorId) {
 
 				final String referenceDescription = getReferenceDescription(action, projectContext);
 				final Annotation annotation = getAnnotationById(projectContext, action.getReferenceId(), ((AnnotationDeprecateAction) action).getAnnotationId());
 
-				return initializeBuilder(action, projectContext.getProjectRepresentation(), author, NotificationType.ANNOTATION_DEPRECATED)
+				return initializeBuilder(action, projectContext.getProjectRepresentation(), authorId, NotificationType.ANNOTATION_DEPRECATED)
 						.setDescription(annotation.getMessage())
 						.setReferenceDescription(referenceDescription);
 			}
 		};
 
 		private static NotificationBuilder initializeBuilder(final ModelAction action, final ProjectRepresentation projectRepresentation,
-				final User author, final NotificationType type) {
+				final UUID authorId, final NotificationType type) {
 
-			return new NotificationBuilder(type, projectRepresentation, author).setReferenceId(action.getReferenceId());
+			return new NotificationBuilder(type, projectRepresentation, authorId).setReferenceId(action.getReferenceId());
 		}
 
 		private static Scope getScopeById(final ModelAction action, final ProjectContext projectContext) {
@@ -150,38 +147,23 @@ public class NotificationFactory {
 			return null;
 		}
 
-		protected abstract NotificationBuilder createNotificationBuilder(ModelAction action, ProjectContext projectContext, User author);
+		protected abstract NotificationBuilder createNotificationBuilder(ModelAction action, ProjectContext projectContext, UUID authorId);
 	}
 
-	private final PersistenceService persistenceService;
+	public Notification createNofification(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext) {
+		final ActionNotificationCreator creator = ActionNotificationCreator.getCreatorFor(action.getClass());
+		if (creator == null) return null;
 
-	public NotificationFactory(final PersistenceService persistenceService) {
-		this.persistenceService = persistenceService;
-	}
+		final List<UserRepresentation> projectUsers = projectContext.getUsers();
 
-	public Notification createNofification(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext)
-			throws PersistenceException {
-		try {
-			final ActionNotificationCreator creator = ActionNotificationCreator.getCreatorFor(action.getClass());
-			if (creator == null) return null;
+		final NotificationBuilder notificationBuilder = creator.createNotificationBuilder(action, projectContext, actionContext.getUserId());
 
-			final ProjectRepresentation projectRepresentation = projectContext.getProjectRepresentation();
-			final List<User> projectUsers = persistenceService.retrieveProjectUsers(projectRepresentation);
-			final User author = persistenceService.retrieveUserById(actionContext.getUserId());
+		if (notificationBuilder == null) return null;
 
-			final NotificationBuilder notificationBuilder = creator.createNotificationBuilder(action, projectContext, author);
-
-			if (notificationBuilder == null) return null;
-
-			for (final User user : projectUsers) {
-				notificationBuilder.addReceipient(user);
-			}
-
-			return notificationBuilder.getNotification();
+		for (final UserRepresentation user : projectUsers) {
+			notificationBuilder.addReceipient(user);
 		}
-		catch (final NoResultFoundException e) {
-			throw new UnableToPostProcessActionException("The author user '" + actionContext.getUserId() + "' could not be retrieved from the persistence.",
-					e);
-		}
+
+		return notificationBuilder.getNotification();
 	}
 }

@@ -1,19 +1,16 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
-import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.CommentsAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.DeprecateAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.LikeAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -27,7 +24,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,8 +49,8 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	@UiField
 	AnnotationTopicStyle style;
 
-	@UiField
-	Image author;
+	@UiField(provided = true)
+	UserWidget author;
 
 	@UiField
 	Label deprecatedLabel;
@@ -92,11 +88,11 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		this.annotation = annotation;
 
 		commentsPanel = new CommentsWidget(annotation.getId());
+		author = new UserWidget(annotation.getAuthor()).setShowActiveColor(false);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		deckPanel.showWidget(annotation.isDeprecated() ? 1 : 0);
 
-		updateAuthorImage();
 		updateMessageBody();
 	}
 
@@ -128,23 +124,6 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		richText.setHTML(this.annotation.getMessage());
 		richText.setStyleName(style.richTextArea());
 		messageBody.add(richText);
-	}
-
-	private void updateAuthorImage() {
-		final String email = this.annotation.getAuthor().getEmail();
-		this.author.setUrl(ClientServiceProvider.getInstance().getUserDataService().getAvatarUrl(email));
-
-		ClientServiceProvider.getInstance().getUserDataService().loadProfile(email, new LoadProfileCallback() {
-			@Override
-			public void onProfileLoaded(final PortableContactJsonObject profile) {
-				author.setTitle(profile.getPreferedUsername());
-			}
-
-			@Override
-			public void onProfileUnavailable(final Throwable cause) {
-				author.setTitle(email);
-			}
-		});
 	}
 
 	@Override
@@ -216,13 +195,9 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 	}
 
 	private String getDeprecationText() {
-		final String username = removeEmailDomain(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
+		// TODO final String username = removeEmailDomain(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
 		final String formattedDate = HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
-		return messages.deprecationDetails(username, formattedDate);
-	}
-
-	private String removeEmailDomain(final User user) {
-		return user.getEmail().replaceAll("@.*$", "");
+		return messages.deprecationDetails("user", formattedDate);
 	}
 
 	@Override

@@ -18,24 +18,13 @@ public class TeamInviteActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_1)
 	private String userId;
 
-	@Column(name = ActionTableColumns.STRING_2)
-	private String inviteeEmail;
-
 	public TeamInviteActionEntity() {}
-
-	public String getInviteeEmail() {
-		return inviteeEmail;
-	}
-
-	public void setInviteeEmail(final String inviteeEmail) {
-		this.inviteeEmail = inviteeEmail;
-	}
 
 	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

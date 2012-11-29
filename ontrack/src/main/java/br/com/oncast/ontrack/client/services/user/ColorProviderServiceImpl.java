@@ -19,7 +19,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserScopeSelectionMulticastRequest;
 import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
@@ -31,8 +31,8 @@ import com.google.web.bindery.event.shared.EventBus;
 public class ColorProviderServiceImpl implements ColorProviderService {
 
 	private static final double SCOPE_COLOR_ALPHA = 0.4;
-	private HashMap<User, Scope> userSelectionMap;
-	private HashMap<User, Color> userColorMap;
+	private HashMap<UserRepresentation, Scope> userSelectionMap;
+	private HashMap<UserRepresentation, Color> userColorMap;
 	private HashMap<Scope, Color> scopeColorMap;
 
 	private final ColorPicker colorPicker;
@@ -43,8 +43,8 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 			final ColorPicker colorPicker) {
 		this.colorPicker = colorPicker;
 		this.eventBus = eventBus;
-		userSelectionMap = new HashMap<User, Scope>();
-		userColorMap = new HashMap<User, Color>();
+		userSelectionMap = new HashMap<UserRepresentation, Scope>();
+		userColorMap = new HashMap<UserRepresentation, Color>();
 		scopeColorMap = new HashMap<Scope, Color>();
 
 		eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
@@ -77,7 +77,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 			public void onEvent(final UserSelectedScopeEvent event) {
 				try {
 					final ProjectContext context = contextProviderService.getCurrentProjectContext();
-					final User member = context.findUser(event.getUserId());
+					final UserRepresentation member = context.findUser(event.getUserId());
 
 					removePreviousSelection(member);
 
@@ -97,7 +97,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 			public void onEvent(final UserClosedProjectEvent event) {
 				try {
 					final ProjectContext context = contextProviderService.getCurrentProjectContext();
-					final User member = context.findUser(event.getUserId());
+					final UserRepresentation member = context.findUser(event.getUserId());
 					removePreviousSelection(member);
 				}
 				catch (final UserNotFoundException e) {
@@ -107,7 +107,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 		});
 	}
 
-	private void removePreviousSelection(final User member) {
+	private void removePreviousSelection(final UserRepresentation member) {
 		final Scope previousSelection = userSelectionMap.remove(member);
 		if (previousSelection != null) {
 			eventBus.fireEvent(new ScopeRemoveMemberSelectionEvent(member, previousSelection));
@@ -115,7 +115,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 	}
 
 	@Override
-	public synchronized Color getSelectionColorFor(final User user) {
+	public synchronized Color getSelectionColorFor(final UserRepresentation user) {
 		if (!userColorMap.containsKey(user)) userColorMap.put(user, colorPicker.pick());
 		return userColorMap.get(user);
 	}
@@ -125,9 +125,9 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 		final List<Selection> selections = new ArrayList<Selection>();
 		if (!userSelectionMap.containsValue(scope)) return selections;
 
-		for (final Entry<User, Scope> e : userSelectionMap.entrySet()) {
+		for (final Entry<UserRepresentation, Scope> e : userSelectionMap.entrySet()) {
 			if (e.getValue().equals(scope)) {
-				final User user = e.getKey();
+				final UserRepresentation user = e.getKey();
 				selections.add(new Selection(user, getSelectionColorFor(user)));
 			}
 		}

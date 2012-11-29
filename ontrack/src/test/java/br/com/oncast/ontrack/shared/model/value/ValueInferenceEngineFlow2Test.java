@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 public class ValueInferenceEngineFlow2Test {
 
@@ -51,7 +51,7 @@ public class ValueInferenceEngineFlow2Test {
 
 	private void shouldInferBottomUpFromModifiedScopeAndTopDownFromIt() {
 		original.getValue().setDeclared(30);
-		valueInferenceEngine.process(original, UserTestUtils.getAdmin(), new Date());
+		valueInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
@@ -59,14 +59,14 @@ public class ValueInferenceEngineFlow2Test {
 	private void shouldRedistributeInferenceBetweenSiblingsWhenParentValueDeclared() {
 		final Scope a2 = original.getChild(0).getChild(1);
 		a2.getValue().setDeclared(10);
-		valueInferenceEngine.process(a2.getParent(), UserTestUtils.getAdmin(), new Date());
+		valueInferenceEngine.process(a2.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}
 
 	private void shouldRedistribuiteValueWhenRootValueIsChanged() {
 		original.getValue().setDeclared(60);
-		valueInferenceEngine.process(original, UserTestUtils.getAdmin(), new Date());
+		valueInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 3), original);
 	}
@@ -74,7 +74,7 @@ public class ValueInferenceEngineFlow2Test {
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneChangesItsValue() {
 		final Scope a21 = original.getChild(0).getChild(1).getChild(0);
 		a21.getValue().setDeclared(7);
-		valueInferenceEngine.process(a21.getParent(), UserTestUtils.getAdmin(), new Date());
+		valueInferenceEngine.process(a21.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 4), original);
 

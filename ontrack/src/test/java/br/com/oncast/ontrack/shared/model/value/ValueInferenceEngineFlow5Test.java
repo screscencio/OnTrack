@@ -11,7 +11,7 @@ import org.junit.Test;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 public class ValueInferenceEngineFlow5Test {
 
@@ -37,14 +37,14 @@ public class ValueInferenceEngineFlow5Test {
 
 	private void shouldApplyInferenceBottomUpThroughAncestors() {
 		original.getChild(0).getChild(1).getValue().setDeclared(30);
-		valueInferenceEngine.process(original.getChild(0), UserTestUtils.getAdmin(), new Date());
+		valueInferenceEngine.process(original.getChild(0), UserRepresentationTestUtils.getAdmin(), new Date());
 
 		DeepEqualityTestUtils.assertObjectEquality(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
 
 	private void shouldRedistributeValueThroughSiblings() {
 		original.getChild(0).getValue().setDeclared(50);
-		valueInferenceEngine.process(original, UserTestUtils.getAdmin(), new Date());
+		valueInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		DeepEqualityTestUtils.assertObjectEquality(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}

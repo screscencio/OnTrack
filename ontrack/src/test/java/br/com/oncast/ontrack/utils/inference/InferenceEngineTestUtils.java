@@ -16,8 +16,8 @@ import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import com.google.common.base.Joiner;
 
@@ -79,11 +79,11 @@ public class InferenceEngineTestUtils {
 	}
 
 	public static Set<UUID> procressEffortInference(final Scope scope) {
-		return EFFORT_INFERENCE_ENGINE.process(scope, UserTestUtils.getAdmin(), new Date(0));
+		return EFFORT_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), new Date(0));
 	}
 
 	public static Set<UUID> processProgressInference(final Scope scope) {
-		return PROGRESS_INFERENCE_ENGINE.process(scope, UserTestUtils.getAdmin(), new Date(0));
+		return PROGRESS_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), new Date(0));
 	}
 
 	// Assertions

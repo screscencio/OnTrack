@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.tags.HasTags;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
@@ -40,11 +40,11 @@ public class Scope implements Serializable, HasTags {
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Scope() {}
 
-	public Scope(final String description, final User author, final Date timestamp) {
+	public Scope(final String description, final UserRepresentation author, final Date timestamp) {
 		this(description, new UUID(), author, timestamp);
 	}
 
-	public Scope(final String description, final UUID scopeId, final User author, final Date timestamp) {
+	public Scope(final String description, final UUID scopeId, final UserRepresentation author, final Date timestamp) {
 		this.id = scopeId;
 		this.description = description;
 		this.effort = new Effort();
@@ -54,6 +54,7 @@ public class Scope implements Serializable, HasTags {
 		childrenList = new ArrayList<Scope>();
 	}
 
+	@Override
 	public UUID getId() {
 		return id;
 	}

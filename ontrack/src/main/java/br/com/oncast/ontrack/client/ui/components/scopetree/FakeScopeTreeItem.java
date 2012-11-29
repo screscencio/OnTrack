@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.scopetree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -76,9 +76,9 @@ public class FakeScopeTreeItem extends ScopeTreeItem implements IsTreeItem {
 	public void showOpenImpedimentIcon(final boolean hasOpenImpediments) {}
 
 	@Override
-	public void addSelectedMember(final User member, final Color selectionColor) {}
+	public void addSelectedMember(final UserRepresentation member, final Color selectionColor) {}
 
 	@Override
-	public void removeSelectedMember(final User member) {}
+	public void removeSelectedMember(final UserRepresentation member) {}
 
 }

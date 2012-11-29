@@ -8,21 +8,21 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 public class ModelStateManagerTest {
 
 	private String initialStateValue;
 	private ModelStateManager<String> manager;
 	private Date initialTimestamp;
-	private User initialAuthor;
+	private UserRepresentation initialAuthor;
 
 	@Before
 	public void setup() throws Exception {
 		initialStateValue = "initialState";
 		initialTimestamp = new Date(1000);
-		initialAuthor = UserTestUtils.createUser();
+		initialAuthor = UserRepresentationTestUtils.createUser();
 		manager = new ModelStateManager<String>(initialStateValue, initialAuthor, initialTimestamp);
 	}
 
@@ -51,7 +51,7 @@ public class ModelStateManagerTest {
 	@Test
 	public void theCurrentStateIsTheNewStateWhenNewStateIsSet() throws Exception {
 		final String newState = "newState";
-		final User newAuthor = UserTestUtils.createUser();
+		final UserRepresentation newAuthor = UserRepresentationTestUtils.createUser();
 		final Date newTimestamp = new Date(3000);
 		manager.setState(newState, newAuthor, newTimestamp);
 
@@ -63,7 +63,7 @@ public class ModelStateManagerTest {
 
 	@Test
 	public void currentStateOnlyChangesWhenNewStateIsSet() throws Exception {
-		final ModelState<String> newModelState = ModelState.create("newState", UserTestUtils.createUser(), new Date(3000));
+		final ModelState<String> newModelState = ModelState.create("newState", UserRepresentationTestUtils.createUser(), new Date(3000));
 		manager.setState(newModelState);
 
 		for (int i = 0; i < 13; i++) {
@@ -140,7 +140,7 @@ public class ModelStateManagerTest {
 	@Test
 	public void theLastOccurenceOfAStateIsTheCurrentStateIfTheGivenStateIsTheLastOne() throws Exception {
 		final String stateValue = "state";
-		final User author = UserTestUtils.createUser();
+		final UserRepresentation author = UserRepresentationTestUtils.createUser();
 		final Date timestamp = new Date(1231231);
 		manager.setState(stateValue, author, timestamp);
 

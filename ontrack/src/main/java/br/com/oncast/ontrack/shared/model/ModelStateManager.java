@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class ModelStateManager<T> implements Serializable {
 
@@ -15,7 +15,7 @@ public class ModelStateManager<T> implements Serializable {
 
 	protected ModelStateManager() {}
 
-	public ModelStateManager(final T initialStateValue, final User author, final Date initialStateTimestamp) {
+	public ModelStateManager(final T initialStateValue, final UserRepresentation author, final Date initialStateTimestamp) {
 		this(ModelState.create(initialStateValue, author, initialStateTimestamp));
 	}
 
@@ -32,7 +32,7 @@ public class ModelStateManager<T> implements Serializable {
 		return getCurrentState().getValue();
 	}
 
-	public void setState(final T newState, final User newAuthor, final Date newTimestamp) {
+	public void setState(final T newState, final UserRepresentation newAuthor, final Date newTimestamp) {
 		setState(ModelState.create(newState, newAuthor, newTimestamp));
 	}
 

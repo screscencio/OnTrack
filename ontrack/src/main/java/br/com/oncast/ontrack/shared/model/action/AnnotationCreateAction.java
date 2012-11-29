@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(AnnotationCreateActionEntity.class)
@@ -67,7 +67,7 @@ public class AnnotationCreateAction implements AnnotationAction {
 	}
 
 	private Annotation getAnnotation(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final User author = ActionHelper.findUser(actionContext.getUserId(), context);
+		final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context);
 		final Annotation annotation = new Annotation(annotationId, author, actionContext.getTimestamp(), message, AnnotationType.SIMPLE);
 		if (attachmentId != null) {
 			final FileRepresentation file = ActionHelper.findFileRepresentation(attachmentId, context);

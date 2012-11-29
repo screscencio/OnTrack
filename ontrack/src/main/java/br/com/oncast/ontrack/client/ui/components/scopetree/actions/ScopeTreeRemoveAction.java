@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 
 class ScopeTreeRemoveAction implements ScopeTreeAction {
@@ -26,7 +26,7 @@ class ScopeTreeRemoveAction implements ScopeTreeAction {
 	@Override
 	public void execute(final ProjectContext context, final ActionContext actionContext, final boolean isUserInteraction) throws ModelBeanNotFoundException {
 		try {
-			final User author = ActionHelper.findUser(actionContext.getUserId(), context);
+			final UserRepresentation author = ActionHelper.findUser(actionContext.getUserId(), context);
 			final ScopeTreeItem treeItem = tree.findScopeTreeItem(new Scope("", action.getReferenceId(), author, actionContext.getTimestamp()));
 
 			final ScopeTreeItem parentItem = treeItem.getParentItem();

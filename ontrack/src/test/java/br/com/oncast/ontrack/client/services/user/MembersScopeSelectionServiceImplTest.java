@@ -38,13 +38,13 @@ import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserScopeSelectionMulticastRequest;
 import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
 import br.com.oncast.ontrack.shared.services.user.UserSelectedScopeEvent;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
@@ -66,7 +66,7 @@ public class MembersScopeSelectionServiceImplTest {
 	@Mock
 	private UsersStatusService usersStatusServiceImpl;
 
-	private User user1;
+	private UserRepresentation user1;
 
 	private Scope scope1;
 
@@ -184,7 +184,7 @@ public class MembersScopeSelectionServiceImplTest {
 		assertEventCalled(ScopeAddMemberSelectionEvent.class, user1, null);
 
 		for (int i = 0; i < 10; i++) {
-			final User differentUser = createUser();
+			final UserRepresentation differentUser = createUser();
 			userSelectedScopeEventHandler.onEvent(new UserSelectedScopeEvent(differentUser.getId(), createScope().getId()));
 			assertEventCall(ScopeAddMemberSelectionEvent.class, differentUser, null, atLeastOnce());
 		}
@@ -206,16 +206,16 @@ public class MembersScopeSelectionServiceImplTest {
 		}), any(DispatchCallback.class));
 	}
 
-	private <T extends Event<?>> T assertEventCalled(final Class<T> clazz, final User member, final Scope scope) {
+	private <T extends Event<?>> T assertEventCalled(final Class<T> clazz, final UserRepresentation member, final Scope scope) {
 		return assertEventCall(clazz, member, scope, times(1));
 	}
 
-	private <T extends Event<?>> void assertEventNotCalled(final Class<T> clazz, final User member, final Scope scope) {
+	private <T extends Event<?>> void assertEventNotCalled(final Class<T> clazz, final UserRepresentation member, final Scope scope) {
 		assertEventCall(clazz, member, scope, never());
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends Event<?>> T assertEventCall(final Class<T> clazz, final User member, final Scope scope, final VerificationMode mode) {
+	private <T extends Event<?>> T assertEventCall(final Class<T> clazz, final UserRepresentation member, final Scope scope, final VerificationMode mode) {
 		final List<T> captured = new ArrayList<T>();
 		verify(eventBus, mode).fireEvent(argThat(new BaseMatcher<T>() {
 			@Override
@@ -236,8 +236,8 @@ public class MembersScopeSelectionServiceImplTest {
 		return captured.isEmpty() ? null : captured.get(captured.size() - 1);
 	}
 
-	private User createUser() throws UserNotFoundException {
-		final User user = UserTestUtils.createUser();
+	private UserRepresentation createUser() throws UserNotFoundException {
+		final UserRepresentation user = UserRepresentationTestUtils.createUser();
 		when(currentContext.findUser(user.getId())).thenReturn(user);
 		return user;
 	}

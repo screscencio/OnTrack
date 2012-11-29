@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.Icon;
 import br.com.oncast.ontrack.server.services.exportImport.freemind.abstractions.MindNode;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 // TODO Review by Lobo - This code has been created by Rodrigo Machado and Jaime and has not yet been reviewed.
@@ -34,8 +34,8 @@ public class FreeMindImporter {
 		return builder.getScope();
 	}
 
-	private static User getUser() {
-		return new User(new UUID(), "robot@ontrack.com");
+	private static UserRepresentation getUser() {
+		return new UserRepresentation(new UUID());
 	}
 
 	private static void pullSync(final ScopeBuilder scope, final MindNode node) {

@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 
@@ -48,7 +49,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public List<ProjectRepresentation> listAuthorizedProjects(final User user) throws PersistenceException, NoResultFoundException {
+	public List<ProjectRepresentation> listAuthorizedProjects(final UserRepresentation user) throws PersistenceException, NoResultFoundException {
 		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
 		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
 
@@ -60,7 +61,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	@Override
 	public List<ProjectRepresentation> listAuthorizedProjects(final UUID userId) throws PersistenceException, NoResultFoundException {
-		return listAuthorizedProjects(persistenceService.retrieveUserById(userId));
+		return listAuthorizedProjects(new UserRepresentation(userId));
 	}
 
 	@Override
@@ -69,15 +70,16 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public User authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage) throws UnableToAuthorizeUserException {
-		User user = null;
+	public UserRepresentation authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
+			throws UnableToAuthorizeUserException {
+		UserRepresentation user = null;
 
 		try {
 			User authenticatedUser = null;
 			String generatedPassword = null;
 
 			try {
-				user = authenticationManager.findUserByEmail(userEmail);
+				user = new UserRepresentation(authenticationManager.findUserByEmail(userEmail).getId());
 
 				if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) {
 					logAndThrowUnableToAuthorizeUserException("The user '" + userEmail + "' is already authorized for the project '" + projectId + "'");
@@ -85,12 +87,18 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			}
 			catch (final UserNotFoundException e) {
 				generatedPassword = PasswordHash.generatePassword();
-				user = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
+				user = new UserRepresentation(authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0).getId());
 				LOGGER.debug("Created New User '" + userEmail + "'.");
 
 				if (authenticationManager.isUserAuthenticated()) {
 					authenticatedUser = authenticationManager.getAuthenticatedUser();
-					validateAndUpdateUserUserInvitaionQuota(userEmail, authenticatedUser);
+					try {
+						validateAndUpdateUserUserInvitaionQuota(userEmail, new UserRepresentation(authenticatedUser.getId()));
+					}
+					catch (final NoResultFoundException e1) {
+						logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
+								+ "' for the project: User not found.", e);
+					}
 				}
 			}
 
@@ -109,16 +117,19 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	}
 
-	void validateAndUpdateUserUserInvitaionQuota(final String userToBeAuthorizedEmail, final User requestingUser)
-			throws UnableToAuthorizeUserException, PersistenceException {
-		if (!requestingUser.getEmail().equals(userToBeAuthorizedEmail)) {
+	void validateAndUpdateUserUserInvitaionQuota(final String userToBeAuthorizedEmail, final UserRepresentation requestingUser)
+			throws UnableToAuthorizeUserException, PersistenceException, NoResultFoundException {
 
-			final int invitationQuota = requestingUser.getProjectInvitationQuota();
+		final User user = persistenceService.retrieveUserById(requestingUser.getId());
+
+		if (!user.getEmail().equals(userToBeAuthorizedEmail)) {
+
+			final int invitationQuota = user.getProjectInvitationQuota();
 			if (invitationQuota <= 0) logAndThrowUnableToAuthorizeUserException("The current user's invitation quota has exceeded.");
 
-			requestingUser.setProjectInvitationQuota(invitationQuota - 1);
-			persistenceService.persistOrUpdateUser(requestingUser);
-			multicastService.multicastToUser(new UserInformationChangeEvent(requestingUser), requestingUser);
+			user.setProjectInvitationQuota(invitationQuota - 1);
+			persistenceService.persistOrUpdateUser(user);
+			multicastService.multicastToUser(new UserInformationChangeEvent(user), user);
 		}
 	}
 
@@ -134,13 +145,20 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public void validateAndUpdateUserProjectCreationQuota(final User requestingUser) throws PersistenceException, AuthorizationException {
-		final int projectCreationQuota = requestingUser.getProjectCreationQuota();
+	public void validateAndUpdateUserProjectCreationQuota(final UserRepresentation requestingUser) throws PersistenceException, AuthorizationException {
+		User user = null;
+		try {
+			user = persistenceService.retrieveUserById(requestingUser.getId());
+		}
+		catch (final NoResultFoundException e) {
+			throw new AuthorizationException("It was not possible to update user project quota. User not found.");
+		}
+		final int projectCreationQuota = user.getProjectCreationQuota();
 		if (projectCreationQuota <= 0) throw new AuthorizationException("The current user's project creation quota has exceeded.");
 
-		requestingUser.setProjectCreationQuota(projectCreationQuota - 1);
-		persistenceService.persistOrUpdateUser(requestingUser);
-		multicastService.multicastToUser(new UserInformationChangeEvent(requestingUser), requestingUser);
+		user.setProjectCreationQuota(projectCreationQuota - 1);
+		persistenceService.persistOrUpdateUser(user);
+		multicastService.multicastToUser(new UserInformationChangeEvent(user), user);
 	}
 
 	private void logAndThrowUnableToAuthorizeUserException(final String message) throws UnableToAuthorizeUserException {

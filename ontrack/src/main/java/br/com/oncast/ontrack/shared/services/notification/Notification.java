@@ -38,9 +38,9 @@ public class Notification implements Serializable {
 	@IgnoredByDeepEquality
 	private List<NotificationRecipient> recipients = null;
 
-	@Attribute
+	@Element
 	@ConversionAlias("author")
-	private String authorMail;
+	private UUID authorId;
 
 	@Element
 	@ConversionAlias("project")
@@ -72,10 +72,10 @@ public class Notification implements Serializable {
 		return id;
 	}
 
-	public List<String> getRecipientsAsUserMails() {
-		final List<String> users = new ArrayList<String>();
+	public List<UUID> getRecipientsAsUserIds() {
+		final List<UUID> users = new ArrayList<UUID>();
 		for (final NotificationRecipient recipient : recipients) {
-			users.add(recipient.getUserMail());
+			users.add(recipient.getUserId());
 		}
 		return users;
 	}
@@ -125,14 +125,6 @@ public class Notification implements Serializable {
 		this.type = type;
 	}
 
-	public String getAuthorMail() {
-		return authorMail;
-	}
-
-	protected void setAuthor(final User author) {
-		this.authorMail = author.getEmail();
-	}
-
 	public UUID getProjectReference() {
 		return projectId;
 	}
@@ -159,7 +151,7 @@ public class Notification implements Serializable {
 
 	public NotificationRecipient getRecipient(final User user) {
 		for (final NotificationRecipient notificationRecipient : getRecipients()) {
-			if (notificationRecipient.getUserMail().equals(user.getEmail())) return notificationRecipient;
+			if (notificationRecipient.getUserId().equals(user.getId())) return notificationRecipient;
 		}
 		return null;
 	}
@@ -167,6 +159,14 @@ public class Notification implements Serializable {
 	@Override
 	public String toString() {
 		return "Notification(" + description + ")";
+	}
+
+	public UUID getAuthorId() {
+		return authorId;
+	}
+
+	public void setAuthorId(final UUID authorId) {
+		this.authorId = authorId;
 	}
 
 }

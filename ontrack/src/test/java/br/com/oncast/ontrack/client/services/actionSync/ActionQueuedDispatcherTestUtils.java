@@ -15,10 +15,12 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
+import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
 
 public class ActionQueuedDispatcherTestUtils {
 
@@ -51,6 +53,9 @@ public class ActionQueuedDispatcherTestUtils {
 			public void multicastToAllUsersButCurrentUserClientInSpecificProject(final ServerPushEvent event, final UUID projectId) {
 				serverPushClientServiceMock.processIncommingEvent(event);
 			}
+
+			@Override
+			public void multicastToAllProjectsInUserAuthorizationList(final UserDataUpdateEvent event, final List<ProjectRepresentation> projectsList) {}
 		};
 	}
 

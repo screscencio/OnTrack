@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -60,7 +61,7 @@ public class LikeAnnotationMenuItem extends Composite implements AnnotationMenuI
 	}
 
 	private boolean hasVoted() {
-		return annotation.hasVoted(ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser());
+		return annotation.hasVoted(new UserRepresentation(ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser().getId()));
 	}
 
 	@UiHandler("icon")

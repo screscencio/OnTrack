@@ -1,7 +1,7 @@
 package br.com.oncast.ontrack.client.ui.events;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -9,9 +9,9 @@ public class ScopeRemoveMemberSelectionEvent extends GwtEvent<ScopeRemoveMemberS
 
 	public static Type<ScopeRemoveMemberSelectionEventHandler> TYPE;
 	private final Scope scope;
-	private final User member;
+	private final UserRepresentation member;
 
-	public ScopeRemoveMemberSelectionEvent(final User member, final Scope scope) {
+	public ScopeRemoveMemberSelectionEvent(final UserRepresentation member, final Scope scope) {
 		this.member = member;
 		this.scope = scope;
 	}
@@ -36,7 +36,7 @@ public class ScopeRemoveMemberSelectionEvent extends GwtEvent<ScopeRemoveMemberS
 	}
 
 	@Override
-	public User getMember() {
+	public UserRepresentation getMember() {
 		return member;
 	}
 

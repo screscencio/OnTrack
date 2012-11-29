@@ -17,20 +17,20 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 
-	private User voter;
+	private UserRepresentation voter;
 	private UUID subjectId;
 	private Annotation annotation;
 
 	@Before
 	public void setUp() throws Exception {
-		voter = UserTestUtils.createUser();
+		voter = UserRepresentationTestUtils.createUser();
 		annotation = AnnotationTestUtils.create();
 		subjectId = new UUID();
 
@@ -58,7 +58,7 @@ public class AnnotationVoteRemoveActionTest extends ModelActionTest {
 
 	@Test(expected = UnableToCompleteActionException.class)
 	public void shouldNotBeAbleToRemoveWhenTheRequestingUserWasntTheOneWhoVoted() throws Exception {
-		annotation.vote(UserTestUtils.createUser());
+		annotation.vote(UserRepresentationTestUtils.createUser());
 		executeAction();
 	}
 

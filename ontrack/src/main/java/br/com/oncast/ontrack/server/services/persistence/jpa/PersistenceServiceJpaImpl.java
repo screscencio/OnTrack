@@ -30,6 +30,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
@@ -186,11 +187,19 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User> retrieveUsersByEmails(final List<String> recipientsAsUserMails) throws PersistenceException {
+	public List<User> retrieveUsersByIds(final List<UUID> userIds) throws PersistenceException {
+		List<String> userList = null;
+		try {
+			userList = (List<String>) TYPE_CONVERTER.convert(userIds);
+		}
+		catch (final TypeConverterException e1) {
+			e1.printStackTrace();
+		}
+
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("SELECT user FROM " + UserEntity.class.getSimpleName() + " AS user WHERE user.email IN (:emails)");
-			query.setParameter("emails", recipientsAsUserMails);
+			final Query query = em.createQuery("SELECT user FROM " + UserEntity.class.getSimpleName() + " AS user WHERE user.id IN (:ids)");
+			query.setParameter("ids", userList);
 
 			return (List<User>) TYPE_CONVERTER.convert(query.getResultList());
 		}
@@ -578,20 +587,20 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Notification> retrieveLatestNotificationsForUser(final User user, final int maxNotifications) throws NoResultFoundException,
+	public List<Notification> retrieveLatestNotificationsForUser(final UserRepresentation user, final int maxNotifications) throws NoResultFoundException,
 			PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query queryNotification = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName()
-					+ " n, IN (n.recipients) recipient WHERE recipient.user = :user ORDER BY n.timestamp DESC");
-			queryNotification.setParameter("user", user.getEmail());
+					+ " n, IN (n.recipients) recipient WHERE recipient.userId = :user ORDER BY n.timestamp DESC");
+			queryNotification.setParameter("user", user.getId().toString());
 			queryNotification.setMaxResults(maxNotifications);
 			final List<NotificationEntity> resultList = queryNotification.getResultList();
 
 			return (List<Notification>) TYPE_CONVERTER.convert(resultList);
 		}
 		catch (final NoResultException e) {
-			throw new NoResultFoundException("No notification found for user: " + user.getEmail(), e);
+			throw new NoResultFoundException("No notification found for user: " + user.getId(), e);
 		}
 		catch (final TypeConverterException e) {
 			throw new PersistenceException("It was not possible to convert the NotificationEntity to it's model equivalent.", e);

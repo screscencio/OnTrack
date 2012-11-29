@@ -20,6 +20,12 @@ public class UserEntity {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
+	@Column(name = "name", unique = false, nullable = true)
+	private String name;
+
+	@Column(name = "userPictureId", unique = true, nullable = true)
+	private String userPictureId;
+
 	@Column(name = "projectInvitationQuota", nullable = false)
 	private int projectInvitationQuota;
 
@@ -56,6 +62,22 @@ public class UserEntity {
 
 	public void setProjectCreationQuota(final int projectCreationQuota) {
 		this.projectCreationQuota = projectCreationQuota;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	public String getUserPictureId() {
+		return userPictureId;
+	}
+
+	public void setUserPictureId(final String userPictureId) {
+		this.userPictureId = userPictureId;
 	}
 
 }

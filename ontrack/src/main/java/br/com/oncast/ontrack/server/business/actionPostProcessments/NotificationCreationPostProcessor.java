@@ -6,7 +6,6 @@ import br.com.oncast.ontrack.server.business.notification.NotificationFactory;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.notification.NotificationServerService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
-import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificationException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
@@ -23,7 +22,7 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 
 	public NotificationCreationPostProcessor(final NotificationServerService notificationServerService, final PersistenceService persistenceService) {
 		this.notificationServerService = notificationServerService;
-		this.notificationFactory = new NotificationFactory(persistenceService);
+		this.notificationFactory = new NotificationFactory();
 		active = true;
 	}
 
@@ -43,9 +42,6 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 		}
 		catch (final UnableToCreateNotificationException e) {
 			throw new UnableToPostProcessActionException("It was not possible to register new notification.", e);
-		}
-		catch (final PersistenceException e) {
-			throw new UnableToPostProcessActionException("It was not possible to create new notification: Unable to retrieve project user list.", e);
 		}
 	}
 

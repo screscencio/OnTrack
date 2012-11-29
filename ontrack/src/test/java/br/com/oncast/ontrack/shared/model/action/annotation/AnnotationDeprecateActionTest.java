@@ -21,10 +21,10 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class AnnotationDeprecateActionTest extends ModelActionTest {
 
@@ -76,7 +76,7 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetDeprecationAuthorOnAnnotation() throws Exception {
-		final User user = UserTestUtils.createUser();
+		final UserRepresentation user = UserRepresentationTestUtils.createUser();
 		when(actionContext.getUserId()).thenReturn(user.getId());
 		when(context.findUser(user.getId())).thenReturn(user);
 		executeAction();
@@ -86,7 +86,7 @@ public class AnnotationDeprecateActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldNotOverridePreviousDeprecationRemovalTimestamp() throws Exception {
-		final User user = UserTestUtils.createUser();
+		final UserRepresentation user = UserRepresentationTestUtils.createUser();
 		when(actionContext.getUserId()).thenReturn(user.getId());
 		when(context.findUser(user.getId())).thenReturn(user);
 

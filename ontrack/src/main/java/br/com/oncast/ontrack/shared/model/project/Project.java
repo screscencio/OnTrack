@@ -17,7 +17,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.HasTags;
 import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.tags.TagType;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -34,7 +34,7 @@ public class Project implements Serializable {
 	private Scope projectScope;
 	private Release projectRelease;
 	private Map<Release, Kanban> kanbanMap;
-	private Set<User> users;
+	private Set<UserRepresentation> users;
 	private Map<UUID, List<Annotation>> annotationsMap;
 	private Set<FileRepresentation> fileRepresentations;
 	private ListMultimap<UUID, Checklist> checklistMap;
@@ -51,7 +51,7 @@ public class Project implements Serializable {
 		this.projectRelease = projectRelease;
 		annotationsMap = new HashMap<UUID, List<Annotation>>();
 		checklistMap = ArrayListMultimap.create();
-		users = new HashSet<User>();
+		users = new HashSet<UserRepresentation>();
 		fileRepresentations = new HashSet<FileRepresentation>();
 		tagsMap = new HashMap<HasTags, SetMultimap<TagType, Tag>>();
 	}
@@ -80,8 +80,8 @@ public class Project implements Serializable {
 		kanbanMap.put(release, kanban);
 	}
 
-	public User getUser(final UUID userId) {
-		for (final User user : users) {
+	public UserRepresentation getUser(final UUID userId) {
+		for (final UserRepresentation user : users) {
 			if (user.getId().equals(userId)) return user;
 		}
 		return null;
@@ -113,11 +113,11 @@ public class Project implements Serializable {
 		return new ArrayList<Annotation>(annotationsMap.get(subjectId));
 	}
 
-	public void setUserList(final Set<User> userList) {
+	public void setUserList(final Set<UserRepresentation> userList) {
 		users = userList;
 	}
 
-	public void addUser(final User user) {
+	public void addUser(final UserRepresentation user) {
 		users.add(user);
 	}
 
@@ -172,12 +172,12 @@ public class Project implements Serializable {
 		return true;
 	}
 
-	public void removeUser(final User user) {
+	public void removeUser(final UserRepresentation user) {
 		users.remove(user);
 	}
 
-	public List<User> getUsers() {
-		return new ArrayList<User>(users);
+	public List<UserRepresentation> getUsers() {
+		return new ArrayList<UserRepresentation>(users);
 	}
 
 	public void addTag(final Tag tag) {

@@ -1,0 +1,35 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style type="br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserWidgetStyle">
+	
+		.author {
+			vertical-align: top;
+			
+			width: 40px;
+			height: 40px;
+			margin-right: 5px;
+		}
+		
+		.author:hover {
+			cursor: pointer;
+		}
+		.online {
+			opacity: 1;
+		}
+		.offline {
+			opacity: 0.4;
+		}
+		
+		.showActiveColor {
+			border-left: 4px solid #888;
+		}
+		
+	</ui:style>
+	
+	<g:FocusPanel ui:field="container">
+		<g:Image ui:field="userImage" styleName="{style.author}" />
+	</g:FocusPanel>
+	
+</ui:UiBinder> 

@@ -215,7 +215,8 @@ public class ClientServiceProvider {
 	}
 
 	public UserDataService getUserDataService() {
-		if (userDataService == null) userDataService = new UserDataServiceImpl();
+		if (userDataService == null) userDataService = new UserDataServiceImpl(getRequestDispatchService(), getContextProviderService(),
+				getServerPushClientService());
 		return userDataService;
 	}
 

@@ -21,7 +21,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.inference.InferenceOverScopeEngine;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
 
@@ -57,7 +57,7 @@ public class ScopeActionExecuter implements ModelActionExecuter {
 		return new ActionExecutionContext(reverseAction, inferenceInfluencedScopeSet);
 	}
 
-	protected static Set<UUID> executeInferenceEngines(final ScopeAction action, final Scope scope, final User author, final Date timestamp) {
+	protected static Set<UUID> executeInferenceEngines(final ScopeAction action, final Scope scope, final UserRepresentation author, final Date timestamp) {
 		final Set<UUID> inferenceInfluencedScopeSet = new HashSet<UUID>();
 		for (final InferenceOverScopeEngine inferenceEngine : inferenceEngines)
 			if (inferenceEngine.shouldProcess(action)) inferenceInfluencedScopeSet.addAll(inferenceEngine.process(scope, author, timestamp));

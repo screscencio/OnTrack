@@ -8,7 +8,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.shared.model.ModelState;
 import br.com.oncast.ontrack.shared.model.ModelStateManager;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class Annotation implements Serializable {
@@ -21,7 +21,7 @@ public class Annotation implements Serializable {
 
 	private FileRepresentation attachmentFile;
 
-	private Set<User> voters;
+	private Set<UserRepresentation> voters;
 
 	private ModelStateManager<AnnotationType> stateManager;
 
@@ -29,12 +29,12 @@ public class Annotation implements Serializable {
 
 	public Annotation() {}
 
-	public Annotation(final UUID id, final User author, final Date date, final String message, final AnnotationType type) {
+	public Annotation(final UUID id, final UserRepresentation author, final Date date, final String message, final AnnotationType type) {
 		this.id = id;
 		this.message = message;
 		this.stateManager = new ModelStateManager<AnnotationType>(type, author, date);
 		this.deprecationManager = new ModelStateManager<DeprecationState>(DeprecationState.VALID, author, date);
-		voters = new HashSet<User>();
+		voters = new HashSet<UserRepresentation>();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class Annotation implements Serializable {
 		return true;
 	}
 
-	public User getAuthor() {
+	public UserRepresentation getAuthor() {
 		return stateManager.getInitialState().getAuthor();
 	}
 
@@ -78,15 +78,15 @@ public class Annotation implements Serializable {
 		return voters.size();
 	}
 
-	public void vote(final User voter) {
+	public void vote(final UserRepresentation voter) {
 		voters.add(voter);
 	}
 
-	public void removeVote(final User user) {
+	public void removeVote(final UserRepresentation user) {
 		voters.remove(user);
 	}
 
-	public boolean hasVoted(final User user) {
+	public boolean hasVoted(final UserRepresentation user) {
 		return voters.contains(user);
 	}
 
@@ -107,7 +107,7 @@ public class Annotation implements Serializable {
 		return lastOccurenceOf == null ? null : lastOccurenceOf.getTimestamp();
 	}
 
-	public User getDeprecationAuthor(final DeprecationState state) {
+	public UserRepresentation getDeprecationAuthor(final DeprecationState state) {
 		final ModelState<DeprecationState> lastOccurenceOf = deprecationManager.getLastOccurenceOf(state);
 		return lastOccurenceOf == null ? null : deprecationManager.getLastOccurenceOf(state).getAuthor();
 	}
@@ -117,7 +117,7 @@ public class Annotation implements Serializable {
 		return lastOccurenceOf == null ? null : lastOccurenceOf.getTimestamp();
 	}
 
-	public User getAuthorForState(final AnnotationType state) {
+	public UserRepresentation getAuthorForState(final AnnotationType state) {
 		final ModelState<AnnotationType> lastOccurenceOf = stateManager.getLastOccurenceOf(state);
 		return lastOccurenceOf == null ? null : stateManager.getLastOccurenceOf(state).getAuthor();
 	}
@@ -126,11 +126,11 @@ public class Annotation implements Serializable {
 		return stateManager.getCurrentStateValue();
 	}
 
-	public void setType(final AnnotationType newState, final User author, final Date timestamp) {
+	public void setType(final AnnotationType newState, final UserRepresentation author, final Date timestamp) {
 		stateManager.setState(newState, author, timestamp);
 	}
 
-	public void setDeprecation(final DeprecationState newState, final User author, final Date timestamp) {
+	public void setDeprecation(final DeprecationState newState, final UserRepresentation author, final Date timestamp) {
 		deprecationManager.setState(newState, author, timestamp);
 	}
 

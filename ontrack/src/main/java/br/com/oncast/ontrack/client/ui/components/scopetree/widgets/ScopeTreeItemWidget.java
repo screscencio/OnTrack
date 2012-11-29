@@ -37,6 +37,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
@@ -547,7 +548,7 @@ public class ScopeTreeItemWidget extends Composite {
 		});
 	}
 
-	public void addSelectedMember(final User member, final Color selectionColor) {
+	public void addSelectedMember(final UserRepresentation member, final Color selectionColor) {
 		selectionsList.add(new Selection(member, selectionColor));
 
 		updateSelection();
@@ -566,7 +567,7 @@ public class ScopeTreeItemWidget extends Composite {
 		});
 	}
 
-	public void removeSelectedMember(final User member) {
+	public void removeSelectedMember(final UserRepresentation member) {
 		selectionsList.remove(new Selection(member));
 		updateSelection();
 	}
@@ -578,7 +579,8 @@ public class ScopeTreeItemWidget extends Composite {
 		if (!selectionsList.isEmpty()) {
 			selectionColor = selectionsList.get(0).getColor();
 			for (final Selection s : selectionsList) {
-				final String email = s.getUser().getEmail();
+				final User user = ClientServiceProvider.getInstance().getUserDataService().retrieveRealUser(s.getUser());
+				final String email = user.getEmail();
 				if (!membersText.contains(email)) membersText += email + ", ";
 			}
 			membersText = membersText.substring(0, membersText.length() - ", ".length());

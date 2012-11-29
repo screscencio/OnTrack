@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class ProjectTestUtils {
@@ -26,7 +27,8 @@ public class ProjectTestUtils {
 		return createProject(getDefaultRepresentation(), scope, release);
 	}
 
-	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release, final Set<User> userList) {
+	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release,
+			final Set<UserRepresentation> userList) {
 		final Project project = new Project(projectRepresentation, scope, release);
 		project.setUserList(userList);
 		return project;
@@ -108,17 +110,17 @@ public class ProjectTestUtils {
 		return createProject(getDefaultRepresentation(), scope, projectRelease);
 	}
 
-	public static ProjectContext createProjectContext(final Scope scope, final Release release, final Set<User> userList) {
+	public static ProjectContext createProjectContext(final Scope scope, final Release release, final Set<UserRepresentation> userList) {
 		return new ProjectContext(createProject(scope, release, userList));
 	}
 
-	private static Project createProject(final Scope scope, final Release release, final Set<User> userList) {
+	private static Project createProject(final Scope scope, final Release release, final Set<UserRepresentation> userList) {
 		return createProject(getDefaultRepresentation(), scope, release, userList);
 	}
 
 	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release) {
-		final HashSet<User> userList = new HashSet<User>();
-		userList.add(UserTestUtils.getAdmin());
+		final HashSet<UserRepresentation> userList = new HashSet<UserRepresentation>();
+		userList.add(UserRepresentationTestUtils.getAdmin());
 		return createProject(projectRepresentation, scope, release, userList);
 	}
 }

@@ -74,6 +74,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
@@ -81,6 +82,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequ
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
 import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.mocks.requests.ModelActionSyncTestUtils;
 import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
@@ -144,10 +146,10 @@ public class BusinessLogicTest {
 		authenticateAndAuthorizeUser(authenticatedUser, PROJECT_ID);
 		configureToRetrieveSnapshot(PROJECT_ID);
 
-		when(authorizationManager.authorize(any(UUID.class), anyString(), anyBoolean())).thenAnswer(new Answer<User>() {
+		when(authorizationManager.authorize(any(UUID.class), anyString(), anyBoolean())).thenAnswer(new Answer<UserRepresentation>() {
 			@Override
-			public User answer(final InvocationOnMock invocation) throws Throwable {
-				return UserTestUtils.createUser((String) invocation.getArguments()[1]);
+			public UserRepresentation answer(final InvocationOnMock invocation) throws Throwable {
+				return UserRepresentationTestUtils.createUser((String) invocation.getArguments()[1]);
 			}
 		});
 	}
@@ -163,7 +165,7 @@ public class BusinessLogicTest {
 		when(persistence.retrieveUserById(user.getId())).thenReturn(user);
 		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
 
-		project.addUser(user);
+		project.addUser(new UserRepresentation(user.getId()));
 		when(actionContext.getUserId()).thenReturn(user.getId());
 	}
 
@@ -262,11 +264,11 @@ public class BusinessLogicTest {
 
 		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
-		context.addUser(admin);
+		context.addUser(new UserRepresentation(admin.getId()));
 		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(admin));
+		actionList.add(new TeamInviteAction(new UserRepresentation(admin.getId())));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -282,11 +284,11 @@ public class BusinessLogicTest {
 
 		final ModelAction action1 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
-		context.addUser(admin);
+		context.addUser(new UserRepresentation(admin.getId()));
 		action1.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(admin));
+		actionList.add(new TeamInviteAction(new UserRepresentation(admin.getId())));
 		actionList.add(action1);
 
 		final ModelAction action2 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "small sister");
@@ -349,11 +351,11 @@ public class BusinessLogicTest {
 
 		final ScopeInsertChildAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
-		context.addUser(admin);
+		context.addUser(new UserRepresentation(admin.getId()));
 		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(admin));
+		actionList.add(new TeamInviteAction(new UserRepresentation(admin.getId())));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -377,7 +379,7 @@ public class BusinessLogicTest {
 
 		final Project project2 = loadProject(OTHER_PROJECT_ID);
 		final List<ModelAction> actions2 = ActionTestUtils.getActions2();
-		actions2.add(0, new TeamInviteAction(admin));
+		actions2.add(0, new TeamInviteAction(new UserRepresentation(admin.getId())));
 		final List<ModelAction> actionList2 = executeActionsToProject(project2, actions2);
 		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectRepresentation2, actionList2));
 
@@ -457,7 +459,8 @@ public class BusinessLogicTest {
 	@Test
 	public void createProjectShouldFailIfUsersProjectCreationQuotaValidationFails() throws UnableToCreateProjectRepresentation, PersistenceException,
 			AuthorizationException {
-		doThrow(new AuthorizationException()).when(authorizationManager).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
+		doThrow(new AuthorizationException()).when(authorizationManager).validateAndUpdateUserProjectCreationQuota(
+				new UserRepresentation(authenticatedUser.getId()));
 		try {
 			BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager).createProject("");
 			Assert.fail("An authorization exception should have been thrown.");
@@ -533,7 +536,7 @@ public class BusinessLogicTest {
 	public void onlyAuthorizedProjectsAreReturnedToUser() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 		business.retrieveCurrentUserProjectList();
-		verify(authorizationManager).listAuthorizedProjects(authenticatedUser);
+		verify(authorizationManager).listAuthorizedProjects(new UserRepresentation(authenticatedUser.getId()));
 	}
 
 	@Test

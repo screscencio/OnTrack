@@ -16,22 +16,18 @@ import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
-
-public class ImpedimentRemoveActionTest extends ModelActionTest {
-
-	private UUID subjectId;
-	private User user;
+entation user;
 	private Annotation annotation;
 
 	@Before
 	public void setup() throws Exception {
 		subjectId = new UUID();
 
-		user = UserTestUtils.createUser();
+		user = UserRepresentationTestUtils.createUser();
 
 		annotation = AnnotationTestUtils.create(user);
 		annotation.setType(AnnotationType.OPEN_IMPEDIMENT, user, new Date());
@@ -64,8 +60,8 @@ public class ImpedimentRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldBeAbleToRemoveImpedimentCreatedBySameUserEvenWhenTheAnnotationWasCreatedByAnotherUser() throws Exception {
-		final User annotationAuthor = UserTestUtils.createUser();
-		final User impedimentAuthor = UserTestUtils.createUser();
+		final UserRepresentation annotationAuthor = UserRepresentationTestUtils.createUser();
+		final UserRepresentation impedimentAuthor = UserRepresentationTestUtils.createUser();
 
 		annotation = AnnotationTestUtils.create(annotationAuthor);
 		annotation.setType(AnnotationType.OPEN_IMPEDIMENT, impedimentAuthor, new Date());

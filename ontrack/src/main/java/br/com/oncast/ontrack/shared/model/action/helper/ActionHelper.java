@@ -17,7 +17,7 @@ import br.com.oncast.ontrack.shared.model.tags.HasTags;
 import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.tags.TagType;
 import br.com.oncast.ontrack.shared.model.tags.exceptions.TagNotFoundException;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -77,11 +77,11 @@ public class ActionHelper {
 		}
 	}
 
-	public static User findUserFrom(final ActionContext actionContext, final ProjectContext context) throws UnableToCompleteActionException {
+	public static UserRepresentation findUserFrom(final ActionContext actionContext, final ProjectContext context) throws UnableToCompleteActionException {
 		return findUser(actionContext.getUserId(), context);
 	}
 
-	public static User findUser(final UUID userId, final ProjectContext context) throws UnableToCompleteActionException {
+	public static UserRepresentation findUser(final UUID userId, final ProjectContext context) throws UnableToCompleteActionException {
 		try {
 			return context.findUser(userId);
 		}

@@ -42,6 +42,7 @@ import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.utils.actions.ModelActionEntityFieldAnnotationsTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import com.google.gwt.dev.util.collect.HashSet;
@@ -60,7 +61,7 @@ public abstract class ModelActionTest {
 
 		final UUID userId = UserTestUtils.getAdmin().getId();
 		when(actionContext.getUserId()).thenReturn(userId);
-		when(context.findUser(userId)).thenReturn(UserTestUtils.getAdmin());
+		when(context.findUser(userId)).thenReturn(UserRepresentationTestUtils.getAdmin());
 		when(actionContext.getTimestamp()).thenReturn(new Date(0));
 	}
 

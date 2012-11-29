@@ -46,6 +46,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
@@ -175,14 +176,14 @@ class BusinessLogicImpl implements BusinessLogic {
 	public void authorize(final String userEmail, final UUID projectId, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
 			UnableToHandleActionException,
 			AuthorizationException {
-		final User user = authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
+		final UserRepresentation user = authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
 		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toStringRepresentation() + "'");
 		handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, Arrays.asList(new ModelAction[] { new TeamInviteAction(user) })));
 	}
 
 	@Override
 	public List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException {
-		final User user = authenticationManager.getAuthenticatedUser();
+		final UserRepresentation user = new UserRepresentation(authenticationManager.getAuthenticatedUser().getId());
 		LOGGER.debug("Retrieving authorized project list for user '" + user + "'.");
 		try {
 			return authorizationManager.listAuthorizedProjects(user);
@@ -201,7 +202,7 @@ class BusinessLogicImpl implements BusinessLogic {
 
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-		authorizationManager.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
+		authorizationManager.validateAndUpdateUserProjectCreationQuota(new UserRepresentation(authenticatedUser.getId()));
 
 		try {
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(
@@ -307,7 +308,10 @@ class BusinessLogicImpl implements BusinessLogic {
 		try {
 			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
 
-			final Scope projectScope = new Scope(projectRepresentation.getName(), new UUID("0"), authenticationManager.getAuthenticatedUser(), new Date(0));
+			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
+			final UUID authenticatedUserId = authenticatedUser == null ? DefaultAuthenticationCredentials.USER_ID : authenticatedUser.getId();
+
+			final Scope projectScope = new Scope(projectRepresentation.getName(), new UUID("0"), new UserRepresentation(authenticatedUserId), new Date(0));
 			final Release projectRelease = new Release(projectRepresentation.getName(), new UUID("release0"));
 
 			final ProjectSnapshot projectSnapshot = new ProjectSnapshot(new Project(projectRepresentation, projectScope,

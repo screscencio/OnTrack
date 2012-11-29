@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class InsertFatherInternalAction implements TwoStepInternalAction {
 
@@ -23,7 +24,9 @@ public class InsertFatherInternalAction implements TwoStepInternalAction {
 	@Override
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
-		newTreeItem = new ScopeTreeItem(new Scope("", ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser(), new Date()));
+		final UserRepresentation user = new UserRepresentation(ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser().getId());
+
+		newTreeItem = new ScopeTreeItem(new Scope("", user, new Date()));
 
 		final ScopeTreeItem parentTreeItem = selectedTreeItem.getParentItem();
 		parentTreeItem.insertItem(parentTreeItem.getChildIndex(selectedTreeItem), newTreeItem);

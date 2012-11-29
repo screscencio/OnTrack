@@ -8,7 +8,6 @@ import java.util.TreeSet;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
-import br.com.oncast.ontrack.client.services.user.UserStatus;
 import br.com.oncast.ontrack.client.services.user.UsersStatusService;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
@@ -17,7 +16,7 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -34,38 +33,40 @@ public class MembersListWidget extends Composite {
 	interface MembersListWidgetUiBinder extends UiBinder<Widget, MembersListWidget> {}
 
 	@UiField(provided = true)
-	ModelWidgetContainer<User, ProjectMemberWidget> membersList;
+	ModelWidgetContainer<UserRepresentation, ProjectMemberWidget> membersList;
 
 	@UiField(provided = true)
-	ModelWidgetContainer<User, ProjectMemberWidget> activeMembersList;
+	ModelWidgetContainer<UserRepresentation, ProjectMemberWidget> activeMembersList;
 
 	@UiField(provided = true)
-	ModelWidgetContainer<User, ProjectMemberWidget> onlineMembersList;
+	ModelWidgetContainer<UserRepresentation, ProjectMemberWidget> onlineMembersList;
 
 	@UiField
 	SimplePanel loadingPanel;
 
 	public MembersListWidget() {
-		membersList = new ModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
+		membersList = new ModelWidgetContainer<UserRepresentation, ProjectMemberWidget>(new ModelWidgetFactory<UserRepresentation, ProjectMemberWidget>() {
 			@Override
-			public ProjectMemberWidget createWidget(final User modelBean) {
-				return new ProjectMemberWidget(modelBean, UserStatus.OFFLINE);
+			public ProjectMemberWidget createWidget(final UserRepresentation modelBean) {
+				return new ProjectMemberWidget(modelBean);
 			}
 		});
 
-		activeMembersList = new ModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
-			@Override
-			public ProjectMemberWidget createWidget(final User modelBean) {
-				return new ProjectMemberWidget(modelBean, UserStatus.ACTIVE);
-			}
-		});
+		activeMembersList = new ModelWidgetContainer<UserRepresentation, ProjectMemberWidget>(
+				new ModelWidgetFactory<UserRepresentation, ProjectMemberWidget>() {
+					@Override
+					public ProjectMemberWidget createWidget(final UserRepresentation modelBean) {
+						return new ProjectMemberWidget(modelBean);
+					}
+				});
 
-		onlineMembersList = new ModelWidgetContainer<User, ProjectMemberWidget>(new ModelWidgetFactory<User, ProjectMemberWidget>() {
-			@Override
-			public ProjectMemberWidget createWidget(final User modelBean) {
-				return new ProjectMemberWidget(modelBean, UserStatus.ONLINE);
-			}
-		});
+		onlineMembersList = new ModelWidgetContainer<UserRepresentation, ProjectMemberWidget>(
+				new ModelWidgetFactory<UserRepresentation, ProjectMemberWidget>() {
+					@Override
+					public ProjectMemberWidget createWidget(final UserRepresentation modelBean) {
+						return new ProjectMemberWidget(modelBean);
+					}
+				});
 
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -91,11 +92,11 @@ public class MembersListWidget extends Composite {
 			@Override
 			public void onUsersStatusListUnavailable(final Throwable caught) {
 				loadingPanel.setVisible(false);
-				updateMembersList(new TreeSet<User>(), new TreeSet<User>());
+				updateMembersList(new TreeSet<UserRepresentation>(), new TreeSet<UserRepresentation>());
 			}
 
 			@Override
-			public void onUsersStatusListsUpdated(final SortedSet<User> activeUsers, final SortedSet<User> onlineUsers) {
+			public void onUsersStatusListsUpdated(final SortedSet<UserRepresentation> activeUsers, final SortedSet<UserRepresentation> onlineUsers) {
 				loadingPanel.setVisible(false);
 				updateMembersList(activeUsers, onlineUsers);
 			}
@@ -103,18 +104,18 @@ public class MembersListWidget extends Composite {
 		});
 	}
 
-	private void updateMembersList(final SortedSet<User> activeUsers, final SortedSet<User> onlineUsers) {
+	private void updateMembersList(final SortedSet<UserRepresentation> activeUsers, final SortedSet<UserRepresentation> onlineUsers) {
 		final ProjectContext currentProjectContext = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
-		activeMembersList.update(new ArrayList<User>(activeUsers));
+		activeMembersList.update(new ArrayList<UserRepresentation>(activeUsers));
 
-		final ArrayList<User> onlineAndNotActiveUsers = new ArrayList<User>();
-		for (final User user : onlineUsers) {
+		final ArrayList<UserRepresentation> onlineAndNotActiveUsers = new ArrayList<UserRepresentation>();
+		for (final UserRepresentation user : onlineUsers) {
 			if (!activeUsers.contains(user)) onlineAndNotActiveUsers.add(user);
 		}
 		onlineMembersList.update(onlineAndNotActiveUsers);
 
-		final List<User> users = new ArrayList<User>();
-		for (final User user : currentProjectContext.getUsers()) {
+		final List<UserRepresentation> users = new ArrayList<UserRepresentation>();
+		for (final UserRepresentation user : currentProjectContext.getUsers()) {
 			if (!activeUsers.contains(user) && !onlineUsers.contains(user)) users.add(user);
 		}
 		membersList.update(users);

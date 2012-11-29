@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(AnnotationVoteRemoveActionEntity.class)
@@ -33,7 +33,7 @@ public class AnnotationVoteRemoveAction implements AnnotationAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Annotation annotation = ActionHelper.findAnnotation(annotatedObjectId, annotationId, context);
-		final User user = ActionHelper.findUser(actionContext.getUserId(), context);
+		final UserRepresentation user = ActionHelper.findUser(actionContext.getUserId(), context);
 		if (annotation.isDeprecated()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.VOTE_REMOVE_FROM_DEPRECATED_ANNOTATION);
 
 		if (!annotation.hasVoted(user)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_UNGIVEN_VOTE);

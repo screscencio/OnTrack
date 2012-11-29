@@ -39,9 +39,10 @@ import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.FileRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
@@ -51,7 +52,7 @@ import com.google.common.io.Files;
 
 public class AnnotationCreateActionTest extends ModelActionTest {
 
-	private User author;
+	private UserRepresentation author;
 	private UUID subjectId;
 	private String message;
 	private FileRepresentation attachmentFile;
@@ -59,7 +60,7 @@ public class AnnotationCreateActionTest extends ModelActionTest {
 	@Before
 	public void setUp() throws Exception {
 		subjectId = new UUID();
-		author = UserTestUtils.createUser();
+		author = UserRepresentationTestUtils.createUser();
 		attachmentFile = FileRepresentationTestUtils.create();
 		message = "Any message";
 

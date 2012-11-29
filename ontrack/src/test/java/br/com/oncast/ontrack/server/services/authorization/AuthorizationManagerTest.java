@@ -37,6 +37,7 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
@@ -82,6 +83,7 @@ public class AuthorizationManagerTest {
 	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException, UserNotFoundException {
 		when(persistence.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(admin);
 		when(authenticationManager.findUserByEmail(authenticatedUser.getEmail())).thenReturn(authenticatedUser);
+		when(persistence.retrieveUserById(authenticatedUser.getId())).thenReturn(authenticatedUser);
 		when(authenticationManager.isUserAuthenticated()).thenReturn(true);
 	}
 
@@ -245,7 +247,7 @@ public class AuthorizationManagerTest {
 		when(persistence.retrieveProjectAuthorizations(authenticatedUser.getId())).thenReturn(authorizations);
 
 		final List<ProjectRepresentation> projects = AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory)
-				.listAuthorizedProjects(authenticatedUser);
+				.listAuthorizedProjects(new UserRepresentation(authenticatedUser.getId()));
 
 		assertEquals(projects.size(), authorizations.size());
 		for (final ProjectAuthorization auth : authorizations) {
@@ -263,7 +265,7 @@ public class AuthorizationManagerTest {
 
 		final List<ProjectRepresentation> projects = AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory)
 				.listAuthorizedProjects(
-						authenticatedUser);
+						new UserRepresentation(authenticatedUser.getId()));
 
 		assertEquals(0, projects.size());
 
@@ -278,43 +280,44 @@ public class AuthorizationManagerTest {
 
 	@Test
 	public void validateAndUpdateUserUserInvitaionQuotaShouldSucceedIfUserHasNoQuotaButIsAuthorizingItself() throws UnableToAuthorizeUserException,
-			PersistenceException {
+			PersistenceException, NoResultFoundException {
 		final String mail = authenticatedUser.getEmail();
 		authenticatedUser.setProjectInvitationQuota(0);
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail,
-				authenticatedUser);
+				new UserRepresentation(authenticatedUser.getId()));
 	}
 
 	@Test
 	public void validateAndUpdateUserUserInvitaionQuotaShouldSucceedIfUserHasQuota() throws UnableToAuthorizeUserException,
-			PersistenceException {
+			PersistenceException, NoResultFoundException {
 		final String mail = "user@mail.com";
 		authenticatedUser.setProjectInvitationQuota(1);
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail,
-				authenticatedUser);
+				new UserRepresentation(authenticatedUser.getId()));
 	}
 
 	@Test(expected = UnableToAuthorizeUserException.class)
-	public void validateAndUpdateUserUserInvitaionQuotaShouldThrowExceptionIfUserHasNoQuota() throws UnableToAuthorizeUserException, PersistenceException {
+	public void validateAndUpdateUserUserInvitaionQuotaShouldThrowExceptionIfUserHasNoQuota() throws UnableToAuthorizeUserException, PersistenceException,
+			NoResultFoundException {
 		final String mail = "user@mail.com";
 		authenticatedUser.setProjectInvitationQuota(0);
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail,
-				authenticatedUser);
+				new UserRepresentation(authenticatedUser.getId()));
 	}
 
 	@Test
 	public void validateAndUpdateUserUserInvitaionQuotaShouldUpdateQuota() throws UnableToAuthorizeUserException,
-			PersistenceException {
+			PersistenceException, NoResultFoundException {
 		final String mail = "user@mail.com";
 		authenticatedUser.setProjectInvitationQuota(2);
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail,
-				authenticatedUser);
+				new UserRepresentation(authenticatedUser.getId()));
 		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
 	}
 
 	@Test
 	public void validateAndUpdateUserUserInvitaionQuotaShouldNotifyUserInformationChangeWhenSucceed() throws PersistenceException,
-			UnableToAuthorizeUserException {
+			UnableToAuthorizeUserException, NoResultFoundException {
 		final String mail = "user@mail.com";
 		final MulticastService multicastService = mock(MulticastService.class);
 
@@ -322,7 +325,7 @@ public class AuthorizationManagerTest {
 
 		final ArgumentCaptor<UserInformationChangeEvent> captor = ArgumentCaptor.forClass(UserInformationChangeEvent.class);
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
-				.validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser);
+				.validateAndUpdateUserUserInvitaionQuota(mail, new UserRepresentation(authenticatedUser.getId()));
 		verify(multicastService).multicastToUser(captor.capture(), eq(authenticatedUser));
 		assertEquals(authenticatedUser.getEmail(), captor.getValue().getUserEmail());
 	}
@@ -335,7 +338,7 @@ public class AuthorizationManagerTest {
 		authenticatedUser.setProjectInvitationQuota(0);
 		try {
 			AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
-					.validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser);
+					.validateAndUpdateUserUserInvitaionQuota(mail, new UserRepresentation(authenticatedUser.getId()));
 		}
 		catch (final Exception e) {}
 		verify(multicastService, times(0)).multicastToUser(new UserInformationChangeEvent(authenticatedUser), authenticatedUser);
@@ -344,19 +347,22 @@ public class AuthorizationManagerTest {
 	@Test
 	public void validateAndUpdateUserProjectCreationQuotaShouldSucceedIfUserHasQuota() throws PersistenceException, AuthorizationException {
 		authenticatedUser.setProjectCreationQuota(1);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(
+				new UserRepresentation(authenticatedUser.getId()));
 	}
 
 	@Test(expected = AuthorizationException.class)
 	public void validateAndUpdateUserProjectCreationQuotaShouldThrowExceptionIfUserHasNoQuota() throws AuthorizationException, PersistenceException {
 		authenticatedUser.setProjectCreationQuota(0);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(
+				new UserRepresentation(authenticatedUser.getId()));
 	}
 
 	@Test
 	public void validateAndUpdateUserProjectCreationQuotaShouldUpdateQuota() throws AuthorizationException, PersistenceException {
 		authenticatedUser.setProjectCreationQuota(2);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(
+				new UserRepresentation(authenticatedUser.getId()));
 		Assert.assertEquals(1, authenticatedUser.getProjectCreationQuota());
 	}
 
@@ -366,7 +372,7 @@ public class AuthorizationManagerTest {
 		authenticatedUser.setProjectCreationQuota(1);
 		final ArgumentCaptor<UserInformationChangeEvent> captor = ArgumentCaptor.forClass(UserInformationChangeEvent.class);
 		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
-				.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
+				.validateAndUpdateUserProjectCreationQuota(new UserRepresentation(authenticatedUser.getId()));
 		verify(multicastService).multicastToUser(captor.capture(), eq(authenticatedUser));
 		assertEquals(authenticatedUser.getProjectCreationQuota(), captor.getValue().getProjectCreationQuota());
 	}
@@ -377,7 +383,7 @@ public class AuthorizationManagerTest {
 		authenticatedUser.setProjectCreationQuota(0);
 		try {
 			AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
-					.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
+					.validateAndUpdateUserProjectCreationQuota(new UserRepresentation(authenticatedUser.getId()));
 		}
 		catch (final Exception e) {}
 		verify(multicastService, times(0)).multicastToUser(new UserInformationChangeEvent(authenticatedUser), authenticatedUser);

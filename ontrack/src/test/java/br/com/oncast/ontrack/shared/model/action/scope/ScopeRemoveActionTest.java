@@ -30,7 +30,9 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
 import br.com.oncast.ontrack.utils.model.ChecklistTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
@@ -238,7 +240,7 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 	public void shouldRemoveAnnotationsBoundToTheScope() throws Exception {
 		final List<Annotation> annotationsList = new ArrayList<Annotation>();
 
-		final User user = UserTestUtils.createUser();
+		final UserRepresentation user = UserRepresentationTestUtils.createUser();
 
 		annotationsList.add(AnnotationTestUtils.create(user));
 		annotationsList.add(AnnotationTestUtils.create(user));

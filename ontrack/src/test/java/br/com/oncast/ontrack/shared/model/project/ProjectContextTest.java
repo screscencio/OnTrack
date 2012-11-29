@@ -34,16 +34,16 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.assertions.AssertTestUtils;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
 import br.com.oncast.ontrack.utils.model.ChecklistTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 import com.google.gwt.dev.util.collect.HashSet;
 
@@ -294,10 +294,10 @@ public class ProjectContextTest {
 
 	@Test
 	public void shouldBeAbleToFindUsersThatWasAddedPreviously() throws Exception {
-		final Set<User> userList = new HashSet<User>();
-		final User user = UserTestUtils.createUser();
+		final Set<UserRepresentation> userList = new HashSet<UserRepresentation>();
+		final UserRepresentation user = UserRepresentationTestUtils.createUser();
 		userList.add(user);
-		final User user2 = UserTestUtils.createUser();
+		final UserRepresentation user2 = UserRepresentationTestUtils.createUser();
 		userList.add(user2);
 
 		context = ProjectTestUtils.createProjectContext(scopeMock, releaseMock, userList);

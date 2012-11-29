@@ -3,25 +3,25 @@ package br.com.oncast.ontrack.shared.services.notification;
 import java.util.Date;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class NotificationBuilder {
 
 	private final Notification notification;
 
-	public NotificationBuilder(final NotificationType type, final ProjectRepresentation projectRepresentation, final User author) {
+	public NotificationBuilder(final NotificationType type, final ProjectRepresentation projectRepresentation, final UUID authorId) {
 		notification = new Notification();
 		notification.setId(new UUID());
 		notification.setTimestamp(new Date());
 		notification.setType(type);
 		notification.setProjectRepresentation(projectRepresentation);
-		notification.setAuthor(author);
+		notification.setAuthorId(authorId);
 		notification.setDescription("");
 		notification.setReferenceDescription("");
 	}
 
-	public NotificationBuilder addReceipient(final User receipient) {
+	public NotificationBuilder addReceipient(final UserRepresentation receipient) {
 		notification.addReceipient(new NotificationRecipient(receipient));
 		return this;
 	}

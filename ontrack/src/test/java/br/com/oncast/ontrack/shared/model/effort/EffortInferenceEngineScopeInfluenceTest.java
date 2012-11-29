@@ -15,9 +15,9 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class EffortInferenceEngineScopeInfluenceTest {
 
@@ -38,14 +38,14 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(0).getChild(2).getChild(1).getId());
 
 		scope.getChild(0).getChild(2).getEffort().setDeclared(30);
-		assertEquals(expectedInfluencedScopes, new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date()));
+		assertEquals(expectedInfluencedScopes, new EffortInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date()));
 	}
 
 	@Test
 	public void shouldReturnAListWithAllInfluencedScopesWhenMovingToLeft() throws UnableToCompleteActionException {
 		final Scope manipulatedScope = scope.getChild(0).getChild(2);
 		manipulatedScope.getEffort().setDeclared(30);
-		new EffortInferenceEngine().process(manipulatedScope.getParent(), UserTestUtils.getAdmin(), new Date());
+		new EffortInferenceEngine().process(manipulatedScope.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
 
 		final ScopeMoveLeftAction moveLeftAction = new ScopeMoveLeftAction(manipulatedScope.getId());
 		moveLeftAction.execute(ProjectTestUtils.createProjectContext(scope, null), Mockito.mock(ActionContext.class));
@@ -53,7 +53,7 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		final Set<UUID> expectedInfluencedScopes = new HashSet<UUID>();
 		expectedInfluencedScopes.add(scope.getChild(0).getId());
 
-		assertEquals(expectedInfluencedScopes, new EffortInferenceEngine().process(scope.getChild(0), UserTestUtils.getAdmin(), new Date()));
+		assertEquals(expectedInfluencedScopes, new EffortInferenceEngine().process(scope.getChild(0), UserRepresentationTestUtils.getAdmin(), new Date()));
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		influencedScopes.addAll(getAllIdsOf(scope));
 
 		scope.getEffort().setDeclared(100);
-		assertEquals(influencedScopes, new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date()));
+		assertEquals(influencedScopes, new EffortInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date()));
 	}
 
 	@Test
@@ -75,10 +75,10 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(0).getChild(3).getId());
 
 		scope.getChild(0).getChild(2).getEffort().setDeclared(30);
-		new EffortInferenceEngine().process(scope.getChild(0), UserTestUtils.getAdmin(), new Date());
+		new EffortInferenceEngine().process(scope.getChild(0), UserRepresentationTestUtils.getAdmin(), new Date());
 
 		scope.getChild(0).getEffort().setDeclared(50);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
@@ -97,10 +97,10 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(3).getId());
 
 		scope.getChild(0).getEffort().setDeclared(50);
-		new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
+		new EffortInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		scope.getEffort().setDeclared(100);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
@@ -119,13 +119,13 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(3).getId());
 
 		scope.getChild(0).getChild(2).getEffort().setDeclared(30);
-		new EffortInferenceEngine().process(scope.getChild(0), UserTestUtils.getAdmin(), new Date());
+		new EffortInferenceEngine().process(scope.getChild(0), UserRepresentationTestUtils.getAdmin(), new Date());
 
 		scope.getChild(0).getEffort().setDeclared(50);
-		new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
+		new EffortInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		scope.getEffort().setDeclared(200);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
@@ -140,10 +140,11 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(2).getChild(1).getChild(1).getId());
 
 		scope.getEffort().setDeclared(100);
-		new EffortInferenceEngine().process(scope, UserTestUtils.getAdmin(), new Date());
+		new EffortInferenceEngine().process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		scope.getChild(2).getChild(1).getChild(0).getEffort().setDeclared(10);
-		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope.getChild(2).getChild(1), UserTestUtils.getAdmin(), new Date());
+		final Set<UUID> actualInfluencedScopes = new EffortInferenceEngine().process(scope.getChild(2).getChild(1), UserRepresentationTestUtils.getAdmin(),
+				new Date());
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}

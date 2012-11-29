@@ -29,14 +29,14 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
 import br.com.oncast.ontrack.utils.model.ChecklistTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ReleaseRemoveActionTest extends ModelActionTest {
 
@@ -342,7 +342,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldRemoveAllRelatedAnntoations() throws Exception {
-		final User user = UserTestUtils.createUser();
+		final UserRepresentation user = UserRepresentationTestUtils.createUser();
 		final UUID releaseId = rootRelease.getChild(0).getId();
 
 		for (int i = 0; i < 6; i++) {
@@ -357,7 +357,7 @@ public class ReleaseRemoveActionTest extends ModelActionTest {
 
 	@Test
 	public void rollbackShouldReAddAllRemovedAnntoations() throws Exception {
-		final User user = UserTestUtils.createUser();
+		final UserRepresentation user = UserRepresentationTestUtils.createUser();
 		context.addUser(user);
 		final UUID releaseId = rootRelease.getChild(0).getId();
 
