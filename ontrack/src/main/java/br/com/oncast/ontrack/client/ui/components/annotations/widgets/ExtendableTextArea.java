@@ -120,7 +120,10 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	@UiHandler("textArea")
 	public void onTextAreaKeyUp(final KeyUpEvent event) {
-		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) hideRichTextArea();
+		if (event.getNativeKeyCode() == BrowserKeyCodes.KEY_ESCAPE) {
+			hideRichTextArea();
+			focusPanel.setFocus(true);
+		}
 	}
 
 	@Override
@@ -143,7 +146,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 		textArea.setFocus(b);
 	}
 
-	private void hideRichTextArea() {
+	public void hideRichTextArea() {
 		deckPanel.showWidget(1);
 		GlobalNativeEventService.getInstance().removeMouseUpListener(clickListener);
 	}
