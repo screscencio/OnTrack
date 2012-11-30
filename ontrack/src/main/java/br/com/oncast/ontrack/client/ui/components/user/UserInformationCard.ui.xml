@@ -46,12 +46,10 @@
 	<g:FocusPanel ui:field="container" styleName="{style.container}">
 		<g:HorizontalPanel>
 			<g:Image ui:field="author" styleName="{style.author}" />
-			<g:cell>
-				<g:VerticalPanel width="100%" height="100%">
-					<misc:EditableLabel ui:field="userName" styleName="{style.userName}" />
-					<g:Label ui:field="userEmail" styleName="{style.userEmail}" />
-				</g:VerticalPanel>
-			</g:cell>
+			<g:VerticalPanel width="100%" height="100%">
+				<misc:EditableLabel ui:field="userName" styleName="{style.userName}" />
+				<g:Label ui:field="userEmail" styleName="{style.userEmail}" />
+			</g:VerticalPanel>
 		</g:HorizontalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 
