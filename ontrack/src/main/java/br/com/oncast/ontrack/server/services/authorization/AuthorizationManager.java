@@ -12,19 +12,19 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface AuthorizationManager {
 
-	public UserRepresentation authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
+	UserRepresentation authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
 			throws UnableToAuthorizeUserException;
 
-	public void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException;
+	void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException;
 
-	public List<ProjectRepresentation> listAuthorizedProjects(final UserRepresentation user) throws PersistenceException, NoResultFoundException;
+	List<ProjectRepresentation> listAuthorizedProjects(final UserRepresentation user) throws PersistenceException, NoResultFoundException;
 
-	public void assureProjectAccessAuthorization(final UUID projectId) throws PersistenceException, AuthorizationException;
+	void assureProjectAccessAuthorization(final UUID projectId) throws PersistenceException, AuthorizationException;
 
-	public void validateAndUpdateUserProjectCreationQuota(UserRepresentation requestingUser) throws PersistenceException, AuthorizationException;
+	void validateAndUpdateUserProjectCreationQuota(UserRepresentation requestingUser) throws PersistenceException, AuthorizationException;
 
-	public List<ProjectRepresentation> listAuthorizedProjects(UUID userId) throws PersistenceException, NoResultFoundException;
+	List<ProjectRepresentation> listAuthorizedProjects(UUID userId) throws PersistenceException, NoResultFoundException;
 
-	public boolean hasAuthorizationFor(UUID userId, UUID projectId) throws NoResultFoundException, PersistenceException;
+	boolean hasAuthorizationFor(UUID userId, UUID projectId) throws NoResultFoundException, PersistenceException;
 
 }

@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.services.user;
 
 import java.util.SortedSet;
 
+import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UserSpecificStatusChangeListener;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
@@ -16,5 +17,7 @@ public interface UsersStatusService {
 	SortedSet<UserRepresentation> getOnlineUsers();
 
 	UserStatus getStatus(UserRepresentation userRepresentation);
+
+	HandlerRegistration registerListenerForSpecificUser(UserRepresentation user, UserSpecificStatusChangeListener listener);
 
 }

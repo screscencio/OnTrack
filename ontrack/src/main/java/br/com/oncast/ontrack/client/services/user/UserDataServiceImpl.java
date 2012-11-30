@@ -3,11 +3,8 @@ package br.com.oncast.ontrack.client.services.user;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
@@ -25,30 +22,30 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateRequestResponse;
 import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.http.client.URL;
-import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class UserDataServiceImpl implements UserDataService {
 
 	private static final String GRAVATAR_BASE_URL = "https://secure.gravatar.com/";
-	private final Map<String, PortableContactJsonObject> cachedResults;
+
 	private final DispatchService dispatchService;
-	private final Set<User> usersCached;
-	private final Set<UserDataUpdateListener> listeners;
+
+	private final Set<User> cachedUsers;
+	private final SetMultimap<UUID, UserSpecificInformationChangeListener> userSpecificListeners;
 
 	public UserDataServiceImpl(final DispatchService dispatchService, final ContextProviderService contextProvider,
 			final ServerPushClientService serverPushClientService) {
+
 		this.dispatchService = dispatchService;
 
-		listeners = new HashSet<UserDataUpdateListener>();
-		usersCached = new HashSet<User>();
-		cachedResults = new HashMap<String, PortableContactJsonObject>();
+		userSpecificListeners = HashMultimap.create();
+		cachedUsers = new HashSet<User>();
 
 		contextProvider.addContextLoadListener(new ContextChangeListener() {
-
 			@Override
 			public void onProjectChanged(final UUID projectId) {
 				updateUserDataFor(projectId);
@@ -56,42 +53,24 @@ public class UserDataServiceImpl implements UserDataService {
 		});
 
 		serverPushClientService.registerServerEventHandler(UserDataUpdateEvent.class, new ServerPushEventHandler<UserDataUpdateEvent>() {
-
 			@Override
 			public void onEvent(final UserDataUpdateEvent event) {
-				usersCached.add(event.getUser());
-				notifyUserDataUpdate(event.getUser());
+				final User user = event.getUser();
+				cachedUsers.add(user);
+				notifyUserDataUpdate(user);
 			}
 		});
 	}
 
 	@Override
-	public SafeUri getAvatarUrl(final UserRepresentation userRepresentation) {
-		return getAvatarUrl(retrieveRealUser(userRepresentation).getEmail());
-	}
+	public SafeUri getAvatarUrl(final User user) {
+		return new SafeUri() {
+			@Override
+			public String asString() {
+				return new String(GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=40&d=mm");
+			}
 
-	@Override
-	public void loadProfile(final String email, final LoadProfileCallback userNameCallback) {
-		if (cachedResults.containsKey(email)) {
-			userNameCallback.onProfileLoaded(cachedResults.get(email));
-			return;
-		}
-
-		new JsonpRequestBuilder().requestObject(URL.encode(GRAVATAR_BASE_URL + getMd5Hex(email) + ".json"),
-				new AsyncCallback<PortableContactJsonObject>() {
-
-					@Override
-					public void onFailure(final Throwable throwable) {
-						userNameCallback.onProfileUnavailable(throwable);
-					}
-
-					@Override
-					public void onSuccess(final PortableContactJsonObject result) {
-						cachedResults.put(email, result);
-						userNameCallback.onProfileLoaded(result);
-					}
-
-				});
+		};
 	}
 
 	private String getMd5Hex(final String email) {
@@ -103,42 +82,38 @@ public class UserDataServiceImpl implements UserDataService {
 		catch (final NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return "";
 	}
 
 	@Override
-	public void onUserDataUpdate(final User user) {
-		// TODO receber um callback? atualizar a view com o push event que vem?
+	public void onUserDataUpdate(final User user, final AsyncCallback<User> callback) {
 		dispatchService.dispatch(new UserDataUpdateRequest(user), new DispatchCallback<UserDataUpdateRequestResponse>() {
-
 			@Override
 			public void onSuccess(final UserDataUpdateRequestResponse result) {
-				// FIXME Auto-generated catch block
-
+				callback.onSuccess(result.getUser());
 			}
 
 			@Override
 			public void onTreatedFailure(final Throwable caught) {
-				// FIXME Auto-generated catch block
-
+				callback.onFailure(caught);
 			}
 
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
-				// FIXME Auto-generated catch block
-
+				callback.onFailure(caught);
 			}
 		});
 	}
 
 	private void updateUserDataFor(final UUID projectId) {
-		usersCached.clear();
+		cachedUsers.clear();
 		dispatchService.dispatch(new UserDataRequest(projectId), new DispatchCallback<UserDataRequestResponse>() {
 
 			@Override
 			public void onSuccess(final UserDataRequestResponse result) {
-				usersCached.addAll(result.getUsers());
-				notifyUserListLoaded(result.getUsers());
+				final List<User> users = result.getUsers();
+				cachedUsers.addAll(users);
+				notifyAllListeners(users);
 			}
 
 			@Override
@@ -154,63 +129,40 @@ public class UserDataServiceImpl implements UserDataService {
 		});
 	}
 
-	private void notifyUserListLoaded(final List<User> users) {
-		for (final UserDataUpdateListener listener : listeners)
-			listener.onUserListLoaded(users);
-	}
-
 	private void notifyUserDataUpdate(final User user) {
-		for (final UserDataUpdateListener listener : listeners)
-			listener.onUserDataUpdate(user);
+		for (final UserSpecificInformationChangeListener listener : userSpecificListeners.get(user.getId()))
+			listener.onInformationChange(user);
 	}
 
-	@Override
-	public HandlerRegistration addUserDataUpdateListener(final UserDataUpdateListener listener) {
-		listeners.add(listener);
-
-		if (!usersCached.isEmpty()) listener.onUserListLoaded(new ArrayList<User>(usersCached));
-
-		return new HandlerRegistration() {
-
-			@Override
-			public void removeHandler() {
-				listeners.remove(listener);
-			}
-		};
-	}
-
-	@Override
-	public List<User> retrieveRealUsers(final List<UserRepresentation> users) {
-		final List<User> responseUsers = new ArrayList<User>();
-		for (final UserRepresentation userRepresentation : users) {
-			final User user = retrieveRealUser(userRepresentation);
-			if (user != null) responseUsers.add(user);
-		}
-
-		return responseUsers;
+	private void notifyAllListeners(final List<User> users) {
+		for (final User user : users)
+			notifyUserDataUpdate(user);
 	}
 
 	@Override
 	public User retrieveRealUser(final UserRepresentation userRepresentation) {
-		for (final User user : usersCached) {
+		for (final User user : cachedUsers) {
 			if (user.getId().equals(userRepresentation.getId())) return user;
 		}
-		return null;
+		throw new IllegalStateException("User information unavailable");
 	}
 
 	@Override
-	public SafeUri getAvatarUrl(final String email) {
-		return new SafeUri() {
-			@Override
-			public String asString() {
-				try {
-					return new String(GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(email) + "?s=40&d=mm");
-				}
-				catch (final Exception e) {
-					return null;
-				}
-			}
+	public HandlerRegistration registerListenerForSpecificUser(final UserRepresentation user, final UserSpecificInformationChangeListener listener) {
+		userSpecificListeners.put(user.getId(), listener);
+		if (cachedUsers.contains(user)) listener.onInformationChange(retrieveRealUser(user));
 
+		return new HandlerRegistration() {
+			@Override
+			public void removeHandler() {
+				userSpecificListeners.remove(user.getId(), listener);
+			}
 		};
+	}
+
+	public interface UserSpecificInformationChangeListener {
+
+		void onInformationChange(User user);
+
 	}
 }

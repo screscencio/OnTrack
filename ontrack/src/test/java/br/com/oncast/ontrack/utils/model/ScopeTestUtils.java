@@ -12,6 +12,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 import com.ibm.icu.util.Calendar;
 

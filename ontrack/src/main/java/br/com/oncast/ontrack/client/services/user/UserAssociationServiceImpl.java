@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class UserAssociationServiceImpl implements UserAssociationService {
 
@@ -22,8 +22,8 @@ public class UserAssociationServiceImpl implements UserAssociationService {
 	}
 
 	@Override
-	public List<User> getAssociatedUsers(final Scope scope) {
-		final List<User> users = new ArrayList<User>();
+	public List<UserRepresentation> getAssociatedUsers(final Scope scope) {
+		final List<UserRepresentation> users = new ArrayList<UserRepresentation>();
 		final List<UserAssociationTag> tags = contextProviderService.getCurrentProjectContext().getTags(scope, UserAssociationTag.getType());
 		for (final UserAssociationTag tag : tags) {
 			users.add(tag.getUser());
@@ -32,7 +32,7 @@ public class UserAssociationServiceImpl implements UserAssociationService {
 	}
 
 	@Override
-	public boolean onAssociateUserRequest(final Scope scope, final User user) {
+	public boolean onAssociateUserRequest(final Scope scope, final UserRepresentation user) {
 		if (hasAssociatedUser(scope, user)) return false;
 
 		actionExecutionService.onUserActionExecutionRequest(new ScopeAddAssociatedUserAction(scope.getId(), user.getId()));
@@ -40,14 +40,14 @@ public class UserAssociationServiceImpl implements UserAssociationService {
 	}
 
 	@Override
-	public void onUserRemoveAssociationRequest(final Scope scope, final User user) {
+	public void onUserRemoveAssociationRequest(final Scope scope, final UserRepresentation user) {
 		if (!hasAssociatedUser(scope, user)) return;
 
 		actionExecutionService.onUserActionExecutionRequest(new ScopeRemoveAssociatedUserAction(scope.getId(), user.getId()));
 	}
 
 	@Override
-	public boolean hasAssociatedUser(final Scope scope, final User user) {
+	public boolean hasAssociatedUser(final Scope scope, final UserRepresentation user) {
 		return getAssociatedUsers(scope).contains(user);
 	}
 

@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
+	<ui:image field="avatar" src="default-avatar.png"/>
 	<ui:style type="br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserWidgetStyle">
 	
 		.author {
@@ -9,7 +10,7 @@
 			
 			width: 40px;
 			height: 40px;
-			margin-right: 5px;
+			margin-right: 2px;
 		}
 		
 		.author:hover {
@@ -29,7 +30,7 @@
 	</ui:style>
 	
 	<g:FocusPanel ui:field="container">
-		<g:Image ui:field="userImage" styleName="{style.author}" />
+		<g:Image ui:field="userImage" styleName="{style.author}" resource="{avatar}" />
 	</g:FocusPanel>
 	
 </ui:UiBinder> 

@@ -8,6 +8,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.ModelWidgetContainerDragHandler;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
@@ -92,8 +93,8 @@ public class UserAssociationDragHandler extends ModelWidgetContainerDragHandler<
 	}
 
 	@SuppressWarnings("unchecked")
-	private User getUser(final DragEndEvent event) {
-		return ((ModelWidget<User>) event.getContext().draggable).getModelObject();
+	private UserRepresentation getUser(final DragEndEvent event) {
+		return ((ModelWidget<UserRepresentation>) event.getContext().draggable).getModelObject();
 	}
 
 	private UserAssociationService getUserAssociationService() {

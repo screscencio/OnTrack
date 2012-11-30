@@ -21,23 +21,23 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ScopeAddAssociatedUserActionTest extends ModelActionTest {
 
 	private UUID scopeId;
 	private UUID userId;
 	private Scope scope;
-	private User user;
+	private UserRepresentation user;
 
 	@Before
 	public void setup() throws Exception {
 		scope = ScopeTestUtils.createScope();
 		scopeId = scope.getId();
-		user = UserTestUtils.getAdmin();
+		user = UserRepresentationTestUtils.getAdmin();
 		userId = user.getId();
 
 		when(context.findScope(scopeId)).thenReturn(scope);

@@ -22,17 +22,17 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.tags.TagFactory;
 import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 
 	private Scope scope;
 	private UUID scopeId;
 
-	private User user;
+	private UserRepresentation user;
 	private UUID userId;
 
 	private UserAssociationTag tag;
@@ -42,7 +42,7 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 		scope = ScopeTestUtils.createScope();
 		scopeId = scope.getId();
 
-		user = UserTestUtils.createUser();
+		user = UserRepresentationTestUtils.createUser();
 		userId = user.getId();
 
 		tag = TagFactory.createUserTag(new UUID(), scope, user);

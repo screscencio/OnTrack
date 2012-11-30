@@ -1,10 +1,15 @@
 package br.com.oncast.ontrack.client.ui.components.user;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.user.UserDataUpdateListener;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.UserStatus;
+import br.com.oncast.ontrack.client.services.user.ColorProviderService;
+import br.com.oncast.ontrack.client.services.user.UserDataService;
+import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
+import br.com.oncast.ontrack.client.services.user.UserStatus;
+import br.com.oncast.ontrack.client.services.user.UsersStatusService;
+import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UserSpecificStatusChangeListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -25,6 +30,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public class UserWidget extends Composite {
+
+	private static final UserDataService USER_DATA_SERVICE = ClientServiceProvider.getInstance().getUserDataService();
+
+	private static final UsersStatusService USERS_STATUS_SERVICE = ClientServiceProvider.getInstance().getUsersStatusService();
+
+	protected static final ColorProviderService COLOR_PROVIDER = ClientServiceProvider.getInstance().getColorProviderService();
 
 	private static UserWidgetUiBinder uiBinder = GWT.create(UserWidgetUiBinder.class);
 
@@ -53,22 +64,25 @@ public class UserWidget extends Composite {
 
 	private final UserRepresentation userRepresentation;
 
-	private HandlerRegistration registrationListener;
+	private final Set<HandlerRegistration> registrationListener;
 
 	private boolean showActiveColor = true;
 
 	private final UserUpdateListener updateListener;
 
+	public UserWidget(final UserRepresentation userRepresentation) {
+		this(userRepresentation, null);
+	}
+
 	public UserWidget(final UserRepresentation userRepresentation, final UserUpdateListener updateListener) {
+		this.registrationListener = new HashSet<HandlerRegistration>();
 		this.userRepresentation = userRepresentation;
 		this.updateListener = updateListener;
 		userCard = new UserInformationCard();
 		initWidget(uiBinder.createAndBindUi(this));
-		createUserInformationCard();
-	}
 
-	public UserWidget(final UserRepresentation userRepresentation) {
-		this(userRepresentation, null);
+		userImage.setUrl("https://secure.gravatar.com/avatar/5e443efe94a5ded46ed5b6b51505c768?s=40&d=mm");
+		createUserInformationCard();
 	}
 
 	public UserWidget setShowActiveColor(final boolean b) {
@@ -77,21 +91,20 @@ public class UserWidget extends Composite {
 	}
 
 	private void createUserModificationListener() {
-		registrationListener = ClientServiceProvider.getInstance().getUserDataService()
-				.addUserDataUpdateListener(new UserDataUpdateListener() {
+		registrationListener.add(USER_DATA_SERVICE.registerListenerForSpecificUser(userRepresentation, new UserSpecificInformationChangeListener() {
+			@Override
+			public void onInformationChange(final User user) {
+				updateInfo(user);
+			}
+		}));
 
-					@Override
-					public void onUserListLoaded(final List<User> users) {
-						for (final User user : users) {
-							if (user.getId().equals(userRepresentation.getId())) updateView(user);
-						}
-					}
+		registrationListener.add(USERS_STATUS_SERVICE.registerListenerForSpecificUser(userRepresentation, new UserSpecificStatusChangeListener() {
+			@Override
+			public void onUserStatusChange(final UserStatus status) {
+				updateStatus(status);
+			}
 
-					@Override
-					public void onUserDataUpdate(final User user) {
-						if (user.getId().equals(userRepresentation.getId())) updateView(user);
-					}
-				});
+		}));
 	}
 
 	@Override
@@ -102,25 +115,28 @@ public class UserWidget extends Composite {
 
 	@Override
 	protected void onDetach() {
-		if (registrationListener != null) registrationListener.removeHandler();
+		for (final HandlerRegistration r : registrationListener)
+			r.removeHandler();
 
 		super.onDetach();
 	}
 
-	private void updateView(final User user) {
+	private void updateInfo(final User user) {
 		userCard.updateUser(user);
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
 
-		final UserStatus status = provider.getUsersStatusService().getStatus(userRepresentation);
-		container.setStyleName(status == UserStatus.OFFLINE ? style.offline() : style.online());
-		userImage.setUrl(provider.getUserDataService().getAvatarUrl(userRepresentation));
+		userImage.setUrl(provider.getUserDataService().getAvatarUrl(user));
 		userImage.setTitle(user.getName());
 
 		userImage.setStyleName(style.showActiveColor(), showActiveColor);
-		if (showActiveColor && status == UserStatus.ACTIVE) userImage.getElement().getStyle()
-				.setBorderColor(provider.getColorProviderService().getSelectionColorFor(userRepresentation).toCssRepresentation());
 
 		if (updateListener != null) updateListener.onUserUpdate(user);
+	}
+
+	private void updateStatus(final UserStatus status) {
+		container.setStyleName(status == UserStatus.OFFLINE ? style.offline() : style.online());
+		if (showActiveColor && status == UserStatus.ACTIVE) userImage.getElement().getStyle()
+				.setBorderColor(COLOR_PROVIDER.getSelectionColorFor(userRepresentation).toCssRepresentation());
 	}
 
 	@UiHandler("userImage")
@@ -140,6 +156,15 @@ public class UserWidget extends Composite {
 
 		void onUserUpdate(User user);
 
+	}
+
+	public double getOpacity() {
+		try {
+			return Double.valueOf(container.getElement().getStyle().getOpacity());
+		}
+		catch (final Exception e) {
+			return 1;
+		}
 	}
 
 }

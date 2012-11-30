@@ -20,8 +20,12 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
-entation user;
+
+public class ImpedimentRemoveActionTest extends ModelActionTest {
+
 	private Annotation annotation;
+	private UUID subjectId;
+	private UserRepresentation user;
 
 	@Before
 	public void setup() throws Exception {

@@ -56,6 +56,9 @@ public class ActionQueuedDispatcherTestUtils {
 
 			@Override
 			public void multicastToAllProjectsInUserAuthorizationList(final UserDataUpdateEvent event, final List<ProjectRepresentation> projectsList) {}
+
+			@Override
+			public void multicastToAllUsersInSpecificProject(final ServerPushEvent event, final UUID projectId) {}
 		};
 	}
 

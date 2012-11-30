@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -28,7 +28,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 	interface ScopeAssociatedMembersWidgetUiBinder extends UiBinder<Widget, ScopeAssociatedMembersWidget> {}
 
 	@UiField(provided = true)
-	ModelWidgetContainer<User, DraggableMemberWidget> associatedUsers;
+	ModelWidgetContainer<UserRepresentation, DraggableMemberWidget> associatedUsers;
 
 	private FlowPanel associatedUsersContainer;
 
@@ -59,7 +59,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 			return;
 		}
 
-		final List<User> associatedUsersList = ClientServiceProvider.getInstance().getUserAssociationService().getAssociatedUsers(scope);
+		final List<UserRepresentation> associatedUsersList = ClientServiceProvider.getInstance().getUserAssociationService().getAssociatedUsers(scope);
 		associatedUsers.update(associatedUsersList);
 		final int userCount = associatedUsersList.size();
 		this.setVisible(userCount > 0);
@@ -72,11 +72,11 @@ public class ScopeAssociatedMembersWidget extends Composite {
 		associatedUsers.getContainningPanel().add(memberWidget);
 	}
 
-	private ModelWidgetContainer<User, DraggableMemberWidget> createAssociatedUsersListWidget(final DragAndDropManager userDragAndDropMananger) {
+	private ModelWidgetContainer<UserRepresentation, DraggableMemberWidget> createAssociatedUsersListWidget(final DragAndDropManager userDragAndDropMananger) {
 		associatedUsersContainer = new FlowPanel();
-		return new ModelWidgetContainer<User, DraggableMemberWidget>(new ModelWidgetFactory<User, DraggableMemberWidget>() {
+		return new ModelWidgetContainer<UserRepresentation, DraggableMemberWidget>(new ModelWidgetFactory<UserRepresentation, DraggableMemberWidget>() {
 			@Override
-			public DraggableMemberWidget createWidget(final User modelBean) {
+			public DraggableMemberWidget createWidget(final UserRepresentation modelBean) {
 				final DraggableMemberWidget widget = new DraggableMemberWidget(modelBean);
 				if (userDragAndDropMananger != null) userDragAndDropMananger.monitorNewDraggableItem(widget, widget.getDraggableItem());
 				return widget;

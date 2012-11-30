@@ -19,4 +19,6 @@ public interface MulticastService {
 	void multicastToAllUsersButCurrentUserClientInSpecificProject(ServerPushEvent event, UUID projectId);
 
 	void multicastToAllProjectsInUserAuthorizationList(UserDataUpdateEvent event, List<ProjectRepresentation> projectsList);
+
+	void multicastToAllUsersInSpecificProject(ServerPushEvent event, UUID projectId);
 }

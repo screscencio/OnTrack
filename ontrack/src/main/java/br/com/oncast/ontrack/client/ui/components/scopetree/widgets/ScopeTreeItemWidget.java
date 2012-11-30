@@ -579,6 +579,7 @@ public class ScopeTreeItemWidget extends Composite {
 		if (!selectionsList.isEmpty()) {
 			selectionColor = selectionsList.get(0).getColor();
 			for (final Selection s : selectionsList) {
+				// FIXME Mats
 				final User user = ClientServiceProvider.getInstance().getUserDataService().retrieveRealUser(s.getUser());
 				final String email = user.getEmail();
 				if (!membersText.contains(email)) membersText += email + ", ";

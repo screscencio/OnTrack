@@ -3,6 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:menu="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu"
+	xmlns:u="urn:import:br.com.oncast.ontrack.client.ui.components.user"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
@@ -11,11 +12,6 @@
 	
 		.author {
 			vertical-align: top;
-			border: 1px solid COLOR_GRAY_DARK;
-			
-			width: 40px;
-			height: 40px;
-			margin-right: 5px;
 		}
 		
 		.messageBody {
@@ -62,7 +58,7 @@
 		<g:DeckPanel ui:field="deckPanel">
 			<g:HTMLPanel>
 				<g:HorizontalPanel height="100%">
-					<g:Image ui:field="author" styleName="{style.author}" />
+					<u:UserWidget ui:field="author" styleName="{style.author}" />
 					<g:cell width="100%" height="100%">
 						<g:VerticalPanel width="100%" height="100%">
 							<g:Label ui:field="deprecatedLabel" styleName="{style.deprecatedLabel}">

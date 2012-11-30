@@ -10,7 +10,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tags.TagFactory;
 import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeAddAssociatedUserActionEntity.class)
@@ -44,7 +44,7 @@ public class ScopeAddAssociatedUserAction implements ScopeAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope scope = ActionHelper.findScope(scopeId, context);
-		final User user = ActionHelper.findUser(userId, context);
+		final UserRepresentation user = ActionHelper.findUser(userId, context);
 
 		context.addTag(TagFactory.createUserTag(tagId, scope, user));
 

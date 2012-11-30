@@ -27,7 +27,7 @@ public class UserDataManagerImpl implements UserDataManager {
 	}
 
 	@Override
-	public User updateUserInformation(final User user) {
+	public User updateUserInformation(final User user) throws PersistenceException {
 		try {
 			final User u = persistenceService.persistOrUpdateUser(user);
 
@@ -36,9 +36,6 @@ public class UserDataManagerImpl implements UserDataManager {
 			multicastService.multicastToAllProjectsInUserAuthorizationList(new UserDataUpdateEvent(user), listAuthorizedProjects);
 
 			return u;
-		}
-		catch (final PersistenceException e) {
-			// throws another exception or just log?
 		}
 		catch (final NoResultFoundException e) {
 			// throws another exception or just log?

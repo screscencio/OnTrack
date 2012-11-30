@@ -3,15 +3,15 @@ package br.com.oncast.ontrack.client.services.user;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public interface UserAssociationService {
 
-	List<User> getAssociatedUsers(Scope scope);
+	List<UserRepresentation> getAssociatedUsers(Scope scope);
 
-	boolean onAssociateUserRequest(Scope scope, User user);
+	boolean onAssociateUserRequest(Scope scope, UserRepresentation user);
 
-	void onUserRemoveAssociationRequest(Scope scope, User user);
+	void onUserRemoveAssociationRequest(Scope scope, UserRepresentation user);
 
-	boolean hasAssociatedUser(Scope scope, User user);
+	boolean hasAssociatedUser(Scope scope, UserRepresentation user);
 }

@@ -22,6 +22,8 @@ import br.com.oncast.ontrack.shared.services.user.UserOfflineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOnlineEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOpenProjectEvent;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -35,6 +37,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	private SortedSet<UserRepresentation> activeUsers;
 	private SortedSet<UserRepresentation> onlineUsers;
 	private final Set<UsersStatusChangeListener> listenersList;
+	private final SetMultimap<UserRepresentation, UserSpecificStatusChangeListener> userSpecificListeners;
 
 	public UsersStatusServiceImpl(final DispatchService requestDispatchService, final ContextProviderService contextProviderService,
 			final ServerPushClientService serverPushClientService, final EventBus eventBus) {
@@ -42,6 +45,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 		this.contextProviderService = contextProviderService;
 
 		listenersList = new HashSet<UsersStatusChangeListener>();
+		userSpecificListeners = HashMultimap.create();
 
 		contextProviderService.addContextLoadListener(getContextChangeListener());
 
@@ -56,6 +60,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 					final UserRepresentation user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					activeUsers.add(user);
 					notifyUsersStatusListsUpdate();
+					notifyUserSpecificStatusChangeListeners(user, UserStatus.ACTIVE);
 				}
 				catch (final UserNotFoundException e) {
 					GWT.log("UserOpenProjectEventHandler Failed", e);
@@ -231,4 +236,28 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 		return UserStatus.OFFLINE;
 	}
 
+	@Override
+	public HandlerRegistration registerListenerForSpecificUser(final UserRepresentation user, final UserSpecificStatusChangeListener listener) {
+		userSpecificListeners.put(user, listener);
+		if (hasLoadedActiveUsers()) listener.onUserStatusChange(getStatus(user));
+
+		return new HandlerRegistration() {
+			@Override
+			public void removeHandler() {
+				userSpecificListeners.remove(user, listener);
+			}
+		};
+	}
+
+	public interface UserSpecificStatusChangeListener {
+
+		void onUserStatusChange(UserStatus status);
+
+	}
+
+	private void notifyUserSpecificStatusChangeListeners(final UserRepresentation user, final UserStatus status) {
+		for (final UserSpecificStatusChangeListener l : userSpecificListeners.get(user)) {
+			l.onUserStatusChange(status);
+		}
+	}
 }

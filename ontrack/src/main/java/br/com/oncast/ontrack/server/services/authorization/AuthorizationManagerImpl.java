@@ -87,7 +87,8 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			}
 			catch (final UserNotFoundException e) {
 				generatedPassword = PasswordHash.generatePassword();
-				user = new UserRepresentation(authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0).getId());
+				final User createdUser = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
+				user = new UserRepresentation(createdUser.getId());
 				LOGGER.debug("Created New User '" + userEmail + "'.");
 
 				if (authenticationManager.isUserAuthenticated()) {
@@ -176,5 +177,4 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		final User user = persistenceService.retrieveUserById(userId);
 		return persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null;
 	}
-
 }

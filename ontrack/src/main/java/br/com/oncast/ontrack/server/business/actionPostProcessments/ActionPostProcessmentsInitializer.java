@@ -51,7 +51,7 @@ public class ActionPostProcessmentsInitializer {
 
 	public synchronized ActionPostProcessor<TeamInviteAction> getTeamInvitePostProcessor() {
 		if (teamInvitePostProcessor == null) {
-			teamInvitePostProcessor = new TeamInvitePostProcessor(multicastService);
+			teamInvitePostProcessor = new TeamInvitePostProcessor(multicastService, persistenceService);
 		}
 		return teamInvitePostProcessor;
 	}

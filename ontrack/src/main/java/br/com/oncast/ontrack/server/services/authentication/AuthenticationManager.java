@@ -94,6 +94,7 @@ public class AuthenticationManager {
 			final String message = "Could not create a new user with e-mail '" + formattedUserEmail + "'";
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
+
 		}
 	}
 

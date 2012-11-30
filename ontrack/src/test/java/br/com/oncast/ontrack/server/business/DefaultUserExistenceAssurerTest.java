@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -16,8 +17,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class DefaultUserExistenceAssurerTest {
 
-	private static final String DEFAULT_PASSWORD = "ontrackpoulain";
-	private static final String DEFAULT_EMAIL = "admin@ontrack.com";
+	private static final String DEFAULT_PASSWORD = DefaultAuthenticationCredentials.USER_PASSWORD;
+	private static final String DEFAULT_EMAIL = DefaultAuthenticationCredentials.USER_EMAIL;
 	private PersistenceService persistanceService;
 
 	@Before

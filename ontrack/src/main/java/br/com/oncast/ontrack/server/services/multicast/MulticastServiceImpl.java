@@ -54,6 +54,15 @@ public class MulticastServiceImpl implements MulticastService {
 	}
 
 	@Override
+	public void multicastToAllUsersInSpecificProject(final ServerPushEvent event, final UUID projectId) {
+		final Set<ServerPushConnection> connectionSet = clientManager.getClientsAtProject(projectId);
+
+		LOGGER.debug("Multicasting '" + event.getClass().getSimpleName() + "' event (" + event.toString() + ") to '"
+				+ PrettyPrinter.getSimpleNamesListString(connectionSet) + "'.");
+		serverPushServerService.pushEvent(event, connectionSet);
+	}
+
+	@Override
 	public void multicastToCurrentUserClientInSpecificProject(final ServerPushEvent event, final UUID projectId) {
 		final ServerPushConnection localClientId = sessionManager.getCurrentSession().getThreadLocalClientId();
 		if (localClientId == null || !clientManager.getClientsAtProject(projectId).contains(localClientId)) return;

@@ -13,6 +13,7 @@ import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -24,6 +25,8 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 	private static UserInformationCardUiBinder uiBinder = GWT.create(UserInformationCardUiBinder.class);
 
 	interface UserInformationCardUiBinder extends UiBinder<Widget, UserInformationCard> {}
+
+	private static UserInformationCardMessages messages = GWT.create(UserInformationCardMessages.class);
 
 	@UiField
 	Image author;
@@ -45,10 +48,20 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 			@Override
 			public boolean onEditionRequest(final String text) {
 				if (text.isEmpty() || text.equals(user.getName())) return false;
-				user.setName(text);
 
-				ClientServiceProvider.getInstance().getUserDataService().onUserDataUpdate(user);
+				ClientServiceProvider.getInstance().getUserDataService().onUserDataUpdate(user, new AsyncCallback<User>() {
 
+					@Override
+					public void onSuccess(final User result) {
+						user.setName(text);
+						ClientServiceProvider.getInstance().getClientAlertingService().showSuccess(messages.userNameChangeSuccess());
+					}
+
+					@Override
+					public void onFailure(final Throwable caught) {
+						ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.userNameChangeFailure());
+					}
+				});
 				return true;
 			}
 		});
@@ -78,6 +91,6 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 	private void updateView() {
 		userEmail.setText(user.getEmail());
 		userName.setValue(user.getName());
-		author.setUrl(ClientServiceProvider.getInstance().getUserDataService().getAvatarUrl(user.getEmail()));
+		author.setUrl(ClientServiceProvider.getInstance().getUserDataService().getAvatarUrl(user));
 	}
 }

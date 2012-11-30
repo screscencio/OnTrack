@@ -1,12 +1,11 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.user.PortableContactJsonObject;
-import br.com.oncast.ontrack.client.services.user.UserDataService.LoadProfileCallback;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.AnnotationMenuWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.DeprecateAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.LikeAnnotationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.menu.SinceAnnotationMenuItem;
+import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
@@ -24,7 +23,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -36,8 +34,8 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 
 	interface AnnotationCommentUiBinder extends UiBinder<Widget, AnnotationComment> {}
 
-	@UiField
-	Image author;
+	@UiField(provided = true)
+	UserWidget author;
 
 	@UiField
 	Label deprecatedLabel;
@@ -66,11 +64,12 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 		this.subjectId = subjectId;
 		this.annotation = annotation;
 
+		author = new UserWidget(annotation.getAuthor());
+
 		initWidget(uiBinder.createAndBindUi(this));
 
 		deckPanel.showWidget(annotation.isDeprecated() ? 1 : 0);
 
-		updateAuthorImage();
 		updateMessageBody();
 		updateMenu();
 
@@ -99,25 +98,6 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 		for (final String line : this.annotation.getMessage().split("\\n")) {
 			messageBody.add(new HTMLPanel(SimpleHtmlSanitizer.sanitizeHtml(line)));
 		}
-	}
-
-	private void updateAuthorImage() {
-		final User user = ClientServiceProvider.getInstance().getUserDataService()
-				.retrieveRealUser(annotation.getAuthor());
-		final String email = user.getEmail();
-		this.author.setUrl(ClientServiceProvider.getInstance().getUserDataService().getAvatarUrl(email));
-
-		ClientServiceProvider.getInstance().getUserDataService().loadProfile(email, new LoadProfileCallback() {
-			@Override
-			public void onProfileLoaded(final PortableContactJsonObject profile) {
-				author.setTitle(profile.getPreferedUsername());
-			}
-
-			@Override
-			public void onProfileUnavailable(final Throwable cause) {
-				author.setTitle(email);
-			}
-		});
 	}
 
 	@Override
@@ -159,13 +139,9 @@ public class AnnotationComment extends Composite implements ModelWidget<Annotati
 	private String getDeprecationText() {
 		final User user = ClientServiceProvider.getInstance().getUserDataService()
 				.retrieveRealUser(annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
-		final String username = removeEmailDomain(user);
 		final String formattedDate = HumanDateFormatter.getRelativeDate(annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
-		return messages.deprecationDetails(username, formattedDate);
-	}
 
-	private String removeEmailDomain(final User user) {
-		return user.getEmail().replaceAll("@.*$", "");
+		return messages.deprecationDetails(user.getName(), formattedDate);
 	}
 
 	@Override

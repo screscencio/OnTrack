@@ -36,13 +36,24 @@ public class UserRepresentation implements Serializable, Comparable<UserRepresen
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		final UserRepresentation other = (UserRepresentation) obj;
-		if (id == null) {
-			if (other.id != null) return false;
+		if (obj.getClass() == User.class) {
+			final User other = (User) obj;
+			if (id == null) {
+				if (other.getId() != null) return false;
+			}
+			else if (!id.equals(other.getId())) return false;
+			return true;
 		}
-		else if (!id.equals(other.id)) return false;
-		return true;
+		else if (obj.getClass() == UserRepresentation.class) {
+			final UserRepresentation other = (UserRepresentation) obj;
+			if (id == null) {
+				if (other.getId() != null) return false;
+			}
+			else if (!id.equals(other.getId())) return false;
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override

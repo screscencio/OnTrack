@@ -20,7 +20,7 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -42,7 +42,7 @@ public class DraggableMembersListWidget extends Composite {
 	interface DraggableMembersListWidgetUiBinder extends UiBinder<Widget, DraggableMembersListWidget> {}
 
 	@UiField(provided = true)
-	ModelWidgetContainer<User, DraggableMemberWidget> users;
+	ModelWidgetContainer<UserRepresentation, DraggableMemberWidget> users;
 
 	@UiField
 	HTMLPanel scroll;
@@ -101,14 +101,14 @@ public class DraggableMembersListWidget extends Composite {
 		updateMembersList(usersStatusService.getActiveUsers(), usersStatusService.getOnlineUsers());
 	}
 
-	private void updateMembersList(final SortedSet<User> activeUsers, final SortedSet<User> onlineUsers) {
+	private void updateMembersList(final SortedSet<UserRepresentation> activeUsers, final SortedSet<UserRepresentation> onlineUsers) {
 		final ProjectContext currentProjectContext = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
-		final ArrayList<User> userModels = new ArrayList<User>(activeUsers);
+		final ArrayList<UserRepresentation> userModels = new ArrayList<UserRepresentation>(activeUsers);
 
-		for (final User user : onlineUsers) {
+		for (final UserRepresentation user : onlineUsers) {
 			if (!userModels.contains(user)) userModels.add(user);
 		}
-		for (final User user : currentProjectContext.getUsers()) {
+		for (final UserRepresentation user : currentProjectContext.getUsers()) {
 			if (!userModels.contains(user)) userModels.add(user);
 		}
 
@@ -133,20 +133,20 @@ public class DraggableMembersListWidget extends Composite {
 		handlerRegistrations.add(ClientServiceProvider.getInstance().getUsersStatusService().register(new UsersStatusChangeListener() {
 			@Override
 			public void onUsersStatusListUnavailable(final Throwable caught) {
-				updateMembersList(new TreeSet<User>(), new TreeSet<User>());
+				updateMembersList(new TreeSet<UserRepresentation>(), new TreeSet<UserRepresentation>());
 			}
 
 			@Override
-			public void onUsersStatusListsUpdated(final SortedSet<User> activeUsers, final SortedSet<User> onlineUsers) {
+			public void onUsersStatusListsUpdated(final SortedSet<UserRepresentation> activeUsers, final SortedSet<UserRepresentation> onlineUsers) {
 				updateMembersList(activeUsers, onlineUsers);
 			}
 		}));
 	}
 
-	private ModelWidgetContainer<User, DraggableMemberWidget> createModelWidgetContainer() {
-		return new ModelWidgetContainer<User, DraggableMemberWidget>(new ModelWidgetFactory<User, DraggableMemberWidget>() {
+	private ModelWidgetContainer<UserRepresentation, DraggableMemberWidget> createModelWidgetContainer() {
+		return new ModelWidgetContainer<UserRepresentation, DraggableMemberWidget>(new ModelWidgetFactory<UserRepresentation, DraggableMemberWidget>() {
 			@Override
-			public DraggableMemberWidget createWidget(final User modelBean) {
+			public DraggableMemberWidget createWidget(final UserRepresentation modelBean) {
 				final DraggableMemberWidget widget = new DraggableMemberWidget(modelBean);
 				userDragAndDropManager.monitorNewDraggableItem(widget, widget.getDraggableItem());
 				return widget;

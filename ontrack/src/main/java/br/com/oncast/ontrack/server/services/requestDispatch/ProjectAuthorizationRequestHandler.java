@@ -17,4 +17,5 @@ public class ProjectAuthorizationRequestHandler implements RequestHandler<Projec
 	private BusinessLogic getBusinessLogic() {
 		return ServerServiceProvider.getInstance().getBusinessLogic();
 	}
+
 }

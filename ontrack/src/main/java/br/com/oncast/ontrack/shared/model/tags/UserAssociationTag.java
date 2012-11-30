@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.shared.model.tags;
 import java.io.Serializable;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class UserAssociationTag implements Tag, Serializable {
@@ -12,19 +12,19 @@ public class UserAssociationTag implements Tag, Serializable {
 
 	private Scope scope;
 
-	private User user;
+	private UserRepresentation user;
 
 	private UUID id;
 
 	public UserAssociationTag() {}
 
-	public UserAssociationTag(final UUID tagId, final Scope scope, final User user) {
+	public UserAssociationTag(final UUID tagId, final Scope scope, final UserRepresentation user) {
 		this.id = tagId;
 		this.scope = scope;
 		this.user = user;
 	}
 
-	public User getUser() {
+	public UserRepresentation getUser() {
 		return user;
 	}
 
