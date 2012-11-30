@@ -146,16 +146,24 @@ public class KanbanColumnWidget extends Composite implements ModelWidget<KanbanC
 
 	private List<Scope> getTasks() {
 		final List<Scope> tasks = new ArrayList<Scope>();
-		for (final Scope scope : release.getScopeList()) {
-			if (!scope.getProgress().isUnderWork()) continue;
 
-			for (final Scope task : scope.getAllLeafs()) {
-				final Progress progress = task.getProgress();
-				final String progressDescription = progress.getState() == NOT_STARTED ? DEFAULT_NOT_STARTED_NAME : progress.getDescription();
-				if (progressDescription.equals(column.getDescription())) tasks.add(task);
-			}
+		for (final Scope scope : release.getScopeList()) {
+			if (scope.getProgress().getState() == ProgressState.UNDER_WORK) addTasks(tasks, scope);
 		}
+
+		for (final Scope scope : release.getScopeList()) {
+			if (scope.getProgress().getState() == ProgressState.DONE) addTasks(tasks, scope);
+		}
+
 		return tasks;
+	}
+
+	private void addTasks(final List<Scope> tasks, final Scope scope) {
+		for (final Scope task : scope.getAllLeafs()) {
+			final Progress progress = task.getProgress();
+			final String progressDescription = progress.getState() == NOT_STARTED ? DEFAULT_NOT_STARTED_NAME : progress.getDescription();
+			if (progressDescription.equals(column.getDescription())) tasks.add(task);
+		}
 	}
 
 	@Override

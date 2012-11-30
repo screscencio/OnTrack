@@ -186,7 +186,9 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		if (shouldShowScopeColor) {
 			final Style s = draggableAnchor.getElement().getStyle();
 
-			if (progress.isUnderWork()) s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope).toCssRepresentation());
+			if (progress.getState() != ProgressState.NOT_STARTED) {
+				s.setBackgroundColor(SERVICE_PROVIDER.getColorProviderService().getColorFor(scope).toCssRepresentation());
+			}
 			else s.clearBackgroundColor();
 		}
 
