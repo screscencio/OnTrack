@@ -14,6 +14,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -30,6 +31,13 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 
 	interface EditableLabelUiBinder extends UiBinder<Widget, EditableLabel> {}
 
+	interface EditableLabelStyle extends CssResource {
+		String disabled();
+	}
+
+	@UiField
+	EditableLabelStyle style;
+
 	@UiField
 	@IgnoredByDeepEquality
 	protected DeckPanel deckPanel;
@@ -45,6 +53,8 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 	@IgnoredByDeepEquality
 	private final EditableLabelEditionHandler editionHandler;
 
+	private boolean isReadOnly = false;
+
 	public EditableLabel(final EditableLabelEditionHandler editionHandler) {
 		this(editionHandler, false);
 	}
@@ -59,6 +69,12 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 	@Override
 	public String getValue() {
 		return visualizationLabel.getText();
+	}
+
+	public void setReadOnly(final boolean readOnly) {
+		isReadOnly = readOnly;
+
+		visualizationLabel.setStyleName(style.disabled(), readOnly);
 	}
 
 	@Override
@@ -104,7 +120,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 	}
 
 	private void switchToEdit() {
-		if (isEditionMode()) return;
+		if (isEditionMode() || isReadOnly) return;
 
 		editionBox.setText(getValue());
 		deckPanel.showWidget(1);
