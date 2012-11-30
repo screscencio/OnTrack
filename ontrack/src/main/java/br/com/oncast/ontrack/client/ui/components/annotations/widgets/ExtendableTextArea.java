@@ -10,13 +10,10 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasBlurHandlers;
-import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -31,7 +28,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ExtendableTextArea extends Composite implements HasText, HasKeyDownHandlers, HasFocusHandlers, HasBlurHandlers {
+public class ExtendableTextArea extends Composite implements HasText, HasKeyDownHandlers {
 
 	private static ExtendableTextAreaUiBinder uiBinder = GWT.create(ExtendableTextAreaUiBinder.class);
 
@@ -57,6 +54,8 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 	private final NativeEventListener clickListener;
 
+	private ExpansionListener expansionListener;
+
 	public ExtendableTextArea() {
 		textArea = new RichTextArea();
 		textArea.ensureDebugId("cwRichText-area");
@@ -70,7 +69,7 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 
 		deckPanel.setAnimationEnabled(true);
 
-		deckPanel.showWidget(1);
+		shrink();
 
 		clickListener = new NativeEventListener() {
 
@@ -94,18 +93,35 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 		};
 	}
 
+	public HandlerRegistration registerExpansionListener(final ExpansionListener listener) {
+		this.expansionListener = listener;
+		return new HandlerRegistration() {
+			@Override
+			public void removeHandler() {
+				expansionListener = null;
+			}
+		};
+	}
+
 	@UiHandler("paddedTextBox")
-	public void onPaddedTextBoxFocusHandler(final FocusEvent event) {
+	public void onPaddedTextBoxFocus(final FocusEvent event) {
+		expand();
+	}
+
+	private void expand() {
 		deckPanel.showWidget(0);
-
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
 			@Override
 			public void execute() {
 				textArea.setFocus(true);
+				if (expansionListener != null) expansionListener.onExpandded();
 			}
 		});
+	}
 
+	@UiHandler("textArea")
+	public void onTextAreaKeyPress(final KeyPressEvent event) {
+		expand();
 	}
 
 	@UiHandler("richTextArea")
@@ -142,22 +158,23 @@ public class ExtendableTextArea extends Composite implements HasText, HasKeyDown
 	}
 
 	public void setFocus(final boolean b) {
-		deckPanel.showWidget(0);
-		textArea.setFocus(b);
+		textArea.setFocus(true);
 	}
 
 	public void hideRichTextArea() {
-		deckPanel.showWidget(1);
+		shrink();
 		GlobalNativeEventService.getInstance().removeMouseUpListener(clickListener);
 	}
 
-	@Override
-	public HandlerRegistration addBlurHandler(final BlurHandler handler) {
-		return textArea.addBlurHandler(handler);
+	private void shrink() {
+		deckPanel.showWidget(1);
+		if (expansionListener != null) expansionListener.onShrinked();
 	}
 
-	@Override
-	public HandlerRegistration addFocusHandler(final FocusHandler handler) {
-		return textArea.addFocusHandler(handler);
+	public interface ExpansionListener {
+		void onExpandded();
+
+		void onShrinked();
 	}
+
 }

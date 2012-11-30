@@ -33,7 +33,7 @@
 	
 	.parameterLabel {
 		font-weight: bold;
-		margin-right: 5px;
+		margin-right: PADDING_SMALL;
 	}
 
 	.parameterLabel, .unitLabel {
@@ -45,7 +45,7 @@
 	}
 	
 	.separator {
-		margin-right: 15px;
+		margin-right: PADDING_LARGE;
 	}
 	
 	.helpText {

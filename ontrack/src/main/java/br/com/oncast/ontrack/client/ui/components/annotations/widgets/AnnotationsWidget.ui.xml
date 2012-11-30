@@ -7,7 +7,8 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
-	<ui:style>
+	<ui:image field="createIcon" src="black_check.png" />
+	<ui:style src="../../../style/default.css">
 	
 		.container {
 			position: relative;
@@ -23,7 +24,33 @@
 		}
 		
 		.uploadPanel {
-			margin-left: 15px;
+			margin-left: 10px;
+		}
+		
+		@sprite .create {
+			gwt-image: 'createIcon';
+			
+			background-size: 30px 30px;
+			background-position: center;
+			
+			width: 24px;
+			height: 24px;
+			
+			margin: 1px;
+			margin-left: 11px;
+			
+			border-radius: 3px;
+			padding: 2px;
+			
+			opacity: 0.8;
+			cursor: pointer;
+		}
+		
+		.create:HOVER {
+			margin: 0px;
+			margin-left: 10px;
+			border: 1px solid #AEAEAE;
+			box-shadow: inset 1px 1px 1px white;
 		}
 		
 	</ui:style>
@@ -31,13 +58,13 @@
 	<g:FocusPanel>
 		<g:VerticalPanel height="100%" width="100%">
 			<g:HorizontalPanel width="100%">
-				<g:cell width="100%">
+				<g:cell width="100%" verticalAlignment="middle">
 					<aw:ExtendableTextArea ui:field="newAnnotationText" />
 				</g:cell>
-				<g:cell verticalAlignment="bottom"  horizontalAlignment="center">
-					<g:VerticalPanel horizontalAlignment="center">
+				<g:cell verticalAlignment="bottom"  horizontalAlignment="right">
+					<g:VerticalPanel horizontalAlignment="right">
 						<aw:UploadWidget ui:field="uploadWidget" styleName="{style.uploadPanel}"/>
-						<g:Button ui:field="createNotificationButton" />
+						<g:FocusPanel ui:field="createNotificationButton" styleName="{style.create}"/>
 					</g:VerticalPanel>
 				</g:cell>
 			</g:HorizontalPanel>

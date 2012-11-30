@@ -9,8 +9,10 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,7 +26,8 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets, HasText, HasBlurHandlers, HasFocusHandlers {
+public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets, HasText, HasBlurHandlers, HasFocusHandlers,
+		HasKeyPressHandlers {
 
 	private static PaddedTextBoxUiBinder uiBinder = GWT.create(PaddedTextBoxUiBinder.class);
 
@@ -112,6 +115,11 @@ public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasK
 	@Override
 	public HandlerRegistration addFocusHandler(final FocusHandler handler) {
 		return textBox.addFocusHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addKeyPressHandler(final KeyPressHandler handler) {
+		return textBox.addKeyPressHandler(handler);
 	}
 
 }

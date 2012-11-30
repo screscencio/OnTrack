@@ -15,6 +15,11 @@
 
 @def COLOR_SEMI_WHITE #FAFAFA;
 
+@def BORDER_DEFAULT 1px solid COLOR_GRAY;
+
+@def PADDING_SMALL 5px;
+@def PADDING_MEDIUM 10px;
+@def PADDING_LARGE 15px;
 
 @def FONT_DEFAULT 'ProximaNovaRegular';
 @def FONT_DEFAULT_ITALIC 'ProximaNovaRegularItalic';

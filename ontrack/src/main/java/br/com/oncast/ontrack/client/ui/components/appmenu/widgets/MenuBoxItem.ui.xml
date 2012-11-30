@@ -14,11 +14,11 @@
 	}
 	
 	.label {
-		padding: 13px 15px;
+		padding: 13px PADDING_LARGE;
 	}
 	
 	.icon {
-        margin: 13px 0px 13px 15px;
+        margin: 13px 0px 13px PADDING_LARGE;
 	}
 	</ui:style>
 	

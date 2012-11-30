@@ -63,7 +63,7 @@
 			cursor: pointer;
 			position: relative;
 			width: 100%;
-			height: 15px !important;
+			height: PADDING_LARGE !important;
 		}
 		
 		.closedDeprecatedLabel {
@@ -87,6 +87,10 @@
 			border-left: SOLVED_IMPEDIMENT_BORDER;
 		}
 		
+		.messageContainer {
+			margin-left: 5px;
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel>
@@ -95,7 +99,7 @@
 				<g:HorizontalPanel ui:field="content" height="100%">
 					<u:UserWidget ui:field="author" />
 					<g:cell width="100%" height="100%">
-						<g:VerticalPanel width="100%" height="100%">
+						<g:VerticalPanel width="100%" height="100%" styleName="{style.messageContainer}">
 							<g:Label ui:field="deprecatedLabel" styleName="{style.deprecatedLabel}">
 								<ui:msg description="deprecated simple label">[Deprecated]</ui:msg>
 							</g:Label>

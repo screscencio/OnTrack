@@ -22,7 +22,7 @@
 		
 		.logo {
 			float: right;
-			margin: 8px 15px;
+			margin: 8px PADDING_LARGE;
 		}
 		
         .menuItemContainer, .menuItem, .backButtonContainer {
@@ -31,7 +31,7 @@
         }
 		
         .menuItemContainer, .menuItem {
-            margin: 20px 15px;
+            margin: 20px PADDING_LARGE;
         }
 		
 		.backButtonContainer {

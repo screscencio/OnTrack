@@ -5,7 +5,7 @@
 	
 	<ui:image field="sliderLeft" src="../places/planning/slider-left.png"/>
 	<ui:image field="sliderRight" src="../places/planning/slider-right.png"/>
-	<ui:style>
+	<ui:style src="../style/default.css">
 	
 	.root {
 		position: relative;
@@ -15,7 +15,7 @@
 		gwt-image: 'sliderLeft';
 		background-size: 16px;
 		background-position: -4px 11px;
-		background-color: #FAFAFA;
+		background-color: COLOR_SEMI_WHITE;
 		
 		position: absolute;
 		left: 0px;
@@ -24,7 +24,7 @@
 		height: 38px;
 
 		border-radius: 3px 0px 0px 3px;
-		border: 1px solid #999;
+		border: BORDER_DEFAULT;
 		
 		opacity: 0.5;
 	}
@@ -33,7 +33,7 @@
 		gwt-image: 'sliderRight';
 		background-size: 16px;
 		background-position: -4px 11px;
-		background-color: #FAFAFA;
+		background-color: COLOR_SEMI_WHITE;
 		
 		position: absolute;
 		right: 0px;
@@ -42,7 +42,7 @@
 		height: 38px;
 
 		border-radius: 0px 3px 3px 0px;
-		border: 1px solid #999;
+		border: BORDER_DEFAULT;
 		
 		opacity: 0.5;
 	}

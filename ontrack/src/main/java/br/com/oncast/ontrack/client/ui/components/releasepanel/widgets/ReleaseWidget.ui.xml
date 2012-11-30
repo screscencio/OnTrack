@@ -14,7 +14,7 @@
 				position: relative;
 				width: 100%;
 				
-				margin-bottom: 10px;
+				margin-bottom: PADDING_MEDIUM;
 			}
 			
 			.header {
@@ -99,7 +99,7 @@
 			
 			.body {
 				position: relative;
-				margin: 0px 5px;
+				margin: 0px 3px;
 
 				border: RELEASE_WIDGET_BORDER;
 				border-top: none;
@@ -108,13 +108,15 @@
 			}
 			
 			.releaseContainer {
-				padding: 10px 5px 0px 5px;
+				padding: PADDING_SMALL;
+				padding-bottom: 0px;
 				width: 100%;
 			}
 			
 			.laterSeparator {
 				width: 100%;
-				padding: 0px 5px;	
+				padding: 0px PADDING_SMALL;
+				padding-bottom: PADDING_SMALL;
 			}
 			
 			.laterImage {
@@ -128,7 +130,7 @@
 				font-family: FONT_DEFAULT;
 				font-size: 8pt;
 				text-transform: uppercase;
-				text-shadow: -1px 0px 1px #CCCCCC;
+				text-shadow: -1px 0px 1px COLOR_GRAY_LIGHT;
 				filter: literal('dropshadow(color=#CCCCCC, offx=-1, offy=0)');;
 			}
 			

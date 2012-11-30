@@ -4,14 +4,15 @@
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:style>
+	<ui:style src="../../style/default.css">
 	
 		.projectsContainer {
 			position: absolute;
-			top: 15px;
-			left: 15px;
-			right: 15px;
-			bottom: 15px;
+			
+			top: PADDING_LARGE;
+			left: PADDING_LARGE;
+			right: PADDING_LARGE;
+			bottom: PADDING_LARGE;
 		}
 		
 	</ui:style>

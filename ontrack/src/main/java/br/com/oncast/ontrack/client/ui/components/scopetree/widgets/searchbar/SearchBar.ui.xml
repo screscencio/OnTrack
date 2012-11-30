@@ -14,7 +14,7 @@
 		}
 		
 		.searchBar {
-			padding: 0px 15px;
+			padding: 0px PADDING_LARGE;
 
 			border: RELEASE_WIDGET_BORDER;
 			margin: 1px;
@@ -34,7 +34,7 @@
 		}
 		
 		.search {
-			margin: -1px 10px;
+			margin: -1px PADDING_MEDIUM;
 		}
 		
 		.activeColumnIndicatorLabel, .inactiveColumnIndicatorLabel {

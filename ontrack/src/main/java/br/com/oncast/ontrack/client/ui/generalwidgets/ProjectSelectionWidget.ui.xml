@@ -6,7 +6,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:style>
+	<ui:style src="../style/default.css">
 		.projectSwitchingMenu {
 			min-width: 245px;
 		}
@@ -21,7 +21,7 @@
 		
 		.loadingIndicator {
             margin: 0px auto;
-            padding: 15px;
+            padding: PADDING_LARGE;
             
             background: white;
             border: 2px solid #eaeaea;

@@ -38,12 +38,12 @@
         }
         
         .customSeparatorMargin {
-        	margin: 10px -15px;
+        	margin: 10px -PADDING_LARGE;
         	margin-top: 16px;
         }
         
         .separator {
-			margin: 10px -15px;
+			margin: 10px -PADDING_LARGE;
         }
         
         .switchProjectLabel {

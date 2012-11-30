@@ -15,7 +15,7 @@
 		.title {
 			text-transform: uppercase;
 			cursor: default;
-			padding: 0px 15px;
+			padding: 0px PADDING_LARGE;
 		}
 		
 		.remove {

@@ -7,11 +7,6 @@
 	
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetStyle">
 	
-		.uploadIcon {
-			cursor: pointer;
-			display: inline-block;
-		}
-		
 		@sprite .uploadImg {
 			gwt-image: 'uploadImg';
 		}
@@ -21,8 +16,24 @@
 			opacity: 0.5;
 		}
 		
+		.uploadIcon {
+			cursor: pointer;
+			display: inline-block;
+			
+			margin: 1px;
+			
+			border-radius: 3px;
+			padding: 2px;
+			background-position: center;
+		}
+		
+		.uploadIcon:HOVER {
+			margin: 0px;
+			border: 1px solid #AEAEAE;
+			box-shadow: inset 1px 1px 1px white;
+		}
+		
 		.fileNameLabel {
-			margin-top: 4px;
 			margin-right: 10px;
 			white-space: nowrap;
 		}
@@ -30,7 +41,9 @@
 	</ui:style>
 
 	<g:HorizontalPanel>
-		<g:Label ui:field="fileNameLabel" styleName="{style.fileNameLabel}"/>
+		<g:cell verticalAlignment="middle">
+			<g:Label ui:field="fileNameLabel" styleName="{style.fileNameLabel}"/>
+		</g:cell>
 		<g:FocusPanel ui:field="uploadIcon" styleName="{style.uploadIcon} {style.uploadImg}"/>
 		<g:SimplePanel ui:field="formPanel" visible="false"/>
 	</g:HorizontalPanel>

@@ -36,7 +36,7 @@
 		
 		.loadingIndicator {
 			margin: 0px auto;
-			padding: 15px;
+			padding: PADDING_LARGE;
 			background: white;
 			border: 2px solid #eaeaea;
 			border-radius: 50%;
@@ -45,7 +45,7 @@
 		.noNotificationContainer {
 			position: relative;
 			padding: 0px;
-			padding-top: 15px;
+			padding-top: PADDING_LARGE;
 			padding-bottom: 30px;
 			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
 			width: 100%;
@@ -55,7 +55,7 @@
 			color: COLOR_GRAY;
 			text-align: center;
 			width: 100%;
-			margin-bottom: 15px;
+			margin-bottom: PADDING_LARGE;
 			font-size: FONT_SIZE_MEDIUM;
 			font-family: FONT_DEFAULT;
 		}

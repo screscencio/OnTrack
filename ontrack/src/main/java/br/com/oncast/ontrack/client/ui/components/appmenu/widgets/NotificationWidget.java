@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.notification.NotificationClientUtils;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserUpdateListener;
@@ -8,7 +7,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
-import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 import com.google.gwt.core.client.GWT;
@@ -61,26 +59,16 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	public NotificationWidget(final Notification modelBean) {
 		this.notification = modelBean;
-		UserRepresentation userRepresetation;
-		try {
-			userRepresetation = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext()
-					.findUser(notification.getAuthorId());
-			userWidget = new UserWidget(userRepresetation, new UserUpdateListener() {
-				@Override
-				public void onUserUpdate(final User user) {
-					userName.setText(user.getName());
-				}
-			});
-		}
-		catch (final UserNotFoundException e) {
-			e.printStackTrace();
-		}
-
+		userWidget = new UserWidget(new UserRepresentation(notification.getAuthorId()), new UserUpdateListener() {
+			@Override
+			public void onUserUpdate(final User user) {
+				userName.setText(user.getName());
+			}
+		});
 		initWidget(uiBinder.createAndBindUi(this));
+
 		setVisible(false);
-
 		update();
-
 		setVisible(true);
 	}
 

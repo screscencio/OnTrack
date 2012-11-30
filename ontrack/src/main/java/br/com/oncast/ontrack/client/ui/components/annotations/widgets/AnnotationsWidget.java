@@ -6,6 +6,7 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
+import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ExtendableTextArea.ExpansionListener;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.UploadWidget.UploadWidgetListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
@@ -23,17 +24,15 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AnnotationsWidget extends Composite {
@@ -53,8 +52,8 @@ public class AnnotationsWidget extends Composite {
 	@UiField
 	protected Widget separator;
 
-	@UiField(provided = true)
-	protected Button createNotificationButton;
+	@UiField
+	protected FocusPanel createNotificationButton;
 
 	@UiField
 	protected ModelWidgetContainer<Annotation, AnnotationTopic> annotationsWidgetContainer;
@@ -90,10 +89,22 @@ public class AnnotationsWidget extends Composite {
 
 	public AnnotationsWidget(final UUID subjectId) {
 		this.subjectId = subjectId;
-		createNotificationButton = new Button(messages.createAnnotation());
-		createNotificationButton.setVisible(false);
 		initWidget(uiBinder.createAndBindUi(this));
+		createNotificationButton.setVisible(false);
 		uploadWidget.setActionUrl("/application/file/upload");
+		createNotificationButton.setTitle(messages.createAnnotation());
+		newAnnotationText.registerExpansionListener(new ExpansionListener() {
+
+			@Override
+			public void onExpandded() {
+				createNotificationButton.setVisible(true);
+			}
+
+			@Override
+			public void onShrinked() {
+				createNotificationButton.setVisible(false);
+			}
+		});
 	}
 
 	@Override
@@ -111,17 +122,6 @@ public class AnnotationsWidget extends Composite {
 	@UiHandler("createNotificationButton")
 	protected void onNewAnnotationClick(final ClickEvent event) {
 		addAnnotation();
-	}
-
-	@UiHandler("newAnnotationText")
-	protected void onNewAnnotationTextOpen(final FocusEvent event) {
-		buttonTimer.cancel();
-		createNotificationButton.setVisible(true);
-	}
-
-	@UiHandler("newAnnotationText")
-	protected void onNewAnnotationTextClosed(final BlurEvent event) {
-		buttonTimer.schedule(200);
 	}
 
 	@UiHandler("newAnnotationText")

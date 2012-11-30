@@ -14,8 +14,8 @@
 	   	}
 	   	
 	   	.container {
-			padding: 10px;
-			padding-bottom: 5px;
+			padding: PADDING_SMALL;
+			padding-bottom: 0px;
 		}
 	   	
 	   	.releases {

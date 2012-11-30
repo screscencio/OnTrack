@@ -20,7 +20,7 @@
 	}
 	
 	.container {
-		box-shadow: 0px -1px 5px #CCC;
+		box-shadow: 0px -1px 5px COLOR_GRAY_LIGHT;
 		border-top: TEXTINPUT_BORDER;
 	}
 	

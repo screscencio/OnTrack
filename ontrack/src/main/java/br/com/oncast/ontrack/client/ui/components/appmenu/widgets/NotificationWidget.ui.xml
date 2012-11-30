@@ -12,7 +12,7 @@
 			.rootPanel {
 				position: relative;
 				width: 100%;
-				color : #666;
+				color : COLOR_GRAY_DARK;
 
 				margin-bottom: 10px;
 			}
@@ -62,7 +62,7 @@
 			
 			.read {
 				opacity: 0.5;
-				color: #999;
+				color: COLOR_GRAY;
 			}
 
 		</ui:style>

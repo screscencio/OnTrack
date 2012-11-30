@@ -65,7 +65,7 @@
 		}
 		
 		.progressIcon {
-			margin-right: 10px;
+			margin-right: 6px;
 			margin-top: 4px;
 			cursor: pointer;
 		}

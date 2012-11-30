@@ -21,7 +21,7 @@
 			left: 0px;
 			right: 0px;
 			
-			padding: 5px 15px;
+			padding: 5px PADDING_LARGE;
 
 			border: RELEASE_WIDGET_BORDER;
 			margin: 1px;
@@ -50,7 +50,7 @@
 		}
 	
 		.spacer {
-			height: 15px;
+			height: PADDING_LARGE;
 		}
 		
 		.name {
@@ -72,7 +72,7 @@
 		
 		.sujestionLabel {
 			font-size: FONT_SIZE_LARGE;
-			margin-bottom: 15px;
+			margin-bottom: PADDING_LARGE;
 		}
 		
 		.feedbackArea {
