@@ -117,6 +117,7 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 			}
 
 		};
+
 		showLoadingIndicator();
 		registerNotificationListChangeListener();
 	}
@@ -159,6 +160,7 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 	protected void hideLoadingIndicator() {
 		deckPanel.showWidget(1);
+		if (notificationContainer.getWidgetCount() == 0 && activityContainer.getWidgetCount() > 0) stackPanel.showWidget(1);
 	}
 
 	protected void showLoadingIndicator() {
