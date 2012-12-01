@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -65,6 +67,12 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 	@UiField
 	protected ScrollPanel activityScrollContainer;
+
+	@UiField
+	protected HorizontalPanel activitiesHeader;
+
+	@UiField
+	protected HorizontalPanel notificationsHeader;
 
 	@UiField(provided = true)
 	@IgnoredByDeepEquality
@@ -120,6 +128,9 @@ public class NotificationListWidget extends Composite implements HasCloseHandler
 
 		showLoadingIndicator();
 		registerNotificationListChangeListener();
+
+		notificationsHeader.getElement().getParentElement().getStyle().setOverflow(Overflow.VISIBLE);
+		activitiesHeader.getElement().getParentElement().getStyle().setOverflow(Overflow.VISIBLE);
 	}
 
 	@Override

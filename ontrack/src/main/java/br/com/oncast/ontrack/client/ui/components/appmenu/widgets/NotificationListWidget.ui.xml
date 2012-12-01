@@ -72,17 +72,23 @@
 
 		.stackHeader {
 			cursor: pointer;
+			
+			margin: 0px -20px;
+			
+			padding: 5px;
+			border-radius: 2px;
+			border: 1px solid #AEAEAE;
+			box-shadow: inset 1px 1px 1px white;
+			background-color: #E5E5E5;
+		}
+		.stackHeader:HOVER {
+			background-color: lightGrey;
 		}
 		
 		.stackHeaderLabel {
 			text-transform: uppercase;
-			display: inline-block;
 			color: COLOR_BLUE_LIGHT;
-		}
-		
-		.stackSeparator {
-			margin-top: 7px;
-			margin-left: 5px;
+			text-shadow: 1px 1px 1px white;;
 		}
 		
 	</ui:style>
@@ -94,11 +100,11 @@
 				</g:SimplePanel>
 				<g:StackLayoutPanel ui:field="stackPanel">
 					<g:stack>
-						<g:customHeader size="15">
-							<g:HorizontalPanel styleName="{style.stackHeader}">
+						<g:customHeader size="30">
+							<g:HorizontalPanel ui:field="notificationsHeader" styleName="{style.stackHeader}">
 								<g:Label ui:field="notificationHeaderLabel" styleName="{style.stackHeaderLabel}">Notitications</g:Label>
-								<g:cell width="100%">
-									<misc:Separator styleName="{style.stackSeparator}"></misc:Separator>
+								<g:cell width="100%" verticalAlignment="middle">
+									<g:SimplePanel />
 								</g:cell>
 							</g:HorizontalPanel>
 						</g:customHeader>
@@ -118,11 +124,11 @@
 					</g:stack>
 					
 					<g:stack>
-						<g:customHeader size="15">
-							<g:HorizontalPanel styleName="{style.stackHeader}">
+						<g:customHeader size="30">
+							<g:HorizontalPanel ui:field="activitiesHeader" styleName="{style.stackHeader}">
 								<g:Label styleName="{style.stackHeaderLabel}">Activities</g:Label>
-								<g:cell width="100%">
-									<misc:Separator styleName="{style.stackSeparator}"></misc:Separator>
+								<g:cell width="100%" verticalAlignment="middle">
+									<g:SimplePanel />
 								</g:cell>
 							</g:HorizontalPanel>
 						</g:customHeader>
