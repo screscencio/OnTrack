@@ -114,7 +114,7 @@
 					<ow:KanbanColumnCreateWidget ui:field="createColumn" styleName="{style.createButton}" />
 				</g:HTMLPanel>
 			</g:cell>
-			<g:cell height="*" horizontalAlignment="center">
+			<g:cell height="100%" horizontalAlignment="center">
 				<ow:KanbanScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}"/>
 			</g:cell>
 		</g:VerticalPanel>

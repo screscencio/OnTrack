@@ -64,7 +64,7 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 			public void onUserUpdate(final User user) {
 				userName.setText(user.getName());
 			}
-		});
+		}, false);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		setVisible(false);

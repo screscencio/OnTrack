@@ -88,7 +88,7 @@ public class AnnotationTopic extends Composite implements ModelWidget<Annotation
 		this.annotation = annotation;
 
 		commentsPanel = new CommentsWidget(annotation.getId());
-		author = new UserWidget(annotation.getAuthor()).setShowActiveColor(false);
+		author = new UserWidget(annotation.getAuthor(), false);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		deckPanel.showWidget(annotation.isDeprecated() ? 1 : 0);

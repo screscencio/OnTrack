@@ -75,6 +75,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 					final UserRepresentation user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					activeUsers.remove(user);
 					notifyUsersStatusListsUpdate();
+					notifyUserSpecificStatusChangeListeners(user, UserStatus.ONLINE);
 				}
 				catch (final UserNotFoundException e) {
 					GWT.log("UserClosedProjectEventHandler Failed", e);
@@ -89,6 +90,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 					final UserRepresentation user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					onlineUsers.add(user);
 					notifyUsersStatusListsUpdate();
+					notifyUserSpecificStatusChangeListeners(user, UserStatus.ONLINE);
 				}
 				catch (final UserNotFoundException e) {
 					GWT.log("UserClosedProjectEventHandler Failed", e);
@@ -103,6 +105,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 					final UserRepresentation user = contextProviderService.getCurrentProjectContext().findUser(event.getUserId());
 					onlineUsers.remove(user);
 					notifyUsersStatusListsUpdate();
+					notifyUserSpecificStatusChangeListeners(user, UserStatus.OFFLINE);
 				}
 				catch (final UserNotFoundException e) {
 					GWT.log("UserClosedProjectEventHandler Failed", e);
@@ -151,6 +154,13 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 				onlineUsers = retrieveUsers(result.getOnlineUsers());
 
 				notifyUsersStatusListsUpdate();
+
+				for (final UserRepresentation user : activeUsers) {
+					notifyUserSpecificStatusChangeListeners(user, UserStatus.ACTIVE);
+				}
+				for (final UserRepresentation user : onlineUsers) {
+					notifyUserSpecificStatusChangeListeners(user, UserStatus.ONLINE);
+				}
 			}
 
 			private SortedSet<UserRepresentation> retrieveUsers(final Set<UUID> usersIds) {

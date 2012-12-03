@@ -64,6 +64,7 @@ public class UserAssociationDragHandler extends ModelWidgetContainerDragHandler<
 			super.onDragEnd(event);
 			return;
 		}
+		if (membersListWidget != null) membersListWidget.update();
 
 		removeFromPreviousScope(event);
 
@@ -72,8 +73,6 @@ public class UserAssociationDragHandler extends ModelWidgetContainerDragHandler<
 			event.getContext().draggable.removeFromParent();
 			return;
 		}
-
-		if (membersListWidget != null) membersListWidget.update();
 
 		super.addToCurrentContainer((ModelWidget<User>) event.getContext().draggable);
 		getUserAssociationService().onAssociateUserRequest(getScope(dropController), getUser(event));

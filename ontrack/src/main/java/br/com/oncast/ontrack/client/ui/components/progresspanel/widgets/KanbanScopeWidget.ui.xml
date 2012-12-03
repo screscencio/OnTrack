@@ -44,6 +44,10 @@
             font-family: FONT_DEFAULT;
             font-size: FONT_SIZE_SMALL;
 		}
+		
+		.descriptionLabelWithAssociatedUsers {
+			padding-bottom: 5px;
+		}
 		      
         .draggable {
             cursor: move;
@@ -66,6 +70,10 @@
         .selected {
 			background: COLOR_YELLOW;
 		}
+		
+		.associatedUsers {
+			float: right;
+		}
         
 	</ui:style>
 
@@ -77,7 +85,7 @@
             <g:cell width="100%">
 	            <g:FlowPanel>
 	                <g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
-	                 <gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
+	                 <gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" styleName="{style.associatedUsers}"/>
 	            </g:FlowPanel>
             </g:cell>
         </g:HorizontalPanel>

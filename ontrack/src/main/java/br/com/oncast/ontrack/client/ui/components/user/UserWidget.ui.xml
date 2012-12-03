@@ -29,8 +29,8 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="container">
-		<g:Image ui:field="userImage" styleName="{style.author}" resource="{avatar}" />
+	<g:FocusPanel>
+		<g:Image ui:field="userImage" styleName="{style.author} {style.offline}" resource="{avatar}" />
 	</g:FocusPanel>
 	
 </ui:UiBinder> 

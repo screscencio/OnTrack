@@ -10,15 +10,16 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 	private static final int DEFAULT_SLIDE_DURATION = 400;
 	private static final int DEFAULT_FADE_DURATION = 600;
 	private final int hiddenOpacity = 0;
-	private final double shownOpacity;
+	private final double shownOpacity = 1;
+	private final boolean shouldResetElementOpacity;
 
 	public SlideAndFadeAnimation(final Widget widget) {
-		this(widget, 1);
+		this(widget, false);
 	}
 
-	public SlideAndFadeAnimation(final Widget widget, final double shownOpacity) {
+	public SlideAndFadeAnimation(final Widget widget, final boolean shouldResetElementOpacity) {
 		this.widget = widget;
-		this.shownOpacity = shownOpacity == 0 ? 1 : shownOpacity;
+		this.shouldResetElementOpacity = shouldResetElementOpacity;
 	}
 
 	@Override
@@ -56,7 +57,14 @@ public class SlideAndFadeAnimation implements ShowAnimation, HideAnimation {
 
 			@Override
 			public void onComplete() {
-				$.slideUp(DEFAULT_SLIDE_DURATION, callback);
+				$.slideUp(DEFAULT_SLIDE_DURATION, new AnimationCallback() {
+
+					@Override
+					public void onComplete() {
+						if (shouldResetElementOpacity) widget.getElement().getStyle().clearOpacity();
+						if (callback != null) callback.onComplete();
+					}
+				});
 			}
 		});
 	}

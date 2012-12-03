@@ -29,6 +29,8 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 	interface KanbanScopeWidgetStyle extends CssResource {
 		String selected();
+
+		String descriptionLabelWithAssociatedUsers();
 	}
 
 	@UiField
@@ -86,6 +88,9 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	@Override
 	public boolean update() {
 		associatedUsers.update();
+
+		final boolean isShowingAssociatedUsers = !scope.getProgress().isDone() && associatedUsers.getWidgetCount() > 0;
+		descriptionLabel.setStyleName(style.descriptionLabelWithAssociatedUsers(), isShowingAssociatedUsers);
 		return updateDescription();
 	}
 

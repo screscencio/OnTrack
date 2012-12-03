@@ -7,14 +7,20 @@
 	<ui:style src="../../style/default.css">
 	
 		.board {
-			height: 100%; 
 			margin-left: 10px;
+		}
+		
+		.board > tbody > tr > td {
+			height: 100%;
+		}
+		.board > tbody > tr > td > table, .board > tbody > tr > td > table > tbody > tr > td {
+			height: 100%;
 		}
 		
 	</ui:style>
 
 	<g:HTMLPanel>
-		<g:HorizontalPanel styleName="{style.board}" verticalAlignment="top">
+		<g:HorizontalPanel styleName="{style.board}" verticalAlignment="top" height="100%">
 			<w:KanbanColumnWidget ui:field="notStartedColumn"/>
 			<gw:ModelWidgetContainer ui:field="draggableColumns"/>
 			<w:KanbanColumnWidget ui:field="doneColumn"/>

@@ -25,7 +25,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -55,9 +54,6 @@ public class UserWidget extends Composite {
 	@UiField
 	Image userImage;
 
-	@UiField
-	FocusPanel container;
-
 	private PopupConfig userCardPopUp;
 
 	private final UserInformationCard userCard;
@@ -66,7 +62,7 @@ public class UserWidget extends Composite {
 
 	private final Set<HandlerRegistration> registrationListener;
 
-	private boolean showActiveColor = true;
+	private final boolean showActiveColor;
 
 	private final UserUpdateListener updateListener;
 
@@ -74,23 +70,28 @@ public class UserWidget extends Composite {
 		this(userRepresentation, null);
 	}
 
+	public UserWidget(final UserRepresentation userRepresentation, final boolean showActiveColor) {
+		this(userRepresentation, null, showActiveColor);
+	}
+
 	public UserWidget(final UserRepresentation userRepresentation, final UserUpdateListener updateListener) {
+		this(userRepresentation, updateListener, true);
+	}
+
+	public UserWidget(final UserRepresentation userRepresentation, final UserUpdateListener updateListener, final boolean showActiveColor) {
+		this.showActiveColor = showActiveColor;
 		this.registrationListener = new HashSet<HandlerRegistration>();
 		this.userRepresentation = userRepresentation;
 		this.updateListener = updateListener;
 		userCard = new UserInformationCard();
 		initWidget(uiBinder.createAndBindUi(this));
 
-		userImage.setUrl("https://secure.gravatar.com/avatar/5e443efe94a5ded46ed5b6b51505c768?s=40&d=mm");
 		createUserInformationCard();
 	}
 
-	public UserWidget setShowActiveColor(final boolean b) {
-		showActiveColor = b;
-		return this;
-	}
+	private void addHandlers() {
+		if (!registrationListener.isEmpty()) return;
 
-	private void createUserModificationListener() {
 		registrationListener.add(USER_DATA_SERVICE.registerListenerForSpecificUser(userRepresentation, new UserSpecificInformationChangeListener() {
 			@Override
 			public void onInformationChange(final User user) {
@@ -110,31 +111,37 @@ public class UserWidget extends Composite {
 	@Override
 	protected void onAttach() {
 		super.onAttach();
-		createUserModificationListener();
+		addHandlers();
 	}
 
 	@Override
 	protected void onDetach() {
-		for (final HandlerRegistration r : registrationListener)
-			r.removeHandler();
-
+		removeHandlers();
 		super.onDetach();
 	}
 
+	private void removeHandlers() {
+		for (final HandlerRegistration r : registrationListener)
+			r.removeHandler();
+
+		registrationListener.clear();
+	}
+
 	private void updateInfo(final User user) {
-		userCard.updateUser(user);
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
 
 		userImage.setUrl(provider.getUserDataService().getAvatarUrl(user));
 		userImage.setTitle(user.getName());
-
 		userImage.setStyleName(style.showActiveColor(), showActiveColor);
 
+		userCard.updateUser(user);
 		if (updateListener != null) updateListener.onUserUpdate(user);
 	}
 
 	private void updateStatus(final UserStatus status) {
-		container.setStyleName(status == UserStatus.OFFLINE ? style.offline() : style.online());
+		userImage.setStyleName(style.offline(), status == UserStatus.OFFLINE);
+		userImage.setStyleName(style.online(), status != UserStatus.OFFLINE);
+
 		if (showActiveColor && status == UserStatus.ACTIVE) userImage.getElement().getStyle()
 				.setBorderColor(COLOR_PROVIDER.getSelectionColorFor(userRepresentation).toCssRepresentation());
 	}
@@ -158,13 +165,8 @@ public class UserWidget extends Composite {
 
 	}
 
-	public double getOpacity() {
-		try {
-			return Double.valueOf(container.getElement().getStyle().getOpacity());
-		}
-		catch (final Exception e) {
-			return 1;
-		}
+	public Widget getDraggableAnchor() {
+		return userImage;
 	}
 
 }

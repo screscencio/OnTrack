@@ -60,4 +60,9 @@ public class UserRepresentation implements Serializable, Comparable<UserRepresen
 	public int compareTo(final UserRepresentation o) {
 		return this.id.toString().compareTo(o.getId().toString());
 	}
+
+	@Override
+	public String toString() {
+		return id.toStringRepresentation();
+	}
 }

@@ -7,6 +7,10 @@ import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlideAndFadeAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
@@ -81,7 +85,23 @@ public class ScopeAssociatedMembersWidget extends Composite {
 				if (userDragAndDropMananger != null) userDragAndDropMananger.monitorNewDraggableItem(widget, widget.getDraggableItem());
 				return widget;
 			}
-		}, new AnimatedContainer(associatedUsersContainer));
+		}, new AnimatedContainer(associatedUsersContainer, new AnimationFactory() {
+
+			@Override
+			public ShowAnimation createShowAnimation(final Widget widget) {
+				return new SlideAndFadeAnimation(widget, true);
+			}
+
+			@Override
+			public HideAnimation createHideAnimation(final Widget widget) {
+				return new SlideAndFadeAnimation(widget, true);
+			}
+		}));
+
+	}
+
+	public int getWidgetCount() {
+		return associatedUsers.getWidgetCount();
 	}
 
 }

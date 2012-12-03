@@ -28,6 +28,7 @@ public class DragAndDropManager {
 		dragController = new PickupDragController(boundaryPanel, false);
 		dragController.setBehaviorConstrainedToBoundaryPanel(true);
 		dragController.setBehaviorMultipleSelection(false);
+		dragController.setBehaviorDragStartSensitivity(4);
 	}
 
 	public void addDragHandler(final DragHandler dragHandler) {

@@ -155,14 +155,12 @@ public class DraggableMembersListWidget extends Composite {
 
 			@Override
 			public ShowAnimation createShowAnimation(final Widget widget) {
-				if (!(widget instanceof DraggableMemberWidget)) return new SlideAndFadeAnimation(widget);
-				return new SlideAndFadeAnimation(widget, ((DraggableMemberWidget) widget).getOpacity());
+				return new SlideAndFadeAnimation(widget, true);
 			}
 
 			@Override
 			public HideAnimation createHideAnimation(final Widget widget) {
-				if (!(widget instanceof DraggableMemberWidget)) return new SlideAndFadeAnimation(widget);
-				return new SlideAndFadeAnimation(widget, ((DraggableMemberWidget) widget).getOpacity());
+				return new SlideAndFadeAnimation(widget, true);
 			}
 		}));
 	}
