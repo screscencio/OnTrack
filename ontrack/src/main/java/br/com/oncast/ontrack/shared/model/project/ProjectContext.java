@@ -9,6 +9,8 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
+import br.com.oncast.ontrack.shared.model.description.Description;
+import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.effort.FibonacciScale;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotFoundException;
@@ -269,6 +271,20 @@ public class ProjectContext {
 		if (tag == null) throw new TagNotFoundException("The tag was not found");
 
 		return tag;
+	}
+
+	public void addDescription(final Description description, final UUID subjectId) {
+		project.addDescription(description, subjectId);
+	}
+
+	public Description findDescriptionFor(final UUID subjectId) throws DescriptionNotFoundException {
+		final Description description = project.findDescriptionFor(subjectId);
+		if (description == null) throw new DescriptionNotFoundException("The Object with id '" + subjectId + "' does not have description associated.");
+		return description;
+	}
+
+	public boolean removeDescriptionFor(final UUID subjectId) {
+		return project.removeDescriptionFor(subjectId);
 	}
 
 }

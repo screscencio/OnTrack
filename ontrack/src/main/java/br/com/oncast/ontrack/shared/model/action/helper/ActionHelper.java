@@ -6,6 +6,8 @@ import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.checklist.exception.ChecklistNotFoundException;
+import br.com.oncast.ontrack.shared.model.description.Description;
+import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -55,6 +57,15 @@ public class ActionHelper {
 			return context.findAnnotation(subjectId, annotationId);
 		}
 		catch (final AnnotationNotFoundException e) {
+			throw new UnableToCompleteActionException(e);
+		}
+	}
+
+	public static Description findDescription(final UUID subjectId, final ProjectContext context) throws UnableToCompleteActionException {
+		try {
+			return context.findDescriptionFor(subjectId);
+		}
+		catch (final DescriptionNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
 		}
 	}

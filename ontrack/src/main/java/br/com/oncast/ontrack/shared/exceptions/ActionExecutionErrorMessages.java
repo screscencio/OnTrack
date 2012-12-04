@@ -128,4 +128,12 @@ public interface ActionExecutionErrorMessages extends BaseMessages {
 	@DefaultMessage("There is no mapped action executer for {0}.")
 	String noMappedExecutor(String className);
 
+	@Description("caused when tries to create a description with empty message")
+	@DefaultMessage("A description should have a message")
+	String descriptionWithEmptyMessage();
+
+	@Description("caused when tries to remove a description created by other user.")
+	@DefaultMessage("Can''t remove a description created by another user.")
+	String descriptionRemoveAction();
+
 }

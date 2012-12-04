@@ -10,6 +10,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -38,6 +39,7 @@ public class Project implements Serializable {
 	private Map<UUID, List<Annotation>> annotationsMap;
 	private Set<FileRepresentation> fileRepresentations;
 	private ListMultimap<UUID, Checklist> checklistMap;
+	private Map<UUID, Description> descriptionMap;
 	private Map<HasTags, SetMultimap<TagType, Tag>> tagsMap;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
@@ -50,6 +52,7 @@ public class Project implements Serializable {
 		this.projectScope = projectScope;
 		this.projectRelease = projectRelease;
 		annotationsMap = new HashMap<UUID, List<Annotation>>();
+		descriptionMap = new HashMap<UUID, Description>();
 		checklistMap = ArrayListMultimap.create();
 		users = new HashSet<UserRepresentation>();
 		fileRepresentations = new HashSet<FileRepresentation>();
@@ -220,5 +223,17 @@ public class Project implements Serializable {
 	public boolean hasTags(final HasTags subject) {
 		if (!tagsMap.containsKey(subject)) return false;
 		return !tagsMap.get(subject).isEmpty();
+	}
+
+	public void addDescription(final Description description, final UUID subjectId) {
+		if (!descriptionMap.containsKey(subjectId)) descriptionMap.put(subjectId, description);
+	}
+
+	public Description findDescriptionFor(final UUID subjectId) {
+		return descriptionMap.get(subjectId);
+	}
+
+	public boolean removeDescriptionFor(final UUID subjectId) {
+		return descriptionMap.remove(subjectId) != null;
 	}
 }
