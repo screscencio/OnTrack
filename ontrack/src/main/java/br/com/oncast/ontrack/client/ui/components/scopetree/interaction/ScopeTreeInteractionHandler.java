@@ -196,4 +196,9 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	public void focusTree() {
 		tree.setFocus(true);
 	}
+
+	@Override
+	public boolean hasPendingInternalAction() {
+		return internalActionHandler.hasPendingAction();
+	}
 }
