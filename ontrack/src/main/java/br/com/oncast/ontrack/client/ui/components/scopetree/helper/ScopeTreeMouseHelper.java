@@ -37,6 +37,7 @@ public class ScopeTreeMouseHelper {
 	private HandlerRegistration selectionHandlerRegistration;
 	private final ScopeTreeItemSelectionEventHandler selectionHandler;
 	private final NativeEventListener mouseEventListener;
+	private NativeEventListener scrollEventListener;
 	private ScopeTreeInternalActionHandler actionHandler;
 
 	private ScopeTreeItemWidget scopeTreeItemWidget;
@@ -64,6 +65,15 @@ public class ScopeTreeMouseHelper {
 				visibilityUpdateTimer.cancel();
 				visibilityUpdateTimer.schedule(MOUSE_MOVEMENT_DELAY);
 				if (!floatingMenu.isVisible()) updateFloatingHelperWidgetVisibility();
+			}
+		};
+		scrollEventListener = new NativeEventListener() {
+
+			@Override
+			public void onNativeEvent(final NativeEvent nativeEvent) {
+				visibilityUpdateTimer.cancel();
+				shouldShow = false;
+				updateFloatingHelperWidgetVisibility();
 			}
 		};
 
@@ -126,6 +136,7 @@ public class ScopeTreeMouseHelper {
 		if (actionExecutionService != null) actionExecutionService = null;
 		if (projectContext != null) projectContext = null;
 		GlobalNativeEventService.getInstance().removeMouseMoveListener(mouseEventListener);
+		GlobalNativeEventService.getInstance().removeMouseMoveListener(scrollEventListener);
 		if (selectionHandlerRegistration == null) {
 			selectionHandlerRegistration.removeHandler();
 			selectionHandlerRegistration = null;
@@ -139,6 +150,7 @@ public class ScopeTreeMouseHelper {
 		this.projectContext = projectContext;
 		this.scopeTreeItemWidget = scopeTreeItemWidget;
 		GlobalNativeEventService.getInstance().addMouseMoveListener(mouseEventListener);
+		GlobalNativeEventService.getInstance().addMouseMoveListener(scrollEventListener);
 		selectionHandlerRegistration = eventBus.addHandler(ScopeTreeItemSelectionEvent.getType(), selectionHandler);
 	}
 }
