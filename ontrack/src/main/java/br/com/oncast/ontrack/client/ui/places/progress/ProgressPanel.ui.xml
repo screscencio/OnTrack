@@ -43,12 +43,32 @@
 		.releaseChart {
 			position: absolute;
 			top: 0px;
-			left: 0px;
+			right: 0px;
 			
 			width: 400px;
-			height: 200px;
+			height: 198px;
+
+			-webkit-box-shadow: POPUP_SHADOW;
+		    -moz-box-shadow: POPUP_SHADOW;
+		    box-shadow: POPUP_SHADOW;
+		    border: POPUP_BORDER;
 		}
 		
+		.descriptionPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 410px;
+			height: 197px;
+			
+			background-color: lightGrey;
+
+			-webkit-box-shadow: POPUP_SHADOW;
+		    -moz-box-shadow: POPUP_SHADOW;
+		    box-shadow: POPUP_SHADOW;
+		    border: POPUP_BORDER;
+		}
+
 		.kanbanPanel {
 			position: absolute;
 			top: 205px;
@@ -79,6 +99,7 @@
 		</g:SimplePanel>
 		<g:HTMLPanel styleName="{style.kanbanContainer}">
 			<chart:ReleaseChart ui:field="chart" styleName="{style.releaseChart}"/>
+			<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
 			<pp:KanbanPanel ui:field="kanbanPanel" addStyleNames="{style.kanbanPanel}" />
 		</g:HTMLPanel>
    </layout:ApplicationMenuAndWidgetContainer>

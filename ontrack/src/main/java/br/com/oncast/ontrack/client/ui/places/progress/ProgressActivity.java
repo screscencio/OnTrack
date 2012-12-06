@@ -9,6 +9,8 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMen
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.Display;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
+import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
@@ -20,9 +22,9 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ProgressActivity extends AbstractActivity {
 
@@ -37,6 +39,8 @@ public class ProgressActivity extends AbstractActivity {
 
 	private final UUID requestedProjectId;
 	private final UUID requestedReleaseId;
+
+	private HandlerRegistration scopeSelectionHandlerRegistration;
 
 	public ProgressActivity(final ProgressPlace place) {
 		requestedProjectId = place.getRequestedProjectId();
@@ -98,6 +102,15 @@ public class ProgressActivity extends AbstractActivity {
 		registrations.add(ShortcutService.configureShortcutHelpPanel(view.getAlertingPanel()));
 
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
+
+		registrations.add(ClientServiceProvider.getInstance().getEventBus()
+				.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
+
+					@Override
+					public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
+						view.getDescriptionWidget().setSelected(event.getTargetScope());
+					}
+				}));
 	}
 
 	@Override
