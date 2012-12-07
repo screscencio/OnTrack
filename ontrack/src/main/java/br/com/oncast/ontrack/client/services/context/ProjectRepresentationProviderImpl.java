@@ -23,6 +23,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationResp
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 
 public class ProjectRepresentationProviderImpl implements ProjectRepresentationProvider {
@@ -77,12 +78,14 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	}
 
 	private void updateAvailableProjectRepresentations() {
+		System.out.println("updateAvailableProjectRepresentations()");
 		dispatchService.dispatch(new ProjectListRequest(), new DispatchCallback<ProjectListResponse>() {
 
 			@Override
 			public void onSuccess(final ProjectListResponse response) {
 				availableProjectRepresentations.clear();
 				availableProjectRepresentations.addAll(response.getProjectList());
+				System.out.println("availableProjectRepresentations.addAll: " + response.getProjectList().size());
 				projectListAvailability = true;
 
 				notifyProjectListChange();
@@ -152,10 +155,15 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	}
 
 	@Override
-	public void registerProjectListChangeListener(final ProjectListChangeListener projectListChangeListener) {
-		if (projectListChangeListeners.contains(projectListChangeListener)) return;
-		projectListChangeListeners.add(projectListChangeListener);
-		notifyProjectListChange(projectListChangeListener);
+	public HandlerRegistration registerProjectListChangeListener(final ProjectListChangeListener projectListChangeListener) {
+		if (projectListChangeListeners.add(projectListChangeListener)) notifyProjectListChange(projectListChangeListener);
+
+		return new HandlerRegistration() {
+			@Override
+			public void removeHandler() {
+				projectListChangeListeners.remove(projectListChangeListener);
+			}
+		};
 	}
 
 	@Override
@@ -189,9 +197,11 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	}
 
 	@Override
-	public ProjectRepresentation getProjectRepresentation(final UUID projectReference) {
+	public ProjectRepresentation getProjectRepresentation(final UUID projectId) {
+		System.out.println("getProjectRepresentation: " + projectId.toStringRepresentation());
 		for (final ProjectRepresentation projectRepresentation : availableProjectRepresentations) {
-			if (projectRepresentation.getId().equals(projectReference)) return projectRepresentation;
+			System.out.println(projectRepresentation.getId());
+			if (projectRepresentation.getId().equals(projectId)) return projectRepresentation;
 		}
 		throw new RuntimeException("Project representation not available.");
 	}

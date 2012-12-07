@@ -30,7 +30,14 @@ public class GlobalNativeEventService {
 			@Override
 			public void onPreviewNativeEvent(final NativePreviewEvent event) {
 				// TODO the line below breaks some times because of event type class mismatch
-				final int eventType = event.getTypeInt();
+				int eventType;
+				try {
+					eventType = event.getTypeInt();
+				}
+				catch (final Exception e) {
+					e.printStackTrace();
+					eventType = -1;
+				}
 
 				switch (eventType) {
 					case Event.ONKEYUP: {

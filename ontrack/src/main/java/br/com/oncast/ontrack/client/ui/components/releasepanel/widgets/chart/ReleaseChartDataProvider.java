@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
 public class ReleaseChartDataProvider {
 
+	private static final int MAX_NUMBER_OF_DAYS = 128;
 	private final Release release;
 	private final ReleaseEstimator releaseEstimator;
 	private HashMap<WorkingDay, Float> accomplishedEffortByDate;
@@ -133,11 +134,32 @@ public class ReleaseChartDataProvider {
 		final List<WorkingDay> releaseDays = new ArrayList<WorkingDay>();
 
 		final int daysCount = startDay.countTo(lastReleaseDay);
-		for (int i = 0; i < daysCount; i++) {
-			releaseDays.add(startDay.copy().add(i));
+		final int step = Math.max(1, daysCount / MAX_NUMBER_OF_DAYS);
+
+		WorkingDay day = startDay.copy();
+		for (int i = 0; i < daysCount; i += step) {
+			releaseDays.add(day);
+			day = day.copy().add(step);
 		}
 
+		addIfNotPresent(releaseDays, inferedEstimatedEndDay);
+		addIfNotPresent(releaseDays, estimatedEndDay);
+		addIfNotPresent(releaseDays, release.getInferedEndDay());
+
 		return releaseDays;
+	}
+
+	private void addIfNotPresent(final List<WorkingDay> releaseDays, final WorkingDay day) {
+		if (day == null) return;
+
+		int index = 0;
+		for (final WorkingDay d : releaseDays) {
+			if (d.equals(day)) return;
+			if (d.isAfter(day)) break;
+			index++;
+		}
+		releaseDays.add(index, day.copy());
+		System.out.println("added at " + index);
 	}
 
 	private Float getAccomplishedValueFor(final WorkingDay day) {
@@ -185,6 +207,11 @@ public class ReleaseChartDataProvider {
 	public WorkingDay getActualEndDay() {
 		if (!release.isDone()) return null;
 		return release.getInferedEndDay();
+	}
+
+	public boolean hasStarted() {
+		final WorkingDay startDay = release.getStartDay();
+		return startDay != null && !WorkingDayFactory.create().isBefore(startDay);
 	}
 
 }

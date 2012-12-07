@@ -87,7 +87,7 @@ public class ReleaseChart extends Composite {
 
 	protected Chart chart;
 
-	private final ReleaseChartDataProvider dataProvider;
+	private ReleaseChartDataProvider dataProvider;
 
 	private ActionExecutionListener actionExecutionListener;
 
@@ -95,7 +95,7 @@ public class ReleaseChart extends Composite {
 
 	private ReleaseChartUpdateListener updateListener;
 
-	private final Release release;
+	private Release release;
 
 	private Series accomplishedEffortSeries;
 
@@ -105,31 +105,40 @@ public class ReleaseChart extends Composite {
 
 	private float previousValue;
 
-	public ReleaseChart(final Release release, final boolean completeMode) {
-		this.release = release;
+	public ReleaseChart(final boolean completeMode) {
 		this.completeMode = completeMode;
-		this.dataProvider = new ReleaseChartDataProvider(release, getReleaseEstimator(), ClientServiceProvider.getInstance().getActionExecutionService());
+		initWidget(uiBinder.createAndBindUi(this));
+		chart = createBasicChart();
+		chartPanel.add(chart);
+	}
+
+	public ReleaseChart(final Release release, final boolean completeMode) {
+		this.completeMode = completeMode;
+		setRelease(release);
 
 		initWidget(uiBinder.createAndBindUi(this));
 		chart = createBasicChart();
 		chartPanel.add(chart);
 	}
 
+	public void setRelease(final Release release) {
+		setRelease(release, new ReleaseChartDataProvider(release, getReleaseEstimator(), ClientServiceProvider.getInstance().getActionExecutionService()));
+	}
+
+	public void setRelease(final Release release, final ReleaseChartDataProvider dataProvider) {
+		this.release = release;
+		this.dataProvider = dataProvider;
+	}
+
 	private ReleaseEstimator getReleaseEstimator() {
-		final Release rootRelease = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext().getProjectRelease();
-		return new ReleaseEstimator(rootRelease);
+		return ClientServiceProvider.getInstance().getReleaseEstimator();
 	}
 
 	@Override
 	protected void onAttach() {
 		super.onAttach();
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener());
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				chart.setSize(chartPanel.getElement().getClientWidth(), chartPanel.getElement().getClientHeight(), false);
-			}
-		});
+		updateSize();
 	}
 
 	@Override
@@ -293,6 +302,7 @@ public class ReleaseChart extends Composite {
 							}
 						}));
 
+		newChart.ensureDebugId("releaseChart");
 		return newChart;
 	}
 
@@ -472,6 +482,25 @@ public class ReleaseChart extends Composite {
 
 	public void declareEstimatedVelocity(final Float velocity) {
 		dataProvider.declareEstimatedVelocity(velocity);
+	}
+
+	public void updateSize() {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				chart.setSize(chartPanel.getElement().getClientWidth(), chartPanel.getElement().getClientHeight(), false);
+			}
+		});
+	}
+
+	public void highlight(final WorkingDay endDay) {
+		int index = -1;
+		for (final WorkingDay day : dataProvider.getReleaseDays()) {
+			if (day.isBeforeOrSameDayOf(endDay)) index++;
+			else break;
+		}
+		if (index == -1) return;
+		chart.refreshTooltip(0, dataProvider.getReleaseDays().contains(endDay) ? index : index + 1);
 	}
 
 }

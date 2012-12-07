@@ -54,6 +54,17 @@ public class Scope implements Serializable, HasTags {
 		childrenList = new ArrayList<Scope>();
 	}
 
+	public Scope cloneWithoutRelationship() {
+		final Scope clone = new Scope();
+		clone.id = id;
+		clone.description = description;
+		clone.effort = effort;
+		clone.value = value;
+		clone.progress = progress;
+
+		return clone;
+	}
+
 	@Override
 	public UUID getId() {
 		return id;

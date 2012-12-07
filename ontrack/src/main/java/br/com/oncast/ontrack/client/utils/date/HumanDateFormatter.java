@@ -9,6 +9,8 @@ import static br.com.oncast.ontrack.client.utils.date.DateUnit.YEAR;
 
 import java.util.Date;
 
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -95,6 +97,8 @@ public enum HumanDateFormatter {
 
 	private final long maxTimeDifference;
 	private DateTimeFormat format;
+	private static final int DEFAULT_DIGITS = 0;
+	private static int decimalDigits = DEFAULT_DIGITS;
 
 	private HumanDateFormatter(final long maxTimeDifference, final String pattern) {
 		this.maxTimeDifference = maxTimeDifference;
@@ -130,8 +134,8 @@ public enum HumanDateFormatter {
 	}
 
 	protected String mountDifferenceText(final long difference, final long delimiter, final String singular, final String plural) {
-		final int time = (int) (difference / delimiter);
-		return time + " " + (time <= 1 ? singular : plural);
+		final float time = difference / (float) delimiter;
+		return ClientDecimalFormat.roundFloat(time, decimalDigits).replaceAll("\\.0+$", "") + " " + (time <= 1 ? singular : plural);
 	}
 
 	private boolean accepts(final Date currentDate, final Date date) {
@@ -147,6 +151,13 @@ public enum HumanDateFormatter {
 			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference); }
 		}
 		return difference + " ms";
+	}
+
+	public static String getDifferenceText(final long difference, final int digits) {
+		decimalDigits = digits;
+		final String differenceText = getDifferenceText(difference);
+		decimalDigits = DEFAULT_DIGITS;
+		return differenceText;
 	}
 
 }

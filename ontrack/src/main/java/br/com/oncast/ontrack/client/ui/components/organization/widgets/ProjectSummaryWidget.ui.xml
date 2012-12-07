@@ -3,13 +3,14 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:layout="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.layout"
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
-	xmlns:footer="urn:import:br.com.oncast.ontrack.client.ui.components.footerbar"
-	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-	ui:generateLocales="default">
+	xmlns:ow="urn:import:br.com.oncast.ontrack.client.ui.components.organization.widgets"
+	xmlns:aw="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
+	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'>
 	
-	<ui:image field="planningIcon" src="link.png"></ui:image>
-	<ui:style src="../../../style/default.css">
+	<ui:image field="planningIcon" src="link.png"/>
+	<ui:image field="containerStateOpenImg" src="../../releasepanel/widgets/bg-expand-minus.png"/>
+	<ui:image field="containerStateClosedImg" src="../../releasepanel/widgets/bg-expand-plus.png"/>
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.organization.widgets.ProjectSummaryWidget.ProjectSummaryWidgetStyle">
 	
 		.root {
 			position: relative;
@@ -40,28 +41,111 @@
 			margin: 0px 6px;
 		}
 		
-		.headerSpacer {
-			height: 12px;
-		}
-		
 		.content {
 			position: relative;
-			padding-top: 20px;
+			margin-top: 19px;
+			height: 400px;
 		}
-	
+		
+		.releaseContainer {
+			position: absolute;
+			
+			top: 0px;
+			right: 0px;
+			bottom: 240px;
+			left: 0px;
+			
+			overflow: auto;
+			
+			background: white;
+			border: BORDER_DEFAULT;
+			border-radius: 3px;
+			padding: PADDING_SMALL;
+		}
+		
+		.details {
+			position: absolute;
+			
+			top: 165px;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+			
+			overflow-y: hidden;
+			overflow-x: auto;
+		}
+		
+		.detailsContainer {
+			position: relative;
+			width: 250px;
+			height: 100%;
+			
+			border: BORDER_DEFAULT;
+			border-radius: 3px;
+			padding: PADDING_SMALL;
+			
+			background: white;
+			
+			margin-right: PADDING_MEDIUM;
+		}
+		
+		.scopeListContainer {
+			width: auto;
+			min-width: 250px;
+		}
+		
+		.releaseChartContainer { 
+			width: 400px;
+			margin-right: 0px;
+		}
+		
+		.releaseChart {
+			position: absolute;
+			top: PADDING_SMALL;
+			bottom: PADDING_SMALL;
+			left: PADDING_SMALL;
+			right: PADDING_SMALL;
+		}
+		
+		.scopesListTitle {
+			text-align: center;
+			text-transform: uppercase;
+			white-space: nowrap;
+			diplay: block;
+			color: COLOR_GRAY_DARK;
+		}
+		
+		.scopesList {
+			position: absolute;
+			
+			top: 30px;
+			bottom: PADDING_SMALL;
+			left: PADDING_SMALL;
+			right: PADDING_SMALL;
+			
+			overflow: auto;
+		}
+		
 		.spacer {
-			height: PADDING_LARGE;
+			height: 11px;
+		}
+		
+		@sprite .containerStateOpen {
+			gwt-image: 'containerStateOpenImg';
+		}
+		
+		@sprite .containerStateClosed {
+			gwt-image: 'containerStateClosedImg';
+		}
+		
+		.containerStateToggleButton {
+			margin-right: PADDING_MEDIUM;
+			cursor: pointer;
 		}
 		
 		.name {
 			font-size: FONT_SIZE_LARGE;
 			text-transform: uppercase;
-			
-			cursor: pointer;
-		}
-		
-		.name:HOVER {
-			color: COLOR_YELLOW_DARK;
 		}
 		
 		@sprite .planningLink {
@@ -70,46 +154,43 @@
 			cursor: pointer;
 		}
 		
-		.sujestionLabel {
-			font-size: FONT_SIZE_LARGE;
-			margin-bottom: PADDING_LARGE;
-		}
-		
-		.feedbackArea {
-			width: 554px;
-			height: 80px;
-		}
-		
-		.sendFeedbackButton {
-			display: block;
-			margin-top: 5px;
-			width: 127px;
-			margin-left: 439px;
-			cursor: pointer;
-		}
-	
 	</ui:style>
 	<g:HTMLPanel styleName="{style.root}">
+	
 		<layout:ApplicationPopupBoxContainer styleName="{style.body}">
-			<g:HTMLPanel>
-				<g:SimplePanel styleName="{style.headerSpacer}"/>
-				<g:HTMLPanel ui:field="bodyContent" styleName="{style.content}">
-					<g:Label styleName="{style.sujestionLabel}">
-						<ui:msg description="sujestion for user to send his feedback to build this widget"> Please tell us what informations you want to see here by sending us a feedback </ui:msg>
-					</g:Label>
-					<g:TextArea ui:field="feedbackArea" styleName="{style.textBoxDecoration} {style.feedbackArea}"/>
-					<g:Button ui:field="sendFeedbackButton" styleName="{style.menuboxButton} {style.sendFeedbackButton}">
-						<ui:msg description="send feedback button text">Send Feedback</ui:msg>
-					</g:Button>
-				</g:HTMLPanel>
+			<g:SimplePanel styleName="{style.spacer}"/>
+			<g:HTMLPanel ui:field="bodyContent" styleName="{style.content}">
+				<g:FocusPanel ui:field="releaseContainer" styleName="{style.releaseContainer}">
+					<w:ModelWidgetContainer ui:field="releases"/>
+				</g:FocusPanel>
+				<g:FocusPanel styleName="{style.details}">
+					<g:HorizontalPanel height="100%">
+						<aw:ReleaseDetailWidget ui:field="releaseDetail" styleName="{style.detailsContainer}"/>
+						<g:cell width="100%">
+							<g:HTMLPanel styleName="{style.detailsContainer} {style.scopeListContainer}">
+								<g:Label ui:field="scopesListTitle" styleName="{style.scopesListTitle}"></g:Label>
+								<g:SimplePanel styleName="{style.scopesList}">
+									<w:ModelWidgetContainer ui:field="scopesList"/>
+								</g:SimplePanel>
+							</g:HTMLPanel>
+						</g:cell>
+						<g:SimplePanel styleName="{style.detailsContainer} {style.releaseChartContainer}">
+							<chart:ReleaseChart ui:field="chart" styleName="{style.releaseChart}"/>
+						</g:SimplePanel>
+					</g:HorizontalPanel>
+				</g:FocusPanel>
 			</g:HTMLPanel>
 		</layout:ApplicationPopupBoxContainer>
+		
 		<g:HorizontalPanel styleName="{style.header}" verticalAlignment="middle">
+			<g:FocusPanel ui:field="containerStateToggleButton" styleName="{style.containerStateToggleButton}"/>
 			<g:cell width="100%">
 				<g:Label ui:field="name" styleName="{style.name}"/>
 			</g:cell>
 			<g:FocusPanel ui:field="planningLink" styleName="{style.planningLink}"/>
 		</g:HorizontalPanel>
+		
 		<g:SimplePanel styleName="{style.spacer}"/>
+		
 	</g:HTMLPanel>
 </ui:UiBinder> 

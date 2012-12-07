@@ -13,6 +13,9 @@
 			left: PADDING_LARGE;
 			right: PADDING_LARGE;
 			bottom: PADDING_LARGE;
+			
+			overflow-x: hidden;
+			overflow-y: auto;
 		}
 		
 	</ui:style>

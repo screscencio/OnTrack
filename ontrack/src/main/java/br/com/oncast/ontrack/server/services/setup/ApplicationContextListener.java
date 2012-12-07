@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordReque
 import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.DeAuthenticationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.MultipleProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.NotificationListRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.NotificationReadStateRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectAuthorizationRequestHandler;
@@ -32,6 +33,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.MultipleProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
@@ -85,6 +87,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(UserDataRequest.class, new UserDataRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(UserScopeSelectionMulticastRequest.class, new UserScopeSelectionMulticastRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(NotificationReadStateRequest.class, new NotificationReadStateRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(MultipleProjectContextRequest.class, new MultipleProjectContextRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

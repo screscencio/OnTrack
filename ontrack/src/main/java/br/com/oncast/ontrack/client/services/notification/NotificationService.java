@@ -8,9 +8,10 @@ import java.util.Set;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
-import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
-import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
+import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEventHandler;
@@ -37,29 +38,28 @@ public class NotificationService {
 	}
 
 	public NotificationService(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
-			final AuthenticationService authenticationService, final ClientAlertingService alertingService) {
+			final ProjectRepresentationProvider projectRepresentationProvider, final ClientAlertingService alertingService) {
 
 		this.dispatchService = dispatchService;
 		this.alertingService = alertingService;
 
-		authenticationService.registerUserAuthenticationListener(new UserAuthenticationListener() {
-			@Override
-			public void onUserLoggedIn() {
-				updateAvailableNotifications();
-			}
+		projectRepresentationProvider.registerProjectListChangeListener(new ProjectListChangeListener() {
 
 			@Override
-			public void onUserLoggedOut() {
+			public void onProjectListChanged(final Set<ProjectRepresentation> projectRepresentations) {}
+
+			@Override
+			public void onProjectListAvailabilityChange(final boolean availability) {
+				if (availability) {
+					updateAvailableNotifications();
+					return;
+				}
+
 				availableNotifications.clear();
 				notificationListAvailability = false;
 
 				notifyNotificationListContentChange();
 				notifyNotificationListAvailabilityChange();
-			}
-
-			@Override
-			public void onUserInformationLoaded() {
-				updateAvailableNotifications();
 			}
 		});
 
@@ -74,8 +74,6 @@ public class NotificationService {
 				notifyNotificationListContentChange();
 			}
 		});
-
-		if (authenticationService.isUserAvailable()) updateAvailableNotifications();
 	}
 
 	public void updateNotificationReadState(final Notification notification, final boolean readState, final NotificationReadStateUpdateCallback callback) {

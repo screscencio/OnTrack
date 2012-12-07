@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
+import br.com.oncast.ontrack.client.services.organization.AvailableContextsListChangeListener;
+import br.com.oncast.ontrack.client.services.organization.OrganizationContextProviderService;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.organization.widgets.ProjectSummaryWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndWidgetContainer;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,7 +27,7 @@ public class OrganizationPanel extends Composite {
 	interface OrganizationPanelUiBinder extends UiBinder<Widget, OrganizationPanel> {}
 
 	@UiField(provided = true)
-	ModelWidgetContainer<ProjectRepresentation, ProjectSummaryWidget> projects;
+	ModelWidgetContainer<ProjectContext, ProjectSummaryWidget> projects;
 
 	@UiField
 	ApplicationMenuAndWidgetContainer rootPanel;
@@ -37,25 +38,23 @@ public class OrganizationPanel extends Composite {
 	}
 
 	public OrganizationPanel() {
-		projects = new ModelWidgetContainer<ProjectRepresentation, ProjectSummaryWidget>(
-				new ModelWidgetFactory<ProjectRepresentation, ProjectSummaryWidget>() {
+		projects = new ModelWidgetContainer<ProjectContext, ProjectSummaryWidget>(
+				new ModelWidgetFactory<ProjectContext, ProjectSummaryWidget>() {
 
 					@Override
-					public ProjectSummaryWidget createWidget(final ProjectRepresentation project) {
+					public ProjectSummaryWidget createWidget(final ProjectContext project) {
 						return new ProjectSummaryWidget(project);
 					}
 				});
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		ClientServiceProvider.getInstance().getProjectRepresentationProvider().registerProjectListChangeListener(new ProjectListChangeListener() {
+		final OrganizationContextProviderService contextProvider = ClientServiceProvider.getInstance().getOrganizationContextProviderService();
+		contextProvider.registerContextsChangeListener(new AvailableContextsListChangeListener() {
 			@Override
-			public void onProjectListChanged(final Set<ProjectRepresentation> projectRepresentations) {
-				projects.update(new ArrayList<ProjectRepresentation>(projectRepresentations));
+			public void onContextListChange(final Set<ProjectContext> availableProjects) {
+				projects.update(new ArrayList<ProjectContext>(availableProjects));
 			}
-
-			@Override
-			public void onProjectListAvailabilityChange(final boolean availability) {}
 		});
 	}
 

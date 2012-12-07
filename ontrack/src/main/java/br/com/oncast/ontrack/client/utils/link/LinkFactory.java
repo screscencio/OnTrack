@@ -26,14 +26,13 @@ public class LinkFactory {
 	}
 
 	public static SafeHtml getLinkForAnnotation(final UUID projectId, final UUID referencedId, final String text) {
-		final ProjectRepresentation currentProject = ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent();
 		final StringBuilder builder = new StringBuilder();
 
 		builder.append(START_A_TAG);
 		builder.append(getAnnotationHrefLink(projectId, referencedId));
 		builder.append(CLOSE_HREF);
 
-		if (!currentProject.getId().equals(projectId)) builder.append(NEW_TAB_LINK);
+		if (shouldAppendNewTabLink(projectId)) builder.append(NEW_TAB_LINK);
 
 		builder.append(END_A_TAG);
 		builder.append(text);
@@ -43,14 +42,13 @@ public class LinkFactory {
 	}
 
 	public static SafeHtml getScopeLinkFor(final UUID projectId, final UUID referencedId, final String text) {
-		final ProjectRepresentation currentProject = ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent();
 		final StringBuilder builder = new StringBuilder();
 
 		builder.append(START_A_TAG);
 		builder.append(getScopeHrefLink(projectId, referencedId));
 		builder.append(CLOSE_HREF);
 
-		if (!currentProject.getId().equals(projectId)) builder.append(NEW_TAB_LINK);
+		if (shouldAppendNewTabLink(projectId)) builder.append(NEW_TAB_LINK);
 
 		builder.append(END_A_TAG);
 		builder.append(text);
@@ -59,8 +57,18 @@ public class LinkFactory {
 		return getSafeHTMLFor(builder.toString());
 	}
 
+	private static boolean shouldAppendNewTabLink(final UUID projectId) {
+		try {
+			final ProjectRepresentation currentProject = ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent();
+			return !currentProject.getId().equals(projectId);
+		}
+		catch (final RuntimeException e) {
+			return false;
+		}
+	}
+
 	private static String getBaseURL() {
-		return GWT.getModuleBaseURL();
+		return GWT.getHostPageBaseURL();
 	}
 
 	private static String getProjectHrefLink(final UUID projectId) {

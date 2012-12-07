@@ -28,6 +28,8 @@ import br.com.oncast.ontrack.client.services.instruction.UserGuideServiceImpl;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricService;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricServiceNewRelicImpl;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
+import br.com.oncast.ontrack.client.services.organization.OrganizationContextProviderService;
+import br.com.oncast.ontrack.client.services.organization.OrganizationContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
@@ -47,6 +49,8 @@ import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
 import br.com.oncast.ontrack.shared.config.RequestConfigurations;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -96,6 +100,7 @@ public class ClientServiceProvider {
 	private ClientErrorMessages clientErrorMessages;
 	private UserGuidService userGuidService;
 	private UserAssociationService userAssociationService;
+	private OrganizationContextProviderService organizationContextProviderService;
 
 	private static ClientServiceProvider instance;
 
@@ -232,7 +237,7 @@ public class ClientServiceProvider {
 
 	public NotificationService getNotificationService() {
 		if (notificationService == null) notificationService = new NotificationService(getRequestDispatchService(), getServerPushClientService(),
-				getAuthenticationService(), getClientAlertingService());
+				getProjectRepresentationProvider(), getClientAlertingService());
 		return notificationService;
 	}
 
@@ -261,4 +266,13 @@ public class ClientServiceProvider {
 				getContextProviderService()) : userAssociationService;
 	}
 
+	public OrganizationContextProviderService getOrganizationContextProviderService() {
+		return organizationContextProviderService == null ? organizationContextProviderService = new OrganizationContextProviderServiceImpl(
+				getRequestDispatchService(), getProjectRepresentationProvider()) : organizationContextProviderService;
+	}
+
+	public ReleaseEstimator getReleaseEstimator() {
+		final Release rootRelease = getContextProviderService().getCurrentProjectContext().getProjectRelease();
+		return new ReleaseEstimator(rootRelease);
+	}
 }

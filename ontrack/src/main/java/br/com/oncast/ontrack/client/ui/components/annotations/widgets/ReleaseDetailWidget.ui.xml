@@ -9,11 +9,30 @@
 	<ui:style src="../../../style/default.css">
 	
 		.title {
+			width: 100%;
 			text-transform: uppercase;
+			text-align: center;
+			color: COLOR_GRAY_DARK;
+			cursor: default;
 		}
 		
-		.detail {
-			margin-top: 3px;
+		.details {
+			margin-top: 5px;
+			width: 100%;
+		}
+		
+		.detailLabel {
+			text-align: right;
+			color: COLOR_BLUE_LIGHT;
+			cursor: default;
+		}
+		
+		.detailValue {
+			cursor: default;
+		}
+		
+		.detailValueCell {
+			width: 100%;
 		}
 		
 	</ui:style>
@@ -23,17 +42,72 @@
 			<ui:msg description="details label">Details</ui:msg>
 		</g:Label>
 		
-		<misc:LabeledText styleName="{style.detail}" ui:field="parent" label="Part of:">
-			<ui:attribute name="label" description="part of label" />
-		</misc:LabeledText>
-		<misc:LabeledText styleName="{style.detail}" ui:field="effort" label="Total Effort:">
-			<ui:attribute name="label" description="total effort label" />
-		</misc:LabeledText>
-		<misc:LabeledText styleName="{style.detail}" ui:field="accomplishedEffort" label="Accomplished Effort:">
-			<ui:attribute name="label" description="accomplished effort label" />
-		</misc:LabeledText>
-		<misc:LabeledText styleName="{style.detail}" ui:field="value" label="Total Value:">
-			<ui:attribute name="label" description="total value label" />
-		</misc:LabeledText>
+		<g:Grid styleName="{style.details}">
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release parent label">Part of:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="parent" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release effort label">Effort:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="effort" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release value label">Value:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="value" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release velocity label">Velocity:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="velocity" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release period label">Period:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="period" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release duration label">Duration:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="duration" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+		 </g:Grid>
 	</g:HTMLPanel>
 </ui:UiBinder> 

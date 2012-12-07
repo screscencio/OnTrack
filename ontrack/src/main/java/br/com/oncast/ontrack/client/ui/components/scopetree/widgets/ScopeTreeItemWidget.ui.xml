@@ -12,7 +12,7 @@
 				min-height: 15px;
 				outline: none;
 				font-size: FONT_SIZE_SMALL;
-				color: #606060;
+				color: COLOR_GRAY_DARK;
 			}
 			
 			.done {

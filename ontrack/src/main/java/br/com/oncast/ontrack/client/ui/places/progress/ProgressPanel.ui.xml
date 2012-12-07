@@ -5,8 +5,7 @@
     xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
 	xmlns:pp='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel'
 	xmlns:rw='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets'
-	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'
->
+	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'>
 
     <ui:data field="bgPixelImg" src="../../semitransparentPixel.png" />
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.progress.ProgressPanel.ProgressPanelStyle">

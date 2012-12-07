@@ -48,7 +48,8 @@ public class UserDataServiceImpl implements UserDataService {
 		contextProvider.addContextLoadListener(new ContextChangeListener() {
 			@Override
 			public void onProjectChanged(final UUID projectId) {
-				updateUserDataFor(projectId);
+				if (projectId == null) cachedUsers.clear();
+				else updateUserDataFor(projectId);
 			}
 		});
 
