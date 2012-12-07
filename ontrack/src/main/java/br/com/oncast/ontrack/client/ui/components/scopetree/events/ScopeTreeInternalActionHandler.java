@@ -8,4 +8,6 @@ public interface ScopeTreeInternalActionHandler {
 	public abstract void onInternalAction(OneStepInternalAction action);
 
 	public abstract void onInternalAction(TwoStepInternalAction action);
+
+	public abstract boolean hasPendingInternalAction();
 }

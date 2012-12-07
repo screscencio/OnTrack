@@ -179,6 +179,9 @@ public class ScopeTreeItemWidget extends Composite {
 	@IgnoredByDeepEquality
 	private final Timer fadeAnimationTimer;
 
+	@IgnoredByDeepEquality
+	private final IPadFocusWorkaround ipadFocusWorkaround;
+
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 		initWidget(uiBinder.createAndBindUi(this));
 		setScope(scope);
@@ -204,6 +207,7 @@ public class ScopeTreeItemWidget extends Composite {
 		this.effortCommandMenuItemFactory = new ScopeTreeItemWidgetEffortCommandMenuItemFactory(editionHandler);
 		this.valueCommandMenuItemFactory = new ScopeTreeItemWidgetValueCommandMenuItemFactory(editionHandler);
 		this.progressCommandMenuItemFactory = new ScopeTreeItemWidgetProgressCommandMenuItemFactory(editionHandler);
+		this.ipadFocusWorkaround = new IPadFocusWorkaround(editionBox);
 
 		focusPanel.addClickHandler(new ClickHandler() {
 
@@ -223,7 +227,11 @@ public class ScopeTreeItemWidget extends Composite {
 		editionBox.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(final BlurEvent event) {
-				switchToVisualization(true);
+				if (ipadFocusWorkaround.shouldNotAllowBlur()) {
+					editionBox.setFocus(true);
+					event.preventDefault();
+				}
+				else switchToVisualization(true);
 			}
 		});
 
@@ -293,13 +301,15 @@ public class ScopeTreeItemWidget extends Composite {
 
 		editionBox.setText(getSimpleDescription());
 		deckPanel.showWidget(1);
-		new Timer() {
-			@Override
-			public void run() {
-				editionBox.selectAll();
-				editionBox.setFocus(true);
-			}
-		}.schedule(100);
+		if (!ipadFocusWorkaround.focus()) {
+			new Timer() {
+				@Override
+				public void run() {
+					editionBox.selectAll();
+					editionBox.setFocus(true);
+				}
+			}.schedule(100);
+		}
 	}
 
 	public void switchToVisualization(final boolean shouldTryToUpdateChanges) {
@@ -329,7 +339,7 @@ public class ScopeTreeItemWidget extends Composite {
 		return buffer.append(builder.toString()).toString();
 	}
 
-	private boolean isEditing() {
+	public boolean isEditing() {
 		return deckPanel.getVisibleWidget() == 1;
 	}
 

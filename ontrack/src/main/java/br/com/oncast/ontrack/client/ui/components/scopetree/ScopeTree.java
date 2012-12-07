@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeInte
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInstructionGuide;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
@@ -102,6 +103,10 @@ public class ScopeTree implements Component {
 
 	public void setFocus(final boolean focus) {
 		tree.setFocus(focus);
+	}
+
+	public ScopeTreeItemWidget getSelected() {
+		return tree.getSelectedItem().getScopeTreeItemWidget();
 	}
 
 	public ScopeTreeInternalActionHandler getScopeTreeInternalActionHandler() {

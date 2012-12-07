@@ -7,8 +7,8 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
-import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.helper.ScopeTreeMouseHelper;
@@ -88,7 +88,8 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getClientApplicationStateService().restore(selectedScopeId);
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();
 
-		mouseHelper.register(eventBus, actionExecutionService, view.getScopeTree().getScopeTreeInternalActionHandler(), projectContext);
+		mouseHelper.register(eventBus, actionExecutionService, view.getScopeTree().getScopeTreeInternalActionHandler(), projectContext, view.getScopeTree()
+				.getSelected());
 
 		SERVICE_PROVIDER.getClientMetricService().onBrowserLoadEnd();
 	}

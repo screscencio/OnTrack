@@ -24,6 +24,8 @@ import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRemoveItemAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistUncheckItemAction;
+import br.com.oncast.ontrack.shared.model.action.DescriptionCreateAction;
+import br.com.oncast.ontrack.shared.model.action.DescriptionRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentRemoveAction;
@@ -159,7 +161,17 @@ public class UserActionTestUtils {
 		userActions.add(createImpedimentSolveAction());
 		userActions.add(createScopeAddAssociatedUserAction());
 		userActions.add(createScopeRemoveAssociatedUserAction());
+		userActions.add(createDescriptionCreateAction());
+		userActions.add(createDescriptionRemoveAction());
 		return userActions;
+	}
+
+	private static UserAction createDescriptionRemoveAction() throws Exception {
+		return createUserAction(new DescriptionRemoveAction(new UUID(), new UUID(), false));
+	}
+
+	private static UserAction createDescriptionCreateAction() throws Exception {
+		return createUserAction(new DescriptionCreateAction(new UUID(), "new description"));
 	}
 
 	public static List<UserAction> createCompleteUserActionListOrderedById() throws Exception {

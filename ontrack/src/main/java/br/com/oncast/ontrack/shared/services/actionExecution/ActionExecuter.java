@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
+import br.com.oncast.ontrack.shared.model.action.DescriptionAction;
 import br.com.oncast.ontrack.shared.model.action.FileAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
@@ -26,6 +27,7 @@ public class ActionExecuter {
 		if (action instanceof FileAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof ChecklistAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof ImpedimentAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
+		if (action instanceof DescriptionAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 
 		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.NO_MAPPED_EXECUTOR, action.getClass().toString());
 	}

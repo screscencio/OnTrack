@@ -188,6 +188,18 @@ public enum ActionExecutionErrorMessageCode implements BaseMessageCode<ActionExe
 		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
 			return messages.noMappedExecutor(args[0]);
 		}
+	},
+	DESCRIPTION_WITH_EMPTY_MESSAGE {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.descriptionWithEmptyMessage();
+		}
+	},
+	DESCRIPTION_REMOVE {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.descriptionRemoveAction();
+		}
 	};
 
 	@Override
