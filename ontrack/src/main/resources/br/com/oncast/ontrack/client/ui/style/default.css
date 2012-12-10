@@ -49,7 +49,22 @@
 @def SOLVED_IMPEDIMENT_BORDER 5px solid SOLVED_IMPEDIMENT_COLOR;
 @def NO_IMPEDIMENT_BORDER 5px solid transparent;
 
+.hoverButton {
+	background-position: center;
+			
+	margin: 1px;
+	
+	border-radius: 3px;
+	padding: 2px;
+}
 
+.hoverButton:HOVER {
+	cursor: pointer;
+	margin: 0px;
+	margin-left: 10px;
+	border: 1px solid #AEAEAE;
+	box-shadow: inset 1px 1px 1px white;
+}
 
 .borderDecoration {
 	height: 1px;

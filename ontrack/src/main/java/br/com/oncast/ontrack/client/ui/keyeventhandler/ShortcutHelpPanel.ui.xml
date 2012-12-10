@@ -17,6 +17,10 @@
 		
 		.rootContainer {
 			color: COLOR_MENUBOX_TEXT;
+			
+			max-height: 600px;
+			overflow-y: auto;
+			overflow-x: hidden;
 		}
 	
 		.header {
@@ -35,7 +39,7 @@
 			color: COLOR_BLUE_LIGHT;
 			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
 		}
-	
+		
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">

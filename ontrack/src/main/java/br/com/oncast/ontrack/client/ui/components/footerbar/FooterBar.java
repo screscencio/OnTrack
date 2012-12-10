@@ -3,6 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.footerbar;
 import br.com.oncast.ontrack.client.ui.generalwidgets.HorizontalScrollMover;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
+import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -61,6 +62,11 @@ public class FooterBar extends Composite {
 	@UiHandler("rightScrollArea")
 	void onRightScrollAreaOut(final MouseOutEvent event) {
 		mover.cancel();
+	}
+
+	@UiHandler("showShortcutsButton")
+	void onShowShortcutsClick(final ClickEvent event) {
+		ShortcutService.toggleShortcutHelpPanel();
 	}
 
 	@UiHandler("feedback")

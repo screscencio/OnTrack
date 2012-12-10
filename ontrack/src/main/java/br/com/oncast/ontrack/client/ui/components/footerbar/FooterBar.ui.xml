@@ -54,6 +54,24 @@
 			white-space: nowrap;
 		}
 		
+		.shortcutsButton {
+			position: absolute;
+			top: 3px;
+			right: 117px;
+			
+			padding: 4px;
+			
+			width: 63px;
+			height: auto;
+			
+			color: COLOR_MENU_LINK;
+			
+			font-size: FONT_SIZE_SMALL;
+			white-space: nowrap;
+			
+			cursor: pointer;
+		}
+		
 		.feedback {
 			position: absolute;
 			top: 3px;
@@ -71,7 +89,7 @@
 			
 			cursor: pointer;
 		}
-		.feedback:HOVER {
+		.feedback:HOVER, .shortcutsButton:HOVER {
 			color: COLOR_MENU_LINK_HOVER;
 		}
 		
@@ -92,7 +110,7 @@
 		
 		.scrollContainer {
 			position: relative;
-			margin-right: 109px;
+			margin-right: 176px;
 			height: 17px;
 		}
 		
@@ -181,6 +199,9 @@
 				<g:FocusPanel ui:field="rightScrollArea" styleName="{style.scrollArea} {style.scrollRight}"/>
 				<g:FocusPanel ui:field="leftScrollArea" styleName="{style.scrollArea} {style.scrollLeft}"/>
 			</g:HTMLPanel>
+			<g:Button ui:field="showShortcutsButton" styleName="{style.menuboxButton} {style.shortcutsButton}">
+				<ui:msg description="shortcuts button text">Shortcuts</ui:msg>
+			</g:Button>
 			<g:Button ui:field="feedback" styleName="{style.menuboxButton} {style.feedback}">
 				<ui:msg description="feedback button text">Give us Feedback</ui:msg>
 			</g:Button>
