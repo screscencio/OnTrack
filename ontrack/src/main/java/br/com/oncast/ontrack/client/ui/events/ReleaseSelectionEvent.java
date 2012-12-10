@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.events;
 
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -8,9 +9,11 @@ public class ReleaseSelectionEvent extends GwtEvent<ReleaseSelectionEventHandler
 
 	public static Type<ReleaseSelectionEventHandler> TYPE;
 	private final Release release;
+	private final UUID projectId;
 
-	public ReleaseSelectionEvent(final Release release) {
+	public ReleaseSelectionEvent(final Release release, final UUID projectId) {
 		this.release = release;
+		this.projectId = projectId;
 	}
 
 	public static Type<ReleaseSelectionEventHandler> getType() {
@@ -29,6 +32,10 @@ public class ReleaseSelectionEvent extends GwtEvent<ReleaseSelectionEventHandler
 
 	public Release getRelease() {
 		return release;
+	}
+
+	public UUID getProjectId() {
+		return projectId;
 	}
 
 }

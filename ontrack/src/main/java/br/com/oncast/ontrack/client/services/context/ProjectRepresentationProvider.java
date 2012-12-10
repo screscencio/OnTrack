@@ -7,6 +7,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public interface ProjectRepresentationProvider {
 
+	boolean hasAvailableProjectRepresentation();
+
 	ProjectRepresentation getCurrent();
 
 	HandlerRegistration registerProjectListChangeListener(final ProjectListChangeListener projectListChangeListener);

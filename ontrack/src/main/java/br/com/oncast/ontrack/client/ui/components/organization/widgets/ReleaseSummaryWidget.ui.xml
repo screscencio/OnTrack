@@ -92,6 +92,7 @@
 			font-size: FONT_SIZE_MEDIUM;
 			width: 100%;
 			text-align: center;
+			cursor: pointer;
 		}
 		
 		.attributes {

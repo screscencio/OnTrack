@@ -6,12 +6,14 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
+import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.feedback.ProjectCreationQuotaRequisitionCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.organization.OrganizationPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -204,7 +206,9 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 		final Command cmd = new Command() {
 			@Override
 			public void execute() {
-				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new OrganizationPlace());
+				final ProjectRepresentationProvider provider = ClientServiceProvider.getInstance().getProjectRepresentationProvider();
+				final UUID project = provider.hasAvailableProjectRepresentation() ? provider.getCurrent().getId() : null;
+				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new OrganizationPlace(project));
 			}
 		};
 

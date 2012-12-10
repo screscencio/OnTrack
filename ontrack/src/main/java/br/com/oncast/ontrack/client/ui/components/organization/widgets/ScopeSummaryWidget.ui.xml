@@ -63,7 +63,7 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="header" styleName="{style.header}">
+	<g:FocusPanel ui:field="header" styleName="{style.header} {style.noSelection}">
 		<g:HTMLPanel styleName="{style.headerContainer}">
 			<g:SimplePanel ui:field="progressBar" styleName="{style.progressBar}"/>
 			<g:HorizontalPanel width="100%">

@@ -3,6 +3,9 @@ package br.com.oncast.ontrack.client.ui.components.organization.widgets;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
@@ -20,6 +23,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -33,6 +37,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -78,8 +83,8 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	@UiField(provided = true)
 	ModelWidgetContainer<Scope, ScopeSummaryWidget> scopesList;
 
-	@UiField(provided = true)
-	protected ReleaseChart chart;
+	@UiField
+	protected SimplePanel chartPanel;
 
 	@UiField
 	FocusPanel containerStateToggleButton;
@@ -90,6 +95,8 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	private ReleaseSummaryWidget selectedWidget;
 
+	private ReleaseChart chart;
+
 	private boolean hasStartedUp = false;
 
 	public ProjectSummaryWidget(final ProjectContext project) {
@@ -98,12 +105,11 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 		createReleasesContainer();
 		createScopesList();
-		chart = new ReleaseChart(false);
 
 		initWidget(uiBinder.createAndBindUi(this));
 
 		name.setText(project.getProjectRepresentation().getName());
-		setContainerState(true);
+		setContainerState(false);
 	}
 
 	private void setupSelectionEventHandlers() {
@@ -113,6 +119,8 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		selectionEventHandlers.add(eventBus.addHandler(ReleaseSelectionEvent.getType(), new ReleaseSelectionEventHandler() {
 			@Override
 			public void onReleaseSelection(final ReleaseSelectionEvent event) {
+				if (!getProjectId().equals(event.getProjectId())) return;
+
 				setSelected(event.getRelease());
 			}
 		}));
@@ -121,25 +129,27 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 			@Override
 			public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
 				final Scope s = event.getTargetScope();
-				if (!s.getProgress().isDone()) return;
+				if (!getProjectId().equals(event.getProjectId()) || !s.getProgress().isDone()) return;
 
-				chart.highlight(s.getProgress().getEndDay());
+				if (chart != null) chart.highlight(s.getProgress().getEndDay());
 			}
 		}));
 	}
 
-	private void removeReleaseSelectionEventHandler() {
+	private void removeSelectionEventHandler() {
 		for (final HandlerRegistration reg : selectionEventHandlers) {
 			reg.removeHandler();
 		}
+		selectionEventHandlers.clear();
 	}
 
 	private void createReleasesContainer() {
 		releases = new ModelWidgetContainer<Release, ReleaseSummaryWidget>(new ModelWidgetFactory<Release, ReleaseSummaryWidget>() {
 			@Override
 			public ReleaseSummaryWidget createWidget(final Release modelBean) {
-				return new ReleaseSummaryWidget(modelBean);
+				return new ReleaseSummaryWidget(getProjectId(), modelBean);
 			}
+
 		}, new AnimatedContainer(new ReleaseEffortBasedHorizontalPanel(getProjectRelease())));
 	}
 
@@ -147,7 +157,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		scopesList = new ModelWidgetContainer<Scope, ScopeSummaryWidget>(new ModelWidgetFactory<Scope, ScopeSummaryWidget>() {
 			@Override
 			public ScopeSummaryWidget createWidget(final Scope modelBean) {
-				return new ScopeSummaryWidget(modelBean);
+				return new ScopeSummaryWidget(modelBean, getProjectId());
 			}
 		});
 	}
@@ -184,6 +194,8 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 				.getInstance()
 				.getActionExecutionService());
 
+		chart = new ReleaseChart(false);
+		chartPanel.setWidget(chart);
 		chart.setRelease(release, dataProvider);
 		chart.updateData();
 	}
@@ -200,32 +212,14 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	}
 
 	private void ensureSelectedWidgetIsVisible() {
+		if (selectedWidget == null) return;
+
 		selectedWidget.setHierarchicalContainerState(true);
-		final Widget widget = selectedWidget.asWidget();
-		final Element containerElement = releaseContainer.getElement();
+		final Element element = selectedWidget.asWidget().getElement();
+		final Element container = releaseContainer.getElement();
 
-		final int menuLeft = containerElement.getScrollLeft();
-		final int menuWidth = containerElement.getClientWidth();
-		final int menuRight = menuLeft + menuWidth;
-
-		final Element widgetElement = widget.getElement();
-		final int itemLeft = getOffsetLeft(widgetElement, containerElement);
-		final int itemWidth = widgetElement.getParentElement().getOffsetWidth();
-		final int itemRight = itemLeft + itemWidth;
-
-		if (itemLeft < menuLeft && itemRight > menuRight) return;
-
-		if (itemLeft < menuLeft || itemWidth > menuWidth) containerElement.setScrollLeft(itemLeft - MARGIN_LEFT);
-		else if (itemRight > menuRight) containerElement.setScrollLeft(itemLeft - MARGIN_LEFT);
-	}
-
-	private int getOffsetLeft(final Element widget, final Element scrollPanel) {
-		final Element parent = widget.getOffsetParent();
-		if (parent == null) return 0;
-
-		if (parent == scrollPanel) return widget.getOffsetLeft();
-
-		return getOffsetLeft(parent, scrollPanel) + widget.getOffsetLeft();
+		WidgetVisibilityEnsurer.ensureVisible(element, container, Orientation.HORIZONTAL, ContainerAlignment.BEGIN, MARGIN_LEFT);
+		WidgetVisibilityEnsurer.ensureVisible(element, container, Orientation.VERTICAL, ContainerAlignment.CENTER, 0);
 	}
 
 	private ReleaseSummaryWidget getWidget(final Release release) {
@@ -236,7 +230,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		return parentWidget == null ? null : parentWidget.getChildWidgetFor(release);
 	}
 
-	private void setContainerState(final boolean b) {
+	public void setContainerState(final boolean b) {
 		bodyContent.setVisible(b);
 		containerStateToggleButton.setStyleName(style.containerStateOpen(), b);
 		containerStateToggleButton.setStyleName(style.containerStateClosed(), !b);
@@ -245,7 +239,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 			setupSelectionEventHandlers();
 			setup();
 		}
-		else removeReleaseSelectionEventHandler();
+		else removeSelectionEventHandler();
 	}
 
 	private void setup() {
@@ -287,6 +281,10 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	private Release getProjectRelease() {
 		return project.getProjectRelease();
+	}
+
+	private UUID getProjectId() {
+		return project.getProjectRepresentation().getId();
 	}
 
 	@Override

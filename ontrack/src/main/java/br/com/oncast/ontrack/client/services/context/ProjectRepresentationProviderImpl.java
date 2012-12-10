@@ -106,7 +106,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 	@Override
 	public ProjectRepresentation getCurrent() {
-		if (currentProjectRepresentation == null) throw new RuntimeException("There is no project representation set.");
+		if (!hasAvailableProjectRepresentation()) throw new RuntimeException("There is no project representation set.");
 		return currentProjectRepresentation;
 	}
 
@@ -204,6 +204,11 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			if (projectRepresentation.getId().equals(projectId)) return projectRepresentation;
 		}
 		throw new RuntimeException("Project representation not available.");
+	}
+
+	@Override
+	public boolean hasAvailableProjectRepresentation() {
+		return currentProjectRepresentation != null;
 	}
 
 }

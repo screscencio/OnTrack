@@ -78,7 +78,7 @@
 		.detailsContainer {
 			position: relative;
 			width: 250px;
-			height: 100%;
+			height: 223px;
 			
 			border: BORDER_DEFAULT;
 			border-radius: 3px;
@@ -97,14 +97,6 @@
 		.releaseChartContainer { 
 			width: 400px;
 			margin-right: 0px;
-		}
-		
-		.releaseChart {
-			position: absolute;
-			top: PADDING_SMALL;
-			bottom: PADDING_SMALL;
-			left: PADDING_SMALL;
-			right: PADDING_SMALL;
 		}
 		
 		.scopesListTitle {
@@ -174,9 +166,7 @@
 								</g:SimplePanel>
 							</g:HTMLPanel>
 						</g:cell>
-						<g:SimplePanel styleName="{style.detailsContainer} {style.releaseChartContainer}">
-							<chart:ReleaseChart ui:field="chart" styleName="{style.releaseChart}"/>
-						</g:SimplePanel>
+						<g:SimplePanel ui:field="chartPanel" styleName="{style.detailsContainer} {style.releaseChartContainer}" />
 					</g:HorizontalPanel>
 				</g:FocusPanel>
 			</g:HTMLPanel>

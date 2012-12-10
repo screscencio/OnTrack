@@ -377,7 +377,7 @@ public class Release implements Serializable {
 		return null;
 	}
 
-	private Release getRootRelease() {
+	public Release getRootRelease() {
 		Release current = this;
 		while (!current.isRoot())
 			current = current.getParent();

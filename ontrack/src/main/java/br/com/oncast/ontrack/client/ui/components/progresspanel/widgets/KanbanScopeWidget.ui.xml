@@ -51,16 +51,15 @@
 		      
         .draggable {
             cursor: move;
-            border-right: RELEASE_WIDGET_BORDER;
             height: 100%;
-            width: 10px; 
+            width: 9px; 
         }
         
         .draggableImage {
             position: absolute;
             top: 5px;
             bottom: 5px;
-            left: 2px;
+            left: 0px;
             width: 9px; 
             
             background-image: draggableImageUrl;
@@ -79,9 +78,11 @@
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel} kanbanColumn">
 		<g:HorizontalPanel styleName="{style.internalPanel}" verticalAlignment="middle">
-            <g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
-                <g:SimplePanel styleName="{style.draggableImage}"/>
-            </g:FocusPanel>
+			<g:cell height="100%">
+	            <g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
+	                <g:SimplePanel styleName="{style.draggableImage}"/>
+	            </g:FocusPanel>
+			</g:cell>
             <g:cell width="100%">
 	            <g:FlowPanel>
 	                <g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />

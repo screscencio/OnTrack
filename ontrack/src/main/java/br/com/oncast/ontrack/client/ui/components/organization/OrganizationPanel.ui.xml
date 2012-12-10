@@ -22,7 +22,7 @@
 	
 	
 	<layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
-		<g:HTMLPanel styleName="{style.projectsContainer}">
+		<g:HTMLPanel ui:field="container" styleName="{style.projectsContainer}">
 			<w:ModelWidgetContainer ui:field="projects"/>
 		</g:HTMLPanel>
 	</layout:ApplicationMenuAndWidgetContainer>

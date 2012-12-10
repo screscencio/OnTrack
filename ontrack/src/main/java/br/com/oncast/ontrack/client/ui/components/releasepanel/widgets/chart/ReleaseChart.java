@@ -302,7 +302,6 @@ public class ReleaseChart extends Composite {
 							}
 						}));
 
-		newChart.ensureDebugId("releaseChart");
 		return newChart;
 	}
 

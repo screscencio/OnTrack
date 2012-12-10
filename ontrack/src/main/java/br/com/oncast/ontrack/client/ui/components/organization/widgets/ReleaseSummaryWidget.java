@@ -82,7 +82,10 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 
 	private boolean containerState;
 
-	public ReleaseSummaryWidget(final Release release, final ReleaseSummaryWidget parentReleaseWidget) {
+	private final UUID projectId;
+
+	public ReleaseSummaryWidget(final UUID projectId, final Release release, final ReleaseSummaryWidget parentReleaseWidget) {
+		this.projectId = projectId;
 		this.release = release;
 		containerState = !release.isDone();
 		this.parentReleaseWidget = parentReleaseWidget;
@@ -94,8 +97,8 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 		setContainerState(containerState);
 	}
 
-	public ReleaseSummaryWidget(final Release release) {
-		this(release, null);
+	public ReleaseSummaryWidget(final UUID projectId, final Release release) {
+		this(projectId, release, null);
 	}
 
 	@UiHandler("header")
@@ -103,7 +106,7 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 		event.stopPropagation();
 
 		if (!release.getId().isValid()) return;
-		ClientServiceProvider.getInstance().getEventBus().fireEvent(new ReleaseSelectionEvent(release));
+		ClientServiceProvider.getInstance().getEventBus().fireEvent(new ReleaseSelectionEvent(release, projectId));
 	}
 
 	public void setSelected(final boolean b) {
@@ -158,7 +161,7 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 		childReleases = new ModelWidgetContainer<Release, ReleaseSummaryWidget>(new ModelWidgetFactory<Release, ReleaseSummaryWidget>() {
 			@Override
 			public ReleaseSummaryWidget createWidget(final Release modelBean) {
-				return new ReleaseSummaryWidget(modelBean, ReleaseSummaryWidget.this);
+				return new ReleaseSummaryWidget(projectId, modelBean, ReleaseSummaryWidget.this);
 			}
 		}, new AnimatedContainer(new ReleaseEffortBasedHorizontalPanel(release)));
 	}

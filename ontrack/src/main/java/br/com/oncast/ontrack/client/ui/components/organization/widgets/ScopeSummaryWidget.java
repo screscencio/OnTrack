@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -48,15 +49,18 @@ public class ScopeSummaryWidget extends Composite implements ScopeWidget {
 
 	private final Scope scope;
 
-	public ScopeSummaryWidget(final Scope scope) {
+	private final UUID projectId;
+
+	public ScopeSummaryWidget(final Scope scope, final UUID projectId) {
 		this.scope = scope;
+		this.projectId = projectId;
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
 	}
 
 	@UiHandler("header")
 	protected void onHeaderMouseOver(final MouseOverEvent e) {
-		ClientServiceProvider.getInstance().getEventBus().fireEvent(new ScopeSelectionEvent(scope));
+		ClientServiceProvider.getInstance().getEventBus().fireEvent(new ScopeSelectionEvent(scope, projectId));
 	}
 
 	@Override

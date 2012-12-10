@@ -197,4 +197,11 @@ public class Scope implements Serializable, HasTags {
 		}
 		return l;
 	}
+
+	public Scope getRootScope() {
+		Scope current = this;
+		while (!current.isRoot())
+			current = current.getParent();
+		return current;
+	}
 }
