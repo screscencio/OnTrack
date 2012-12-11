@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.description.DescriptionRemoveActionEntity;
@@ -22,10 +23,10 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	@Element
 	private UUID descriptionId;
 
-	@Element
-	private boolean userAction;
+	@Attribute
+	private Boolean userAction;
 
-	@Element
+	@Element(required = false)
 	private String description;
 
 	protected DescriptionRemoveAction() {}
@@ -62,5 +63,4 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	public String getDescription() {
 		return description;
 	}
-
 }
