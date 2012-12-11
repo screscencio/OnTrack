@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.components.releasepanel.interaction.Relea
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.dnd.ScopeWidgetDropController;
+import br.com.oncast.ontrack.client.ui.generalwidgets.DescriptionWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
@@ -43,6 +44,9 @@ public class ProgressPanel extends Composite implements ProgressView {
 	protected ApplicationMenuAndWidgetContainer rootPanel;
 
 	@UiField(provided = true)
+	protected DescriptionWidget descriptionWidget;
+
+	@UiField(provided = true)
 	protected ReleasePanelWidget releaseWidget;
 
 	@UiField(provided = true)
@@ -70,6 +74,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 		members = new DraggableMembersListWidget(userDragAndDropManager);
 		releaseWidget = new ReleasePanelWidget(interactionHandler, userDragAndDropManager, userDropControllerFactory, true);
 		kanbanPanel = new KanbanPanel(kanban, release, userDragAndDropManager, userDropControllerFactory);
+		descriptionWidget = new DescriptionWidget(release);
 
 		chart = new ReleaseChart(release, false);
 
@@ -105,5 +110,15 @@ public class ProgressPanel extends Composite implements ProgressView {
 	@Override
 	public Widget getAlertingPanel() {
 		return rootPanel.getContentPanelWidget();
+	}
+
+	@Override
+	public DescriptionWidget getDescriptionWidget() {
+		return descriptionWidget;
+	}
+
+	@Override
+	public ReleasePanelWidget getReleaseWidget() {
+		return releaseWidget;
 	}
 }

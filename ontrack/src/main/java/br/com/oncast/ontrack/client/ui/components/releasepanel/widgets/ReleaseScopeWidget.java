@@ -103,6 +103,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private final boolean shouldShowScopeColor;
 
 	private boolean selected = false;
+	private boolean highlighted = false;
 
 	public ReleaseScopeWidget(final Scope scope) {
 		this(scope, false, null);
@@ -292,14 +293,27 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	@Override
-	public void setSelected(final boolean shouldSelect) {
-		panel.setStyleName(style.selected(), shouldSelect);
-		selected = shouldSelect;
+	public void setHighlighted(final boolean shouldHighlight) {
+		highlighted = shouldHighlight;
+		updateSelectionANdHighlightStyle();
 	}
 
 	@Override
+	public boolean isHighlighted() {
+		return highlighted;
+	}
+
+	public void setSelected(final boolean shouldSelect) {
+		selected = shouldSelect;
+		updateSelectionANdHighlightStyle();
+	}
+
 	public boolean isSelected() {
 		return selected;
+	}
+
+	private void updateSelectionANdHighlightStyle() {
+		panel.setStyleName(style.selected(), selected || highlighted);
 	}
 
 	public void setHasOpenImpediments(final boolean hasOpenImpediments) {

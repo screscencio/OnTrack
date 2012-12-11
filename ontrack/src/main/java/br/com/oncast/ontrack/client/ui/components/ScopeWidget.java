@@ -6,10 +6,10 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public interface ScopeWidget extends ModelWidget<Scope> {
 
-	void setSelected(boolean b);
+	void setHighlighted(boolean b);
 
 	void addAssociatedUsers(DraggableMemberWidget draggable);
 
-	boolean isSelected();
+	boolean isHighlighted();
 
 }

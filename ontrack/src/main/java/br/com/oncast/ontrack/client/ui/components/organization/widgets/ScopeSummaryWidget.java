@@ -84,14 +84,13 @@ public class ScopeSummaryWidget extends Composite implements ScopeWidget {
 	}
 
 	@Override
-	public void setSelected(final boolean b) {}
-
-	@Override
 	public void addAssociatedUsers(final DraggableMemberWidget draggable) {}
 
 	@Override
-	public boolean isSelected() {
+	public void setHighlighted(final boolean b) {}
+
+	@Override
+	public boolean isHighlighted() {
 		return false;
 	}
-
 }

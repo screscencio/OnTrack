@@ -17,7 +17,7 @@
 			top: 5px;
 			left: 5px;
 			height: 40px;;
-			width: 400px;
+			width: 480px;
 			overflow: hidden;
 		}
 		
@@ -26,7 +26,7 @@
 			top: 50px;
 			left: 0px;
 			bottom: 0px;
-			width: 400px;
+			width: 480px;
 			overflow: auto;
 			overflow-x: hidden;
 			padding: 0px 5px 10px 5px;
@@ -35,7 +35,7 @@
 		.kanbanContainer {
 			position: absolute;
 			top: 5px;
-			left: 415px;
+			left: 495px;
 			bottom: 5px;
 			right: 5px;
 		}
@@ -43,12 +43,30 @@
 		.releaseChart {
 			position: absolute;
 			top: 0px;
-			left: 0px;
+			right: 0px;
 			
-			width: 400px;
-			height: 200px;
+			width: 350px;
+			height: 198px;
+
+			-webkit-box-shadow: POPUP_SHADOW;
+		    -moz-box-shadow: POPUP_SHADOW;
+		    box-shadow: POPUP_SHADOW;
+		    border: POPUP_BORDER;
 		}
 		
+		.descriptionPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 360px;
+			height: 197px;
+
+			-webkit-box-shadow: POPUP_SHADOW;
+		    -moz-box-shadow: POPUP_SHADOW;
+		    box-shadow: POPUP_SHADOW;
+		    border: POPUP_BORDER;
+		}
+
 		.kanbanPanel {
 			position: absolute;
 			top: 205px;
@@ -79,6 +97,7 @@
 		</g:SimplePanel>
 		<g:HTMLPanel styleName="{style.kanbanContainer}">
 			<chart:ReleaseChart ui:field="chart" styleName="{style.releaseChart}"/>
+			<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
 			<pp:KanbanPanel ui:field="kanbanPanel" addStyleNames="{style.kanbanPanel}" />
 		</g:HTMLPanel>
    </layout:ApplicationMenuAndWidgetContainer>

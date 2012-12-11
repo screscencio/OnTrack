@@ -67,13 +67,16 @@
         }
         
         .selected {
+			background: #FFE8B3;
+		}
+
+        .selected:hover {
 			background: COLOR_YELLOW;
 		}
 		
 		.associatedUsers {
 			float: right;
 		}
-        
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel} kanbanColumn">

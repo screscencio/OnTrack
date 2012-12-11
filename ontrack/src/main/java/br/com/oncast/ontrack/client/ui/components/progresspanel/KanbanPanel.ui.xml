@@ -8,6 +8,16 @@
 	
 		.board {
 			margin-left: 10px;
+			margin: auto;
+		}
+		
+		.board, .board > tbody > tr > td > table, .board > tr > td > table {
+            position: relative;
+            height: 100%;			
+		}
+
+		.board td {
+			position: relative;
 		}
 		
 		.board > tbody > tr > td {

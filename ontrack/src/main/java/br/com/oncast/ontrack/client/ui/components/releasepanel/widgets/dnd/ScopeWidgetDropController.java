@@ -20,14 +20,14 @@ public class ScopeWidgetDropController extends SimpleDropController implements D
 	@Override
 	public void onEnter(final DragContext context) {
 		super.onEnter(context);
-		wasSelected = scopeWidget.isSelected();
-		scopeWidget.setSelected(true);
+		wasSelected = scopeWidget.isHighlighted();
+		scopeWidget.setHighlighted(true);
 	}
 
 	@Override
 	public void onLeave(final DragContext context) {
 		super.onLeave(context);
-		scopeWidget.setSelected(wasSelected);
+		scopeWidget.setHighlighted(wasSelected);
 	}
 
 	@Override
