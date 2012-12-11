@@ -2,7 +2,27 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+	<ui:style>
+		
+		.rootPanel {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+	
+			border: 1px solid #d3d3d3;
+			background-color: white;
+			padding: 5px;
+			overflow: auto;
+			overflow-x: hidden; 
+		}
+		
+	</ui:style>
+
 	<g:SimplePanel>
-		<g:Label ui:field="label" />
+		<g:SimplePanel styleName="{style.rootPanel}">
+			<g:Label ui:field="label" />
+		</g:SimplePanel>
 	</g:SimplePanel>
 </ui:UiBinder> 

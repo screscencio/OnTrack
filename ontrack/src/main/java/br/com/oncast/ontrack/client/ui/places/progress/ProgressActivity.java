@@ -9,6 +9,8 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMen
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanActionSyncController.Display;
+import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanScopeWidget;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
@@ -18,6 +20,7 @@ import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -39,8 +42,6 @@ public class ProgressActivity extends AbstractActivity {
 
 	private final UUID requestedProjectId;
 	private final UUID requestedReleaseId;
-
-	private HandlerRegistration scopeSelectionHandlerRegistration;
 
 	public ProgressActivity(final ProgressPlace place) {
 		requestedProjectId = place.getRequestedProjectId();
@@ -106,9 +107,37 @@ public class ProgressActivity extends AbstractActivity {
 		registrations.add(ClientServiceProvider.getInstance().getEventBus()
 				.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 
+					Scope currSelectedScope;
+
 					@Override
 					public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
-						view.getDescriptionWidget().setSelected(event.getTargetScope());
+						final Scope scope = event.getTargetScope();
+						if (scope == currSelectedScope) return;
+						deselectCurrentScopeWidget(scope);
+						selectScopeWidget(scope);
+					}
+
+					private void selectScopeWidget(final Scope scope) {
+						setScopeSelection(scope, true);
+						view.getDescriptionWidget().setSelected(scope);
+						currSelectedScope = scope;
+					}
+
+					private void deselectCurrentScopeWidget(final Scope scope) {
+						setScopeSelection(currSelectedScope, false);
+					}
+
+					private void setScopeSelection(final Scope scope, final boolean selection) {
+						if (scope == null) return;
+
+						final KanbanScopeWidget kanbanScopeWidget = view.getKanbanPanel().getWidgetFor(scope);
+						if (kanbanScopeWidget != null) {
+							kanbanScopeWidget.setSelected(selection);
+							return;
+						}
+
+						final ReleaseScopeWidget releaseScopeWidget = view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(scope);
+						if (releaseScopeWidget != null) releaseScopeWidget.setSelected(selection);
 					}
 				}));
 	}

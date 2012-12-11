@@ -1,12 +1,13 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
-
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.components.progresspanel.KanbanWidgetDisplay;
+import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleasePanelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DescriptionWidget;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
 
 public interface ProgressView extends IsWidget {
 
@@ -21,4 +22,6 @@ public interface ProgressView extends IsWidget {
 	void unregisterActionExecutionHandler(ActionExecutionService actionExecutionService);
 
 	DescriptionWidget getDescriptionWidget();
+
+	ReleasePanelWidget getReleaseWidget();
 }

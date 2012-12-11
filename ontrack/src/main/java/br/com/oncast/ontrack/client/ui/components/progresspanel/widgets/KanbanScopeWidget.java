@@ -54,6 +54,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	private String currentScopeDescription;
 
 	private boolean selected = false;
+	private boolean highlighted = false;
 
 	@UiField(provided = true)
 	ScopeAssociatedMembersWidget associatedUsers;
@@ -90,7 +91,6 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	@UiHandler("panel")
 	public void onScopeWidgetClick(final ClickEvent e) {
 		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
-		setSelected(true);
 	}
 
 	@Override
@@ -129,19 +129,32 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	}
 
 	@Override
-	public void setSelected(final boolean b) {
-		panel.setStyleName(style.selected(), b);
-		selected = b;
+	public void setHighlighted(final boolean shouldHighlight) {
+		highlighted = shouldHighlight;
+		updateSelectionANdHighlightStyle();
+	}
+
+	@Override
+	public boolean isHighlighted() {
+		return highlighted;
+	}
+
+	public void setSelected(final boolean shouldSelect) {
+		selected = shouldSelect;
+		updateSelectionANdHighlightStyle();
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	private void updateSelectionANdHighlightStyle() {
+		panel.setStyleName(style.selected(), selected || highlighted);
 	}
 
 	@Override
 	public void addAssociatedUsers(final DraggableMemberWidget memberWidget) {
 		associatedUsers.add(memberWidget);
-	}
-
-	@Override
-	public boolean isSelected() {
-		return selected;
 	}
 
 }

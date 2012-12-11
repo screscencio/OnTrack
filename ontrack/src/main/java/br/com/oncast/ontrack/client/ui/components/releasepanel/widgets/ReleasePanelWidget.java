@@ -177,6 +177,10 @@ public class ReleasePanelWidget extends Composite {
 		update();
 	}
 
+	public Release getRelease() {
+		return this.rootRelease;
+	}
+
 	public void update() {
 		final List<Release> children = new ArrayList<Release>();
 		if (releaseSpecific) {
@@ -190,14 +194,13 @@ public class ReleasePanelWidget extends Composite {
 	}
 
 	public ReleaseWidget getWidgetFor(final Release release) {
-		if (rootRelease.equals(release.getParent())) {
+		if (releaseSpecific || rootRelease.equals(release.getParent())) {
 			final ReleaseWidget widget = releaseContainer.getWidgetFor(release);
 			if (widget == null) throw new RuntimeException("Release not found");
 			return widget;
 		}
-		final ReleaseWidget parentWidget = getWidgetFor(release.getParent());
 
-		final ReleaseWidget widget = parentWidget.getChildReleasesContainer().getWidgetFor(release);
+		final ReleaseWidget widget = getWidgetFor(release.getParent()).getChildReleasesContainer().getWidgetFor(release);
 		if (widget == null) throw new RuntimeException("Release not found");
 		return widget;
 	}
