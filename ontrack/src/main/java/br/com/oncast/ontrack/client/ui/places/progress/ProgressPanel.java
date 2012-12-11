@@ -43,7 +43,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 	@UiField
 	protected ApplicationMenuAndWidgetContainer rootPanel;
 
-	@UiField
+	@UiField(provided = true)
 	protected DescriptionWidget descriptionWidget;
 
 	@UiField(provided = true)
@@ -74,6 +74,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 		members = new DraggableMembersListWidget(userDragAndDropManager);
 		releaseWidget = new ReleasePanelWidget(interactionHandler, userDragAndDropManager, userDropControllerFactory, true);
 		kanbanPanel = new KanbanPanel(kanban, release, userDragAndDropManager, userDropControllerFactory);
+		descriptionWidget = new DescriptionWidget(release);
 
 		chart = new ReleaseChart(release, false);
 
@@ -114,5 +115,10 @@ public class ProgressPanel extends Composite implements ProgressView {
 	@Override
 	public DescriptionWidget getDescriptionWidget() {
 		return descriptionWidget;
+	}
+
+	@Override
+	public ReleasePanelWidget getReleaseWidget() {
+		return releaseWidget;
 	}
 }

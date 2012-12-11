@@ -124,6 +124,7 @@ public class ProgressActivity extends AbstractActivity {
 					}
 
 					private void deselectCurrentScopeWidget(final Scope scope) {
+						view.getDescriptionWidget().setSelected(null);
 						setScopeSelection(currSelectedScope, false);
 					}
 

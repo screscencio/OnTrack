@@ -24,9 +24,7 @@
 		
 		.container {
 			position: relative;
-			top: 0px;
-			left: 0px;
-			right: 0px;
+			width: 100%;
 			
 			background-color: white;
 			padding: 1px 1px 0px 0px;
@@ -117,6 +115,16 @@
 		.relative {
 			position: relative;
 		}
+		
+		.displayPanel {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
+			left: 0px;
+			padding: 10px 15px;
+			width: auto !important;
+		}
 
 	</ui:style>
 	
@@ -132,7 +140,7 @@
 						<g:FocusPanel ui:field="createDescriptionButton" styleName="{style.create}"/>
 					</g:HTMLPanel>
 				</g:FocusPanel>
-				<g:FlowPanel>
+				<g:FlowPanel styleName="{style.displayPanel}">
 					<g:DeckPanel ui:field="descriptionDeckPanel">
 						<g:FlowPanel styleName="{style.noDescriptionContainer}">
 							<g:Label styleName="{style.noDescriptionLabel}">
@@ -142,7 +150,7 @@
 								<ui:msg description="description help message">You could set a description using the link below.</ui:msg>
 							</g:Label>
 						</g:FlowPanel>
-						<g:InlineHTML ui:field="label"/>
+						<g:InlineHTML ui:field="label" />
 					</g:DeckPanel>
 					<g:Label ui:field="editButtom" styleName="{style.editDescriptionBtn}">
 						<ui:msg description="edit description buttom">Edit description...</ui:msg>
