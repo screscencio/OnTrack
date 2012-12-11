@@ -25,6 +25,9 @@ public class DescriptionRemoveActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.BOOLEAN_1)
 	private boolean userAction;
 
+	@Column(name = ActionTableColumns.DESCRIPTION_TEXT, length = ActionTableColumns.DESCRIPTION_TEXT_LENGTH)
+	private String description;
+
 	protected DescriptionRemoveActionEntity() {}
 
 	public String getDescriptionId() {
@@ -49,6 +52,14 @@ public class DescriptionRemoveActionEntity extends ModelActionEntity {
 
 	public void setUserAction(final boolean userAction) {
 		this.userAction = userAction;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

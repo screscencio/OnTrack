@@ -169,4 +169,8 @@ public class UserWidget extends Composite {
 		return userImage;
 	}
 
+	public Widget getDraggableItem() {
+		return userImage;
+	}
+
 }

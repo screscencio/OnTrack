@@ -227,6 +227,10 @@ public class Project implements Serializable {
 
 	public void addDescription(final Description description, final UUID subjectId) {
 		if (!descriptionMap.containsKey(subjectId)) descriptionMap.put(subjectId, description);
+		else {
+			descriptionMap.remove(subjectId);
+			descriptionMap.put(subjectId, description);
+		}
 	}
 
 	public Description findDescriptionFor(final UUID subjectId) {

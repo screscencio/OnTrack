@@ -25,6 +25,9 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	@Element
 	private boolean userAction;
 
+	@Element
+	private String description;
+
 	protected DescriptionRemoveAction() {}
 
 	public DescriptionRemoveAction(final UUID subjectId, final UUID descriptionId, final boolean isUserAction) {
@@ -36,6 +39,7 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Description description = ActionHelper.findDescription(subjectId, context);
+		this.description = description.getDescription();
 		if (userAction && !description.getAuthor().getId().equals(actionContext.getUserId())) throw new UnableToCompleteActionException(
 				ActionExecutionErrorMessageCode.DESCRIPTION_REMOVE);
 
@@ -52,6 +56,11 @@ public class DescriptionRemoveAction implements DescriptionAction {
 	@Override
 	public UUID getDescriptionId() {
 		return descriptionId;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
 	}
 
 }

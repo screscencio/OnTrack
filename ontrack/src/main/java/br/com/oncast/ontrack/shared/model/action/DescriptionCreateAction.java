@@ -65,4 +65,9 @@ public class DescriptionCreateAction implements DescriptionAction {
 	public UUID getDescriptionId() {
 		return descriptionId;
 	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
 }

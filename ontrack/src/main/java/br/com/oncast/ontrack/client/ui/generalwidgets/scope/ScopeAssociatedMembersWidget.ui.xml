@@ -2,19 +2,12 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
-	<ui:style>
+	<ui:style type="br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget.ScopeAssociatedMembersWidgetStyle">
 	
 		.associatedUsers {
 			background: #fafafa;
 
 			padding: 3px 1px 0px 3px;
-		}
-		
-		.associatedUsers:HOVER {
-			border: 1px solid #BEBEBE;
-			margin: -1px;
-			
-			margin-bottom: 1px;
 		}
 		
 		.associatedUsers img {
@@ -29,11 +22,6 @@
 			overflow: hidden;
 		}
 		
-		.associatedUsersContainer:HOVER {
-			z-index: 1;
-			overflow: visible;
-		}
-		
 		.hiddenUsersIndicatorLabel {
 			background: #bebebe;
 			color: #fafafa;
@@ -46,10 +34,34 @@
 			padding-right: 1px;
 		}
 		
+		.usersContainerOverflow {
+			z-index: 1;
+			overflow: visible;
+		}
+		
+		.associatedUsersOverflow {
+			border: 1px solid #BEBEBE;
+			margin: -1px;
+			
+			margin-bottom: 1px;
+		}
+		
+		.associatedUsers:HOVER {
+			border: 1px solid #BEBEBE;
+			margin: -1px;
+			
+			margin-bottom: 1px;
+		}
+
+		.associatedUsersContainer:HOVER {
+			z-index: 1;
+			overflow: visible;
+		}
+		
 	</ui:style>
 	
 	<g:HorizontalPanel verticalAlignment="middle">
-		<g:HTMLPanel styleName="{style.associatedUsersContainer}">
+		<g:HTMLPanel styleName="{style.associatedUsersContainer}" ui:field="usersContainer">
 			<gw:ModelWidgetContainer ui:field="associatedUsers" styleName="{style.associatedUsers}"/>
 		</g:HTMLPanel>
 		<g:Label ui:field="hiddenAssociatedUsersIndicator" styleName="{style.hiddenUsersIndicatorLabel}" />

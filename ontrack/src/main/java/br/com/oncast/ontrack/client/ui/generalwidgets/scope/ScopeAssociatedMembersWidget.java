@@ -16,10 +16,15 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,10 +36,22 @@ public class ScopeAssociatedMembersWidget extends Composite {
 
 	interface ScopeAssociatedMembersWidgetUiBinder extends UiBinder<Widget, ScopeAssociatedMembersWidget> {}
 
+	interface ScopeAssociatedMembersWidgetStyle extends CssResource {
+		String usersContainerOverflow();
+
+		String associatedUsersOverflow();
+	}
+
+	@UiField
+	ScopeAssociatedMembersWidgetStyle style;
+
 	@UiField(provided = true)
 	ModelWidgetContainer<UserRepresentation, DraggableMemberWidget> associatedUsers;
 
 	private FlowPanel associatedUsersContainer;
+
+	@UiField
+	HTMLPanel usersContainer;
 
 	@UiField
 	Label hiddenAssociatedUsersIndicator;
@@ -57,6 +74,16 @@ public class ScopeAssociatedMembersWidget extends Composite {
 		update();
 	}
 
+	@UiHandler("hiddenAssociatedUsersIndicator")
+	public void onMouseOver(final MouseOverEvent event) {
+		setUserListVisible(true);
+	}
+
+	@UiHandler("hiddenAssociatedUsersIndicator")
+	public void onMouseOut(final MouseOutEvent event) {
+		setUserListVisible(false);
+	}
+
 	public void update() {
 		if (scope.getProgress().isDone()) {
 			this.setVisible(false);
@@ -74,6 +101,11 @@ public class ScopeAssociatedMembersWidget extends Composite {
 
 	public void add(final DraggableMemberWidget memberWidget) {
 		associatedUsers.getContainningPanel().add(memberWidget);
+	}
+
+	private void setUserListVisible(final boolean isOver) {
+		usersContainer.setStyleName(style.usersContainerOverflow(), isOver);
+		associatedUsers.setStyleName(style.associatedUsersOverflow(), isOver);
 	}
 
 	private ModelWidgetContainer<UserRepresentation, DraggableMemberWidget> createAssociatedUsersListWidget(final DragAndDropManager userDragAndDropMananger) {

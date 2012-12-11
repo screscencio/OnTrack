@@ -19,6 +19,17 @@
 			left: 40px;
 			opacity: 0;
 		}
+
+		.rootContainer {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
+			left: 0px;
+			min-width: 720px;
+			
+			color: COLOR_MENUBOX_TEXT;
+		}
 		
 		@sprite .closeIcon {
 			gwt-image: 'closeImage';
@@ -26,23 +37,85 @@
 			top: -9.5px;
 			right: -9.5px;
 			cursor: pointer;
+			z-index: 10;
 		}
-		
-		.rootContainer {
-			height: 100%;
-			width: 100%;
-			min-width: 720px;
-			
-			color: COLOR_MENUBOX_TEXT;
-		}
-		
+
 		.subjectTitle {
 			text-transform: uppercase;
-			padding: POPUP_PADDING;
+			padding: 8px;
+			border: 1px solid #C2C2C2;
+			background: lightGrey;
+			-webkit-box-shadow: inset 0 1px 0 0 #E9E9E9, 0 2px 6px #E1E1E1;
+			-moz-box-shadow: inset 0 1px 0 0 #e9e9e9, 0 2px 6px #e1e1e1;
+			box-shadow: inset 0 1px 0 0 #E9E9E9, 0 2px 6px #E1E1E1;
+			color: #777;
+			font-family: "ProximaNovaRegular";
+			font-size: 12pt;
+			text-shadow: 1px 1px 0 #EDEDED;
+			margin-bottom: 5px;
+		}
+
+		.header {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			left: 0px;
+			height: 25px;
+
+			text-transform: uppercase;
+			padding: 16px 8px 7px 17px;
+			-webkit-box-shadow: inset 0 1px 0 0 #E9E9E9, 0 2px 6px #E1E1E1;
+			-moz-box-shadow: inset 0 1px 0 0 #e9e9e9, 0 2px 6px #e1e1e1;
+			box-shadow: inset 0 1px 0 0 #E9E9E9, 0 2px 6px #E1E1E1;
+			font-family: "ProximaNovaRegular";
+			font-size: 12pt;
+			font-weight: bold;
+			text-shadow: 1px -1px 1px #F6D792;
+			color: #960;
+		}		
+		
+		.clickable:hover {
+			cursor: pointer;
 		}
 		
-		.subjectTitle:hover {
-			cursor: pointer;
+		.hseparator {
+			position: absolute;
+			top: 46px;
+			right: 0px;
+			left: 0px;
+			height: 2px;
+		}
+		
+		.contentContainer {
+			position: absolute;
+			top: 48px;
+			right: 0px;
+			left: 0px;
+			bottom: 0px;
+			overflow: auto;
+			overflow-x: hidden; 
+		}
+		
+		.flowContainer {
+			position: absolute;
+			top: 0px;
+			right: 400px;
+			left: 0px;
+			bottom: 0px;
+			
+			background-color: white;
+			border-right: 1px solid #d3d3d3;
+		}
+				
+		.rightPanel {
+			position: fixed;
+			top: 88px;
+			right: 64px;
+			width: 380px;
+		}
+		
+		.description {
+			padding: POPUP_PADDING;
 		}
 		
 		.detailWidget {
@@ -50,20 +123,11 @@
 		}
 		
 		.annotationsPanel {
-			height: 100%;
-			min-width: 415px;
-			
 			padding: POPUP_PADDING;
-			overflow-y: auto; 
-		}
-		
-		.rightPanel {
-			height: 100%;
-			overflow-y: auto; 
 		}
 		
 		.checklist {
-			padding: 5px POPUP_PADDING;
+			padding: 10px;
 		}
 		
 		.noMargin {
@@ -71,34 +135,34 @@
 		}
 		
 	</ui:style>
-	
         
 
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
 		<g:HTMLPanel ui:field="container" styleName="{style.rootContainer} {style.popupContainer}">
 			<g:FocusPanel ui:field="closeIcon" styleName="{style.closeIcon}"/>
-			<g:VerticalPanel height="100%" width="100%">
-				<misc:EditableLabel ui:field="subjectTitle" styleName="{style.subjectTitle}" />
-				<misc:Separator styleName="{style.noMargin}"/>
-				<g:cell height="100%">
-					<g:HorizontalPanel height="100%" width="100%">
-						<g:cell width="62%">
+				<misc:EditableLabel ui:field="subjectTitle" styleName="{style.header} {style.clickable} {style.colorMenuBackgroundGradient}" />
+				<misc:Separator styleName="{style.hseparator} {style.noMargin}"/>
+				<g:HTMLPanel styleName="{style.contentContainer}">
+					<g:HTMLPanel styleName="{style.flowContainer}">
+
+							<g:Label styleName="{style.subjectTitle}">Description</g:Label>
+							<misc:DescriptionRichTextLabel ui:field="descriptionLabel" styleName="{style.description}" />
+							<misc:Separator styleName="{style.noMargin}"/>
+
+							<g:Label styleName="{style.subjectTitle}">Checklists</g:Label>
+							<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
+							<misc:Separator styleName="{style.noMargin}"/>
+
+							<g:Label styleName="{style.subjectTitle}">Annotations</g:Label>
 							<aw:AnnotationsWidget ui:field="annotations" styleName="{style.annotationsPanel}" />
-						</g:cell>
-						<misc:Separator vertical="true"/>
-						<g:cell width="38%">
-							<g:FocusPanel styleName="{style.rightPanel}">
-								<g:VerticalPanel width="100%">
-									<aw:SubjectDetailWidget ui:field="subjectDetails" styleName="{style.detailWidget}" />
-									<misc:Separator />
-									<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
-									<misc:Separator />
-								</g:VerticalPanel>
-							</g:FocusPanel>
-						</g:cell>
-					</g:HorizontalPanel>
-				</g:cell>
-			</g:VerticalPanel>
+
+					</g:HTMLPanel>
+					<g:FocusPanel styleName="{style.rightPanel}">
+
+							<aw:SubjectDetailWidget ui:field="subjectDetails" styleName="{style.detailWidget}" />
+
+					</g:FocusPanel>
+				</g:HTMLPanel>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

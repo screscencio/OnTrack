@@ -28,6 +28,8 @@
 			height: 100%;
 			
 			background-color: white;
+			border: 1px solid #d3d3d3;
+			padding: 1px 1px 0px 0px;
 		}
 		
 		.helpText {

@@ -1,0 +1,154 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:r="urn:import:br.com.oncast.ontrack.client.ui.components.annotations.widgets"
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+	
+	<ui:image field="createIcon" src="black_check.png" />
+	<ui:style src="../style/default.css" >
+		.root {
+			height: auto;
+		}
+	
+		.expandPanel {
+			position: relative;
+			
+			height: 100%;
+			width: 100%;
+			
+			min-height: 26px;
+		}
+		
+		.container {
+			position: relative;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			
+			background-color: white;
+			padding: 1px 1px 0px 0px;
+			border: 1px solid #d3d3d3;
+		}
+		
+		.helpText {
+			position: absolute;
+			top: 5px;
+			left: 5px;
+			opacity: 0.6;
+		}
+		
+		.submitHelpText {
+			position: absolute;
+			bottom: 5px;
+			right: 20px;
+			opacity: 0.6;
+		}
+		
+		.noDescriptionContainer {
+			position: relative;
+			padding: 0px;
+			padding-top: PADDING_LARGE;
+			padding-bottom: 30px;
+			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
+			width: 100%;
+		}
+	   	
+	   	.noDescriptionLabel  {
+			color: COLOR_GRAY;
+			text-align: center;
+			width: 100%;
+			margin-bottom: PADDING_LARGE;
+			font-size: FONT_SIZE_MEDIUM;
+			font-family: FONT_DEFAULT;
+		}
+		
+		.helpLabel {
+			position: absolute;
+			bottom: 5px;
+			left: 0px;
+			right: 0px;
+			
+			color: COLOR_GRAY_LIGHT;
+			text-align: center;
+		}
+		
+		.editDescriptionBtn{
+			text-align: right;
+		}
+		
+		.editDescriptionBtn:hover{
+			cursor: pointer;
+			text-decoration: underline;
+		}
+		
+		@sprite .create {
+			position: absolute;
+			top: 20px;
+			right: 15px;
+
+			gwt-image: 'createIcon';
+			
+			background-size: 30px 30px;
+			background-position: center;
+			
+			width: 24px;
+			height: 24px;
+			
+			margin: 1px;
+			margin-left: 11px;
+			
+			border-radius: 3px;
+			padding: 2px;
+			
+			opacity: 0.8;
+			cursor: pointer;
+		}
+		
+		.create:HOVER {
+			margin: 0px;
+			margin-left: 10px;
+			border: 1px solid #AEAEAE;
+			box-shadow: inset 1px 1px 1px white;
+		}
+		
+		.relative {
+			position: relative;
+		}
+
+	</ui:style>
+	
+	<g:FocusPanel ui:field="focusPanel" styleName="{style.root}">
+		<g:HTMLPanel styleName="{style.expandPanel}">
+			<g:DeckPanel ui:field="deckPanel">
+				<g:FocusPanel ui:field="richTextArea">
+					<g:HTMLPanel styleName="{style.relative}">
+						<g:VerticalPanel styleName="{style.container}">
+							<r:RichTextToolbar ui:field="toolbar"/>
+							<g:RichTextArea ui:field="textArea"/>
+						</g:VerticalPanel>
+						<g:FocusPanel ui:field="createDescriptionButton" styleName="{style.create}"/>
+					</g:HTMLPanel>
+				</g:FocusPanel>
+				<g:FlowPanel>
+					<g:DeckPanel ui:field="descriptionDeckPanel">
+						<g:FlowPanel styleName="{style.noDescriptionContainer}">
+							<g:Label styleName="{style.noDescriptionLabel}">
+								<ui:msg description="no description yet message">No Description yet</ui:msg>
+							</g:Label>
+							<g:Label styleName="{style.helpLabel}">
+								<ui:msg description="description help message">You could set a description using the link below.</ui:msg>
+							</g:Label>
+						</g:FlowPanel>
+						<g:InlineHTML ui:field="label"/>
+					</g:DeckPanel>
+					<g:Label ui:field="editButtom" styleName="{style.editDescriptionBtn}">
+						<ui:msg description="edit description buttom">Edit description...</ui:msg>
+					</g:Label>
+				</g:FlowPanel>
+			</g:DeckPanel>
+		</g:HTMLPanel>
+	</g:FocusPanel>
+</ui:UiBinder> 

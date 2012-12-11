@@ -1,12 +1,16 @@
 package br.com.oncast.ontrack.client.ui.components.annotations;
 
+import java.util.Set;
+
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.AnnotationsWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ChecklistsContainerWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ScopeDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.SubjectDetailWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.DescriptionRichTextLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
@@ -14,8 +18,14 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallbac
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.utils.jquery.JQuery;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.DescriptionAction;
+import br.com.oncast.ontrack.shared.model.action.DescriptionCreateAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.description.Description;
+import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
@@ -54,6 +64,9 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	EditableLabel subjectTitle;
 
 	@UiField(provided = true)
+	DescriptionRichTextLabel descriptionLabel;
+
+	@UiField(provided = true)
 	AnnotationsWidget annotations;
 
 	@UiField
@@ -62,7 +75,12 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	@UiField
 	ChecklistsContainerWidget checklist;
 
+	private final UUID subjectId;
+
+	private com.google.web.bindery.event.shared.HandlerRegistration handlerRegistration;
+
 	private AnnotationsPanel(final SubjectDetailWidget detailWidget, final UUID subjectId, final String subjectDescription) {
+		this.subjectId = subjectId;
 		subjectTitle = new EditableLabel(new EditableLabelEditionHandler() {
 
 			@Override
@@ -87,6 +105,18 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 			}
 		});
 
+		descriptionLabel = new DescriptionRichTextLabel(new EditableLabelEditionHandler() {
+
+			@Override
+			public boolean onEditionRequest(final String text) {
+				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
+
+				actionExecutionService.onUserActionExecutionRequest(new DescriptionCreateAction(subjectId, text));
+
+				return true;
+			}
+		});
+
 		subjectTitle.setTitle(messages.doubleClickToEdit());
 
 		subjectDetails = detailWidget;
@@ -95,6 +125,17 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 		checklist.setSubjectId(subjectId);
 		this.subjectTitle.setValue(subjectDescription);
+
+		try {
+			final Description description = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext()
+					.findDescriptionFor(subjectId);
+			this.descriptionLabel.setText(description.getDescription());
+		}
+		catch (final DescriptionNotFoundException e) {}
+	}
+
+	private void updateDescription(final String description) {
+		descriptionLabel.update(description);
 	}
 
 	public static AnnotationsPanel forRelease(final Release release) {
@@ -147,4 +188,23 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		});
 	}
 
+	public void registerActionExecutionListener() {
+		unregisterActionExecutionListener();
+		handlerRegistration = SERVICE_PROVIDER.getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
+
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+					final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isUserAction) {
+				if (action instanceof DescriptionAction && action.getReferenceId().equals(subjectId)) updateDescription(((DescriptionAction) action)
+						.getDescription());
+			}
+		});
+	}
+
+	public void unregisterActionExecutionListener() {
+		if (handlerRegistration == null) return;
+		handlerRegistration.removeHandler();
+		handlerRegistration = null;
+	}
 }

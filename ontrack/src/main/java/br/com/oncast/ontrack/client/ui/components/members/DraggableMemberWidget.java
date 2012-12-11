@@ -49,4 +49,8 @@ public class DraggableMemberWidget extends Composite implements ModelWidget<User
 		return userWidget.getDraggableAnchor();
 	}
 
+	public double getOpacity() {
+		return userWidget.getOpacity();
+	}
+
 }

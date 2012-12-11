@@ -38,12 +38,14 @@ public class DetailActivity extends AbstractActivity {
 			@Override
 			public void onHasClosed() {
 				getApplicationPlaceController().goTo(place.getDestinationPlace());
+				detailPanel.unregisterActionExecutionListener();
 			}
 
 		}).onOpen(new PopupOpenListener() {
 			@Override
 			public void onWillOpen() {
 				ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
+				detailPanel.registerActionExecutionListener();
 			}
 		}).setModal(true).pop();
 	}

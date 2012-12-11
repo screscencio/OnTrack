@@ -91,6 +91,7 @@ public class AnnotationsWidget extends Composite {
 		this.subjectId = subjectId;
 		initWidget(uiBinder.createAndBindUi(this));
 		createNotificationButton.setVisible(false);
+		uploadWidget.setVisible(false);
 		uploadWidget.setActionUrl("/application/file/upload");
 		createNotificationButton.setTitle(messages.createAnnotation());
 		newAnnotationText.registerExpansionListener(new ExpansionListener() {
@@ -98,11 +99,13 @@ public class AnnotationsWidget extends Composite {
 			@Override
 			public void onExpandded() {
 				createNotificationButton.setVisible(true);
+				uploadWidget.setVisible(true);
 			}
 
 			@Override
 			public void onShrinked() {
 				createNotificationButton.setVisible(false);
+				uploadWidget.setVisible(false);
 			}
 		});
 	}
