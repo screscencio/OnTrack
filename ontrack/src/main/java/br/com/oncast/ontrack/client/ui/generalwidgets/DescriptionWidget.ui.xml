@@ -3,6 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
+	<ui:with type="br.com.oncast.ontrack.client.ui.generalwidgets.DescriptionWidgetMessages" field="messages" />
 	<ui:style>
 		
 		.rootPanel {
@@ -37,18 +38,11 @@
 		.description {
 		}
 		
-		.label {
-			display: inline;
-		}
-		
 	</ui:style>
 
 	<g:SimplePanel>
 		<g:HTMLPanel styleName="{style.rootPanel}">
-			<g:HTMLPanel styleName="{style.subjectTitle}">
-				<g:Label ui:field="label" styleName="{style.label}"></g:Label>
-				<g:Label styleName="{style.label}"> Description</g:Label>
-			</g:HTMLPanel>
+			<g:Label ui:field="label" styleName="{style.subjectTitle}" />
 			<misc:DescriptionRichTextLabel ui:field="descriptionLabel" styleName="{style.description}" />
 		</g:HTMLPanel>
 	</g:SimplePanel>

@@ -21,6 +21,7 @@ public class DescriptionWidget extends Composite {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private static final ContextProviderService CONTEXT_PROVIDER_SERVICE = SERVICE_PROVIDER.getContextProviderService();
+	private static final DescriptionWidgetMessages MESSAGES = GWT.create(DescriptionWidgetMessages.class);
 
 	private static DescriptionWidgetUiBinder uiBinder = GWT.create(DescriptionWidgetUiBinder.class);
 
@@ -77,7 +78,7 @@ public class DescriptionWidget extends Composite {
 	}
 
 	private void update() throws DescriptionNotFoundException {
-		label.setText(getCurrentTitle());
+		label.setText(MESSAGES.descriptionOf() + " " + getCurrentTitle());
 		descriptionLabel.setText("");
 		final Description description = CONTEXT_PROVIDER_SERVICE.getCurrentProjectContext().findDescriptionFor(getCurrentId());
 		descriptionLabel.setText(description.getDescription());

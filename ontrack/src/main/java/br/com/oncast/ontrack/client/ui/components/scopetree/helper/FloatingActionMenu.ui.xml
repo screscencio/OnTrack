@@ -7,7 +7,7 @@
 	<ui:image field="imgEdit" src="edit_pop_btn.png"/>
 	<ui:image field="imgNChild" src="add1_pop_btn.png"/>
 	<ui:image field="imgNSibling" src="add_pop_btn.png"/>
-	<ui:image field="imgDelete" src="close_pop_btn.png"/>
+	<ui:image field="imgDelete" src="remove_pop_btn.png"/>
 	<ui:image field="imgDetail" src="comment_pop_btn.png"/>
 	<ui:image field="imgRelease" src="release_pop_btn.png"/>
 	<ui:image field="imgEffort" src="effort_pop_btn.png"/>
