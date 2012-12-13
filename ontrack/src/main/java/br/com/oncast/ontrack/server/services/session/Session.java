@@ -44,7 +44,7 @@ public class Session implements Serializable {
 			LOGGER.debug("The user logged out (sessionId = '" + this.sessionId + "')");
 		}
 		else {
-			LOGGER.debug("The user '" + authenticatedUser.getEmail() + "' logged in (sessionId = '" + this.sessionId + "')");
+			LOGGER.debug("The user '" + authenticatedUser.getId() + "' logged in (sessionId = '" + this.sessionId + "')");
 		}
 		this.authenticatedUser = authenticatedUser;
 	}

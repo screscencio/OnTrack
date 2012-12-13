@@ -25,9 +25,9 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceE
 import br.com.oncast.ontrack.server.services.session.Session;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.server.services.threadSync.SyncronizationService;
-import br.com.oncast.ontrack.server.utils.PrettyPrinter;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
@@ -38,6 +38,7 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
+import br.com.oncast.ontrack.shared.model.action.TeamRevogueInvitationAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.Project;
@@ -50,9 +51,9 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
-import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
+import br.com.oncast.ontrack.shared.utils.PrettyPrinter;
 
 import com.newrelic.api.agent.Trace;
 
@@ -105,7 +106,7 @@ class BusinessLogicImpl implements BusinessLogic {
 				final User authenticatedUser = authenticationManager.getAuthenticatedUser();
 				final Date timestamp = new Date();
 
-				final ActionContext actionContext = new ActionContext(authenticatedUser, timestamp);
+				final ActionContext actionContext = new ActionContext(authenticatedUser.getId(), timestamp);
 				final List<ModelAction> actionList = actionSyncRequest.getActionList();
 
 				validateIncomingActions(projectId, actionList, actionContext);
@@ -160,7 +161,7 @@ class BusinessLogicImpl implements BusinessLogic {
 		for (final UserAction action : actionList) {
 			try {
 				final User user = persistenceService.retrieveUserById(action.getUserId());
-				final ActionContext actionContext = new ActionContext(user, action.getTimestamp());
+				final ActionContext actionContext = new ActionContext(user.getId(), action.getTimestamp());
 				ActionExecuter.executeAction(projectContext, actionContext, action.getModelAction());
 			}
 			catch (final Exception e) {
@@ -173,20 +174,31 @@ class BusinessLogicImpl implements BusinessLogic {
 	}
 
 	@Override
+	public void removeAuthorization(final UUID userId, final UUID projectId) throws UnableToHandleActionException, UnableToRemoveAuthorizationException,
+			PersistenceException, AuthorizationException {
+		if (userId.equals(DefaultAuthenticationCredentials.USER_ID)) throw new UnableToRemoveAuthorizationException("Cannot remove Admin User");
+
+		handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, Arrays.asList(new ModelAction[] { new TeamRevogueInvitationAction(userId) })));
+
+		authorizationManager.removeAuthorization(projectId, userId);
+		LOGGER.debug("Removed authorization for user '" + userId + "' from project '" + projectId.toString() + "'");
+	}
+
+	@Override
 	public void authorize(final String userEmail, final UUID projectId, final boolean wasRequestedByTheUser) throws UnableToAuthorizeUserException,
 			UnableToHandleActionException,
 			AuthorizationException {
-		final UserRepresentation user = authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
-		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toStringRepresentation() + "'");
-		handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, Arrays.asList(new ModelAction[] { new TeamInviteAction(user) })));
+		final UUID userId = authorizationManager.authorize(projectId, userEmail, wasRequestedByTheUser);
+		LOGGER.debug("Authorized user '" + userEmail + "' to project '" + projectId.toString() + "'");
+		handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, Arrays.asList(new ModelAction[] { new TeamInviteAction(userId) })));
 	}
 
 	@Override
 	public List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException {
-		final UserRepresentation user = new UserRepresentation(authenticationManager.getAuthenticatedUser().getId());
-		LOGGER.debug("Retrieving authorized project list for user '" + user + "'.");
+		final UUID userId = authenticationManager.getAuthenticatedUser().getId();
+		LOGGER.debug("Retrieving authorized project list for user '" + userId + "'.");
 		try {
-			return authorizationManager.listAuthorizedProjects(user);
+			return authorizationManager.listAuthorizedProjects(userId);
 		}
 		catch (final Exception e) {
 			final String errorMessage = "Unable to retrieve the current user project list.";
@@ -202,17 +214,15 @@ class BusinessLogicImpl implements BusinessLogic {
 
 		LOGGER.debug("Creating new project '" + projectName + "'.");
 		final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-		authorizationManager.validateAndUpdateUserProjectCreationQuota(new UserRepresentation(authenticatedUser.getId()));
+		authorizationManager.validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 
 		try {
 			final ProjectRepresentation persistedProjectRepresentation = persistenceService.persistOrUpdateProjectRepresentation(new ProjectRepresentation(
 					projectName));
 
 			authorize(authenticatedUser.getEmail(), persistedProjectRepresentation.getId(), false);
-			if (!authenticatedUser.getEmail().equals(DefaultAuthenticationCredentials.USER_EMAIL)) authorizationManager
+			if (!authenticatedUser.getId().equals(DefaultAuthenticationCredentials.USER_ID)) authorizationManager
 					.authorizeAdmin(persistedProjectRepresentation);
-
-			multicastService.multicastToUser(new ProjectCreatedEvent(persistedProjectRepresentation), authenticatedUser);
 
 			return persistedProjectRepresentation;
 		}
@@ -374,4 +384,5 @@ class BusinessLogicImpl implements BusinessLogic {
 	private long getTimeSpent(final long initialTime) {
 		return getCurrentTime() - initialTime;
 	}
+
 }

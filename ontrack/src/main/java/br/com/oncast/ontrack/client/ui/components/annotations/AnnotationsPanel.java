@@ -85,7 +85,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 			@Override
 			public boolean onEditionRequest(final String text) {
-				final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getCurrentProjectContext();
+				final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
 				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
 				try {
 					projectContext.findScope(subjectId);
@@ -127,8 +127,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 		this.subjectTitle.setValue(subjectDescription);
 
 		try {
-			final Description description = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext()
-					.findDescriptionFor(subjectId);
+			final Description description = ClientServiceProvider.getCurrentProjectContext().findDescriptionFor(subjectId);
 			this.descriptionLabel.setText(description.getDescription());
 		}
 		catch (final DescriptionNotFoundException e) {}

@@ -214,7 +214,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		fireScopeSelectionEvent(); // Showing the item that will be changed.
 		e.stopPropagation();
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
-		final ProjectContext context = SERVICE_PROVIDER.getContextProviderService().getCurrentProjectContext();
+		final ProjectContext context = ClientServiceProvider.getCurrentProjectContext();
 
 		final String notStartedDescription = ProgressState.NOT_STARTED.getDescription();
 		items.add(createItem("Not Started", notStartedDescription));

@@ -30,7 +30,6 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
@@ -52,7 +51,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final ProjectRepresentationEntity projectRepresentationEntity = convertProjectRepresentationToEntity(retrieveProjectRepresentation(projectId));
 			for (final ModelAction modelAction : actionList) {
 				final ModelActionEntity entity = convertActionToEntity(modelAction);
-				final UserActionEntity container = new UserActionEntity(entity, userId.toStringRepresentation(), projectRepresentationEntity, timestamp);
+				final UserActionEntity container = new UserActionEntity(entity, userId.toString(), projectRepresentationEntity, timestamp);
 				em.persist(container);
 			}
 			em.getTransaction().commit();
@@ -80,7 +79,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final Query query = em.createQuery("select action from " + UserActionEntity.class.getSimpleName()
 					+ " as action where action.projectRepresentation.id = :projectId and action.id > :lastActionId order by action.id asc");
 
-			query.setParameter("projectId", projectId.toStringRepresentation());
+			query.setParameter("projectId", projectId.toString());
 			query.setParameter("lastActionId", actionId);
 			final List<UserActionEntity> actions = query.getResultList();
 
@@ -126,7 +125,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final Query query = em.createQuery("select snapshot from " + ProjectSnapshot.class.getSimpleName()
 					+ " as snapshot where snapshot.id = :projectId");
-			query.setParameter("projectId", projectId.toStringRepresentation());
+			query.setParameter("projectId", projectId.toString());
 			return (ProjectSnapshot) query.getSingleResult();
 		}
 		catch (final NoResultException e) {
@@ -216,7 +215,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select user from " + UserEntity.class.getSimpleName() + " as user where user.id = :id");
-			query.setParameter("id", id.toStringRepresentation());
+			query.setParameter("id", id.toString());
 
 			return (User) TYPE_CONVERTER.convert(query.getSingleResult());
 		}
@@ -277,7 +276,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password where password.userId = :userId");
-			query.setParameter("userId", userId.toStringRepresentation());
+			query.setParameter("userId", userId.toString());
 
 			return convertEntityToPassword((PasswordEntity) query.getSingleResult());
 		}
@@ -343,7 +342,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			final Query query = em.createQuery("select projectRepresentation from " + ProjectRepresentation.class.getSimpleName()
 					+ " as projectRepresentation where projectRepresentation.id = :projectId");
 
-			query.setParameter("projectId", projectId.toStringRepresentation());
+			query.setParameter("projectId", projectId.toString());
 			return (ProjectRepresentation) TYPE_CONVERTER.convert(query.getSingleResult());
 		}
 		catch (final NoResultException e) {
@@ -436,7 +435,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final Query query = em.createQuery("select authorization from " + ProjectAuthorization.class.getSimpleName()
 					+ " as authorization where authorization.userId = :userId");
-			query.setParameter("userId", userId.toStringRepresentation());
+			query.setParameter("userId", userId.toString());
 			return query.getResultList();
 		}
 		catch (final Exception e) {
@@ -470,7 +469,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final Query query = em.createQuery("SELECT authorization FROM " + ProjectAuthorization.class.getSimpleName()
 					+ " AS authorization WHERE authorization.projectId = :projectId");
-			query.setParameter("projectId", projectRepresentation.getId().toStringRepresentation());
+			query.setParameter("projectId", projectRepresentation.getId().toString());
 			return query.getResultList();
 		}
 		catch (final Exception e) {
@@ -487,8 +486,8 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final Query query = em.createQuery("select authorization from " + ProjectAuthorization.class.getSimpleName()
 					+ " as authorization where authorization.userId = :userId and authorization.projectId = :projectId");
-			query.setParameter("userId", userId.toStringRepresentation());
-			query.setParameter("projectId", projectId.toStringRepresentation());
+			query.setParameter("userId", userId.toString());
+			query.setParameter("projectId", projectId.toString());
 			return (ProjectAuthorization) query.getSingleResult();
 		}
 		catch (final NoResultException e) {
@@ -570,12 +569,12 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		try {
 			final Query query = em.createQuery("select fileRepresentation from " + FileRepresentationEntity.class.getSimpleName()
 					+ " as fileRepresentation where fileRepresentation.id = :id");
-			query.setParameter("id", fileId.toStringRepresentation());
+			query.setParameter("id", fileId.toString());
 
 			return (FileRepresentation) TYPE_CONVERTER.convert(query.getSingleResult());
 		}
 		catch (final NoResultException e) {
-			throw new NoResultFoundException("No file representation found for id: " + fileId.toStringRepresentation(), e);
+			throw new NoResultFoundException("No file representation found for id: " + fileId.toString(), e);
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to convert the FileRepresentationEntity to it's model", e);
@@ -587,20 +586,20 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Notification> retrieveLatestNotificationsForUser(final UserRepresentation user, final int maxNotifications) throws NoResultFoundException,
+	public List<Notification> retrieveLatestNotificationsForUser(final UUID userId, final int maxNotifications) throws NoResultFoundException,
 			PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query queryNotification = em.createQuery("SELECT n FROM " + NotificationEntity.class.getSimpleName()
 					+ " n, IN (n.recipients) recipient WHERE recipient.userId = :user ORDER BY n.timestamp DESC");
-			queryNotification.setParameter("user", user.getId().toString());
+			queryNotification.setParameter("user", userId.toString());
 			queryNotification.setMaxResults(maxNotifications);
 			final List<NotificationEntity> resultList = queryNotification.getResultList();
 
 			return (List<Notification>) TYPE_CONVERTER.convert(resultList);
 		}
 		catch (final NoResultException e) {
-			throw new NoResultFoundException("No notification found for user: " + user.getId(), e);
+			throw new NoResultFoundException("No notification found for user: " + userId, e);
 		}
 		catch (final TypeConverterException e) {
 			throw new PersistenceException("It was not possible to convert the NotificationEntity to it's model equivalent.", e);
@@ -662,7 +661,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	private List<String> getStringListFromUUIDList(final List<UUID> projectIds) {
 		final List<String> projectStringIds = new ArrayList<String>();
 		for (final UUID uuid : projectIds) {
-			projectStringIds.add(uuid.toStringRepresentation());
+			projectStringIds.add(uuid.toString());
 		}
 		return projectStringIds;
 	}
@@ -706,5 +705,28 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 
 		return projectUsers;
+	}
+
+	@Override
+	public void remove(final ProjectAuthorization authorization) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.remove(em.getReference(authorization.getClass(), authorization.getId()));
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to remove the " + authorization.getClass().getSimpleName() + " nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to remove the " + authorization.getClass().getSimpleName() + ".", e);
+		}
+		finally {
+			em.close();
+		}
 	}
 }

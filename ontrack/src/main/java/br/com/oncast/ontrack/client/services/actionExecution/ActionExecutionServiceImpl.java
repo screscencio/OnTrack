@@ -17,8 +17,8 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
-import com.google.web.bindery.event.shared.HandlerRegistration;
 
 public class ActionExecutionServiceImpl implements ActionExecutionService {
 
@@ -54,13 +54,13 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 
 	@Override
 	public void onNonUserActionRequest(final ModelAction action, final ActionContext actionContext) throws UnableToCompleteActionException {
-		actionManager.doNonUserAction(action, contextService.getCurrentProjectContext(), actionContext);
+		actionManager.doNonUserAction(action, contextService.getCurrent(), actionContext);
 	}
 
 	@Override
 	public void onUserActionExecutionRequest(final ModelAction action) {
 		try {
-			actionManager.doUserAction(action, contextService.getCurrentProjectContext(), createActionContext());
+			actionManager.doUserAction(action, contextService.getCurrent(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
 			alertingService.showWarning(e.getLocalizedMessage());
@@ -71,7 +71,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	@Override
 	public void onUserActionUndoRequest() {
 		try {
-			actionManager.undoUserAction(contextService.getCurrentProjectContext(), createActionContext());
+			actionManager.undoUserAction(contextService.getCurrent(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
 			alertingService.showWarning(e.getLocalizedMessage());
@@ -82,7 +82,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	@Override
 	public void onUserActionRedoRequest() {
 		try {
-			actionManager.redoUserAction(contextService.getCurrentProjectContext(), createActionContext());
+			actionManager.redoUserAction(contextService.getCurrent(), createActionContext());
 		}
 		catch (final UnableToCompleteActionException e) {
 			alertingService.showWarning(e.getLocalizedMessage());
@@ -99,7 +99,7 @@ public class ActionExecutionServiceImpl implements ActionExecutionService {
 	}
 
 	private ActionContext createActionContext() {
-		return new ActionContext(authenticationService.getCurrentUser(), new Date());
+		return new ActionContext(authenticationService.getCurrentUserId(), new Date());
 	}
 
 	@Override

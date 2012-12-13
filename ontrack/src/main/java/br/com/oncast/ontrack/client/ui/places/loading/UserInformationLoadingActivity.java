@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.authentication.UserInformationLoadCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessagePanel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectMessageView;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
@@ -38,7 +38,7 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getAuthenticationService().loadCurrentUserInformation(new UserInformationLoadCallback() {
 
 			@Override
-			public void onUserInformationLoaded(final User currentUser) {
+			public void onUserInformationLoaded(final UUID userId) {
 				validateGatheredData();
 			}
 

@@ -18,4 +18,10 @@ public class UserOnlineEvent implements UserStatusEvent {
 	public UUID getUserId() {
 		return userId;
 	}
+
+	@Override
+	public String toString() {
+		return "userId='" + userId + "'";
+	}
+
 }

@@ -35,6 +35,8 @@ public class NotificationService {
 	static {
 		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_SOLVED);
 		IMPORTANT_NOTIFICATIONS.add(NotificationType.IMPEDIMENT_CREATED);
+		IMPORTANT_NOTIFICATIONS.add(NotificationType.TEAM_INVITED);
+		IMPORTANT_NOTIFICATIONS.add(NotificationType.TEAM_REMOVED);
 	}
 
 	public NotificationService(final DispatchService dispatchService, final ServerPushClientService serverPushClientService,
@@ -140,8 +142,8 @@ public class NotificationService {
 	}
 
 	public void registerNotificationListChangeListener(final NotificationListChangeListener notificationListChangeListener) {
-		if (notificationListChangeListeners.contains(notificationListChangeListener)) return;
-		notificationListChangeListeners.add(notificationListChangeListener);
+		if (!notificationListChangeListeners.contains(notificationListChangeListener)) notificationListChangeListeners.add(notificationListChangeListener);
+
 		notifyListenerForNotificationListChange(notificationListChangeListener);
 		notifyListenerForNotificationListAvailabilityChange(notificationListChangeListener);
 	}

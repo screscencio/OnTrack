@@ -62,15 +62,13 @@ public class DraggableMembersListWidget extends Composite {
 	}
 
 	@Override
-	protected void onAttach() {
-		super.onAttach();
+	protected void onLoad() {
 		setupUsersStatusChangeListener();
 		setupActionExecutionListener();
 	}
 
 	@Override
-	protected void onDetach() {
-		super.onDetach();
+	protected void onUnload() {
 		for (final HandlerRegistration reg : handlerRegistrations) {
 			reg.removeHandler();
 		}
@@ -102,14 +100,14 @@ public class DraggableMembersListWidget extends Composite {
 	}
 
 	private void updateMembersList(final SortedSet<UserRepresentation> activeUsers, final SortedSet<UserRepresentation> onlineUsers) {
-		final ProjectContext currentProjectContext = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
+		final ProjectContext currentProjectContext = ClientServiceProvider.getCurrentProjectContext();
 		final ArrayList<UserRepresentation> userModels = new ArrayList<UserRepresentation>(activeUsers);
 
 		for (final UserRepresentation user : onlineUsers) {
 			if (!userModels.contains(user)) userModels.add(user);
 		}
 		for (final UserRepresentation user : currentProjectContext.getUsers()) {
-			if (!userModels.contains(user)) userModels.add(user);
+			if (!userModels.contains(user) && user.isValid()) userModels.add(user);
 		}
 
 		this.users.update(userModels);

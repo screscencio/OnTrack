@@ -48,8 +48,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 			@Override
 			public boolean onEditionRequest(final String text) {
 				if (text.isEmpty() || text.equals(user.getName())) return false;
-				final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
-				if (!user.equals(currentUser)) return false;
+				if (!user.equals(ClientServiceProvider.getCurrentUser())) return false;
 				user.setName(text);
 
 				ClientServiceProvider.getInstance().getUserDataService().onUserDataUpdate(user, new AsyncCallback<User>() {
@@ -88,8 +87,7 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 
 	public void updateUser(final User user) {
 		this.user = user;
-		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
-		userName.setReadOnly(!user.equals(currentUser));
+		userName.setReadOnly(!user.equals(ClientServiceProvider.getCurrentUser()));
 		updateView();
 	}
 

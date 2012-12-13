@@ -35,7 +35,7 @@ public class UserRepresentationTestUtils {
 	}
 
 	public static UserRepresentation getAdmin() {
-		return admin == null ? admin = createUser(DefaultAuthenticationCredentials.USER_ID, DefaultAuthenticationCredentials.USER_EMAIL) : admin;
+		return admin == null ? admin = createUser(DefaultAuthenticationCredentials.USER_ID) : admin;
 	}
 
 	public static UserRepresentation createUser(final UUID id) {

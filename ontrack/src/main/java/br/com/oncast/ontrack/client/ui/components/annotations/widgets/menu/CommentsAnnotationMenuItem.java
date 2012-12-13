@@ -42,7 +42,7 @@ public class CommentsAnnotationMenuItem extends Composite implements HasClickHan
 
 	@Override
 	public void update() {
-		final List<Annotation> comments = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext()
+		final List<Annotation> comments = ClientServiceProvider.getCurrentProjectContext()
 				.findAnnotationsFor(annotation.getId());
 		label.setText("" + comments.size());
 	}

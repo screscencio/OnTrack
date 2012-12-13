@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.login;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationCallback;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -22,9 +22,9 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 		this.authenticationCallback = new UserAuthenticationCallback() {
 
 			@Override
-			public void onUserAuthenticatedSuccessfully(final User user) {
+			public void onUserAuthenticatedSuccessfully(final String username, final UUID userId) {
 				view.enable();
-				SERVICE_PROVIDER.getClientStorageService().storeLastUserEmail(user.getEmail());
+				SERVICE_PROVIDER.getClientStorageService().storeLastUserEmail(username);
 				SERVICE_PROVIDER.getApplicationPlaceController().goTo(destinationPlace);
 			}
 

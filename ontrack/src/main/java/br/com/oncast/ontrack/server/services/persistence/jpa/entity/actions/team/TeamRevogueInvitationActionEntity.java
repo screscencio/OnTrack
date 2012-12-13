@@ -24,7 +24,7 @@ public class TeamRevogueInvitationActionEntity extends ModelActionEntity {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

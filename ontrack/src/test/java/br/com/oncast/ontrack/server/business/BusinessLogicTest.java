@@ -31,8 +31,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
@@ -77,7 +75,6 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
-import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.utils.deepEquality.DeepEqualityTestUtils;
@@ -121,6 +118,7 @@ public class BusinessLogicTest {
 	private BusinessLogic business;
 	private User authenticatedUser;
 	private User admin;
+	private UserRepresentation adminRepresentation;
 
 	private Project project;
 
@@ -129,6 +127,7 @@ public class BusinessLogicTest {
 		MockitoAnnotations.initMocks(this);
 
 		admin = UserTestUtils.getAdmin();
+		adminRepresentation = UserRepresentationTestUtils.getAdmin();
 
 		entityManager = Persistence.createEntityManagerFactory("ontrackPU").createEntityManager();
 		projectRepresentation = assureProjectRepresentationExistance(PROJECT_ID);
@@ -146,12 +145,7 @@ public class BusinessLogicTest {
 		authenticateAndAuthorizeUser(authenticatedUser, PROJECT_ID);
 		configureToRetrieveSnapshot(PROJECT_ID);
 
-		when(authorizationManager.authorize(any(UUID.class), anyString(), anyBoolean())).thenAnswer(new Answer<UserRepresentation>() {
-			@Override
-			public UserRepresentation answer(final InvocationOnMock invocation) throws Throwable {
-				return UserRepresentationTestUtils.createUser((String) invocation.getArguments()[1]);
-			}
-		});
+		when(authorizationManager.authorize(any(UUID.class), anyString(), anyBoolean())).thenReturn(new UUID());
 	}
 
 	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException, UserNotFoundException {
@@ -165,7 +159,7 @@ public class BusinessLogicTest {
 		when(persistence.retrieveUserById(user.getId())).thenReturn(user);
 		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
 
-		project.addUser(new UserRepresentation(user.getId()));
+		project.addUser(UserRepresentationTestUtils.createUser(user));
 		when(actionContext.getUserId()).thenReturn(user.getId());
 	}
 
@@ -264,11 +258,11 @@ public class BusinessLogicTest {
 
 		final ModelAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
-		context.addUser(new UserRepresentation(admin.getId()));
+		context.addUser(adminRepresentation);
 		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(new UserRepresentation(admin.getId())));
+		actionList.add(new TeamInviteAction(admin.getId()));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -284,11 +278,11 @@ public class BusinessLogicTest {
 
 		final ModelAction action1 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
-		context.addUser(new UserRepresentation(admin.getId()));
+		context.addUser(adminRepresentation);
 		action1.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(new UserRepresentation(admin.getId())));
+		actionList.add(new TeamInviteAction(admin.getId()));
 		actionList.add(action1);
 
 		final ModelAction action2 = new ScopeInsertChildAction(project1.getProjectScope().getId(), "small sister");
@@ -351,11 +345,11 @@ public class BusinessLogicTest {
 
 		final ScopeInsertChildAction action = new ScopeInsertChildAction(project1.getProjectScope().getId(), "big son");
 		final ProjectContext context = new ProjectContext(project1);
-		context.addUser(new UserRepresentation(admin.getId()));
+		context.addUser(adminRepresentation);
 		action.execute(context, actionContext);
 
 		final List<ModelAction> actionList = new ArrayList<ModelAction>();
-		actionList.add(new TeamInviteAction(new UserRepresentation(admin.getId())));
+		actionList.add(new TeamInviteAction(admin.getId()));
 		actionList.add(action);
 		business.handleIncomingActionSyncRequest(createModelActionSyncRequest(actionList));
 
@@ -379,7 +373,7 @@ public class BusinessLogicTest {
 
 		final Project project2 = loadProject(OTHER_PROJECT_ID);
 		final List<ModelAction> actions2 = ActionTestUtils.getActions2();
-		actions2.add(0, new TeamInviteAction(new UserRepresentation(admin.getId())));
+		actions2.add(0, new TeamInviteAction(admin.getId()));
 		final List<ModelAction> actionList2 = executeActionsToProject(project2, actions2);
 		business.handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectRepresentation2, actionList2));
 
@@ -442,25 +436,9 @@ public class BusinessLogicTest {
 	}
 
 	@Test
-	public void createProjectShouldNotifyAProjectCreation() throws UnableToCreateProjectRepresentation, PersistenceException, NoResultFoundException,
-			AuthorizationException {
-
-		setupMocksToCreateProjectWithId(new UUID());
-		business = BusinessLogicTestUtils.create(persistence, multicast, authenticationManager);
-		final ProjectRepresentation representation = business.createProject("new project");
-
-		final ArgumentCaptor<ProjectCreatedEvent> captor = ArgumentCaptor.forClass(ProjectCreatedEvent.class);
-		verify(multicast, times(1)).multicastToUser(captor.capture(), eq(authenticatedUser));
-
-		final ProjectCreatedEvent createdProject = captor.getValue();
-		assertEquals(representation, createdProject.getProjectRepresentation());
-	}
-
-	@Test
 	public void createProjectShouldFailIfUsersProjectCreationQuotaValidationFails() throws UnableToCreateProjectRepresentation, PersistenceException,
 			AuthorizationException {
-		doThrow(new AuthorizationException()).when(authorizationManager).validateAndUpdateUserProjectCreationQuota(
-				new UserRepresentation(authenticatedUser.getId()));
+		doThrow(new AuthorizationException()).when(authorizationManager).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 		try {
 			BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager).createProject("");
 			Assert.fail("An authorization exception should have been thrown.");
@@ -536,7 +514,7 @@ public class BusinessLogicTest {
 	public void onlyAuthorizedProjectsAreReturnedToUser() throws Exception {
 		business = BusinessLogicTestUtils.create(persistence, authenticationManager, authorizationManager);
 		business.retrieveCurrentUserProjectList();
-		verify(authorizationManager).listAuthorizedProjects(new UserRepresentation(authenticatedUser.getId()));
+		verify(authorizationManager).listAuthorizedProjects(authenticatedUser.getId());
 	}
 
 	@Test

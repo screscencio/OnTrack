@@ -49,8 +49,11 @@ import br.com.oncast.ontrack.client.ui.places.AppPlaceHistoryMapper;
 import br.com.oncast.ontrack.shared.config.RequestConfigurations;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -104,7 +107,6 @@ public class ClientServiceProvider {
 
 	private static ClientServiceProvider instance;
 
-	// TODO let this method be private and make it call before other public methods.
 	public static ClientServiceProvider getInstance() {
 		if (instance != null) return instance;
 		return instance = new ClientServiceProvider();
@@ -133,12 +135,13 @@ public class ClientServiceProvider {
 
 	private AuthorizationService getAuthorizationService() {
 		if (authorizationService != null) return authorizationService;
-		return authorizationService = new AuthorizationServiceImpl(getRequestDispatchService(), getApplicationPlaceController());
+		return authorizationService = new AuthorizationServiceImpl(getRequestDispatchService(), getApplicationPlaceController(), getContextProviderService());
 	}
 
 	public AuthenticationService getAuthenticationService() {
 		if (authenticationService != null) return authenticationService;
-		return authenticationService = new AuthenticationServiceImpl(getRequestDispatchService(), getApplicationPlaceController(), getServerPushClientService());
+		return authenticationService = new AuthenticationServiceImpl(getRequestDispatchService(), getApplicationPlaceController(),
+				getServerPushClientService());
 	}
 
 	public ApplicationPlaceController getApplicationPlaceController() {
@@ -272,7 +275,20 @@ public class ClientServiceProvider {
 	}
 
 	public ReleaseEstimator getReleaseEstimator() {
-		final Release rootRelease = getContextProviderService().getCurrentProjectContext().getProjectRelease();
+		final Release rootRelease = getContextProviderService().getCurrent().getProjectRelease();
 		return new ReleaseEstimator(rootRelease);
+	}
+
+	public static ProjectContext getCurrentProjectContext() {
+		return getInstance().getContextProviderService().getCurrent();
+	}
+
+	public static UserRepresentation getCurrentUser() {
+		try {
+			return getInstance().getContextProviderService().getCurrent().findUser(getInstance().getAuthenticationService().getCurrentUserId());
+		}
+		catch (final UserNotFoundException e) {
+			return null;
+		}
 	}
 }

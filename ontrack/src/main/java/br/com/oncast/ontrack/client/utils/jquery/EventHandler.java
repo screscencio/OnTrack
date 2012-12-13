@@ -5,7 +5,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 public abstract class EventHandler {
 	@SuppressWarnings("unused")
 	// IMPORTANT This field is used natively through JavaScript so that handlers can be unbounded individually.
-	private final String registrationId = new UUID().toStringRepresentation();
+	private final String registrationId = new UUID().toString();
 
 	public abstract void handle(Event e);
 }

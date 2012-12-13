@@ -124,10 +124,10 @@ public class UploadWidget extends Composite {
 
 		ClientServiceProvider.getInstance().getClientAlertingService().showInfo(messages.uploading());
 		final FormPanel form = getForm();
-		getProjectId().setValue(getCurrentProject().getId().toStringRepresentation());
+		getProjectId().setValue(getCurrentProject().getId().toString());
 		getFileName().setValue(filename);
 		final UUID uuid = new UUID();
-		getFileId().setValue(uuid.toStringRepresentation());
+		getFileId().setValue(uuid.toString());
 		getActionExecutionService().addActionExecutionListener(getActionExecutionListener(uuid, listener));
 		form.submit();
 	}

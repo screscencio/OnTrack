@@ -118,7 +118,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	public void restore(final UUID scopeSelectedId) {
 		try {
 			if (scopeSelectedId != null) {
-				previousSelectedScopes.add(contextProviderService.getCurrentProjectContext().findScope(scopeSelectedId));
+				previousSelectedScopes.add(contextProviderService.getCurrent().findScope(scopeSelectedId));
 			}
 			restore();
 		}
@@ -128,7 +128,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	}
 
 	private void fireReleaseContainerStateChangeEvents() {
-		final ProjectContext context = contextProviderService.getCurrentProjectContext();
+		final ProjectContext context = contextProviderService.getCurrent();
 		for (final UUID releaseId : clientStorageService.loadModifiedContainerStateReleases()) {
 			try {
 				final Release release = context.findRelease(releaseId);
@@ -176,7 +176,7 @@ public class ClientApplicationStateServiceImpl implements ClientApplicationState
 	}
 
 	private Scope loadSelectedScope() {
-		final ProjectContext currentContext = contextProviderService.getCurrentProjectContext();
+		final ProjectContext currentContext = contextProviderService.getCurrent();
 		Scope selectedScope = null;
 		try {
 			selectedScope = currentContext.findScope(clientStorageService.loadSelectedScopeId(currentContext.getProjectScope().getId()));

@@ -6,11 +6,13 @@ import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
-public class Release implements Serializable {
+public class Release implements Serializable, HasUUID {
 
 	private static final long serialVersionUID = 1L;
 
@@ -49,6 +51,7 @@ public class Release implements Serializable {
 		scopeList = new ArrayList<Scope>();
 	}
 
+	@Override
 	public UUID getId() {
 		return this.id;
 	}
@@ -390,13 +393,12 @@ public class Release implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return this.id.hashCode();
+		return UUIDUtils.hashCode(this);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof Release)) return false;
-		return this.id.equals(((Release) obj).getId());
+		return UUIDUtils.equals(this, obj);
 	}
 
 	@Override

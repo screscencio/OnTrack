@@ -47,13 +47,15 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	protected Label timestamp;
 
 	@UiField
-	protected Label userName;
+	protected Label userNameLabel;
 
 	@UiField
 	HorizontalPanel container;
 
 	@UiField(provided = true)
 	UserWidget userWidget;
+
+	private String userName;
 
 	private final Notification notification;
 
@@ -62,7 +64,8 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 		userWidget = new UserWidget(new UserRepresentation(notification.getAuthorId()), new UserUpdateListener() {
 			@Override
 			public void onUserUpdate(final User user) {
-				userName.setText(user.getName());
+				userName = user.getName();
+				if (userNameLabel != null) update();
 			}
 		}, false);
 		initWidget(uiBinder.createAndBindUi(this));
@@ -74,6 +77,7 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	@Override
 	public boolean update() {
+		userNameLabel.setText(userName);
 		notificationMessage.setHTML(notification.getType().selectMessage(messages, notification));
 
 		timestamp.setText(HumanDateFormatter.getDifferenceDate(notification.getTimestamp()));

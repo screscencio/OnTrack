@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -20,6 +21,7 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,7 +46,10 @@ public class MembersListWidget extends Composite {
 	@UiField
 	SimplePanel loadingPanel;
 
+	private Set<HandlerRegistration> handlerRegistrations;
+
 	public MembersListWidget() {
+		handlerRegistrations = new HashSet<HandlerRegistration>();
 		membersList = new ModelWidgetContainer<UserRepresentation, ProjectMemberWidget>(new ModelWidgetFactory<UserRepresentation, ProjectMemberWidget>() {
 			@Override
 			public ProjectMemberWidget createWidget(final UserRepresentation modelBean) {
@@ -69,10 +74,13 @@ public class MembersListWidget extends Composite {
 				});
 
 		initWidget(uiBinder.createAndBindUi(this));
+	}
 
-		setupMembersList();
+	@Override
+	protected void onLoad() {
+		if (!handlerRegistrations.isEmpty()) return;
 
-		ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
+		handlerRegistrations.add(ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
 			@Override
 			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet,
@@ -82,12 +90,10 @@ public class MembersListWidget extends Composite {
 					updateMembersList(usersStatusService.getActiveUsers(), usersStatusService.getOnlineUsers());
 				}
 			}
-		});
-	}
+		}));
 
-	private void setupMembersList() {
 		loadingPanel.setVisible(true);
-		ClientServiceProvider.getInstance().getUsersStatusService().register(new UsersStatusChangeListener() {
+		handlerRegistrations.add(ClientServiceProvider.getInstance().getUsersStatusService().register(new UsersStatusChangeListener() {
 
 			@Override
 			public void onUsersStatusListUnavailable(final Throwable caught) {
@@ -101,22 +107,31 @@ public class MembersListWidget extends Composite {
 				updateMembersList(activeUsers, onlineUsers);
 			}
 
-		});
+		}));
+	}
+
+	@Override
+	protected void onUnload() {
+		for (final HandlerRegistration r : handlerRegistrations) {
+			r.removeHandler();
+		}
+
+		handlerRegistrations.clear();
 	}
 
 	private void updateMembersList(final SortedSet<UserRepresentation> activeUsers, final SortedSet<UserRepresentation> onlineUsers) {
-		final ProjectContext currentProjectContext = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext();
+		final ProjectContext currentProjectContext = ClientServiceProvider.getCurrentProjectContext();
 		activeMembersList.update(new ArrayList<UserRepresentation>(activeUsers));
 
 		final ArrayList<UserRepresentation> onlineAndNotActiveUsers = new ArrayList<UserRepresentation>();
 		for (final UserRepresentation user : onlineUsers) {
-			if (!activeUsers.contains(user)) onlineAndNotActiveUsers.add(user);
+			if (!activeUsers.contains(user) && user.isValid()) onlineAndNotActiveUsers.add(user);
 		}
 		onlineMembersList.update(onlineAndNotActiveUsers);
 
 		final List<UserRepresentation> users = new ArrayList<UserRepresentation>();
 		for (final UserRepresentation user : currentProjectContext.getUsers()) {
-			if (!activeUsers.contains(user) && !onlineUsers.contains(user)) users.add(user);
+			if (!activeUsers.contains(user) && !onlineUsers.contains(user) && user.isValid()) users.add(user);
 		}
 		membersList.update(users);
 	}

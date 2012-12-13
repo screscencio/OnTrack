@@ -9,7 +9,7 @@ public class UUIDConverter implements TypeConverter {
 	@Override
 	public Object convert(final Object originalBean) throws TypeConverterException {
 		if (!(originalBean instanceof UUID)) throw new TypeConverterException("Cannot convert " + originalBean.getClass() + ": it is not an UUID.");
-		return ((UUID) originalBean).toStringRepresentation();
+		return ((UUID) originalBean).toString();
 	}
 
 }

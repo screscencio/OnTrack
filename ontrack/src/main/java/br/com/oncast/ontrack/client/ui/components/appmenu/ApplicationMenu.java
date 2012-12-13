@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
+import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.MembersWidget;
@@ -21,12 +22,14 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ApplicationMenu extends Composite {
@@ -60,6 +63,10 @@ public class ApplicationMenu extends Composite {
 	@UiField
 	protected Image backButton;
 
+	private HandlerRegistration registration;
+
+	private MenuItem userLogoutMenuItem;
+
 	public ApplicationMenu() {
 		this(true);
 	}
@@ -74,10 +81,10 @@ public class ApplicationMenu extends Composite {
 
 		createNotificationMenu();
 
+		createUserMenu();
+
 		if (enableProjectDependantMenus) createMemberMenu();
 		memberMenuItem.setVisible(enableProjectDependantMenus);
-
-		createUserMenu();
 
 		backButton.addClickHandler(enableProjectDependantMenus ? new ClickHandler() {
 			@Override
@@ -93,6 +100,38 @@ public class ApplicationMenu extends Composite {
 		});
 
 		backButton.setTitle(enableProjectDependantMenus ? messages.backToProject() : messages.backToProjectSelection());
+	}
+
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		registerUserDataUpdateListener();
+	}
+
+	private void registerUserDataUpdateListener() {
+		if (registration != null) return;
+
+		registration = ClientServiceProvider.getInstance().getUserDataService()
+				.registerListenerForSpecificUser(ClientServiceProvider.getCurrentUser(), new UserSpecificInformationChangeListener() {
+					@Override
+					public void onInformationChange(final User user) {
+						if (userLogoutMenuItem != null) userLogoutMenuItem.setText(messages.logout(user.getName()));
+						else unregisterUserDataUpdateListener();
+					}
+				});
+	}
+
+	@Override
+	protected void onUnload() {
+		unregisterUserDataUpdateListener();
+		super.onUnload();
+	}
+
+	private void unregisterUserDataUpdateListener() {
+		if (registration == null) return;
+
+		registration.removeHandler();
+		registration = null;
 	}
 
 	private void hideBackButton() {
@@ -142,6 +181,7 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private void createUserMenu() {
+		if (registration != null) return;
 		final ApplicationSubmenu userMenu = new ApplicationSubmenu();
 
 		final PopupConfig popupPassChange = PopupConfig.configPopup().popup(new PasswordChangeWidget())
@@ -159,13 +199,14 @@ public class ApplicationMenu extends Composite {
 			}
 		});
 
-		final User currentUser = SERVICE_PROVIDER.getAuthenticationService().getCurrentUser();
-		userMenu.addItem(currentUser == null ? messages.logout() : messages.logout(currentUser.getEmail()), new Command() {
+		userLogoutMenuItem = userMenu.addItem(messages.logout(), new Command() {
 			@Override
 			public void execute() {
 				logUserOut();
 			}
 		});
+
+		registerUserDataUpdateListener();
 
 		userMenuItem.setPopupConfig(popup);
 	}

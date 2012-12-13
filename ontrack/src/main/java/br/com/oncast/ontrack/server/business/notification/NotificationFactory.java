@@ -2,6 +2,9 @@ package br.com.oncast.ontrack.server.business.notification;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToPostProcessActionException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.AnnotationCreateAction;
@@ -10,6 +13,8 @@ import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
+import br.com.oncast.ontrack.shared.model.action.TeamRevogueInvitationAction;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -17,6 +22,7 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
@@ -25,7 +31,45 @@ import br.com.oncast.ontrack.shared.services.notification.NotificationType;
 
 public class NotificationFactory {
 
+	private static final Logger LOGGER = Logger.getLogger(NotificationFactory.class);
+
 	private enum ActionNotificationCreator {
+		TEAM_INVITE(TeamInviteAction.class) {
+			@Override
+			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
+					final UUID authorId) {
+
+				final NotificationBuilder builder = initializeBuilder(action, projectContext.getProjectRepresentation(), authorId,
+						NotificationType.TEAM_INVITED);
+
+				try {
+					final User user = ServerServiceProvider.getInstance().getUsersDataManager().retrieveUser(action.getReferenceId());
+					builder.setReferenceDescription(user.getName());
+				}
+				catch (final Exception e) {
+					LOGGER.error("Could not build notification for TeamInviteAction", e);
+				}
+				return builder;
+			}
+		},
+		TEAM_REVOGUE_INVITATION(TeamRevogueInvitationAction.class) {
+			@Override
+			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
+					final UUID authorId) {
+
+				final NotificationBuilder builder = initializeBuilder(action, projectContext.getProjectRepresentation(), authorId,
+						NotificationType.TEAM_REMOVED);
+
+				try {
+					final User user = ServerServiceProvider.getInstance().getUsersDataManager().retrieveUser(action.getReferenceId());
+					builder.setReferenceDescription(user.getName());
+				}
+				catch (final Exception e) {
+					LOGGER.error("Could not build notification for TeamInviteAction", e);
+				}
+				return builder;
+			}
+		},
 		IMPEDIMENT_CREATION(ImpedimentCreateAction.class) {
 			@Override
 			protected NotificationBuilder createNotificationBuilder(final ModelAction action, final ProjectContext projectContext,
@@ -161,7 +205,7 @@ public class NotificationFactory {
 		if (notificationBuilder == null) return null;
 
 		for (final UserRepresentation user : projectUsers) {
-			notificationBuilder.addReceipient(user);
+			notificationBuilder.addReceipient(user.getId());
 		}
 
 		return notificationBuilder.getNotification();

@@ -29,7 +29,7 @@ public class ProjectSnapshot {
 	public ProjectSnapshot() {}
 
 	public ProjectSnapshot(final Project project, final Date timestamp) throws IOException {
-		this.id = project.getProjectRepresentation().getId().toStringRepresentation();
+		this.id = project.getProjectRepresentation().getId().toString();
 		setProject(project);
 		setTimestamp(timestamp);
 	}

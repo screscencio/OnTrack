@@ -102,7 +102,7 @@ public class InferenceEngineTestUtils {
 		}
 		final HashSet<String> exceededScopes = new HashSet<String>();
 		for (final UUID id : actual) {
-			exceededScopes.add(scopesCache.containsKey(id) ? scopesCache.get(id).getDescription() : id.toStringRepresentation());
+			exceededScopes.add(scopesCache.containsKey(id) ? scopesCache.get(id).getDescription() : id.toString());
 		}
 		assertTrue("There are " + actual.size() + " more scopes than expected: " + Joiner.on(", ").join(exceededScopes),
 				actual.isEmpty());

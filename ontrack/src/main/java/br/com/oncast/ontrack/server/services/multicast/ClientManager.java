@@ -246,4 +246,10 @@ public class ClientManager {
 		return getKeyFor(clientsByProject, clientId);
 	}
 
+	public void unbindUserFromProject(final UUID userId, final UUID projectId) {
+		for (final ServerPushConnection connection : getClientsOfUser(userId)) {
+			System.out.println("asdasdasd    " + getCurrentProject(connection));
+			if (projectId.equals(getCurrentProject(connection))) unbindClientFromProject(connection);
+		}
+	}
 }

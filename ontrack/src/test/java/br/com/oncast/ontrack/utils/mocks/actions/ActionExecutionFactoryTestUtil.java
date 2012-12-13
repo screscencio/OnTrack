@@ -9,11 +9,11 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.ContextProviderServiceMock;
-import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class ActionExecutionFactoryTestUtil {
 
@@ -25,7 +25,7 @@ public class ActionExecutionFactoryTestUtil {
 		final ClientAlertingService alertingService = mock(ClientAlertingService.class);
 		final AuthenticationService authenticationService = mock(AuthenticationService.class);
 
-		when(authenticationService.getCurrentUser()).thenReturn(UserTestUtils.getAdmin());
+		when(authenticationService.getCurrentUserId()).thenReturn(DefaultAuthenticationCredentials.USER_ID);
 		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
 		when(projectRepresentation.getId()).thenReturn(UUID.INVALID_UUID);
 
@@ -40,7 +40,7 @@ public class ActionExecutionFactoryTestUtil {
 		final ApplicationPlaceController applicationPlaceController = mock(ApplicationPlaceController.class);
 		final AuthenticationService authenticationService = mock(AuthenticationService.class);
 
-		when(authenticationService.getCurrentUser()).thenReturn(UserTestUtils.getAdmin());
+		when(authenticationService.getCurrentUserId()).thenReturn(DefaultAuthenticationCredentials.USER_ID);
 		when(projectRepresentationProvider.getCurrent()).thenReturn(projectRepresentation);
 		when(projectRepresentation.getId()).thenReturn(UUID.INVALID_UUID);
 

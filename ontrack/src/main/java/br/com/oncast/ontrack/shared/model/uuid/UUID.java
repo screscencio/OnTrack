@@ -74,10 +74,6 @@ public class UUID implements Serializable {
 		return new String(generatedId);
 	}
 
-	public String toStringRepresentation() {
-		return id;
-	}
-
 	public boolean isValid() {
 		if (this.id == null) return false;
 
@@ -90,4 +86,5 @@ public class UUID implements Serializable {
 		}
 		return true;
 	}
+
 }

@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.client.services.validation.EmailValidator;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DefaultTextedTextBox;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
-import br.com.oncast.ontrack.shared.model.user.User;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -68,8 +67,7 @@ public class MembersWidget extends Composite implements HasCloseHandlers<Members
 	}
 
 	private void validateCountdown() {
-		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
-		final int invitationQuota = (currentUser == null || currentUser.getProjectInvitationQuota() <= 0) ? 0 : currentUser.getProjectInvitationQuota();
+		final int invitationQuota = ClientServiceProvider.getInstance().getAuthenticationService().getProjectInvitationQuota();
 
 		countdownLabel.setText(messages.inivitationQuota(invitationQuota));
 	}

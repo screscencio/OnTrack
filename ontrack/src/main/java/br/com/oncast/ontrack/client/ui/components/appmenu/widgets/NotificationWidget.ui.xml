@@ -72,7 +72,7 @@
 			<u:UserWidget ui:field="userWidget" styleName="{style.image}" />
 			<g:cell styleName="{style.cell}">
 				<g:HTMLPanel styleName="{style.inline}">
-					<g:Label ui:field="userName" styleName="{style.inline}"/>
+					<g:Label ui:field="userNameLabel" styleName="{style.inline}"/>
 					<g:InlineHTML ui:field="notificationMessage" styleName="{style.inline}" />
 					<g:Label ui:field="timestamp"  styleName="{style.timestamp}"/>
 				</g:HTMLPanel>

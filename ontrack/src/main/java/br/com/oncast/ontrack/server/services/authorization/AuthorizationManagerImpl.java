@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.server.services.authentication.AuthenticationManage
 import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.server.services.authentication.PasswordHash;
 import br.com.oncast.ontrack.server.services.email.ProjectAuthorizationMailFactory;
+import br.com.oncast.ontrack.server.services.multicast.ClientManager;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
@@ -18,11 +19,13 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAutho
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectRemovedEvent;
 
 public class AuthorizationManagerImpl implements AuthorizationManager {
 
@@ -31,26 +34,30 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	private final PersistenceService persistenceService;
 	private final MulticastService multicastService;
 	private final ProjectAuthorizationMailFactory projectAuthorizationMailFactory;
+	private final ClientManager clientManager;
 
 	public AuthorizationManagerImpl(final AuthenticationManager authenticationManager, final PersistenceService persistenceService,
-			final MulticastService multicastService, final ProjectAuthorizationMailFactory projectAuthorizationMailFactory) {
+			final MulticastService multicastService, final ProjectAuthorizationMailFactory projectAuthorizationMailFactory, final ClientManager clientManager) {
 
 		this.authenticationManager = authenticationManager;
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
 		this.projectAuthorizationMailFactory = projectAuthorizationMailFactory;
+		this.clientManager = clientManager;
 	}
 
 	@Override
 	public void assureProjectAccessAuthorization(final UUID projectId) throws PersistenceException, AuthorizationException {
 		final UUID currentUserId = authenticationManager.getAuthenticatedUser().getId();
 		final ProjectAuthorization retrieveProjectAuthorization = persistenceService.retrieveProjectAuthorization(currentUserId, projectId);
-		if (retrieveProjectAuthorization == null) throw new AuthorizationException("Not authorized to access project '" + projectId + "'.");
+		if (retrieveProjectAuthorization == null) throw new AuthorizationException("Not authorized to access project '" + projectId + "'.")
+				.setProjectId(projectId);
+
 	}
 
 	@Override
-	public List<ProjectRepresentation> listAuthorizedProjects(final UserRepresentation user) throws PersistenceException, NoResultFoundException {
-		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
+	public List<ProjectRepresentation> listAuthorizedProjects(final UUID userId) throws PersistenceException, NoResultFoundException {
+		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(userId);
 		final List<ProjectRepresentation> projects = new ArrayList<ProjectRepresentation>();
 
 		for (final ProjectAuthorization authorization : authorizations)
@@ -60,26 +67,21 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public List<ProjectRepresentation> listAuthorizedProjects(final UUID userId) throws PersistenceException, NoResultFoundException {
-		return listAuthorizedProjects(new UserRepresentation(userId));
-	}
-
-	@Override
 	public void authorizeAdmin(final ProjectRepresentation persistedProjectRepresentation) throws PersistenceException {
 		persistenceService.authorize(DefaultAuthenticationCredentials.USER_EMAIL, persistedProjectRepresentation.getId());
 	}
 
 	@Override
-	public UserRepresentation authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
+	public UUID authorize(final UUID projectId, final String userEmail, final boolean shouldSendMailMessage)
 			throws UnableToAuthorizeUserException {
-		UserRepresentation user = null;
+		User user = null;
 
 		try {
 			User authenticatedUser = null;
 			String generatedPassword = null;
 
 			try {
-				user = new UserRepresentation(authenticationManager.findUserByEmail(userEmail).getId());
+				user = authenticationManager.findUserByEmail(userEmail);
 
 				if (persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null) {
 					logAndThrowUnableToAuthorizeUserException("The user '" + userEmail + "' is already authorized for the project '" + projectId + "'");
@@ -87,23 +89,18 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			}
 			catch (final UserNotFoundException e) {
 				generatedPassword = PasswordHash.generatePassword();
-				final User createdUser = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
-				user = new UserRepresentation(createdUser.getId());
+				user = authenticationManager.createNewUser(userEmail, generatedPassword, 0, 0);
 				LOGGER.debug("Created New User '" + userEmail + "'.");
 
 				if (authenticationManager.isUserAuthenticated()) {
 					authenticatedUser = authenticationManager.getAuthenticatedUser();
-					try {
-						validateAndUpdateUserUserInvitaionQuota(userEmail, new UserRepresentation(authenticatedUser.getId()));
-					}
-					catch (final NoResultFoundException e1) {
-						logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
-								+ "' for the project: User not found.", e);
-					}
+					validateAndUpdateUserUserInvitaionQuota(userEmail, authenticatedUser.getId());
 				}
 			}
 
 			persistenceService.authorize(userEmail, projectId);
+			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
+			multicastService.multicastToUser(new ProjectAddedEvent(projectRepresentation), user);
 			if (shouldSendMailMessage) sendMailMessage(projectId, userEmail, generatedPassword, authenticatedUser);
 
 		}
@@ -114,14 +111,18 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
 					+ "' for the project: Password generation went wrong.", e);
 		}
-		return user;
+		catch (final NoResultFoundException e) {
+			logAndThrowUnableToAuthorizeUserException("It was not possible to authorize the user '" + userEmail
+					+ "' for the project: Trying to authorize to an inexistent project or inexistent user.", e);
+		}
+		return user.getId();
 
 	}
 
-	void validateAndUpdateUserUserInvitaionQuota(final String userToBeAuthorizedEmail, final UserRepresentation requestingUser)
+	void validateAndUpdateUserUserInvitaionQuota(final String userToBeAuthorizedEmail, final UUID userId)
 			throws UnableToAuthorizeUserException, PersistenceException, NoResultFoundException {
 
-		final User user = persistenceService.retrieveUserById(requestingUser.getId());
+		final User user = persistenceService.retrieveUserById(userId);
 
 		if (!user.getEmail().equals(userToBeAuthorizedEmail)) {
 
@@ -146,7 +147,7 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	@Override
-	public void validateAndUpdateUserProjectCreationQuota(final UserRepresentation requestingUser) throws PersistenceException, AuthorizationException {
+	public void validateAndUpdateUserProjectCreationQuota(final User requestingUser) throws PersistenceException, AuthorizationException {
 		User user = null;
 		try {
 			user = persistenceService.retrieveUserById(requestingUser.getId());
@@ -172,9 +173,40 @@ public class AuthorizationManagerImpl implements AuthorizationManager {
 		throw new UnableToAuthorizeUserException(message, e);
 	}
 
+	private void logAndThrowUnableToRemoveAuthorizationException(final String message, final Throwable e) throws UnableToRemoveAuthorizationException {
+		LOGGER.error(message, e);
+		throw new UnableToRemoveAuthorizationException(message, e);
+	}
+
+	private void logAndThrowUnableToRemoveAuthorizationException(final String message) throws UnableToRemoveAuthorizationException {
+		LOGGER.error(message);
+		throw new UnableToRemoveAuthorizationException(message);
+	}
+
 	@Override
 	public boolean hasAuthorizationFor(final UUID userId, final UUID projectId) throws NoResultFoundException, PersistenceException {
 		final User user = persistenceService.retrieveUserById(userId);
 		return persistenceService.retrieveProjectAuthorization(user.getId(), projectId) != null;
+	}
+
+	@Override
+	public void removeAuthorization(final UUID projectId, final UUID userId) throws UnableToRemoveAuthorizationException {
+		try {
+			final ProjectAuthorization authorization = persistenceService.retrieveProjectAuthorization(userId, projectId);
+			if (authorization == null) logAndThrowUnableToRemoveAuthorizationException("Remove authorization failed: persistence error");
+
+			persistenceService.remove(authorization);
+			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
+			final User user = persistenceService.retrieveUserById(userId);
+
+			clientManager.unbindUserFromProject(userId, projectId);
+			multicastService.multicastToUser(new ProjectRemovedEvent(projectRepresentation), user);
+		}
+		catch (final PersistenceException e) {
+			logAndThrowUnableToRemoveAuthorizationException("Remove authorization failed: persistence error", e);
+		}
+		catch (final NoResultFoundException e) {
+			logAndThrowUnableToRemoveAuthorizationException("Remove authorization failed: user or project not found", e);
+		}
 	}
 }

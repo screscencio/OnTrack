@@ -80,6 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @see StockChart
  * @since 1.0.0
  */
+@SuppressWarnings("rawtypes")
 public abstract class BaseChart<T> extends Widget {
 
 	/**
@@ -1313,7 +1314,7 @@ public abstract class BaseChart<T> extends Widget {
 
 	// Helper method to avoid having to do the cast and warning handling in multiple places
 	private T returnThis() {
-		@SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" }) final T instance = (T) this;
+		@SuppressWarnings({ "unchecked" }) final T instance = (T) this;
 		return instance;
 	}
 
@@ -2207,128 +2208,127 @@ public abstract class BaseChart<T> extends Widget {
 			JavaScriptObject plotOptionsLabelsFormatterFlags,
 			JavaScriptObject seriesLabelsFormatterFlags) /*-{
 
-															var self = this;
+		var self = this;
 
-															// Add in GWT interceptor callback functions for the various core chart event handlers
-															for ( var type1 in chartEventHandlerFlags) {
-															if (type1.indexOf("gwt") < 0 && chartEventHandlerFlags[type1]) {
-															options.chart.events = options.chart.events || {};
-															options.chart.events[type1] = function(e) {
-															return self.@org.moxieapps.gwt.highcharts.client.BaseChart::chartEventCallback(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(e, arguments.callee.type);
-															};
-															options.chart.events[type1].type = type1;
-															}
-															}
+		// Add in GWT interceptor callback functions for the various core chart event handlers
+		for ( var type1 in chartEventHandlerFlags) {
+			if (type1.indexOf("gwt") < 0 && chartEventHandlerFlags[type1]) {
+				options.chart.events = options.chart.events || {};
+				options.chart.events[type1] = function(e) {
+					return self.@org.moxieapps.gwt.highcharts.client.BaseChart::chartEventCallback(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(e, arguments.callee.type);
+				};
+				options.chart.events[type1].type = type1;
+			}
+		}
 
-															// Add in GWT interceptor callback functions for the various series event handlers
-															for ( var type2 in seriesEventHandlerFlags) {
-															if (type2.indexOf("gwt") < 0 && seriesEventHandlerFlags[type2]) {
-															options.plotOptions = options.plotOptions || {};
-															options.plotOptions.series = options.plotOptions.series || {};
-															options.plotOptions.series.events = options.plotOptions.series.events
-															|| {};
-															options.plotOptions.series.events[type2] = function(e) {
-															return self.@org.moxieapps.gwt.highcharts.client.BaseChart::seriesEventCallback(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, e, arguments.callee.type);
-															};
-															options.plotOptions.series.events[type2].type = type2;
-															}
-															}
+		// Add in GWT interceptor callback functions for the various series event handlers
+		for ( var type2 in seriesEventHandlerFlags) {
+			if (type2.indexOf("gwt") < 0 && seriesEventHandlerFlags[type2]) {
+				options.plotOptions = options.plotOptions || {};
+				options.plotOptions.series = options.plotOptions.series || {};
+				options.plotOptions.series.events = options.plotOptions.series.events
+						|| {};
+				options.plotOptions.series.events[type2] = function(e) {
+					return self.@org.moxieapps.gwt.highcharts.client.BaseChart::seriesEventCallback(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, e, arguments.callee.type);
+				};
+				options.plotOptions.series.events[type2].type = type2;
+			}
+		}
 
-															// Add in GWT interceptor callback functions for the various series point event handlers
-															for ( var type3 in pointEventHandlerFlags) {
-															if (type3.indexOf("gwt") < 0 && pointEventHandlerFlags[type3]) {
-															options.plotOptions = options.plotOptions || {};
-															options.plotOptions.series = options.plotOptions.series || {};
-															options.plotOptions.series.point = options.plotOptions.series.point
-															|| {};
-															options.plotOptions.series.point.events = options.plotOptions.series.point.events
-															|| {};
-															options.plotOptions.series.point.events[type3] = function(e) {
-															return self.@org.moxieapps.gwt.highcharts.client.BaseChart::pointEventCallback(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, e, arguments.callee.type);
-															};
-															options.plotOptions.series.point.events[type3].type = type3;
-															}
-															}
+		// Add in GWT interceptor callback functions for the various series point event handlers
+		for ( var type3 in pointEventHandlerFlags) {
+			if (type3.indexOf("gwt") < 0 && pointEventHandlerFlags[type3]) {
+				options.plotOptions = options.plotOptions || {};
+				options.plotOptions.series = options.plotOptions.series || {};
+				options.plotOptions.series.point = options.plotOptions.series.point
+						|| {};
+				options.plotOptions.series.point.events = options.plotOptions.series.point.events
+						|| {};
+				options.plotOptions.series.point.events[type3] = function(e) {
+					return self.@org.moxieapps.gwt.highcharts.client.BaseChart::pointEventCallback(Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, e, arguments.callee.type);
+				};
+				options.plotOptions.series.point.events[type3].type = type3;
+			}
+		}
 
-															// Add in GWT interceptor callback functions for the various formatters so that we can move from
-															// the native JS world back to the Java world...
-															if (toolTipFormatterFlag) {
-															options.tooltip = options.tooltip || {};
-															options.tooltip.formatter = function() {
-															var result = self.@org.moxieapps.gwt.highcharts.client.BaseChart::toolTipFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;)(this);
-															if (result == null) {
-															return false;
-															}
-															return result;
-															};
-															}
+		// Add in GWT interceptor callback functions for the various formatters so that we can move from
+		// the native JS world back to the Java world...
+		if (toolTipFormatterFlag) {
+			options.tooltip = options.tooltip || {};
+			options.tooltip.formatter = function() {
+				var result = self.@org.moxieapps.gwt.highcharts.client.BaseChart::toolTipFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;)(this);
+				if (result == null) {
+					return false;
+				}
+				return result;
+			};
+		}
 
-															// X axis label formatters
-															for (i = 0; i < xAxisLabelFormatterFlags.length; i++) {
-															if (!xAxisLabelFormatterFlags[i])
-															continue;
-															var xAxis = xAxisLabelFormatterFlags.length == 1 ? options.xAxis
-															: options.xAxis[i];
-															xAxis.labels = xAxis.labels || {};
-															xAxis.labels.formatter = function() {
-															return self.@org.moxieapps.gwt.highcharts.client.BaseChart::xAxisLabelFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;I)(this, arguments.callee.index);
-															};
-															xAxis.labels.formatter.index = i;
-															}
+		// X axis label formatters
+		for (i = 0; i < xAxisLabelFormatterFlags.length; i++) {
+			if (!xAxisLabelFormatterFlags[i])
+				continue;
+			var xAxis = xAxisLabelFormatterFlags.length == 1 ? options.xAxis
+					: options.xAxis[i];
+			xAxis.labels = xAxis.labels || {};
+			xAxis.labels.formatter = function() {
+				return self.@org.moxieapps.gwt.highcharts.client.BaseChart::xAxisLabelFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;I)(this, arguments.callee.index);
+			};
+			xAxis.labels.formatter.index = i;
+		}
 
-															// Y axis label formatters
-															for (i = 0; i < yAxisLabelFormatterFlags.length
-															&& i < yAxisStackLabelFormatterFlags.length; i++) {
-															var yAxis = yAxisLabelFormatterFlags.length == 1 ? options.yAxis
-															: options.yAxis[i];
-															if (yAxisLabelFormatterFlags[i]) {
-															yAxis.labels = yAxis.labels || {};
-															yAxis.labels.formatter = function() {
-															return self.@org.moxieapps.gwt.highcharts.client.BaseChart::yAxisLabelFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;I)(this, arguments.callee.index);
-															};
-															yAxis.labels.formatter.index = i;
-															}
-															if (yAxisStackLabelFormatterFlags[i]) {
-															yAxis.stackLabels = yAxis.stackLabels || {};
-															yAxis.stackLabels.formatter = function() {
-															return self.@org.moxieapps.gwt.highcharts.client.BaseChart::yAxisStackLabelFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;I)(this, arguments.callee.index);
-															};
-															yAxis.stackLabels.formatter.index = i;
-															}
-															}
+		// Y axis label formatters
+		for (i = 0; i < yAxisLabelFormatterFlags.length
+				&& i < yAxisStackLabelFormatterFlags.length; i++) {
+			var yAxis = yAxisLabelFormatterFlags.length == 1 ? options.yAxis
+					: options.yAxis[i];
+			if (yAxisLabelFormatterFlags[i]) {
+				yAxis.labels = yAxis.labels || {};
+				yAxis.labels.formatter = function() {
+					return self.@org.moxieapps.gwt.highcharts.client.BaseChart::yAxisLabelFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;I)(this, arguments.callee.index);
+				};
+				yAxis.labels.formatter.index = i;
+			}
+			if (yAxisStackLabelFormatterFlags[i]) {
+				yAxis.stackLabels = yAxis.stackLabels || {};
+				yAxis.stackLabels.formatter = function() {
+					return self.@org.moxieapps.gwt.highcharts.client.BaseChart::yAxisStackLabelFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;I)(this, arguments.callee.index);
+				};
+				yAxis.stackLabels.formatter.index = i;
+			}
+		}
 
-															// Plot options data label formatters
-															for ( var type4 in plotOptionsLabelsFormatterFlags) {
-															if (type4.indexOf("gwt") < 0
-															&& plotOptionsLabelsFormatterFlags[type4]) {
-															options.plotOptions = options.plotOptions || {};
-															options.plotOptions[type4] = options.plotOptions[type4] || {};
-															options.plotOptions[type4].dataLabels = options.plotOptions[type4].dataLabels
-															|| {};
-															options.plotOptions[type4].dataLabels.formatter = function() {
-															return self.@org.moxieapps.gwt.highcharts.client.BaseChart::plotOptionsLabelsFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, arguments.callee.type);
-															};
-															options.plotOptions[type4].dataLabels.formatter.type = type4;
-															}
-															}
+		// Plot options data label formatters
+		for ( var type4 in plotOptionsLabelsFormatterFlags) {
+			if (type4.indexOf("gwt") < 0
+					&& plotOptionsLabelsFormatterFlags[type4]) {
+				options.plotOptions = options.plotOptions || {};
+				options.plotOptions[type4] = options.plotOptions[type4] || {};
+				options.plotOptions[type4].dataLabels = options.plotOptions[type4].dataLabels
+						|| {};
+				options.plotOptions[type4].dataLabels.formatter = function() {
+					return self.@org.moxieapps.gwt.highcharts.client.BaseChart::plotOptionsLabelsFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(this, arguments.callee.type);
+				};
+				options.plotOptions[type4].dataLabels.formatter.type = type4;
+			}
+		}
 
-															// Series override label formatters
-															for (i = 0; i < seriesLabelsFormatterFlags.length; i++) {
-															if (!seriesLabelsFormatterFlags[i])
-															continue;
-															var series = options.series[i];
-															series.dataLabels = series.dataLabels || {};
-															series.dataLabels.formatter = function() {
-															return self.@org.moxieapps.gwt.highcharts.client.BaseChart::seriesLabelsFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;I)(this, arguments.callee.index);
-															};
-															series.dataLabels.formatter.index = i;
-															}
+		// Series override label formatters
+		for (i = 0; i < seriesLabelsFormatterFlags.length; i++) {
+			if (!seriesLabelsFormatterFlags[i])
+				continue;
+			var series = options.series[i];
+			series.dataLabels = series.dataLabels || {};
+			series.dataLabels.formatter = function() {
+				return self.@org.moxieapps.gwt.highcharts.client.BaseChart::seriesLabelsFormatterCallback(Lcom/google/gwt/core/client/JavaScriptObject;I)(this, arguments.callee.index);
+			};
+			series.dataLabels.formatter.index = i;
+		}
 
-															// Draw the chart!
-															return new $wnd.Highcharts[chartTypeName](options);
-															}-*/;
+		// Draw the chart!
+		return new $wnd.Highcharts[chartTypeName](options);
+	}-*/;
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private void chartEventCallback(final JavaScriptObject nativeEvent, final String eventType) {
 		if ("click".equals(eventType) && chartClickEventHandler != null) {
 			chartClickEventHandler.onClick(new ChartClickEvent(nativeEvent));
@@ -2344,7 +2344,6 @@ public abstract class BaseChart<T> extends Widget {
 		}
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private void seriesEventCallback(final JavaScriptObject nativeSeries, final JavaScriptObject nativeEvent, final String eventType) {
 		if ("click".equals(eventType) && seriesPlotOptions != null && seriesPlotOptions.getSeriesClickEventHandler() != null) {
 			seriesPlotOptions.getSeriesClickEventHandler().onClick(new SeriesClickEvent(nativeEvent, nativeSeries));
@@ -2369,7 +2368,6 @@ public abstract class BaseChart<T> extends Widget {
 		}
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private void pointEventCallback(final JavaScriptObject nativePoint, final JavaScriptObject nativeEvent, final String eventType) {
 		if ("click".equals(eventType) && seriesPlotOptions != null && seriesPlotOptions.getPointClickEventHandler() != null) {
 			seriesPlotOptions.getPointClickEventHandler().onClick(new PointClickEvent(nativeEvent, nativePoint));
@@ -2394,13 +2392,11 @@ public abstract class BaseChart<T> extends Widget {
 		}
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String toolTipFormatterCallback(final JavaScriptObject nativeData) {
 		if (toolTip == null || toolTip.getToolTipFormatter() == null) { return null; }
 		return toolTip.getToolTipFormatter().format(new ToolTipData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String xAxisLabelFormatterCallback(final JavaScriptObject nativeData, final int axisIndex) {
 		if (xAxes == null || xAxes.size() <= axisIndex ||
 				xAxes.get(axisIndex).getLabels() == null ||
@@ -2408,7 +2404,6 @@ public abstract class BaseChart<T> extends Widget {
 		return xAxes.get(axisIndex).getLabels().getFormatter().format(new AxisLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String yAxisLabelFormatterCallback(final JavaScriptObject nativeData, final int axisIndex) {
 		if (yAxes == null || yAxes.size() <= axisIndex ||
 				yAxes.get(axisIndex).getLabels() == null ||
@@ -2416,7 +2411,6 @@ public abstract class BaseChart<T> extends Widget {
 		return yAxes.get(axisIndex).getLabels().getFormatter().format(new AxisLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String yAxisStackLabelFormatterCallback(final JavaScriptObject nativeData, final int axisIndex) {
 		if (yAxes == null || yAxes.size() <= axisIndex ||
 				yAxes.get(axisIndex).getStackLabels() == null ||
@@ -2424,7 +2418,6 @@ public abstract class BaseChart<T> extends Widget {
 		return yAxes.get(axisIndex).getStackLabels().getFormatter().format(new StackLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String plotOptionsLabelsFormatterCallback(final JavaScriptObject nativeData, final String type) {
 		PlotOptions plotOptions = null;
 		if ("area".equals(type)) plotOptions = areaPlotOptions;
@@ -2441,7 +2434,6 @@ public abstract class BaseChart<T> extends Widget {
 		return plotOptions.getDataLabels().getFormatter().format(new DataLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String seriesLabelsFormatterCallback(final JavaScriptObject nativeData, final int seriesIndex) {
 		if (seriesList == null || seriesList.size() <= seriesIndex ||
 				seriesList.get(seriesIndex).getPlotOptions() == null ||
@@ -2451,72 +2443,72 @@ public abstract class BaseChart<T> extends Widget {
 	}
 
 	private static native void nativeRefreshTooltip(JavaScriptObject chart, int seriesIndex, int pointIndex) /*-{
-																												chart.tooltip.refresh(chart.series[seriesIndex].data[pointIndex]);
-																												}-*/;
+		chart.tooltip.refresh(chart.series[seriesIndex].data[pointIndex]);
+	}-*/;
 
 	private static native void nativeRedraw(JavaScriptObject chart) /*-{
-																	chart.redraw();
-																	}-*/;
+		chart.redraw();
+	}-*/;
 
 	private static native void nativeDestroy(JavaScriptObject chart) /*-{
-																		chart.destroy();
-																		}-*/;
+		chart.destroy();
+	}-*/;
 
 	private static native void nativeSetSize(JavaScriptObject chart, int width, int height, boolean animated) /*-{
-																												chart.setSize(width, height, animated);
-																												}-*/;
+		chart.setSize(width, height, animated);
+	}-*/;
 
 	private static native void nativeSetSize(JavaScriptObject chart, int width, int height, JavaScriptObject animation) /*-{
-																														chart.setSize(width, height, animation);
-																														}-*/;
+		chart.setSize(width, height, animation);
+	}-*/;
 
 	private static native JavaScriptObject nativeGet(JavaScriptObject chart, String id) /*-{
-																						return chart.get(id);
-																						}-*/;
+		return chart.get(id);
+	}-*/;
 
 	private static native void nativeAddSeries(JavaScriptObject chart, JavaScriptObject seriesOptions, boolean redraw, boolean animationFlag) /*-{
-																																				chart.addSeries(seriesOptions, redraw, animationFlag);
-																																				}-*/;
+		chart.addSeries(seriesOptions, redraw, animationFlag);
+	}-*/;
 
 	private static native void nativeAddSeries(JavaScriptObject chart, JavaScriptObject seriesOptions, boolean redraw, JavaScriptObject animationOptions) /*-{
-																																							chart.addSeries(seriesOptions, redraw, animationOptions);
-																																							}-*/;
+		chart.addSeries(seriesOptions, redraw, animationOptions);
+	}-*/;
 
 	private static native void nativeRemoveSeries(JavaScriptObject chart, JavaScriptObject nativeSeries, boolean redraw) /*-{
-																															nativeSeries.remove(redraw);
-																															}-*/;
+		nativeSeries.remove(redraw);
+	}-*/;
 
 	private static native void nativeHideLoading(JavaScriptObject chart) /*-{
-																			chart.hideLoading();
-																			}-*/;
+		chart.hideLoading();
+	}-*/;
 
 	private static native void nativeShowLoading(JavaScriptObject chart, String message) /*-{
-																							chart.showLoading(message);
-																							}-*/;
+		chart.showLoading(message);
+	}-*/;
 
 	private static native void nativePrint(JavaScriptObject chart) /*-{
-																	chart.print();
-																	}-*/;
+		chart.print();
+	}-*/;
 
 	private static native JsArrayString nativeGetSelectedSeriesIds(JavaScriptObject chart) /*-{
-																							var seriesIds = [];
-																							var selectedSeries = chart.getSelectedSeries();
-																							for ( var i = 0; i < selectedSeries.length; i++) {
-																							seriesIds.push(selectedSeries[i].options["id"]);
-																							}
-																							return seriesIds;
-																							}-*/;
+		var seriesIds = [];
+		var selectedSeries = chart.getSelectedSeries();
+		for ( var i = 0; i < selectedSeries.length; i++) {
+			seriesIds.push(selectedSeries[i].options["id"]);
+		}
+		return seriesIds;
+	}-*/;
 
 	private static native JsArray<JavaScriptObject> nativeGetSelectedPoints(JavaScriptObject chart) /*-{
-																									return chart.getSelectedPoints();
-																									}-*/;
+		return chart.getSelectedPoints();
+	}-*/;
 
 	private static native String nativeGetSVG(JavaScriptObject chart) /*-{
-																		return chart.getSVG();
-																		}-*/;
+		return chart.getSVG();
+	}-*/;
 
 	private static native void nativeSetTitle(JavaScriptObject chart, JavaScriptObject title, JavaScriptObject subTitle) /*-{
-																															chart.setTitle(title, subTitle);
-																															}-*/;
+		chart.setTitle(title, subTitle);
+	}-*/;
 
 }

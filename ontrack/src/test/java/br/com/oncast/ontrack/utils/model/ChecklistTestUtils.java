@@ -8,7 +8,7 @@ public class ChecklistTestUtils {
 
 	public static Checklist create() {
 		final UUID uuid = new UUID();
-		return new Checklist(uuid, "title " + uuid.toStringRepresentation());
+		return new Checklist(uuid, "title " + uuid.toString());
 	}
 
 	public static ChecklistItem createItem(final UUID itemId, final String itemDescription, final boolean isChecked) {
@@ -19,7 +19,7 @@ public class ChecklistTestUtils {
 
 	public static ChecklistItem createItem() {
 		final UUID itemId = new UUID();
-		return createItem(itemId, "checklist item description " + itemId.toStringRepresentation(), true);
+		return createItem(itemId, "checklist item description " + itemId.toString(), true);
 	}
 
 }

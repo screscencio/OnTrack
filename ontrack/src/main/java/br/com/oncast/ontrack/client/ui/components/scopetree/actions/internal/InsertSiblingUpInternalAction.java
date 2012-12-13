@@ -10,7 +10,6 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class InsertSiblingUpInternalAction implements TwoStepInternalAction {
 
@@ -26,9 +25,7 @@ public class InsertSiblingUpInternalAction implements TwoStepInternalAction {
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		treeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 		if (treeItem.isRoot()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_ROOT_SIBLING);
-		final UserRepresentation user = new UserRepresentation(ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser().getId());
-
-		newTreeItem = new ScopeTreeItem(new Scope("", user, new Date()));
+		newTreeItem = new ScopeTreeItem(new Scope("", ClientServiceProvider.getCurrentUser(), new Date()));
 
 		final ScopeTreeItem parentItem = treeItem.getParentItem();
 		parentItem.insertItem(parentItem.getChildIndex(treeItem), newTreeItem);

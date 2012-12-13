@@ -32,9 +32,11 @@ import br.com.oncast.ontrack.shared.model.tags.TagType;
 import br.com.oncast.ontrack.shared.model.tags.exceptions.TagNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
-public class ProjectContext {
+public class ProjectContext implements HasUUID {
 
 	private final Project project;
 
@@ -205,34 +207,13 @@ public class ProjectContext {
 
 	public Checklist findChecklist(final UUID subjectId, final UUID checklistId) throws ChecklistNotFoundException {
 		final Checklist checklist = project.findChecklist(subjectId, checklistId);
-		if (checklist == null) throw new ChecklistNotFoundException("The checklist with id '" + checklistId.toStringRepresentation()
-				+ "' and associated with the subject with id '" + subjectId.toStringRepresentation() + "' was not found.");
+		if (checklist == null) throw new ChecklistNotFoundException("The checklist with id '" + checklistId.toString()
+				+ "' and associated with the subject with id '" + subjectId.toString() + "' was not found.");
 		return checklist;
 	}
 
 	public List<Checklist> findChecklistsFor(final UUID subjectId) {
 		return project.findChecklistsFor(subjectId);
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((project == null) ? 0 : project.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		final ProjectContext other = (ProjectContext) obj;
-		if (project == null) {
-			if (other.project != null) return false;
-		}
-		else if (!project.equals(other.project)) return false;
-		return true;
 	}
 
 	public void removeUser(final UserRepresentation user) {
@@ -245,7 +226,7 @@ public class ProjectContext {
 
 	public UserRepresentation findUser(final UUID userId) throws UserNotFoundException {
 		final UserRepresentation user = project.getUser(userId);
-		if (user == null) throw new UserNotFoundException("The user '" + userId.toStringRepresentation() + "' was not found.");
+		if (user == null) throw new UserNotFoundException("The user '" + userId.toString() + "' was not found.");
 
 		return user;
 	}
@@ -285,6 +266,25 @@ public class ProjectContext {
 
 	public boolean removeDescriptionFor(final UUID subjectId) {
 		return project.removeDescriptionFor(subjectId);
+	}
+
+	public <T extends Tag> List<T> getAllTags(final TagType tagType) {
+		return project.getTagsList(tagType);
+	}
+
+	@Override
+	public UUID getId() {
+		return project.getId();
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
 	}
 
 }

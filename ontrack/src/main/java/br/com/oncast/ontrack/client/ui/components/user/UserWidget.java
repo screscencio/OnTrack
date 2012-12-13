@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.user.ColorProviderService;
 import br.com.oncast.ontrack.client.services.user.UserDataService;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
@@ -14,8 +15,13 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.TeamAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,6 +31,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,10 +53,15 @@ public class UserWidget extends Composite {
 		String online();
 
 		String showActiveColor();
+
+		String removed();
 	}
 
 	@UiField
 	UserWidgetStyle style;
+
+	@UiField
+	FocusPanel mask;
 
 	@UiField
 	Image userImage;
@@ -87,6 +99,10 @@ public class UserWidget extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		createUserInformationCard();
+
+		addHandlers();
+
+		updateRemoved();
 	}
 
 	private void addHandlers() {
@@ -106,18 +122,28 @@ public class UserWidget extends Composite {
 			}
 
 		}));
+
+		registrationListener.add(ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(new ActionExecutionListener() {
+			@Override
+			public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+					final Set<UUID> inferenceInfluencedScopeSet,
+					final boolean isUserAction) {
+				if (action instanceof TeamAction && action.getReferenceId().equals(userRepresentation.getId())) updateRemoved();
+			}
+
+		}));
 	}
 
 	@Override
-	protected void onAttach() {
-		super.onAttach();
+	protected void onLoad() {
+		super.onLoad();
 		addHandlers();
 	}
 
 	@Override
-	protected void onDetach() {
+	protected void onUnload() {
 		removeHandlers();
-		super.onDetach();
+		super.onUnload();
 	}
 
 	private void removeHandlers() {
@@ -125,6 +151,10 @@ public class UserWidget extends Composite {
 			r.removeHandler();
 
 		registrationListener.clear();
+	}
+
+	private void updateRemoved() {
+		mask.setStyleName(style.removed(), !userRepresentation.isValid());
 	}
 
 	private void updateInfo(final User user) {
@@ -146,7 +176,7 @@ public class UserWidget extends Composite {
 				.setBorderColor(COLOR_PROVIDER.getSelectionColorFor(userRepresentation).toCssRepresentation());
 	}
 
-	@UiHandler("userImage")
+	@UiHandler("mask")
 	public void onAuthorClick(final ClickEvent event) {
 		userCardPopUp.pop();
 	}
@@ -166,7 +196,7 @@ public class UserWidget extends Composite {
 	}
 
 	public Widget getDraggableAnchor() {
-		return userImage;
+		return mask;
 	}
 
 	public Widget getDraggableItem() {

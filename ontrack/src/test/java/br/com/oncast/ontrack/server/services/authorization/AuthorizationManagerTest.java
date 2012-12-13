@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.authorization;
 
+import static br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerImplTestUtils.create;
 import static br.com.oncast.ontrack.utils.model.ProjectTestUtils.createRepresentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,24 +36,28 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAutho
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectRemovedEvent;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class AuthorizationManagerTest {
 
-	private static final UUID PROJECT_ID = new UUID();
 	private EntityManager entityManager;
 
 	private PersistenceService persistence;
 	private AuthenticationManager authenticationManager;
 	private ProjectAuthorizationMailFactory mailFactory;
+	private MulticastService multicastService;
 	private User authenticatedUser;
 	private User admin;
+	private ProjectRepresentation project;
+	private UUID projectId;
 
 	@Before
 	public void setUp() throws Exception {
@@ -70,43 +75,25 @@ public class AuthorizationManagerTest {
 		authenticationManager = mock(AuthenticationManager.class);
 		persistence = mock(PersistenceService.class);
 		mailFactory = mock(ProjectAuthorizationMailFactory.class);
+		multicastService = mock(MulticastService.class);
 
-		admin = UserTestUtils.createUser(DefaultAuthenticationCredentials.USER_EMAIL);
-		authenticatedUser = UserTestUtils.createUser(new UUID());
+		admin = persist(UserTestUtils.getAdmin());
+		authenticatedUser = createUser();
 		authenticatedUser.setProjectInvitationQuota(1);
+		project = createProjectRepresentation();
+		projectId = project.getId();
 
 		configureToRetrieveAdmin();
-		authorizeUser(authenticatedUser, PROJECT_ID);
-		configureToRetrieveSnapshot(PROJECT_ID);
-	}
-
-	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException, UserNotFoundException {
-		when(persistence.retrieveUserByEmail(DefaultAuthenticationCredentials.USER_EMAIL)).thenReturn(admin);
-		when(authenticationManager.findUserByEmail(authenticatedUser.getEmail())).thenReturn(authenticatedUser);
-		when(persistence.retrieveUserById(authenticatedUser.getId())).thenReturn(authenticatedUser);
-		when(authenticationManager.isUserAuthenticated()).thenReturn(true);
-	}
-
-	private void configureToRetrieveSnapshot(final UUID projectId) throws Exception {
-		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
-		when(persistence.retrieveProjectSnapshot(projectId)).thenReturn(snapshot);
-		when(snapshot.getProject()).thenReturn(ProjectTestUtils.createProject());
-	}
-
-	private void authorizeUser(final User user, final UUID projectId) throws PersistenceException, NoResultFoundException {
-		when(authenticationManager.getAuthenticatedUser()).thenReturn(user);
-		final ProjectAuthorization authorization = mock(ProjectAuthorization.class);
-		when(persistence.retrieveUserByEmail(user.getEmail())).thenReturn(user);
-		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
+		authorizeUser(authenticatedUser, project.getId());
+		configureToRetrieveSnapshot(project);
 	}
 
 	@Test
 	public void shouldBeAbleToAuthorizeAnExistentUser() throws Exception {
-		final String mail = "user@mail.com";
+		final String mail = createUser().getEmail();
 
-		when(authenticationManager.findUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
-		verify(persistence).authorize(mail, PROJECT_ID);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false);
+		verify(persistence).authorize(mail, projectId);
 	}
 
 	@Test
@@ -116,7 +103,7 @@ public class AuthorizationManagerTest {
 		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
 		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(UserTestUtils.createUser(mail));
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false);
 
 		final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 		verify(authenticationManager).createNewUser(captor.capture(), Mockito.anyString(), eq(0), eq(0));
@@ -126,13 +113,10 @@ public class AuthorizationManagerTest {
 
 	@Test(expected = UnableToAuthorizeUserException.class)
 	public void shouldFailToAuthorizeUserThatIsAlreadyAuthorized() throws Exception {
-		final String mail = "user@mail.com";
-		final User user = UserTestUtils.createUser(mail);
+		final User user = createUser();
+		authorizeUser(user, projectId);
 
-		when(authenticationManager.findUserByEmail(mail)).thenReturn(user);
-		when(persistence.retrieveProjectAuthorization(user.getId(), PROJECT_ID)).thenReturn(new ProjectAuthorization(new UUID(), new UUID()));
-
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, user.getEmail(), false);
 	}
 
 	@Test
@@ -141,10 +125,10 @@ public class AuthorizationManagerTest {
 
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
-		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());
+		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation());
 		authenticatedUser.setProjectInvitationQuota(0);
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false);
 	}
 
 	@Test(expected = UnableToAuthorizeUserException.class)
@@ -154,10 +138,10 @@ public class AuthorizationManagerTest {
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenThrow(new UserNotFoundException());
 		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(requestUser);
-		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());
+		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation());
 		authenticatedUser.setProjectInvitationQuota(0);
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, true);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, true);
 	}
 
 	@Test
@@ -170,9 +154,9 @@ public class AuthorizationManagerTest {
 		when(mailFactory.createMail()).thenReturn(mockMail);
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
-		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation());
+		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation());
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, true);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, true);
 
 		verify(mockMail).sendTo(mail, null);
 	}
@@ -187,10 +171,10 @@ public class AuthorizationManagerTest {
 		when(mailFactory.createMail()).thenReturn(mockMail);
 		final User requestUser = UserTestUtils.createUser(mail);
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(requestUser);
-		when(persistence.retrieveProjectRepresentation(PROJECT_ID)).thenReturn(ProjectTestUtils.createRepresentation(PROJECT_ID));
+		when(persistence.retrieveProjectRepresentation(projectId)).thenReturn(ProjectTestUtils.createRepresentation(projectId));
 		when(authenticationManager.isUserAuthenticated()).thenReturn(false);
 
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, true);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, true);
 
 		verify(mockMail).currentUser(admin.getEmail());
 		verify(mockMail).sendTo(mail, null);
@@ -204,7 +188,7 @@ public class AuthorizationManagerTest {
 		when(authenticationManager.createNewUser(eq(mail), Mockito.anyString(), eq(0), eq(0))).thenReturn(UserTestUtils.createUser(mail));
 
 		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false);
 		Assert.assertEquals(0, authenticatedUser.getProjectInvitationQuota());
 		verify(persistence).persistOrUpdateUser(authenticatedUser);
 	}
@@ -216,23 +200,23 @@ public class AuthorizationManagerTest {
 		when(authenticationManager.findUserByEmail(mail)).thenReturn(UserTestUtils.createUser(mail));
 
 		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(PROJECT_ID, mail, false);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorize(projectId, mail, false);
 		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
 	}
 
 	@Test(expected = AuthorizationException.class)
 	public void assureProjectAccessAuthorizationShouldFailWhenUserIsNotAuthorized() throws Exception {
-		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID)).thenReturn(null);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureProjectAccessAuthorization(PROJECT_ID);
-		verify(persistence).retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID);
+		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), projectId)).thenReturn(null);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureProjectAccessAuthorization(projectId);
+		verify(persistence).retrieveProjectAuthorization(authenticatedUser.getId(), projectId);
 	}
 
 	@Test
 	public void assureProjectAccessAuthorizationShouldSucceedWhenUserIsAuthorized() throws Exception {
-		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID)).thenReturn(
+		when(persistence.retrieveProjectAuthorization(authenticatedUser.getId(), projectId)).thenReturn(
 				new ProjectAuthorization(authenticatedUser.getId(), new UUID()));
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureProjectAccessAuthorization(PROJECT_ID);
-		verify(persistence).retrieveProjectAuthorization(authenticatedUser.getId(), PROJECT_ID);
+		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).assureProjectAccessAuthorization(projectId);
+		verify(persistence).retrieveProjectAuthorization(authenticatedUser.getId(), projectId);
 	}
 
 	@Test
@@ -246,8 +230,8 @@ public class AuthorizationManagerTest {
 
 		when(persistence.retrieveProjectAuthorizations(authenticatedUser.getId())).thenReturn(authorizations);
 
-		final List<ProjectRepresentation> projects = AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory)
-				.listAuthorizedProjects(new UserRepresentation(authenticatedUser.getId()));
+		final List<ProjectRepresentation> projects = create(persistence, authenticationManager, mailFactory)
+				.listAuthorizedProjects(authenticatedUser.getId());
 
 		assertEquals(projects.size(), authorizations.size());
 		for (final ProjectAuthorization auth : authorizations) {
@@ -260,12 +244,11 @@ public class AuthorizationManagerTest {
 	@Test
 	public void listAuthorizedProjectsReturnsOnlyAuthorizedProjects02() throws Exception {
 
-		ProjectTestUtils.createAuthorizations(3, UserTestUtils.createUser());
+		ProjectTestUtils.createAuthorizations(3, createUser());
 		when(persistence.retrieveProjectAuthorizations(authenticatedUser.getId())).thenReturn(new ArrayList<ProjectAuthorization>());
 
-		final List<ProjectRepresentation> projects = AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory)
-				.listAuthorizedProjects(
-						new UserRepresentation(authenticatedUser.getId()));
+		final List<ProjectRepresentation> projects = create(persistence, authenticationManager, mailFactory)
+				.listAuthorizedProjects(authenticatedUser.getId());
 
 		assertEquals(0, projects.size());
 
@@ -274,8 +257,8 @@ public class AuthorizationManagerTest {
 
 	@Test
 	public void authorizeAdminShouldCreateNewAuthorizationWithAdminCredentials() throws Exception {
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).authorizeAdmin(new ProjectRepresentation(PROJECT_ID, ""));
-		verify(persistence).authorize(DefaultAuthenticationCredentials.USER_EMAIL, PROJECT_ID);
+		create(persistence, authenticationManager, mailFactory).authorizeAdmin(project);
+		verify(persistence).authorize(DefaultAuthenticationCredentials.USER_EMAIL, projectId);
 	}
 
 	@Test
@@ -283,8 +266,7 @@ public class AuthorizationManagerTest {
 			PersistenceException, NoResultFoundException {
 		final String mail = authenticatedUser.getEmail();
 		authenticatedUser.setProjectInvitationQuota(0);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail,
-				new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser.getId());
 	}
 
 	@Test
@@ -292,8 +274,7 @@ public class AuthorizationManagerTest {
 			PersistenceException, NoResultFoundException {
 		final String mail = "user@mail.com";
 		authenticatedUser.setProjectInvitationQuota(1);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail,
-				new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser.getId());
 	}
 
 	@Test(expected = UnableToAuthorizeUserException.class)
@@ -301,8 +282,7 @@ public class AuthorizationManagerTest {
 			NoResultFoundException {
 		final String mail = "user@mail.com";
 		authenticatedUser.setProjectInvitationQuota(0);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail,
-				new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser.getId());
 	}
 
 	@Test
@@ -310,8 +290,7 @@ public class AuthorizationManagerTest {
 			PersistenceException, NoResultFoundException {
 		final String mail = "user@mail.com";
 		authenticatedUser.setProjectInvitationQuota(2);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail,
-				new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory).validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser.getId());
 		Assert.assertEquals(1, authenticatedUser.getProjectInvitationQuota());
 	}
 
@@ -319,26 +298,22 @@ public class AuthorizationManagerTest {
 	public void validateAndUpdateUserUserInvitaionQuotaShouldNotifyUserInformationChangeWhenSucceed() throws PersistenceException,
 			UnableToAuthorizeUserException, NoResultFoundException {
 		final String mail = "user@mail.com";
-		final MulticastService multicastService = mock(MulticastService.class);
 
 		authenticatedUser.setProjectInvitationQuota(1);
 
 		final ArgumentCaptor<UserInformationChangeEvent> captor = ArgumentCaptor.forClass(UserInformationChangeEvent.class);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
-				.validateAndUpdateUserUserInvitaionQuota(mail, new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory, multicastService).validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser.getId());
 		verify(multicastService).multicastToUser(captor.capture(), eq(authenticatedUser));
-		assertEquals(authenticatedUser.getEmail(), captor.getValue().getUserEmail());
+		assertEquals(authenticatedUser.getId(), captor.getValue().getUserId());
 	}
 
 	@Test
 	public void validateAndUpdateUserUserInvitaionQuotaShouldNotNotifyUserInformationChangeWhenFailed() {
-		final MulticastService multicastService = mock(MulticastService.class);
 		final String mail = "user@mail.com";
 
 		authenticatedUser.setProjectInvitationQuota(0);
 		try {
-			AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
-					.validateAndUpdateUserUserInvitaionQuota(mail, new UserRepresentation(authenticatedUser.getId()));
+			create(persistence, authenticationManager, mailFactory, multicastService).validateAndUpdateUserUserInvitaionQuota(mail, authenticatedUser.getId());
 		}
 		catch (final Exception e) {}
 		verify(multicastService, times(0)).multicastToUser(new UserInformationChangeEvent(authenticatedUser), authenticatedUser);
@@ -347,46 +322,123 @@ public class AuthorizationManagerTest {
 	@Test
 	public void validateAndUpdateUserProjectCreationQuotaShouldSucceedIfUserHasQuota() throws PersistenceException, AuthorizationException {
 		authenticatedUser.setProjectCreationQuota(1);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(
-				new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 	}
 
 	@Test(expected = AuthorizationException.class)
 	public void validateAndUpdateUserProjectCreationQuotaShouldThrowExceptionIfUserHasNoQuota() throws AuthorizationException, PersistenceException {
 		authenticatedUser.setProjectCreationQuota(0);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(
-				new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 	}
 
 	@Test
 	public void validateAndUpdateUserProjectCreationQuotaShouldUpdateQuota() throws AuthorizationException, PersistenceException {
 		authenticatedUser.setProjectCreationQuota(2);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(
-				new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 		Assert.assertEquals(1, authenticatedUser.getProjectCreationQuota());
 	}
 
 	@Test
 	public void validateAndUpdateUserProjectCreationQuotaShouldNotifyUserInformationChangeWhenSucceed() throws PersistenceException, AuthorizationException {
-		final MulticastService multicastService = mock(MulticastService.class);
 		authenticatedUser.setProjectCreationQuota(1);
 		final ArgumentCaptor<UserInformationChangeEvent> captor = ArgumentCaptor.forClass(UserInformationChangeEvent.class);
-		AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
-				.validateAndUpdateUserProjectCreationQuota(new UserRepresentation(authenticatedUser.getId()));
+		create(persistence, authenticationManager, mailFactory, multicastService).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 		verify(multicastService).multicastToUser(captor.capture(), eq(authenticatedUser));
 		assertEquals(authenticatedUser.getProjectCreationQuota(), captor.getValue().getProjectCreationQuota());
 	}
 
 	@Test
 	public void validateAndUpdateUserProjectCreationQuotaShouldNotNotifyUserInformationChangeWhenFailed() throws PersistenceException, AuthorizationException {
-		final MulticastService multicastService = mock(MulticastService.class);
 		authenticatedUser.setProjectCreationQuota(0);
 		try {
-			AuthorizationManagerImplTestUtils.create(persistence, authenticationManager, mailFactory, multicastService)
-					.validateAndUpdateUserProjectCreationQuota(new UserRepresentation(authenticatedUser.getId()));
+			create(persistence, authenticationManager, mailFactory, multicastService).validateAndUpdateUserProjectCreationQuota(authenticatedUser);
 		}
 		catch (final Exception e) {}
 		verify(multicastService, times(0)).multicastToUser(new UserInformationChangeEvent(authenticatedUser), authenticatedUser);
 	}
 
+	@Test
+	public void shouldRemoveTheAuthorizationFromPersistenceWhenRequested() throws Exception {
+		final AuthorizationManager manager = create(persistence, authenticationManager, mailFactory, multicastService);
+		manager.removeAuthorization(projectId, authenticatedUser.getId());
+		final ArgumentCaptor<ProjectAuthorization> captor = ArgumentCaptor.forClass(ProjectAuthorization.class);
+		verify(persistence).remove(captor.capture());
+
+		final ProjectAuthorization authorization = captor.getValue();
+		assertEquals(projectId, authorization.getProjectId());
+		assertEquals(authenticatedUser.getId(), authorization.getUserId());
+	}
+
+	@Test(expected = UnableToRemoveAuthorizationException.class)
+	public void shouldNotBeAbleToRemoveAuthorizationWhenThereIsNoAuthorization() throws Exception {
+		final AuthorizationManager manager = create(persistence, authenticationManager, mailFactory, multicastService);
+		when(persistence.retrieveProjectRepresentation(Mockito.any(UUID.class))).thenReturn(ProjectTestUtils.createRepresentation());
+
+		manager.removeAuthorization(admin.getId(), new UUID());
+	}
+
+	@Test
+	public void authorizeShouldNotifyAProjectAddition() throws Exception {
+		final User user = createUser();
+		final ProjectRepresentation project = createProjectRepresentation();
+
+		final AuthorizationManager manager = create(persistence, authenticationManager, mailFactory, multicastService);
+		manager.authorize(project.getId(), user.getEmail(), false);
+
+		final ArgumentCaptor<ProjectAddedEvent> captor = ArgumentCaptor.forClass(ProjectAddedEvent.class);
+		verify(multicastService, times(1)).multicastToUser(captor.capture(), eq(user));
+
+		final ProjectAddedEvent createdProject = captor.getValue();
+		assertEquals(project, createdProject.getProjectRepresentation());
+	}
+
+	@Test
+	public void removeAuthorizationShouldNotifyAProjectRemotion() throws Exception {
+		final User user = createUser();
+		final ProjectRepresentation project = createProjectRepresentation();
+		authorizeUser(user, project.getId());
+
+		final AuthorizationManager manager = create(persistence, authenticationManager, mailFactory, multicastService);
+		manager.removeAuthorization(project.getId(), user.getId());
+
+		final ArgumentCaptor<ProjectRemovedEvent> captor = ArgumentCaptor.forClass(ProjectRemovedEvent.class);
+		verify(multicastService, times(1)).multicastToUser(captor.capture(), eq(user));
+
+		final ProjectRemovedEvent createdProject = captor.getValue();
+		assertEquals(project, createdProject.getProjectRepresentation());
+	}
+
+	private ProjectRepresentation createProjectRepresentation() throws PersistenceException, NoResultFoundException {
+		final ProjectRepresentation project = ProjectTestUtils.createRepresentation();
+		when(persistence.retrieveProjectRepresentation(project.getId())).thenReturn(project);
+		return project;
+	}
+
+	private User createUser() throws Exception {
+		return persist(UserTestUtils.createUser());
+	}
+
+	private User persist(final User user) throws Exception {
+		when(persistence.retrieveUserByEmail(user.getEmail())).thenReturn(user);
+		when(persistence.retrieveUserById(user.getId())).thenReturn(user);
+		when(authenticationManager.findUserByEmail(user.getEmail())).thenReturn(user);
+		return user;
+	}
+
+	private void configureToRetrieveAdmin() throws NoResultFoundException, PersistenceException, UserNotFoundException {
+		when(authenticationManager.findUserByEmail(authenticatedUser.getEmail())).thenReturn(authenticatedUser);
+		when(authenticationManager.isUserAuthenticated()).thenReturn(true);
+	}
+
+	private void configureToRetrieveSnapshot(final ProjectRepresentation project) throws Exception {
+		final ProjectSnapshot snapshot = mock(ProjectSnapshot.class);
+		when(persistence.retrieveProjectSnapshot(project.getId())).thenReturn(snapshot);
+		when(snapshot.getProject()).thenReturn(ProjectTestUtils.createProject(project));
+	}
+
+	private void authorizeUser(final User user, final UUID projectId) throws PersistenceException, NoResultFoundException {
+		when(authenticationManager.getAuthenticatedUser()).thenReturn(user);
+		final ProjectAuthorization authorization = ProjectTestUtils.createAuthorization(user, projectId);
+		when(persistence.retrieveProjectAuthorization(user.getId(), projectId)).thenReturn(authorization);
+	}
 }

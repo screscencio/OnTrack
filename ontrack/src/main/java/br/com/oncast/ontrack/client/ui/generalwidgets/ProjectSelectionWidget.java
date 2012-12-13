@@ -110,7 +110,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 
 			@Override
 			public CommandMenuItem createCustomItem(final String inputText) {
-				final int projectCreationQuota = SERVICE_PROVIDER.getAuthenticationService().getCurrentUser().getProjectCreationQuota();
+				final int projectCreationQuota = SERVICE_PROVIDER.getAuthenticationService().getProjectCreationQuota();
 				if (projectCreationQuota > 0) return createProjectCreationItem(inputText, projectCreationQuota);
 				else return getProjectCreationQuotaRequisitionItem();
 			}

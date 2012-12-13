@@ -1,13 +1,14 @@
 package br.com.oncast.ontrack.shared.services.authentication;
 
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 public class UserInformationChangeEvent implements ServerPushEvent {
 
 	private static final long serialVersionUID = 1L;
 
-	private String email;
+	private UUID id;
 
 	private int projectInvitationQuota;
 
@@ -17,13 +18,13 @@ public class UserInformationChangeEvent implements ServerPushEvent {
 	protected UserInformationChangeEvent() {}
 
 	public UserInformationChangeEvent(final User user) {
-		email = user.getEmail();
+		id = user.getId();
 		projectCreationQuota = user.getProjectCreationQuota();
 		projectInvitationQuota = user.getProjectInvitationQuota();
 	}
 
-	public String getUserEmail() {
-		return email;
+	public UUID getUserId() {
+		return id;
 	}
 
 	public int getProjectInvitationQuota() {

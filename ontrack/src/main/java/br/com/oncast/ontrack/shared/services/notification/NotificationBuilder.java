@@ -3,7 +3,6 @@ package br.com.oncast.ontrack.shared.services.notification;
 import java.util.Date;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class NotificationBuilder {
@@ -21,8 +20,8 @@ public class NotificationBuilder {
 		notification.setReferenceDescription("");
 	}
 
-	public NotificationBuilder addReceipient(final UserRepresentation receipient) {
-		notification.addReceipient(new NotificationRecipient(receipient));
+	public NotificationBuilder addReceipient(final UUID userId) {
+		notification.addReceipient(new NotificationRecipient(userId));
 		return this;
 	}
 

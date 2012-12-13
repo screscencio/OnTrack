@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.client.services.serverPush.atmosphere.OntrackAtmosp
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 
 public class ServerPushClientServiceImpl implements ServerPushClientService {
@@ -66,11 +67,19 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	}
 
 	@Override
-	public <T extends ServerPushEvent> void registerServerEventHandler(final Class<T> eventClass, final ServerPushEventHandler<T> serverPushEventHandler) {
+	public <T extends ServerPushEvent> HandlerRegistration registerServerEventHandler(final Class<T> eventClass,
+			final ServerPushEventHandler<T> serverPushEventHandler) {
 		if (!eventHandlersMap.containsKey(eventClass)) eventHandlersMap.put(eventClass, new ArrayList<ServerPushEventHandler<?>>());
 
 		final List<ServerPushEventHandler<?>> handlerList = eventHandlersMap.get(eventClass);
 		handlerList.add(serverPushEventHandler);
+
+		return new HandlerRegistration() {
+			@Override
+			public void removeHandler() {
+				handlerList.remove(serverPushEventHandler);
+			}
+		};
 	}
 
 	private void processIncommingEvent(final ServerPushEvent event) {

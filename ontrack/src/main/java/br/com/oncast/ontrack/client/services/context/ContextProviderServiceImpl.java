@@ -77,7 +77,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	@Override
 	public boolean isContextAvailable(final UUID projectId) {
-		return (projectContext != null) && (projectContext.getProjectRepresentation().getId().equals(projectId));
+		return (projectContext != null) && (projectContext.equals(projectId));
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	@Override
-	public ProjectContext getCurrentProjectContext() {
+	public ProjectContext getCurrent() {
 		if (projectContext == null) throw new RuntimeException("There is no project context avaliable.");
 		return projectContext;
 	}
@@ -119,10 +119,15 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	private UUID getCurrentProjectId() {
 		if (projectContext == null) return null;
 
-		return getCurrentProjectContext().getProjectRepresentation().getId();
+		return getCurrent().getProjectRepresentation().getId();
 	}
 
 	public interface ContextChangeListener {
 		void onProjectChanged(UUID projectId);
+	}
+
+	@Override
+	public void unloadProjectContext() {
+		setProjectContext(null);
 	}
 }

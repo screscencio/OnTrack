@@ -45,7 +45,7 @@ public class ClientApplicationStateServiceTest extends GwtTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		Mockito.when(contextProviderService.getCurrentProjectContext()).thenReturn(context);
+		Mockito.when(contextProviderService.getCurrent()).thenReturn(context);
 		Mockito.when(context.getProjectScope()).thenReturn(ScopeTestUtils.createScope());
 
 		service = new ClientApplicationStateServiceImpl(eventBus, contextProviderService, clientStorageService, alertingService, messages);

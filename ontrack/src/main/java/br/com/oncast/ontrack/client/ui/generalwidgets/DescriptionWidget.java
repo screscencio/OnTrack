@@ -80,7 +80,7 @@ public class DescriptionWidget extends Composite {
 	private void update() throws DescriptionNotFoundException {
 		label.setText(MESSAGES.descriptionOf() + " " + getCurrentTitle());
 		descriptionLabel.setText("");
-		final Description description = CONTEXT_PROVIDER_SERVICE.getCurrentProjectContext().findDescriptionFor(getCurrentId());
+		final Description description = CONTEXT_PROVIDER_SERVICE.getCurrent().findDescriptionFor(getCurrentId());
 		descriptionLabel.setText(description.getDescription());
 	}
 

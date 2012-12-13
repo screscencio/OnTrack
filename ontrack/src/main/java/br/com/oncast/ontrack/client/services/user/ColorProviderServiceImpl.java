@@ -76,7 +76,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 			@Override
 			public void onEvent(final UserSelectedScopeEvent event) {
 				try {
-					final ProjectContext context = contextProviderService.getCurrentProjectContext();
+					final ProjectContext context = contextProviderService.getCurrent();
 					final UserRepresentation member = context.findUser(event.getUserId());
 
 					removePreviousSelection(member);
@@ -96,7 +96,7 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 			@Override
 			public void onEvent(final UserClosedProjectEvent event) {
 				try {
-					final ProjectContext context = contextProviderService.getCurrentProjectContext();
+					final ProjectContext context = contextProviderService.getCurrent();
 					final UserRepresentation member = context.findUser(event.getUserId());
 					removePreviousSelection(member);
 				}

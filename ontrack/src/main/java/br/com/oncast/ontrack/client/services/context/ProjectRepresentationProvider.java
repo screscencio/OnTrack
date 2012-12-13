@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.services.context;
 
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -20,5 +21,7 @@ public interface ProjectRepresentationProvider {
 	void authorizeUser(String mail, ProjectAuthorizationCallback callback);
 
 	ProjectRepresentation getProjectRepresentation(UUID projectReference);
+
+	void unauthorizeUser(UserRepresentation user, ProjectAuthorizationCallback projectAuthorizationCallback);
 
 }

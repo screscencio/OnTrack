@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.mockito.Mockito;
 import org.reflections.Reflections;
 
+import br.com.oncast.ontrack.server.services.authentication.DefaultAuthenticationCredentials;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
@@ -28,9 +29,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.StringRepresentationSymbolsProvider;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 
 public class ActionTestUtils {
@@ -39,7 +38,7 @@ public class ActionTestUtils {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
 
 		for (final User user : requiredUsers) {
-			if (user != null) actions.add(new TeamInviteAction(new UserRepresentation(user.getId())));
+			if (user != null) actions.add(new TeamInviteAction(user.getId()));
 		}
 
 		final UUID rootScope = ProjectTestUtils.createProject().getProjectScope().getId();
@@ -102,7 +101,7 @@ public class ActionTestUtils {
 
 	public static List<ModelAction> createOneValidAction() {
 		final List<ModelAction> actions = new ArrayList<ModelAction>();
-		actions.add(new TeamInviteAction(UserRepresentationTestUtils.getAdmin()));
+		actions.add(new TeamInviteAction(DefaultAuthenticationCredentials.USER_ID));
 		return actions;
 	}
 

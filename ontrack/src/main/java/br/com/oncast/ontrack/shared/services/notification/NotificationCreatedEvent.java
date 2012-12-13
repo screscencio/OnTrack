@@ -17,4 +17,9 @@ public class NotificationCreatedEvent implements ServerPushEvent {
 	public Notification getNotification() {
 		return notification;
 	}
+
+	@Override
+	public String toString() {
+		return notification.toString();
+	}
 }

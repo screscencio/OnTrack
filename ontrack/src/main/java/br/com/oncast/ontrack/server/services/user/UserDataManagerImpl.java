@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.server.services.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
@@ -9,7 +10,6 @@ import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoun
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
 
@@ -31,7 +31,7 @@ public class UserDataManagerImpl implements UserDataManager {
 		try {
 			final User u = persistenceService.persistOrUpdateUser(user);
 
-			final List<ProjectRepresentation> listAuthorizedProjects = authorizationManager.listAuthorizedProjects(new UserRepresentation(user.getId()));
+			final List<ProjectRepresentation> listAuthorizedProjects = authorizationManager.listAuthorizedProjects(user.getId());
 
 			multicastService.multicastToAllProjectsInUserAuthorizationList(new UserDataUpdateEvent(user), listAuthorizedProjects);
 
@@ -44,17 +44,24 @@ public class UserDataManagerImpl implements UserDataManager {
 	}
 
 	@Override
-	public List<User> findAllUsersForProjectId(final UUID projectId) {
-		try {
-			final ProjectRepresentation projectRepresentation = persistenceService.retrieveProjectRepresentation(projectId);
-			return persistenceService.retrieveProjectUsers(projectRepresentation);
+	public List<User> retrieveUsers(final List<UUID> usersIds) {
+		final List<User> userList = new ArrayList<User>();
+		for (final UUID userId : usersIds) {
+			try {
+				userList.add(persistenceService.retrieveUserById(userId));
+			}
+			catch (final NoResultFoundException e) {
+				e.printStackTrace();
+			}
+			catch (final PersistenceException e) {
+				e.printStackTrace();
+			}
 		}
-		catch (final PersistenceException e) {
-			// throws another exception or just log?
-		}
-		catch (final NoResultFoundException e) {
-			// throws another exception or just log?
-		}
-		return null;
+		return userList;
+	}
+
+	@Override
+	public User retrieveUser(final UUID userId) throws NoResultFoundException, PersistenceException {
+		return persistenceService.retrieveUserById(userId);
 	}
 }

@@ -6,7 +6,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -87,17 +86,19 @@ public class MembersScopeSelectionServiceImplTest {
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		when(contextProviderService.getCurrentProjectContext()).thenReturn(currentContext);
+		when(contextProviderService.getCurrent()).thenReturn(currentContext);
 		when(colorPicker.pick()).thenReturn(new Color("#ffaaee"));
 
 		user1 = createUser();
 		scope1 = createScope();
 
 		final ArgumentCaptor<ServerPushEventHandler> userSelectedScopeEventHandlerCaptor = ArgumentCaptor.forClass(ServerPushEventHandler.class);
-		doNothing().when(serverPushClientService).registerServerEventHandler(eq(UserSelectedScopeEvent.class), userSelectedScopeEventHandlerCaptor.capture());
+		when(serverPushClientService.registerServerEventHandler(eq(UserSelectedScopeEvent.class), userSelectedScopeEventHandlerCaptor.capture())).thenReturn(
+				null);
 
 		final ArgumentCaptor<ServerPushEventHandler> userClosedProjectEventHandlerCaptor = ArgumentCaptor.forClass(ServerPushEventHandler.class);
-		doNothing().when(serverPushClientService).registerServerEventHandler(eq(UserClosedProjectEvent.class), userClosedProjectEventHandlerCaptor.capture());
+		when(serverPushClientService.registerServerEventHandler(eq(UserClosedProjectEvent.class), userClosedProjectEventHandlerCaptor.capture())).thenReturn(
+				null);
 
 		new ColorProviderServiceImpl(requestDispatchService, contextProviderService, serverPushClientService,
 				eventBus, usersStatusServiceImpl, colorPicker);

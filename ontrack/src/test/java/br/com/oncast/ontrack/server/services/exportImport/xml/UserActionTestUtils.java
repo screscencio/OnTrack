@@ -68,7 +68,6 @@ import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
@@ -93,7 +92,7 @@ public class UserActionTestUtils {
 		for (final User user : userList) {
 			final Password password = new Password();
 			password.setUserId(user.getId());
-			password.setPassword("password" + user.getId().toStringRepresentation());
+			password.setPassword("password" + user.getId().toString());
 			passwords.add(password);
 		}
 		return passwords;
@@ -256,7 +255,7 @@ public class UserActionTestUtils {
 	}
 
 	public static UserAction createTeamInviteAction() throws Exception {
-		return createUserAction(new TeamInviteAction(UserRepresentationTestUtils.createUser()));
+		return createUserAction(new TeamInviteAction(new UUID()));
 	}
 
 	public static UserAction createImpedimentCreateAction() throws Exception {

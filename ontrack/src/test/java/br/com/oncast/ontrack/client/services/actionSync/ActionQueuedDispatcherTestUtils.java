@@ -20,7 +20,8 @@ import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
-import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
+
+import com.google.gwt.event.shared.HandlerRegistration;
 
 public class ActionQueuedDispatcherTestUtils {
 
@@ -39,7 +40,7 @@ public class ActionQueuedDispatcherTestUtils {
 		return multicastService = new MulticastService() {
 
 			@Override
-			public void multicastToUser(final ServerPushEvent event, final User authenticatedUser) {}
+			public void multicastToUser(final ServerPushEvent event, final User user) {}
 
 			@Override
 			public void multicastToUsers(final ServerPushEvent event, final List<User> recipients) {}
@@ -55,7 +56,7 @@ public class ActionQueuedDispatcherTestUtils {
 			}
 
 			@Override
-			public void multicastToAllProjectsInUserAuthorizationList(final UserDataUpdateEvent event, final List<ProjectRepresentation> projectsList) {}
+			public void multicastToAllProjectsInUserAuthorizationList(final ServerPushEvent event, final List<ProjectRepresentation> projectsList) {}
 
 			@Override
 			public void multicastToAllUsersInSpecificProject(final ServerPushEvent event, final UUID projectId) {}
@@ -108,11 +109,18 @@ public class ActionQueuedDispatcherTestUtils {
 		private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 
 		@Override
-		public <T extends ServerPushEvent> void registerServerEventHandler(final Class<T> eventClass, final ServerPushEventHandler<T> serverPushEventHandler) {
+		public <T extends ServerPushEvent> HandlerRegistration registerServerEventHandler(final Class<T> eventClass,
+				final ServerPushEventHandler<T> serverPushEventHandler) {
 			if (!eventHandlersMap.containsKey(eventClass)) eventHandlersMap.put(eventClass, new ArrayList<ServerPushEventHandler<?>>());
 
 			final List<ServerPushEventHandler<?>> handlerList = eventHandlersMap.get(eventClass);
 			handlerList.add(serverPushEventHandler);
+			return new HandlerRegistration() {
+				@Override
+				public void removeHandler() {
+					handlerList.remove(serverPushEventHandler);
+				}
+			};
 		}
 
 		public void processIncommingEvent(final ServerPushEvent event) {

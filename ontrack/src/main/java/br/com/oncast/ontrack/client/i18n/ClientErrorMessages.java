@@ -34,10 +34,6 @@ public interface ClientErrorMessages extends BaseMessages {
 	@DefaultMessage("The user ''{0}'' was not found")
 	String userNotFound(String userEmail);
 
-	@Description("message shown when the invited user accepts the invitation.")
-	@DefaultMessage("The User ''{0}'' accepted the invitaton for this project")
-	String acceptedInvitation(String userEmail);
-
 	@Description("message shown when the user tries to show details and the given id was not found in the model.")
 	@DefaultMessage("It was not possible to show details: The referenced entity does not exist")
 	String errorShowingDetails();
@@ -49,5 +45,9 @@ public interface ClientErrorMessages extends BaseMessages {
 	@Description("message shown when the user tries to show planning with a selected scope and the given id was not found.")
 	@DefaultMessage("It was not possible to select the requested scope: It does not exist")
 	String errorSelectingScope();
+
+	@Description("message shown when the authorization for the current project is removed")
+	@DefaultMessage("Your authorization for the project ''{0}'' were revogued")
+	String authorizationRevogued(String projectName);
 
 }

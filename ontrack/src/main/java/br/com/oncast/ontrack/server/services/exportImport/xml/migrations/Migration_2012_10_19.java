@@ -33,7 +33,7 @@ public class Migration_2012_10_19 extends Migration {
 
 	static {
 		emailMap = new HashMap<String, String>();
-		emailMap.put(DefaultAuthenticationCredentials.USER_EMAIL, DefaultAuthenticationCredentials.USER_ID.toStringRepresentation());
+		emailMap.put(DefaultAuthenticationCredentials.USER_EMAIL, DefaultAuthenticationCredentials.USER_ID.toString());
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class Migration_2012_10_19 extends Migration {
 	private void replaceLongForUUID() {
 		for (final Element user : getElements("//user")) {
 			final String email = user.attributeValue("email");
-			if (!emailMap.containsKey(email)) emailMap.put(email, new UUID().toStringRepresentation());
+			if (!emailMap.containsKey(email)) emailMap.put(email, new UUID().toString());
 
 			final String newId = emailMap.get(email);
 

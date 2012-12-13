@@ -35,6 +35,20 @@ public class ProjectTestUtils {
 		return project;
 	}
 
+	private static Project createProject(final Scope scope, final Release release, final Set<UserRepresentation> userList) {
+		return createProject(getDefaultRepresentation(), scope, release, userList);
+	}
+
+	public static Project createProject(final ProjectRepresentation projectRepresentation) {
+		return createProject(projectRepresentation, getDefaultScope(), getDefaultRelease());
+	}
+
+	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release) {
+		final HashSet<UserRepresentation> userList = new HashSet<UserRepresentation>();
+		userList.add(UserRepresentationTestUtils.getAdmin());
+		return createProject(projectRepresentation, scope, release, userList);
+	}
+
 	public static ProjectContext createProjectContext() {
 		return new ProjectContext(createProject());
 	}
@@ -77,11 +91,19 @@ public class ProjectTestUtils {
 	}
 
 	public static ProjectAuthorization createAuthorization() throws Exception {
-		return new ProjectAuthorization(UserTestUtils.createUser(), createRepresentation());
+		return createAuthorization(UserTestUtils.createUser());
 	}
 
 	public static ProjectAuthorization createAuthorization(final User user) {
-		return new ProjectAuthorization(user, createRepresentation());
+		return createAuthorization(user, createRepresentation());
+	}
+
+	public static ProjectAuthorization createAuthorization(final User user, final UUID projectId) {
+		return createAuthorization(user, createRepresentation(projectId));
+	}
+
+	private static ProjectAuthorization createAuthorization(final User user, final ProjectRepresentation projectRepresentation) {
+		return new ProjectAuthorization(user, projectRepresentation);
 	}
 
 	public static List<ProjectAuthorization> createAuthorizations(final int numberOfAuthorizations, final User user) {
@@ -115,13 +137,4 @@ public class ProjectTestUtils {
 		return new ProjectContext(createProject(scope, release, userList));
 	}
 
-	private static Project createProject(final Scope scope, final Release release, final Set<UserRepresentation> userList) {
-		return createProject(getDefaultRepresentation(), scope, release, userList);
-	}
-
-	public static Project createProject(final ProjectRepresentation projectRepresentation, final Scope scope, final Release release) {
-		final HashSet<UserRepresentation> userList = new HashSet<UserRepresentation>();
-		userList.add(UserRepresentationTestUtils.getAdmin());
-		return createProject(projectRepresentation, scope, release, userList);
-	}
 }

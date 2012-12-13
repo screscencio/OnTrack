@@ -52,6 +52,18 @@ public enum NotificationType implements NotificationMessageCode {
 					notification.getReferenceDescription(),
 					getProjectLinkFor(notification));
 		}
+	},
+	TEAM_INVITED {
+		@Override
+		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
+			return messages.teamInvitedNotificationWidgetMessage(notification.getReferenceDescription());
+		}
+	},
+	TEAM_REMOVED {
+		@Override
+		public String selectMessage(final NotificationWidgetMessages messages, final Notification notification) {
+			return messages.teamRemovedNotificationWidgetMessage(notification.getReferenceDescription());
+		}
 	};
 
 	@Override

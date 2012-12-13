@@ -29,7 +29,7 @@ public class UploadResponseFactory {
 		final UploadResponse response = bean.as();
 		response.setMessage(UploadMessageCode.UPLOAD_COMPLETE);
 		response.setStatus(SUCCESS);
-		response.setFileId(fileRepresentation.getId().toStringRepresentation());
+		response.setFileId(fileRepresentation.getId().toString());
 		return AutoBeanCodex.encode(bean).getPayload();
 	}
 }

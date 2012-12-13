@@ -39,7 +39,7 @@ public class ApplicationSubmenu extends Composite implements HasCloseHandlers<Ap
 
 	}
 
-	public void addItem(final String string, final Command command) {
+	public MenuItem addItem(final String string, final Command command) {
 		final MenuItem menuItem = new MenuItem(string, new Command() {
 
 			@Override
@@ -50,6 +50,7 @@ public class ApplicationSubmenu extends Composite implements HasCloseHandlers<Ap
 		});
 		menuItem.setStyleName(style.menuItem());
 		submenu.addItem(menuItem);
+		return menuItem;
 	}
 
 	@Override

@@ -13,15 +13,20 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.context.NewProjectCreatedEventHandler;
-import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectAddedEventHandler;
+import br.com.oncast.ontrack.shared.services.context.ProjectRemovedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectRemovedEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
+import br.com.oncast.ontrack.shared.services.requestDispatch.RemoveProjectAuthorizationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.RemoveProjectAuthorizationResponse;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
@@ -63,13 +68,24 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			}
 		});
 
-		serverPushClientService.registerServerEventHandler(ProjectCreatedEvent.class, new NewProjectCreatedEventHandler() {
+		serverPushClientService.registerServerEventHandler(ProjectAddedEvent.class, new ProjectAddedEventHandler() {
 
 			@Override
-			public void onEvent(final ProjectCreatedEvent event) {
-				final ProjectRepresentation newProjectRepresentation = event.getProjectRepresentation();
-				if (availableProjectRepresentations.contains(newProjectRepresentation)) return;
-				availableProjectRepresentations.add(newProjectRepresentation);
+			public void onEvent(final ProjectAddedEvent event) {
+				final ProjectRepresentation projectRepresentation = event.getProjectRepresentation();
+				if (availableProjectRepresentations.contains(projectRepresentation)) return;
+				availableProjectRepresentations.add(projectRepresentation);
+				notifyProjectListContentChange();
+			}
+		});
+
+		serverPushClientService.registerServerEventHandler(ProjectRemovedEvent.class, new ProjectRemovedEventHandler() {
+			@Override
+			public void onEvent(final ProjectRemovedEvent event) {
+				final ProjectRepresentation projectRepresentation = event.getProjectRepresentation();
+				if (!availableProjectRepresentations.contains(projectRepresentation)) return;
+				availableProjectRepresentations.remove(projectRepresentation);
+				alertingService.showWarning(messages.authorizationRevogued(projectRepresentation.getName()));
 				notifyProjectListContentChange();
 			}
 		});
@@ -78,14 +94,12 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	}
 
 	private void updateAvailableProjectRepresentations() {
-		System.out.println("updateAvailableProjectRepresentations()");
 		dispatchService.dispatch(new ProjectListRequest(), new DispatchCallback<ProjectListResponse>() {
 
 			@Override
 			public void onSuccess(final ProjectListResponse response) {
 				availableProjectRepresentations.clear();
 				availableProjectRepresentations.addAll(response.getProjectList());
-				System.out.println("availableProjectRepresentations.addAll: " + response.getProjectList().size());
 				projectListAvailability = true;
 
 				notifyProjectListChange();
@@ -198,9 +212,7 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 
 	@Override
 	public ProjectRepresentation getProjectRepresentation(final UUID projectId) {
-		System.out.println("getProjectRepresentation: " + projectId.toStringRepresentation());
 		for (final ProjectRepresentation projectRepresentation : availableProjectRepresentations) {
-			System.out.println(projectRepresentation.getId());
 			if (projectRepresentation.getId().equals(projectId)) return projectRepresentation;
 		}
 		throw new RuntimeException("Project representation not available.");
@@ -209,6 +221,25 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 	@Override
 	public boolean hasAvailableProjectRepresentation() {
 		return currentProjectRepresentation != null;
+	}
+
+	@Override
+	public void unauthorizeUser(final UserRepresentation user, final ProjectAuthorizationCallback callback) {
+		dispatchService.dispatch(new RemoveProjectAuthorizationRequest(currentProjectRepresentation.getId(), user.getId()),
+				new DispatchCallback<RemoveProjectAuthorizationResponse>() {
+					@Override
+					public void onSuccess(final RemoveProjectAuthorizationResponse result) {
+						callback.onSuccess();
+					}
+
+					@Override
+					public void onTreatedFailure(final Throwable caught) {}
+
+					@Override
+					public void onUntreatedFailure(final Throwable caught) {
+						callback.onFailure(caught);
+					}
+				});
 	}
 
 }

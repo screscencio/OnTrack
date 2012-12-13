@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.place.shared.Place;
 
@@ -16,7 +16,7 @@ public interface AuthenticationService {
 
 	void unregisterUserAuthenticatedListener(UserAuthenticationListener listener);
 
-	User getCurrentUser();
+	UUID getCurrentUserId();
 
 	void loadCurrentUserInformation(UserInformationLoadCallback userInformationLoadCallback);
 
@@ -27,4 +27,8 @@ public interface AuthenticationService {
 	void onUserLogout();
 
 	void onUserLoginRequired(Place destinationPlace);
+
+	int getProjectCreationQuota();
+
+	int getProjectInvitationQuota();
 }

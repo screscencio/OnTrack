@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class InsertChildInternalAction implements TwoStepInternalAction {
 
@@ -26,9 +25,7 @@ public class InsertChildInternalAction implements TwoStepInternalAction {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 		selectedTreeItem.setState(true);
 
-		final UserRepresentation user = new UserRepresentation(ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser().getId());
-
-		newTreeItem = new ScopeTreeItem(new Scope("", user, new Date()));
+		newTreeItem = new ScopeTreeItem(new Scope("", ClientServiceProvider.getCurrentUser(), new Date()));
 
 		selectedTreeItem.addItem(newTreeItem);
 		if (!selectedTreeItem.getState()) selectedTreeItem.setState(true, false);

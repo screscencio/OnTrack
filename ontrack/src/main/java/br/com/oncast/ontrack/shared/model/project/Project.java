@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.shared.model.project;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,9 @@ import br.com.oncast.ontrack.shared.model.tags.HasTags;
 import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.tags.TagType;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
@@ -27,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.SetMultimap;
 
-public class Project implements Serializable {
+public class Project implements Serializable, HasUUID {
 
 	private static final long serialVersionUID = 1L;
 
@@ -154,27 +157,6 @@ public class Project implements Serializable {
 		return checklistMap.remove(subjectId, checklist);
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((projectRepresentation == null) ? 0 : projectRepresentation.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		final Project other = (Project) obj;
-		if (projectRepresentation == null) {
-			if (other.projectRepresentation != null) return false;
-		}
-		else if (!projectRepresentation.equals(other.projectRepresentation)) return false;
-		return true;
-	}
-
 	public void removeUser(final UserRepresentation user) {
 		users.remove(user);
 	}
@@ -240,4 +222,31 @@ public class Project implements Serializable {
 	public boolean removeDescriptionFor(final UUID subjectId) {
 		return descriptionMap.remove(subjectId) != null;
 	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Tag> List<T> getTagsList(final TagType tagType) {
+		final List<T> tagList = new ArrayList<T>();
+
+		for (final SetMultimap<TagType, Tag> setMultimap : tagsMap.values()) {
+			tagList.addAll((Collection<T>) setMultimap.get(tagType));
+		}
+
+		return tagList;
+	}
+
+	@Override
+	public UUID getId() {
+		return projectRepresentation.getId();
+	}
+
+	@Override
+	public int hashCode() {
+		return UUIDUtils.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return UUIDUtils.equals(this, obj);
+	}
+
 }

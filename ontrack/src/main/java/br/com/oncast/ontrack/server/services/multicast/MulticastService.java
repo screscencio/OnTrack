@@ -6,11 +6,10 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
-import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
 
 public interface MulticastService {
 
-	void multicastToUser(ServerPushEvent event, User authenticatedUser);
+	void multicastToUser(ServerPushEvent event, User user);
 
 	void multicastToUsers(ServerPushEvent event, List<User> recipients);
 
@@ -18,7 +17,7 @@ public interface MulticastService {
 
 	void multicastToAllUsersButCurrentUserClientInSpecificProject(ServerPushEvent event, UUID projectId);
 
-	void multicastToAllProjectsInUserAuthorizationList(UserDataUpdateEvent event, List<ProjectRepresentation> projectsList);
+	void multicastToAllProjectsInUserAuthorizationList(ServerPushEvent event, List<ProjectRepresentation> projectsList);
 
 	void multicastToAllUsersInSpecificProject(ServerPushEvent event, UUID projectId);
 }

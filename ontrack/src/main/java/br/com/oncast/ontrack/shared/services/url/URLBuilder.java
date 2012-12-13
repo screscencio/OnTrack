@@ -28,7 +28,7 @@ public class URLBuilder {
 	public static String buildMindMapExportURL(final UUID uuid) {
 		return Window.Location.createUrlBuilder()
 				.setPath(EXPORT_TO_MINDMAP_APPLICATION_SERVLET_URL)
-				.setParameter(Parameter.PROJECT_ID.getName(), uuid.toStringRepresentation())
+				.setParameter(Parameter.PROJECT_ID.getName(), uuid.toString())
 				.buildString();
 	}
 }

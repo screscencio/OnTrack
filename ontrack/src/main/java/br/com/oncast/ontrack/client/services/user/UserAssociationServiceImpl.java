@@ -24,7 +24,7 @@ public class UserAssociationServiceImpl implements UserAssociationService {
 	@Override
 	public List<UserRepresentation> getAssociatedUsers(final Scope scope) {
 		final List<UserRepresentation> users = new ArrayList<UserRepresentation>();
-		final List<UserAssociationTag> tags = contextProviderService.getCurrentProjectContext().getTags(scope, UserAssociationTag.getType());
+		final List<UserAssociationTag> tags = contextProviderService.getCurrent().getTags(scope, UserAssociationTag.getType());
 		for (final UserAssociationTag tag : tags) {
 			users.add(tag.getUser());
 		}

@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationRecipient;
 
 public class NotificationClientUtils {
 
 	public static NotificationRecipient getRecipientForCurrentUser(final Notification notification) {
-		final User currentUser = ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUser();
+		final UserRepresentation currentUser = ClientServiceProvider.getCurrentUser();
 		if (currentUser == null) throw new RuntimeException("There is no user logged in.");
-		return notification.getRecipient(currentUser);
+		return notification.getRecipient(currentUser.getId());
 	}
 
 	public static List<Notification> getUnreadNotificationsForCurrentUser(final List<Notification> notifications) {

@@ -33,8 +33,8 @@ public class ProjectAuthorization {
 	}
 
 	public ProjectAuthorization(final UUID userId, final UUID projectId) {
-		this.userId = userId.toStringRepresentation();
-		this.projectId = projectId.toStringRepresentation();
+		this.userId = userId.toString();
+		this.projectId = projectId.toString();
 	}
 
 	public long getId() {

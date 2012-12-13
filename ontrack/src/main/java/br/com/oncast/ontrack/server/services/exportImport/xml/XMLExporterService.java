@@ -127,7 +127,7 @@ public class XMLExporterService {
 
 	public void listProjects(final OutputStream out) throws PersistenceException, IOException {
 		for (final ProjectRepresentation representation : persistanceService.retrieveAllProjectRepresentations()) {
-			out.write(representation.getId().toStringRepresentation().getBytes());
+			out.write(representation.getId().toString().getBytes());
 			out.write(",".getBytes());
 		}
 		out.flush();

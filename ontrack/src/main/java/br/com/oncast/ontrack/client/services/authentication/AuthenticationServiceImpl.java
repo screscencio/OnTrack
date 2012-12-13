@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.authentication.UserInformationChangeEvent;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationResponse;
@@ -31,7 +32,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final DispatchService dispatchService;
 
-	private User currentUser;
+	private UUID currentUserId;
+
+	private int projectCreationQuota;
+
+	private int projectInvitationQuota;
 
 	public AuthenticationServiceImpl(final DispatchService dispatchService, final ApplicationPlaceController applicationPlaceController,
 			final ServerPushClientService serverPushClientService) {
@@ -59,8 +64,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 			@Override
 			public void onSuccess(final CurrentUserInformationResponse result) {
-				currentUser = result.getUser();
-				callback.onUserInformationLoaded(currentUser);
+				final User user = result.getUser();
+
+				updateCurrentUser(user);
+
+				callback.onUserInformationLoaded(currentUserId);
 				notifyUserInformationLoadToUserAuthenticationListeners();
 			}
 
@@ -75,13 +83,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public void authenticate(final String user, final String password, final UserAuthenticationCallback callback) {
-		dispatchService.dispatch(new AuthenticationRequest(user, password), new DispatchCallback<AuthenticationResponse>() {
+	public void authenticate(final String username, final String password, final UserAuthenticationCallback callback) {
+		dispatchService.dispatch(new AuthenticationRequest(username, password), new DispatchCallback<AuthenticationResponse>() {
 
 			@Override
 			public void onSuccess(final AuthenticationResponse result) {
-				currentUser = result.getUser();
-				callback.onUserAuthenticatedSuccessfully(currentUser);
+				updateCurrentUser(result.getUser());
+
+				callback.onUserAuthenticatedSuccessfully(username, currentUserId);
 				notifyLoginToUserAuthenticationListeners();
 			}
 
@@ -174,12 +183,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public User getCurrentUser() {
-		return currentUser;
+	public UUID getCurrentUserId() {
+		return currentUserId;
 	}
 
 	private void processUserInformationUpdate(final UserInformationChangeEvent event) {
-		if (currentUser == null || !currentUser.getEmail().equals(event.getUserEmail())) logout(new UserLogoutCallback() {
+		if (currentUserId == null || !currentUserId.equals(event.getUserId())) logout(new UserLogoutCallback() {
 
 			@Override
 			public void onUserLogout() {
@@ -190,13 +199,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			public void onFailure(final Throwable caught) {}
 		});
 
-		currentUser.setProjectCreationQuota(event.getProjectCreationQuota());
-		currentUser.setProjectInvitationQuota(event.getProjectInvitationQuota());
+		projectCreationQuota = event.getProjectCreationQuota();
+		projectInvitationQuota = event.getProjectInvitationQuota();
+	}
+
+	private void updateCurrentUser(final User user) {
+		currentUserId = user.getId();
+		projectCreationQuota = user.getProjectCreationQuota();
+		projectInvitationQuota = user.getProjectInvitationQuota();
 	}
 
 	@Override
 	public boolean isUserAvailable() {
-		return getCurrentUser() != null;
+		return getCurrentUserId() != null;
 	}
 
 	@Override
@@ -210,8 +225,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	private void resetCurrentUsetAndGoTo(final Place destinationPlace) {
-		currentUser = null;
+		currentUserId = null;
+		projectCreationQuota = 0;
+		projectInvitationQuota = 0;
+
 		notifyLogoutToUserAuthenticationListeners();
 		applicationPlaceController.goTo(destinationPlace);
+	}
+
+	@Override
+	public int getProjectCreationQuota() {
+		return projectCreationQuota;
+	}
+
+	@Override
+	public int getProjectInvitationQuota() {
+		return projectInvitationQuota;
 	}
 }

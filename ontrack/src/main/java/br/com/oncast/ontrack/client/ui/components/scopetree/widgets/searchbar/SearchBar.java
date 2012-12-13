@@ -181,7 +181,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	}
 
 	private void updateItems() {
-		final List<Scope> allScopes = ClientServiceProvider.getInstance().getContextProviderService().getCurrentProjectContext().getProjectScope()
+		final List<Scope> allScopes = ClientServiceProvider.getCurrentProjectContext().getProjectScope()
 				.getAllDescendantScopes();
 		search.setItems(asCommandMenuItens(allScopes));
 	}

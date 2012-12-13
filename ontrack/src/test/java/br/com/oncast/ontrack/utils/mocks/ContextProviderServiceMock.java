@@ -31,11 +31,14 @@ public class ContextProviderServiceMock implements ContextProviderService {
 	}
 
 	@Override
-	public ProjectContext getCurrentProjectContext() {
+	public ProjectContext getCurrent() {
 		if (projectContext != null) return projectContext;
 		throw new RuntimeException();
 	}
 
 	@Override
 	public void addContextLoadListener(final ContextChangeListener contextLoadListener) {}
+
+	@Override
+	public void unloadProjectContext() {}
 }

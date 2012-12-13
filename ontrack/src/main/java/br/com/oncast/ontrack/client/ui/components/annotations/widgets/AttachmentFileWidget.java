@@ -29,6 +29,6 @@ public class AttachmentFileWidget extends Composite {
 		downloadLink.setTarget("_blank");
 		downloadLink.setText(fileRepresentation.getFileName());
 		downloadLink.setHref(URL.encode(GWT.getModuleBaseURL() + "file/download?" + FileUploadFieldNames.FILE_ID + "="
-				+ fileRepresentation.getId().toStringRepresentation()));
+				+ fileRepresentation.getId().toString()));
 	}
 }

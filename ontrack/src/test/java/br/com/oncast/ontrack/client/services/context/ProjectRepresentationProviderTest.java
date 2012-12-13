@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.services.context;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,8 +26,8 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.services.context.NewProjectCreatedEventHandler;
-import br.com.oncast.ontrack.shared.services.context.ProjectCreatedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectAddedEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListResponse;
 import br.com.oncast.ontrack.utils.mocks.callback.DispatchCallbackMock;
@@ -156,15 +155,15 @@ public class ProjectRepresentationProviderTest {
 
 	@Test
 	public void projectsListChangeIsNotifiedWhenProjectCreationEventIsNotified() throws Exception {
-		final ArgumentCaptor<NewProjectCreatedEventHandler> captor = ArgumentCaptor.forClass(NewProjectCreatedEventHandler.class);
-		doNothing().when(serverPush).registerServerEventHandler(Mockito.same(ProjectCreatedEvent.class), captor.capture());
+		final ArgumentCaptor<ProjectAddedEventHandler> captor = ArgumentCaptor.forClass(ProjectAddedEventHandler.class);
+		when(serverPush.registerServerEventHandler(Mockito.same(ProjectAddedEvent.class), captor.capture())).thenReturn(null);
 
 		final TestProjectListChangeListener listener = registerAndGetProjectListChangeListener(createProvider());
 		assertEquals(0, listener.projectRepresentations.size());
 
-		final NewProjectCreatedEventHandler event = captor.getValue();
+		final ProjectAddedEventHandler event = captor.getValue();
 		final ProjectRepresentation representation = ProjectTestUtils.createRepresentation();
-		event.onEvent(new ProjectCreatedEvent(representation));
+		event.onEvent(new ProjectAddedEvent(representation));
 
 		assertEquals(1, listener.projectRepresentations.size());
 		assertTrue(listener.projectRepresentations.contains(representation));

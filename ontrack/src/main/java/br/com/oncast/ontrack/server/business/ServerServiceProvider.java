@@ -79,7 +79,7 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (authorizationManager != null) return authorizationManager;
 			return authorizationManager = new AuthorizationManagerImpl(getAuthenticationManager(), getPersistenceService(), getMulticastService(),
-					getProjectAuthorizationMailFactory());
+					getProjectAuthorizationMailFactory(), getClientManagerService());
 		}
 	}
 

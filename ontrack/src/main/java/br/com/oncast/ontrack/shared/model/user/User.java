@@ -8,11 +8,13 @@ import org.simpleframework.xml.Root;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.UserEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 @Root(name = "userData")
 @ConvertTo(UserEntity.class)
-public class User implements Serializable, Comparable<User> {
+public class User implements Serializable, Comparable<User>, HasUUID {
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,6 +49,7 @@ public class User implements Serializable, Comparable<User> {
 		this(id, email, 0, 0);
 	}
 
+	@Override
 	public UUID getId() {
 		return id;
 	}
@@ -97,34 +100,12 @@ public class User implements Serializable, Comparable<User> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return UUIDUtils.hashCode(this);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (obj.getClass() == User.class) {
-			final User other = (User) obj;
-			if (id == null) {
-				if (other.id != null) return false;
-			}
-			else if (!id.equals(other.id)) return false;
-			return true;
-		}
-		else if (obj.getClass() == UserRepresentation.class) {
-			final UserRepresentation other = (UserRepresentation) obj;
-			if (id == null) {
-				if (other.getId() != null) return false;
-			}
-			else if (!id.equals(other.getId())) return false;
-			return true;
-		}
-
-		return false;
+		return UUIDUtils.equals(this, obj);
 	}
 
 	@Override

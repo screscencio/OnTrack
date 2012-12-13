@@ -8,7 +8,6 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(TeamRevogueInvitationActionEntity.class)
@@ -31,9 +30,9 @@ public class TeamRevogueInvitationAction implements TeamAction {
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final UserRepresentation user = ActionHelper.findUser(userId, context);
-		context.removeUser(user);
-		return new TeamInviteAction(user);
+		ActionHelper.findUser(userId, context).setValid(false);
+
+		return new TeamInviteAction(userId);
 	}
 
 	@Override

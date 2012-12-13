@@ -14,7 +14,6 @@ import br.com.oncast.ontrack.server.services.multicast.MulticastService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushConnection;
-import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
 import br.com.oncast.ontrack.shared.services.user.UserOfflineEvent;
@@ -94,14 +93,12 @@ public class UsersStatusManager implements UserStatusChangeListener {
 	}
 
 	private void multicastForSpecificProject(final UUID projectId, final UserStatusEvent event) {
-		multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(event, projectId);
+		multicastService.multicastToAllUsersInSpecificProject(event, projectId);
 	}
 
 	private void multicastForAuthorizedProjects(final UserStatusEvent event) {
 		try {
-			for (final ProjectRepresentation representation : authorizationManager.listAuthorizedProjects(event.getUserId())) {
-				multicastService.multicastToAllUsersButCurrentUserClientInSpecificProject(event, representation.getId());
-			}
+			multicastService.multicastToAllProjectsInUserAuthorizationList(event, authorizationManager.listAuthorizedProjects(event.getUserId()));
 		}
 		catch (final PersistenceException e) {
 			LOGGER.error("Multicast of " + event.getClass().getSimpleName() + " failed", e);

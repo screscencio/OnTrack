@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(TeamInviteActionEntity.class)
@@ -19,14 +20,19 @@ public class TeamInviteAction implements TeamAction {
 
 	protected TeamInviteAction() {}
 
-	public TeamInviteAction(final UserRepresentation user) {
-		this.userId = user.getId();
+	public TeamInviteAction(final UUID userId) {
+		this.userId = userId;
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-		final UserRepresentation user = new UserRepresentation(userId);
-		context.addUser(user);
+		try {
+			context.findUser(userId).setValid(true);
+		}
+		catch (final UserNotFoundException e) {
+			context.addUser(new UserRepresentation(userId));
+		}
+
 		return new TeamRevogueInvitationAction(userId);
 	}
 

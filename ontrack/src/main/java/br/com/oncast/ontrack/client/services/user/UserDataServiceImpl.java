@@ -35,12 +35,16 @@ public class UserDataServiceImpl implements UserDataService {
 	private final DispatchService dispatchService;
 
 	private final Set<User> cachedUsers;
+
 	private final SetMultimap<UUID, UserSpecificInformationChangeListener> userSpecificListeners;
+
+	private final ContextProviderService contextProvider;
 
 	public UserDataServiceImpl(final DispatchService dispatchService, final ContextProviderService contextProvider,
 			final ServerPushClientService serverPushClientService) {
 
 		this.dispatchService = dispatchService;
+		this.contextProvider = contextProvider;
 
 		userSpecificListeners = HashMultimap.create();
 		cachedUsers = new HashSet<User>();
@@ -48,7 +52,7 @@ public class UserDataServiceImpl implements UserDataService {
 		contextProvider.addContextLoadListener(new ContextChangeListener() {
 			@Override
 			public void onProjectChanged(final UUID projectId) {
-				if (projectId == null) cachedUsers.clear();
+				if (projectId == null) clearCachedUsers();
 				else updateUserDataFor(projectId);
 			}
 		});
@@ -107,8 +111,8 @@ public class UserDataServiceImpl implements UserDataService {
 	}
 
 	private void updateUserDataFor(final UUID projectId) {
-		cachedUsers.clear();
-		dispatchService.dispatch(new UserDataRequest(projectId), new DispatchCallback<UserDataRequestResponse>() {
+		clearCachedUsers();
+		dispatchService.dispatch(new UserDataRequest(contextProvider.getCurrent().getUsers()), new DispatchCallback<UserDataRequestResponse>() {
 
 			@Override
 			public void onSuccess(final UserDataRequestResponse result) {
@@ -130,6 +134,10 @@ public class UserDataServiceImpl implements UserDataService {
 		});
 	}
 
+	private void clearCachedUsers() {
+		cachedUsers.clear();
+	}
+
 	private void notifyUserDataUpdate(final User user) {
 		for (final UserSpecificInformationChangeListener listener : userSpecificListeners.get(user.getId()))
 			listener.onInformationChange(user);
@@ -141,9 +149,45 @@ public class UserDataServiceImpl implements UserDataService {
 	}
 
 	@Override
+	public void loadRealUser(final UUID userId, final AsyncCallback<User> callback) {
+		if (cachedUsers.contains(userId)) {
+			callback.onSuccess(retrieveRealUser(userId));
+			return;
+		}
+
+		dispatchService.dispatch(new UserDataRequest(userId), new DispatchCallback<UserDataRequestResponse>() {
+
+			@Override
+			public void onSuccess(final UserDataRequestResponse result) {
+				final User user = result.getUsers().get(0);
+				cachedUsers.add(user);
+				notifyUserDataUpdate(user);
+				callback.onSuccess(user);
+			}
+
+			@Override
+			public void onTreatedFailure(final Throwable caught) {
+				caught.printStackTrace();
+				callback.onFailure(caught);
+			}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				caught.printStackTrace();
+				callback.onFailure(caught);
+			}
+
+		});
+	}
+
+	@Override
 	public User retrieveRealUser(final UserRepresentation userRepresentation) {
+		return retrieveRealUser(userRepresentation.getId());
+	}
+
+	private User retrieveRealUser(final UUID userId) {
 		for (final User user : cachedUsers) {
-			if (user.getId().equals(userRepresentation.getId())) return user;
+			if (user.getId().equals(userId)) return user;
 		}
 		throw new IllegalStateException("User information unavailable");
 	}
@@ -166,4 +210,5 @@ public class UserDataServiceImpl implements UserDataService {
 		void onInformationChange(User user);
 
 	}
+
 }

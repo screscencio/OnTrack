@@ -43,7 +43,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	@Override
 	public void storeSelectedScopeId(final UUID scopeId) {
-		setUserProjectSpecificItem(SELECTED_SCOPE_ID, scopeId.toStringRepresentation());
+		setUserProjectSpecificItem(SELECTED_SCOPE_ID, scopeId.toString());
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 		final boolean hasBeenModified = containerState != DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE;
 
-		final String releaseId = release.getId().toStringRepresentation();
+		final String releaseId = release.getId().toString();
 		if (modifiedReleases.contains(releaseId) == hasBeenModified) return;
 
 		if (hasBeenModified) modifiedReleases.add(releaseId);
@@ -169,12 +169,12 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 
 	private String getCurrentUserStorageKey(final String key) {
 		if (!authenticationService.isUserAvailable()) throw new RuntimeException("There is no user available for user dependant storage operation");
-		return getApplicationKey(authenticationService.getCurrentUser().getEmail() + SEPARATOR + key);
+		return getApplicationKey(authenticationService.getCurrentUserId() + SEPARATOR + key);
 	}
 
 	private String getCurrentUserProjectStorageKey(final String key) {
 		if (!authenticationService.isUserAvailable()) throw new RuntimeException("There is no user available for user dependant storage operation");
-		return getApplicationKey(authenticationService.getCurrentUser().getEmail() + SEPARATOR
+		return getApplicationKey(authenticationService.getCurrentUserId() + SEPARATOR
 				+ projectRepresentationProvider.getCurrent().getId() + SEPARATOR
 				+ key);
 	}

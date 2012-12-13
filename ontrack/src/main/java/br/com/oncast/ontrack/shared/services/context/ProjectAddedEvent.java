@@ -4,16 +4,16 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
-public class ProjectCreatedEvent implements ServerPushEvent {
+public class ProjectAddedEvent implements ServerPushEvent {
 
 	private static final long serialVersionUID = 1L;
 	private UUID projectId;
 	private String projectName;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
-	protected ProjectCreatedEvent() {}
+	protected ProjectAddedEvent() {}
 
-	public ProjectCreatedEvent(final ProjectRepresentation projectRepresentation) {
+	public ProjectAddedEvent(final ProjectRepresentation projectRepresentation) {
 		// IMPORTANT Storing the ProjectRepresentation itself returns an mysterious serialization error.
 		// The id cannot be serialized. Remember to store the object parameters instead.
 		projectId = projectRepresentation.getId();

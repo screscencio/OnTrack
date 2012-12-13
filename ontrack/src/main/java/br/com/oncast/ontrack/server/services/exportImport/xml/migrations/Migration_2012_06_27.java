@@ -30,7 +30,7 @@ public class Migration_2012_06_27 extends Migration {
 
 	private void updateProjectId() {
 		for (final Element project : projects) {
-			final String newProjectId = new UUID().toStringRepresentation();
+			final String newProjectId = new UUID().toString();
 			final Attribute oldProjectId = project.attribute("id");
 			project.remove(oldProjectId);
 			project.element("projectRepresentation").addElement(oldProjectId.getName())

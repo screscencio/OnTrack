@@ -88,7 +88,7 @@ public class XMLImporter {
 		int newUsersCount = 0;
 		for (final UserXMLNode userNode : userNodes) {
 			final User user = userNode.getUser();
-			LOGGER.debug(user.getEmail() + ": " + user.getId().toStringRepresentation());
+			LOGGER.debug(user.getEmail() + ": " + user.getId().toString());
 
 			persistenceService.persistOrUpdateUser(user);
 			if (userNode.hasPassword()) persistenceService.persistOrUpdatePassword(userNode.getPassword());

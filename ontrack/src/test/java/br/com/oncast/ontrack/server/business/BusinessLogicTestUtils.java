@@ -37,9 +37,7 @@ import br.com.oncast.ontrack.server.services.threadSync.SyncronizationService;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
@@ -68,12 +66,7 @@ public class BusinessLogicTestUtils {
 	private static void configureAuthorizationMock() {
 		try {
 			authorizationMock = mock(AuthorizationManagerImpl.class);
-			when(authorizationMock.authorize(any(UUID.class), anyString(), anyBoolean())).thenAnswer(new Answer<UserRepresentation>() {
-				@Override
-				public UserRepresentation answer(final InvocationOnMock invocation) throws Throwable {
-					return UserRepresentationTestUtils.createUser((String) invocation.getArguments()[1]);
-				}
-			});
+			when(authorizationMock.authorize(any(UUID.class), anyString(), anyBoolean())).thenReturn(new UUID());
 			Mockito.doNothing().when(authorizationMock).assureProjectAccessAuthorization(Mockito.any(UUID.class));
 		}
 		catch (final Exception e) {

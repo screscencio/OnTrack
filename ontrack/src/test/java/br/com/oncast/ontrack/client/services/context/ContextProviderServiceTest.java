@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.services.context;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.verify;
 import junit.framework.Assert;
 
@@ -26,7 +27,7 @@ import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 public class ContextProviderServiceTest {
 
-	private static final UUID PROJECT_ID = new UUID();
+	private UUID projectId;
 
 	@Mock
 	private ProjectRepresentationProviderImpl projectRepresentationProvider;
@@ -40,6 +41,7 @@ public class ContextProviderServiceTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
+		projectId = new UUID();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -52,7 +54,7 @@ public class ContextProviderServiceTest {
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider,
 				requestDispatchService, authenticationService);
 
-		Assert.assertFalse(contextProviderService.isContextAvailable(PROJECT_ID));
+		Assert.assertFalse(contextProviderService.isContextAvailable(projectId));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -65,9 +67,9 @@ public class ContextProviderServiceTest {
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
 				authenticationService);
 
-		contextProviderService.loadProjectContext(PROJECT_ID, Mockito.mock(ProjectContextLoadCallback.class));
+		contextProviderService.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
 
-		Assert.assertTrue(contextProviderService.isContextAvailable(PROJECT_ID));
+		Assert.assertTrue(contextProviderService.isContextAvailable(projectId));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -80,19 +82,28 @@ public class ContextProviderServiceTest {
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
 				authenticationService);
 
-		contextProviderService.loadProjectContext(PROJECT_ID, Mockito.mock(ProjectContextLoadCallback.class));
+		contextProviderService.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
 
-		Assert.assertTrue(contextProviderService.isContextAvailable(PROJECT_ID));
+		Assert.assertTrue(contextProviderService.isContextAvailable(projectId));
 
 		final ArgumentCaptor<UserAuthenticationListener> captor = ArgumentCaptor.forClass(UserAuthenticationListener.class);
 		verify(authenticationService).registerUserAuthenticationListener(captor.capture());
 
 		captor.getValue().onUserLoggedOut();
 
-		Assert.assertFalse(contextProviderService.isContextAvailable(PROJECT_ID));
+		Assert.assertFalse(contextProviderService.isContextAvailable(projectId));
+	}
+
+	@Test
+	public void shouldBeAbleToUnloadTheCurrentProjectContext() throws Exception {
+		final ContextProviderServiceImpl service = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService, authenticationService);
+		service.loadProjectContext(projectId, Mockito.mock(ProjectContextLoadCallback.class));
+
+		service.unloadProjectContext();
+		assertFalse(service.isContextAvailable(projectId));
 	}
 
 	private Project createDummyProject() throws Exception {
-		return ProjectTestUtils.createProject(new ProjectRepresentation(PROJECT_ID, ""), ScopeTestUtils.createScope(""), new Release("", new UUID()));
+		return ProjectTestUtils.createProject(new ProjectRepresentation(projectId, ""), ScopeTestUtils.createScope(""), new Release("", new UUID()));
 	}
 }

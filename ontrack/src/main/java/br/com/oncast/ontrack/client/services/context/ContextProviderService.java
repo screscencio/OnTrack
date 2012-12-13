@@ -12,7 +12,9 @@ public interface ContextProviderService {
 
 	public void loadProjectContext(UUID requestedProjectId, ProjectContextLoadCallback projectContextLoadCallback);
 
-	public ProjectContext getCurrentProjectContext();
+	public ProjectContext getCurrent();
 
 	public void addContextLoadListener(ContextChangeListener contextLoadListener);
+
+	public void unloadProjectContext();
 }

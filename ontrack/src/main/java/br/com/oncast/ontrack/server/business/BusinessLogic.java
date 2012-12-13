@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToAuthorizeUserException;
+import br.com.oncast.ontrack.shared.exceptions.authorization.UnableToRemoveAuthorizationException;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateProjectRepresentation;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
@@ -43,5 +44,8 @@ public interface BusinessLogic {
 	public abstract void onFileUploadCompleted(final FileRepresentation fileRepresentation) throws UnableToHandleActionException, AuthorizationException;
 
 	public abstract void loadProjectForMigration(UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException;
+
+	public abstract void removeAuthorization(UUID userId, UUID projectId) throws UnableToHandleActionException, UnableToRemoveAuthorizationException,
+			PersistenceException, AuthorizationException;
 
 }

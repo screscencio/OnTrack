@@ -45,7 +45,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationBuilder;
@@ -69,7 +68,7 @@ public class PersistenceServiceTest {
 
 	private EntityManager entityManager;
 
-	private UserRepresentation author;
+	private UUID author;
 
 	@Before
 	public void before() throws Exception {
@@ -285,14 +284,14 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldBeAbleToFindAllProjectAuthorizationsThatAGivenUserIsRelatedTo() throws Exception {
-		final UserRepresentation user = createAndPersistUser();
+		final UUID user = createAndPersistUser();
 		final ProjectRepresentation project1 = createProjectRepresentation("project1");
 		createProjectRepresentation("project2");
 		final ProjectRepresentation project3 = createProjectRepresentation("project3");
 
 		authorize(user, project1, project3);
 
-		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user.getId());
+		final List<ProjectAuthorization> authorizations = persistenceService.retrieveProjectAuthorizations(user);
 
 		final List<ProjectRepresentation> obtainedProjectAuthorizations = extractProjectsFromAuthorization(authorizations);
 		assertTrue(obtainedProjectAuthorizations.contains(project1));
@@ -301,19 +300,19 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldBeAbleToRetrieveProjectAuthorizationForSpecificUserAndProject() throws Exception {
-		final UserRepresentation user1 = createAndPersistUser();
-		final UserRepresentation user2 = createAndPersistUser();
+		final UUID user1 = createAndPersistUser();
+		final UUID user2 = createAndPersistUser();
 		final ProjectRepresentation project1 = createProjectRepresentation("project1");
 		final ProjectRepresentation project2 = createProjectRepresentation("project2");
 
 		authorize(user1, project1);
 		authorize(user2, project2);
 
-		assertNotNull(persistenceService.retrieveProjectAuthorization(user1.getId(), project1.getId()));
-		assertNotNull(persistenceService.retrieveProjectAuthorization(user2.getId(), project2.getId()));
+		assertNotNull(persistenceService.retrieveProjectAuthorization(user1, project1.getId()));
+		assertNotNull(persistenceService.retrieveProjectAuthorization(user2, project2.getId()));
 
-		assertNull(persistenceService.retrieveProjectAuthorization(user1.getId(), project2.getId()));
-		assertNull(persistenceService.retrieveProjectAuthorization(user2.getId(), project1.getId()));
+		assertNull(persistenceService.retrieveProjectAuthorization(user1, project2.getId()));
+		assertNull(persistenceService.retrieveProjectAuthorization(user2, project1.getId()));
 	}
 
 	private List<ProjectRepresentation> extractProjectsFromAuthorization(final List<ProjectAuthorization> authorizations) throws PersistenceException,
@@ -332,20 +331,20 @@ public class PersistenceServiceTest {
 
 	@Test(expected = PersistenceException.class)
 	public void inexistentProjectCannotBeAuthorized() throws Exception {
-		final UserRepresentation user = createAndPersistUser();
-		persistenceService.authorize(user.getId(), new UUID());
+		final UUID user = createAndPersistUser();
+		persistenceService.authorize(user, new UUID());
 	}
 
 	@Test
 	public void cannotAuthorizeAUserToProjectTwice() throws Exception {
-		final UserRepresentation user = createAndPersistUser();
+		final UUID user = createAndPersistUser();
 		final ProjectRepresentation project = persistenceService.retrieveProjectRepresentation(PROJECT_ID);
 
 		boolean reached = false;
 		try {
-			persistenceService.authorize(user.getId(), project.getId());
+			persistenceService.authorize(user, project.getId());
 			reached = true;
-			persistenceService.authorize(user.getId(), project.getId());
+			persistenceService.authorize(user, project.getId());
 			fail();
 		}
 		catch (final PersistenceException e) {
@@ -392,7 +391,7 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldPersistAndRetrieveSingleUserNotification() throws Exception {
-		final UserRepresentation user = createAndPersistUser();
+		final UUID user = createAndPersistUser();
 		final Notification notification = getBuilder("msg").addReceipient(user).getNotification();
 
 		persistenceService.persistOrUpdateNotification(notification);
@@ -408,17 +407,17 @@ public class PersistenceServiceTest {
 		persistenceService.persistOrUpdateProjectRepresentation(project);
 
 		if (author == null) author = createAndPersistUser();
-		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, project, author.getId())
+		return new NotificationBuilder(NotificationType.IMPEDIMENT_CREATED, project, author)
 				.setDescription(desc);
 	}
 
 	@Test
 	public void shouldPersistAndRetrieveSingleUserNotificationWhenThereIsMoreNotifications() throws Exception {
-		final UserRepresentation user1 = createAndPersistUser();
+		final UUID user1 = createAndPersistUser();
 		final Notification notification1 = getBuilder("msg1").addReceipient(user1).getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
-		final UserRepresentation user2 = createAndPersistUser();
+		final UUID user2 = createAndPersistUser();
 		final Notification notification2 = getBuilder("msg2").addReceipient(user2).getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
@@ -429,15 +428,15 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldPersistAndRetrieveMultipleUserNotifications() throws Exception {
-		final UserRepresentation user1 = createAndPersistUser();
+		final UUID user1 = createAndPersistUser();
 		final Notification notification1 = getBuilder("msg1").addReceipient(user1).getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
-		final UserRepresentation user2 = createAndPersistUser();
+		final UUID user2 = createAndPersistUser();
 		final Notification notification2 = getBuilder("msg2").addReceipient(user2).getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
-		final UserRepresentation user3 = createAndPersistUser();
+		final UUID user3 = createAndPersistUser();
 		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
@@ -450,18 +449,18 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldPersistAndRetrieveMultipleUserNotificationsInTheCorrectOrder() throws Exception {
-		final UserRepresentation user1 = createAndPersistUser();
+		final UUID user1 = createAndPersistUser();
 		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
-		final UserRepresentation user2 = createAndPersistUser();
+		final UUID user2 = createAndPersistUser();
 		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
 				.setTimestamp(new Date(1000))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
-		final UserRepresentation user3 = createAndPersistUser();
+		final UUID user3 = createAndPersistUser();
 		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
 				.setTimestamp(new Date(100))
 				.getNotification();
@@ -477,18 +476,18 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldPersistAndRetrieveMultipleUserNotificationsLimitedByMaxRequested() throws Exception {
-		final UserRepresentation user1 = createAndPersistUser();
+		final UUID user1 = createAndPersistUser();
 		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date(1))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
-		final UserRepresentation user2 = createAndPersistUser();
+		final UUID user2 = createAndPersistUser();
 		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
 				.setTimestamp(new Date(1000))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
-		final UserRepresentation user3 = createAndPersistUser();
+		final UUID user3 = createAndPersistUser();
 		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
 				.setTimestamp(new Date(100))
 				.getNotification();
@@ -503,18 +502,18 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldPersistAndRetrieveLatestNotificationsLimitedByDate() throws Exception {
-		final UserRepresentation user1 = createAndPersistUser();
+		final UUID user1 = createAndPersistUser();
 		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date())
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
-		final UserRepresentation user2 = createAndPersistUser();
+		final UUID user2 = createAndPersistUser();
 		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
 				.setTimestamp(getInitialFetchDate(1))
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
-		final UserRepresentation user3 = createAndPersistUser();
+		final UUID user3 = createAndPersistUser();
 		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
 				.setTimestamp(getInitialFetchDate(3))
 				.getNotification();
@@ -533,24 +532,25 @@ public class PersistenceServiceTest {
 		final ProjectRepresentation projectRepresentation2 = ProjectTestUtils.createRepresentation(new UUID("2"));
 		final ProjectRepresentation projectRepresentation3 = ProjectTestUtils.createRepresentation(new UUID("3"));
 
-		final UserRepresentation user1 = createAndPersistUser();
-		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date()).setProjectRepresentation(projectRepresentation3)
+		final UUID user1 = createAndPersistUser();
+		final Notification notification1 = getBuilder("msg1").addReceipient(user1).setTimestamp(new Date())
+				.setProjectRepresentation(projectRepresentation3)
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification1);
 
-		final UserRepresentation user2 = createAndPersistUser();
+		final UUID user2 = createAndPersistUser();
 		final Notification notification2 = getBuilder("msg2").addReceipient(user1).addReceipient(user2)
 				.setTimestamp(getInitialFetchDate(1)).setProjectRepresentation(projectRepresentation2)
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification2);
 
-		final UserRepresentation user3 = createAndPersistUser();
+		final UUID user3 = createAndPersistUser();
 		final Notification notification3 = getBuilder("msg3").addReceipient(user3).addReceipient(user1)
 				.setTimestamp(getInitialFetchDate(3)).setProjectRepresentation(projectRepresentation1)
 				.getNotification();
 		persistenceService.persistOrUpdateNotification(notification3);
 
-		final UserRepresentation user4 = createAndPersistUser();
+		final UUID user4 = createAndPersistUser();
 		final Notification notification4 = getBuilder("msg4").addReceipient(user4).addReceipient(user1)
 				.setTimestamp(getInitialFetchDate(0)).setProjectRepresentation(projectRepresentation1)
 				.getNotification();
@@ -572,14 +572,14 @@ public class PersistenceServiceTest {
 
 	@Test
 	public void shouldRetrieveMultipleUsers() throws Exception {
-		final UserRepresentation user1 = createAndPersistUser();
+		final UUID user1 = createAndPersistUser();
 		createAndPersistUser();
-		final UserRepresentation user2 = createAndPersistUser();
+		final UUID user2 = createAndPersistUser();
 		createAndPersistUser();
 
 		final List<UUID> userIds = new ArrayList<UUID>();
-		userIds.add(user1.getId());
-		userIds.add(user2.getId());
+		userIds.add(user1);
+		userIds.add(user2);
 
 		final List<User> retrievedUsers = persistenceService.retrieveUsersByIds(userIds);
 
@@ -591,14 +591,14 @@ public class PersistenceServiceTest {
 
 	}
 
-	private UserRepresentation createAndPersistUser() throws Exception {
+	private UUID createAndPersistUser() throws Exception {
 		final User user = persistenceService.persistOrUpdateUser(UserTestUtils.createUser());
-		return new UserRepresentation(user.getId());
+		return user.getId();
 	}
 
-	private void authorize(final UserRepresentation user, final ProjectRepresentation... projects) throws PersistenceException {
+	private void authorize(final UUID user, final ProjectRepresentation... projects) throws PersistenceException {
 		for (final ProjectRepresentation project : projects) {
-			persistenceService.authorize(user.getId(), project.getId());
+			persistenceService.authorize(user, project.getId());
 		}
 	}
 

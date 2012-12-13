@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+
+<servlet>
+  <servlet-name>br_com_drycode_api_web_gwt_dispatchService_server_DispatchServiceServlet</servlet-name>
+  <servlet-class>br.com.drycode.api.web.gwt.dispatchService.server.DispatchServiceServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+  <servlet-name>br_com_drycode_api_web_gwt_dispatchService_server_DispatchServiceServlet</servlet-name>
+  <url-pattern>/application/dispatchService</url-pattern>
+</servlet-mapping>
+
+</web-app>

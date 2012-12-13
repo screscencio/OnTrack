@@ -53,7 +53,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public boolean hasDetails(final UUID subjectId) {
-		final ProjectContext context = contextProviderService.getCurrentProjectContext();
+		final ProjectContext context = contextProviderService.getCurrent();
 
 		return context.hasChecklistsFor(subjectId) || hasAnnotationsFor(subjectId);
 	}
@@ -144,7 +144,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	private ProjectContext getCurrentContext() {
-		return contextProviderService.getCurrentProjectContext();
+		return contextProviderService.getCurrent();
 	}
 
 	private UUID getCurrentProjectId() {

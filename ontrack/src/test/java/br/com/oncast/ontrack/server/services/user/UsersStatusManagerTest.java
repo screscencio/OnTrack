@@ -162,7 +162,7 @@ public class UsersStatusManagerTest {
 	public void shouldMulticastProjectWhenAUserOpenAProject() throws Exception {
 		userStatusChangeListener.onUserOpenProject(project1, userId1);
 
-		verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserOpenProjectEvent.class, userId1)),
+		verify(multicastService).multicastToAllUsersInSpecificProject(argThat(hasUserId(UserOpenProjectEvent.class, userId1)),
 				eq(project1));
 	}
 
@@ -172,7 +172,7 @@ public class UsersStatusManagerTest {
 			userStatusChangeListener.onUserOpenProject(project1, userId1);
 		}
 
-		verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserOpenProjectEvent.class, userId1)),
+		verify(multicastService).multicastToAllUsersInSpecificProject(argThat(hasUserId(UserOpenProjectEvent.class, userId1)),
 				eq(project1));
 	}
 
@@ -192,7 +192,7 @@ public class UsersStatusManagerTest {
 		userStatusChangeListener.onUserCloseProject(project1, userId1);
 
 		verify(multicastService)
-				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
+				.multicastToAllUsersInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
 	}
 
 	@Test
@@ -205,7 +205,7 @@ public class UsersStatusManagerTest {
 		}
 
 		verify(multicastService)
-				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
+				.multicastToAllUsersInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
 	}
 
 	@Test
@@ -223,14 +223,12 @@ public class UsersStatusManagerTest {
 		}
 
 		verify(multicastService)
-				.multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
+				.multicastToAllUsersInSpecificProject(argThat(hasUserId(UserClosedProjectEvent.class, userId1)), eq(project1));
 	}
 
 	private void verifyForAllAuthorizedProjectsForUser1(final Class<? extends UserStatusEvent> clazz) {
-		for (final ProjectRepresentation r : user1AuthorizedProjects) {
-			verify(multicastService).multicastToAllUsersButCurrentUserClientInSpecificProject(argThat(hasUserId(clazz, userId1)),
-					eq(r.getId()));
-		}
+		verify(multicastService).multicastToAllProjectsInUserAuthorizationList(argThat(hasUserId(clazz, userId1)),
+				eq(user1AuthorizedProjects));
 	}
 
 	private <T extends UserStatusEvent> Matcher<T> hasUserId(final Class<T> class1, final UUID userId) {

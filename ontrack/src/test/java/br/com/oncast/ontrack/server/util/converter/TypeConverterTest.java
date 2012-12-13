@@ -38,7 +38,7 @@ public class TypeConverterTest {
 		final UUID original = new UUID();
 		final Object converted = new GeneralTypeConverter().convert(original);
 
-		assertEquals(original.toStringRepresentation(), converted);
+		assertEquals(original.toString(), converted);
 	}
 
 	@Test

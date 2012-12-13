@@ -143,7 +143,7 @@ public class ChecklistsContainerWidget extends Composite {
 
 	public void setSubjectId(final UUID subjectId) {
 		this.subjectId = subjectId;
-		checklists.update(getProvider().getContextProviderService().getCurrentProjectContext().findChecklistsFor(subjectId));
+		checklists.update(ClientServiceProvider.getCurrentProjectContext().findChecklistsFor(subjectId));
 	}
 
 	private ClientServiceProvider getProvider() {

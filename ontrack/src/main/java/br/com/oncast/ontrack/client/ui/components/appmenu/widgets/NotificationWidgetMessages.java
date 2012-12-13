@@ -40,4 +40,12 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("deprecated an annotation ''{0}'' on item ''{1}'' at ''{2}''")
 	String annotationDeprecatedNotificationWidgetMessage(String annotationLinkFor, String referenceDescription, String projectLinkFor);
 
+	@Description("team invite notification widget")
+	@DefaultMessage("invited ''{0}'' to the project")
+	String teamInvitedNotificationWidgetMessage(String invitee);
+
+	@Description("team revogue invitation notification widget")
+	@DefaultMessage("excluded ''{0}'' from the project")
+	String teamRemovedNotificationWidgetMessage(String invitee);
+
 }

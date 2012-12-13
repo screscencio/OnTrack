@@ -3,7 +3,20 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
 	<ui:image field="avatar" src="default-avatar.png"/>
+	<ui:image field="invalidImg" src="banned.png"/>
 	<ui:style type="br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserWidgetStyle">
+	
+		.container {
+			position: relative;
+		}
+		
+		.mask {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+		}
 	
 		.author {
 			vertical-align: top;
@@ -23,6 +36,17 @@
 			opacity: 0.4;
 		}
 		
+		@sprite .removed {
+			gwt-image: 'invalidImg';
+			
+			width: auto;
+			height: auto;
+			
+			background-position: center;
+			background-size: 50px;
+			opacity: 0.8;
+		}
+		
 		.showActiveColor {
 			border-left: 4px solid #888;
 		}
@@ -30,7 +54,10 @@
 	</ui:style>
 	
 	<g:FocusPanel>
-		<g:Image ui:field="userImage" styleName="{style.author} {style.offline}" resource="{avatar}" />
+		<g:HTMLPanel styleName="{style.container}">
+			<g:Image ui:field="userImage" styleName="{style.author} {style.offline}" resource="{avatar}" />
+			<g:FocusPanel ui:field="mask" styleName="{style.mask}"/>
+		</g:HTMLPanel>
 	</g:FocusPanel>
 	
 </ui:UiBinder> 

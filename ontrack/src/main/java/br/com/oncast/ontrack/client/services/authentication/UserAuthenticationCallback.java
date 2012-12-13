@@ -1,10 +1,10 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
-import br.com.oncast.ontrack.shared.model.user.User;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface UserAuthenticationCallback {
 
-	void onUserAuthenticatedSuccessfully(User user);
+	void onUserAuthenticatedSuccessfully(String username, UUID currentUser);
 
 	void onIncorrectCredentialsFailure();
 

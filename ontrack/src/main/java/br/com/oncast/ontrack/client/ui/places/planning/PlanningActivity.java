@@ -44,7 +44,7 @@ public class PlanningActivity extends AbstractActivity {
 		requestedProjectId = place.getRequestedProjectId();
 		selectedScopeId = place.getSelectedScopeId();
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
-		activityActionExecutionListener = new ActivityActionExecutionListener(SERVICE_PROVIDER.getClientErrorMessages());
+		activityActionExecutionListener = new ActivityActionExecutionListener();
 		mouseHelper = new ScopeTreeMouseHelper();
 	}
 
@@ -55,7 +55,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.setVisible(false);
 
 		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
-		final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getCurrentProjectContext();
+		final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
 
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));

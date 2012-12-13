@@ -10,8 +10,10 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationDeprecateAction;
 import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
+import br.com.oncast.ontrack.shared.model.action.TeamRevogueInvitationAction;
 
 public class ActionPostProcessmentsInitializer {
 
@@ -21,7 +23,7 @@ public class ActionPostProcessmentsInitializer {
 	private final MulticastService multicastService;
 	private final NotificationServerService notificationServerService;
 	private NotificationCreationPostProcessor notificationCreationPostProcessor;
-	private TeamInvitePostProcessor teamInvitePostProcessor;
+	private SendActionToCurrentClientPostProcessor sendActionToCurrentClientPostProcessor;
 	private FileUploadPostProcessor fileUploadPostProcessor;
 
 	public ActionPostProcessmentsInitializer(final ActionPostProcessingService actionPostProcessingService, final PersistenceService persistenceService,
@@ -36,9 +38,10 @@ public class ActionPostProcessmentsInitializer {
 	public synchronized void initialize() {
 		if (initialized) return;
 		postProcessingService.registerPostProcessor(getFileUploadPostProcessor(), FileUploadAction.class);
-		postProcessingService.registerPostProcessor(getTeamInvitePostProcessor(), TeamInviteAction.class);
+		postProcessingService.registerPostProcessor(getSendActionToCurrentClientPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class);
 		postProcessingService.registerPostProcessor(getNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
-				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class, AnnotationCreateAction.class, AnnotationDeprecateAction.class);
+				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class, AnnotationCreateAction.class, AnnotationDeprecateAction.class,
+				TeamInviteAction.class, TeamRevogueInvitationAction.class);
 		initialized = true;
 	}
 
@@ -49,11 +52,11 @@ public class ActionPostProcessmentsInitializer {
 		return notificationCreationPostProcessor;
 	}
 
-	public synchronized ActionPostProcessor<TeamInviteAction> getTeamInvitePostProcessor() {
-		if (teamInvitePostProcessor == null) {
-			teamInvitePostProcessor = new TeamInvitePostProcessor(multicastService, persistenceService);
+	public synchronized ActionPostProcessor<ModelAction> getSendActionToCurrentClientPostProcessor() {
+		if (sendActionToCurrentClientPostProcessor == null) {
+			sendActionToCurrentClientPostProcessor = new SendActionToCurrentClientPostProcessor(multicastService, persistenceService);
 		}
-		return teamInvitePostProcessor;
+		return sendActionToCurrentClientPostProcessor;
 	}
 
 	public synchronized ActionPostProcessor<FileUploadAction> getFileUploadPostProcessor() {

@@ -10,11 +10,13 @@ import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.tags.HasTags;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.model.value.Value;
+import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
-public class Scope implements Serializable, HasTags {
+public class Scope implements Serializable, HasTags, HasUUID {
 
 	private static final long serialVersionUID = 1L;
 
@@ -165,14 +167,12 @@ public class Scope implements Serializable, HasTags {
 
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return UUIDUtils.hashCode(this);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof Scope)) return false;
-
-		return this.id.equals(((Scope) obj).getId());
+		return UUIDUtils.equals(this, obj);
 	}
 
 	@Override

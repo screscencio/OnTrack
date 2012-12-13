@@ -14,7 +14,6 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToCreateNotificati
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveNotificationListException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToUpdateNotificationException;
 import br.com.oncast.ontrack.shared.model.user.User;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 import br.com.oncast.ontrack.shared.services.notification.NotificationCreatedEvent;
@@ -41,7 +40,7 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 		final User user = this.authenticationManager.getAuthenticatedUser();
 		LOGGER.debug("Retrieving notifications for user '" + user + "'.");
 		try {
-			return persistenceService.retrieveLatestNotificationsForUser(new UserRepresentation(user.getId()), MAX_NUMBER_OF_NOTIFICATIONS);
+			return persistenceService.retrieveLatestNotificationsForUser(user.getId(), MAX_NUMBER_OF_NOTIFICATIONS);
 		}
 		catch (final NoResultFoundException e) {
 			return new ArrayList<Notification>();
@@ -78,7 +77,7 @@ public class NotificationServerServiceImpl implements NotificationServerService 
 	@Override
 	public void updateNotificationCurrentUserReadState(final Notification notification, final boolean read) throws UnableToUpdateNotificationException {
 		final User user = this.authenticationManager.getAuthenticatedUser();
-		final NotificationRecipient recipient = notification.getRecipient(user);
+		final NotificationRecipient recipient = notification.getRecipient(user.getId());
 
 		if (recipient == null) {
 			final String message = "Unable to update notification: The current user is not in the notification recipients.";

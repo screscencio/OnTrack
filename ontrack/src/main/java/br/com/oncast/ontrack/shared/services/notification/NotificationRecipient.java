@@ -8,7 +8,6 @@ import org.simpleframework.xml.Element;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.notification.NotificationRecipientEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(NotificationRecipientEntity.class)
@@ -30,9 +29,9 @@ public class NotificationRecipient implements Serializable {
 
 	protected NotificationRecipient() {}
 
-	public NotificationRecipient(final UserRepresentation receipient) {
+	public NotificationRecipient(final UUID userId) {
 		id = new UUID();
-		setUserId(receipient.getId());
+		setUserId(userId);
 	}
 
 	public UUID getId() {

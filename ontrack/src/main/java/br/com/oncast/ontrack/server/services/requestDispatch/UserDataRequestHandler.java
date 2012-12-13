@@ -12,7 +12,7 @@ public class UserDataRequestHandler implements RequestHandler<UserDataRequest, U
 	public UserDataRequestResponse handle(final UserDataRequest request) throws Exception {
 		final UserDataManager userDataManager = ServerServiceProvider.getInstance().getUsersDataManager();
 
-		return new UserDataRequestResponse(userDataManager.findAllUsersForProjectId(request.getProjectId()));
+		return new UserDataRequestResponse(userDataManager.retrieveUsers(request.getUsersList()));
 	}
 
 }

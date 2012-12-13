@@ -22,6 +22,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextReque
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationQuotaRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectListRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.RemoveProjectAuthorizationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.SendFeedbackRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.UserDataRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.UserDataUpdateRequestHandler;
@@ -41,6 +42,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationQuotaRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectListRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.RemoveProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserScopeSelectionMulticastRequest;
@@ -88,6 +90,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(UserScopeSelectionMulticastRequest.class, new UserScopeSelectionMulticastRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(NotificationReadStateRequest.class, new NotificationReadStateRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(MultipleProjectContextRequest.class, new MultipleProjectContextRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(RemoveProjectAuthorizationRequest.class, new RemoveProjectAuthorizationRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

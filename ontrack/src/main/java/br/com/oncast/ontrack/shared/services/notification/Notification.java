@@ -15,7 +15,6 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.NotificationTypeConveter;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
@@ -149,9 +148,9 @@ public class Notification implements Serializable {
 		this.referenceDescription = referenceDescription;
 	}
 
-	public NotificationRecipient getRecipient(final User user) {
+	public NotificationRecipient getRecipient(final UUID userId) {
 		for (final NotificationRecipient notificationRecipient : getRecipients()) {
-			if (notificationRecipient.getUserId().equals(user.getId())) return notificationRecipient;
+			if (notificationRecipient.getUserId().equals(userId)) return notificationRecipient;
 		}
 		return null;
 	}
