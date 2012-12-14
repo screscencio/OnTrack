@@ -33,7 +33,9 @@ public class ScopeWidgetDropController extends SimpleDropController implements D
 	@Override
 	public void onDrop(final DragContext context) {
 		super.onDrop(context);
-		scopeWidget.addAssociatedUsers((DraggableMemberWidget) context.draggable);
+		final DraggableMemberWidget memberWidget = (DraggableMemberWidget) context.draggable;
+		scopeWidget.addAssociatedUsers(memberWidget);
+		memberWidget.setAssociation(scopeWidget.getModelObject());
 	}
 
 }

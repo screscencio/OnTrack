@@ -3,7 +3,12 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:u="urn:import:br.com.oncast.ontrack.client.ui.components.user">
 	
+	<ui:image field="removeImg" src="removebtn.png"/>
 	<ui:style>
+	
+		.rootPanel {
+			position: relative;
+		}
 	
 		.image {
 			margin-right: 2px;
@@ -14,10 +19,22 @@
 			display: inline-block !important;
 		}
 		
+		@sprite .removeBtn {
+			gwt-image: 'removeImg';
+			position: absolute;
+			top: 0px;
+			right: 1px;
+			height: 9px;
+			width: 9px;
+		}
+		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="container" styleName="{style.container}">
-		<u:UserWidget ui:field="userWidget" styleName="{style.image}" />
-	</g:FocusPanel>
+	<g:HTMLPanel styleName="{style.rootPanel}">
+		<g:FocusPanel ui:field="container" styleName="{style.container}">
+			<u:UserWidget ui:field="userWidget" styleName="{style.image}" />
+		</g:FocusPanel>
+		<g:FocusPanel ui:field="removeBtn" styleName="{style.removeBtn}" />
+	</g:HTMLPanel>
 	
 </ui:UiBinder> 

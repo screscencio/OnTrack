@@ -113,7 +113,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 		return new ModelWidgetContainer<UserRepresentation, DraggableMemberWidget>(new ModelWidgetFactory<UserRepresentation, DraggableMemberWidget>() {
 			@Override
 			public DraggableMemberWidget createWidget(final UserRepresentation modelBean) {
-				final DraggableMemberWidget widget = new DraggableMemberWidget(modelBean);
+				final DraggableMemberWidget widget = new DraggableMemberWidget(modelBean, scope);
 				if (userDragAndDropMananger != null) userDragAndDropMananger.monitorNewDraggableItem(widget, widget.getDraggableItem());
 				return widget;
 			}
