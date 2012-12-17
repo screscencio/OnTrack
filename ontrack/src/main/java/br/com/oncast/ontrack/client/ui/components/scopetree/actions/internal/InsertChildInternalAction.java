@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal;
 
 import java.util.Date;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -25,7 +24,7 @@ public class InsertChildInternalAction implements TwoStepInternalAction {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 		selectedTreeItem.setState(true);
 
-		newTreeItem = new ScopeTreeItem(new Scope("", ClientServiceProvider.getCurrentUser(), new Date()));
+		newTreeItem = new ScopeTreeItem(new Scope("", InternalActionHelper.findCurrentUser(), new Date()));
 
 		selectedTreeItem.addItem(newTreeItem);
 		if (!selectedTreeItem.getState()) selectedTreeItem.setState(true, false);

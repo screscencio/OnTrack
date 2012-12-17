@@ -19,5 +19,8 @@ public interface UserDataService {
 
 	HandlerRegistration registerListenerForSpecificUser(UserRepresentation user, UserSpecificInformationChangeListener listener);
 
+	HandlerRegistration registerListenerForSpecificUser(UUID userId, UserSpecificInformationChangeListener listener);
+
 	void onUserDataUpdate(User user, AsyncCallback<User> callback);
+
 }

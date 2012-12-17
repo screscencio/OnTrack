@@ -111,14 +111,17 @@ public class ApplicationMenu extends Composite {
 	private void registerUserDataUpdateListener() {
 		if (registration != null) return;
 
-		registration = ClientServiceProvider.getInstance().getUserDataService()
-				.registerListenerForSpecificUser(ClientServiceProvider.getCurrentUser(), new UserSpecificInformationChangeListener() {
-					@Override
-					public void onInformationChange(final User user) {
-						if (userLogoutMenuItem != null) userLogoutMenuItem.setText(messages.logout(user.getName()));
-						else unregisterUserDataUpdateListener();
-					}
-				});
+		registration = ClientServiceProvider
+				.getInstance()
+				.getUserDataService()
+				.registerListenerForSpecificUser(ClientServiceProvider.getInstance().getAuthenticationService().getCurrentUserId(),
+						new UserSpecificInformationChangeListener() {
+							@Override
+							public void onInformationChange(final User user) {
+								if (userLogoutMenuItem != null) userLogoutMenuItem.setText(messages.logout(user.getName()));
+								else unregisterUserDataUpdateListener();
+							}
+						});
 	}
 
 	@Override

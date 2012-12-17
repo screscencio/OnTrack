@@ -52,8 +52,7 @@ import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationExcept
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
-import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -283,12 +282,7 @@ public class ClientServiceProvider {
 		return getInstance().getContextProviderService().getCurrent();
 	}
 
-	public static UserRepresentation getCurrentUser() {
-		try {
-			return getInstance().getContextProviderService().getCurrent().findUser(getInstance().getAuthenticationService().getCurrentUserId());
-		}
-		catch (final UserNotFoundException e) {
-			return null;
-		}
+	public static UUID getCurrentUser() {
+		return getInstance().getAuthenticationService().getCurrentUserId();
 	}
 }

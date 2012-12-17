@@ -82,6 +82,10 @@ public class Annotation implements Serializable, HasUUID {
 		return voters.contains(user);
 	}
 
+	public boolean hasVoted(final UUID userId) {
+		return voters.contains(userId);
+	}
+
 	public FileRepresentation getAttachmentFile() {
 		return attachmentFile;
 	}

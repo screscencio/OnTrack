@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal;
 
 import java.util.Date;
 
-import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
@@ -24,7 +23,7 @@ public class InsertFatherInternalAction implements TwoStepInternalAction {
 	public void execute(final ScopeTreeWidget tree) throws UnableToCompleteActionException {
 		selectedTreeItem = InternalActionHelper.findScopeTreeItem(tree, scope);
 
-		newTreeItem = new ScopeTreeItem(new Scope("", ClientServiceProvider.getCurrentUser(), new Date()));
+		newTreeItem = new ScopeTreeItem(new Scope("", InternalActionHelper.findCurrentUser(), new Date()));
 
 		final ScopeTreeItem parentTreeItem = selectedTreeItem.getParentItem();
 		parentTreeItem.insertItem(parentTreeItem.getChildIndex(selectedTreeItem), newTreeItem);

@@ -194,13 +194,18 @@ public class UserDataServiceImpl implements UserDataService {
 
 	@Override
 	public HandlerRegistration registerListenerForSpecificUser(final UserRepresentation user, final UserSpecificInformationChangeListener listener) {
-		userSpecificListeners.put(user.getId(), listener);
-		if (cachedUsers.contains(user)) listener.onInformationChange(retrieveRealUser(user));
+		return registerListenerForSpecificUser(user.getId(), listener);
+	}
+
+	@Override
+	public HandlerRegistration registerListenerForSpecificUser(final UUID userId, final UserSpecificInformationChangeListener listener) {
+		userSpecificListeners.put(userId, listener);
+		if (cachedUsers.contains(userId)) listener.onInformationChange(retrieveRealUser(userId));
 
 		return new HandlerRegistration() {
 			@Override
 			public void removeHandler() {
-				userSpecificListeners.remove(user.getId(), listener);
+				userSpecificListeners.remove(userId, listener);
 			}
 		};
 	}
