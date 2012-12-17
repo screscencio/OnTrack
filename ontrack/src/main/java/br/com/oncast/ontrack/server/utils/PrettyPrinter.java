@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.utils;
+package br.com.oncast.ontrack.server.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;

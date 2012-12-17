@@ -6,7 +6,8 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
-import br.com.oncast.ontrack.shared.utils.PrettyPrinter;
+
+import com.google.common.base.Joiner;
 
 public class ModelActionSyncEvent implements ServerPushEvent {
 
@@ -41,7 +42,6 @@ public class ModelActionSyncEvent implements ServerPushEvent {
 
 	@Override
 	public String toString() {
-		return "[Project: " + projectId + "; " + PrettyPrinter.getSimpleNamesListString(actionList) + "]";
+		return "[Project: " + projectId + "; " + Joiner.on(", ").join(actionList) + "]";
 	}
-
 }
