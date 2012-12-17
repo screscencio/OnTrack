@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
+import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -84,6 +85,8 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private SimpleCommandMenuItem noItemsItem;
 
+	private boolean firstTime;
+
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int width, final int maxHeight) {
 		this(defaultUiBinder, customItemFactory, width, maxHeight);
 	}
@@ -120,8 +123,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@Override
 	public void show() {
+		firstTime = true;
 		menu.show();
-		menu.selectFirstItem();
+		selectFirstItem();
 		focus();
 	}
 
@@ -138,6 +142,11 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	@UiHandler("filterArea")
 	protected void handleKeyUp(final KeyUpEvent event) {
+		if (BrowserKeyCodes.isModifierKey(event.getNativeKeyCode())) return;
+		if (firstTime) {
+			firstTime = false;
+			return;
+		}
 		if (event.getNativeKeyCode() == KEY_ESCAPE) {
 			if (closeOnEscape) hide();
 			else {
@@ -334,5 +343,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private SimpleCommandMenuItem getNoItemsItem() {
 		return noItemsItem == null ? noItemsItem = new SimpleCommandMenuItem(customItemFactory.getNoItemText(), "", null) : noItemsItem;
+	}
+
+	public void setSelected(final CommandMenuItem item) {
+		menu.setSelected(item);
 	}
 }

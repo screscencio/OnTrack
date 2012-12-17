@@ -25,6 +25,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFacto
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
@@ -432,9 +433,21 @@ public class ScopeTreeItemWidget extends Composite {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
 
 		items.add(releaseCommandMenuItemFactory.createItem("None", ""));
-		for (final Release releaseItem : releaseList)
-			items.add(releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(), releaseItem.getFullDescription()));
 
+		CommandMenuItem scopeReleaseItem = null;
+		Release release = scope.getRelease();
+
+		if (release == null) release = getCurrentRelease();
+
+		for (final Release releaseItem : releaseList) {
+			final SimpleCommandMenuItem item = releaseCommandMenuItemFactory.createItem(releaseItem.getFullDescription(),
+					releaseItem.getFullDescription());
+
+			if (release.equals(releaseItem)) scopeReleaseItem = item;
+			items.add(item);
+		}
+
+		final CommandMenuItem scopeReleaseItemFinal = scopeReleaseItem;
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 250, 264);
 
 		commandsMenu.addCloseHandler(createCloseHandler());
@@ -442,6 +455,38 @@ public class ScopeTreeItemWidget extends Composite {
 		align(configPopup(), releasePanel)
 				.popup(commandsMenu)
 				.pop();
+
+		if (scopeReleaseItem != null) {
+
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					commandsMenu.setSelected(scopeReleaseItemFinal);
+				}
+			});
+		}
+	}
+
+	private Release getProjectRelease() {
+		return ClientServiceProvider.getCurrentProjectContext().getProjectRelease();
+	}
+
+	private Release getCurrentRelease() {
+		for (final Release r : getProjectRelease().getAllReleasesInTemporalOrder()) {
+			if (r.isDone()) continue;
+
+			for (final Scope s : r.getScopeList()) {
+				if (s.getProgress().isUnderWork()) return r;
+			}
+		}
+		return getFirstNotCompleteRelease();
+	}
+
+	private Release getFirstNotCompleteRelease() {
+		for (final Release r : getProjectRelease().getAllReleasesInTemporalOrder()) {
+			if (!r.isDone()) return r;
+		}
+		return getProjectRelease();
 	}
 
 	private CloseHandler<FiltrableCommandMenu> createCloseHandler() {
@@ -451,7 +496,6 @@ public class ScopeTreeItemWidget extends Composite {
 			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
 				focusPanel.setFocus(true);
 			}
-
 		};
 	}
 

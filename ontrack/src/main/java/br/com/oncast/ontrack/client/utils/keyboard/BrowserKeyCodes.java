@@ -171,4 +171,8 @@ public class BrowserKeyCodes {
 		}
 	}
 
+	public static boolean isModifierKey(final int code) {
+		return code == KEY_SHIFT || code == KEY_CTRL || code == KEY_ALT;
+	}
+
 }
