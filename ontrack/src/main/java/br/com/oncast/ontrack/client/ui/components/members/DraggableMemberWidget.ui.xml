@@ -8,6 +8,7 @@
 	
 		.rootPanel {
 			position: relative;
+			display: inline-block !important;
 		}
 	
 		.image {
@@ -16,7 +17,6 @@
 		}
 	
 		.container {
-			display: inline-block !important;
 		}
 		
 		@sprite .removeBtn {
