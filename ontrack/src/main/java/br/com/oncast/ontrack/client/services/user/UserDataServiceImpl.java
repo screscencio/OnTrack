@@ -200,7 +200,7 @@ public class UserDataServiceImpl implements UserDataService {
 	@Override
 	public HandlerRegistration registerListenerForSpecificUser(final UUID userId, final UserSpecificInformationChangeListener listener) {
 		userSpecificListeners.put(userId, listener);
-		if (cachedUsers.contains(userId)) listener.onInformationChange(retrieveRealUser(userId));
+		if (cachedUsers.contains(new UserRepresentation(userId))) listener.onInformationChange(retrieveRealUser(userId));
 
 		return new HandlerRegistration() {
 			@Override
