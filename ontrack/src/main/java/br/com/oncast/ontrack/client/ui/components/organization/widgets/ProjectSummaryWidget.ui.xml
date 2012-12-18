@@ -10,6 +10,7 @@
 	<ui:image field="planningIcon" src="link.png"/>
 	<ui:image field="containerStateOpenImg" src="../../releasepanel/widgets/bg-expand-minus.png"/>
 	<ui:image field="containerStateClosedImg" src="../../releasepanel/widgets/bg-expand-plus.png"/>
+	<ui:image field="loadingImg" src="loading.gif"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.organization.widgets.ProjectSummaryWidget.ProjectSummaryWidgetStyle">
 	
 		.root {
@@ -45,6 +46,19 @@
 			position: relative;
 			margin-top: 19px;
 			height: 400px;
+		}
+		
+		.loadingIndicatorPanel {
+			border: BORDER_DEFAULT;
+			border-radius: 3px;
+			background: white;
+		}
+		
+		@sprite .loadingIndicator {
+			gwt-image: 'loadingImg';
+			margin: auto;
+			position: relative;
+			top: 160px;
 		}
 		
 		.releaseContainer {
@@ -151,25 +165,30 @@
 	
 		<layout:ApplicationPopupBoxContainer styleName="{style.body}">
 			<g:SimplePanel styleName="{style.spacer}"/>
-			<g:HTMLPanel ui:field="bodyContent" styleName="{style.content}">
-				<g:FocusPanel ui:field="releaseContainer" styleName="{style.releaseContainer}">
-					<w:ModelWidgetContainer ui:field="releases"/>
-				</g:FocusPanel>
-				<g:FocusPanel styleName="{style.details}">
-					<g:HorizontalPanel height="100%">
-						<aw:ReleaseDetailWidget ui:field="releaseDetail" styleName="{style.detailsContainer}"/>
-						<g:cell width="100%">
-							<g:HTMLPanel styleName="{style.detailsContainer} {style.scopeListContainer}">
-								<g:Label ui:field="scopesListTitle" styleName="{style.scopesListTitle}"></g:Label>
-								<g:SimplePanel styleName="{style.scopesList}">
-									<w:ModelWidgetContainer ui:field="scopesList"/>
-								</g:SimplePanel>
-							</g:HTMLPanel>
-						</g:cell>
-						<g:SimplePanel ui:field="chartPanel" styleName="{style.detailsContainer} {style.releaseChartContainer}" />
-					</g:HorizontalPanel>
-				</g:FocusPanel>
-			</g:HTMLPanel>
+			<g:DeckPanel ui:field="loadingDeck" styleName="{style.content}">
+				<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
+					<g:SimplePanel styleName="{style.loadingIndicator}" />
+				</g:SimplePanel>
+				<g:HTMLPanel>
+					<g:FocusPanel ui:field="releaseContainer" styleName="{style.releaseContainer}">
+						<w:ModelWidgetContainer ui:field="releases"/>
+					</g:FocusPanel>
+					<g:FocusPanel styleName="{style.details}">
+						<g:HorizontalPanel height="100%">
+							<aw:ReleaseDetailWidget ui:field="releaseDetail" styleName="{style.detailsContainer}"/>
+							<g:cell width="100%">
+								<g:HTMLPanel styleName="{style.detailsContainer} {style.scopeListContainer}">
+									<g:Label ui:field="scopesListTitle" styleName="{style.scopesListTitle}"></g:Label>
+									<g:SimplePanel styleName="{style.scopesList}">
+										<w:ModelWidgetContainer ui:field="scopesList"/>
+									</g:SimplePanel>
+								</g:HTMLPanel>
+							</g:cell>
+							<g:SimplePanel ui:field="chartPanel" styleName="{style.detailsContainer} {style.releaseChartContainer}" />
+						</g:HorizontalPanel>
+					</g:FocusPanel>
+				</g:HTMLPanel>
+			</g:DeckPanel>
 		</layout:ApplicationPopupBoxContainer>
 		
 		<g:HorizontalPanel styleName="{style.header}" verticalAlignment="middle">

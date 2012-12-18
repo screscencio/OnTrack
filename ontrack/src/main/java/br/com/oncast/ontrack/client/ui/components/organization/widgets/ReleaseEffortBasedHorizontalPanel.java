@@ -7,9 +7,15 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseEffortBasedHorizontalPanel extends HorizontalPanel {
 
-	private final Release release;
+	private Release release;
+
+	public ReleaseEffortBasedHorizontalPanel() {}
 
 	public ReleaseEffortBasedHorizontalPanel(final Release release) {
+		this.release = release;
+	}
+
+	public void setRelease(final Release release) {
 		this.release = release;
 	}
 

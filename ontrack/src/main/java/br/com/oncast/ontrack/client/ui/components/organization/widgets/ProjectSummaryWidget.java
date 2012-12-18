@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
@@ -20,6 +21,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -35,15 +37,15 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
-public class ProjectSummaryWidget extends Composite implements ModelWidget<ProjectContext> {
+public class ProjectSummaryWidget extends Composite implements ModelWidget<ProjectRepresentation> {
 
 	private static final int MARGIN_LEFT = 10;
 
@@ -69,9 +71,6 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	ReleaseDetailWidget releaseDetail;
 
 	@UiField
-	UIObject bodyContent;
-
-	@UiField
 	FocusPanel releaseContainer;
 
 	@UiField(provided = true)
@@ -84,12 +83,17 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	ModelWidgetContainer<Scope, ScopeSummaryWidget> scopesList;
 
 	@UiField
-	protected SimplePanel chartPanel;
+	SimplePanel chartPanel;
+
+	@UiField
+	DeckPanel loadingDeck;
 
 	@UiField
 	FocusPanel containerStateToggleButton;
 
-	private final ProjectContext project;
+	private final ProjectRepresentation projectRepresentation;
+
+	private ProjectContext project;
 
 	private final Set<HandlerRegistration> selectionEventHandlers;
 
@@ -99,8 +103,10 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	private boolean hasStartedUp = false;
 
-	public ProjectSummaryWidget(final ProjectContext project) {
-		this.project = project;
+	private ReleaseEffortBasedHorizontalPanel releasesHorizontalPanel;
+
+	public ProjectSummaryWidget(final ProjectRepresentation project) {
+		this.projectRepresentation = project;
 		selectionEventHandlers = new HashSet<HandlerRegistration>();
 
 		createReleasesContainer();
@@ -108,7 +114,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		name.setText(project.getProjectRepresentation().getName());
+		name.setText(project.getName());
 		setContainerState(false);
 	}
 
@@ -150,7 +156,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 				return new ReleaseSummaryWidget(getProjectId(), modelBean);
 			}
 
-		}, new AnimatedContainer(new ReleaseEffortBasedHorizontalPanel(getProjectRelease())));
+		}, new AnimatedContainer(releasesHorizontalPanel = new ReleaseEffortBasedHorizontalPanel()));
 	}
 
 	private void createScopesList() {
@@ -175,13 +181,13 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	@UiHandler("planningLink")
 	void onPlanningLinkClicked(final ClickEvent e) {
-		ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new PlanningPlace(project.getProjectRepresentation()));
+		ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new PlanningPlace(projectRepresentation));
 	}
 
 	@Override
 	public boolean update() {
-		name.setText(project.getProjectRepresentation().getName());
-		releases.update(project.getProjectRelease().getChildren());
+		name.setText(projectRepresentation.getName());
+		releases.update(getProjectRelease().getChildren());
 		return false;
 	}
 
@@ -231,7 +237,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	}
 
 	public void setContainerState(final boolean b) {
-		bodyContent.setVisible(b);
+		loadingDeck.setVisible(b);
 		containerStateToggleButton.setStyleName(style.containerStateOpen(), b);
 		containerStateToggleButton.setStyleName(style.containerStateClosed(), !b);
 
@@ -245,20 +251,39 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	private void setup() {
 		if (hasStartedUp) return;
 
-		update();
-		setSelected(getCurrentRelease());
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+		loadingDeck.showWidget(0);
+		ClientServiceProvider.getInstance().getContextProviderService().loadProjectContext(projectRepresentation.getId(), new ProjectContextLoadCallback() {
 			@Override
-			public void execute() {
-				ensureSelectedWidgetIsVisible();
+			public void onUnexpectedFailure(final Throwable cause) {
+				ClientServiceProvider.getInstance().getClientAlertingService().showError(cause.getLocalizedMessage());
+			}
+
+			@Override
+			public void onProjectNotFound() {
+				ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.projectNotFound());
+			}
+
+			@Override
+			public void onProjectContextLoaded() {
+				project = ClientServiceProvider.getCurrentProjectContext();
+				releasesHorizontalPanel.setRelease(getProjectRelease());
+				update();
+				setSelected(getCurrentRelease());
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						ensureSelectedWidgetIsVisible();
+					}
+				});
+				chart.updateSize();
+				hasStartedUp = true;
+				loadingDeck.showWidget(1);
 			}
 		});
-		chart.updateSize();
-		hasStartedUp = true;
 	}
 
 	private boolean getContainerState() {
-		return bodyContent.isVisible();
+		return loadingDeck.isVisible();
 	}
 
 	private Release getCurrentRelease() {
@@ -284,12 +309,12 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	}
 
 	private UUID getProjectId() {
-		return project.getProjectRepresentation().getId();
+		return projectRepresentation.getId();
 	}
 
 	@Override
-	public ProjectContext getModelObject() {
-		return project;
+	public ProjectRepresentation getModelObject() {
+		return projectRepresentation;
 	}
 
 }

@@ -12,4 +12,8 @@ public interface ProjectSummaryWidgetMessages extends BaseMessages {
 	@Description("Title for release's unplanned scope")
 	String unplannedScope();
 
+	@DefaultMessage("The requested project was not found.")
+	@Description("shown when the requested project was not found in the server")
+	String projectNotFound();
+
 }

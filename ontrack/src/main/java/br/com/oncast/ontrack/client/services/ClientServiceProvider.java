@@ -28,8 +28,6 @@ import br.com.oncast.ontrack.client.services.instruction.UserGuideServiceImpl;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricService;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricServiceNewRelicImpl;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
-import br.com.oncast.ontrack.client.services.organization.OrganizationContextProviderService;
-import br.com.oncast.ontrack.client.services.organization.OrganizationContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
@@ -102,7 +100,6 @@ public class ClientServiceProvider {
 	private ClientErrorMessages clientErrorMessages;
 	private UserGuidService userGuidService;
 	private UserAssociationService userAssociationService;
-	private OrganizationContextProviderService organizationContextProviderService;
 
 	private static ClientServiceProvider instance;
 
@@ -266,11 +263,6 @@ public class ClientServiceProvider {
 	public UserAssociationService getUserAssociationService() {
 		return userAssociationService == null ? userAssociationService = new UserAssociationServiceImpl(getActionExecutionService(),
 				getContextProviderService()) : userAssociationService;
-	}
-
-	public OrganizationContextProviderService getOrganizationContextProviderService() {
-		return organizationContextProviderService == null ? organizationContextProviderService = new OrganizationContextProviderServiceImpl(
-				getRequestDispatchService(), getProjectRepresentationProvider()) : organizationContextProviderService;
 	}
 
 	public ReleaseEstimator getReleaseEstimator() {

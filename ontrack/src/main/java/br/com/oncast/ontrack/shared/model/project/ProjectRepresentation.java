@@ -12,7 +12,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
 @ConvertTo(ProjectRepresentationEntity.class)
-public class ProjectRepresentation implements Serializable, HasUUID {
+public class ProjectRepresentation implements Serializable, HasUUID, Comparable<ProjectRepresentation> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,6 +60,11 @@ public class ProjectRepresentation implements Serializable, HasUUID {
 	@Override
 	public String toString() {
 		return name + " (" + id.toString() + ")";
+	}
+
+	@Override
+	public int compareTo(final ProjectRepresentation o) {
+		return getName().compareTo(o.getName());
 	}
 
 }
