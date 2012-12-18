@@ -7,7 +7,7 @@
 		.associatedUsers {
 			background: #fafafa;
 
-			padding: 3px 1px 0px 3px;
+			padding: 3px 1px 1px 3px;
 		}
 		
 		.associatedUsers img {
@@ -48,9 +48,7 @@
 		
 		.associatedUsers:HOVER {
 			border: 1px solid #BEBEBE;
-			margin: -1px;
-			
-			margin-bottom: 1px;
+			padding: 2px 0px 0px 2px;
 		}
 
 		.associatedUsersContainer:HOVER {
