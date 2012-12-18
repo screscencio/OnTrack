@@ -27,6 +27,8 @@
 @def PADDING_MEDIUM 10px;
 @def PADDING_LARGE 15px;
 
+@def BORDER_RADIUS_SMALL 2px;
+
 @def FONT_DEFAULT 'ProximaNovaRegular';
 @def FONT_DEFAULT_ITALIC 'ProximaNovaRegularItalic';
 
@@ -56,17 +58,16 @@
 .hoverButton {
 	background-position: center;
 			
-	margin: 1px;
+	border: 1px solid transparent;
 	
-	border-radius: 3px;
-	padding: 2px;
+	border-radius: BORDER_RADIUS_SMALL;
+	padding: BORDER_RADIUS_SMALL;
 }
 
 .hoverButton:HOVER {
 	cursor: pointer;
-	margin: 0px;
 	margin-left: 10px;
-	border: 1px solid #AEAEAE;
+	border-color: #AEAEAE;
 	box-shadow: inset 1px 1px 1px white;
 }
 

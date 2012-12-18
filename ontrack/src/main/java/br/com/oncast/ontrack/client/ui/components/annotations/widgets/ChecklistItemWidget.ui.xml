@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:style type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.ChecklistItemWidget.ChecklistWidgetStyle">
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.annotations.widgets.ChecklistItemWidget.ChecklistWidgetStyle">
 	
 		.description {
 			padding-left: 3px;
@@ -11,14 +11,27 @@
 		}
 		
 		.remove {
-			padding-right: 5px;
-			padding-left: 2px;
+			margin-right: 5px;
+			margin-left: 2px;
+			padding: 0px 2px;
 			cursor: pointer;
 
 			color: red;
 			font-weight: bold;
+			text-align: center;
+			vertical-align: middle;
 			
 			visibility: hidden;
+			
+			border: 1px solid transparent;
+			border-radius: BORDER_RADIUS_SMALL;
+		}
+		
+		.remove:HOVER {
+			border-color: #AEAEAE;
+			-webkit-box-shadow: inset -1px -1px 1px #E9E9E9;
+			-moz-box-shadow: inset -1px -1px 1px #E9E9E9;
+			box-shadow: inset -1px -1px 1px #E9E9E9;
 		}
 		
 		.removeVisible {

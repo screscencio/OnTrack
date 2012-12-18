@@ -6,7 +6,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
-	<ui:style>
+	<ui:style src="../../../style/default.css">
 	
 		.container {
 			margin-bottom: 5px;
@@ -27,6 +27,15 @@
 			
 			cursor: pointer;
 			padding: 0px 2px;
+			border: 1px solid transparent;
+			border-radius: BORDER_RADIUS_SMALL;
+		}
+		
+		.remove:HOVER {
+			border-color: #AEAEAE;
+			-webkit-box-shadow: inset -1px -1px 1px #E9E9E9;
+			-moz-box-shadow: inset -1px -1px 1px #E9E9E9;
+			box-shadow: inset -1px -1px 1px #E9E9E9;
 		}
 		
 		.separator {
@@ -36,9 +45,20 @@
 		.addButton {
 			cursor: pointer;
 			font-weight: bold;
-			padding-left: 7px;
-			
+			text-align: center;
+
+			padding: BORDER_RADIUS_SMALL;
 			margin: 0px 5px;
+
+			border: 1px solid transparent;
+			border-radius: BORDER_RADIUS_SMALL;
+		}
+		
+		.addButton:HOVER {
+			border-color: #AEAEAE;
+			-webkit-box-shadow: inset -1px -1px 1px #E9E9E9;
+			-moz-box-shadow: inset -1px -1px 1px #E9E9E9;
+			box-shadow: inset -1px -1px 1px #E9E9E9;
 		}
 		
 		.newItemDescription {
@@ -46,10 +66,25 @@
 		}
 		
 		.addItemLabel {
+			width: 120px !important;
+			margin-right: auto;
+			
 			cursor: pointer;
 			font-weight: bold;
+			text-align: center;
 			
 			margin-left: 5px;
+			padding: BORDER_RADIUS_SMALL;
+			
+			border: 1px solid transparent;
+			border-radius: BORDER_RADIUS_SMALL;
+		}
+		
+		.addItemLabel:HOVER {
+			border-color: #AEAEAE;
+			-webkit-box-shadow: inset -1px -1px 1px #E9E9E9;
+			-moz-box-shadow: inset -1px -1px 1px #E9E9E9;
+			box-shadow: inset -1px -1px 1px #E9E9E9;
 		}
 		
 		.addItemDeck {

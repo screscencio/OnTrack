@@ -39,7 +39,7 @@
 			cursor: pointer;
 			z-index: 10;
 		}
-
+		
 		.subjectTitle {
 			text-transform: uppercase;
 			padding: 8px;
@@ -145,22 +145,24 @@
 				<g:HTMLPanel styleName="{style.contentContainer}">
 					<g:HTMLPanel styleName="{style.flowContainer}">
 
-							<g:Label styleName="{style.subjectTitle}">Description</g:Label>
+							<g:Label styleName="{style.subjectTitle}">
+								<ui:msg description="Description">Description</ui:msg>
+							</g:Label>
 							<misc:DescriptionRichTextLabel ui:field="descriptionLabel" styleName="{style.description}" />
-							<misc:Separator styleName="{style.noMargin}"/>
 
-							<g:Label styleName="{style.subjectTitle}">Checklists</g:Label>
+							<g:Label styleName="{style.subjectTitle}">
+								<ui:msg description="Checklists">Checklists</ui:msg>
+							</g:Label>
 							<aw:ChecklistsContainerWidget ui:field="checklist" styleName="{style.checklist}"/>
-							<misc:Separator styleName="{style.noMargin}"/>
 
-							<g:Label styleName="{style.subjectTitle}">Annotations</g:Label>
+							<g:Label styleName="{style.subjectTitle}">
+								<ui:msg description="Annotations">Annotations</ui:msg>
+							</g:Label>
 							<aw:AnnotationsWidget ui:field="annotations" styleName="{style.annotationsPanel}" />
 
 					</g:HTMLPanel>
 					<g:FocusPanel styleName="{style.rightPanel}">
-
 							<aw:SubjectDetailWidget ui:field="subjectDetails" styleName="{style.detailWidget}" />
-
 					</g:FocusPanel>
 				</g:HTMLPanel>
 		</g:HTMLPanel>
