@@ -8,24 +8,24 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 public class ScopeWidgetFactory implements ModelWidgetFactory<Scope, ReleaseScopeWidget> {
 
 	private final DragAndDropManager scopeItemDragAndDropManager;
-	private final boolean shouldShowScopeColor;
+	private final boolean releaseSpecific;
 	private final DragAndDropManager userDragAndDropMananger;
 	private final DropControllerFactory userDropControllerFactory;
 
 	public ScopeWidgetFactory(final DragAndDropManager scopeItemDragAndDropManager,
 			final DragAndDropManager userDragAndDropMananger,
 			final DropControllerFactory userDropControllerFactory,
-			final boolean shouldShowScopeColor) {
+			final boolean releaseSpecific) {
 
 		this.scopeItemDragAndDropManager = scopeItemDragAndDropManager;
 		this.userDragAndDropMananger = userDragAndDropMananger;
 		this.userDropControllerFactory = userDropControllerFactory;
-		this.shouldShowScopeColor = shouldShowScopeColor;
+		this.releaseSpecific = releaseSpecific;
 	}
 
 	@Override
 	public ReleaseScopeWidget createWidget(final Scope scope) {
-		final ReleaseScopeWidget newScopeWidget = new ReleaseScopeWidget(scope, shouldShowScopeColor, userDragAndDropMananger);
+		final ReleaseScopeWidget newScopeWidget = new ReleaseScopeWidget(scope, releaseSpecific, userDragAndDropMananger);
 
 		scopeItemDragAndDropManager.monitorNewDraggableItem(newScopeWidget, newScopeWidget.getDraggableAnchor());
 		if (userDragAndDropMananger != null && userDropControllerFactory != null) userDragAndDropMananger.monitorDropTarget(newScopeWidget,

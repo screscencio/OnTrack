@@ -41,9 +41,26 @@
 	        height: 100%;
 	        width: 100%;
 	    }
+	    
+	    .percentualBar {
+			position: absolute;
+			bottom: 0px;
+			left: 11px;
+			right: 0px;
+			height: 3px;
+		}
 		
 		.descriptionLabel {
 			padding: 10px;
+		}
+
+		.effortLabel {
+			font-size: 11px;
+			padding-top: 2px;
+			padding-right: 6px;
+			font-weight: bolder;
+			color: #B3B3B3;
+			text-align: center;
 		}
 		
 		.draggable {
@@ -95,6 +112,7 @@
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">
 		<g:HorizontalPanel ui:field="internalPanel" styleName="{style.internalPanel}" verticalAlignment="middle">
+			<t:PercentualBar ui:field="percentualBar" styleName="{style.percentualBar}" />
 			<g:cell height="100%">
 				<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}">
 					<g:SimplePanel styleName="{style.draggableImage}"/>
@@ -104,6 +122,7 @@
 	  		<g:cell width="100%">
 				<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
 	  		</g:cell>
+  			<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
  			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIconNotStarted} {style.progressIcon}"/>
   			<g:FocusPanel ui:field="statusBar" styleName="{style.statusBar}"/>
 		</g:HorizontalPanel>
