@@ -14,9 +14,9 @@ import com.google.gwt.user.client.ui.Widget;
 // TODO Refactor this class to be more flexible or create a builder
 public class ClientAlertingService {
 
-	private static final int DURATION_SHORT = 3000;
+	public static final int DURATION_SHORT = 3000;
 
-	private static final int DURATION_LONG = 5000;
+	public static final int DURATION_LONG = 5000;
 
 	Widget alertingParentPanel;
 
@@ -79,6 +79,10 @@ public class ClientAlertingService {
 
 	public void showWarning(final String message) {
 		makeAutoCloseAlert(message, AlertType.WARNING, DURATION_SHORT);
+	}
+
+	public void showWarning(final String message, final int duration) {
+		makeAutoCloseAlert(message, AlertType.WARNING, duration);
 	}
 
 	public void showSuccess(final String message) {

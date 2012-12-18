@@ -13,7 +13,7 @@ public class ReleaseDescriptionParser {
 	private int lastSeparatorIndex = 0;
 
 	public ReleaseDescriptionParser(final String releaseDescription) {
-		description = releaseDescription;
+		description = releaseDescription == null ? "" : releaseDescription;
 		fullDescriptionOfTheHead = "";
 		head = extractHead();
 	}

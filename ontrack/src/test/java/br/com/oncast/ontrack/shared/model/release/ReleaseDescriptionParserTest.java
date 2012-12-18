@@ -17,6 +17,11 @@ public class ReleaseDescriptionParserTest {
 	private static final char[] WHITE_CHARACTERS = { ' ', '\n', '\r', '\t' };
 
 	@Test
+	public void emptyStringShouldBeTheHeadOfANullDescription() {
+		assertEquals("", getHeadOfDescription(null));
+	}
+
+	@Test
 	public void emptyStringShouldBeTheHeadOfABlankDescription() {
 		for (final String description : getWhiteSpaceConcatenationVariationsOf("")) {
 			assertEquals("", getHeadOfDescription(description));

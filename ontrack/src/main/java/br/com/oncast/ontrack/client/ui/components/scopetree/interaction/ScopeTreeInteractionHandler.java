@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.Two
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeWidgetInteractionHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.exceptions.OperationNotAllowedException;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
+import br.com.oncast.ontrack.client.util.ScopeBindReleaseActionHelper;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
@@ -136,6 +137,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 	@Override
 	public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {
+		if (!ScopeBindReleaseActionHelper.validadeHierarchicalCondition(scopeId, releaseDescription)) return;
 		applicationActionHandler.onUserActionExecutionRequest(new ScopeBindReleaseAction(scopeId, releaseDescription));
 	}
 

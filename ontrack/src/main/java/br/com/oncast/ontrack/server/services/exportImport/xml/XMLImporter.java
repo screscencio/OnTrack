@@ -105,7 +105,7 @@ public class XMLImporter {
 			persistenceService.persistOrUpdateProjectRepresentation(representation);
 			final List<UserAction> actions = projectNode.getActions();
 			persistActions(representation.getId(), actions);
-			LOGGER.debug("Persisted project " + representation + " and it's " + actions.size() + " actions in " + getTimeSpent(initialTime)
+			LOGGER.info("Persisted project " + representation + " and it's " + actions.size() + " actions in " + getTimeSpent(initialTime)
 					+ " ms.");
 		}
 		LOGGER.debug("Persisted " + projectNodes.size() + " projects in " + getTimeSpent(startTime) + " ms");
@@ -137,7 +137,7 @@ public class XMLImporter {
 			final ProjectRepresentation representation = node.getProjectRepresentation();
 			try {
 				businessLogic.loadProjectForMigration(representation.getId());
-				LOGGER.debug("Loaded project " + representation + " in " + getTimeSpent(initialTime) + " ms.");
+				LOGGER.info("Loaded project " + representation + " in " + getTimeSpent(initialTime) + " ms.");
 			}
 			catch (final Exception e) {
 				final String message = "Unable to load project '" + representation + "' after import.";

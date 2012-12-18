@@ -30,7 +30,7 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 	public void process(final ModelAction action, final ActionContext actionContext, final ProjectContext projectContext)
 			throws UnableToPostProcessActionException {
 		if (!active) {
-			LOGGER.info("Ignoring notification post processment of action '" + action + "': the post processor was deactivated.");
+			LOGGER.debug("Ignoring notification post processment of action '" + action + "': the post processor was deactivated.");
 			return;
 		}
 
@@ -46,12 +46,12 @@ public class NotificationCreationPostProcessor implements ActionPostProcessor<Mo
 	}
 
 	public void deactivate() {
-		LOGGER.warn("Deactivating notification post processment.");
+		LOGGER.debug("Deactivating notification post processment.");
 		active = false;
 	}
 
 	public void activate() {
-		LOGGER.warn("Activating notification post processment.");
+		LOGGER.debug("Activating notification post processment.");
 		active = true;
 	}
 }
