@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PercentualBar;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
@@ -22,7 +23,9 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.BgColorAnimation
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -89,6 +92,13 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	@UiField
 	HorizontalPanel internalPanel;
 
+	@UiField
+	PercentualBar percentualBar;
+
+	@UiField
+	// TODO use FastLabel
+	Label effortLabel;
+
 	@UiField(provided = true)
 	ScopeAssociatedMembersWidget associatedUsers;
 
@@ -100,7 +110,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	// IMPORTANT Used to refresh DOM only when needed.
 	private String currentScopeProgress;
 
-	private final boolean shouldShowScopeColor;
+	private final boolean releaseSpecific;
 
 	private boolean selected = false;
 	private boolean highlighted = false;
@@ -109,12 +119,13 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		this(scope, false, null);
 	}
 
-	public ReleaseScopeWidget(final Scope scope, final boolean shouldShowScopeColor, final DragAndDropManager userDragAndDropMananger) {
+	public ReleaseScopeWidget(final Scope scope, final boolean releaseSpecific, final DragAndDropManager userDragAndDropMananger) {
 		associatedUsers = createAssociatedUsersListWidget(scope, userDragAndDropMananger);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		this.scope = scope;
-		this.shouldShowScopeColor = shouldShowScopeColor;
+		this.releaseSpecific = releaseSpecific;
+		effortLabel.setVisible(releaseSpecific);
 		update();
 		setHasOpenImpediments(SERVICE_PROVIDER.getAnnotationService().hasOpenImpediment(scope.getId()));
 	}
@@ -122,7 +133,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	@Override
 	public boolean update() {
 		updateAssociatedUsers();
-		return updateDescription() | updateProgress() | updateTitle();
+		return updateDescription() | updateProgress() | updateTitle() | updateValues();
 	}
 
 	private void updateAssociatedUsers() {
@@ -134,6 +145,17 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		if (title.isEmpty() || title.equals(panel.getTitle())) return false;
 
 		descriptionLabel.setTitle(title);
+		return true;
+	}
+
+	private boolean updateValues() {
+		if (!releaseSpecific) return false;
+
+		final Effort effort = scope.getEffort();
+		final float inferedEffort = effort.getInfered();
+		effortLabel.setText(ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep");
+		percentualBar.setPercentual((int) (effort.getAccomplishedPercentual()));
+
 		return true;
 	}
 
@@ -184,7 +206,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 			new BgColorAnimation(internalPanel, color).animate();
 		}
 
-		if (shouldShowScopeColor) {
+		if (releaseSpecific) {
 			final Style s = draggableAnchor.getElement().getStyle();
 
 			if (progress.getState() != ProgressState.NOT_STARTED) {
