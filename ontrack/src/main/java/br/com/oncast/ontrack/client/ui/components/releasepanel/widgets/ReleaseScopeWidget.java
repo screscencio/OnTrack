@@ -153,7 +153,9 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 		final Effort effort = scope.getEffort();
 		final float inferedEffort = effort.getInfered();
-		effortLabel.setText(ClientDecimalFormat.roundFloat(inferedEffort, 1) + "ep");
+		final String effortStr = ClientDecimalFormat.roundFloat(inferedEffort, 1);
+		effortLabel.setText(effortStr);
+		effortLabel.setTitle(effortStr + " effort points");
 		percentualBar.setPercentual((int) (effort.getAccomplishedPercentual()));
 
 		return true;

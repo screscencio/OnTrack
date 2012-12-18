@@ -45,7 +45,7 @@
 	    .percentualBar {
 			position: absolute;
 			bottom: 0px;
-			left: 50px;
+			left: 11px;
 			right: 0px;
 			height: 3px;
 		}
@@ -55,10 +55,12 @@
 		}
 
 		.effortLabel {
-			color: #888;
-			font-size: x-small;
-			margin-top: -14px;
-			padding-right: 5px;
+			font-size: 11px;
+			padding-top: 2px;
+			padding-right: 6px;
+			font-weight: bolder;
+			color: #B3B3B3;
+			text-align: center;
 		}
 		
 		.draggable {
