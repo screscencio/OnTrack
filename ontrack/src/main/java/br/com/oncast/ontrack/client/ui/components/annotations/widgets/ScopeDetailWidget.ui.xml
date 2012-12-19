@@ -21,6 +21,9 @@
 			width: 100%;
 		}
 		
+		.associatedUsersRow {
+		}
+		
 		.detailLabel {
 			text-align: right;
 			color: COLOR_BLUE_LIGHT;
@@ -44,7 +47,7 @@
 		
 		<g:Grid styleName="{style.details}">
 			<g:row>
-				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+				<g:customCell styleName="{style.detailValueCell} {style.associatedUsersRow}" horizontalAlignment="left">
 					<gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
 				</g:customCell>
 			</g:row>

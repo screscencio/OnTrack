@@ -36,12 +36,6 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public ScopeDetailWidget(final Scope scope) {
-		associatedUsers = new ScopeAssociatedMembersWidget(scope, null);
-		initWidget(uiBinder.createAndBindUi(this));
-		setSubject(scope);
-	}
-
 	@UiField
 	HasText parent;
 
@@ -63,6 +57,13 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	private Scope scope;
 
 	private ActionExecutionListener actionExecutionListener;
+
+	public ScopeDetailWidget(final Scope scope) {
+		associatedUsers = new ScopeAssociatedMembersWidget(scope, null, 10);
+		initWidget(uiBinder.createAndBindUi(this));
+		setSubject(scope);
+		associatedUsers.getElement().getParentElement().setAttribute("colspan", "2");
+	}
 
 	private void setSubject(final Scope scope) {
 		this.scope = scope;
