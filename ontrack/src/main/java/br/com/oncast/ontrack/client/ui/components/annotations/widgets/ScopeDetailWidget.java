@@ -1,11 +1,13 @@
 package br.com.oncast.ontrack.client.ui.components.annotations.widgets;
 
+import static br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat.roundFloat;
+
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
@@ -24,6 +26,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeDetailWidget extends Composite implements SubjectDetailWidget {
 
+	private static final ScopeDetailWidgetMessages messages = GWT.create(ScopeDetailWidgetMessages.class);
+
 	private static ScopeDetailWidgetUiBinder uiBinder = GWT.create(ScopeDetailWidgetUiBinder.class);
 
 	interface ScopeDetailWidgetUiBinder extends UiBinder<Widget, ScopeDetailWidget> {}
@@ -33,7 +37,8 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	}
 
 	public ScopeDetailWidget(final Scope scope) {
-		this();
+		associatedUsers = new ScopeAssociatedMembersWidget(scope, null);
+		initWidget(uiBinder.createAndBindUi(this));
 		setSubject(scope);
 	}
 
@@ -52,12 +57,16 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	@UiField
 	HasText release;
 
+	@UiField(provided = true)
+	ScopeAssociatedMembersWidget associatedUsers;
+
 	private Scope scope;
 
 	private ActionExecutionListener actionExecutionListener;
 
 	private void setSubject(final Scope scope) {
 		this.scope = scope;
+		associatedUsers.setScope(scope);
 		update();
 	}
 
@@ -87,17 +96,24 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	}
 
 	private void update() {
-		this.parent.setText(scope.isRoot() ? "None" : scope.getParent().getDescription());
-		this.effort.setText(format(scope.getEffort().getInfered(), " ep"));
-		this.value.setText(format(scope.getValue().getInfered(), " vp"));
+		this.parent.setText(scope.isRoot() ? messages.none() : scope.getParent().getDescription());
+		this.effort.setText(formatProgressText(scope.getEffort().getAccomplished(), scope.getEffort().getInfered(), " ep"));
+		this.value.setText(formatProgressText(scope.getValue().getAccomplished(), scope.getValue().getInfered(), " vp"));
 		final String progress = scope.getProgress().getDescription();
 		this.progress.setText(progress.isEmpty() ? Progress.DEFAULT_NOT_STARTED_NAME : progress);
 		final Release release = scope.getRelease();
-		this.release.setText(release == null ? "None" : release.getDescription());
+		this.release.setText(release == null ? messages.none() : release.getDescription());
+		associatedUsers.update();
 	}
 
-	private String format(final float floatValue, final String posfix) {
-		return ClientDecimalFormat.roundFloat(floatValue, 1) + posfix;
+	private String formatProgressText(final float accomplished, final float total, final String unit) {
+		if (total == 0) return format(total) + unit;
+		final String percentage = accomplished == 0 ? "" : (" ( " + format(accomplished * 100 / total) + "% )");
+		return format(accomplished) + " / " + format(total) + unit + percentage;
+	}
+
+	private String format(final float floatValue) {
+		return roundFloat(floatValue, 0);
 	}
 
 }

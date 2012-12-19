@@ -89,7 +89,7 @@
             <g:cell width="100%">
 	            <g:FlowPanel>
 	                <g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
-	                 <gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" styleName="{style.associatedUsers}"/>
+	                <gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" styleName="{style.associatedUsers}"/>
 	            </g:FlowPanel>
             </g:cell>
         </g:HorizontalPanel>

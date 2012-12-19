@@ -58,7 +58,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 
 	private int visibleUsersCount = VISIBLE_USERS_COUNT;
 
-	private final Scope scope;
+	private Scope scope;
 
 	public ScopeAssociatedMembersWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger) {
 		this(scope, userDragAndDropMananger, VISIBLE_USERS_COUNT);
@@ -134,6 +134,10 @@ public class ScopeAssociatedMembersWidget extends Composite {
 
 	public int getWidgetCount() {
 		return associatedUsers.getWidgetCount();
+	}
+
+	public void setScope(final Scope scope) {
+		this.scope = scope;
 	}
 
 }
