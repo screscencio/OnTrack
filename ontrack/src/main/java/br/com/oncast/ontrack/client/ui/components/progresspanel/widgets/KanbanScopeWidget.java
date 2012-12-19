@@ -32,6 +32,8 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	interface KanbanScopeWidgetStyle extends CssResource {
 		String selected();
 
+		String highlighted();
+
 		String descriptionLabelWithAssociatedUsers();
 	}
 
@@ -131,7 +133,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	@Override
 	public void setHighlighted(final boolean shouldHighlight) {
 		highlighted = shouldHighlight;
-		updateSelectionANdHighlightStyle();
+		panel.setStyleName(style.highlighted(), highlighted);
 	}
 
 	@Override
@@ -141,15 +143,11 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 	public void setSelected(final boolean shouldSelect) {
 		selected = shouldSelect;
-		updateSelectionANdHighlightStyle();
+		panel.setStyleName(style.selected(), selected);
 	}
 
 	public boolean isSelected() {
 		return selected;
-	}
-
-	private void updateSelectionANdHighlightStyle() {
-		panel.setStyleName(style.selected(), selected || highlighted);
 	}
 
 	@Override

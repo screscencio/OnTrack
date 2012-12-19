@@ -25,7 +25,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembe
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
-import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -66,6 +65,8 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		String progressIconUnderwork();
 
 		String selected();
+
+		String highlighted();
 
 		String statusBarOpenImpediment();
 	}
@@ -151,14 +152,18 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private boolean updateValues() {
 		if (!releaseSpecific) return false;
 
-		final Effort effort = scope.getEffort();
-		final float inferedEffort = effort.getInfered();
+		final float inferedEffort = scope.getEffort().getInfered();
 		final String effortStr = ClientDecimalFormat.roundFloat(inferedEffort, 1);
 		effortLabel.setText(effortStr);
 		effortLabel.setTitle(effortStr + " effort points");
-		percentualBar.setPercentual((int) (effort.getAccomplishedPercentual()));
+		percentualBar.setPercentual(calculatePercentual(scope));
 
 		return true;
+	}
+
+	private int calculatePercentual(final Scope scope) {
+		if (scope.getProgress().isDone()) return 100;
+		return (int) (scope.getEffort().getAccomplishedPercentual());
 	}
 
 	private String buildLineageRepresentationText() {
@@ -319,7 +324,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	@Override
 	public void setHighlighted(final boolean shouldHighlight) {
 		highlighted = shouldHighlight;
-		updateSelectionANdHighlightStyle();
+		panel.setStyleName(style.highlighted(), highlighted);
 	}
 
 	@Override
@@ -329,15 +334,11 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	public void setSelected(final boolean shouldSelect) {
 		selected = shouldSelect;
-		updateSelectionANdHighlightStyle();
+		panel.setStyleName(style.selected(), selected);
 	}
 
 	public boolean isSelected() {
 		return selected;
-	}
-
-	private void updateSelectionANdHighlightStyle() {
-		panel.setStyleName(style.selected(), selected || highlighted);
 	}
 
 	public void setHasOpenImpediments(final boolean hasOpenImpediments) {

@@ -20,7 +20,7 @@
 
 			background: COLOR_MENUBOX_BACKGROUND;
 			
-			color: COLOR_MENUBOX_TEXT;
+			color: #666;
 			font-family: FONT_DEFAULT;
 
 			border: SCOPE_WIDGET_BORDER;
@@ -33,8 +33,20 @@
 		}
 		
 		.selected {
-			background-color: #ffe8b3;
+			background-color: white;
+			box-shadow: 0px 0px 5px orange;
+			z-index: 1;
+			border: 1px solid #888;
 		}
+
+		.selected:hover {
+			border: 1px solid #777;
+			color: #555;
+		}
+		
+		.highlighted {
+			background-color: #ffe8b3;
+		}		
 		
 	    .internalPanel {
 	        position: relative;

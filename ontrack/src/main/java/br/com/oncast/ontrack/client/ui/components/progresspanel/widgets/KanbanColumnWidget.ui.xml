@@ -59,6 +59,8 @@
 	
             overflow-y: auto;
             overflow-x: hidden;
+            
+            padding: 2px;
         }
         
         .highlightBlock {
