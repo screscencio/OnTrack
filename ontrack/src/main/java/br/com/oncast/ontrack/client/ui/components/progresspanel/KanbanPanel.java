@@ -10,6 +10,10 @@ import br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.dnd.Kanb
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.NoHideShowAnimation;
+import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.KanbanColumnDropControllerFactory;
@@ -55,7 +59,18 @@ public class KanbanPanel extends Composite implements KanbanWidgetDisplay {
 				kanbanColumnDragAndDropMangager.monitorNewDraggableItem(w, w.getDraggableAnchor());
 				return w;
 			}
-		}, new AnimatedContainer(new HorizontalPanel()));
+		}, new AnimatedContainer(new HorizontalPanel(), new AnimationFactory() {
+
+			@Override
+			public ShowAnimation createShowAnimation(final Widget widget) {
+				return new NoHideShowAnimation(widget);
+			}
+
+			@Override
+			public HideAnimation createHideAnimation(final Widget widget) {
+				return new NoHideShowAnimation(widget);
+			}
+		}));
 	}
 
 	private final Release release;
