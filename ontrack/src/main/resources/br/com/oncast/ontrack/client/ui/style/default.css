@@ -46,8 +46,8 @@
 @def KANBAN_TITLE_TEXT_SHADOW 1px 1px 1px #ECECEC;
 @def KANBAN_TITLE_TEXT_SHADOW_IE literal('dropshadow(color=#ECECEC, offx=1, offy=-1)');
 @def KANBAN_TITLE_SHADOW 1px 2px 6px #999;
-@def KANBAN_SCOPE_BACKGROUND COLOR_SEMI_WHITE;
-@def KANBAN_SCOPE_HOVER_BACKGROUND #FCFCFC;
+@def KANBAN_SCOPE_BACKGROUND #FCFCFC;
+@def KANBAN_SCOPE_HOVER_BACKGROUND #FEFEFE;
 
 @def OPEN_IMPEDIMENT_COLOR COLOR_RED;
 @def SOLVED_IMPEDIMENT_COLOR COLOR_GREEN_DARK;
@@ -170,7 +170,7 @@
 		filter: literal('progid:DXImageTransform.Microsoft.gradient( startColorstr="#EDB443", endColorstr="#F1C460",GradientType=0)');
 }
 
-@def COLOR_RELEASE_WIDGET_BORDER #C2C2C2;
+@def COLOR_RELEASE_WIDGET_BORDER #dedede;
 @def RELEASE_WIDGET_BORDER 1px solid COLOR_RELEASE_WIDGET_BORDER;
 @def COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED #d3d3d3;
 @def COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_CLOSED #e2e2e2;
@@ -182,7 +182,7 @@
 @def RELEASE_WIDGET_HEADER_SHADOW_CLOSED inset 0px 1px 0px 0px #dedede, 0 2px 6px #e1e1e1;
 
 /* //IMPORTANT SCOPE_WIDGET_BORDER's value is replicated on 'Application.css' at '.dragdrop-positioner' because of a workaround. */
-@def SCOPE_WIDGET_BORDER_COLOR #bebebe;
+@def SCOPE_WIDGET_BORDER_COLOR #afafaf;
 @def SCOPE_WIDGET_BORDER 1px solid SCOPE_WIDGET_BORDER_COLOR;
 
 .popupContainer {

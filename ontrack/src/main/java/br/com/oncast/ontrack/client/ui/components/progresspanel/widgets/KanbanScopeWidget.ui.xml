@@ -17,7 +17,7 @@
 
 			background: KANBAN_SCOPE_BACKGROUND;
 
-            border: SCOPE_WIDGET_BORDER;
+            border: 1px solid #999;
 			-moz-box-shadow: 1px 1px 2px #ddd;
 			-webkit-box-shadow: 1px 1px 2px #ddd;
 			box-shadow: 1px 1px 2px #ddd;
@@ -40,7 +40,7 @@
 			overflow-x: visible;
 			overflow-y: hidden;
 			font-stretch: extra-expanded;
-            color: COLOR_MENUBOX_TEXT;
+            color: #555;
             font-family: FONT_DEFAULT;
             font-size: FONT_SIZE_SMALL;
 		}
@@ -67,12 +67,20 @@
         }
         
         .selected {
-			background: #FFE8B3;
+			background-color: white;
+			box-shadow: 0px 0px 5px orange;
+			z-index: 1;
+			border: 1px solid #888;
 		}
 
-        .selected:hover {
-			background: COLOR_YELLOW;
+		.selected:hover {
+			border: 1px solid #777;
+			color: #444;
 		}
+
+		.highlighted {
+			background-color: #ffe8b3;
+		}		
 		
 		.associatedUsers {
 			float: right;
