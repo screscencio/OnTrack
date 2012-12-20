@@ -59,6 +59,8 @@ import com.newrelic.api.agent.Trace;
 
 class BusinessLogicImpl implements BusinessLogic {
 
+	private static final int PROJECT_SNAPSHOT_UPDATE_ACTION_LIMIT = 50;
+
 	private static final Logger LOGGER = Logger.getLogger(BusinessLogicImpl.class);
 
 	private final PersistenceService persistenceService;
@@ -277,7 +279,10 @@ class BusinessLogicImpl implements BusinessLogic {
 			if (actionList.isEmpty()) return project;
 
 			project = applyActionsToProject(project, actionList);
-			updateProjectSnapshot(snapshot, project, actionList.get(actionList.size() - 1).getId());
+
+			if (actionList.size() > PROJECT_SNAPSHOT_UPDATE_ACTION_LIMIT) {
+				updateProjectSnapshot(snapshot, project, actionList.get(actionList.size() - 1).getId());
+			}
 
 			return project;
 		}
