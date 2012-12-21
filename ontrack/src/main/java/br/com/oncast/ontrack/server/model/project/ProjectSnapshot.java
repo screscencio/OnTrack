@@ -73,5 +73,4 @@ public class ProjectSnapshot {
 	public void setLastAppliedActionId(final long lastAppliedActionId) {
 		this.lastAppliedActionId = lastAppliedActionId;
 	}
-
 }

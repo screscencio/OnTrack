@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.server.model.project.ProjectSnapshot;
 import br.com.oncast.ontrack.server.model.project.UserAction;
 import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
+import br.com.oncast.ontrack.server.services.persistence.cache.ObjectCache;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.ProjectAuthorization;
@@ -42,6 +43,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	private final static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ontrackPU");
 	private final static GeneralTypeConverter TYPE_CONVERTER = new GeneralTypeConverter();
+	private final static ObjectCache<UUID, ProjectSnapshot> SNAPSHOT_CACHE = new ObjectCache<UUID, ProjectSnapshot>();
 
 	@Override
 	public void persistActions(final UUID projectId, final List<ModelAction> actionList, final UUID userId, final Date timestamp) throws PersistenceException {
@@ -103,6 +105,7 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.getTransaction().begin();
 			em.merge(projectSnapshot);
 			em.getTransaction().commit();
+			SNAPSHOT_CACHE.set(new UUID(projectSnapshot.getId()), projectSnapshot);
 		}
 		catch (final Exception e) {
 			try {
@@ -121,12 +124,17 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 
 	@Override
 	public ProjectSnapshot retrieveProjectSnapshot(final UUID projectId) throws PersistenceException, NoResultFoundException {
+		if (SNAPSHOT_CACHE.get(projectId) != null) return SNAPSHOT_CACHE.get(projectId);
+
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			final Query query = em.createQuery("select snapshot from " + ProjectSnapshot.class.getSimpleName()
 					+ " as snapshot where snapshot.id = :projectId");
 			query.setParameter("projectId", projectId.toString());
-			return (ProjectSnapshot) query.getSingleResult();
+
+			final ProjectSnapshot projectSnapshot = (ProjectSnapshot) query.getSingleResult();
+			SNAPSHOT_CACHE.set(projectId, projectSnapshot);
+			return projectSnapshot;
 		}
 		catch (final NoResultException e) {
 			throw new NoResultFoundException("No snapshot found.", e);
