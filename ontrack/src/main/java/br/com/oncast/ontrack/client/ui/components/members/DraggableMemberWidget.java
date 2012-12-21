@@ -92,4 +92,8 @@ public class DraggableMemberWidget extends Composite implements ModelWidget<User
 	public void setAssociation(final Scope scope) {
 		this.association = scope;
 	}
+
+	public void setSizeSmall() {
+		userWidget.setSmallSize();
+	}
 }

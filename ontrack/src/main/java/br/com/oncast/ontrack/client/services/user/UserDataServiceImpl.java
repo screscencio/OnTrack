@@ -25,12 +25,19 @@ import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class UserDataServiceImpl implements UserDataService {
 
 	private static final String GRAVATAR_BASE_URL = "https://secure.gravatar.com/";
+
+	private static final int GRAVATAR_SUCCESS_CODE = 200;
 
 	private final DispatchService dispatchService;
 
@@ -65,6 +72,28 @@ public class UserDataServiceImpl implements UserDataService {
 				notifyUserDataUpdate(user);
 			}
 		});
+	}
+
+	@Override
+	public void hasAvatarInGravatar(final User user, final UserHasGravatarCallback callback) {
+		final String urlAddress = GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=40&d=ontrack";
+
+		try {
+			new RequestBuilder(RequestBuilder.GET, urlAddress).sendRequest(null, new RequestCallback() {
+				@Override
+				public void onResponseReceived(final Request request, final Response response) {
+					callback.onResponseReceived(response.getStatusCode() == GRAVATAR_SUCCESS_CODE);
+				}
+
+				@Override
+				public void onError(final Request request, final Throwable exception) {
+					callback.onResponseReceived(false);
+				}
+			});
+		}
+		catch (final RequestException e) {
+			callback.onResponseReceived(false);
+		}
 	}
 
 	@Override

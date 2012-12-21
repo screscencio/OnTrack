@@ -100,6 +100,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 	}
 
 	public void add(final DraggableMemberWidget memberWidget) {
+		memberWidget.setSizeSmall();
 		associatedUsers.getContainningPanel().add(memberWidget);
 	}
 
@@ -114,6 +115,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 			@Override
 			public DraggableMemberWidget createWidget(final UserRepresentation modelBean) {
 				final DraggableMemberWidget widget = new DraggableMemberWidget(modelBean, scope);
+				widget.setSizeSmall();
 				if (userDragAndDropMananger != null) userDragAndDropMananger.monitorNewDraggableItem(widget, widget.getDraggableItem());
 				return widget;
 			}

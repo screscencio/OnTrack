@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.user;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.user.UserHasGravatarCallback;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
@@ -11,10 +12,12 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -22,11 +25,23 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class UserInformationCard extends Composite implements HasCloseHandlers<UserInformationCard>, PopupAware {
 
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+
 	private static UserInformationCardUiBinder uiBinder = GWT.create(UserInformationCardUiBinder.class);
 
 	interface UserInformationCardUiBinder extends UiBinder<Widget, UserInformationCard> {}
 
 	private static UserInformationCardMessages messages = GWT.create(UserInformationCardMessages.class);
+
+	interface UserInformationCardStyle extends CssResource {
+
+		String userImageContainerImageColor();
+
+		String userImageContainerLabelColor();
+	}
+
+	@UiField
+	UserInformationCardStyle style;
 
 	@UiField
 	Image author;
@@ -40,7 +55,13 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 	@UiField
 	FocusPanel container;
 
-	User user;
+	@UiField
+	DeckPanel userImageContainer;
+
+	@UiField
+	Label userWithoutImage;
+
+	private User user;
 
 	public UserInformationCard() {
 		userName = new EditableLabel(new EditableLabelEditionHandler() {
@@ -51,16 +72,16 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 				if (!user.equals(ClientServiceProvider.getCurrentUser())) return false;
 				user.setName(text);
 
-				ClientServiceProvider.getInstance().getUserDataService().onUserDataUpdate(user, new AsyncCallback<User>() {
+				SERVICE_PROVIDER.getUserDataService().onUserDataUpdate(user, new AsyncCallback<User>() {
 
 					@Override
 					public void onSuccess(final User result) {
-						ClientServiceProvider.getInstance().getClientAlertingService().showSuccess(messages.userNameChangeSuccess());
+						SERVICE_PROVIDER.getClientAlertingService().showSuccess(messages.userNameChangeSuccess());
 					}
 
 					@Override
 					public void onFailure(final Throwable caught) {
-						ClientServiceProvider.getInstance().getClientAlertingService().showError(messages.userNameChangeFailure());
+						SERVICE_PROVIDER.getClientAlertingService().showError(messages.userNameChangeFailure());
 					}
 				});
 				return true;
@@ -91,9 +112,33 @@ public class UserInformationCard extends Composite implements HasCloseHandlers<U
 		updateView();
 	}
 
+	private void showLabel() {
+		userImageContainer.setStyleName(style.userImageContainerImageColor(), false);
+		userImageContainer.setStyleName(style.userImageContainerLabelColor(), true);
+		userImageContainer.showWidget(1);
+	}
+
+	private void showImage() {
+		userImageContainer.setStyleName(style.userImageContainerLabelColor(), false);
+		userImageContainer.setStyleName(style.userImageContainerImageColor(), true);
+		userImageContainer.showWidget(0);
+	}
+
 	private void updateView() {
 		userEmail.setText(user.getEmail());
 		userName.setValue(user.getName());
-		author.setUrl(ClientServiceProvider.getInstance().getUserDataService().getAvatarUrl(user));
+		userWithoutImage.setText(user.getName().substring(0, 1));
+		author.setUrl(SERVICE_PROVIDER.getUserDataService().getAvatarUrl(user));
+
+		SERVICE_PROVIDER.getUserDataService().hasAvatarInGravatar(user, new UserHasGravatarCallback() {
+
+			@Override
+			public void onResponseReceived(final boolean hasGravatarAvatar) {
+				if (hasGravatarAvatar) showImage();
+				else showLabel();
+			}
+		});
+
+		userImageContainer.showWidget(1);
 	}
 }

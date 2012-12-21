@@ -350,6 +350,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 	@Override
 	public void addAssociatedUsers(final DraggableMemberWidget widget) {
+		widget.setSizeSmall();
 		associatedUsers.add(widget);
 	}
 

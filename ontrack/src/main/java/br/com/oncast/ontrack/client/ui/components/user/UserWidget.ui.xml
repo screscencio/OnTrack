@@ -51,11 +51,60 @@
 			border-left: 4px solid #888;
 		}
 		
+		.userImageContainerMedium {
+			width: 38px;
+			height: 38px;
+			border: 1px solid #c0c0c0;
+		}
+		
+		.userWithoutImageMedium {
+			position: absolute;
+			top: 11px;
+			left: 15px;
+			font-size: larger;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+		
+		.userImageContainerLabelColor {
+			background-color: #FFE8B3;
+		}
+		
+		.userImageContainerImageColor {
+			background-color: transparent;
+		}
+		
+		.userImageContainerSmall {
+			width: 32px;
+			height: 28px;
+			border: 1px solid #c0c0c0;
+		}
+		
+		.userWithoutImageSmall {
+			position: absolute;
+			top: 7px;
+			left: 12px;
+			font-size: medium;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+		
+		.userWithoutImageContainer {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+		
 	</ui:style>
 	
 	<g:FocusPanel>
 		<g:HTMLPanel styleName="{style.container}">
-			<g:Image ui:field="userImage" styleName="{style.author} {style.offline}" resource="{avatar}" />
+			<g:DeckPanel ui:field="userImageContainer">
+				<g:Image ui:field="userImage" styleName="{style.author} {style.offline}" resource="{avatar}" />
+				<g:HTMLPanel ui:field="userWithoutImageContainer" styleName="style.userWithoutImageContainer">
+					<g:Label ui:field="userWithoutImage"/>
+				</g:HTMLPanel>
+			</g:DeckPanel>
 			<g:FocusPanel ui:field="mask" styleName="{style.mask}"/>
 		</g:HTMLPanel>
 	</g:FocusPanel>

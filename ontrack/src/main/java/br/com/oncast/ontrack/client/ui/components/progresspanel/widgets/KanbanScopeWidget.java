@@ -152,6 +152,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 	@Override
 	public void addAssociatedUsers(final DraggableMemberWidget memberWidget) {
+		memberWidget.setSizeSmall();
 		associatedUsers.add(memberWidget);
 	}
 

@@ -23,4 +23,6 @@ public interface UserDataService {
 
 	void onUserDataUpdate(User user, AsyncCallback<User> callback);
 
+	void hasAvatarInGravatar(User user, UserHasGravatarCallback callback);
+
 }
