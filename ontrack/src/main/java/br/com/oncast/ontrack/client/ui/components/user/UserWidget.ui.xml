@@ -58,16 +58,16 @@
 		}
 		
 		.userWithoutImageMedium {
-			position: absolute;
-			top: 11px;
-			left: 15px;
 			font-size: larger;
 			font-weight: bold;
 			text-transform: uppercase;
 		}
 		
 		.userImageContainerLabelColor {
-			background-color: #FFE8B3;
+			background-color: #1E3669;
+			color: #eee;
+			overflow: hidden;
+			text-align: center;
 		}
 		
 		.userImageContainerImageColor {
@@ -81,9 +81,6 @@
 		}
 		
 		.userWithoutImageSmall {
-			position: absolute;
-			top: 7px;
-			left: 12px;
 			font-size: medium;
 			font-weight: bold;
 			text-transform: uppercase;
@@ -101,8 +98,12 @@
 		<g:HTMLPanel styleName="{style.container}">
 			<g:DeckPanel ui:field="userImageContainer">
 				<g:Image ui:field="userImage" styleName="{style.author} {style.offline}" resource="{avatar}" />
-				<g:HTMLPanel ui:field="userWithoutImageContainer" styleName="style.userWithoutImageContainer">
-					<g:Label ui:field="userWithoutImage"/>
+				<g:HTMLPanel ui:field="userWithoutImageContainer" styleName="{style.userWithoutImageContainer}">
+					<table width="100%" height="100%" style="margin-left: -4px">
+					<tr><td>
+						<g:Label ui:field="userWithoutImage"/>
+					</td></tr>
+					</table>
 				</g:HTMLPanel>
 			</g:DeckPanel>
 			<g:FocusPanel ui:field="mask" styleName="{style.mask}"/>

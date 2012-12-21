@@ -42,7 +42,10 @@
 		}
 		
 		.userImageContainerLabelColor {
-			background-color: #FFE8B3;
+			background-color: #1E3669;
+			color: #eee;
+			overflow: hidden;
+			text-align: center;
 		}
 		
 		.userImageContainerImageColor {
@@ -50,12 +53,15 @@
 		}
 		
 		.userWithoutImage {
-			position: absolute;
-			top: 18px;
-			left: 24px;
 			font-size: xx-large;
 			font-weight: bold;
 			text-transform: uppercase;
+		}
+		
+		.userWithoutImageContainer {
+			position: relative;
+			width: 100%;
+			height: 100%;
 		}
 		
 	</ui:style>
@@ -63,7 +69,13 @@
 		<g:HorizontalPanel>
 			<g:DeckPanel ui:field="userImageContainer" styleName="{style.userImageContainer}">
 				<g:Image ui:field="author" styleName="{style.author}" />
-				<g:Label ui:field="userWithoutImage" styleName="{style.userWithoutImage}"/>
+				<g:HTMLPanel ui:field="userWithoutImageContainer" styleName="{style.userWithoutImageContainer}">
+					<table width="100%" height="100%" style="margin-left: -1px">
+					<tr><td>
+						<g:Label ui:field="userWithoutImage" styleName="{style.userWithoutImage}"/>
+					</td></tr>
+					</table>
+				</g:HTMLPanel>
 			</g:DeckPanel>
 			<g:VerticalPanel width="100%" height="100%">
 				<misc:EditableLabel ui:field="userName" styleName="{style.userName}" />
