@@ -15,12 +15,12 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -155,8 +155,8 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
 		progressAction.execute(context, actionContext);
 
-		final List<UserAssociationTag> tags = context.getTags(scope, UserAssociationTag.getType());
-		final UserRepresentation associatedUser = tags.get(0).getUser();
+		final List<UserAssociationMetadata> metadataList = context.getMetadataList(scope, UserAssociationMetadata.getType());
+		final UserRepresentation associatedUser = metadataList.get(0).getUser();
 		assertEquals(author, associatedUser);
 	}
 
@@ -170,11 +170,11 @@ public class ScopeDeclareProgressActionTest extends ModelActionTest {
 		final ScopeDeclareProgressAction progressAction = new ScopeDeclareProgressAction(scope.getId(), "Under work");
 		final ModelAction undoAction = progressAction.execute(context, actionContext);
 
-		final UserRepresentation associatedUser = context.<UserAssociationTag> getTags(scope, UserAssociationTag.getType()).get(0).getUser();
+		final UserRepresentation associatedUser = context.<UserAssociationMetadata> getMetadataList(scope, UserAssociationMetadata.getType()).get(0).getUser();
 		assertEquals(author, associatedUser);
 
 		undoAction.execute(context, actionContext);
-		assertTrue(context.getTags(scope, UserAssociationTag.getType()).isEmpty());
+		assertTrue(context.getMetadataList(scope, UserAssociationMetadata.getType()).isEmpty());
 	}
 
 	private void assertThatProgressIs(final Progress.ProgressState status) {

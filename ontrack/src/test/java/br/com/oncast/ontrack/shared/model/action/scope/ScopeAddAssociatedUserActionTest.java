@@ -18,9 +18,9 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.Tag;
-import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -55,24 +55,24 @@ public class ScopeAddAssociatedUserActionTest extends ModelActionTest {
 	public void shouldAddTheGivenUserAsAssociatedUserToTheGivenScope() throws Exception {
 		executeAction();
 
-		final Tag value = captureAddedTag();
-		assertTrue(value instanceof UserAssociationTag);
-		final UserAssociationTag tag = (UserAssociationTag) value;
+		final Metadata value = captureAddedTag();
+		assertTrue(value instanceof UserAssociationMetadata);
+		final UserAssociationMetadata metadata = (UserAssociationMetadata) value;
 
-		assertEquals(scope, tag.getSubject());
-		assertEquals(user, tag.getUser());
+		assertEquals(scope, metadata.getSubject());
+		assertEquals(user, metadata.getUser());
 	}
 
 	@Test
 	public void undoShouldRemoveTheAssociation() throws Exception {
 		final ModelAction undoAction = executeAction();
-		final UserAssociationTag tag = captureAddedTag();
+		final UserAssociationMetadata metadata = captureAddedTag();
 
-		final List<Tag> list = new ArrayList<Tag>();
-		list.add(tag);
-		when(context.getTags(scope, UserAssociationTag.getType())).thenReturn(list);
+		final List<Metadata> list = new ArrayList<Metadata>();
+		list.add(metadata);
+		when(context.getMetadataList(scope, UserAssociationMetadata.getType())).thenReturn(list);
 		undoAction.execute(context, actionContext);
-		verify(context).removeTag(tag);
+		verify(context).removeMetadata(metadata);
 	}
 
 	@Override

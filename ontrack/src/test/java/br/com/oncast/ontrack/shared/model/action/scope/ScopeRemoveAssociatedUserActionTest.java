@@ -18,10 +18,10 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
+import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.Tag;
-import br.com.oncast.ontrack.shared.model.tags.TagFactory;
-import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
@@ -35,7 +35,7 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 	private UserRepresentation user;
 	private UUID userId;
 
-	private UserAssociationTag tag;
+	private UserAssociationMetadata metadata;
 
 	@Before
 	public void setup() throws Exception {
@@ -45,13 +45,13 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 		user = UserRepresentationTestUtils.createUser();
 		userId = user.getId();
 
-		tag = TagFactory.createUserTag(new UUID(), scope, user);
+		metadata = MetadataFactory.createUserMetadata(new UUID(), scope, user);
 
 		when(context.findScope(scopeId)).thenReturn(scope);
 		when(context.findUser(userId)).thenReturn(user);
-		final List<Tag> list = new ArrayList<Tag>();
-		list.add(tag);
-		when(context.getTags(scope, UserAssociationTag.getType())).thenReturn(list);
+		final List<Metadata> list = new ArrayList<Metadata>();
+		list.add(metadata);
+		when(context.getMetadataList(scope, UserAssociationMetadata.getType())).thenReturn(list);
 	}
 
 	@Test
@@ -66,21 +66,21 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 	public void shouldRemoveTheGivenAssociationOfTheGivenScope() throws Exception {
 		executeAction();
 
-		final Tag value = captureRemovedTag();
-		assertTrue(value instanceof UserAssociationTag);
-		final UserAssociationTag tag = (UserAssociationTag) value;
+		final Metadata value = captureRemovedTag();
+		assertTrue(value instanceof UserAssociationMetadata);
+		final UserAssociationMetadata metadata = (UserAssociationMetadata) value;
 
-		assertEquals(scope, tag.getSubject());
-		assertEquals(userId, tag.getUser().getId());
+		assertEquals(scope, metadata.getSubject());
+		assertEquals(userId, metadata.getUser().getId());
 	}
 
 	@Test
 	public void undoShouldAddTheAssociation() throws Exception {
 		final ModelAction undoAction = executeAction();
-		final Tag tag = captureRemovedTag();
+		final Metadata metadata = captureRemovedTag();
 
 		undoAction.execute(context, actionContext);
-		verify(context).addTag(tag);
+		verify(context).addMetadata(metadata);
 	}
 
 	@Override

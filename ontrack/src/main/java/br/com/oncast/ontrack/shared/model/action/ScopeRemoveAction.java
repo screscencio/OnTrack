@@ -13,9 +13,9 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeRemoveActionEntity.class)
@@ -66,8 +66,8 @@ public class ScopeRemoveAction implements ScopeAction {
 			throws UnableToCompleteActionException {
 		final List<ModelAction> subActionList = new ArrayList<ModelAction>();
 
-		for (final UserAssociationTag tag : context.<UserAssociationTag> getTags(selectedScope, UserAssociationTag.getType())) {
-			subActionList.add(new ScopeRemoveAssociatedUserAction(referenceId, tag.getUser().getId()));
+		for (final UserAssociationMetadata metadata : context.<UserAssociationMetadata> getMetadataList(selectedScope, UserAssociationMetadata.getType())) {
+			subActionList.add(new ScopeRemoveAssociatedUserAction(referenceId, metadata.getUser().getId()));
 		}
 
 		subActionList.add(new ScopeDeclareProgressAction(referenceId, null));

@@ -24,7 +24,7 @@ public class ScopeAddAssociatedUserActionEntity extends ModelActionEntity {
 
 	@Column(name = ActionTableColumns.STRING_3)
 	@ConvertUsing(StringToUuidConverter.class)
-	private String tagId;
+	private String metadataId;
 
 	public String getScopeId() {
 		return scopeId;
@@ -42,11 +42,11 @@ public class ScopeAddAssociatedUserActionEntity extends ModelActionEntity {
 		this.userId = userId;
 	}
 
-	public String getTagId() {
-		return tagId;
+	public String getMetadataId() {
+		return metadataId;
 	}
 
-	public void setTagId(String tagId) {
-		this.tagId = tagId;
+	public void setMetadataId(final String metadataId) {
+		this.metadataId = metadataId;
 	}
 }

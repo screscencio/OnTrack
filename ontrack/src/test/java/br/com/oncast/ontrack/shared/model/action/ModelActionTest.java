@@ -37,8 +37,8 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionExecution.ActionExecuter;
 import br.com.oncast.ontrack.utils.actions.ModelActionEntityFieldAnnotationsTestUtils;
@@ -70,17 +70,17 @@ public abstract class ModelActionTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends Tag> T captureAddedTag() {
-		final ArgumentCaptor<Tag> captor = ArgumentCaptor.forClass(Tag.class);
-		verify(context).addTag(captor.capture());
-		final Tag value = captor.getValue();
+	protected <T extends Metadata> T captureAddedTag() {
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
+		verify(context).addMetadata(captor.capture());
+		final Metadata value = captor.getValue();
 		return (T) value;
 	}
 
-	protected Tag captureRemovedTag() {
-		final ArgumentCaptor<Tag> captor = ArgumentCaptor.forClass(Tag.class);
-		verify(context).removeTag(captor.capture());
-		final Tag value = captor.getValue();
+	protected Metadata captureRemovedTag() {
+		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
+		verify(context).removeMetadata(captor.capture());
+		final Metadata value = captor.getValue();
 		return value;
 	}
 

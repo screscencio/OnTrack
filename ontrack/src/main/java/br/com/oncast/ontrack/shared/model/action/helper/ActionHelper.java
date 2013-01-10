@@ -10,15 +10,15 @@ import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotFoundException;
+import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
+import br.com.oncast.ontrack.shared.model.metadata.exceptions.MetadataNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
-import br.com.oncast.ontrack.shared.model.tags.HasTags;
-import br.com.oncast.ontrack.shared.model.tags.Tag;
-import br.com.oncast.ontrack.shared.model.tags.TagType;
-import br.com.oncast.ontrack.shared.model.tags.exceptions.TagNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -101,12 +101,12 @@ public class ActionHelper {
 		}
 	}
 
-	public static <T extends Tag> T findTag(final HasTags subject, final TagType tagType, final UUID tagId, final ProjectContext context)
+	public static <T extends Metadata> T findMetadata(final HasMetadata subject, final MetadataType metadataType, final UUID metadataId, final ProjectContext context)
 			throws UnableToCompleteActionException {
 		try {
-			return context.findTag(subject, tagType, tagId);
+			return context.findMetadata(subject, metadataType, metadataId);
 		}
-		catch (final TagNotFoundException e) {
+		catch (final MetadataNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
 		}
 	}

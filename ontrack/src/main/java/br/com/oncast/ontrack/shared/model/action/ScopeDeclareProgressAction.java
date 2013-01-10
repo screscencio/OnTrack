@@ -19,11 +19,11 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAl
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
+import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @ConvertTo(ScopeDeclareProgressActionEntity.class)
@@ -84,7 +84,7 @@ public class ScopeDeclareProgressAction implements ScopeAction {
 	}
 
 	private void checkUserAssociation(final ProjectContext context, final ActionContext actionContext, final Scope scope) {
-		if (!ProgressState.UNDER_WORK.matches(newProgressDescription) || context.hasTags(scope, UserAssociationTag.getType())) return;
+		if (!ProgressState.UNDER_WORK.matches(newProgressDescription) || context.hasMetadata(scope, UserAssociationMetadata.getType())) return;
 
 		subActionList.add(new ScopeAddAssociatedUserAction(referenceId, actionContext.getUserId()));
 	}

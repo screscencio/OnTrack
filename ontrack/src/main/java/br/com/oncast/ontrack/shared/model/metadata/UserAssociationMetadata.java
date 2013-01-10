@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.shared.model.tags;
+package br.com.oncast.ontrack.shared.model.metadata;
 
 import java.io.Serializable;
 
@@ -7,7 +7,7 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 
-public class UserAssociationTag implements Tag, Serializable {
+public class UserAssociationMetadata implements Metadata, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -17,10 +17,10 @@ public class UserAssociationTag implements Tag, Serializable {
 
 	private UUID id;
 
-	public UserAssociationTag() {}
+	public UserAssociationMetadata() {}
 
-	public UserAssociationTag(final UUID tagId, final Scope scope, final UserRepresentation user) {
-		this.id = tagId;
+	public UserAssociationMetadata(final UUID metadataId, final Scope scope, final UserRepresentation user) {
+		this.id = metadataId;
 		this.scope = scope;
 		this.user = user;
 	}
@@ -35,12 +35,12 @@ public class UserAssociationTag implements Tag, Serializable {
 	}
 
 	@Override
-	public HasTags getSubject() {
+	public HasMetadata getSubject() {
 		return scope;
 	}
 
 	@Override
-	public TagType getTagType() {
+	public MetadataType getMetadataType() {
 		return getType();
 	}
 
@@ -54,8 +54,8 @@ public class UserAssociationTag implements Tag, Serializable {
 		return UUIDUtils.equals(this, obj);
 	}
 
-	public static TagType getType() {
-		return TagType.USER;
+	public static MetadataType getType() {
+		return MetadataType.USER;
 	}
 
 }

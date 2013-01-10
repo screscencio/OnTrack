@@ -9,9 +9,9 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
+import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -38,16 +38,16 @@ public class ScopeRemoveAssociatedUserAction implements ScopeAction {
 		final Scope scope = ActionHelper.findScope(scopeId, context);
 		final UserRepresentation user = ActionHelper.findUser(userId, context);
 
-		final List<UserAssociationTag> tags = context.getTags(scope, UserAssociationTag.getType());
+		final List<UserAssociationMetadata> metadataList = context.getMetadataList(scope, UserAssociationMetadata.getType());
 
-		for (final UserAssociationTag tag : tags) {
-			if (tag.getUser().equals(user)) {
-				context.removeTag(tag);
-				return new ScopeAddAssociatedUserAction(tag);
+		for (final UserAssociationMetadata metadata : metadataList) {
+			if (metadata.getUser().equals(user)) {
+				context.removeMetadata(metadata);
+				return new ScopeAddAssociatedUserAction(metadata);
 			}
 		}
 
-		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.UNKNOWN, "Tag not found");
+		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.UNKNOWN, "Metadata not found");
 	}
 
 	@Override

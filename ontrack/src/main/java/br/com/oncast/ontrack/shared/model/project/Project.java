@@ -14,11 +14,11 @@ import br.com.oncast.ontrack.shared.model.checklist.Checklist;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
+import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.HasTags;
-import br.com.oncast.ontrack.shared.model.tags.Tag;
-import br.com.oncast.ontrack.shared.model.tags.TagType;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -43,7 +43,7 @@ public class Project implements Serializable, HasUUID {
 	private Set<FileRepresentation> fileRepresentations;
 	private ListMultimap<UUID, Checklist> checklistMap;
 	private Map<UUID, Description> descriptionMap;
-	private Map<HasTags, SetMultimap<TagType, Tag>> tagsMap;
+	private Map<HasMetadata, SetMultimap<MetadataType, Metadata>> metadataMap;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
@@ -59,7 +59,7 @@ public class Project implements Serializable, HasUUID {
 		checklistMap = ArrayListMultimap.create();
 		users = new HashSet<UserRepresentation>();
 		fileRepresentations = new HashSet<FileRepresentation>();
-		tagsMap = new HashMap<HasTags, SetMultimap<TagType, Tag>>();
+		metadataMap = new HashMap<HasMetadata, SetMultimap<MetadataType, Metadata>>();
 	}
 
 	public Scope getProjectScope() {
@@ -165,46 +165,46 @@ public class Project implements Serializable, HasUUID {
 		return new ArrayList<UserRepresentation>(users);
 	}
 
-	public void addTag(final Tag tag) {
-		final HasTags subject = tag.getSubject();
-		if (!hasTags(subject)) {
-			final HashMultimap<TagType, Tag> multimap = HashMultimap.create();
-			tagsMap.put(subject, multimap);
+	public void addMetadata(final Metadata metadata) {
+		final HasMetadata subject = metadata.getSubject();
+		if (!hasMetadata(subject)) {
+			final HashMultimap<MetadataType, Metadata> multimap = HashMultimap.create();
+			metadataMap.put(subject, multimap);
 		}
-		tagsMap.get(subject).put(tag.getTagType(), tag);
+		metadataMap.get(subject).put(metadata.getMetadataType(), metadata);
 	}
 
-	public void removeTag(final Tag tag) {
-		if (!hasTags(tag.getSubject())) return;
+	public void removeMetadata(final Metadata metadata) {
+		if (!hasMetadata(metadata.getSubject())) return;
 
-		tagsMap.get(tag.getSubject()).remove(tag.getTagType(), tag);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T extends Tag> List<T> getTagsList(final HasTags subject, final TagType type) {
-		if (!hasTags(subject)) return ImmutableList.of();
-
-		return (List<T>) ImmutableList.copyOf(tagsMap.get(subject).get(type));
-	}
-
-	public boolean hasTags(final HasTags subject, final TagType type) {
-		return !getTagsList(subject, type).isEmpty();
+		metadataMap.get(metadata.getSubject()).remove(metadata.getMetadataType(), metadata);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Tag> T findTag(final HasTags subject, final TagType type, final UUID tagId) {
-		if (tagId == null) throw new IllegalArgumentException("tagId can not be null");
-		if (!hasTags(subject)) return null;
+	public <T extends Metadata> List<T> getMetadataList(final HasMetadata subject, final MetadataType type) {
+		if (!hasMetadata(subject)) return ImmutableList.of();
 
-		for (final Tag tag : tagsMap.get(subject).get(type)) {
-			if (tag.getId().equals(tagId)) return (T) tag;
+		return (List<T>) ImmutableList.copyOf(metadataMap.get(subject).get(type));
+	}
+
+	public boolean hasMetadata(final HasMetadata subject, final MetadataType type) {
+		return !getMetadataList(subject, type).isEmpty();
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Metadata> T findMetadata(final HasMetadata subject, final MetadataType type, final UUID metadataId) {
+		if (metadataId == null) throw new IllegalArgumentException("metadataId can not be null");
+		if (!hasMetadata(subject)) return null;
+
+		for (final Metadata metadata : metadataMap.get(subject).get(type)) {
+			if (metadata.getId().equals(metadataId)) return (T) metadata;
 		}
 		return null;
 	}
 
-	public boolean hasTags(final HasTags subject) {
-		if (!tagsMap.containsKey(subject)) return false;
-		return !tagsMap.get(subject).isEmpty();
+	public boolean hasMetadata(final HasMetadata subject) {
+		if (!metadataMap.containsKey(subject)) return false;
+		return !metadataMap.get(subject).isEmpty();
 	}
 
 	public void addDescription(final Description description, final UUID subjectId) {
@@ -224,14 +224,14 @@ public class Project implements Serializable, HasUUID {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Tag> List<T> getTagsList(final TagType tagType) {
-		final List<T> tagList = new ArrayList<T>();
+	public <T extends Metadata> List<T> getMetadataList(final MetadataType metadataType) {
+		final List<T> metadataList = new ArrayList<T>();
 
-		for (final SetMultimap<TagType, Tag> setMultimap : tagsMap.values()) {
-			tagList.addAll((Collection<T>) setMultimap.get(tagType));
+		for (final SetMultimap<MetadataType, Metadata> setMultimap : metadataMap.values()) {
+			metadataList.addAll((Collection<T>) setMultimap.get(metadataType));
 		}
 
-		return tagList;
+		return metadataList;
 	}
 
 	@Override

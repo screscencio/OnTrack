@@ -7,8 +7,8 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
+import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tags.UserAssociationTag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class UserAssociationServiceImpl implements UserAssociationService {
@@ -24,9 +24,9 @@ public class UserAssociationServiceImpl implements UserAssociationService {
 	@Override
 	public List<UserRepresentation> getAssociatedUsers(final Scope scope) {
 		final List<UserRepresentation> users = new ArrayList<UserRepresentation>();
-		final List<UserAssociationTag> tags = contextProviderService.getCurrent().getTags(scope, UserAssociationTag.getType());
-		for (final UserAssociationTag tag : tags) {
-			users.add(tag.getUser());
+		final List<UserAssociationMetadata> metadataList = contextProviderService.getCurrent().getMetadataList(scope, UserAssociationMetadata.getType());
+		for (final UserAssociationMetadata metadata : metadataList) {
+			users.add(metadata.getUser());
 		}
 		return users;
 	}

@@ -17,6 +17,10 @@ import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotF
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
+import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
+import br.com.oncast.ontrack.shared.model.metadata.exceptions.MetadataNotFoundException;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
@@ -26,10 +30,6 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
-import br.com.oncast.ontrack.shared.model.tags.HasTags;
-import br.com.oncast.ontrack.shared.model.tags.Tag;
-import br.com.oncast.ontrack.shared.model.tags.TagType;
-import br.com.oncast.ontrack.shared.model.tags.exceptions.TagNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
@@ -231,27 +231,28 @@ public class ProjectContext implements HasUUID {
 		return user;
 	}
 
-	public void addTag(final Tag tag) {
-		project.addTag(tag);
+	public void addMetadata(final Metadata metadata) {
+		project.addMetadata(metadata);
 	}
 
-	public void removeTag(final Tag tag) {
-		project.removeTag(tag);
+	public void removeMetadata(final Metadata metadata) {
+		project.removeMetadata(metadata);
 	}
 
-	public <T extends Tag> List<T> getTags(final HasTags subject, final TagType tagType) {
-		return project.getTagsList(subject, tagType);
+	public <T extends Metadata> List<T> getMetadataList(final HasMetadata subject, final MetadataType metadataType) {
+		return project.getMetadataList(subject, metadataType);
 	}
 
-	public boolean hasTags(final HasTags subject, final TagType tagType) {
-		return project.hasTags(subject, tagType);
+	public boolean hasMetadata(final HasMetadata subject, final MetadataType metadataType) {
+		return project.hasMetadata(subject, metadataType);
 	}
 
-	public <T extends Tag> T findTag(final HasTags subject, final TagType tagType, final UUID tagId) throws TagNotFoundException {
-		final T tag = project.findTag(subject, tagType, tagId);
-		if (tag == null) throw new TagNotFoundException("The tag was not found");
+	public <T extends Metadata> T findMetadata(final HasMetadata subject, final MetadataType metadataType, final UUID metadataId)
+			throws MetadataNotFoundException {
+		final T metadata = project.findMetadata(subject, metadataType, metadataId);
+		if (metadata == null) throw new MetadataNotFoundException("The metadata was not found");
 
-		return tag;
+		return metadata;
 	}
 
 	public void addDescription(final Description description, final UUID subjectId) {
@@ -268,8 +269,8 @@ public class ProjectContext implements HasUUID {
 		return project.removeDescriptionFor(subjectId);
 	}
 
-	public <T extends Tag> List<T> getAllTags(final TagType tagType) {
-		return project.getTagsList(tagType);
+	public <T extends Metadata> List<T> getAllMetadata(final MetadataType metadataType) {
+		return project.getMetadataList(metadataType);
 	}
 
 	@Override
