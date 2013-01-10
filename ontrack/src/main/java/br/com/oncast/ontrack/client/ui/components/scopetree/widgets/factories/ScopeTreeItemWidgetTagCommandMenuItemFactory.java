@@ -1,10 +1,14 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
+<<<<<<< HEAD
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagWidget;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+=======
+import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
+>>>>>>> Underwork
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
