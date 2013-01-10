@@ -11,11 +11,11 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Tag extends Composite implements HasText, HasClickHandlers {
+public class ReleaseTag extends Composite implements HasText, HasClickHandlers {
 
 	private static ReleaseTagUiBinder uiBinder = GWT.create(ReleaseTagUiBinder.class);
 
-	interface ReleaseTagUiBinder extends UiBinder<Widget, Tag> {}
+	interface ReleaseTagUiBinder extends UiBinder<Widget, ReleaseTag> {}
 
 	@UiField
 	protected FastLabel tagLabel;
@@ -25,7 +25,7 @@ public class Tag extends Composite implements HasText, HasClickHandlers {
 
 	private Boolean visible;
 
-	public Tag() {
+	public ReleaseTag() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -48,7 +48,7 @@ public class Tag extends Composite implements HasText, HasClickHandlers {
 	}
 
 	/**
-	 * It is safe to use the {@link #setText(String)} repeatedly. {@link Tag} makes use of the {@link FastLabel} component.
+	 * It is safe to use the {@link #setText(String)} repeatedly. {@link ReleaseTag} makes use of the {@link FastLabel} component.
 	 * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
 	 */
 	@Override
@@ -58,7 +58,7 @@ public class Tag extends Composite implements HasText, HasClickHandlers {
 	}
 
 	/**
-	 * It is safe to use the {@link #setTitle(String)} repeatedly. {@link Tag} makes use of the {@link FastLabel} component.
+	 * It is safe to use the {@link #setTitle(String)} repeatedly. {@link ReleaseTag} makes use of the {@link FastLabel} component.
 	 * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
 	 */
 	@Override

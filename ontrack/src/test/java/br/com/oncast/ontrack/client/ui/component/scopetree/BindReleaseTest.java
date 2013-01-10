@@ -17,7 +17,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget;
-import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -75,7 +75,7 @@ public class BindReleaseTest extends GwtTest {
 	public void shouldInsertTagIntoScopeTreeItem() throws Exception {
 		actionExecutionService.onUserActionExecutionRequest(new ScopeBindReleaseAction(firstScope.getId(), "R1"));
 
-		final Tag tag = getTag();
+		final ReleaseTag tag = getTag();
 
 		assertTrue(tag.isVisible());
 		assertEquals("R1", tag.getText());
@@ -89,13 +89,13 @@ public class BindReleaseTest extends GwtTest {
 
 		actionExecutionService.onUserActionExecutionRequest(new ScopeBindReleaseAction(firstScope.getId(), ""));
 
-		final Tag tag = getTag();
+		final ReleaseTag tag = getTag();
 
 		assertFalse(tag.isVisible());
 		assertTrue(tag.getText().isEmpty());
 	}
 
-	private Tag getTag() throws ScopeNotFoundException, NoSuchFieldException, IllegalAccessException {
+	private ReleaseTag getTag() throws ScopeNotFoundException, NoSuchFieldException, IllegalAccessException {
 		final ScopeTreeWidget asWidget = (ScopeTreeWidget) tree.asWidget();
 		final ScopeTreeItem item = asWidget.findScopeTreeItem(firstScope);
 
@@ -105,7 +105,7 @@ public class BindReleaseTest extends GwtTest {
 
 		final Field releaseTagField = itemWidget.getClass().getDeclaredField("releaseTag");
 		releaseTagField.setAccessible(true);
-		final Tag tag = (Tag) releaseTagField.get(itemWidget);
+		final ReleaseTag tag = (ReleaseTag) releaseTagField.get(itemWidget);
 		return tag;
 	}
 

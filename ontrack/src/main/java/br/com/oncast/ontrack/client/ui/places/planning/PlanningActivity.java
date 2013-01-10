@@ -15,7 +15,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.helper.ScopeTreeMous
 import br.com.oncast.ontrack.client.ui.components.scopetree.interaction.ScopeTreeShortcutMappings;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.Tag;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
@@ -147,7 +147,7 @@ public class PlanningActivity extends AbstractActivity {
 				selectedScope = releaseWidget.getScopeContainer().getWidgetFor(scope);
 				selectedScope.setSelected(true);
 
-				if (event.getSource() instanceof Tag || event.getSource() instanceof ScopeTreeShortcutMappings) {
+				if (event.getSource() instanceof ReleaseTag || event.getSource() instanceof ScopeTreeShortcutMappings) {
 					releaseWidget.setHierarchicalContainerState(true);
 					view.ensureWidgetIsVisible(selectedScope);
 				}
