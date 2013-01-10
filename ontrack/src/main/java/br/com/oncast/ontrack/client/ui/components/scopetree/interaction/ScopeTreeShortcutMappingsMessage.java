@@ -92,4 +92,8 @@ public interface ScopeTreeShortcutMappingsMessage extends BaseMessages {
 	@Description("select next selected scope shortcut")
 	String selectNextSelectedScope();
 
+	@DefaultMessage("Add a tag to selection")
+	@Description("add tag to selected scope shortcut")
+	String addTagToScope();
+
 }

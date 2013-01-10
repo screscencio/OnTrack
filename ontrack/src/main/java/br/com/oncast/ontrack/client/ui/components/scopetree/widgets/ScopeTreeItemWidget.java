@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.client.services.user.Selection;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetReleaseCommandMenuItemFactory;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetTagCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetValueCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -25,8 +26,8 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFacto
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
-import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
+import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
@@ -37,6 +38,8 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
+import br.com.oncast.ontrack.shared.model.tags.ScopeTag;
+import br.com.oncast.ontrack.shared.model.tags.Tag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.value.Value;
@@ -172,6 +175,9 @@ public class ScopeTreeItemWidget extends Composite {
 	private final ScopeTreeItemWidgetValueCommandMenuItemFactory valueCommandMenuItemFactory;
 
 	@IgnoredByDeepEquality
+	private final ScopeTreeItemWidgetTagCommandMenuItemFactory tagCommandMenuItemFactory;
+
+	@IgnoredByDeepEquality
 	private final List<Selection> selectionsList;
 
 	@IgnoredByDeepEquality
@@ -207,6 +213,7 @@ public class ScopeTreeItemWidget extends Composite {
 		this.releaseCommandMenuItemFactory = new ScopeTreeItemWidgetReleaseCommandMenuItemFactory(editionHandler);
 		this.effortCommandMenuItemFactory = new ScopeTreeItemWidgetEffortCommandMenuItemFactory(editionHandler);
 		this.valueCommandMenuItemFactory = new ScopeTreeItemWidgetValueCommandMenuItemFactory(editionHandler);
+		this.tagCommandMenuItemFactory = new ScopeTreeItemWidgetTagCommandMenuItemFactory(editionHandler);
 		this.progressCommandMenuItemFactory = new ScopeTreeItemWidgetProgressCommandMenuItemFactory(editionHandler);
 		this.ipadFocusWorkaround = new IPadFocusWorkaround(editionBox);
 
@@ -541,6 +548,24 @@ public class ScopeTreeItemWidget extends Composite {
 			items.add(valueCommandMenuItemFactory.createItem(value, value));
 
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, valueCommandMenuItemFactory, 100, 264);
+
+		commandsMenu.addCloseHandler(createCloseHandler());
+
+		commandsMenu.setHelpText("");
+		align(configPopup(), valuePanel)
+				.popup(commandsMenu)
+				.pop();
+	}
+
+	public void showTagMenu(final List<Tag> tags) {
+		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
+
+		for (final Tag value : tags) {
+			final ScopeTag tag = (ScopeTag) value;
+			items.add(tagCommandMenuItemFactory.createItem(tag.getDescription(), tag.getDescription()));
+		}
+
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, tagCommandMenuItemFactory, 100, 264);
 
 		commandsMenu.addCloseHandler(createCloseHandler());
 

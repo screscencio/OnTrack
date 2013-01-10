@@ -63,6 +63,8 @@ public class BrowserKeyCodes {
 	 */
 	public static final int KEY_5 = 53;
 
+	public static final int KEY_7 = 55;
+
 	public static final int KEY_A = 65;
 
 	public static final int KEY_F = 70;
@@ -127,6 +129,7 @@ public class BrowserKeyCodes {
 			keysRepresentations.put(KEY_3, "3");
 			keysRepresentations.put(KEY_4, "4");
 			keysRepresentations.put(KEY_5, "5");
+			keysRepresentations.put(KEY_7, "7");
 			keysRepresentations.put(KEY_SLASH, "/");
 			keysRepresentations.put(KEY_A, "a");
 			keysRepresentations.put(KEY_F, "f");
@@ -143,6 +146,7 @@ public class BrowserKeyCodes {
 			shiftedKeysRepresentations.put(KEY_3, "#");
 			shiftedKeysRepresentations.put(KEY_4, "$");
 			shiftedKeysRepresentations.put(KEY_5, "%");
+			shiftedKeysRepresentations.put(KEY_7, "&");
 			shiftedKeysRepresentations.put(KEY_SLASH, "?");
 			shiftedKeysRepresentations.put(KEY_A, "A");
 			shiftedKeysRepresentations.put(KEY_F, "F");

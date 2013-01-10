@@ -17,10 +17,6 @@ import br.com.oncast.ontrack.shared.model.file.exceptions.FileRepresentationNotF
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
-import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
-import br.com.oncast.ontrack.shared.model.metadata.Metadata;
-import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
-import br.com.oncast.ontrack.shared.model.metadata.exceptions.MetadataNotFoundException;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
@@ -35,6 +31,8 @@ import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
+
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
 
 public class ProjectContext implements HasUUID {
 
@@ -269,6 +267,7 @@ public class ProjectContext implements HasUUID {
 		return project.removeDescriptionFor(subjectId);
 	}
 
+	// FIXME LOBO
 	public <T extends Metadata> List<T> getAllMetadata(final MetadataType metadataType) {
 		return project.getMetadataList(metadataType);
 	}
