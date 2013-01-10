@@ -64,8 +64,11 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
+import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
+import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
@@ -162,7 +165,17 @@ public class UserActionTestUtils {
 		userActions.add(createScopeRemoveAssociatedUserAction());
 		userActions.add(createDescriptionCreateAction());
 		userActions.add(createDescriptionRemoveAction());
+		userActions.add(createTagCreateActionAction());
+		userActions.add(createTagRemoveActionAction());
 		return userActions;
+	}
+
+	private static UserAction createTagRemoveActionAction() throws Exception {
+		return createUserAction(new TagRemoveAction(new UUID()));
+	}
+
+	private static UserAction createTagCreateActionAction() throws Exception {
+		return createUserAction(new TagCreateAction("description", Color.RED, Color.BLUE));
 	}
 
 	private static UserAction createDescriptionRemoveAction() throws Exception {

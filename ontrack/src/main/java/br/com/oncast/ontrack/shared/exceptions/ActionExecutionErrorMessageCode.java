@@ -200,6 +200,18 @@ public enum ActionExecutionErrorMessageCode implements BaseMessageCode<ActionExe
 		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
 			return messages.descriptionRemoveAction();
 		}
+	},
+	CREATE_EXISTENT {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.createDuplicated();
+		}
+	},
+	REMOVE_INEXISTENT {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.removeInexitent();
+		}
 	};
 
 	@Override

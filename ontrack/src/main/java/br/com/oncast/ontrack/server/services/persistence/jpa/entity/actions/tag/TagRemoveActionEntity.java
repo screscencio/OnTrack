@@ -1,0 +1,29 @@
+package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
+import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
+
+@Entity(name = "TagRemove")
+@ConvertTo(TagRemoveAction.class)
+public class TagRemoveActionEntity extends ModelActionEntity {
+
+	@Column(name = ActionTableColumns.STRING_1)
+	@ConvertUsing(StringToUuidConverter.class)
+	private String tagId;
+
+	public String getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(final String tagId) {
+		this.tagId = tagId;
+	}
+
+}

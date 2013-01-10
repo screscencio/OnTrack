@@ -30,6 +30,7 @@ import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
@@ -286,6 +287,18 @@ public class ProjectContext implements HasUUID {
 	@Override
 	public boolean equals(final Object obj) {
 		return UUIDUtils.equals(this, obj);
+	}
+
+	public void addTag(final Tag tag) {
+		project.addTag(tag);
+	}
+
+	public boolean hasTag(final String tagDescription) {
+		return project.hasTag(tagDescription);
+	}
+
+	public Tag removeTag(final UUID tagId) {
+		return project.removeTag(tagId);
 	}
 
 }

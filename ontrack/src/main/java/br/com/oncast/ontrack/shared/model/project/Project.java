@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.shared.model.metadata.Metadata;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -44,6 +45,7 @@ public class Project implements Serializable, HasUUID {
 	private ListMultimap<UUID, Checklist> checklistMap;
 	private Map<UUID, Description> descriptionMap;
 	private Map<HasMetadata, SetMultimap<MetadataType, Metadata>> metadataMap;
+	private Map<String, Tag> tags;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
@@ -54,8 +56,11 @@ public class Project implements Serializable, HasUUID {
 		this.projectRepresentation = projectRepresentation;
 		this.projectScope = projectScope;
 		this.projectRelease = projectRelease;
+
 		annotationsMap = new HashMap<UUID, List<Annotation>>();
 		descriptionMap = new HashMap<UUID, Description>();
+		tags = new HashMap<String, Tag>();
+
 		checklistMap = ArrayListMultimap.create();
 		users = new HashSet<UserRepresentation>();
 		fileRepresentations = new HashSet<FileRepresentation>();
@@ -232,6 +237,25 @@ public class Project implements Serializable, HasUUID {
 		}
 
 		return metadataList;
+	}
+
+	public void addTag(final Tag tag) {
+		tags.put(tag.getDescription().trim().toLowerCase(), tag);
+	}
+
+	public boolean hasTag(final String tagDescription) {
+		return tags.containsKey(tagDescription.trim().toLowerCase());
+	}
+
+	public Tag removeTag(final UUID tagId) {
+		for (final Tag tag : tags.values()) {
+			if (tag.equals(tagId)) return removeTag(tag.getDescription());
+		}
+		return null;
+	}
+
+	private Tag removeTag(final String tagDescription) {
+		return tags.remove(tagDescription.trim().toLowerCase());
 	}
 
 	@Override
