@@ -77,7 +77,9 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			}
 
 			@Override
-			public void addTag(final String tagDescription, final Color bgColor, final Color fgColor) {}
+			public void addTag(final String tagDescription, final Color bgColor, final Color fgColor) {
+				// FIXME LOBO handle this
+			}
 		}));
 
 		addStyleName("ScopeTreeItem");
