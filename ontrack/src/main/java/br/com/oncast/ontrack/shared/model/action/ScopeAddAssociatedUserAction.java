@@ -4,6 +4,7 @@ import org.simpleframework.xml.Element;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeAddAssociatedUserActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
@@ -45,6 +46,10 @@ public class ScopeAddAssociatedUserAction implements ScopeAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope scope = ActionHelper.findScope(scopeId, context);
 		final UserRepresentation user = ActionHelper.findUser(userId, context);
+
+		for (final UserAssociationMetadata metadata : context.<UserAssociationMetadata> getMetadataList(scope, UserAssociationMetadata.getType())) {
+			if (user.equals(metadata.getUser())) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
+		}
 
 		context.addMetadata(MetadataFactory.createUserMetadata(metadataId, scope, user));
 

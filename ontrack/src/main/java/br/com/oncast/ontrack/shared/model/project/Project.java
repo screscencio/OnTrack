@@ -273,4 +273,11 @@ public class Project implements Serializable, HasUUID {
 		return UUIDUtils.equals(this, obj);
 	}
 
+	public Tag getTag(final UUID tagId) {
+		for (final Tag tag : tags.values()) {
+			if (tag.equals(tagId)) return tag;
+		}
+		return null;
+	}
+
 }

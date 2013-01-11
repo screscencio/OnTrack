@@ -19,6 +19,8 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
+import br.com.oncast.ontrack.shared.model.tag.exception.TagNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -101,12 +103,22 @@ public class ActionHelper {
 		}
 	}
 
-	public static <T extends Metadata> T findMetadata(final HasMetadata subject, final MetadataType metadataType, final UUID metadataId, final ProjectContext context)
+	public static <T extends Metadata> T findMetadata(final HasMetadata subject, final MetadataType metadataType, final UUID metadataId,
+			final ProjectContext context)
 			throws UnableToCompleteActionException {
 		try {
 			return context.findMetadata(subject, metadataType, metadataId);
 		}
 		catch (final MetadataNotFoundException e) {
+			throw new UnableToCompleteActionException(e);
+		}
+	}
+
+	public static Tag findTag(final UUID tagId, final ProjectContext context) throws UnableToCompleteActionException {
+		try {
+			return context.findTag(tagId);
+		}
+		catch (final TagNotFoundException e) {
 			throw new UnableToCompleteActionException(e);
 		}
 	}

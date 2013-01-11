@@ -1,53 +1,52 @@
 package br.com.oncast.ontrack.shared.model.action;
 
-import java.util.List;
-
 import org.simpleframework.xml.Element;
 
-import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeRemoveAssociatedUserActionEntity;
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag.ScopeAddTagAssociationActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
-import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
+import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-@ConvertTo(ScopeRemoveAssociatedUserActionEntity.class)
-public class ScopeRemoveAssociatedUserAction implements ScopeAction {
+@ConvertTo(ScopeAddTagAssociationActionEntity.class)
+public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
 
 	private static final long serialVersionUID = 1L;
+
+	@Element
+	private UUID metadataId;
 
 	@Element
 	private UUID scopeId;
 
 	@Element
-	private UUID userId;
+	private UUID tagId;
 
-	protected ScopeRemoveAssociatedUserAction() {}
+	protected ScopeAddTagAssociationAction() {}
 
-	public ScopeRemoveAssociatedUserAction(final UUID scopeId, final UUID userId) {
+	public ScopeAddTagAssociationAction(final UUID scopeId, final UUID tagId) {
 		this.scopeId = scopeId;
-		this.userId = userId;
+		this.tagId = tagId;
+		this.metadataId = new UUID();
 	}
 
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope scope = ActionHelper.findScope(scopeId, context);
-		final UserRepresentation user = ActionHelper.findUser(userId, context);
+		final Tag tag = ActionHelper.findTag(tagId, context);
 
-		final List<UserAssociationMetadata> metadataList = context.getMetadataList(scope, UserAssociationMetadata.getType());
-
-		for (final UserAssociationMetadata metadata : metadataList) {
-			if (metadata.getUser().equals(user)) {
-				context.removeMetadata(metadata);
-				return new ScopeAddAssociatedUserAction(metadata);
-			}
+		for (final TagAssociationMetadata metadata : context.<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType())) {
+			if (tag.equals(metadata.getTag())) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
 		}
 
-		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_INEXISTENT);
+		context.addMetadata(MetadataFactory.createTagMetadata(metadataId, scope, tag));
+		return new ScopeRemoveTagAssociationAction(scopeId, tagId);
 	}
 
 	@Override
