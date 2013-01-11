@@ -38,8 +38,7 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
-import br.com.oncast.ontrack.shared.model.tags.ScopeTag;
-import br.com.oncast.ontrack.shared.model.tags.Tag;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.value.Value;
@@ -560,12 +559,11 @@ public class ScopeTreeItemWidget extends Composite {
 	public void showTagMenu(final List<Tag> tags) {
 		final List<CommandMenuItem> items = new ArrayList<CommandMenuItem>();
 
-		for (final Tag value : tags) {
-			final ScopeTag tag = (ScopeTag) value;
+		for (final Tag tag : tags) {
 			items.add(tagCommandMenuItemFactory.createItem(tag.getDescription(), tag.getDescription()));
 		}
 
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, tagCommandMenuItemFactory, 100, 264);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, tagCommandMenuItemFactory, 300, 264);
 
 		commandsMenu.addCloseHandler(createCloseHandler());
 

@@ -75,6 +75,11 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 				if (ScopeTreeItem.this.getTree().getSelectedItem() != null) return;
 				ScopeTreeItem.this.select();
 			}
+
+			@Override
+			public void addTag(final String tagDescription, final Color bgColor, final Color fgColor) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemAddTagEvent(getReferencedScope().getId(), tagDescription, bgColor, fgColor));
+			}
 		}));
 
 		addStyleName("ScopeTreeItem");

@@ -1,45 +1,49 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.TagCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.TagWidget;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 
 public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeItemWidgetCommandMenuItemFactory {
 
-	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
-
 	private final ScopeTreeItemWidgetEditionHandler controller;
+	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
 
 	public ScopeTreeItemWidgetTagCommandMenuItemFactory(final ScopeTreeItemWidgetEditionHandler controller) {
 		this.controller = controller;
 	}
 
 	@Override
-	public SimpleCommandMenuItem createCustomItem(final String inputText) {
-		// FIXME LOBO
-		return new SimpleCommandMenuItem(messages.use(inputText), inputText, new Command() {
+	public TagCommandMenuItem createCustomItem(final String inputText) {
+		// FIXME LOBO bUSCAR OBJETO TAG PELA DESCRICAO
+		// FIXME I18N MESSAGES
+		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), messages.create(inputText))), inputText, new Command() {
 
 			@Override
 			public void execute() {
-				controller.declareValue(inputText);
+				controller.addTag(inputText);
 			}
 		});
 	}
 
 	@Override
-	public SimpleCommandMenuItem createItem(final String itemText, final String valueToDeclare) {
-		// FIXME LOBO
-		return new SimpleCommandMenuItem(itemText, valueToDeclare, new Command() {
+	public TagCommandMenuItem createItem(final String itemText, final String valueToDeclare) {
+		// FIXME LOBO bUSCAR OBJETO TAG PELA DESCRICAO
+		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), valueToDeclare)), valueToDeclare, new Command() {
 
 			@Override
 			public void execute() {
-				controller.declareValue(valueToDeclare);
+				controller.addTag(valueToDeclare);
 			}
 		});
 	}
 
+	// FIXME LOBO
 	@Override
 	public String getNoItemText() {
 		return null;

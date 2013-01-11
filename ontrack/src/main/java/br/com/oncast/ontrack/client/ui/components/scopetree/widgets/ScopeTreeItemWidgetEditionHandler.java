@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
+import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
+
 public interface ScopeTreeItemWidgetEditionHandler {
 
 	void onEditionStart();
@@ -25,4 +27,6 @@ public interface ScopeTreeItemWidgetEditionHandler {
 	void declareEffort(String effortDescription);
 
 	void declareValue(String valueToDeclare);
+
+	void addTag(String description, Color bgColor, Color fgColor);
 }
