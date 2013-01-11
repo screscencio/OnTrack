@@ -9,7 +9,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItem
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemEditionStartEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidget;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
-import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
+import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
@@ -77,9 +77,7 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			}
 
 			@Override
-			public void addTag(final String tagDescription, final Color bgColor, final Color fgColor) {
-				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeItemAddTagEvent(getReferencedScope().getId(), tagDescription, bgColor, fgColor));
-			}
+			public void addTag(final String tagDescription, final Color bgColor, final Color fgColor) {}
 		}));
 
 		addStyleName("ScopeTreeItem");

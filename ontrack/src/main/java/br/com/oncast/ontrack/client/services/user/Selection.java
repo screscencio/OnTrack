@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.services.user;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
+import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 public class Selection {

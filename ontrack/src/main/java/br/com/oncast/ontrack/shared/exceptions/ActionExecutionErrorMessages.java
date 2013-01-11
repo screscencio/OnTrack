@@ -136,4 +136,12 @@ public interface ActionExecutionErrorMessages extends BaseMessages {
 	@DefaultMessage("Can''t remove a description created by another user.")
 	String descriptionRemoveAction();
 
+	@Description("caused when tries to create something with already used Id.")
+	@DefaultMessage("Creation failed: Duplicated object.")
+	String createDuplicated();
+
+	@Description("caused when tries to remove something that does not exists.")
+	@DefaultMessage("Remotion failed: Object not found.")
+	String removeInexitent();
+
 }

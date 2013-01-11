@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
+import br.com.oncast.ontrack.shared.model.color.Color;
 
 public interface ScopeTreeItemWidgetEditionHandler {
 

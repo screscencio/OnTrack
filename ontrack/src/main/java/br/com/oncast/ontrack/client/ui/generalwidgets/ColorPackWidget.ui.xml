@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style>
+		
+		.root {
+			position: relative;
+			height: 13px;
+			width: 13px;
+			border: 1px solid #888;
+			line-height: 11px;
+			text-align: center;
+			font-size: 90%;
+			font-family: arial,sans-serif;
+			cursor: pointer;
+			border-collapse: collapse;
+			border-spacing: 2px;
+			border-color: gray;
+			margin: 5px;
+		}
+		
+	</ui:style>
+	
+	<g:Label ui:field="label" styleName="{style.root}" text="a" />
+</ui:UiBinder> 

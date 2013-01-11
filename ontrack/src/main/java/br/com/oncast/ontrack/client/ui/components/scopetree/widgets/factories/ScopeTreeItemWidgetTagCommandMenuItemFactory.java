@@ -26,7 +26,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 
 			@Override
 			public void execute() {
-				controller.addTag(inputText);
+				// controller.addTag(inputText);
 			}
 		});
 	}
@@ -38,7 +38,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 
 			@Override
 			public void execute() {
-				controller.addTag(valueToDeclare);
+				// controller.addTag(valueToDeclare);
 			}
 		});
 	}

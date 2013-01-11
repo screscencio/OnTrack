@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.animation;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.utils.Color;
+import br.com.oncast.ontrack.shared.model.color.Color;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.user.client.ui.Widget;

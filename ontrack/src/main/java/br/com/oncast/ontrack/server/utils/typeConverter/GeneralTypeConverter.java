@@ -13,6 +13,7 @@ import org.hibernate.collection.PersistentBag;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.BooleanConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.CollectionConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.CollectionToListConverter;
+import br.com.oncast.ontrack.server.utils.typeConverter.custom.ColorConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.DateConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.FloatConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.IntegerConverter;
@@ -21,6 +22,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.custom.LongConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.UUIDConverter;
 import br.com.oncast.ontrack.server.utils.typeConverter.exceptions.TypeConverterException;
+import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 @SuppressWarnings("rawtypes")
@@ -49,6 +51,7 @@ public class GeneralTypeConverter implements TypeConverter {
 
 		// TODO +Externalize this so that specific application converters are registered by the application itself.
 		addCustomConverter(UUID.class, new UUIDConverter());
+		addCustomConverter(Color.class, new ColorConverter());
 		addCustomConverter(PersistentBag.class, new ListConverter<ArrayList>(ArrayList.class));
 	}
 
