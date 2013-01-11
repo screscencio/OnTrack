@@ -45,6 +45,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -63,6 +64,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
@@ -165,16 +167,26 @@ public class UserActionTestUtils {
 		userActions.add(createScopeRemoveAssociatedUserAction());
 		userActions.add(createDescriptionCreateAction());
 		userActions.add(createDescriptionRemoveAction());
-		userActions.add(createTagCreateActionAction());
-		userActions.add(createTagRemoveActionAction());
+		userActions.add(createTagCreateAction());
+		userActions.add(createTagRemoveAction());
+		userActions.add(createScopeAddTagAssociationAction());
+		userActions.add(createScopeRemoveTagAssociationAction());
 		return userActions;
 	}
 
-	private static UserAction createTagRemoveActionAction() throws Exception {
+	private static UserAction createScopeRemoveTagAssociationAction() throws Exception {
+		return createUserAction(new ScopeRemoveTagAssociationAction(new UUID(), new UUID()));
+	}
+
+	private static UserAction createScopeAddTagAssociationAction() throws Exception {
+		return createUserAction(new ScopeAddTagAssociationAction(new UUID(), new UUID()));
+	}
+
+	private static UserAction createTagRemoveAction() throws Exception {
 		return createUserAction(new TagRemoveAction(new UUID()));
 	}
 
-	private static UserAction createTagCreateActionAction() throws Exception {
+	private static UserAction createTagCreateAction() throws Exception {
 		return createUserAction(new TagCreateAction("description", Color.RED, Color.BLUE));
 	}
 

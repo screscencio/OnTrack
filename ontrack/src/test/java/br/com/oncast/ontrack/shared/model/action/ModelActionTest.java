@@ -70,18 +70,19 @@ public abstract class ModelActionTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends Metadata> T captureAddedTag() {
+	protected <T extends Metadata> T captureAddedMetadata() {
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(context).addMetadata(captor.capture());
 		final Metadata value = captor.getValue();
 		return (T) value;
 	}
 
-	protected Metadata captureRemovedTag() {
+	@SuppressWarnings("unchecked")
+	protected <T extends Metadata> T captureRemovedMetadata() {
 		final ArgumentCaptor<Metadata> captor = ArgumentCaptor.forClass(Metadata.class);
 		verify(context).removeMetadata(captor.capture());
 		final Metadata value = captor.getValue();
-		return value;
+		return (T) value;
 	}
 
 	@Test

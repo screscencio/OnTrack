@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public enum MetadataType implements Serializable {
 
-	USER;
+	USER,
+	TAG;
 
 }

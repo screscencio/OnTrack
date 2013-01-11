@@ -36,6 +36,7 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 	private UUID userId;
 
 	private UserAssociationMetadata metadata;
+	private List<Metadata> metadataList;
 
 	@Before
 	public void setup() throws Exception {
@@ -49,9 +50,9 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 
 		when(context.findScope(scopeId)).thenReturn(scope);
 		when(context.findUser(userId)).thenReturn(user);
-		final List<Metadata> list = new ArrayList<Metadata>();
-		list.add(metadata);
-		when(context.getMetadataList(scope, UserAssociationMetadata.getType())).thenReturn(list);
+		metadataList = new ArrayList<Metadata>();
+		metadataList.add(metadata);
+		when(context.getMetadataList(scope, UserAssociationMetadata.getType())).thenReturn(metadataList);
 	}
 
 	@Test
@@ -66,7 +67,7 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 	public void shouldRemoveTheGivenAssociationOfTheGivenScope() throws Exception {
 		executeAction();
 
-		final Metadata value = captureRemovedTag();
+		final Metadata value = captureRemovedMetadata();
 		assertTrue(value instanceof UserAssociationMetadata);
 		final UserAssociationMetadata metadata = (UserAssociationMetadata) value;
 
@@ -77,7 +78,8 @@ public class ScopeRemoveAssociatedUserActionTest extends ModelActionTest {
 	@Test
 	public void undoShouldAddTheAssociation() throws Exception {
 		final ModelAction undoAction = executeAction();
-		final Metadata metadata = captureRemovedTag();
+		final Metadata metadata = captureRemovedMetadata();
+		metadataList.clear();
 
 		undoAction.execute(context, actionContext);
 		verify(context).addMetadata(metadata);

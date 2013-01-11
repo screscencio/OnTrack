@@ -18,7 +18,9 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
@@ -55,7 +57,7 @@ public class ScopeAddAssociatedUserActionTest extends ModelActionTest {
 	public void shouldAddTheGivenUserAsAssociatedUserToTheGivenScope() throws Exception {
 		executeAction();
 
-		final Metadata value = captureAddedTag();
+		final Metadata value = captureAddedMetadata();
 		assertTrue(value instanceof UserAssociationMetadata);
 		final UserAssociationMetadata metadata = (UserAssociationMetadata) value;
 
@@ -63,10 +65,19 @@ public class ScopeAddAssociatedUserActionTest extends ModelActionTest {
 		assertEquals(user, metadata.getUser());
 	}
 
+	@Test(expected = UnableToCompleteActionException.class)
+	public void shouldNotBeAbleToAssociateTheSameScopeWithSameUserTwice() throws Exception {
+		final List<Metadata> list = new ArrayList<Metadata>();
+		list.add(MetadataFactory.createUserMetadata(new UUID(), scope, user));
+		when(context.getMetadataList(scope, UserAssociationMetadata.getType())).thenReturn(list);
+
+		executeAction();
+	}
+
 	@Test
 	public void undoShouldRemoveTheAssociation() throws Exception {
 		final ModelAction undoAction = executeAction();
-		final UserAssociationMetadata metadata = captureAddedTag();
+		final UserAssociationMetadata metadata = captureAddedMetadata();
 
 		final List<Metadata> list = new ArrayList<Metadata>();
 		list.add(metadata);
