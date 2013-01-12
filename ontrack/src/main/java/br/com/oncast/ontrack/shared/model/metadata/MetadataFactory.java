@@ -11,7 +11,7 @@ public class MetadataFactory {
 		return new UserAssociationMetadata(metadataId, scope, user);
 	}
 
-	public static Metadata createTagMetadata(final UUID metadataId, final Scope scope, final Tag tag) {
+	public static TagAssociationMetadata createTagMetadata(final UUID metadataId, final Scope scope, final Tag tag) {
 		return new TagAssociationMetadata(metadataId, scope, tag);
 	}
 

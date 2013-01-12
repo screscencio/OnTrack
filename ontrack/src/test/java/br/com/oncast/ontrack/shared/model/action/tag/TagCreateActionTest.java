@@ -68,9 +68,9 @@ public class TagCreateActionTest extends ModelActionTest {
 		verify(context).addTag(captor.capture());
 
 		final Tag tag = captor.getValue();
-		when(context.removeTag(tag.getId())).thenReturn(tag);
+		when(context.findTag(tag.getId())).thenReturn(tag);
 		undoAction.execute(context, actionContext);
-		verify(context).removeTag(tag.getId());
+		verify(context).removeTag(tag);
 	}
 
 	@Override

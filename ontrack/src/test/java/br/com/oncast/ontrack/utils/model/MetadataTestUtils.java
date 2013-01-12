@@ -10,11 +10,11 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class MetadataTestUtils {
 
-	public static Metadata create() {
-		return create(new UUID(), new UUID(), UserAssociationMetadata.getType());
+	public static Metadata createMetadata() {
+		return createMetadata(new UUID(), new UUID(), UserAssociationMetadata.getType());
 	}
 
-	public static Metadata create(final UUID subjectId, final UUID metadataId, final MetadataType type) {
+	public static Metadata createMetadata(final UUID subjectId, final UUID metadataId, final MetadataType type) {
 		final Metadata metadata = mock(Metadata.class);
 		final HasMetadata subject = mock(HasMetadata.class);
 		when(subject.getId()).thenReturn(subjectId);

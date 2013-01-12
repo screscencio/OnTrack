@@ -36,6 +36,12 @@ public class ScopeAddTagAssociationAction implements ScopeAction, TagAction {
 		this.metadataId = new UUID();
 	}
 
+	protected ScopeAddTagAssociationAction(final TagAssociationMetadata metadata) {
+		this.scopeId = metadata.getSubject().getId();
+		this.tagId = metadata.getTag().getId();
+		this.metadataId = metadata.getId();
+	}
+
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		final Scope scope = ActionHelper.findScope(scopeId, context);
