@@ -16,7 +16,11 @@ import br.com.oncast.ontrack.shared.model.action.ModelActionTest;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.color.Color;
+import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
+import br.com.oncast.ontrack.utils.TagTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 public class TagCreateActionTest extends ModelActionTest {
 
@@ -71,6 +75,21 @@ public class TagCreateActionTest extends ModelActionTest {
 		when(context.findTag(tag.getId())).thenReturn(tag);
 		undoAction.execute(context, actionContext);
 		verify(context).removeTag(tag);
+	}
+
+	@Test
+	public void shouldAssociateToTheGivenScopeWhenRequested() throws Exception {
+		final Scope scope = ScopeTestUtils.createScope();
+		final TagCreateAction action = new TagCreateAction(scope.getId(), description, backgroundColor, textColor);
+		when(context.findScope(scope.getId())).thenReturn(scope);
+		final Tag createdTag = TagTestUtils.createTag();
+		when(context.findTag(action.getReferenceId())).thenReturn(createdTag);
+
+		action.execute(context, actionContext);
+
+		final TagAssociationMetadata addedMetadata = captureAddedMetadata();
+		assertEquals(scope, addedMetadata.getSubject());
+		assertEquals(createdTag, addedMetadata.getTag());
 	}
 
 	@Override

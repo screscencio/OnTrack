@@ -53,6 +53,15 @@ public class TagCreateAction implements TagAction {
 		this.tagId = tag.getId();
 	}
 
+	public TagCreateAction(final UUID scopeId, final String description, final Color backgroundColor, final Color textColor) {
+		this.subActionList = new ArrayList<ModelAction>();
+		this.description = description.trim();
+		this.backgroundColor = backgroundColor;
+		this.textColor = textColor;
+		this.tagId = new UUID();
+		this.subActionList.add(new ScopeAddTagAssociationAction(scopeId, tagId));
+	}
+
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (context.hasTag(description)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);

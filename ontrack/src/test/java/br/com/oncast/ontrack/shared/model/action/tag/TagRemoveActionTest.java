@@ -36,7 +36,7 @@ public class TagRemoveActionTest extends ModelActionTest {
 
 	@Before
 	public void setup() throws Exception {
-		tag = TagTestUtils.create();
+		tag = TagTestUtils.createTag();
 		when(context.findTag(tag.getId())).thenReturn(tag);
 	}
 
