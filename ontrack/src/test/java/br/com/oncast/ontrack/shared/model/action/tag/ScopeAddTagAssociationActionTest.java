@@ -34,7 +34,7 @@ public class ScopeAddTagAssociationActionTest extends ModelActionTest {
 	@Before
 	public void setup() throws Exception {
 		scope = ScopeTestUtils.createScope();
-		tag = TagTestUtils.create();
+		tag = TagTestUtils.createTag();
 
 		when(context.findScope(scope.getId())).thenReturn(scope);
 		when(context.findTag(tag.getId())).thenReturn(tag);

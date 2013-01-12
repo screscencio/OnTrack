@@ -36,7 +36,7 @@ public class ScopeRemoveTagAssociationActionTest extends ModelActionTest {
 	public void setup() throws Exception {
 		metadataList = new ArrayList<Metadata>();
 		scope = ScopeTestUtils.createScope();
-		tag = TagTestUtils.create();
+		tag = TagTestUtils.createTag();
 		metadataList.add(MetadataFactory.createTagMetadata(new UUID(), scope, tag));
 
 		when(context.findScope(scope.getId())).thenReturn(scope);

@@ -6,7 +6,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public class TagTestUtils {
 
-	public static Tag create() {
+	public static Tag createTag() {
 		return new Tag(new UUID(), "description", Color.RED, Color.BLUE);
 	}
 
