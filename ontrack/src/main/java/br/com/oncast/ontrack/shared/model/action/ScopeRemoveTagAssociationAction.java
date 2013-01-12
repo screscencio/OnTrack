@@ -39,7 +39,7 @@ public class ScopeRemoveTagAssociationAction implements ScopeAction, TagAction {
 			if (!tag.equals(metadata.getTag())) continue;
 
 			context.removeMetadata(metadata);
-			return new ScopeAddTagAssociationAction(scopeId, tagId);
+			return new ScopeAddTagAssociationAction(metadata);
 		}
 
 		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.REMOVE_INEXISTENT);

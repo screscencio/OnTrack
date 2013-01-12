@@ -247,11 +247,8 @@ public class Project implements Serializable, HasUUID {
 		return tags.containsKey(tagDescription.trim().toLowerCase());
 	}
 
-	public Tag removeTag(final UUID tagId) {
-		for (final Tag tag : tags.values()) {
-			if (tag.equals(tagId)) return removeTag(tag.getDescription());
-		}
-		return null;
+	public Tag removeTag(final Tag tag) {
+		return removeTag(tag.getDescription());
 	}
 
 	private Tag removeTag(final String tagDescription) {

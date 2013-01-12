@@ -1,6 +1,10 @@
 package br.com.oncast.ontrack.shared.model.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag.TagCreateActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
@@ -28,16 +32,21 @@ public class TagCreateAction implements TagAction {
 	@Element
 	private Color textColor;
 
+	@ElementList
+	private List<ModelAction> subActionList;
+
 	protected TagCreateAction() {}
 
 	public TagCreateAction(final String description, final Color backgroundColor, final Color textColor) {
+		this.subActionList = new ArrayList<ModelAction>();
 		this.description = description.trim();
 		this.backgroundColor = backgroundColor;
 		this.textColor = textColor;
 		this.tagId = new UUID();
 	}
 
-	public TagCreateAction(final Tag tag) {
+	public TagCreateAction(final Tag tag, final List<ModelAction> rollbackActions) {
+		this.subActionList = rollbackActions;
 		this.description = tag.getDescription();
 		this.backgroundColor = tag.getBackgroundColor();
 		this.textColor = tag.getTextColor();
@@ -48,6 +57,10 @@ public class TagCreateAction implements TagAction {
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (context.hasTag(description)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
 		context.addTag(new Tag(tagId, description, backgroundColor, textColor));
+
+		for (final ModelAction action : subActionList) {
+			action.execute(context, actionContext);
+		}
 		return new TagRemoveAction(tagId);
 	}
 

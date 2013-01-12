@@ -1,7 +1,12 @@
 package br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.tag;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 
 import br.com.oncast.ontrack.server.services.persistence.jpa.ActionTableColumns;
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.model.ModelActionEntity;
@@ -29,6 +34,11 @@ public class TagCreateActionEntity extends ModelActionEntity {
 	@Column(name = ActionTableColumns.STRING_3)
 	@ConvertUsing(StringToColorConverter.class)
 	private String textColor;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@Column(name = ActionTableColumns.ACTION_LIST)
+	@JoinTable(name = "TagCreateAction_subActionList")
+	private List<ModelActionEntity> subActionList;
 
 	public String getTagId() {
 		return tagId;
@@ -60,6 +70,14 @@ public class TagCreateActionEntity extends ModelActionEntity {
 
 	public void setTextColor(final String textColor) {
 		this.textColor = textColor;
+	}
+
+	public List<ModelActionEntity> getSubActionList() {
+		return subActionList;
+	}
+
+	public void setSubActionList(List<ModelActionEntity> subActionList) {
+		this.subActionList = subActionList;
 	}
 
 }

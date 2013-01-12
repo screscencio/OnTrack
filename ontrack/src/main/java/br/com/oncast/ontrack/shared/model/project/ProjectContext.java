@@ -298,8 +298,8 @@ public class ProjectContext implements HasUUID {
 		return project.hasTag(tagDescription);
 	}
 
-	public Tag removeTag(final UUID tagId) {
-		return project.removeTag(tagId);
+	public Tag removeTag(final Tag tag) {
+		return project.removeTag(tag);
 	}
 
 	public Tag findTag(final UUID tagId) throws TagNotFoundException {
