@@ -140,4 +140,9 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 		if (!scopeColorMap.containsKey(scope)) scopeColorMap.put(scope, colorPicker.pick(SCOPE_COLOR_ALPHA));
 		return scopeColorMap.get(scope);
 	}
+
+	@Override
+	public Color pickColor() {
+		return colorPicker.pick();
+	}
 }

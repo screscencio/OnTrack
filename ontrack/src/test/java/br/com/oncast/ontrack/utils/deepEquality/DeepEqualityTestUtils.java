@@ -17,8 +17,8 @@ import br.com.oncast.ontrack.server.utils.introspector.IntrospectionException;
 import br.com.oncast.ontrack.server.utils.introspector.Introspector;
 import br.com.oncast.ontrack.utils.deepEquality.custom.DeepEqualityComparator;
 import br.com.oncast.ontrack.utils.deepEquality.custom.ScopeTreeDeepEqualityComparator;
-import br.com.oncast.ontrack.utils.identedLogger.IdentedLogger;
 import br.com.oncast.ontrack.utils.identedLogger.ErrorOnlyIdentedLogger;
+import br.com.oncast.ontrack.utils.identedLogger.IdentedLogger;
 
 // TODO Implement a logger that informs where the error occurred.
 public class DeepEqualityTestUtils {

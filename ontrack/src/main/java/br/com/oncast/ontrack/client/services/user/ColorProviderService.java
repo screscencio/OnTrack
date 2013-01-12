@@ -14,4 +14,6 @@ public interface ColorProviderService {
 
 	List<Selection> getMembersSelectionsFor(Scope scope);
 
+	Color pickColor();
+
 }

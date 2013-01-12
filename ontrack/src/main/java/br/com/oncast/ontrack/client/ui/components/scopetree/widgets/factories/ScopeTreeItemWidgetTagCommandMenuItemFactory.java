@@ -1,8 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagWidget;
+import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -12,6 +14,9 @@ import com.google.gwt.user.client.Command;
 public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeItemWidgetCommandMenuItemFactory {
 
 	private final ScopeTreeItemWidgetEditionHandler controller;
+	private final Color bgColor = ClientServiceProvider.getInstance().getColorProviderService().pickColor();
+	private final Color txColor = ClientServiceProvider.getInstance().getColorProviderService().pickColor();
+
 	private static final CommandMenuMessages messages = GWT.create(CommandMenuMessages.class);
 
 	public ScopeTreeItemWidgetTagCommandMenuItemFactory(final ScopeTreeItemWidgetEditionHandler controller) {
@@ -22,7 +27,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 	public TagCommandMenuItem createCustomItem(final String inputText) {
 		// FIXME LOBO bUSCAR OBJETO TAG PELA DESCRICAO
 		// FIXME I18N MESSAGES
-		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), messages.create(inputText))), inputText, new Command() {
+		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), messages.create(inputText), bgColor, txColor)), inputText, new Command() {
 
 			@Override
 			public void execute() {
@@ -34,7 +39,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 	@Override
 	public TagCommandMenuItem createItem(final String itemText, final String valueToDeclare) {
 		// FIXME LOBO bUSCAR OBJETO TAG PELA DESCRICAO
-		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), valueToDeclare)), valueToDeclare, new Command() {
+		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), valueToDeclare, bgColor, txColor)), valueToDeclare, new Command() {
 
 			@Override
 			public void execute() {
