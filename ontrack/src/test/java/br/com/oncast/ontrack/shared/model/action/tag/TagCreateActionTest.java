@@ -48,7 +48,7 @@ public class TagCreateActionTest extends ModelActionTest {
 		executeAction();
 		final ArgumentCaptor<Tag> captor = ArgumentCaptor.forClass(Tag.class);
 		verify(context).addTag(captor.capture());
-		assertEquals(backgroundColor, captor.getValue().getBackgroundColor());
+		assertEquals(backgroundColor, captor.getValue().getColorPack().getBackground());
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class TagCreateActionTest extends ModelActionTest {
 		executeAction();
 		final ArgumentCaptor<Tag> captor = ArgumentCaptor.forClass(Tag.class);
 		verify(context).addTag(captor.capture());
-		assertEquals(textColor, captor.getValue().getTextColor());
+		assertEquals(textColor, captor.getValue().getColorPack().getForeground());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)

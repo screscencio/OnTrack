@@ -5,6 +5,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeIte
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TagWidget;
 import br.com.oncast.ontrack.shared.model.color.Color;
+import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -27,19 +28,20 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 	public TagCommandMenuItem createCustomItem(final String inputText) {
 		// FIXME LOBO bUSCAR OBJETO TAG PELA DESCRICAO
 		// FIXME I18N MESSAGES
-		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), messages.create(inputText), bgColor, txColor)), inputText, new Command() {
+		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), messages.create(inputText), new ColorPack(txColor, bgColor))), inputText,
+				new Command() {
 
-			@Override
-			public void execute() {
-				// controller.addTag(inputText);
-			}
-		});
+					@Override
+					public void execute() {
+						// controller.addTag(inputText);
+					}
+				});
 	}
 
 	@Override
 	public TagCommandMenuItem createItem(final String itemText, final String valueToDeclare) {
 		// FIXME LOBO bUSCAR OBJETO TAG PELA DESCRICAO
-		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), valueToDeclare, bgColor, txColor)), valueToDeclare, new Command() {
+		return new TagCommandMenuItem(new TagWidget(new Tag(new UUID(), valueToDeclare, new ColorPack(txColor, bgColor))), valueToDeclare, new Command() {
 
 			@Override
 			public void execute() {
