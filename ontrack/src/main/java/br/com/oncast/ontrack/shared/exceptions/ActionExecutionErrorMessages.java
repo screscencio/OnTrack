@@ -144,4 +144,8 @@ public interface ActionExecutionErrorMessages extends BaseMessages {
 	@DefaultMessage("Remotion failed: Object not found.")
 	String removeInexitent();
 
+	@Description("caused when tries to update something without any new values.")
+	@DefaultMessage("Update failed: the object is exactly the same.")
+	String updateWithoutChanges();
+
 }

@@ -75,8 +75,8 @@ public class Project implements Serializable, HasUUID {
 				new Tag(new UUID(), "Deprecated", new ColorPack(Color.GRAY, Color.BLUE)),
 				new Tag(new UUID(), "Checklist", new ColorPack(Color.BLUE, Color.GREEN)),
 				new Tag(new UUID(), "Administrativo", new ColorPack(Color.GREEN, Color.YELLOW)),
-				new Tag(new UUID(), "Lorem Ipsum", new ColorPack(Color.YELLOW, Color.BLUE)),
-				new Tag(new UUID(), "BUG", new ColorPack(Color.RED, Color.YELLOW)),
+				new Tag(new UUID(), "Lorem Ipsum", new ColorPack(Color.BLUE, Color.YELLOW)),
+				new Tag(new UUID(), "BUG", new ColorPack(Color.YELLOW, Color.RED)),
 				new Tag(new UUID(), "Transparent", new ColorPack(Color.TRANSPARENT, Color.GRAY))
 		};
 		for (final Tag tag : tagsList) {
@@ -84,6 +84,7 @@ public class Project implements Serializable, HasUUID {
 		}
 		final HashMultimap<MetadataType, Metadata> multimap = HashMultimap.<MetadataType, Metadata> create();
 		multimap.put(TagAssociationMetadata.getType(), MetadataFactory.createTagMetadata(new UUID(), projectScope, tagsList[3]));
+		multimap.put(TagAssociationMetadata.getType(), MetadataFactory.createTagMetadata(new UUID(), projectScope, tagsList[4]));
 		metadataMap.put(projectScope, multimap);
 	}
 

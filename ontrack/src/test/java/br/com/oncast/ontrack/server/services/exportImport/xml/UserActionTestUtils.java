@@ -68,6 +68,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
+import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.color.Color;
@@ -169,6 +170,7 @@ public class UserActionTestUtils {
 		userActions.add(createDescriptionRemoveAction());
 		userActions.add(createTagCreateAction());
 		userActions.add(createTagRemoveAction());
+		userActions.add(createTagUpdateAction());
 		userActions.add(createScopeAddTagAssociationAction());
 		userActions.add(createScopeRemoveTagAssociationAction());
 		return userActions;
@@ -180,6 +182,10 @@ public class UserActionTestUtils {
 
 	private static UserAction createScopeAddTagAssociationAction() throws Exception {
 		return createUserAction(new ScopeAddTagAssociationAction(new UUID(), new UUID()));
+	}
+
+	private static UserAction createTagUpdateAction() throws Exception {
+		return createUserAction(new TagUpdateAction(new UUID(), "description", Color.RED, Color.BLUE));
 	}
 
 	private static UserAction createTagRemoveAction() throws Exception {

@@ -4,9 +4,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+
+import org.mockito.Mockito;
 
 import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
+import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.user.ColorProviderService;
+import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.Metadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -56,6 +64,16 @@ public class ClientServiceProviderTestUtils {
 			mockEventBus();
 			mockAnnotationService();
 			mockMembersScopeSelectionService();
+			mockForTags();
+			return this;
+		}
+
+		private ClientServiceProviderTestConfiguration mockForTags() {
+			final ContextProviderService contextProvider = mock(ContextProviderService.class);
+			when(mock.getContextProviderService()).thenReturn(contextProvider);
+			final ProjectContext context = mock(ProjectContext.class);
+			when(contextProvider.getCurrent()).thenReturn(context);
+			when(context.getMetadataList(Mockito.any(HasMetadata.class), Mockito.any(MetadataType.class))).thenReturn(new ArrayList<Metadata>());
 			return this;
 		}
 

@@ -21,6 +21,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.Sc
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetValueCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
@@ -72,6 +73,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -199,7 +201,6 @@ public class ScopeTreeItemWidget extends Composite {
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 		tags = createTagsContainer();
 		initWidget(uiBinder.createAndBindUi(this));
-		setScope(scope);
 
 		selectionsList = ClientServiceProvider.getInstance().getColorProviderService().getMembersSelectionsFor(scope);
 
@@ -224,6 +225,8 @@ public class ScopeTreeItemWidget extends Composite {
 		this.tagCommandMenuItemFactory = new ScopeTreeItemWidgetTagCommandMenuItemFactory(editionHandler);
 		this.progressCommandMenuItemFactory = new ScopeTreeItemWidgetProgressCommandMenuItemFactory(editionHandler);
 		this.ipadFocusWorkaround = new IPadFocusWorkaround(editionBox);
+
+		setScope(scope);
 
 		focusPanel.addClickHandler(new ClickHandler() {
 
@@ -266,9 +269,9 @@ public class ScopeTreeItemWidget extends Composite {
 		return new ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget>(new ModelWidgetFactory<TagAssociationMetadata, ScopeTagWidget>() {
 			@Override
 			public ScopeTagWidget createWidget(final TagAssociationMetadata modelBean) {
-				return new ScopeTagWidget(modelBean);
+				return new ScopeTagWidget(modelBean, editionHandler);
 			}
-		});
+		}, new AnimatedContainer(new HorizontalPanel()));
 	}
 
 	@UiHandler("editionBox")
@@ -388,7 +391,7 @@ public class ScopeTreeItemWidget extends Composite {
 		updateTagsDisplay();
 	}
 
-	private void updateTagsDisplay() {
+	public void updateTagsDisplay() {
 		tags.update(ClientServiceProvider.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
 	}
 
