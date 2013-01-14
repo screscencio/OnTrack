@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
-import br.com.oncast.ontrack.shared.model.color.Color;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 
 public interface ScopeTreeItemWidgetEditionHandler {
 
@@ -28,5 +28,5 @@ public interface ScopeTreeItemWidgetEditionHandler {
 
 	void declareValue(String valueToDeclare);
 
-	void addTag(String description, Color bgColor, Color fgColor);
+	Scope getScope();
 }

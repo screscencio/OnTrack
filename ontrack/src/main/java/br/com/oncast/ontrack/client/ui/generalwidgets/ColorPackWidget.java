@@ -25,10 +25,10 @@ public class ColorPackWidget extends Composite {
 
 	public ColorPackWidget(final ColorPack colorPack, final ColorSelectionListener listener) {
 		this.listener = listener;
-		initWidget(uiBinder.createAndBindUi(this));
 		this.colorPack = colorPack;
-		label.getElement().getStyle().setBackgroundColor(colorPack.getBackground().toHex());
-		label.getElement().getStyle().setColor(colorPack.getForeground().toHex());
+		initWidget(uiBinder.createAndBindUi(this));
+		label.getElement().getStyle().setBackgroundColor(colorPack.getBackground().toCssRepresentation());
+		label.getElement().getStyle().setColor(colorPack.getForeground().toCssRepresentation());
 	}
 
 	@UiHandler("label")

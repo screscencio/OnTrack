@@ -11,16 +11,12 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
-import br.com.oncast.ontrack.shared.model.color.Color;
-import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.description.Description;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.Metadata;
-import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
-import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
@@ -69,23 +65,6 @@ public class Project implements Serializable, HasUUID {
 		users = new HashSet<UserRepresentation>();
 		fileRepresentations = new HashSet<FileRepresentation>();
 		metadataMap = new HashMap<HasMetadata, SetMultimap<MetadataType, Metadata>>();
-
-		// FIXME Mats remove HardCoded tags and tagMetadata
-		final Tag[] tagsList = {
-				new Tag(new UUID(), "Deprecated", new ColorPack(Color.GRAY, Color.BLUE)),
-				new Tag(new UUID(), "Checklist", new ColorPack(Color.BLUE, Color.GREEN)),
-				new Tag(new UUID(), "Administrativo", new ColorPack(Color.GREEN, Color.YELLOW)),
-				new Tag(new UUID(), "Lorem Ipsum", new ColorPack(Color.BLUE, Color.YELLOW)),
-				new Tag(new UUID(), "BUG", new ColorPack(Color.YELLOW, Color.RED)),
-				new Tag(new UUID(), "Transparent", new ColorPack(Color.TRANSPARENT, Color.GRAY))
-		};
-		for (final Tag tag : tagsList) {
-			tags.put(tag.getDescription(), tag);
-		}
-		final HashMultimap<MetadataType, Metadata> multimap = HashMultimap.<MetadataType, Metadata> create();
-		multimap.put(TagAssociationMetadata.getType(), MetadataFactory.createTagMetadata(new UUID(), projectScope, tagsList[3]));
-		multimap.put(TagAssociationMetadata.getType(), MetadataFactory.createTagMetadata(new UUID(), projectScope, tagsList[4]));
-		metadataMap.put(projectScope, multimap);
 	}
 
 	public Scope getProjectScope() {
@@ -276,6 +255,21 @@ public class Project implements Serializable, HasUUID {
 		return tags.remove(tagDescription.trim().toLowerCase());
 	}
 
+	public Tag getTag(final String tagDescription) {
+		return tags.get(tagDescription);
+	}
+
+	public Tag getTag(final UUID tagId) {
+		for (final Tag tag : tags.values()) {
+			if (tag.getId().equals(tagId)) return tag;
+		}
+		return null;
+	}
+
+	public List<Tag> getTags() {
+		return new ArrayList<Tag>(tags.values());
+	}
+
 	@Override
 	public UUID getId() {
 		return projectRepresentation.getId();
@@ -289,13 +283,6 @@ public class Project implements Serializable, HasUUID {
 	@Override
 	public boolean equals(final Object obj) {
 		return UUIDUtils.equals(this, obj);
-	}
-
-	public Tag getTag(final UUID tagId) {
-		for (final Tag tag : tags.values()) {
-			if (tag.equals(tagId)) return tag;
-		}
-		return null;
 	}
 
 }

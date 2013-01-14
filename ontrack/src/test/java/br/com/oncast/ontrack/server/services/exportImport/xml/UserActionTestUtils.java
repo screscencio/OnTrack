@@ -193,7 +193,7 @@ public class UserActionTestUtils {
 	}
 
 	private static UserAction createTagCreateAction() throws Exception {
-		return createUserAction(new TagCreateAction("description", Color.RED, Color.BLUE));
+		return createUserAction(new TagCreateAction("description", Color.BLUE, Color.RED));
 	}
 
 	private static UserAction createDescriptionRemoveAction() throws Exception {

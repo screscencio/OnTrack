@@ -303,10 +303,20 @@ public class ProjectContext implements HasUUID {
 		return project.removeTag(tag);
 	}
 
+	public Tag findTag(final String tagDescription) throws TagNotFoundException {
+		final Tag tag = project.getTag(tagDescription);
+		if (tag == null) throw new TagNotFoundException();
+		return tag;
+	}
+
 	public Tag findTag(final UUID tagId) throws TagNotFoundException {
 		final Tag tag = project.getTag(tagId);
 		if (tag == null) throw new TagNotFoundException();
 		return tag;
+	}
+
+	public List<Tag> getAllTags() {
+		return project.getTags();
 	}
 
 }

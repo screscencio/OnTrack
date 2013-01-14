@@ -15,7 +15,7 @@ public class ColorPicker {
 	public ColorPicker() {
 		availableColors = Color.getPresetColors();
 
-		// IMPORTANT workarround because of GWT limitations
+		// IMPORTANT Workaround because of GWT limitations
 		Collections.sort(availableColors, new Comparator<Color>() {
 			@Override
 			public int compare(final Color o1, final Color o2) {
@@ -27,7 +27,7 @@ public class ColorPicker {
 	private int index = 0;
 
 	public Color pick() {
-		return availableColors.get(index++ % availableColors.size());
+		return availableColors.get(index++ % availableColors.size()).copy();
 	}
 
 	public Color pick(final double alpha) {

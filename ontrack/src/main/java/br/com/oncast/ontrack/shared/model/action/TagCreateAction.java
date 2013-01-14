@@ -38,11 +38,11 @@ public class TagCreateAction implements TagAction {
 
 	protected TagCreateAction() {}
 
-	public TagCreateAction(final String description, final Color backgroundColor, final Color textColor) {
+	public TagCreateAction(final String description, final Color foregroundColor, final Color backgroundColor) {
 		this.subActionList = new ArrayList<ModelAction>();
 		this.description = description.trim();
 		this.backgroundColor = backgroundColor;
-		this.textColor = textColor;
+		this.textColor = foregroundColor;
 		this.tagId = new UUID();
 	}
 
@@ -54,11 +54,11 @@ public class TagCreateAction implements TagAction {
 		this.tagId = tag.getId();
 	}
 
-	public TagCreateAction(final UUID scopeId, final String description, final Color backgroundColor, final Color textColor) {
+	public TagCreateAction(final UUID scopeId, final String description, final Color foregroundColor, final Color backgroundColor) {
 		this.subActionList = new ArrayList<ModelAction>();
 		this.description = description.trim();
 		this.backgroundColor = backgroundColor;
-		this.textColor = textColor;
+		this.textColor = foregroundColor;
 		this.tagId = new UUID();
 		this.subActionList.add(new ScopeAddTagAssociationAction(scopeId, tagId));
 	}

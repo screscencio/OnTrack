@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.color.Color;
+import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
@@ -37,11 +38,13 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 
 	private final ColorPicker colorPicker;
 	private final EventBus eventBus;
+	private final ColorPackPicker colorPackPicker;
 
 	public ColorProviderServiceImpl(final DispatchService requestDispatchService, final ContextProviderService contextProviderService,
 			final ServerPushClientService serverPushClientService, final EventBus eventBus, final UsersStatusService usersStatusServiceImpl,
-			final ColorPicker colorPicker) {
+			final ColorPicker colorPicker, final ColorPackPicker colorPackPicker) {
 		this.colorPicker = colorPicker;
+		this.colorPackPicker = colorPackPicker;
 		this.eventBus = eventBus;
 		userSelectionMap = new HashMap<UserRepresentation, Scope>();
 		userColorMap = new HashMap<UserRepresentation, Color>();
@@ -144,5 +147,9 @@ public class ColorProviderServiceImpl implements ColorProviderService {
 	@Override
 	public Color pickColor() {
 		return colorPicker.pick();
+	}
+
+	public ColorPack pickColorPack() {
+		return colorPackPicker.pick();
 	}
 }
