@@ -1,9 +1,12 @@
 package br.com.oncast.ontrack.shared.model.color;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ColorPack {
+public class ColorPack implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private static final List<ColorPack> PACKS = new ArrayList<ColorPack>();
 
@@ -22,12 +25,14 @@ public class ColorPack {
 		PACKS.add(new ColorPack(new Color(251, 76, 47), new Color(255, 255, 255)));
 	}
 
-	private final Color background;
-	private final Color foreground;
+	private Color background;
+	private Color foreground;
 
 	public static List<ColorPack> getDefaultColorPacks() {
 		return PACKS;
 	}
+
+	public ColorPack() {}
 
 	public ColorPack(final Color foreground, final Color background) {
 		this.foreground = foreground;

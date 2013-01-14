@@ -25,14 +25,18 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ReleaseTag;
 import br.com.oncast.ontrack.client.ui.generalwidgets.SimpleCommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeTagWidget;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn.VisibilityChangeListener;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -156,6 +160,10 @@ public class ScopeTreeItemWidget extends Composite {
 	@IgnoredByDeepEquality
 	protected Label selectedMembers;
 
+	@UiField(provided = true)
+	@IgnoredByDeepEquality
+	protected ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget> tags;
+
 	@IgnoredByDeepEquality
 	private final ScopeTreeItemWidgetEditionHandler editionHandler;
 
@@ -189,6 +197,7 @@ public class ScopeTreeItemWidget extends Composite {
 	private final IPadFocusWorkaround ipadFocusWorkaround;
 
 	public ScopeTreeItemWidget(final Scope scope, final ScopeTreeItemWidgetEditionHandler editionHandler) {
+		tags = createTagsContainer();
 		initWidget(uiBinder.createAndBindUi(this));
 		setScope(scope);
 
@@ -251,6 +260,15 @@ public class ScopeTreeItemWidget extends Composite {
 
 		updateSelection();
 		showSelectedMembersLabel();
+	}
+
+	private ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget> createTagsContainer() {
+		return new ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget>(new ModelWidgetFactory<TagAssociationMetadata, ScopeTagWidget>() {
+			@Override
+			public ScopeTagWidget createWidget(final TagAssociationMetadata modelBean) {
+				return new ScopeTagWidget(modelBean);
+			}
+		});
 	}
 
 	@UiHandler("editionBox")
@@ -367,6 +385,11 @@ public class ScopeTreeItemWidget extends Composite {
 		updateEffortDisplay();
 		updateValueDisplay();
 		updateReleaseDisplay();
+		updateTagsDisplay();
+	}
+
+	private void updateTagsDisplay() {
+		tags.update(ClientServiceProvider.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
 	}
 
 	public void showDetailsIcon(final boolean b) {
