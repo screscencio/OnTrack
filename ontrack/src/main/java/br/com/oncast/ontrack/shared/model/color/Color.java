@@ -79,10 +79,15 @@ public class Color implements Serializable {
 
 	public String toHex() {
 		String hex = HASH;
-		hex += Integer.toHexString(r);
-		hex += Integer.toHexString(g);
-		hex += Integer.toHexString(b);
+		hex += toTwoDigitHex(r);
+		hex += toTwoDigitHex(g);
+		hex += toTwoDigitHex(b);
 		return hex;
+	}
+
+	private String toTwoDigitHex(final int x) {
+		final String hexString = Integer.toHexString(x);
+		return hexString.length() <= 1 ? "0" + hexString : hexString;
 	}
 
 	public int getRed() {

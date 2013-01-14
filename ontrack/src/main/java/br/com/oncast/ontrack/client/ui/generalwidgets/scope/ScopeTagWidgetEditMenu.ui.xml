@@ -1,0 +1,40 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+	
+	<ui:style src="../../style/default.css">
+	
+		.root {
+			padding: 5px;
+			background: COLOR_SEMI_WHITE;
+			
+			border: BORDER_DEFAULT;
+		}
+		
+		.color {
+			margin-left: 3px;
+			width: 23px;
+			height: 23px;
+			font-size: 18px;
+			margin-top: 1px;
+			margin-right: 3px;
+		}
+		
+	</ui:style>
+	
+	<g:VerticalPanel styleName="{style.root}">
+		<g:HorizontalPanel>
+			<gw:PaddedTextBox ui:field="description"></gw:PaddedTextBox>
+			<gw:EditableColorPackWidget ui:field="color" styleName="{style.color}"/>
+		</g:HorizontalPanel>
+		<gw:Separator />
+		
+		<g:Label>
+			<ui:msg description="Remove from scope">Remove from Scope</ui:msg>
+		</g:Label>
+	</g:VerticalPanel>
+</ui:UiBinder> 

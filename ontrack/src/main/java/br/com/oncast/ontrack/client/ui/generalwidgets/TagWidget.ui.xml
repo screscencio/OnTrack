@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	<ui:style>
 		
 		.panel {
@@ -18,26 +18,15 @@
 			position: absolute;
 			top: -5px;
 			right: 2px;
-			border: 1px solid #AAA;
-			cursor: pointer;
-			border-radius: 2px;
 			width: 21px;
 			height: 19px;
-			text-align: center;
-			padding-top: 2px;	
-			
-			background-color: #C8F19C;
-			color: #6D29C4;
-		}
-
-		.color:hover {
-			box-shadow: 1px 1px 2px #BBB;
+			padding-top: 2px;
 		}
 		
 	</ui:style>
 	
 	<g:HorizontalPanel styleName="{style.panel}" >
 		<g:Label ui:field="label" styleName="{style.label}" />
-		<g:Label ui:field="color" styleName="{style.color}" text="a" title="CLick to change tag colors" />
+		<gw:EditableColorPackWidget ui:field="color" styleName="{style.color}"/>
 	</g:HorizontalPanel>
 </ui:UiBinder> 

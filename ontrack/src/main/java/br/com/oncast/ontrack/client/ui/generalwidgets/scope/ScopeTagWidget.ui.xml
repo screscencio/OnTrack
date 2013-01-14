@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="brushImg" src="../brush.png" />
+	<ui:image field="menuDownImg" src="../menu_down.png" />
 	<ui:style src="../../style/default.css">
 	
 		.container {
@@ -19,20 +19,18 @@
 		}
 		
 		@sprite .colorEdit {
-			gwt-image: "brushImg";
-			background-size: 17px;
-			background-position: 1px -1px;
+			gwt-image: "menuDownImg";
+			background-size: 11px;
+			background-position: center;
 			background-color: #FAFAFA;
 
 			position: absolute;
-			top: -1px;
-			right: -1px;
-			height: 17px;
-			width: 17px;
+			top: 2px;
+			right: 2px;
+			height: 13px;
+			width: 13px;
 			
 			border-radius: 2px;
-			border: 1px solid COLOR_GRAY;
-			
 			cursor: pointer;
 		}
 		

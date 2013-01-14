@@ -1,7 +1,11 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 
@@ -15,7 +19,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -25,8 +28,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociationMetadata> {
 
 	private static final int DURATION = 500;
-
-	private static final int COLOR_EDIT_WIDTH = 17;
 
 	private static ScopeTagWidgetUiBinder uiBinder = GWT.create(ScopeTagWidgetUiBinder.class);
 
@@ -80,7 +81,11 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 
 	@UiHandler("colorEdit")
 	void onClick(final ClickEvent e) {
-		Window.alert("HA!");
+		PopupConfig.configPopup()
+				.popup(new ScopeTagWidgetEditMenu(association))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM))
+				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(colorEdit, HorizontalAlignment.LEFT))
+				.pop();
 	}
 
 	@Override
@@ -105,37 +110,40 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 
 	private class ScopeTagWidgetAnimation extends Animation {
 
-		private int endWidth = -1;
-		private int startWidth = -1;
+		private static final double HIDDEN = 1.0;
+
+		private double endOpacity = -1;
+		private double startOpacity = -1;
 
 		@Override
 		protected void onUpdate(final double progress) {
-			colorEdit.setWidth((startWidth + (progress * (endWidth - startWidth))) + "px");
+			colorEdit.getElement().getStyle().setOpacity(startOpacity + (progress * (endOpacity - startOpacity)));
 		}
 
 		@Override
 		protected void onStart() {
+			colorEdit.getElement().getStyle().setOpacity(startOpacity);
 			colorEdit.setVisible(true);
 		}
 
 		@Override
 		protected void onComplete() {
-			colorEdit.setVisible(endWidth != 0);
+			colorEdit.setVisible(endOpacity != 0);
 		}
 
 		public void show() {
-			if (startWidth == 0) return;
+			if (startOpacity == 0) return;
 
-			startWidth = 0;
-			endWidth = COLOR_EDIT_WIDTH;
+			startOpacity = 0;
+			endOpacity = HIDDEN;
 			run(DURATION);
 		}
 
 		public void hide() {
-			if (endWidth == 0) return;
+			if (endOpacity == 0) return;
 
-			startWidth = COLOR_EDIT_WIDTH;
-			endWidth = 0;
+			startOpacity = HIDDEN;
+			endOpacity = 0;
 			run(DURATION);
 		}
 
