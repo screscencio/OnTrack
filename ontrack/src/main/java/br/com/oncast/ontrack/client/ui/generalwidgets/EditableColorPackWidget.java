@@ -24,7 +24,7 @@ public class EditableColorPackWidget extends Composite implements ModelWidget<Co
 
 	private final PopupConfig colorPopUp;
 
-	private final ColorPack colorPack;
+	private ColorPack colorPack;
 
 	public EditableColorPackWidget(final ColorPack colorPack, final ColorSelectionListener listener) {
 		this.colorPack = colorPack;
@@ -33,7 +33,9 @@ public class EditableColorPackWidget extends Composite implements ModelWidget<Co
 		final ColorPicker picker = new ColorPicker(new ColorSelectionListener() {
 			@Override
 			public void onColorPackSelect(final ColorPack selectedColorPack) {
+				System.out.println(selectedColorPack.toString());
 				listener.onColorPackSelect(selectedColorPack);
+				EditableColorPackWidget.this.colorPack = selectedColorPack;
 				update();
 			}
 
@@ -43,6 +45,7 @@ public class EditableColorPackWidget extends Composite implements ModelWidget<Co
 				.popup(picker)
 				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(anchor.asWidget(), HorizontalAlignment.RIGHT, -10))
 				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(anchor.asWidget(), VerticalAlignment.BOTTOM, -10));
+
 		update();
 	}
 

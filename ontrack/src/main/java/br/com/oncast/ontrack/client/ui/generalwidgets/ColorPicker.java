@@ -11,19 +11,22 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ColorPicker extends Composite implements HasCloseHandlers<ColorPicker>, PopupAware {
 
+	private static final int COLUMNS = 6;
+	private static final int ROWS = 4;
 	private static ColorPickerUiBinder uiBinder = GWT.create(ColorPickerUiBinder.class);
 
 	interface ColorPickerUiBinder extends UiBinder<Widget, ColorPicker> {}
 
-	@UiField
-	HTMLPanel panel;
+	@UiField(provided = true)
+	Grid panel;
 
 	public ColorPicker(final ColorSelectionListener listener) {
+		panel = new Grid(ROWS, COLUMNS);
 		initWidget(uiBinder.createAndBindUi(this));
 
 		final ColorSelectionListener selectionListener = new ColorSelectionListener() {
@@ -35,8 +38,8 @@ public class ColorPicker extends Composite implements HasCloseHandlers<ColorPick
 			}
 		};
 
-		for (final ColorPack colorPack : ColorPack.getDefaultColorPacks())
-			panel.add(new ColorPackWidget(colorPack, selectionListener));
+		for (int i = 0; i < ColorPack.getDefaultColorPacks().size(); i++)
+			panel.setWidget(i / COLUMNS, i % COLUMNS, new ColorPackWidget(ColorPack.getDefaultColorPacks().get(i), selectionListener));
 	}
 
 	@Override

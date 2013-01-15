@@ -14,5 +14,5 @@
 		
 	</ui:style>
 	
-	<g:HTMLPanel ui:field="panel" styleName="{style.panel}" />
+	<g:Grid ui:field="panel" styleName="{style.panel}" />
 </ui:UiBinder> 

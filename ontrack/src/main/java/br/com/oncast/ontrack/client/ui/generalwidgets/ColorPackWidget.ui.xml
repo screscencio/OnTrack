@@ -17,10 +17,10 @@
 			border-collapse: collapse;
 			border-spacing: 2px;
 			border-color: gray;
-			margin: 5px;
+			margin: 3px;
 		}
 		
 	</ui:style>
-	
+
 	<g:Label ui:field="label" styleName="{style.root}" text="a" />
 </ui:UiBinder> 
