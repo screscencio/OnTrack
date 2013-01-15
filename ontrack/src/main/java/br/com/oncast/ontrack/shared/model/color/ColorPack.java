@@ -20,7 +20,7 @@ public class ColorPack implements Serializable {
 		PACKS.add(new ColorPack(new Color(255, 255, 255), new Color(194, 194, 194)));
 		PACKS.add(new ColorPack(new Color(255, 255, 255), new Color(73, 134, 231)));
 		PACKS.add(new ColorPack(new Color(255, 255, 255), new Color(45, 162, 187)));
-		PACKS.add(new ColorPack(new Color(255, 255, 255), new Color(185, 174, 255)));
+		PACKS.add(new ColorPack(new Color(255, 255, 255), new Color(185, 154, 255)));
 		PACKS.add(new ColorPack(new Color(153, 74, 100), new Color(246, 145, 178)));
 		PACKS.add(new ColorPack(new Color(255, 255, 255), new Color(251, 76, 47)));
 		PACKS.add(new ColorPack(new Color(122, 46, 11), new Color(255, 200, 175)));
@@ -28,7 +28,7 @@ public class ColorPack implements Serializable {
 		PACKS.add(new ColorPack(new Color(89, 76, 5), new Color(251, 233, 131)));
 		PACKS.add(new ColorPack(new Color(104, 78, 7), new Color(253, 237, 193)));
 		PACKS.add(new ColorPack(new Color(11, 79, 48), new Color(179, 239, 211)));
-		PACKS.add(new ColorPack(new Color(4, 80, 46), new Color(162, 220, 192)));
+		PACKS.add(new ColorPack(new Color(4, 80, 46), new Color(162, 220, 193)));
 		PACKS.add(new ColorPack(new Color(255, 255, 255), new Color(255, 117, 55)));
 		PACKS.add(new ColorPack(new Color(255, 255, 255), new Color(255, 173, 70)));
 		PACKS.add(new ColorPack(new Color(102, 46, 55), new Color(235, 219, 222)));
