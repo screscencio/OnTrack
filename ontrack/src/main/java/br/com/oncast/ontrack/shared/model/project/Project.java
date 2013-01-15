@@ -256,7 +256,7 @@ public class Project implements Serializable, HasUUID {
 	}
 
 	public Tag getTag(final String tagDescription) {
-		return tags.get(tagDescription);
+		return tags.get(tagDescription.trim().toLowerCase());
 	}
 
 	public Tag getTag(final UUID tagId) {

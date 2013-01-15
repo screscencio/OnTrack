@@ -35,6 +35,7 @@ import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.mode
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConversionAlias;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertUsing;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.IgnoreByConversion;
 import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConverter;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.metadata.Metadata;
@@ -297,7 +298,7 @@ public abstract class ModelActionTest {
 
 	private void assertAllNonStaticFieldsHaveMatchingConversionAlias(final Class<?> source, final Class<?> target) {
 		for (final Field field : getAllNotInjectedFields(source)) {
-			if (Modifier.isStatic(field.getModifiers())) continue;
+			if (Modifier.isStatic(field.getModifiers()) || field.getAnnotation(IgnoreByConversion.class) != null) continue;
 
 			final String aliasName = getAliasName(field);
 
