@@ -6,6 +6,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
+	<ui:image field="trashImg" src="../../components/scopetree/helper/remove_pop_btn.png"/>
 	<ui:style src="../../style/default.css">
 	
 		.root {
@@ -13,28 +14,40 @@
 			background: COLOR_SEMI_WHITE;
 			
 			border: BORDER_DEFAULT;
+			border-radius: 2px;
+		}
+		
+		.description {
+			border-radius: 2px;
 		}
 		
 		.color {
-			margin-left: 3px;
 			width: 23px;
 			height: 23px;
 			font-size: 18px;
-			margin-top: 1px;
-			margin-right: 3px;
+			margin: 0px 8px;
+		}
+		
+		@sprite .removeBtn {
+			gwt-image: 'trashImg';
+			background-position: center;
+			cursor: pointer;
+			width: 23px;
+			height: 23px;
+			border-radius: 2px; 
+		}
+		
+		.removeBtn:HOVER {
+			border: 1px solid COLOR_GRAY_LIGHT;
+			margin: -1px;
+			box-shadow: inset 1px 1px 2px #FFF, 1px 1px 2px #999;
 		}
 		
 	</ui:style>
 	
-	<g:VerticalPanel styleName="{style.root}">
-		<g:HorizontalPanel>
-			<gw:PaddedTextBox ui:field="description"></gw:PaddedTextBox>
-			<gw:EditableColorPackWidget ui:field="color" styleName="{style.color}"/>
-		</g:HorizontalPanel>
-		<gw:Separator />
-		
-		<g:Label>
-			<ui:msg description="Remove from scope">Remove from Scope</ui:msg>
-		</g:Label>
-	</g:VerticalPanel>
+	<g:HorizontalPanel styleName="{style.root}" verticalAlignment="middle" horizontalAlignment="center">
+		<gw:PaddedTextBox ui:field="description" addContainerStyleName="{style.description}"></gw:PaddedTextBox>
+		<gw:EditableColorPackWidget ui:field="color" styleName="{style.color}"/>
+		<g:FocusPanel ui:field="remove" styleName="{style.removeBtn}" />
+	</g:HorizontalPanel>
 </ui:UiBinder> 

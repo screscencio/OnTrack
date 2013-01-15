@@ -39,6 +39,13 @@ public class TagUpdateAction implements TagAction {
 		this.textColor = foregroundColor;
 	}
 
+	public TagUpdateAction(final UUID tagId, final String description, final ColorPack colorPack) {
+		this.tagId = tagId;
+		this.description = description == null ? "" : description.trim();
+		this.textColor = colorPack == null ? null : colorPack.getForeground();
+		this.backgroundColor = colorPack == null ? null : colorPack.getBackground();
+	}
+
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (description.isEmpty() && backgroundColor == null && textColor == null) throw new UnableToCompleteActionException(

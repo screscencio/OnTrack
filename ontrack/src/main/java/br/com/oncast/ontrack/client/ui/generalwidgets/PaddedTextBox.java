@@ -107,6 +107,10 @@ public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasK
 		return container.remove(w);
 	}
 
+	public void setAddContainerStyleName(final String style) {
+		container.addStyleName(style);
+	}
+
 	@Override
 	public HandlerRegistration addBlurHandler(final BlurHandler handler) {
 		return textBox.addBlurHandler(handler);
