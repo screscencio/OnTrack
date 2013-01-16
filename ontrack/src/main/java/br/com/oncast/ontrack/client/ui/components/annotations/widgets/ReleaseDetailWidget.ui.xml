@@ -14,6 +14,7 @@
 			text-align: center;
 			color: COLOR_GRAY_DARK;
 			cursor: default;
+			border-bottom: 1px solid #606060;
 		}
 		
 		.details {
