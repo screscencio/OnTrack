@@ -318,5 +318,4 @@ public class ProjectContext implements HasUUID {
 	public List<Tag> getAllTags() {
 		return project.getTags();
 	}
-
 }
