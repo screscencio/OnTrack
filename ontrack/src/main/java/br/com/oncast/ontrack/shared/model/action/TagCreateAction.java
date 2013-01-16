@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.exceptions.ActionExecutionErrorMessageCode;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.color.Color;
+import br.com.oncast.ontrack.shared.model.color.ColorPack;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -37,27 +38,27 @@ public class TagCreateAction implements TagAction {
 
 	protected TagCreateAction() {}
 
-	public TagCreateAction(final String description, final Color backgroundColor, final Color textColor) {
+	public TagCreateAction(final String description, final Color foregroundColor, final Color backgroundColor) {
 		this.subActionList = new ArrayList<ModelAction>();
 		this.description = description.trim();
 		this.backgroundColor = backgroundColor;
-		this.textColor = textColor;
+		this.textColor = foregroundColor;
 		this.tagId = new UUID();
 	}
 
 	public TagCreateAction(final Tag tag, final List<ModelAction> rollbackActions) {
 		this.subActionList = rollbackActions;
 		this.description = tag.getDescription();
-		this.backgroundColor = tag.getBackgroundColor();
-		this.textColor = tag.getTextColor();
+		this.backgroundColor = tag.getColorPack().getBackground();
+		this.textColor = tag.getColorPack().getForeground();
 		this.tagId = tag.getId();
 	}
 
-	public TagCreateAction(final UUID scopeId, final String description, final Color backgroundColor, final Color textColor) {
+	public TagCreateAction(final UUID scopeId, final String description, final Color foregroundColor, final Color backgroundColor) {
 		this.subActionList = new ArrayList<ModelAction>();
 		this.description = description.trim();
 		this.backgroundColor = backgroundColor;
-		this.textColor = textColor;
+		this.textColor = foregroundColor;
 		this.tagId = new UUID();
 		this.subActionList.add(new ScopeAddTagAssociationAction(scopeId, tagId));
 	}
@@ -65,7 +66,7 @@ public class TagCreateAction implements TagAction {
 	@Override
 	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
 		if (context.hasTag(description)) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
-		context.addTag(new Tag(tagId, description, backgroundColor, textColor));
+		context.addTag(new Tag(tagId, description, new ColorPack(textColor, backgroundColor)));
 
 		for (final ModelAction action : subActionList) {
 			action.execute(context, actionContext);

@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:gs="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope"
+	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
@@ -36,6 +37,15 @@
 		
 		.detailValueCell {
 			width: 100%;
+		}
+		
+		.tags {
+			margin-top: 10px;
+			display: inline-block;
+		}
+
+		.tags > div > div > div {
+			margin: 5px;
 		}
 		
 	</ui:style>
@@ -105,8 +115,10 @@
 					<g:Label ui:field="release" styleName="{style.detailValue}" />
 				</g:customCell>
 			</g:row>
-			
 		 </g:Grid>
+		 <g:HTMLPanel styleName="{style.tags}">
+			<t:ModelWidgetContainer ui:field="tags" />
+		 </g:HTMLPanel>
 	</g:HTMLPanel>
 	
 </ui:UiBinder> 

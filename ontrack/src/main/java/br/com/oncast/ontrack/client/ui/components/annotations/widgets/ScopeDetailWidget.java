@@ -7,20 +7,27 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeTagWidget;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
+import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -54,15 +61,29 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	@UiField(provided = true)
 	ScopeAssociatedMembersWidget associatedUsers;
 
+	@UiField(provided = true)
+	@IgnoredByDeepEquality
+	protected ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget> tags;
+
 	private Scope scope;
 
 	private ActionExecutionListener actionExecutionListener;
 
 	public ScopeDetailWidget(final Scope scope) {
 		associatedUsers = new ScopeAssociatedMembersWidget(scope, null, 10);
+		tags = createTagsContainer();
 		initWidget(uiBinder.createAndBindUi(this));
 		setSubject(scope);
 		associatedUsers.getElement().getParentElement().setAttribute("colspan", "2");
+	}
+
+	private ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget> createTagsContainer() {
+		return new ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget>(new ModelWidgetFactory<TagAssociationMetadata, ScopeTagWidget>() {
+			@Override
+			public ScopeTagWidget createWidget(final TagAssociationMetadata modelBean) {
+				return new ScopeTagWidget(modelBean);
+			}
+		}, new AnimatedContainer(new FlowPanel()));
 	}
 
 	private void setSubject(final Scope scope) {
@@ -105,6 +126,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 		final Release release = scope.getRelease();
 		this.release.setText(release == null ? messages.none() : release.getDescription());
 		associatedUsers.update();
+		tags.update(ClientServiceProvider.getCurrentProjectContext().<TagAssociationMetadata> getMetadataList(scope, TagAssociationMetadata.getType()));
 	}
 
 	private String formatProgressText(final float accomplished, final float total, final String unit) {

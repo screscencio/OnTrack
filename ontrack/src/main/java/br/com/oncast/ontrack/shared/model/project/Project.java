@@ -45,7 +45,7 @@ public class Project implements Serializable, HasUUID {
 	private ListMultimap<UUID, Checklist> checklistMap;
 	private Map<UUID, Description> descriptionMap;
 	private Map<HasMetadata, SetMultimap<MetadataType, Metadata>> metadataMap;
-	private Map<String, Tag> tags;
+	private List<Tag> tags;
 
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected Project() {}
@@ -59,7 +59,7 @@ public class Project implements Serializable, HasUUID {
 
 		annotationsMap = new HashMap<UUID, List<Annotation>>();
 		descriptionMap = new HashMap<UUID, Description>();
-		tags = new HashMap<String, Tag>();
+		tags = new ArrayList<Tag>();
 
 		checklistMap = ArrayListMultimap.create();
 		users = new HashSet<UserRepresentation>();
@@ -240,19 +240,36 @@ public class Project implements Serializable, HasUUID {
 	}
 
 	public void addTag(final Tag tag) {
-		tags.put(tag.getDescription().trim().toLowerCase(), tag);
+		if (tags.contains(tag)) return;
+
+		tags.add(tag);
 	}
 
 	public boolean hasTag(final String tagDescription) {
-		return tags.containsKey(tagDescription.trim().toLowerCase());
+		final Tag tag = getTag(tagDescription);
+		return tag != null;
 	}
 
-	public Tag removeTag(final Tag tag) {
-		return removeTag(tag.getDescription());
+	public void removeTag(final Tag tag) {
+		tags.remove(tag);
 	}
 
-	private Tag removeTag(final String tagDescription) {
-		return tags.remove(tagDescription.trim().toLowerCase());
+	public Tag getTag(final String tagDescription) {
+		for (final Tag tag : tags) {
+			if (tag.getDescription().equalsIgnoreCase(tagDescription.trim())) return tag;
+		}
+		return null;
+	}
+
+	public Tag getTag(final UUID tagId) {
+		for (final Tag tag : tags) {
+			if (tag.getId().equals(tagId)) return tag;
+		}
+		return null;
+	}
+
+	public List<Tag> getTags() {
+		return new ArrayList<Tag>(tags);
 	}
 
 	@Override
@@ -269,12 +286,4 @@ public class Project implements Serializable, HasUUID {
 	public boolean equals(final Object obj) {
 		return UUIDUtils.equals(this, obj);
 	}
-
-	public Tag getTag(final UUID tagId) {
-		for (final Tag tag : tags.values()) {
-			if (tag.equals(tagId)) return tag;
-		}
-		return null;
-	}
-
 }

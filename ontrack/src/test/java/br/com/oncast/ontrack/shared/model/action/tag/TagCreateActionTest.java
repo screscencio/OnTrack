@@ -48,7 +48,7 @@ public class TagCreateActionTest extends ModelActionTest {
 		executeAction();
 		final ArgumentCaptor<Tag> captor = ArgumentCaptor.forClass(Tag.class);
 		verify(context).addTag(captor.capture());
-		assertEquals(backgroundColor, captor.getValue().getBackgroundColor());
+		assertEquals(backgroundColor, captor.getValue().getColorPack().getBackground());
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class TagCreateActionTest extends ModelActionTest {
 		executeAction();
 		final ArgumentCaptor<Tag> captor = ArgumentCaptor.forClass(Tag.class);
 		verify(context).addTag(captor.capture());
-		assertEquals(textColor, captor.getValue().getTextColor());
+		assertEquals(textColor, captor.getValue().getColorPack().getForeground());
 	}
 
 	@Test(expected = UnableToCompleteActionException.class)
@@ -80,7 +80,7 @@ public class TagCreateActionTest extends ModelActionTest {
 	@Test
 	public void shouldAssociateToTheGivenScopeWhenRequested() throws Exception {
 		final Scope scope = ScopeTestUtils.createScope();
-		final TagCreateAction action = new TagCreateAction(scope.getId(), description, backgroundColor, textColor);
+		final TagCreateAction action = new TagCreateAction(scope.getId(), description, textColor, backgroundColor);
 		when(context.findScope(scope.getId())).thenReturn(scope);
 		final Tag createdTag = TagTestUtils.createTag();
 		when(context.findTag(action.getReferenceId())).thenReturn(createdTag);
@@ -94,7 +94,7 @@ public class TagCreateActionTest extends ModelActionTest {
 
 	@Override
 	protected ModelAction getNewInstance() {
-		return new TagCreateAction(description, backgroundColor, textColor);
+		return new TagCreateAction(description, textColor, backgroundColor);
 	}
 
 	@Override

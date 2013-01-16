@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client;
 
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
+
 import com.google.gwt.dom.client.Element;
 
 public class WidgetVisibilityEnsurer {

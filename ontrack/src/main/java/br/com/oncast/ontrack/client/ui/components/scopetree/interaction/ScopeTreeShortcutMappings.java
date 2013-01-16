@@ -12,6 +12,7 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LE
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_RIGHT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_UP;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.AddTagInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.BindReleaseInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareEffortInternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.DeclareProgressInternalAction;
@@ -324,6 +325,19 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 		@Override
 		public String getDescription() {
 			return messages.selectNextSelectedScope();
+		}
+
+	},
+
+	ADD_TAG(new Shortcut(BrowserKeyCodes.KEY_7).with(ShiftModifier.PRESSED)) {
+		@Override
+		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
+			interactionHandler.onInternalAction(new AddTagInternalAction(scope, interactionHandler.getProjectContext()));
+		}
+
+		@Override
+		public String getDescription() {
+			return messages.addTagToScope();
 		}
 
 	};

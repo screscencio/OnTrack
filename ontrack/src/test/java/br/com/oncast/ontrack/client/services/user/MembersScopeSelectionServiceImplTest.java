@@ -81,6 +81,9 @@ public class MembersScopeSelectionServiceImplTest {
 	@Mock
 	private ColorPicker colorPicker;
 
+	@Mock
+	private ColorPackPicker colorPackPicker;
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Before
 	public void setup() throws Exception {
@@ -101,7 +104,7 @@ public class MembersScopeSelectionServiceImplTest {
 				null);
 
 		new ColorProviderServiceImpl(requestDispatchService, contextProviderService, serverPushClientService,
-				eventBus, usersStatusServiceImpl, colorPicker);
+				eventBus, usersStatusServiceImpl, colorPicker, colorPackPicker);
 
 		userClosedProjectEventHandler = userClosedProjectEventHandlerCaptor.getValue();
 		userSelectedScopeEventHandler = userSelectedScopeEventHandlerCaptor.getValue();

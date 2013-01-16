@@ -33,6 +33,7 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.services.storage.Html5StorageClientStorageService;
+import br.com.oncast.ontrack.client.services.user.ColorPackPicker;
 import br.com.oncast.ontrack.client.services.user.ColorPicker;
 import br.com.oncast.ontrack.client.services.user.ColorProviderService;
 import br.com.oncast.ontrack.client.services.user.ColorProviderServiceImpl;
@@ -248,7 +249,7 @@ public class ClientServiceProvider {
 
 	public ColorProviderService getColorProviderService() {
 		if (colorProviderService == null) colorProviderService = new ColorProviderServiceImpl(getRequestDispatchService(),
-				getContextProviderService(), getServerPushClientService(), getEventBus(), getUsersStatusService(), new ColorPicker());
+				getContextProviderService(), getServerPushClientService(), getEventBus(), getUsersStatusService(), new ColorPicker(), new ColorPackPicker());
 		return colorProviderService;
 	}
 

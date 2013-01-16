@@ -212,6 +212,12 @@ public enum ActionExecutionErrorMessageCode implements BaseMessageCode<ActionExe
 		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
 			return messages.removeInexitent();
 		}
+	},
+	UPDATE_WIHTOUT_CHANGES {
+		@Override
+		public String selectMessage(final ActionExecutionErrorMessages messages, final String... args) {
+			return messages.updateWithoutChanges();
+		}
 	};
 
 	@Override

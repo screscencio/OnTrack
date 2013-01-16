@@ -1,0 +1,32 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+	<ui:style>
+		
+		.panel {
+			position: relative;
+			width: 100%;
+			cursor: default;
+		}
+		
+		.label {
+			padding-right: 25px;
+		}
+		
+		.color {
+			position: absolute;
+			top: -5px;
+			right: 2px;
+			width: 21px;
+			height: 19px;
+			padding-top: 2px;
+		}
+		
+	</ui:style>
+	
+	<g:HorizontalPanel styleName="{style.panel}" >
+		<g:Label ui:field="label" styleName="{style.label}" />
+		<gw:EditableColorPackWidget ui:field="color" styleName="{style.color}"/>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

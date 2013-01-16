@@ -75,6 +75,12 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 				if (ScopeTreeItem.this.getTree().getSelectedItem() != null) return;
 				ScopeTreeItem.this.select();
 			}
+
+			@Override
+			public Scope getScope() {
+				return scope;
+			}
+
 		}));
 
 		addStyleName("ScopeTreeItem");

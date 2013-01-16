@@ -1,0 +1,53 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+	
+	<ui:image field="trashImg" src="../../components/scopetree/helper/remove_pop_btn.png"/>
+	<ui:style src="../../style/default.css">
+	
+		.root {
+			padding: 5px;
+			background: COLOR_SEMI_WHITE;
+			
+			border: BORDER_DEFAULT;
+			border-radius: 2px;
+		}
+		
+		.description {
+			border-radius: 2px;
+		}
+		
+		.color {
+			width: 23px;
+			height: 23px;
+			font-size: 18px;
+			margin: 0px 8px;
+		}
+		
+		@sprite .removeBtn {
+			gwt-image: 'trashImg';
+			background-position: center;
+			cursor: pointer;
+			width: 23px;
+			height: 23px;
+			border-radius: 2px; 
+		}
+		
+		.removeBtn:HOVER {
+			border: 1px solid COLOR_GRAY_LIGHT;
+			margin: -1px;
+			box-shadow: inset 1px 1px 2px #FFF, 1px 1px 2px #999;
+		}
+		
+	</ui:style>
+	
+	<g:HorizontalPanel styleName="{style.root}" verticalAlignment="middle" horizontalAlignment="center">
+		<gw:PaddedTextBox ui:field="description" addContainerStyleName="{style.description}"></gw:PaddedTextBox>
+		<gw:EditableColorPackWidget ui:field="color" styleName="{style.color}"/>
+		<g:FocusPanel ui:field="remove" styleName="{style.removeBtn}" />
+	</g:HorizontalPanel>
+</ui:UiBinder> 

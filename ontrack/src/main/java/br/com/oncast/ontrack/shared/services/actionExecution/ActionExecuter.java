@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAction;
+import br.com.oncast.ontrack.shared.model.action.TagAction;
 import br.com.oncast.ontrack.shared.model.action.TeamAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -28,6 +29,7 @@ public class ActionExecuter {
 		if (action instanceof ChecklistAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof ImpedimentAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 		if (action instanceof DescriptionAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
+		if (action instanceof TagAction) return new SimpleActionExecuter().executeAction(context, actionContext, action);
 
 		throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.NO_MAPPED_EXECUTOR, action.getClass().toString());
 	}
