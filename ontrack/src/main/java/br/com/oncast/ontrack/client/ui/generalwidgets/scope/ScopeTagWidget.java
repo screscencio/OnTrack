@@ -4,6 +4,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
@@ -28,7 +29,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -67,8 +67,15 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 		}
 	};
 
+	private ScopeTreeItemWidgetEditionHandler editionHandler;
+
 	public ScopeTagWidget(final TagAssociationMetadata tagAssociation) {
+		this(tagAssociation, null);
+	}
+
+	public ScopeTagWidget(final TagAssociationMetadata tagAssociation, final ScopeTreeItemWidgetEditionHandler editionHandler) {
 		this.association = tagAssociation;
+		this.editionHandler = editionHandler;
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
 		animation.hide();
@@ -78,7 +85,6 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 	void onRootDoubleClick(final DoubleClickEvent e) {
 		e.stopPropagation();
 		e.preventDefault();
-		Window.alert("ahoy");
 		editionHandler.onFilterByTagRequested(association.getTag().getId());
 	}
 

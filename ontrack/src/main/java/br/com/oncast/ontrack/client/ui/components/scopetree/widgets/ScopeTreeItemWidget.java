@@ -269,7 +269,7 @@ public class ScopeTreeItemWidget extends Composite {
 		return new ModelWidgetContainer<TagAssociationMetadata, ScopeTagWidget>(new ModelWidgetFactory<TagAssociationMetadata, ScopeTagWidget>() {
 			@Override
 			public ScopeTagWidget createWidget(final TagAssociationMetadata modelBean) {
-				return new ScopeTagWidget(modelBean);
+				return new ScopeTagWidget(modelBean, editionHandler);
 			}
 		}, new AnimatedContainer(new HorizontalPanel()));
 	}

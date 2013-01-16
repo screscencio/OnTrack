@@ -62,7 +62,9 @@ public class FakeScopeTreeItem extends ScopeTreeItem implements IsTreeItem {
 	}
 
 	@Override
-	public void setHierarchicalState(final boolean state) {}
+	public ScopeTreeItem setHierarchicalState(final boolean state) {
+		return this;
+	}
 
 	@Override
 	public ScopeTreeItemWidget getScopeTreeItemWidget() {
