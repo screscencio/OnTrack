@@ -233,10 +233,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 	private void addAncestors(final HashSet<Scope> showingScopes, final Scope scope) {
 		if (!scope.isRoot()) addAncestors(showingScopes, scope.getParent());
-
 		showingScopes.add(scope);
-		return;
-
 	}
 
 	@Override
