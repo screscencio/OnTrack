@@ -11,6 +11,7 @@ import br.com.oncast.ontrack.client.ui.events.ScopeTreeItemSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeTreeItemSelectionEventHandler;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
@@ -104,6 +105,13 @@ public class ScopeTreeMouseHelper {
 			public boolean hasPendingInternalAction() {
 				return actionHandler.hasPendingInternalAction();
 			}
+
+			@Override
+			public void filterByTag(final UUID filteredTagId) {}
+
+			@Override
+			public void clearTagFilter() {}
+
 		});
 		resetXCoordinate();
 		RootPanel.get().add(floatingMenu);

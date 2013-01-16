@@ -21,12 +21,14 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -70,6 +72,14 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
 		animation.hide();
+	}
+
+	@UiHandler("root")
+	void onRootDoubleClick(final DoubleClickEvent e) {
+		e.stopPropagation();
+		e.preventDefault();
+		Window.alert("ahoy");
+		editionHandler.onFilterByTagRequested(association.getTag().getId());
 	}
 
 	@UiHandler("root")

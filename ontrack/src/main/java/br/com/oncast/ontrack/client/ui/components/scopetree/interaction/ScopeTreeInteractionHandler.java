@@ -1,5 +1,9 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
@@ -19,6 +23,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -178,6 +183,37 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		}
 
 		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareValueAction(scopeId, hasDeclaredValue, declaredValue));
+	}
+
+	private List<ScopeTreeItem> filteredItems = new ArrayList<ScopeTreeItem>();
+
+	@Override
+	public void filterByTag(final UUID filteredTagId) {
+		clearTagFilter();
+
+		final HashSet<Scope> showingScopes = new HashSet<Scope>();
+		for (final TagAssociationMetadata association : context.<TagAssociationMetadata> getAllMetadata(TagAssociationMetadata.getType())) {
+			if (!association.getTag().getId().equals(filteredTagId)) continue;
+			final Scope scope = (Scope) association.getSubject();
+			addHierarchical(showingScopes, scope);
+		}
+		filteredItems = tree.getItem(0).filter(showingScopes);
+	}
+
+	@Override
+	public void clearTagFilter() {
+		for (final ScopeTreeItem item : filteredItems) {
+			item.setVisible(true);
+		}
+		filteredItems.clear();
+	}
+
+	private void addHierarchical(final HashSet<Scope> showingScopes, final Scope scope) {
+		if (!scope.isRoot()) addHierarchical(showingScopes, scope.getParent());
+
+		showingScopes.add(scope);
+		return;
+
 	}
 
 	@Override
