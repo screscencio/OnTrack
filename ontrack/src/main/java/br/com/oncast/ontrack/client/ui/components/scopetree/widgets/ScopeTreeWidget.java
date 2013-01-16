@@ -10,6 +10,10 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.FakeScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeDetailUpdateEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeClearTagFilterEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeClearTagFilterEventHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeFilterByTagEvent;
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeFilterByTagEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEventHandler;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
@@ -214,6 +218,21 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				itemMapCache.remove(scope.getId());
 			}
 		});
+
+		tree.addHandler(new ScopeTreeFilterByTagEventHandler() {
+			@Override
+			public void onFilterByTagRequested(final UUID tagId) {
+				interactionHandler.filterByTag(tagId);
+			}
+		}, ScopeTreeFilterByTagEvent.getType());
+
+		tree.addHandler(new ScopeTreeClearTagFilterEventHandler() {
+
+			@Override
+			public void onClearTagFilterRequested() {
+				interactionHandler.clearTagFilter();
+			}
+		}, ScopeTreeClearTagFilterEvent.getType());
 
 	}
 
