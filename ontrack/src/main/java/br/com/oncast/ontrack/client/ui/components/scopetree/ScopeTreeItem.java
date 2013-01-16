@@ -159,13 +159,14 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	// TODO Analise using (maybe deprecating this method) 'Tree#ensureSelectedItemVisible()' method, that ensures that the currently-selected item is visible,
 	// opening its parents and scrolling the tree as necessary.
-	public void setHierarchicalState(final boolean state) {
+	public ScopeTreeItem setHierarchicalState(final boolean state) {
 		ScopeTreeItem item = this;
 
 		while (item != null) {
 			if (!item.getState()) item.setState(state);
 			item = item.getParentItem();
 		}
+		return this;
 	}
 
 	public ScopeTreeItemWidget getScopeTreeItemWidget() {
@@ -188,18 +189,19 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 		scopeItemWidget.removeSelectedMember(member);
 	}
 
-	public List<ScopeTreeItem> filter(final HashSet<Scope> showingScopes) {
-		final List<ScopeTreeItem> shownItens = new ArrayList<ScopeTreeItem>();
+	public List<ScopeTreeItem> filter(final HashSet<Scope> neededScopes) {
+		final List<ScopeTreeItem> hiddenItens = new ArrayList<ScopeTreeItem>();
 
-		final boolean mustShow = showingScopes.contains(getReferencedScope());
+		final boolean mustShow = neededScopes.contains(getReferencedScope());
 		this.setVisible(mustShow);
 		if (mustShow) {
-			setState(true);
 			for (int i = 0; i < getChildCount(); i++) {
-				shownItens.addAll(getChild(i).filter(showingScopes));
+				hiddenItens.addAll(getChild(i).filter(neededScopes));
 			}
-			shownItens.add(this);
 		}
-		return shownItens;
+		else {
+			hiddenItens.add(this);
+		}
+		return hiddenItens;
 	}
 }

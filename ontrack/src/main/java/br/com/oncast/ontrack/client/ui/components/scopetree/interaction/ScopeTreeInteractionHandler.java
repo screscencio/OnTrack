@@ -191,13 +191,36 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	public void filterByTag(final UUID filteredTagId) {
 		clearTagFilter();
 
-		final HashSet<Scope> showingScopes = new HashSet<Scope>();
+		final HashSet<Scope> neededScopes = new HashSet<Scope>();
 		for (final TagAssociationMetadata association : context.<TagAssociationMetadata> getAllMetadata(TagAssociationMetadata.getType())) {
 			if (!association.getTag().getId().equals(filteredTagId)) continue;
+
 			final Scope scope = (Scope) association.getSubject();
-			addHierarchical(showingScopes, scope);
+
+			addAncestors(neededScopes, scope);
+			tree.findAndMountScopeTreeItem(scope).setHierarchicalState(true).setState(hasTaggedDescendant(neededScopes, scope));
+			addDescendants(neededScopes, scope);
 		}
-		filteredItems = tree.getItem(0).filter(showingScopes);
+
+		filteredItems = tree.getItem(0).filter(neededScopes);
+	}
+
+	private boolean hasTaggedDescendant(final HashSet<Scope> neededScopes, final Scope scope) {
+		boolean hasTaggedChild = false;
+		for (final Scope child : scope.getChildren()) {
+			if (neededScopes.contains(child)) {
+				hasTaggedChild = true;
+				break;
+			}
+		}
+		return hasTaggedChild;
+	}
+
+	private void addDescendants(final HashSet<Scope> neededScopes, final Scope scope) {
+		for (final Scope child : scope.getChildren()) {
+			neededScopes.add(child);
+			addDescendants(neededScopes, child);
+		}
 	}
 
 	@Override
@@ -208,8 +231,8 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		filteredItems.clear();
 	}
 
-	private void addHierarchical(final HashSet<Scope> showingScopes, final Scope scope) {
-		if (!scope.isRoot()) addHierarchical(showingScopes, scope.getParent());
+	private void addAncestors(final HashSet<Scope> showingScopes, final Scope scope) {
+		if (!scope.isRoot()) addAncestors(showingScopes, scope.getParent());
 
 		showingScopes.add(scope);
 		return;
