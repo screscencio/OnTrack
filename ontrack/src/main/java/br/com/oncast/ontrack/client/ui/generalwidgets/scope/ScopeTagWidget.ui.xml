@@ -34,9 +34,14 @@
 			cursor: pointer;
 		}
 		
+		.root {
+			display: inline-block !important;
+			margin-right: 1px;
+		}
+		
 	</ui:style>
 	
-	<g:FocusPanel ui:field="root">
+	<g:FocusPanel ui:field="root" styleName="{style.root}">
 		<g:HTMLPanel ui:field="container" styleName="{style.container}">
 			<g:Label ui:field="description"/>
 			<g:FocusPanel ui:field="colorEdit" styleName="{style.colorEdit}"/>

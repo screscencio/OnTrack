@@ -1,13 +1,21 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.scope;
 
-import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeItemWidgetEditionHandler;
+import java.util.Set;
+
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.shared.model.action.ActionContext;
+import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
@@ -25,7 +33,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociationMetadata> {
+public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociationMetadata>, ActionExecutionListener {
 
 	private static final int DURATION = 500;
 
@@ -48,8 +56,6 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 
 	private TagAssociationMetadata association;
 
-	private ScopeTreeItemWidgetEditionHandler editionHandler;
-
 	private final ScopeTagWidgetAnimation animation = new ScopeTagWidgetAnimation();
 
 	private final Timer hideTimer = new Timer() {
@@ -59,9 +65,8 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 		}
 	};
 
-	public ScopeTagWidget(final TagAssociationMetadata tagAssociation, final ScopeTreeItemWidgetEditionHandler editionHandler) {
+	public ScopeTagWidget(final TagAssociationMetadata tagAssociation) {
 		this.association = tagAssociation;
-		this.editionHandler = editionHandler;
 		initWidget(uiBinder.createAndBindUi(this));
 		update();
 		animation.hide();
@@ -86,6 +91,16 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM))
 				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(colorEdit, HorizontalAlignment.LEFT))
 				.pop();
+	}
+
+	@Override
+	protected void onLoad() {
+		ClientServiceProvider.getInstance().getActionExecutionService().addActionExecutionListener(this);
+	}
+
+	@Override
+	protected void onUnload() {
+		ClientServiceProvider.getInstance().getActionExecutionService().removeActionExecutionListener(this);
 	}
 
 	@Override
@@ -147,6 +162,13 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 			run(DURATION);
 		}
 
+	}
+
+	@Override
+	public void onActionExecution(final ModelAction action, final ProjectContext context, final ActionContext actionContext,
+			final Set<UUID> inferenceInfluencedScopeSet,
+			final boolean isUserAction) {
+		if (action instanceof TagUpdateAction && action.getReferenceId().equals(association.getTag().getId())) update();
 	};
 
 }

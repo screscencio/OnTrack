@@ -24,7 +24,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
-import br.com.oncast.ontrack.shared.model.action.TagAction;
+import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 
@@ -59,7 +59,7 @@ public class ScopeTreeActionFactory {
 		else if (action instanceof ScopeAddTagAssociationAction || action instanceof ScopeRemoveTagAssociationAction) return new ScopeTreeTagAssociationAction(
 				tree, action);
 		else if (action instanceof TagRemoveAction) return new ScopeTreeTagRemoveUpdateAction(tree, (TagRemoveAction) action);
-		else if (action instanceof TagAction) return new ScopeTreeTagUpdateAction(tree, action);
+		else if (action instanceof TagCreateAction) return new ScopeTreeTagUpdateAction(tree, action);
 
 		throw new RuntimeException("It was not possible to find the desired action.");
 	}
