@@ -39,10 +39,12 @@ public class PlanningActivity extends AbstractActivity {
 	private final UUID selectedScopeId;
 	private final UUID requestedProjectId;
 	private final ScopeTreeMouseHelper mouseHelper;
+	private final UUID filteredTagId;
 
 	public PlanningActivity(final PlanningPlace place) {
 		requestedProjectId = place.getRequestedProjectId();
 		selectedScopeId = place.getSelectedScopeId();
+		filteredTagId = place.getTagId();
 		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		activityActionExecutionListener = new ActivityActionExecutionListener();
 		mouseHelper = new ScopeTreeMouseHelper();
@@ -84,6 +86,8 @@ public class PlanningActivity extends AbstractActivity {
 
 		registrations.add(registerScopeSelectionEventHandler());
 		registrations.add(registerScopeImpedimentUpdateEventHandler());
+
+		if (filteredTagId != null) view.getScopeTree().getScopeTreeInternalActionHandler().filterByTag(filteredTagId);
 
 		SERVICE_PROVIDER.getClientApplicationStateService().restore(selectedScopeId);
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();

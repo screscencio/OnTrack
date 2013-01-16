@@ -1,5 +1,10 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeFilterByTagEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemBindReleaseEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareEffortEvent;
 import br.com.oncast.ontrack.client.ui.components.scopetree.events.ScopeTreeItemDeclareProgressEvent;
@@ -12,6 +17,7 @@ import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeIte
 import br.com.oncast.ontrack.shared.model.color.Color;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.Tree;
@@ -79,6 +85,11 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 			@Override
 			public Scope getScope() {
 				return scope;
+			}
+
+			@Override
+			public void onFilterByTagRequested(final UUID tagId) {
+				ScopeTreeItem.this.getTree().fireEvent(new ScopeTreeFilterByTagEvent(tagId));
 			}
 
 		}));
@@ -175,5 +186,20 @@ public class ScopeTreeItem extends TreeItem implements IsTreeItem {
 
 	public void removeSelectedMember(final UserRepresentation member) {
 		scopeItemWidget.removeSelectedMember(member);
+	}
+
+	public List<ScopeTreeItem> filter(final HashSet<Scope> showingScopes) {
+		final List<ScopeTreeItem> shownItens = new ArrayList<ScopeTreeItem>();
+
+		final boolean mustShow = showingScopes.contains(getReferencedScope());
+		this.setVisible(mustShow);
+		if (mustShow) {
+			setState(true);
+			for (int i = 0; i < getChildCount(); i++) {
+				shownItens.addAll(getChild(i).filter(showingScopes));
+			}
+			shownItens.add(this);
+		}
+		return shownItens;
 	}
 }

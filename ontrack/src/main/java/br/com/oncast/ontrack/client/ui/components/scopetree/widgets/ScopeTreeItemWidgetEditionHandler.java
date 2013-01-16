@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public interface ScopeTreeItemWidgetEditionHandler {
 
@@ -29,4 +30,6 @@ public interface ScopeTreeItemWidgetEditionHandler {
 	void declareValue(String valueToDeclare);
 
 	Scope getScope();
+
+	void onFilterByTagRequested(UUID tagId);
 }
