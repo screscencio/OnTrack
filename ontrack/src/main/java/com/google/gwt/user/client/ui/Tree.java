@@ -888,8 +888,13 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 	}
 
 	private TreeItem findDeepestOpenChild(final TreeItem item) {
-		if (!item.getState()) { return item; }
-		return findDeepestOpenChild(item.getChild(item.getChildCount() - 1));
+		// IMPORTANT [Tag Filter] Skips not shown items
+		if (!item.getState() && item.isVisible()) { return item; }
+		for (int i = item.getChildCount() - 1; i >= 0; i--) {
+			final TreeItem deepestOpenChild = findDeepestOpenChild(item.getChild(i));
+			if (deepestOpenChild != null) return deepestOpenChild;
+		}
+		return null;
 	}
 
 	protected TreeItem findItemByChain(final ArrayList<Element> chain, final int idx, final TreeItem root) {
@@ -918,7 +923,8 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		TreeItem topClosedParent = null;
 		TreeItem parent = item.getParentItem();
 		while (parent != null && parent != root) {
-			if (!parent.getState()) {
+			// IMPORTANT [Tag Filter] Skips not shown items
+			if (!parent.getState() && parent.isVisible()) {
 				topClosedParent = parent;
 			}
 			parent = parent.getParentItem();
@@ -1062,18 +1068,30 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		if (parent == null) {
 			parent = root;
 		}
-		final int idx = parent.getChildIndex(sel);
+		int idx = parent.getChildIndex(sel);
 
 		if (!dig || !sel.getState()) {
-			if (idx < parent.getChildCount() - 1) {
-				onSelection(parent.getChild(idx + 1), true, true);
+
+			// IMPORTANT [Tag Filter] Skips not shown items
+			while (idx < parent.getChildCount() - 1) {
+				final TreeItem sibling = parent.getChild(++idx);
+				if (sibling.isVisible()) {
+					onSelection(sibling, true, true);
+					return;
+				}
 			}
-			else {
-				moveSelectionDown(parent, false);
-			}
+			moveSelectionDown(parent, false);
+
 		}
-		else if (sel.getChildCount() > 0) {
-			onSelection(sel.getChild(0), true, true);
+		else {
+			// IMPORTANT [Tag Filter] Skips not shown items
+			for (int i = 0; i < sel.getChildCount(); i++) {
+				final TreeItem child = sel.getChild(i);
+				if (child.isVisible()) {
+					onSelection(child, true, true);
+					return;
+				}
+			}
 		}
 	}
 
@@ -1092,15 +1110,18 @@ public class Tree extends Widget implements HasTreeItems, HasWidgets, HasAnimati
 		if (parent == null) {
 			parent = root;
 		}
-		final int idx = parent.getChildIndex(sel);
 
-		if (idx > 0) {
-			final TreeItem sibling = parent.getChild(idx - 1);
-			onSelection(findDeepestOpenChild(sibling), true, true);
+		// IMPORTANT [Tag Filter] Skips not shown items
+		int idx = parent.getChildIndex(sel);
+		while (idx > 0) {
+			final TreeItem sibling = parent.getChild(--idx);
+			if (sibling.isVisible()) {
+				onSelection(findDeepestOpenChild(sibling), true, true);
+				return;
+			}
 		}
-		else {
-			onSelection(parent, true, true);
-		}
+		onSelection(parent, true, true);
+
 	}
 
 	protected void onSelection(final TreeItem item, final boolean fireEvents, final boolean moveFocus) {
