@@ -32,10 +32,7 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ControlModifier;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.modifier.ShiftModifier;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
-import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveToAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -112,7 +109,13 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	MOVE_SCOPE_UP(new Shortcut(KEY_UP).with(ControlModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			interactionHandler.onUserActionExecutionRequest(new ScopeMoveUpAction(scope.getId()));
+			if (scope.isRoot()) return;
+
+			final Scope target = interactionHandler.getVisibleScopeAbove(scope);
+
+			final Scope parent = scope.getParent();
+			final int targetIndex = target == null ? parent.getChildCount() : parent.getChildIndex(target);
+			interactionHandler.onUserActionExecutionRequest(new ScopeMoveToAction(scope.getId(), parent.getId(), targetIndex));
 		}
 
 		@Override
@@ -125,7 +128,13 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	MOVE_SCOPE_DOWN(new Shortcut(KEY_DOWN).with(ControlModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			interactionHandler.onUserActionExecutionRequest(new ScopeMoveDownAction(scope.getId()));
+			if (scope.isRoot()) return;
+
+			final Scope target = interactionHandler.getVisibleScopeBelow(scope);
+
+			final Scope parent = scope.getParent();
+			final int targetIndex = target == null ? 0 : parent.getChildIndex(target) + 1;
+			interactionHandler.onUserActionExecutionRequest(new ScopeMoveToAction(scope.getId(), parent.getId(), targetIndex));
 		}
 
 		@Override
@@ -137,7 +146,12 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	MOVE_SCOPE_RIGHT(new Shortcut(KEY_RIGHT).with(ControlModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			interactionHandler.onUserActionExecutionRequest(new ScopeMoveRightAction(scope.getId()));
+			if (scope.isRoot()) return;
+
+			final Scope target = interactionHandler.getVisibleScopeAbove(scope);
+			if (target == null) return;
+
+			interactionHandler.onUserActionExecutionRequest(new ScopeMoveToAction(scope.getId(), target.getId(), target.getChildCount()));
 		}
 
 		@Override
@@ -150,7 +164,11 @@ public enum ScopeTreeShortcutMappings implements ShortcutMapping<ScopeTreeWidget
 	MOVE_SCOPE_LEFT(new Shortcut(KEY_LEFT).with(ControlModifier.PRESSED)) {
 		@Override
 		protected void customExecution(final ScopeTreeWidgetInteractionHandler interactionHandler, final Scope scope) {
-			interactionHandler.onUserActionExecutionRequest(new ScopeMoveLeftAction(scope.getId()));
+			if (scope.isRoot() || scope.getParent().isRoot()) return;
+
+			final Scope parent = scope.getParent();
+			final Scope grandParent = parent.getParent();
+			interactionHandler.onUserActionExecutionRequest(new ScopeMoveToAction(scope.getId(), grandParent.getId(), grandParent.getChildIndex(parent) + 1));
 		}
 
 		@Override

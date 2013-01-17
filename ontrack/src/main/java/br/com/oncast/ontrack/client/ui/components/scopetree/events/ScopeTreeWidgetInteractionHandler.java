@@ -23,4 +23,8 @@ public interface ScopeTreeWidgetInteractionHandler extends
 	void focusTree();
 
 	void onUserActionExecutionRequest(ModelAction action);
+
+	Scope getVisibleScopeAbove(Scope scope);
+
+	Scope getVisibleScopeBelow(Scope scope);
 }

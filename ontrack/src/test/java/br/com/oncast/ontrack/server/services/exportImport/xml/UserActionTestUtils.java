@@ -60,6 +60,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeInsertSiblingUpRollbackAct
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveDownAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveLeftAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeMoveToAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeMoveUpAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
@@ -173,7 +174,12 @@ public class UserActionTestUtils {
 		userActions.add(createTagUpdateAction());
 		userActions.add(createScopeAddTagAssociationAction());
 		userActions.add(createScopeRemoveTagAssociationAction());
+		userActions.add(createScopeMoveToAction());
 		return userActions;
+	}
+
+	private static UserAction createScopeMoveToAction() throws Exception {
+		return createUserAction(new ScopeMoveToAction(new UUID(), new UUID(), 0));
 	}
 
 	private static UserAction createScopeRemoveTagAssociationAction() throws Exception {
