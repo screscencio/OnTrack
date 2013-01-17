@@ -1,0 +1,27 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style src="../../style/default.css">
+	
+		.container {
+			position: relative;
+			display: inline-block !important;
+
+			padding: 0px 5px 0px 5px;
+			margin-top: 1px;
+			margin-right: 1px;
+
+			border-radius: 2px;
+			box-shadow: 1px 1px 1px #999;
+
+			cursor: default;
+			font-weight: bold;
+
+		}
+	</ui:style>
+	
+	<g:HTMLPanel ui:field="container" styleName="{style.container}">
+		<g:Label ui:field="description"/>
+	</g:HTMLPanel>
+</ui:UiBinder> 

@@ -120,5 +120,5 @@
 				<ow:KanbanScopeContainer ui:field="scopeContainer" styleName="{style.scopeContainer}"/>
 			</g:cell>
 		</g:VerticalPanel>
-	</g:FocusPanel>
+		</g:FocusPanel>
 </ui:UiBinder> 

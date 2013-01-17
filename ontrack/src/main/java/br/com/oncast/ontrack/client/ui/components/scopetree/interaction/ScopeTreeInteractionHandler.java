@@ -26,6 +26,7 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInteractionHandler {
@@ -192,8 +193,10 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		clearTagFilter();
 
 		final HashSet<Scope> neededScopes = new HashSet<Scope>();
+		final HashSet<Tag> tags = new HashSet<Tag>();
 		for (final TagAssociationMetadata association : context.<TagAssociationMetadata> getAllMetadata(TagAssociationMetadata.getType())) {
 			if (!association.getTag().getId().equals(filteredTagId)) continue;
+			tags.add(association.getTag());
 
 			final Scope scope = (Scope) association.getSubject();
 
@@ -203,6 +206,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		}
 
 		filteredItems = tree.getItem(0).filter(neededScopes);
+		tree.showTagFilteringInfo(tags);
 	}
 
 	private boolean hasTaggedDescendant(final HashSet<Scope> neededScopes, final Scope scope) {
@@ -229,6 +233,7 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 			item.setVisible(true);
 		}
 		filteredItems.clear();
+		tree.hideTagFilteringInfo();
 	}
 
 	private void addAncestors(final HashSet<Scope> showingScopes, final Scope scope) {

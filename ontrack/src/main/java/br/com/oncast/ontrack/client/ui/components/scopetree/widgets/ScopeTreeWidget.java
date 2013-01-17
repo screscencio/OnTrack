@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,10 +38,17 @@ import br.com.oncast.ontrack.client.ui.events.ScopeRemoveMemberSelectionEventHan
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEvent;
 import br.com.oncast.ontrack.client.ui.events.ScopeSelectionEventHandler;
 import br.com.oncast.ontrack.client.ui.events.ScopeTreeItemSelectionEvent;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.scope.TagWidget;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -52,8 +60,11 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -108,6 +119,12 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 	@UiField
 	protected HTMLPanel instructionPanel;
 
+	@UiField
+	protected Label deleteButton;
+
+	@UiField
+	protected HorizontalPanel filteredPanel;
+
 	private final Map<UUID, ScopeTreeItem> itemMapCache = new HashMap<UUID, ScopeTreeItem>();
 
 	private ScopeTreeItem lastTreeItem = null;
@@ -116,15 +133,24 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 	private final Set<HandlerRegistration> handlerRegistrations;
 
+	@UiField(provided = true)
+	@IgnoredByDeepEquality
+	protected ModelWidgetContainer<Tag, TagWidget> tags;
+
+	private final ScopeTreeWidgetInteractionHandler interactionHandler;
+
 	@UiFactory
 	protected Tree createTree() {
 		return new Tree((Resources) GWT.create(Resources.class), true);
 	}
 
 	public ScopeTreeWidget(final ScopeTreeWidgetInteractionHandler interactionHandler) {
+		this.interactionHandler = interactionHandler;
+		tags = createTagsContainer();
 		handlerRegistrations = new HashSet<HandlerRegistration>();
 
 		initWidget(uiBinder.createAndBindUi(this));
+		hideTagFilteringInfo();
 
 		tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
 			@Override
@@ -233,7 +259,15 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				interactionHandler.clearTagFilter();
 			}
 		}, ScopeTreeClearTagFilterEvent.getType());
+	}
 
+	private ModelWidgetContainer<Tag, TagWidget> createTagsContainer() {
+		return new ModelWidgetContainer<Tag, TagWidget>(new ModelWidgetFactory<Tag, TagWidget>() {
+			@Override
+			public TagWidget createWidget(final Tag modelBean) {
+				return new TagWidget(modelBean);
+			}
+		}, new AnimatedContainer(new FlowPanel()));
 	}
 
 	@Override
@@ -420,4 +454,18 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		return wasFake;
 	}
 
+	@UiHandler("deleteButton")
+	protected void onClearFilterButtonClick(final ClickEvent event) {
+		interactionHandler.clearTagFilter();
+	}
+
+	public void hideTagFilteringInfo() {
+		filteredPanel.setVisible(false);
+	}
+
+	public void showTagFilteringInfo(final HashSet<Tag> tagSet) {
+		tags.clear();
+		filteredPanel.setVisible(true);
+		tags.update(new ArrayList<Tag>(tagSet));
+	}
 }

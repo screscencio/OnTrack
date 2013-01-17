@@ -85,7 +85,7 @@ public class ScopeTagWidget extends Composite implements ModelWidget<TagAssociat
 	void onRootDoubleClick(final DoubleClickEvent e) {
 		e.stopPropagation();
 		e.preventDefault();
-		editionHandler.onFilterByTagRequested(association.getTag().getId());
+		if (editionHandler != null) editionHandler.onFilterByTagRequested(association.getTag().getId());
 	}
 
 	@UiHandler("root")

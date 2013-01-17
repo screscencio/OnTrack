@@ -3,49 +3,111 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"	
 	ui:generateLocales="default">
+
+	<ui:data src="../../progresspanel/widgets/delete_column.png" field="deleteColumnImg" />
+	<ui:data src="../../progresspanel/widgets/delete_column_hover.png" field="deleteColumnHoverImg" />
 
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.scopetree.widgets.ScopeTreeWidget.ScopeTreeWidgetStyle">
 
-			.rootPanel {
-				height: 100%;
-				overflow: auto;
-			}
-			
-			.instructionPanel {
-				width: 100%;
+	   @url deleteImgUrl deleteColumnImg;
+	   @url deleteHoverImgUrl deleteColumnHoverImg;
 
-				vertical-align: middle;
-				text-align: center;
-			}
+		.rootPanel {
+			height: 100%;
+			overflow: auto;
+			position: relative;
+		}
+		
+		.instructionPanel {
+			width: 100%;
+
+			vertical-align: middle;
+			text-align: center;
+		}
+		
+		.emptyIndicationLabel {
+			width: 100%;
 			
-			.emptyIndicationLabel {
-				width: 100%;
-				
-				vertical-align: middle;
-				text-align: center;
-				
-				font-size: 14pt; 
-				padding: 25px 0px;
-				
-				color: COLOR_GRAY;
-				text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
-			}
+			vertical-align: middle;
+			text-align: center;
 			
-			.instructionLabel {
-				font-family: FONT_DEFAULT_ITALIC;
-				font-size: FONT_SIZE_MEDIUM;
-				
-				color: COLOR_GRAY_LIGHT;
-				text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
-				
-				margin: 5px;
-			}
-		</ui:style>
+			font-size: 14pt; 
+			padding: 25px 0px;
+			
+			color: COLOR_GRAY;
+			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
+		}
+		
+		.instructionLabel {
+			font-family: FONT_DEFAULT_ITALIC;
+			font-size: FONT_SIZE_MEDIUM;
+			
+			color: COLOR_GRAY_LIGHT;
+			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
+			
+			margin: 5px;
+		}
+
+		.filteredPanel {
+			position: relative;
+			right: 3px;
+			padding: 3px 3px 3px 5px;
+			margin: 1px 0px 2px 0px;
+			display: block;
+
+			border: 1px solid #2D4171;
+			background-color: #667aa8;
+			color: #eeeeee;
+		}
+
+		.filteredLabel {
+			margin-right: 5px;
+		}
+
+		.tags {
+			margin-top: -1px;
+			width: 100%;
+			min-height: 10px;
+		}
+		
+		.deleteButton {
+			position: absolute;
+			top: 5px;
+			right: 8px;
+			width: 9px;
+			height: 9px;
+
+			cursor: pointer;
+			border: 1px solid transparent;
+			
+			background-image: deleteImgUrl;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+		
+		.deleteButton:hover {
+			background-image: deleteHoverImgUrl;
+			background-color: #efefef;
+            border: 1px solid #ededed;
+		}
+		
+	</ui:style>
 
 	<g:FocusPanel styleName="{style.rootPanel}">
 		<g:HTMLPanel>
+			<g:HorizontalPanel ui:field="filteredPanel" styleName="{style.filteredPanel}">
+				<g:Label styleName="{style.filteredLabel}">
+					<ui:msg description="message shown when scope tree is filtered">The scope is being filtered by: </ui:msg>
+				</g:Label>
+				<g:cell width="*">
+					<misc:ModelWidgetContainer ui:field="tags" styleName="{style.tags}" />
+				</g:cell>
+				<g:Label ui:field="deleteButton" styleName="{style.deleteButton}" title="Clear filter" >
+					<ui:attribute name='title' description='clear filter'/>
+				</g:Label>
+			</g:HorizontalPanel>
 			<g:Tree ui:field="tree" />
 			<g:Label ui:field="noScopeLabel" styleName="{style.emptyIndicationLabel}">
 				<ui:msg description="message shown when scope tree is empty">No Scope yet</ui:msg>
