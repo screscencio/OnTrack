@@ -267,4 +267,27 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	public boolean hasPendingInternalAction() {
 		return internalActionHandler.hasPendingAction();
 	}
+
+	@Override
+	public Scope getVisibleScopeAbove(final Scope scope) {
+		final ScopeTreeItem item = tree.findScopeTreeItem(scope);
+		final ScopeTreeItem parent = item.getParentItem();
+		for (int i = parent.getChildIndex(item) - 1; i >= 0; i--) {
+			final ScopeTreeItem itemAbove = parent.getChild(i);
+			if (itemAbove.isVisible()) return itemAbove.getReferencedScope();
+		}
+		return null;
+	}
+
+	@Override
+	public Scope getVisibleScopeBelow(final Scope scope) {
+		final ScopeTreeItem item = tree.findScopeTreeItem(scope);
+		final ScopeTreeItem parent = item.getParentItem();
+
+		for (int i = parent.getChildIndex(item) + 1; i < parent.getChildCount(); i++) {
+			final ScopeTreeItem itemBelow = parent.getChild(i);
+			if (itemBelow.isVisible()) return itemBelow.getReferencedScope();
+		}
+		return null;
+	}
 }
