@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
@@ -137,26 +138,23 @@ public class EffortInferenceEngineFlow1Test {
 	}
 
 	private void shouldApplyInferenceTopDownWhenRootIsModified() {
-		original.getEffort().setDeclared(1000);
-		effortInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original, 1000);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneIsAdded() {
 		final Scope newScope = ScopeTestUtils.createScope("Cancelar pedido");
 		original.getChild(1).add(newScope);
-		effortInferenceEngine.process(newScope.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
+		effortInferenceEngine.process(newScope, UserRepresentationTestUtils.getAdmin(), new Date());
 
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}
 
 	private void shouldRedistributeEffortBetweenChildrenWhenParentEffortIsDeclared() {
-		final Scope scopeWithChangedEffort = original.getChild(1);
-		scopeWithChangedEffort.getEffort().setDeclared(350);
-		effortInferenceEngine.process(scopeWithChangedEffort.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
+		final Scope scope = original.getChild(1);
+		declare(scope, 350);
 
-		for (final Scope child : scopeWithChangedEffort.getChildren()) {
+		for (final Scope child : scope.getChildren()) {
 			assertEquals(87.5, child.getEffort().getInfered(), ERROR);
 		}
 
@@ -164,9 +162,7 @@ public class EffortInferenceEngineFlow1Test {
 	}
 
 	private void shouldRedistributeEffortBetweenSiblingWhenOneIsDeclared() {
-		final Scope scopeWithChangedEffort = original.getChild(1).getChild(0);
-		scopeWithChangedEffort.getEffort().setDeclared(150);
-		effortInferenceEngine.process(scopeWithChangedEffort.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
+		declare(original.getChild(1).getChild(0), 150);
 
 		assertEquals(66.6, original.getChild(1).getChild(1).getEffort().getInfered(), ERROR);
 		assertEquals(66.6, original.getChild(1).getChild(2).getEffort().getInfered(), ERROR);
@@ -176,18 +172,13 @@ public class EffortInferenceEngineFlow1Test {
 	}
 
 	private void shouldRedistributeEffortBetweenSiblingWhenInferedChanges() {
-		final Scope parentScopeWithChildrenModification = original.getChild(1);
+		final Scope parent = original.getChild(1);
 
-		parentScopeWithChildrenModification.getChild(1).getEffort().setDeclared(150);
-		effortInferenceEngine.process(parentScopeWithChildrenModification, UserRepresentationTestUtils.getAdmin(), new Date());
+		declare(parent.getChild(1), 150);
+		declare(parent.getChild(2), 150);
+		declare(parent.getChild(3), 150);
 
-		parentScopeWithChildrenModification.getChild(2).getEffort().setDeclared(150);
-		effortInferenceEngine.process(parentScopeWithChildrenModification, UserRepresentationTestUtils.getAdmin(), new Date());
-
-		parentScopeWithChildrenModification.getChild(3).getEffort().setDeclared(150);
-		effortInferenceEngine.process(parentScopeWithChildrenModification, UserRepresentationTestUtils.getAdmin(), new Date());
-
-		assertEquals(600, parentScopeWithChildrenModification.getEffort().getInfered(), ERROR);
+		assertEquals(600, parent.getEffort().getInfered(), ERROR);
 		assertEquals(133.3, original.getChild(0).getEffort().getInfered(), ERROR);
 		assertEquals(133.3, original.getChild(2).getEffort().getInfered(), ERROR);
 		assertEquals(133.3, original.getChild(3).getEffort().getInfered(), ERROR);
@@ -196,49 +187,42 @@ public class EffortInferenceEngineFlow1Test {
 	}
 
 	private void shouldRemoveUnusedInference() {
-		final Scope scopeWithChangedEffort = original.getChild(1);
-		scopeWithChangedEffort.getEffort().resetDeclared();
-		effortInferenceEngine.process(scopeWithChangedEffort.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
-
+		resetDeclared(original.getChild(1));
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 6), original);
 	}
 
 	private void shouldRedistributeEffortBetweenSiblingWhenOneIsChanged() {
-		final Scope scopeWithChangedEffort = original.getChild(0).getChild(0);
-		scopeWithChangedEffort.getEffort().setDeclared(30);
-		effortInferenceEngine.process(scopeWithChangedEffort.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original.getChild(0).getChild(0), 30);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 7), original);
 	}
 
 	private void shouldNotDistributeEffortForStronglyDeclaredEfforts() {
-		final Scope scopeWithChangedEffort = original.getChild(0).getChild(1);
-		scopeWithChangedEffort.getEffort().setDeclared(60);
-		effortInferenceEngine.process(scopeWithChangedEffort.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original.getChild(0).getChild(1), 60);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 8), original);
 	}
 
 	private void shouldRemoveUnusedInferenceForChildrenIfThereIsNoMoreEffortAvaliable() {
-		original.getEffort().resetDeclared();
-		effortInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
-
+		resetDeclared(original);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 9), original);
 	}
 
 	private void shouldUpdateRootEffortWhenSomeChildIsChanged() {
-		original.getChild(2).getEffort().setDeclared(350);
-		effortInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original.getChild(2), 350);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 10), original);
 	}
 
 	private void shouldUpdateRootEffortWhenSomeChildIsChanged2() {
-		final Scope scopeWithChangedEffort = original.getChild(3).getChild(0);
-		scopeWithChangedEffort.getEffort().setDeclared(150);
-		effortInferenceEngine.process(scopeWithChangedEffort.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original.getChild(3).getChild(0), 150);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 11), original);
+	}
+
+	private void declare(final Scope scope, final float effort) {
+		InferenceEngineTestUtils.declare(scope, effort);
+	}
+
+	private void resetDeclared(final Scope scope) {
+		scope.getEffort().resetDeclared();
+		effortInferenceEngine.process(scope, UserRepresentationTestUtils.getAdmin(), new Date());
 	}
 
 }

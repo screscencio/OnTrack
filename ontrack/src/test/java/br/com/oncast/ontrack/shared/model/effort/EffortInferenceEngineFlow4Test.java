@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -122,53 +123,47 @@ public class EffortInferenceEngineFlow4Test {
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX), rootScope);
 	}
 
-	private ModelAction executeAction(final Scope scope, final ModelAction action) throws UnableToCompleteActionException {
+	private ModelAction executeAction(final ModelAction action) throws UnableToCompleteActionException {
 		final ModelAction rollbackAction = action.execute(projectContext, Mockito.mock(ActionContext.class));
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);
+		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(ActionHelper.findScope(action.getReferenceId(), projectContext));
 		return rollbackAction;
 	}
 
 	private void shouldApplyEffortAtProjectRoot() throws UnableToCompleteActionException {
-		rollbackActions.push(executeAction(rootScope, new ScopeDeclareEffortAction(rootScope.getId(), true, 1000)));
+		rollbackActions.push(executeAction(new ScopeDeclareEffortAction(rootScope.getId(), true, 1000)));
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 1), rootScope);
 	}
 
 	private void shouldApplyEffortInA1AndInferenceOverTheRestOfTheTree() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0);
-		final Scope scope = parent.getChild(0);
+		final Scope scope = rootScope.getChild(0).getChild(0);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareEffortAction(scope.getId(), true, 10)));
+		rollbackActions.push(executeAction(new ScopeDeclareEffortAction(scope.getId(), true, 10)));
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 2), rootScope);
 	}
 
 	private void shouldApplyEffortInA21AndInferenceOverTheRestOfTheTree() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0).getChild(1);
-		final Scope scope = parent.getChild(0);
+		final Scope scope = rootScope.getChild(0).getChild(1).getChild(0);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareEffortAction(scope.getId(), true, 20)));
+		rollbackActions.push(executeAction(new ScopeDeclareEffortAction(scope.getId(), true, 20)));
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 3), rootScope);
 	}
 
 	private void shouldReApplyEffortInferenceAfterUndo() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0).getChild(1);
-
-		executeAction(parent, rollbackActions.pop());
+		executeAction(rollbackActions.pop());
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 4), rootScope);
 	}
 
 	private void shouldApplyEffortInA3AndInferenceOverTheRestOfTheTree() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0);
-		final Scope scope = parent.getChild(2);
+		final Scope scope = rootScope.getChild(0).getChild(2);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareEffortAction(scope.getId(), true, 10)));
+		rollbackActions.push(executeAction(new ScopeDeclareEffortAction(scope.getId(), true, 10)));
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 5), rootScope);
 	}
 
 	private void shouldApplyEffortInA21AndInferenceOverTheRestOfTheTree2() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0).getChild(1);
-		final Scope scope = parent.getChild(0);
+		final Scope scope = rootScope.getChild(0).getChild(1).getChild(0);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareEffortAction(scope.getId(), true, 10)));
+		rollbackActions.push(executeAction(new ScopeDeclareEffortAction(scope.getId(), true, 10)));
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), rootScope);
 	}
 
@@ -176,7 +171,7 @@ public class EffortInferenceEngineFlow4Test {
 		final Scope parent = rootScope.getChild(0).getChild(1);
 		final Scope scope = parent.getChild(1);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareEffortAction(scope.getId(), true, 10)));
+		rollbackActions.push(executeAction(new ScopeDeclareEffortAction(scope.getId(), true, 10)));
 		DeepEqualityTestUtils.assertObjectEquality(EffortInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 7), rootScope);
 	}
 }

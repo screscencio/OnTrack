@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -27,6 +28,33 @@ public class EffortInferenceEngineTest {
 		insertChild(parent, child);
 
 		assertInferedEffort(20, child);
+	}
+
+	@Test
+	public void declaringEffortInParentAndDeclaringEffortInAChildShouldReDistributeTheEffortAmongTheChildren() throws Exception {
+		final Scope root = ScopeTestUtils.createScope();
+		final Scope parent = ScopeTestUtils.createScope();
+		final Scope child1 = ScopeTestUtils.createScope();
+		final Scope child2 = ScopeTestUtils.createScope();
+		final Scope child3 = ScopeTestUtils.createScope();
+		insertChild(root, parent);
+		insertChild(parent, child1);
+		insertChild(parent, child2);
+		insertChild(parent, child3);
+
+		declare(parent, 9);
+
+		assertInferedEffort(3, child1);
+		assertInferedEffort(3, child2);
+		assertInferedEffort(3, child3);
+
+		final Set<UUID> inferenceInfluencedScopes = declare(child1, 5);
+
+		assertInferedEffort(2, child2);
+		assertInferedEffort(2, child3);
+
+		assertTrue(inferenceInfluencedScopes.contains(child2));
+		assertTrue(inferenceInfluencedScopes.contains(child3));
 	}
 
 	private void assertInferedEffort(final float expectedEffort, final Scope scope) {

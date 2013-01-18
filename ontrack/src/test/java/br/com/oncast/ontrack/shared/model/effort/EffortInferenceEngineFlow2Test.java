@@ -3,14 +3,12 @@ package br.com.oncast.ontrack.shared.model.effort;
 import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getModifiedScope;
 import static br.com.oncast.ontrack.shared.model.effort.EffortInferenceTestUtils.getOriginalScope;
 import static br.com.oncast.ontrack.utils.assertions.AssertTestUtils.assertDeepEquals;
-
-import java.util.Date;
+import static br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils.declare;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
 public class EffortInferenceEngineFlow2Test {
 
@@ -50,34 +48,23 @@ public class EffortInferenceEngineFlow2Test {
 	}
 
 	private void shouldInferBottomUpFromModifiedScopeAndTopDownFromIt() {
-		original.getEffort().setDeclared(30);
-		effortInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original, 30);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 1), original);
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenParentEffortDeclared() {
-		final Scope a2 = original.getChild(0).getChild(1);
-		a2.getEffort().setDeclared(10);
-		effortInferenceEngine.process(a2.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original.getChild(0).getChild(1), 10);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 2), original);
 	}
 
 	private void shouldRedistribuiteEffortWhenRootEffortIsChanged() {
-		original.getEffort().setDeclared(60);
-		effortInferenceEngine.process(original, UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original, 60);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 3), original);
 	}
 
 	private void shouldRedistributeInferenceBetweenSiblingsWhenOneChangesItsEffort() {
-		final Scope a21 = original.getChild(0).getChild(1).getChild(0);
-		a21.getEffort().setDeclared(7);
-		effortInferenceEngine.process(a21.getParent(), UserRepresentationTestUtils.getAdmin(), new Date());
-
+		declare(original.getChild(0).getChild(1).getChild(0), 7);
 		assertDeepEquals(getModifiedScope(FILE_NAME_PREFIX, 4), original);
-
 	}
 
 }
