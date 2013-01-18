@@ -122,61 +122,54 @@ public class ValueInferenceEngineFlow4Test {
 		DeepEqualityTestUtils.assertObjectEquality(ValueInferenceTestUtils.getOriginalScope(FILE_NAME_PREFIX), rootScope);
 	}
 
-	private ModelAction executeAction(final Scope scope, final ModelAction action) throws UnableToCompleteActionException {
+	private ModelAction executeAction(final ModelAction action) throws UnableToCompleteActionException {
+		final Scope baseScope = ActionExecuterTestUtils.getInferenceBaseScopeForTestingPurposes(projectContext, action);
 		final ModelAction rollbackAction = action.execute(projectContext, Mockito.mock(ActionContext.class));
-		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(scope);
+		ActionExecuterTestUtils.executeInferenceEnginesForTestingPurposes(baseScope);
 		return rollbackAction;
 	}
 
 	private void shouldApplyValueAtProjectRoot() throws UnableToCompleteActionException {
-		rollbackActions.push(executeAction(rootScope, new ScopeDeclareValueAction(rootScope.getId(), true, 1000)));
+		rollbackActions.push(executeAction(new ScopeDeclareValueAction(rootScope.getId(), true, 1000)));
 		DeepEqualityTestUtils.assertObjectEquality(ValueInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 1), rootScope);
 	}
 
 	private void shouldApplyValueInA1AndInferenceOverTheRestOfTheTree() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0);
-		final Scope scope = parent.getChild(0);
+		final Scope scope = rootScope.getChild(0).getChild(0);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareValueAction(scope.getId(), true, 10)));
+		rollbackActions.push(executeAction(new ScopeDeclareValueAction(scope.getId(), true, 10)));
 		DeepEqualityTestUtils.assertObjectEquality(ValueInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 2), rootScope);
 	}
 
 	private void shouldApplyValueInA21AndInferenceOverTheRestOfTheTree() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0).getChild(1);
-		final Scope scope = parent.getChild(0);
+		final Scope scope = rootScope.getChild(0).getChild(1).getChild(0);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareValueAction(scope.getId(), true, 20)));
+		rollbackActions.push(executeAction(new ScopeDeclareValueAction(scope.getId(), true, 20)));
 		DeepEqualityTestUtils.assertObjectEquality(ValueInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 3), rootScope);
 	}
 
 	private void shouldReApplyValueInferenceAfterUndo() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0).getChild(1);
-
-		executeAction(parent, rollbackActions.pop());
+		executeAction(rollbackActions.pop());
 		DeepEqualityTestUtils.assertObjectEquality(ValueInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 4), rootScope);
 	}
 
 	private void shouldApplyValueInA3AndInferenceOverTheRestOfTheTree() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0);
-		final Scope scope = parent.getChild(2);
-
-		rollbackActions.push(executeAction(parent, new ScopeDeclareValueAction(scope.getId(), true, 10)));
+		final Scope scope = rootScope.getChild(0).getChild(2);
+		rollbackActions.push(executeAction(new ScopeDeclareValueAction(scope.getId(), true, 10)));
 		DeepEqualityTestUtils.assertObjectEquality(ValueInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 5), rootScope);
 	}
 
 	private void shouldApplyValueInA21AndInferenceOverTheRestOfTheTree2() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0).getChild(1);
-		final Scope scope = parent.getChild(0);
+		final Scope scope = rootScope.getChild(0).getChild(1).getChild(0);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareValueAction(scope.getId(), true, 10)));
+		rollbackActions.push(executeAction(new ScopeDeclareValueAction(scope.getId(), true, 10)));
 		DeepEqualityTestUtils.assertObjectEquality(ValueInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 6), rootScope);
 	}
 
 	private void shouldApplyValueInA22AndInferenceOverTheRestOfTheTree() throws UnableToCompleteActionException {
-		final Scope parent = rootScope.getChild(0).getChild(1);
-		final Scope scope = parent.getChild(1);
+		final Scope scope = rootScope.getChild(0).getChild(1).getChild(1);
 
-		rollbackActions.push(executeAction(parent, new ScopeDeclareValueAction(scope.getId(), true, 10)));
+		rollbackActions.push(executeAction(new ScopeDeclareValueAction(scope.getId(), true, 10)));
 		DeepEqualityTestUtils.assertObjectEquality(ValueInferenceTestUtils.getModifiedScope(FILE_NAME_PREFIX, 7), rootScope);
 	}
 }

@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.shared.model.action.ScopeAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 
@@ -48,7 +47,7 @@ public class ActionExecuterTestUtils extends ScopeActionExecuter {
 		return ActionExecuterTestUtils.executeInferenceEngines(new ModelActionMockImpl(), scope, UserRepresentationTestUtils.getAdmin(), new Date(0));
 	}
 
-	public static Scope getInferenceBaseScopeForTestingPurposes(final ProjectContext context, final ModelAction action) throws ScopeNotFoundException {
+	public static Scope getInferenceBaseScopeForTestingPurposes(final ProjectContext context, final ModelAction action) throws UnableToCompleteActionException {
 		return getInferenceBaseScope(context, action);
 	}
 }

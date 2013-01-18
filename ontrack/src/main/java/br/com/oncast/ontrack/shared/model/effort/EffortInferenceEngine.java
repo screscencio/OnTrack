@@ -26,6 +26,7 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		preProcessBottomUp(scope, 2, inferenceInfluencedScopeSet);
 		processTopDown(processBottomUp(scope, inferenceInfluencedScopeSet), inferenceInfluencedScopeSet);
 		processTopDown(scope, inferenceInfluencedScopeSet);
+		processTopDown(scope.isRoot() ? scope : scope.getParent(), inferenceInfluencedScopeSet);
 
 		return inferenceInfluencedScopeSet;
 	}
@@ -40,7 +41,7 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 			if (recursionIndex > 0) preProcessBottomUp(child, recursionIndex, inferenceInfluencedScopeSet);
 
 			final Effort childEffort = child.getEffort();
-			sum += childEffort.getDeclared() > childEffort.getBottomUpValue() ? childEffort.getDeclared() : childEffort.getBottomUpValue();
+			sum += Math.max(childEffort.getDeclared(), childEffort.getBottomUpValue());
 			hasStronglyDefinedChildren &= childEffort.isStronglyDefined();
 		}
 
@@ -82,8 +83,7 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		float available = effort.getTopDownValue() - getStronglyDefinedEffortSum(scope);
 		if (available < 0) available = 0;
 
-		final List<Scope> childrenWithNonDeclaredEfforts = getChildrenWithNonStronglyDefinedEfforts(scope);
-		final float portion = getPortion(available, childrenWithNonDeclaredEfforts);
+		final float portion = getPortion(available, getChildrenWithNonStronglyDefinedEfforts(scope));
 
 		final List<Scope> childrenList = scope.getChildren();
 		for (final Scope child : childrenList) {
@@ -108,8 +108,7 @@ public class EffortInferenceEngine implements InferenceOverScopeEngine {
 		float sum = 0;
 		final List<Scope> children = scope.getChildren();
 		for (final Scope child : children)
-			if (child.getEffort().isStronglyDefined()) sum += (child.getEffort().getDeclared() > child.getEffort().getBottomUpValue()) ? child.getEffort()
-					.getDeclared() : child.getEffort().getBottomUpValue();
+			if (child.getEffort().isStronglyDefined()) sum += Math.max(child.getEffort().getDeclared(), child.getEffort().getBottomUpValue());
 
 		return sum;
 	}

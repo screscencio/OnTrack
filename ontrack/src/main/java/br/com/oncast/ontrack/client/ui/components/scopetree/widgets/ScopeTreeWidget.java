@@ -76,6 +76,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 public class ScopeTreeWidget extends Composite implements HasInstructions, HasFocusHandlers {
 
 	private static ScopeTreeWidgetUiBinder uiBinder = GWT.create(ScopeTreeWidgetUiBinder.class);
+	private static ScopeTreeWidgetMessages messages = GWT.create(ScopeTreeWidgetMessages.class);
 
 	interface ScopeTreeWidgetUiBinder extends UiBinder<Widget, ScopeTreeWidget> {}
 
@@ -150,6 +151,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		handlerRegistrations = new HashSet<HandlerRegistration>();
 
 		initWidget(uiBinder.createAndBindUi(this));
+		deleteButton.setTitle(messages.clearFilter());
+
 		hideTagFilteringInfo();
 
 		tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {

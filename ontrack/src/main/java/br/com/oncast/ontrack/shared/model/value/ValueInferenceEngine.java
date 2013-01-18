@@ -26,6 +26,7 @@ public class ValueInferenceEngine implements InferenceOverScopeEngine {
 		preProcessBottomUp(scope, 2, inferenceInfluencedScopeSet);
 		processTopDown(processBottomUp(scope, inferenceInfluencedScopeSet), inferenceInfluencedScopeSet);
 		processTopDown(scope, inferenceInfluencedScopeSet);
+		processTopDown(scope.isRoot() ? scope : scope.getParent(), inferenceInfluencedScopeSet);
 
 		return inferenceInfluencedScopeSet;
 	}

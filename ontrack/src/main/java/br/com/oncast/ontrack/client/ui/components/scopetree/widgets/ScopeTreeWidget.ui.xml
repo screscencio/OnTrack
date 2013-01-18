@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"	
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
 	<ui:data src="../../progresspanel/widgets/delete_column.png" field="deleteColumnImg" />
@@ -104,9 +104,7 @@
 				<g:cell width="*">
 					<misc:ModelWidgetContainer ui:field="tags" styleName="{style.tags}" />
 				</g:cell>
-				<g:Label ui:field="deleteButton" styleName="{style.deleteButton}" title="Clear filter" >
-					<ui:attribute name='title' description='clear filter'/>
-				</g:Label>
+				<g:Label ui:field="deleteButton" styleName="{style.deleteButton}" />
 			</g:HorizontalPanel>
 			<g:Tree ui:field="tree" />
 			<g:Label ui:field="noScopeLabel" styleName="{style.emptyIndicationLabel}">
