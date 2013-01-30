@@ -66,7 +66,9 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 
 		String selected();
 
-		String highlighted();
+		String targetHighlight();
+
+		String associationHighlight();
 
 		String statusBarOpenImpediment();
 	}
@@ -114,7 +116,8 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private final boolean releaseSpecific;
 
 	private boolean selected = false;
-	private boolean highlighted = false;
+	private boolean targetHighlight = false;
+	private boolean associationHighlight = false;
 
 	public ReleaseScopeWidget(final Scope scope) {
 		this(scope, false, null);
@@ -323,14 +326,19 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	@Override
-	public void setHighlighted(final boolean shouldHighlight) {
-		highlighted = shouldHighlight;
-		panel.setStyleName(style.highlighted(), highlighted);
+	public void setTargetHighlight(final boolean shouldHighlight) {
+		targetHighlight = shouldHighlight;
+		panel.setStyleName(style.targetHighlight(), targetHighlight);
 	}
 
 	@Override
-	public boolean isHighlighted() {
-		return highlighted;
+	public boolean isTargetHighlight() {
+		return targetHighlight;
+	}
+
+	public void setAssociationHighlight(final boolean shouldHighlight) {
+		associationHighlight = shouldHighlight;
+		panel.setStyleName(style.associationHighlight(), associationHighlight);
 	}
 
 	public void setSelected(final boolean shouldSelect) {
@@ -358,4 +366,5 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	private ScopeAssociatedMembersWidget createAssociatedUsersListWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger) {
 		return new ScopeAssociatedMembersWidget(scope, userDragAndDropMananger, 2);
 	}
+
 }

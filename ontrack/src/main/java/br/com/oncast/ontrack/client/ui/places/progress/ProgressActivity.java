@@ -112,33 +112,46 @@ public class ProgressActivity extends AbstractActivity {
 					@Override
 					public void onScopeSelectionRequest(final ScopeSelectionEvent event) {
 						final Scope scope = event.getTargetScope();
-						if (scope == currSelectedScope) return;
 						deselectCurrentScopeWidget(scope);
-						selectScopeWidget(scope);
+						selectScopeWidget(scope, event.getSource() instanceof KanbanScopeWidget);
 					}
 
-					private void selectScopeWidget(final Scope scope) {
-						setScopeSelection(scope, true);
+					private void selectScopeWidget(final Scope scope, final boolean isKanbanScopeWidget) {
+						setScopeSelection(scope, true, isKanbanScopeWidget);
 						view.getDescriptionWidget().setSelected(scope);
 						currSelectedScope = scope;
 					}
 
 					private void deselectCurrentScopeWidget(final Scope scope) {
 						view.getDescriptionWidget().setSelected(null);
-						setScopeSelection(currSelectedScope, false);
+						setScopeSelection(currSelectedScope, false, false);
 					}
 
-					private void setScopeSelection(final Scope scope, final boolean selection) {
+					private void setScopeSelection(final Scope scope, final boolean selection, final boolean isKanbanScopeWidget) {
 						if (scope == null) return;
+
+						final ReleaseScopeWidget releaseScopeWidget = view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(scope);
+						if (releaseScopeWidget != null) {
+							releaseScopeWidget.setSelected(!isKanbanScopeWidget && selection);
+
+							for (final Scope childTask : scope.getAllLeafs()) {
+								final KanbanScopeWidget widget = view.getKanbanPanel().getWidgetFor(childTask);
+								if (widget != null) widget.setAssociationHighlight(selection);
+							}
+						}
 
 						final KanbanScopeWidget kanbanScopeWidget = view.getKanbanPanel().getWidgetFor(scope);
 						if (kanbanScopeWidget != null) {
-							kanbanScopeWidget.setSelected(selection);
-							return;
+							kanbanScopeWidget.setSelected(isKanbanScopeWidget && selection);
+							view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(getStory(scope)).setAssociationHighlight(selection);
 						}
+					}
 
-						final ReleaseScopeWidget releaseScopeWidget = view.getReleaseWidget().getWidgetFor(release).getScopeContainer().getWidgetFor(scope);
-						if (releaseScopeWidget != null) releaseScopeWidget.setSelected(selection);
+					private Scope getStory(Scope scope) {
+						while (scope.getRelease() == null) {
+							scope = scope.getParent();
+						}
+						return scope;
 					}
 				}));
 	}
