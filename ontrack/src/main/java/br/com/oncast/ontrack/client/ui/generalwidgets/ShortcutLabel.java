@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ALT;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_CTRL;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DELETE;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_DOWN;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_LEFT;
@@ -27,8 +28,9 @@ public class ShortcutLabel extends Label {
 	public static final HashMap<String, String> replacementMap = new HashMap<String, String>();
 
 	static {
-		replacementMap.put(getString(KEY_CTRL), PlatformDependantKeys.getControlKey());
-		replacementMap.put(getString(KEY_ALT), PlatformDependantKeys.getAltKey());
+		replacementMap.put(getString(KEY_CTRL), PlatformDependantKey.CONTROL.getCurrentPlatformText());
+		replacementMap.put(getString(KEY_ALT), PlatformDependantKey.ALT.getCurrentPlatformText());
+		replacementMap.put(getString(KEY_DELETE), PlatformDependantKey.DELETE.getCurrentPlatformText());
 		replacementMap.put(getString(KEY_ENTER), "↵");
 		replacementMap.put(getString(KEY_SHIFT), "⇧");
 		replacementMap.put(getString(KEY_UP), "↑");

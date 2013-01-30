@@ -106,7 +106,9 @@
 					<g:stack>
 						<g:customHeader size="30">
 							<g:HorizontalPanel ui:field="notificationsHeader" styleName="{style.stackHeader}">
-								<g:Label ui:field="notificationHeaderLabel" styleName="{style.stackHeaderLabel}">Notitications</g:Label>
+								<g:Label ui:field="notificationHeaderLabel" styleName="{style.stackHeaderLabel}">
+									<ui:msg description="Notifications">Notifications</ui:msg>
+								</g:Label>
 								<g:cell width="100%" verticalAlignment="middle">
 									<g:SimplePanel />
 								</g:cell>
@@ -130,7 +132,9 @@
 					<g:stack>
 						<g:customHeader size="30">
 							<g:HorizontalPanel ui:field="activitiesHeader" styleName="{style.stackHeader}">
-								<g:Label styleName="{style.stackHeaderLabel}">Activities</g:Label>
+								<g:Label styleName="{style.stackHeaderLabel}">
+									<ui:msg description="Activities">Activities</ui:msg>
+								</g:Label>
 								<g:cell width="100%" verticalAlignment="middle">
 									<g:SimplePanel />
 								</g:cell>
