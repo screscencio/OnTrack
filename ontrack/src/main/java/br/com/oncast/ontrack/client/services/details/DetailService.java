@@ -1,11 +1,11 @@
-package br.com.oncast.ontrack.client.services.annotations;
+package br.com.oncast.ontrack.client.services.details;
 
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-public interface AnnotationService {
+public interface DetailService {
 
 	void createAnnotationFor(UUID subjectId, String message, UUID attachmentId);
 

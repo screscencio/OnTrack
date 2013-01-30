@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
+import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.services.user.Selection;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetEffortCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.components.scopetree.widgets.factories.ScopeTreeItemWidgetProgressCommandMenuItemFactory;
@@ -619,7 +619,7 @@ public class ScopeTreeItemWidget extends Composite {
 		return menu;
 	}
 
-	private AnnotationService getAnnotationService() {
+	private DetailService getAnnotationService() {
 		return ClientServiceProvider.getInstance().getAnnotationService();
 	}
 

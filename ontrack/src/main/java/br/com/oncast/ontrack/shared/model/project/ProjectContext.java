@@ -319,4 +319,8 @@ public class ProjectContext implements HasUUID {
 		return project.getTags();
 	}
 
+	public boolean hasDescriptionFor(final UUID subjectId) {
+		return project.hasDescription(subjectId);
+	}
+
 }

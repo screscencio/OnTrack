@@ -6,7 +6,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
-import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
+import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.Shortcut;
@@ -116,7 +116,7 @@ public class CommentsWidget extends Composite {
 		};
 	}
 
-	private AnnotationService getAnnotationService() {
+	private DetailService getAnnotationService() {
 		return getProvider().getAnnotationService();
 	}
 

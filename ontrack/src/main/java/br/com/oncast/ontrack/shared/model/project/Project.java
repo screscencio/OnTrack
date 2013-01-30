@@ -286,4 +286,8 @@ public class Project implements Serializable, HasUUID {
 	public boolean equals(final Object obj) {
 		return UUIDUtils.equals(this, obj);
 	}
+
+	public boolean hasDescription(final UUID subjectId) {
+		return findDescriptionFor(subjectId) != null;
+	}
 }

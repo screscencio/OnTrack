@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 import org.mockito.Mockito;
 
-import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
+import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.services.user.ColorProviderService;
 import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.Metadata;
@@ -55,7 +55,7 @@ public class ClientServiceProviderTestUtils {
 		}
 
 		public ClientServiceProviderTestConfiguration mockAnnotationService() {
-			final AnnotationService service = mock(AnnotationService.class);
+			final DetailService service = mock(DetailService.class);
 			when(mock.getAnnotationService()).thenReturn(service);
 			return this;
 		}

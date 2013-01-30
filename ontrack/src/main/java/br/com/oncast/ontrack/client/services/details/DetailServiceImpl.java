@@ -1,4 +1,4 @@
-package br.com.oncast.ontrack.client.services.annotations;
+package br.com.oncast.ontrack.client.services.details;
 
 import java.util.List;
 import java.util.Set;
@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.action.AnnotationRemoveDeprecationActi
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteAction;
 import br.com.oncast.ontrack.shared.model.action.AnnotationVoteRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ChecklistAction;
+import br.com.oncast.ontrack.shared.model.action.DescriptionAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
@@ -33,7 +34,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.web.bindery.event.shared.EventBus;
 
-public class AnnotationServiceImpl implements AnnotationService {
+public class DetailServiceImpl implements DetailService {
 
 	private final ActionExecutionService actionExecutionService;
 	private final ContextProviderService contextProviderService;
@@ -41,7 +42,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	private ActionExecutionListener actionExecutionListener;
 	private final EventBus eventBus;
 
-	public AnnotationServiceImpl(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
+	public DetailServiceImpl(final ActionExecutionService actionExecutionService, final ContextProviderService contextProviderService,
 			final ApplicationPlaceController applicationPlaceController, final EventBus eventBus) {
 		this.actionExecutionService = actionExecutionService;
 		this.contextProviderService = contextProviderService;
@@ -55,7 +56,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public boolean hasDetails(final UUID subjectId) {
 		final ProjectContext context = contextProviderService.getCurrent();
 
-		return context.hasChecklistsFor(subjectId) || hasAnnotationsFor(subjectId);
+		return context.hasChecklistsFor(subjectId) || context.hasDescriptionFor(subjectId) || hasAnnotationsFor(subjectId);
 	}
 
 	private boolean hasAnnotationsFor(final UUID subjectId) {
@@ -114,7 +115,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 					final ActionContext actionContext,
 					final Set<UUID> inferenceInfluencedScopeSet, final boolean isUserAction) {
 
-				if (action instanceof AnnotationAction || action instanceof ImpedimentAction || action instanceof ChecklistAction) {
+				if (action instanceof AnnotationAction || action instanceof ImpedimentAction || action instanceof ChecklistAction
+						|| action instanceof DescriptionAction) {
 					fireScopeDetailUpdateEvent(action, context);
 				}
 			}

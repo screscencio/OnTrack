@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
+import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.events.ReleaseContainerStateChangeEvent;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartPopup;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
@@ -248,7 +248,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void setupDetails() {
-		final AnnotationService annotationService = ClientServiceProvider.getInstance().getAnnotationService();
+		final DetailService annotationService = ClientServiceProvider.getInstance().getAnnotationService();
 		detailIcon.setVisible(annotationService.hasDetails(release.getId()));
 		impedimentIcon.setVisible(annotationService.hasOpenImpediment(release.getId()));
 	}

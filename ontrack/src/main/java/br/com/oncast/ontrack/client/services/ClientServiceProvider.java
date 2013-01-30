@@ -8,8 +8,6 @@ import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServ
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
-import br.com.oncast.ontrack.client.services.annotations.AnnotationService;
-import br.com.oncast.ontrack.client.services.annotations.AnnotationServiceImpl;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateServiceImpl;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
@@ -21,6 +19,8 @@ import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
+import br.com.oncast.ontrack.client.services.details.DetailService;
+import br.com.oncast.ontrack.client.services.details.DetailServiceImpl;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.instruction.UserGuidService;
@@ -90,7 +90,7 @@ public class ClientServiceProvider {
 	private FeedbackServiceImpl feedbackService;
 	private ClientApplicationStateService clientApplicationStateService;
 
-	private AnnotationService annotationService;
+	private DetailService annotationService;
 	private UserDataService userDataService;
 	private ChecklistService checklistService;
 	private ClientStorageService clientStorageService;
@@ -213,9 +213,9 @@ public class ClientServiceProvider {
 		return clientStorageService;
 	}
 
-	public AnnotationService getAnnotationService() {
+	public DetailService getAnnotationService() {
 		if (annotationService != null) return annotationService;
-		return annotationService = new AnnotationServiceImpl(getActionExecutionService(), getContextProviderService(),
+		return annotationService = new DetailServiceImpl(getActionExecutionService(), getContextProviderService(),
 				getApplicationPlaceController(), getEventBus());
 	}
 
