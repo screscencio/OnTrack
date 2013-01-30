@@ -150,6 +150,10 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 		return progress;
 	}
 
+	public UserRepresentation getOwner() {
+		return progress.getInitialStateAuthor();
+	}
+
 	public Scope findScope(final UUID scopeId) {
 		if (this.id.equals(scopeId)) return this;
 

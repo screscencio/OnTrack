@@ -84,7 +84,12 @@ public class Progress implements Serializable {
 
 	public Progress(final UserRepresentation author, final Date timestamp) {
 		stateManager = new ModelStateManager<ProgressState>(ProgressState.NOT_STARTED, author, timestamp);
+		stateManager.getInitialState().getAuthor();
 		description = "";
+	}
+
+	public UserRepresentation getInitialStateAuthor() {
+		return stateManager.getInitialState().getAuthor();
 	}
 
 	public String getDescription() {

@@ -7,6 +7,7 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
@@ -59,6 +60,9 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	HasText release;
 
 	@UiField(provided = true)
+	UserWidget ownerWidget;
+
+	@UiField(provided = true)
 	ScopeAssociatedMembersWidget associatedUsers;
 
 	@UiField(provided = true)
@@ -70,8 +74,9 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	private ActionExecutionListener actionExecutionListener;
 
 	public ScopeDetailWidget(final Scope scope) {
-		associatedUsers = new ScopeAssociatedMembersWidget(scope, null, 10);
+		associatedUsers = new ScopeAssociatedMembersWidget(scope, null, 10, true);
 		tags = createTagsContainer();
+		ownerWidget = new UserWidget(scope.getOwner());
 		initWidget(uiBinder.createAndBindUi(this));
 		setSubject(scope);
 		associatedUsers.getElement().getParentElement().setAttribute("colspan", "2");

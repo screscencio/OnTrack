@@ -97,6 +97,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 
 	@Override
 	public boolean update() {
+		associatedUsers.setShouldShowDone(!scope.getProgress().isDone());
 		associatedUsers.update();
 
 		final boolean isShowingAssociatedUsers = !scope.getProgress().isDone() && associatedUsers.getWidgetCount() > 0;

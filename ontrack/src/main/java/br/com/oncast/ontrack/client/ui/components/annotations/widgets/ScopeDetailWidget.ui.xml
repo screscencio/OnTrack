@@ -3,6 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:gs="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.scope"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	xmlns:u="urn:import:br.com.oncast.ontrack.client.ui.components.user"
 	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
@@ -21,9 +22,6 @@
 		.details {
 			margin-top: 5px;
 			width: 100%;
-		}
-		
-		.associatedUsersRow {
 		}
 		
 		.detailLabel {
@@ -58,7 +56,7 @@
 		
 		<g:Grid styleName="{style.details}">
 			<g:row>
-				<g:customCell styleName="{style.detailValueCell} {style.associatedUsersRow}" horizontalAlignment="left">
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
 					<gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
 				</g:customCell>
 			</g:row>
@@ -114,6 +112,16 @@
 				</g:customCell>
 				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
 					<g:Label ui:field="release" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="scope owner label">Owner:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}"  horizontalAlignment="left">
+					<u:UserWidget ui:field="ownerWidget" styleName="{style.detailValue}" />
 				</g:customCell>
 			</g:row>
 		 </g:Grid>

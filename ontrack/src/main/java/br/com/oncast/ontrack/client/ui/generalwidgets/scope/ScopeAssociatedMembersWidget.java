@@ -60,13 +60,21 @@ public class ScopeAssociatedMembersWidget extends Composite {
 
 	private Scope scope;
 
+	private boolean shouldShowDone;
+
 	public ScopeAssociatedMembersWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger) {
 		this(scope, userDragAndDropMananger, VISIBLE_USERS_COUNT);
 	}
 
 	public ScopeAssociatedMembersWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger, final int maxVisibleUsers) {
+		this(scope, userDragAndDropMananger, VISIBLE_USERS_COUNT, !scope.getProgress().isDone());
+	}
+
+	public ScopeAssociatedMembersWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger, final int maxVisibleUsers,
+			final boolean shouldShowDone) {
 		this.scope = scope;
 		this.visibleUsersCount = maxVisibleUsers;
+		this.shouldShowDone = shouldShowDone;
 		associatedUsers = createAssociatedUsersListWidget(userDragAndDropMananger);
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -84,8 +92,12 @@ public class ScopeAssociatedMembersWidget extends Composite {
 		setUserListVisible(false);
 	}
 
+	public void setShouldShowDone(final boolean shouldShow) {
+		this.shouldShowDone = shouldShow;
+	}
+
 	public void update() {
-		if (scope.getProgress().isDone()) {
+		if (!shouldShowDone) {
 			this.setVisible(false);
 			return;
 		}

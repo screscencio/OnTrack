@@ -138,6 +138,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	private void updateAssociatedUsers() {
+		associatedUsers.setShouldShowDone(!scope.getProgress().isDone());
 		associatedUsers.update();
 	}
 
