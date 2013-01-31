@@ -41,6 +41,7 @@
 	.scrollpanel {
 		border: 1px solid #9899ad;
 		margin: -1px;
+		max-height: 275px;
 	}
 	
 	.resultContainer {

@@ -29,13 +29,13 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -46,6 +46,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 // TODO refactor this class and FiltableCommandMenu to extract duplicated code
 public class SearchScopeFiltrableCommandMenu extends Composite implements HasFocusHandlers, HasBlurHandlers, HasKeyDownHandlers {
+
+	private static final int FILTER_ACTIVATION_DELAY = 400;
 
 	private static final SearchScopeMenuMessages messages = GWT.create(SearchScopeMenuMessages.class);
 
@@ -80,14 +82,21 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 
 	private boolean mouseLeft = true;
 
-	private final int maxHeight;
+	private String filterText;
+
+	private final Timer typeFilterTimer;
 
 	public SearchScopeFiltrableCommandMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
-		this.maxHeight = 275;
-
 		configureMenu();
 		hide();
+
+		typeFilterTimer = new Timer() {
+			@Override
+			public void run() {
+				filterMenuItens();
+			}
+		};
 	}
 
 	public void setItems(final List<CommandMenuItem> itens) {
@@ -98,8 +107,6 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	public void setOrderedItens(final List<CommandMenuItem> itens) {
 		this.itens = itens;
 		menu.setItems(itens);
-
-		adjustDimentions();
 	}
 
 	public void focus() {
@@ -130,7 +137,8 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 			if (executeSelectedItemCommand()) hide();
 		}
 		else if (!KEY_DOWN_HANDLED_KEYS.contains(event.getNativeKeyCode())) {
-			filterMenuItens();
+			typeFilterTimer.cancel();
+			typeFilterTimer.schedule(FILTER_ACTIVATION_DELAY);
 		}
 
 		eatEvent(event);
@@ -168,16 +176,17 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	}
 
 	private void filterMenuItens() {
-		final String filterText = filterArea.getText().trim();
+		if (filterArea.getText().trim().equals(filterText)) return;
+		filterText = filterArea.getText().trim();
 		result.setVisible(!filterText.isEmpty());
 
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
 		resultInfo.setText(messages.showingMatchingResults(filteredItens.size()));
 
 		menu.setItems(filteredItens);
+
 		menu.selectFirstItem();
 
-		adjustDimentions();
 	}
 
 	private List<CommandMenuItem> getFilteredItens(final String filterText) {
@@ -215,15 +224,6 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 		else if (itemBottom > menuBottom) scrollPanel.setVerticalScrollPosition(itemTop - menuHeight + itemHeight + 3);
 	}
 
-	/*
-	 * IMPORTANT Do not use max_height CSS property directly in the ui.xml file, because the first time this ScrollabeCommandMenu is
-	 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
-	 */
-	private void adjustDimentions() {
-		scrollPanel.setHeight("");
-		if (scrollPanel.getOffsetHeight() > maxHeight) scrollPanel.setHeight(maxHeight + "px");
-	}
-
 	private void eatEvent(final DomEvent<?> event) {
 		event.preventDefault();
 		event.stopPropagation();
@@ -250,16 +250,9 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 		menu.selectFirstItem();
 	}
 
-	@UiHandler("focusPanel")
-	protected void onAttach(final AttachEvent event) {
-		if (!event.isAttached()) return;
-		adjustDimentions();
-	}
-
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
-		if (visible) adjustDimentions();
 	}
 
 	public interface FiltrableCommandMenuListener {

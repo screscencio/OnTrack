@@ -1,9 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.widgets.searchbar;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
@@ -86,12 +84,9 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	private boolean shouldUpdate = true;
 
-	private final Map<Scope, SearchScopeResultCommandMenuItem> scopeMenuCache;
-
 	public SearchBar() {
 		initWidget(uiBinder.createAndBindUi(this));
 		registerScopeTreeColumnVisibilityChangeListeners();
-		scopeMenuCache = new HashMap<Scope, SearchScopeResultCommandMenuItem>();
 	}
 
 	@UiHandler({ "valueColumnActiveIndicatorLabel", "valueColumnInactiveIndicatorLabel" })
@@ -189,14 +184,12 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	private List<CommandMenuItem> asCommandMenuItens(final List<Scope> scopeList) {
 		final List<CommandMenuItem> menuItens = new ArrayList<CommandMenuItem>();
 		for (final Scope scope : scopeList) {
-			if (!scopeMenuCache.containsKey(scope)) scopeMenuCache.put(scope, new SearchScopeResultCommandMenuItem(scope, new Command() {
-
+			menuItens.add(new SearchScopeResultCommandMenuItem(scope, new Command() {
 				@Override
 				public void execute() {
 					selectItem(tree, scope);
 				}
 			}));
-			menuItens.add(scopeMenuCache.get(scope));
 		}
 		return menuItens;
 	}

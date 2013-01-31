@@ -2,13 +2,17 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -42,6 +46,8 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 
 	private final Map<MenuItem, CommandMenuItem> itemsMap;
 
+	private List<CommandMenuItem> previousItems = new ArrayList<CommandMenuItem>();
+
 	@UiFactory
 	protected MenuBar createMenuBar() {
 		return new MenuBar(true);
@@ -69,9 +75,17 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 	public void setItems(final List<CommandMenuItem> items) {
 		menu.clearItems();
 		itemsMap.clear();
-		for (final CommandMenuItem item : items) {
-			addItem(item);
-		}
+		previousItems = items;
+		final Iterator<CommandMenuItem> iterator = items.iterator();
+		Scheduler.get().scheduleIncremental(new RepeatingCommand() {
+			@Override
+			public boolean execute() {
+				if (previousItems != items || !iterator.hasNext()) return false;
+
+				addItem(iterator.next());
+				return true;
+			}
+		});
 	}
 
 	public void setItem(final CommandMenuItem item) {

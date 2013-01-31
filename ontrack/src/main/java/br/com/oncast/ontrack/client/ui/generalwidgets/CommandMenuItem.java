@@ -4,15 +4,15 @@ import com.google.gwt.user.client.ui.MenuItem;
 
 public interface CommandMenuItem extends Comparable<CommandMenuItem> {
 
-	public abstract String getText();
+	String getText();
 
-	public abstract String getValue();
+	String getValue();
 
-	public abstract MenuItem getMenuItem();
+	MenuItem getMenuItem();
 
 	@Override
-	public abstract int compareTo(final CommandMenuItem obj);
+	int compareTo(final CommandMenuItem obj);
 
-	public abstract boolean executeCommand();
+	boolean executeCommand();
 
 }
