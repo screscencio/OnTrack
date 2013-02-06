@@ -1,0 +1,28 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:p="urn:import:br.com.oncast.ontrack.client.ui.places.progress.details"
+	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
+	<ui:style src="../../../style/default.css">
+		.descriptionPanel {
+			-webkit-box-shadow: POPUP_SHADOW;
+		    -moz-box-shadow: POPUP_SHADOW;
+		    box-shadow: POPUP_SHADOW;
+		    border: POPUP_BORDER;
+		}
+		
+		.detailMenu {
+			position: absolute;
+			width: 45px;
+			height: 100%;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<g:HorizontalPanel>
+			<p:ProgressDetailMenuWidget ui:field="progressMenu" styleName="{style.detailMenu}"/>
+			<g:DeckPanel ui:field="deckPanel">
+				<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
+			</g:DeckPanel>
+		</g:HorizontalPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

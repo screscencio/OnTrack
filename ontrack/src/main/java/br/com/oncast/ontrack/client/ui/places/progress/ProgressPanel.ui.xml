@@ -5,7 +5,8 @@
     xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
 	xmlns:pp='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel'
 	xmlns:rw='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets'
-	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'>
+	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'
+	xmlns:d='urn:import:br.com.oncast.ontrack.client.ui.places.progress.details'>
 
     <ui:data field="bgPixelImg" src="../../semitransparentPixel.png" />
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.progress.ProgressPanel.ProgressPanelStyle">
@@ -54,7 +55,7 @@
 		    border: POPUP_BORDER;
 		}
 		
-		.descriptionPanel {
+		.detailPanel {
 			position: absolute;
 			top: 0px;
 			left: 0px;
@@ -97,7 +98,7 @@
 		</g:SimplePanel>
 		<g:HTMLPanel styleName="{style.kanbanContainer}">
 			<chart:ReleaseChart ui:field="chart" styleName="{style.releaseChart}"/>
-			<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
+			<d:ProgressDetailPanel ui:field="detailWidget" styleName="{style.detailPanel}"/>
 			<pp:KanbanPanel ui:field="kanbanPanel" addStyleNames="{style.kanbanPanel}" />
 		</g:HTMLPanel>
    </layout:ApplicationMenuAndWidgetContainer>

@@ -15,6 +15,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DragAndDropManager;
 import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationMenuAndWidgetContainer;
 import br.com.oncast.ontrack.client.ui.places.planning.dnd.UserAssociationDragHandler;
+import br.com.oncast.ontrack.client.ui.places.progress.details.ProgressDetailPanel;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
@@ -44,7 +45,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 	protected ApplicationMenuAndWidgetContainer rootPanel;
 
 	@UiField(provided = true)
-	protected DescriptionWidget descriptionWidget;
+	protected ProgressDetailPanel detailWidget;
 
 	@UiField(provided = true)
 	protected ReleasePanelWidget releaseWidget;
@@ -74,7 +75,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 		members = new DraggableMembersListWidget(userDragAndDropManager);
 		releaseWidget = new ReleasePanelWidget(interactionHandler, userDragAndDropManager, userDropControllerFactory, true);
 		kanbanPanel = new KanbanPanel(kanban, release, userDragAndDropManager, userDropControllerFactory);
-		descriptionWidget = new DescriptionWidget(release);
+		detailWidget = new ProgressDetailPanel(release);
 
 		chart = new ReleaseChart(release, false);
 
@@ -114,7 +115,7 @@ public class ProgressPanel extends Composite implements ProgressView {
 
 	@Override
 	public DescriptionWidget getDescriptionWidget() {
-		return descriptionWidget;
+		return detailWidget.getDescriptionWidget();
 	}
 
 	@Override

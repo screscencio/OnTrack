@@ -9,7 +9,7 @@
 		.rootPanel {
 			position: absolute;
 			top: 0px;
-			left: 0px;
+			left: 45px;
 			right: 0px;
 			bottom: 0px;
 	
