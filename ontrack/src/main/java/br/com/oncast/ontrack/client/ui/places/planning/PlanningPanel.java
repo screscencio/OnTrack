@@ -161,6 +161,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 	public void toggleReleasePanel() {
 		final boolean wasVisible = releasePanel.isVisible();
 		releasePanel.setVisible(!wasVisible);
+		releaseScroll.setVisible(!wasVisible);
 		members.setVisible(!wasVisible);
 		toggleReleaseBtn.setStyleName(style.showReleaseIcon(), wasVisible);
 		mainContainer.setStyleName(style.mainContainerExpanded(), wasVisible);
