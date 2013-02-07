@@ -1,11 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree.interaction;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionRequestHandler;
+import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTree;
 import br.com.oncast.ontrack.client.ui.components.scopetree.ScopeTreeItem;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalAction;
 import br.com.oncast.ontrack.client.ui.components.scopetree.actions.internal.InternalActionExecutionRequestHandler;
@@ -23,10 +20,8 @@ import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareValueAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
-import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInteractionHandler {
@@ -90,6 +85,11 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 	private ActionExecutionRequestHandler applicationActionHandler;
 	private ScopeTreeWidget tree;
 	private ProjectContext context;
+	private final ScopeTree scopeTree;
+
+	public ScopeTreeInteractionHandler(final ScopeTree scopeTree) {
+		this.scopeTree = scopeTree;
+	}
 
 	@Override
 	public Scope getSelectedScope() {
@@ -186,62 +186,14 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 		applicationActionHandler.onUserActionExecutionRequest(new ScopeDeclareValueAction(scopeId, hasDeclaredValue, declaredValue));
 	}
 
-	private List<ScopeTreeItem> filteredItems = new ArrayList<ScopeTreeItem>();
-
 	@Override
 	public void filterByTag(final UUID filteredTagId) {
-		clearTagFilter();
-
-		final HashSet<Scope> neededScopes = new HashSet<Scope>();
-		final HashSet<Tag> tags = new HashSet<Tag>();
-		for (final TagAssociationMetadata association : context.<TagAssociationMetadata> getAllMetadata(TagAssociationMetadata.getType())) {
-			if (!association.getTag().getId().equals(filteredTagId)) continue;
-			tags.add(association.getTag());
-
-			final Scope scope = (Scope) association.getSubject();
-
-			addAncestors(neededScopes, scope);
-			tree.findAndMountScopeTreeItem(scope).setHierarchicalState(true).setState(hasTaggedDescendant(neededScopes, scope));
-			addDescendants(neededScopes, scope);
-		}
-
-		filteredItems = tree.getItem(0).filter(neededScopes);
-		tree.showTagFilteringInfo(tags);
-	}
-
-	private boolean hasTaggedDescendant(final HashSet<Scope> neededScopes, final Scope scope) {
-		boolean hasTaggedChild = false;
-		for (final Scope child : scope.getChildren()) {
-			if (neededScopes.contains(child)) {
-				hasTaggedChild = true;
-				break;
-			}
-		}
-		return hasTaggedChild;
-	}
-
-	private void addDescendants(final HashSet<Scope> neededScopes, final Scope scope) {
-		for (final Scope child : scope.getChildren()) {
-			neededScopes.add(child);
-			addDescendants(neededScopes, child);
-		}
+		scopeTree.filterByTag(filteredTagId);
 	}
 
 	@Override
 	public void clearTagFilter() {
-		for (final ScopeTreeItem item : filteredItems) {
-			item.setVisible(true);
-		}
-		filteredItems.clear();
-		tree.hideTagFilteringInfo();
-	}
-
-	private void addAncestors(final HashSet<Scope> showingScopes, final Scope scope) {
-		if (!scope.isRoot()) addAncestors(showingScopes, scope.getParent());
-
-		showingScopes.add(scope);
-		return;
-
+		scopeTree.clearTagFilter();
 	}
 
 	@Override
@@ -256,11 +208,6 @@ public final class ScopeTreeInteractionHandler implements ScopeTreeWidgetInterac
 
 	public void setContext(final ProjectContext context) {
 		this.context = context;
-	}
-
-	@Override
-	public void focusTree() {
-		tree.setFocus(true);
 	}
 
 	@Override

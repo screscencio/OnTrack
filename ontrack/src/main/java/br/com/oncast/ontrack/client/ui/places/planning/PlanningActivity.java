@@ -87,7 +87,7 @@ public class PlanningActivity extends AbstractActivity {
 		registrations.add(registerScopeSelectionEventHandler());
 		registrations.add(registerScopeImpedimentUpdateEventHandler());
 
-		if (filteredTagId != null) view.getScopeTree().getScopeTreeInternalActionHandler().filterByTag(filteredTagId);
+		if (filteredTagId != null) view.getScopeTree().filterByTag(filteredTagId);
 
 		SERVICE_PROVIDER.getClientApplicationStateService().restore(selectedScopeId);
 		SERVICE_PROVIDER.getClientApplicationStateService().startRecording();

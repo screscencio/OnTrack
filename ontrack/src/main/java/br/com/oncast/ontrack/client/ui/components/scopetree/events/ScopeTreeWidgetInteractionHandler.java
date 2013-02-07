@@ -20,8 +20,6 @@ public interface ScopeTreeWidgetInteractionHandler extends
 
 	void assureConfigured();
 
-	void focusTree();
-
 	void onUserActionExecutionRequest(ModelAction action);
 
 	Scope getVisibleScopeAbove(Scope scope);
