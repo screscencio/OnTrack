@@ -76,7 +76,16 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 		menu.clearItems();
 		itemsMap.clear();
 		previousItems = items;
+
 		final Iterator<CommandMenuItem> iterator = items.iterator();
+
+		// TODO remove this by using a callback
+		// IMPORTANT Should try to add the first two items so the filtrableCommandMenu can select it.
+		for (int i = 0; i < 2; i++) {
+			if (!iterator.hasNext()) return;
+			addItem(iterator.next());
+		}
+
 		Scheduler.get().scheduleIncremental(new RepeatingCommand() {
 			@Override
 			public boolean execute() {
