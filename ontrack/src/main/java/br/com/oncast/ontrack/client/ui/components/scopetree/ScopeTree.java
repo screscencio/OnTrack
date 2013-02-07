@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.components.scopetree;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
@@ -19,8 +21,10 @@ import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.shared.model.ModelBeanNotFoundException;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.metadata.TagAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -37,8 +41,12 @@ public class ScopeTree implements Component {
 
 	private final ScopeTreeInstructionGuide instructionGuide;
 
+	private List<ScopeTreeItem> filteredItems = new ArrayList<ScopeTreeItem>();
+
+	private ProjectContext context;
+
 	public ScopeTree() {
-		treeInteractionHandler = new ScopeTreeInteractionHandler();
+		treeInteractionHandler = new ScopeTreeInteractionHandler(this);
 		tree = new ScopeTreeWidget(treeInteractionHandler);
 
 		ShortcutService.register(tree, treeInteractionHandler, ScopeTreeShortcutMappings.values());
@@ -84,6 +92,7 @@ public class ScopeTree implements Component {
 	}
 
 	public void setContext(final ProjectContext context) {
+		this.context = context;
 		treeInteractionHandler.setContext(context);
 		tree.clear();
 		final ScopeTreeItem rootItem = new ScopeTreeItem(context.getProjectScope());
@@ -113,4 +122,45 @@ public class ScopeTree implements Component {
 		return treeInteractionHandler;
 	}
 
+	public void filterByTag(final UUID filteredTagId) {
+		final ScopeTreeItem selectedItem = tree.getSelectedItem();
+		clearTagFilter();
+
+		final HashSet<Scope> neededScopes = new HashSet<Scope>();
+		final HashSet<Tag> tags = new HashSet<Tag>();
+		for (final TagAssociationMetadata association : context.<TagAssociationMetadata> getAllMetadata(TagAssociationMetadata.getType())) {
+			if (!association.getTag().getId().equals(filteredTagId)) continue;
+			tags.add(association.getTag());
+
+			final Scope scope = (Scope) association.getSubject();
+
+			addAncestors(neededScopes, scope);
+			tree.findAndMountScopeTreeItem(scope).setHierarchicalState(true);
+			addDescendants(neededScopes, scope);
+		}
+
+		filteredItems = tree.getItem(0).filter(neededScopes);
+		tree.showTagFilteringInfo(tags);
+		if (selectedItem != null) selectedItem.select();
+	}
+
+	public void clearTagFilter() {
+		for (final ScopeTreeItem item : filteredItems) {
+			item.setVisible(true);
+		}
+		filteredItems.clear();
+		tree.hideTagFilteringInfo();
+	}
+
+	private void addDescendants(final HashSet<Scope> neededScopes, final Scope scope) {
+		for (final Scope child : scope.getChildren()) {
+			neededScopes.add(child);
+			addDescendants(neededScopes, child);
+		}
+	}
+
+	private void addAncestors(final HashSet<Scope> showingScopes, final Scope scope) {
+		if (!scope.isRoot()) addAncestors(showingScopes, scope.getParent());
+		showingScopes.add(scope);
+	}
 }

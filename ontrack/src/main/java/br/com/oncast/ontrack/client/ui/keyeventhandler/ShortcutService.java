@@ -77,7 +77,7 @@ public class ShortcutService {
 				registeredShortcuts.removeAll(Arrays.asList(mappings));
 
 				try {
-					JQuery.jquery(w).unbindKeyDown(handler);
+					jquery.unbindKeyDown(handler);
 				}
 				catch (final Exception e) {}
 			}
