@@ -4,7 +4,10 @@
 	xmlns:p="urn:import:br.com.oncast.ontrack.client.ui.places.progress.details"
 	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
 	
-	<ui:image field="description" src="../../../generalwidgets/black_check.png" />
+	<ui:image field="description" src="../../../generalwidgets/descrip-preto.png" />
+	<ui:image field="checklist" src="../../../generalwidgets/check-preto.png" />
+	<ui:image field="addTask" src="../../../generalwidgets/postit-preto.png" />
+	
 	<ui:style src="../../../style/default.css">
 	
 		.root {
@@ -38,6 +41,17 @@
 		
 		@sprite .descriptionTab {
 			gwt-image: 'description';
+		}
+		
+		@sprite .checklistTab {
+			gwt-image: 'checklist';
+		}
+		
+		@sprite .addTask {
+			gwt-image: 'addTask';
+		}
+		
+		.tabButton {
 			width: 40px;
 			height: 40px;
 			border: none;
@@ -51,10 +65,10 @@
 	</ui:style>
 	<g:HTMLPanel styleName="{style.root}">
 		<p:ProgressDetailMenuWidget ui:field="progressMenu" styleName="{style.detailMenu}">
-			<g:Button styleName="{style.descriptionTab}"/>
-			<g:Button styleName="{style.descriptionTab}"/>
-			<g:Button styleName="{style.descriptionTab}"/>
-			<g:Button styleName="{style.descriptionTab}"/>
+			<g:Button styleName="{style.tabButton} {style.descriptionTab}"/>
+			<g:Button styleName="{style.tabButton} {style.checklistTab}"/>
+			<g:Button styleName="{style.tabButton} {style.addTask}"/>
+			<g:Button styleName="{style.tabButton} {style.descriptionTab}"/>
 		</p:ProgressDetailMenuWidget>
 		<g:DeckPanel ui:field="deckPanel" styleName="{style.detailDeck}">
 			<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
