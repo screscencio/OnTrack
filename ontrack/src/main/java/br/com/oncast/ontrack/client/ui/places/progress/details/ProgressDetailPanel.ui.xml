@@ -3,26 +3,64 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:p="urn:import:br.com.oncast.ontrack.client.ui.places.progress.details"
 	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
+	
+	<ui:image field="description" src="../../../generalwidgets/black_check.png" />
 	<ui:style src="../../../style/default.css">
-		.descriptionPanel {
-			-webkit-box-shadow: POPUP_SHADOW;
-		    -moz-box-shadow: POPUP_SHADOW;
-		    box-shadow: POPUP_SHADOW;
-		    border: POPUP_BORDER;
+	
+		.root {
+			position: relative;
 		}
 		
 		.detailMenu {
 			position: absolute;
-			width: 45px;
-			height: 100%;
+			top: 0px;
+			left: 0px;
+			width: 40px;
+			bottom: 0px;
+			
+			box-shadow: inset 0px 0px 10px #555;
+			overflow: hidden;
 		}
+	
+		.detailDeck {
+			position: absolute;
+			top: 0px;
+			left: 40px;
+			right: 0px;
+			bottom: 0px;
+		}
+	
+		.descriptionPanel {
+			background-color: white;
+			overflow: auto;
+			overflow-x: hidden; 
+		}
+		
+		@sprite .descriptionTab {
+			gwt-image: 'description';
+			width: 40px;
+			height: 40px;
+			border: none;
+			
+			background-size: 40px;
+			
+			margin-bottom: 1px;
+			box-shadow: inset 0px 0px 10px #555
+		}
+		
 	</ui:style>
-	<g:HTMLPanel>
-		<g:HorizontalPanel>
-			<p:ProgressDetailMenuWidget ui:field="progressMenu" styleName="{style.detailMenu}"/>
-			<g:DeckPanel ui:field="deckPanel">
-				<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
-			</g:DeckPanel>
-		</g:HorizontalPanel>
+	<g:HTMLPanel styleName="{style.root}">
+		<p:ProgressDetailMenuWidget ui:field="progressMenu" styleName="{style.detailMenu}">
+			<g:Button styleName="{style.descriptionTab}"/>
+			<g:Button styleName="{style.descriptionTab}"/>
+			<g:Button styleName="{style.descriptionTab}"/>
+			<g:Button styleName="{style.descriptionTab}"/>
+		</p:ProgressDetailMenuWidget>
+		<g:DeckPanel ui:field="deckPanel" styleName="{style.detailDeck}">
+			<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
+			<gw:CheckListWidget ui:field="checklistWidget" styleName="{style.descriptionPanel}"/>
+			<gw:AddTaskWidget ui:field="addTaskWidget" styleName="{style.descriptionPanel}"/>
+			<gw:RemoveTaskWidget ui:field="removeTaskWidget" styleName="{style.descriptionPanel}"/>
+		</g:DeckPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -20,6 +20,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -27,7 +28,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasKeyUpHandlers, HasWidgets, HasText, HasBlurHandlers, HasFocusHandlers,
-		HasKeyPressHandlers {
+		HasKeyPressHandlers, Focusable {
 
 	private static PaddedTextBoxUiBinder uiBinder = GWT.create(PaddedTextBoxUiBinder.class);
 
@@ -75,6 +76,7 @@ public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasK
 		textBox.setCursorPos(pos);
 	}
 
+	@Override
 	public void setFocus(final boolean focused) {
 		textBox.setFocus(focused);
 	}
@@ -124,6 +126,21 @@ public class PaddedTextBox extends Composite implements HasKeyDownHandlers, HasK
 	@Override
 	public HandlerRegistration addKeyPressHandler(final KeyPressHandler handler) {
 		return textBox.addKeyPressHandler(handler);
+	}
+
+	@Override
+	public int getTabIndex() {
+		return textBox.getTabIndex();
+	}
+
+	@Override
+	public void setAccessKey(final char key) {
+		textBox.setAccessKey(key);
+	}
+
+	@Override
+	public void setTabIndex(final int index) {
+		textBox.setTabIndex(index);
 	}
 
 }

@@ -125,6 +125,10 @@ public class Scope implements Serializable, HasMetadata, HasUUID {
 		return parent == null;
 	}
 
+	public boolean isStory() {
+		return getRelease() != null;
+	}
+
 	public Scope getChild(final int index) {
 		return childrenList.get(index);
 	}

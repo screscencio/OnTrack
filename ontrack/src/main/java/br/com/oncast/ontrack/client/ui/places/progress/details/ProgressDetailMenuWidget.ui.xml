@@ -1,17 +1,26 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style>
+	
+	<ui:style type="br.com.oncast.ontrack.client.ui.places.progress.details.ProgressDetailMenuWidget.ProgressDetailMenuStyle">
+	
 		.menuOption {
 			height: 40px;
 			width: 40px;
+			cursor: pointer;
+		}
+		
+		.menuOption:disabled {
+			opacity: 0.3;
+			cursor: default;
+		}
+		
+		.menuOptionActive {
+			background-color: white !important;
+			box-shadow: none !important;
 		}
 		
 	</ui:style>
-	<g:HTMLPanel>
-		<g:Button ui:field="descriptionButton" styleName="{style.menuOption}">D</g:Button>
-		<g:Button ui:field="checklistButton" styleName="{style.menuOption}">C</g:Button>
-		<g:Button ui:field="addTaskButton" styleName="{style.menuOption}">+</g:Button>
-		<g:Button ui:field="removeTaskButton" styleName="{style.menuOption}">-</g:Button>
-	</g:HTMLPanel>
+	
+	<g:HTMLPanel ui:field="container"/>
 </ui:UiBinder> 
