@@ -150,7 +150,7 @@ public class ScopeTree implements Component {
 				tree.hideFilteringIndicator();
 				if (selectedItem != null) selectedItem.select();
 			}
-		}.schedule(10);
+		}.schedule(50);
 	}
 
 	public void clearTagFilter() {

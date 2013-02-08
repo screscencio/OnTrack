@@ -3,12 +3,12 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:style>
+	<ui:style src="../style/default.css">
 		
 		.panel {
 			position: absolute;
 			border: 1px solid #aaa;
-			background-color: #d3d3d3;
+			background-color: COLOR_GRAY_LIGHTEST;
 			padding: 5px;
 		}
 		

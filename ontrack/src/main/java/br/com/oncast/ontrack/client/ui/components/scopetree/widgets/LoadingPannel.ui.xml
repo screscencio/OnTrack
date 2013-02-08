@@ -1,6 +1,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:style src="../../../style/default.css">
 	
@@ -27,7 +30,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.loadingIndicatorPanel}">
-		<g:Label styleName="{style.loadingLabel}">Filtering...</g:Label>
+		<g:Label styleName="{style.loadingLabel}"><ui:msg description="Scope tree filtering message">Filtering</ui:msg>...</g:Label>
 	</g:HTMLPanel>
 	
 </ui:UiBinder>

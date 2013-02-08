@@ -104,7 +104,7 @@
 			bottom: 0px;
 			
 			background-color: white;
-			border-right: 1px solid #d3d3d3;
+			border-right: 1px solid COLOR_GRAY_LIGHTEST;
 		}
 				
 		.rightPanel {

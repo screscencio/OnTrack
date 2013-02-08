@@ -28,7 +28,7 @@
 			
 			background-color: white;
 			padding: 1px 1px 0px 0px;
-			border: 1px solid #d3d3d3;
+			border: 1px solid COLOR_GRAY_LIGHTEST;
 		}
 		
 		.helpText {

@@ -1,9 +1,12 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
+	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
-	<ui:image field="submitIcon" src="black_check.png" />
+	<ui:image field="submitIcon" src="ok-black.png" />
 	<ui:style src="../style/default.css">
 		
 		.root {
@@ -34,13 +37,17 @@
 		@sprite .submit {
 			gwt-image: 'submitIcon';
 			
-			background-size: 30px 30px;
-			background-position: center;
+			background-size: 20px;
+			background-position: 6px center;
 			
 			width: 120px;
 			height: 30px;
 			
 			background-color: #44AB7F;
+
+			padding-left: 16px;
+			font-size: FONT_SIZE_MEDIUM;
+			letter-spacing: 1px;
 		}
 		
 	</ui:style>
@@ -50,7 +57,7 @@
 			<g:Label ui:field="label" styleName="{style.subjectTitle}" />
 			<gw:PaddedTextBox ui:field="taskDescription"/>
 			<g:HTMLPanel styleName="{style.buttonContainer}">
-				<g:Button ui:field="submit" styleName="{style.submit} {style.hoverButton}"/>
+				<g:Button ui:field="submit" styleName="{style.submit} {style.hoverButton}"><ui:msg description="Add task button">Add</ui:msg></g:Button>
 			</g:HTMLPanel>
 		</g:HTMLPanel>
 	</g:SimplePanel>

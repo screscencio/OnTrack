@@ -37,7 +37,7 @@
 		@sprite .submit {
 			gwt-image: 'submitIcon';
 			
-			background-size: 20px 20px;
+			background-size: 17px;
 			background-position: 6px center;
 			
 			width: 120px;
@@ -45,8 +45,9 @@
 			
 			background-color: #F0542D;
 			
-			font-size: 11pt;
-			padding-left: 15px;
+			padding-left: 16px;
+			font-size: FONT_SIZE_MEDIUM;
+			letter-spacing: 1px;
 		}
 		
 	</ui:style>

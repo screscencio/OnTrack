@@ -4,9 +4,10 @@
 	xmlns:p="urn:import:br.com.oncast.ontrack.client.ui.places.progress.details"
 	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
 	
-	<ui:image field="description" src="../../../generalwidgets/descrip-preto.png" />
-	<ui:image field="checklist" src="../../../generalwidgets/check-preto.png" />
-	<ui:image field="addTask" src="../../../generalwidgets/postit-preto.png" />
+	<ui:image field="description" src="../../../generalwidgets/descrip-black.png" />
+	<ui:image field="checklist" src="../../../generalwidgets/check-black.png" />
+	<ui:image field="addTask" src="../../../generalwidgets/postit-black.png" />
+	<ui:image field="removeTask" src="../../../generalwidgets/trash-black.png" />
 	
 	<ui:style src="../../../style/default.css">
 	
@@ -21,7 +22,8 @@
 			width: 40px;
 			bottom: 0px;
 			
-			box-shadow: inset 0px 0px 10px #555;
+			box-shadow: inset 0px 0px 10px #999;
+			background: COLOR_GRAY_LIGHTEST;
 			overflow: hidden;
 		}
 	
@@ -47,8 +49,13 @@
 			gwt-image: 'checklist';
 		}
 		
-		@sprite .addTask {
+		@sprite .addTaskTab {
 			gwt-image: 'addTask';
+		}
+		
+		@sprite .removeTaskTab {
+			gwt-image: 'removeTask';
+			background-size: 20px !important;
 		}
 		
 		.tabButton {
@@ -56,10 +63,11 @@
 			height: 40px;
 			border: none;
 			
-			background-size: 40px;
+			background-size: 30px;
+			background-position: center;
 			
 			margin-bottom: 1px;
-			box-shadow: inset 0px 0px 10px #555
+			box-shadow: inset 0px 0px 10px #999
 		}
 		
 	</ui:style>
@@ -67,8 +75,8 @@
 		<p:ProgressDetailMenuWidget ui:field="progressMenu" styleName="{style.detailMenu}">
 			<g:Button styleName="{style.tabButton} {style.descriptionTab}"/>
 			<g:Button styleName="{style.tabButton} {style.checklistTab}"/>
-			<g:Button styleName="{style.tabButton} {style.addTask}"/>
-			<g:Button styleName="{style.tabButton} {style.descriptionTab}"/>
+			<g:Button styleName="{style.tabButton} {style.addTaskTab}"/>
+			<g:Button styleName="{style.tabButton} {style.removeTaskTab}"/>
 		</p:ProgressDetailMenuWidget>
 		<g:DeckPanel ui:field="deckPanel" styleName="{style.detailDeck}">
 			<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
