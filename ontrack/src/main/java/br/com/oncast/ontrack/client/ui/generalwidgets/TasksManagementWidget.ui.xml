@@ -6,7 +6,8 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 	
-	<ui:image field="submitIcon" src="../components/scopetree/helper/remove_pop_btn.png" />
+	<ui:image field="addIcon" src="ok-white.png" />
+	<ui:image field="removeIcon" src="trash-white.png" />
 	<ui:style src="../style/default.css">
 		
 		.root {
@@ -28,37 +29,62 @@
 			margin-bottom: 5px;
 		}
 		
-		.buttonContainer {
+		.tasksListContainer {
 			position: absolute;
-			right: 10px;
-			bottom: 10px;
+			top: 78px;
+			left: 5px;
+			right: 40px;
+			bottom: 5px;
+			
+			overflow-x: hidden;
+			overflow-y: auto;
+			
+			border: BORDER_DEFAULT;
 		}
 		
-		@sprite .submit {
-			gwt-image: 'submitIcon';
+		@sprite .addTask {
+			gwt-image: 'addIcon';
+			background-color: #44ab7f;
 			
-			background-size: 17px;
-			background-position: 6px center;
+			position: absolute;
+			top: 78px;
+			right: 5px;
+		}
+		
+		@sprite .removeTask {
+			gwt-image: 'removeIcon';
+			background-color: #C7613F;
+			background-size: 24px;
+
+			position: absolute;
+			bottom: 5px;
+			right: 5px;
+		}
+		
+		.button {
+			background-size: 20px;
+			background-position: center;
 			
-			width: 120px;
+			width: 30px;
 			height: 30px;
 			
-			background-color: #F0542D;
-			
-			padding-left: 16px;
-			font-size: FONT_SIZE_MEDIUM;
-			letter-spacing: 1px;
+			display: block;
 		}
 		
 	</ui:style>
 	
-	<g:SimplePanel>
+	<g:FocusPanel ui:field="focusPanel">
 		<g:HTMLPanel styleName="{style.root}">
 			<g:Label ui:field="label" styleName="{style.subjectTitle}" />
-			<g:HTMLPanel styleName="{style.buttonContainer}">
-				<g:Button ui:field="submit" styleName="{style.submit} {style.hoverButton}"><ui:msg description="Remove task button">Remove</ui:msg></g:Button>
-			</g:HTMLPanel>
+
+			<gw:PaddedTextBox ui:field="newTaskDescription"/>
+			<g:FocusPanel ui:field="taskListScroll" styleName="{style.tasksListContainer}">
+				<gw:ModelWidgetContainer ui:field="tasksList"/>
+			</g:FocusPanel>
+			
+			<g:Button ui:field="addTask" styleName="{style.addTask} {style.button} {style.hoverButton}"/>
+			<g:Button ui:field="removeTask" styleName="{style.removeTask} {style.button} {style.hoverButton}"/>
 		</g:HTMLPanel>
-	</g:SimplePanel>
+	</g:FocusPanel>
 		
 </ui:UiBinder> 

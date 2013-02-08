@@ -136,4 +136,8 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 		@Override
 		public void onUpdateComplete(final boolean hasChanged) {}
 	}
+
+	public int getWidgetIndex(final E widget) {
+		return cellContainer.getWidgetIndex(widget);
+	}
 }

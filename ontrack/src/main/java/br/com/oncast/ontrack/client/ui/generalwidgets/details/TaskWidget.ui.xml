@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.details.TaskWidget.TaskWidgetStyle">
+	
+		.container {
+			border-bottom: 1px solid COLOR_GRAY_LIGHT;
+			padding: 10px 5px;
+		}
+		
+		.targetHighlight {
+			background: COLOR_YELLOW;
+		}
+
+		.description {}
+
+	</ui:style>
+
+	<g:FocusPanel ui:field="focusPanel">
+		<g:HTMLPanel ui:field="container" styleName="{style.container}">
+			<g:Label ui:field="description" styleName="{style.description}" />
+		</g:HTMLPanel>
+	</g:FocusPanel>
+	
+</ui:UiBinder> 

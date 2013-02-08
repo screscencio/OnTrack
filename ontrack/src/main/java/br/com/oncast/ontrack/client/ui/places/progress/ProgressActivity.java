@@ -181,6 +181,7 @@ public class ProgressActivity extends AbstractActivity {
 
 	protected void updateViewData() {
 		view.getKanbanPanel().update(projectContext.getKanban(release));
+		view.getProgressDetailWidget().update();
 	}
 
 	private void exitToPlanningPlace() {

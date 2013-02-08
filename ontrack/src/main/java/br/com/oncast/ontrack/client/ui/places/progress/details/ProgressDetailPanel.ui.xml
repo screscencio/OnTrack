@@ -4,10 +4,9 @@
 	xmlns:p="urn:import:br.com.oncast.ontrack.client.ui.places.progress.details"
 	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
 	
-	<ui:image field="description" src="../../../generalwidgets/descrip-black.png" />
-	<ui:image field="checklist" src="../../../generalwidgets/check-black.png" />
-	<ui:image field="addTask" src="../../../generalwidgets/postit-black.png" />
-	<ui:image field="removeTask" src="../../../generalwidgets/trash-black.png" />
+	<ui:image field="description" src="../../../generalwidgets/description-grey.png" />
+	<ui:image field="checklist" src="../../../generalwidgets/check-grey.png" />
+	<ui:image field="tasks" src="../../../generalwidgets/postit-grey.png" />
 	
 	<ui:style src="../../../style/default.css">
 	
@@ -49,13 +48,8 @@
 			gwt-image: 'checklist';
 		}
 		
-		@sprite .addTaskTab {
-			gwt-image: 'addTask';
-		}
-		
-		@sprite .removeTaskTab {
-			gwt-image: 'removeTask';
-			background-size: 20px !important;
+		@sprite .tasksTab {
+			gwt-image: 'tasks';
 		}
 		
 		.tabButton {
@@ -75,14 +69,12 @@
 		<p:ProgressDetailMenuWidget ui:field="progressMenu" styleName="{style.detailMenu}">
 			<g:Button styleName="{style.tabButton} {style.descriptionTab}"/>
 			<g:Button styleName="{style.tabButton} {style.checklistTab}"/>
-			<g:Button styleName="{style.tabButton} {style.addTaskTab}"/>
-			<g:Button styleName="{style.tabButton} {style.removeTaskTab}"/>
+			<g:Button styleName="{style.tabButton} {style.tasksTab}"/>
 		</p:ProgressDetailMenuWidget>
 		<g:DeckPanel ui:field="deckPanel" styleName="{style.detailDeck}">
 			<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
 			<gw:CheckListWidget ui:field="checklistWidget" styleName="{style.descriptionPanel}"/>
-			<gw:AddTaskWidget ui:field="addTaskWidget" styleName="{style.descriptionPanel}"/>
-			<gw:RemoveTaskWidget ui:field="removeTaskWidget" styleName="{style.descriptionPanel}"/>
+			<gw:TasksManagementWidget ui:field="tasksWidget" styleName="{style.descriptionPanel}"/>
 		</g:DeckPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

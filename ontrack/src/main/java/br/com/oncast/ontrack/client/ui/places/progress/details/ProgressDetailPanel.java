@@ -1,9 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.progress.details;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.AddTaskWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CheckListWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.DescriptionWidget;
-import br.com.oncast.ontrack.client.ui.generalwidgets.RemoveTaskWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.TasksManagementWidget;
 import br.com.oncast.ontrack.client.ui.places.progress.details.ProgressDetailMenuWidget.ProgressDetailMenuListener;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -27,10 +26,7 @@ public class ProgressDetailPanel extends Composite {
 	protected CheckListWidget checklistWidget;
 
 	@UiField(provided = true)
-	protected AddTaskWidget addTaskWidget;
-
-	@UiField(provided = true)
-	protected RemoveTaskWidget removeTaskWidget;
+	protected TasksManagementWidget tasksWidget;
 
 	@UiField
 	protected DeckPanel deckPanel;
@@ -48,17 +44,14 @@ public class ProgressDetailPanel extends Composite {
 		deckPanel.showWidget(0);
 
 		progressMenu.setEnabled(2, false);
-		progressMenu.setEnabled(3, false);
 	}
 
 	public void setSelected(final Scope scope) {
 		descriptionWidget.setSelected(scope);
 		checklistWidget.setSelected(scope);
-		addTaskWidget.setSelected(scope);
-		removeTaskWidget.setSelected(scope);
+		tasksWidget.setSelected(scope);
 
-		progressMenu.setEnabled(2, scope != null);
-		progressMenu.setEnabled(3, scope != null && !scope.isStory());
+		progressMenu.setEnabled(2, scope != null && scope.isStory());
 	}
 
 	private ProgressDetailMenuListener getProgressMenuListener() {
@@ -75,10 +68,13 @@ public class ProgressDetailPanel extends Composite {
 	private void initializeComponents(final Release release) {
 		descriptionWidget = new DescriptionWidget(release);
 		checklistWidget = new CheckListWidget(release);
-		addTaskWidget = new AddTaskWidget();
-		removeTaskWidget = new RemoveTaskWidget();
+		tasksWidget = new TasksManagementWidget();
 
 		progressMenu = new ProgressDetailMenuWidget(getProgressMenuListener());
+	}
+
+	public void update() {
+		tasksWidget.update();
 	}
 
 }
