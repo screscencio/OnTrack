@@ -126,6 +126,9 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 	@UiField
 	protected HorizontalPanel filteredPanel;
 
+	@UiField
+	protected LoadingPannel loadingPanel;
+
 	private final Map<UUID, ScopeTreeItem> itemMapCache = new HashMap<UUID, ScopeTreeItem>();
 
 	private ScopeTreeItem lastTreeItem = null;
@@ -153,63 +156,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		initWidget(uiBinder.createAndBindUi(this));
 		deleteButton.setTitle(messages.clearFilter());
 
+		hideFilteringIndicator();
 		hideTagFilteringInfo();
-
-		tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
-			@Override
-			public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {
-				interactionHandler.onBindReleaseRequest(scopeId, releaseDescription);
-			}
-		}, ScopeTreeItemBindReleaseEvent.getType());
-
-		tree.addHandler(new ScopeTreeItemDeclareEffortEventHandler() {
-
-			@Override
-			public void onDeclareEffortRequest(final UUID scopeId, final String effortDescription) {
-				interactionHandler.onDeclareEffortRequest(scopeId, effortDescription);
-			}
-
-		}, ScopeTreeItemDeclareEffortEvent.getType());
-
-		tree.addHandler(new ScopeTreeItemDeclareValueEventHandler() {
-
-			@Override
-			public void onDeclareValueRequest(final UUID scopeId, final String valueDescription) {
-				interactionHandler.onDeclareValueRequest(scopeId, valueDescription);
-			}
-		}, ScopeTreeItemDeclareValueEvent.getType());
-
-		tree.addHandler(new ScopeTreeItemDeclareProgressEventHandler() {
-
-			@Override
-			public void onDeclareProgressRequest(final UUID scopeId, final String progressDescription) {
-				interactionHandler.onDeclareProgressRequest(scopeId, progressDescription);
-			}
-		}, ScopeTreeItemDeclareProgressEvent.getType());
-
-		tree.addHandler(new ScopeTreeItemEditionStartEventHandler() {
-
-			@Override
-			public void onItemEditionStart(final ScopeTreeItem item) {
-				interactionHandler.onItemEditionStart(item);
-			}
-		}, ScopeTreeItemEditionStartEvent.getType());
-
-		tree.addHandler(new ScopeTreeItemEditionEndEventHandler() {
-
-			@Override
-			public void onItemEditionEnd(final ScopeTreeItem item, final String value) {
-				interactionHandler.onItemEditionEnd(item, value);
-			}
-		}, ScopeTreeItemEditionEndEvent.getType());
-
-		tree.addHandler(new ScopeTreeItemEditionCancelEventHandler() {
-
-			@Override
-			public void onItemEditionCancel() {
-				interactionHandler.onItemEditionCancel();
-			}
-		}, ScopeTreeItemEditionCancelEvent.getType());
 
 		tree.setTreeItemAdoptionListener(new TreeItemAdoptionListener() {
 
@@ -247,21 +195,14 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				itemMapCache.remove(scope.getId());
 			}
 		});
+	}
 
-		tree.addHandler(new ScopeTreeFilterByTagEventHandler() {
-			@Override
-			public void onFilterByTagRequested(final UUID tagId) {
-				interactionHandler.filterByTag(tagId);
-			}
-		}, ScopeTreeFilterByTagEvent.getType());
+	public void showFilteringIndicator() {
+		loadingPanel.setVisible(true);
+	}
 
-		tree.addHandler(new ScopeTreeClearTagFilterEventHandler() {
-
-			@Override
-			public void onClearTagFilterRequested() {
-				interactionHandler.clearTagFilter();
-			}
-		}, ScopeTreeClearTagFilterEvent.getType());
+	public void hideFilteringIndicator() {
+		loadingPanel.setVisible(false);
 	}
 
 	private ModelWidgetContainer<Tag, TagWidget> createTagsContainer() {
@@ -275,7 +216,88 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 
 	@Override
 	protected void onLoad() {
+		activateEventHandlers();
+	}
+
+	@Override
+	protected void onUnload() {
+		deactivateEventHandlers();
+	}
+
+	private void activateEventHandlers() {
+		deactivateEventHandlers();
 		final EventBus eventBus = ClientServiceProvider.getInstance().getEventBus();
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemBindReleaseEventHandler() {
+			@Override
+			public void onBindReleaseRequest(final UUID scopeId, final String releaseDescription) {
+				interactionHandler.onBindReleaseRequest(scopeId, releaseDescription);
+			}
+		}, ScopeTreeItemBindReleaseEvent.getType()));
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemDeclareEffortEventHandler() {
+
+			@Override
+			public void onDeclareEffortRequest(final UUID scopeId, final String effortDescription) {
+				interactionHandler.onDeclareEffortRequest(scopeId, effortDescription);
+			}
+
+		}, ScopeTreeItemDeclareEffortEvent.getType()));
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemDeclareValueEventHandler() {
+
+			@Override
+			public void onDeclareValueRequest(final UUID scopeId, final String valueDescription) {
+				interactionHandler.onDeclareValueRequest(scopeId, valueDescription);
+			}
+		}, ScopeTreeItemDeclareValueEvent.getType()));
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemDeclareProgressEventHandler() {
+
+			@Override
+			public void onDeclareProgressRequest(final UUID scopeId, final String progressDescription) {
+				interactionHandler.onDeclareProgressRequest(scopeId, progressDescription);
+			}
+		}, ScopeTreeItemDeclareProgressEvent.getType()));
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemEditionStartEventHandler() {
+
+			@Override
+			public void onItemEditionStart(final ScopeTreeItem item) {
+				interactionHandler.onItemEditionStart(item);
+			}
+		}, ScopeTreeItemEditionStartEvent.getType()));
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemEditionEndEventHandler() {
+
+			@Override
+			public void onItemEditionEnd(final ScopeTreeItem item, final String value) {
+				interactionHandler.onItemEditionEnd(item, value);
+			}
+		}, ScopeTreeItemEditionEndEvent.getType()));
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeItemEditionCancelEventHandler() {
+
+			@Override
+			public void onItemEditionCancel() {
+				interactionHandler.onItemEditionCancel();
+			}
+		}, ScopeTreeItemEditionCancelEvent.getType()));
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeFilterByTagEventHandler() {
+			@Override
+			public void onFilterByTagRequested(final UUID tagId) {
+				interactionHandler.filterByTag(tagId);
+			}
+		}, ScopeTreeFilterByTagEvent.getType()));
+
+		handlerRegistrations.add(tree.addHandler(new ScopeTreeClearTagFilterEventHandler() {
+
+			@Override
+			public void onClearTagFilterRequested() {
+				interactionHandler.clearTagFilter();
+			}
+		}, ScopeTreeClearTagFilterEvent.getType()));
 
 		handlerRegistrations.add(eventBus.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {
 
@@ -295,8 +317,8 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				addBorderToSelectedItem();
 				disableSelectionEvent = false;
 			}
-
 		}));
+
 		handlerRegistrations.add(eventBus.addHandler(ScopeAddMemberSelectionEvent.getType(), new ScopeAddMemberSelectionEventHandler() {
 			@Override
 			public void onMemberSelectedScope(final ScopeAddMemberSelectionEvent event) {
@@ -306,6 +328,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				item.addSelectedMember(event.getMember(), event.getSelectionColor());
 			}
 		}));
+
 		handlerRegistrations.add(eventBus.addHandler(ScopeRemoveMemberSelectionEvent.getType(), new ScopeRemoveMemberSelectionEventHandler() {
 			@Override
 			public void clearSelection(final ScopeRemoveMemberSelectionEvent event) {
@@ -315,6 +338,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 				item.removeSelectedMember(event.getMember());
 			}
 		}));
+
 		handlerRegistrations.add(eventBus.addHandler(ScopeDetailUpdateEvent.getType(), new ScopeDetailUpdateEventHandler() {
 			@Override
 			public void onScopeDetailUpdate(final ScopeDetailUpdateEvent event) {
@@ -355,8 +379,7 @@ public class ScopeTreeWidget extends Composite implements HasInstructions, HasFo
 		}));
 	}
 
-	@Override
-	protected void onUnload() {
+	private void deactivateEventHandlers() {
 		for (final HandlerRegistration hr : handlerRegistrations) {
 			hr.removeHandler();
 		}
