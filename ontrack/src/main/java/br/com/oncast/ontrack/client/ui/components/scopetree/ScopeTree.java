@@ -27,6 +27,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTree implements Component {
@@ -124,24 +125,32 @@ public class ScopeTree implements Component {
 
 	public void filterByTag(final UUID filteredTagId) {
 		final ScopeTreeItem selectedItem = tree.getSelectedItem();
-		clearTagFilter();
+		tree.showFilteringIndicator();
+		new Timer() {
 
-		final HashSet<Scope> neededScopes = new HashSet<Scope>();
-		final HashSet<Tag> tags = new HashSet<Tag>();
-		for (final TagAssociationMetadata association : context.<TagAssociationMetadata> getAllMetadata(TagAssociationMetadata.getType())) {
-			if (!association.getTag().getId().equals(filteredTagId)) continue;
-			tags.add(association.getTag());
+			@Override
+			public void run() {
+				clearTagFilter();
 
-			final Scope scope = (Scope) association.getSubject();
+				final HashSet<Scope> neededScopes = new HashSet<Scope>();
+				final HashSet<Tag> tags = new HashSet<Tag>();
+				for (final TagAssociationMetadata association : context.<TagAssociationMetadata> getAllMetadata(TagAssociationMetadata.getType())) {
+					if (!association.getTag().getId().equals(filteredTagId)) continue;
+					tags.add(association.getTag());
 
-			addAncestors(neededScopes, scope);
-			tree.findAndMountScopeTreeItem(scope).setHierarchicalState(true);
-			addDescendants(neededScopes, scope);
-		}
+					final Scope scope = (Scope) association.getSubject();
 
-		filteredItems = tree.getItem(0).filter(neededScopes);
-		tree.showTagFilteringInfo(tags);
-		if (selectedItem != null) selectedItem.select();
+					addAncestors(neededScopes, scope);
+					tree.findAndMountScopeTreeItem(scope).setHierarchicalState(true);
+					addDescendants(neededScopes, scope);
+				}
+
+				filteredItems = tree.getItem(0).filter(neededScopes);
+				tree.showTagFilteringInfo(tags);
+				tree.hideFilteringIndicator();
+				if (selectedItem != null) selectedItem.select();
+			}
+		}.schedule(10);
 	}
 
 	public void clearTagFilter() {
