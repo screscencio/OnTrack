@@ -4,11 +4,11 @@
  */
 
 Highcharts.theme = {
-	colors: ["#DDDF0D", "#7798BF", "#55BF3B", "#DF5353", "#aaeeee", "#ff0066", "#eeaaee", 
+	colors: ["#DDDF0D", "#7798BF", "#55BF3B", "#DF5353", "#aaeeee", "#ff0066", "#eeaaee",
 		"#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
 	chart: {
 		backgroundColor: {
-			linearGradient: [0, 0, 0, 400],
+			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 			stops: [
 				[0, 'rgb(96, 96, 96)'],
 				[1, 'rgb(16, 16, 16)']
@@ -21,13 +21,13 @@ Highcharts.theme = {
 		plotBorderWidth: 0
 	},
 	title: {
-		style: { 
+		style: {
 			color: '#FFF',
 			font: '16px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
 		}
 	},
 	subtitle: {
-		style: { 
+		style: {
 			color: '#DDD',
 			font: '12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
 		}
@@ -46,7 +46,7 @@ Highcharts.theme = {
 			style: {
 				color: '#AAA',
 				font: 'bold 12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
-			}				
+			}
 		}
 	},
 	yAxis: {
@@ -65,7 +65,7 @@ Highcharts.theme = {
 			style: {
 				color: '#AAA',
 				font: 'bold 12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
-			}				
+			}
 		}
 	},
 	legend: {
@@ -86,7 +86,7 @@ Highcharts.theme = {
 	},
 	tooltip: {
 		backgroundColor: {
-			linearGradient: [0, 0, 0, 50],
+			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 			stops: [
 				[0, 'rgba(96, 96, 96, .8)'],
 				[1, 'rgba(16, 16, 16, .8)']
@@ -97,8 +97,8 @@ Highcharts.theme = {
 			color: '#FFF'
 		}
 	},
-	
-	
+
+
 	plotOptions: {
 		line: {
 			dataLabels: {
@@ -122,17 +122,17 @@ Highcharts.theme = {
 			lineColor: 'white'
 		}
 	},
-	
+
 	toolbar: {
 		itemStyle: {
 			color: '#CCC'
 		}
 	},
-	
+
 	navigation: {
 		buttonOptions: {
 			backgroundColor: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#606060'],
 					[0.6, '#333333']
@@ -143,7 +143,7 @@ Highcharts.theme = {
 			hoverSymbolStroke: '#FFFFFF'
 		}
 	},
-	
+
 	exporting: {
 		buttons: {
 			exportButton: {
@@ -154,12 +154,12 @@ Highcharts.theme = {
 			}
 		}
 	},
-	
+
 	// scroll charts
 	rangeSelector: {
 		buttonTheme: {
 			fill: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -173,7 +173,7 @@ Highcharts.theme = {
 			states: {
 				hover: {
 					fill: {
-						linearGradient: [0, 0, 0, 20],
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 						stops: [
 							[0.4, '#BBB'],
 							[0.6, '#888']
@@ -186,7 +186,7 @@ Highcharts.theme = {
 				},
 				select: {
 					fill: {
-						linearGradient: [0, 0, 0, 20],
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 						stops: [
 							[0.1, '#000'],
 							[0.3, '#333']
@@ -197,7 +197,7 @@ Highcharts.theme = {
 						color: 'yellow'
 					}
 				}
-			}					
+			}
 		},
 		inputStyle: {
 			backgroundColor: '#333',
@@ -207,7 +207,7 @@ Highcharts.theme = {
 			color: 'silver'
 		}
 	},
-	
+
 	navigator: {
 		handles: {
 			backgroundColor: '#666',
@@ -220,10 +220,10 @@ Highcharts.theme = {
 			lineColor: '#A6C7ED'
 		}
 	},
-	
+
 	scrollbar: {
 		barBackgroundColor: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -232,7 +232,7 @@ Highcharts.theme = {
 		barBorderColor: '#CCC',
 		buttonArrowColor: '#CCC',
 		buttonBackgroundColor: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -241,7 +241,7 @@ Highcharts.theme = {
 		buttonBorderColor: '#CCC',
 		rifleColor: '#FFF',
 		trackBackgroundColor: {
-			linearGradient: [0, 0, 0, 10],
+			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 			stops: [
 				[0, '#000'],
 				[1, '#333']
@@ -249,7 +249,7 @@ Highcharts.theme = {
 		},
 		trackBorderColor: '#666'
 	},
-	
+
 	// special colors for some of the demo examples
 	legendBackgroundColor: 'rgba(48, 48, 48, 0.8)',
 	legendBackgroundColorSolid: 'rgb(70, 70, 70)',

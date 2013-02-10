@@ -4,11 +4,11 @@
  */
 
 Highcharts.theme = {
-	colors: ["#DDDF0D", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee", 
+	colors: ["#DDDF0D", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
 		"#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
 	chart: {
 		backgroundColor: {
-			linearGradient: [0, 0, 250, 500],
+			linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
 			stops: [
 				[0, 'rgb(48, 48, 96)'],
 				[1, 'rgb(0, 0, 0)']
@@ -28,7 +28,7 @@ Highcharts.theme = {
 		}
 	},
 	subtitle: {
-		style: { 
+		style: {
 			color: '#666666',
 			font: 'bold 12px "Trebuchet MS", Verdana, sans-serif'
 		}
@@ -50,7 +50,7 @@ Highcharts.theme = {
 				fontSize: '12px',
 				fontFamily: 'Trebuchet MS, Verdana, sans-serif'
 
-			}				
+			}
 		}
 	},
 	yAxis: {
@@ -70,13 +70,7 @@ Highcharts.theme = {
 				fontWeight: 'bold',
 				fontSize: '12px',
 				fontFamily: 'Trebuchet MS, Verdana, sans-serif'
-			}				
-		}
-	},
-	legend: {
-		itemStyle: {
-			font: '9pt Trebuchet MS, Verdana, sans-serif',
-			color: '#A0A0A0'
+			}
 		}
 	},
 	tooltip: {
@@ -86,7 +80,7 @@ Highcharts.theme = {
 		}
 	},
 	toolbar: {
-		itemStyle: { 
+		itemStyle: {
 			color: 'silver'
 		}
 	},
@@ -112,10 +106,11 @@ Highcharts.theme = {
 		candlestick: {
 			lineColor: 'white'
 		}
-	},		
+	},
 	legend: {
 		itemStyle: {
-			color: '#CCC'
+			font: '9pt Trebuchet MS, Verdana, sans-serif',
+			color: '#A0A0A0'
 		},
 		itemHoverStyle: {
 			color: '#FFF'
@@ -134,11 +129,11 @@ Highcharts.theme = {
 			color: '#CCC'
 		}
 	},
-	
+
 	navigation: {
 		buttonOptions: {
 			backgroundColor: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#606060'],
 					[0.6, '#333333']
@@ -149,7 +144,7 @@ Highcharts.theme = {
 			hoverSymbolStroke: '#FFFFFF'
 		}
 	},
-	
+
 	exporting: {
 		buttons: {
 			exportButton: {
@@ -160,12 +155,12 @@ Highcharts.theme = {
 			}
 		}
 	},
-	
+
 	// scroll charts
 	rangeSelector: {
 		buttonTheme: {
 			fill: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -179,7 +174,7 @@ Highcharts.theme = {
 			states: {
 				hover: {
 					fill: {
-						linearGradient: [0, 0, 0, 20],
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 						stops: [
 							[0.4, '#BBB'],
 							[0.6, '#888']
@@ -192,7 +187,7 @@ Highcharts.theme = {
 				},
 				select: {
 					fill: {
-						linearGradient: [0, 0, 0, 20],
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 						stops: [
 							[0.1, '#000'],
 							[0.3, '#333']
@@ -203,7 +198,7 @@ Highcharts.theme = {
 						color: 'yellow'
 					}
 				}
-			}					
+			}
 		},
 		inputStyle: {
 			backgroundColor: '#333',
@@ -213,7 +208,7 @@ Highcharts.theme = {
 			color: 'silver'
 		}
 	},
-	
+
 	navigator: {
 		handles: {
 			backgroundColor: '#666',
@@ -226,10 +221,10 @@ Highcharts.theme = {
 			lineColor: '#A6C7ED'
 		}
 	},
-	
+
 	scrollbar: {
 		barBackgroundColor: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -238,7 +233,7 @@ Highcharts.theme = {
 		barBorderColor: '#CCC',
 		buttonArrowColor: '#CCC',
 		buttonBackgroundColor: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -247,7 +242,7 @@ Highcharts.theme = {
 		buttonBorderColor: '#CCC',
 		rifleColor: '#FFF',
 		trackBackgroundColor: {
-			linearGradient: [0, 0, 0, 10],
+			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 			stops: [
 				[0, '#000'],
 				[1, '#333']
@@ -255,7 +250,7 @@ Highcharts.theme = {
 		},
 		trackBorderColor: '#666'
 	},
-	
+
 	// special colors for some of the
 	legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
 	legendBackgroundColorSolid: 'rgb(35, 35, 70)',

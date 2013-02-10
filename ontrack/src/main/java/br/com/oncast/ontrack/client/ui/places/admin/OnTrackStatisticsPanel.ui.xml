@@ -24,14 +24,13 @@
 		}
 		
 		.onlineUsersPanel {
-			width: 60%;
-			height: 200px;
 		}
 		
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.root}">
-		<g:Button ui:field="updateButton" styleName="{style.updateButton}">Update</g:Button>
+		Auto Update Interval (seconds): <g:TextBox ui:field="autoUpdateIntervalTextBox" width="50px" height="12px"/>
+		<g:Button ui:field="updateButton" styleName="{style.updateButton}">Update Now</g:Button>
 		<g:FocusPanel ui:field="onlineUsersPanel" styleName="{style.onlineUsersPanel}"/>
 	</g:HTMLPanel>
 	
