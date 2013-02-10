@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
+import br.com.oncast.ontrack.client.services.admin.OnTrackAdminService;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateServiceImpl;
@@ -101,6 +102,7 @@ public class ClientServiceProvider {
 	private ClientErrorMessages clientErrorMessages;
 	private UserGuidService userGuidService;
 	private UserAssociationService userAssociationService;
+	private OnTrackAdminService onTrackAdminService;
 
 	private static ClientServiceProvider instance;
 
@@ -277,5 +279,9 @@ public class ClientServiceProvider {
 
 	public static UUID getCurrentUser() {
 		return getInstance().getAuthenticationService().getCurrentUserId();
+	}
+
+	public OnTrackAdminService getOnTrackAdminService() {
+		return onTrackAdminService == null ? onTrackAdminService = new OnTrackAdminService(getRequestDispatchService()) : onTrackAdminService;
 	}
 }

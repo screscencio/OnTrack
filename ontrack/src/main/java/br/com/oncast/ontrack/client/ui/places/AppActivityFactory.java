@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places;
 
+import br.com.oncast.ontrack.client.ui.places.admin.OnTrackStatisticsActivity;
 import br.com.oncast.ontrack.client.ui.places.details.DetailActivity;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.client.ui.places.loading.ContextLoadingActivity;
@@ -60,5 +61,9 @@ public class AppActivityFactory {
 
 	protected UserInformationLoadingActivity getUserInformationLoadingActivity(final Place place) {
 		return new UserInformationLoadingActivity(place);
+	}
+
+	public Activity getOnTrackStatisticsActivity() {
+		return new OnTrackStatisticsActivity();
 	}
 }

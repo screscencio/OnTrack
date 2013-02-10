@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderService;
 import br.com.oncast.ontrack.client.services.context.ContextProviderServiceImpl.ContextChangeListener;
@@ -14,7 +15,6 @@ import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.user.exceptions.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ActiveUsersRequestCallback;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UsersStatusRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UsersStatusRequestResponse;
 import br.com.oncast.ontrack.shared.services.user.UserClosedProjectEvent;
@@ -141,7 +141,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	private void loadActiveUsers(final UUID projectId) {
 		clearUsersStatus();
 
-		requestDispatchService.dispatch(new UsersStatusRequest(projectId), new ActiveUsersRequestCallback() {
+		requestDispatchService.dispatch(new UsersStatusRequest(projectId), new DispatchCallback<UsersStatusRequestResponse>() {
 
 			@Override
 			public void onUntreatedFailure(final Throwable caught) {
