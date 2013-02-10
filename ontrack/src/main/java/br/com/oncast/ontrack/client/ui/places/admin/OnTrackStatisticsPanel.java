@@ -1,8 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.admin;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.moxieapps.gwt.highcharts.client.Axis.Type;
 import org.moxieapps.gwt.highcharts.client.Chart;
@@ -14,9 +12,9 @@ import org.moxieapps.gwt.highcharts.client.ToolTipData;
 import org.moxieapps.gwt.highcharts.client.ToolTipFormatter;
 import org.moxieapps.gwt.highcharts.client.plotOptions.LinePlotOptions;
 
-import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.shared.services.requestDispatch.admin.OnTrackServerStatisticsResponse;
+import br.com.oncast.ontrack.client.services.admin.OnTrackServerStatistics;
+import br.com.oncast.ontrack.client.services.admin.OnTrackServerStatisticsBag;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -28,6 +26,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -57,7 +56,7 @@ public class OnTrackStatisticsPanel extends Composite {
 
 	private Series onlineUsersSeries;
 
-	private final List<Point> points;
+	private final OnTrackServerStatisticsBag statisticsList;
 
 	private final Timer autoUpdateTimer = new Timer() {
 		@Override
@@ -69,7 +68,7 @@ public class OnTrackStatisticsPanel extends Composite {
 	private float autoUpdateInterval = 30;
 
 	public OnTrackStatisticsPanel() {
-		points = new ArrayList<Point>();
+		statisticsList = ClientServiceProvider.getInstance().getClientStorageService().loadOnTrackServerStatisticsList();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -111,29 +110,24 @@ public class OnTrackStatisticsPanel extends Composite {
 		update();
 	}
 
-	private void updateView() {
-		onlineUsersSeries.addPoint(points.get(points.size() - 1));
-		onlineUsersChart.redraw();
+	private void updateView(final OnTrackServerStatistics result) {
+		onlineUsersSeries.addPoint(toPoint(result));
 	}
 
 	private void update() {
 		updateButton.setEnabled(false);
-		ClientServiceProvider.getInstance().getOnTrackAdminService().getStatistics(new DispatchCallback<OnTrackServerStatisticsResponse>() {
+		ClientServiceProvider.getInstance().getOnTrackAdminService().getStatistics(new AsyncCallback<OnTrackServerStatistics>() {
+
 			@Override
-			public void onSuccess(final OnTrackServerStatisticsResponse result) {
-				points.add(new Point(result.getTimestamp().getTime(), result.getOnlineUsers().size()));
-				updateView();
+			public void onSuccess(final OnTrackServerStatistics result) {
+				updateView(result);
 				updateButton.setEnabled(true);
+				statisticsList.getStatisticsList().add(result);
+				storeStatistics();
 			}
 
 			@Override
-			public void onTreatedFailure(final Throwable caught) {
-				showError(caught);
-				updateButton.setEnabled(true);
-			}
-
-			@Override
-			public void onUntreatedFailure(final Throwable caught) {
+			public void onFailure(final Throwable caught) {
 				showError(caught);
 				updateButton.setEnabled(true);
 			}
@@ -172,15 +166,25 @@ public class OnTrackStatisticsPanel extends Composite {
 				.setName("Online Users")
 				.setPlotOptions(new LinePlotOptions()
 						.setColor("#6eb28e")
-						.setLineWidth(2))
-				.setPoints(points.toArray(new Point[points.size()]));
+						.setLineWidth(2));
+		for (final OnTrackServerStatistics statistic : statisticsList.getStatisticsList()) {
+			onlineUsersSeries.addPoint(toPoint(statistic));
+		}
 		chart.addSeries(onlineUsersSeries);
 
 		return chart;
 	}
 
+	private Point toPoint(final OnTrackServerStatistics statistic) {
+		return new Point(statistic.getTimestamp().getTime(), statistic.getOnlineUsers().size());
+	}
+
 	private String formatTime(final long time) {
 		return dateTimeFormat.format(new Date(time));
+	}
+
+	private void storeStatistics() {
+		ClientServiceProvider.getInstance().getClientStorageService().appendOnTrackServerStatistics(statisticsList);
 	}
 
 }

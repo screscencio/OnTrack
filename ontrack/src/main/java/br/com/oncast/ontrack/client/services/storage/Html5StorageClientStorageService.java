@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.oncast.ontrack.client.services.admin.OnTrackServerStatistics;
+import br.com.oncast.ontrack.client.services.admin.OnTrackServerStatisticsBag;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
@@ -16,12 +18,18 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.common.base.Joiner;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.storage.client.Storage;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 public class Html5StorageClientStorageService implements ClientStorageService {
 
 	private static final String SEPARATOR = ".";
 	private static final String PREFIX = "OnTrack" + SEPARATOR;
+
+	private static final ClientStorageFactory FACTORY = GWT.create(ClientStorageFactory.class);
 
 	private final Storage storage;
 	private final AuthenticationService authenticationService;
@@ -137,20 +145,6 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 		storage.setItem(getCurrentUserProjectStorageKey(key), value);
 	}
 
-	@SuppressWarnings("unused")
-	private String getUserSpecificItem(final String key) {
-		if (storage == null) return null;
-
-		return storage.getItem(getCurrentUserStorageKey(key));
-	}
-
-	@SuppressWarnings("unused")
-	private void setUserSpecificItem(final String key, final String value) {
-		if (storage == null) return;
-
-		storage.setItem(getCurrentUserStorageKey(key), value);
-	}
-
 	private String getItem(final String key) {
 		if (storage == null) return null;
 
@@ -179,4 +173,32 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 				+ key);
 	}
 
+	@Override
+	public void appendOnTrackServerStatistics(final OnTrackServerStatisticsBag statistics) {
+		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
+		setItem(key, serialize(statistics));
+	}
+
+	@Override
+	public OnTrackServerStatisticsBag loadOnTrackServerStatisticsList() {
+		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
+		final String item = getItem(key);
+		if (item == null || item.isEmpty()) {
+			final OnTrackServerStatisticsBag bag = FACTORY.onTrackServerStatisticsBag().as();
+			bag.setStatisticsList(new ArrayList<OnTrackServerStatistics>());
+			return bag;
+		}
+
+		return deserialize(item);
+	}
+
+	public static String serialize(final OnTrackServerStatisticsBag serializable) {
+		final AutoBean<OnTrackServerStatisticsBag> bean = AutoBeanUtils.getAutoBean(serializable);
+		return AutoBeanCodex.encode(bean).getPayload();
+	}
+
+	public static OnTrackServerStatisticsBag deserialize(final String json) {
+		final AutoBean<OnTrackServerStatisticsBag> bean = AutoBeanCodex.decode(FACTORY, OnTrackServerStatisticsBag.class, json);
+		return bean.as();
+	}
 }
