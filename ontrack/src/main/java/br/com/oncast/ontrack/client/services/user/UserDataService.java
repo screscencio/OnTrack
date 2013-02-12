@@ -17,6 +17,8 @@ public interface UserDataService {
 
 	SafeUri getAvatarUrl(User user);
 
+	SafeUri getAvatarUrl(User user, int imageSize);
+
 	HandlerRegistration registerListenerForSpecificUser(UserRepresentation user, UserSpecificInformationChangeListener listener);
 
 	HandlerRegistration registerListenerForSpecificUser(UUID userId, UserSpecificInformationChangeListener listener);

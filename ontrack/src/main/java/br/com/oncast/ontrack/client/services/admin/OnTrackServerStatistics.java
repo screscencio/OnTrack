@@ -13,4 +13,20 @@ public interface OnTrackServerStatistics {
 
 	void setOnlineUsers(final Set<String> onlineUsers);
 
+	void setActiveConnectionsCount(int activeConnectionsCount);
+
+	int getActiveConnectionsCount();
+
+	void setActionsPerHour(long actionsPerHour);
+
+	long getActionsPerHour();
+
+	void setUsersCount(int usersCount);
+
+	int getUsersCount();
+
+	void setProjectsCount(int projectsCount);
+
+	int getProjectsCount();
+
 }

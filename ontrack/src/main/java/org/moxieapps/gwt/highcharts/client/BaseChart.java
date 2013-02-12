@@ -2276,7 +2276,7 @@ public abstract class BaseChart<T> extends Widget {
 
 	// IMPORTANT Added to be able to select tooltip programmaticaly
 	private static native void nativeRefreshTooltip(JavaScriptObject chart, int seriesIndex, int pointIndex) /*-{
-		chart.tooltip.refresh(chart.series[seriesIndex].data[pointIndex]);
+		chart.tooltip.refresh([ chart.series[seriesIndex].data[pointIndex] ]);
 	}-*/;
 
 	private JavaScriptObject createNativeOptions() {

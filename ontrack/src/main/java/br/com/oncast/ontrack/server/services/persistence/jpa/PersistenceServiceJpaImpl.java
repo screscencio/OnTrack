@@ -737,4 +737,21 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.close();
 		}
 	}
+
+	@Override
+	public long countActionsSince(final Date date) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query queryNotification = em.createQuery("SELECT COUNT(ua) FROM " + UserActionEntity.class.getSimpleName()
+					+ " AS ua WHERE ua.timestamp > :date");
+			queryNotification.setParameter("date", date);
+			return (Long) queryNotification.getSingleResult();
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("Not able to retrieve notifications.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
 }

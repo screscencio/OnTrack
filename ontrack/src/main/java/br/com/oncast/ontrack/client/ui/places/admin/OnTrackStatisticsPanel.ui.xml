@@ -23,7 +23,8 @@
 			font-weight: bold;
 		}
 		
-		.onlineUsersPanel {
+		.chartPanel {
+			margin-bottom: 15px;
 		}
 		
 	</ui:style>
@@ -31,7 +32,9 @@
 	<g:HTMLPanel styleName="{style.root}">
 		Auto Update Interval (seconds): <g:TextBox ui:field="autoUpdateIntervalTextBox" width="50px" height="12px"/>
 		<g:Button ui:field="updateButton" styleName="{style.updateButton}">Update Now</g:Button>
-		<g:FocusPanel ui:field="onlineUsersPanel" styleName="{style.onlineUsersPanel}"/>
+		<g:Button ui:field="wipeLocalData" styleName="{style.updateButton}">Clear Data</g:Button>
+		<g:FocusPanel ui:field="onlineUsersPanel" styleName="{style.chartPanel}"/>
+		<g:FocusPanel ui:field="usagePanel" styleName="{style.chartPanel}"/>
 	</g:HTMLPanel>
 	
 </ui:UiBinder> 

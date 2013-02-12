@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.business;
 
 import br.com.oncast.ontrack.server.business.actionPostProcessments.ActionPostProcessmentsInitializer;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessingService;
+import br.com.oncast.ontrack.server.services.admin.ServerStatisticsService;
 import br.com.oncast.ontrack.server.services.authentication.AuthenticationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManager;
 import br.com.oncast.ontrack.server.services.authorization.AuthorizationManagerImpl;
@@ -57,6 +58,8 @@ public class ServerServiceProvider {
 
 	private UsersStatusManager usersStatusManager;
 	private UserDataManager userDataManager;
+
+	private ServerStatisticsService serverStatisticsService;
 
 	public static ServerServiceProvider getInstance() {
 		return INSTANCE;
@@ -218,6 +221,14 @@ public class ServerServiceProvider {
 		synchronized (this) {
 			if (userDataManager != null) return userDataManager;
 			return userDataManager = new UserDataManagerImpl(getPersistenceService(), getMulticastService(), getAuthorizationManager());
+		}
+	}
+
+	public ServerStatisticsService getServerStatisticsService() {
+		if (serverStatisticsService != null) return serverStatisticsService;
+		synchronized (this) {
+			if (serverStatisticsService != null) return serverStatisticsService;
+			return serverStatisticsService = new ServerStatisticsService(getPersistenceService());
 		}
 	}
 }

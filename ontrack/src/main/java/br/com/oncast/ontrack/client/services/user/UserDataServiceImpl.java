@@ -107,6 +107,17 @@ public class UserDataServiceImpl implements UserDataService {
 		};
 	}
 
+	@Override
+	public SafeUri getAvatarUrl(final User user, final int imageSize) {
+		return new SafeUri() {
+			@Override
+			public String asString() {
+				return new String(GRAVATAR_BASE_URL + "avatar/" + getMd5Hex(user.getEmail()) + "?s=" + imageSize + "&d=mm");
+			}
+
+		};
+	}
+
 	private String getMd5Hex(final String email) {
 		try {
 			final BigInteger hash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(email.trim().toLowerCase().getBytes()));

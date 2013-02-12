@@ -30,6 +30,10 @@ public class OnTrackAdminService {
 				final OnTrackServerStatistics statistics = FACTORY.onTrackServerStatistics().as();
 				statistics.setOnlineUsers(toStringSet(result.getOnlineUsers()));
 				statistics.setTimestamp(result.getTimestamp());
+				statistics.setActiveConnectionsCount(result.getActiveConnectionsCount());
+				statistics.setActionsPerHour(result.getActionsPerHour());
+				statistics.setUsersCount(result.getUsersCount());
+				statistics.setProjectsCount(result.getProjectsCount());
 				callback.onSuccess(statistics);
 			}
 

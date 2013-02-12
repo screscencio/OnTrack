@@ -10,6 +10,10 @@ public class OnTrackServerStatisticsResponse implements DispatchResponse {
 
 	private Set<UUID> onlineUsers;
 	private Date timestamp;
+	private int activeConnectionsCount;
+	private long actionsPerHour;
+	private int usersCount;
+	private int projectsCount;
 
 	public OnTrackServerStatisticsResponse() {
 		this.timestamp = new Date();
@@ -29,6 +33,38 @@ public class OnTrackServerStatisticsResponse implements DispatchResponse {
 
 	public Date getTimestamp() {
 		return timestamp;
+	}
+
+	public void setActiveConnectionsCount(final int count) {
+		this.activeConnectionsCount = count;
+	}
+
+	public int getActiveConnectionsCount() {
+		return activeConnectionsCount;
+	}
+
+	public void setActionsPerHour(final long actionsPerHour) {
+		this.actionsPerHour = actionsPerHour;
+	}
+
+	public long getActionsPerHour() {
+		return this.actionsPerHour;
+	}
+
+	public int getUsersCount() {
+		return this.usersCount;
+	}
+
+	public void setUsersCount(final int usersCount) {
+		this.usersCount = usersCount;
+	}
+
+	public void setProjectsCount(final int projectsCount) {
+		this.projectsCount = projectsCount;
+	}
+
+	public int getProjectsCount() {
+		return this.projectsCount;
 	}
 
 }

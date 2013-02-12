@@ -85,4 +85,6 @@ public interface PersistenceService {
 
 	public void remove(ProjectAuthorization authorization) throws PersistenceException;
 
+	public long countActionsSince(Date date) throws PersistenceException;
+
 }
