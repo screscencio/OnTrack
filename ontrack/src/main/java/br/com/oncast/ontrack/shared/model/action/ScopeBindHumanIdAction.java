@@ -56,16 +56,6 @@ public class ScopeBindHumanIdAction implements ScopeAction {
 		return new ScopeUnbindHumanIdAction(metadata);
 	}
 
-	// @Override
-	// public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
-	// final Scope scope = ActionHelper.findScope(scopeId, context);
-	// final List<Metadata> metadataList = context.getMetadataList(scope, MetadataType.HUMAN_ID);
-	// if (!metadataList.isEmpty()) throw new UnableToCompleteActionException(ActionExecutionErrorMessageCode.CREATE_EXISTENT);
-	//
-	// context.addMetadata(MetadataFactory.createHumanIdMetadata(metadataId, scope, humanId));
-	// return new ScopeBindHumanIdAction(scopeId, null);
-	// }
-
 	@Override
 	public UUID getReferenceId() {
 		return scopeId;

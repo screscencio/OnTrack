@@ -39,7 +39,7 @@ public class HumanIdMetadata implements Metadata, Serializable {
 
 	@Override
 	public MetadataType getMetadataType() {
-		return MetadataType.HUMAN_ID;
+		return getType();
 	}
 
 	@Override
@@ -50,6 +50,10 @@ public class HumanIdMetadata implements Metadata, Serializable {
 	@Override
 	public int hashCode() {
 		return UUIDUtils.hashCode(this);
+	}
+
+	public static MetadataType getType() {
+		return MetadataType.HUMAN_ID;
 	}
 
 }

@@ -35,6 +35,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -140,7 +141,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	@Override
 	public boolean update() {
 		updateAssociatedUsers();
-		return updateDescription() | updateProgress() | updateTitle() | updateValues();
+		return updateHumanId() | updateDescription() | updateProgress() | updateTitle() | updateValues();
 	}
 
 	private void updateAssociatedUsers() {
@@ -189,14 +190,20 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	/**
+	 * @return if the humanId was updated.
+	 */
+	private boolean updateHumanId() {
+		final String humanId = ClientServiceProvider.getCurrentProjectContext().getHumanId(scope);
+		humanIdLabel.setInnerHTML(humanId);
+		if (humanId.isEmpty()) humanIdLabel.getStyle().setDisplay(Display.NONE);
+		else humanIdLabel.getStyle().clearDisplay();
+		return true;
+	}
+
+	/**
 	 * @return if the description was updated.
 	 */
 	private boolean updateDescription() {
-		final String humanId = ClientServiceProvider.getCurrentProjectContext().getHumanId(scope);
-		humanIdLabel.setInnerHTML(humanId);
-		// if (humanId.isEmpty()) humanIdLabel.getStyle().setDisplay(Display.NONE);
-		// else humanIdLabel.getStyle().clearDisplay();
-
 		final String description = scope.getDescription();
 		if (description.equals(currentScopeDescription)) return false;
 		currentScopeDescription = description;

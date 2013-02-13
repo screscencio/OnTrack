@@ -140,4 +140,8 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	public boolean changesValueInference() {
 		return false;
 	}
+
+	public boolean isUnbinding() {
+		return newReleaseDescription == null || newReleaseDescription.isEmpty();
+	}
 }

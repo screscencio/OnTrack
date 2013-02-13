@@ -20,6 +20,9 @@ public class ProjectRepresentationEntity {
 	@Column(name = "name", unique = false, nullable = false)
 	private String name;
 
+	@Column(name = "humanIdCounter", unique = false, nullable = false)
+	private Long humanIdCounter;
+
 	public String getId() {
 		return id;
 	}
@@ -34,5 +37,13 @@ public class ProjectRepresentationEntity {
 
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	public Long getHumanIdCounter() {
+		return humanIdCounter;
+	}
+
+	public void setHumanIdCounter(Long humanIdCounter) {
+		this.humanIdCounter = humanIdCounter;
 	}
 }

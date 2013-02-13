@@ -42,7 +42,7 @@ public class SendActionToCurrentClientPostProcessor implements ActionPostProcess
 		multicastService.multicastToCurrentUserClientInSpecificProject(syncEvent, projectId);
 
 		try {
-			final User user = persistenceService.retrieveUserById(action.getReferenceId());
+			final User user = persistenceService.retrieveUserById(actionContext.getUserId());
 			multicastService.multicastToAllUsersInSpecificProject(new UserDataUpdateEvent(user), projectId);
 		}
 		catch (final NoResultFoundException e) {

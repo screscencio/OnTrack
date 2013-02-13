@@ -11,7 +11,6 @@ import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
-import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
@@ -41,8 +40,7 @@ public class ActionPostProcessmentsInitializer {
 	public synchronized void initialize() {
 		if (initialized) return;
 		postProcessingService.registerPostProcessor(getFileUploadPostProcessor(), FileUploadAction.class);
-		postProcessingService.registerPostProcessor(getSendActionToCurrentClientPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class,
-				ScopeBindHumanIdAction.class);
+		postProcessingService.registerPostProcessor(getSendActionToCurrentClientPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class);
 		postProcessingService.registerPostProcessor(getNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
 				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class, AnnotationCreateAction.class, AnnotationDeprecateAction.class,
 				TeamInviteAction.class, TeamRevogueInvitationAction.class);
@@ -52,7 +50,7 @@ public class ActionPostProcessmentsInitializer {
 
 	private synchronized ActionPostProcessor<ScopeBindReleaseAction> getScopeBindIdPostProcessor() {
 		if (scopeBindIdPostProcessor == null) {
-			scopeBindIdPostProcessor = new ScopeBindHumanIdPostProcessor();
+			scopeBindIdPostProcessor = new ScopeBindHumanIdPostProcessor(persistenceService, multicastService);
 		}
 		return scopeBindIdPostProcessor;
 	}

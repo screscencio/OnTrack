@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActi
 import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.metadata.HumanIdMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -68,6 +69,10 @@ public class ScopeRemoveAction implements ScopeAction {
 
 		for (final UserAssociationMetadata metadata : context.<UserAssociationMetadata> getMetadataList(selectedScope, UserAssociationMetadata.getType())) {
 			subActionList.add(new ScopeRemoveAssociatedUserAction(referenceId, metadata.getUser().getId()));
+		}
+
+		for (final HumanIdMetadata metadata : context.<HumanIdMetadata> getMetadataList(selectedScope, HumanIdMetadata.getType())) {
+			subActionList.add(new ScopeUnbindHumanIdAction(metadata));
 		}
 
 		subActionList.add(new ScopeDeclareProgressAction(referenceId, null));

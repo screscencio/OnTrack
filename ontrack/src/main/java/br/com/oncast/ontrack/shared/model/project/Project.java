@@ -290,4 +290,5 @@ public class Project implements Serializable, HasUUID {
 	public boolean hasDescription(final UUID subjectId) {
 		return findDescriptionFor(subjectId) != null;
 	}
+
 }

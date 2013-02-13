@@ -25,7 +25,11 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
+import br.com.oncast.ontrack.shared.model.metadata.HumanIdMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.metadata.UserAssociationMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.exceptions.MetadataNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.ReleaseFactoryTestUtil;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -293,6 +297,23 @@ public class ScopeRemoveActionTest extends ModelActionTest {
 		new ScopeRemoveAction(scopeId).execute(context, actionContext);
 
 		assertFalse(context.hasMetadata(child1Level1, UserAssociationMetadata.getType()));
+	}
+
+	@Test(expected = MetadataNotFoundException.class)
+	public void shouldRemoveAnyExistentHumanId() throws Exception {
+		final UUID metadataId = new UUID();
+		context.addMetadata(MetadataFactory.createHumanIdMetadata(metadataId, child1Level1, "humanId"));
+		new ScopeRemoveAction(child1Level1.getId()).execute(context, actionContext);
+		context.findMetadata(child1Level1, MetadataType.HUMAN_ID, metadataId);
+	}
+
+	@Test
+	public void undoShouldAddTheRemovedHumanId() throws Exception {
+		final HumanIdMetadata metadata = MetadataFactory.createHumanIdMetadata(new UUID(), child1Level1, "humanId");
+		context.addMetadata(metadata);
+		final ScopeRemoveRollbackAction undo = new ScopeRemoveAction(child1Level1.getId()).execute(context, actionContext);
+		undo.execute(context, actionContext);
+		assertEquals(metadata, context.findMetadata(child1Level1, MetadataType.HUMAN_ID, metadata.getId()));
 	}
 
 	@Override

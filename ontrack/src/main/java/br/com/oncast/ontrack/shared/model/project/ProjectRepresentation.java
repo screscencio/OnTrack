@@ -22,12 +22,16 @@ public class ProjectRepresentation implements Serializable, HasUUID, Comparable<
 	@Attribute
 	private String name;
 
+	@Attribute
+	private Long humanIdCounter;
+
 	// IMPORTANT The default constructor is used by GWT and by Mind map converter to construct new scopes. Do not remove this.
 	protected ProjectRepresentation() {}
 
 	public ProjectRepresentation(final UUID id, final String name) {
 		this.id = id;
 		this.name = name;
+		this.humanIdCounter = 0L;
 	}
 
 	public ProjectRepresentation(final String name) {
@@ -65,6 +69,10 @@ public class ProjectRepresentation implements Serializable, HasUUID, Comparable<
 	@Override
 	public int compareTo(final ProjectRepresentation o) {
 		return getName().compareTo(o.getName());
+	}
+
+	public long incrementHumanIdCounter() {
+		return ++humanIdCounter;
 	}
 
 }

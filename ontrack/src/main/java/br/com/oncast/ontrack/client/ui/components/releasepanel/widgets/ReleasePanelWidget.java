@@ -26,6 +26,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -40,6 +41,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeMoveRightAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeUnbindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -127,6 +129,8 @@ public class ReleasePanelWidget extends Composite {
 						action instanceof ScopeDeclareEffortAction ||
 						action instanceof ScopeDeclareValueAction ||
 						action instanceof ScopeBindReleaseAction ||
+						action instanceof ScopeBindHumanIdAction ||
+						action instanceof ScopeUnbindHumanIdAction ||
 						action instanceof ScopeRemoveAssociatedUserAction ||
 						action instanceof ScopeAddAssociatedUserAction ||
 						action instanceof ReleaseRemoveAction ||
