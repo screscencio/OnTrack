@@ -11,6 +11,8 @@ import br.com.oncast.ontrack.shared.model.action.FileUploadAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentCreateAction;
 import br.com.oncast.ontrack.shared.model.action.ImpedimentSolveAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.action.TeamRevogueInvitationAction;
@@ -25,6 +27,7 @@ public class ActionPostProcessmentsInitializer {
 	private NotificationCreationPostProcessor notificationCreationPostProcessor;
 	private SendActionToCurrentClientPostProcessor sendActionToCurrentClientPostProcessor;
 	private FileUploadPostProcessor fileUploadPostProcessor;
+	private ScopeBindHumanIdPostProcessor scopeBindIdPostProcessor;
 
 	public ActionPostProcessmentsInitializer(final ActionPostProcessingService actionPostProcessingService, final PersistenceService persistenceService,
 			final MulticastService multicastService, final NotificationServerService notificationServerService) {
@@ -38,11 +41,20 @@ public class ActionPostProcessmentsInitializer {
 	public synchronized void initialize() {
 		if (initialized) return;
 		postProcessingService.registerPostProcessor(getFileUploadPostProcessor(), FileUploadAction.class);
-		postProcessingService.registerPostProcessor(getSendActionToCurrentClientPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class);
+		postProcessingService.registerPostProcessor(getSendActionToCurrentClientPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class,
+				ScopeBindHumanIdAction.class);
 		postProcessingService.registerPostProcessor(getNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
 				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class, AnnotationCreateAction.class, AnnotationDeprecateAction.class,
 				TeamInviteAction.class, TeamRevogueInvitationAction.class);
+		postProcessingService.registerPostProcessor(getScopeBindIdPostProcessor(), ScopeBindReleaseAction.class);
 		initialized = true;
+	}
+
+	private synchronized ActionPostProcessor<ScopeBindReleaseAction> getScopeBindIdPostProcessor() {
+		if (scopeBindIdPostProcessor == null) {
+			scopeBindIdPostProcessor = new ScopeBindHumanIdPostProcessor();
+		}
+		return scopeBindIdPostProcessor;
 	}
 
 	public synchronized NotificationCreationPostProcessor getNotificationCreationPostProcessor() {

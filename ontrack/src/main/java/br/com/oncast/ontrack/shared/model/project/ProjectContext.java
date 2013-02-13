@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanColumn;
 import br.com.oncast.ontrack.shared.model.kanban.KanbanFactory;
 import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.HumanIdMetadata;
 import br.com.oncast.ontrack.shared.model.metadata.Metadata;
 import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.metadata.exceptions.MetadataNotFoundException;
@@ -321,5 +322,10 @@ public class ProjectContext implements HasUUID {
 
 	public boolean hasDescriptionFor(final UUID subjectId) {
 		return project.hasDescription(subjectId);
+	}
+
+	public String getHumanId(final Scope scope) {
+		final List<HumanIdMetadata> list = getMetadataList(scope, MetadataType.HUMAN_ID);
+		return list.isEmpty() ? "" : list.get(0).getHumanId();
 	}
 }

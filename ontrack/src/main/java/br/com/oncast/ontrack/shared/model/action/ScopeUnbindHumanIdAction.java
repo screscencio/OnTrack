@@ -1,0 +1,61 @@
+package br.com.oncast.ontrack.shared.model.action;
+
+import org.simpleframework.xml.Element;
+
+import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeUnbindHumanIdActionEntity;
+import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
+import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
+import br.com.oncast.ontrack.shared.model.action.helper.ActionHelper;
+import br.com.oncast.ontrack.shared.model.metadata.HasMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.HumanIdMetadata;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
+
+@ConvertTo(ScopeUnbindHumanIdActionEntity.class)
+public class ScopeUnbindHumanIdAction implements ScopeAction {
+
+	private static final long serialVersionUID = 1L;
+
+	@Element
+	private UUID scopeId;
+
+	@Element
+	private UUID metadataId;
+
+	protected ScopeUnbindHumanIdAction() {}
+
+	public ScopeUnbindHumanIdAction(final HumanIdMetadata metadata) {
+		this.metadataId = metadata.getId();
+		this.scopeId = metadata.getSubject().getId();
+	}
+
+	@Override
+	public ModelAction execute(final ProjectContext context, final ActionContext actionContext) throws UnableToCompleteActionException {
+		final HasMetadata subject = ActionHelper.findScope(scopeId, context);
+		final HumanIdMetadata metadata = ActionHelper.findMetadata(subject, MetadataType.HUMAN_ID, metadataId, context);
+		context.removeMetadata(metadata);
+		return new ScopeBindHumanIdAction(metadata);
+	}
+
+	@Override
+	public UUID getReferenceId() {
+		return scopeId;
+	}
+
+	@Override
+	public boolean changesEffortInference() {
+		return false;
+	}
+
+	@Override
+	public boolean changesProgressInference() {
+		return false;
+	}
+
+	@Override
+	public boolean changesValueInference() {
+		return false;
+	}
+
+}

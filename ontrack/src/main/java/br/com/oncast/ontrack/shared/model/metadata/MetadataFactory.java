@@ -15,4 +15,8 @@ public class MetadataFactory {
 		return new TagAssociationMetadata(metadataId, scope, tag);
 	}
 
+	public static HumanIdMetadata createHumanIdMetadata(final UUID metadataId, final Scope scope, final String humanId) {
+		return new HumanIdMetadata(metadataId, scope, humanId);
+	}
+
 }

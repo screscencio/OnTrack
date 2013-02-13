@@ -33,6 +33,7 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -80,8 +81,10 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	FocusPanel panel;
 
 	@UiField
-	// TODO use FastLabel
-	Label descriptionLabel;
+	SpanElement humanIdLabel;
+
+	@UiField
+	SpanElement descriptionLabel;
 
 	@UiField
 	FocusPanel draggableAnchor;
@@ -189,11 +192,16 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	 * @return if the description was updated.
 	 */
 	private boolean updateDescription() {
+		final String humanId = ClientServiceProvider.getCurrentProjectContext().getHumanId(scope);
+		humanIdLabel.setInnerHTML(humanId);
+		// if (humanId.isEmpty()) humanIdLabel.getStyle().setDisplay(Display.NONE);
+		// else humanIdLabel.getStyle().clearDisplay();
+
 		final String description = scope.getDescription();
 		if (description.equals(currentScopeDescription)) return false;
 		currentScopeDescription = description;
 
-		descriptionLabel.setText(currentScopeDescription);
+		descriptionLabel.setInnerHTML(currentScopeDescription);
 
 		return true;
 	}

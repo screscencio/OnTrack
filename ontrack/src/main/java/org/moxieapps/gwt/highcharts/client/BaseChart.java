@@ -87,6 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @see StockChart
  * @since 1.0.0
  */
+@SuppressWarnings("rawtypes")
 public abstract class BaseChart<T> extends Widget {
 
 	/**
@@ -1336,7 +1337,7 @@ public abstract class BaseChart<T> extends Widget {
 
 	// Helper method to avoid having to do the cast and warning handling in multiple places
 	private T returnThis() {
-		@SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" }) final T instance = (T) this;
+		@SuppressWarnings({ "unchecked" }) final T instance = (T) this;
 		return instance;
 	}
 
@@ -2643,7 +2644,6 @@ public abstract class BaseChart<T> extends Widget {
 		return new $wnd.Highcharts[chartTypeName](options);
 	}-*/;
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private boolean chartEventCallback(final JavaScriptObject nativeEvent, final String eventType) {
 		if ("click".equals(eventType) && chartClickEventHandler != null) {
 			return chartClickEventHandler.onClick(new ChartClickEvent(nativeEvent));
@@ -2659,7 +2659,6 @@ public abstract class BaseChart<T> extends Widget {
 		return true;
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private boolean seriesEventCallback(final JavaScriptObject nativeSeries, final JavaScriptObject nativeEvent, final String eventType) {
 		if ("click".equals(eventType) && seriesPlotOptions != null && seriesPlotOptions.getSeriesClickEventHandler() != null) {
 			return seriesPlotOptions.getSeriesClickEventHandler().onClick(new SeriesClickEvent(nativeEvent, nativeSeries));
@@ -2684,7 +2683,6 @@ public abstract class BaseChart<T> extends Widget {
 		return true;
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private boolean pointEventCallback(final JavaScriptObject nativePoint, final JavaScriptObject nativeEvent, final String eventType) {
 		if ("click".equals(eventType) && seriesPlotOptions != null && seriesPlotOptions.getPointClickEventHandler() != null) {
 			return seriesPlotOptions.getPointClickEventHandler().onClick(new PointClickEvent(nativeEvent, nativePoint));
@@ -2712,7 +2710,6 @@ public abstract class BaseChart<T> extends Widget {
 		return true;
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private boolean axisEventCallback(final String axisId, final JavaScriptObject nativeEvent, final String eventType) {
 		final Axis<?> axis = getAxis(axisId);
 		// noinspection SimplifiableIfStatement
@@ -2721,19 +2718,16 @@ public abstract class BaseChart<T> extends Widget {
 		return true;
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String toolTipFormatterCallback(final JavaScriptObject nativeData) {
 		if (toolTip == null || toolTip.getToolTipFormatter() == null) { return null; }
 		return toolTip.getToolTipFormatter().format(new ToolTipData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String legendLabelsFormatterCallback(final JavaScriptObject nativeData) {
 		if (legend == null || legend.getLabelsFormatter() == null) { return null; }
 		return legend.getLabelsFormatter().format(new LegendLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String xAxisLabelFormatterCallback(final JavaScriptObject nativeData, final int axisIndex) {
 		if (xAxes == null || xAxes.size() <= axisIndex ||
 				xAxes.get(axisIndex).getLabels() == null ||
@@ -2741,7 +2735,6 @@ public abstract class BaseChart<T> extends Widget {
 		return xAxes.get(axisIndex).getLabels().getFormatter().format(new AxisLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String yAxisLabelFormatterCallback(final JavaScriptObject nativeData, final int axisIndex) {
 		if (yAxes == null || yAxes.size() <= axisIndex ||
 				yAxes.get(axisIndex).getLabels() == null ||
@@ -2749,7 +2742,6 @@ public abstract class BaseChart<T> extends Widget {
 		return yAxes.get(axisIndex).getLabels().getFormatter().format(new AxisLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String yAxisStackLabelFormatterCallback(final JavaScriptObject nativeData, final int axisIndex) {
 		if (yAxes == null || yAxes.size() <= axisIndex ||
 				yAxes.get(axisIndex).getStackLabels() == null ||
@@ -2757,7 +2749,6 @@ public abstract class BaseChart<T> extends Widget {
 		return yAxes.get(axisIndex).getStackLabels().getFormatter().format(new StackLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String plotOptionsLabelsFormatterCallback(final JavaScriptObject nativeData, final String type) {
 		PlotOptions plotOptions = null;
 		if ("area".equals(type)) plotOptions = areaPlotOptions;
@@ -2778,7 +2769,6 @@ public abstract class BaseChart<T> extends Widget {
 		return plotOptions.getDataLabels().getFormatter().format(new DataLabelsData(nativeData));
 	}
 
-	@SuppressWarnings({ "UnusedDeclaration" })
 	private String seriesLabelsFormatterCallback(final JavaScriptObject nativeData, final int seriesIndex) {
 		if (seriesList == null || seriesList.size() <= seriesIndex ||
 				seriesList.get(seriesIndex).getPlotOptions() == null ||

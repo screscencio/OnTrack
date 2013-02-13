@@ -46,6 +46,7 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseScopeUpdatePriorityActio
 import br.com.oncast.ontrack.shared.model.action.ReleaseUpdatePriorityAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeAddTagAssociationAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
@@ -66,6 +67,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAssociatedUserAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveTagAssociationAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeUnbindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TagCreateAction;
 import br.com.oncast.ontrack.shared.model.action.TagRemoveAction;
@@ -73,9 +75,11 @@ import br.com.oncast.ontrack.shared.model.action.TagUpdateAction;
 import br.com.oncast.ontrack.shared.model.action.TeamInviteAction;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.color.Color;
+import br.com.oncast.ontrack.shared.model.metadata.MetadataFactory;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
+import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 import br.com.oncast.ontrack.utils.model.UserTestUtils;
 
 public class UserActionTestUtils {
@@ -175,7 +179,17 @@ public class UserActionTestUtils {
 		userActions.add(createScopeAddTagAssociationAction());
 		userActions.add(createScopeRemoveTagAssociationAction());
 		userActions.add(createScopeMoveToAction());
+		userActions.add(createScopeBindHumanIdAction());
+		userActions.add(createScopeUnbindHumanIdAction());
 		return userActions;
+	}
+
+	private static UserAction createScopeUnbindHumanIdAction() throws Exception {
+		return createUserAction(new ScopeUnbindHumanIdAction(MetadataFactory.createHumanIdMetadata(new UUID(), ScopeTestUtils.createScope(), "")));
+	}
+
+	private static UserAction createScopeBindHumanIdAction() throws Exception {
+		return createUserAction(new ScopeBindHumanIdAction(new UUID(), "id"));
 	}
 
 	private static UserAction createScopeMoveToAction() throws Exception {

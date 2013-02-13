@@ -68,8 +68,16 @@
 			height: 3px;
 		}
 		
-		.descriptionLabel {
-			padding: 10px;
+		.descriptionContainer {
+			padding: 10px 5px;
+		}
+		
+		.humanId {
+			color: white;
+			font-size: 8pt;
+			background: #C0C0C0;
+			border-radius: 4px;
+			padding: 1px 5px;
 		}
 
 		.effortLabel {
@@ -138,7 +146,10 @@
 			</g:cell>
 			<s:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
 	  		<g:cell width="100%">
-				<g:Label ui:field="descriptionLabel" styleName="{style.descriptionLabel}" />
+	  			<g:HTMLPanel styleName="{style.descriptionContainer}">
+	  				<span ui:field="humanIdLabel" class="{style.humanId}"/>
+					<span ui:field="descriptionLabel"/>
+	  			</g:HTMLPanel>
 	  		</g:cell>
   			<g:Label ui:field="effortLabel" styleName="{style.effortLabel}" />
  			<g:FocusPanel ui:field="progressIcon" styleName="{style.progressIconNotStarted} {style.progressIcon}"/>
