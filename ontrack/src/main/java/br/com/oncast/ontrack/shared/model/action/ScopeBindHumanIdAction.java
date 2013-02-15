@@ -28,7 +28,7 @@ public class ScopeBindHumanIdAction implements ScopeAction {
 	@Element
 	private UUID metadataId;
 
-	@Attribute(required = false)
+	@Attribute
 	private String humanId;
 
 	protected ScopeBindHumanIdAction() {}

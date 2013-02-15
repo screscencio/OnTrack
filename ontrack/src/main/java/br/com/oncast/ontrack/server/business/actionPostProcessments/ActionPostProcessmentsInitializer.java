@@ -48,7 +48,7 @@ public class ActionPostProcessmentsInitializer {
 		initialized = true;
 	}
 
-	private synchronized ActionPostProcessor<ScopeBindReleaseAction> getScopeBindIdPostProcessor() {
+	public synchronized ScopeBindHumanIdPostProcessor getScopeBindIdPostProcessor() {
 		if (scopeBindIdPostProcessor == null) {
 			scopeBindIdPostProcessor = new ScopeBindHumanIdPostProcessor(persistenceService, multicastService);
 		}

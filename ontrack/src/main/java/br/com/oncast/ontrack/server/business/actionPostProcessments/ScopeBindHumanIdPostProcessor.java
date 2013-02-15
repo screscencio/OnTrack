@@ -3,6 +3,8 @@ package br.com.oncast.ontrack.server.business.actionPostProcessments;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import br.com.oncast.ontrack.server.business.ServerServiceProvider;
 import br.com.oncast.ontrack.server.services.actionPostProcessing.ActionPostProcessor;
 import br.com.oncast.ontrack.server.services.multicast.MulticastService;
@@ -24,17 +26,27 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequ
 
 public class ScopeBindHumanIdPostProcessor implements ActionPostProcessor<ScopeBindReleaseAction> {
 
+	private static final Logger LOGGER = Logger.getLogger(ScopeBindHumanIdPostProcessor.class);
+
 	private final PersistenceService persistenceService;
 	private final MulticastService multicastService;
+
+	private boolean active;
 
 	public ScopeBindHumanIdPostProcessor(final PersistenceService persistenceService, final MulticastService multicastService) {
 		this.persistenceService = persistenceService;
 		this.multicastService = multicastService;
+		active = true;
 	}
 
 	@Override
 	public void process(final ScopeBindReleaseAction action, final ActionContext actionContext, final ProjectContext context)
 			throws UnableToPostProcessActionException {
+		if (!active) {
+			LOGGER.debug("Ignoring ScopeBindReleaseAction post processment of action '" + action + "': the post processor was deactivated.");
+			return;
+		}
+
 		try {
 			final Scope scope = context.findScope(action.getReferenceId());
 			if (action.isUnbinding() || !context.getMetadataList(scope, MetadataType.HUMAN_ID).isEmpty()) return;
@@ -57,5 +69,15 @@ public class ScopeBindHumanIdPostProcessor implements ActionPostProcessor<ScopeB
 		list.add(action);
 		ServerServiceProvider.getInstance().getBusinessLogic().handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, list));
 		multicastService.multicastToCurrentUserClientInSpecificProject(new ModelActionSyncEvent(projectId, list, actionContext), projectId);
+	}
+
+	public void deactivate() {
+		LOGGER.debug("Deactivating notification post processment.");
+		active = false;
+	}
+
+	public void activate() {
+		LOGGER.debug("Activating notification post processment.");
+		active = true;
 	}
 }

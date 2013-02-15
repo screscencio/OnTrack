@@ -378,8 +378,10 @@ class BusinessLogicImpl implements BusinessLogic {
 	@PostProcessActions
 	public void loadProjectForMigration(final UUID projectId) throws ProjectNotFoundException, UnableToLoadProjectException {
 		postProcessmentsControler.getNotificationCreationPostProcessor().deactivate();
+		postProcessmentsControler.getScopeBindIdPostProcessor().deactivate();
 		doLoadProject(projectId);
 		postProcessmentsControler.getNotificationCreationPostProcessor().activate();
+		postProcessmentsControler.getScopeBindIdPostProcessor().activate();
 	}
 
 	private long getCurrentTime() {
