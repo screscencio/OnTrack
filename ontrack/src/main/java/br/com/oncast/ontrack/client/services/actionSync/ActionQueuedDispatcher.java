@@ -21,10 +21,10 @@ class ActionQueuedDispatcher {
 
 	private final DispatchService requestDispatchService;
 
-	private final ClientErrorMessages messages;
 	private final List<ModelAction> actionList;
 	private List<ModelAction> waitingServerAnswerActionList;
 	private final ProjectRepresentationProvider projectRepresentationProvider;
+	private final ClientErrorMessages messages;
 	private final ClientAlertingService alertingService;
 
 	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider,
@@ -86,6 +86,8 @@ class ActionQueuedDispatcher {
 							alertingService.showErrorWithConfirmation(messages.connectionLost(), new AlertConfirmationListener() {
 								@Override
 								public void onConfirmation() {
+									// FIXME LOBO
+									Window.alert(caught.toString());
 									Window.Location.reload();
 								}
 							});

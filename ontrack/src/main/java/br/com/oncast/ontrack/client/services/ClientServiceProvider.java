@@ -26,6 +26,7 @@ import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.instruction.UserGuidService;
 import br.com.oncast.ontrack.client.services.instruction.UserGuideServiceImpl;
+import br.com.oncast.ontrack.client.services.internet.NetworkMonitoringService;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricService;
 import br.com.oncast.ontrack.client.services.metric.ClientMetricServiceNewRelicImpl;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
@@ -103,6 +104,7 @@ public class ClientServiceProvider {
 	private UserGuidService userGuidService;
 	private UserAssociationService userAssociationService;
 	private OnTrackAdminService onTrackAdminService;
+	private NetworkMonitoringService networkMonitoringService;
 
 	private static ClientServiceProvider instance;
 
@@ -130,6 +132,13 @@ public class ClientServiceProvider {
 		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), getClientStorageService());
 		getColorProviderService();
+		getInternetMonitoringService();
+	}
+
+	private NetworkMonitoringService getInternetMonitoringService() {
+		if (networkMonitoringService != null) return networkMonitoringService;
+		return networkMonitoringService = new NetworkMonitoringService(getRequestDispatchService(), getServerPushClientService(), getClientAlertingService(),
+				getClientErrorMessages());
 	}
 
 	private AuthorizationService getAuthorizationService() {

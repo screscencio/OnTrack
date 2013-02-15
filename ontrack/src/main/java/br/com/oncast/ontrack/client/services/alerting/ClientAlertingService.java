@@ -57,8 +57,8 @@ public class ClientAlertingService {
 	}
 
 	// TODO make this message alert like modal popup
-	public void showErrorWithConfirmation(final String errorMessage, final AlertConfirmationListener confirmationListener) {
-		makeConfirmationAlert(errorMessage, AlertType.ERROR, confirmationListener);
+	public ConfirmationAlertRegister showErrorWithConfirmation(final String errorMessage, final AlertConfirmationListener confirmationListener) {
+		return makeConfirmationAlert(errorMessage, AlertType.ERROR, confirmationListener);
 	}
 
 	public void showModalError(final String errorDescriptionMessage) {
@@ -113,7 +113,7 @@ public class ClientAlertingService {
 		});
 	}
 
-	private void makeConfirmationAlert(final String message, final AlertType type, final AlertConfirmationListener listener) {
+	private ConfirmationAlertRegister makeConfirmationAlert(final String message, final AlertType type, final AlertConfirmationListener listener) {
 		final Alert toast = new Alert();
 		addAlertToAlertingContainer(toast);
 
@@ -132,6 +132,15 @@ public class ClientAlertingService {
 			}
 		});
 		toast.show(message, type);
+
+		return new ConfirmationAlertRegister() {
+			@Override
+			public void hide(final boolean confirmation) {
+				ErrorMaskPanel.assureHidden();
+				removeAlertFromAlertingContainer(toast);
+				if (confirmation) listener.onConfirmation();
+			}
+		};
 	}
 
 	private void makeModalAutoCloseAlert(final String errorDescriptionMessage, final AlertType type, final int autoCloseTime) {
