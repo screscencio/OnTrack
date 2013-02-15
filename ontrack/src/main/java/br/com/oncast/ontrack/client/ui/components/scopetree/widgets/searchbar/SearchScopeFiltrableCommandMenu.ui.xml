@@ -74,7 +74,7 @@
 					<g:Label ui:field="resultInfo"/>
 				</g:SimplePanel>
 				<g:ScrollPanel ui:field="scrollPanel" styleName="{style.scrollpanel}">
-					<t:CommandMenu ui:field="menu" />
+					<t:MenuBarCommandMenu ui:field="menu" />
 				</g:ScrollPanel>
 			</g:HTMLPanel>
 		</g:HTMLPanel>

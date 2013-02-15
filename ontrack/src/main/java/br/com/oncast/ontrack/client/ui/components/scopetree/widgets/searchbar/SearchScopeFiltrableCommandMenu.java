@@ -11,8 +11,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.MenuBarCommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
+import br.com.oncast.ontrack.client.ui.generalwidgets.IncrementalAdditionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ItemSelectionHandler;
 
 import com.google.gwt.core.client.GWT;
@@ -67,7 +68,7 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	protected FocusPanel focusPanel;
 
 	@UiField
-	protected CommandMenu menu;
+	protected MenuBarCommandMenu menu;
 
 	@UiField
 	protected HTMLPanel rootPanel;
@@ -183,9 +184,21 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 		final List<CommandMenuItem> filteredItens = getFilteredItens(filterText);
 		resultInfo.setText(messages.showingMatchingResults(filteredItens.size()));
 
-		menu.setItems(filteredItens);
+		menu.setItems(filteredItens, new IncrementalAdditionListener<CommandMenuItem>() {
 
-		menu.selectFirstItem();
+			boolean first = true;
+
+			@Override
+			public void onItemAdded(final CommandMenuItem item) {
+				if (first) {
+					menu.selectFirstItem();
+					first = false;
+				}
+			}
+
+			@Override
+			public void onFinished(final boolean allItemsAdded) {}
+		});
 
 	}
 
@@ -238,9 +251,9 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 				ensureSelectedItemIsVisible();
 			}
 		});
-		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
+		menu.addCloseHandler(new CloseHandler<MenuBarCommandMenu>() {
 			@Override
-			public void onClose(final CloseEvent<CommandMenu> event) {
+			public void onClose(final CloseEvent<MenuBarCommandMenu> event) {
 				hide();
 			}
 		});

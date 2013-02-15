@@ -11,6 +11,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes;
 
@@ -42,8 +45,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private static final List<Integer> KEY_DOWN_HANDLED_KEYS = Arrays.asList(new Integer[] { KEY_DOWN, KEY_UP, KEY_TAB });
 
-	private final int maxHeight;
-
 	interface FiltrableCommandMenuUiBinder extends UiBinder<Widget, FiltrableCommandMenu> {}
 
 	private static FiltrableCommandMenuUiBinder defaultUiBinder = GWT.create(FiltrableCommandMenuUiBinder.class);
@@ -65,7 +66,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	protected FocusPanel focusPanel;
 
 	@UiField
-	protected CommandMenu menu;
+	protected MenuBarCommandMenu menu;
 
 	@UiField
 	protected TextBox filterArea;
@@ -97,7 +98,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 		initWidget(binder.createAndBindUi(this));
 		this.customItemFactory = customItemFactory;
-		this.maxHeight = maxHeight;
+		scrollPanel.getElement().getStyle().setProperty("maxHeight", maxHeight + "px");
 		focusPanel.setWidth(width + "px");
 
 		configureMenu();
@@ -114,11 +115,19 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		setOrderedItems(items);
 	}
 
+	public void setItems(final List<CommandMenuItem> items, final IncrementalAdditionListener<CommandMenuItem> listener) {
+		Collections.sort(items);
+		setOrderedItems(items, listener);
+	}
+
 	public void setOrderedItems(final List<CommandMenuItem> items) {
 		this.items = items;
 		setMenuItems(items);
+	}
 
-		adjustHeight();
+	public void setOrderedItems(final List<CommandMenuItem> items, final IncrementalAdditionListener<CommandMenuItem> listener) {
+		this.items = items;
+		setMenuItems(items, listener);
 	}
 
 	@Override
@@ -175,7 +184,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 			if (isMenuVisible) menu.selectItemDown();
 			else if (filterArea.getText().isEmpty()) {
 				setMenuVisibility(true);
-				adjustHeight();
 			}
 		}
 
@@ -208,17 +216,23 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final boolean shouldAddCustomItems = customItemFactory != null && !filterText.isEmpty() && !hasTextMatchInItemList(filteredItems, filterText);
 		if (shouldAddCustomItems) filteredItems.add(0, customItemFactory.createCustomItem(filterText));
 
-		setMenuItems(filteredItems);
-		menu.selectFirstItem();
-		if (shouldAddCustomItems) menu.selectItemDown();
+		setMenuItems(filteredItems, new IncrementalAdditionListener<CommandMenuItem>() {
 
-		adjustHeight();
+			int count = shouldAddCustomItems ? 2 : 1;
+
+			@Override
+			public void onItemAdded(final CommandMenuItem item) {
+				if (--count > 0) menu.setSelected(item);
+			}
+
+			@Override
+			public void onFinished(final boolean allItemsAdded) {}
+		});
 	}
 
 	private void setMenuVisibility(final boolean b) {
 		if (alwaysShowMenu) return;
 		if (isMenuVisible != b) scrollPanel.setVisible(isMenuVisible = b);
-		adjustHeight();
 	}
 
 	private boolean hasTextMatchInItemList(final List<CommandMenuItem> items, final String text) {
@@ -250,26 +264,8 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return;
 
-		final int menuTop = scrollPanel.getVerticalScrollPosition();
-		final int menuHeight = scrollPanel.getElement().getClientHeight();
-		final int menuBottom = menuTop + menuHeight;
-
-		final int itemTop = selectedItem.getMenuItem().getElement().getOffsetTop();
-		final int itemHeight = selectedItem.getMenuItem().getElement().getOffsetHeight();
-		final int itemBottom = selectedItem.getMenuItem().getElement().getOffsetTop() + itemHeight;
-
-		if (itemTop < menuTop) scrollPanel.setVerticalScrollPosition(itemTop - 1);
-		else if (itemBottom > menuBottom) scrollPanel.setVerticalScrollPosition(itemTop - menuHeight + itemHeight + 3);
-	}
-
-	/*
-	 * IMPORTANT Do not use max_height CSS property directly in the ui.xml file, because the first time this ScrollabeCommandMenu is
-	 * created, the CSS class which this property is set is not being loaded, causing the visibility assurance to act incorrectly.
-	 */
-	// TODO++++ Think a new way of setting the max height
-	private void adjustHeight() {
-		scrollPanel.setHeight("");
-		if (scrollPanel.getOffsetHeight() > maxHeight) scrollPanel.setHeight(maxHeight + "px");
+		WidgetVisibilityEnsurer.ensureVisible(selectedItem.getMenuItem().getElement(), scrollPanel.getElement(), Orientation.VERTICAL,
+				ContainerAlignment.BEGIN, 3);
 	}
 
 	private void eatEvent(final DomEvent<?> event) {
@@ -285,9 +281,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 				ensureSelectedItemIsVisible();
 			}
 		});
-		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
+		menu.addCloseHandler(new CloseHandler<MenuBarCommandMenu>() {
 			@Override
-			public void onClose(final CloseEvent<CommandMenu> event) {
+			public void onClose(final CloseEvent<MenuBarCommandMenu> event) {
 				filterArea.setText("");
 				setMenuVisibility(false);
 
@@ -317,13 +313,13 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@UiHandler("focusPanel")
 	protected void onAttach(final AttachEvent event) {
 		if (!event.isAttached()) return;
-		adjustHeight();
+		// adjustHeight();
 	}
 
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
-		if (visible) adjustHeight();
+		// if (visible) adjustHeight();
 	}
 
 	public FiltrableCommandMenu setLargePadding() {
@@ -339,6 +335,14 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	private void setMenuItems(final List<CommandMenuItem> items) {
 		if (items.isEmpty() && customItemFactory.getNoItemText() != null) menu.setItem(getNoItemsItem());
 		else menu.setItems(items);
+	}
+
+	private void setMenuItems(final List<CommandMenuItem> items, final IncrementalAdditionListener<CommandMenuItem> listener) {
+		if (items.isEmpty()) {
+			if (customItemFactory.getNoItemText() != null) menu.setItem(getNoItemsItem());
+			listener.onFinished(true);
+		}
+		else menu.setItems(items, listener);
 	}
 
 	private SimpleCommandMenuItem getNoItemsItem() {

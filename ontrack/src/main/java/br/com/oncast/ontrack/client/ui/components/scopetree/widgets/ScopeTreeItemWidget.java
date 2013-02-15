@@ -26,6 +26,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.IncrementalAdditionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
@@ -480,7 +481,19 @@ public class ScopeTreeItemWidget extends Composite {
 		}
 
 		final CommandMenuItem scopeReleaseItemFinal = scopeReleaseItem;
-		final FiltrableCommandMenu commandsMenu = createCommandMenu(items, releaseCommandMenuItemFactory, 250, 264);
+		final FiltrableCommandMenu commandsMenu = createCommandMenu(releaseCommandMenuItemFactory, 250, 264);
+
+		commandsMenu.setOrderedItems(items, new IncrementalAdditionListener<CommandMenuItem>() {
+			@Override
+			public void onItemAdded(final CommandMenuItem item) {
+				if (item.equals(scopeReleaseItemFinal)) {
+					commandsMenu.setSelected(scopeReleaseItemFinal);
+				}
+			}
+
+			@Override
+			public void onFinished(final boolean allItemsAdded) {}
+		});
 
 		commandsMenu.addCloseHandler(createCloseHandler());
 
@@ -488,15 +501,6 @@ public class ScopeTreeItemWidget extends Composite {
 				.popup(commandsMenu)
 				.pop();
 
-		if (scopeReleaseItem != null) {
-
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					commandsMenu.setSelected(scopeReleaseItemFinal);
-				}
-			});
-		}
 	}
 
 	private Release getProjectRelease() {
@@ -604,6 +608,17 @@ public class ScopeTreeItemWidget extends Composite {
 
 		if (widget.isVisible()) return config.alignHorizontal(CENTER, new AlignmentReference(widget, CENTER));
 		else return config.alignHorizontal(RIGHT, new AlignmentReference(descriptionLabel, RIGHT));
+	}
+
+	private FiltrableCommandMenu createCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
+		final FiltrableCommandMenu menu = new FiltrableCommandMenu(customItemFactory, maxWidth, maxHeight);
+		menu.addCloseHandler(new CloseHandler<FiltrableCommandMenu>() {
+			@Override
+			public void onClose(final CloseEvent<FiltrableCommandMenu> event) {
+				editionHandler.onEditionMenuClose();
+			}
+		});
+		return menu;
 	}
 
 	private FiltrableCommandMenu createCommandMenu(final List<CommandMenuItem> itens, final CustomCommandMenuItemFactory customItemFactory,

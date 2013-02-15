@@ -91,7 +91,7 @@
 				</g:cell>
 			</g:HorizontalPanel>
 			<g:ScrollPanel ui:field="scrollPanel">
-				<misc:CommandMenu ui:field="menu" styleName="{style.menu}" />
+				<misc:MenuBarCommandMenu ui:field="menu" styleName="{style.menu}" />
 			</g:ScrollPanel>
 		</layout:ApplicationPopupBoxContainer>
 	</g:FocusPanel>

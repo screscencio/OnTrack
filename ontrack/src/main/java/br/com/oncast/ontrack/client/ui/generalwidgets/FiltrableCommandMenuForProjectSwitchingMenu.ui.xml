@@ -101,7 +101,7 @@
 			</g:HorizontalPanel>
 			<g:SimplePanel styleName="{style.separator}"/>
 			<g:ScrollPanel ui:field="scrollPanel" styleName="{style.scroll}">
-				<misc:CommandMenu ui:field="menu" styleName="{style.menu}" />
+				<misc:MenuBarCommandMenu ui:field="menu" styleName="{style.menu}" />
 			</g:ScrollPanel>
 		</layout:ApplicationPopupBoxContainer>
 	</g:FocusPanel>

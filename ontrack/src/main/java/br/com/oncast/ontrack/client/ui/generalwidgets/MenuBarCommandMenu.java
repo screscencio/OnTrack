@@ -30,11 +30,11 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CommandMenu extends Composite implements HasCloseHandlers<CommandMenu>, PopupAware {
+public class MenuBarCommandMenu extends Composite implements HasCloseHandlers<MenuBarCommandMenu>, PopupAware {
 
-	private static CommandMenuUiBinder uiBinder = GWT.create(CommandMenuUiBinder.class);
+	private static MenuBarCommandMenuUiBinder uiBinder = GWT.create(MenuBarCommandMenuUiBinder.class);
 
-	interface CommandMenuUiBinder extends UiBinder<Widget, CommandMenu> {}
+	interface MenuBarCommandMenuUiBinder extends UiBinder<Widget, MenuBarCommandMenu> {}
 
 	@UiField
 	protected MenuBar menu;
@@ -53,7 +53,7 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 		return new MenuBar(true);
 	}
 
-	public CommandMenu() {
+	public MenuBarCommandMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
 		itemsMap = new HashMap<MenuItem, CommandMenuItem>();
 		menu.setAnimationEnabled(true);
@@ -77,21 +77,29 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 		itemsMap.clear();
 		previousItems = items;
 
-		final Iterator<CommandMenuItem> iterator = items.iterator();
-
-		// TODO remove this by using a callback
-		// IMPORTANT Should try to add the first two items so the filtrableCommandMenu can select it.
-		for (int i = 0; i < 2; i++) {
-			if (!iterator.hasNext()) return;
-			addItem(iterator.next());
+		for (final CommandMenuItem commandMenuItem : items) {
+			addItem(commandMenuItem);
 		}
+	}
+
+	public void setItems(final List<CommandMenuItem> items, final IncrementalAdditionListener<CommandMenuItem> listener) {
+		menu.clearItems();
+		itemsMap.clear();
+		previousItems = items;
+
+		final Iterator<CommandMenuItem> iterator = items.iterator();
 
 		Scheduler.get().scheduleIncremental(new RepeatingCommand() {
 			@Override
 			public boolean execute() {
-				if (previousItems != items || !iterator.hasNext()) return false;
+				if (previousItems != items || !iterator.hasNext()) {
+					listener.onFinished(!iterator.hasNext());
+					return false;
+				}
 
-				addItem(iterator.next());
+				final CommandMenuItem item = iterator.next();
+				addItem(item);
+				listener.onItemAdded(item);
 				return true;
 			}
 		});
@@ -138,7 +146,7 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 	}
 
 	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<CommandMenu> handler) {
+	public HandlerRegistration addCloseHandler(final CloseHandler<MenuBarCommandMenu> handler) {
 		return addHandler(handler, CloseEvent.getType());
 	}
 
@@ -179,4 +187,5 @@ public class CommandMenu extends Composite implements HasCloseHandlers<CommandMe
 	public void focus() {
 		menu.focus();
 	}
+
 }
