@@ -60,6 +60,18 @@
 					<gs:ScopeAssociatedMembersWidget ui:field="associatedUsers" />
 				</g:customCell>
 			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="human id label">Id:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="humanId" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			
 			<g:row>
 				<g:customCell horizontalAlignment="right">
 					<g:Label styleName="{style.detailLabel}">

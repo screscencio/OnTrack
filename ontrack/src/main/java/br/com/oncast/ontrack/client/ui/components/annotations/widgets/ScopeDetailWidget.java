@@ -48,6 +48,9 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 	HasText parent;
 
 	@UiField
+	HasText humanId;
+
+	@UiField
 	HasText effort;
 
 	@UiField
@@ -124,6 +127,7 @@ public class ScopeDetailWidget extends Composite implements SubjectDetailWidget 
 
 	private void update() {
 		this.parent.setText(scope.isRoot() ? messages.none() : scope.getParent().getDescription());
+		this.humanId.setText(ClientServiceProvider.getCurrentProjectContext().getHumanId(scope));
 		this.effort.setText(formatProgressText(scope.getEffort().getAccomplished(), scope.getEffort().getInfered(), " ep"));
 		this.value.setText(formatProgressText(scope.getValue().getAccomplished(), scope.getValue().getInfered(), " vp"));
 		final String progress = scope.getProgress().getDescription();
