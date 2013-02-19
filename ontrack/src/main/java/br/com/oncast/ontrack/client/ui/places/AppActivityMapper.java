@@ -1,9 +1,9 @@
 package br.com.oncast.ontrack.client.ui.places;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.places.admin.OnTrackStatisticsPlace;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
+import br.com.oncast.ontrack.client.ui.places.metrics.OnTrackMetricsPlace;
 import br.com.oncast.ontrack.client.ui.places.organization.OrganizationPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
@@ -52,7 +52,7 @@ public class AppActivityMapper implements ActivityMapper {
 		if (place instanceof ProjectCreationPlace) return activityFactory.getProjectCreationPlace((ProjectCreationPlace) place);
 		if (place instanceof ProgressPlace) return activityFactory.getProgressActivity((ProgressPlace) place);
 		if (place instanceof OrganizationPlace) return activityFactory.getOrganizationActivity((OrganizationPlace) place);
-		if (place instanceof OnTrackStatisticsPlace) return activityFactory.getOnTrackStatisticsActivity();
+		if (place instanceof OnTrackMetricsPlace) return activityFactory.getOnTrackStatisticsActivity();
 
 		return null;
 	}

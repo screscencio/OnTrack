@@ -20,7 +20,6 @@ public class ContextLoadingActivity extends AbstractActivity {
 	private final ProjectDependentPlace projectDependentPlace;
 
 	public ContextLoadingActivity(final ProjectDependentPlace destinationPlace) {
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		this.projectDependentPlace = destinationPlace;
 	}
 
@@ -62,7 +61,6 @@ public class ContextLoadingActivity extends AbstractActivity {
 	private void validateGatheredData() {
 		if (!SERVICE_PROVIDER.getContextProviderService().isContextAvailable(projectDependentPlace.getRequestedProjectId())) return;
 
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 		SERVICE_PROVIDER.getApplicationPlaceController().goTo(projectDependentPlace);
 	}
 

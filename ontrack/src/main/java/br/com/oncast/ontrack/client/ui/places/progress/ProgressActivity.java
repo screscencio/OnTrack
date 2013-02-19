@@ -55,7 +55,6 @@ public class ProgressActivity extends AbstractActivity {
 		requestedReleaseId = place.getRequestedReleaseId();
 
 		registrations = new ArrayList<HandlerRegistration>();
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 
 		try {
 			projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(requestedProjectId);
@@ -83,7 +82,6 @@ public class ProgressActivity extends AbstractActivity {
 			}, ClientServiceProvider.getInstance().getClientErrorMessages());
 		}
 		catch (final ReleaseNotFoundException e) {
-			ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 			exitToPlanningPlace();
 		}
 	}
@@ -119,8 +117,6 @@ public class ProgressActivity extends AbstractActivity {
 				}
 			}
 		}));
-
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 
 		registrations.add(ClientServiceProvider.getInstance().getEventBus()
 				.addHandler(ScopeSelectionEvent.getType(), new ScopeSelectionEventHandler() {

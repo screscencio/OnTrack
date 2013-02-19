@@ -1,14 +1,18 @@
-package br.com.oncast.ontrack.client.ui.places.admin;
+package br.com.oncast.ontrack.client.ui.places.metrics;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.moxieapps.gwt.highcharts.client.Axis.Type;
 import org.moxieapps.gwt.highcharts.client.Chart;
 import org.moxieapps.gwt.highcharts.client.Legend;
+import org.moxieapps.gwt.highcharts.client.Legend.Align;
+import org.moxieapps.gwt.highcharts.client.Legend.VerticalAlign;
 import org.moxieapps.gwt.highcharts.client.Point;
 import org.moxieapps.gwt.highcharts.client.Series;
 import org.moxieapps.gwt.highcharts.client.ToolTip;
@@ -16,18 +20,25 @@ import org.moxieapps.gwt.highcharts.client.ToolTipData;
 import org.moxieapps.gwt.highcharts.client.ToolTipFormatter;
 import org.moxieapps.gwt.highcharts.client.events.PointMouseOverEvent;
 import org.moxieapps.gwt.highcharts.client.events.PointMouseOverEventHandler;
+import org.moxieapps.gwt.highcharts.client.labels.DataLabelsData;
+import org.moxieapps.gwt.highcharts.client.labels.DataLabelsFormatter;
+import org.moxieapps.gwt.highcharts.client.labels.PieDataLabels;
 import org.moxieapps.gwt.highcharts.client.plotOptions.LinePlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
+import org.moxieapps.gwt.highcharts.client.plotOptions.PiePlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.services.admin.OnTrackServerStatistics;
-import br.com.oncast.ontrack.client.services.admin.OnTrackServerStatisticsBag;
+import br.com.oncast.ontrack.client.ui.places.metrics.widgets.ProjectMetricsWidget;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetricsBag;
+import br.com.oncast.ontrack.shared.services.metrics.ProjectMetrics;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -39,11 +50,12 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class OnTrackStatisticsPanel extends Composite {
+public class OnTrackMetricsPanel extends Composite {
 
 	private static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyy/MM/dd - HH:mm:ss");
 
@@ -51,7 +63,7 @@ public class OnTrackStatisticsPanel extends Composite {
 
 	private static OnTrackStatisticsPanelUiBinder uiBinder = GWT.create(OnTrackStatisticsPanelUiBinder.class);
 
-	interface OnTrackStatisticsPanelUiBinder extends UiBinder<Widget, OnTrackStatisticsPanel> {}
+	interface OnTrackStatisticsPanelUiBinder extends UiBinder<Widget, OnTrackMetricsPanel> {}
 
 	@UiField
 	TextBox autoUpdateIntervalTextBox;
@@ -68,6 +80,12 @@ public class OnTrackStatisticsPanel extends Composite {
 	@UiField
 	FocusPanel usagePanel;
 
+	@UiField
+	FocusPanel actionsPanel;
+
+	@UiField
+	FlowPanel projectsPanel;
+
 	private Series onlineUsersSeries;
 
 	private Series activeConnectionsSeries;
@@ -78,11 +96,13 @@ public class OnTrackStatisticsPanel extends Composite {
 
 	private Series projectsCountSeries;
 
-	private final OnTrackServerStatisticsBag statisticsList;
+	private final OnTrackServerMetricsBag metricsList;
 
-	private final Map<Long, OnTrackServerStatistics> statisticsCache;
+	private final Map<Long, OnTrackServerMetrics> metricsCache;
 
 	private final Map<String, User> usersCache;
+
+	private final Map<String, ProjectMetricsWidget> projects;
 
 	private final Timer autoUpdateTimer = new Timer() {
 		@Override
@@ -91,16 +111,19 @@ public class OnTrackStatisticsPanel extends Composite {
 		}
 	};
 
-	private float autoUpdateInterval = 60;
+	private float autoUpdateInterval = 3 * 60;
 
 	private Chart usageChart;
 
 	private Chart clientsChart;
 
-	public OnTrackStatisticsPanel() {
-		statisticsCache = new HashMap<Long, OnTrackServerStatistics>();
+	private Chart actionsRatioChart;
+
+	public OnTrackMetricsPanel() {
+		projects = new HashMap<String, ProjectMetricsWidget>();
+		metricsCache = new HashMap<Long, OnTrackServerMetrics>();
 		usersCache = new HashMap<String, User>();
-		statisticsList = ClientServiceProvider.getInstance().getClientStorageService().loadOnTrackServerStatisticsList();
+		metricsList = ClientServiceProvider.getInstance().getClientStorageService().loadOnTrackServerMetricsList();
 		initWidget(uiBinder.createAndBindUi(this));
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -134,8 +157,10 @@ public class OnTrackStatisticsPanel extends Composite {
 
 	@UiHandler("wipeLocalData")
 	void onWipeLocalDataClick(final ClickEvent e) {
-		statisticsCache.clear();
-		statisticsList.getStatisticsList().clear();
+		metricsCache.clear();
+		metricsList.getStatisticsList().clear();
+		projects.clear();
+		projectsPanel.clear();
 		storeStatistics();
 
 		initCharts();
@@ -146,14 +171,17 @@ public class OnTrackStatisticsPanel extends Composite {
 		update();
 	}
 
-	private void updateView(final OnTrackServerStatistics statistic) {
+	private void updateView(final OnTrackServerMetrics statistic) {
 		onlineUsersSeries.addPoint(getOnlineUsersPoint(statistic));
 		activeConnectionsSeries.addPoint(getActiveConnectionsPoint(statistic));
 		actionsPerHourSeries.addPoint(getActionsPerHourPoint(statistic));
 		usersCountSeries.addPoint(getUsersCountPoint(statistic));
 		projectsCountSeries.addPoint(getProjectsCountPoint(statistic));
 
-		statisticsCache.put(statistic.getTimestamp().getTime(), statistic);
+		updateActionsRatioChart(statistic);
+		updateProjectsStatistics(statistic);
+
+		metricsCache.put(statistic.getTimestamp().getTime(), statistic);
 
 		for (final String user : statistic.getOnlineUsers()) {
 			ClientServiceProvider.getInstance().getUserDataService().loadRealUser(new UUID(user), new AsyncCallback<User>() {
@@ -166,18 +194,41 @@ public class OnTrackStatisticsPanel extends Composite {
 				}
 			});
 		}
+	}
 
+	private void updateProjectsStatistics(final OnTrackServerMetrics statistic) {
+		final List<ProjectMetrics> activeProjectsMetrics = statistic.getActiveProjectsMetrics();
+		if (activeProjectsMetrics == null) return;
+		for (final ProjectMetrics metrics : activeProjectsMetrics) {
+			final String projectName = metrics.getProjectName();
+			if (projects.containsKey(projectName)) projects.get(projectName).removeFromParent();
+
+			final ProjectMetricsWidget widget = new ProjectMetricsWidget(metrics);
+			projects.put(projectName, widget);
+			projectsPanel.add(widget);
+		}
+	}
+
+	private void updateActionsRatioChart(final OnTrackServerMetrics statistic) {
+		actionsRatioChart.removeAllSeries();
+		final Series series = actionsRatioChart.createSeries();
+		final Map<String, Integer> actionsMap = statistic.getActionsRatio();
+		if (actionsMap == null) return;
+		for (final Entry<String, Integer> e : actionsMap.entrySet()) {
+			series.addPoint(new Point(e.getKey(), e.getValue()));
+		}
+		actionsRatioChart.addSeries(series);
 	}
 
 	private void update() {
 		setOptionsEnabled(false);
-		ClientServiceProvider.getInstance().getOnTrackAdminService().getStatistics(new AsyncCallback<OnTrackServerStatistics>() {
+		ClientServiceProvider.getInstance().getClientMetricsService().getMetrics(new AsyncCallback<OnTrackServerMetrics>() {
 
 			@Override
-			public void onSuccess(final OnTrackServerStatistics statistic) {
+			public void onSuccess(final OnTrackServerMetrics statistic) {
 				updateView(statistic);
 				setOptionsEnabled(true);
-				final List<OnTrackServerStatistics> list = statisticsList.getStatisticsList();
+				final List<OnTrackServerMetrics> list = metricsList.getStatisticsList();
 				final int size = list.size();
 				if (size > 1 && hasSameAttributes(list.get(size - 1), statistic) && hasSameAttributes(list.get(size - 2), statistic)) {
 					list.remove(size - 1);
@@ -186,7 +237,7 @@ public class OnTrackStatisticsPanel extends Composite {
 				storeStatistics();
 			}
 
-			private boolean hasSameAttributes(final OnTrackServerStatistics o1, final OnTrackServerStatistics o2) {
+			private boolean hasSameAttributes(final OnTrackServerMetrics o1, final OnTrackServerMetrics o2) {
 				boolean equals = o1.getActiveConnectionsCount() == o2.getActiveConnectionsCount();
 				equals &= o1.getOnlineUsers().size() == o2.getOnlineUsers().size();
 				equals &= o1.getOnlineUsers().containsAll(o2.getOnlineUsers());
@@ -210,23 +261,35 @@ public class OnTrackStatisticsPanel extends Composite {
 	private void initCharts() {
 		createClientsChart();
 		createUsageChart();
+		createActionsRatioChart();
 
-		for (final OnTrackServerStatistics statistic : statisticsList.getStatisticsList()) {
-			updateView(statistic);
-		}
+		final Iterator<OnTrackServerMetrics> it = metricsList.getStatisticsList().iterator();
+		Scheduler.get().scheduleIncremental(new RepeatingCommand() {
+			@Override
+			public boolean execute() {
+				if (!it.hasNext()) {
+					update();
 
-		update();
+					autoUpdateTimer.cancel();
+					autoUpdateTimer.scheduleRepeating((int) (autoUpdateInterval * SECOND));
+					autoUpdateIntervalTextBox.setText("" + autoUpdateInterval);
 
-		autoUpdateTimer.cancel();
-		autoUpdateTimer.scheduleRepeating((int) (autoUpdateInterval * SECOND));
-		autoUpdateIntervalTextBox.setText("" + autoUpdateInterval);
+					return false;
+				}
+
+				updateView(it.next());
+				return true;
+			}
+		});
 	}
 
 	private void createClientsChart() {
 		clientsChart = new Chart()
 				.setChartTitleText("Clients")
 				.setLegend(new Legend()
-						.setEnabled(false))
+						.setAlign(Align.RIGHT)
+						.setVerticalAlign(VerticalAlign.TOP)
+						.setFloating(true))
 				.setSeriesPlotOptions(new SeriesPlotOptions()
 						.setPointMouseOverEventHandler(new PointMouseOverEventHandler() {
 							@Override
@@ -247,7 +310,7 @@ public class OnTrackStatisticsPanel extends Composite {
 							@Override
 							public String format(final ToolTipData toolTipData) {
 								final long timestamp = toolTipData.getXAsLong();
-								final OnTrackServerStatistics statistic = statisticsCache.get(timestamp);
+								final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
 								final Set<String> onlineUsers = statistic.getOnlineUsers();
 								String toolTip = formatTime(timestamp) +
 										"<br/><b>Active Connections:</b> " + statistic.getActiveConnectionsCount() +
@@ -275,6 +338,7 @@ public class OnTrackStatisticsPanel extends Composite {
 		onlineUsersSeries = clientsChart.createSeries()
 				.setName("Online Users")
 				.setPlotOptions(new LinePlotOptions()
+						.setMarker(new Marker().setEnabled(false))
 						.setColor("#4444ff")
 						.setLineWidth(1));
 
@@ -295,7 +359,9 @@ public class OnTrackStatisticsPanel extends Composite {
 		usageChart = new Chart()
 				.setChartTitleText("Server Usage")
 				.setLegend(new Legend()
-						.setEnabled(false))
+						.setAlign(Align.RIGHT)
+						.setVerticalAlign(VerticalAlign.TOP)
+						.setFloating(true))
 				.setSeriesPlotOptions(new SeriesPlotOptions()
 						.setPointMouseOverEventHandler(new PointMouseOverEventHandler() {
 							@Override
@@ -316,7 +382,7 @@ public class OnTrackStatisticsPanel extends Composite {
 							@Override
 							public String format(final ToolTipData toolTipData) {
 								final long timestamp = toolTipData.getXAsLong();
-								final OnTrackServerStatistics statistic = statisticsCache.get(timestamp);
+								final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
 								final String toolTip = formatTime(timestamp) +
 										"<br/><b>Actions / Hour:</b> " + statistic.getActionsPerHour() +
 										"<br/><b>Users Count:</b> " + statistic.getUsersCount() +
@@ -339,18 +405,21 @@ public class OnTrackStatisticsPanel extends Composite {
 		actionsPerHourSeries = usageChart.createSeries()
 				.setName("Actions / Hour")
 				.setPlotOptions(new LinePlotOptions()
+						.setMarker(new Marker().setEnabled(false))
 						.setColor("#44CC44")
 						.setLineWidth(1));
 
 		usersCountSeries = usageChart.createSeries()
 				.setName("Total Users")
 				.setPlotOptions(new LinePlotOptions()
+						.setMarker(new Marker().setEnabled(false))
 						.setColor("#CC44CC")
 						.setLineWidth(1));
 
 		projectsCountSeries = usageChart.createSeries()
 				.setName("Total Users")
 				.setPlotOptions(new LinePlotOptions()
+						.setMarker(new Marker().setEnabled(false))
 						.setColor("#CCCC44")
 						.setLineWidth(1));
 
@@ -359,6 +428,29 @@ public class OnTrackStatisticsPanel extends Composite {
 		usageChart.addSeries(projectsCountSeries);
 
 		usagePanel.setWidget(usageChart);
+	}
+
+	private void createActionsRatioChart() {
+		actionsRatioChart = new Chart()
+				.setType(Series.Type.PIE)
+				.setChartTitleText("Actions")
+				.setPiePlotOptions(new PiePlotOptions()
+						.setPieDataLabels(new PieDataLabels()
+								.setConnectorColor("#000000")
+								.setEnabled(true)
+								.setColor("#000000")
+								.setFormatter(new DataLabelsFormatter() {
+									@Override
+									public String format(final DataLabelsData dataLabelsData) {
+										return "<b>" + dataLabelsData.getPointName() + "</b>: " + dataLabelsData.getYAsLong() + " actions";
+									}
+								})
+						)
+				)
+				.setToolTip(new ToolTip()
+						.setEnabled(false)
+				);
+		actionsPanel.setWidget(actionsRatioChart);
 	}
 
 	private void updateToolTip(final int pointIndex) {
@@ -372,27 +464,27 @@ public class OnTrackStatisticsPanel extends Composite {
 		autoUpdateIntervalTextBox.setEnabled(enabled);
 	}
 
-	private Point getOnlineUsersPoint(final OnTrackServerStatistics statistic) {
+	private Point getOnlineUsersPoint(final OnTrackServerMetrics statistic) {
 		return createPoint(statistic, statistic.getOnlineUsers().size());
 	}
 
-	private Point getActiveConnectionsPoint(final OnTrackServerStatistics statistic) {
+	private Point getActiveConnectionsPoint(final OnTrackServerMetrics statistic) {
 		return createPoint(statistic, statistic.getActiveConnectionsCount());
 	}
 
-	private Point getActionsPerHourPoint(final OnTrackServerStatistics statistic) {
+	private Point getActionsPerHourPoint(final OnTrackServerMetrics statistic) {
 		return createPoint(statistic, statistic.getActionsPerHour());
 	}
 
-	private Point getUsersCountPoint(final OnTrackServerStatistics statistic) {
+	private Point getUsersCountPoint(final OnTrackServerMetrics statistic) {
 		return createPoint(statistic, statistic.getUsersCount());
 	}
 
-	private Point getProjectsCountPoint(final OnTrackServerStatistics statistic) {
+	private Point getProjectsCountPoint(final OnTrackServerMetrics statistic) {
 		return createPoint(statistic, statistic.getProjectsCount());
 	}
 
-	private Point createPoint(final OnTrackServerStatistics statistic, final Number number) {
+	private Point createPoint(final OnTrackServerMetrics statistic, final Number number) {
 		return new Point(statistic.getTimestamp().getTime(), number);
 	}
 
@@ -401,7 +493,7 @@ public class OnTrackStatisticsPanel extends Composite {
 	}
 
 	private void storeStatistics() {
-		ClientServiceProvider.getInstance().getClientStorageService().appendOnTrackServerStatistics(statisticsList);
+		ClientServiceProvider.getInstance().getClientStorageService().appendOnTrackServerMetrics(metricsList);
 	}
 
 }

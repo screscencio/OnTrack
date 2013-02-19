@@ -1,0 +1,50 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style>
+	
+		.container {
+			background: #fafafa;
+			border: 1px solid black;
+			border-radius: 5px;
+			padding: 5px;
+			width: 180px;
+			color: black;
+			
+			display: inline-block;
+			margin-right: 10px;
+		}
+		
+		.container:last-child{
+			margin-right: 0px;
+		}
+		
+		.projectName {
+			font-size: 12pt;
+			font-weight: bold;
+			text-transform: uppercase;
+			width: 100%;
+			text-align: center;
+		}
+		
+	</ui:style>
+	
+	<g:HTMLPanel styleName="{style.container}">
+		<p ui:field="projectName" class="{style.projectName}"/>
+		<p>
+			Total users: <span ui:field="usersCount"/>
+		</p>
+		<p>
+			Total scopes: <span ui:field="scopesCount"/><br/>
+			Scopes depth: <span ui:field="scopesDepth"/><br/>
+		</p>
+			
+		<p>
+			Total releases: <span ui:field="releasesCount"/><br/>
+			Releases depth: <span ui:field="releasesDepth"/><br/>
+			Releases duration: <span ui:field="releasesDuration"/><br/>
+			Stories per release: <span ui:field="storiesPerRelease"/><br/>
+		</p>			
+	</g:HTMLPanel>
+</ui:UiBinder> 

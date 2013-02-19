@@ -45,7 +45,6 @@ public class PlanningActivity extends AbstractActivity {
 		requestedProjectId = place.getRequestedProjectId();
 		selectedScopeId = place.getSelectedScopeId();
 		filteredTagId = place.getTagId();
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		activityActionExecutionListener = new ActivityActionExecutionListener();
 		mouseHelper = new ScopeTreeMouseHelper();
 	}
@@ -95,7 +94,6 @@ public class PlanningActivity extends AbstractActivity {
 		mouseHelper.register(eventBus, actionExecutionService, view.getScopeTree().getScopeTreeInternalActionHandler(), projectContext, view.getScopeTree()
 				.getSelected());
 
-		SERVICE_PROVIDER.getClientMetricService().onBrowserLoadEnd();
 	}
 
 	private Release getFirstReleaseInProgress(final ProjectContext context) {

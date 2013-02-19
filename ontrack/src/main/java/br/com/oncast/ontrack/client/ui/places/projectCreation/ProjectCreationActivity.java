@@ -23,7 +23,6 @@ public class ProjectCreationActivity extends AbstractActivity {
 	private final ProjectCreationPlace projectCreationPlace;
 
 	public ProjectCreationActivity(final ProjectCreationPlace projectCreationPlace) {
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		this.projectCreationPlace = projectCreationPlace;
 	}
 
@@ -69,7 +68,6 @@ public class ProjectCreationActivity extends AbstractActivity {
 					}
 				});
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override

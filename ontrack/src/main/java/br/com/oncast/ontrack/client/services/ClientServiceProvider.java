@@ -7,7 +7,6 @@ import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
-import br.com.oncast.ontrack.client.services.admin.OnTrackAdminService;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateServiceImpl;
@@ -26,8 +25,8 @@ import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.instruction.UserGuidService;
 import br.com.oncast.ontrack.client.services.instruction.UserGuideServiceImpl;
-import br.com.oncast.ontrack.client.services.metric.ClientMetricService;
-import br.com.oncast.ontrack.client.services.metric.ClientMetricServiceNewRelicImpl;
+import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
+import br.com.oncast.ontrack.client.services.metrics.ClientMetricsServiceImpl;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -95,14 +94,13 @@ public class ClientServiceProvider {
 	private UserDataService userDataService;
 	private ChecklistService checklistService;
 	private ClientStorageService clientStorageService;
-	private ClientMetricService clientMetricService;
 	private UsersStatusService usersStatusService;
 	private ColorProviderService colorProviderService;
 
 	private ClientErrorMessages clientErrorMessages;
 	private UserGuidService userGuidService;
 	private UserAssociationService userAssociationService;
-	private OnTrackAdminService onTrackAdminService;
+	private ClientMetricsService clientMetricsService;
 
 	private static ClientServiceProvider instance;
 
@@ -232,11 +230,6 @@ public class ClientServiceProvider {
 		return checklistService;
 	}
 
-	public ClientMetricService getClientMetricService() {
-		if (clientMetricService == null) clientMetricService = new ClientMetricServiceNewRelicImpl();
-		return clientMetricService;
-	}
-
 	public NotificationService getNotificationService() {
 		if (notificationService == null) notificationService = new NotificationService(getRequestDispatchService(), getServerPushClientService(),
 				getProjectRepresentationProvider(), getClientAlertingService());
@@ -281,7 +274,7 @@ public class ClientServiceProvider {
 		return getInstance().getAuthenticationService().getCurrentUserId();
 	}
 
-	public OnTrackAdminService getOnTrackAdminService() {
-		return onTrackAdminService == null ? onTrackAdminService = new OnTrackAdminService(getRequestDispatchService()) : onTrackAdminService;
+	public ClientMetricsService getClientMetricsService() {
+		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(getRequestDispatchService()) : clientMetricsService;
 	}
 }

@@ -7,5 +7,5 @@ public class PlacesPrefixes {
 	public static final String DETAIL = "Detail";
 	public static final String ORGANIZATION = "Organization";
 	public static final String ARGUMENT_SEPARATOR = ":";
-	public static final String ADMIN = "Admin";
+	public static final String METRICS = "Metrics";
 }

@@ -8,14 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.oncast.ontrack.client.services.admin.OnTrackServerStatistics;
-import br.com.oncast.ontrack.client.services.admin.OnTrackServerStatisticsBag;
 import br.com.oncast.ontrack.client.services.authentication.AuthenticationService;
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvider;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.client.ui.settings.ViewSettings.ScopeTreeColumn;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetricsBag;
+import br.com.oncast.ontrack.shared.services.metrics.OnTrackStatisticsFactory;
 
 import com.google.common.base.Joiner;
 import com.google.gwt.core.client.GWT;
@@ -29,7 +30,7 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	private static final String SEPARATOR = ".";
 	private static final String PREFIX = "OnTrack" + SEPARATOR;
 
-	private static final ClientStorageFactory FACTORY = GWT.create(ClientStorageFactory.class);
+	private static final OnTrackStatisticsFactory FACTORY = GWT.create(OnTrackStatisticsFactory.class);
 
 	private final Storage storage;
 	private final AuthenticationService authenticationService;
@@ -174,31 +175,31 @@ public class Html5StorageClientStorageService implements ClientStorageService {
 	}
 
 	@Override
-	public void appendOnTrackServerStatistics(final OnTrackServerStatisticsBag statistics) {
+	public void appendOnTrackServerMetrics(final OnTrackServerMetricsBag metrics) {
 		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
-		setItem(key, serialize(statistics));
+		setItem(key, serialize(metrics));
 	}
 
 	@Override
-	public OnTrackServerStatisticsBag loadOnTrackServerStatisticsList() {
+	public OnTrackServerMetricsBag loadOnTrackServerMetricsList() {
 		final String key = getCurrentUserStorageKey(ClientStorageColumnNames.SERVER_STATISTICS);
 		final String item = getItem(key);
 		if (item == null || item.isEmpty()) {
-			final OnTrackServerStatisticsBag bag = FACTORY.onTrackServerStatisticsBag().as();
-			bag.setStatisticsList(new ArrayList<OnTrackServerStatistics>());
+			final OnTrackServerMetricsBag bag = FACTORY.createOnTrackServerMetricsBag().as();
+			bag.setStatisticsList(new ArrayList<OnTrackServerMetrics>());
 			return bag;
 		}
 
 		return deserialize(item);
 	}
 
-	public static String serialize(final OnTrackServerStatisticsBag serializable) {
-		final AutoBean<OnTrackServerStatisticsBag> bean = AutoBeanUtils.getAutoBean(serializable);
+	public static String serialize(final OnTrackServerMetricsBag serializable) {
+		final AutoBean<OnTrackServerMetricsBag> bean = AutoBeanUtils.getAutoBean(serializable);
 		return AutoBeanCodex.encode(bean).getPayload();
 	}
 
-	public static OnTrackServerStatisticsBag deserialize(final String json) {
-		final AutoBean<OnTrackServerStatisticsBag> bean = AutoBeanCodex.decode(FACTORY, OnTrackServerStatisticsBag.class, json);
+	public static OnTrackServerMetricsBag deserialize(final String json) {
+		final AutoBean<OnTrackServerMetricsBag> bean = AutoBeanCodex.decode(FACTORY, OnTrackServerMetricsBag.class, json);
 		return bean.as();
 	}
 }

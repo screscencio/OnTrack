@@ -23,7 +23,6 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 	private final Place destinationPlace;
 
 	public UserInformationLoadingActivity(final Place destinationPlace) {
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 		this.destinationPlace = destinationPlace;
 	}
 
@@ -49,8 +48,6 @@ public class UserInformationLoadingActivity extends AbstractActivity {
 
 		});
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.asWidget());
-
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 	}
 
 	@Override

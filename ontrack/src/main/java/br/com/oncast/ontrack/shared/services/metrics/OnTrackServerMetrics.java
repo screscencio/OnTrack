@@ -1,9 +1,11 @@
-package br.com.oncast.ontrack.client.services.admin;
+package br.com.oncast.ontrack.shared.services.metrics;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public interface OnTrackServerStatistics {
+public interface OnTrackServerMetrics {
 
 	Date getTimestamp();
 
@@ -28,5 +30,13 @@ public interface OnTrackServerStatistics {
 	void setProjectsCount(int projectsCount);
 
 	int getProjectsCount();
+
+	void setActionsRatio(Map<String, Integer> actionsRatio);
+
+	Map<String, Integer> getActionsRatio();
+
+	void setActiveProjectsMetrics(List<ProjectMetrics> activeProjectsMetrics);
+
+	List<ProjectMetrics> getActiveProjectsMetrics();
 
 }

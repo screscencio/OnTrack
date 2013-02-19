@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.generalwidgets.MenuBarCommandMenu;
+import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.IncrementalAdditionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ItemSelectionHandler;
@@ -68,7 +68,7 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	protected FocusPanel focusPanel;
 
 	@UiField
-	protected MenuBarCommandMenu menu;
+	protected CommandMenu menu;
 
 	@UiField
 	protected HTMLPanel rootPanel;
@@ -251,9 +251,9 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 				ensureSelectedItemIsVisible();
 			}
 		});
-		menu.addCloseHandler(new CloseHandler<MenuBarCommandMenu>() {
+		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
 			@Override
-			public void onClose(final CloseEvent<MenuBarCommandMenu> event) {
+			public void onClose(final CloseEvent<CommandMenu> event) {
 				hide();
 			}
 		});

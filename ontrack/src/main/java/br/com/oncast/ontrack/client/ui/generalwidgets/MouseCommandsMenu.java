@@ -21,15 +21,15 @@ public class MouseCommandsMenu extends Composite implements HasCloseHandlers<Mou
 	interface MouseActionsMenuUiBinder extends UiBinder<Widget, MouseCommandsMenu> {}
 
 	@UiField
-	protected MenuBarCommandMenu menu;
+	protected CommandMenu menu;
 
 	public MouseCommandsMenu(final List<CommandMenuItem> items) {
 		initWidget(uiBinder.createAndBindUi(this));
 		menu.setItems(items);
 		menu.setFocusWhenMouseOver(true);
-		menu.addCloseHandler(new CloseHandler<MenuBarCommandMenu>() {
+		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
 			@Override
-			public void onClose(final CloseEvent<MenuBarCommandMenu> event) {
+			public void onClose(final CloseEvent<CommandMenu> event) {
 				hide();
 			}
 		});

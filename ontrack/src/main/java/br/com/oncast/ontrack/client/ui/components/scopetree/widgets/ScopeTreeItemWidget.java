@@ -26,7 +26,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CustomCommandMenuItemFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FastLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.FiltrableCommandMenu;
-import br.com.oncast.ontrack.client.ui.generalwidgets.IncrementalAdditionListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
@@ -483,23 +482,22 @@ public class ScopeTreeItemWidget extends Composite {
 		final CommandMenuItem scopeReleaseItemFinal = scopeReleaseItem;
 		final FiltrableCommandMenu commandsMenu = createCommandMenu(releaseCommandMenuItemFactory, 250, 264);
 
-		commandsMenu.setOrderedItems(items, new IncrementalAdditionListener<CommandMenuItem>() {
-			@Override
-			public void onItemAdded(final CommandMenuItem item) {
-				if (item.equals(scopeReleaseItemFinal)) {
-					commandsMenu.setSelected(scopeReleaseItemFinal);
-				}
-			}
-
-			@Override
-			public void onFinished(final boolean allItemsAdded) {}
-		});
+		commandsMenu.setOrderedItems(items);
 
 		commandsMenu.addCloseHandler(createCloseHandler());
 
 		align(configPopup(), releasePanel)
 				.popup(commandsMenu)
 				.pop();
+
+		if (scopeReleaseItem != null) {
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					commandsMenu.setSelected(scopeReleaseItemFinal);
+				}
+			});
+		}
 
 	}
 

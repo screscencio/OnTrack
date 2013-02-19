@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.places;
 
-import br.com.oncast.ontrack.client.ui.places.admin.OnTrackStatisticsActivity;
 import br.com.oncast.ontrack.client.ui.places.details.DetailActivity;
 import br.com.oncast.ontrack.client.ui.places.details.DetailPlace;
 import br.com.oncast.ontrack.client.ui.places.loading.ContextLoadingActivity;
@@ -8,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.places.loading.ServerPushLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.loading.UserInformationLoadingActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginActivity;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
+import br.com.oncast.ontrack.client.ui.places.metrics.OnTrackMetricsActivity;
 import br.com.oncast.ontrack.client.ui.places.organization.OrganizationActivity;
 import br.com.oncast.ontrack.client.ui.places.organization.OrganizationPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningActivity;
@@ -64,6 +64,6 @@ public class AppActivityFactory {
 	}
 
 	public Activity getOnTrackStatisticsActivity() {
-		return new OnTrackStatisticsActivity();
+		return new OnTrackMetricsActivity();
 	}
 }

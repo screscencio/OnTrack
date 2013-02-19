@@ -754,4 +754,23 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 			em.close();
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UserAction> retrieveActionsSince(final Date date) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final Query query = em.createQuery("SELECT ua FROM " + UserActionEntity.class.getSimpleName()
+					+ " AS ua WHERE ua.timestamp > :date");
+			query.setParameter("date", date);
+			final List<UserActionEntity> actions = query.getResultList();
+			return (List<UserAction>) TYPE_CONVERTER.convert(actions);
+		}
+		catch (final Exception e) {
+			throw new PersistenceException("Not able to retrieve notifications.", e);
+		}
+		finally {
+			em.close();
+		}
+	}
 }

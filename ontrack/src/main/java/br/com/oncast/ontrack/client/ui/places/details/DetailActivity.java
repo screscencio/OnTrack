@@ -26,7 +26,6 @@ public class DetailActivity extends AbstractActivity {
 
 	public DetailActivity(final DetailPlace place) {
 		this.place = place;
-		ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadStart();
 	}
 
 	public void start() {
@@ -44,7 +43,6 @@ public class DetailActivity extends AbstractActivity {
 		}).onOpen(new PopupOpenListener() {
 			@Override
 			public void onWillOpen() {
-				ClientServiceProvider.getInstance().getClientMetricService().onBrowserLoadEnd();
 				detailPanel.registerActionExecutionListener();
 			}
 		}).setModal(true).pop();

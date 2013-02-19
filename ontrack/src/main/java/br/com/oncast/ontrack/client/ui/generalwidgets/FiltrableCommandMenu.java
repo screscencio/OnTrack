@@ -66,7 +66,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	protected FocusPanel focusPanel;
 
 	@UiField
-	protected MenuBarCommandMenu menu;
+	protected CommandMenu menu;
 
 	@UiField
 	protected TextBox filterArea;
@@ -115,19 +115,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		setOrderedItems(items);
 	}
 
-	public void setItems(final List<CommandMenuItem> items, final IncrementalAdditionListener<CommandMenuItem> listener) {
-		Collections.sort(items);
-		setOrderedItems(items, listener);
-	}
-
 	public void setOrderedItems(final List<CommandMenuItem> items) {
 		this.items = items;
 		setMenuItems(items);
-	}
-
-	public void setOrderedItems(final List<CommandMenuItem> items, final IncrementalAdditionListener<CommandMenuItem> listener) {
-		this.items = items;
-		setMenuItems(items, listener);
 	}
 
 	@Override
@@ -216,18 +206,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 		final boolean shouldAddCustomItems = customItemFactory != null && !filterText.isEmpty() && !hasTextMatchInItemList(filteredItems, filterText);
 		if (shouldAddCustomItems) filteredItems.add(0, customItemFactory.createCustomItem(filterText));
 
-		setMenuItems(filteredItems, new IncrementalAdditionListener<CommandMenuItem>() {
-
-			int count = shouldAddCustomItems ? 2 : 1;
-
-			@Override
-			public void onItemAdded(final CommandMenuItem item) {
-				if (--count > 0) menu.setSelected(item);
-			}
-
-			@Override
-			public void onFinished(final boolean allItemsAdded) {}
-		});
+		setMenuItems(filteredItems);
+		menu.selectFirstItem();
+		if (shouldAddCustomItems) menu.selectItemDown();
 	}
 
 	private void setMenuVisibility(final boolean b) {
@@ -281,9 +262,9 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 				ensureSelectedItemIsVisible();
 			}
 		});
-		menu.addCloseHandler(new CloseHandler<MenuBarCommandMenu>() {
+		menu.addCloseHandler(new CloseHandler<CommandMenu>() {
 			@Override
-			public void onClose(final CloseEvent<MenuBarCommandMenu> event) {
+			public void onClose(final CloseEvent<CommandMenu> event) {
 				filterArea.setText("");
 				setMenuVisibility(false);
 
@@ -335,14 +316,6 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	private void setMenuItems(final List<CommandMenuItem> items) {
 		if (items.isEmpty() && customItemFactory.getNoItemText() != null) menu.setItem(getNoItemsItem());
 		else menu.setItems(items);
-	}
-
-	private void setMenuItems(final List<CommandMenuItem> items, final IncrementalAdditionListener<CommandMenuItem> listener) {
-		if (items.isEmpty()) {
-			if (customItemFactory.getNoItemText() != null) menu.setItem(getNoItemsItem());
-			listener.onFinished(true);
-		}
-		else menu.setItems(items, listener);
 	}
 
 	private SimpleCommandMenuItem getNoItemsItem() {

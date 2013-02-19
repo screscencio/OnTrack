@@ -14,7 +14,6 @@ public class EffortInferenceEngineFlow2Test {
 
 	private final String FILE_NAME_PREFIX = "Flow2";
 	private Scope original = null;
-	private final EffortInferenceEngine effortInferenceEngine = new EffortInferenceEngine();
 
 	@Before
 	public void setUp() {

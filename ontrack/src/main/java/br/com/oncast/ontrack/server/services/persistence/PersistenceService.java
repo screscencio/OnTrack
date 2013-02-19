@@ -87,4 +87,6 @@ public interface PersistenceService {
 
 	public long countActionsSince(Date date) throws PersistenceException;
 
+	List<UserAction> retrieveActionsSince(Date date) throws PersistenceException;
+
 }

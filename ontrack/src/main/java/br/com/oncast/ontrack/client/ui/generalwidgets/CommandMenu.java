@@ -30,11 +30,11 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MenuBarCommandMenu extends Composite implements HasCloseHandlers<MenuBarCommandMenu>, PopupAware {
+public class CommandMenu extends Composite implements HasCloseHandlers<CommandMenu>, PopupAware {
 
-	private static MenuBarCommandMenuUiBinder uiBinder = GWT.create(MenuBarCommandMenuUiBinder.class);
+	private static CommandMenuUiBinder uiBinder = GWT.create(CommandMenuUiBinder.class);
 
-	interface MenuBarCommandMenuUiBinder extends UiBinder<Widget, MenuBarCommandMenu> {}
+	interface CommandMenuUiBinder extends UiBinder<Widget, CommandMenu> {}
 
 	@UiField
 	protected MenuBar menu;
@@ -53,7 +53,7 @@ public class MenuBarCommandMenu extends Composite implements HasCloseHandlers<Me
 		return new MenuBar(true);
 	}
 
-	public MenuBarCommandMenu() {
+	public CommandMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
 		itemsMap = new HashMap<MenuItem, CommandMenuItem>();
 		menu.setAnimationEnabled(true);
@@ -146,7 +146,7 @@ public class MenuBarCommandMenu extends Composite implements HasCloseHandlers<Me
 	}
 
 	@Override
-	public HandlerRegistration addCloseHandler(final CloseHandler<MenuBarCommandMenu> handler) {
+	public HandlerRegistration addCloseHandler(final CloseHandler<CommandMenu> handler) {
 		return addHandler(handler, CloseEvent.getType());
 	}
 
