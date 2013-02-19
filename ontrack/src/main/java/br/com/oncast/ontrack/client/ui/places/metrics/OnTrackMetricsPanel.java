@@ -57,6 +57,16 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class OnTrackMetricsPanel extends Composite {
 
+	private static final String PROJECTS_COUNT_COLOR = "#CCCC44";
+
+	private static final String USERS_COUNT_COLOR = "#CC44CC";
+
+	private static final String ACTIONS_PER_HOUR_COLOR = "#44CC44";
+
+	private static final String ACTIVE_CONNECTIONS_COLOR = "#ff4444";
+
+	private static final String ONLINE_USERS_COLOR = "#4444ff";
+
 	private static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyy/MM/dd - HH:mm:ss");
 
 	private static final int SECOND = 1000;
@@ -111,7 +121,7 @@ public class OnTrackMetricsPanel extends Composite {
 		}
 	};
 
-	private float autoUpdateInterval = 3 * 60;
+	private float autoUpdateInterval = 5 * 60;
 
 	private Chart usageChart;
 
@@ -313,8 +323,9 @@ public class OnTrackMetricsPanel extends Composite {
 								final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
 								final Set<String> onlineUsers = statistic.getOnlineUsers();
 								String toolTip = formatTime(timestamp) +
-										"<br/><b>Active Connections:</b> " + statistic.getActiveConnectionsCount() +
-										"<br/><b>Online Users:</b> " + onlineUsers.size();
+										"<br/><b style=\"color: " + ACTIVE_CONNECTIONS_COLOR + ";\">Active Connections:</b> "
+										+ statistic.getActiveConnectionsCount() +
+										"<br/><b style=\"color: " + ONLINE_USERS_COLOR + ";\">Online Users:</b> " + onlineUsers.size();
 
 								for (final String userIdAsString : onlineUsers) {
 									toolTip += "<br/>" + usersCache.get(userIdAsString).getEmail();
@@ -339,14 +350,14 @@ public class OnTrackMetricsPanel extends Composite {
 				.setName("Online Users")
 				.setPlotOptions(new LinePlotOptions()
 						.setMarker(new Marker().setEnabled(false))
-						.setColor("#4444ff")
+						.setColor(ONLINE_USERS_COLOR)
 						.setLineWidth(1));
 
 		activeConnectionsSeries = clientsChart.createSeries()
 				.setName("Active Connections")
 				.setPlotOptions(new LinePlotOptions()
 						.setMarker(new Marker().setEnabled(false))
-						.setColor("#ff4444")
+						.setColor(ACTIVE_CONNECTIONS_COLOR)
 						.setLineWidth(1));
 
 		clientsChart.addSeries(activeConnectionsSeries);
@@ -384,9 +395,9 @@ public class OnTrackMetricsPanel extends Composite {
 								final long timestamp = toolTipData.getXAsLong();
 								final OnTrackServerMetrics statistic = metricsCache.get(timestamp);
 								final String toolTip = formatTime(timestamp) +
-										"<br/><b>Actions / Hour:</b> " + statistic.getActionsPerHour() +
-										"<br/><b>Users Count:</b> " + statistic.getUsersCount() +
-										"<br/><b>Projects Count:</b> " + statistic.getProjectsCount();
+										"<br/><b style=\"color: " + ACTIONS_PER_HOUR_COLOR + ";\">Actions / Hour:</b> " + statistic.getActionsPerHour() +
+										"<br/><b style=\"color: " + USERS_COUNT_COLOR + ";\">Users Count:</b> " + statistic.getUsersCount() +
+										"<br/><b style=\"color: " + PROJECTS_COUNT_COLOR + ";\">Projects Count:</b> " + statistic.getProjectsCount();
 								return toolTip;
 							}
 
@@ -406,21 +417,21 @@ public class OnTrackMetricsPanel extends Composite {
 				.setName("Actions / Hour")
 				.setPlotOptions(new LinePlotOptions()
 						.setMarker(new Marker().setEnabled(false))
-						.setColor("#44CC44")
+						.setColor(ACTIONS_PER_HOUR_COLOR)
 						.setLineWidth(1));
 
 		usersCountSeries = usageChart.createSeries()
 				.setName("Total Users")
 				.setPlotOptions(new LinePlotOptions()
 						.setMarker(new Marker().setEnabled(false))
-						.setColor("#CC44CC")
+						.setColor(USERS_COUNT_COLOR)
 						.setLineWidth(1));
 
 		projectsCountSeries = usageChart.createSeries()
 				.setName("Total Users")
 				.setPlotOptions(new LinePlotOptions()
 						.setMarker(new Marker().setEnabled(false))
-						.setColor("#CCCC44")
+						.setColor(PROJECTS_COUNT_COLOR)
 						.setLineWidth(1));
 
 		usageChart.addSeries(actionsPerHourSeries);
