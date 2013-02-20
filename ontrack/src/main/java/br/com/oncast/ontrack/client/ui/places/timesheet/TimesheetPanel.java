@@ -9,14 +9,17 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.ScopeHourAppointmentWidget;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.Release.Condition;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -109,9 +112,41 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release> {
 		return sum;
 	}
 
+	@UiHandler("previousRelease")
+	public void onPreviousReleaseClick(final ClickEvent event) {
+		final Release previousRelease = release.getLatestPastRelease(new Condition() {
+			@Override
+			public boolean eval(final Release release) {
+				return release.getDescription().contains("*");
+			}
+		});
+
+		ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(previousRelease.getId());
+	}
+
+	@UiHandler("nextRelease")
+	public void onNextReleaseClick(final ClickEvent event) {
+		final Release nextRelease = release.getFirstFutureRelease(new Condition() {
+			@Override
+			public boolean eval(final Release release) {
+				return release.getDescription().contains("*");
+			}
+		});
+
+		ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(nextRelease.getId());
+	}
+
 	@Override
 	public Release getModelObject() {
 		return release;
+	}
+
+	public void unregisterActionExecutionListener() {
+		// FIXME Auto-generated catch block
+	}
+
+	public void registerActionExecutionListener() {
+		// FIXME Auto-generated catch block
 	}
 
 }

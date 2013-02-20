@@ -69,7 +69,7 @@ public class AppActivityFactory {
 		return new OnTrackMetricsActivity();
 	}
 
-	public Activity getTimesheetActivity(final TimesheetPlace place) {
+	public TimesheetActivity getTimesheetActivity(final TimesheetPlace place) {
 		return new TimesheetActivity(place);
 	}
 }

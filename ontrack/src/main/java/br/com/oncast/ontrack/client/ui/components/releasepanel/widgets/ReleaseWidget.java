@@ -160,6 +160,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Image menuIcon;
 
 	@UiField
+	protected Image timesheetLink;
+
+	@UiField
 	protected DivElement bodyContainer;
 
 	@UiField
@@ -282,6 +285,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiHandler("detailLink")
 	protected void showAnnotationPanel(final ClickEvent event) {
 		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(release.getId());
+	}
+
+	@UiHandler("timesheetLink")
+	protected void showTimesheetPanel(final ClickEvent event) {
+		ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(release.getId());
 	}
 
 	@UiHandler("progressIcon")

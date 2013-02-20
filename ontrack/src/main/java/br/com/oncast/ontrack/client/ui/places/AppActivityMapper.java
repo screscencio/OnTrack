@@ -54,7 +54,11 @@ public class AppActivityMapper implements ActivityMapper {
 		if (place instanceof ProgressPlace) return activityFactory.getProgressActivity((ProgressPlace) place);
 		if (place instanceof OrganizationPlace) return activityFactory.getOrganizationActivity((OrganizationPlace) place);
 		if (place instanceof OnTrackMetricsPlace) return activityFactory.getOnTrackStatisticsActivity();
-		if (place instanceof TimesheetPlace) return activityFactory.getTimesheetActivity((TimesheetPlace) place);
+
+		if (place instanceof TimesheetPlace) {
+			activityFactory.getTimesheetActivity((TimesheetPlace) place).start();
+			return null;
+		}
 
 		return null;
 	}

@@ -165,6 +165,7 @@
 							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
 						</g:FocusPanel>
 					</g:cell>
+					<g:Image ui:field="timesheetLink" resource="{resources.kanbanIcon}" styleName="{style.headerItem} {style.annotationIcon}"/>
 					<g:Image ui:field="impedimentIcon" resource="{resources.impedimentIcon}" styleName="{style.headerItem} {style.annotationIcon}"/>
 					<g:Image ui:field="detailIcon" resource="{resources.detailIcon}" styleName="{style.headerItem} {style.annotationIcon}"/>
 					

@@ -34,6 +34,8 @@ import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientServiceImpl;
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.services.storage.Html5StorageClientStorageService;
+import br.com.oncast.ontrack.client.services.timesheet.TimesheetService;
+import br.com.oncast.ontrack.client.services.timesheet.TimesheetServiceImpl;
 import br.com.oncast.ontrack.client.services.user.ColorPackPicker;
 import br.com.oncast.ontrack.client.services.user.ColorPicker;
 import br.com.oncast.ontrack.client.services.user.ColorProviderService;
@@ -103,6 +105,8 @@ public class ClientServiceProvider {
 	private UserAssociationService userAssociationService;
 	private ClientMetricsService clientMetricsService;
 	private NetworkMonitoringService networkMonitoringService;
+
+	private TimesheetService timesheetService;
 
 	private static ClientServiceProvider instance;
 
@@ -286,5 +290,10 @@ public class ClientServiceProvider {
 
 	public ClientMetricsService getClientMetricsService() {
 		return clientMetricsService == null ? clientMetricsService = new ClientMetricsServiceImpl(getRequestDispatchService()) : clientMetricsService;
+	}
+
+	public TimesheetService getTimesheetService() {
+		if (timesheetService == null) timesheetService = new TimesheetServiceImpl(getApplicationPlaceController(), getContextProviderService());
+		return timesheetService;
 	}
 }
