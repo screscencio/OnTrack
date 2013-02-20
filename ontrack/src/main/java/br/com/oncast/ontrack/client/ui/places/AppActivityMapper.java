@@ -9,6 +9,7 @@ import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
+import br.com.oncast.ontrack.client.ui.places.timesheet.TimesheetPlace;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.Activity;
@@ -53,6 +54,7 @@ public class AppActivityMapper implements ActivityMapper {
 		if (place instanceof ProgressPlace) return activityFactory.getProgressActivity((ProgressPlace) place);
 		if (place instanceof OrganizationPlace) return activityFactory.getOrganizationActivity((OrganizationPlace) place);
 		if (place instanceof OnTrackMetricsPlace) return activityFactory.getOnTrackStatisticsActivity();
+		if (place instanceof TimesheetPlace) return activityFactory.getTimesheetActivity((TimesheetPlace) place);
 
 		return null;
 	}

@@ -11,13 +11,14 @@ public class PlaceTokenBuilder {
 		this.builder = new StringBuilder();
 	}
 
-	public void add(final PlaceTokenType type, final HasUUID hasUUID) {
-		add(type, hasUUID.getId());
+	public PlaceTokenBuilder add(final PlaceTokenType type, final HasUUID hasUUID) {
+		return add(type, hasUUID.getId());
 	}
 
-	public void add(final PlaceTokenType type, final UUID id) {
+	public PlaceTokenBuilder add(final PlaceTokenType type, final UUID id) {
 		builder.append(type.getIdentifier());
 		builder.append(id.toString());
+		return this;
 	}
 
 	public String getToken() {

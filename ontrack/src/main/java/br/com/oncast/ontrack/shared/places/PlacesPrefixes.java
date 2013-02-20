@@ -8,4 +8,5 @@ public class PlacesPrefixes {
 	public static final String ORGANIZATION = "Organization";
 	public static final String ARGUMENT_SEPARATOR = ":";
 	public static final String METRICS = "Metrics";
+	public static final String TIMESHEET = "Timesheet";
 }

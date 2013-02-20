@@ -119,7 +119,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 		else return;
 	}
 
-	private void switchToEdit() {
+	protected void switchToEdit() {
 		if (isEditionMode() || isReadOnly) return;
 
 		editionBox.setText(getValue());
@@ -134,7 +134,7 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 		});
 	}
 
-	private void switchToVisualization(final boolean shouldTryToUpdateChanges) {
+	protected void switchToVisualization(final boolean shouldTryToUpdateChanges) {
 		if (!isEditionMode()) return;
 		deckPanel.showWidget(0);
 
