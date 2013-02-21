@@ -4,13 +4,19 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
+import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.ScopeHourAppointmentWidget;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.Release.Condition;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -31,10 +37,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TimesheetPanel extends Composite implements ModelWidget<Release>, PopupAware, HasCloseHandlers<TimesheetPanel> {
+
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
 	private static TimesheetPanelUiBinder uiBinder = GWT.create(TimesheetPanelUiBinder.class);
 
@@ -53,8 +60,8 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	@UiField
 	TimesheetPanelStyle style;
 
-	@UiField
-	Label releaseTitle;
+	@UiField(provided = true)
+	EditableLabel releaseTitle;
 
 	@UiField
 	FlexTable timesheet;
@@ -69,6 +76,8 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 	public TimesheetPanel(final Release release) {
 		this.release = release;
+
+		initializeReleaseTitle();
 
 		widgetsByScopeCache = HashMultimap.create();
 		widgetsByUserCache = HashMultimap.create();
@@ -89,7 +98,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 	@Override
 	public boolean update() {
-		releaseTitle.setText(release.getDescription());
+		releaseTitle.setValue(release.getDescription());
 
 		final List<UserRepresentation> users = ClientServiceProvider.getCurrentProjectContext().getUsers();
 		final List<Scope> scopes = release.getScopeList();
@@ -163,7 +172,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			}
 		});
 
-		ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(previousRelease.getId());
+		SERVICE_PROVIDER.getTimesheetService().showTimesheetFor(previousRelease.getId());
 	}
 
 	@UiHandler("nextRelease")
@@ -175,7 +184,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			}
 		});
 
-		ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(nextRelease.getId());
+		SERVICE_PROVIDER.getTimesheetService().showTimesheetFor(nextRelease.getId());
 	}
 
 	@Override
@@ -194,6 +203,26 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	@Override
 	public HandlerRegistration addCloseHandler(final CloseHandler<TimesheetPanel> handler) {
 		return this.addHandler(handler, CloseEvent.getType());
+	}
+
+	private void initializeReleaseTitle() {
+		releaseTitle = new EditableLabel(new EditableLabelEditionHandler() {
+
+			@Override
+			public boolean onEditionRequest(final String text) {
+				final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
+				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
+
+				try {
+					projectContext.findRelease(release.getId());
+					actionExecutionService.onUserActionExecutionRequest(new ReleaseRenameAction(release.getId(), text));
+				}
+				catch (final ReleaseNotFoundException e1) {
+					throw new RuntimeException("Impossible to create an editable label for this annotation.");
+				}
+				return true;
+			}
+		});
 	}
 
 }
