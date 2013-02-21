@@ -65,34 +65,46 @@ public class ClientAlertingService {
 		makeModalAutoCloseAlert(errorDescriptionMessage, AlertType.ERROR, DURATION_LONG);
 	}
 
-	public void showLongDurationInfo(final String message) {
-		makeAutoCloseAlert(message, AlertType.INFO, DURATION_LONG);
+	public AlertRegistration showLongDurationInfo(final String message) {
+		return makeAutoCloseAlert(message, AlertType.INFO, DURATION_LONG);
 	}
 
-	public void showInfo(final String message) {
-		makeAutoCloseAlert(message, AlertType.INFO, DURATION_SHORT);
+	public AlertRegistration showInfo(final String message) {
+		return makeAutoCloseAlert(message, AlertType.INFO, DURATION_SHORT);
 	}
 
-	public void showError(final String message) {
-		makeAutoCloseAlert(message, AlertType.ERROR, DURATION_LONG);
+	public AlertRegistration showError(final String message) {
+		return makeAutoCloseAlert(message, AlertType.ERROR, DURATION_LONG);
 	}
 
-	public void showWarning(final String message) {
-		makeAutoCloseAlert(message, AlertType.WARNING, DURATION_SHORT);
+	public AlertRegistration showWarning(final String message) {
+		return makeAutoCloseAlert(message, AlertType.WARNING, DURATION_SHORT);
 	}
 
-	public void showWarning(final String message, final int duration) {
-		makeAutoCloseAlert(message, AlertType.WARNING, duration);
+	public AlertRegistration showWarning(final String message, final int duration) {
+		return makeAutoCloseAlert(message, AlertType.WARNING, duration);
 	}
 
-	public void showSuccess(final String message) {
-		makeAutoCloseAlert(message, AlertType.SUCCESS, DURATION_SHORT);
+	public AlertRegistration showSuccess(final String message) {
+		return makeAutoCloseAlert(message, AlertType.SUCCESS, DURATION_SHORT);
 	}
 
-	private void makeAutoCloseAlert(final String message, final AlertType type, final int autoCloseTime) {
+	private AlertRegistration makeAutoCloseAlert(final String message, final AlertType type, final int autoCloseTime) {
 		final Alert toast = new Alert();
 		addAlertToAlertingContainer(toast);
 
+		final AlertRegistration alertRegistration = new AlertRegistration() {
+			@Override
+			public void hide() {
+				toast.hide(new AnimationCallback() {
+
+					@Override
+					public void onComplete() {
+						removeAlertFromAlertingContainer(toast);
+					}
+				});
+			}
+		};
 		toast.show(message, type, new AnimationCallback() {
 
 			@Override
@@ -100,17 +112,12 @@ public class ClientAlertingService {
 				new Timer() {
 					@Override
 					public void run() {
-						toast.hide(new AnimationCallback() {
-
-							@Override
-							public void onComplete() {
-								removeAlertFromAlertingContainer(toast);
-							}
-						});
+						alertRegistration.hide();
 					}
 				}.schedule(autoCloseTime);
 			}
 		});
+		return alertRegistration;
 	}
 
 	private ConfirmationAlertRegister makeConfirmationAlert(final String message, final AlertType type, final AlertConfirmationListener listener) {

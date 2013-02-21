@@ -16,7 +16,7 @@ public class MultipleProjectContextRequestHandler implements RequestHandler<Mult
 	public MultipleProjectContextRequestResponse handle(final MultipleProjectContextRequest request) throws Exception {
 		final Set<Project> projects = new HashSet<Project>();
 		for (final ProjectRepresentation rep : request.getRequestedProjects()) {
-			projects.add(ServerServiceProvider.getInstance().getBusinessLogic().loadProject(rep.getId()));
+			projects.add(ServerServiceProvider.getInstance().getBusinessLogic().loadProject(rep.getId()).getProject());
 		}
 		return new MultipleProjectContextRequestResponse(projects);
 	}

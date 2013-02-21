@@ -1,9 +1,13 @@
 package br.com.oncast.ontrack.client.services.internet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
+import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.alerting.ConfirmationAlertRegister;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -15,20 +19,27 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 
 public class NetworkMonitoringService {
 
+	private boolean connected = true;
 	private final ClientErrorMessages messages;
 	private final ClientAlertingService alertingService;
-	private boolean connected = true;
-	private ConfirmationAlertRegister alertConfirmation;
+	private ConfirmationAlertRegister errorAlertConfirmation;
 	private final ServerPushClientService serverPushClientService;
+	private final List<ConnectionListener> connectionListeners = new ArrayList<ConnectionListener>();
+	private AlertRegistration infoAlertRegistration = null;
 	private final Timer connectionVerificationTimer = new Timer() {
 
 		@Override
 		public void run() {
-			// FIXME LOBO i18n
-			alertingService.showInfo("Trying to reconnect...");
+			if (connected) return;
 
-			if (isInternetAvailable()) serverPushClientService.connect();
-			this.schedule(3000);
+			// FIXME LOBO i18n
+			infoAlertRegistration = alertingService.showInfo("Trying to reconnect...");
+
+			if (isInternetAvailable()) {
+				if (serverPushClientService.isConnected()) onConnectionRecovered();
+				else serverPushClientService.connect();
+			}
+			this.schedule(3200);
 		}
 	};
 
@@ -88,13 +99,19 @@ public class NetworkMonitoringService {
 
 		connectionVerificationTimer.cancel();
 
-		if (alertConfirmation != null) {
-			alertConfirmation.hide(false);
-			alertConfirmation = null;
+		if (errorAlertConfirmation != null) {
+			errorAlertConfirmation.hide(false);
+			errorAlertConfirmation = null;
+		}
+		if (infoAlertRegistration != null) {
+			infoAlertRegistration.hide();
+			infoAlertRegistration = null;
 		}
 
 		// FIXME LOBO i18n
-		alertingService.showSuccess("Connection recovered!");
+		alertingService.showInfo("Engaging server!");
+
+		notifyConnectionRecovered();
 	}
 
 	protected native boolean isInternetAvailable() /*-{
@@ -102,7 +119,7 @@ public class NetworkMonitoringService {
 	}-*/;
 
 	private void alertMissingConnection() {
-		alertConfirmation = alertingService.showErrorWithConfirmation(messages.connectionLost(), new AlertConfirmationListener() {
+		errorAlertConfirmation = alertingService.showErrorWithConfirmation(messages.connectionLost(), new AlertConfirmationListener() {
 			@Override
 			public void onConfirmation() {
 				connectionVerificationTimer.cancel();
@@ -111,4 +128,12 @@ public class NetworkMonitoringService {
 		});
 	}
 
+	public void addConnectionListener(final ConnectionListener connectionListener) {
+		connectionListeners.add(connectionListener);
+	}
+
+	private void notifyConnectionRecovered() {
+		for (final ConnectionListener listener : connectionListeners)
+			listener.onConnectionRecovered();
+	}
 }

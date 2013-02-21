@@ -132,10 +132,10 @@ public class ClientServiceProvider {
 		getApplicationPlaceController().configure(panel, defaultAppPlace, new AppActivityMapper(this),
 				(PlaceHistoryMapper) GWT.create(AppPlaceHistoryMapper.class), getClientStorageService());
 		getColorProviderService();
-		getInternetMonitoringService();
+		getNetworkMonitoringService();
 	}
 
-	private NetworkMonitoringService getInternetMonitoringService() {
+	private NetworkMonitoringService getNetworkMonitoringService() {
 		if (networkMonitoringService != null) return networkMonitoringService;
 		return networkMonitoringService = new NetworkMonitoringService(getRequestDispatchService(), getServerPushClientService(), getClientAlertingService(),
 				getClientErrorMessages());
@@ -200,7 +200,8 @@ public class ClientServiceProvider {
 	private ActionSyncService getActionSyncService() {
 		if (actionSyncService != null) return actionSyncService;
 		return actionSyncService = new ActionSyncService(getRequestDispatchService(), getServerPushClientService(), getActionExecutionService(),
-				getProjectRepresentationProvider(), getClientAlertingService(), getClientErrorMessages());
+				getProjectRepresentationProvider(), getClientAlertingService(), getClientErrorMessages(), getNetworkMonitoringService(),
+				getContextProviderService());
 	}
 
 	public ServerPushClientService getServerPushClientService() {

@@ -17,6 +17,7 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
+import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
@@ -48,7 +49,7 @@ public class ContextProviderServiceTest {
 	@Test
 	public void contextIsNotAvailableBeforeLoadsProjectContext() throws Exception {
 
-		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProject())).when(requestDispatchService)
+		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProjectVersion())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider,
@@ -61,7 +62,7 @@ public class ContextProviderServiceTest {
 	@Test
 	public void makesContextAvailableAfterLoadsProjectContext() throws Exception {
 
-		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProject())).when(requestDispatchService)
+		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProjectVersion())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
@@ -76,7 +77,7 @@ public class ContextProviderServiceTest {
 	@Test
 	public void cleansContextWhenUserLogsOut() throws Exception {
 
-		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProject())).when(requestDispatchService)
+		DispatchCallbackMock.callOnSuccessWith(new ProjectContextResponse(createDummyProjectVersion())).when(requestDispatchService)
 				.dispatch(Mockito.any(ProjectContextRequest.class), Mockito.any(DispatchCallback.class));
 
 		final ContextProviderServiceImpl contextProviderService = new ContextProviderServiceImpl(projectRepresentationProvider, requestDispatchService,
@@ -101,6 +102,10 @@ public class ContextProviderServiceTest {
 
 		service.unloadProjectContext();
 		assertFalse(service.isContextAvailable(projectId));
+	}
+
+	private ProjectRevision createDummyProjectVersion() throws Exception {
+		return new ProjectRevision(createDummyProject(), -1);
 	}
 
 	private Project createDummyProject() throws Exception {

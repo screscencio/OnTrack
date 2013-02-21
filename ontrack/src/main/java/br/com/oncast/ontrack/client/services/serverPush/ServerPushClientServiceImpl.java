@@ -18,7 +18,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
-	private ServerPushClient serverPushClient;
+	private final ServerPushClient serverPushClient;
 	private final List<ServerPushConnectionCallback> serverPushConnectionCallbacks = new ArrayList<ServerPushConnectionCallback>();
 	private final AtmosphereListener atmosphereListener;
 
@@ -59,6 +59,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			@Override
 			public void onAfterRefresh() {}
 		};
+		serverPushClient = new OntrackAtmosphereClient(atmosphereListener);
 		connect();
 	}
 
@@ -99,7 +100,6 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	@Override
 	public void connect() {
-		serverPushClient = new OntrackAtmosphereClient(atmosphereListener);
 		serverPushClient.start();
 	}
 
