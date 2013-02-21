@@ -6,26 +6,52 @@ import java.util.Set;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.ScopeHourAppointmentWidget;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.Release.Condition;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
+import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TimesheetPanel extends Composite implements ModelWidget<Release> {
+public class TimesheetPanel extends Composite implements ModelWidget<Release>, PopupAware, HasCloseHandlers<TimesheetPanel> {
+
+	private static TimesheetPanelUiBinder uiBinder = GWT.create(TimesheetPanelUiBinder.class);
+
+	interface TimesheetPanelStyle extends CssResource {
+
+		String scopeDescriptionCell();
+
+		String sumCell();
+
+		String row();
+
+		String currentUserColumn();
+
+	}
+
+	@UiField
+	TimesheetPanelStyle style;
 
 	@UiField
 	Label releaseTitle;
@@ -33,7 +59,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release> {
 	@UiField
 	FlexTable timesheet;
 
-	private static TimesheetPanelUiBinder uiBinder = GWT.create(TimesheetPanelUiBinder.class);
 	private final Release release;
 
 	private final SetMultimap<Scope, ScopeHourAppointmentWidget> widgetsByScopeCache;
@@ -54,6 +79,15 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release> {
 	}
 
 	@Override
+	public void show() {}
+
+	@Override
+	public void hide() {
+		if (!this.isVisible()) return;
+		CloseEvent.fire(this, this);
+	}
+
+	@Override
 	public boolean update() {
 		releaseTitle.setText(release.getDescription());
 
@@ -62,12 +96,11 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release> {
 		final int lastRow = scopes.size() + 1;
 		final int lastColumn = users.size() + 1;
 
-		timesheet.setBorderWidth(2);
-		timesheet.setText(0, 0, "");
-		timesheet.setText(lastRow, lastColumn, "");
+		timesheet.setCellSpacing(0);
+		timesheet.setCellPadding(5);
 
-		timesheet.setText(0, lastColumn, "Total");
-		timesheet.setText(lastRow, 0, "Total");
+		final CellFormatter cellFormatter = timesheet.getCellFormatter();
+		final RowFormatter rowFormatter = timesheet.getRowFormatter();
 
 		for (int i = 0; i < scopes.size(); i++) {
 			final Scope scope = scopes.get(0);
@@ -84,17 +117,26 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release> {
 			final Scope scope = scopes.get(i);
 			timesheet.setText(i + 1, 0, scope.getDescription());
 			timesheet.setText(i + 1, lastColumn, round(getAppointmentSum(widgetsByScopeCache.get(scope))));
+			rowFormatter.addStyleName(i + 1, style.row());
+			cellFormatter.addStyleName(i + 1, 0, style.scopeDescriptionCell());
+			cellFormatter.addStyleName(i + 1, lastColumn, style.sumCell());
 		}
 
 		float totalSum = 0;
+		final UUID currentUser = ClientServiceProvider.getCurrentUser();
+		int currentUserColumn = -1;
 		for (int j = 0; j < users.size(); j++) {
 			final UserRepresentation user = users.get(j);
 			timesheet.setWidget(0, j + 1, new UserWidget(user));
 			final float appointment = getAppointmentSum(widgetsByUserCache.get(user));
 			timesheet.setText(lastRow, j + 1, round(appointment));
+			cellFormatter.addStyleName(lastRow, j + 1, style.sumCell());
 			totalSum += appointment;
+			if (user.getId().equals(currentUser)) currentUserColumn = j + 1;
 		}
 
+		timesheet.getColumnFormatter().addStyleName(currentUserColumn, style.currentUserColumn());
+		cellFormatter.addStyleName(lastRow, lastColumn, style.sumCell());
 		timesheet.setText(lastRow, lastColumn, round(totalSum));
 
 		return false;
@@ -147,6 +189,11 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release> {
 
 	public void registerActionExecutionListener() {
 		// FIXME Auto-generated catch block
+	}
+
+	@Override
+	public HandlerRegistration addCloseHandler(final CloseHandler<TimesheetPanel> handler) {
+		return this.addHandler(handler, CloseEvent.getType());
 	}
 
 }

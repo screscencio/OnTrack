@@ -38,6 +38,8 @@ public class ScopeHourAppointmentWidget implements IsWidget {
 				}
 			}
 		});
+		editableLabel.setWidth("40px");
+		editableLabel.getElement().getStyle().setProperty("textAlign", "center");
 
 		setAppointedHour(extractHour(scope));
 		editableLabel.setReadOnly(!ClientServiceProvider.getCurrentUser().equals(user.getId()));

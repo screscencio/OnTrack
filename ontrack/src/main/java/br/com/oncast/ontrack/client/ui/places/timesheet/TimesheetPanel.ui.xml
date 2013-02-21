@@ -1,14 +1,72 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style>
+	
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.timesheet.TimesheetPanel.TimesheetPanelStyle">
+		
+		.root {
+			position: absolute;
+			
+			top: PADDING_LARGE;
+			left: PADDING_LARGE;
+
+			padding: PADDING_MEDIUM;
+		}
+		
+		.title {
+			font-size: FONT_SIZE_LARGE;
+			text-transform: uppercase;
+			color: COLOR_GRAY_DARK;
+		}
+		
+		.body {
+			top: 27px;
+
+			border: 1px solid #DEDEDE;
+			background: white;
+		}
+		
+		.timesheet {
+			text-align: center;
+			vertical-align: middle;
+		}
+		
+		.row td {
+			border-bottom: 1px solid COLOR_GRAY;
+		}
+		
+		.currentUserColumn {
+			background: #C7CAE6;
+		}
+
+		.scopeDescriptionCell {
+			text-align: right;
+			vertical-align: middle;
+			color: COLOR_GRAY_DARKEST;
+			
+			text-overflow: ellipsis;
+			-o-text-overflow: ellipsis;
+			-moz-binding: url( 'bindings.xml#ellipsis' );
+			white-space: nowrap;
+			overflow: hidden;
+			
+			max-width: 250px;
+		}
+
+		.sumCell {
+			color: COLOR_GRAY_DARKEST;
+		}
 		
 	</ui:style>
-	<g:HTMLPanel>
-		<g:Label ui:field="releaseTitle" />
-		<g:FlexTable ui:field="timesheet"  />
-			
-		<g:Button ui:field="previousRelease"/>
-		<g:Button ui:field="nextRelease"/>
+	
+	<g:HTMLPanel styleName="{style.root} {style.popupContainer}">
+		<g:Label ui:field="releaseTitle" styleName="{style.title}"/>
+		<g:HTMLPanel styleName="{style.body}">
+			<g:FlexTable ui:field="timesheet" styleName="{style.timesheet}"/>
+				
+			<g:Button ui:field="previousRelease"/>
+			<g:Button ui:field="nextRelease"/>
+		</g:HTMLPanel>
 	</g:HTMLPanel>
+	
 </ui:UiBinder> 
