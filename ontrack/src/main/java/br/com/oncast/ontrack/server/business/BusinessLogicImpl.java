@@ -401,16 +401,15 @@ class BusinessLogicImpl implements BusinessLogic {
 			final Session currentSession = sessionManager.getCurrentSession();
 			clientManager.bindClientToProject(currentSession.getThreadLocalClientId(), projectId);
 
-			final Date timestamp = new Date();
-			final User authenticatedUser = authenticationManager.getAuthenticatedUser();
-			final ActionContext actionContext = new ActionContext(authenticatedUser.getId(), timestamp);
-
 			final List<UserAction> userActionList = persistenceService.retrieveActionsSince(projectId, lastSyncId);
 			final List<ModelAction> actionList = new ArrayList<ModelAction>();
 			for (final UserAction userAction : userActionList)
 				actionList.add(userAction.getModelAction());
 
 			final long lastUserActionId = (userActionList.size() > 0) ? userActionList.get(userActionList.size() - 1).getId() : lastSyncId;
+			final Date timestamp = (userActionList.size() > 0) ? userActionList.get(userActionList.size() - 1).getTimestamp() : new Date();
+			final ActionContext actionContext = new ActionContext(authenticationManager.getAuthenticatedUser().getId(), timestamp);
+
 			return new ModelActionSyncEventRequestResponse(new ModelActionSyncEvent(projectId, actionList, actionContext, lastUserActionId));
 		}
 		catch (final PersistenceException e) {

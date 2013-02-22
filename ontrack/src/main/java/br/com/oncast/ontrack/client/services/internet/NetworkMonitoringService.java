@@ -32,8 +32,7 @@ public class NetworkMonitoringService {
 		public void run() {
 			if (connected) return;
 
-			// FIXME LOBO i18n
-			infoAlertRegistration = alertingService.showInfo("Trying to reconnect...");
+			infoAlertRegistration = alertingService.showInfo(messages.tryingToReconnect());
 
 			if (isInternetAvailable()) {
 				if (serverPushClientService.isConnected()) onConnectionRecovered();
@@ -108,8 +107,7 @@ public class NetworkMonitoringService {
 			infoAlertRegistration = null;
 		}
 
-		// FIXME LOBO i18n
-		alertingService.showInfo("Engaging server!");
+		alertingService.showInfo(messages.establishingConnection());
 
 		notifyConnectionRecovered();
 	}

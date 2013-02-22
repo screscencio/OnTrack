@@ -41,7 +41,6 @@ public class ActionSyncService {
 
 	private final DispatchService requestDispatchService;
 
-	// FIXME LOBO Load this from project context
 	private Long lastSyncId = null;
 
 	public ActionSyncService(final DispatchService requestDispatchService, final ServerPushClientService serverPushClientService,
@@ -140,8 +139,7 @@ public class ActionSyncService {
 					@Override
 					public void onSuccess(final ModelActionSyncEventRequestResponse result) {
 						processServerActionSyncEvent(result.getModelActionSyncEvent());
-						// FIXME LOBO i18n
-						alertingService.showSuccess("We are back!");
+						alertingService.showSuccess(messages.resyncSuccess());
 						actionQueuedDispatcher.tryExchange();
 					}
 
