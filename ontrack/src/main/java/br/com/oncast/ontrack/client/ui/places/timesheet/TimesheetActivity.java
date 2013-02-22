@@ -19,7 +19,8 @@ public class TimesheetActivity extends AbstractActivity {
 
 	private final TimesheetPlace place;
 	private HandlerRegistration register;
-	private TimesheetPanel timesheetPanel;
+	private static TimesheetPanel timesheetPanel;
+	private static PopupConfig popupConfig;
 
 	public TimesheetActivity(final TimesheetPlace place) {
 		this.place = place;
@@ -33,29 +34,40 @@ public class TimesheetActivity extends AbstractActivity {
 	public void start() {
 		try {
 			final Release release = ClientServiceProvider.getCurrentProjectContext().findRelease(place.getReleaseId());
-			timesheetPanel = new TimesheetPanel(release);
+			getTimesheetPanel().setRelease(release);
 
 			if (!place.hasLoadedPlace()) register = ShortcutService.register(timesheetPanel, ClientServiceProvider.getInstance().getActionExecutionService(),
 					UndoRedoShortCutMapping.values());
 
-			PopupConfig.configPopup().popup(this.timesheetPanel).onClose(new PopupCloseListener() {
-				@Override
-				public void onHasClosed() {
-					getApplicationPlaceController().goTo(place.getDestinationPlace());
-					timesheetPanel.unregisterActionExecutionListener();
-				}
-
-			}).onOpen(new PopupOpenListener() {
-				@Override
-				public void onWillOpen() {
-					timesheetPanel.registerActionExecutionListener();
-				}
-			}).setModal(true).pop();
+			getPopupConfig().pop();
 		}
 		catch (final ReleaseNotFoundException e) {
 			// FIXME i18n
 			ClientServiceProvider.getInstance().getClientAlertingService().showError("FIXME");
 		}
+	}
+
+	private TimesheetPanel getTimesheetPanel() {
+		if (timesheetPanel != null) return timesheetPanel;
+		return timesheetPanel = new TimesheetPanel();
+	}
+
+	private PopupConfig getPopupConfig() {
+		if (popupConfig != null) return popupConfig;
+
+		return popupConfig = PopupConfig.configPopup().popup(this.timesheetPanel).onClose(new PopupCloseListener() {
+			@Override
+			public void onHasClosed() {
+				getApplicationPlaceController().goTo(place.getDestinationPlace());
+				timesheetPanel.unregisterActionExecutionListener();
+			}
+
+		}).onOpen(new PopupOpenListener() {
+			@Override
+			public void onWillOpen() {
+				timesheetPanel.registerActionExecutionListener();
+			}
+		}).setModal(true);
 	}
 
 	@Override

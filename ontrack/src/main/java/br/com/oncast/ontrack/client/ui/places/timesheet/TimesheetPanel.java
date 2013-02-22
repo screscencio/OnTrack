@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +14,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.ScopeTimeSpentWidget;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
+import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -29,8 +30,6 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -81,33 +80,21 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	@UiField
 	Button nextReleaseButton;
 
-	private final Release release;
+	private Release release;
 
 	private ActionExecutionListener actionExecutionListener;
-
-	private final SetMultimap<UUID, ScopeTimeSpentWidget> widgetsByScopeCache = HashMultimap.create();
-
-	private final SetMultimap<UUID, ScopeTimeSpentWidget> widgetsByUserCache = HashMultimap.create();
 
 	private Release previousRelease;
 
 	private Release nextRelease;
 
-	private final List<Float> rowSums = new ArrayList<Float>();
-
-	private final List<Float> columnSums = new ArrayList<Float>();
+	private Float[][] times;
 
 	interface TimesheetPanelUiBinder extends UiBinder<Widget, TimesheetPanel> {}
 
-	public TimesheetPanel(final Release release) {
-		this.release = release;
-
+	public TimesheetPanel() {
 		initializeReleaseTitle();
 		initWidget(uiBinder.createAndBindUi(this));
-
-		update();
-
-		setupReleaseNavigationButtons();
 	}
 
 	private void setupReleaseNavigationButtons() {
@@ -148,75 +135,94 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		final int lastColumn = users.size() + 1;
 
 		mountTable(lastRow, lastColumn);
-
 		populateTable(scopes, users);
 
 		return false;
 	}
 
 	private void updateSum(final UUID scopeId, final UUID userId) {
-		float difference = 0;
-		for (final ScopeTimeSpentWidget w : widgetsByScopeCache.get(scopeId)) {
-			if (w.getUser().getId().equals(userId)) {
-				final float previous = w.getTimeSpent();
-				w.update();
-				difference = w.getTimeSpent() - previous;
-			}
-		}
 
 		final int row = getScopeRowIndex(scopeId);
 		final int column = getUserColumnIndex(userId);
 		if (row == -1 || column == -1) return;
+		final Float previous = Float.valueOf(timesheet.getText(row, column));
+		final float timeSpent = getTimeSpent(scopeId, userId);
 
-		final float newRowSum = rowSums.get(row) + difference;
-		rowSums.add(row, newRowSum);
-		timesheet.setText(row, timesheet.getCellCount(row) - 1, round(newRowSum));
-		final float newColumnsSum = columnSums.get(column) + difference;
-		columnSums.add(column, newColumnsSum);
-		timesheet.setText(timesheet.getRowCount() - 1, column, round(newColumnsSum));
+		final float difference = timeSpent - previous;
 
+		times[row - 1][column - 1] = timeSpent;
+
+		timesheet.setText(row, timesheet.getCellCount(row) - 1, getRowSum(row - 1) + "");
+		timesheet.setText(timesheet.getRowCount() - 1, column, getColumnSum(column - 1) + "");
+		final Float totalSum = Float.valueOf(timesheet.getText(timesheet.getRowCount() - 1, timesheet.getCellCount(row) - 1));
+		timesheet.setText(timesheet.getRowCount() - 1, timesheet.getCellCount(row) - 1, totalSum + difference + "");
 	}
 
 	private void populateTable(final List<Scope> scopes, final List<UserRepresentation> users) {
-		widgetsByScopeCache.clear();
-		widgetsByUserCache.clear();
+		final long time = new Date().getTime();
+
+		SpeedTracerConsole.log("clear " + (new Date().getTime() - time));
 
 		for (int i = 0; i < scopes.size(); i++) {
 			final Scope scope = scopes.get(i);
 			for (int j = 0; j < users.size(); j++) {
 				final UserRepresentation user = users.get(j);
+				final float value = getTimeSpent(scope.getId(), user.getId());
 
-				final ScopeTimeSpentWidget widget = new ScopeTimeSpentWidget(scope, user);
-				widgetsByScopeCache.put(scope.getId(), widget);
-				widgetsByUserCache.put(user.getId(), widget);
+				times[i][j] = value;
 
-				timesheet.setWidget(i + 1, j + 1, widget);
+				if (user.equals(ClientServiceProvider.getCurrentUser())) timesheet.setWidget(i + 1, j + 1, new ScopeTimeSpentWidget(scope, user));
+				else timesheet.setText(i + 1, j + 1, round(value));
 			}
 		}
 
-		rowSums.clear();
-		rowSums.add(-1F);
+		SpeedTracerConsole.log("widget " + (new Date().getTime() - time));
+
 		for (int i = 1; i < scopes.size() + 1; i++) {
 			final Scope scope = scopes.get(i - 1);
 			timesheet.setText(i, 0, scope.getDescription());
-			final float sum = getTimeSpentSum(widgetsByScopeCache.get(scope.getId()));
-			rowSums.add(sum);
+
+			final float sum = getRowSum(i - 1);
 			timesheet.setText(i, users.size() + 1, round(sum));
 		}
 
-		columnSums.clear();
-		columnSums.add(-1F);
+		SpeedTracerConsole.log("scopes " + (new Date().getTime() - time));
+
 		float totalSum = 0;
 		for (int j = 1; j < users.size() + 1; j++) {
 			final UserRepresentation user = users.get(j - 1);
 			timesheet.setWidget(0, j, new UserWidget(user));
-			final float sum = getTimeSpentSum(widgetsByUserCache.get(user.getId()));
-			columnSums.add(sum);
+
+			final float sum = getColumnSum(j - 1);
+
 			timesheet.setText(scopes.size() + 1, j, round(sum));
 			totalSum += sum;
 		}
 
+		SpeedTracerConsole.log("users" + (new Date().getTime() - time));
+
 		timesheet.setText(scopes.size() + 1, users.size() + 1, round(totalSum));
+	}
+
+	private float getColumnSum(final int j) {
+		Float result = 0F;
+		for (final Float[] time : times)
+			result += time[j];
+
+		return result;
+	}
+
+	private float getRowSum(final int i) {
+		Float result = 0F;
+		for (int j = 0; j < times[i].length; j++)
+			result += times[i][j];
+
+		return result;
+	}
+
+	private float getTimeSpent(final UUID scopeId, final UUID userId) {
+		final Float declaredTimeSpent = ClientServiceProvider.getCurrentProjectContext().getDeclaredTimeSpent(scopeId, userId);
+		return declaredTimeSpent == null ? 0.0f : declaredTimeSpent;
 	}
 
 	private void mountTable(final int lastRow, final int lastColumn) {
@@ -262,14 +268,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			if (s.getId().equals(scopeId)) return scopes.indexOf(s) + 1;
 		}
 		return -1;
-	}
-
-	private float getTimeSpentSum(final Set<ScopeTimeSpentWidget> set) {
-		float sum = 0;
-		for (final ScopeTimeSpentWidget widget : set) {
-			sum += widget.getTimeSpent();
-		}
-		return sum;
 	}
 
 	private void updateScopeDescriptions(final UUID scopeId) {
@@ -321,8 +319,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 					final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
 
-				if (action instanceof ScopeDeclareTimeSpentAction && widgetsByScopeCache.containsKey(action.getReferenceId())) updateSum(
-						action.getReferenceId(), actionContext.getUserId());
+				if (action instanceof ScopeDeclareTimeSpentAction) updateSum(action.getReferenceId(), actionContext.getUserId());
 
 				else if (action instanceof ScopeBindReleaseAction) update();
 				else if (action instanceof TeamAction) update();
@@ -358,4 +355,10 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		});
 	}
 
+	public void setRelease(final Release release) {
+		this.release = release;
+		times = new Float[release.getScopeList().size()][ClientServiceProvider.getCurrentProjectContext().getUsers().size()];
+		update();
+		setupReleaseNavigationButtons();
+	}
 }
