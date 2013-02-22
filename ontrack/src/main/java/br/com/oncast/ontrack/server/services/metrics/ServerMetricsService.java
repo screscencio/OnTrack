@@ -113,7 +113,7 @@ public class ServerMetricsService {
 
 	public ProjectMetrics getProjectMetrics(final UUID projectId) throws Exception {
 		final ProjectMetrics metrics = FACTORY.createProjectMetrics().as();
-		final Project project = businessLogic.loadProject(projectId);
+		final Project project = businessLogic.loadProject(projectId).getProject();
 		metrics.setProjectName(project.getProjectRepresentation().getName());
 		metrics.setUsersCount(project.getUsers().size());
 		final List<Scope> scopes = project.getProjectScope().getAllDescendantScopes();

@@ -68,7 +68,7 @@ public class ScopeBindHumanIdPostProcessor implements ActionPostProcessor<ScopeB
 		final List<ModelAction> list = new ArrayList<ModelAction>();
 		list.add(action);
 		ServerServiceProvider.getInstance().getBusinessLogic().handleIncomingActionSyncRequest(new ModelActionSyncRequest(projectId, list));
-		multicastService.multicastToCurrentUserClientInSpecificProject(new ModelActionSyncEvent(projectId, list, actionContext), projectId);
+		multicastService.multicastToCurrentUserClientInSpecificProject(new ModelActionSyncEvent(projectId, list, actionContext, -1), projectId);
 	}
 
 	public void deactivate() {
