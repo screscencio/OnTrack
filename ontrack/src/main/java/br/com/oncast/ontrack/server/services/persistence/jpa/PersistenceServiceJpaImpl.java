@@ -46,17 +46,20 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 	private final static ObjectCache<UUID, ProjectSnapshot> SNAPSHOT_CACHE = new ObjectCache<UUID, ProjectSnapshot>();
 
 	@Override
-	public void persistActions(final UUID projectId, final List<ModelAction> actionList, final UUID userId, final Date timestamp) throws PersistenceException {
+	public long persistActions(final UUID projectId, final List<ModelAction> actionList, final UUID userId, final Date timestamp) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
 			em.getTransaction().begin();
 			final ProjectRepresentationEntity projectRepresentationEntity = convertProjectRepresentationToEntity(retrieveProjectRepresentation(projectId));
+			UserActionEntity lastPersistedAction = null;
 			for (final ModelAction modelAction : actionList) {
 				final ModelActionEntity entity = convertActionToEntity(modelAction);
 				final UserActionEntity container = new UserActionEntity(entity, userId.toString(), projectRepresentationEntity, timestamp);
 				em.persist(container);
+				lastPersistedAction = container;
 			}
 			em.getTransaction().commit();
+			return (lastPersistedAction == null) ? 0 : lastPersistedAction.getId();
 		}
 		catch (final Exception e) {
 			try {

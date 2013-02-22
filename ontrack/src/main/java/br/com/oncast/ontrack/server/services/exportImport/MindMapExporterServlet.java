@@ -35,7 +35,7 @@ public class MindMapExporterServlet extends HttpServlet {
 
 	private void doReply(final HttpServletRequest request, final HttpServletResponse response) throws UnableToLoadProjectException, IOException,
 			ServletException, ProjectNotFoundException {
-		final Project project = BUSINESS.loadProject(getProjectId(request));
+		final Project project = BUSINESS.loadProject(getProjectId(request)).getProject();
 		configureResponse(response, project);
 
 		FreeMindExporter.export(project, response.getOutputStream());

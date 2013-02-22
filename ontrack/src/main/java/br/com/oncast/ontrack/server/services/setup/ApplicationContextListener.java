@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.AuthenticationReque
 import br.com.oncast.ontrack.server.services.requestDispatch.ChangePasswordRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.CurrentUserInformationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.DeAuthenticationRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncEventRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.MultipleProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.NotificationListRequestHandler;
@@ -28,12 +29,13 @@ import br.com.oncast.ontrack.server.services.requestDispatch.UserDataRequestHand
 import br.com.oncast.ontrack.server.services.requestDispatch.UserDataUpdateRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.UserScopeSelectionMulticastRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.UsersStatusRequestHandler;
-import br.com.oncast.ontrack.server.services.requestDispatch.metrics.OnTrackServerMetricsRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.admin.OnTrackServerStatisticsRequestHandler;
 import br.com.oncast.ontrack.server.services.serverPush.ServerPushServerService;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.MultipleProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
@@ -48,7 +50,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserDataUpdateRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UserScopeSelectionMulticastRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.UsersStatusRequest;
-import br.com.oncast.ontrack.shared.services.requestDispatch.metrics.OnTrackServerMetricsRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.admin.OnTrackServerStatisticsRequest;
 
 public class ApplicationContextListener implements ServletContextListener {
 
@@ -94,6 +96,8 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(MultipleProjectContextRequest.class, new MultipleProjectContextRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(RemoveProjectAuthorizationRequest.class, new RemoveProjectAuthorizationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(OnTrackServerMetricsRequest.class, new OnTrackServerMetricsRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(OnTrackServerStatisticsRequest.class, new OnTrackServerStatisticsRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(ModelActionSyncEventRequest.class, new ModelActionSyncEventRequestHandler());
 		}
 		catch (final DispatchServiceException e) {
 			throw new RuntimeException("The application is misconfigured.", e);

@@ -5,7 +5,6 @@ import java.util.List;
 
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchCallback;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
-import br.com.drycode.api.web.gwt.dispatchService.shared.responses.VoidResult;
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
@@ -14,6 +13,7 @@ import br.com.oncast.ontrack.shared.exceptions.business.InvalidIncomingAction;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionException;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequestResponse;
 
 import com.google.gwt.user.client.Window;
 
@@ -21,11 +21,12 @@ class ActionQueuedDispatcher {
 
 	private final DispatchService requestDispatchService;
 
-	private final ClientErrorMessages messages;
 	private final List<ModelAction> actionList;
 	private List<ModelAction> waitingServerAnswerActionList;
 	private final ProjectRepresentationProvider projectRepresentationProvider;
+	private final ClientErrorMessages messages;
 	private final ClientAlertingService alertingService;
+	private final List<ActionQueuedDispatchCallback> callbacks = new ArrayList<ActionQueuedDispatchCallback>();
 
 	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider,
 			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
@@ -41,10 +42,10 @@ class ActionQueuedDispatcher {
 
 	public void dispatch(final ModelAction action) {
 		actionList.add(action);
-		sync();
+		tryExchange();
 	}
 
-	private void sync() {
+	public void tryExchange() {
 		if (!waitingServerAnswerActionList.isEmpty()) return;
 		if (actionList.isEmpty()) return;
 
@@ -54,13 +55,14 @@ class ActionQueuedDispatcher {
 		// TODO Display 'loading' UI indicator.
 		requestDispatchService.dispatch(
 				new ModelActionSyncRequest(projectRepresentationProvider.getCurrent(), waitingServerAnswerActionList),
-				new DispatchCallback<VoidResult>() {
+				new DispatchCallback<ModelActionSyncRequestResponse>() {
 
 					@Override
-					public void onSuccess(final VoidResult response) {
+					public void onSuccess(final ModelActionSyncRequestResponse response) {
 						// TODO Hide 'loading' UI indicator.
 						waitingServerAnswerActionList.clear();
-						sync();
+						notifyCallbacks(response);
+						tryExchange();
 					}
 
 					@Override
@@ -92,5 +94,15 @@ class ActionQueuedDispatcher {
 						}
 					}
 				});
+	}
+
+	protected void notifyCallbacks(final ModelActionSyncRequestResponse response) {
+		for (final ActionQueuedDispatchCallback callback : callbacks) {
+			callback.onDispatch(response.getLastApplyedActionId());
+		}
+	}
+
+	public void addDispatchCallback(final ActionQueuedDispatchCallback actionQueuedDispatchCallback) {
+		callbacks.add(actionQueuedDispatchCallback);
 	}
 }
