@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.shared.model.metadata.MetadataType;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
+import br.com.oncast.ontrack.shared.model.timesheet.UuidAssociation;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -44,6 +45,7 @@ public class Project implements Serializable, HasUUID {
 	private Set<FileRepresentation> fileRepresentations;
 	private ListMultimap<UUID, Checklist> checklistMap;
 	private Map<UUID, Description> descriptionMap;
+	private Map<UuidAssociation, Float> timesheet;
 	private Map<HasMetadata, SetMultimap<MetadataType, Metadata>> metadataMap;
 	private List<Tag> tags;
 
@@ -51,20 +53,21 @@ public class Project implements Serializable, HasUUID {
 	protected Project() {}
 
 	public Project(final ProjectRepresentation projectRepresentation, final Scope projectScope, final Release projectRelease) {
-		kanbanMap = new HashMap<Release, Kanban>();
-
 		this.projectRepresentation = projectRepresentation;
 		this.projectScope = projectScope;
 		this.projectRelease = projectRelease;
 
+		metadataMap = new HashMap<HasMetadata, SetMultimap<MetadataType, Metadata>>();
+		checklistMap = ArrayListMultimap.create();
+
+		kanbanMap = new HashMap<Release, Kanban>();
 		annotationsMap = new HashMap<UUID, List<Annotation>>();
 		descriptionMap = new HashMap<UUID, Description>();
-		tags = new ArrayList<Tag>();
+		timesheet = new HashMap<UuidAssociation, Float>();
 
-		checklistMap = ArrayListMultimap.create();
+		tags = new ArrayList<Tag>();
 		users = new HashSet<UserRepresentation>();
 		fileRepresentations = new HashSet<FileRepresentation>();
-		metadataMap = new HashMap<HasMetadata, SetMultimap<MetadataType, Metadata>>();
 	}
 
 	public Scope getProjectScope() {
@@ -291,4 +294,11 @@ public class Project implements Serializable, HasUUID {
 		return findDescriptionFor(subjectId) != null;
 	}
 
+	public void declareTimeSpent(final UUID scopeId, final UUID userId, final Float timeSpent) {
+		timesheet.put(new UuidAssociation(scopeId, userId), timeSpent);
+	}
+
+	public Float getDeclaredTimeSpent(final UUID scopeId, final UUID userId) {
+		return timesheet.get(new UuidAssociation(scopeId, userId));
+	}
 }

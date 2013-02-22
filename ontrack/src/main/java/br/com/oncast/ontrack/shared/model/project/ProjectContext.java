@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.checklist.Checklist;
@@ -326,6 +328,14 @@ public class ProjectContext implements HasUUID {
 	public String getHumanId(final Scope scope) {
 		final List<HumanIdMetadata> list = getMetadataList(scope, MetadataType.HUMAN_ID);
 		return list.isEmpty() ? "" : list.get(0).getHumanId();
+	}
+
+	public void declareTimeSpent(final UUID scopeId, final UUID userId, final @Nullable Float timeSpent) {
+		project.declareTimeSpent(scopeId, userId, timeSpent);
+	}
+
+	public Float getDeclaredTimeSpent(final UUID scopeId, final UUID userId) {
+		return project.getDeclaredTimeSpent(scopeId, userId);
 	}
 
 }

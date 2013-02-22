@@ -3,16 +3,18 @@ package br.com.oncast.ontrack.client.ui.places.timesheet.widgets;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareTimeSpentAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
+import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeHourAppointmentWidget implements IsWidget {
+public class ScopeTimeSpentWidget implements IsWidget {
 
 	private static final float DEFAULT_DAILLY_WORKING_HOUR = 8;
 
@@ -20,7 +22,14 @@ public class ScopeHourAppointmentWidget implements IsWidget {
 
 	EditableLabel editableLabel;
 
-	public ScopeHourAppointmentWidget(final Scope scope, final UserRepresentation user) {
+	private final UserRepresentation user;
+
+	private final Scope scope;
+
+	public ScopeTimeSpentWidget(final Scope scope, final UserRepresentation user) {
+		this.scope = scope;
+		this.user = user;
+
 		editableLabel = new EditableLabel(new EditableLabelEditionHandler() {
 			@Override
 			public boolean onEditionRequest(final String text) {
@@ -28,7 +37,7 @@ public class ScopeHourAppointmentWidget implements IsWidget {
 					final Float newAppointment = Float.valueOf(text);
 					if (newAppointment.equals(appointedHour)) return false;
 
-					setAppointedHour(newAppointment);
+					launchAction(scope.getId(), newAppointment);
 					return true;
 				}
 				catch (final NumberFormatException e) {
@@ -37,12 +46,18 @@ public class ScopeHourAppointmentWidget implements IsWidget {
 					return false;
 				}
 			}
+
 		});
 		editableLabel.setWidth("40px");
 		editableLabel.getElement().getStyle().setProperty("textAlign", "center");
-
-		setAppointedHour(extractHour(scope));
 		editableLabel.setReadOnly(!ClientServiceProvider.getCurrentUser().equals(user.getId()));
+
+		update();
+	}
+
+	public void update() {
+		final Float declaredTimeSpent = ClientServiceProvider.getCurrentProjectContext().getDeclaredTimeSpent(scope.getId(), user.getId());
+		setAppointedHour(declaredTimeSpent == null ? extractHour(scope) : declaredTimeSpent);
 	}
 
 	private float extractHour(final Scope scope) {
@@ -57,13 +72,21 @@ public class ScopeHourAppointmentWidget implements IsWidget {
 		editableLabel.setValue("" + appointedHour);
 	}
 
-	public float getAppointedHour() {
+	private void launchAction(final UUID scopeId, final Float newAppointment) {
+		ClientServiceProvider.getInstance().getActionExecutionService().onUserActionExecutionRequest(new ScopeDeclareTimeSpentAction(scopeId, newAppointment));
+	}
+
+	public float getTimeSpent() {
 		return appointedHour;
 	}
 
 	@Override
 	public Widget asWidget() {
 		return editableLabel;
+	}
+
+	public UserRepresentation getUser() {
+		return user;
 	}
 
 }

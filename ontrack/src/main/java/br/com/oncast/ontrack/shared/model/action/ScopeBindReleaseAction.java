@@ -144,4 +144,8 @@ public class ScopeBindReleaseAction implements ScopeAction {
 	public boolean isUnbinding() {
 		return newReleaseDescription == null || newReleaseDescription.isEmpty();
 	}
+
+	public String getNewReleaseDescription() {
+		return newReleaseDescription;
+	}
 }

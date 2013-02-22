@@ -50,6 +50,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeBindHumanIdAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeBindReleaseAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareEffortAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareProgressAction;
+import br.com.oncast.ontrack.shared.model.action.ScopeDeclareTimeSpentAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertChildRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeInsertParentAction;
@@ -181,7 +182,12 @@ public class UserActionTestUtils {
 		userActions.add(createScopeMoveToAction());
 		userActions.add(createScopeBindHumanIdAction());
 		userActions.add(createScopeUnbindHumanIdAction());
+		userActions.add(createScopeDeclareTimeSpentAction());
 		return userActions;
+	}
+
+	private static UserAction createScopeDeclareTimeSpentAction() throws Exception {
+		return createUserAction(new ScopeDeclareTimeSpentAction(new UUID(), 2F));
 	}
 
 	private static UserAction createScopeUnbindHumanIdAction() throws Exception {
