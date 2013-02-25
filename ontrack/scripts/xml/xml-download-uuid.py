@@ -30,8 +30,9 @@ def download(projectId) :
 
 def setup() :
 	global folder, ssl3, protocol
-	timeStr = strftime("%Y-%m-%d", gmtime())
-	folder = 'ontrack_' + timeStr
+	if not folder :
+		timeStr = strftime("%Y-%m-%d", gmtime())
+		folder = 'ontrack_' + timeStr
 	
 	if useHttps :
 		ssl3 = " -3"
@@ -108,13 +109,14 @@ def usage():
 		 -s, --use-https \t\tuse https connection
 		 -u, --user <username> \t\tusername to be used on basic authentication [admin@ontrack.com]
 		 -p, --password <password> \t\tpassword to be used on basic authentication [ontrackpoulain]
+		 -o, --out-dir <dir> \t\tthe folder in with the ontrack migration should be downloaded [ontrack_aaaa_mm_dd]
 	'''
 
 def main():
-	global baseUrl, fromProject, untilProject, useHttps, user, password
+	global baseUrl, fromProject, untilProject, useHttps, user, password, folder
 
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hb:su:p:", ["help", "base-url", "use-https", "--user", "--password"])
+		opts, args = getopt.getopt(sys.argv[1:], "hb:su:p:o:", ["help", "base-url", "use-https", "--user", "--password", "--out-dir"])
 	except getopt.error, msg:
 		print str(msg)
 		usage()
@@ -136,6 +138,9 @@ def main():
 
 		if o in ("-p", "--password") :
 			password = a
+			
+		if o in ("-o", "--out-dir") :
+			folder = a
 
 	setup()
 	execute(args)
