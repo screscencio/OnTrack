@@ -1,5 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet;
 
+import static br.com.oncast.ontrack.client.services.ClientServiceProvider.getCurrentUser;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -97,6 +99,13 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
+	public void setRelease(final Release release) {
+		this.release = release;
+		times = new Float[release.getScopeList().size()][getUsers().size()];
+		update();
+		setupReleaseNavigationButtons();
+	}
+
 	private void setupReleaseNavigationButtons() {
 		previousRelease = release.getLatestPastRelease(new Condition() {
 			@Override
@@ -129,33 +138,34 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	public boolean update() {
 		updateReleaseTitle();
 
-		final List<UserRepresentation> users = ClientServiceProvider.getCurrentProjectContext().getUsers();
+		final List<UserRepresentation> users = getUsers();
 		final List<Scope> scopes = release.getScopeList();
-		final int lastRow = scopes.size() + 1;
-		final int lastColumn = users.size() + 1;
 
-		mountTable(lastRow, lastColumn);
+		mountTable(scopes, users);
 		populateTable(scopes, users);
 
 		return false;
 	}
 
-	private void updateSum(final UUID scopeId, final UUID userId) {
-
+	private void updateSums(final UUID scopeId, final UUID userId) {
 		final int row = getScopeRowIndex(scopeId);
 		final int column = getUserColumnIndex(userId);
 		if (row == -1 || column == -1) return;
-		final Float previous = Float.valueOf(timesheet.getText(row, column));
-		final float timeSpent = getTimeSpent(scopeId, userId);
 
-		final float difference = timeSpent - previous;
+		final Float previousValue = times[row - 1][column - 1];
+		final float newValue = getTimeSpent(scopeId, userId);
+		final float difference = newValue - previousValue;
 
-		times[row - 1][column - 1] = timeSpent;
+		times[row - 1][column - 1] = newValue;
 
-		timesheet.setText(row, timesheet.getCellCount(row) - 1, getRowSum(row - 1) + "");
-		timesheet.setText(timesheet.getRowCount() - 1, column, getColumnSum(column - 1) + "");
-		final Float totalSum = Float.valueOf(timesheet.getText(timesheet.getRowCount() - 1, timesheet.getCellCount(row) - 1));
-		timesheet.setText(timesheet.getRowCount() - 1, timesheet.getCellCount(row) - 1, totalSum + difference + "");
+		final int lastColumn = timesheet.getCellCount(row) - 1;
+		final int lastRow = timesheet.getRowCount() - 1;
+
+		timesheet.setText(row, lastColumn, getRowSum(row) + "");
+		timesheet.setText(lastRow, column, getColumnSum(column) + "");
+
+		final Float previousTotal = Float.valueOf(timesheet.getText(lastRow, lastColumn));
+		timesheet.setText(lastRow, lastColumn, previousTotal + difference + "");
 	}
 
 	private void populateTable(final List<Scope> scopes, final List<UserRepresentation> users) {
@@ -165,13 +175,14 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 		for (int i = 0; i < scopes.size(); i++) {
 			final Scope scope = scopes.get(i);
+
 			for (int j = 0; j < users.size(); j++) {
 				final UserRepresentation user = users.get(j);
-				final float value = getTimeSpent(scope.getId(), user.getId());
 
+				final float value = getTimeSpent(scope.getId(), user.getId());
 				times[i][j] = value;
 
-				if (user.equals(ClientServiceProvider.getCurrentUser())) timesheet.setWidget(i + 1, j + 1, new ScopeTimeSpentWidget(scope, user));
+				if (user.equals(getCurrentUser())) timesheet.setWidget(i + 1, j + 1, new ScopeTimeSpentWidget(scope, user));
 				else timesheet.setText(i + 1, j + 1, round(value));
 			}
 		}
@@ -182,8 +193,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			final Scope scope = scopes.get(i - 1);
 			timesheet.setText(i, 0, scope.getDescription());
 
-			final float sum = getRowSum(i - 1);
-			timesheet.setText(i, users.size() + 1, round(sum));
+			timesheet.setText(i, users.size() + 1, round(getRowSum(i)));
 		}
 
 		SpeedTracerConsole.log("scopes " + (new Date().getTime() - time));
@@ -193,8 +203,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			final UserRepresentation user = users.get(j - 1);
 			timesheet.setWidget(0, j, new UserWidget(user));
 
-			final float sum = getColumnSum(j - 1);
-
+			final float sum = getColumnSum(j);
 			timesheet.setText(scopes.size() + 1, j, round(sum));
 			totalSum += sum;
 		}
@@ -204,28 +213,10 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		timesheet.setText(scopes.size() + 1, users.size() + 1, round(totalSum));
 	}
 
-	private float getColumnSum(final int j) {
-		Float result = 0F;
-		for (final Float[] time : times)
-			result += time[j];
+	private void mountTable(final List<Scope> scopes, final List<UserRepresentation> users) {
+		final int lastRow = scopes.size() + 1;
+		final int lastColumn = users.size() + 1;
 
-		return result;
-	}
-
-	private float getRowSum(final int i) {
-		Float result = 0F;
-		for (int j = 0; j < times[i].length; j++)
-			result += times[i][j];
-
-		return result;
-	}
-
-	private float getTimeSpent(final UUID scopeId, final UUID userId) {
-		final Float declaredTimeSpent = ClientServiceProvider.getCurrentProjectContext().getDeclaredTimeSpent(scopeId, userId);
-		return declaredTimeSpent == null ? 0.0f : declaredTimeSpent;
-	}
-
-	private void mountTable(final int lastRow, final int lastColumn) {
 		timesheet.clear();
 
 		timesheet.setText(0, 0, "");
@@ -236,38 +227,16 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 		for (int i = 1; i < lastRow; i++) {
 			rowFormatter.addStyleName(i, style.row());
-			cellFormatter.addStyleName(i
-					, 0, style.scopeDescriptionCell());
+			cellFormatter.addStyleName(i, 0, style.scopeDescriptionCell());
 			cellFormatter.addStyleName(i, lastColumn, style.sumCell());
 		}
 
-		for (int j = 1; j < lastColumn; j++) {
-			cellFormatter.addStyleName(lastRow, j, style.sumCell());
+		for (int i = 1; i < lastColumn; i++) {
+			cellFormatter.addStyleName(lastRow, i, style.sumCell());
 		}
 
-		timesheet.getColumnFormatter().addStyleName(getCurrentUserColumnIndex(), style.currentUserColumn());
+		timesheet.getColumnFormatter().addStyleName(getUserColumnIndex(getCurrentUser()), style.currentUserColumn());
 		cellFormatter.addStyleName(lastRow, lastColumn, style.sumCell());
-	}
-
-	private int getCurrentUserColumnIndex() {
-		final UUID currentUser = ClientServiceProvider.getCurrentUser();
-		return getUserColumnIndex(currentUser);
-	}
-
-	private int getUserColumnIndex(final UUID userId) {
-		final List<UserRepresentation> users = ClientServiceProvider.getCurrentProjectContext().getUsers();
-		for (final UserRepresentation u : users) {
-			if (u.getId().equals(userId)) return users.indexOf(u) + 1;
-		}
-		return -1;
-	}
-
-	private int getScopeRowIndex(final UUID scopeId) {
-		final List<Scope> scopes = release.getScopeList();
-		for (final Scope s : scopes) {
-			if (s.getId().equals(scopeId)) return scopes.indexOf(s) + 1;
-		}
-		return -1;
 	}
 
 	private void updateScopeDescriptions(final UUID scopeId) {
@@ -282,10 +251,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 	private void updateReleaseTitle() {
 		releaseTitle.setValue(release.getDescription());
-	}
-
-	private String round(final float number) {
-		return ClientDecimalFormat.roundFloat(number, 1);
 	}
 
 	@UiHandler("previousReleaseButton")
@@ -319,7 +284,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 					final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
 
-				if (action instanceof ScopeDeclareTimeSpentAction) updateSum(action.getReferenceId(), actionContext.getUserId());
+				if (action instanceof ScopeDeclareTimeSpentAction) updateSums(action.getReferenceId(), actionContext.getUserId());
 
 				else if (action instanceof ScopeBindReleaseAction) update();
 				else if (action instanceof TeamAction) update();
@@ -340,7 +305,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 			@Override
 			public boolean onEditionRequest(final String text) {
-				final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
+				final ProjectContext projectContext = getContext();
 				final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
 
 				try {
@@ -355,10 +320,53 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		});
 	}
 
-	public void setRelease(final Release release) {
-		this.release = release;
-		times = new Float[release.getScopeList().size()][ClientServiceProvider.getCurrentProjectContext().getUsers().size()];
-		update();
-		setupReleaseNavigationButtons();
+	private float getColumnSum(final int column) {
+		Float result = 0F;
+		for (final Float[] row : times)
+			result += row[column - 1];
+
+		return result;
 	}
+
+	private float getRowSum(final int row) {
+		Float result = 0F;
+		for (final Float value : times[row - 1])
+			result += value;
+
+		return result;
+	}
+
+	private int getUserColumnIndex(final UUID userId) {
+		final List<UserRepresentation> users = getUsers();
+		for (final UserRepresentation u : users) {
+			if (u.getId().equals(userId)) return users.indexOf(u) + 1;
+		}
+		return -1;
+	}
+
+	private int getScopeRowIndex(final UUID scopeId) {
+		final List<Scope> scopes = release.getScopeList();
+		for (final Scope s : scopes) {
+			if (s.getId().equals(scopeId)) return scopes.indexOf(s) + 1;
+		}
+		return -1;
+	}
+
+	private float getTimeSpent(final UUID scopeId, final UUID userId) {
+		final Float declaredTimeSpent = getContext().getDeclaredTimeSpent(scopeId, userId);
+		return declaredTimeSpent == null ? 0.0f : declaredTimeSpent;
+	}
+
+	private List<UserRepresentation> getUsers() {
+		return getContext().getUsers();
+	}
+
+	private ProjectContext getContext() {
+		return ClientServiceProvider.getCurrentProjectContext();
+	}
+
+	private String round(final float number) {
+		return ClientDecimalFormat.roundFloat(number, 1);
+	}
+
 }
