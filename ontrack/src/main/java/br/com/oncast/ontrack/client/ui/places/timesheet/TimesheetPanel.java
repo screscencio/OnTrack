@@ -2,7 +2,6 @@ package br.com.oncast.ontrack.client.ui.places.timesheet;
 
 import static br.com.oncast.ontrack.client.services.ClientServiceProvider.getCurrentUser;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +15,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupAware;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.ScopeTimeSpentWidget;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
-import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -47,6 +45,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TimesheetPanel extends Composite implements ModelWidget<Release>, PopupAware, HasCloseHandlers<TimesheetPanel> {
@@ -65,7 +64,11 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 		String currentUserColumn();
 
+		String timesheet();
 	}
+
+	@UiField
+	HorizontalPanel timesheetContainer;
 
 	@UiField
 	TimesheetPanelStyle style;
@@ -74,13 +77,12 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	EditableLabel releaseTitle;
 
 	@UiField
-	FlexTable timesheet;
-
-	@UiField
 	Button previousReleaseButton;
 
 	@UiField
 	Button nextReleaseButton;
+
+	FlexTable timesheet;
 
 	private Release release;
 
@@ -147,7 +149,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		return false;
 	}
 
-	private void updateSums(final UUID scopeId, final UUID userId) {
+	private void updateTimeSpent(final UUID scopeId, final UUID userId) {
 		final int row = getScopeRowIndex(scopeId);
 		final int column = getUserColumnIndex(userId);
 		if (row == -1 || column == -1) return;
@@ -157,6 +159,9 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		final float difference = newValue - previousValue;
 
 		times[row - 1][column - 1] = newValue;
+		final Widget widget = timesheet.getWidget(row, column);
+		if (widget == null) timesheet.setText(row, column, newValue + "");
+		else ((EditableLabel) widget).setValue(round(newValue), false);
 
 		final int lastColumn = timesheet.getCellCount(row) - 1;
 		final int lastRow = timesheet.getRowCount() - 1;
@@ -169,10 +174,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	}
 
 	private void populateTable(final List<Scope> scopes, final List<UserRepresentation> users) {
-		final long time = new Date().getTime();
-
-		SpeedTracerConsole.log("clear " + (new Date().getTime() - time));
-
 		for (int i = 0; i < scopes.size(); i++) {
 			final Scope scope = scopes.get(i);
 
@@ -182,12 +183,10 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 				final float value = getTimeSpent(scope.getId(), user.getId());
 				times[i][j] = value;
 
-				if (user.equals(getCurrentUser())) timesheet.setWidget(i + 1, j + 1, new ScopeTimeSpentWidget(scope, user));
+				if (user.equals(getCurrentUser())) timesheet.setWidget(i + 1, j + 1, new ScopeTimeSpentWidget(scope, user, value));
 				else timesheet.setText(i + 1, j + 1, round(value));
 			}
 		}
-
-		SpeedTracerConsole.log("widget " + (new Date().getTime() - time));
 
 		for (int i = 1; i < scopes.size() + 1; i++) {
 			final Scope scope = scopes.get(i - 1);
@@ -195,8 +194,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 			timesheet.setText(i, users.size() + 1, round(getRowSum(i)));
 		}
-
-		SpeedTracerConsole.log("scopes " + (new Date().getTime() - time));
 
 		float totalSum = 0;
 		for (int j = 1; j < users.size() + 1; j++) {
@@ -208,8 +205,6 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 			totalSum += sum;
 		}
 
-		SpeedTracerConsole.log("users" + (new Date().getTime() - time));
-
 		timesheet.setText(scopes.size() + 1, users.size() + 1, round(totalSum));
 	}
 
@@ -217,7 +212,9 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		final int lastRow = scopes.size() + 1;
 		final int lastColumn = users.size() + 1;
 
-		timesheet.clear();
+		timesheetContainer.clear();
+		timesheet = createTimesheetTable();
+		timesheetContainer.add(timesheet);
 
 		timesheet.setText(0, 0, "");
 		timesheet.setText(lastRow, lastColumn, "");
@@ -263,6 +260,11 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		SERVICE_PROVIDER.getTimesheetService().showTimesheetFor(nextRelease.getId());
 	}
 
+	@UiHandler("closeIcon")
+	public void onCloseClick(final ClickEvent event) {
+		hide();
+	}
+
 	@Override
 	public Release getModelObject() {
 		return release;
@@ -284,15 +286,31 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 					final Set<UUID> inferenceInfluencedScopeSet,
 					final boolean isUserAction) {
 
-				if (action instanceof ScopeDeclareTimeSpentAction) updateSums(action.getReferenceId(), actionContext.getUserId());
-
-				else if (action instanceof ScopeBindReleaseAction) update();
+				if (action instanceof ScopeDeclareTimeSpentAction) updateTimeSpent(action.getReferenceId(), actionContext.getUserId());
+				else if (action instanceof ScopeBindReleaseAction && (isRemovingFromMyRelease(action) || isAddingToMyRelease((ScopeBindReleaseAction) action))) update();
 				else if (action instanceof TeamAction) update();
 				else if (action instanceof ReleaseRenameAction) updateReleaseTitle();
 				else if (action instanceof ScopeUpdateAction) updateScopeDescriptions(action.getReferenceId());
 			}
 
-		} : actionExecutionListener;
+			private boolean isAddingToMyRelease(final ScopeBindReleaseAction action) {
+				try {
+					return release.equals(getContext().findRelease(action.getNewReleaseDescription()));
+				}
+				catch (final ReleaseNotFoundException e) {
+					return false;
+				}
+			}
+
+			private boolean isRemovingFromMyRelease(final ModelAction action) {
+				for (final Scope s : release.getScopeList()) {
+					if (s.getId().equals(action.getReferenceId())) return true;
+				}
+				return false;
+			}
+
+		}
+				: actionExecutionListener;
 	}
 
 	@Override
@@ -318,6 +336,14 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 				return true;
 			}
 		});
+	}
+
+	private FlexTable createTimesheetTable() {
+		final FlexTable table = new FlexTable();
+		table.addStyleName(style.timesheet());
+		table.setCellPadding(5);
+		table.setCellSpacing(0);
+		return table;
 	}
 
 	private float getColumnSum(final int column) {
