@@ -72,7 +72,7 @@ def printAuthorizedUsers(xmlText, projectId = None) :
 def execute(path) :
 	if os.path.isdir(path) :
 
-		expression = re.compile(r"^ontrack_\d+(-\d+-\d+)?\.xml$")
+		expression = re.compile(r"^ontrack_[A-Z\-0-9]+\.xml$")
 		for entry in os.listdir(path) :
 			if expression.match(entry) :
 				xmlText = open(os.path.join(path, entry)).read();
