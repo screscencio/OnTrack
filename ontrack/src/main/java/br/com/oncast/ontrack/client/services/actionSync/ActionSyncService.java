@@ -160,7 +160,7 @@ public class ActionSyncService {
 	}
 
 	private void updateLastSyncId(final Long syncId) {
-		if (syncId < 0) return;
+		if (syncId == null || syncId < 0) return;
 		lastSyncId = syncId;
 	}
 

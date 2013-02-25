@@ -127,17 +127,17 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	}
 
 	protected void notifyConnection() {
-		for (final ServerPushConnectionCallback serverPushConnectionCallback : serverPushConnectionCallbacks)
+		for (final ServerPushConnectionCallback serverPushConnectionCallback : new ArrayList<ServerPushConnectionCallback>(serverPushConnectionCallbacks))
 			serverPushConnectionCallback.connected();
 	}
 
 	protected void notifyDisconnection() {
-		for (final ServerPushConnectionCallback serverPushConnectionCallback : serverPushConnectionCallbacks)
+		for (final ServerPushConnectionCallback serverPushConnectionCallback : new ArrayList<ServerPushConnectionCallback>(serverPushConnectionCallbacks))
 			serverPushConnectionCallback.disconnected();
 	}
 
 	protected void notifyError(final Throwable cause) {
-		for (final ServerPushConnectionCallback serverPushConnectionCallback : serverPushConnectionCallbacks)
+		for (final ServerPushConnectionCallback serverPushConnectionCallback : new ArrayList<ServerPushConnectionCallback>(serverPushConnectionCallbacks))
 			serverPushConnectionCallback.uncaughtExeption(cause);
 	}
 }

@@ -4,8 +4,12 @@
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
 	<ui:image field="closeImage" src="../../components/releasepanel/widgets/chart/stats-close.png" />
-	<ui:image field="previousImage" src="../../components/releasepanel/widgets/chart/stats-close.png" />
-	<ui:image field="nextImage" src="../../components/releasepanel/widgets/chart/stats-close.png" />
+	<ui:image field="previousImage" src="arrow_left_regular.png" />
+	<ui:image field="previousImageHover" src="arrow_left_hover.png" />
+	<ui:image field="previousImageDisable" src="arrow_left_disable.png" />
+	<ui:image field="nextImage" src="arrow_right_regular.png" />
+	<ui:image field="nextImageHover" src="arrow_right_hover.png" />
+	<ui:image field="nextImageDisable" src="arrow_right_disable.png" />
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.timesheet.TimesheetPanel.TimesheetPanelStyle">
 		
 		.root {
@@ -122,7 +126,10 @@
 		.navigationButton {
 			position: absolute;
 			top: 50%;
-			margin-top: -5px;
+			margin-top: -17.5px;
+			border: 0px;
+
+			cursor: pointer;
 		}
 		
 		@sprite .previous {
@@ -135,6 +142,22 @@
 			right: 10px;
 		}
 		
+		@sprite .previous:hover {
+			gwt-image: 'previousImageHover';
+		}
+		
+		@sprite .next:hover {
+			gwt-image: 'nextImageHover';
+		}
+		
+		@sprite .previous:disabled {
+			gwt-image: 'previousImageDisable';
+		}
+		
+		@sprite .next:disabled {
+			gwt-image: 'nextImageDisable';
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.root} {style.popupContainer}">
@@ -143,8 +166,8 @@
 		<misc:Separator styleName="{style.hseparator} {style.noMargin}"/>
 		
 		<g:Button ui:field="previousReleaseButton" styleName="{style.navigationButton} {style.previous}"/>
-		<g:SimplePanel styleName="{style.contentContainer}" >
-			<g:HorizontalPanel ui:field="timesheetContainer" verticalAlignment="middle" horizontalAlignment="center" width="100%" height="100%"/>
+		<g:SimplePanel ui:field="contentContainer" styleName="{style.contentContainer}" >
+			<g:HorizontalPanel ui:field="timesheetContainer" verticalAlignment="middle" horizontalAlignment="center" width="100%" height="100%" spacing="0" borderWidth="0"/>
 		</g:SimplePanel>
 		<g:Button ui:field="nextReleaseButton" styleName="{style.navigationButton} {style.next}"/>
 		

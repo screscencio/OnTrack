@@ -101,6 +101,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		@Source("switch-kanban.png")
 		ImageResource kanbanIcon();
 
+		@Source("timesheet.png")
+		ImageResource timesheetIcon();
+
 		@Source("priority-expand.png")
 		ImageResource menuIcon();
 

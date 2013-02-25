@@ -30,7 +30,13 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -40,12 +46,14 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TimesheetPanel extends Composite implements ModelWidget<Release>, PopupAware, HasCloseHandlers<TimesheetPanel> {
@@ -73,6 +81,9 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	@UiField
 	TimesheetPanelStyle style;
 
+	@UiField
+	SimplePanel contentContainer;
+
 	@UiField(provided = true)
 	EditableLabel releaseTitle;
 
@@ -84,6 +95,8 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 	FlexTable timesheet;
 
+	FlexTable lastTimesheet;
+
 	private Release release;
 
 	private ActionExecutionListener actionExecutionListener;
@@ -94,14 +107,111 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 	private Float[][] times;
 
+	private final TimesheetAnimation animation;
+
 	interface TimesheetPanelUiBinder extends UiBinder<Widget, TimesheetPanel> {}
+
+	private class TimesheetAnimation extends Animation {
+
+		private int duration;
+		private boolean toRight;
+
+		@Override
+		protected void onStart() {
+			updateOpacity(timesheet, 0);
+			updatePosition(timesheet, -1000);
+
+			Window.setTitle("" + timesheetContainer.getOffsetWidth() + " : " + contentContainer.getOffsetWidth());
+
+			if (timesheetContainer.getOffsetWidth() <= contentContainer.getOffsetWidth()) contentContainer.getElement().getStyle()
+					.setOverflowX(Overflow.HIDDEN);
+
+			if (animation.isSlideDirectionToRight()) timesheetContainer.insert(timesheet, 0);
+			else timesheetContainer.add(timesheet);
+		}
+
+		@Override
+		protected void onUpdate(final double progress) {
+			final double interpolatedProgress = interpolate(progress);
+			updatePosition(timesheet, -timesheet.getOffsetWidth() + interpolatedProgress * timesheet.getOffsetWidth());
+			updateOpacity(timesheet, interpolatedProgress);
+			updatePosition(lastTimesheet, -(interpolatedProgress * lastTimesheet.getOffsetWidth()));
+			updateOpacity(lastTimesheet, 1 - interpolatedProgress);
+		}
+
+		@Override
+		protected void onComplete() {
+			setDuration(0);
+
+			if (lastTimesheet != null) {
+				lastTimesheet.removeFromParent();
+				lastTimesheet = null;
+			}
+
+			contentContainer.getElement().getStyle().setOverflowX(Overflow.AUTO);
+
+			timesheet.setVisible(true);
+			clear(timesheet);
+		}
+
+		public void setSlideDirection(final boolean toRight) {
+			this.toRight = toRight;
+			this.duration = 3000;
+		}
+
+		public boolean isSlideDirectionToRight() {
+			return duration > 0 && toRight;
+		}
+
+		public void slide() {
+			if (duration <= 0) {
+				timesheetContainer.add(timesheet);
+				onComplete();
+			}
+			else Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					run(duration);
+				}
+			});
+		}
+
+		private void updateOpacity(final Widget widget, final double opacity) {
+			widget.getElement().getStyle().setOpacity(opacity);
+		}
+
+		private void updatePosition(final Widget widget, final double value) {
+			if (toRight) widget.getElement().getStyle().setMarginRight(value, Unit.PX);
+			else widget.getElement().getStyle().setMarginLeft(value, Unit.PX);
+		}
+
+		public void setDuration(final int duration) {
+			this.duration = duration;
+		}
+
+		private void clear(final Widget widget) {
+			final Style s = widget.getElement().getStyle();
+			s.clearMarginLeft();
+			s.clearMarginRight();
+			s.clearOpacity();
+		}
+
+	}
 
 	public TimesheetPanel() {
 		initializeReleaseTitle();
+		animation = new TimesheetAnimation();
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
 	public void setRelease(final Release release) {
+		if (release == null) throw new RuntimeException("Release cannot be null");
+
+		if (release.equals(previousRelease)) animation.setSlideDirection(true);
+		else if (release.equals(nextRelease)) animation.setSlideDirection(false);
+		else animation.setDuration(0);
+
+		previousRelease = this.release;
 		this.release = release;
 		times = new Float[release.getScopeList().size()][getUsers().size()];
 		update();
@@ -146,6 +256,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		mountTable(scopes, users);
 		populateTable(scopes, users);
 
+		animation.slide();
 		return false;
 	}
 
@@ -212,9 +323,8 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		final int lastRow = scopes.size() + 1;
 		final int lastColumn = users.size() + 1;
 
-		timesheetContainer.clear();
+		lastTimesheet = timesheet;
 		timesheet = createTimesheetTable();
-		timesheetContainer.add(timesheet);
 
 		timesheet.setText(0, 0, "");
 		timesheet.setText(lastRow, lastColumn, "");
