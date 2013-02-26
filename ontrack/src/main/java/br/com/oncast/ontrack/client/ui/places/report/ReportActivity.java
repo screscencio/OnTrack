@@ -16,13 +16,10 @@ public class ReportActivity extends AbstractActivity {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 
-	private final ReportPlace place;
-
 	private final UUID requestedProjectId;
 	private final UUID requestedReleaseId;
 
 	public ReportActivity(final ReportPlace place) {
-		this.place = place;
 		this.requestedProjectId = place.getRequestedProjectId();
 		this.requestedReleaseId = place.getRequestedReleaseId();
 	}
@@ -33,11 +30,12 @@ public class ReportActivity extends AbstractActivity {
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-		final ReportPanel view = new ReportPanel();
 
 		try {
 			final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(requestedProjectId);
 			final Release release = projectContext.findRelease(requestedReleaseId);
+
+			final ReportPanel view = new ReportPanel(release.getAllScopesIncludingDescendantReleases());
 			view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
 			view.getApplicationMenu().setBackButtonVisibility(true);
 
