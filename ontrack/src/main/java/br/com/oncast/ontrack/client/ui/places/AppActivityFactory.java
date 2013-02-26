@@ -17,8 +17,13 @@ import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationActivity;
 import br.com.oncast.ontrack.client.ui.places.projectCreation.ProjectCreationPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionActivity;
+<<<<<<< HEAD
 import br.com.oncast.ontrack.client.ui.places.timesheet.TimesheetActivity;
 import br.com.oncast.ontrack.client.ui.places.timesheet.TimesheetPlace;
+=======
+import br.com.oncast.ontrack.client.ui.places.report.ReportActivity;
+import br.com.oncast.ontrack.client.ui.places.report.ReportPlace;
+>>>>>>> work
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.place.shared.Place;
@@ -71,5 +76,9 @@ public class AppActivityFactory {
 
 	public TimesheetActivity getTimesheetActivity(final TimesheetPlace place) {
 		return new TimesheetActivity(place);
+	}
+
+	public Activity getReportActivity(final ReportPlace place) {
+		return new ReportActivity(place);
 	}
 }

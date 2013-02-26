@@ -163,5 +163,4 @@ public class ActionSyncService {
 		if (syncId == null || syncId < 0) return;
 		lastSyncId = syncId;
 	}
-
 }
