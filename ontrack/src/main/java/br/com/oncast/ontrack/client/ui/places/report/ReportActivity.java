@@ -2,7 +2,10 @@ package br.com.oncast.ontrack.client.ui.places.report;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
+import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -11,28 +14,44 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class ReportActivity extends AbstractActivity {
 
-	private static final ClientServiceProvider PROVIDER = ClientServiceProvider.getInstance();
+	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
+
 	private final ReportPlace place;
 
 	private final UUID requestedProjectId;
+	private final UUID requestedReleaseId;
 
 	public ReportActivity(final ReportPlace place) {
 		this.place = place;
 		this.requestedProjectId = place.getRequestedProjectId();
+		this.requestedReleaseId = place.getRequestedReleaseId();
+	}
+
+	private void exitToPlanningPlace() {
+		SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(requestedProjectId));
 	}
 
 	@Override
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		final ReportPanel view = new ReportPanel();
 
-		final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
+		try {
+			final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(requestedProjectId);
+			final Release release = projectContext.findRelease(requestedReleaseId);
+			view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
+			view.getApplicationMenu().setBackButtonVisibility(true);
 
-		final ApplicationMenu menu = view.getApplicationMenu();
-		menu.clearCustomMenuItems();
-		menu.setBackButtonVisibility(true);
+			final ApplicationMenu menu = view.getApplicationMenu();
+			menu.clearCustomMenuItems();
+			menu.setBackButtonVisibility(true);
 
-		PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
-		panel.setWidget(view);
+			SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
+
+			panel.setWidget(view);
+		}
+		catch (final ReleaseNotFoundException e) {
+			exitToPlanningPlace();
+		}
 	}
 
 	@Override
