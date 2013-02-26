@@ -12,9 +12,11 @@ import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
+import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
+import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
@@ -30,6 +32,8 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	private static ReleaseDetailWidgetUiBinder uiBinder = GWT.create(ReleaseDetailWidgetUiBinder.class);
 
 	private static final ReleaseDetailWidgetMessages messages = GWT.create(ReleaseDetailWidgetMessages.class);
+
+	private static final long DAY = 86400000;
 
 	interface ReleaseDetailWidgetUiBinder extends UiBinder<Widget, ReleaseDetailWidget> {}
 
@@ -54,6 +58,12 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	@UiField
 	HasText duration;
+
+	@UiField
+	HasText cycletime;
+
+	@UiField
+	HasText leadtime;
 
 	private Release release;
 
@@ -117,6 +127,64 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		final WorkingDay endDay = dataProvider.getEstimatedEndDay();
 		this.period.setText(format(startDay) + " - " + format(endDay));
 		this.duration.setText(HumanDateFormatter.getDifferenceText(endDay.getJavaDate().getTime() - startDay.getJavaDate().getTime(), 1));
+		final Float cycleTimeAverage = getAverage(getCycletimeExtractor());
+		this.cycletime.setText(formatInfo(cycleTimeAverage, getDeviant(getCycletimeExtractor(), cycleTimeAverage)));
+		final Float leadtimeAverage = getAverage(getLeadtimeExtractor());
+		this.leadtime.setText(formatInfo(leadtimeAverage, getDeviant(getLeadtimeExtractor(), leadtimeAverage)));
+	}
+
+	private Extractor getCycletimeExtractor() {
+		return new Extractor() {
+			@Override
+			public Long getValue(final Progress progress) {
+				return progress.getCycletime();
+			}
+		};
+	}
+
+	private Extractor getLeadtimeExtractor() {
+		return new Extractor() {
+			@Override
+			public Long getValue(final Progress progress) {
+				return progress.getLeadtime();
+			}
+		};
+	}
+
+	private Float getDeviant(final Extractor extractor, final Float average) {
+		Float deviant = 0f;
+		int scopeCount = 0;
+		for (final Scope scope : this.release.getAllScopesIncludingDescendantReleases()) {
+			if (!scope.getProgress().isDone()) continue;
+			scopeCount++;
+			final float variance = extractor.getValue(scope.getProgress()) - average;
+			deviant += variance * variance;
+		}
+
+		if (scopeCount <= 1) return null;
+		return (float) Math.sqrt(deviant / (scopeCount - 1));
+	}
+
+	private Float getAverage(final Extractor extractor) {
+		Float average = 0f;
+		int scopeCount = 0;
+		for (final Scope scope : this.release.getAllScopesIncludingDescendantReleases()) {
+			if (!scope.getProgress().isDone()) continue;
+			scopeCount++;
+			average += extractor.getValue(scope.getProgress());
+		}
+
+		if (scopeCount == 0) return null;
+		return average / scopeCount;
+	}
+
+	private interface Extractor {
+		Long getValue(Progress progress);
+	}
+
+	private String formatInfo(final Float value, final Float deviation) {
+		if (value == null) return " - ";
+		return format(value / DAY) + " " + (value <= 1 ? messages.day() : messages.days() + " ± " + format(deviation / DAY));
 	}
 
 	private String format(final WorkingDay day) {

@@ -23,6 +23,7 @@ public class UserEntity {
 	@Column(name = "name", unique = false, nullable = true)
 	private String name;
 
+	@ConvertUsing(StringToUuidConverter.class)
 	@Column(name = "userPictureId", unique = true, nullable = true)
 	private String userPictureId;
 

@@ -345,7 +345,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private boolean updateScopeWidgets() {
-		return scopeContainer.update(release.getScopeList());
+		final List<Scope> scopeList = release.getScopeList();
+		timesheetLink.setVisible(!scopeList.isEmpty());
+		return scopeContainer.update(scopeList);
 	}
 
 	private boolean updateChildReleaseWidgets() {

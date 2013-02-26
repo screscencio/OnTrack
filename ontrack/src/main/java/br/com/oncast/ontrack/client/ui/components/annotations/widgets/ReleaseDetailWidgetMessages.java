@@ -16,4 +16,8 @@ public interface ReleaseDetailWidgetMessages extends BaseMessages {
 	@Description("day")
 	String day();
 
+	@DefaultMessage("days")
+	@Description("days")
+	String days();
+
 }

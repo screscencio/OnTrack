@@ -109,6 +109,28 @@
 					<g:Label ui:field="duration" styleName="{style.detailValue}" />
 				</g:customCell>
 			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release average cycle time">Cycle time:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="cycletime" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release average lead time label">Lead time:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="leadtime" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
 		 </g:Grid>
 	</g:HTMLPanel>
 </ui:UiBinder> 
