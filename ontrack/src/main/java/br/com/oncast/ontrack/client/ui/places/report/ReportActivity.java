@@ -34,7 +34,7 @@ public class ReportActivity extends AbstractActivity {
 			final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(requestedProjectId);
 			final Release release = projectContext.findRelease(requestedReleaseId);
 
-			final ReportPanel view = new ReportPanel(release);
+			final ReportPanel view = new ReportPanel(projectContext, release);
 
 			SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
 

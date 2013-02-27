@@ -4,6 +4,7 @@ import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDet
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.report.ScopeReportTable;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.TimesheetWidget;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 
 import com.google.gwt.core.client.GWT;
@@ -41,10 +42,10 @@ public class ReportPanel extends Composite {
 
 	private final ReleaseChart chart;
 
-	public ReportPanel(final Release release) {
+	public ReportPanel(final ProjectContext context, final Release release) {
 		chart = new ReleaseChart(release, true);
 		details = new ReleaseDetailWidget(release);
-		table = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases());
+		table = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), context);
 		timesheet = new TimesheetWidget(release, true);
 
 		initWidget(uiBinder.createAndBindUi(this));
