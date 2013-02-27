@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.report;
 
 import static br.com.oncast.ontrack.client.services.ClientServiceProvider.getCurrentProjectContext;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -96,8 +97,13 @@ public class ReportPanel extends Composite {
 		final List<Release> ancestors = release.getAncestors();
 		if (ancestors.isEmpty()) return projectName;
 
-		Collections.reverse(ancestors);
-		return projectName + " &gt; " + Joiner.on(" &gt; ").join(ancestors);
+		final List<String> ancestorsSimpleDescriptions = new ArrayList<String>();
+		for (final Release r : ancestors) {
+			ancestorsSimpleDescriptions.add(r.getDescription());
+		}
+
+		Collections.reverse(ancestorsSimpleDescriptions);
+		return projectName + " &gt; " + Joiner.on(" &gt; ").join(ancestorsSimpleDescriptions);
 	}
 
 	public Widget getAlertingContainer() {
