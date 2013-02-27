@@ -3,7 +3,7 @@ package br.com.oncast.ontrack.client.ui.components.report;
 import java.util.Comparator;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.ui.components.report.ScopeDatabase.ScopeItem;
+import br.com.oncast.ontrack.client.ui.components.report.ImpedimentDatabase.ImpedimentItem;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -17,6 +17,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionModel;
@@ -28,143 +29,110 @@ public class ImpedimentReportTable extends Composite {
 	interface ScopeReportTableUiBinder extends UiBinder<Widget, ImpedimentReportTable> {}
 
 	@UiField(provided = true)
-	CellTable<ScopeItem> cellTable;
+	CellTable<ImpedimentItem> cellTable;
 
-	private final ScopeDatabase scopeDatabase;
+	private final ImpedimentDatabase impedimentDatabase;
 
 	public ImpedimentReportTable(final List<Scope> scopeList, final ProjectContext context) {
-		cellTable = new CellTable<ScopeItem>(ScopeDatabase.ScopeItem.KEY_PROVIDER);
-		scopeDatabase = new ScopeDatabase(scopeList, context);
-		final ListHandler<ScopeItem> sortHandler = new ListHandler<ScopeItem>(scopeDatabase.getDataProvider().getList());
-		final SelectionModel<ScopeItem> selectionModel = new NoSelectionModel<ScopeItem>(ScopeDatabase.ScopeItem.KEY_PROVIDER);
+		cellTable = new CellTable<ImpedimentItem>(ImpedimentDatabase.ImpedimentItem.KEY_PROVIDER);
+		impedimentDatabase = new ImpedimentDatabase(scopeList, context);
+		final ListHandler<ImpedimentItem> sortHandler = new ListHandler<ImpedimentItem>(impedimentDatabase.getDataProvider().getList());
+		final SelectionModel<ImpedimentItem> selectionModel = new NoSelectionModel<ImpedimentItem>(ImpedimentDatabase.ImpedimentItem.KEY_PROVIDER);
 		cellTable.addColumnSortHandler(sortHandler);
 		cellTable.setSelectionModel(selectionModel);
 		cellTable.setWidth("100%", true);
 		initTableColumns(selectionModel, sortHandler);
-		scopeDatabase.addDataDisplay(cellTable);
+		impedimentDatabase.addDataDisplay(cellTable);
 
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	private void initTableColumns(final SelectionModel<ScopeItem> selectionModel, final ListHandler<ScopeItem> sortHandler) {
+	private void initTableColumns(final SelectionModel<ImpedimentItem> selectionModel, final ListHandler<ImpedimentItem> sortHandler) {
 
-		final Column<ScopeItem, String> idColumn = new Column<ScopeItem, String>(new TextCell()) {
+		final Column<ImpedimentItem, String> stateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
-			public String getValue(final ScopeItem object) {
-				return object.getHumandReadableId();
+			public String getValue(final ImpedimentItem object) {
+				return object.getState();
 			}
 		};
-		idColumn.setSortable(true);
-		sortHandler.setComparator(idColumn, new Comparator<ScopeItem>() {
+		stateColumn.setSortable(true);
+		sortHandler.setComparator(stateColumn, new Comparator<ImpedimentItem>() {
 			@Override
-			public int compare(final ScopeItem o1, final ScopeItem o2) {
-				return o1.getHumandReadableId().compareTo(o2.getHumandReadableId());
+			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
+				return o1.getState().compareTo(o2.getState());
 			}
 		});
 		// FIXME LOBO I18N
-		cellTable.setColumnWidth(idColumn, 55, Unit.PX);
-		cellTable.addColumn(idColumn, new TextHeader("ID"));
+		cellTable.addColumn(stateColumn, new TextHeader("Status"));
+		stateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		cellTable.setColumnWidth(stateColumn, 80, Unit.PX);
 
-		final Column<ScopeItem, String> descriptionColumn = new Column<ScopeItem, String>(new TextCell()) {
+		final Column<ImpedimentItem, String> descriptionColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
-			public String getValue(final ScopeItem object) {
+			public String getValue(final ImpedimentItem object) {
 				return object.getDescription();
 			}
 		};
 		descriptionColumn.setSortable(true);
-		sortHandler.setComparator(descriptionColumn, new Comparator<ScopeItem>() {
+		sortHandler.setComparator(descriptionColumn, new Comparator<ImpedimentItem>() {
 			@Override
-			public int compare(final ScopeItem o1, final ScopeItem o2) {
+			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
 				return o1.getDescription().compareTo(o2.getDescription());
 			}
 		});
 		// FIXME LOBO I18N
 		cellTable.addColumn(descriptionColumn, new TextHeader("Description"));
 
-		final Column<ScopeItem, String> effortColumn = new Column<ScopeItem, String>(new TextCell()) {
+		final Column<ImpedimentItem, String> idColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
-			public String getValue(final ScopeItem object) {
-				return object.getEffort();
+			public String getValue(final ImpedimentItem object) {
+				return object.getHumandReadableId();
 			}
 		};
-		effortColumn.setSortable(true);
-		sortHandler.setComparator(effortColumn, new Comparator<ScopeItem>() {
+		idColumn.setSortable(true);
+		sortHandler.setComparator(idColumn, new Comparator<ImpedimentItem>() {
 			@Override
-			public int compare(final ScopeItem o1, final ScopeItem o2) {
-				return o1.getEffort().compareTo(o2.getEffort());
+			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
+				return o1.getHumandReadableId().compareTo(o2.getHumandReadableId());
 			}
 		});
 		// FIXME LOBO I18N
-		cellTable.addColumn(effortColumn, new TextHeader("Effort"));
-		cellTable.setColumnWidth(effortColumn, 80, Unit.PX);
+		cellTable.setColumnWidth(idColumn, 65, Unit.PX);
+		cellTable.addColumn(idColumn, new TextHeader("ID"));
 
-		final Column<ScopeItem, String> valueColumn = new Column<ScopeItem, String>(new TextCell()) {
+		final Column<ImpedimentItem, String> endDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
-			public String getValue(final ScopeItem object) {
-				return object.getValue();
+			public String getValue(final ImpedimentItem object) {
+				return object.getEndDate();
 			}
 		};
-		valueColumn.setSortable(true);
-		sortHandler.setComparator(valueColumn, new Comparator<ScopeItem>() {
+		endDateColumn.setSortable(true);
+		sortHandler.setComparator(endDateColumn, new Comparator<ImpedimentItem>() {
 			@Override
-			public int compare(final ScopeItem o1, final ScopeItem o2) {
-				return o1.getValue().compareTo(o2.getValue());
+			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
+				return o1.getEndDate().compareTo(o2.getEndDate());
 			}
 		});
 		// FIXME LOBO I18N
-		cellTable.addColumn(valueColumn, new TextHeader("Value"));
-		cellTable.setColumnWidth(valueColumn, 80, Unit.PX);
+		cellTable.addColumn(endDateColumn, new TextHeader("End date"));
+		endDateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		cellTable.setColumnWidth(endDateColumn, 85, Unit.PX);
 
-		final Column<ScopeItem, String> progressColumn = new Column<ScopeItem, String>(new TextCell()) {
+		final Column<ImpedimentItem, String> cycleTimeColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
-			public String getValue(final ScopeItem object) {
-				return object.getProgress();
-			}
-		};
-		progressColumn.setSortable(true);
-		sortHandler.setComparator(progressColumn, new Comparator<ScopeItem>() {
-			@Override
-			public int compare(final ScopeItem o1, final ScopeItem o2) {
-				return o1.getProgress().compareTo(o2.getProgress());
-			}
-		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(progressColumn, new TextHeader("Progress"));
-		cellTable.setColumnWidth(progressColumn, 85, Unit.PX);
-
-		final Column<ScopeItem, String> cycleTimeColumn = new Column<ScopeItem, String>(new TextCell()) {
-			@Override
-			public String getValue(final ScopeItem object) {
-				return object.getCycleTime();
+			public String getValue(final ImpedimentItem object) {
+				return object.getCycletime();
 			}
 		};
 		cycleTimeColumn.setSortable(true);
-		sortHandler.setComparator(cycleTimeColumn, new Comparator<ScopeItem>() {
+		sortHandler.setComparator(cycleTimeColumn, new Comparator<ImpedimentItem>() {
 			@Override
-			public int compare(final ScopeItem o1, final ScopeItem o2) {
-				return o1.getCycleTime().compareTo(o2.getCycleTime());
+			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
+				return o1.getCycletime().compareTo(o2.getCycletime());
 			}
 		});
 		// FIXME LOBO I18N
 		cellTable.addColumn(cycleTimeColumn, new TextHeader("Cycle Time"));
 		cellTable.setColumnWidth(cycleTimeColumn, 80, Unit.PX);
-
-		final Column<ScopeItem, String> leadTimeColumn = new Column<ScopeItem, String>(new TextCell()) {
-			@Override
-			public String getValue(final ScopeItem object) {
-				return object.getLeadTime();
-			}
-		};
-		leadTimeColumn.setSortable(true);
-		sortHandler.setComparator(leadTimeColumn, new Comparator<ScopeItem>() {
-			@Override
-			public int compare(final ScopeItem o1, final ScopeItem o2) {
-				return o1.getLeadTime().compareTo(o2.getLeadTime());
-			}
-		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(leadTimeColumn, new TextHeader("Lead Time"));
-		cellTable.setColumnWidth(leadTimeColumn, 80, Unit.PX);
-
 	}
 }
