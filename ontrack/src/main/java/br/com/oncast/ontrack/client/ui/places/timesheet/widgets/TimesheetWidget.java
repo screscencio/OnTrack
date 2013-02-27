@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.places.timesheet.widgets;
 
 import static br.com.oncast.ontrack.client.services.ClientServiceProvider.getCurrentUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
@@ -52,8 +53,11 @@ public class TimesheetWidget extends Composite {
 
 	private final Release release;
 
+	private final boolean readOnly;
+
 	public TimesheetWidget(final Release release, final boolean readOnly) {
 		this.release = release;
+		this.readOnly = readOnly;
 		times = new Float[release.getScopeList().size()][getUsers().size()];
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -196,7 +200,21 @@ public class TimesheetWidget extends Composite {
 	}
 
 	private List<UserRepresentation> getUsers() {
-		return getContext().getUsers();
+		if (!readOnly) return getContext().getUsers();
+
+		final List<UserRepresentation> usersWithHours = new ArrayList<UserRepresentation>();
+		for (final UserRepresentation userRepresentation : getContext().getUsers()) {
+			if (hasDeclaredSpentHours(userRepresentation)) usersWithHours.add(userRepresentation);
+		}
+		return usersWithHours;
+	}
+
+	private boolean hasDeclaredSpentHours(final UserRepresentation user) {
+		for (final Scope scope : release.getScopeList()) {
+			if (getContext().getDeclaredTimeSpent(scope.getId(), user.getId()) != null) return true;
+		}
+
+		return false;
 	}
 
 	private ProjectContext getContext() {

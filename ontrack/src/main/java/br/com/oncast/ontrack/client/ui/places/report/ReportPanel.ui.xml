@@ -118,11 +118,10 @@
 		}
 		
 		.timesheetTable {
+			margin: 0px auto;
 			padding: 9px 36px;
-
 			border: 1px solid #ccc;
 		}
-
 	</ui:style>
 	
 	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root}">
@@ -151,7 +150,7 @@
 		</div>
 		<div class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Time spent">Time spent</ui:msg></g:Label>
-		    <t:TimesheetWidget ui:field="timesheet" styleName="{style.timesheetTable}" />
+			<t:TimesheetWidget ui:field="timesheet" styleName="{style.timesheetTable}" />
 		</div>
     </g:HTMLPanel>
 </ui:UiBinder> 

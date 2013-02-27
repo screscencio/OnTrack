@@ -72,6 +72,10 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		setSubject(release);
 	}
 
+	public ReleaseDetailWidget() {
+		initWidget(uiBinder.createAndBindUi(this));
+	}
+
 	public void setSubject(final Release release) {
 		this.release = release;
 		this.dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getRootRelease()), ClientServiceProvider.getInstance()

@@ -26,7 +26,7 @@
 		
 		.detailLabel {
 			text-align: right;
-			color: COLOR_BLUE_LIGHT;
+			color: COLOR_BLUE_DARK;
 			cursor: default;
 		}
 		
