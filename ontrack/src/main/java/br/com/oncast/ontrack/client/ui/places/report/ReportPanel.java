@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReportPanel extends Composite {
 
-	private static final DateTimeFormat FORMATTER = DateTimeFormat.getFormat("dd/mm/yyyy - HH:MM");
+	private static final DateTimeFormat FORMATTER = DateTimeFormat.getFormat("dd/MM/yyyy - HH:mm");
 
 	private static ReportPanelUiBinder uiBinder = GWT.create(ReportPanelUiBinder.class);
 
@@ -65,6 +65,9 @@ public class ReportPanel extends Composite {
 	DivElement descriptionContainer;
 
 	@UiField
+	DivElement timesheetContainer;
+
+	@UiField
 	InlineHTML ancestors;
 
 	@UiField
@@ -92,6 +95,8 @@ public class ReportPanel extends Composite {
 		catch (final DescriptionNotFoundException e) {
 			descriptionContainer.removeFromParent();
 		}
+
+		if (!timesheet.hasAnyDeclaredValues()) timesheetContainer.removeFromParent();
 
 		burnUpPanel.add(chart);
 		chart.updateData();

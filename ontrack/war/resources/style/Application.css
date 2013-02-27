@@ -13,6 +13,17 @@ html,body {
 	outline: 0;
 }
 
+@media print {
+	.reportPanel-root {
+		padding: 0px;
+	}
+	
+	.reportPanel-root>div {
+		min-width: 0;
+	}
+
+}
+
 .hasWarningTips {
 	background: #FFE09B;
 	border-radius: 2px;
