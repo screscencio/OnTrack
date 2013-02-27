@@ -142,4 +142,8 @@ public class Annotation implements Serializable, HasUUID {
 		return stateManager.getCurrentStateDuration();
 	}
 
+	public boolean isImpediment() {
+		return (stateManager.getCurrentStateValue() == AnnotationType.OPEN_IMPEDIMENT || stateManager.getCurrentStateValue() == AnnotationType.SOLVED_IMPEDIMENT);
+	}
+
 }

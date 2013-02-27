@@ -1,12 +1,17 @@
 package br.com.oncast.ontrack.client.ui.components.report;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.services.details.DetailService;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
-import br.com.oncast.ontrack.shared.model.effort.Effort;
+import br.com.oncast.ontrack.shared.model.annotation.Annotation;
+import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.value.Value;
 
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.view.client.ListDataProvider;
@@ -14,11 +19,13 @@ import com.google.gwt.view.client.ProvidesKey;
 
 public class ImpedimentDatabase {
 
-	public static class ScopeItem implements Comparable<ScopeItem> {
+	private static final DetailService ANNOTATION_SERVICE = ClientServiceProvider.getInstance().getAnnotationService();
 
-		public static final ProvidesKey<ScopeItem> KEY_PROVIDER = new ProvidesKey<ScopeItem>() {
+	public static class ImpedimentItem implements Comparable<ImpedimentItem> {
+
+		public static final ProvidesKey<ImpedimentItem> KEY_PROVIDER = new ProvidesKey<ImpedimentItem>() {
 			@Override
-			public Object getKey(final ScopeItem item) {
+			public Object getKey(final ImpedimentItem item) {
 				return item == null ? null : item.getPriority();
 			}
 		};
@@ -29,14 +36,17 @@ public class ImpedimentDatabase {
 
 		private final ProjectContext context;
 
-		public ScopeItem(final ProjectContext context, final Scope scope, final int priority) {
+		private final Annotation annotation;
+
+		public ImpedimentItem(final ProjectContext context, final Scope scope, final Annotation annotation, final int priority) {
 			this.context = context;
 			this.scope = scope;
+			this.annotation = annotation;
 			this.priority = priority;
 		}
 
 		@Override
-		public int compareTo(final ScopeItem o) {
+		public int compareTo(final ImpedimentItem o) {
 			if (o.getPriority() == this.getPriority()) return 0;
 			return o.getPriority() < this.getPriority() ? -1 : 1;
 		}
@@ -45,64 +55,56 @@ public class ImpedimentDatabase {
 			return priority;
 		}
 
-		public String getDescription() {
-			return scope.getDescription();
-		}
-
-		public String getEffort() {
-			final Effort effort = scope.getEffort();
-
-			final float declaredEffort = effort.getDeclared();
-			final float inferedEffort = effort.getInfered();
-
-			final float resultantEffort = Math.max(inferedEffort, declaredEffort);
-			return ClientDecimalFormat.roundFloat(resultantEffort, 1) + "ep";
-		}
-
-		public String getValue() {
-			final Value value = scope.getValue();
-
-			final float declaredValue = value.getDeclared();
-			final float inferedValue = value.getInfered();
-
-			final float resultantEffort = Math.max(inferedValue, declaredValue);
-			return ClientDecimalFormat.roundFloat(resultantEffort, 1) + "vp";
-		}
-
-		public String getProgress() {
-			return scope.getEffort().getAccomplishedPercentual() + "%";
-		}
-
-		public String getCycleTime() {
-			final Long cycletime = scope.getProgress().getCycletime();
-			return cycletime == null ? "---" : ClientDecimalFormat.roundFloat(cycletime / 86400000, 1);
-		}
-
-		public String getLeadTime() {
-			final Long leadtime = scope.getProgress().getLeadtime();
-			return leadtime == null ? "---" : ClientDecimalFormat.roundFloat(leadtime / 86400000, 1);
-		}
-
 		public String getHumandReadableId() {
 			return context.getHumanId(scope);
 		}
-	}
 
-	private final ListDataProvider<ScopeItem> dataProvider = new ListDataProvider<ScopeItem>();
+		public String getState() {
+			// FIXME LOBO I18N
+			return annotation.isImpeded() ? "Open" : "Solved";
+		}
 
-	public ImpedimentDatabase(final List<Scope> scopeList, final ProjectContext context) {
-		final List<ScopeItem> list = dataProvider.getList();
-		int i = 0;
-		for (final Scope scope : scopeList) {
-			list.add(new ScopeItem(context, scope, i++));
+		public String getDescription() {
+			return annotation.getMessage();
+		}
+
+		public String getEndDate() {
+			final Date lastOcuurenceOf = annotation.getLastOcuurenceOf(AnnotationType.SOLVED_IMPEDIMENT);
+			return (lastOcuurenceOf == null) ? "----" : HumanDateFormatter.getShortAbsuluteDate(lastOcuurenceOf);
+		}
+
+		public String getCycletime() {
+			final long cycletime = annotation.getDurationOf(AnnotationType.OPEN_IMPEDIMENT);
+			return cycletime == 0 ? "---" : ClientDecimalFormat.roundFloat(cycletime / 86400000, 1);
 		}
 	}
 
-	public ListDataProvider<ScopeItem> getDataProvider() {
+	private final ListDataProvider<ImpedimentItem> dataProvider = new ListDataProvider<ImpedimentItem>();
+
+	public ImpedimentDatabase(final List<Scope> scopeList, final ProjectContext context) {
+		final List<ImpedimentItem> list = getImpedimentList(scopeList, context);
+		dataProvider.getList().addAll(list);
+	}
+
+	private List<ImpedimentItem> getImpedimentList(final List<Scope> scopeList, final ProjectContext context) {
+		final List<ImpedimentItem> list = new ArrayList<ImpedimentItem>();
+		int priority = 0;
+		for (final Scope scope : scopeList) {
+			for (final Annotation annotation : ANNOTATION_SERVICE.getAnnotationsFor(scope.getId()))
+				if (annotation.isImpediment()) list.add(new ImpedimentItem(context, scope, annotation, priority++));
+			for (final Scope descendantScope : scope.getAllDescendantScopes()) {
+				for (final Annotation annotation : ANNOTATION_SERVICE.getAnnotationsFor(descendantScope.getId()))
+					if (annotation.isImpediment()) list.add(new ImpedimentItem(context, scope, annotation, priority++));
+			}
+		}
+		return list;
+	}
+
+	public ListDataProvider<ImpedimentItem> getDataProvider() {
 		return dataProvider;
 	}
 
-	public void addDataDisplay(final CellTable<ScopeItem> display) {
+	public void addDataDisplay(final CellTable<ImpedimentItem> display) {
 		dataProvider.addDataDisplay(display);
 	}
 

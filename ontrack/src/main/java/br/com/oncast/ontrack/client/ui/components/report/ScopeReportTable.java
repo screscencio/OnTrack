@@ -17,6 +17,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionModel;
@@ -62,7 +63,7 @@ public class ScopeReportTable extends Composite {
 			}
 		});
 		// FIXME LOBO I18N
-		cellTable.setColumnWidth(idColumn, 55, Unit.PX);
+		cellTable.setColumnWidth(idColumn, 65, Unit.PX);
 		cellTable.addColumn(idColumn, new TextHeader("ID"));
 
 		final Column<ScopeItem, String> descriptionColumn = new Column<ScopeItem, String>(new TextCell()) {
@@ -130,6 +131,7 @@ public class ScopeReportTable extends Composite {
 		});
 		// FIXME LOBO I18N
 		cellTable.addColumn(progressColumn, new TextHeader("Progress"));
+		progressColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		cellTable.setColumnWidth(progressColumn, 85, Unit.PX);
 
 		final Column<ScopeItem, String> cycleTimeColumn = new Column<ScopeItem, String>(new TextCell()) {
