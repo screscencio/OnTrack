@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
+import br.com.oncast.ontrack.client.ui.components.report.ImpedimentReportTable;
 import br.com.oncast.ontrack.client.ui.components.report.ScopeReportTable;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.TimesheetWidget;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
@@ -49,7 +50,10 @@ public class ReportPanel extends Composite {
 	ReleaseDetailWidget details;
 
 	@UiField(provided = true)
-	ScopeReportTable table;
+	ScopeReportTable scopeTable;
+
+	@UiField(provided = true)
+	ImpedimentReportTable impedimentTable;
 
 	@UiField(provided = true)
 	TimesheetWidget timesheet;
@@ -71,7 +75,9 @@ public class ReportPanel extends Composite {
 	public ReportPanel(final ProjectContext projectContext, final Release release) {
 		chart = new ReleaseChart(release, true);
 		details = new ReleaseDetailWidget(release);
-		table = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext);
+		scopeTable = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext);
+		// FIXME MATS Hide if there are no impediments.
+		impedimentTable = new ImpedimentReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext);
 		timesheet = new TimesheetWidget(release, true);
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -111,6 +117,6 @@ public class ReportPanel extends Composite {
 	}
 
 	public ScopeReportTable getScopeReportTable() {
-		return table;
+		return scopeTable;
 	}
 }

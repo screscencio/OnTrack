@@ -113,6 +113,10 @@
 			border: 1px solid #ccc;
 		}
 		
+		.impedimentTable {
+			border: 1px solid #ccc;
+		}
+		
 		.timesheetTable {
 			padding: 9px 36px;
 
@@ -139,7 +143,11 @@
 		</div>
 		<div class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Stories">Stories</ui:msg></g:Label>
-		    <r:ScopeReportTable ui:field="table" styleName="{style.scopesTable}" />
+		    <r:ScopeReportTable ui:field="scopeTable" styleName="{style.scopesTable}" />
+		</div>
+		<div class="{style.sectionContainer}">
+			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Impediments">Impediments</ui:msg></g:Label>
+		    <r:ImpedimentReportTable ui:field="impedimentTable" styleName="{style.impedimentTable}" />
 		</div>
 		<div class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Time spent">Time spent</ui:msg></g:Label>
