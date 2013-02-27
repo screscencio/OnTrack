@@ -18,21 +18,21 @@ public class PlaceTokenParser {
 		return get(type, null);
 	}
 
-	private String extract(final String identifier) {
-		return compile(identifier).exec(token).getGroup(0).substring(identifier.length());
+	public UUID get(final PlaceTokenType type, final UUID defaultValue) {
+		return has(type) ? new UUID(extract(type.getIdentifier())) : defaultValue;
 	}
 
 	public boolean has(final PlaceTokenType type) {
 		return compile(type.getIdentifier()).test(token);
 	}
 
+	private String extract(final String identifier) {
+		return compile(identifier).exec(token).getGroup(0).substring(identifier.length());
+	}
+
 	private RegExp compile(final String identifier) {
 		final RegExp reg = RegExp.compile(identifier + UUID_REGEX, "gi");
 		return reg;
-	}
-
-	public UUID get(final PlaceTokenType type, final UUID defaultValue) {
-		return has(type) ? new UUID(extract(type.getIdentifier())) : defaultValue;
 	}
 
 }

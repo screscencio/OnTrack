@@ -27,6 +27,11 @@ public class TimesheetPlace extends ProjectDependentPlace {
 	}
 
 	@Override
+	public boolean equals(final Object obj) {
+		return false;
+	}
+
+	@Override
 	public UUID getRequestedProjectId() {
 		return projectId;
 	}

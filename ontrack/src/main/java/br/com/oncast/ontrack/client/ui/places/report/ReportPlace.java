@@ -3,6 +3,9 @@ package br.com.oncast.ontrack.client.ui.places.report;
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.places.PlaceTokenBuilder;
+import br.com.oncast.ontrack.shared.places.PlaceTokenParser;
+import br.com.oncast.ontrack.shared.places.PlaceTokenType;
 import br.com.oncast.ontrack.shared.places.PlacesPrefixes;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
@@ -36,27 +39,22 @@ public class ReportPlace extends ProjectDependentPlace {
 	@Prefix(PlacesPrefixes.REPORT)
 	public static class Tokenizer implements PlaceTokenizer<ReportPlace> {
 
-		private static final String SEPARATOR = ":";
-
 		@Override
 		public ReportPlace getPlace(final String token) {
-			UUID projectId;
-			UUID releaseId;
-			final String[] parameters = token.split(SEPARATOR);
-			try {
-				projectId = new UUID(parameters[0]);
-				releaseId = new UUID(parameters[1]);
-			}
-			catch (final Exception e) {
-				projectId = UUID.INVALID_UUID;
-				releaseId = UUID.INVALID_UUID;
-			}
+			final PlaceTokenParser parser = new PlaceTokenParser(token);
+
+			final UUID projectId = parser.get(PlaceTokenType.PROJECT, UUID.INVALID_UUID);
+			final UUID releaseId = parser.get(PlaceTokenType.RELEASE, UUID.INVALID_UUID);
+
 			return new ReportPlace(projectId, releaseId);
 		}
 
 		@Override
 		public String getToken(final ReportPlace place) {
-			return place.getRequestedProjectId() + SEPARATOR + place.getRequestedReleaseId();
+			return new PlaceTokenBuilder()
+					.add(PlaceTokenType.PROJECT, place.getRequestedProjectId())
+					.add(PlaceTokenType.RELEASE, place.getRequestedReleaseId())
+					.getToken();
 		}
 	}
 

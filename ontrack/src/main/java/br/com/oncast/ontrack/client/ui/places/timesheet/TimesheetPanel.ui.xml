@@ -10,7 +10,7 @@
 	<ui:image field="nextImage" src="arrow_right_regular.png" />
 	<ui:image field="nextImageHover" src="arrow_right_hover.png" />
 	<ui:image field="nextImageDisable" src="arrow_right_disable.png" />
-	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.timesheet.TimesheetPanel.TimesheetPanelStyle">
+	<ui:style src="../../style/default.css" >
 		
 		.root {
 			position: absolute;
@@ -42,41 +42,6 @@
 
 			border: 1px solid #DEDEDE;
 			background: white;
-		}
-		
-		.timesheet {
-			text-align: center;
-			vertical-align: middle;
-			
-			padding: 30px 50px;
-			background: white;
-			border: BORDER_DEFAULT;
-		}
-		
-		.row td {
-			border-bottom: 1px solid COLOR_GRAY;
-		}
-		
-		.currentUserColumn {
-			background: #C7CAE6;
-		}
-
-		.scopeDescriptionCell {
-			text-align: right;
-			vertical-align: middle;
-			color: COLOR_GRAY_DARKEST;
-			
-			text-overflow: ellipsis;
-			-o-text-overflow: ellipsis;
-			-moz-binding: url( 'bindings.xml#ellipsis' );
-			white-space: nowrap;
-			overflow: hidden;
-			
-			max-width: 250px;
-		}
-
-		.sumCell {
-			color: COLOR_GRAY_DARKEST;
 		}
 		
 		.header {

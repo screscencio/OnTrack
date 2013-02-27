@@ -37,10 +37,6 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	interface ReleaseDetailWidgetUiBinder extends UiBinder<Widget, ReleaseDetailWidget> {}
 
-	public ReleaseDetailWidget() {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
-
 	@UiField
 	HasText parent;
 
@@ -72,7 +68,7 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	private ReleaseChartDataProvider dataProvider;
 
 	public ReleaseDetailWidget(final Release release) {
-		this();
+		initWidget(uiBinder.createAndBindUi(this));
 		setSubject(release);
 	}
 

@@ -1,0 +1,51 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.timesheet.widgets.TimesheetWidget.TimesheetPanelStyle">
+	
+		.timesheet {
+			text-align: center;
+			vertical-align: middle;
+			
+			padding: 30px 50px;
+			background: white;
+			border: BORDER_DEFAULT;
+		}
+		
+		
+		
+		.currentUserColumn {
+			background: #C7CAE6;
+		}
+
+		.scopeDescriptionCell {
+			text-align: right !important;
+			vertical-align: middle;
+			color: COLOR_GRAY_DARKEST;
+			
+			text-overflow: ellipsis;
+			-o-text-overflow: ellipsis;
+			-moz-binding: url( 'bindings.xml#ellipsis' );
+			white-space: nowrap;
+			overflow: hidden;
+			
+			max-width: 250px;
+		}
+		
+		.row td {
+			border-bottom: 1px solid COLOR_GRAY;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.sumCell {
+			color: COLOR_GRAY_DARKEST;
+			text-align: center;
+		}
+		
+	</ui:style>
+	
+	<g:FlexTable ui:field="timesheet" styleName="{style.timesheet}" cellPadding="5" cellSpacing="0"/> 
+	
+</ui:UiBinder> 

@@ -1,7 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.report;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
-import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -35,13 +34,7 @@ public class ReportActivity extends AbstractActivity {
 			final ProjectContext projectContext = SERVICE_PROVIDER.getContextProviderService().getProjectContext(requestedProjectId);
 			final Release release = projectContext.findRelease(requestedReleaseId);
 
-			final ReportPanel view = new ReportPanel(release.getAllScopesIncludingDescendantReleases());
-			view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
-			view.getApplicationMenu().setBackButtonVisibility(true);
-
-			final ApplicationMenu menu = view.getApplicationMenu();
-			menu.clearCustomMenuItems();
-			menu.setBackButtonVisibility(true);
+			final ReportPanel view = new ReportPanel(release);
 
 			SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
 
