@@ -8,8 +8,10 @@
 	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
+	<ui:image field="ontracklogo" src="../../components/appmenu/logo.png" />
 	<ui:style src="../../style/default.css">	
 
+		@def MIN_WIDTH 702px;
 		.root {
 			position: absolute;
 			
@@ -21,40 +23,126 @@
 			background: white;
 			overflow: auto;
 			
-			padding: PADDING_LARGE;
+			padding: 18px;
+		}
+		
+		.header {
+			min-width: MIN_WIDTH;
+			height: 54px;
+			position: relative;
+			margin-bottom: 35px;
+			border-bottom: 1px solid #444;
+		}
+		
+		@sprite .logo {
+			gwt-image: 'ontracklogo';
+			
+			position: absolute;
+			right:0px;
+			
+			margin: 0px 4px 11px 4px;
+		}
+		
+		.ancestors {
+			position: absolute;
+			top: -2px;
+			left: 1px;
+			right: 270px;
+			line-height: 18px;
+			color: #888;
+			font-size: 13px;
 		}
 	
 		.title {
+			position: absolute;
+			bottom: 5px;
+			left: 0;
+			right: 270px;
+			line-height: 36px;
+			font-size: 27px;
+		}
+		
+		.timestamp {
+			position: absolute;
+			right: 9px;
+			bottom: -24px;
+			line-height: 18px;
+			font-style: italic;
+		}
+		
+		.overviewContainer {
+			min-width: MIN_WIDTH;
+			position: relative;
+			height: 459px;
 		}
 		
 		.burnUp {
+			position: absolute;
+			right: 270px;
+			left: 0px;
+
 			border: BORDER_DEFAULT;
+			padding: 9px;
+			padding-bottom: 0px;
 		}
 		
 		.details {
-			border: BORDER_DEFAULT;
-			width: 350px;
+			position: absolute;
+			width: 252px;
+			right: 0px;
 		}
 		
-		.table {
-			border: BORDER_DEFAULT;
+		.sectionContainer {
+			position: relative;
+			min-width: MIN_WIDTH;
+			margin-bottom: 18px;
+		}
+		
+		.sectionTitle {
+			line-height: 18px;
+			border-bottom: 1px solid #444;
+			margin: 9px 0;
+			width: 30%;
+			font-weight: bold;
+			text-transform: uppercase;
+			letter-spacing: 3px;
+		}
+		
+		.scopesTable {
+			border: 1px solid #ccc;
+		}
+		
+		.timesheetTable {
+			padding: 9px 36px;
+
+			border: 1px solid #ccc;
 		}
 
 	</ui:style>
 	
 	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root}">
-	<g:HTMLPanel>
-		<g:Label ui:field="releaseTitle" styleName="{style.title}"/>
-		<g:HorizontalPanel width="100%">
-			<g:cell width="100%">
-				<g:SimplePanel ui:field="burnUpPanel" styleName="{style.burnUp}"/>
-			</g:cell>
-			<g:cell width="350px">
-				<d:ReleaseDetailWidget ui:field="details"  styleName="{style.details}"/>
-			</g:cell>
-		</g:HorizontalPanel>
-	    <r:ScopeReportTable ui:field="table" styleName="{style.table}" />
-	    <t:TimesheetWidget ui:field="timesheet" styleName="{style.table}" />
-	</g:HTMLPanel>
+		<div class="{style.header}">
+			<g:InlineHTML ui:field="ancestors" styleName="{style.ancestors}"/>
+			<g:Label ui:field="releaseTitle" styleName="{style.title}"/>
+			<g:Label ui:field="timestamp" styleName="{style.timestamp}"/>
+			<g:SimplePanel styleName="{style.logo}"/>
+		</div>
+		<div ui:field="descriptionContainer" class="{style.sectionContainer}">
+			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Description">Description</ui:msg></g:Label>
+			<g:InlineHTML ui:field="description" />
+		</div>
+		<div class="{style.overviewContainer}">
+			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Overview">Overview</ui:msg></g:Label>
+			<g:SimplePanel ui:field="burnUpPanel" styleName="{style.burnUp}"/>
+			<d:ReleaseDetailWidget ui:field="details"  styleName="{style.details}"/>
+		</div>
+		<div class="{style.sectionContainer}">
+			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Stories">Stories</ui:msg></g:Label>
+		    <r:ScopeReportTable ui:field="table" styleName="{style.scopesTable}" />
+		</div>
+		<div class="{style.sectionContainer}">
+			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Time spent">Time spent</ui:msg></g:Label>
+		    <t:TimesheetWidget ui:field="timesheet" styleName="{style.timesheetTable}" />
+		</div>
     </g:HTMLPanel>
 </ui:UiBinder> 

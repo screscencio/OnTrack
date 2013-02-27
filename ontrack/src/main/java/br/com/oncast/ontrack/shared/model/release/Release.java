@@ -450,4 +450,15 @@ public class Release implements Serializable, HasUUID {
 		return tasks;
 	}
 
+	public List<Release> getAncestors() {
+		final List<Release> ancestors = new ArrayList<Release>();
+
+		Release parent = getParent();
+		while (!parent.isRoot()) {
+			ancestors.add(parent);
+			parent = parent.getParent();
+		}
+		return ancestors;
+	}
+
 }

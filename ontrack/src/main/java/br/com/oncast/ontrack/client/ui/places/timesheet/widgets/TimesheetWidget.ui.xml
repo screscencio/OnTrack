@@ -13,8 +13,6 @@
 			border: BORDER_DEFAULT;
 		}
 		
-		
-		
 		.currentUserColumn {
 			background: #C7CAE6;
 		}
