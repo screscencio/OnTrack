@@ -2,11 +2,8 @@ package br.com.oncast.ontrack.client.ui.components.report;
 
 import java.util.List;
 
-import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
-import br.com.oncast.ontrack.shared.model.effort.Effort;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.value.Value;
 
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.view.client.ListDataProvider;
@@ -37,8 +34,7 @@ public class ScopeDatabase {
 
 		@Override
 		public int compareTo(final ScopeItem o) {
-			if (o.getPriority() == this.getPriority()) return 0;
-			return o.getPriority() < this.getPriority() ? -1 : 1;
+			return this.getPriority() - o.getPriority();
 		}
 
 		protected int getPriority() {
@@ -49,38 +45,24 @@ public class ScopeDatabase {
 			return scope.getDescription();
 		}
 
-		public String getEffort() {
-			final Effort effort = scope.getEffort();
-
-			final float declaredEffort = effort.getDeclared();
-			final float inferedEffort = effort.getInfered();
-
-			final float resultantEffort = Math.max(inferedEffort, declaredEffort);
-			return ClientDecimalFormat.roundFloat(resultantEffort, 1) + "ep";
+		public Float getEffort() {
+			return scope.getEffort().getInfered();
 		}
 
-		public String getValue() {
-			final Value value = scope.getValue();
-
-			final float declaredValue = value.getDeclared();
-			final float inferedValue = value.getInfered();
-
-			final float resultantEffort = Math.max(inferedValue, declaredValue);
-			return ClientDecimalFormat.roundFloat(resultantEffort, 1) + "vp";
+		public Float getValue() {
+			return scope.getValue().getInfered();
 		}
 
-		public String getProgress() {
-			return scope.getEffort().getAccomplishedPercentual() + "%";
+		public Float getProgress() {
+			return scope.getEffort().getAccomplishedPercentual();
 		}
 
-		public String getCycleTime() {
-			final Long cycletime = scope.getProgress().getCycletime();
-			return cycletime == null ? "---" : ClientDecimalFormat.roundFloat(cycletime / 86400000, 1);
+		public Long getCycleTime() {
+			return scope.getProgress().getCycletime();
 		}
 
-		public String getLeadTime() {
-			final Long leadtime = scope.getProgress().getLeadtime();
-			return leadtime == null ? "---" : ClientDecimalFormat.roundFloat(leadtime / 86400000, 1);
+		public Long getLeadTime() {
+			return scope.getProgress().getLeadtime();
 		}
 
 		public String getHumandReadableId() {

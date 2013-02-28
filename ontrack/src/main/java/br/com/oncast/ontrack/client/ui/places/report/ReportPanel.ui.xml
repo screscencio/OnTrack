@@ -39,7 +39,7 @@
 			position: absolute;
 			bottom: 36px;
 			left: 0px;
-			right: 126px;
+			right: 162px;
 			line-height: 18px;
 			color: #888;
 			font-size: 13px;
@@ -70,7 +70,7 @@
 		
 		.burnUp {
 			position: absolute;
-			right: 270px;
+			right: 288px;
 			left: 0px;
 
 			border: BORDER_DEFAULT;
@@ -80,7 +80,7 @@
 		
 		.details {
 			position: absolute;
-			width: 252px;
+			width: 270px;
 			right: 0px;
 		}
 		
@@ -118,8 +118,8 @@
 	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root} reportPanel-root">
 		<div class="{style.header}">
 			<g:SimplePanel styleName="{style.logo}"/>
-			<g:InlineHTML ui:field="ancestors" styleName="{style.ancestors}"/>
-			<g:Label ui:field="releaseTitle" styleName="{style.title}"/>
+			<g:InlineHTML ui:field="ancestors" styleName="{style.ancestors} v-ellip"/>
+			<g:Label ui:field="releaseTitle" styleName="{style.title} v-ellip"/>
 			<g:Label ui:field="timestamp" styleName="{style.timestamp}"/>
 		</div>
 		<div ui:field="descriptionContainer" class="{style.sectionContainer}">

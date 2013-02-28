@@ -52,8 +52,8 @@ public class Value implements Serializable {
 	}
 
 	public float getInfered() {
-		final float processedValue = (bottomUpValue > topDownValue) ? bottomUpValue : topDownValue;
-		return (declared > processedValue) ? declared : processedValue;
+		final float processedValue = Math.max(bottomUpValue, topDownValue);
+		return Math.max(declared, processedValue);
 	}
 
 	public float getTopDownValue() {
