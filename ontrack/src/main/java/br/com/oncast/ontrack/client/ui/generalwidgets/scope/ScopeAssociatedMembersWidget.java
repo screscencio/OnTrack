@@ -67,7 +67,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 	}
 
 	public ScopeAssociatedMembersWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger, final int maxVisibleUsers) {
-		this(scope, userDragAndDropMananger, VISIBLE_USERS_COUNT, !scope.getProgress().isDone());
+		this(scope, userDragAndDropMananger, maxVisibleUsers, !scope.getProgress().isDone());
 	}
 
 	public ScopeAssociatedMembersWidget(final Scope scope, final DragAndDropManager userDragAndDropMananger, final int maxVisibleUsers,
