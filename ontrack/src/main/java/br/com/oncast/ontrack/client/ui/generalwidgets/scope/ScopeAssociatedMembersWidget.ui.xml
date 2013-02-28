@@ -4,22 +4,16 @@
 	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	<ui:style type="br.com.oncast.ontrack.client.ui.generalwidgets.scope.ScopeAssociatedMembersWidget.ScopeAssociatedMembersWidgetStyle">
 	
-		.associatedUsers {
-			background: #fafafa;
-
-			padding: 3px 1px 1px 3px;
-		}
-		
-		.associatedUsers img {
-			width: 30px;
-			height: 30px;
-		}
-		
 		.associatedUsersContainer {
 			position: relative;
 			
 			max-height: 36px;
 			overflow: hidden;
+		}
+		
+		.associatedUsersContainer:HOVER {
+			z-index: 1;
+			overflow: visible;
 		}
 		
 		.hiddenUsersIndicatorLabel {
@@ -46,14 +40,22 @@
 			margin-bottom: 1px;
 		}
 		
+		.associatedUsers {
+			background: #fafafa;
+
+			padding: 3px 2px;
+			padding-left: 4px;
+		}
+		
 		.associatedUsers:HOVER {
 			border: 1px solid #BEBEBE;
-			padding: 2px 0px 0px 2px;
+			padding: 2px 1px;
+			padding-left: 3px;
 		}
-
-		.associatedUsersContainer:HOVER {
-			z-index: 1;
-			overflow: visible;
+		
+		.associatedUsers img {
+			width: 30px;
+			height: 30px;
 		}
 		
 	</ui:style>

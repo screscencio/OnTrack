@@ -48,4 +48,8 @@ public interface NotificationWidgetMessages extends BaseMessages {
 	@DefaultMessage("excluded ''{0}'' from the project")
 	String teamRemovedNotificationWidgetMessage(String invitee);
 
+	@Description("represents the unavailable project in a notification")
+	@DefaultMessage("unavailable project")
+	String unavailableProject();
+
 }

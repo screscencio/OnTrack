@@ -43,6 +43,7 @@
 		
 		.instructionLabel {
 			font-family: FONT_DEFAULT_ITALIC;
+			font-style: italic;
 			font-size: FONT_SIZE_MEDIUM;
 			
 			color: COLOR_GRAY_LIGHT;

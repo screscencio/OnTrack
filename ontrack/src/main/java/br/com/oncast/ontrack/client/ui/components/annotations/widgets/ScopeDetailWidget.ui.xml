@@ -47,6 +47,10 @@
 			margin: 5px;
 		}
 		
+		.ownerImage {
+			width: 40px;
+		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel>
@@ -133,7 +137,7 @@
 					</g:Label>
 				</g:customCell>
 				<g:customCell styleName="{style.detailValueCell}"  horizontalAlignment="left">
-					<u:UserWidget ui:field="ownerWidget" styleName="{style.detailValue}" />
+					<u:UserWidget ui:field="ownerWidget" styleName="{style.detailValue} {style.ownerImage}" />
 				</g:customCell>
 			</g:row>
 		 </g:Grid>

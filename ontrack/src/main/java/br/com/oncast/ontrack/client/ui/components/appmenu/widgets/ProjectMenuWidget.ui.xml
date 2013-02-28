@@ -12,7 +12,7 @@
 	<ui:style src="../../../style/default.css">
 
         .rootPanel {
-			width: 285px;
+			width: 300px;
         }
         
         .container {
@@ -25,6 +25,7 @@
 		
 		.exportToMapLink {
             font: FONT_SIZE_LARGE FONT_DEFAULT_ITALIC;
+            font-style: italic;
             color: COLOR_MENUBOX_TEXT;
             
             text-decoration: none;

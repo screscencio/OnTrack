@@ -6,8 +6,19 @@
 	<ui:image field="invalidImg" src="banned.png"/>
 	<ui:style type="br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserWidgetStyle">
 	
+	
+		.root {
+		}
 		.container {
 			position: relative;
+		}
+		
+		.activeIndicator {
+			position: absolute;
+			top: 1px;
+			left: 1px;
+			width: 4px;
+			bottom: 1px;
 		}
 		
 		.mask {
@@ -16,19 +27,27 @@
 			left: 0px;
 			right: 0px;
 			bottom: 0px;
-		}
-	
-		.author {
-			vertical-align: top;
 			
-			width: 40px;
-			height: 40px;
-			margin-right: 2px;
-		}
-		
-		.author:hover {
+			border: 1px solid #c0c0c0;
+			
 			cursor: pointer;
 		}
+	
+		.userImage {
+			width: inherit;
+			height: inherit;
+		}
+		
+		.userLabel {
+			width: inherit;
+			height: inherit;
+			
+			color: #eee;
+			text-align: center;
+			text-transform: uppercase;
+			margin-left: 1px;
+		}
+		
 		.online {
 			opacity: 1;
 		}
@@ -48,64 +67,39 @@
 		}
 		
 		.showActiveColor {
-			border-left: 4px solid #888;
+			background: #888;
 		}
 		
 		.userImageContainerMedium {
-			width: 38px;
-			height: 38px;
-			border: 1px solid #c0c0c0;
-		}
-		
-		.userWithoutImageMedium {
-			font-size: larger;
-			font-weight: bold;
-			text-transform: uppercase;
-		}
-		
-		.userImageContainerLabelColor {
-			background-color: #1E3669;
-			color: #eee;
-			overflow: hidden;
-			text-align: center;
-		}
-		
-		.userImageContainerImageColor {
-			background-color: transparent;
+			width: 40px;
+			height: 40px;
+			font-size: x-large;
+			line-height: 40px;
 		}
 		
 		.userImageContainerSmall {
-			width: 32px;
-			height: 28px;
-			border: 1px solid #c0c0c0;
-		}
-		
-		.userWithoutImageSmall {
+			width: 30px;
+			height: 30px;
 			font-size: medium;
+			line-height: 30px;
 			font-weight: bold;
-			text-transform: uppercase;
 		}
 		
-		.userWithoutImageContainer {
-			position: relative;
-			width: 100%;
-			height: 100%;
+		.userImageContainer {
+			background-color: #1E3669;
+			overflow: hidden;
 		}
 		
 	</ui:style>
 	
-	<g:FocusPanel>
+	<g:FocusPanel styleName="{style.root}">
 		<g:HTMLPanel styleName="{style.container}">
-			<g:DeckPanel ui:field="userImageContainer">
-				<g:Image ui:field="userImage" styleName="{style.author} {style.offline}" resource="{avatar}" />
-				<g:HTMLPanel ui:field="userWithoutImageContainer" styleName="{style.userWithoutImageContainer}">
-					<table width="100%" height="100%" style="margin-left: -4px">
-					<tr><td>
-						<g:Label ui:field="userWithoutImage"/>
-					</td></tr>
-					</table>
-				</g:HTMLPanel>
+			<g:DeckPanel ui:field="userImageContainer" styleName="{style.userImageContainer}">
+				<g:Image ui:field="userImage" styleName="{style.userImage}" resource="{avatar}" />
+				<g:Label ui:field="userWithoutImage" styleName="{style.userLabel}"/>
 			</g:DeckPanel>
+			
+			<g:FocusPanel ui:field="activeIndicator" styleName="{style.activeIndicator}"/>
 			<g:FocusPanel ui:field="mask" styleName="{style.mask}"/>
 		</g:HTMLPanel>
 	</g:FocusPanel>

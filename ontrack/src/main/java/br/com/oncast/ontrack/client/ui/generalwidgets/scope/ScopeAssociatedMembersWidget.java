@@ -30,6 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeAssociatedMembersWidget extends Composite {
 
+	private static final int USER_WIDGET_WIDTH = 32;
+
 	private static final int VISIBLE_USERS_COUNT = 5;
 
 	private static ScopeAssociatedMembersWidgetUiBinder uiBinder = GWT.create(ScopeAssociatedMembersWidgetUiBinder.class);
@@ -108,7 +110,7 @@ public class ScopeAssociatedMembersWidget extends Composite {
 		this.setVisible(userCount > 0);
 		hiddenAssociatedUsersIndicator.setVisible(userCount > visibleUsersCount);
 		hiddenAssociatedUsersIndicator.setText("+\n" + (userCount - visibleUsersCount));
-		associatedUsersContainer.setWidth(Math.min(userCount, visibleUsersCount) * 36 + "px");
+		associatedUsersContainer.setWidth(Math.min(userCount, visibleUsersCount) * USER_WIDGET_WIDTH + "px");
 	}
 
 	public void add(final DraggableMemberWidget memberWidget) {

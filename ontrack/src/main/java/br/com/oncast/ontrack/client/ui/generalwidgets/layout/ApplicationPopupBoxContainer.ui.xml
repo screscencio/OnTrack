@@ -8,6 +8,7 @@
 			
 			color: COLOR_MENUBOX_TEXT;
 			font: FONT_SIZE_SMALL FONT_DEFAULT_ITALIC;
+			font-style: italic;
 		}
 		
 		.backgroundPanel {

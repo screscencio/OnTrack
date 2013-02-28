@@ -88,7 +88,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private static FiltrableCommandMenu createForProjectSwitchingMenu() {
-		return configureFiltrableMenu(FiltrableCommandMenu.forProjectSwitchingMenu(createCustomItemFactory(), 250,
+		return configureFiltrableMenu(FiltrableCommandMenu.forProjectSwitchingMenu(createCustomItemFactory(), 265,
 				FILTRABLE_MENU_MAX_HEIGHT));
 	}
 
