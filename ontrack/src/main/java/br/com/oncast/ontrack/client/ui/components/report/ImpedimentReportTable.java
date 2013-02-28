@@ -133,4 +133,8 @@ public class ImpedimentReportTable extends Composite {
 		cellTable.addColumn(cycleTimeColumn, new TextHeader(messages.cycleTime()));
 		cellTable.setColumnWidth(cycleTimeColumn, 80, Unit.PX);
 	}
+
+	public boolean isEmpty() {
+		return impedimentDatabase.isEmpty();
+	}
 }

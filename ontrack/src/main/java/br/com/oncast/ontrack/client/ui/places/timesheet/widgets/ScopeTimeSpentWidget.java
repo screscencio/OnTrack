@@ -8,10 +8,13 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeTimeSpentWidget implements IsWidget {
+
+	private static final ScopeTimeSpentMessages MESSAGES = GWT.create(ScopeTimeSpentMessages.class);
 
 	private float timeSpent = 0;
 
@@ -29,8 +32,7 @@ public class ScopeTimeSpentWidget implements IsWidget {
 					return true;
 				}
 				catch (final NumberFormatException e) {
-					// FIXME i18n
-					ClientServiceProvider.getInstance().getClientAlertingService().showWarning("should be a number");
+					ClientServiceProvider.getInstance().getClientAlertingService().showWarning(MESSAGES.shoulBeAValidNumber());
 					return false;
 				}
 			}

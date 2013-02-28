@@ -11,16 +11,20 @@ import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class TimesheetActivity extends AbstractActivity {
 
-	private final TimesheetPlace place;
-	private HandlerRegistration register;
+	private static final TimesheetMessages MESSAGES = GWT.create(TimesheetMessages.class);
+
 	private static TimesheetPanel timesheetPanel;
 	private static PopupConfig popupConfig;
+
+	private final TimesheetPlace place;
+	private HandlerRegistration register;
 
 	public TimesheetActivity(final TimesheetPlace place) {
 		this.place = place;
@@ -42,8 +46,7 @@ public class TimesheetActivity extends AbstractActivity {
 			getPopupConfig().pop();
 		}
 		catch (final ReleaseNotFoundException e) {
-			// FIXME i18n
-			ClientServiceProvider.getInstance().getClientAlertingService().showError("FIXME");
+			ClientServiceProvider.getInstance().getClientAlertingService().showError(MESSAGES.theRequestingReleaseWasNotFound());
 		}
 	}
 
@@ -55,7 +58,7 @@ public class TimesheetActivity extends AbstractActivity {
 	private PopupConfig getPopupConfig() {
 		if (popupConfig != null) return popupConfig;
 
-		return popupConfig = PopupConfig.configPopup().popup(this.timesheetPanel).onClose(new PopupCloseListener() {
+		return popupConfig = PopupConfig.configPopup().popup(timesheetPanel).onClose(new PopupCloseListener() {
 			@Override
 			public void onHasClosed() {
 				getApplicationPlaceController().goTo(place.getDestinationPlace());

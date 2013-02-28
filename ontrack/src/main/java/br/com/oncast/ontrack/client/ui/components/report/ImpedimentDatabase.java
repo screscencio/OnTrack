@@ -62,7 +62,6 @@ public class ImpedimentDatabase {
 		}
 
 		public String getState() {
-			// FIXME LOBO I18N
 			return annotation.isImpeded() ? MESSAGES.openImpediment() : MESSAGES.solvedImpediment();
 		}
 
@@ -112,5 +111,9 @@ public class ImpedimentDatabase {
 
 	public void refreshDisplays() {
 		dataProvider.refresh();
+	}
+
+	public boolean isEmpty() {
+		return dataProvider.getList().isEmpty();
 	}
 }

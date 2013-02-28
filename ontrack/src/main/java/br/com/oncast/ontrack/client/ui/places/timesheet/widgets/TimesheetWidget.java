@@ -229,7 +229,7 @@ public class TimesheetWidget extends Composite {
 		return ClientDecimalFormat.roundFloat(number, 1);
 	}
 
-	public boolean hasAnyDeclaredValues() {
+	public boolean isEmpty() {
 		return !getUsers().isEmpty();
 	}
 

@@ -135,7 +135,7 @@
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Stories">Stories</ui:msg></g:Label>
 		    <r:ScopeReportTable ui:field="scopeTable" styleName="{style.scopesTable}" />
 		</div>
-		<div class="{style.sectionContainer}">
+		<div ui:field="impedimentsContainer" class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Impediments">Impediments</ui:msg></g:Label>
 		    <r:ImpedimentReportTable ui:field="impedimentTable" styleName="{style.impedimentTable}" />
 		</div>

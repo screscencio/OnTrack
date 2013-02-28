@@ -68,6 +68,9 @@ public class ReportPanel extends Composite {
 	DivElement descriptionContainer;
 
 	@UiField
+	DivElement impedimentsContainer;
+
+	@UiField
 	DivElement timesheetContainer;
 
 	@UiField
@@ -82,27 +85,33 @@ public class ReportPanel extends Composite {
 		chart = new ReleaseChart(release, true);
 		details = new ReleaseDetailWidget(release);
 		scopeTable = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
-		// FIXME MATS Hide if there are no impediments.
 		impedimentTable = new ImpedimentReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
 		timesheet = new TimesheetWidget(release, true);
 
 		initWidget(uiBinder.createAndBindUi(this));
 
+		burnUpPanel.add(chart);
+
 		releaseTitle.setText(release.getDescription());
 		ancestors.setHTML(getAncestorsBreadcrumb(release));
 		timestamp.setText(FORMATTER.format(new Date()));
 
+		updateDescription(release);
+
+		if (impedimentTable.isEmpty()) impedimentsContainer.removeFromParent();
+
+		if (timesheet.isEmpty()) timesheetContainer.removeFromParent();
+
+		chart.updateData();
+	}
+
+	private void updateDescription(final Release release) {
 		try {
 			description.setHTML(getCurrentProjectContext().findDescriptionFor(release.getId()).getDescription());
 		}
 		catch (final DescriptionNotFoundException e) {
 			descriptionContainer.removeFromParent();
 		}
-
-		if (!timesheet.hasAnyDeclaredValues()) timesheetContainer.removeFromParent();
-
-		burnUpPanel.add(chart);
-		chart.updateData();
 	}
 
 	private String getAncestorsBreadcrumb(final Release release) {
