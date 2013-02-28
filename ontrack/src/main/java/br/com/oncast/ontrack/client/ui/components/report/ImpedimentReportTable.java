@@ -33,7 +33,10 @@ public class ImpedimentReportTable extends Composite {
 
 	private final ImpedimentDatabase impedimentDatabase;
 
-	public ImpedimentReportTable(final List<Scope> scopeList, final ProjectContext context) {
+	private final ReportMessages messages;
+
+	public ImpedimentReportTable(final List<Scope> scopeList, final ProjectContext context, final ReportMessages messages) {
+		this.messages = messages;
 		cellTable = new CellTable<ImpedimentItem>(ImpedimentDatabase.ImpedimentItem.KEY_PROVIDER);
 		impedimentDatabase = new ImpedimentDatabase(scopeList, context);
 		final ListHandler<ImpedimentItem> sortHandler = new ListHandler<ImpedimentItem>(impedimentDatabase.getDataProvider().getList());
@@ -62,8 +65,7 @@ public class ImpedimentReportTable extends Composite {
 				return o1.getState().compareTo(o2.getState());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(stateColumn, new TextHeader("Status"));
+		cellTable.addColumn(stateColumn, new TextHeader(messages.status()));
 		stateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		cellTable.setColumnWidth(stateColumn, 80, Unit.PX);
 
@@ -80,8 +82,7 @@ public class ImpedimentReportTable extends Composite {
 				return o1.getDescription().compareTo(o2.getDescription());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(descriptionColumn, new TextHeader("Description"));
+		cellTable.addColumn(descriptionColumn, new TextHeader(messages.impedimentDescription()));
 
 		final Column<ImpedimentItem, String> idColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
@@ -96,9 +97,8 @@ public class ImpedimentReportTable extends Composite {
 				return o1.getHumandReadableId().compareTo(o2.getHumandReadableId());
 			}
 		});
-		// FIXME LOBO I18N
 		cellTable.setColumnWidth(idColumn, 65, Unit.PX);
-		cellTable.addColumn(idColumn, new TextHeader("ID"));
+		cellTable.addColumn(idColumn, new TextHeader(messages.id()));
 
 		final Column<ImpedimentItem, String> endDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
@@ -113,8 +113,7 @@ public class ImpedimentReportTable extends Composite {
 				return o1.getEndDate().compareTo(o2.getEndDate());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(endDateColumn, new TextHeader("End date"));
+		cellTable.addColumn(endDateColumn, new TextHeader(messages.endDate()));
 		endDateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		cellTable.setColumnWidth(endDateColumn, 85, Unit.PX);
 
@@ -131,8 +130,7 @@ public class ImpedimentReportTable extends Composite {
 				return o1.getCycletime().compareTo(o2.getCycletime());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(cycleTimeColumn, new TextHeader("Cycle Time"));
+		cellTable.addColumn(cycleTimeColumn, new TextHeader(messages.cycleTime()));
 		cellTable.setColumnWidth(cycleTimeColumn, 80, Unit.PX);
 	}
 }

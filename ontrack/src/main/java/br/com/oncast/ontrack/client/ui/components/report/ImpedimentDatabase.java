@@ -13,6 +13,7 @@ import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
@@ -20,6 +21,7 @@ import com.google.gwt.view.client.ProvidesKey;
 public class ImpedimentDatabase {
 
 	private static final DetailService ANNOTATION_SERVICE = ClientServiceProvider.getInstance().getAnnotationService();
+	private static final ReportMessages MESSAGES = GWT.create(ReportMessages.class);;
 
 	public static class ImpedimentItem implements Comparable<ImpedimentItem> {
 
@@ -61,7 +63,7 @@ public class ImpedimentDatabase {
 
 		public String getState() {
 			// FIXME LOBO I18N
-			return annotation.isImpeded() ? "Open" : "Solved";
+			return annotation.isImpeded() ? MESSAGES.openImpediment() : MESSAGES.solvedImpediment();
 		}
 
 		public String getDescription() {

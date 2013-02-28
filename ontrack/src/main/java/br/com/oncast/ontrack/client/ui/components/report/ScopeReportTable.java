@@ -33,7 +33,10 @@ public class ScopeReportTable extends Composite {
 
 	private final ScopeDatabase scopeDatabase;
 
-	public ScopeReportTable(final List<Scope> scopeList, final ProjectContext context) {
+	private final ReportMessages messages;
+
+	public ScopeReportTable(final List<Scope> scopeList, final ProjectContext context, final ReportMessages messages) {
+		this.messages = messages;
 		cellTable = new CellTable<ScopeItem>(ScopeDatabase.ScopeItem.KEY_PROVIDER);
 		scopeDatabase = new ScopeDatabase(scopeList, context);
 		final ListHandler<ScopeItem> sortHandler = new ListHandler<ScopeItem>(scopeDatabase.getDataProvider().getList());
@@ -62,9 +65,8 @@ public class ScopeReportTable extends Composite {
 				return o1.getHumandReadableId().compareTo(o2.getHumandReadableId());
 			}
 		});
-		// FIXME LOBO I18N
 		cellTable.setColumnWidth(idColumn, 65, Unit.PX);
-		cellTable.addColumn(idColumn, new TextHeader("ID"));
+		cellTable.addColumn(idColumn, new TextHeader(messages.id()));
 
 		final Column<ScopeItem, String> descriptionColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override
@@ -79,8 +81,7 @@ public class ScopeReportTable extends Composite {
 				return o1.getDescription().compareTo(o2.getDescription());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(descriptionColumn, new TextHeader("Description"));
+		cellTable.addColumn(descriptionColumn, new TextHeader(messages.scopeDescription()));
 
 		final Column<ScopeItem, String> effortColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override
@@ -95,8 +96,7 @@ public class ScopeReportTable extends Composite {
 				return o1.getEffort().compareTo(o2.getEffort());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(effortColumn, new TextHeader("Effort"));
+		cellTable.addColumn(effortColumn, new TextHeader(messages.effort()));
 		cellTable.setColumnWidth(effortColumn, 80, Unit.PX);
 
 		final Column<ScopeItem, String> valueColumn = new Column<ScopeItem, String>(new TextCell()) {
@@ -112,8 +112,7 @@ public class ScopeReportTable extends Composite {
 				return o1.getValue().compareTo(o2.getValue());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(valueColumn, new TextHeader("Value"));
+		cellTable.addColumn(valueColumn, new TextHeader(messages.value()));
 		cellTable.setColumnWidth(valueColumn, 80, Unit.PX);
 
 		final Column<ScopeItem, String> progressColumn = new Column<ScopeItem, String>(new TextCell()) {
@@ -129,8 +128,7 @@ public class ScopeReportTable extends Composite {
 				return o1.getProgress().compareTo(o2.getProgress());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(progressColumn, new TextHeader("Progress"));
+		cellTable.addColumn(progressColumn, new TextHeader(messages.progress()));
 		progressColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		cellTable.setColumnWidth(progressColumn, 85, Unit.PX);
 
@@ -147,8 +145,7 @@ public class ScopeReportTable extends Composite {
 				return o1.getCycleTime().compareTo(o2.getCycleTime());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(cycleTimeColumn, new TextHeader("Cycle Time"));
+		cellTable.addColumn(cycleTimeColumn, new TextHeader(messages.cycleTime()));
 		cellTable.setColumnWidth(cycleTimeColumn, 80, Unit.PX);
 
 		final Column<ScopeItem, String> leadTimeColumn = new Column<ScopeItem, String>(new TextCell()) {
@@ -164,8 +161,7 @@ public class ScopeReportTable extends Composite {
 				return o1.getLeadTime().compareTo(o2.getLeadTime());
 			}
 		});
-		// FIXME LOBO I18N
-		cellTable.addColumn(leadTimeColumn, new TextHeader("Lead Time"));
+		cellTable.addColumn(leadTimeColumn, new TextHeader(messages.leadTime()));
 		cellTable.setColumnWidth(leadTimeColumn, 80, Unit.PX);
 
 	}

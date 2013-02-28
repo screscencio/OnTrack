@@ -10,6 +10,7 @@ import java.util.List;
 import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.report.ImpedimentReportTable;
+import br.com.oncast.ontrack.client.ui.components.report.ReportMessages;
 import br.com.oncast.ontrack.client.ui.components.report.ScopeReportTable;
 import br.com.oncast.ontrack.client.ui.places.timesheet.widgets.TimesheetWidget;
 import br.com.oncast.ontrack.shared.model.description.exceptions.DescriptionNotFoundException;
@@ -34,6 +35,8 @@ public class ReportPanel extends Composite {
 	private static final DateTimeFormat FORMATTER = DateTimeFormat.getFormat("dd/mm/yyyy - HH:MM");
 
 	private static ReportPanelUiBinder uiBinder = GWT.create(ReportPanelUiBinder.class);
+
+	private static ReportMessages messages = GWT.create(ReportMessages.class);
 
 	interface ReportPanelUiBinder extends UiBinder<Widget, ReportPanel> {}
 
@@ -75,9 +78,9 @@ public class ReportPanel extends Composite {
 	public ReportPanel(final ProjectContext projectContext, final Release release) {
 		chart = new ReleaseChart(release, true);
 		details = new ReleaseDetailWidget(release);
-		scopeTable = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext);
+		scopeTable = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
 		// FIXME MATS Hide if there are no impediments.
-		impedimentTable = new ImpedimentReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext);
+		impedimentTable = new ImpedimentReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
 		timesheet = new TimesheetWidget(release, true);
 
 		initWidget(uiBinder.createAndBindUi(this));
