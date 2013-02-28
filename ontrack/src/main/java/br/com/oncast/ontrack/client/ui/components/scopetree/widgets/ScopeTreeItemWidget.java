@@ -49,6 +49,7 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.value.Value;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
+import com.google.common.base.Joiner;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -694,13 +695,13 @@ public class ScopeTreeItemWidget extends Composite {
 
 		if (!selectionsList.isEmpty()) {
 			selectionColor = selectionsList.get(0).getColor();
+			final ArrayList<String> selectionNames = new ArrayList<String>();
 			for (final Selection s : selectionsList) {
-				// FIXME Mats
 				final User user = ClientServiceProvider.getInstance().getUserDataService().retrieveRealUser(s.getUser());
-				final String email = user.getEmail();
-				if (!membersText.contains(email)) membersText += email + ", ";
+				final String name = user.getName();
+				if (!selectionNames.contains(name)) selectionNames.add(name);
 			}
-			membersText = membersText.substring(0, membersText.length() - ", ".length());
+			membersText = Joiner.on(", ").join(selectionNames);
 		}
 
 		borderPanel.getElement().getStyle().setBorderColor(selectionColor.toCssRepresentation());

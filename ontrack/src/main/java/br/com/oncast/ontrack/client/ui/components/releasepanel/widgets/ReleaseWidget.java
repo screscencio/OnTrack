@@ -22,6 +22,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
+import br.com.oncast.ontrack.client.ui.places.report.ReportPlace;
 import br.com.oncast.ontrack.client.ui.settings.DefaultViewSettings;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -104,6 +105,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		@Source("timesheet.png")
 		ImageResource timesheetIcon();
 
+		@Source("report.png")
+		ImageResource reportIcon();
+
 		@Source("priority-expand.png")
 		ImageResource menuIcon();
 
@@ -161,9 +165,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected Image menuIcon;
-
-	@UiField
-	protected Image timesheetLink;
 
 	@UiField
 	protected DivElement bodyContainer;
@@ -261,12 +262,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiHandler("menuMouseOverArea")
 	protected void onMouseOver(final MouseOverEvent event) {
-		menuIcon.setVisible(!kanbanSpecific);
+		menuIcon.setVisible(true);
 	}
 
 	@UiHandler("menuMouseOverArea")
 	protected void onMouseOut(final MouseOutEvent event) {
-		menuIcon.setVisible(isMenuOpen && !kanbanSpecific);
+		menuIcon.setVisible(isMenuOpen);
 	}
 
 	@UiHandler("menuIcon")
@@ -288,11 +289,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiHandler("detailLink")
 	protected void showAnnotationPanel(final ClickEvent event) {
 		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(release.getId());
-	}
-
-	@UiHandler("timesheetLink")
-	protected void showTimesheetPanel(final ClickEvent event) {
-		ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(release.getId());
 	}
 
 	@UiHandler("progressIcon")
@@ -319,35 +315,48 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (mouseCommandsMenu != null) return mouseCommandsMenu;
 
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
-		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseIncreasePriority(), messages.increasePriority(), new Command() {
-
+		itens.add(new TextAndImageCommandMenuItem(resources.reportIcon(), messages.report(), new Command() {
 			@Override
 			public void execute() {
-				releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
+				final UUID project = ClientServiceProvider.getCurrentProjectContext().getId();
+				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new ReportPlace(project, release.getId()));
 			}
 		}));
-		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDecreasePriority(), messages.decreasePriority(), new Command() {
-
+		if (release.hasDirectScopes()) itens.add(new TextAndImageCommandMenuItem(resources.timesheetIcon(), messages.timesheet(), new Command() {
 			@Override
 			public void execute() {
-				releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
+				ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(release.getId());
 			}
 		}));
-		itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDelete(), messages.deleteRelease(), new Command() {
+		if (!kanbanSpecific) {
+			itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseIncreasePriority(), messages.increasePriority(), new Command() {
 
-			@Override
-			public void execute() {
-				releasePanelInteractionHandler.onReleaseDeletionRequest(release);
-			}
-		}));
+				@Override
+				public void execute() {
+					releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
+				}
+			}));
+			itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDecreasePriority(), messages.decreasePriority(), new Command() {
+
+				@Override
+				public void execute() {
+					releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
+				}
+			}));
+			itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDelete(), messages.deleteRelease(), new Command() {
+
+				@Override
+				public void execute() {
+					releasePanelInteractionHandler.onReleaseDeletionRequest(release);
+				}
+			}));
+		}
 		mouseCommandsMenu = new MouseCommandsMenu(itens);
 		return mouseCommandsMenu;
 	}
 
 	private boolean updateScopeWidgets() {
-		final List<Scope> scopeList = release.getScopeList();
-		timesheetLink.setVisible(!scopeList.isEmpty());
-		return scopeContainer.update(scopeList);
+		return scopeContainer.update(release.getScopeList());
 	}
 
 	private boolean updateChildReleaseWidgets() {

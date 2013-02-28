@@ -13,7 +13,15 @@ public interface ReleaseWidgetMessages extends BaseMessages {
 	String decreasePriority();
 
 	@Description("delete release menu text")
-	@DefaultMessage("Delete Release")
+	@DefaultMessage("Delete release")
 	String deleteRelease();
+
+	@Description("go to release report menu text")
+	@DefaultMessage("Report")
+	String report();
+
+	@Description("go to release timesheet menu text")
+	@DefaultMessage("Timesheet")
+	String timesheet();
 
 }
