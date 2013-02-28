@@ -30,11 +30,14 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -46,6 +49,9 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 	private static SearchBarUiBinder uiBinder = GWT.create(SearchBarUiBinder.class);
 
 	interface SearchBarUiBinder extends UiBinder<Widget, SearchBar> {}
+
+	@UiField
+	FocusPanel root;
 
 	@UiField
 	SearchScopeFiltrableCommandMenu search;
@@ -84,6 +90,10 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	private boolean shouldUpdate = true;
 
+	private boolean mouseOver;
+
+	private boolean focus;
+
 	public SearchBar() {
 		initWidget(uiBinder.createAndBindUi(this));
 		registerScopeTreeColumnVisibilityChangeListeners();
@@ -111,24 +121,50 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	@UiHandler("search")
 	void onSearchFocus(final FocusEvent e) {
-		JQuery.jquery(columnContainer).stop(true).slideLeftHide(400, new AnimationCallback() {
-
-			@Override
-			public void onComplete() {}
-		});
-		if (!shouldUpdate) return;
-
-		updateItems();
-		shouldUpdate = false;
+		focus = true;
+		updateContainerVisibility();
 	}
 
 	@UiHandler("search")
 	void onSearchBlur(final BlurEvent e) {
-		JQuery.jquery(columnContainer).slideRightShow(300, new AnimationCallback() {
+		focus = false;
+		updateContainerVisibility();
+	}
 
-			@Override
-			public void onComplete() {}
-		});
+	@UiHandler("root")
+	void onMouseOver(final MouseOverEvent e) {
+		mouseOver = true;
+		updateContainerVisibility();
+	}
+
+	@UiHandler("root")
+	void onMouseOut(final MouseOutEvent e) {
+		mouseOver = false;
+		updateContainerVisibility();
+	}
+
+	private void updateContainerVisibility() {
+		if (focus) {
+			JQuery.jquery(columnContainer).stop(true).slideLeftHide(400, new AnimationCallback() {
+
+				@Override
+				public void onComplete() {}
+			});
+			if (!shouldUpdate) return;
+
+			updateItems();
+			shouldUpdate = false;
+		}
+		else {
+			if (mouseOver) return;
+			JQuery.jquery(columnContainer).slideRightShow(300, new AnimationCallback() {
+
+				@Override
+				public void onComplete() {
+					search.clear();
+				}
+			});
+		}
 	}
 
 	@UiHandler("search")

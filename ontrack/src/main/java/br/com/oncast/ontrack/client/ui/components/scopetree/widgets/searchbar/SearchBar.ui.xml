@@ -69,7 +69,7 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel styleName="{style.root}">
+	<g:FocusPanel ui:field="root" styleName="{style.root}">
 		<g:HTMLPanel styleName="{style.searchBar}">
 			<g:HorizontalPanel ui:field="container" styleName="{style.container}" verticalAlignment="middle">
 				<g:cell width="1">

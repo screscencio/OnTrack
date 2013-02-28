@@ -290,4 +290,9 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 		return filterArea.addKeyDownHandler(handler);
 	}
 
+	public void clear() {
+		filterArea.setText("");
+		filterMenuItens();
+	}
+
 }
