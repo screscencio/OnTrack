@@ -44,6 +44,7 @@ public class ImpedimentReportTable extends Composite {
 		cellTable.addColumnSortHandler(sortHandler);
 		cellTable.setSelectionModel(selectionModel);
 		cellTable.setWidth("100%", true);
+		cellTable.setPageSize(Integer.MAX_VALUE);
 		initTableColumns(selectionModel, sortHandler);
 		impedimentDatabase.addDataDisplay(cellTable);
 
