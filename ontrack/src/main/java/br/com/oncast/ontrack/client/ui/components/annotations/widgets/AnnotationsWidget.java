@@ -106,6 +106,7 @@ public class AnnotationsWidget extends Composite {
 			public void onShrinked() {
 				createNotificationButton.setVisible(false);
 				uploadWidget.setVisible(false);
+				addAnnotation();
 			}
 		});
 	}
