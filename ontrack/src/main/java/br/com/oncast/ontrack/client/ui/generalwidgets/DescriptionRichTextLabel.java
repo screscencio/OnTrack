@@ -90,7 +90,7 @@ public class DescriptionRichTextLabel extends Composite implements HasText, HasK
 			public void onNativeEvent(final NativeEvent nativeEvent) {
 				if (isInsideFocusPanel(Element.as(nativeEvent.getEventTarget()))) return;
 
-				hideRichTextArea();
+				submitContent();
 			}
 
 			private boolean isInsideFocusPanel(final Element element) {

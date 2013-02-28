@@ -2,7 +2,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:p="urn:import:br.com.oncast.ontrack.client.ui.places.progress.details"
-	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
+	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:image field="description" src="../../../generalwidgets/description-grey.png" />
 	<ui:image field="checklist" src="../../../generalwidgets/check-grey.png" />
@@ -67,9 +70,15 @@
 	</ui:style>
 	<g:HTMLPanel styleName="{style.root}">
 		<p:ProgressDetailMenuWidget ui:field="progressMenu" styleName="{style.detailMenu}">
-			<g:Button styleName="{style.tabButton} {style.descriptionTab}"/>
-			<g:Button styleName="{style.tabButton} {style.checklistTab}"/>
-			<g:Button styleName="{style.tabButton} {style.tasksTab}"/>
+			<g:Button styleName="{style.tabButton} {style.descriptionTab}" title="Description">
+				<ui:attribute name="title" description="description kanban tabButton" />
+			</g:Button>
+			<g:Button styleName="{style.tabButton} {style.checklistTab}" title="Checklists">
+				<ui:attribute name="title" description="checklists kanban tabButton" />
+			</g:Button>
+			<g:Button styleName="{style.tabButton} {style.tasksTab}"  title="Task management">
+				<ui:attribute name="title" description="task management kanban tabButton" />
+			</g:Button>
 		</p:ProgressDetailMenuWidget>
 		<g:DeckPanel ui:field="deckPanel" styleName="{style.detailDeck}">
 			<gw:DescriptionWidget ui:field="descriptionWidget" styleName="{style.descriptionPanel}"/>
