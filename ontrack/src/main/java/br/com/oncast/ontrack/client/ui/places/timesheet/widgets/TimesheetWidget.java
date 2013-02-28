@@ -90,7 +90,7 @@ public class TimesheetWidget extends Composite {
 	}
 
 	public void updateScopeDescriptions(final UUID scopeId) {
-		final List<Scope> scopes = release.getScopeList();
+		final List<Scope> scopes = getScopes();
 
 		for (final Scope s : scopes) {
 			if (s.getId().equals(scopeId)) {
@@ -100,7 +100,7 @@ public class TimesheetWidget extends Composite {
 	}
 
 	private void initTimesheetTable(final boolean readOnly) {
-		final List<Scope> scopes = release.getScopeList();
+		final List<Scope> scopes = getScopes();
 		final int lastRow = scopes.size() + 1;
 		final List<UserRepresentation> users = getUsers();
 		final int lastColumn = users.size() + 1;
@@ -187,7 +187,7 @@ public class TimesheetWidget extends Composite {
 	}
 
 	private int getScopeRowIndex(final UUID scopeId) {
-		final List<Scope> scopes = release.getScopeList();
+		final List<Scope> scopes = getScopes();
 		for (final Scope s : scopes) {
 			if (s.getId().equals(scopeId)) return scopes.indexOf(s) + 1;
 		}
@@ -199,18 +199,22 @@ public class TimesheetWidget extends Composite {
 		return declaredTimeSpent == null ? 0.0f : declaredTimeSpent;
 	}
 
+	private List<Scope> getScopes() {
+		return release.getScopeList();
+	}
+
 	private List<UserRepresentation> getUsers() {
 		if (!readOnly) return getContext().getUsers();
 
-		final List<UserRepresentation> usersWithHours = new ArrayList<UserRepresentation>();
-		for (final UserRepresentation userRepresentation : getContext().getUsers()) {
-			if (hasDeclaredSpentHours(userRepresentation)) usersWithHours.add(userRepresentation);
+		final List<UserRepresentation> users = new ArrayList<UserRepresentation>();
+		for (final UserRepresentation user : getContext().getUsers()) {
+			if (hasDeclaredSpentHours(user)) users.add(user);
 		}
-		return usersWithHours;
+		return users;
 	}
 
 	private boolean hasDeclaredSpentHours(final UserRepresentation user) {
-		for (final Scope scope : release.getScopeList()) {
+		for (final Scope scope : getScopes()) {
 			if (getContext().getDeclaredTimeSpent(scope.getId(), user.getId()) != null) return true;
 		}
 
@@ -223,6 +227,10 @@ public class TimesheetWidget extends Composite {
 
 	private String round(final float number) {
 		return ClientDecimalFormat.roundFloat(number, 1);
+	}
+
+	public boolean hasAnyDeclaredValues() {
+		return !getUsers().isEmpty();
 	}
 
 }

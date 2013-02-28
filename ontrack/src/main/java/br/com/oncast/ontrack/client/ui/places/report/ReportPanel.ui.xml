@@ -11,18 +11,9 @@
 	<ui:image field="ontracklogo" src="../../components/appmenu/logo.png" />
 	<ui:style src="../../style/default.css">	
 
-		@def MIN_WIDTH 702px;
+		@def MIN_WIDTH 900px;
 		.root {
-			position: absolute;
-			
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			bottom: 0px;
-			
 			background: white;
-			overflow: auto;
-			
 			padding: 18px;
 		}
 		
@@ -96,7 +87,7 @@
 		.sectionContainer {
 			position: relative;
 			min-width: MIN_WIDTH;
-			margin-bottom: 18px;
+			padding-bottom: 18px;
 		}
 		
 		.sectionTitle {
@@ -124,7 +115,7 @@
 		}
 	</ui:style>
 	
-	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root}">
+	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root} reportPanel-root">
 		<div class="{style.header}">
 			<g:SimplePanel styleName="{style.logo}"/>
 			<g:InlineHTML ui:field="ancestors" styleName="{style.ancestors}"/>
@@ -148,7 +139,7 @@
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Impediments">Impediments</ui:msg></g:Label>
 		    <r:ImpedimentReportTable ui:field="impedimentTable" styleName="{style.impedimentTable}" />
 		</div>
-		<div class="{style.sectionContainer}">
+		<div ui:field="timesheetContainer" class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Time spent">Time spent</ui:msg></g:Label>
 			<t:TimesheetWidget ui:field="timesheet" styleName="{style.timesheetTable}" />
 		</div>
