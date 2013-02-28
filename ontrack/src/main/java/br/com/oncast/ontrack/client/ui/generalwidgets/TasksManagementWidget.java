@@ -165,6 +165,7 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 		newTaskDescription.setEnabled(isStory());
 
 		tasksList.update(getTasks());
+		clearSelection();
 		if (tasksList.getWidgetCount() > 0) selectTask(tasksList.getWidget(0));
 
 		updateSubmit();
