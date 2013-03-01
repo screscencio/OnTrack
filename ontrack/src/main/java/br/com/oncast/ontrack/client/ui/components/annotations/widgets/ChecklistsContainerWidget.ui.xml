@@ -13,7 +13,7 @@
 		}
 		
 		.addChecklistLabel {
-			width: 180px !important;
+			width: 198px !important;
 			margin: auto;
 			
 			font-weight: bold;

@@ -162,8 +162,8 @@ public class ReleasePanelWidget extends Composite {
 						final ReleaseWidget widget = releaseContainer.getWidgetFor(event.getTargetRelease());
 						if (widget == null) return;
 
-						widget.setDetailIconVisible(event.hasDetails());
-						widget.setImpedimentIconVisible(event.hasOpenImpediments());
+						widget.setHasDetails(event.hasDetails());
+						widget.setHasImpediments(event.hasOpenImpediments());
 					}
 				}));
 	}

@@ -7,8 +7,6 @@
 	<ui:style type="br.com.oncast.ontrack.client.ui.components.user.UserWidget.UserWidgetStyle">
 	
 	
-		.root {
-		}
 		.container {
 			position: relative;
 		}
@@ -92,7 +90,7 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel styleName="{style.root}">
+	<g:FocusPanel>
 		<g:HTMLPanel styleName="{style.container}">
 			<g:DeckPanel ui:field="userImageContainer" styleName="{style.userImageContainer}">
 				<g:Image ui:field="userImage" styleName="{style.userImage}" resource="{avatar}" />

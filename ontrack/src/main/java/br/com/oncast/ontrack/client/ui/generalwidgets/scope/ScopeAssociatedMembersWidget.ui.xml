@@ -33,24 +33,16 @@
 			overflow: visible;
 		}
 		
-		.associatedUsersOverflow {
-			border: 1px solid #BEBEBE;
-			margin: -1px;
-			
-			margin-bottom: 1px;
-		}
-		
 		.associatedUsers {
 			background: #fafafa;
-
-			padding: 3px 2px;
-			padding-left: 4px;
+			padding: 2px;
+			padding-top: 1px;
 		}
 		
-		.associatedUsers:HOVER {
+		.associatedUsers:HOVER, .associatedUsersOverflow {
 			border: 1px solid #BEBEBE;
-			padding: 2px 1px;
-			padding-left: 3px;
+			border-top: none;
+			padding: 1px;
 		}
 		
 		.associatedUsers img {

@@ -114,22 +114,22 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		@Source("bg-later.png")
 		ImageResource laterImage();
 
-		@Source("priority-decrease.png")
+		@Source("down.png")
 		ImageResource menuReleaseDecreasePriority();
 
-		@Source("priority-increase.png")
+		@Source("up.png")
 		ImageResource menuReleaseIncreasePriority();
 
-		@Source("priority-delete.png")
+		@Source("trash.png")
 		ImageResource menuReleaseDelete();
 
-		@Source("../../scopetree/widgets/details.png")
-		ImageResource detailIcon();
+		@Source("info_full.png")
+		ImageResource detailLinkWithDetails();
 
 		@Source("../../scopetree/widgets/open_impediment.png")
 		ImageResource impedimentIcon();
 
-		@Source("annotationIcon.png")
+		@Source("info_empty.png")
 		ImageResource detailLink();
 	}
 
@@ -150,9 +150,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	@UiField
 	protected Image impedimentIcon;
-
-	@UiField
-	protected Image detailIcon;
 
 	@UiField
 	protected Image detailLink;
@@ -256,7 +253,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private void setupDetails() {
 		final DetailService annotationService = ClientServiceProvider.getInstance().getAnnotationService();
-		detailIcon.setVisible(annotationService.hasDetails(release.getId()));
+		setHasDetails(annotationService.hasDetails(release.getId()));
 		impedimentIcon.setVisible(annotationService.hasOpenImpediment(release.getId()));
 	}
 
@@ -472,11 +469,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		return (ReleaseWidget) current;
 	}
 
-	public void setDetailIconVisible(final boolean b) {
-		detailIcon.setVisible(b);
+	public void setHasDetails(final boolean hasDetails) {
+		detailLink.setResource(hasDetails ? resources.detailLinkWithDetails() : resources.detailLink());
 	}
 
-	public void setImpedimentIconVisible(final boolean b) {
-		impedimentIcon.setVisible(b);
+	public void setHasImpediments(final boolean hasImpediments) {
+		impedimentIcon.setVisible(hasImpediments);
 	}
 }

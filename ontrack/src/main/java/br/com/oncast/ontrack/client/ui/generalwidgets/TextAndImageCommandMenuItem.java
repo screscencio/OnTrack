@@ -40,7 +40,8 @@ public class TextAndImageCommandMenuItem implements CommandMenuItem {
 		if (menuItem != null) return menuItem;
 		final SafeHtml safeHtml = new SafeHtmlBuilder().appendHtmlConstant(
 				"<img src='" + image.getSafeUri().asString() + "' style='width: 14px; height: " + 14
-						+ "px; margin: 2px; float:left;'><span style='margin-left:5px;line-height: 18px; float: left;'>" + text + "</span>")
+						+ "px; margin: 2px 4px 2px 0px; float:left;'><span style='margin-left:5px;line-height: 18px; float: left;'>" + text
+						+ "</span>")
 				.toSafeHtml();
 		return menuItem = new MenuItem(safeHtml, command);
 	}

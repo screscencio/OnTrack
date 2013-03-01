@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScopeAssociatedMembersWidget extends Composite {
 
-	private static final int USER_WIDGET_WIDTH = 32;
+	private static final int USER_WIDGET_WIDTH = 34;
 
 	private static final int VISIBLE_USERS_COUNT = 5;
 
