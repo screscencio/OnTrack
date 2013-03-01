@@ -24,7 +24,7 @@ public class ActionPostProcessmentsInitializer {
 	private final MulticastService multicastService;
 	private final NotificationServerService notificationServerService;
 	private NotificationCreationPostProcessor notificationCreationPostProcessor;
-	private SendActionToCurrentClientPostProcessor sendActionToCurrentClientPostProcessor;
+	private TeamActionPostProcessor sendActionToCurrentClientPostProcessor;
 	private FileUploadPostProcessor fileUploadPostProcessor;
 	private ScopeBindHumanIdPostProcessor scopeBindIdPostProcessor;
 
@@ -40,7 +40,7 @@ public class ActionPostProcessmentsInitializer {
 	public synchronized void initialize() {
 		if (initialized) return;
 		postProcessingService.registerPostProcessor(getFileUploadPostProcessor(), FileUploadAction.class);
-		postProcessingService.registerPostProcessor(getSendActionToCurrentClientPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class);
+		postProcessingService.registerPostProcessor(getTeamActionPostProcessor(), TeamInviteAction.class, TeamRevogueInvitationAction.class);
 		postProcessingService.registerPostProcessor(getNotificationCreationPostProcessor(), ImpedimentCreateAction.class,
 				ImpedimentSolveAction.class, ScopeDeclareProgressAction.class, AnnotationCreateAction.class, AnnotationDeprecateAction.class,
 				TeamInviteAction.class, TeamRevogueInvitationAction.class);
@@ -62,9 +62,9 @@ public class ActionPostProcessmentsInitializer {
 		return notificationCreationPostProcessor;
 	}
 
-	public synchronized ActionPostProcessor<ModelAction> getSendActionToCurrentClientPostProcessor() {
+	public synchronized ActionPostProcessor<ModelAction> getTeamActionPostProcessor() {
 		if (sendActionToCurrentClientPostProcessor == null) {
-			sendActionToCurrentClientPostProcessor = new SendActionToCurrentClientPostProcessor(multicastService, persistenceService);
+			sendActionToCurrentClientPostProcessor = new TeamActionPostProcessor(multicastService, persistenceService);
 		}
 		return sendActionToCurrentClientPostProcessor;
 	}

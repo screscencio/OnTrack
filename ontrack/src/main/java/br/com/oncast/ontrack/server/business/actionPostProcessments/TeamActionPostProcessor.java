@@ -18,13 +18,13 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.actionSync.ModelActionSyncEvent;
 import br.com.oncast.ontrack.shared.services.user.UserDataUpdateEvent;
 
-public class SendActionToCurrentClientPostProcessor implements ActionPostProcessor<ModelAction> {
+public class TeamActionPostProcessor implements ActionPostProcessor<ModelAction> {
 
-	private static final Logger LOGGER = Logger.getLogger(SendActionToCurrentClientPostProcessor.class);
+	private static final Logger LOGGER = Logger.getLogger(TeamActionPostProcessor.class);
 	private final MulticastService multicastService;
 	private final PersistenceService persistenceService;
 
-	public SendActionToCurrentClientPostProcessor(final MulticastService multicastService, final PersistenceService persistenceService) {
+	public TeamActionPostProcessor(final MulticastService multicastService, final PersistenceService persistenceService) {
 		this.multicastService = multicastService;
 		this.persistenceService = persistenceService;
 	}
@@ -42,7 +42,7 @@ public class SendActionToCurrentClientPostProcessor implements ActionPostProcess
 		multicastService.multicastToCurrentUserClientInSpecificProject(syncEvent, projectId);
 
 		try {
-			final User user = persistenceService.retrieveUserById(actionContext.getUserId());
+			final User user = persistenceService.retrieveUserById(action.getReferenceId());
 			multicastService.multicastToAllUsersInSpecificProject(new UserDataUpdateEvent(user), projectId);
 		}
 		catch (final NoResultFoundException e) {
