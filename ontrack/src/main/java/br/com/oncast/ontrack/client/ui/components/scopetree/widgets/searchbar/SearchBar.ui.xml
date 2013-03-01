@@ -41,6 +41,7 @@
 			cursor: pointer;
 			margin: 0px 1px;
 			overflow: hidden;
+			text-align: center;
 		}
 		
 		.inactiveColumnIndicatorLabel {
@@ -71,7 +72,7 @@
 	
 	<g:FocusPanel ui:field="root" styleName="{style.root}">
 		<g:HTMLPanel styleName="{style.searchBar}">
-			<g:HorizontalPanel ui:field="container" styleName="{style.container}" verticalAlignment="middle">
+			<g:HorizontalPanel ui:field="container" styleName="{style.container}" verticalAlignment="middle" horizontalAlignment="center">
 				<g:cell width="1">
 					<g:Label>
 						<ui:msg description="search scope label">Search</ui:msg>

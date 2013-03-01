@@ -58,6 +58,7 @@
 		padding: 17px 12px;
 		
 		font-family: FONT_DEFAULT_ITALIC;
+		font-style: italic;
 		font-size: 10pt;
 	}
 	

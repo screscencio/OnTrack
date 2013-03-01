@@ -2,6 +2,10 @@ package br.com.oncast.ontrack.shared.model.action;
 
 import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findScope;
 import static br.com.oncast.ontrack.shared.model.action.helper.ActionHelper.findUserFrom;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+
 import br.com.oncast.ontrack.server.services.persistence.jpa.entity.actions.scope.ScopeDeclareTimeSpentActionEntity;
 import br.com.oncast.ontrack.server.utils.typeConverter.annotations.ConvertTo;
 import br.com.oncast.ontrack.shared.model.action.exceptions.UnableToCompleteActionException;
@@ -13,8 +17,10 @@ public class ScopeDeclareTimeSpentAction implements ScopeAction, TimesheetAction
 
 	private static final long serialVersionUID = 1L;
 
+	@Element
 	private UUID scopeId;
 
+	@Attribute
 	private Float timeSpent;
 
 	protected ScopeDeclareTimeSpentAction() {}

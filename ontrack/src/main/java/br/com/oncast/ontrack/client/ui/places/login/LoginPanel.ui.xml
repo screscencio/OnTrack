@@ -18,6 +18,7 @@
 			margin-bottom: 10px;
 
 			font-family: FONT_DEFAULT_ITALIC;
+			font-style: italic;
 		}
 		
 		.separator {

@@ -10,7 +10,7 @@
     <script type="text/javascript" language="javascript" src="resources/script/lib/jquery.min.js"></script>
 	<script type="text/javascript" language="javascript" src="resources/script/lib/highcharts/highcharts.js"></script>
     <script type="text/javascript" language="javascript" src="application/application.nocache.js"></script>
-    <link rel="stylesheet" href="resources/fonts/Fonts.css">
+    <link href='http://fonts.googleapis.com/css?family=Muli:400,400italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="resources/style/Application.css">
     
     <script type="text/javascript">

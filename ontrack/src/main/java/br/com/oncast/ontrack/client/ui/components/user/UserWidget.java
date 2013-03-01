@@ -34,7 +34,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,19 +61,15 @@ public class UserWidget extends Composite {
 
 		String userImageContainerMedium();
 
-		String userWithoutImageMedium();
-
 		String userImageContainerSmall();
 
-		String userWithoutImageSmall();
-
-		String userImageContainerLabelColor();
-
-		String userImageContainerImageColor();
 	}
 
 	@UiField
 	UserWidgetStyle style;
+
+	@UiField
+	FocusPanel activeIndicator;
 
 	@UiField
 	FocusPanel mask;
@@ -84,9 +79,6 @@ public class UserWidget extends Composite {
 
 	@UiField
 	Label userWithoutImage;
-
-	@UiField
-	HTMLPanel userWithoutImageContainer;
 
 	@UiField
 	Image userImage;
@@ -133,14 +125,10 @@ public class UserWidget extends Composite {
 	}
 
 	private void showLabel() {
-		userImageContainer.setStyleName(style.userImageContainerImageColor(), false);
-		userImageContainer.setStyleName(style.userImageContainerLabelColor(), true);
 		userImageContainer.showWidget(1);
 	}
 
 	private void showImage() {
-		userImageContainer.setStyleName(style.userImageContainerLabelColor(), false);
-		userImageContainer.setStyleName(style.userImageContainerImageColor(), true);
 		userImageContainer.showWidget(0);
 	}
 
@@ -210,25 +198,22 @@ public class UserWidget extends Composite {
 		});
 		userImage.setUrl(provider.getUserDataService().getAvatarUrl(user));
 		userImageContainer.setTitle(user.getName());
-		userImage.setStyleName(style.showActiveColor(), showActiveColor);
-		userWithoutImageContainer.setStyleName(style.showActiveColor(), showActiveColor);
+		activeIndicator.setStyleName(style.showActiveColor(), showActiveColor);
 
 		userCard.updateUser(user);
 		if (updateListener != null) updateListener.onUserUpdate(user);
 	}
 
 	private void updateStatus(final UserStatus status) {
-		userImage.setStyleName(style.offline(), status == UserStatus.OFFLINE);
-		userImage.setStyleName(style.online(), status != UserStatus.OFFLINE);
+		userImageContainer.setStyleName(style.offline(), status == UserStatus.OFFLINE);
+		userImageContainer.setStyleName(style.online(), status != UserStatus.OFFLINE);
 
 		if (showActiveColor && status == UserStatus.ACTIVE) showColor();
 	}
 
 	private void showColor() {
-		userImage.getElement().getStyle()
-				.setBorderColor(COLOR_PROVIDER.getSelectionColorFor(userRepresentation).toCssRepresentation());
-		userWithoutImageContainer.getElement().getStyle()
-				.setBorderColor(COLOR_PROVIDER.getSelectionColorFor(userRepresentation).toCssRepresentation());
+		activeIndicator.getElement().getStyle()
+				.setBackgroundColor(COLOR_PROVIDER.getSelectionColorFor(userRepresentation).toCssRepresentation());
 	}
 
 	@UiHandler("mask")
@@ -246,16 +231,12 @@ public class UserWidget extends Composite {
 
 	public void setMediumSize() {
 		userImageContainer.setStyleName(style.userImageContainerSmall(), false);
-		userWithoutImage.setStyleName(style.userWithoutImageSmall(), false);
 		userImageContainer.setStyleName(style.userImageContainerMedium(), true);
-		userWithoutImage.setStyleName(style.userWithoutImageMedium(), true);
 	}
 
 	public void setSmallSize() {
 		userImageContainer.setStyleName(style.userImageContainerMedium(), false);
-		userWithoutImage.setStyleName(style.userWithoutImageMedium(), false);
 		userImageContainer.setStyleName(style.userImageContainerSmall(), true);
-		userWithoutImage.setStyleName(style.userWithoutImageSmall(), true);
 	}
 
 	public interface UserUpdateListener {

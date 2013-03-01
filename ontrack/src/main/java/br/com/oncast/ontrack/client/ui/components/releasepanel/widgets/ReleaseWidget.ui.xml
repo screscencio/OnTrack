@@ -168,9 +168,6 @@
 					<g:Image ui:field="impedimentIcon" resource="{resources.impedimentIcon}" styleName="{style.headerItem} {style.annotationIcon}" title="Impediments">
 						<ui:attribute name="title" description="impediment icon release widget" />
 					</g:Image>
-					<g:Image ui:field="detailIcon" resource="{resources.detailIcon}" styleName="{style.headerItem} {style.annotationIcon}" title="Has details">
-						<ui:attribute name="title" description="detail icon release widget" />
-					</g:Image>
 					<g:Image ui:field="detailLink" resource="{resources.detailLink}" styleName="{style.headerItem} {style.annotationIcon}" title="Details">
 						<ui:attribute name="title" description="detailLink icon release widget" />
 					</g:Image>

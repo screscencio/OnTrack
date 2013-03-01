@@ -3,7 +3,7 @@ html,body {
 	height: 100%;
 	margin: 0px auto;
 	padding: 0px;
-	font-family: 'ProximaNovaRegular', tahoma, verdana, arial, serif;
+	font-family: 'Muli', sans-serif;
 	font-size: 14px;
 	font-weight: 500;
 	overflow: hidden;
@@ -56,7 +56,7 @@ html,body {
 
 /* Tree */
 .gwt-Tree {
-	font-family: "ProximaNovaRegular";
+	font-family: 'Muli', sans-serif;
 }
 
 .gwt-Tree table {
@@ -162,7 +162,7 @@ html,body {
 	background: #FAFAFA;
 	background-color: #FAFAFA;
 	border: none;
-	font-family: 'ProximaNovaRegular';
+	font-family: 'Muli', sans-serif;
 	font-size: inherit;
 }
 
@@ -194,7 +194,7 @@ html,body {
 /* SearchScopeResult menu item */
 .searchScopeResult-container {
 	padding: 3px;
-	font-family: 'ProximaNovaRegular';
+	font-family: 'Muli', sans-serif;
 	font-size: 10pt;
 	color: #9c9c9c;
 }
@@ -235,7 +235,7 @@ html,body {
 .gwt-MenuBar-breadcrumb .gwt-MenuItem {
 	background: transparent;
 	background-color: transparent;
-	font-family: 'ProximaNovaRegular';
+	font-family: 'Muli', sans-serif;
 	font-size: 12pt;
 	color: #960;
 	text-shadow: #F6D792 1px -1px 1px;

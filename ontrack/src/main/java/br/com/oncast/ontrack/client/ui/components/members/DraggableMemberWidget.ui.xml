@@ -9,16 +9,14 @@
 		.rootPanel {
 			position: relative;
 			display: inline-block !important;
+			vertical-align: top;
 		}
 	
 		.image {
-			margin-right: 2px;
+			margin: 2px;
 			cursor: move;
 		}
 	
-		.container {
-		}
-		
 		@sprite .removeBtn {
 			gwt-image: 'removeImg';
 			position: absolute;
@@ -31,7 +29,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel styleName="{style.rootPanel}">
-		<g:FocusPanel ui:field="container" styleName="{style.container}">
+		<g:FocusPanel ui:field="container">
 			<u:UserWidget ui:field="userWidget" styleName="{style.image}" />
 		</g:FocusPanel>
 		<g:FocusPanel ui:field="removeBtn" styleName="{style.removeBtn}" />
