@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReportPanel extends Composite {
 
-	private static final DateTimeFormat FORMATTER = DateTimeFormat.getFormat("dd/mm/yyyy - HH:MM");
+	private static final DateTimeFormat FORMATTER = DateTimeFormat.getFormat("dd/MM/yyyy - HH:mm");
 
 	private static ReportPanelUiBinder uiBinder = GWT.create(ReportPanelUiBinder.class);
 
