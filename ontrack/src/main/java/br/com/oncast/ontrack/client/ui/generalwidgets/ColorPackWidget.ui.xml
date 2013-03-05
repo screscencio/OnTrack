@@ -12,7 +12,6 @@
 			line-height: 11px;
 			text-align: center;
 			font-size: 90%;
-			font-family: arial,sans-serif;
 			cursor: pointer;
 			border-collapse: collapse;
 			border-spacing: 2px;

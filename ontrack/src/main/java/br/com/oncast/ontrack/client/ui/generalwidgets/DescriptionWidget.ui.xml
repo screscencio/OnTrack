@@ -4,7 +4,7 @@
 	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
 	<ui:with type="br.com.oncast.ontrack.client.ui.generalwidgets.DescriptionWidgetMessages" field="messages" />
-	<ui:style>
+	<ui:style src="../style/default.css">
 	
 		.root {
 			padding: 5px;

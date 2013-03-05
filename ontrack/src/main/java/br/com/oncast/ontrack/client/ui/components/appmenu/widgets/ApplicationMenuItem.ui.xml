@@ -7,7 +7,7 @@
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem.ApplicationMenuItemStyle">
 	
 		.menuItem {
-			font: FONT_DEFAULT FONT_SIZE_MEDIUM;
+			font: FONT_SIZE_MEDIUM FONT_DEFAULT;
 			text-transform: uppercase;
 			
 			text-shadow: TEXT_SHADOW;
