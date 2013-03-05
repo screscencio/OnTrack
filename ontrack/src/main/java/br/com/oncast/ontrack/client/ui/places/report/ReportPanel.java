@@ -109,7 +109,7 @@ public class ReportPanel extends Composite {
 	}
 
 	private String getAncestorsBreadcrumb(final Release release) {
-		final String projectName = "<span style=\"color: #2D4171; font-size: 18px;\">" + release.getRootRelease().getDescription() + "</span>";
+		final String projectName = "<span style=\"color: #2D4171; font-size: 150%;\">" + release.getRootRelease().getDescription() + "</span>";
 
 		final List<Release> ancestors = release.getAncestors();
 		if (ancestors.isEmpty()) return projectName;

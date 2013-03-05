@@ -151,7 +151,7 @@ public class Progress implements Serializable {
 
 	public Long getLeadtime() {
 		if (!isDone()) return null;
-		return getEndDay().getJavaDate().getTime() - getCreationDate().getTime();
+		return stateManager.getLastOccurenceOf(ProgressState.DONE).getTimestamp().getTime() - getCreationDate().getTime();
 	}
 
 	public Long getCycletime() {

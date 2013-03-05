@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.report.ScopeDatabase.ScopeItem;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -24,8 +25,6 @@ import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionModel;
 
 public class ScopeReportTable extends Composite {
-
-	private static final int DAY = 86400000;
 
 	private static ScopeReportTableUiBinder uiBinder = GWT.create(ScopeReportTableUiBinder.class);
 
@@ -69,7 +68,7 @@ public class ScopeReportTable extends Composite {
 				return Long.valueOf(o1.getHumandReadableId()).compareTo(Long.valueOf(o2.getHumandReadableId()));
 			}
 		});
-		cellTable.setColumnWidth(idColumn, 65, Unit.PX);
+		cellTable.setColumnWidth(idColumn, 36, Unit.PX);
 		cellTable.addColumn(idColumn, new TextHeader(messages.id()));
 
 		final Column<ScopeItem, String> descriptionColumn = new Column<ScopeItem, String>(new TextCell()) {
@@ -102,7 +101,7 @@ public class ScopeReportTable extends Composite {
 		});
 		cellTable.addColumn(effortColumn, new TextHeader(messages.effort()));
 		effortColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		cellTable.setColumnWidth(effortColumn, 80, Unit.PX);
+		cellTable.setColumnWidth(effortColumn, 72, Unit.PX);
 
 		final Column<ScopeItem, String> valueColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override
@@ -119,7 +118,7 @@ public class ScopeReportTable extends Composite {
 		});
 		cellTable.addColumn(valueColumn, new TextHeader(messages.value()));
 		valueColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		cellTable.setColumnWidth(valueColumn, 80, Unit.PX);
+		cellTable.setColumnWidth(valueColumn, 72, Unit.PX);
 
 		final Column<ScopeItem, String> progressColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override
@@ -142,7 +141,7 @@ public class ScopeReportTable extends Composite {
 			@Override
 			public String getValue(final ScopeItem object) {
 				final Long cycleTime = object.getCycleTime();
-				return cycleTime == null ? "---" : ClientDecimalFormat.roundFloat(cycleTime / DAY, 0) + "d";
+				return cycleTime == null ? "---" : HumanDateFormatter.getDifferenceText(cycleTime, 0);
 			}
 		};
 		cycleTimeColumn.setSortable(true);
@@ -154,13 +153,13 @@ public class ScopeReportTable extends Composite {
 		});
 		cellTable.addColumn(cycleTimeColumn, new TextHeader(messages.cycleTime()));
 		cycleTimeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		cellTable.setColumnWidth(cycleTimeColumn, 80, Unit.PX);
+		cellTable.setColumnWidth(cycleTimeColumn, 108, Unit.PX);
 
 		final Column<ScopeItem, String> leadTimeColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ScopeItem object) {
 				final Long leadTime = object.getLeadTime();
-				return leadTime == null ? "---" : ClientDecimalFormat.roundFloat(leadTime / DAY, 0) + "d";
+				return leadTime == null ? "---" : HumanDateFormatter.getDifferenceText(leadTime, 0);
 			}
 		};
 		leadTimeColumn.setSortable(true);
@@ -172,7 +171,7 @@ public class ScopeReportTable extends Composite {
 		});
 		cellTable.addColumn(leadTimeColumn, new TextHeader(messages.leadTime()));
 		leadTimeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		cellTable.setColumnWidth(leadTimeColumn, 80, Unit.PX);
+		cellTable.setColumnWidth(leadTimeColumn, 108, Unit.PX);
 
 	}
 

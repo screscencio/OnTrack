@@ -15,6 +15,7 @@
 		.root {
 			background: white;
 			padding: 18px;
+			font-size: FONT_SIZE_SMALL;
 		}
 		
 		.header {
@@ -42,7 +43,6 @@
 			right: 162px;
 			line-height: 18px;
 			color: #888;
-			font-size: 13px;
 		}
 	
 		.title {
@@ -51,7 +51,7 @@
 			left: 0;
 			right: 126px;
 			line-height: 36px;
-			font-size: 27px;
+			font-size: 200%;
 		}
 		
 		.timestamp {

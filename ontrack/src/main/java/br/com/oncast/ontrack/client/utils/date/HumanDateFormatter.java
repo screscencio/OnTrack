@@ -18,7 +18,7 @@ public enum HumanDateFormatter {
 	JUST_NOW(1 * MINUTE, "yyyyMMddHHmm") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return messages.lessThanAMinute();
+			return onlyNumbers ? "0" : messages.lessThanAMinute();
 		}
 
 		@Override
@@ -95,10 +95,14 @@ public enum HumanDateFormatter {
 
 	private static final HumanDateFormatterMessages messages = GWT.create(HumanDateFormatterMessages.class);
 
+	private static final int DEFAULT_DIGITS = 0;
+	private static final boolean DEFAULT_ONLY_NUMBERS = false;
+
+	private static int decimalDigits = DEFAULT_DIGITS;
+	private static boolean onlyNumbers = DEFAULT_ONLY_NUMBERS;
+
 	private final long maxTimeDifference;
 	private DateTimeFormat format;
-	private static final int DEFAULT_DIGITS = 0;
-	private static int decimalDigits = DEFAULT_DIGITS;
 
 	private HumanDateFormatter(final long maxTimeDifference, final String pattern) {
 		this.maxTimeDifference = maxTimeDifference;
@@ -133,9 +137,11 @@ public enum HumanDateFormatter {
 		return DateTimeFormat.getFormat(pattern).format(date);
 	}
 
-	protected String mountDifferenceText(final long difference, final long delimiter, final String singular, final String plural) {
+	protected static String mountDifferenceText(final long difference, final long delimiter, final String singular, final String plural) {
 		final float time = difference / (float) delimiter;
-		return ClientDecimalFormat.roundFloat(time, decimalDigits).replaceAll("\\.0+$", "") + " " + (time <= 1 ? singular : plural);
+		String differenceText = ClientDecimalFormat.roundFloat(time, decimalDigits).replaceAll("\\.0+$", "");
+		if (!onlyNumbers) differenceText += " " + (time <= 1 ? singular : plural);
+		return differenceText;
 	}
 
 	private boolean accepts(final Date currentDate, final Date date) {
@@ -150,13 +156,22 @@ public enum HumanDateFormatter {
 		for (final HumanDateFormatter formatter : values()) {
 			if (formatter.maxTimeDifference > difference) { return formatter.formatDifferenceTime(difference); }
 		}
-		return difference + " ms";
+		return mountDifferenceText(difference, 1, "ms", "ms");
 	}
 
 	public static String getDifferenceText(final long difference, final int digits) {
 		decimalDigits = digits;
 		final String differenceText = getDifferenceText(difference);
 		decimalDigits = DEFAULT_DIGITS;
+		return differenceText;
+	}
+
+	public static String getDifferenceText(final long difference, final int digits, final boolean numbersOnly) {
+		decimalDigits = digits;
+		onlyNumbers = numbersOnly;
+		final String differenceText = getDifferenceText(difference);
+		decimalDigits = DEFAULT_DIGITS;
+		onlyNumbers = DEFAULT_ONLY_NUMBERS;
 		return differenceText;
 	}
 
