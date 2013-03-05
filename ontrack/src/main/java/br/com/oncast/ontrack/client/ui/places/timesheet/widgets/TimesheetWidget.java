@@ -230,7 +230,7 @@ public class TimesheetWidget extends Composite {
 	}
 
 	public boolean isEmpty() {
-		return !getUsers().isEmpty();
+		return getUsers().isEmpty();
 	}
 
 }

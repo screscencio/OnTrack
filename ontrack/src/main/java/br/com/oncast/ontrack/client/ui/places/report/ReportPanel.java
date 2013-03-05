@@ -68,6 +68,12 @@ public class ReportPanel extends Composite {
 	DivElement descriptionContainer;
 
 	@UiField
+	DivElement impedimentsContainer;
+
+	@UiField
+	DivElement timesheetContainer;
+
+	@UiField
 	InlineHTML ancestors;
 
 	@UiField
@@ -79,7 +85,6 @@ public class ReportPanel extends Composite {
 		chart = new ReleaseChart(release, true);
 		details = new ReleaseDetailWidget(release);
 		scopeTable = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
-		// FIXME MATS Hide if there are no impediments.
 		impedimentTable = new ImpedimentReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
 		timesheet = new TimesheetWidget(release, true);
 
@@ -95,6 +100,9 @@ public class ReportPanel extends Composite {
 		catch (final DescriptionNotFoundException e) {
 			descriptionContainer.removeFromParent();
 		}
+
+		if (timesheet.isEmpty()) timesheetContainer.removeFromParent();
+		if (impedimentTable.isEmpty()) impedimentsContainer.removeFromParent();
 
 		burnUpPanel.add(chart);
 		chart.updateData();
