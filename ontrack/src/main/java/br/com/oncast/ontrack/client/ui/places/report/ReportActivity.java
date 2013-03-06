@@ -41,7 +41,7 @@ public class ReportActivity extends AbstractActivity {
 			SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingContainer());
 
 			final Element body = RootPanel.getBodyElement();
-			body.getStyle().setOverflow(Overflow.AUTO);
+			body.getStyle().setOverflow(Overflow.VISIBLE);
 			body.getStyle().setProperty("height", "auto");
 			body.getParentElement().getStyle().setOverflow(Overflow.AUTO);
 			panel.setWidget(view);

@@ -5,18 +5,23 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.storage.ClientStorageService;
 import br.com.oncast.ontrack.client.ui.places.AppActivityManager;
+import br.com.oncast.ontrack.client.ui.places.RestorablePlace;
 
 import com.google.gwt.activity.shared.ActivityMapper;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeRequestEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class ApplicationPlaceController {
 
+	private static final String NEW_WINDOW_EVERY_TIME = "_blank";
+	private static final String FEATURES = "chrome=yes,width=900,outerHeight=800";
 	private final PlaceController placeController;
 	private final EventBus eventBus;
 	private boolean configured;
@@ -30,8 +35,16 @@ public class ApplicationPlaceController {
 		placeController = new PlaceController(eventBus);
 	}
 
+	public void open(final OpenInNewWindowPlace place) {
+		final OpenInNewWindowPlace p = place;
+		String url = GWT.getHostPageBaseURL() + "#";
+		url += p.getPlacePrefix() + ":";
+		url += p.getToken();
+		Window.open(url, NEW_WINDOW_EVERY_TIME, FEATURES);
+	}
+
 	public void goTo(final Place place) {
-		clientStorageService.storeDefaultPlaceToken(placeHistoryMapper.getToken(place));
+		if (place instanceof RestorablePlace) clientStorageService.storeDefaultPlaceToken(placeHistoryMapper.getToken(place));
 		placeController.goTo(place);
 	}
 

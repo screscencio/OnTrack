@@ -23,13 +23,19 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseDetailWidget extends Composite implements SubjectDetailWidget {
 
-	private static ReleaseDetailWidgetUiBinder uiBinder = GWT.create(ReleaseDetailWidgetUiBinder.class);
+	private static ReleaseDetailWidgetUiBinder defaultUiBinder = GWT.create(ReleaseDetailWidgetUiBinder.class);
+
+	@UiTemplate("ReleaseDetailWidgetForReport.ui.xml")
+	interface ReleaseDetailWidgetForReportUiBinder extends UiBinder<Widget, ReleaseDetailWidget> {}
+
+	private static ReleaseDetailWidgetForReportUiBinder reportUiBinder = GWT.create(ReleaseDetailWidgetForReportUiBinder.class);
 
 	private static final ReleaseDetailWidgetMessages messages = GWT.create(ReleaseDetailWidgetMessages.class);
 
@@ -45,7 +51,10 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	HasText value;
 
 	@UiField
-	HasText velocity;
+	HasText actualVelocity;
+
+	@UiField
+	HasText plannedVelocity;
 
 	@UiField
 	HasText period;
@@ -65,20 +74,24 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	private ReleaseChartDataProvider dataProvider;
 
-	public ReleaseDetailWidget(final Release release) {
+	public static ReleaseDetailWidget forReport(final Release release) {
+		return new ReleaseDetailWidget(reportUiBinder).setSubject(release);
+	}
+
+	private ReleaseDetailWidget(final UiBinder<Widget, ReleaseDetailWidget> uiBinder) {
 		initWidget(uiBinder.createAndBindUi(this));
-		setSubject(release);
 	}
 
 	public ReleaseDetailWidget() {
-		initWidget(uiBinder.createAndBindUi(this));
+		initWidget(defaultUiBinder.createAndBindUi(this));
 	}
 
-	public void setSubject(final Release release) {
+	public ReleaseDetailWidget setSubject(final Release release) {
 		this.release = release;
 		this.dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getRootRelease()), ClientServiceProvider.getInstance()
 				.getActionExecutionService());
 		update();
+		return this;
 	}
 
 	private Release getRootRelease() {
@@ -117,10 +130,8 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		this.parent.setText(release.isRoot() || (release.getParent().isRoot()) ? messages.none() : release.getParent().getDescription());
 		this.effort.setText(formatProgressText(release.getAccomplishedEffortSum(), release.getEffortSum(), " ep"));
 		this.value.setText(formatProgressText(release.getAccomplishedValueSum(), release.getValueSum(), " vp"));
-		final float vel = dataProvider.hasStarted() ? dataProvider.getActualVelocity() : dataProvider.getEstimatedVelocity();
-		final String estimatedIndicator = " (" + (dataProvider.hasStarted() ? roundFloat(dataProvider.getEstimatedVelocity(), 1) + " " : "")
-				+ messages.planned() + ")";
-		this.velocity.setText(roundFloat(vel, 1) + " ep / " + messages.day() + estimatedIndicator);
+		this.actualVelocity.setText(dataProvider.hasStarted() ? (roundFloat(dataProvider.getActualVelocity(), 1) + " ep / " + messages.day()) : "---");
+		this.plannedVelocity.setText(roundFloat(dataProvider.getEstimatedVelocity(), 1) + " ep / " + messages.day());
 		final WorkingDay startDay = dataProvider.getEstimatedStartDay();
 		final WorkingDay endDay = dataProvider.getEstimatedEndDay();
 		this.period.setText(format(startDay) + " - " + format(endDay));

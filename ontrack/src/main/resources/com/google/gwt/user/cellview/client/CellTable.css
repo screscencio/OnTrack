@@ -1,0 +1,147 @@
+@CHARSET "UTF-8";
+
+
+/*
+ * Copyright 2010 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+ 
+.cellTableWidget {
+  
+}
+
+.cellTableFirstColumn {
+  
+}
+
+.cellTableLastColumn {
+  
+}
+
+.cellTableFooter {
+  border-top: 2px solid #6f7277;
+  padding: 3px 15px;
+  text-align: left;
+  color: #4b4a4a;
+  text-shadow: #ddf 1px 1px 0;
+  overflow: hidden;
+}
+
+.cellTableHeader {
+  border-bottom: 1px solid #999999;
+  padding: 3px 0px;
+  text-align: center;
+  color: #2d4171;
+  overflow: hidden;
+}
+
+.cellTableHeader:nth-child\(2\) {
+  text-align: left;
+  padding: 3px 0px;
+}
+
+.cellTableCell {
+  padding: 2px 0px;
+  padding-right: 5px;
+  overflow: hidden;
+}
+
+.cellTableFirstColumnFooter {
+  
+}
+
+.cellTableFirstColumnHeader {
+  
+}
+
+.cellTableLastColumnFooter {
+  
+}
+
+.cellTableLastColumnHeader {
+  
+}
+
+.cellTableSortableHeader {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.cellTableSortableHeader:hover {
+	color: #9BA2D2;
+	border-bottom: 1px solid #9BA2D2;
+}
+
+.cellTableSortedHeaderAscending {
+	border-bottom: 1px solid #2d4171;
+}
+
+.cellTableSortedHeaderDescending {
+	border-bottom: 1px solid #2d4171;
+}
+
+.cellTableEvenRow {
+  background: #ffffff;
+}
+
+.cellTableEvenRowCell {
+  border-top: 1px solid #ccc;
+}
+
+.cellTableOddRow {
+  background: #ccc;
+}
+
+.cellTableOddRowCell {
+  border-top: 1px solid #ccc;
+}
+
+.cellTableHoveredRow {
+  background: #9BA2D2;
+}
+
+.cellTableHoveredRowCell {
+  border-top: 1px solid #9BA2D2;
+}
+
+.cellTableKeyboardSelectedRow {
+  background: #F5CC6F;
+}
+
+.cellTableKeyboardSelectedRowCell {
+  border-top: 1px solid #F5CC6F;
+}
+
+.cellTableSelectedRow {
+  background: #F5CC6F;
+  color: white;
+  height: auto;
+  overflow: auto;
+}
+
+.cellTableSelectedRowCell {
+  border-top: 1px solid #F5CC6F;
+}
+
+/**
+ * The keyboard selected cell is visible over selection.
+ */
+.cellTableKeyboardSelectedCell {
+  border-top: 1px solid #F5CC6F;
+}
+
+@sprite .cellTableLoading {
+  gwt-image: 'cellTableLoading';
+  margin: 30px;
+}

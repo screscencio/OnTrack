@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.planning;
 
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
+import br.com.oncast.ontrack.client.ui.places.RestorablePlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.places.PlaceTokenParser;
@@ -10,7 +11,7 @@ import br.com.oncast.ontrack.shared.places.PlacesPrefixes;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class PlanningPlace extends ProjectDependentPlace {
+public class PlanningPlace extends ProjectDependentPlace implements RestorablePlace {
 
 	private final UUID projectId;
 	private final UUID selectedScopeId;

@@ -39,14 +39,13 @@ public class ScopeReportTable extends Composite {
 
 	public ScopeReportTable(final List<Scope> scopeList, final ProjectContext context, final ReportMessages messages) {
 		this.messages = messages;
-		cellTable = new CellTable<ScopeItem>(ScopeDatabase.ScopeItem.KEY_PROVIDER);
+		cellTable = new CellTable<ScopeItem>(Integer.MAX_VALUE, ScopeDatabase.ScopeItem.KEY_PROVIDER);
 		scopeDatabase = new ScopeDatabase(scopeList, context);
 		final ListHandler<ScopeItem> sortHandler = new ListHandler<ScopeItem>(scopeDatabase.getDataProvider().getList());
 		final SelectionModel<ScopeItem> selectionModel = new NoSelectionModel<ScopeItem>(ScopeDatabase.ScopeItem.KEY_PROVIDER);
 		cellTable.addColumnSortHandler(sortHandler);
 		cellTable.setSelectionModel(selectionModel);
 		cellTable.setWidth("100%", true);
-		cellTable.setPageSize(Integer.MAX_VALUE);
 		initTableColumns(selectionModel, sortHandler);
 		scopeDatabase.addDataDisplay(cellTable);
 
@@ -69,6 +68,7 @@ public class ScopeReportTable extends Composite {
 			}
 		});
 		cellTable.setColumnWidth(idColumn, 36, Unit.PX);
+		idColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		cellTable.addColumn(idColumn, new TextHeader(messages.id()));
 
 		final Column<ScopeItem, String> descriptionColumn = new Column<ScopeItem, String>(new TextCell()) {
@@ -101,7 +101,7 @@ public class ScopeReportTable extends Composite {
 		});
 		cellTable.addColumn(effortColumn, new TextHeader(messages.effort()));
 		effortColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		cellTable.setColumnWidth(effortColumn, 72, Unit.PX);
+		cellTable.setColumnWidth(effortColumn, 54, Unit.PX);
 
 		final Column<ScopeItem, String> valueColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override
@@ -118,7 +118,7 @@ public class ScopeReportTable extends Composite {
 		});
 		cellTable.addColumn(valueColumn, new TextHeader(messages.value()));
 		valueColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		cellTable.setColumnWidth(valueColumn, 72, Unit.PX);
+		cellTable.setColumnWidth(valueColumn, 54, Unit.PX);
 
 		final Column<ScopeItem, String> progressColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override
@@ -135,7 +135,7 @@ public class ScopeReportTable extends Composite {
 		});
 		cellTable.addColumn(progressColumn, new TextHeader(messages.progress()));
 		progressColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		cellTable.setColumnWidth(progressColumn, 90, Unit.PX);
+		cellTable.setColumnWidth(progressColumn, 72, Unit.PX);
 
 		final Column<ScopeItem, String> cycleTimeColumn = new Column<ScopeItem, String>(new TextCell()) {
 			@Override

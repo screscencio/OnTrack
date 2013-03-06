@@ -1,0 +1,103 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:misc="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+
+	<ui:style src="../../../style/default.css">
+	
+		.title {
+			width: 100%;
+			text-transform: uppercase;
+			text-align: center;
+			color: COLOR_GRAY_DARK;
+			cursor: default;
+			border-bottom: 1px solid #606060;
+		}
+		
+		.details {
+			width: 100%;
+		}
+		
+		.detailLabel {
+			color: COLOR_BLUE_DARK;
+			cursor: default;
+			white-space: nowrap;
+			text-align: right;
+		}
+		
+		.detailValue {
+			cursor: default;
+			white-space: nowrap;
+			padding-left: 2px;
+		}
+		
+		.detailValueCell {
+		}
+		
+		.labelColumn {
+		}
+		
+		.valueColumn {
+		}
+		
+	</ui:style>
+	
+	<g:HTMLPanel>
+		<g:Label ui:field="parent" visible="false" />
+		<table class="{style.details}" cellspacing="0" border="1" rules="groups" frame="void">
+			<colgroup>
+				<col class="{style.labelColumn}"/>
+				<col class="{style.valueColumn}"/>
+			</colgroup>
+			<colgroup>
+				<col class="{style.labelColumn}"/>
+				<col class="{style.valueColumn}"/>
+			</colgroup>
+			<colgroup>
+				<col class="{style.labelColumn}"/>
+				<col class="{style.valueColumn}"/>
+			</colgroup>
+			<colgroup>
+				<col class="{style.labelColumn}"/>
+				<col class="{style.valueColumn}"/>
+			</colgroup>
+			<colgroup>
+				<col class="{style.labelColumn}"/>
+				<col class="{style.valueColumn}"/>
+			</colgroup>
+			
+			<tbody>
+				<tr>
+					<td class="{style.detailLabel}"><ui:msg description="release effort label">Effort:</ui:msg></td>
+					<td class="{style.detailValueCell}"><g:Label ui:field="effort" styleName="{style.detailValue}"/></td>
+					
+					<td class="{style.detailLabel}"><ui:msg description="release planned velocity label">Planned velocity:</ui:msg></td>
+					<td class="{style.detailValueCell}"><g:Label ui:field="plannedVelocity" styleName="{style.detailValue}"/></td>
+					
+					<td class="{style.detailLabel}"><ui:msg description="release period label">Period:</ui:msg></td>
+					<td class="{style.detailValueCell}"><g:Label ui:field="period" styleName="{style.detailValue}"/></td>
+					
+					<td class="{style.detailLabel}"><ui:msg description="release average cycle time">Cycle time:</ui:msg></td>
+					<td class="{style.detailValueCell}"><g:Label ui:field="cycletime" styleName="{style.detailValue}"/></td>
+				</tr>
+				
+				<tr>
+					<td class="{style.detailLabel}"><ui:msg description="release value label">Value:</ui:msg></td>
+					<td class="{style.detailValueCell}"><g:Label ui:field="value" styleName="{style.detailValue}"/></td>
+					
+					<td class="{style.detailLabel}"><ui:msg description="release actual velocity label">Actual Velocity:</ui:msg></td>
+					<td class="{style.detailValueCell}"><g:Label ui:field="actualVelocity" styleName="{style.detailValue}"/></td>
+					
+					<td class="{style.detailLabel}"><ui:msg description="release duration label">Duration:</ui:msg></td>
+					<td class="{style.detailValueCell}"><g:Label ui:field="duration" styleName="{style.detailValue}"/></td>
+					
+					<td class="{style.detailLabel}"><ui:msg description="release average lead time label">Lead time:</ui:msg></td>
+					<td class="{style.detailValueCell}"><g:Label ui:field="leadtime" styleName="{style.detailValue}"/></td>
+				</tr>
+			</tbody>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 

@@ -138,7 +138,7 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 	}
 
 	public static AnnotationsPanel forRelease(final Release release) {
-		return new AnnotationsPanel(new ReleaseDetailWidget(release), release.getId(), release.getDescription());
+		return new AnnotationsPanel(new ReleaseDetailWidget().setSubject(release), release.getId(), release.getDescription());
 	}
 
 	public static AnnotationsPanel forScope(final Scope scope) {

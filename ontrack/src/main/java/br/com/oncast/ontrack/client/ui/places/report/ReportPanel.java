@@ -83,7 +83,7 @@ public class ReportPanel extends Composite {
 
 	public ReportPanel(final ProjectContext projectContext, final Release release) {
 		chart = new ReleaseChart(release, true);
-		details = new ReleaseDetailWidget(release);
+		details = ReleaseDetailWidget.forReport(release);
 		scopeTable = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
 		impedimentTable = new ImpedimentReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
 		timesheet = new TimesheetWidget(release, true);

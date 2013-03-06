@@ -94,6 +94,7 @@ public class ImpedimentReportTable extends Composite {
 			}
 		};
 		idColumn.setSortable(true);
+		idColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		sortHandler.setComparator(idColumn, new Comparator<ImpedimentItem>() {
 			@Override
 			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
@@ -119,7 +120,7 @@ public class ImpedimentReportTable extends Composite {
 		});
 		cellTable.addColumn(startDateColumn, new TextHeader(messages.startDate()));
 		startDateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		cellTable.setColumnWidth(startDateColumn, 90, Unit.PX);
+		cellTable.setColumnWidth(startDateColumn, 72, Unit.PX);
 
 		final Column<ImpedimentItem, String> endDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
@@ -138,7 +139,7 @@ public class ImpedimentReportTable extends Composite {
 		});
 		cellTable.addColumn(endDateColumn, new TextHeader(messages.endDate()));
 		endDateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		cellTable.setColumnWidth(endDateColumn, 90, Unit.PX);
+		cellTable.setColumnWidth(endDateColumn, 72, Unit.PX);
 
 		final Column<ImpedimentItem, String> leadTimeColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
@@ -155,6 +156,7 @@ public class ImpedimentReportTable extends Composite {
 			}
 		});
 		cellTable.addColumn(leadTimeColumn, new TextHeader(messages.leadTime()));
+		leadTimeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		cellTable.setColumnWidth(leadTimeColumn, 108, Unit.PX);
 	}
 
