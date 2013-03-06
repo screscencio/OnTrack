@@ -23,6 +23,8 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -47,6 +49,8 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 	private static TasksManagementWidgetMessages messages = GWT.create(TasksManagementWidgetMessages.class);
 
 	private Scope scope;
+
+	private String lastCreatedTask = "";
 
 	@UiField(provided = true)
 	ModelWidgetContainer<Scope, TaskWidget> tasksList;
@@ -106,6 +110,7 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 		}
 
 		moveSelection(index);
+		event.stopPropagation();
 	}
 
 	@UiHandler("newTaskDescription")
@@ -139,13 +144,15 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 			return;
 		}
 
-		final String text = newTaskDescription.getText();
+		lastCreatedTask = newTaskDescription.getText();
 		if (!hasNewTaskDescription()) {
 			showWarning(messages.emptyTaskDescription());
 			return;
 		}
 
-		launchAction(scope.getRelease() != null ? new ScopeInsertChildAction(getScopeId(), text) : new ScopeInsertSiblingDownAction(getScopeId(), text));
+		launchAction(scope.getRelease() != null ? new ScopeInsertChildAction(getScopeId(), lastCreatedTask) : new ScopeInsertSiblingDownAction(getScopeId(),
+				lastCreatedTask));
+
 		clearDescription();
 	}
 
@@ -166,9 +173,20 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 
 		tasksList.update(getTasks());
 		clearSelection();
-		if (tasksList.getWidgetCount() > 0) selectTask(tasksList.getWidget(0));
+		if (tasksList.getWidgetCount() > 0 && lastCreatedTask.isEmpty()) selectTask(tasksList.getWidget(0));
+		else selectLastTask();
 
 		updateSubmit();
+	}
+
+	private void selectLastTask() {
+		for (int i = 0; i < tasksList.getWidgetCount(); i++) {
+			final TaskWidget widget = tasksList.getWidget(i);
+			if (widget.getDescription().equals(lastCreatedTask)) {
+				selectTask(widget);
+				return;
+			}
+		}
 	}
 
 	private List<Scope> getTasks() {
@@ -252,7 +270,13 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 		selectedTask = task;
 		selectedTask.setTargetHighlight(true);
 
-		WidgetVisibilityEnsurer.ensureVisible(selectedTask.getElement(), taskListScroll.getElement(), Orientation.VERTICAL,
-				ContainerAlignment.CENTER, 0);
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+			@Override
+			public void execute() {
+				WidgetVisibilityEnsurer.ensureVisible(selectedTask.getElement(), taskListScroll.getElement(), Orientation.VERTICAL,
+						ContainerAlignment.END, -50);
+			}
+		});
 	}
 }

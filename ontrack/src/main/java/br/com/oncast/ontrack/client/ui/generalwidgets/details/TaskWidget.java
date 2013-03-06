@@ -82,6 +82,10 @@ public class TaskWidget extends Composite implements ScopeWidget {
 		return targetHighlight;
 	}
 
+	public String getDescription() {
+		return task.getDescription();
+	}
+
 	public interface TaskWidgetClickListener {
 		void onClick(TaskWidget taskWidget);
 	}
