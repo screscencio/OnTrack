@@ -122,8 +122,9 @@ public class AuthenticationManager {
 
 			final Password userPassword = getValidUserPassword(currentPassword, userPasswords);
 			if (userPassword == null) throw new InvalidAuthenticationCredentialsException(
-					"Could not change the password for the user " + username
-							+ ", because the current password is incorrect.");
+			final Password userPassword = findPasswordForUser(user);
+
+			if (!userPassword.authenticate(currentPassword)) throw new InvalidAuthenticationCredentialsException(
 
 			userPassword.setPassword(newPassword);
 			persistenceService.persistOrUpdatePassword(userPassword);
