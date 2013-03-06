@@ -9,4 +9,6 @@ public interface ProjectListChangeListener {
 	void onProjectListChanged(Set<ProjectRepresentation> projectRepresentations);
 
 	void onProjectListAvailabilityChange(boolean availability);
+
+	void onProjectNameUpdate(ProjectRepresentation projectRepresentation);
 }

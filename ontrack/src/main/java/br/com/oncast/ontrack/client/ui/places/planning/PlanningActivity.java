@@ -2,10 +2,12 @@ package br.com.oncast.ontrack.client.ui.places.planning;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
+import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseScopeWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseWidget;
@@ -21,6 +23,7 @@ import br.com.oncast.ontrack.client.ui.places.ActivityActionExecutionListener;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
 import br.com.oncast.ontrack.client.ui.places.planning.interation.PlanningShortcutMappings;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -40,6 +43,7 @@ public class PlanningActivity extends AbstractActivity {
 	private final UUID requestedProjectId;
 	private final ScopeTreeMouseHelper mouseHelper;
 	private final UUID filteredTagId;
+	private ProjectContext projectContext;
 
 	public PlanningActivity(final PlanningPlace place) {
 		requestedProjectId = place.getRequestedProjectId();
@@ -56,7 +60,7 @@ public class PlanningActivity extends AbstractActivity {
 		view.setVisible(false);
 
 		final ActionExecutionService actionExecutionService = SERVICE_PROVIDER.getActionExecutionService();
-		final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
+		projectContext = ClientServiceProvider.getCurrentProjectContext();
 
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
@@ -64,6 +68,8 @@ public class PlanningActivity extends AbstractActivity {
 		view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
 		view.getApplicationMenu().setBackButtonVisibility(false);
 		view.getApplicationMenu().clearCustomMenuItems();
+
+		SERVICE_PROVIDER.getProjectRepresentationProvider().registerProjectListChangeListener(getProjectRepresentationListener());
 
 		view.getScopeTree().setActionExecutionRequestHandler(actionExecutionService);
 		view.getReleasePanel().setActionExecutionRequestHandler(actionExecutionService);
@@ -96,6 +102,24 @@ public class PlanningActivity extends AbstractActivity {
 
 	}
 
+	private ProjectListChangeListener getProjectRepresentationListener() {
+		return new ProjectListChangeListener() {
+
+			@Override
+			public void onProjectNameUpdate(final ProjectRepresentation projectRepresentation) {
+				if (!projectContext.getProjectRepresentation().equals(projectRepresentation)) return;
+
+				view.getApplicationMenu().setProjectName(projectRepresentation.getName());
+			}
+
+			@Override
+			public void onProjectListChanged(final Set<ProjectRepresentation> projectRepresentations) {}
+
+			@Override
+			public void onProjectListAvailabilityChange(final boolean availability) {}
+		};
+	}
+
 	private Release getFirstReleaseInProgress(final ProjectContext context) {
 		for (final Release release : context.getProjectRelease().getAllReleasesInTemporalOrder()) {
 			if (!release.isDone() && release.getEffortSum() > 0) return release;
@@ -109,6 +133,7 @@ public class PlanningActivity extends AbstractActivity {
 		SERVICE_PROVIDER.getClientApplicationStateService().stopRecording();
 		SERVICE_PROVIDER.getActionExecutionService().removeActionExecutionListener(activityActionExecutionListener);
 		SERVICE_PROVIDER.getClientAlertingService().clearAlertingParentWidget();
+		projectContext = null;
 
 		for (final HandlerRegistration registration : registrations) {
 			registration.removeHandler();

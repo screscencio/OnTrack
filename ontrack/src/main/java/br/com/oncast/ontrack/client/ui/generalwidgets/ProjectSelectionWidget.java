@@ -82,6 +82,10 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 				if (projectListAvailable) hideLoadingIndicator();
 				else showLoadingIndicator();
 			}
+
+			@Override
+			public void onProjectNameUpdate(final ProjectRepresentation projectRepresentation) {}
+
 		};
 		registerProjectListChangeListener();
 		registerCloseHandler();

@@ -51,6 +51,9 @@ public class NotificationService {
 			public void onProjectListChanged(final Set<ProjectRepresentation> projectRepresentations) {}
 
 			@Override
+			public void onProjectNameUpdate(final ProjectRepresentation projectRepresentation) {}
+
+			@Override
 			public void onProjectListAvailabilityChange(final boolean availability) {
 				if (availability) {
 					updateAvailableNotifications();

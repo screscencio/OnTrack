@@ -6,6 +6,7 @@ import java.util.Set;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
+import br.com.oncast.ontrack.client.services.context.ProjectListChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenuShortcutMapping;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ReleaseSelectionWidget;
@@ -23,6 +24,7 @@ import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ScopeRemoveAction;
 import br.com.oncast.ontrack.shared.model.kanban.Kanban;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
+import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
@@ -101,6 +103,8 @@ public class ProgressActivity extends AbstractActivity {
 		kanbanActionSyncController.registerActionExecutionListener();
 		view.registerActionExecutionHandler(SERVICE_PROVIDER.getActionExecutionService());
 
+		SERVICE_PROVIDER.getProjectRepresentationProvider().registerProjectListChangeListener(getProjectRepresentationListener());
+
 		registrations.add(ShortcutService.register(RootPanel.get(), view.getApplicationMenu(), ApplicationMenuShortcutMapping.values()));
 		registrations.add(ShortcutService.register(RootPanel.get(), SERVICE_PROVIDER.getActionExecutionService(), UndoRedoShortCutMapping.values()));
 		SERVICE_PROVIDER.getClientAlertingService().setAlertingParentWidget(view.getAlertingPanel());
@@ -126,6 +130,24 @@ public class ProgressActivity extends AbstractActivity {
 						selectScopeWidget(event.getTargetScope(), event.getSource() instanceof KanbanScopeWidget);
 					}
 				}));
+	}
+
+	private ProjectListChangeListener getProjectRepresentationListener() {
+		return new ProjectListChangeListener() {
+
+			@Override
+			public void onProjectNameUpdate(final ProjectRepresentation projectRepresentation) {
+				if (!projectContext.getProjectRepresentation().equals(projectRepresentation)) return;
+
+				view.getApplicationMenu().setProjectName(projectRepresentation.getName());
+			}
+
+			@Override
+			public void onProjectListChanged(final Set<ProjectRepresentation> projectRepresentations) {}
+
+			@Override
+			public void onProjectListAvailabilityChange(final boolean availability) {}
+		};
 	}
 
 	private void deselectCurrentScopeWidget() {

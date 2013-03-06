@@ -91,7 +91,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	@UiField
 	FocusPanel containerStateToggleButton;
 
-	private final ProjectRepresentation projectRepresentation;
+	private ProjectRepresentation projectRepresentation;
 
 	private ProjectContext project;
 
@@ -317,4 +317,8 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 		return projectRepresentation;
 	}
 
+	public void setProjectRepresentation(final ProjectRepresentation projectRepresentation) {
+		this.projectRepresentation = projectRepresentation;
+		update();
+	}
 }
