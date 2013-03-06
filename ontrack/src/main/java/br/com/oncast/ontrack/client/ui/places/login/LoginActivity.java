@@ -60,4 +60,34 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 		view.disable();
 		SERVICE_PROVIDER.getAuthenticationService().authenticate(username, password, authenticationCallback);
 	}
+
+	@Override
+	public void onResetPasswordRequest(final String username) {
+		view.disable();
+		// FIXME LOBO i18n
+		SERVICE_PROVIDER.getClientAlertingService().showInfo("Request new password for '" + username + "'.");
+		SERVICE_PROVIDER.getAuthenticationService().resetPasswordFor(username, new ResetPasswordCallback() {
+			@Override
+			public void onUserPasswordResetSuccessfully() {
+				view.enable();
+				SERVICE_PROVIDER.getClientStorageService().storeLastUserEmail(username);
+				// FIXME LOBO i18n
+				SERVICE_PROVIDER.getClientAlertingService().showSuccess("An e-mail with a new passowrd was sent.");
+			}
+
+			@Override
+			public void onUnexpectedFailure(final Throwable caught) {
+				view.enable();
+				SERVICE_PROVIDER.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().unexpectedError());
+			}
+
+			@Override
+			public void onIncorrectCredentialsFailure() {
+				view.enable();
+				view.onIncorrectUsername();
+				// FIXME LOBO i18n
+				SERVICE_PROVIDER.getClientAlertingService().showError("Invalid user... Nothing was done.");
+			}
+		});
+	}
 }

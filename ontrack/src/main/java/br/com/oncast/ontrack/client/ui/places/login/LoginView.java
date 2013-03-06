@@ -8,6 +8,8 @@ public interface LoginView {
 
 	public interface Presenter {
 		void onAuthenticationRequest(String username, String password);
+
+		void onResetPasswordRequest(String userMail);
 	}
 
 	void disable();
@@ -17,4 +19,6 @@ public interface LoginView {
 	void onIncorrectCredentials();
 
 	void setUsername(String username);
+
+	void onIncorrectUsername();
 }

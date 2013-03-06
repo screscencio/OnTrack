@@ -1,10 +1,12 @@
 package br.com.oncast.ontrack.server.services.authentication;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import br.com.oncast.ontrack.server.services.email.PasswordResetMailFactory;
 import br.com.oncast.ontrack.server.services.persistence.PersistenceService;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.NoResultFoundException;
 import br.com.oncast.ontrack.server.services.persistence.exceptions.PersistenceException;
@@ -12,6 +14,7 @@ import br.com.oncast.ontrack.server.services.session.Session;
 import br.com.oncast.ontrack.server.services.session.SessionManager;
 import br.com.oncast.ontrack.shared.exceptions.authentication.AuthenticationException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
+import br.com.oncast.ontrack.shared.exceptions.authentication.UnableToResetPasswordException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.UserNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -98,28 +101,28 @@ public class AuthenticationManager {
 		}
 	}
 
-	public void updateUserPassword(final String currentPassword, final String newPassword) throws InvalidAuthenticationCredentialsException {
-		final String email = sessionManager.getCurrentSession().getAuthenticatedUser().getEmail();
+	public void updateCurrentUserPassword(final String currentPassword, final String newPassword) throws InvalidAuthenticationCredentialsException {
+		final String username = sessionManager.getCurrentSession().getAuthenticatedUser().getEmail();
 		if (!PasswordValidator.isValid(newPassword)) throw new InvalidAuthenticationCredentialsException("The new given password is invalid.");
 
 		try {
-			final User user = findUserByEmail(email);
+			final User user = findUserByEmail(username);
 			final Password userPassword = findPasswordForUser(user);
 
 			if (!userPassword.authenticate(currentPassword)) throw new InvalidAuthenticationCredentialsException(
-					"Could not change the password for the user " + email
+					"Could not change the password for the user " + username
 							+ ", because the current password is incorrect.");
 
 			userPassword.setPassword(newPassword);
 			persistenceService.persistOrUpdatePassword(userPassword);
 		}
 		catch (final UserNotFoundException e) {
-			final String message = "Unable to update the user '" + email + "'s password: no user was found for this email.";
+			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
 		}
 		catch (final PersistenceException e) {
-			final String message = "Unable to update the user '" + email + "'s password: it was not possible to persist it.";
+			final String message = "Unable to update the user '" + username + "'s password: it was not possible to persist it.";
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
 		}
@@ -215,4 +218,31 @@ public class AuthenticationManager {
 			listener.onUserLoggedOut(user, sessionId);
 	}
 
+	public void resetPassword(final String username) throws UnableToResetPasswordException, InvalidAuthenticationCredentialsException {
+		// FIXME LOBO
+		try {
+			final User user = findUserByEmail(username);
+			final Password userPassword = findPasswordForUser(user);
+
+			final String newPassword = PasswordHash.generatePassword();
+			userPassword.setPassword(newPassword);
+			persistenceService.persistOrUpdatePassword(userPassword);
+			new PasswordResetMailFactory().createMail().send(username, newPassword);
+		}
+		catch (final UserNotFoundException e) {
+			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
+			LOGGER.error(message, e);
+			throw new InvalidAuthenticationCredentialsException(message);
+		}
+		catch (final PersistenceException e) {
+			final String message = "Unable to update the user '" + username + "'s password: it was not possible to persist it.";
+			LOGGER.error(message, e);
+			throw new UnableToResetPasswordException(message);
+		}
+		catch (final NoSuchAlgorithmException e) {
+			final String message = "Unable to update the user '" + username + "'s password: new password could not be created.";
+			LOGGER.error(message, e);
+			throw new UnableToResetPasswordException(message);
+		}
+	}
 }

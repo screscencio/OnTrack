@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.services.authentication;
 
+import br.com.oncast.ontrack.client.ui.places.login.ResetPasswordCallback;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.place.shared.Place;
@@ -31,4 +32,6 @@ public interface AuthenticationService {
 	int getProjectCreationQuota();
 
 	int getProjectInvitationQuota();
+
+	void resetPasswordFor(String username, ResetPasswordCallback resetPasswordCallback);
 }

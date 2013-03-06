@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushEventHandler;
 import br.com.oncast.ontrack.client.ui.places.login.LoginPlace;
+import br.com.oncast.ontrack.client.ui.places.login.ResetPasswordCallback;
 import br.com.oncast.ontrack.shared.exceptions.authentication.InvalidAuthenticationCredentialsException;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -21,6 +22,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ChangePasswordReque
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.CurrentUserInformationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.PasswordResetRequest;
 
 import com.google.gwt.place.shared.Place;
 
@@ -92,6 +94,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 				callback.onUserAuthenticatedSuccessfully(username, currentUserId);
 				notifyLoginToUserAuthenticationListeners();
+			}
+
+			@Override
+			public void onTreatedFailure(final Throwable caught) {
+				callback.onUnexpectedFailure(caught);
+			}
+
+			@Override
+			public void onUntreatedFailure(final Throwable caught) {
+				if (caught instanceof InvalidAuthenticationCredentialsException) callback.onIncorrectCredentialsFailure();
+				else callback.onUnexpectedFailure(caught);
+			}
+		});
+	}
+
+	@Override
+	public void resetPasswordFor(final String username, final ResetPasswordCallback callback) {
+		dispatchService.dispatch(new PasswordResetRequest(username), new DispatchCallback<VoidResult>() {
+
+			@Override
+			public void onSuccess(final VoidResult result) {
+				callback.onUserPasswordResetSuccessfully();
 			}
 
 			@Override

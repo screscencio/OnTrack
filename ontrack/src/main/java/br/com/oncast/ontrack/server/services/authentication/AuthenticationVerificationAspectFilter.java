@@ -7,6 +7,7 @@ import br.com.drycode.api.web.gwt.dispatchService.shared.DispatchRequest;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 import br.com.oncast.ontrack.shared.services.requestDispatch.AuthenticationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.DeAuthenticationRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.PasswordResetRequest;
 
 public class AuthenticationVerificationAspectFilter implements RequestFilter {
 
@@ -18,7 +19,7 @@ public class AuthenticationVerificationAspectFilter implements RequestFilter {
 
 	@Override
 	public void doFilter(final DispatchRequest<?> request, final HttpServletRequest httpServletRequest) throws Exception {
-		if (request instanceof AuthenticationRequest || request instanceof DeAuthenticationRequest) return;
+		if (request instanceof AuthenticationRequest || request instanceof DeAuthenticationRequest || request instanceof PasswordResetRequest) return;
 		if (!authenticationManager.isUserAuthenticated()) throw new NotAuthenticatedException();
 	}
 }

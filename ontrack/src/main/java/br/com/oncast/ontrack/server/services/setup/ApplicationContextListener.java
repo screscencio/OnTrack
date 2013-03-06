@@ -18,6 +18,7 @@ import br.com.oncast.ontrack.server.services.requestDispatch.ModelActionSyncRequ
 import br.com.oncast.ontrack.server.services.requestDispatch.MultipleProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.NotificationListRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.NotificationReadStateRequestHandler;
+import br.com.oncast.ontrack.server.services.requestDispatch.PasswordResetRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectAuthorizationRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectContextRequestHandler;
 import br.com.oncast.ontrack.server.services.requestDispatch.ProjectCreationQuotaRequestHandler;
@@ -40,6 +41,7 @@ import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequ
 import br.com.oncast.ontrack.shared.services.requestDispatch.MultipleProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationListRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.NotificationReadStateRequest;
+import br.com.oncast.ontrack.shared.services.requestDispatch.PasswordResetRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationQuotaRequest;
@@ -82,6 +84,7 @@ public class ApplicationContextListener implements ServletContextListener {
 			DispatchServiceServlet.registerRequestHandler(ProjectAuthorizationRequest.class, new ProjectAuthorizationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ProjectListRequest.class, new ProjectListRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(AuthenticationRequest.class, new AuthenticationRequestHandler());
+			DispatchServiceServlet.registerRequestHandler(PasswordResetRequest.class, new PasswordResetRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(DeAuthenticationRequest.class, new DeAuthenticationRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(ChangePasswordRequest.class, new ChangePasswordRequestHandler());
 			DispatchServiceServlet.registerRequestHandler(CurrentUserInformationRequest.class, new CurrentUserInformationRequestHandler());

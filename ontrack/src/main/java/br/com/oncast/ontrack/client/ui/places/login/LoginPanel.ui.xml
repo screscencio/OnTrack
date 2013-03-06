@@ -7,6 +7,7 @@
 	ui:generateLocales="default">
 
 	<ui:style src="../../style/default.css">
+		
 		.contentPanel {
 			position: relative;
 			width: 325px;
@@ -23,6 +24,19 @@
 		
 		.separator {
 			margin-top: 20px;
+		}
+
+		.forgotPassword { 
+			margin-top: 10px;
+			font-size: 12px;
+			color: blue;
+			width: 100%;
+			text-align: right;	
+		}
+		
+		.forgotPassword>a:hover { 
+			cursor: pointer;
+			text-decoration: underline;
 		}
 		
 	</ui:style>
@@ -50,6 +64,13 @@
 				<g:SubmitButton debugId="submitButton" ui:field="loginButton" styleName="{style.menuboxButton}">
 					<ui:msg description="login submit button label">LOGIN</ui:msg>
 				</g:SubmitButton>
+
+				<div class="{style.forgotPassword}">
+					<g:Anchor ui:field="forgotPassword">
+						<ui:msg description="login forgot password anchor">Forgot my password</ui:msg>
+					</g:Anchor>
+				</div>
+				
 			</g:HTMLPanel>
 		</g:FormPanel>
 	</layout:ApplicationWidgetContainer>

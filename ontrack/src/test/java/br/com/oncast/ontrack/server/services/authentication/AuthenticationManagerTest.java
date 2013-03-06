@@ -209,7 +209,7 @@ public class AuthenticationManagerTest {
 	}
 
 	private void changePassword() throws UserNotFoundException, InvalidAuthenticationCredentialsException {
-		authenticationManager.updateUserPassword("password", "new password");
+		authenticationManager.updateCurrentUserPassword("password", "new password");
 	}
 
 	private void assertUserIsNotLoggedIn() {

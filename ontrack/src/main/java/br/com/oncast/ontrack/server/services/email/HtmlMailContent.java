@@ -13,6 +13,11 @@ import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 // TODO+ refactor this removing duplication and modularizing better
 public class HtmlMailContent {
 
+	public static String forPasswordReset(final String userEmail, final String generatedPassword) {
+		final Template template = getTemplate("/br/com/oncast/ontrack/server/services/email/authMailPassReset.html");
+		return writeMailContent(createPasswordResetContext(userEmail, generatedPassword), template);
+	}
+
 	public static String forProjectAuthorization(final String userEmail, final ProjectRepresentation project, final String currentUser) {
 		final Template template = getTemplate("/br/com/oncast/ontrack/server/services/email/authMail.html");
 		return writeMailContent(createProjectAuthorizationContext(project, userEmail, currentUser), template);
@@ -46,6 +51,13 @@ public class HtmlMailContent {
 		context.put("projectLink", CustomUrlGenerator.forProject(project));
 		context.put("userEmail", userEmail);
 		context.put("currentUser", currentUser);
+		return context;
+	}
+
+	private static VelocityContext createPasswordResetContext(final String userEmail, final String generatedPassword) {
+		final VelocityContext context = new VelocityContext();
+		context.put("userEmail", userEmail);
+		context.put("generatedPassword", generatedPassword);
 		return context;
 	}
 
@@ -100,5 +112,4 @@ public class HtmlMailContent {
 		}
 		return engine;
 	}
-
 }

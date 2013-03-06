@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
+import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.validation.EmailValidator;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.layout.ValidationInputContainer.ValidationHandler;
@@ -12,6 +13,7 @@ import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
@@ -36,6 +38,9 @@ public class LoginPanel extends Composite implements LoginView {
 
 	@UiField
 	protected FormPanel form;
+
+	@UiField
+	protected Anchor forgotPassword;
 
 	private boolean isEmailValid;
 
@@ -80,6 +85,17 @@ public class LoginPanel extends Composite implements LoginView {
 		presenter.onAuthenticationRequest(emailArea.getText(), passwordArea.getText());
 	}
 
+	private void doResetPassword() {
+		if (!isEmailValid) {
+			// FIXME LOBO i18n
+			ClientServiceProvider.getInstance().getClientAlertingService().showError("Please insert your username.");
+			emailArea.setFocus(true);
+			return;
+		}
+
+		presenter.onResetPasswordRequest(emailArea.getText());
+	}
+
 	@UiHandler("emailArea")
 	protected void onAttach(final AttachEvent event) {
 		if (!event.isAttached()) return;
@@ -105,6 +121,11 @@ public class LoginPanel extends Composite implements LoginView {
 
 		emailArea.setFocus(true);
 		event.preventDefault();
+	}
+
+	@UiHandler("forgotPassword")
+	protected void onForgotPasswordLinkCLick(final ClickEvent event) {
+		doResetPassword();
 	}
 
 	@Override
@@ -133,5 +154,12 @@ public class LoginPanel extends Composite implements LoginView {
 
 		emailArea.setText(username);
 		passwordArea.setFocus(true);
+	}
+
+	@Override
+	public void onIncorrectUsername() {
+		emailArea.update(false);
+		passwordArea.update(true);
+		emailArea.setFocus(true);
 	}
 }
