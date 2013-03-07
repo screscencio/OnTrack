@@ -18,23 +18,19 @@
 			position: relative;
 			margin-top: -1px;
 
-			background: COLOR_MENUBOX_BACKGROUND;
-			
-			color: #666;
-			font-family: FONT_DEFAULT;
-
-			border: SCOPE_WIDGET_BORDER;
-			
+			background: COLOR_BACKGROUND_SECONDARY;
+			color: COLOR_TEXT_SECONDARY;
+			border: BORDER_SECONDARY;
 		}
 		
 		.panel:hover {
-			background-color: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_CLOSED;
+			background-color: COLOR_HOVER_SECONDARY;
 			cursor: pointer;
 		}
 		
 		.selected {
-			background-color: white;
-			box-shadow: 0px 0px 5px orange;
+			background-color: COLOR_ACTIVE_SECONDARY;
+			box-shadow: SHADOW_ACTIVE_SECONDARY;
 			z-index: 1;
 			border: 1px solid #888;
 		}
