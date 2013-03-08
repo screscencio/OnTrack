@@ -2,7 +2,9 @@
 
 @def COLOR_BACKGROUND_PRIMARY #343838;
 @def COLOR_BACKGROUND_SECONDARY #FAFAFA;
-@def COLOR_BACKGROUND_TERTIARY #C0C0C0;
+@def COLOR_BACKGROUND_TERTIARY #444444;
+@def COLOR_BACKGROUND_CONTAINER rgba(0, 0, 0, 0.3);
+@def COLOR_BACKGROUND_HEADER #d1d1d1;
 
 @def COLOR_HIGHLIGHT_PRIMARY #00B4CC;
 @def COLOR_HIGHLIGHT_SECONDARY #005F6B;
@@ -31,11 +33,15 @@
 @def COLOR_DETAIL_PRIMARY #FC354C;
 @def COLOR_DETAIL_SECONDARY #FC354C;
 
-@def COLOR_TEXT_PRIMARY #000;
-@def COLOR_TEXT_SECONDARY #FFF;
+@def COLOR_TEXT_PRIMARY #FAFAFA;
+@def COLOR_TEXT_SECONDARY #343838;
+@def COLOR_TEXT_MENUBAR #d1d1d1;
+@def COLOR_TEXT_HEADER #666;
 
-@def COLOR_BORDER_PRIMARY #999;
+@def COLOR_BORDER_PRIMARY #666;
 @def COLOR_BORDER_SECONDARY #C0C0C0;
+@def COLOR_BORDER_MENUBAR #999;
+@def COLOR_BORDER_HEADER #bbb;
 
 @def COLOR_BORDER_ACTIVE_PRIMARY #f00;
 @def COLOR_BORDER_ACTIVE_SECONDARY #ff0;
@@ -47,11 +53,17 @@
 
 @def BORDER_PRIMARY 1px solid COLOR_BORDER_PRIMARY;
 @def BORDER_SECONDARY 1px solid COLOR_BORDER_SECONDARY;
+@def BORDER_MENUBAR 1px solid COLOR_BORDER_MENUBAR;
+@def BORDER_HEADER 1px solid COLOR_BORDER_HEADER;
 
 @def BORDER_ACTIVE_PRIMARY 1px solid COLOR_BORDER_ACTIVE_PRIMARY;
 @def BORDER_ACTIVE_SECONDARY 1px solid COLOR_BORDER_ACTIVE_SECONDARY;
 
 /* Shadow */
+
+@def SHADOW_PRIMARY 0px 0px 5px COLOR_HIGHLIGHT_PRIMARY;
+@def SHADOW_SECONDARY 0px 2px 5px -1px #444;
+@def SHADOW_INSET_SECONDARY inset 0px 0px 5px #000;
 
 @def SHADOW_HIGHLIGHT_PRIMARY 0px 0px 5px COLOR_HIGHLIGHT_PRIMARY;
 @def SHADOW_HIGHLIGHT_SECONDARY 0px 0px 5px COLOR_HIGHLIGHT_SECONDARY;
@@ -60,6 +72,38 @@
 @def SHADOW_ACTIVE_SECONDARY 0px 0px 5px COLOR_ACTIVE_SECONDARY;
 
 /* Styles */
+
+.menuBar, .colorMenuBackgroundGradient {
+	background: rgb(67,67,67);
+	background: -moz-linear-gradient(top,  rgba(67,67,67,1) 0%, rgba(119,119,119,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(67,67,67,1)), color-stop(100%,rgba(119,119,119,1)));
+	background: -webkit-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%);
+	background: -o-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%);
+	background: linear-gradient(to bottom,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%);
+	
+	color: COLOR_TEXT_MENUBAR;
+	border-bottom: BORDER_MENUBAR;
+	box-shadow: 0px 2px 6px black; 
+}
+
+.header {
+	background: COLOR_BACKGROUND_HEADER;
+
+	color: COLOR_TEXT_HEADER;
+	border: BORDER_HEADER;
+	
+	-webkit-box-shadow: SHADOW_SECONDARY;
+	-moz-box-shadow: SHADOW_SECONDARY;
+	box-shadow: SHADOW_SECONDARY;
+}
+
+.popupContainer {
+       color: COLOR_TEXT_SECONDARY;
+       background-color: COLOR_BACKGROUND_SECONDARY;
+       border: BORDER_SECONDARY;
+       box-shadow: SHADOW_SECONDARY;
+}
 
 .active, .selected {
 	background-color: COLOR_ACTIVE_PRIMARY;
@@ -205,18 +249,8 @@
 @def COLOR_MENU_BORDER_TOP #B4AA67;
 @def COLOR_MENU_BORDER_BOTTOM #EAE9DE;
 
-@def COLOR_MENU_LINK COLOR_YELLOW_DARKEST;
-@def COLOR_MENU_LINK_HOVER COLOR_YELLOW_DARK;
-.colorMenuBackgroundGradient {
-	background: #f7cf75;
-	background: literal('-moz-linear-gradient(top,  #f7cf75 0%, #f0c662 100%)');
-	background: literal('-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7cf75), color-stop(100%,#f0c662))');
-	background: literal('-webkit-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
-	background: literal('-o-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
-	background: literal('-ms-linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
-	background: literal('linear-gradient(top,  #f7cf75 0%,#f0c662 100%)');
-	filter: literal('progid:DXImageTransform.Microsoft.gradient( startColorstr="#f7cf75", endColorstr="#f0c662",GradientType=0 )');
-}
+@def COLOR_MENU_LINK COLOR_BACKGROUND_PRIMARY;
+@def COLOR_MENU_LINK_HOVER COLOR_HOVER_PRIMARY;
 
 @def COLOR_MENUBOX_SEPARATOR_BORDER_TOP COLOR_GRAY_LIGHTEST;
 @def COLOR_MENUBOX_SEPARATOR_BORDER_BOTTOM #FFFFFF;
@@ -270,16 +304,6 @@
 @def SCOPE_WIDGET_BORDER_COLOR #afafaf;
 @def SCOPE_WIDGET_BORDER 1px solid SCOPE_WIDGET_BORDER_COLOR;
 
-.popupContainer {
-       color: COLOR_MENUBOX_TEXT;
-       background-color: COLOR_MENUBOX_BACKGROUND;
-       -webkit-box-shadow: POPUP_SHADOW;
-       -moz-box-shadow: POPUP_SHADOW;
-       box-shadow: POPUP_SHADOW;
-       border: POPUP_BORDER;
-       border-top: 0px;
-}
-
 .semiTransparentContainer {
     position: absolute;
     top: 0px;
@@ -287,12 +311,6 @@
     right: 0px;
     bottom: 0px;
 
-    background-color: COLOR_MENUBOX_BACKGROUND;
-    -webkit-box-shadow: POPUP_SHADOW;
-    -moz-box-shadow: POPUP_SHADOW;
-    box-shadow: POPUP_SHADOW;
-    border: POPUP_BORDER;
-    
-    opacity: 0.8;
-    filter: literal('alpha(opacity=80)');
+    background-color: COLOR_BACKGROUND_CONTAINER;
+    color: COLOR_TEXT_SECONDARY;
 }

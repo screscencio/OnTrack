@@ -6,7 +6,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:image field="logo" src="logo.png"/>
+	<ui:image field="logo" src="../../logo-new.png"/>
 	<ui:image field="backBtnImg" src="go_back_arrow.png"/>
 	<ui:style src="../../style/default.css">
 
@@ -15,14 +15,18 @@
 		}
 		
 		.menuBar {
-			position: relative;
-            height: 56px;
-            width: 100%;
+			position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
 		}
 		
 		.logo {
-			float: right;
-			margin: 8px PADDING_LARGE;
+			float: left;
+			margin: 3px;
+			background-size: 24px !important;
+			background-position: center !important;
 		}
 		
         .menuItemContainer, .menuItem, .backButtonContainer {
@@ -31,7 +35,7 @@
         }
 		
         .menuItemContainer, .menuItem {
-            margin: 20px PADDING_LARGE;
+			line-height: 36px;
         }
 		
 		.backButtonContainer {
@@ -39,6 +43,7 @@
 			width: 18px;
 			height: 100%;
 			text-align: center;
+			display: none;
 		}
 		
 		.backButton {
@@ -51,20 +56,17 @@
 			float: right;
 		}
 		
-		.border1 {
-			background: COLOR_MENU_BORDER_TOP;
-		}
-		
-		.border2 {
-			background: COLOR_MENU_BORDER_BOTTOM;
-		}
 	</ui:style>
 
 	<g:FlowPanel styleName="{style.rootPanel}">
-		<g:HTMLPanel ui:field="applicationMenuPanel" styleName="{style.menuBar} {style.colorMenuBackgroundGradient}" >
+		<g:HTMLPanel ui:field="applicationMenuPanel" styleName="{style.menuBar}" >
+			<g:Image resource="{logo}" styleName="{style.logo}"/>
 		    <div class="{style.backButtonContainer}">
     			<g:Image ui:field="backButton" resource="{backBtnImg}" styleName="{style.backButton}"/>
 		    </div>
+		    <aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem}" text="User">
+				<ui:attribute name="text" description="user menu item text" />
+			</aw:ApplicationMenuItem>
 			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItem}" text="Project" biggerFont="true">
 				<ui:attribute name="text" description="project menu item text" />
 			</aw:ApplicationMenuItem>
@@ -73,10 +75,6 @@
     				<ui:attribute name="text" description="release menu item text" />
     			</aw:ApplicationMenuItem>
 			</g:HTMLPanel>
-			<g:Image resource="{logo}" styleName="{style.logo}"/>
-			<aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="User">
-				<ui:attribute name="text" description="user menu item text" />
-			</aw:ApplicationMenuItem>
 			<aw:ApplicationMenuItem ui:field="memberMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="Members">
 				<ui:attribute name="text" description="members menu item text" />
 			</aw:ApplicationMenuItem>
@@ -84,7 +82,5 @@
 				<ui:attribute name="text" description="notifications menu item text" />
 			</aw:NotificationMenuItem>
 		</g:HTMLPanel>
-		<g:SimplePanel styleName="{style.border1} {style.borderDecoration}"/>
-		<g:SimplePanel styleName="{style.border2} {style.borderDecoration}"/>
 	</g:FlowPanel>
 </ui:UiBinder>
