@@ -7,19 +7,14 @@
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem.ApplicationMenuItemStyle">
 	
 		.menuItem {
-			font: FONT_SIZE_MEDIUM FONT_DEFAULT;
-			text-transform: uppercase;
-			
-			text-shadow: TEXT_SHADOW;
 		}
 		
 		.hoverPanel {
 			cursor: pointer;
-			color: COLOR_MENU_LINK;
 		}
 
 		.hoverPanel:hover, .menuItemSelected {
-			color: COLOR_MENU_LINK_HOVER;
+			color: COLOR_HOVER_PRIMARY;
 		}
 		
 		.biggerFont {
@@ -35,8 +30,10 @@
 		}
 		
 		.arrowUp, .arrowDown {
-			margin-left: 10px;
-			margin-top: 5px;
+			height: 36px;
+			background-position: center;
+			margin-left: 8px;
+			margin-right: 18px;
 		}
 	</ui:style>
 

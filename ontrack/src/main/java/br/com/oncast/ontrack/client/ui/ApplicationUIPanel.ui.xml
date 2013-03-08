@@ -6,20 +6,50 @@
 	
 		@url bgUrl background;
 		
-		.applicationPanel {
+		.root {
+			position: relative;
 			width: 100%;
 			height: 100%;
 			margin: 0px auto;
 			padding: 0px;
+			display: inline-block;
 			
+			background: COLOR_BACKGROUND_PRIMARY;
 			background-image: bgUrl;
-			background-color: COLOR_APP_BACKGROUND;
-			background-attachment: fixed;
-			background-position: center center;
-			background-repeat: no-repeat;
-			background-size: 100% 100%;
+			background-repeat: repeat;
 		}
+		
+		.applicationPanel {
+			position: absolute;
+		    top: 0; right: 0; bottom: 0; left: 0;
+		}
+		
+		.maskContainer {
+			position: relative;
+			height: 100%;
+			width: 0;
+			padding-left: 56%;
+			margin: 0px auto;
+		}
+		
+		.radialMask {
+			position: absolute;
+			top: 0; right: 0; bottom: 0; left: 0;
+			
+		    background: literal('-moz-radial-gradient(center, ellipse cover,  rgba(250,250,250, 0.1) 0%, rgba(52,56,56,0) 80%)');
+			background: literal('-webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(250,250,250,0.1)), color-stop(80%,rgba(52,56,56,0)))');
+			background: literal('-webkit-radial-gradient(center, ellipse cover,  rgba(250,250,250,0.1) 0%,rgba(52,56,56,0) 80%)');
+			background: literal('-o-radial-gradient(center, ellipse cover,  rgba(250,250,250,0.1) 0%,rgba(52,56,56,0) 80%)');
+			background: literal('-ms-radial-gradient(center, ellipse cover,  rgba(250,250,250,0.1) 0%,rgba(52,56,56,0) 80%)');
+			background: literal('radial-gradient(ellipse at center,  rgba(250,250,250,0.1) 0%,rgba(52,56,56,0) 80%)');
+		}
+		
 	</ui:style>
-
-	<g:SimplePanel styleName="{style.applicationPanel}" ui:field="panel" />
+	
+	<g:HTMLPanel styleName="{style.root}">
+		<div class="{style.maskContainer}">
+			<div class="{style.radialMask}"/>
+		</div>
+		<g:SimplePanel styleName="{style.applicationPanel}" ui:field="panel" />
+	</g:HTMLPanel>
 </ui:UiBinder> 

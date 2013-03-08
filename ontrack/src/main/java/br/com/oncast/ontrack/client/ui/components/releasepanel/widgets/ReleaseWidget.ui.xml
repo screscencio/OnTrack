@@ -14,27 +14,17 @@
 				position: relative;
 				width: 100%;
 				
-				margin-bottom: PADDING_MEDIUM;
+				margin-bottom: 15px;
 			}
 			
 			.header {
 				width: 100%;
 				height: 36px;
 				
-				padding: 8px;
+				line-height: 36px;
 
-				border: RELEASE_WIDGET_BORDER;
-				
-				background: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED;
-				-webkit-box-shadow: RELEASE_WIDGET_HEADER_SHADOW_OPENED;
-				-moz-box-shadow: RELEASE_WIDGET_HEADER_SHADOW_OPENED;
-				box-shadow: RELEASE_WIDGET_HEADER_SHADOW_OPENED;
-				
-				color: COLOR_RELEASE_WIDGET_HEADER_TEXT_OPENED;
-				font-family: FONT_DEFAULT;
-				font-size: FONT_SIZE_LARGE;				
-				text-shadow: RELEASE_WIDGET_HEADER_TEXT_SHADOW;
-				filter: RELEASE_WIDGET_HEADER_TEXT_SHADOW_IE;
+				font-size: FONT_SIZE_LARGE;	
+				text-shadow: SHADOW_TEXT_SECONDARY;
 			}
 			
 			.headerClosed {

@@ -16,17 +16,10 @@
 		.searchBar {
 			padding: 0px PADDING_LARGE;
 
-			border: RELEASE_WIDGET_BORDER;
 			margin: 1px;
 		
-			background: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED;
-			box-shadow: inset 0px 1px 0px 0px #e9e9e9, 0px 1px 3px #9F9F9F;
-			
-			color: COLOR_RELEASE_WIDGET_HEADER_TEXT_OPENED;
-			font-family: FONT_DEFAULT;
 			font-size: FONT_SIZE_LARGE;				
 			text-shadow: RELEASE_WIDGET_HEADER_TEXT_SHADOW;
-			filter: RELEASE_WIDGET_HEADER_TEXT_SHADOW_IE;
 		}
 		
 		.container {
@@ -71,7 +64,7 @@
 	</ui:style>
 	
 	<g:FocusPanel ui:field="root" styleName="{style.root}">
-		<g:HTMLPanel styleName="{style.searchBar}">
+		<g:HTMLPanel styleName="{style.searchBar} {style.header}">
 			<g:HorizontalPanel ui:field="container" styleName="{style.container}" verticalAlignment="middle" horizontalAlignment="center">
 				<g:cell width="1">
 					<g:Label>

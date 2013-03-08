@@ -28,7 +28,7 @@
 			position: absolute;
 			top: PADDING_MEDIUM;
 			left: PADDING_SMALL;
-			right: PADDING_MEDIUM;
+			right: PADDING_SMALL;
 		}
 			
 		.scopeTree {
@@ -36,7 +36,7 @@
 			
 			top: PADDING_SMALL;
 			left: 11px;
-			right: 16px;
+			right: 11px;
 			bottom: 38px;
 			
 			padding: 50px 0px 0px 5px;
@@ -48,7 +48,7 @@
 		.footerBar {
 			position: absolute;
 			left: PADDING_SMALL;
-			right: PADDING_MEDIUM;
+			right: PADDING_SMALL;
 			bottom: PADDING_SMALL;
 			height: 33px;
 		}
@@ -68,9 +68,9 @@
 		.projectMembers {
 			position: absolute;
 			top: 2px;
-			right: 5px;
+			right: PADDING_SMALL;
 			height: 40px;;
-			width: 405px;
+			width: 400px;
 			overflow: hidden;
 		}
 		
@@ -83,20 +83,18 @@
 		}
 				
 		.toggleReleaseBtn {
-			height: auto;
 			position: absolute;
-			top: 63px;
-			right: 6px;
-			bottom: 48px;
-			width: 7px;
-			z-index: 1;
-			background-size: PADDING_LARGE PADDING_LARGE;
+			top: 50%;
+			right: 3px;
+			width: 8px;
+			background-size: 15px 15px;
 			background-position: center;
-			background-color: white;
+			background-color: #fafafa;
 			cursor: pointer;
-			border: 1px solid silver;
-			box-shadow: -2px 3px 5px silver;
 			opacity: 0.5;
+			height: 30px;
+			margin-top: -15px;
+			border-radius: 0px 10px 10px 0px;
 		}
 
 		</ui:style>

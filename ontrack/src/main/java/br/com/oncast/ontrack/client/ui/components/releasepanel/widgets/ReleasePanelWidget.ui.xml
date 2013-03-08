@@ -13,11 +13,6 @@
 			width: auto;
 	   	}
 	   	
-	   	.container {
-			padding: PADDING_SMALL;
-			padding-bottom: 0px;
-		}
-	   	
 	   	.releases {
 	   		width: 100%;
 	   	}
@@ -50,7 +45,7 @@
 			
 	</ui:style>
 	
-	<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.semiTransparentContainer}" addContainerStyleNames="{style.container}">
+	<g:HTMLPanel addStyleNames="{style.rootPanel}">
 		<g:FlowPanel ui:field="noReleaseText" styleName="{style.noReleaseContainer}">
 			<g:Label styleName="{style.noReleaseLabel}">
 				<ui:msg description="no releases in project message">No Release yet</ui:msg>
@@ -60,5 +55,5 @@
 			</g:Label>
 		</g:FlowPanel>
 		<misc:ModelWidgetContainer ui:field="releaseContainer" styleName="{style.releases}" />
-	</layout:ApplicationPopupBoxContainer>
+	</g:HTMLPanel>
 </ui:UiBinder> 
