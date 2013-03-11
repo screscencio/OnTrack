@@ -65,4 +65,5 @@ public interface ClientErrorMessages extends BaseMessages {
 	@Description("message shown when new password request is done without username")
 	@DefaultMessage("Please insert your username.")
 	String passwordRequestNeedsUsernameInput();
+
 }
