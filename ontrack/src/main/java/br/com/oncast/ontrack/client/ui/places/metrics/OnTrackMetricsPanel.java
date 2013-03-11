@@ -1,5 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.metrics;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +33,7 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.places.metrics.widgets.ProjectMetricsWidget;
+import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.metrics.OnTrackServerMetrics;
@@ -56,6 +60,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class OnTrackMetricsPanel extends Composite {
+
+	private static final int MAX_ACTIONS = 8;
 
 	private static final String PROJECTS_COUNT_COLOR = "#CCCC44";
 
@@ -224,9 +230,21 @@ public class OnTrackMetricsPanel extends Composite {
 		final Series series = actionsRatioChart.createSeries();
 		final Map<String, Integer> actionsMap = statistic.getActionsRatio();
 		if (actionsMap == null) return;
-		for (final Entry<String, Integer> e : actionsMap.entrySet()) {
-			series.addPoint(new Point(e.getKey(), e.getValue()));
+
+		final ArrayList<Entry<String, Integer>> orderedList = new ArrayList<Map.Entry<String, Integer>>(actionsMap.entrySet());
+		Collections.sort(orderedList, new Comparator<Entry<String, Integer>>() {
+			@Override
+			public int compare(final Entry<String, Integer> o1, final Entry<String, Integer> o2) {
+				return o2.getValue().compareTo(o1.getValue());
+			}
+		});
+		int sumOfOthers = 0;
+		for (int i = 0; i < orderedList.size(); i++) {
+			final Entry<String, Integer> e = orderedList.get(i);
+			if (i <= MAX_ACTIONS) series.addPoint(new Point(e.getKey(), e.getValue()));
+			else sumOfOthers += e.getValue();
 		}
+		if (sumOfOthers > 0) series.addPoint(new Point((orderedList.size() - MAX_ACTIONS) + " other actions", sumOfOthers));
 		actionsRatioChart.addSeries(series);
 	}
 
@@ -459,7 +477,12 @@ public class OnTrackMetricsPanel extends Composite {
 						)
 				)
 				.setToolTip(new ToolTip()
-						.setEnabled(false)
+						.setFormatter(new ToolTipFormatter() {
+							@Override
+							public String format(final ToolTipData data) {
+								return "<b>" + data.getPointName() + "</b>: " + ClientDecimalFormat.roundFloat((float) data.getPercentage(), 1) + "%";
+							}
+						})
 				);
 		actionsPanel.setWidget(actionsRatioChart);
 	}

@@ -316,7 +316,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			@Override
 			public void execute() {
 				final UUID project = ClientServiceProvider.getCurrentProjectContext().getId();
-				ClientServiceProvider.getInstance().getApplicationPlaceController().goTo(new ReportPlace(project, release.getId()));
+				ClientServiceProvider.getInstance().getApplicationPlaceController().open(new ReportPlace(project, release.getId()));
 			}
 		}));
 		if (release.hasDirectScopes()) itens.add(new TextAndImageCommandMenuItem(resources.timesheetIcon(), messages.timesheet(), new Command() {

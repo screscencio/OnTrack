@@ -80,11 +80,22 @@
 			<g:row>
 				<g:customCell horizontalAlignment="right">
 					<g:Label styleName="{style.detailLabel}">
-						<ui:msg description="release velocity label">Velocity:</ui:msg>
+						<ui:msg description="release planned velocity label">Planned velocity:</ui:msg>
 					</g:Label>
 				</g:customCell>
 				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
-					<g:Label ui:field="velocity" styleName="{style.detailValue}" />
+					<g:Label ui:field="plannedVelocity" styleName="{style.detailValue}" />
+				</g:customCell>
+			</g:row>
+			
+			<g:row>
+				<g:customCell horizontalAlignment="right">
+					<g:Label styleName="{style.detailLabel}">
+						<ui:msg description="release actual velocity label">Actual velocity:</ui:msg>
+					</g:Label>
+				</g:customCell>
+				<g:customCell styleName="{style.detailValueCell}" horizontalAlignment="left">
+					<g:Label ui:field="actualVelocity" styleName="{style.detailValue}" />
 				</g:customCell>
 			</g:row>
 			

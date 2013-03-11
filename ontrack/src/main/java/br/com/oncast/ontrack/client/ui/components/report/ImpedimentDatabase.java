@@ -6,8 +6,6 @@ import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.details.DetailService;
-import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
-import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.annotation.Annotation;
 import br.com.oncast.ontrack.shared.model.annotation.AnnotationType;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
@@ -69,14 +67,16 @@ public class ImpedimentDatabase {
 			return annotation.getMessage();
 		}
 
-		public String getEndDate() {
-			final Date lastOcuurenceOf = annotation.getLastOcuurenceOf(AnnotationType.SOLVED_IMPEDIMENT);
-			return (lastOcuurenceOf == null) ? "----" : HumanDateFormatter.getShortAbsuluteDate(lastOcuurenceOf);
+		public Date getEndDate() {
+			return annotation.getLastOcuurenceOf(AnnotationType.SOLVED_IMPEDIMENT);
 		}
 
-		public String getCycletime() {
-			final long cycletime = annotation.getDurationOf(AnnotationType.OPEN_IMPEDIMENT);
-			return cycletime == 0 ? "---" : ClientDecimalFormat.roundFloat(cycletime / 86400000, 1);
+		public Long getCycletime() {
+			return annotation.getDurationOf(AnnotationType.OPEN_IMPEDIMENT);
+		}
+
+		public Date getStartDate() {
+			return annotation.getLastOcuurenceOf(AnnotationType.OPEN_IMPEDIMENT);
 		}
 	}
 

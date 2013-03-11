@@ -91,4 +91,8 @@ public class ScopeUpdateAction implements ScopeAction {
 	public boolean changesProgressInference() {
 		return true;
 	}
+
+	public String getDescription() {
+		return newDescription;
+	}
 }

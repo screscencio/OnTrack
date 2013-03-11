@@ -19,6 +19,8 @@ import br.com.oncast.ontrack.shared.services.context.ProjectAddedEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectAddedEventHandler;
 import br.com.oncast.ontrack.shared.services.context.ProjectRemovedEvent;
 import br.com.oncast.ontrack.shared.services.context.ProjectRemovedEventHandler;
+import br.com.oncast.ontrack.shared.services.context.ProjectRenamedEvent;
+import br.com.oncast.ontrack.shared.services.context.ProjectRenamedEventHandler;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectAuthorizationResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectCreationRequest;
@@ -90,6 +92,20 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			}
 		});
 
+		serverPushClientService.registerServerEventHandler(ProjectRenamedEvent.class, new ProjectRenamedEventHandler() {
+			@Override
+			public void onEvent(final ProjectRenamedEvent event) {
+				final ProjectRepresentation projectRepresentation = event.getProjectRepresentation();
+				if (!availableProjectRepresentations.contains(projectRepresentation)) return;
+				availableProjectRepresentations.remove(projectRepresentation);
+				availableProjectRepresentations.add(projectRepresentation);
+				notifyProjectListContentChange();
+				notifyProjectNameUpdated(projectRepresentation);
+				if (currentProjectRepresentation.equals(projectRepresentation)) setProjectRepresentation(projectRepresentation);
+			}
+
+		});
+
 		if (authenticationService.isUserAvailable()) updateAvailableProjectRepresentations();
 	}
 
@@ -116,6 +132,12 @@ public class ProjectRepresentationProviderImpl implements ProjectRepresentationP
 			}
 
 		});
+	}
+
+	private void notifyProjectNameUpdated(final ProjectRepresentation projectRepresentation) {
+		for (final ProjectListChangeListener listener : projectListChangeListeners) {
+			listener.onProjectNameUpdate(projectRepresentation);
+		}
 	}
 
 	@Override

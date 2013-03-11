@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.organization;
 
+import br.com.oncast.ontrack.client.ui.places.RestorablePlace;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.places.PlacesPrefixes;
 
@@ -7,7 +8,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class OrganizationPlace extends Place {
+public class OrganizationPlace extends Place implements RestorablePlace {
 
 	private final UUID projectId;
 

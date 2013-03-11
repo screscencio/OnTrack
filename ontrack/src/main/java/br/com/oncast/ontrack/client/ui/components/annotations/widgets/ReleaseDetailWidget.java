@@ -23,17 +23,21 @@ import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ReleaseDetailWidget extends Composite implements SubjectDetailWidget {
 
-	private static ReleaseDetailWidgetUiBinder uiBinder = GWT.create(ReleaseDetailWidgetUiBinder.class);
+	private static ReleaseDetailWidgetUiBinder defaultUiBinder = GWT.create(ReleaseDetailWidgetUiBinder.class);
+
+	@UiTemplate("ReleaseDetailWidgetForReport.ui.xml")
+	interface ReleaseDetailWidgetForReportUiBinder extends UiBinder<Widget, ReleaseDetailWidget> {}
+
+	private static ReleaseDetailWidgetForReportUiBinder reportUiBinder = GWT.create(ReleaseDetailWidgetForReportUiBinder.class);
 
 	private static final ReleaseDetailWidgetMessages messages = GWT.create(ReleaseDetailWidgetMessages.class);
-
-	private static final long DAY = 86400000;
 
 	interface ReleaseDetailWidgetUiBinder extends UiBinder<Widget, ReleaseDetailWidget> {}
 
@@ -47,7 +51,10 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 	HasText value;
 
 	@UiField
-	HasText velocity;
+	HasText actualVelocity;
+
+	@UiField
+	HasText plannedVelocity;
 
 	@UiField
 	HasText period;
@@ -67,20 +74,24 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	private ReleaseChartDataProvider dataProvider;
 
-	public ReleaseDetailWidget(final Release release) {
+	public static ReleaseDetailWidget forReport(final Release release) {
+		return new ReleaseDetailWidget(reportUiBinder).setSubject(release);
+	}
+
+	private ReleaseDetailWidget(final UiBinder<Widget, ReleaseDetailWidget> uiBinder) {
 		initWidget(uiBinder.createAndBindUi(this));
-		setSubject(release);
 	}
 
 	public ReleaseDetailWidget() {
-		initWidget(uiBinder.createAndBindUi(this));
+		initWidget(defaultUiBinder.createAndBindUi(this));
 	}
 
-	public void setSubject(final Release release) {
+	public ReleaseDetailWidget setSubject(final Release release) {
 		this.release = release;
 		this.dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getRootRelease()), ClientServiceProvider.getInstance()
 				.getActionExecutionService());
 		update();
+		return this;
 	}
 
 	private Release getRootRelease() {
@@ -119,17 +130,15 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		this.parent.setText(release.isRoot() || (release.getParent().isRoot()) ? messages.none() : release.getParent().getDescription());
 		this.effort.setText(formatProgressText(release.getAccomplishedEffortSum(), release.getEffortSum(), " ep"));
 		this.value.setText(formatProgressText(release.getAccomplishedValueSum(), release.getValueSum(), " vp"));
-		final float vel = dataProvider.hasStarted() ? dataProvider.getActualVelocity() : dataProvider.getEstimatedVelocity();
-		final String estimatedIndicator = " ( " + (dataProvider.hasStarted() ? roundFloat(dataProvider.getEstimatedVelocity(), 1) + " " : "")
-				+ messages.planned() + " )";
-		this.velocity.setText(roundFloat(vel, 1) + " ep / " + messages.day() + estimatedIndicator);
+		this.actualVelocity.setText(dataProvider.hasStarted() ? (roundFloat(dataProvider.getActualVelocity(), 1) + " ep / " + messages.day()) : "---");
+		this.plannedVelocity.setText(roundFloat(dataProvider.getEstimatedVelocity(), 1) + " ep / " + messages.day());
 		final WorkingDay startDay = dataProvider.getEstimatedStartDay();
 		final WorkingDay endDay = dataProvider.getEstimatedEndDay();
 		this.period.setText(format(startDay) + " - " + format(endDay));
 		this.duration.setText(HumanDateFormatter.getDifferenceText(endDay.getJavaDate().getTime() - startDay.getJavaDate().getTime(), 1));
-		final Float cycleTimeAverage = getAverage(getCycletimeExtractor());
+		final Long cycleTimeAverage = getAverage(getCycletimeExtractor());
 		this.cycletime.setText(formatInfo(cycleTimeAverage, getDeviant(getCycletimeExtractor(), cycleTimeAverage)));
-		final Float leadtimeAverage = getAverage(getLeadtimeExtractor());
+		final Long leadtimeAverage = getAverage(getLeadtimeExtractor());
 		this.leadtime.setText(formatInfo(leadtimeAverage, getDeviant(getLeadtimeExtractor(), leadtimeAverage)));
 	}
 
@@ -151,22 +160,22 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		};
 	}
 
-	private Float getDeviant(final Extractor extractor, final Float average) {
-		Float deviant = 0f;
+	private Long getDeviant(final Extractor extractor, final Long average) {
+		Long deviant = 0L;
 		int scopeCount = 0;
 		for (final Scope scope : this.release.getAllScopesIncludingDescendantReleases()) {
 			if (!scope.getProgress().isDone()) continue;
 			scopeCount++;
-			final float variance = extractor.getValue(scope.getProgress()) - average;
+			final Long variance = extractor.getValue(scope.getProgress()) - average;
 			deviant += variance * variance;
 		}
 
 		if (scopeCount <= 1) return null;
-		return (float) Math.sqrt(deviant / (scopeCount - 1));
+		return (long) Math.sqrt(deviant / (scopeCount - 1));
 	}
 
-	private Float getAverage(final Extractor extractor) {
-		Float average = 0f;
+	private Long getAverage(final Extractor extractor) {
+		Long average = 0L;
 		int scopeCount = 0;
 		for (final Scope scope : this.release.getAllScopesIncludingDescendantReleases()) {
 			if (!scope.getProgress().isDone()) continue;
@@ -182,9 +191,9 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		Long getValue(Progress progress);
 	}
 
-	private String formatInfo(final Float value, final Float deviation) {
-		if (value == null) return " - ";
-		return format(value / DAY) + " " + (value <= 1 ? messages.day() : messages.days() + " ± " + format(deviation / DAY));
+	private String formatInfo(final Long value, final Long deviation) {
+		if (value == null) return "---";
+		return format(value) + (" ± " + (deviation == null ? "0" : HumanDateFormatter.getDifferenceText(deviation, 0, true)));
 	}
 
 	private String format(final WorkingDay day) {
@@ -193,8 +202,12 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	private String formatProgressText(final float accomplished, final float total, final String unit) {
 		if (total == 0) return format(total) + unit;
-		final String percentage = accomplished == 0 ? "" : (" ( " + format(accomplished * 100 / total) + "% )");
+		final String percentage = accomplished == 0 ? "" : (" (" + format(accomplished * 100 / total) + "%)");
 		return format(accomplished) + " / " + format(total) + unit + percentage;
+	}
+
+	private String format(final Long value) {
+		return HumanDateFormatter.getDifferenceText(value, 0);
 	}
 
 	private String format(final float floatValue) {

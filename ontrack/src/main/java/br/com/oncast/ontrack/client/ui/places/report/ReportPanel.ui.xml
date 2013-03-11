@@ -8,26 +8,22 @@
 	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="ontracklogo" src="../../components/appmenu/logo.png" />
-	<ui:style src="../../style/default.css">	
-
-		@def MIN_WIDTH 900px;
+	<ui:style src="../../style/default.css">
+	
 		.root {
 			background: white;
-			padding: 18px;
+			font-size: FONT_SIZE_SMALL;
 		}
 		
 		.header {
-			min-width: MIN_WIDTH;
-			height: 108px;
 			position: relative;
+
+			height: 108px;
 			margin-bottom: 35px;
 			border-bottom: 1px solid #444;
 		}
 		
-		@sprite .logo {
-			gwt-image: 'ontracklogo';
-			
+		.logo {
 			position: absolute;
 			right:0px;
 			
@@ -42,7 +38,6 @@
 			right: 162px;
 			line-height: 18px;
 			color: #888;
-			font-size: 13px;
 		}
 	
 		.title {
@@ -51,7 +46,7 @@
 			left: 0;
 			right: 126px;
 			line-height: 36px;
-			font-size: 27px;
+			font-size: 200%;
 		}
 		
 		.timestamp {
@@ -62,62 +57,45 @@
 			font-style: italic;
 		}
 		
-		.overviewContainer {
-			min-width: MIN_WIDTH;
-			position: relative;
-			height: 459px;
-		}
-		
 		.burnUp {
-			position: absolute;
-			right: 288px;
-			left: 0px;
-
-			border: BORDER_DEFAULT;
 			padding: 9px;
-			padding-bottom: 0px;
 		}
 		
 		.details {
-			position: absolute;
-			width: 270px;
-			right: 0px;
+			margin: 9px auto;
 		}
 		
 		.sectionContainer {
 			position: relative;
-			min-width: MIN_WIDTH;
+			
+			overflow: hidden;
 			padding-bottom: 18px;
 		}
 		
 		.sectionTitle {
 			line-height: 18px;
-			border-bottom: 1px solid #444;
 			margin: 9px 0;
-			width: 30%;
 			font-weight: bold;
 			text-transform: uppercase;
 			letter-spacing: 3px;
+			font-size: 120%;
 		}
 		
 		.scopesTable {
-			border: 1px solid #ccc;
 		}
 		
 		.impedimentTable {
-			border: 1px solid #ccc;
 		}
 		
 		.timesheetTable {
 			margin: 0px auto;
 			padding: 9px 36px;
-			border: 1px solid #ccc;
 		}
 	</ui:style>
 	
 	<g:HTMLPanel ui:field="rootPanel" styleName="{style.root} reportPanel-root">
 		<div class="{style.header}">
-			<g:SimplePanel styleName="{style.logo}"/>
+			<g:Image styleName="{style.logo}" url="resources/image/logo.png"/>
 			<g:InlineHTML ui:field="ancestors" styleName="{style.ancestors} v-ellip"/>
 			<g:Label ui:field="releaseTitle" styleName="{style.title} v-ellip"/>
 			<g:Label ui:field="timestamp" styleName="{style.timestamp}"/>
@@ -126,9 +104,9 @@
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Description">Description</ui:msg></g:Label>
 			<g:InlineHTML ui:field="description" />
 		</div>
-		<div class="{style.overviewContainer}">
+		<div class="{style.sectionContainer}">
 			<g:Label styleName="{style.sectionTitle}"><ui:msg description="Overview">Overview</ui:msg></g:Label>
-			<g:SimplePanel ui:field="burnUpPanel" styleName="{style.burnUp}"/>
+			<g:SimplePanel ui:field="burnUpPanel" styleName="{style.burnUp} reportPanel-burnUp"/>
 			<d:ReleaseDetailWidget ui:field="details"  styleName="{style.details}"/>
 		</div>
 		<div class="{style.sectionContainer}">

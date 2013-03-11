@@ -91,6 +91,14 @@ public class OrganizationPanel extends Composite {
 
 					@Override
 					public void onProjectListAvailabilityChange(final boolean availability) {}
+
+					@Override
+					public void onProjectNameUpdate(final ProjectRepresentation projectRepresentation) {
+						final ProjectSummaryWidget widget = projects.getWidgetFor(projectRepresentation);
+						if (widget == null) return;
+
+						widget.setProjectRepresentation(projectRepresentation);
+					}
 				}));
 	}
 

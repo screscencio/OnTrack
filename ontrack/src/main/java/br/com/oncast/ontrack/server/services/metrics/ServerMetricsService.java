@@ -61,6 +61,7 @@ public class ServerMetricsService {
 				int count = map.containsKey(name) ? map.get(name) : 0;
 				map.put(name, ++count);
 			}
+
 			return map;
 		}
 		catch (final PersistenceException e) {
@@ -92,10 +93,8 @@ public class ServerMetricsService {
 	public List<ProjectMetrics> getActiveProjectsMetrics() {
 		final Set<UUID> activeProjects = new HashSet<UUID>();
 		final Set<ServerPushConnection> clients = clientManager.getAllClients();
-		LOGGER.debug("ActiveClientsSize: " + clients.size());
 		for (final ServerPushConnection client : clients) {
 			final UUID currentProject = clientManager.getCurrentProject(client);
-			LOGGER.debug(currentProject.toString() + ".isValid(): " + currentProject.isValid());
 			if (currentProject.isValid()) activeProjects.add(currentProject);
 		}
 

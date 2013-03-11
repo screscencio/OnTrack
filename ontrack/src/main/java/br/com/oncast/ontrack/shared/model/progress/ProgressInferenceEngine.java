@@ -40,7 +40,7 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		propagateToDescendants(scope, updatedScopes, author, timestamp);
 		propagateToAncestors(scope, updatedScopes, author, timestamp);
 
-		processBottomUpAccomplishedEffort(getRoot(scope), updatedScopes);
+		processBottomUpAccomplishedAmmounts(getRoot(scope), updatedScopes);
 
 		return updatedScopes;
 	}
@@ -98,18 +98,24 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 		return scope.getProgress().getState().equals(state);
 	}
 
-	private void processBottomUpAccomplishedEffort(final Scope scope, final HashSet<UUID> updatedScopes) {
+	private void processBottomUpAccomplishedAmmounts(final Scope scope, final HashSet<UUID> updatedScopes) {
 		for (final Scope child : scope.getChildren())
-			processBottomUpAccomplishedEffort(child, updatedScopes);
+			processBottomUpAccomplishedAmmounts(child, updatedScopes);
 
-		calculateBottomUpEffort(scope, updatedScopes);
+		calculateBottomUpAmmounts(scope, updatedScopes);
 	}
 
-	private void calculateBottomUpEffort(final Scope scope, final HashSet<UUID> updatedScopes) {
+	private void calculateBottomUpAmmounts(final Scope scope, final HashSet<UUID> updatedScopes) {
 		final float newAccomplishedEffort = is(scope, DONE) ? scope.getEffort().getInfered() : calculateAccomplishedEffort(scope);
+		final float newAccomplishedValue = is(scope, DONE) ? scope.getValue().getInfered() : calculateAccomplishedValue(scope);
 
 		if (Math.abs(newAccomplishedEffort - scope.getEffort().getAccomplished()) > EPSILON) {
 			scope.getEffort().setAccomplished(newAccomplishedEffort);
+			updatedScopes.add(scope.getId());
+		}
+
+		if (Math.abs(newAccomplishedValue - scope.getValue().getAccomplished()) > EPSILON) {
+			scope.getValue().setAccomplished(newAccomplishedValue);
 			updatedScopes.add(scope.getId());
 		}
 	}
@@ -119,6 +125,15 @@ public class ProgressInferenceEngine implements InferenceOverScopeEngine {
 
 		for (final Scope child : scope.getChildren())
 			doneSum += child.getEffort().getAccomplished();
+
+		return doneSum;
+	}
+
+	private float calculateAccomplishedValue(final Scope scope) {
+		float doneSum = 0;
+
+		for (final Scope child : scope.getChildren())
+			doneSum += child.getValue().getAccomplished();
 
 		return doneSum;
 	}

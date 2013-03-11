@@ -235,6 +235,9 @@ public class ProjectRepresentationProviderTest {
 			this.availability = isAvailable;
 		}
 
+		@Override
+		public void onProjectNameUpdate(final ProjectRepresentation projectRepresentation) {}
+
 	}
 
 }

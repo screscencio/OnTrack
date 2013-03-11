@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReportPanel extends Composite {
 
-	private static final DateTimeFormat FORMATTER = DateTimeFormat.getFormat("dd/mm/yyyy - HH:MM");
+	private static final DateTimeFormat FORMATTER = DateTimeFormat.getFormat("dd/MM/yyyy - HH:mm");
 
 	private static ReportPanelUiBinder uiBinder = GWT.create(ReportPanelUiBinder.class);
 
@@ -68,6 +68,12 @@ public class ReportPanel extends Composite {
 	DivElement descriptionContainer;
 
 	@UiField
+	DivElement impedimentsContainer;
+
+	@UiField
+	DivElement timesheetContainer;
+
+	@UiField
 	InlineHTML ancestors;
 
 	@UiField
@@ -77,9 +83,8 @@ public class ReportPanel extends Composite {
 
 	public ReportPanel(final ProjectContext projectContext, final Release release) {
 		chart = new ReleaseChart(release, true);
-		details = new ReleaseDetailWidget(release);
+		details = ReleaseDetailWidget.forReport(release);
 		scopeTable = new ScopeReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
-		// FIXME MATS Hide if there are no impediments.
 		impedimentTable = new ImpedimentReportTable(release.getAllScopesIncludingDescendantReleases(), projectContext, messages);
 		timesheet = new TimesheetWidget(release, true);
 
@@ -96,12 +101,15 @@ public class ReportPanel extends Composite {
 			descriptionContainer.removeFromParent();
 		}
 
+		if (timesheet.isEmpty()) timesheetContainer.removeFromParent();
+		if (impedimentTable.isEmpty()) impedimentsContainer.removeFromParent();
+
 		burnUpPanel.add(chart);
 		chart.updateData();
 	}
 
 	private String getAncestorsBreadcrumb(final Release release) {
-		final String projectName = "<span style=\"color: #2D4171; font-size: 18px;\">" + release.getRootRelease().getDescription() + "</span>";
+		final String projectName = "<span style=\"color: #2D4171; font-size: 150%;\">" + release.getRootRelease().getDescription() + "</span>";
 
 		final List<Release> ancestors = release.getAncestors();
 		if (ancestors.isEmpty()) return projectName;

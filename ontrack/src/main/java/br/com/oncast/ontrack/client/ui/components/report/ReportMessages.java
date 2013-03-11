@@ -24,8 +24,12 @@ public interface ReportMessages extends BaseMessages {
 	@DefaultMessage("ID")
 	String id();
 
+	@Description("message shown in the report table as header for impediment creation date column")
+	@DefaultMessage("Start")
+	String startDate();
+
 	@Description("message shown in the report table as header for impediment solution date column")
-	@DefaultMessage("End Date")
+	@DefaultMessage("End")
 	String endDate();
 
 	@Description("message shown in the report table as header for cycle time column")
@@ -51,4 +55,5 @@ public interface ReportMessages extends BaseMessages {
 	@Description("message shown in the report table as header for lead time column")
 	@DefaultMessage("Lead Time")
 	String leadTime();
+
 }

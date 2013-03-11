@@ -24,7 +24,7 @@
             margin-bottom: 0px;
 
             color: #cc3c29;
-            font-family: arial, helvetica, sans-serif;
+            font-family: FONT_DEFAULT;
             font-size: 13px;
             font-style: normal;
             font-variant: normal;

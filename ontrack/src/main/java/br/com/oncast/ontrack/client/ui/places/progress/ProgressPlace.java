@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.places.progress;
 
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
+import br.com.oncast.ontrack.client.ui.places.RestorablePlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.places.PlacesPrefixes;
@@ -8,7 +9,7 @@ import br.com.oncast.ontrack.shared.places.PlacesPrefixes;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class ProgressPlace extends ProjectDependentPlace {
+public class ProgressPlace extends ProjectDependentPlace implements RestorablePlace {
 
 	private final UUID projectId;
 	private final UUID releaseId;
@@ -58,4 +59,5 @@ public class ProgressPlace extends ProjectDependentPlace {
 	public UUID getRequestedReleaseId() {
 		return releaseId;
 	}
+
 }

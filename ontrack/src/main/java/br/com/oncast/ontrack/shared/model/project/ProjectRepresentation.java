@@ -75,4 +75,8 @@ public class ProjectRepresentation implements Serializable, HasUUID, Comparable<
 		return ++humanIdCounter;
 	}
 
+	public void setName(final String description) {
+		name = description;
+	}
+
 }

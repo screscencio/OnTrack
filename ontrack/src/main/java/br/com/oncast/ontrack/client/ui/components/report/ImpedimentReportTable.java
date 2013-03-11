@@ -1,9 +1,11 @@
 package br.com.oncast.ontrack.client.ui.components.report;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.ui.components.report.ImpedimentDatabase.ImpedimentItem;
+import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 
@@ -68,7 +70,7 @@ public class ImpedimentReportTable extends Composite {
 		});
 		cellTable.addColumn(stateColumn, new TextHeader(messages.status()));
 		stateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		cellTable.setColumnWidth(stateColumn, 80, Unit.PX);
+		cellTable.setColumnWidth(stateColumn, 90, Unit.PX);
 
 		final Column<ImpedimentItem, String> descriptionColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
@@ -92,21 +94,42 @@ public class ImpedimentReportTable extends Composite {
 			}
 		};
 		idColumn.setSortable(true);
+		idColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		sortHandler.setComparator(idColumn, new Comparator<ImpedimentItem>() {
 			@Override
 			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
 				return o1.getHumandReadableId().compareTo(o2.getHumandReadableId());
 			}
 		});
-		cellTable.setColumnWidth(idColumn, 65, Unit.PX);
+		cellTable.setColumnWidth(idColumn, 36, Unit.PX);
 		cellTable.addColumn(idColumn, new TextHeader(messages.id()));
+
+		final Column<ImpedimentItem, String> startDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
+			@Override
+			public String getValue(final ImpedimentItem object) {
+				final Date date = object.getStartDate();
+				return (date == null) ? "---" : HumanDateFormatter.getShortAbsuluteDate(date);
+			}
+		};
+		startDateColumn.setSortable(true);
+		sortHandler.setComparator(startDateColumn, new Comparator<ImpedimentItem>() {
+			@Override
+			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
+				return o1.getStartDate().compareTo(o2.getStartDate());
+			}
+		});
+		cellTable.addColumn(startDateColumn, new TextHeader(messages.startDate()));
+		startDateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		cellTable.setColumnWidth(startDateColumn, 72, Unit.PX);
 
 		final Column<ImpedimentItem, String> endDateColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ImpedimentItem object) {
-				return object.getEndDate();
+				final Date date = object.getEndDate();
+				return (date == null) ? "---" : HumanDateFormatter.getShortAbsuluteDate(date);
 			}
 		};
+
 		endDateColumn.setSortable(true);
 		sortHandler.setComparator(endDateColumn, new Comparator<ImpedimentItem>() {
 			@Override
@@ -116,23 +139,25 @@ public class ImpedimentReportTable extends Composite {
 		});
 		cellTable.addColumn(endDateColumn, new TextHeader(messages.endDate()));
 		endDateColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		cellTable.setColumnWidth(endDateColumn, 85, Unit.PX);
+		cellTable.setColumnWidth(endDateColumn, 72, Unit.PX);
 
-		final Column<ImpedimentItem, String> cycleTimeColumn = new Column<ImpedimentItem, String>(new TextCell()) {
+		final Column<ImpedimentItem, String> leadTimeColumn = new Column<ImpedimentItem, String>(new TextCell()) {
 			@Override
 			public String getValue(final ImpedimentItem object) {
-				return object.getCycletime();
+				final Long time = object.getCycletime();
+				return time == 0 ? "---" : HumanDateFormatter.getDifferenceText(time, 0);
 			}
 		};
-		cycleTimeColumn.setSortable(true);
-		sortHandler.setComparator(cycleTimeColumn, new Comparator<ImpedimentItem>() {
+		leadTimeColumn.setSortable(true);
+		sortHandler.setComparator(leadTimeColumn, new Comparator<ImpedimentItem>() {
 			@Override
 			public int compare(final ImpedimentItem o1, final ImpedimentItem o2) {
 				return o1.getCycletime().compareTo(o2.getCycletime());
 			}
 		});
-		cellTable.addColumn(cycleTimeColumn, new TextHeader(messages.cycleTime()));
-		cellTable.setColumnWidth(cycleTimeColumn, 80, Unit.PX);
+		cellTable.addColumn(leadTimeColumn, new TextHeader(messages.leadTime()));
+		leadTimeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		cellTable.setColumnWidth(leadTimeColumn, 108, Unit.PX);
 	}
 
 	public boolean isEmpty() {

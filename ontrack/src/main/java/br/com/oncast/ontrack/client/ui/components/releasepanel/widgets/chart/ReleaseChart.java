@@ -324,6 +324,7 @@ public class ReleaseChart extends Composite {
 				.setPlotOptions(new LinePlotOptions()
 						.setLineWidth(2)
 						.setZIndex(2)
+						.setShadow(false)
 						.setColor(EFFORT_COLOR)
 						.setMarker(new Marker()
 								.setSymbol(Symbol.CIRCLE)
@@ -337,11 +338,13 @@ public class ReleaseChart extends Composite {
 				.setName(SERIES_ACCOMPLISHED_VALUE)
 				.setYAxis(1)
 				.setPlotOptions(new LinePlotOptions()
-						.setLineWidth(2)
+						.setLineWidth(1)
+						.setShadow(false)
 						.setZIndex(1)
 						.setColor(VALUE_COLOR)
 						.setMarker(new Marker()
-								.setSymbol(Symbol.CIRCLE)
+								.setSymbol(Symbol.DIAMOND)
+								.setLineColor(VALUE_COLOR)
 								.setRadius(2)));
 
 		return populateSeries(values, releaseDays, newSerie);

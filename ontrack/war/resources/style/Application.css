@@ -13,15 +13,34 @@ html,body {
 	outline: 0;
 }
 
+.reportPanel-root {
+	width: 21cm;
+	padding: 1cm;
+	margin: 0px auto;
+	overflow: visible;
+	height: auto;
+}
+
 @media print {
 	.reportPanel-root {
 		padding: 0px;
+		margin: 0px;
+
+		width: auto;
+		min-width: 21cm;
+		height: auto;
 	}
 	
-	.reportPanel-root>div {
-		min-width: 0;
+	.reportPanel-burnUp {
+/* 		width: 765px; */
+/* 		margin: 0px auto; */
 	}
 
+}
+
+.reportPanel-burnUp {
+/* 	width: 765px; */
+/* 	margin: 0px auto; */
 }
 
 .hasWarningTips {

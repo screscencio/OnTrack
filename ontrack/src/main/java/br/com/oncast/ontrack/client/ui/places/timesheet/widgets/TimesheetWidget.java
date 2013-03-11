@@ -35,11 +35,15 @@ public class TimesheetWidget extends Composite {
 
 		String scopeDescriptionCell();
 
-		String sumCell();
+		String totalSumCell();
 
 		String row();
 
 		String currentUserColumn();
+
+		String columnSumCell();
+
+		String rowSumCell();
 
 	}
 
@@ -114,15 +118,15 @@ public class TimesheetWidget extends Composite {
 		for (int i = 1; i < lastRow; i++) {
 			rowFormatter.addStyleName(i, style.row());
 			cellFormatter.addStyleName(i, 0, style.scopeDescriptionCell());
-			cellFormatter.addStyleName(i, lastColumn, style.sumCell());
+			cellFormatter.addStyleName(i, lastColumn, style.rowSumCell());
 		}
 
 		for (int i = 1; i < lastColumn; i++) {
-			cellFormatter.addStyleName(lastRow, i, style.sumCell());
+			cellFormatter.addStyleName(lastRow, i, style.columnSumCell());
 		}
 
 		if (!readOnly) timesheet.getColumnFormatter().addStyleName(getUserColumnIndex(getCurrentUser()), style.currentUserColumn());
-		cellFormatter.addStyleName(lastRow, lastColumn, style.sumCell());
+		cellFormatter.addStyleName(lastRow, lastColumn, style.totalSumCell());
 
 		populateTable(scopes, users, readOnly);
 	}
@@ -230,7 +234,7 @@ public class TimesheetWidget extends Composite {
 	}
 
 	public boolean isEmpty() {
-		return !getUsers().isEmpty();
+		return getUsers().isEmpty();
 	}
 
 }

@@ -37,9 +37,26 @@
 			text-align: center;
 		}
 
-		.sumCell {
-			color: COLOR_GRAY_DARKEST;
+		.totalSumCell {
+			color: COLOR_BLUE_DARK;
 			text-align: center;
+			
+			padding-top: PADDING_MEDIUM;
+			padding-left: PADDING_MEDIUM;
+		}
+		
+		.columnSumCell {
+			color: COLOR_BLUE_DARK;
+			text-align: center;
+			
+			padding-top: PADDING_MEDIUM;
+		}
+		
+		.rowSumCell {
+			color: COLOR_BLUE_DARK;
+			text-align: center;
+			
+			padding-left: PADDING_MEDIUM;
 		}
 		
 	</ui:style>

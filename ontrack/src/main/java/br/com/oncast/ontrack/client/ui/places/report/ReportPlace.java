@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.report;
 
+import br.com.oncast.ontrack.client.services.places.OpenInNewWindowPlace;
 import br.com.oncast.ontrack.client.ui.places.ProjectDependentPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -11,7 +12,7 @@ import br.com.oncast.ontrack.shared.places.PlacesPrefixes;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class ReportPlace extends ProjectDependentPlace {
+public class ReportPlace extends ProjectDependentPlace implements OpenInNewWindowPlace {
 
 	private final UUID projectId;
 	private final UUID releaseId;
@@ -51,14 +52,24 @@ public class ReportPlace extends ProjectDependentPlace {
 
 		@Override
 		public String getToken(final ReportPlace place) {
-			return new PlaceTokenBuilder()
-					.add(PlaceTokenType.PROJECT, place.getRequestedProjectId())
-					.add(PlaceTokenType.RELEASE, place.getRequestedReleaseId())
-					.getToken();
+			return place.getToken();
 		}
 	}
 
 	public UUID getRequestedReleaseId() {
 		return releaseId;
+	}
+
+	@Override
+	public String getPlacePrefix() {
+		return PlacesPrefixes.REPORT;
+	}
+
+	@Override
+	public String getToken() {
+		return new PlaceTokenBuilder()
+				.add(PlaceTokenType.PROJECT, getRequestedProjectId())
+				.add(PlaceTokenType.RELEASE, getRequestedReleaseId())
+				.getToken();
 	}
 }
