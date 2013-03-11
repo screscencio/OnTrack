@@ -3,11 +3,12 @@ package br.com.oncast.ontrack.shared.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 
-public class ModelStateManager<T> implements Serializable {
+public class ModelStateManager<T> implements Serializable, Iterable<ModelState<T>> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,10 +38,13 @@ public class ModelStateManager<T> implements Serializable {
 	}
 
 	public void setState(final ModelState<T> newModelState) {
-		if (getCurrentState().getTimestamp().after(newModelState.getTimestamp())) throw new IllegalArgumentException(
-				"It's not possible to set a state that happened before the current state");
+		final ModelState<T> currentModelState = getCurrentState();
+		final long timeDifference = newModelState.getTimestamp().getTime() - currentModelState.getTimestamp().getTime();
 
-		if (getCurrentStateValue() == newModelState.getValue()) return;
+		if (timeDifference < 0) throw new IllegalArgumentException("It's not possible to set a state that happened before the current state");
+
+		if (timeDifference == 0) this.statesList.remove(currentModelState);
+		if (!statesList.isEmpty() && getCurrentStateValue() == newModelState.getValue()) return;
 
 		this.statesList.add(newModelState);
 	}
@@ -89,6 +93,11 @@ public class ModelStateManager<T> implements Serializable {
 			if (isTheRequiredState(state, stateValue)) return state;
 		}
 		return null;
+	}
+
+	@Override
+	public Iterator<ModelState<T>> iterator() {
+		return statesList.iterator();
 	}
 
 }

@@ -31,7 +31,7 @@ public class ReleaseEstimatorTest {
 	}
 
 	@Test
-	public void estimatedVelocityShouldBeOneWhenNoScopeIsDone() throws Exception {
+	public void estimatedVelocityShouldBeOneWhenThereIsNoPreviousDoneRelease() throws Exception {
 		assertEquals(1, estimator.getInferedEstimatedVelocityOnDay(WorkingDayFactory.create()), TestUtils.TOLERATED_FLOAT_DIFFERENCE);
 	}
 

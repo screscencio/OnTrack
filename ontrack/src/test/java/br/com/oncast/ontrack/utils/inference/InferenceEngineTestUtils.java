@@ -16,6 +16,9 @@ import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.progress.ProgressInferenceEngine;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.shared.model.value.ValueInferenceEngine;
+import br.com.oncast.ontrack.shared.utils.WorkingDay;
+import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
@@ -23,19 +26,26 @@ import com.google.common.base.Joiner;
 
 public class InferenceEngineTestUtils {
 
+	private static final Date DEFAULT_TIMESTAMP = new Date(0);
 	private static final ProgressInferenceEngine PROGRESS_INFERENCE_ENGINE = new ProgressInferenceEngine();
 	private static final EffortInferenceEngine EFFORT_INFERENCE_ENGINE = new EffortInferenceEngine();
+	private static final ValueInferenceEngine VALUE_INFERENCE_ENGINE = new ValueInferenceEngine();
+
 	private static Map<UUID, Scope> scopesCache = new HashMap<UUID, Scope>();
 
 	// Declarations
 
-	public static Set<UUID> declare(final Scope scope, final ProgressState state) {
-		addToCache(scope);
-		ScopeTestUtils.declareProgress(scope, state);
-		return processAllInferenceEngines(scope);
+	public static Set<UUID> declareProgress(final Scope scope, final ProgressState state) {
+		return declareProgress(scope, state, WorkingDayFactory.create(DEFAULT_TIMESTAMP));
 	}
 
-	public static Set<UUID> declare(final Scope scope, final double effort) {
+	public static Set<UUID> declareProgress(final Scope scope, final ProgressState state, final WorkingDay day) {
+		addToCache(scope);
+		ScopeTestUtils.setProgress(scope, state, day);
+		return processAllInferenceEngines(scope, day.getJavaDate());
+	}
+
+	public static Set<UUID> declareEffort(final Scope scope, final double effort) {
 		addToCache(scope);
 		scope.getEffort().setDeclared((float) effort);
 		return processAllInferenceEngines(scope);
@@ -57,6 +67,12 @@ public class InferenceEngineTestUtils {
 		return processAllInferenceEngines(parent);
 	}
 
+	public static Set<UUID> insertChild(final Scope parent, final Scope newScope, final Date timestamp) {
+		addToCache(parent, newScope);
+		parent.add(newScope);
+		return processAllInferenceEngines(parent, timestamp);
+	}
+
 	// Scope Removal
 
 	public static Set<UUID> removeScope(final Scope scope) {
@@ -71,19 +87,28 @@ public class InferenceEngineTestUtils {
 	// Processments
 
 	public static Set<UUID> processAllInferenceEngines(final Scope scope) {
+		return processAllInferenceEngines(scope, DEFAULT_TIMESTAMP);
+	}
+
+	private static Set<UUID> processAllInferenceEngines(final Scope scope, final Date timestamp) {
 		addToCache(scope);
 		final Set<UUID> updatesScopes = new HashSet<UUID>();
-		updatesScopes.addAll(procressEffortInference(scope));
-		updatesScopes.addAll(processProgressInference(scope));
+		updatesScopes.addAll(procressEffortInference(scope, timestamp));
+		updatesScopes.addAll(procressValueInference(scope, timestamp));
+		updatesScopes.addAll(processProgressInference(scope, timestamp));
 		return updatesScopes;
 	}
 
-	public static Set<UUID> procressEffortInference(final Scope scope) {
-		return EFFORT_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), new Date(0));
+	public static Set<UUID> procressEffortInference(final Scope scope, final Date timestamp) {
+		return EFFORT_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), timestamp);
 	}
 
-	public static Set<UUID> processProgressInference(final Scope scope) {
-		return PROGRESS_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), new Date(0));
+	public static Set<UUID> procressValueInference(final Scope scope, final Date timestamp) {
+		return VALUE_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), timestamp);
+	}
+
+	public static Set<UUID> processProgressInference(final Scope scope, final Date timestamp) {
+		return PROGRESS_INFERENCE_ENGINE.process(scope, UserRepresentationTestUtils.getAdmin(), timestamp);
 	}
 
 	// Assertions

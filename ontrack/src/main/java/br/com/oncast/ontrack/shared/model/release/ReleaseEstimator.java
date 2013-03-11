@@ -3,10 +3,15 @@ package br.com.oncast.ontrack.shared.model.release;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
+import br.com.oncast.ontrack.shared.model.ModelState;
+import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.ScopeComparator;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class ReleaseEstimator {
 
@@ -54,6 +59,8 @@ public class ReleaseEstimator {
 		return Math.max(MIN_VELOCITY, getRawInferedEstimatedVelocityOnDay(day));
 	}
 
+	private static final DateTimeFormat format = DateTimeFormat.getFormat("dd/MM/yy");
+
 	private float getRawInferedEstimatedVelocityOnDay(final WorkingDay day) {
 		final List<Scope> sampleScopes = rootRelease.getAllScopesIncludingDescendantReleases();
 
@@ -67,7 +74,20 @@ public class ReleaseEstimator {
 		final float effortSum = getEffortSumOf(consideredSampleScopes);
 		final int nConsideredScopes = consideredSampleScopes.size();
 
-		return calculateVelocity(nConsideredScopes, effortSum, daysSpent);
+		final float velocity = calculateVelocity(nConsideredScopes, effortSum, daysSpent);
+
+		for (final Scope scope : consideredSampleScopes) {
+			SpeedTracerConsole.log("\t" + scope.getDescription());
+			for (final ModelState<ProgressState> state : scope.getProgress().stateManager) {
+				SpeedTracerConsole.log("\t\t" + state.getValue().name() + " (" + state.getValue().getDescription() + ") : "
+						+ format.format(state.getTimestamp()));
+			}
+		}
+
+		SpeedTracerConsole.log("[" + nConsideredScopes + "] " + effortSum + " / " + daysSpent + " = " + velocity + " ("
+				+ earliestStartDay.getDayMonthShortYearString() + " to " + latestEndDay.getDayMonthShortYearString() + ")");
+
+		return velocity;
 	}
 
 	private List<Scope> getDoneScopesSortedByLatestEndDateUntilDay(final List<Scope> scopes, final WorkingDay day) {

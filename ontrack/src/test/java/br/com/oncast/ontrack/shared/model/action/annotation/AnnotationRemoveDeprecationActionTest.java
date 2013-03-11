@@ -23,6 +23,7 @@ import br.com.oncast.ontrack.shared.model.annotation.DeprecationState;
 import br.com.oncast.ontrack.shared.model.annotation.exceptions.AnnotationNotFoundException;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
+import br.com.oncast.ontrack.utils.TestUtils;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.AnnotationTestUtils;
 
@@ -72,8 +73,7 @@ public class AnnotationRemoveDeprecationActionTest extends ModelActionTest {
 
 	@Test
 	public void shouldSetDeprecationTimestampOnAnnotation() throws Exception {
-		final Date deprecationRemovalDate = new Date();
-		when(actionContext.getTimestamp()).thenReturn(deprecationRemovalDate);
+		final Date deprecationRemovalDate = newActionContextTimestamp();
 		executeAction();
 
 		assertEquals(deprecationTimestamp, annotation.getDeprecationTimestamp(DeprecationState.DEPRECATED));
@@ -85,15 +85,18 @@ public class AnnotationRemoveDeprecationActionTest extends ModelActionTest {
 		final UserRepresentation deprecationRemovalAuthor = UserRepresentationTestUtils.createUser();
 		when(actionContext.getUserId()).thenReturn(deprecationRemovalAuthor.getId());
 		when(context.findUser(deprecationRemovalAuthor.getId())).thenReturn(deprecationRemovalAuthor);
+		newActionContextTimestamp();
 		executeAction();
 
 		assertEquals(deprecationAuthor, annotation.getDeprecationAuthor(DeprecationState.DEPRECATED));
 		assertEquals(deprecationRemovalAuthor, annotation.getDeprecationAuthor(DeprecationState.VALID));
 	}
 
-	@Test
-	public void shouldNotOverrideDeprecationTime() throws Exception {
-
+	private Date newActionContextTimestamp() {
+		TestUtils.sleep();
+		final Date deprecationRemovalDate = new Date();
+		when(actionContext.getTimestamp()).thenReturn(deprecationRemovalDate);
+		return deprecationRemovalDate;
 	}
 
 	@Override

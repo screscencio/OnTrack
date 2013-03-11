@@ -1,6 +1,6 @@
 package br.com.oncast.ontrack.shared.model.effort;
 
-import static br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils.declare;
+import static br.com.oncast.ontrack.utils.inference.InferenceEngineTestUtils.declareEffort;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
@@ -140,8 +140,8 @@ public class EffortInferenceEngineScopeInfluenceTest {
 		expectedInfluencedScopes.add(scope.getChild(2).getChild(1).getChild(0).getId());
 		expectedInfluencedScopes.add(scope.getChild(2).getChild(1).getChild(1).getId());
 
-		declare(scope, 100);
-		final Set<UUID> actualInfluencedScopes = declare(scope.getChild(2).getChild(1).getChild(0), 10);
+		declareEffort(scope, 100);
+		final Set<UUID> actualInfluencedScopes = declareEffort(scope.getChild(2).getChild(1).getChild(0), 10);
 
 		assertEquals(expectedInfluencedScopes, actualInfluencedScopes);
 	}
