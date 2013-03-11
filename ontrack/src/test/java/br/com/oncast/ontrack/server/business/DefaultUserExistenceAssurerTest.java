@@ -42,6 +42,7 @@ public class DefaultUserExistenceAssurerTest {
 
 	@Test
 	public void ifUserAlreadyExistsDontDoAnything() throws PersistenceException {
+		DefaultUserExistenceAssurer.verify();
 		final User persistedUser = findUser(DEFAULT_EMAIL);
 
 		final Password password = findPassword(persistedUser.getId());
@@ -60,10 +61,7 @@ public class DefaultUserExistenceAssurerTest {
 	private Password findPassword(final UUID userId) {
 		Password p = null;
 		try {
-			p = persistanceService.retrievePasswordForUser(userId);
-		}
-		catch (final NoResultFoundException e) {
-			fail();
+			p = persistanceService.retrievePasswordsForUser(userId).get(0);
 		}
 		catch (final PersistenceException e) {
 			fail();

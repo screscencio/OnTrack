@@ -10,6 +10,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -38,6 +41,8 @@ public class AuthenticationManagerTest {
 	@Mock
 	private Password passwordMock;
 
+	private List<Password> userPasswords;
+
 	private AuthenticationManager authenticationManager;
 
 	private User user;
@@ -58,8 +63,12 @@ public class AuthenticationManagerTest {
 		sessionManager.configureCurrentHttpSession(requestMock);
 		authenticationManager = new AuthenticationManager(persistenceServiceMock, sessionManager);
 
+		userPasswords = new ArrayList<Password>();
+		userPasswords.add(passwordMock);
+
 		configureUser();
 		setDefaultMockBehavior();
+
 	}
 
 	private void configureUser() {
@@ -68,7 +77,7 @@ public class AuthenticationManagerTest {
 
 	private void setDefaultMockBehavior() throws NoResultFoundException, PersistenceException {
 		when(persistenceServiceMock.retrieveUserByEmail(anyString())).thenReturn(user);
-		when(persistenceServiceMock.retrievePasswordForUser(any(UUID.class))).thenReturn(passwordMock);
+		when(persistenceServiceMock.retrievePasswordsForUser(any(UUID.class))).thenReturn(userPasswords);
 		when(passwordMock.authenticate(anyString())).thenReturn(true);
 	}
 
@@ -193,7 +202,7 @@ public class AuthenticationManagerTest {
 
 	private void forcePersistenceToFail() throws Exception {
 		when(persistenceServiceMock.retrieveUserByEmail(anyString())).thenThrow(new AuthenticationException());
-		when(persistenceServiceMock.retrievePasswordForUser(any(UUID.class))).thenThrow(new AuthenticationException());
+		when(persistenceServiceMock.retrievePasswordsForUser(any(UUID.class))).thenThrow(new AuthenticationException());
 	}
 
 	private void forcePasswordToBeIncorrect() {

@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.authentication;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -42,10 +43,15 @@ public class AuthenticationManager {
 		final String formattedUserEmail = formatUserEmail(email);
 		try {
 			final User user = findUserByEmail(formattedUserEmail);
-			final Password passwordForUser = findPasswordForUserOrCreateANewOne(user);
+			final List<Password> passwordsForUser = findPasswordForUserOrCreateANewOne(user);
 
-			if (!passwordForUser.authenticate(password)) throw new InvalidAuthenticationCredentialsException("Incorrect password for user with e-mail "
-					+ formattedUserEmail);
+			final Password validUserPassword = getValidUserPassword(password, passwordsForUser);
+			if (validUserPassword == null) throw new InvalidAuthenticationCredentialsException(
+					"Incorrect password for user with e-mail "
+							+ formattedUserEmail);
+
+			for (final Password passw : passwordsForUser)
+				if (validUserPassword != passw) persistenceService.remove(passw);
 
 			sessionManager.getCurrentSession().setAuthenticatedUser(user);
 			notifyUserLoggedIn(user);
@@ -53,6 +59,11 @@ public class AuthenticationManager {
 		}
 		catch (final UserNotFoundException e) {
 			throw new InvalidAuthenticationCredentialsException(e);
+		}
+		catch (final PersistenceException e) {
+			final String message = "Could not remove unused user passwords for '" + formattedUserEmail + "'";
+			LOGGER.error(message, e);
+			throw new RuntimeException();
 		}
 	}
 
@@ -107,9 +118,10 @@ public class AuthenticationManager {
 
 		try {
 			final User user = findUserByEmail(username);
-			final Password userPassword = findPasswordForUser(user);
+			final List<Password> userPasswords = findPasswordForUser(user);
 
-			if (!userPassword.authenticate(currentPassword)) throw new InvalidAuthenticationCredentialsException(
+			final Password userPassword = getValidUserPassword(currentPassword, userPasswords);
+			if (userPassword == null) throw new InvalidAuthenticationCredentialsException(
 					"Could not change the password for the user " + username
 							+ ", because the current password is incorrect.");
 
@@ -126,6 +138,12 @@ public class AuthenticationManager {
 			LOGGER.error(message, e);
 			throw new AuthenticationException(message);
 		}
+	}
+
+	private Password getValidUserPassword(final String password, final List<Password> userPasswords) {
+		for (final Password pass : userPasswords)
+			if (pass.authenticate(password)) return pass;
+		return null;
 	}
 
 	public void register(final AuthenticationListener authenticationListener) {
@@ -166,38 +184,30 @@ public class AuthenticationManager {
 		}
 	}
 
-	private Password findPasswordForUser(final User user) {
-		Password password = null;
-
+	private List<Password> findPasswordForUser(final User user) {
 		try {
-			password = persistenceService.retrievePasswordForUser(user.getId());
-		}
-		catch (final NoResultFoundException e) {
-			LOGGER.error("No password found for user " + user.getEmail(), e);
-			throw new AuthenticationException("Unable to find the password for user " + user.getEmail());
+			return persistenceService.retrievePasswordsForUser(user.getId());
 		}
 		catch (final PersistenceException e) {
 			LOGGER.error("Unable to find the password for user " + user.getEmail(), e);
 			throw new AuthenticationException();
 		}
-		return password;
 	}
 
 	// TODO Fix - creating a new empty password if the user doesn't have one...
 	// TODO Review this method when user account creation is implemented.
-	private Password findPasswordForUserOrCreateANewOne(final User user) throws UserNotFoundException {
-		Password passwordForUser;
+	private List<Password> findPasswordForUserOrCreateANewOne(final User user) throws UserNotFoundException {
 		try {
-			passwordForUser = persistenceService.retrievePasswordForUser(user.getId());
-		}
-		catch (final NoResultFoundException e) {
-			passwordForUser = createPasswordForUser(user, DEFAULT_NEW_USER_PASSWORD);
+			final List<Password> passwordsForUser = persistenceService.retrievePasswordsForUser(user.getId());
+			if (passwordsForUser.isEmpty()) {
+				passwordsForUser.add(createPasswordForUser(user, DEFAULT_NEW_USER_PASSWORD));
+			}
+			return passwordsForUser;
 		}
 		catch (final PersistenceException e) {
 			LOGGER.error("Unable to find passowrd for user.", e);
 			throw new AuthenticationException();
 		}
-		return passwordForUser;
 	}
 
 	// TODO ++Extract this method to a external class, responsible for formatting the user email, which can then be used both in client and server.
@@ -219,25 +229,16 @@ public class AuthenticationManager {
 	}
 
 	public void resetPassword(final String username) throws UnableToResetPasswordException, InvalidAuthenticationCredentialsException {
-		// FIXME LOBO
 		try {
 			final User user = findUserByEmail(username);
-			final Password userPassword = findPasswordForUser(user);
-
 			final String newPassword = PasswordHash.generatePassword();
-			userPassword.setPassword(newPassword);
-			persistenceService.persistOrUpdatePassword(userPassword);
+			createPasswordForUser(user, newPassword);
 			new PasswordResetMailFactory().createMail().send(username, newPassword);
 		}
 		catch (final UserNotFoundException e) {
 			final String message = "Unable to update the user '" + username + "'s password: no user was found for this email.";
 			LOGGER.error(message, e);
 			throw new InvalidAuthenticationCredentialsException(message);
-		}
-		catch (final PersistenceException e) {
-			final String message = "Unable to update the user '" + username + "'s password: it was not possible to persist it.";
-			LOGGER.error(message, e);
-			throw new UnableToResetPasswordException(message);
 		}
 		catch (final NoSuchAlgorithmException e) {
 			final String message = "Unable to update the user '" + username + "'s password: new password could not be created.";

@@ -19,6 +19,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -184,8 +186,8 @@ public class PersistenceServiceTest {
 		final String passwordText = "password";
 		password.setPassword(passwordText);
 		persistenceService.persistOrUpdatePassword(password);
-		final Password newPassword = persistenceService.retrievePasswordForUser(user.getId());
-		assertTrue(newPassword.authenticate(passwordText));
+		final List<Password> newPassword = persistenceService.retrievePasswordsForUser(user.getId());
+		assertTrue(newPassword.get(0).authenticate(passwordText));
 	}
 
 	@Test
@@ -201,32 +203,32 @@ public class PersistenceServiceTest {
 		final String passwordText = "password";
 		password.setPassword(passwordText);
 		persistenceService.persistOrUpdatePassword(password);
-		final Password firstPassword = persistenceService.retrievePasswordForUser(user.getId());
+		final Password firstPassword = persistenceService.retrievePasswordsForUser(user.getId()).get(0);
 		assertTrue(firstPassword.authenticate(passwordText));
 
 		final String newPassword = "newPassword";
 		firstPassword.setPassword(newPassword);
 		persistenceService.persistOrUpdatePassword(firstPassword);
 
-		final Password secondPassword = persistenceService.retrievePasswordForUser(user.getId());
+		final Password secondPassword = persistenceService.retrievePasswordsForUser(user.getId()).get(0);
 		assertFalse(secondPassword.authenticate(passwordText));
 		assertTrue(secondPassword.authenticate(newPassword));
 	}
 
-	@Test(expected = NoResultFoundException.class)
-	public void shouldThrowNoResultFoundExceptionWhenUserDontHaveAPassword() throws PersistenceException, NoResultFoundException {
+	@Test
+	public void shouldReturnEmptyListWhenUserDontHaveAPassword() throws PersistenceException, NoResultFoundException {
 		final String email = "user1@email.com";
 		User user = UserTestUtils.createUser(email);
 
 		persistenceService.persistOrUpdateUser(user);
 
 		user = persistenceService.retrieveUserByEmail(email);
-		persistenceService.retrievePasswordForUser(user.getId());
+		Assert.assertEquals(0, persistenceService.retrievePasswordsForUser(user.getId()).size());
 	}
 
-	@Test(expected = NoResultFoundException.class)
-	public void shouldThrowNoResultFoundExceptionWhenUserNotExist() throws PersistenceException, NoResultFoundException {
-		persistenceService.retrievePasswordForUser(new UUID());
+	@Test
+	public void shouldReturnEmptyListWhenUserNotExist() throws PersistenceException, NoResultFoundException {
+		persistenceService.retrievePasswordsForUser(new UUID());
 	}
 
 	@Test(expected = NoResultFoundException.class)

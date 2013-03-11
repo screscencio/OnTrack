@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.server.services.persistence.jpa.entity.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import br.com.oncast.ontrack.server.services.authentication.Password;
@@ -14,8 +15,11 @@ import br.com.oncast.ontrack.server.utils.typeConverter.custom.StringToUuidConve
 public class PasswordEntity {
 
 	@Id
+	@GeneratedValue
+	private long id;
+
 	@ConvertUsing(StringToUuidConverter.class)
-	@Column(name = "userId", unique = true, nullable = false)
+	@Column(name = "userId", nullable = false)
 	private String userId;
 
 	private String passwordHash;
@@ -43,5 +47,13 @@ public class PasswordEntity {
 
 	public void setUserId(final String userId) {
 		this.userId = userId;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(final long id) {
+		this.id = id;
 	}
 }

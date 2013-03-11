@@ -7,6 +7,8 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 @ConvertTo(PasswordEntity.class)
 public class Password {
 
+	private long id;
+
 	private UUID userId;
 
 	private String passwordHash;
@@ -38,6 +40,14 @@ public class Password {
 
 	public String getPasswordSalt() {
 		return passwordSalt;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(final long id) {
+		this.id = id;
 	}
 
 	public void setPasswordSalt(final String passwordSalt) {

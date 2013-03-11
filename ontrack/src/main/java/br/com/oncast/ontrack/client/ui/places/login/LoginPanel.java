@@ -87,8 +87,8 @@ public class LoginPanel extends Composite implements LoginView {
 
 	private void doResetPassword() {
 		if (!isEmailValid) {
-			// FIXME LOBO i18n
-			ClientServiceProvider.getInstance().getClientAlertingService().showError("Please insert your username.");
+			final ClientServiceProvider serviceProvider = ClientServiceProvider.getInstance();
+			serviceProvider.getClientAlertingService().showError(serviceProvider.getClientErrorMessages().passwordRequestNeedsUsernameInput());
 			emailArea.setFocus(true);
 			return;
 		}

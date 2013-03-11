@@ -35,11 +35,13 @@ public interface PersistenceService {
 
 	public List<User> retrieveAllUsers() throws PersistenceException;
 
-	public Password retrievePasswordForUser(UUID userId) throws NoResultFoundException, PersistenceException;
+	public List<Password> retrievePasswordsForUser(UUID userId) throws PersistenceException;
 
 	public void persistOrUpdatePassword(Password passwordForUser) throws PersistenceException;
 
 	public List<Password> retrieveAllPasswords() throws PersistenceException;
+
+	public void remove(Password passw) throws PersistenceException;
 
 	public ProjectRepresentation persistOrUpdateProjectRepresentation(final ProjectRepresentation projectRepresentation) throws PersistenceException;
 

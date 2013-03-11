@@ -62,4 +62,19 @@ public interface ClientErrorMessages extends BaseMessages {
 	@DefaultMessage("We are back!")
 	String resyncSuccess();
 
+	@Description("message shown when requesting new password for user")
+	@DefaultMessage("Requesting new password for ''{0}''.")
+	String requestingNewPassword(String username);
+
+	@Description("message shown when new password request was successful")
+	@DefaultMessage("An e-mail with a new passowrd was sent.")
+	String passwordRequestSucessful();
+
+	@Description("message shown when new password request failed because of bad username")
+	@DefaultMessage("Invalid user... Nothing was done.")
+	String passwordRequestFailedDueToBadUsername();
+
+	@Description("message shown when new password request is done without username")
+	@DefaultMessage("Please insert your username.")
+	String passwordRequestNeedsUsernameInput();
 }

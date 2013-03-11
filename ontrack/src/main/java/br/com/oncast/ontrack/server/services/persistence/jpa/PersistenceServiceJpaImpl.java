@@ -282,20 +282,43 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Password retrievePasswordForUser(final UUID userId) throws NoResultFoundException, PersistenceException {
+	public List<Password> retrievePasswordsForUser(final UUID userId) throws PersistenceException {
 		final EntityManager em = entityManagerFactory.createEntityManager();
 		try {
-			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName() + " as password where password.userId = :userId");
+			final Query query = em.createQuery("select password from " + PasswordEntity.class.getSimpleName()
+					+ " as password where password.userId = :userId");
 			query.setParameter("userId", userId.toString());
 
-			return convertEntityToPassword((PasswordEntity) query.getSingleResult());
-		}
-		catch (final NoResultException e) {
-			throw new NoResultFoundException("No password found for userId: " + userId, e);
+			return convertEntityToPassword((List<PasswordEntity>) query.getResultList());
 		}
 		catch (final Exception e) {
 			throw new PersistenceException("It was not possible to retrieve the password for userId: " + userId, e);
+		}
+		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public void remove(final Password password) throws PersistenceException {
+		final EntityManager em = entityManagerFactory.createEntityManager();
+		try {
+			final PasswordEntity passwordEntity = (PasswordEntity) TYPE_CONVERTER.convert(password);
+			em.getTransaction().begin();
+			em.remove(em.getReference(passwordEntity.getClass(), passwordEntity.getId()));
+			em.getTransaction().commit();
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+			try {
+				em.getTransaction().rollback();
+			}
+			catch (final Exception f) {
+				throw new PersistenceException("It was not possible to remove the " + password.getClass().getSimpleName() + " nor to rollback it.", f);
+			}
+			throw new PersistenceException("It was not possible to remove the " + password.getClass().getSimpleName() + ".", e);
 		}
 		finally {
 			em.close();
@@ -510,6 +533,13 @@ public class PersistenceServiceJpaImpl implements PersistenceService {
 		finally {
 			em.close();
 		}
+	}
+
+	private List<Password> convertEntityToPassword(final List<PasswordEntity> passwordEntityList) throws PersistenceException {
+		final List<Password> results = new ArrayList<Password>();
+		for (final PasswordEntity passwordEntity : passwordEntityList)
+			results.add(convertEntityToPassword(passwordEntity));
+		return results;
 	}
 
 	private Password convertEntityToPassword(final PasswordEntity passwordEntity) throws PersistenceException {

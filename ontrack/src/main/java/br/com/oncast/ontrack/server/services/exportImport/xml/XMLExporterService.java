@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.com.oncast.ontrack.server.services.authentication.Password;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.OntrackMigrationManager;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectAuthorizationXMLNode;
 import br.com.oncast.ontrack.server.services.exportImport.xml.abstractions.ProjectXMLNode;
@@ -97,12 +98,8 @@ public class XMLExporterService {
 
 	private UserXMLNode associatePasswordTo(final User user) throws PersistenceException {
 		final UserXMLNode userXMLNode = new UserXMLNode(user);
-		try {
-			userXMLNode.setPassword(persistanceService.retrievePasswordForUser(user.getId()));
-		}
-		catch (final NoResultFoundException e) {
-			// This user doesn't have a password.
-		}
+		final List<Password> passwordsForUser = persistanceService.retrievePasswordsForUser(user.getId());
+		userXMLNode.setPassword(passwordsForUser.get(passwordsForUser.size() - 1));
 		return userXMLNode;
 	}
 

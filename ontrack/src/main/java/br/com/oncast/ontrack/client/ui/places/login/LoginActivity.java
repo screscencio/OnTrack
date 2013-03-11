@@ -1,5 +1,6 @@
 package br.com.oncast.ontrack.client.ui.places.login;
 
+import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationCallback;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
@@ -64,29 +65,27 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
 	@Override
 	public void onResetPasswordRequest(final String username) {
 		view.disable();
-		// FIXME LOBO i18n
-		SERVICE_PROVIDER.getClientAlertingService().showInfo("Request new password for '" + username + "'.");
+		final ClientErrorMessages messages = ClientServiceProvider.getInstance().getClientErrorMessages();
+		SERVICE_PROVIDER.getClientAlertingService().showInfo(messages.requestingNewPassword(username));
 		SERVICE_PROVIDER.getAuthenticationService().resetPasswordFor(username, new ResetPasswordCallback() {
 			@Override
 			public void onUserPasswordResetSuccessfully() {
 				view.enable();
 				SERVICE_PROVIDER.getClientStorageService().storeLastUserEmail(username);
-				// FIXME LOBO i18n
-				SERVICE_PROVIDER.getClientAlertingService().showSuccess("An e-mail with a new passowrd was sent.");
+				SERVICE_PROVIDER.getClientAlertingService().showSuccess(messages.passwordRequestSucessful());
 			}
 
 			@Override
 			public void onUnexpectedFailure(final Throwable caught) {
 				view.enable();
-				SERVICE_PROVIDER.getClientAlertingService().showError(ClientServiceProvider.getInstance().getClientErrorMessages().unexpectedError());
+				SERVICE_PROVIDER.getClientAlertingService().showError(messages.unexpectedError());
 			}
 
 			@Override
 			public void onIncorrectCredentialsFailure() {
 				view.enable();
 				view.onIncorrectUsername();
-				// FIXME LOBO i18n
-				SERVICE_PROVIDER.getClientAlertingService().showError("Invalid user... Nothing was done.");
+				SERVICE_PROVIDER.getClientAlertingService().showError(messages.passwordRequestFailedDueToBadUsername());
 			}
 		});
 	}
