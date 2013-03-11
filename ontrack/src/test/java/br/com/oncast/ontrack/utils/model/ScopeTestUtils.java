@@ -18,6 +18,7 @@ import com.ibm.icu.util.Calendar;
 
 public class ScopeTestUtils {
 
+	private static final Date DEFAULT_TIMESTAMP = new Date(0);
 	private static int scopeCounter = 0;
 
 	// IMPORTANT Doesn't change this scope without changing the tests that use it.
@@ -104,7 +105,7 @@ public class ScopeTestUtils {
 	}
 
 	public static Scope setProgress(final Scope scope, final ProgressState progress) {
-		return setProgress(scope, progress, new Date(0));
+		return setProgress(scope, progress, DEFAULT_TIMESTAMP);
 	}
 
 	public static Scope setDelcaredEffort(final Scope scope, final float effort) {
@@ -121,10 +122,10 @@ public class ScopeTestUtils {
 	}
 
 	public static Scope createScope(final String name, final ProgressState progress, final Integer effort, final WorkingDay startDay, final WorkingDay endDay) {
-		final Scope scope = ScopeTestUtils.createScope(name);
-		if (progress != null) setProgress(scope, progress);
+		final Scope scope = ScopeTestUtils.createScope(name, startDay.getJavaDate());
 		if (effort != null) setDelcaredEffort(scope, effort);
 		if (startDay != null) setStartDate(scope, startDay);
+		if (progress != null) setProgress(scope, progress, endDay);
 		if (endDay != null) setEndDate(scope, endDay);
 
 		return scope;
@@ -192,7 +193,11 @@ public class ScopeTestUtils {
 	}
 
 	public static Scope createScope(final String description) {
-		return createScope(description, new UUID());
+		return createScope(description, DEFAULT_TIMESTAMP);
+	}
+
+	public static Scope createScope(final String description, final Date timestamp) {
+		return createScope(description, new UUID(), timestamp);
 	}
 
 	public static Scope createScope() {
@@ -209,15 +214,15 @@ public class ScopeTestUtils {
 	}
 
 	public static Scope createScope(final String description, final UUID id) {
-		return createScope(description, id, new Date(0));
+		return createScope(description, id, DEFAULT_TIMESTAMP);
 	}
 
 	public static Scope createScope(final String description, final UUID id, final Date date) {
-		return new Scope(description, id, UserRepresentationTestUtils.getAdmin(), new Date(0));
+		return new Scope(description, id, UserRepresentationTestUtils.getAdmin(), DEFAULT_TIMESTAMP);
 	}
 
 	public static Scope setProgress(final Scope scope, final String progressDescription) {
-		scope.getProgress().setDescription(progressDescription, UserRepresentationTestUtils.getAdmin(), new Date(0));
+		scope.getProgress().setDescription(progressDescription, UserRepresentationTestUtils.getAdmin(), DEFAULT_TIMESTAMP);
 		return scope;
 	}
 

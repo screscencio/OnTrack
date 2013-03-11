@@ -175,4 +175,25 @@ public class ModelStateManagerTest {
 
 		assertEquals(initialState, manager.getInitialState());
 	}
+
+	@Test
+	public void stateSetInTheSameTimeShouldBeOverrided() throws Exception {
+		final String overridedStateValue = "overridedState";
+		manager.setState(ModelState.create(overridedStateValue, initialAuthor, new Date(3512314)));
+		manager.setState(ModelState.create("anotherOne", initialAuthor, new Date(3512314)));
+
+		assertNull(manager.getFirstOccurenceOf(overridedStateValue));
+	}
+
+	@Test
+	public void theNewStateShouldNotBeAddedWhenTheSecondLastStateIsTheSameAsTheNewStateWhenItOverridesTheLastState() throws Exception {
+		final String repeatedStateValue = "anotherOne";
+		final long firstOccurence = 3512310;
+
+		manager.setState(ModelState.create(repeatedStateValue, initialAuthor, new Date(firstOccurence)));
+		manager.setState(ModelState.create("overridedState", initialAuthor, new Date(3512314)));
+		manager.setState(ModelState.create(repeatedStateValue, initialAuthor, new Date(3512314)));
+
+		assertEquals(firstOccurence, manager.getLastOccurenceOf(repeatedStateValue).getTimestamp().getTime());
+	}
 }

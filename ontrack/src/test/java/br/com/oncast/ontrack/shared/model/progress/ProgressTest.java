@@ -34,6 +34,10 @@ public class ProgressTest {
 	}
 
 	private void setState(final ProgressState state) {
+		try {
+			Thread.sleep(1);
+		}
+		catch (final InterruptedException e) {}
 		progress.setState(state, UserRepresentationTestUtils.getAdmin(), new Date());
 	}
 

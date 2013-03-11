@@ -258,17 +258,15 @@ public class ReleaseChartDataProviderTest {
 
 	@Test
 	public void shouldConsiderDescendantScopesProgressOnAccomplishedEffortCalculation() throws Exception {
-		final WorkingDay startDay1 = WorkingDayFactory.create(2012, 6, 2);
-		final WorkingDay endDay1 = WorkingDayFactory.create(2012, 6, 5);
-		final WorkingDay startDay2 = WorkingDayFactory.create(2012, 6, 2);
-		final WorkingDay endDay2 = WorkingDayFactory.create(2012, 6, 6);
-		final WorkingDay startDay3 = WorkingDayFactory.create(2012, 6, 3);
-		final WorkingDay endDay3 = WorkingDayFactory.create(2012, 6, 3);
+		final WorkingDay day2 = WorkingDayFactory.create(2012, 6, 2);
+		final WorkingDay day3 = WorkingDayFactory.create(2012, 6, 3);
+		final WorkingDay day5 = WorkingDayFactory.create(2012, 6, 5);
+		final WorkingDay day6 = WorkingDayFactory.create(2012, 6, 6);
 
 		final Scope parent = ScopeTestUtils.createScope();
-		final Scope child1 = ScopeTestUtils.createScope("child1", ProgressState.DONE, 1, startDay1, endDay1);
-		final Scope child3 = ScopeTestUtils.createScope("child2", ProgressState.DONE, 2, startDay2, endDay2);
-		final Scope child2 = ScopeTestUtils.createScope("child3", ProgressState.DONE, 3, startDay3, endDay3);
+		final Scope child1 = ScopeTestUtils.createScope("child1", ProgressState.DONE, 1, day2, day5);
+		final Scope child3 = ScopeTestUtils.createScope("child2", ProgressState.DONE, 2, day2, day6);
+		final Scope child2 = ScopeTestUtils.createScope("child3", ProgressState.DONE, 3, day3, day3);
 
 		parent.add(child1);
 		parent.add(child2);
@@ -277,7 +275,7 @@ public class ReleaseChartDataProviderTest {
 		releaseScopes.add(parent);
 
 		releaseEffortSum = 6F;
-		estimatedStartDay = WorkingDayFactory.create(2012, 6, 2);
+		estimatedStartDay = day2;
 		estimatedEndDay = WorkingDayFactory.create(2012, 6, 7);
 
 		assertAccomplishedEffortsByDate(0f, 3f, 3f, 4f, 6f);

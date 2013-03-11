@@ -217,7 +217,7 @@ public class EffortInferenceEngineFlow1Test {
 	}
 
 	private void declare(final Scope scope, final float effort) {
-		InferenceEngineTestUtils.declare(scope, effort);
+		InferenceEngineTestUtils.declareEffort(scope, effort);
 	}
 
 	private void resetDeclared(final Scope scope) {
