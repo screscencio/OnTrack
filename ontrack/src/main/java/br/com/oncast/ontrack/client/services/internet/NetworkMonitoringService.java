@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
-import br.com.oncast.ontrack.client.services.alerting.ConfirmationAlertRegister;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 
@@ -22,10 +21,10 @@ public class NetworkMonitoringService {
 	private boolean connected = true;
 	private final ClientErrorMessages messages;
 	private final ClientAlertingService alertingService;
-	private ConfirmationAlertRegister errorAlertConfirmation;
 	private final ServerPushClientService serverPushClientService;
 	private final List<ConnectionListener> connectionListeners = new ArrayList<ConnectionListener>();
-	private AlertRegistration infoAlertRegistration = null;
+	private AlertRegistration infoAlertRegistration;
+	private AlertRegistration errorAlertConfirmation;
 	private final Timer connectionVerificationTimer = new Timer() {
 
 		@Override
@@ -99,7 +98,7 @@ public class NetworkMonitoringService {
 		connectionVerificationTimer.cancel();
 
 		if (errorAlertConfirmation != null) {
-			errorAlertConfirmation.hide(false);
+			errorAlertConfirmation.hide();
 			errorAlertConfirmation = null;
 		}
 		if (infoAlertRegistration != null) {
@@ -117,7 +116,7 @@ public class NetworkMonitoringService {
 	}-*/;
 
 	private void alertMissingConnection() {
-		errorAlertConfirmation = alertingService.showErrorWithConfirmation(messages.connectionLost(), new AlertConfirmationListener() {
+		errorAlertConfirmation = alertingService.showBlockingError(messages.connectionLost(), new AlertConfirmationListener() {
 			@Override
 			public void onConfirmation() {
 				connectionVerificationTimer.cancel();

@@ -89,6 +89,36 @@ public class ClientAlertingService {
 		return makeAutoCloseAlert(message, AlertType.SUCCESS, DURATION_SHORT);
 	}
 
+	public AlertRegistration showBlockingError(final String message, final AlertConfirmationListener alertConfirmationListener) {
+		return makeBlockingAlert(message, AlertType.ERROR);
+	}
+
+	private AlertRegistration makeBlockingAlert(final String message, final AlertType type) {
+		final Alert toast = new Alert();
+		addAlertToAlertingContainer(toast);
+
+		ErrorMaskPanel.show(new HideHandler() {
+			@Override
+			public void onWillHide() {}
+		});
+
+		final AlertRegistration alertRegistration = new AlertRegistration() {
+			@Override
+			public void hide() {
+				toast.hide(new AnimationCallback() {
+
+					@Override
+					public void onComplete() {
+						removeAlertFromAlertingContainer(toast);
+						ErrorMaskPanel.assureHidden();
+					}
+				});
+			}
+		};
+		toast.show(message, type);
+		return alertRegistration;
+	}
+
 	private AlertRegistration makeAutoCloseAlert(final String message, final AlertType type, final int autoCloseTime) {
 		final Alert toast = new Alert();
 		addAlertToAlertingContainer(toast);
