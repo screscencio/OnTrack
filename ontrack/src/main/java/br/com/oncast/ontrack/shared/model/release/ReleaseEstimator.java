@@ -3,25 +3,15 @@ package br.com.oncast.ontrack.shared.model.release;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oncast.ontrack.client.utils.speedtracer.SpeedTracerConsole;
-import br.com.oncast.ontrack.shared.model.ModelState;
-import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
-import br.com.oncast.ontrack.shared.model.scope.ScopeComparator;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
-
-import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class ReleaseEstimator {
 
 	public static final float MIN_VELOCITY = 0.1F;
+	private static final float NEW_VELOCITY_WEIGHT = 0.6F;
 	private static final int DURATION_OF_START_DAY = 1;
-	private static final short NUMBER_OF_REQUIRED_SCOPES = 30;
-
 	private static final short DEFAULT_VELOCITY = 1;
-	private static final short DEFAULT_EFFORT = 1;
-	private static final short DEFAULT_DAYS_SPENT = 1;
 
 	private final Release rootRelease;
 
@@ -36,7 +26,7 @@ public class ReleaseEstimator {
 
 	public WorkingDay getEstimatedEndDayUsingInferedEstimatedVelocity(final Release release) {
 		final WorkingDay startDay = getEstimatedStartDayFor(release);
-		return getEstimatedEndDay(startDay, release.getEffortSum(), getInferedEstimatedVelocityOnDay(startDay));
+		return getEstimatedEndDay(startDay, release.getEffortSum(), getInferedEstimatedVelocityOnDay(release));
 
 	}
 
@@ -44,7 +34,7 @@ public class ReleaseEstimator {
 		if (release.hasDeclaredEndDay()) return release.getEndDay();
 
 		final WorkingDay startDay = getEstimatedStartDayFor(release);
-		final float estimatedVelocity = release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : getInferedEstimatedVelocityOnDay(startDay);
+		final float estimatedVelocity = release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : getInferedEstimatedVelocityOnDay(release);
 
 		return getEstimatedEndDay(startDay, release.getEffortSum(), estimatedVelocity);
 	}
@@ -55,84 +45,32 @@ public class ReleaseEstimator {
 		return startDay.add(ceilling(effortSum / estimatedVelocity) - DURATION_OF_START_DAY);
 	}
 
-	public float getInferedEstimatedVelocityOnDay(final WorkingDay day) {
-		return Math.max(MIN_VELOCITY, getRawInferedEstimatedVelocityOnDay(day));
+	public float getInferedEstimatedVelocityOnDay(final Release release) {
+		return Math.max(MIN_VELOCITY, getRawInferedEstimatedVelocityOnDay(release));
 	}
 
-	private static final DateTimeFormat format = DateTimeFormat.getFormat("dd/MM/yy");
+	private float getRawInferedEstimatedVelocityOnDay(final Release release) {
+		final List<Release> consideredReleases = getConsideredReleases(release);
 
-	private float getRawInferedEstimatedVelocityOnDay(final WorkingDay day) {
-		final List<Scope> sampleScopes = rootRelease.getAllScopesIncludingDescendantReleases();
+		if (consideredReleases.isEmpty()) return DEFAULT_VELOCITY;
 
-		final List<Scope> consideredSampleScopes = getDoneScopesSortedByLatestEndDateUntilDay(sampleScopes, day);
-		if (consideredSampleScopes.isEmpty()) return DEFAULT_VELOCITY;
-
-		final WorkingDay earliestStartDay = getEarliestStartDay(consideredSampleScopes);
-		final WorkingDay latestEndDay = consideredSampleScopes.get(0).getProgress().getEndDay();
-		final int daysSpent = earliestStartDay.countTo(latestEndDay);
-
-		final float effortSum = getEffortSumOf(consideredSampleScopes);
-		final int nConsideredScopes = consideredSampleScopes.size();
-
-		final float velocity = calculateVelocity(nConsideredScopes, effortSum, daysSpent);
-
-		for (final Scope scope : consideredSampleScopes) {
-			SpeedTracerConsole.log("\t" + scope.getDescription());
-			for (final ModelState<ProgressState> state : scope.getProgress().stateManager) {
-				SpeedTracerConsole.log("\t\t" + state.getValue().name() + " (" + state.getValue().getDescription() + ") : "
-						+ format.format(state.getTimestamp()));
-			}
+		final Release first = consideredReleases.remove(0);
+		float velocity = first.getActualVelocity();
+		for (final Release r : consideredReleases) {
+			final Float actual = r.getActualVelocity();
+			if (actual != null) velocity = (1F - NEW_VELOCITY_WEIGHT) * velocity + NEW_VELOCITY_WEIGHT * actual;
 		}
-
-		SpeedTracerConsole.log("[" + nConsideredScopes + "] " + effortSum + " / " + daysSpent + " = " + velocity + " ("
-				+ earliestStartDay.getDayMonthShortYearString() + " to " + latestEndDay.getDayMonthShortYearString() + ")");
 
 		return velocity;
 	}
 
-	private List<Scope> getDoneScopesSortedByLatestEndDateUntilDay(final List<Scope> scopes, final WorkingDay day) {
-		ScopeComparator.sortByLatestEndDate(scopes);
-		final ArrayList<Scope> consideredScopes = new ArrayList<Scope>();
-
-		for (final Scope scope : scopes) {
-			final WorkingDay endDate = scope.getProgress().getEndDay();
-
-			if (endDate == null) break;
-			if (!endDate.isBefore(day)) continue;
-
-			consideredScopes.add(scope);
-			if (consideredScopes.size() == NUMBER_OF_REQUIRED_SCOPES) break;
+	private List<Release> getConsideredReleases(final Release release) {
+		final List<Release> consideredReleases = new ArrayList<Release>();
+		for (final Release r : rootRelease.getAllReleasesInTemporalOrder()) {
+			if (r.equals(release)) break;
+			if (r.isLeaf() && r.isDone()) consideredReleases.add(r);
 		}
-
-		return consideredScopes;
-	}
-
-	private WorkingDay getEarliestStartDay(final List<Scope> consideredSampleScopes) {
-		WorkingDay earliestStartDay = WorkingDayFactory.create();
-
-		for (final Scope scope : consideredSampleScopes) {
-			final WorkingDay scopeStartDay = scope.getProgress().getStartDay();
-			if (scopeStartDay.isBefore(earliestStartDay)) earliestStartDay = scopeStartDay;
-		}
-		return earliestStartDay;
-	}
-
-	private float getEffortSumOf(final List<Scope> consideredSampleScopes) {
-		float effortSum = 0;
-		for (final Scope scope : consideredSampleScopes) {
-			effortSum += scope.getEffort().getInfered();
-		}
-
-		return effortSum;
-	}
-
-	private float calculateVelocity(final int nConsideredScopes, final float consideredEffortSum, final int consideredDaysSpent) {
-		final int nLackingScopes = NUMBER_OF_REQUIRED_SCOPES - nConsideredScopes;
-		final float effortSum = consideredEffortSum + nLackingScopes * DEFAULT_EFFORT;
-		final int daysSpent = consideredDaysSpent + nLackingScopes * DEFAULT_DAYS_SPENT;
-
-		final float velocity = effortSum / daysSpent;
-		return velocity;
+		return consideredReleases;
 	}
 
 	private int ceilling(final float number) {

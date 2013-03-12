@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
 import java.util.List;
@@ -277,7 +279,9 @@ public class ReleaseTest {
 
 	@Test
 	public void endDateShouldBeTheLatestEndDate() throws Exception {
-		final Release release = ReleaseTestUtils.getReleaseWithScopes();
+		final Release release = spy(ReleaseTestUtils.getReleaseWithScopes());
+		when(release.isDone()).thenReturn(true);
+
 		final List<Scope> scopeList = release.getScopeList();
 
 		for (int i = 0; i < scopeList.size(); i++) {
@@ -288,7 +292,9 @@ public class ReleaseTest {
 
 	@Test
 	public void endDateShouldBeTheScopesLatestEndDate2() throws Exception {
-		final Release release = ReleaseTestUtils.getReleaseWithScopes();
+		final Release release = spy(ReleaseTestUtils.getReleaseWithScopes());
+		when(release.isDone()).thenReturn(true);
+
 		final List<Scope> scopeList = release.getScopeList();
 
 		final int lastIndex = getLastIndex(scopeList);
@@ -300,7 +306,8 @@ public class ReleaseTest {
 
 	@Test
 	public void endDateShouldBeTheScopesLatestEndDateRegardingChildReleases() throws Exception {
-		final Release release = ReleaseTestUtils.getReleaseWithScopes();
+		final Release release = spy(ReleaseTestUtils.getReleaseWithScopes());
+		when(release.isDone()).thenReturn(true);
 
 		setEndDayOnScope(release.getChild(1).getScopeList().get(2), WorkingDayFactory.create(2011, Calendar.OCTOBER, 3));
 		setEndDayOnScope(release.getChild(0).getScopeList().get(0), WorkingDayFactory.create(2011, Calendar.OCTOBER, 7));
@@ -314,6 +321,13 @@ public class ReleaseTest {
 		setEndDayOnScope(latestScope, WorkingDayFactory.create(2011, Calendar.OCTOBER, 12));
 
 		assertEquals(latestScope.getProgress().getEndDay(), release.getEndDay());
+	}
+
+	@Test
+	public void endDateShouldBeNullIfTheReleaseIsNotDone() throws Exception {
+		final Release release = spy(ReleaseTestUtils.getReleaseWithScopes());
+		when(release.isDone()).thenReturn(false);
+		assertNull(release.getEndDay());
 	}
 
 	@Test

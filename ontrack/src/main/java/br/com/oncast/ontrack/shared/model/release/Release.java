@@ -10,6 +10,7 @@ import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.UUIDUtils;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
+import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 public class Release implements Serializable, HasUUID {
@@ -288,14 +289,37 @@ public class Release implements Serializable, HasUUID {
 	}
 
 	public WorkingDay getInferedEndDay() {
+		if (!isDone()) return null;
+
 		WorkingDay endDay = null;
 		for (final Scope scope : getAllScopesIncludingDescendantReleases()) {
-			final WorkingDay scopeEndDay = scope.getProgress().getEndDay();
+			final WorkingDay scopeEndDay = getScopeEndDay(scope);
+
 			if (endDay == null || (scopeEndDay != null && scopeEndDay.isAfter(endDay))) {
 				endDay = scopeEndDay;
 			}
 		}
 		return endDay;
+	}
+
+	private WorkingDay getScopeEndDay(final Scope scope) {
+		final WorkingDay scopeEndDay = scope.getProgress().getEndDay();
+		if (scope.isLeaf()) return scopeEndDay;
+
+		WorkingDay effortAccomplishedDay = null;
+		float effortLeft = scope.getEffort().getInfered();
+
+		for (final Scope child : scope.getChildren()) {
+			final float accomplished = child.getEffort().getAccomplished();
+			if (accomplished == 0) continue;
+
+			final WorkingDay d = (child.isLeaf()) ? child.getProgress().getEndDay() : getScopeEndDay(child);
+			if (d != null && d.isAfter(effortAccomplishedDay)) effortAccomplishedDay = d;
+
+			if ((effortLeft -= accomplished) <= 0) break;
+		}
+
+		return WorkingDay.getEarliest(scopeEndDay, effortAccomplishedDay);
 	}
 
 	public Float getValueSum() {
@@ -332,6 +356,15 @@ public class Release implements Serializable, HasUUID {
 			accomplishedValueSum += scope.getValue().getAccomplished();
 
 		return accomplishedValueSum;
+	}
+
+	public Float getActualVelocity() {
+		final WorkingDay endDay = WorkingDay.getEarliest(getInferedEndDay(), WorkingDayFactory.create());
+		final WorkingDay startDay = getStartDay();
+
+		if (endDay.isBefore(startDay)) return null;
+
+		return getAccomplishedEffortSum() / startDay.countTo(endDay);
 	}
 
 	public boolean isDone() {
