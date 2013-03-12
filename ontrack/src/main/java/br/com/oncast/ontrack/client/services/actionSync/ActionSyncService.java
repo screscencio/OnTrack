@@ -74,6 +74,12 @@ public class ActionSyncService {
 			@Override
 			public void onConnectionRecovered() {
 				requestResyncronization();
+				actionQueuedDispatcher.resume();
+			}
+
+			@Override
+			public void onConnectionLost() {
+				actionQueuedDispatcher.pause();
 			}
 		});
 		contextProviderService.addContextLoadListener(new ContextChangeListener() {

@@ -152,5 +152,8 @@ public class ActionQueuedDispatcherTestUtils {
 
 		@Override
 		public void connect() {}
+
+		@Override
+		public void reconnect() {}
 	}
 }

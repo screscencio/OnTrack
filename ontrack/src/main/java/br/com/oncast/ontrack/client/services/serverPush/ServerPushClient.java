@@ -8,5 +8,5 @@ public interface ServerPushClient {
 
 	void stop();
 
-	int getConnectionId();
+	String getConnectionId();
 }

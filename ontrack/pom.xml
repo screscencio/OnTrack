@@ -10,9 +10,12 @@
 
 	<properties>
 		<gwtModule>br.com.oncast.ontrack.Application</gwtModule>
-		<gwtVersion>2.4.0</gwtVersion>
+		<gwt.compiler.force>false</gwt.compiler.force>
+		<gwt.draftCompile>false</gwt.draftCompile>
+		<gwt.style>OBF</gwt.style>
+		<gwtVersion>2.5.0</gwtVersion>
 		<guavaVersion>12.0</guavaVersion>
-		<atmosphereVersion>1.0.12</atmosphereVersion>
+		<atmosphereVersion>1.1.0.beta3</atmosphereVersion>
 		<webappDirectory>${basedir}/war</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -541,7 +544,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.4.0</version>
+				<version>2.5.0</version>
 				<executions>
 					<execution>
 						<configuration>

@@ -20,4 +20,6 @@ public interface ServerPushClientService {
 
 	public void connect();
 
+	public void reconnect();
+
 }

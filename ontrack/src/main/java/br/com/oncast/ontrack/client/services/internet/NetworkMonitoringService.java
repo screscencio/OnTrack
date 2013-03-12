@@ -6,7 +6,6 @@ import java.util.List;
 import br.com.drycode.api.web.gwt.dispatchService.client.DispatchService;
 import br.com.drycode.api.web.gwt.dispatchService.client.FailureHandler;
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
-import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.AlertRegistration;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -23,7 +22,8 @@ public class NetworkMonitoringService {
 	private final ClientAlertingService alertingService;
 	private final ServerPushClientService serverPushClientService;
 	private final List<ConnectionListener> connectionListeners = new ArrayList<ConnectionListener>();
-	private AlertRegistration infoAlertRegistration;
+	private AlertRegistration tryingToReconnectAlertRegistration;
+	private AlertRegistration establishingConnectionAlertRegistration;
 	private AlertRegistration errorAlertConfirmation;
 	private final Timer connectionVerificationTimer = new Timer() {
 
@@ -31,12 +31,8 @@ public class NetworkMonitoringService {
 		public void run() {
 			if (connected) return;
 
-			infoAlertRegistration = alertingService.showInfo(messages.tryingToReconnect());
-
-			if (isInternetAvailable()) {
-				if (serverPushClientService.isConnected()) onConnectionRecovered();
-				else serverPushClientService.connect();
-			}
+			tryingToReconnectAlertRegistration = alertingService.showInfo(messages.tryingToReconnect());
+			serverPushClientService.reconnect();
 			this.schedule(3200);
 		}
 	};
@@ -73,7 +69,7 @@ public class NetworkMonitoringService {
 
 			@Override
 			public void connected() {
-				if (!connected) onConnectionRecovered();
+				onConnectionRecovered();
 			}
 
 			@Override
@@ -87,8 +83,10 @@ public class NetworkMonitoringService {
 		if (!connected) return;
 		connected = false;
 
+		notifyConnectionLost();
 		alertMissingConnection();
-		connectionVerificationTimer.run();
+		connectionVerificationTimer.cancel();
+		connectionVerificationTimer.schedule(5000);
 	}
 
 	private void onConnectionRecovered() {
@@ -101,12 +99,13 @@ public class NetworkMonitoringService {
 			errorAlertConfirmation.hide();
 			errorAlertConfirmation = null;
 		}
-		if (infoAlertRegistration != null) {
-			infoAlertRegistration.hide();
-			infoAlertRegistration = null;
+		if (tryingToReconnectAlertRegistration != null) {
+			tryingToReconnectAlertRegistration.hide();
+			tryingToReconnectAlertRegistration = null;
 		}
 
-		alertingService.showInfo(messages.establishingConnection());
+		if (establishingConnectionAlertRegistration != null) establishingConnectionAlertRegistration.hide();
+		establishingConnectionAlertRegistration = alertingService.showInfo(messages.establishingConnection());
 
 		notifyConnectionRecovered();
 	}
@@ -116,13 +115,8 @@ public class NetworkMonitoringService {
 	}-*/;
 
 	private void alertMissingConnection() {
-		errorAlertConfirmation = alertingService.showBlockingError(messages.connectionLost(), new AlertConfirmationListener() {
-			@Override
-			public void onConfirmation() {
-				connectionVerificationTimer.cancel();
-				connectionVerificationTimer.run();
-			}
-		});
+		if (errorAlertConfirmation != null) return;
+		errorAlertConfirmation = alertingService.showBlockingError(messages.connectionLost());
 	}
 
 	public void addConnectionListener(final ConnectionListener connectionListener) {
@@ -132,5 +126,10 @@ public class NetworkMonitoringService {
 	private void notifyConnectionRecovered() {
 		for (final ConnectionListener listener : connectionListeners)
 			listener.onConnectionRecovered();
+	}
+
+	private void notifyConnectionLost() {
+		for (final ConnectionListener listener : connectionListeners)
+			listener.onConnectionLost();
 	}
 }

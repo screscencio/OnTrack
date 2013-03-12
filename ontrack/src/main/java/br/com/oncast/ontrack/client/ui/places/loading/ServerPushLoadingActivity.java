@@ -37,8 +37,8 @@ public class ServerPushLoadingActivity extends AbstractActivity {
 
 			@Override
 			public void connected() {
-				SERVICE_PROVIDER.getServerPushClientService().removeConnectionListener(this);
 				validateConnection();
+				SERVICE_PROVIDER.getServerPushClientService().removeConnectionListener(this);
 			}
 
 			@Override

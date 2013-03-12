@@ -89,18 +89,13 @@ public class ClientAlertingService {
 		return makeAutoCloseAlert(message, AlertType.SUCCESS, DURATION_SHORT);
 	}
 
-	public AlertRegistration showBlockingError(final String message, final AlertConfirmationListener alertConfirmationListener) {
+	public AlertRegistration showBlockingError(final String message) {
 		return makeBlockingAlert(message, AlertType.ERROR);
 	}
 
 	private AlertRegistration makeBlockingAlert(final String message, final AlertType type) {
 		final Alert toast = new Alert();
 		addAlertToAlertingContainer(toast);
-
-		ErrorMaskPanel.show(new HideHandler() {
-			@Override
-			public void onWillHide() {}
-		});
 
 		final AlertRegistration alertRegistration = new AlertRegistration() {
 			@Override
@@ -110,7 +105,6 @@ public class ClientAlertingService {
 					@Override
 					public void onComplete() {
 						removeAlertFromAlertingContainer(toast);
-						ErrorMaskPanel.assureHidden();
 					}
 				});
 			}

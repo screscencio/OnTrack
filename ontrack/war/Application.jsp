@@ -3,7 +3,6 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="gwt:property" content="locale=<%= request.getLocale()%>">
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" >
 	
     <title>OnTrack</title>
     

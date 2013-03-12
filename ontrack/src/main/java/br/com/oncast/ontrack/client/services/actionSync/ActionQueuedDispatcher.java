@@ -27,6 +27,7 @@ class ActionQueuedDispatcher {
 	private final ClientErrorMessages messages;
 	private final ClientAlertingService alertingService;
 	private final List<ActionQueuedDispatchCallback> callbacks = new ArrayList<ActionQueuedDispatchCallback>();
+	private boolean paused = false;
 
 	public ActionQueuedDispatcher(final DispatchService requestDispatchService, final ProjectRepresentationProvider projectRepresentationProvider,
 			final ClientAlertingService alertingService, final ClientErrorMessages messages) {
@@ -46,6 +47,7 @@ class ActionQueuedDispatcher {
 	}
 
 	public void tryExchange() {
+		if (paused) return;
 		if (!waitingServerAnswerActionList.isEmpty()) return;
 		if (actionList.isEmpty()) return;
 
@@ -104,5 +106,14 @@ class ActionQueuedDispatcher {
 
 	public void addDispatchCallback(final ActionQueuedDispatchCallback actionQueuedDispatchCallback) {
 		callbacks.add(actionQueuedDispatchCallback);
+	}
+
+	public void pause() {
+		paused = true;
+	}
+
+	public void resume() {
+		paused = false;
+		tryExchange();
 	}
 }

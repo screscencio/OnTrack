@@ -15,6 +15,9 @@ public class OntrackAtmosphereClient implements ServerPushClient {
 
 	public OntrackAtmosphereClient(final AtmosphereListener listener) {
 		client = new AtmosphereClient(URLBuilder.ATMOSPHERE_URL, (AtmosphereGWTSerializer) GWT.create(EventSerializer.class), listener, false);
+		client.setConnectionTimeout(9000);
+		client.setReconnectionTimeout(3000);
+		client.setReconnectionCount(1);
 	}
 
 	@Override
@@ -33,7 +36,7 @@ public class OntrackAtmosphereClient implements ServerPushClient {
 	}
 
 	@Override
-	public int getConnectionId() {
-		return client.getConnectionID();
+	public String getConnectionId() {
+		return client.getConnectionUUID();
 	}
 }

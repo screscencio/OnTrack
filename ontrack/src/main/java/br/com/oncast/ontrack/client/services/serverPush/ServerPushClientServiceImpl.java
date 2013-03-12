@@ -49,15 +49,15 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 			}
 
 			@Override
-			public void onConnected(final int heartbeat, final int connectionID) {
+			public void onBeforeDisconnected() {}
+
+			@Override
+			public void onConnected(final int heartbeat, final String connectionUUID) {
 				notifyConnection();
 			}
 
 			@Override
-			public void onBeforeDisconnected() {}
-
-			@Override
-			public void onAfterRefresh() {}
+			public void onAfterRefresh(final String connectionUUID) {}
 		};
 		connect();
 	}
@@ -104,21 +104,29 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 	}
 
 	@Override
+	public void reconnect() {
+		serverPushClient.stop();
+		connect();
+	}
+
+	@Override
 	public String getConnectionID() {
 		if (serverPushClient == null) return null;
-		return String.valueOf(serverPushClient.getConnectionId());
+		return serverPushClient.getConnectionId();
 	}
 
 	@Override
 	public boolean isConnected() {
 		if (serverPushClient == null) return false;
-		return serverPushClient.isRunning() && serverPushClient.getConnectionId() > 0;
+		return serverPushClient.isRunning() && !serverPushClient.getConnectionId().isEmpty();
 	}
 
 	@Override
 	public void addConnectionListener(final ServerPushConnectionCallback serverPushConnectionCallback) {
 		serverPushConnectionCallbacks.add(serverPushConnectionCallback);
-		if (isConnected()) serverPushConnectionCallback.connected();
+		if (isConnected()) {
+			serverPushConnectionCallback.connected();
+		}
 	}
 
 	@Override
