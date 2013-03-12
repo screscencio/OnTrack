@@ -76,9 +76,8 @@ public class Progress implements Serializable {
 	@DeepEqualityByGetter
 	private String description;
 
-	// FIXME Mats change to private
 	@IgnoredByDeepEquality
-	public ModelStateManager<ProgressState> stateManager;
+	private ModelStateManager<ProgressState> stateManager;
 
 	// IMPORTANT used by serialization
 	protected Progress() {}
