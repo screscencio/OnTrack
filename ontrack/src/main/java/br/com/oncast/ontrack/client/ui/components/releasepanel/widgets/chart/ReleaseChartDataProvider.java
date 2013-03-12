@@ -43,7 +43,7 @@ public class ReleaseChartDataProvider {
 
 	public float getEstimatedVelocity() {
 		return release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : releaseEstimator
-				.getInferedEstimatedVelocityOnDay(getEstimatedStartDay());
+				.getInferedEstimatedVelocityOnDay(release);
 	}
 
 	public WorkingDay getEstimatedStartDay() {
@@ -94,12 +94,7 @@ public class ReleaseChartDataProvider {
 	}
 
 	public Float getActualVelocity() {
-		final WorkingDay currentDay = WorkingDay.getEarliest(release.getEndDay(), WorkingDayFactory.create());
-		final WorkingDay startDay = release.getStartDay();
-
-		if (currentDay.isBefore(startDay)) return null;
-
-		return getAccomplishedEffortFor(currentDay) / startDay.countTo(currentDay);
+		return release.getActualVelocity();
 	}
 
 	public float getValueSum() {
@@ -205,7 +200,6 @@ public class ReleaseChartDataProvider {
 	}
 
 	public WorkingDay getActualEndDay() {
-		if (!release.isDone()) return null;
 		return release.getInferedEndDay();
 	}
 

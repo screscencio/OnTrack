@@ -34,6 +34,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 import br.com.oncast.ontrack.shared.utils.WorkingDayFactory;
 import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
+import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import com.google.gwt.user.client.rpc.impl.ReflectionHelper;
@@ -42,19 +43,17 @@ import com.ibm.icu.util.Calendar;
 public class ReleaseChartDataProviderTest {
 
 	private ReleaseEstimator estimatorMock;
-	private Release releaseMock;
+	private static Release release;
 
 	private WorkingDay estimatedEndDay;
 	private WorkingDay estimatedStartDay;
 	private Float releaseEffortSum;
 	private ActionExecutionService actionExecutionServiceMock;
-	private static List<Scope> releaseScopes;
 
 	@Before
 	public void setup() throws Exception {
-		releaseMock = Mockito.mock(Release.class);
+		release = Mockito.spy(ReleaseTestUtils.createRelease());
 		releaseEffortSum = 10f;
-		releaseScopes = new ArrayList<Scope>();
 		setupReleaseMock();
 
 		estimatorMock = Mockito.mock(ReleaseEstimator.class);
@@ -66,9 +65,9 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	public void verifyMocks() {
-		Mockito.verify(estimatorMock, Mockito.atLeastOnce()).getEstimatedEndDayFor(releaseMock);
-		Mockito.verify(estimatorMock, Mockito.atLeastOnce()).getEstimatedStartDayFor(releaseMock);
-		Mockito.verify(releaseMock, Mockito.atLeastOnce()).getAllScopesIncludingDescendantReleases();
+		Mockito.verify(estimatorMock, Mockito.atLeastOnce()).getEstimatedEndDayFor(release);
+		Mockito.verify(estimatorMock, Mockito.atLeastOnce()).getEstimatedStartDayFor(release);
+		Mockito.verify(release, Mockito.atLeastOnce()).getAllScopesIncludingDescendantReleases();
 	}
 
 	@Test
@@ -93,7 +92,7 @@ public class ReleaseChartDataProviderTest {
 	public void releaseDaysShouldEndOnEstimatedEndDayWhenReleaseEndDayIsNull() throws Exception {
 		final List<WorkingDay> releaseDays = getProvider().getReleaseDays();
 		final int lastIndex = releaseDays.size() - 1;
-		assertNull(releaseMock.getEndDay());
+		assertNull(release.getEndDay());
 		assertEquals(estimatedEndDay, releaseDays.get(lastIndex));
 		verifyMocks();
 	}
@@ -105,7 +104,7 @@ public class ReleaseChartDataProviderTest {
 		final List<WorkingDay> releaseDays = getProvider().getReleaseDays();
 		final int lastIndex = releaseDays.size() - 1;
 
-		assertTrue(estimatedEndDay.isAfter(releaseMock.getEndDay()));
+		assertTrue(estimatedEndDay.isAfter(release.getEndDay()));
 		assertEquals(estimatedEndDay.getDayAndMonthString(), releaseDays.get(lastIndex).getDayAndMonthString());
 		verifyMocks();
 	}
@@ -117,7 +116,7 @@ public class ReleaseChartDataProviderTest {
 		final List<WorkingDay> releaseDays = getProvider().getReleaseDays();
 		final int lastIndex = releaseDays.size() - 1;
 
-		final WorkingDay releaseEndDay = releaseMock.getEndDay();
+		final WorkingDay releaseEndDay = release.getEndDay();
 		assertTrue(releaseEndDay.isAfter(estimatedEndDay));
 		assertEquals(releaseEndDay.getDayAndMonthString(), releaseDays.get(lastIndex).getDayAndMonthString());
 		verifyMocks();
@@ -145,7 +144,7 @@ public class ReleaseChartDataProviderTest {
 			estimatedEndDay.add(i);
 			assertEquals(estimatedEndDay, getProvider().getEstimatedEndDay());
 		}
-		Mockito.verify(estimatorMock, Mockito.atLeast(20)).getEstimatedEndDayFor(releaseMock);
+		Mockito.verify(estimatorMock, Mockito.atLeast(20)).getEstimatedEndDayFor(release);
 	}
 
 	@Test
@@ -184,38 +183,38 @@ public class ReleaseChartDataProviderTest {
 	@Test
 	public void getEstimatedVelocityShouldReturnTheDeclaredOneWhenAlreadyDeclared() throws Exception {
 		final Float declaredVelocity = 1.5f;
-		Mockito.when(releaseMock.hasDeclaredEstimatedVelocity()).thenReturn(true);
-		Mockito.when(releaseMock.getEstimatedVelocity()).thenReturn(declaredVelocity);
+		Mockito.when(release.hasDeclaredEstimatedVelocity()).thenReturn(true);
+		Mockito.when(release.getEstimatedVelocity()).thenReturn(declaredVelocity);
 
 		assertEquals(declaredVelocity, getProvider().getEstimatedVelocity());
 
-		Mockito.verify(releaseMock).getEstimatedVelocity();
+		Mockito.verify(release).getEstimatedVelocity();
 	}
 
 	@Test
 	public void getEstimatedVelocityShouldReturnTheInferedOneWhenNotDeclared() throws Exception {
 		final Float inferedVelocity = 5.6f;
 
-		Mockito.when(releaseMock.hasDeclaredEstimatedVelocity()).thenReturn(false);
-		Mockito.when(estimatorMock.getInferedEstimatedVelocityOnDay(Mockito.any(WorkingDay.class))).thenReturn(inferedVelocity);
+		Mockito.when(release.hasDeclaredEstimatedVelocity()).thenReturn(false);
+		Mockito.when(estimatorMock.getInferedEstimatedVelocityOnDay(Mockito.any(Release.class))).thenReturn(inferedVelocity);
 
 		assertEquals(inferedVelocity, getProvider().getEstimatedVelocity());
 
-		Mockito.verify(releaseMock, Mockito.never()).getEstimatedVelocity();
-		Mockito.verify(estimatorMock).getInferedEstimatedVelocityOnDay(Mockito.any(WorkingDay.class));
+		Mockito.verify(release, Mockito.never()).getEstimatedVelocity();
+		Mockito.verify(estimatorMock).getInferedEstimatedVelocityOnDay(Mockito.any(Release.class));
 	}
 
 	@Test
 	public void shouldRequestReleaseDeclareStartDayActionWhenDeclareStartDayWereCalled() throws Exception {
 		final Date declaredDate = new Date();
 		final UUID releaseId = new UUID();
-		when(releaseMock.getId()).thenReturn(releaseId);
+		when(release.getId()).thenReturn(releaseId);
 
 		getProvider().declareStartDate(declaredDate);
 
 		final ArgumentCaptor<ReleaseDeclareStartDayAction> captor = ArgumentCaptor.forClass(ReleaseDeclareStartDayAction.class);
 		verify(actionExecutionServiceMock).onUserActionExecutionRequest(captor.capture());
-		verify(releaseMock).getId();
+		verify(release).getId();
 
 		final ReleaseDeclareStartDayAction action = captor.getValue();
 		assertEquals(releaseId, action.getReferenceId());
@@ -226,13 +225,13 @@ public class ReleaseChartDataProviderTest {
 	public void shouldRequestReleaseDeclareEndDayActionWhenDeclareEndDayWereCalled() throws Exception {
 		final Date declaredDate = new Date();
 		final UUID releaseId = new UUID();
-		when(releaseMock.getId()).thenReturn(releaseId);
+		when(release.getId()).thenReturn(releaseId);
 
 		getProvider().declareEndDate(declaredDate);
 
 		final ArgumentCaptor<ReleaseDeclareEndDayAction> captor = ArgumentCaptor.forClass(ReleaseDeclareEndDayAction.class);
 		verify(actionExecutionServiceMock).onUserActionExecutionRequest(captor.capture());
-		verify(releaseMock).getId();
+		verify(release).getId();
 
 		final ReleaseDeclareEndDayAction action = captor.getValue();
 		assertEquals(releaseId, action.getReferenceId());
@@ -243,13 +242,13 @@ public class ReleaseChartDataProviderTest {
 	public void shouldRequestReleaseDeclareEstimatedVelocityActionWhenDeclareEstimatedVelocityWereCalled() throws Exception {
 		final Float declaredVelocity = 12.5f;
 		final UUID releaseId = new UUID();
-		when(releaseMock.getId()).thenReturn(releaseId);
+		when(release.getId()).thenReturn(releaseId);
 
 		getProvider().declareEstimatedVelocity(declaredVelocity);
 
 		final ArgumentCaptor<ReleaseDeclareEstimatedVelocityAction> captor = ArgumentCaptor.forClass(ReleaseDeclareEstimatedVelocityAction.class);
 		verify(actionExecutionServiceMock).onUserActionExecutionRequest(captor.capture());
-		verify(releaseMock).getId();
+		verify(release).getId();
 
 		final ReleaseDeclareEstimatedVelocityAction action = captor.getValue();
 		assertEquals(releaseId, action.getReferenceId());
@@ -272,7 +271,7 @@ public class ReleaseChartDataProviderTest {
 		parent.add(child2);
 		parent.add(child3);
 
-		releaseScopes.add(parent);
+		release.addScope(parent);
 
 		releaseEffortSum = 6F;
 		estimatedStartDay = day2;
@@ -310,7 +309,7 @@ public class ReleaseChartDataProviderTest {
 		ScopeTestUtils.setProgress(childA, ProgressState.DONE, estimatedEndDay);
 		processInference(parent, estimatedEndDay);
 
-		releaseScopes.add(parent);
+		release.addScope(parent);
 		assertAccomplishedEffortsByDate(0f, 0f, 5f, 10f);
 	}
 
@@ -347,14 +346,14 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	private void setupEstimatorMock() {
-		Mockito.when(estimatorMock.getEstimatedStartDayFor(releaseMock)).thenAnswer(new Answer<WorkingDay>() {
+		Mockito.when(estimatorMock.getEstimatedStartDayFor(release)).thenAnswer(new Answer<WorkingDay>() {
 
 			@Override
 			public WorkingDay answer(final InvocationOnMock invocation) throws Throwable {
 				return estimatedStartDay.copy();
 			}
 		});
-		Mockito.when(estimatorMock.getEstimatedEndDayFor(releaseMock)).thenAnswer(new Answer<WorkingDay>() {
+		Mockito.when(estimatorMock.getEstimatedEndDayFor(release)).thenAnswer(new Answer<WorkingDay>() {
 
 			@Override
 			public WorkingDay answer(final InvocationOnMock invocation) throws Throwable {
@@ -364,31 +363,17 @@ public class ReleaseChartDataProviderTest {
 	}
 
 	private void setupReleaseMock() {
-		Mockito.when(releaseMock.getEffortSum()).thenAnswer(new Answer<Float>() {
+		Mockito.when(release.getEffortSum()).thenAnswer(new Answer<Float>() {
 
 			@Override
 			public Float answer(final InvocationOnMock invocation) throws Throwable {
 				return releaseEffortSum;
 			}
 		});
-		Mockito.when(releaseMock.getAllScopesIncludingDescendantReleases()).thenAnswer(new Answer<List<Scope>>() {
-
-			@Override
-			public List<Scope> answer(final InvocationOnMock invocation) throws Throwable {
-				return releaseScopes;
-			}
-		});
-		Mockito.when(releaseMock.getInferedEndDay()).thenCallRealMethod();
-		Mockito.when(releaseMock.getEndDay()).thenAnswer(new Answer<WorkingDay>() {
-			@Override
-			public WorkingDay answer(final InvocationOnMock invocation) throws Throwable {
-				return releaseMock.getInferedEndDay();
-			}
-		});
 	}
 
 	private ReleaseChartDataProvider getProvider() {
-		return new ReleaseChartDataProvider(releaseMock, estimatorMock, actionExecutionServiceMock);
+		return new ReleaseChartDataProvider(release, estimatorMock, actionExecutionServiceMock);
 	}
 
 	private static class Accomplish {
@@ -397,7 +382,7 @@ public class ReleaseChartDataProviderTest {
 
 		public Accomplish(final int effort) {
 			scope = createScope(ProgressState.UNDER_WORK, effort);
-			releaseScopes.add(scope);
+			release.addScope(scope);
 		}
 
 		public void today() {
