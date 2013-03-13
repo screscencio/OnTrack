@@ -13,6 +13,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,10 +37,13 @@ public class ApplicationMenuItem extends Composite implements HasText {
 
 	public ApplicationMenuItem() {
 		initWidget(uiBinder.createAndBindUi(this));
+		content.setVisible(false);
+		menuHeader.setVisible(false);
 	}
 
 	public ApplicationMenuItem(final String text, final boolean hasBiggerFont) {
 		initWidget(uiBinder.createAndBindUi(this));
+		content.setVisible(false);
 		setText(text);
 		setBiggerFont(hasBiggerFont);
 	}
@@ -48,10 +52,16 @@ public class ApplicationMenuItem extends Composite implements HasText {
 	FocusPanel rootPanel;
 
 	@UiField
+	HorizontalPanel container;
+
+	@UiField
 	SimplePanel menuHeader;
 
 	@UiField
 	Label arrow;
+
+	@UiField
+	SimplePanel content;
 
 	private PopupConfig popup;
 
@@ -73,11 +83,18 @@ public class ApplicationMenuItem extends Composite implements HasText {
 		if (!(headerWidget instanceof HasText)) throw new IllegalArgumentException();
 		textWidget = (HasText) headerWidget;
 		menuHeader.setWidget(headerWidget);
+		menuHeader.setVisible(headerWidget != null);
 	}
 
 	@Override
 	public void setText(final String text) {
 		setMenuHeaderWidget(new Label(text));
+		menuHeader.setVisible(text != null && !text.isEmpty());
+	}
+
+	public void setContentStyle(final String style) {
+		content.setStyleName(style);
+		content.setVisible(style != null && !style.isEmpty());
 	}
 
 	@Override
@@ -93,7 +110,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 			@Override
 			public void onWillOpen() {
 				arrow.addStyleName(style.arrowUp());
-				menuHeader.addStyleName(style.menuItemSelected());
+				container.addStyleName(style.menuItemSelected());
 				isOpen = true;
 			}
 		});
@@ -102,7 +119,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 			@Override
 			public void onHasClosed() {
 				arrow.removeStyleName(style.arrowUp());
-				menuHeader.removeStyleName(style.menuItemSelected());
+				container.removeStyleName(style.menuItemSelected());
 				isOpen = false;
 			}
 		});

@@ -26,20 +26,21 @@
 
 		.searchBar {
 			position: absolute;
-			top: PADDING_MEDIUM;
+			top: PADDING_SMALL;
 			left: PADDING_SMALL;
-			right: PADDING_SMALL;
+			right: PADDING_MEDIUM;
 		}
 			
 		.scopeTree {
 			position: absolute;
 			
 			top: PADDING_SMALL;
-			left: 11px;
-			right: 11px;
-			bottom: 38px;
+			left: PADDING_SMALL;
+			right: PADDING_MEDIUM;
+			bottom: 32px;
 			
-			padding: 50px 0px 0px 5px;
+			padding: 40px 5px;
+			padding-bottom: 0px;
 			
 			overflow: auto;
 			overflow-x: hidden;
@@ -48,14 +49,14 @@
 		.footerBar {
 			position: absolute;
 			left: PADDING_SMALL;
-			right: PADDING_SMALL;
+			right: PADDING_MEDIUM;
 			bottom: PADDING_SMALL;
-			height: 33px;
+			height: 27px;
 		}
 		
 		.releasePanel {
 			position: absolute;
-			top: 45px;
+			top: 55px;
 			right: 0px;
 			bottom: 0px;
 			width: 400px;
@@ -67,9 +68,9 @@
 		
 		.projectMembers {
 			position: absolute;
-			top: 2px;
+			top: PADDING_SMALL;
 			right: PADDING_SMALL;
-			height: 40px;;
+			height: 40px;
 			width: 400px;
 			overflow: hidden;
 		}
@@ -85,7 +86,7 @@
 		.toggleReleaseBtn {
 			position: absolute;
 			top: 50%;
-			right: 3px;
+			right: 2px;
 			width: 8px;
 			background-size: 15px 15px;
 			background-position: center;

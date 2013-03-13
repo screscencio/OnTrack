@@ -12,11 +12,14 @@
 			width: 100%;
 		}
 		
+		.header {
+			border: 0px;
+		}
+		
 		.footer {
 			padding: 8px;
 			
-			font-size: FONT_SIZE_LARGE;				
-			text-shadow: RELEASE_WIDGET_HEADER_TEXT_SHADOW;
+			font-size: FONT_SIZE_LARGE;
 		}
 		
 		.container {
@@ -34,6 +37,7 @@
 			font-size: FONT_SIZE_SMALL;
 			font-weight: bold;
 			white-space: nowrap;
+			color: COLOR_HIGHLIGHT_PRIMARY;
 		}
 		
 		.upperAdjust {
@@ -49,7 +53,7 @@
 		
 		.shortcutsButton {
 			position: absolute;
-			top: 3px;
+			top: 2px;
 			right: 117px;
 			
 			padding: 4px;
@@ -57,33 +61,22 @@
 			width: 63px;
 			height: auto;
 			
-			color: COLOR_MENU_LINK;
-			
 			font-size: FONT_SIZE_SMALL;
 			white-space: nowrap;
-			
-			cursor: pointer;
 		}
 		
 		.feedback {
 			position: absolute;
-			top: 3px;
-			right: 3px;
+			top: 2px;
+			right: 2px;
 			
 			padding: 4px;
 			
 			width: auto;
 			height: auto;
 			
-			color: COLOR_MENU_LINK;
-			
 			font-size: FONT_SIZE_SMALL;
 			white-space: nowrap;
-			
-			cursor: pointer;
-		}
-		.feedback:HOVER, .shortcutsButton:HOVER {
-			color: COLOR_MENU_LINK_HOVER;
 		}
 		
 		.scrollArea {

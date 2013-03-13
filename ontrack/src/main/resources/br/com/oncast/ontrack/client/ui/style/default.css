@@ -4,13 +4,16 @@
 @def COLOR_BACKGROUND_SECONDARY #FAFAFA;
 @def COLOR_BACKGROUND_TERTIARY #444444;
 @def COLOR_BACKGROUND_CONTAINER rgba(0, 0, 0, 0.3);
-@def COLOR_BACKGROUND_HEADER #d1d1d1;
+@def COLOR_BACKGROUND_HEADER #D1D1D1;
+@def COLOR_BACKGROUND_HEADER_CLOSED #444;
 
 @def COLOR_HIGHLIGHT_PRIMARY #00B4CC;
 @def COLOR_HIGHLIGHT_SECONDARY #005F6B;
+@def COLOR_HIGHLIGHT_TERTIARY #FFF;
 
-@def COLOR_HOVER_PRIMARY #00DFFC;
-@def COLOR_HOVER_SECONDARY #008C9E;
+@def COLOR_HOVER_PRIMARY #FFF;
+@def COLOR_HOVER_SECONDARY #C1E8EE;
+@def COLOR_HOVER_TERTIARY #4EC6D6;
 
 @def COLOR_ACTIVE_PRIMARY #00DFFC;
 @def COLOR_ACTIVE_SECONDARY #008C9E;
@@ -35,16 +38,18 @@
 
 @def COLOR_TEXT_PRIMARY #FAFAFA;
 @def COLOR_TEXT_SECONDARY #343838;
-@def COLOR_TEXT_MENUBAR #d1d1d1;
+@def COLOR_TEXT_TERTIARY #D1D1D1;
+@def COLOR_TEXT_MENUBAR #D1D1D1;
 @def COLOR_TEXT_HEADER #666;
+@def COLOR_TEXT_HEADER_CLOSED #666;
 
 @def COLOR_BORDER_PRIMARY #666;
 @def COLOR_BORDER_SECONDARY #C0C0C0;
 @def COLOR_BORDER_MENUBAR #999;
 @def COLOR_BORDER_HEADER #bbb;
 
-@def COLOR_BORDER_ACTIVE_PRIMARY #f00;
-@def COLOR_BORDER_ACTIVE_SECONDARY #ff0;
+@def COLOR_BORDER_ACTIVE_PRIMARY #F00;
+@def COLOR_BORDER_ACTIVE_SECONDARY #FF0;
 
 @def COLOR_SHADOW_PRIMARY #000;
 @def COLOR_SHADOW_SECONDARY #444;
@@ -63,7 +68,7 @@
 
 @def SHADOW_PRIMARY 0px 0px 5px COLOR_HIGHLIGHT_PRIMARY;
 @def SHADOW_SECONDARY 0px 2px 5px -1px #444;
-@def SHADOW_INSET_SECONDARY inset 0px 0px 5px #000;
+@def SHADOW_INSET_SECONDARY inset 0px 2px 5px -1px #444;
 
 @def SHADOW_HIGHLIGHT_PRIMARY 0px 0px 5px COLOR_HIGHLIGHT_PRIMARY;
 @def SHADOW_HIGHLIGHT_SECONDARY 0px 0px 5px COLOR_HIGHLIGHT_SECONDARY;
@@ -71,31 +76,40 @@
 @def SHADOW_ACTIVE_PRIMARY 0px 0px 5px COLOR_ACTIVE_PRIMARY;
 @def SHADOW_ACTIVE_SECONDARY 0px 0px 5px COLOR_ACTIVE_SECONDARY;
 
+/* Fonts */
+@def FONT_ICON_FILL 'IconicFill';
+
 /* Styles */
 
 .menuBar, .colorMenuBackgroundGradient {
-	background: rgb(67,67,67);
-	background: -moz-linear-gradient(top,  rgba(67,67,67,1) 0%, rgba(119,119,119,1) 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(67,67,67,1)), color-stop(100%,rgba(119,119,119,1)));
-	background: -webkit-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%);
-	background: -o-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%);
-	background: -ms-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%);
-	background: linear-gradient(to bottom,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%);
+	background: rgba(255, 255, 255, 0.3);
 	
 	color: COLOR_TEXT_MENUBAR;
 	border-bottom: BORDER_MENUBAR;
-	box-shadow: 0px 2px 6px black; 
+	box-shadow: 0px 2px 6px black;
+	
+/* 	background: rgb(67,67,67); */
+/* 	background: -moz-linear-gradient(top,  rgba(67,67,67,1) 0%, rgba(119,119,119,1) 100%); */
+/* 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(67,67,67,1)), color-stop(100%,rgba(119,119,119,1))); */
+/* 	background: -webkit-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%); */
+/* 	background: -o-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%); */
+/* 	background: -ms-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%); */
+/* 	background: linear-gradient(to bottom,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%); */
 }
 
 .header {
 	background: COLOR_BACKGROUND_HEADER;
 
 	color: COLOR_TEXT_HEADER;
-	border: BORDER_HEADER;
 	
 	-webkit-box-shadow: SHADOW_SECONDARY;
 	-moz-box-shadow: SHADOW_SECONDARY;
 	box-shadow: SHADOW_SECONDARY;
+}
+
+.headerClosed {
+	opacity: 0.5;
+	box-shadow: none;
 }
 
 .popupContainer {
@@ -116,6 +130,24 @@
 	box-shadow: SHADOW_ACTIVE_SECONDARY;
 	z-index: 1;
 	border: 1px solid #888;
+}
+
+.menuboxButton {
+		background: COLOR_BACKGROUND_TERTIARY;
+		
+		border: 0px;
+		border-radius: 3px;
+
+		color: COLOR_TEXT_TERTIARY;
+		font-size: FONT_SIZE_MEDIUM;
+		
+		padding: 8px;
+		width: 100%;
+		
+		cursor: pointer;
+}
+.menuboxButton:hover {
+	color: COLOR_HIGHLIGHT_TERTIARY;
 }
 
 /* Old Styles */
@@ -262,32 +294,6 @@
 @def MENUBOX_BUTTOM_BORDER 1px solid #CCAF6B;
 
 @def TEXT_SHADOW_ENGRAVED_METAL 1px 1px 1px COLOR_MENUBOX_BACKGROUND;
-
-.menuboxButton {
-		background: COLOR_MENUBOX_BUTTOM_BACKGROUND;
-		
-		border: MENUBOX_BUTTOM_BORDER;
-		-webkit-box-shadow: MENUBOX_BUTTOM_SHADOW;
-		-moz-box-shadow: MENUBOX_BUTTOM_SHADOW;
-		box-shadow: MENUBOX_BUTTOM_SHADOW;
-		
-		color: #FFFFFF;
-		font-family: FONT_DEFAULT;
-		font-size: FONT_SIZE_MEDIUM;
-		
-		padding: 8px;
-		width: 100%;
-}
-.menuboxButton:active {
-		background: #EDB443;
-		background: literal('-moz-linear-gradient(top, #EDB443 1%, #F1C460 100%)');
-		background: literal('-webkit-gradient(linear, left top, left bottom, color-stop(1%,#EDB443), color-stop(100%,#F1C460))');
-		background: literal('-webkit-linear-gradient(top, #EDB443 1%,#F1C460 100%)');
-		background: literal('-o-linear-gradient(top, #EDB443 1%,#F1C460 100%)');
-		background: literal('-ms-linear-gradient(top, #EDB443 1%,#F1C460 100%)');
-		background: literal('linear-gradient(top, #EDB443 1%,#F1C460 100%)');
-		filter: literal('progid:DXImageTransform.Microsoft.gradient( startColorstr="#EDB443", endColorstr="#F1C460",GradientType=0)');
-}
 
 @def COLOR_RELEASE_WIDGET_BORDER #dedede;
 @def RELEASE_WIDGET_BORDER 1px solid COLOR_RELEASE_WIDGET_BORDER;
