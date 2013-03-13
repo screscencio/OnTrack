@@ -87,6 +87,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 		SERVICE_PROVIDER.getActionExecutionService().onUserActionExecutionRequest(action);
 	}
 
+	// FIXME LOBO REmover esse metodo que nao eh mais usado faz um tempo
 	@Override
 	public String getNoItemText() {
 		return null;
