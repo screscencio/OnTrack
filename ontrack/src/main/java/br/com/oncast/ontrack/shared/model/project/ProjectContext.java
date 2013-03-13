@@ -274,6 +274,7 @@ public class ProjectContext implements HasUUID {
 		return project.removeDescriptionFor(subjectId);
 	}
 
+	// FIXME LOBO
 	public <T extends Metadata> List<T> getAllMetadata(final MetadataType metadataType) {
 		return project.getMetadataList(metadataType);
 	}

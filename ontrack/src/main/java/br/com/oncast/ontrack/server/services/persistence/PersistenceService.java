@@ -18,7 +18,7 @@ import br.com.oncast.ontrack.shared.services.notification.Notification;
 
 public interface PersistenceService {
 
-	public long persistActions(final UUID projectId, final List<ModelAction> actionList, UUID userId, final Date timestamp)
+	public void persistActions(final UUID projectId, final List<ModelAction> actionList, UUID userId, final Date timestamp)
 			throws PersistenceException;
 
 	public ProjectSnapshot retrieveProjectSnapshot(UUID projectId) throws PersistenceException, NoResultFoundException;

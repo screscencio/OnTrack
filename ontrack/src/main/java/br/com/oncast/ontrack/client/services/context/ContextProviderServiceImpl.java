@@ -9,7 +9,6 @@ import br.com.oncast.ontrack.client.services.authentication.AuthenticationServic
 import br.com.oncast.ontrack.client.services.authentication.UserAuthenticationListener;
 import br.com.oncast.ontrack.shared.exceptions.business.ProjectNotFoundException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextResponse;
@@ -18,7 +17,6 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 	private final ProjectRepresentationProviderImpl projectRepresentationProvider;
 	private final DispatchService requestDispatchService;
-	private Long loadProjectRevision = null;
 
 	private ProjectContext projectContext;
 	private final List<ContextChangeListener> contextLoadListeners;
@@ -73,7 +71,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 		final UUID currentProjectId = getCurrentProjectId();
 
 		for (final ContextChangeListener l : contextLoadListeners) {
-			l.onProjectChanged(currentProjectId, loadProjectRevision);
+			l.onProjectChanged(currentProjectId);
 		}
 	}
 
@@ -89,9 +87,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 
 					@Override
 					public void onSuccess(final ProjectContextResponse response) {
-						final ProjectRevision projectRevision = response.getProjectRevision();
-						setProjectContext(new ProjectContext(projectRevision.getProject()));
-						loadProjectRevision = projectRevision.getRevision();
+						setProjectContext(new ProjectContext(response.getProject()));
 						projectContextLoadCallback.onProjectContextLoaded();
 					}
 
@@ -117,7 +113,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	public void addContextLoadListener(final ContextChangeListener contextLoadListener) {
 		contextLoadListeners.add(contextLoadListener);
 
-		contextLoadListener.onProjectChanged(getCurrentProjectId(), loadProjectRevision);
+		contextLoadListener.onProjectChanged(getCurrentProjectId());
 	}
 
 	private UUID getCurrentProjectId() {
@@ -127,7 +123,7 @@ public class ContextProviderServiceImpl implements ContextProviderService {
 	}
 
 	public interface ContextChangeListener {
-		void onProjectChanged(UUID projectId, Long loadedProjectRevision);
+		void onProjectChanged(UUID projectId);
 	}
 
 	@Override

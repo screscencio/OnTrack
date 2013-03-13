@@ -12,20 +12,19 @@ import br.com.oncast.ontrack.shared.exceptions.business.UnableToHandleActionExce
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToLoadProjectException;
 import br.com.oncast.ontrack.shared.exceptions.business.UnableToRetrieveProjectListException;
 import br.com.oncast.ontrack.shared.model.file.FileRepresentation;
+import br.com.oncast.ontrack.shared.model.project.Project;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
-import br.com.oncast.ontrack.shared.model.project.ProjectRevision;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
-import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncEventRequestResponse;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ModelActionSyncRequest;
 import br.com.oncast.ontrack.shared.services.requestDispatch.ProjectContextRequest;
 
 // TODO Analyze dividing this class into multiple classes, each doing a specific job.
 public interface BusinessLogic {
 
-	public abstract long handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException,
+	public abstract void handleIncomingActionSyncRequest(final ModelActionSyncRequest modelActionSyncRequest) throws UnableToHandleActionException,
 			AuthorizationException;
 
-	public abstract ProjectRevision loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
+	public abstract Project loadProjectForClient(final ProjectContextRequest projectContextRequest) throws UnableToLoadProjectException,
 			ProjectNotFoundException;
 
 	public abstract ProjectRepresentation createProject(final String projectName) throws UnableToCreateProjectRepresentation, PersistenceException,
@@ -33,7 +32,7 @@ public interface BusinessLogic {
 
 	public abstract List<ProjectRepresentation> retrieveCurrentUserProjectList() throws UnableToRetrieveProjectListException;
 
-	public ProjectRevision loadProject(UUID uuid) throws ProjectNotFoundException, UnableToLoadProjectException;
+	public Project loadProject(UUID uuid) throws ProjectNotFoundException, UnableToLoadProjectException;
 
 	public abstract void sendProjectCreationQuotaRequestEmail();
 
@@ -48,8 +47,5 @@ public interface BusinessLogic {
 
 	public abstract void removeAuthorization(UUID userId, UUID projectId) throws UnableToHandleActionException, UnableToRemoveAuthorizationException,
 			PersistenceException, AuthorizationException;
-
-	public abstract ModelActionSyncEventRequestResponse loadProjectActions(UUID projectId, long lastSyncId) throws AuthorizationException,
-			UnableToLoadProjectException;
 
 }
