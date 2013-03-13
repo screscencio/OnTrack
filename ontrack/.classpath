@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar" sourcepath="/home/rhlobo/.m2/repository/org/hibernate/javax/persistence/hibernate-jpa-2.0-api/1.0.1.Final/hibernate-jpa-2.0-api-1.0.1.Final-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/validation-api-1.0.0.GA.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hsqldb-1.8.0.7.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist-3.12.1.GA.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jta-1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.6.1.jar"/>
@@ -57,14 +56,20 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.1.0.beta3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/newrelic-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.5.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist-3.12.1.GA.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jacocoagent.jar"/>
 	<classpathentry kind="lib" path="lib/atmosphere-gwt-client-1.1.0.beta3.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-test-utils-0.43-sources.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-test-utils-0.43.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-runtime-3.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/fest-assert-core-2.0M7.jar"/>
+	<classpathentry kind="lib" path="lib/fest-util-1.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-asl-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/javaparser-1.0.8.jar"/>
+	<classpathentry kind="lib" path="lib/paranamer-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-test-utils-0.43.jar" sourcepath="lib/gwt-test-utils-0.43-sources.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

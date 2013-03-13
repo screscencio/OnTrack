@@ -10,9 +10,6 @@
 
 	<properties>
 		<gwtModule>br.com.oncast.ontrack.Application</gwtModule>
-		<gwt.compiler.force>false</gwt.compiler.force>
-		<gwt.draftCompile>false</gwt.draftCompile>
-		<gwt.style>OBF</gwt.style>
 		<gwtVersion>2.5.0</gwtVersion>
 		<guavaVersion>12.0</guavaVersion>
 		<atmosphereVersion>1.1.0.beta3</atmosphereVersion>
@@ -297,7 +294,7 @@
 		<dependency>
 			<groupId>com.googlecode.gwt-test-utils</groupId>
   			<artifactId>gwt-test-utils</artifactId>
-			<version>0.44</version>
+			<version>0.43</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
