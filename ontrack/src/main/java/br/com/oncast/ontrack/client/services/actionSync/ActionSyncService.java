@@ -90,4 +90,5 @@ public class ActionSyncService {
 				"This client received an action for project '" + requestedProjectId + "' but it is currently on project '" + currentProjectId
 						+ "'. Please notify OnTrack team.");
 	}
+
 }
