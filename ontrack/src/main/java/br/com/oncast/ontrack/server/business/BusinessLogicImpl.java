@@ -391,5 +391,4 @@ class BusinessLogicImpl implements BusinessLogic {
 	private long getTimeSpent(final long initialTime) {
 		return getCurrentTime() - initialTime;
 	}
-
 }
