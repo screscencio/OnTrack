@@ -25,6 +25,15 @@
 			width: 100%;
 		}
 		
+		.searchIcon:before {
+			content: '\e074'
+		}
+		
+		.searchIcon {
+			font-family: FONT_ICON_FILL;
+			font-size: 22px;
+		}
+		
 		.search {
 			margin: 0 PADDING_MEDIUM;
 		}
@@ -66,8 +75,8 @@
 		<g:HTMLPanel styleName="{style.searchBar} {style.header}">
 			<g:HorizontalPanel ui:field="container" styleName="{style.container}" verticalAlignment="middle" horizontalAlignment="center">
 				<g:cell width="1">
-					<g:Label>
-						<ui:msg description="search scope label">Search</ui:msg>
+					<g:Label styleName="{style.searchIcon} {style.flip}">
+<!-- 						<ui:msg description="search scope label">Search</ui:msg> -->
 					</g:Label>
 				</g:cell>
 				<g:cell width="100%">

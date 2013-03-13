@@ -15,23 +15,29 @@
 			padding: 25px;
 		}
 		
-		.descriptionLabel {
-			margin-bottom: 10px;
-
-			font-family: FONT_DEFAULT_ITALIC;
-			font-style: italic;
-		}
-		
 		.separator {
 			margin-top: 20px;
 		}
+		
+		.submitButton {
+			width: auto;
+			background: COLOR_HIGHLIGHT_SECONDARY;
+			color: COLOR_TEXT_TERTIARY;
+			float: left;
+			margin: 0px;
+			border-radius: 0px;
+			line-height: 30px;
+			font-size: 10pt;
+			padding: 0px 10px;
+			
+			box-shadow: SHADOW_TERTIARY;
+		}
 
 		.forgotPassword { 
-			margin-top: 10px;
 			font-size: 12px;
-			color: blue;
-			width: 100%;
-			text-align: right;	
+			color: COLOR_BORDER_MENUBAR;
+			float: right;
+			text-shadow: TEXT_SHADOW_TERTIARY;
 		}
 		
 		.forgotPassword>a:hover { 
@@ -44,25 +50,21 @@
 	<layout:ApplicationWidgetContainer debugId="loginPlace">
 		<g:FormPanel ui:field="form" action="fakeAction" method="post">
 			<g:HTMLPanel styleName="{style.contentPanel}">
-				<g:Label ui:field="emailLabel" styleName="{style.descriptionLabel}">
-					<ui:msg description="username label">Username</ui:msg>
-				</g:Label>
-				<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea">
+				<layout:ValidationInputContainer debugId="emailInput" ui:field="emailArea" defaultText="Username">
+					<ui:attribute name="defaultText" description="username label"/>
 					<g:TextBox name="email"/>
 				</layout:ValidationInputContainer>
 				
 				<div class="{style.separator}" />
 				
-				<g:Label ui:field="passwordLabel" styleName="{style.descriptionLabel}">
-					<ui:msg description="password label">Password</ui:msg>
-				</g:Label>
-				<layout:ValidationInputContainer debugId="passwordInput" ui:field="passwordArea">
+				<layout:ValidationInputContainer debugId="passwordInput" ui:field="passwordArea" defaultText="Password">
+					<ui:attribute name="defaultText" description="password label"/>
 					<g:PasswordTextBox name="password"/>
 				</layout:ValidationInputContainer>
 				
 				<div class="{style.separator}" />
-				<g:SubmitButton debugId="submitButton" ui:field="loginButton" styleName="{style.menuboxButton}">
-					<ui:msg description="login submit button label">LOGIN</ui:msg>
+				<g:SubmitButton debugId="submitButton" ui:field="loginButton" styleName="{style.menuboxButton} {style.submitButton}">
+					<ui:msg description="login submit button label">Login</ui:msg>
 				</g:SubmitButton>
 
 				<div class="{style.forgotPassword}">

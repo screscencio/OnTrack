@@ -3,12 +3,12 @@
 @def COLOR_BACKGROUND_PRIMARY #343838;
 @def COLOR_BACKGROUND_SECONDARY #FAFAFA;
 @def COLOR_BACKGROUND_TERTIARY #444444;
-@def COLOR_BACKGROUND_CONTAINER rgba(0, 0, 0, 0.3);
+@def COLOR_BACKGROUND_MENUBAR rgba(255, 255, 255, 0.2);
 @def COLOR_BACKGROUND_HEADER #D1D1D1;
 @def COLOR_BACKGROUND_HEADER_CLOSED #444;
 
 @def COLOR_HIGHLIGHT_PRIMARY #00B4CC;
-@def COLOR_HIGHLIGHT_SECONDARY #005F6B;
+@def COLOR_HIGHLIGHT_SECONDARY #3995A7;
 @def COLOR_HIGHLIGHT_TERTIARY #FFF;
 
 @def COLOR_HOVER_PRIMARY #FFF;
@@ -28,7 +28,7 @@
 @def COLOR_WARNING_SECONDARY #008C9E;
 
 @def COLOR_ERROR_PRIMARY #00DFFC;
-@def COLOR_ERROR_SECONDARY #008C9E;
+@def COLOR_ERROR_SECONDARY #EF4755;
 
 @def COLOR_NEUTRAL_PRIMARY #00DFFC;
 @def COLOR_NEUTRAL_SECONDARY #008C9E;
@@ -69,6 +69,8 @@
 @def SHADOW_PRIMARY 0px 0px 5px COLOR_HIGHLIGHT_PRIMARY;
 @def SHADOW_SECONDARY 0px 2px 5px -1px #444;
 @def SHADOW_INSET_SECONDARY inset 0px 2px 5px -1px #444;
+@def SHADOW_TERTIARY 0px 2px 5px -1px #000;
+@def TEXT_SHADOW_TERTIARY 0px 2px 5px #000;
 
 @def SHADOW_HIGHLIGHT_PRIMARY 0px 0px 5px COLOR_HIGHLIGHT_PRIMARY;
 @def SHADOW_HIGHLIGHT_SECONDARY 0px 0px 5px COLOR_HIGHLIGHT_SECONDARY;
@@ -82,19 +84,10 @@
 /* Styles */
 
 .menuBar, .colorMenuBackgroundGradient {
-	background: rgba(255, 255, 255, 0.3);
+	background: COLOR_BACKGROUND_MENUBAR;
 	
 	color: COLOR_TEXT_MENUBAR;
-	border-bottom: BORDER_MENUBAR;
 	box-shadow: 0px 2px 6px black;
-	
-/* 	background: rgb(67,67,67); */
-/* 	background: -moz-linear-gradient(top,  rgba(67,67,67,1) 0%, rgba(119,119,119,1) 100%); */
-/* 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(67,67,67,1)), color-stop(100%,rgba(119,119,119,1))); */
-/* 	background: -webkit-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%); */
-/* 	background: -o-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%); */
-/* 	background: -ms-linear-gradient(top,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%); */
-/* 	background: linear-gradient(to bottom,  rgba(67,67,67,1) 0%,rgba(119,119,119,1) 100%); */
 }
 
 .header {
@@ -110,6 +103,14 @@
 .headerClosed {
 	opacity: 0.5;
 	box-shadow: none;
+}
+
+.flip {
+    -moz-transform: scaleX(-1); /* Gecko */
+    -o-transform: scaleX(-1); /* Operah */
+    -webkit-transform: scaleX(-1); /* webkit */
+    transform: scaleX(-1); /* standard */
+    filter: FlipH; /* IE 6/7/8 */
 }
 
 .popupContainer {
@@ -136,7 +137,7 @@
 		background: COLOR_BACKGROUND_TERTIARY;
 		
 		border: 0px;
-		border-radius: 3px;
+		border-radius: 2px;
 
 		color: COLOR_TEXT_TERTIARY;
 		font-size: FONT_SIZE_MEDIUM;
