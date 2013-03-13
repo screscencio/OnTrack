@@ -90,6 +90,8 @@ class ActionQueuedDispatcher {
 							alertingService.showErrorWithConfirmation(messages.connectionLost(), new AlertConfirmationListener() {
 								@Override
 								public void onConfirmation() {
+									// FIXME LOBO
+									Window.alert(caught.toString());
 									Window.Location.reload();
 								}
 							});
