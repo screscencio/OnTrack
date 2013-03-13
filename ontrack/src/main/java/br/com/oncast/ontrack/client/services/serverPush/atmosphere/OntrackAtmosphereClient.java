@@ -15,6 +15,9 @@ public class OntrackAtmosphereClient implements ServerPushClient {
 
 	public OntrackAtmosphereClient(final AtmosphereListener listener) {
 		client = new AtmosphereClient(URLBuilder.ATMOSPHERE_URL, (AtmosphereGWTSerializer) GWT.create(EventSerializer.class), listener, false);
+		client.setConnectionTimeout(10000);
+		client.setReconnectionTimeout(2000);
+		client.setReconnectionCount(1);
 	}
 
 	@Override
