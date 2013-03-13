@@ -18,8 +18,10 @@ import br.com.oncast.ontrack.utils.mocks.actions.ActionExecutionFactoryTestUtil;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class MoveDownTest extends GwtTest {
 
 	private Scope scope;
@@ -131,10 +133,4 @@ public class MoveDownTest extends GwtTest {
 		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedScope().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
 	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
-	}
-
 }

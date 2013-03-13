@@ -31,8 +31,10 @@ import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ReleaseTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class BindReleaseTest extends GwtTest {
 
 	private Scope firstScope;
@@ -108,10 +110,4 @@ public class BindReleaseTest extends GwtTest {
 		final ReleaseTag tag = (ReleaseTag) releaseTagField.get(itemWidget);
 		return tag;
 	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
-	}
-
 }

@@ -14,8 +14,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class AnimatedVerticalContainerTests extends GwtTest {
 
 	public static final int ANIMATION_DURATION = 10;
@@ -355,10 +357,5 @@ public class AnimatedVerticalContainerTests extends GwtTest {
 		Assert.assertEquals(widget3, container.getWidget(2));
 		Assert.assertEquals(widget4, container.getWidget(3));
 		Assert.assertEquals(widget5, container.getWidget(4));
-	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
 	}
 }

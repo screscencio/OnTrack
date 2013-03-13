@@ -22,8 +22,10 @@ import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import com.google.gwt.user.client.ui.Label;
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class ScopeTreeItemWidgetTest extends GwtTest {
 
 	private static final Random RANDOM = new Random();
@@ -291,10 +293,4 @@ public class ScopeTreeItemWidgetTest extends GwtTest {
 	private ScopeTreeItemWidget getScopeTreeItemWidget(final Scope parent) {
 		return new ScopeTreeItem(parent).getScopeTreeItemWidget();
 	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
-	}
-
 }

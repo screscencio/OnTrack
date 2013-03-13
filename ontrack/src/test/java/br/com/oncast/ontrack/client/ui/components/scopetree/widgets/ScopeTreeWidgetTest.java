@@ -16,8 +16,10 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class ScopeTreeWidgetTest extends GwtTest {
 
 	private ScopeTreeWidget scopeTreeWidget;
@@ -199,10 +201,5 @@ public class ScopeTreeWidgetTest extends GwtTest {
 		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA1).isFake());
 		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA11).isFake());
 		assertTrue(scopeTreeWidget.findScopeTreeItem(scopeA12).isFake());
-	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
 	}
 }

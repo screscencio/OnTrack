@@ -6,8 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class FastLabelTest extends GwtTest {
 	@Test
 	public void shouldReturnEmptyStringIfTextNeverSet() {
@@ -109,10 +111,5 @@ public class FastLabelTest extends GwtTest {
 		final FastLabel l = new FastLabel();
 		l.setText("test text");
 		assertEquals("test text", l.getElement().getInnerText());
-	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
 	}
 }

@@ -31,9 +31,11 @@ import br.com.oncast.ontrack.utils.mocks.actions.ActionTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import com.google.gwt.user.client.ui.Label;
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
 @SuppressWarnings("unchecked")
+@GwtModule("br.com.oncast.ontrack.Application")
 public class ScopeTreeInstructionGuideTest extends GwtTest {
 
 	private ScopeTreeInstructionGuide guide;
@@ -345,10 +347,4 @@ public class ScopeTreeInstructionGuideTest extends GwtTest {
 			assertEquals(new ShortcutLabel(expectedInstructions[i]).getText(), actual.get(i).getText());
 		}
 	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
-	}
-
 }

@@ -18,8 +18,10 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class ClientApplicationStateServiceTest extends GwtTest {
 
 	@Mock
@@ -89,10 +91,4 @@ public class ClientApplicationStateServiceTest extends GwtTest {
 		Mockito.when(context.findScope(scope.getId())).thenReturn(scope);
 		return scope;
 	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
-	}
-
 }

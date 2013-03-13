@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-3.1.jar"/>
@@ -23,7 +22,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.6.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils-1.8.3.jar" sourcepath="/home/luiz/.m2/repository/commons-beanutils/commons-beanutils/1.8.3/commons-beanutils-1.8.3-sources.jar"/>
-	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar" sourcepath="/Users/guilherme/.m2/repository/org/mockito/mockito-all/1.8.5/mockito-all-1.8.5-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-c3p0-3.6.6.Final.jar"/>
@@ -39,7 +37,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dnd-3.1.2.jar" sourcepath="/home/rhlobo/.m2/repository/com/allen-sauer/gwt/dnd/gwt-dnd/3.1.2/gwt-dnd-3.1.2-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/RequestDispatch-0.9.jar"/>
-	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/dsn.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/imap.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mailapi.jar"/>
@@ -48,21 +45,26 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/velocity-1.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr305-1.3.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-gwt-12.0.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-test-utils-0.38.jar" sourcepath="/home/rhlobo/.m2/repository/com/googlecode/gwt-test-utils/gwt-test-utils/0.38/gwt-test-utils-0.38-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-12.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr305-gwt-1.3.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/aspectjrt-1.6.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-deps.jar"/>
-	<classpathentry kind="lib" path="lib/atmosphere-gwt-client-1.1.0.beta3.jar" sourcepath="/home/rhlobo/.m2/repository/org/atmosphere/atmosphere-gwt-client/1.1.0.beta3/atmosphere-gwt-client-1.1.0.beta3-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-jbossweb-1.1.0.beta3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat-1.1.0.beta3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-compat-tomcat7-1.1.0.beta3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-common-1.1.0.beta3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-gwt-server-1.1.0.beta3.jar" sourcepath="/home/rhlobo/.m2/repository/org/atmosphere/atmosphere-gwt-server/1.1.0.beta3/atmosphere-gwt-server-1.1.0.beta3-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/atmosphere-runtime-1.1.0.beta3.jar"/>
-	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/newrelic-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.moxieapps.gwt.highcharts-1.5.0.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jacocoagent.jar"/>
+	<classpathentry kind="lib" path="lib/atmosphere-gwt-client-1.1.0.beta3.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-test-utils-0.43-sources.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-test-utils-0.43.jar"/>
+	<classpathentry kind="lib" path="lib/htmlparser-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-all-1.8.5.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

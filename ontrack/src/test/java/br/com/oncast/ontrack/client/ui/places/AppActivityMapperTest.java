@@ -28,8 +28,10 @@ import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionA
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class AppActivityMapperTest extends GwtTest {
 
 	private static final UUID PROJECT_ID = new UUID();
@@ -148,10 +150,5 @@ public class AppActivityMapperTest extends GwtTest {
 	public void userDataShouldBeLoadedIfNotPresentWhenAnotherPlaceIsRequested() {
 		when(authenticationService.isUserAvailable()).thenReturn(false);
 		assertTrue(appActivityMapper.getActivity(new ProjectSelectionPlace()) instanceof UserInformationLoadingActivity);
-	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
 	}
 }

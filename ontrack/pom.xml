@@ -296,8 +296,8 @@
 		<!-- Testing Related Dependencies. -->
 		<dependency>
 			<groupId>com.googlecode.gwt-test-utils</groupId>
-			<artifactId>gwt-test-utils</artifactId>
-			<version>0.38</version>
+  			<artifactId>gwt-test-utils</artifactId>
+			<version>0.44</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -318,7 +318,6 @@
 			<version>1.6</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<profiles>

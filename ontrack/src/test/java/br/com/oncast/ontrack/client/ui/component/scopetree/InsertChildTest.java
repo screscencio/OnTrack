@@ -22,8 +22,10 @@ import br.com.oncast.ontrack.utils.mocks.models.UserRepresentationTestUtils;
 import br.com.oncast.ontrack.utils.model.ProjectTestUtils;
 import br.com.oncast.ontrack.utils.model.ScopeTestUtils;
 
+import com.googlecode.gwt.test.GwtModule;
 import com.googlecode.gwt.test.GwtTest;
 
+@GwtModule("br.com.oncast.ontrack.Application")
 public class InsertChildTest extends GwtTest {
 
 	private Scope scope;
@@ -143,10 +145,5 @@ public class InsertChildTest extends GwtTest {
 
 		DeepEqualityTestUtils.assertObjectEquality(scope, getUnmodifiedContext().getProjectScope());
 		DeepEqualityTestUtils.assertObjectEquality(tree, getUnmodifiedTree());
-	}
-
-	@Override
-	public String getModuleName() {
-		return "br.com.oncast.ontrack.Application";
 	}
 }
