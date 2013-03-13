@@ -14,93 +14,102 @@
 	
 		.mainContainer {
 			position: absolute;
-			top: 0px;
-			left: 0px;
-			right: 405px;
-			bottom: 0px;
+			top: 10px;
+			bottom: 10px;
+			left: 10px;
+			right: 420px;
 		}
 		
 		.mainContainerExpanded {
+			top: 0px;
+			bottom: 0px;
+			left: 0px;
 			right: 0px;
+		}
+		
+		.sideContainer {
+			position: absolute;
+			top: 10px;
+			bottom: 10px;
+			right: 10px;
+			width: 400px;
 		}
 
 		.searchBar {
 			position: absolute;
-			top: PADDING_SMALL;
-			left: PADDING_SMALL;
-			right: PADDING_MEDIUM;
+			top: 0px;
+			left: 0px; right: 0px;
 		}
 			
 		.scopeTree {
 			position: absolute;
 			
-			top: PADDING_SMALL;
-			left: PADDING_SMALL;
-			right: PADDING_MEDIUM;
-			bottom: 32px;
-			
-			padding: 40px 5px;
-			padding-bottom: 0px;
+			top: 38px; bottom: 33px;
+			left: 0px; right: 0px;
 			
 			overflow: auto;
 			overflow-x: hidden;
+			padding: 5px;
+			
+			border: 0px;
 		}
 		
 		.footerBar {
 			position: absolute;
-			left: PADDING_SMALL;
-			right: PADDING_MEDIUM;
-			bottom: PADDING_SMALL;
-			height: 27px;
-		}
-		
-		.releasePanel {
-			position: absolute;
-			top: 55px;
-			right: 0px;
 			bottom: 0px;
-			width: 400px;
-			overflow: hidden;
-			overflow-y: auto;
-			padding: 0px;
-			padding-right: PADDING_SMALL;
+			left: 0px; right: 0px;
 		}
 		
 		.projectMembers {
 			position: absolute;
-			top: PADDING_SMALL;
-			right: PADDING_SMALL;
-			height: 40px;
-			width: 400px;
+			top: 0px;
+			right: 0px;
+			height: 44px;
+			left: 0px;
 			overflow: hidden;
 		}
 		
-		@sprite .hideReleaseIcon {
-			gwt-image: 'sliderRight';
-		}
-		
-		@sprite .showReleaseIcon {
-			gwt-image: 'sliderLeft';
-		}
-				
-		.toggleReleaseBtn {
+		.releasePanel {
 			position: absolute;
-			top: 50%;
-			right: 2px;
-			width: 8px;
-			background-size: 15px 15px;
-			background-position: center;
-			background-color: #fafafa;
+			top: 54px;
+			right: -10px;
+			bottom: 0px;
+			left: 0px;
+			overflow: hidden;
+			overflow-y: auto;
+			
+			padding-right: PADDING_MEDIUM;
+		}
+
+		.hideReleaseIcon:before {
+			content: '\e04e';
+		}
+
+		.showReleaseIcon:before {
+			content: '\e051';
+		}
+
+		.toggleReleaseBtn {
+			font-family: FONT_ICON_FILL;
+			position: absolute;
+			top: 1px;
+			right: 9px;
+			color: COLOR_TEXT_HEADER;
 			cursor: pointer;
-			opacity: 0.5;
-			height: 30px;
-			margin-top: -15px;
-			border-radius: 0px 10px 10px 0px;
+			font-size: 22px;
+			text-align: center;
+			line-height: 36px;
 		}
 
 		</ui:style>
 
 	<layout:ApplicationMenuAndWidgetContainer ui:field="rootPanel">
+		<g:FlowPanel styleName="{style.sideContainer}">
+			<gw:DraggableMembersListWidget ui:field="members" styleName="{style.projectMembers}"/>
+			<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
+				<rp:ReleasePanel ui:field="releasePanel" />
+			</g:ScrollPanel>
+		</g:FlowPanel>
 		<g:FlowPanel ui:field="mainContainer" styleName="{style.mainContainer}">
 			<g:SimplePanel styleName="{style.popupContainer} {style.scopeTree}">
 				<st:ScopeTree ui:field="scopeTree" />
@@ -112,12 +121,6 @@
 				<footer:FooterBar ui:field="footerBar" />
 			</g:SimplePanel>
 			<g:FocusPanel ui:field="toggleReleaseBtn" styleName="{style.toggleReleaseBtn} {style.hideReleaseIcon}" />
-		</g:FlowPanel>
-		<g:FlowPanel>
-			<gw:DraggableMembersListWidget ui:field="members" styleName="{style.projectMembers}"/>
-			<g:ScrollPanel ui:field="releaseScroll" styleName="{style.releasePanel}">
-				<rp:ReleasePanel ui:field="releasePanel" />
-			</g:ScrollPanel>
 		</g:FlowPanel>
 	</layout:ApplicationMenuAndWidgetContainer>
 

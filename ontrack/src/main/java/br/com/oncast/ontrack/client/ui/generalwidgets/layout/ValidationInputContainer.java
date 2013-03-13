@@ -5,6 +5,8 @@ import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_EN
 import java.util.Iterator;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -49,6 +52,9 @@ public class ValidationInputContainer extends Composite implements HasWidgets, H
 	@UiField
 	HTMLPanel container;
 
+	@UiField
+	Label defaultText;
+
 	public ValidationInputContainer(final HasText inputWidget) {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -64,6 +70,14 @@ public class ValidationInputContainer extends Composite implements HasWidgets, H
 
 	public void update(final boolean isValid) {
 		container.setStyleName(style.error(), !isValid);
+	}
+
+	public void setDefaultText(final String text) {
+		defaultText.setText(text);
+	}
+
+	public void setDefaultTextAlign(final String align) {
+		defaultText.getElement().getStyle().setProperty("textAlign", align);
 	}
 
 	@UiHandler("focusPanel")
@@ -83,6 +97,7 @@ public class ValidationInputContainer extends Composite implements HasWidgets, H
 		textBox.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
+				updateDefaultText();
 				if (event.getNativeKeyCode() == KEY_ENTER && validate())
 				handler.onSubmit();
 			}
@@ -96,6 +111,17 @@ public class ValidationInputContainer extends Composite implements HasWidgets, H
 		});
 
 		container.add(textBox);
+
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				updateDefaultText();
+			}
+		});
+	}
+
+	private void updateDefaultText() {
+		defaultText.setVisible(textBox.getText().isEmpty());
 	}
 
 	@Override
