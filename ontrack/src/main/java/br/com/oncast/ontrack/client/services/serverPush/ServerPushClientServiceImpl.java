@@ -8,22 +8,23 @@ import java.util.Map;
 import org.atmosphere.gwt.client.AtmosphereListener;
 
 import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
+import br.com.oncast.ontrack.client.services.alerting.AlertConfirmationListener;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.serverPush.atmosphere.OntrackAtmosphereClient;
 import br.com.oncast.ontrack.client.ui.places.loading.ServerPushConnectionCallback;
 import br.com.oncast.ontrack.shared.services.serverPush.ServerPushEvent;
 
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 
 public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 	private final Map<Class<?>, List<ServerPushEventHandler<?>>> eventHandlersMap = new HashMap<Class<?>, List<ServerPushEventHandler<?>>>();
 	private final ServerPushClient serverPushClient;
-	private final List<ServerPushConnectionCallback> serverPushConnectionCallbacks = new ArrayList<ServerPushConnectionCallback>();
-	private final AtmosphereListener atmosphereListener;
+	private ServerPushConnectionCallback serverPushConnectionCallback;
 
 	public ServerPushClientServiceImpl(final ClientAlertingService alertingService, final ClientErrorMessages messages) {
-		atmosphereListener = new AtmosphereListener() {
+		serverPushClient = new OntrackAtmosphereClient(new AtmosphereListener() {
 
 			@Override
 			public void onRefresh() {}
@@ -38,19 +39,22 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 			@Override
 			public void onError(final Throwable exception, final boolean connected) {
-				serverPushClient.stop();
-				notifyError(exception);
 				exception.printStackTrace();
+				alertingService.showErrorWithConfirmation(messages.noInternectConnection(), new AlertConfirmationListener() {
+					@Override
+					public void onConfirmation() {
+						Window.Location.reload();
+					}
+				});
 			}
 
 			@Override
-			public void onDisconnected() {
-				notifyDisconnection();
-			}
+			public void onDisconnected() {}
 
 			@Override
 			public void onConnected(final int heartbeat, final int connectionID) {
-				notifyConnection();
+				serverPushConnectionCallback.connected();
+				serverPushConnectionCallback = null;
 			}
 
 			@Override
@@ -58,8 +62,7 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 
 			@Override
 			public void onAfterRefresh() {}
-		};
-		serverPushClient = new OntrackAtmosphereClient(atmosphereListener);
+		});
 		connect();
 	}
 
@@ -98,46 +101,23 @@ public class ServerPushClientServiceImpl implements ServerPushClientService {
 		handler.onEvent(event);
 	}
 
-	@Override
-	public void connect() {
+	private void connect() {
 		serverPushClient.start();
 	}
 
 	@Override
 	public String getConnectionID() {
-		if (serverPushClient == null) return null;
 		return String.valueOf(serverPushClient.getConnectionId());
 	}
 
 	@Override
 	public boolean isConnected() {
-		if (serverPushClient == null) return false;
 		return serverPushClient.isRunning() && serverPushClient.getConnectionId() > 0;
 	}
 
 	@Override
-	public void addConnectionListener(final ServerPushConnectionCallback serverPushConnectionCallback) {
-		serverPushConnectionCallbacks.add(serverPushConnectionCallback);
+	public void onConnected(final ServerPushConnectionCallback serverPushConnectionCallback) {
 		if (isConnected()) serverPushConnectionCallback.connected();
-	}
-
-	@Override
-	public void removeConnectionListener(final ServerPushConnectionCallback serverPushConnectionCallback) {
-		serverPushConnectionCallbacks.remove(serverPushConnectionCallback);
-	}
-
-	protected void notifyConnection() {
-		for (final ServerPushConnectionCallback serverPushConnectionCallback : new ArrayList<ServerPushConnectionCallback>(serverPushConnectionCallbacks))
-			serverPushConnectionCallback.connected();
-	}
-
-	protected void notifyDisconnection() {
-		for (final ServerPushConnectionCallback serverPushConnectionCallback : new ArrayList<ServerPushConnectionCallback>(serverPushConnectionCallbacks))
-			serverPushConnectionCallback.disconnected();
-	}
-
-	protected void notifyError(final Throwable cause) {
-		for (final ServerPushConnectionCallback serverPushConnectionCallback : new ArrayList<ServerPushConnectionCallback>(serverPushConnectionCallbacks))
-			serverPushConnectionCallback.uncaughtExeption(cause);
+		else this.serverPushConnectionCallback = serverPushConnectionCallback;
 	}
 }

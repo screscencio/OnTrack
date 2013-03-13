@@ -145,12 +145,6 @@ public class ActionQueuedDispatcherTestUtils {
 		}
 
 		@Override
-		public void addConnectionListener(final ServerPushConnectionCallback serverPushConnectionCallback) {}
-
-		@Override
-		public void removeConnectionListener(final ServerPushConnectionCallback serverPushConnectionCallback) {}
-
-		@Override
-		public void connect() {}
+		public void onConnected(final ServerPushConnectionCallback serverPushConnectionCallback) {}
 	}
 }

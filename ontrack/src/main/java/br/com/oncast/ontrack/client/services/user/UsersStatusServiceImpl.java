@@ -122,7 +122,7 @@ public class UsersStatusServiceImpl implements UsersStatusService {
 	private ContextChangeListener getContextChangeListener() {
 		return new ContextChangeListener() {
 			@Override
-			public void onProjectChanged(final UUID projectId, Long loadedProjectRevision) {
+			public void onProjectChanged(final UUID projectId) {
 				if (projectId == null) {
 					clearUsersStatus();
 					return;

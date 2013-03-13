@@ -620,7 +620,7 @@ public class BusinessLogicTest {
 	}
 
 	private Project loadProject(final UUID projectId) throws UnableToLoadProjectException, ProjectNotFoundException {
-		return business.loadProject(projectId).getProject();
+		return business.loadProject(projectId);
 	}
 
 	private ProjectRepresentation assureProjectRepresentationExistance(final UUID projectId) throws Exception {

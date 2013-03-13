@@ -6,6 +6,4 @@ public interface ServerPushConnectionCallback {
 
 	void uncaughtExeption(Throwable cause);
 
-	void disconnected();
-
 }
