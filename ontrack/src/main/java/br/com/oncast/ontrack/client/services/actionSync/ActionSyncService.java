@@ -86,15 +86,14 @@ public class ActionSyncService {
 
 			@Override
 			public void onProjectChanged(final UUID projectId, final Long loadedProjectRevision) {
-				updateLastSyncId(loadedProjectRevision);
+				lastSyncId = loadedProjectRevision;
 			}
-
 		});
 		actionQueuedDispatcher.addDispatchCallback(new ActionQueuedDispatchCallback() {
 
 			@Override
 			public void onDispatch(final long applyedActionSyncId) {
-				updateLastSyncId(applyedActionSyncId);
+				lastSyncId = applyedActionSyncId;
 			}
 		});
 	}
@@ -107,7 +106,7 @@ public class ActionSyncService {
 			for (final ModelAction modelAction : event.getActionList()) {
 				actionExecutionService.onNonUserActionRequest(modelAction, actionContext);
 			}
-			updateLastSyncId(event.getLastActionId());
+			lastSyncId = event.getLastActionId();
 		}
 		catch (final UnableToCompleteActionException e) {
 			alertingService.showErrorWithConfirmation(messages.someChangesConflicted(),
@@ -163,10 +162,5 @@ public class ActionSyncService {
 						});
 					}
 				});
-	}
-
-	private void updateLastSyncId(final Long syncId) {
-		if (syncId == null || syncId < 0) return;
-		lastSyncId = syncId;
 	}
 }

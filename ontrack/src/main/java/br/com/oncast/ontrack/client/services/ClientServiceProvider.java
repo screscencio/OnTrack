@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.i18n.ClientErrorMessages;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionService;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionServiceImpl;
 import br.com.oncast.ontrack.client.services.actionSync.ActionSyncService;
+import br.com.oncast.ontrack.client.services.admin.OnTrackAdminService;
 import br.com.oncast.ontrack.client.services.alerting.ClientAlertingService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateService;
 import br.com.oncast.ontrack.client.services.applicationState.ClientApplicationStateServiceImpl;
@@ -26,8 +27,6 @@ import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.instruction.UserGuidService;
 import br.com.oncast.ontrack.client.services.instruction.UserGuideServiceImpl;
 import br.com.oncast.ontrack.client.services.internet.NetworkMonitoringService;
-import br.com.oncast.ontrack.client.services.metrics.ClientMetricsService;
-import br.com.oncast.ontrack.client.services.metrics.ClientMetricsServiceImpl;
 import br.com.oncast.ontrack.client.services.notification.NotificationService;
 import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.serverPush.ServerPushClientService;
@@ -104,6 +103,7 @@ public class ClientServiceProvider {
 	private UserGuidService userGuidService;
 	private UserAssociationService userAssociationService;
 	private ClientMetricsService clientMetricsService;
+	private OnTrackAdminService onTrackAdminService;
 	private NetworkMonitoringService networkMonitoringService;
 
 	private TimesheetService timesheetService;
