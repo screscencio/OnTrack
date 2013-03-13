@@ -98,8 +98,8 @@ html,body {
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
-	background-color: #ffe8b3;
-	border: 1px solid #ddcda7;
+	background-color: #c1e8ee;
+	border: 1px solid #4ec6d6;
 	margin: 0px;
 }
 
@@ -178,8 +178,6 @@ html,body {
 
 .gwt-MenuBar-vertical {
 	color: #999999;
-	background: #FAFAFA;
-	background-color: #FAFAFA;
 	border: none;
 	font-family: 'Muli', sans-serif;
 	font-size: inherit;
@@ -213,9 +211,7 @@ html,body {
 /* SearchScopeResult menu item */
 .searchScopeResult-container {
 	padding: 3px;
-	font-family: 'Muli', sans-serif;
 	font-size: 10pt;
-	color: #9c9c9c;
 }
 
 .searchScopeResult-description {
@@ -240,10 +236,9 @@ html,body {
 	font-weight: normal;
 	cursor: pointer;
 	color: #999999;
-	background: #FAFAFA;
-	background-color: #FAFAFA;
-	border-top: 1px solid white;
-	border-bottom: 1px solid #CCCCCC;
+	background: #d1d1d1;
+	background-color: #d1d1d1;
+	border-top: 1px solid #999;
 	white-space: nowrap;
 }
 
@@ -267,8 +262,7 @@ html,body {
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
-	background-color: #E8E8E8;
-	text-shadow: none;
+	background-color: #c1e8ee;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {

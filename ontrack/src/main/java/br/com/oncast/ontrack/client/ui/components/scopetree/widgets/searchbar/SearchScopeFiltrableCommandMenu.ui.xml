@@ -3,12 +3,9 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 
-<ui:image field="background" src="pattern_background.png"/>
 <ui:style src="../../../../style/default.css">
 
-	@sprite .rootPanel {
-		gwt-image: "background";
-		background-repeat: repeat;
+	.rootPanel {
 		overflow: visible;
 
 		position: relative;
@@ -16,12 +13,13 @@
 		height: auto;
 		
 		padding: 8px 10px;
-
-        border: 1px solid #9899ad;
 	}
 
 	.filterArea {
 		width: 100%;
+		
+		background: transparent;
+		color: COLOR_BACKGROUND_HEADER;
 		
 		font-size: FONT_SIZE_SMALL;
 		
@@ -32,34 +30,31 @@
 	}
 	
 	.container {
-		border: 2px solid #9196ce;
 		border-radius: 10px;
-		padding: 0px 7px;
-		background: #FFF;
+		padding: 1px 7px;
+		background: COLOR_BORDER_MENUBAR;
 	}
 	
 	.scrollpanel {
-		border: 1px solid #9899ad;
-		margin: -1px;
 		max-height: 275px;
 	}
 	
 	.resultContainer {
 		position: absolute;
-		top: 40px;
+		top: 37px;
 		left: 0px;
 		right: 0px;
+		
+		box-shadow: SHADOW_SECONDARY;
 	}
 	
 	.resultInfoContainer {
-		background: #e4e4e4;
-		border: 1px solid #9899ad;
-		margin: -1px;
+		background: COLOR_BORDER_MENUBAR;
 		padding: 17px 12px;
-		
-		font-family: FONT_DEFAULT_ITALIC;
 		font-style: italic;
 		font-size: 10pt;
+		color: COLOR_BACKGROUND_HEADER;
+		box-shadow: SHADOW_INSET_SECONDARY;
 	}
 	
 </ui:style>

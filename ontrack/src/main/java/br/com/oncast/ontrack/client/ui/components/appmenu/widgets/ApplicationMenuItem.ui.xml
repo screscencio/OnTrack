@@ -30,15 +30,17 @@
 		}
 		
 		.arrowUp, .arrowDown {
-			height: 36px;
+			height: 54px;
 			background-position: center;
 			margin-left: 8px;
 			margin-right: 18px;
 		}
+		
 	</ui:style>
 
 	<g:FocusPanel ui:field="rootPanel">
-		<g:HorizontalPanel styleName="{style.hoverPanel}">
+		<g:HorizontalPanel ui:field="container" styleName="{style.hoverPanel}">
+			<g:SimplePanel ui:field="content"/>
 			<g:SimplePanel ui:field="menuHeader" styleName="{style.menuItem}" />
 			<g:Label ui:field="arrow" styleName="{style.arrowDown}" />
 		</g:HorizontalPanel>

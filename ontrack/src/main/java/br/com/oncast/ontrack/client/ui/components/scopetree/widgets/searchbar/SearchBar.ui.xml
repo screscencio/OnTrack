@@ -15,11 +15,10 @@
 		
 		.searchBar {
 			padding: 0px PADDING_LARGE;
-
-			margin: 1px;
-		
 			font-size: FONT_SIZE_LARGE;				
-			text-shadow: RELEASE_WIDGET_HEADER_TEXT_SHADOW;
+			
+			border: none;
+			box-shadow: none;
 		}
 		
 		.container {
@@ -27,7 +26,7 @@
 		}
 		
 		.search {
-			margin: -1px PADDING_MEDIUM;
+			margin: 0 PADDING_MEDIUM;
 		}
 		
 		.activeColumnIndicatorLabel, .inactiveColumnIndicatorLabel {
@@ -38,11 +37,11 @@
 		}
 		
 		.inactiveColumnIndicatorLabel {
-			color: #9e9e9e;
+			color: COLOR_BORDER_MENUBAR;
 		}
 		
 		.activeColumnIndicatorLabel {
-			color: #7e7f9f;
+			color: COLOR_HIGHLIGHT_PRIMARY;
 		}
 
 		.valueColumn {

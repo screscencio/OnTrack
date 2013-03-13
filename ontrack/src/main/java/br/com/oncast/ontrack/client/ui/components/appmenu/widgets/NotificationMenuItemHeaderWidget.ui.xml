@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:style>
+	<ui:style src="../../../style/default.css">
 	
 		.text {
 			display: inline-block;
@@ -10,7 +10,7 @@
 		
 		.countIndicator {
 			display: inline-block;
-			color: white;
+			color: COLOR_HOVER_TERTIARY;
 			width: 13px;
 		}
 	

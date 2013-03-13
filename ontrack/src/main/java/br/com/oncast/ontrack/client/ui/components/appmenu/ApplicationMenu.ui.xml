@@ -24,8 +24,7 @@
 		
 		.logo {
 			float: left;
-			margin: 3px;
-			background-size: 24px !important;
+			background-size: 36px !important;
 			background-position: center !important;
 		}
 		
@@ -35,7 +34,7 @@
         }
 		
         .menuItemContainer, .menuItem {
-			line-height: 36px;
+			line-height: 54px;
         }
 		
 		.backButtonContainer {
@@ -56,16 +55,27 @@
 			float: right;
 		}
 		
+		.user:before {
+			content: '\e062';
+		}
+		
+		.user {
+			font-family: "IconicFill";
+			display: inline-block;
+			font-size: 33px;
+			cursor: pointer;
+		}
+		
 	</ui:style>
 
 	<g:FlowPanel styleName="{style.rootPanel}">
 		<g:HTMLPanel ui:field="applicationMenuPanel" styleName="{style.menuBar}" >
-			<g:Image resource="{logo}" styleName="{style.logo}"/>
+			<g:Image resource="{logo}" styleName="{style.logo}" width="54px" height="54px"/>
 		    <div class="{style.backButtonContainer}">
     			<g:Image ui:field="backButton" resource="{backBtnImg}" styleName="{style.backButton}"/>
 		    </div>
-		    <aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem}" text="User">
-				<ui:attribute name="text" description="user menu item text" />
+		    <aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.user}" title="User">
+				<ui:attribute name="title" description="user menu item text" />
 			</aw:ApplicationMenuItem>
 			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItem}" text="Project" biggerFont="true">
 				<ui:attribute name="text" description="project menu item text" />

@@ -47,6 +47,7 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 	}
 
 	protected ApplicationMenuItem notificationMenuItem;
+
 	private final NotificationMenuItemHeaderWidget notificationMenuItemHeader;
 
 	public NotificationMenuItem() {
