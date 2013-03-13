@@ -49,4 +49,20 @@ public interface ClientErrorMessages extends BaseMessages {
 	@Description("message shown when the authorization for the current project is removed")
 	@DefaultMessage("Your authorization for the project ''{0}'' were revogued")
 	String authorizationRevogued(String projectName);
+
+	@Description("message shown when requesting new password for user")
+	@DefaultMessage("Requesting new password for ''{0}''.")
+	String requestingNewPassword(String username);
+
+	@Description("message shown when new password request was successful")
+	@DefaultMessage("An e-mail with a new passowrd was sent.")
+	String passwordRequestSucessful();
+
+	@Description("message shown when new password request failed because of bad username")
+	@DefaultMessage("Invalid user... Nothing was done.")
+	String passwordRequestFailedDueToBadUsername();
+
+	@Description("message shown when new password request is done without username")
+	@DefaultMessage("Please insert your username.")
+	String passwordRequestNeedsUsernameInput();
 }
