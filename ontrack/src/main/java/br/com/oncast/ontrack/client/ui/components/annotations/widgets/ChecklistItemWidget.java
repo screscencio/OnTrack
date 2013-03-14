@@ -64,6 +64,13 @@ public class ChecklistItemWidget extends Composite implements ModelWidget<Checkl
 			public boolean onEditionRequest(final String text) {
 				return text != null && !text.trim().isEmpty() && !checklistItem.getDescription().equals(text);
 			}
+
+			@Override
+			public void onEditionExit(final boolean canceledEdition) {}
+
+			@Override
+			public void onEditionStart() {}
+
 		}, true);
 	}
 

@@ -1,6 +1,8 @@
 package br.com.oncast.ontrack.client.ui.places.timesheet.widgets;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.selection.IsSelectable;
+import br.com.oncast.ontrack.client.ui.components.selection.SelectionController;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandler;
 import br.com.oncast.ontrack.shared.model.action.ScopeDeclareTimeSpentAction;
@@ -12,7 +14,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScopeTimeSpentWidget implements IsWidget {
+public class ScopeTimeSpentWidget implements IsWidget, IsSelectable {
 
 	private static final ScopeTimeSpentMessages MESSAGES = GWT.create(ScopeTimeSpentMessages.class);
 
@@ -20,8 +22,16 @@ public class ScopeTimeSpentWidget implements IsWidget {
 
 	EditableLabel editableLabel;
 
-	public ScopeTimeSpentWidget(final Scope scope, final UserRepresentation user, final float timeSpent) {
+	private boolean selected;
+
+	public ScopeTimeSpentWidget(final Scope scope, final UserRepresentation user, final float timeSpent, final SelectionController selectionController) {
 		editableLabel = new EditableLabel(new EditableLabelEditionHandler() {
+
+			@Override
+			public void onEditionStart() {
+				selectionController.setSelected(ScopeTimeSpentWidget.this);
+			}
+
 			@Override
 			public boolean onEditionRequest(final String text) {
 				try {
@@ -37,6 +47,10 @@ public class ScopeTimeSpentWidget implements IsWidget {
 				}
 			}
 
+			@Override
+			public void onEditionExit(final boolean canceledEdition) {
+				if (!canceledEdition) selectionController.selectNext();
+			}
 		});
 		editableLabel.setWidth("40px");
 		editableLabel.getElement().getStyle().setProperty("textAlign", "center");
@@ -59,4 +73,20 @@ public class ScopeTimeSpentWidget implements IsWidget {
 		return editableLabel;
 	}
 
+	@Override
+	public void select() {
+		selected = true;
+		editableLabel.switchToEdit();
+	}
+
+	@Override
+	public void deselect() {
+		selected = false;
+		editableLabel.switchToVisualization(editableLabel.isEditionMode());
+	}
+
+	@Override
+	public boolean isSelected() {
+		return selected;
+	}
 }

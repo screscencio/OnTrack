@@ -103,6 +103,12 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 				}
 				return true;
 			}
+
+			@Override
+			public void onEditionStart() {}
+
+			@Override
+			public void onEditionExit(final boolean canceledEdition) {}
 		});
 
 		descriptionLabel = new DescriptionRichTextLabel(new EditableLabelEditionHandler() {
@@ -115,6 +121,13 @@ public class AnnotationsPanel extends Composite implements HasCloseHandlers<Anno
 
 				return true;
 			}
+
+			@Override
+			public void onEditionExit(final boolean canceledEdition) {}
+
+			@Override
+			public void onEditionStart() {}
+
 		});
 
 		subjectTitle.setTitle(messages.doubleClickToEdit());

@@ -237,6 +237,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				releasePanelInteractionHandler.onReleaseRenameRequest(release, newReleaseName);
 				return false;
 			}
+
+			@Override
+			public void onEditionExit(final boolean canceledEdition) {}
+
+			@Override
+			public void onEditionStart() {}
+
 		};
 
 		initWidget(uiBinder.createAndBindUi(this));

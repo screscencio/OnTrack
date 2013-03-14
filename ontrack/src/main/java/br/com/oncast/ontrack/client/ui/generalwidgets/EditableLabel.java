@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.generalwidgets;
 
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ENTER;
 import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_ESCAPE;
+import static br.com.oncast.ontrack.client.utils.keyboard.BrowserKeyCodes.KEY_TAB;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
 import com.google.gwt.core.client.GWT;
@@ -111,16 +112,17 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 
 		event.stopPropagation();
 
-		final boolean isEnter = event.getNativeKeyCode() == KEY_ENTER;
-		if (isEnter || event.getNativeKeyCode() == KEY_ESCAPE) {
+		final boolean isEnterOrTab = event.getNativeKeyCode() == KEY_ENTER || event.getNativeKeyCode() == KEY_TAB;
+		if (isEnterOrTab || event.getNativeKeyCode() == KEY_ESCAPE) {
 			event.preventDefault();
-			switchToVisualization(isEnter);
+			switchToVisualization(isEnterOrTab);
 		}
 		else return;
 	}
 
-	protected void switchToEdit() {
+	public void switchToEdit() {
 		if (isEditionMode() || isReadOnly) return;
+		editionHandler.onEditionStart();
 
 		editionBox.setText(getValue());
 		deckPanel.showWidget(1);
@@ -134,18 +136,21 @@ public class EditableLabel extends Composite implements HasValueChangeHandlers<S
 		});
 	}
 
-	protected void switchToVisualization(final boolean shouldTryToUpdateChanges) {
+	public void switchToVisualization(final boolean shouldTryToUpdateChanges) {
 		if (!isEditionMode()) return;
 		deckPanel.showWidget(0);
+		editionHandler.onEditionExit(!shouldTryToUpdateChanges);
 
-		if (!shouldTryToUpdateChanges) editionBox.setText(visualizationLabel.getText());
+		if (!shouldTryToUpdateChanges) {
+			editionBox.setText(visualizationLabel.getText());
+		}
 		else if (!getValue().equals(editionBox.getText()) || editionBox.getText().isEmpty()) {
 			if (editionHandler.onEditionRequest(editionBox.getText())) setValue(editionBox.getText(), true);
 			else editionBox.setText(getValue());
 		}
 	}
 
-	private boolean isEditionMode() {
+	public boolean isEditionMode() {
 		return deckPanel.getVisibleWidget() == 1;
 	}
 }

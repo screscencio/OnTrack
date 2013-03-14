@@ -318,6 +318,13 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 				}
 				return true;
 			}
+
+			@Override
+			public void onEditionExit(final boolean canceledEdition) {}
+
+			@Override
+			public void onEditionStart() {}
+
 		});
 	}
 

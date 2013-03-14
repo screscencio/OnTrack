@@ -49,6 +49,13 @@ public class DescriptionWidget extends Composite {
 
 				return true;
 			}
+
+			@Override
+			public void onEditionExit(final boolean canceledEdition) {}
+
+			@Override
+			public void onEditionStart() {}
+
 		});
 		initWidget(uiBinder.createAndBindUi(this));
 		try {
