@@ -25,7 +25,7 @@ public class ScopeTimeSpentWidget implements IsWidget {
 			@Override
 			public boolean onEditionRequest(final String text) {
 				try {
-					final Float newAppointment = Float.valueOf(text);
+					final Float newAppointment = Float.valueOf(text.replace(',', '.'));
 					if (newAppointment.equals(ScopeTimeSpentWidget.this.timeSpent)) return false;
 
 					launchAction(scope.getId(), newAppointment);
