@@ -34,10 +34,9 @@
 			left: 0px;
 	
             padding-left: 3px;
-			background-color: COLOR_BACKGROUND_RELEASE_TAG;
-			color: COLOR_TEXT_TERTIARY;
+			background-color: #005B89;
 			text-align: justify;
-			line-height: 13px;
+			color: COLOR_TEXT_TERTIARY;
         }
         
         @sprite .leftBg {
