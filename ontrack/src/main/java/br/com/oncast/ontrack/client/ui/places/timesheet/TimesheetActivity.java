@@ -7,6 +7,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseList
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupOpenListener;
 import br.com.oncast.ontrack.client.ui.keyeventhandler.ShortcutService;
 import br.com.oncast.ontrack.client.ui.places.UndoRedoShortCutMapping;
+import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 
@@ -37,8 +38,9 @@ public class TimesheetActivity extends AbstractActivity {
 
 	public void start() {
 		try {
-			final Release release = ClientServiceProvider.getCurrentProjectContext().findRelease(place.getReleaseId());
-			getTimesheetPanel().setRelease(release);
+			final ProjectContext projectContext = ClientServiceProvider.getCurrentProjectContext();
+			final Release release = projectContext.findRelease(place.getReleaseId());
+			getTimesheetPanel().setRelease(release, projectContext);
 
 			if (!place.hasLoadedPlace()) register = ShortcutService.register(timesheetPanel, ClientServiceProvider.getInstance().getActionExecutionService(),
 					UndoRedoShortCutMapping.values());

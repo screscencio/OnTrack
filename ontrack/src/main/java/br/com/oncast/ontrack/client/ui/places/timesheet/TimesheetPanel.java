@@ -80,6 +80,8 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 
 	private final TimesheetAnimation animation;
 
+	private ProjectContext projectContext;
+
 	interface TimesheetPanelUiBinder extends UiBinder<Widget, TimesheetPanel> {}
 
 	private class TimesheetAnimation extends Animation {
@@ -173,7 +175,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public void setRelease(final Release release) {
+	public void setRelease(final Release release, final ProjectContext projectContext) {
 		if (release == null) throw new RuntimeException("Release cannot be null");
 
 		if (release.equals(previousRelease)) animation.setSlideDirection(true);
@@ -181,6 +183,7 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 		else animation.setDuration(0);
 
 		this.release = release;
+		this.projectContext = projectContext;
 
 		setupReleaseNavigationButtons();
 
@@ -321,5 +324,4 @@ public class TimesheetPanel extends Composite implements ModelWidget<Release>, P
 	private ProjectContext getContext() {
 		return ClientServiceProvider.getCurrentProjectContext();
 	}
-
 }
