@@ -63,7 +63,7 @@ public interface ClientErrorMessages extends BaseMessages {
 	String passwordRequestFailedDueToBadUsername();
 
 	@Description("message shown when new password request is done without username")
-	@DefaultMessage("Please insert your username. ")
+	@DefaultMessage("Please insert your username.")
 	String passwordRequestNeedsUsernameInput();
 
 }
