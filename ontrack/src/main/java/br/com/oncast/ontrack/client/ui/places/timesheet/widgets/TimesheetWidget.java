@@ -164,7 +164,6 @@ public class TimesheetWidget extends Composite {
 		for (int i = 1; i < scopes.size() + 1; i++) {
 			final Scope scope = scopes.get(i - 1);
 			timesheet.setWidget(i, 0, new ScopeIdAndDescriptionWidget(scope));
-			timesheet.getFlexCellFormatter().addStyleName(i, users.size() + 1, style.boldCell());
 			timesheet.setText(i, users.size() + 1, round(getRowSum(i)));
 		}
 
