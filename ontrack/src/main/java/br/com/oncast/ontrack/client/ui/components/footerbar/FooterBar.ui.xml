@@ -31,30 +31,34 @@
 		}
 		
 		.shortcut {
-			margin-right: 2px;
+			margin-right: 5px;
 			
-			word-spacing: -2px;
-			font-size: FONT_SIZE_SMALL;
-			font-weight: bold;
+			font-size: FONT_SIZE_TINY;
+			color: COLOR_ERROR_PRIMARY;
 			white-space: nowrap;
-			color: COLOR_HIGHLIGHT_PRIMARY;
 		}
 		
 		.upperAdjust {
-			margin-top: -1px;
 		}
 		
 		.shortcutDescription {
-			margin-right: 10px;
-			font-size: FONT_SIZE_SMALL;
-			
+			font-size: FONT_SIZE_TINY;
 			white-space: nowrap;
+		}
+		
+		.separator {
+			width: 1px;
+			height: 18px;
+			
+			margin: 0px 5px;
+			
+			background: COLOR_BORDER_MENUBAR;
 		}
 		
 		.shortcutsButton {
 			position: absolute;
 			top: 2px;
-			right: 117px;
+			right: 74px;
 			
 			padding: 4px;
 			
@@ -63,6 +67,7 @@
 			
 			font-size: FONT_SIZE_SMALL;
 			white-space: nowrap;
+			background: #888;
 		}
 		
 		.feedback {
@@ -77,6 +82,7 @@
 			
 			font-size: FONT_SIZE_SMALL;
 			white-space: nowrap;
+			background: #888;
 		}
 		
 		.scrollArea {
@@ -96,7 +102,7 @@
 		
 		.scrollContainer {
 			position: relative;
-			margin-right: 176px;
+			margin-right: 135px;
 			height: 17px;
 		}
 		
@@ -136,46 +142,55 @@
 							<ui:msg description="insert below shortcut label">Insert Below</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="CONTROL ENTER" styleName="{style.shortcut}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="insert a child shortcut label">Insert a Child</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="SHIFT A" styleName="{style.shortcut}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="annotate shorcut label">Annotate</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="SHIFT @" styleName="{style.shortcut}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="schedule shortcut label">Schedule</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="SHIFT #" styleName="{style.shortcut}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="effort shorcut label">Effort</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="SHIFT $" styleName="{style.shortcut}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="value shorcut label">Value</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="SHIFT %" styleName="{style.shortcut}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="progress shorcut label">Progress</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="CONTROL Z" styleName="{style.shortcut} {style.upperAdjust}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="undo shorcut label">Undo</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="CONTROL F" styleName="{style.shortcut} {style.upperAdjust}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="search shorcut label">Search</ui:msg>
 						</g:Label>
 						
+						<g:SimplePanel styleName="{style.separator}"/>
 						<misc:ShortcutLabel text="CONTROL ARROWS" styleName="{style.shortcut}" />
 						<g:Label styleName="{style.shortcutDescription}">
 							<ui:msg description="move shortcut label">Move</ui:msg>

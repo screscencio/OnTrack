@@ -145,6 +145,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 	private void updateContainerVisibility() {
 		if (focus) {
+			search.setVisible(true);
 			JQuery.jquery(columnContainer).stop(true).slideLeftHide(400, new AnimationCallback() {
 
 				@Override
@@ -161,6 +162,7 @@ public class SearchBar extends Composite implements ActionExecutionListener {
 
 				@Override
 				public void onComplete() {
+					// search.setVisible(false);
 					search.clear();
 				}
 			});

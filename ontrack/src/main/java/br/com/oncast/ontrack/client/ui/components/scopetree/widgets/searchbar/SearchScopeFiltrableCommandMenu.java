@@ -19,6 +19,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.ItemSelectionHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
@@ -98,6 +99,8 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 				filterMenuItens();
 			}
 		};
+
+		result.setVisible(false);
 	}
 
 	public void setItems(final List<CommandMenuItem> itens) {
@@ -111,7 +114,13 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	}
 
 	public void focus() {
+		setVisible(true);
 		filterArea.setFocus(true);
+	}
+
+	@UiHandler({ "searchIcon" })
+	void onSearchIconClick(final ClickEvent event) {
+		focus();
 	}
 
 	@UiHandler("focusPanel")
