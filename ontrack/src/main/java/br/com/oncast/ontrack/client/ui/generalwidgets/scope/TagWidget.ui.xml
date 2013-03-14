@@ -16,9 +16,8 @@
 			box-shadow: 1px 1px 1px #999;
 
 			cursor: default;
-			font-weight: bold;
-
 		}
+		
 	</ui:style>
 	
 	<g:HTMLPanel ui:field="container" styleName="{style.container}">

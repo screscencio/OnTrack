@@ -11,15 +11,49 @@
 		position: relative;
 		width: auto;
 		height: auto;
+	}
+	
+	.container {
+		padding: 10px 8px;
+		-webkit-transform: matrix(1,0,-0.5,1,0,0);
+		background: COLOR_BORDER_MENUBAR;
+		height: 18px;
+		padding-left: 45px;
+	}
+	
+	.leftBg {
+		position: absolute;
+		top: 0px;
+		left: -10px;
+		width: 20px;
+		bottom: 0px;
 		
-		padding: 8px 10px;
+		background: COLOR_BORDER_MENUBAR;
+	}
+
+	.searchIcon {
+		position: absolute;
+		left: 22px;
+	
+		-webkit-transform: matrix(1,0,0.5,1,0,0);
+
+		font-family: FONT_ICON_FILL;
+		font-size: 22px;
+		color: COLOR_TEXT_MENUBAR;
+
+		cursor: pointer;
+	}
+	
+	.searchIcon:before {
+		content: '\e074'
 	}
 
 	.filterArea {
+		-webkit-transform: matrix(1,0,0.5,1,0,0);
 		width: 100%;
 		
 		background: transparent;
-		color: COLOR_BACKGROUND_HEADER;
+		color: COLOR_TEXT_MENUBAR;
 		
 		font-size: FONT_SIZE_SMALL;
 		
@@ -27,12 +61,6 @@
 		border: none;
 		padding: 0px;
 		margin: 0px;
-	}
-	
-	.container {
-		border-radius: 10px;
-		padding: 1px 7px;
-		background: COLOR_BORDER_MENUBAR;
 	}
 	
 	.scrollpanel {
@@ -62,7 +90,9 @@
 
 	<g:FocusPanel ui:field="focusPanel">
 		<g:HTMLPanel ui:field="rootPanel" styleName="{style.rootPanel}" >
+			<g:SimplePanel styleName="{style.leftBg}"/>
 			<g:HTMLPanel styleName="{style.container}" >
+				<g:Label ui:field="searchIcon" styleName="{style.searchIcon} {style.flip}"/>
 				<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
 			</g:HTMLPanel>
 			<g:HTMLPanel ui:field="result" styleName="{style.resultContainer}">

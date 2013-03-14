@@ -15,7 +15,6 @@
 			box-shadow: 1px 1px 1px #999;
 
 			cursor: default;
-			font-weight: bold;
 		}
 		
 		@sprite .colorEdit {

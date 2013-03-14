@@ -111,7 +111,7 @@
 			}
 
 			.progressLabel {
-				width: 80px;
+				width: 100px;
 				height: 20px;
 				font-size: small;
 				font-stretch: expanded;
