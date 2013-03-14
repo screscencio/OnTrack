@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
+import br.com.oncast.ontrack.client.ui.components.selection.SelectionControllerDefault;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ScopeIdAndDescriptionWidget;
@@ -17,11 +18,14 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,19 +58,24 @@ public class TimesheetWidget extends Composite {
 	@UiField
 	FlexTable timesheet;
 
+	@UiField
+	FocusPanel focusPanel;
+
 	private final Float[][] times;
 
 	private final Release release;
 
 	private final boolean readOnly;
 
+	private final SelectionControllerDefault selectionController;
+
 	public TimesheetWidget(final Release release, final boolean readOnly) {
 		this.release = release;
 		this.readOnly = readOnly;
+		this.selectionController = new SelectionControllerDefault();
 		times = new Float[release.getScopeList().size()][getUsers().size()];
 
 		initWidget(uiBinder.createAndBindUi(this));
-
 		initTimesheetTable(readOnly);
 	}
 
@@ -142,7 +151,11 @@ public class TimesheetWidget extends Composite {
 				final float value = getTimeSpent(scope.getId(), user.getId());
 				times[i][j] = value;
 
-				if (!readOnly && user.equals(getCurrentUser())) timesheet.setWidget(i + 1, j + 1, new ScopeTimeSpentWidget(scope, user, value));
+				if (!readOnly && user.equals(getCurrentUser())) {
+					final ScopeTimeSpentWidget widget = new ScopeTimeSpentWidget(scope, user, value, selectionController);
+					selectionController.addSelectableWidget(widget);
+					timesheet.setWidget(i + 1, j + 1, widget);
+				}
 				else timesheet.setText(i + 1, j + 1, round(value));
 			}
 		}
@@ -237,4 +250,8 @@ public class TimesheetWidget extends Composite {
 		return getUsers().isEmpty();
 	}
 
+	@UiHandler("focusPanel")
+	protected void onClick(final ClickEvent event) {
+		selectionController.deselectAll();
+	}
 }

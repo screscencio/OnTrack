@@ -61,6 +61,8 @@
 		
 	</ui:style>
 	
-	<g:FlexTable ui:field="timesheet" styleName="{style.timesheet}" cellPadding="5" cellSpacing="0"/> 
+	<g:FocusPanel ui:field="focusPanel">
+		<g:FlexTable ui:field="timesheet" styleName="{style.timesheet}" cellPadding="5" cellSpacing="0"/> 
+	</g:FocusPanel>
 	
 </ui:UiBinder> 
