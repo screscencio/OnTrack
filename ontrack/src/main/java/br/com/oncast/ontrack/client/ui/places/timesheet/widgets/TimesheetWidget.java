@@ -8,6 +8,7 @@ import java.util.List;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.ui.components.user.UserWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabel;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ScopeIdAndDescriptionWidget;
 import br.com.oncast.ontrack.client.utils.number.ClientDecimalFormat;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
@@ -148,8 +149,7 @@ public class TimesheetWidget extends Composite {
 
 		for (int i = 1; i < scopes.size() + 1; i++) {
 			final Scope scope = scopes.get(i - 1);
-			timesheet.setText(i, 0, scope.getDescription());
-
+			timesheet.setWidget(i, 0, new ScopeIdAndDescriptionWidget(scope));
 			timesheet.setText(i, users.size() + 1, round(getRowSum(i)));
 		}
 
