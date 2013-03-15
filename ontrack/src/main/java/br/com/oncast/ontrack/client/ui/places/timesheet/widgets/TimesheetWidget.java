@@ -50,6 +50,7 @@ public class TimesheetWidget extends Composite {
 
 		String rowSumCell();
 
+		String boldCell();
 	}
 
 	@UiField
@@ -163,6 +164,7 @@ public class TimesheetWidget extends Composite {
 		for (int i = 1; i < scopes.size() + 1; i++) {
 			final Scope scope = scopes.get(i - 1);
 			timesheet.setWidget(i, 0, new ScopeIdAndDescriptionWidget(scope));
+			timesheet.getFlexCellFormatter().addStyleName(i, users.size() + 1, style.boldCell());
 			timesheet.setText(i, users.size() + 1, round(getRowSum(i)));
 		}
 
@@ -172,10 +174,12 @@ public class TimesheetWidget extends Composite {
 			timesheet.setWidget(0, j, new UserWidget(user));
 
 			final float sum = getColumnSum(j);
+			timesheet.getFlexCellFormatter().addStyleName(scopes.size() + 1, j, style.boldCell());
 			timesheet.setText(scopes.size() + 1, j, round(sum));
 			totalSum += sum;
 		}
 
+		timesheet.getFlexCellFormatter().addStyleName(scopes.size() + 1, users.size() + 1, style.boldCell());
 		timesheet.setText(scopes.size() + 1, users.size() + 1, round(totalSum));
 	}
 
