@@ -73,7 +73,7 @@
 	<g:FocusPanel ui:field="root" styleName="{style.root}">
 		<g:HTMLPanel styleName="{style.searchBar} {style.header}">
 			<g:HorizontalPanel ui:field="container" styleName="{style.container}" verticalAlignment="middle" horizontalAlignment="center">
-				<g:cell width="100%">
+				<g:cell width="100%" horizontalAlignment="left">
 					<search:SearchScopeFiltrableCommandMenu ui:field="search" styleName="{style.search}"/>
 				</g:cell>
 				<g:cell width="1">
