@@ -11,6 +11,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
+import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenu;
 import br.com.oncast.ontrack.client.ui.generalwidgets.CommandMenuItem;
 import br.com.oncast.ontrack.client.ui.generalwidgets.IncrementalAdditionListener;
@@ -42,7 +45,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -60,7 +63,7 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	private static final List<Integer> KEY_DOWN_HANDLED_KEYS = Arrays.asList(new Integer[] { KEY_DOWN, KEY_UP, KEY_TAB });
 
 	@UiField
-	protected ScrollPanel scrollPanel;
+	protected SimplePanel scrollPanel;
 
 	@UiField
 	protected HTMLPanel result;
@@ -75,10 +78,16 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	protected HTMLPanel rootPanel;
 
 	@UiField
+	protected HTMLPanel container;
+
+	@UiField
 	protected TextBox filterArea;
 
 	@UiField
 	protected Label resultInfo;
+
+	@UiField
+	protected Label searchIcon;
 
 	private List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 
@@ -114,11 +123,17 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 	}
 
 	public void focus() {
-		setVisible(true);
+		container.getElement().getStyle().setProperty("width", "auto");
 		filterArea.setFocus(true);
 	}
 
-	@UiHandler({ "searchIcon" })
+	private void hide() {
+		filterArea.setText("");
+		result.setVisible(false);
+		container.getElement().getStyle().clearWidth();
+	}
+
+	@UiHandler("searchIcon")
 	void onSearchIconClick(final ClickEvent event) {
 		focus();
 	}
@@ -152,11 +167,6 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 		}
 
 		eatEvent(event);
-	}
-
-	private void hide() {
-		filterArea.setText("");
-		result.setVisible(false);
 	}
 
 	@UiHandler("filterArea")
@@ -234,16 +244,8 @@ public class SearchScopeFiltrableCommandMenu extends Composite implements HasFoc
 		final CommandMenuItem selectedItem = menu.getSelectedItem();
 		if (selectedItem == null) return;
 
-		final int menuTop = scrollPanel.getVerticalScrollPosition();
-		final int menuHeight = scrollPanel.getElement().getClientHeight();
-		final int menuBottom = menuTop + menuHeight;
-
-		final int itemTop = selectedItem.getMenuItem().getElement().getOffsetTop();
-		final int itemHeight = selectedItem.getMenuItem().getElement().getOffsetHeight();
-		final int itemBottom = selectedItem.getMenuItem().getElement().getOffsetTop() + itemHeight;
-
-		if (itemTop < menuTop) scrollPanel.setVerticalScrollPosition(itemTop - 1);
-		else if (itemBottom > menuBottom) scrollPanel.setVerticalScrollPosition(itemTop - menuHeight + itemHeight + 3);
+		WidgetVisibilityEnsurer.ensureVisible(selectedItem.getMenuItem().getElement(),
+				scrollPanel.getElement(), Orientation.VERTICAL, ContainerAlignment.BEGIN, 3);
 	}
 
 	private void eatEvent(final DomEvent<?> event) {

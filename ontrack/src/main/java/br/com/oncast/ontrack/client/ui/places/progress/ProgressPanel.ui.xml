@@ -8,11 +8,8 @@
 	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'
 	xmlns:d='urn:import:br.com.oncast.ontrack.client.ui.places.progress.details'>
 
-    <ui:data field="bgPixelImg" src="../../semitransparentPixel.png" />
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.places.progress.ProgressPanel.ProgressPanelStyle">
 	
-	   @url bgPixelUrl bgPixelImg;
-		
 		.projectMembers {
 			position: absolute;
 			top: 5px;

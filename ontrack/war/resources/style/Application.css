@@ -98,8 +98,12 @@ html,body {
 }
 
 .gwt-Tree .gwt-TreeItem.gwt-TreeItem-selected {
-	background-color: #c1e8ee;
-	border: 1px solid #4ec6d6;
+	background-color: #B2C9CC;
+	border: 1px solid #7792A4;
+	
+	background-color: rgba(111, 156, 162, 0.5);
+	border: 1px solid rgba(60, 93, 124, 0.5);
+	
 	margin: 0px;
 }
 
@@ -235,7 +239,7 @@ html,body {
 	padding: 8px;
 	font-weight: normal;
 	cursor: pointer;
-	color: #999999;
+	color: #666;
 	background: #d1d1d1;
 	background-color: #d1d1d1;
 	border-top: 1px solid #999;
@@ -262,7 +266,7 @@ html,body {
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
-	background-color: #c1e8ee;
+	background-color: #B2C9CC;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {
