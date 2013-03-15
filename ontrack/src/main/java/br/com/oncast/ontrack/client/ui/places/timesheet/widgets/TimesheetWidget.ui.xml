@@ -59,6 +59,10 @@
 			padding-left: PADDING_MEDIUM;
 		}
 		
+		.boldCell {
+			font-weight: bold;
+		}
+		
 	</ui:style>
 	
 	<g:FocusPanel ui:field="focusPanel">
