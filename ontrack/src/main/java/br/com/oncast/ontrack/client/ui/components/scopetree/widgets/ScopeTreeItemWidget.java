@@ -42,7 +42,6 @@ import br.com.oncast.ontrack.shared.model.progress.Progress.ProgressState;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationBuilder;
-import br.com.oncast.ontrack.shared.model.scope.stringrepresentation.ScopeRepresentationParser;
 import br.com.oncast.ontrack.shared.model.tag.Tag;
 import br.com.oncast.ontrack.shared.model.user.User;
 import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
@@ -351,21 +350,9 @@ public class ScopeTreeItemWidget extends Composite {
 		}
 		else {
 			if (!getSimpleDescription().equals(editionBox.getText())) editionHandler
-					.onEditionEnd(completeDescription(editionBox
-							.getText()));
+					.onEditionEnd(editionBox.getText());
 			else editionHandler.onEditionCancel();
 		}
-	}
-
-	private String completeDescription(final String text) {
-		final ScopeRepresentationParser parser = new ScopeRepresentationParser(text);
-		final ScopeRepresentationBuilder builder = new ScopeRepresentationBuilder(scope);
-		final StringBuffer buffer = new StringBuffer(text);
-		if (!parser.hasDeclaredEffort()) builder.includeEffort();
-		if (!parser.hasDeclaredValue()) builder.includeValue();
-		if (parser.getReleaseDescription().isEmpty()) builder.includeReleaseReference();
-		if (parser.getProgressDescription() == null) builder.includeProgress();
-		return buffer.append(builder.toString()).toString();
 	}
 
 	public boolean isEditing() {
