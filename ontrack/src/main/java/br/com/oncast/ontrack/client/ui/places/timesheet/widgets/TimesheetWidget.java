@@ -96,11 +96,11 @@ public class TimesheetWidget extends Composite {
 		final int lastColumn = timesheet.getCellCount(row) - 1;
 		final int lastRow = timesheet.getRowCount() - 1;
 
-		timesheet.setText(row, lastColumn, getRowSum(row) + "");
-		timesheet.setText(lastRow, column, getColumnSum(column) + "");
+		timesheet.setText(row, lastColumn, round(getRowSum(row)) + "");
+		timesheet.setText(lastRow, column, round(getColumnSum(column)) + "");
 
 		final Float previousTotal = Float.valueOf(timesheet.getText(lastRow, lastColumn));
-		timesheet.setText(lastRow, lastColumn, previousTotal + difference + "");
+		timesheet.setText(lastRow, lastColumn, round(previousTotal + difference) + "");
 	}
 
 	public void updateScopeDescriptions(final UUID scopeId) {
