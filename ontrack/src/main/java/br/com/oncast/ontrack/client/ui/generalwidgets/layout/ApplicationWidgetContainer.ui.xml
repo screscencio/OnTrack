@@ -41,7 +41,7 @@
             font-size: 14pt;
             
             color: COLOR_BORDER_MENUBAR;
-            text-shadow: COLOR_BORDER_SECONDARY;
+            text-shadow: TEXT_SHADOW_TERTIARY;
             
             cursor: default;
             user-select: none;
@@ -59,7 +59,7 @@
             
             font-size: FONT_SIZE_MEDIUM;
             color: COLOR_MENUBOX_TEXT;
-            text-shadow: SHADOW_TERTIARY;
+            text-shadow: TEXT_SHADOW_TERTIARY;
         }
 
     </ui:style>

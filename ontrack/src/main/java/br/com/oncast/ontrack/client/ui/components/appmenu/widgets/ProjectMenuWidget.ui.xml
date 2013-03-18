@@ -24,7 +24,7 @@
 		}
 		
 		.exportToMapLink {
-            font: FONT_SIZE_LARGE FONT_DEFAULT_ITALIC;
+            font-size: FONT_SIZE_LARGE;
             font-style: italic;
             color: COLOR_MENUBOX_TEXT;
             
@@ -39,12 +39,12 @@
         }
         
         .customSeparatorMargin {
-        	margin: 10px -PADDING_LARGE;
+        	margin: 10px -15px;
         	margin-top: 16px;
         }
         
         .separator {
-			margin: 10px -PADDING_LARGE;
+			margin: 10px -15px;
         }
         
         .switchProjectLabel {
@@ -60,7 +60,7 @@
 		            <td width="1" align="center">
 		                <div class="{style.exportDataImg}" />
 		            </td>
-		            <td width="*" align="center"><ui:msg description="export data label">Export data (.mm)</ui:msg></td>
+		            <td width="100%" align="center"><ui:msg description="export data label">Export data (.mm)</ui:msg></td>
 		        </tr>
 		    </table>
            </g:Anchor>
