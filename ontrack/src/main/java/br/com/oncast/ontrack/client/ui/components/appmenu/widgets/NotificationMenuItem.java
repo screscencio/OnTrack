@@ -10,6 +10,8 @@ import br.com.oncast.ontrack.client.services.notification.NotificationService;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.shared.services.notification.Notification;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -28,16 +30,16 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 
 		@Override
 		public void onNotificationListAvailabilityChange(final boolean availability) {
-			if (!availability) setSuffix("(?)");
+			if (!availability) setSuffix("?");
 			else {
 				calculateUnreadNotifications();
 			}
 		}
 
 		private void calculateUnreadNotifications() {
-			final List<Notification> unread = NotificationClientUtils.getUnreadNotificationsForCurrentUser(notifications);
-			if (unread.size() > 0) setSuffix("(" + unread.size() + ")");
-			else setSuffix("");
+			final List<Notification> unreadNotificationsForCurrentUser = NotificationClientUtils.getUnreadNotificationsForCurrentUser(notifications);
+			setSuffix("" + unreadNotificationsForCurrentUser.size());
+			notificationMenuItemHeader.setHasUnread(!unreadNotificationsForCurrentUser.isEmpty());
 		}
 
 		@Override
@@ -46,34 +48,27 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 		}
 	}
 
-	protected ApplicationMenuItem notificationMenuItem;
-
 	private final NotificationMenuItemHeaderWidget notificationMenuItemHeader;
 
-	public NotificationMenuItem() {
-		initWidget(notificationMenuItem = new ApplicationMenuItem());
+	private PopupConfig popup;
 
-		notificationMenuItemHeader = new NotificationMenuItemHeaderWidget();
-		notificationMenuItem.setMenuHeaderWidget(notificationMenuItemHeader);
+	public NotificationMenuItem() {
+		initWidget(notificationMenuItemHeader = new NotificationMenuItemHeaderWidget());
 		final NotificationService notificationService = ClientServiceProvider.getInstance().getNotificationService();
 		final NotificationMenuListenerImplementation listener = new NotificationMenuListenerImplementation();
 		notificationService.registerNotificationListChangeListener(listener);
 		notificationService.registerNotificationReadStateChangeListener(listener);
+		notificationMenuItemHeader.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				openMenu();
+			}
+		});
 	}
 
 	@Override
 	public Widget asWidget() {
-		return notificationMenuItem;
-	}
-
-	@Override
-	public String getText() {
-		return notificationMenuItem.getText();
-	}
-
-	@Override
-	public void setText(final String text) {
-		notificationMenuItemHeader.setText(text);
+		return notificationMenuItemHeader;
 	}
 
 	protected void setSuffix(final String string) {
@@ -81,10 +76,21 @@ public class NotificationMenuItem extends Composite implements IsWidget, HasText
 	}
 
 	public void setPopupConfig(final PopupConfig popup) {
-		notificationMenuItem.setPopupConfig(popup);
+		this.popup = popup;
+		popup.setAnimationDuration(PopupConfig.SlideAnimation.DURATION_SHORT);
 	}
 
 	public void openMenu() {
-		notificationMenuItem.toggleMenu();
+		popup.pop();
+	}
+
+	@Override
+	public String getText() {
+		return notificationMenuItemHeader.getText();
+	}
+
+	@Override
+	public void setText(final String text) {
+		notificationMenuItemHeader.setText(text);
 	}
 }
