@@ -15,7 +15,13 @@
 	
 	.container {
 		padding: 10px 8px;
+		
+		transform: matrix(1,0,-0.5,1,0,0);
 		-webkit-transform: matrix(1,0,-0.5,1,0,0);
+		-ms-transform: matrix(1,0,-0.5,1,0,0);
+		-moz-transform: matrix(1,0,-0.5,1,0,0);
+		-o-transform: matrix(1,0,-0.5,1,0,0);
+		
 		background: COLOR_BACKGROUND_SEARCH;
 		height: 18px;
 		padding-left: 30px;
@@ -36,7 +42,11 @@
 		position: absolute;
 		left: 10px;
 	
+		transform: matrix(1,0,0.5,1,0,0);
 		-webkit-transform: matrix(1,0,0.5,1,0,0);
+		-ms-transform: matrix(1,0,0.5,1,0,0);
+		-moz-transform: matrix(1,0,0.5,1,0,0);
+		-o-transform: matrix(1,0,0.5,1,0,0);
 
 		font-family: FONT_ICON_FILL;
 		font-size: 22px;
@@ -54,7 +64,12 @@
 	}
 
 	.filterArea {
+		transform: matrix(1,0,0.5,1,0,0);
 		-webkit-transform: matrix(1,0,0.5,1,0,0);
+		-ms-transform: matrix(1,0,0.5,1,0,0);
+		-moz-transform: matrix(1,0,0.5,1,0,0);
+		-o-transform: matrix(1,0,0.5,1,0,0);
+		
 		width: 100%;
 		
 		background: transparent;

@@ -430,7 +430,6 @@ public class PopupConfig {
 			widgetToPopup.removeFromParent();
 
 			container = new SimplePanel();
-			PopUpPanel.add(container);
 			container.add(widgetToPopup);
 
 			final Style s = container.getElement().getStyle();
@@ -440,6 +439,8 @@ public class PopupConfig {
 			s.setHeight(height + CONTAINER_PADDING, Unit.PX);
 			s.setWidth(width + 2 * CONTAINER_PADDING, Unit.PX);
 			s.setOverflow(Overflow.HIDDEN);
+
+			PopUpPanel.add(container);
 
 			startPos = 0;
 			endPos = 0;
@@ -462,7 +463,6 @@ public class PopupConfig {
 		private void restoreWidget() {
 			widgetToPopup.removeFromParent();
 			container.removeFromParent();
-			PopUpPanel.add(widgetToPopup);
 
 			final Style s = widgetToPopup.getElement().getStyle();
 			s.setPosition(Position.ABSOLUTE);
@@ -470,6 +470,8 @@ public class PopupConfig {
 			s.setLeft(left, Unit.PX);
 			s.setProperty("width", styleWidthValue);
 			s.setProperty("height", styleHeightValue);
+
+			PopUpPanel.add(widgetToPopup);
 
 			if (showAnimation) {
 				setPopupWidgetVisible();

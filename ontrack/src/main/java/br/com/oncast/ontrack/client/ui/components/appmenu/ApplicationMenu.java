@@ -164,7 +164,7 @@ public class ApplicationMenu extends Composite {
 
 	private void createProjectMenu() {
 		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget())
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 5))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(projectMenuItem, HorizontalAlignment.CENTER));
 		projectMenuItem.setPopupConfig(config);
 	}
