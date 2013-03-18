@@ -56,10 +56,15 @@ public class ModelWidgetContainer<T, E extends ModelWidget<T>> extends Composite
 			if (widgetIndex != i) {
 				for (int j = widgetIndex - 1; j >= i; j--) {
 					@SuppressWarnings("unchecked") final E missPlacedWidget = (E) cellContainer.getWidget(j);
-					if (!modelBeanList.contains(missPlacedWidget.getModelObject())) cellContainer.remove(j);
+					if (!modelBeanList.contains(missPlacedWidget.getModelObject())) {
+						cellContainer.remove(j);
+						hasChanged = true;
+					}
 				}
-				cellContainer.move(modelWidget, i);
-				hasChanged = true;
+				if (cellContainer.getWidgetIndex(modelWidget) != i) {
+					cellContainer.move(modelWidget, i);
+					hasChanged = true;
+				}
 			}
 
 			hasChanged |= modelWidget.update();
