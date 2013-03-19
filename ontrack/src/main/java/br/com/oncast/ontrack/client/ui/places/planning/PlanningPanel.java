@@ -38,8 +38,6 @@ public class PlanningPanel extends Composite implements PlanningView {
 	interface PlanningPanelUiBinder extends UiBinder<Widget, PlanningPanel> {}
 
 	interface PlanningPanelStyle extends CssResource {
-		String showReleaseIcon();
-
 		String mainContainerExpanded();
 	}
 
@@ -163,7 +161,7 @@ public class PlanningPanel extends Composite implements PlanningView {
 		releasePanel.setVisible(!wasVisible);
 		releaseScroll.setVisible(!wasVisible);
 		members.setVisible(!wasVisible);
-		toggleReleaseBtn.setStyleName(style.showReleaseIcon(), wasVisible);
+		toggleReleaseBtn.setStyleName("icon-resize-small", wasVisible);
 		mainContainer.setStyleName(style.mainContainerExpanded(), wasVisible);
 
 	}

@@ -55,15 +55,9 @@
 			float: right;
 		}
 		
-		.user:before {
-			content: '\e062';
-		}
-		
 		.user {
-			font-family: "IconicFill";
-			display: inline-block;
-			font-size: 33px;
 			cursor: pointer;
+			line-height: 54px;
 		}
 		
 	</ui:style>
@@ -74,7 +68,7 @@
 		    <div class="{style.backButtonContainer}">
     			<g:Image ui:field="backButton" resource="{backBtnImg}" styleName="{style.backButton}"/>
 		    </div>
-		    <aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.user}" title="User">
+		    <aw:ApplicationMenuItem ui:field="userMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" contentStyle="{style.user} icon-user icon-2x" title="User">
 				<ui:attribute name="title" description="user menu item text" />
 			</aw:ApplicationMenuItem>
 			<aw:ApplicationMenuItem ui:field="projectMenuItem" styleName="{style.menuItem}" text="Project" biggerFont="true">
