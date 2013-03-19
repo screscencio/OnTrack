@@ -47,7 +47,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO Refactor dividing visualization logic from business logic
 public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 	private static final ReleaseWidgetMessages messages = GWT.create(ReleaseWidgetMessages.class);
@@ -175,6 +174,9 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	@UiField
 	protected ScopeWidgetContainer scopeContainer;
 
+	@UiField(provided = true)
+	protected ReleaseInfoWidget infoWidget;
+
 	@UiFactory
 	protected ReleaseWidgetContainer createReleaseContainer() {
 		return new ReleaseWidgetContainer(releaseWidgetFactory);
@@ -226,7 +228,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 			final ModelWidgetFactory<Scope, ReleaseScopeWidget> scopeWidgetFactory,
 			final ReleasePanelWidgetInteractionHandler releasePanelInteractionHandler, final boolean kanbanSpecific) {
 		this.release = release;
-
+		this.infoWidget = new ReleaseInfoWidget(release);
 		this.releaseWidgetFactory = releaseWidgetFactory;
 		this.scopeWidgetFactory = scopeWidgetFactory;
 		this.releasePanelInteractionHandler = releasePanelInteractionHandler;
@@ -256,6 +258,15 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		setContainerState(DefaultViewSettings.RELEASE_PANEL_CONTAINER_STATE, false);
 		setVisible(true);
+
+		ClientServiceProvider.getInstance().getEventBus().addHandler(ReleaseScopeListUpdateEvent.TYPE, new ReleaseScopeListUpdateEventHandler() {
+
+			@Override
+			public void onScopeListInteraction(final Release r) {
+				if (release.equals(r)) infoWidget.show();
+				else infoWidget.hide();
+			}
+		});
 	}
 
 	private void setupDetails() {
@@ -274,6 +285,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		menuIcon.setVisible(isMenuOpen);
 	}
 
+	@UiHandler("menuMouseOverArea")
+	protected void onHeaderClick(final ClickEvent event) {
+		if (isContainerStateOpen) infoWidget.toogle();
+	}
+
 	@UiHandler("menuIcon")
 	protected void showMenu(final ClickEvent event) {
 		configPopup().popup(getMouseActionMenu())
@@ -288,11 +304,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				})
 				.pop();
 		isMenuOpen = true;
+		event.stopPropagation();
 	}
 
 	@UiHandler("detailLink")
 	protected void showAnnotationPanel(final ClickEvent event) {
 		ClientServiceProvider.getInstance().getAnnotationService().showAnnotationsFor(release.getId());
+		event.stopPropagation();
 	}
 
 	@UiHandler("progressIcon")
@@ -301,6 +319,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(progressIcon, HorizontalAlignment.CENTER))
 				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(progressIcon, VerticalAlignment.MIDDLE))
 				.pop();
+		event.stopPropagation();
 	}
 
 	@UiHandler("kanbanLink")
@@ -308,11 +327,13 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
 		final UUID projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
 		provider.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
+		event.stopPropagation();
 	}
 
 	@UiHandler("containerStateIcon")
 	protected void onContainerStateIconClicked(final ClickEvent event) {
 		setContainerState(!isContainerStateOpen);
+		event.stopPropagation();
 	}
 
 	private MouseCommandsMenu getMouseActionMenu() {
@@ -373,6 +394,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	public boolean update() {
 		updateDescription();
 		updateProgress();
+		infoWidget.update();
 
 		final boolean releaseUpdate = updateChildReleaseWidgets();
 		final boolean scopeUpdate = updateScopeWidgets();
@@ -428,6 +450,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		final boolean shouldShowReleaseContainer = shouldOpen && release.hasChildren();
 
 		scopeContainer.setVisible(shouldOpen);
+		infoWidget.setVisible(shouldOpen);
 		releaseContainer.setVisible(shouldShowReleaseContainer);
 		laterSeparator.setVisible(shouldShowReleaseContainer && release.hasDirectScopes());
 

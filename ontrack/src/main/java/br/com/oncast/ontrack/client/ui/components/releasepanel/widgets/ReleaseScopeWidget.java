@@ -38,6 +38,8 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -73,6 +75,8 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 		String associationHighlight();
 
 		String statusBarOpenImpediment();
+
+		String draggingMousePointer();
 	}
 
 	@UiField
@@ -254,7 +258,7 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	}
 
 	public Widget getDraggableAnchor() {
-		return draggableAnchor;
+		return panel;
 	}
 
 	@UiHandler("progressIcon")
@@ -334,6 +338,16 @@ public class ReleaseScopeWidget extends Composite implements ScopeWidget, ModelW
 	@UiHandler("panel")
 	public void onScopeWidgetDoubleClick(final DoubleClickEvent e) {
 		SERVICE_PROVIDER.getAnnotationService().showAnnotationsFor(scope.getId());
+	}
+
+	@UiHandler("panel")
+	protected void onScopeWidgetMouseDown(final MouseDownEvent event) {
+		panel.setStyleName(style.draggingMousePointer(), true);
+	}
+
+	@UiHandler("panel")
+	protected void onScopeWidgetUpDown(final MouseUpEvent event) {
+		panel.setStyleName(style.draggingMousePointer(), false);
 	}
 
 	private void fireScopeSelectionEvent() {
