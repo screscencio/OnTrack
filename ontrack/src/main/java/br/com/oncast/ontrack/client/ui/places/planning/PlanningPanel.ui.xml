@@ -81,22 +81,12 @@
 			padding-right: PADDING_MEDIUM;
 		}
 
-		.hideReleaseIcon:before {
-			content: '\e04e';
-		}
-
-		.showReleaseIcon:before {
-			content: '\e051';
-		}
-
 		.toggleReleaseBtn {
-			font-family: FONT_ICON_FILL;
 			position: absolute;
-			top: 1px;
+			top: 0px;
 			right: 9px;
 			color: COLOR_TEXT_HEADER;
 			cursor: pointer;
-			font-size: 22px;
 			text-align: center;
 			line-height: 36px;
 		}
@@ -124,7 +114,7 @@
 			<g:SimplePanel styleName="{style.footerBar}">
 				<footer:FooterBar ui:field="footerBar" />
 			</g:SimplePanel>
-			<g:FocusPanel ui:field="toggleReleaseBtn" styleName="{style.toggleReleaseBtn} {style.hideReleaseIcon}" />
+			<g:FocusPanel ui:field="toggleReleaseBtn" styleName="{style.toggleReleaseBtn} icon-resize-full" />
 		</g:FlowPanel>
 	</layout:ApplicationMenuAndWidgetContainer>
 

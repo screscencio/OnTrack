@@ -12,7 +12,7 @@
     <script type="text/javascript" language="javascript" src="application/application.nocache.js"></script>
     
     <link href='https://fonts.googleapis.com/css?family=Muli:400,400italic' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="resources/fonts/iconic/iconic.css">
+    <link rel="stylesheet" href="resources/style/font-awesome.min.css">
 
     <link rel="stylesheet" href="resources/style/Application.css">
     
