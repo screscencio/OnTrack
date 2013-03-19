@@ -10,7 +10,9 @@
 	<ui:style src="../../../style/default.css">
 	
 		.rootContainer {
-			padding: PADDING_MEDIUM;
+			padding: 0px;
+			padding-top: 10px;
+			color: COLOR_TEXT_MENUBAR;
 		}
 		
 		.rootPanel {
@@ -74,25 +76,12 @@
 			text-align: center;
 		}
 
-		.stackHeader {
-			cursor: pointer;
-			
-			margin: 0px -15px;
-			
-			padding: 5px;
-			border-radius: 2px;
-			border: 1px solid #AEAEAE;
-			box-shadow: inset 1px 1px 1px white;
-			background-color: #E5E5E5;
-		}
-		.stackHeader:HOVER {
-			background-color: lightGrey;
+		.stackHeaderLabel:HOVER {
+			color: COLOR_TEXT_PRIMARY;
 		}
 		
 		.stackHeaderLabel {
-			text-transform: uppercase;
-			color: COLOR_BLUE_LIGHT;
-			text-shadow: 1px 1px 1px white;;
+			cursor: pointer;
 		}
 		
 	</ui:style>
@@ -102,18 +91,14 @@
 				<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
 					<g:Image url="resources/image/misc/loading.gif" styleName="{style.loadingIndicator}" />
 				</g:SimplePanel>
-				<g:StackLayoutPanel ui:field="stackPanel">
-					<g:stack>
-						<g:customHeader size="30">
-							<g:HorizontalPanel ui:field="notificationsHeader" styleName="{style.stackHeader}">
-								<g:Label ui:field="notificationHeaderLabel" styleName="{style.stackHeaderLabel}">
-									<ui:msg description="Notifications">Notifications</ui:msg>
-								</g:Label>
-								<g:cell width="100%" verticalAlignment="middle">
-									<g:SimplePanel />
-								</g:cell>
-							</g:HorizontalPanel>
-						</g:customHeader>
+				<g:TabLayoutPanel ui:field="container" barHeight="36">
+					<g:tab>
+						<g:header>
+							<span class="{style.stackHeaderLabel}">
+								<ui:msg description="Notifications">Notifications</ui:msg>
+							</span>
+						</g:header>
+						
 						<g:ScrollPanel ui:field="notificationScrollContainer" styleName="{style.scrollContainer}">
 							<g:DeckPanel ui:field="notificationDeckPanel">
 								<g:FlowPanel styleName="{style.noNotificationContainer}">
@@ -127,19 +112,15 @@
 								<misc:ModelWidgetContainer ui:field="notificationContainer" styleName="{style.notifications}" />
 							</g:DeckPanel>
 						</g:ScrollPanel>	
-					</g:stack>
+					</g:tab>
 					
-					<g:stack>
-						<g:customHeader size="30">
-							<g:HorizontalPanel ui:field="activitiesHeader" styleName="{style.stackHeader}">
-								<g:Label styleName="{style.stackHeaderLabel}">
-									<ui:msg description="Activities">Activities</ui:msg>
-								</g:Label>
-								<g:cell width="100%" verticalAlignment="middle">
-									<g:SimplePanel />
-								</g:cell>
-							</g:HorizontalPanel>
-						</g:customHeader>
+					<g:tab>
+						<g:header>
+							<span class="{style.stackHeaderLabel}">
+								<ui:msg description="Activities">Activities</ui:msg>
+							</span>
+						</g:header>
+						
 						<g:ScrollPanel ui:field="activityScrollContainer" styleName="{style.scrollContainer}">
 							<g:DeckPanel ui:field="activityDeckPanel">
 								<g:FlowPanel styleName="{style.noNotificationContainer}">
@@ -153,8 +134,9 @@
 								<misc:ModelWidgetContainer ui:field="activityContainer" styleName="{style.notifications}" />
 							</g:DeckPanel>
 						</g:ScrollPanel>
-					</g:stack>	
-				</g:StackLayoutPanel>
+					</g:tab>
+					
+				</g:TabLayoutPanel>
 			</g:DeckPanel>
 	</layout:ApplicationPopupBoxContainer>
 

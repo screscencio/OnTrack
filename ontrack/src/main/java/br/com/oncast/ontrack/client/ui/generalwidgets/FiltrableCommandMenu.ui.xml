@@ -15,11 +15,6 @@
 			margin: -1px;
 		}
 		
-		.background {
-			border: none;
-			margin: 1px;
-		}
-		
 		.container {
 			background-color: white;
 			
@@ -28,6 +23,8 @@
 			-khtml-user-select: none;
 			-moz-user-select: none;
 			-ms-user-select: none;
+			
+			border: none;
 		}
 		
 		@sprite .searchIcon {
@@ -78,7 +75,7 @@
 	</ui:style>
 
 	<g:FocusPanel ui:field="focusPanel">
-		<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" addBackgroundStyleNames="{style.background}" paddingEnabled="false">
+		<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" paddingEnabled="false">
 			<g:HorizontalPanel styleName="{style.textBoxDecoration} {style.container}" verticalAlignment="middle">
 				<g:SimplePanel styleName="{style.searchIcon}"/>
 				<g:cell width="100%">
