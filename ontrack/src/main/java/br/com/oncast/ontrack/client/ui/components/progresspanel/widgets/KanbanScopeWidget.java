@@ -14,6 +14,8 @@ import br.com.oncast.ontrack.shared.model.scope.Scope;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -37,6 +39,8 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 		String descriptionLabelWithAssociatedUsers();
 
 		String associationHighlight();
+
+		String draggingMousePointer();
 	}
 
 	@UiField
@@ -98,6 +102,16 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 		ClientServiceProvider.getInstance().getEventBus().fireEventFromSource(new ScopeSelectionEvent(scope), this);
 	}
 
+	@UiHandler("panel")
+	protected void onScopeWidgetMouseDown(final MouseDownEvent event) {
+		panel.setStyleName(style.draggingMousePointer(), true);
+	}
+
+	@UiHandler("panel")
+	protected void onScopeWidgetUpDown(final MouseUpEvent event) {
+		panel.setStyleName(style.draggingMousePointer(), false);
+	}
+
 	@Override
 	public boolean update() {
 		associatedUsers.setShouldShowDone(!scope.getProgress().isDone());
@@ -131,7 +145,7 @@ public class KanbanScopeWidget extends Composite implements ScopeWidget, ModelWi
 	}
 
 	public Widget getDraggableAnchor() {
-		return draggableAnchor;
+		return panel;
 	}
 
 	@Override

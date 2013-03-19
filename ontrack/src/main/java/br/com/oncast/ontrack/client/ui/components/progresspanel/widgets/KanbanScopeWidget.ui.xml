@@ -91,6 +91,10 @@
 		.associatedUsers {
 			float: right;
 		}
+		
+		.draggingMousePointer {
+			cursor: move;
+		}
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel} kanbanColumn">

@@ -155,6 +155,7 @@
 			</g:HTMLPanel>
 		</g:FocusPanel>
 		<div ui:field="bodyContainer" class="{style.body}">
+			<ow:ReleaseInfoWidget ui:field="infoWidget" />
 			<ow:ReleaseWidgetContainer ui:field="releaseContainer" styleName="{style.releaseContainer}" />
 			<g:HorizontalPanel ui:field="laterSeparator" styleName="{style.laterSeparator}" verticalAlignment="middle">
 				<g:Image resource="{resources.laterImage}" styleName="{style.laterImage}"/>

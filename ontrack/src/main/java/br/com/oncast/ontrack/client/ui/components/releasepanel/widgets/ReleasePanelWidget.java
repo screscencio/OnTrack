@@ -46,6 +46,7 @@ import br.com.oncast.ontrack.shared.model.action.ScopeUpdateAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
+import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.utils.deepEquality.IgnoredByDeepEquality;
 
@@ -139,6 +140,16 @@ public class ReleasePanelWidget extends Composite {
 						action instanceof ReleaseScopeUpdatePriorityAction ||
 						action instanceof ReleaseRenameAction ||
 						action instanceof KanbanAction) update();
+
+				if (action instanceof ScopeBindReleaseAction || action instanceof ReleaseScopeUpdatePriorityAction) {
+					try {
+						final UUID scopeId = action instanceof ScopeBindReleaseAction ? action.getReferenceId() : ((ReleaseScopeUpdatePriorityAction) (action))
+								.getScopeReferenceId();
+						final Release release = ClientServiceProvider.getCurrentProjectContext().findScope(scopeId).getRelease();
+						ClientServiceProvider.getInstance().getEventBus().fireEvent(new ReleaseScopeListUpdateEvent(release));
+					}
+					catch (final ScopeNotFoundException e) {}
+				}
 			}
 		};
 	}

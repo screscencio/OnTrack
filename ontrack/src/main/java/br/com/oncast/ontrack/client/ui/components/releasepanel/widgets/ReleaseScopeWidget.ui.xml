@@ -129,7 +129,10 @@
 		.statusBarOpenImpediment {
 			background-color: #f0542d;
 		}
-		
+				
+		.draggingMousePointer {
+			cursor: move;
+		}
 	</ui:style>
 
 	<g:FocusPanel ui:field="panel" styleName="{style.panel}">

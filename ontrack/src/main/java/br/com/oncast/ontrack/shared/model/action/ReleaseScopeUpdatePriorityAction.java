@@ -64,4 +64,8 @@ public class ReleaseScopeUpdatePriorityAction implements ReleaseAction {
 	public UUID getReferenceId() {
 		return releaseReferenceId;
 	}
+
+	public UUID getScopeReferenceId() {
+		return scopeReferenceId;
+	}
 }
