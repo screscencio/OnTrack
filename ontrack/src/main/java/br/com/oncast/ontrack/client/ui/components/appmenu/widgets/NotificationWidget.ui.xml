@@ -48,21 +48,30 @@
 				vertical-alignment: middle;
 			}
 			
+			.normal, .impediment, .impedimentSolved {
+				position: absolute;
+				width: 4px;
+				top: 0px;
+				left: -5px;
+				bottom: 10px;
+			}
+			
 			.impediment {
-				border-left: OPEN_IMPEDIMENT_BORDER;
-				margin-left: -5px;
+				background: OPEN_IMPEDIMENT_COLOR;
 			}
 
 			.impedimentSolved {
-				border-left: SOLVED_IMPEDIMENT_BORDER;
-				margin-left: -5px;
+				background: SOLVED_IMPEDIMENT_COLOR;
 			}
-
-			.normal {}
 			
 			.read {
 				opacity: 0.5;
 				color: COLOR_GRAY;
+			}
+			
+			.separator {
+				margin: 10px 0px;
+				margin-left: -10px;
 			}
 
 		</ui:style>
@@ -78,6 +87,7 @@
 				</g:HTMLPanel>
 			</g:cell>
 		</g:HorizontalPanel>
-		<t:Separator />
+		<g:SimplePanel ui:field="typeIndicator" styleName="{style.normal}"/>
+		<t:Separator styleName="{style.separator}"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 	

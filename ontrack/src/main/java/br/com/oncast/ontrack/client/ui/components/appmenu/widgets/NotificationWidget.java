@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class NotificationWidget extends Composite implements ModelWidget<Notification> {
@@ -51,6 +52,9 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 
 	@UiField
 	HorizontalPanel container;
+
+	@UiField
+	SimplePanel typeIndicator;
 
 	@UiField(provided = true)
 	UserWidget userWidget;
@@ -108,13 +112,13 @@ public class NotificationWidget extends Composite implements ModelWidget<Notific
 	private void setStyleByType() {
 		switch (notification.getType()) {
 			case IMPEDIMENT_CREATED:
-				container.setStyleName(style.impediment());
+				typeIndicator.setStyleName(style.impediment());
 				break;
 			case IMPEDIMENT_SOLVED:
-				container.setStyleName(style.impedimentSolved());
+				typeIndicator.setStyleName(style.impedimentSolved());
 				break;
 			default:
-				container.setStyleName(style.normal());
+				typeIndicator.setStyleName(style.normal());
 				break;
 		}
 	}

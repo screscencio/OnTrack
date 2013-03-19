@@ -5,10 +5,9 @@
 	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.layout.ApplicationPopupBoxContainer.Style">
 		.container {
             position: relative;
-			
-			color: COLOR_MENUBOX_TEXT;
-			font: FONT_SIZE_SMALL FONT_DEFAULT_ITALIC;
-			font-style: italic;
+            
+            color: COLOR_TEXT_SECONDARY;
+			font-size: FONT_SIZE_SMALL;
 		}
 		
 		.backgroundPanel {
@@ -17,11 +16,11 @@
 			left: 0px;
 			right: 0px;
 			bottom: 0px;
+			border: 0px;
 		}
 
         .content {
         	position: relative;
-        	margin: 1px;
         }
         
         .boxPadding {
