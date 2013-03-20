@@ -7,49 +7,71 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:image field="searchIcon" src="search-project.png"/>
 	<ui:style src="../style/default.css">
-	
+
 		.rootPanel {
 			width: auto;
 			margin: -1px;
 		}
 		
+		@def inputHeight 30px;
 		.container {
-			background-color: white;
-			
-			user-select: none;
-			-webkit-user-select: none;
-			-khtml-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			
-			border: none;
-		}
-		
-		@sprite .searchIcon {
-			gwt-image: 'searchIcon';
-			background-position: center left;
-			margin: 2px 4px 0px 0px;
-		}
-		
-		.filterBoxContainer {
 			position: relative;
-			width: 100%;
+			background: COLOR_BACKGROUND_TERTIARY;
+			color: COLOR_TEXT_TERTIARY;
+			height: inputHeight;
+			
+			overflow: hidden;
+			padding-left: 45px;
+		}
+	
+		.iconContainer {
+			position: absolute;
+			top: 0px;
+			left: -10px;
+			height: inputHeight;
+			width: 45px;
+			
+			transform: matrix(1,0,-0.5,1,0,0);
+			-webkit-transform: matrix(1,0,-0.5,1,0,0);
+			-ms-transform: matrix(1,0,-0.5,1,0,0);
+			-moz-transform: matrix(1,0,-0.5,1,0,0);
+			-o-transform: matrix(1,0,-0.5,1,0,0);
+			
+			background: COLOR_BACKGROUND_HEADER;
+			color: COLOR_BACKGROUND_TERTIARY;
+		}
+		
+		.searchIcon {
+			position: absolute;
+			left: 20px;
+			
+			line-height: inputHeight;
+		
+			transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
+			-webkit-transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
+			-ms-transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
+			-moz-transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
+			-o-transform: matrix(1,0,0.5,1,0,0) scaleX(-1);
+	
+			cursor: pointer;
+		}
+
+		.searchIcon:hover {
+			color: COLOR_HOVER_4;
 		}
 		
 		.filterArea {
 			width: 100%;
+
+			font-size: FONT_SIZE_SMALL;
+			color: COLOR_TEXT_TERTIARY;
 			
-			margin: 0px;
-			padding: 0px;
-			
-			border: none;
 			background: transparent;
-			
-			font-family: inherit;
-			font-size: inherit;
-			color: inherit;
+			outline: none;
+			border: none;
+			padding: 0;
+			margin: 6px 0px;
 		}
 		
 		.menu {
@@ -76,17 +98,16 @@
 
 	<g:FocusPanel ui:field="focusPanel">
 		<layout:ApplicationPopupBoxContainer addStyleNames="{style.rootPanel}" paddingEnabled="false">
-			<g:HorizontalPanel styleName="{style.textBoxDecoration} {style.container}" verticalAlignment="middle">
-				<g:SimplePanel styleName="{style.searchIcon}"/>
-				<g:cell width="100%">
-				 	<g:HTMLPanel styleName="{style.filterBoxContainer}">
-						<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
-						<g:Label ui:field="helpLabel" styleName="{style.helpLabel}">
-							<ui:msg description="filtrable command menu help text">Hit TAB to complete</ui:msg>
-						</g:Label>
-					</g:HTMLPanel>
-				</g:cell>
-			</g:HorizontalPanel>
+			<g:HTMLPanel ui:field="container" styleName="{style.container}" >
+				<div class="{style.iconContainer}">
+					<i class="icon-search {style.searchIcon}"/>
+				</div>
+				<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
+				<g:Label ui:field="helpLabel" styleName="{style.helpLabel}">
+					<ui:msg description="filtrable command menu help text">Hit TAB to complete</ui:msg>
+				</g:Label>
+			</g:HTMLPanel>
+			
 			<g:ScrollPanel ui:field="scrollPanel">
 				<misc:CommandMenu ui:field="menu" styleName="{style.menu}" />
 			</g:ScrollPanel>

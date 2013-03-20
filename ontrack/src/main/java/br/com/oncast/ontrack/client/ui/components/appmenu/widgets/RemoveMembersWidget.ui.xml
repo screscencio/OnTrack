@@ -8,11 +8,17 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.RemoveMembersWidget.MembersWidgetStyle">
+	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.RemoveMembersWidget.MembersWidgetStyle">
 
 		.root {
 			position: relative;
 			width: 400px;
+			height: 71px;
+		}
+		
+		.container {
+			width: 400px;
+			height: 71px;
 		}
 
 		.membersContainer {
@@ -64,14 +70,13 @@
 				background 500ms,
 				border 500ms,
 				color 500ms;
-			
 		}
 		
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.root}">
 		<misc:DraggableMembersListWidget ui:field="members" styleName="{style.membersContainer}" visible="false"/>
-		<layout:ApplicationPopupBoxContainer>
+		<layout:ApplicationPopupBoxContainer styleName="{style.container}">
 			<g:FocusPanel ui:field="dropTarget" styleName="{style.dropTarget}">
 				<g:Label ui:field="trash" styleName="icon-trash icon-2x">&nbsp;&nbsp;<ui:msg description="invitee label">Drop here to remove</ui:msg></g:Label>
 			</g:FocusPanel>
