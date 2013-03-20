@@ -31,17 +31,6 @@ public enum ApplicationMenuShortcutMapping implements ShortcutMapping<Applicatio
 			return messages.openNotificationsMenu();
 		}
 	},
-	OPEN_MEMBERS(new Shortcut(BrowserKeyCodes.KEY_M).with(AltModifier.PRESSED)) {
-		@Override
-		public void execute(final ApplicationMenu menu) {
-			menu.openMembersMenuItem();
-		}
-
-		@Override
-		public String getDescription() {
-			return messages.openMembersMenu();
-		}
-	},
 	OPEN_USER(new Shortcut(BrowserKeyCodes.KEY_U).with(AltModifier.PRESSED)) {
 		@Override
 		public void execute(final ApplicationMenu menu) {

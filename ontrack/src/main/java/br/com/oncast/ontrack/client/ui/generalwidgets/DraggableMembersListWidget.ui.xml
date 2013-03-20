@@ -3,9 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:gw='urn:import:br.com.oncast.ontrack.client.ui.generalwidgets'>
 	
-	<ui:image field="sliderLeft" src="../places/planning/slider-left.png"/>
-	<ui:image field="sliderRight" src="../places/planning/slider-right.png"/>
-	<ui:style src="../style/default.css">
+	<ui:style src="../style/default.css" type="br.com.oncast.ontrack.client.ui.generalwidgets.DraggableMembersListWidget.DraggableMemnbersListWidgetStyle">
 	
 	.root {
 		position: relative;
@@ -13,48 +11,86 @@
 		height: 100%;
 	}
 	
-	@sprite .left {
-		gwt-image: 'sliderLeft';
+	.left, .right {
+		position: absolute;
+		top: 0;
+		width: 15px;
+		bottom: 0px;
+		opacity: 0.7;
+		line-height: 41px;
+		text-align: center;
+	}
+	
+	.left {
 		left: 0px;
 	}
 	
-	@sprite .right {
-		gwt-image: 'sliderRight';
+	.right {
 		right: 0px;
 	}
 	
-	.left, .right {
-		background-size: 16px;
-		background-position: center;
-		
+	.left:hover, .right:hover {
+		opacity: 1;
+	}
+	
+	.buttonContainer {
 		position: absolute;
-		right: 0px;
 		top: 0px;
-		width: 15px;
-		height: 44px;
+		bottom: 0px;
+		left: 12px;
+		width: 20px;
+		
+		overflow: hidden;
+	}
+	
+	.addMember, .removeMember {
+		position: absolute;
+		
+		margin: 4px;
 
-		opacity: 0.5;
+		text-align: center;
+		cursor: pointer;
+	}
+	
+	.addMember {
+		top: 2px;
+	}
+	
+	.removeMember {
+		bottom: 2px;
 	}
 	
 	.container {
 		position: absolute;
 		top: 0px;
 		bottom: 0px;
-		left: 12px;
+		left: 32px;
 		right: 12px;
 		
 		overflow: hidden;
+	}
+	
+	.hiddenButtons .container {
+		left: 12px;
+	}
+	
+	.hiddenButtons .buttonContainer {
+		display: none;
 	}
 		
 	</ui:style>
 	
 	<g:FocusPanel>
-		<g:HTMLPanel styleName="{style.root} {style.header}">
-			<g:FocusPanel ui:field="left" styleName="{style.left}"/>
+		<g:HTMLPanel ui:field="root" styleName="{style.root} {style.header}">
+			<g:FocusPanel ui:field="left" styleName="{style.left} icon-caret-left icon-large"/>
+			<g:HTMLPanel styleName="{style.buttonContainer}">
+				<g:FocusPanel ui:field="addMember" styleName="{style.addMember} icon-plus-sign"/>
+				<g:FocusPanel ui:field="removeMember" styleName="{style.removeMember} icon-minus-sign"/>
+			</g:HTMLPanel>
 			<g:HTMLPanel ui:field="scroll" styleName="{style.container}">
 				<gw:ModelWidgetContainer ui:field="users" width="auto"/>
 			</g:HTMLPanel>
-			<g:FocusPanel ui:field="right" styleName="{style.right}"/>
+			<g:FocusPanel ui:field="right" styleName="{style.right} icon-caret-right icon-large"/>
 		</g:HTMLPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

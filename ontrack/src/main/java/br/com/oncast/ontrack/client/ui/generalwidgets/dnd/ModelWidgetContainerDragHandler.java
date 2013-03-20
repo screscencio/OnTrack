@@ -10,7 +10,7 @@ import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.google.gwt.user.client.ui.Widget;
 
 @SuppressWarnings("unchecked")
-public abstract class ModelWidgetContainerDragHandler<T> implements DragHandler {
+public class ModelWidgetContainerDragHandler<T> implements DragHandler {
 
 	private ModelWidgetContainer<T, ModelWidget<T>> lastWidgetContainer;
 
