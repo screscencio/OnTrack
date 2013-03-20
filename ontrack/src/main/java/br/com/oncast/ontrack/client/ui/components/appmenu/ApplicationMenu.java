@@ -5,7 +5,6 @@ import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.MembersWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationListWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
@@ -52,9 +51,6 @@ public class ApplicationMenu extends Composite {
 	protected NotificationMenuItem notificationMenuItem;
 
 	@UiField
-	protected ApplicationMenuItem memberMenuItem;
-
-	@UiField
 	protected ApplicationMenuItem userMenuItem;
 
 	@UiField
@@ -82,9 +78,6 @@ public class ApplicationMenu extends Composite {
 		createNotificationMenu();
 
 		createUserMenu();
-
-		if (enableProjectDependantMenus) createMemberMenu();
-		memberMenuItem.setVisible(enableProjectDependantMenus);
 
 		backButton.addClickHandler(enableProjectDependantMenus ? new ClickHandler() {
 			@Override
@@ -176,13 +169,6 @@ public class ApplicationMenu extends Composite {
 		notificationMenuItem.setPopupConfig(notificationPopup);
 	}
 
-	private void createMemberMenu() {
-		final PopupConfig invitePopup = PopupConfig.configPopup().popup(new MembersWidget())
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
-				.alignHorizontal(HorizontalAlignment.RIGHT, new AlignmentReference(memberMenuItem, HorizontalAlignment.RIGHT));
-		memberMenuItem.setPopupConfig(invitePopup);
-	}
-
 	private void createUserMenu() {
 		if (registration != null) return;
 		final ApplicationSubmenu userMenu = new ApplicationSubmenu();
@@ -234,10 +220,6 @@ public class ApplicationMenu extends Composite {
 
 	public void openNotificationsMenuItem() {
 		notificationMenuItem.openMenu();
-	}
-
-	public void openMembersMenuItem() {
-		memberMenuItem.toggleMenu();
 	}
 
 	public void openUserMenuItem() {

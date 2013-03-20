@@ -82,9 +82,6 @@
 			<aw:NotificationMenuItem ui:field="notificationMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" title="Notifications">
 				<ui:attribute name="title" description="notifications menu item text" />
 			</aw:NotificationMenuItem>
-			<aw:ApplicationMenuItem ui:field="memberMenuItem" styleName="{style.menuItem} {style.rightSideMenuItem}" text="Members">
-				<ui:attribute name="text" description="members menu item text" />
-			</aw:ApplicationMenuItem>
 		</g:HTMLPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

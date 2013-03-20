@@ -2,7 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu.widgets;
 
 import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
-public interface ProjectMemeberWidgetMessages extends BaseMessages {
+public interface RemoveMembersWidgetMessages extends BaseMessages {
 
 	@DefaultMessage("The user was removed successfully")
 	@Description("message shown when the user was removed sucessfully")

@@ -10,7 +10,12 @@ import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.actionExecution.ActionExecutionListener;
 import br.com.oncast.ontrack.client.services.user.UsersStatusService;
 import br.com.oncast.ontrack.client.services.user.UsersStatusServiceImpl.UsersStatusChangeListener;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.MembersWidget;
+import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.RemoveMembersWidget;
 import br.com.oncast.ontrack.client.ui.components.members.DraggableMemberWidget;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
+import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.SlideAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.HideAnimation;
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.ShowAnimation;
@@ -24,12 +29,15 @@ import br.com.oncast.ontrack.shared.model.user.UserRepresentation;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,11 +49,24 @@ public class DraggableMembersListWidget extends Composite {
 
 	interface DraggableMembersListWidgetUiBinder extends UiBinder<Widget, DraggableMembersListWidget> {}
 
+	interface DraggableMemnbersListWidgetStyle extends CssResource {
+		String hiddenButtons();
+	}
+
+	@UiField
+	DraggableMemnbersListWidgetStyle style;
+
+	@UiField
+	HTMLPanel root;
+
 	@UiField(provided = true)
 	ModelWidgetContainer<UserRepresentation, DraggableMemberWidget> users;
 
 	@UiField
 	HTMLPanel scroll;
+
+	@UiField
+	FocusPanel addMember;
 
 	private final HorizontalScrollMover mover;
 
@@ -72,6 +93,24 @@ public class DraggableMembersListWidget extends Composite {
 		for (final HandlerRegistration reg : handlerRegistrations) {
 			reg.removeHandler();
 		}
+	}
+
+	@UiHandler("addMember")
+	protected void onAddMemberClick(final ClickEvent e) {
+		PopupConfig.configPopup().popup(new MembersWidget())
+				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(this, HorizontalAlignment.LEFT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM))
+				.setAnimationDuration(SlideAnimation.DURATION_SHORT)
+				.pop();
+	}
+
+	@UiHandler("removeMember")
+	protected void onRemoveMemberClick(final ClickEvent e) {
+		PopupConfig.configPopup().popup(new RemoveMembersWidget())
+				.alignHorizontal(HorizontalAlignment.LEFT, new AlignmentReference(this, HorizontalAlignment.LEFT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(this, VerticalAlignment.BOTTOM))
+				.setAnimationDuration(SlideAnimation.DURATION_SHORT)
+				.pop();
 	}
 
 	@UiHandler("right")
@@ -161,5 +200,9 @@ public class DraggableMembersListWidget extends Composite {
 				return new SlideAndFadeAnimation(widget, true);
 			}
 		}));
+	}
+
+	public void setButtonsVisibility(final boolean isHidden) {
+		root.setStyleName(style.hiddenButtons(), !isHidden);
 	}
 }

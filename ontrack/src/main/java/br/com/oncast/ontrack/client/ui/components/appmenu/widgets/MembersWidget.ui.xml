@@ -11,11 +11,11 @@
 <ui:style src="../../../style/default.css">
 	
 		.rootPanel {
-			width: 350px;
+			width: 400px;
 		}
 		
 	    .title {
-	    	font-family: FONT_DEFAULT;
+	    	margin-bottom: 5px;
 	    }
 		
  		.helpLabel {
@@ -32,12 +32,10 @@
 	</ui:style>
 
 	<layout:ApplicationPopupBoxContainer ui:field="rootPanel" styleName="{style.rootPanel}">
-		<w:MembersListWidget />
-		<misc:Separator />
 		<g:Label styleName="{style.title}">
 			<ui:msg description="invitee label">Invitee:</ui:msg>
 		</g:Label>
-		<misc:DefaultTextedTextBox ui:field="invitationTextBox" defaultText="domain@email.com"/>
+		<misc:DefaultTextedTextBox ui:field="invitationTextBox" defaultText="email@domain.com"/>
 		<g:Label styleName="{style.helpLabel}">
 			<ui:msg description="invite submition help text">Hit ENTER to invite</ui:msg>
 		</g:Label>
