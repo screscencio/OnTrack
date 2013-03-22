@@ -19,7 +19,6 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.EditableLabelEditionHandle
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
 import br.com.oncast.ontrack.client.ui.generalwidgets.MouseCommandsMenu;
-import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig.PopupCloseListener;
 import br.com.oncast.ontrack.client.ui.generalwidgets.TextAndImageCommandMenuItem;
 import br.com.oncast.ontrack.client.ui.places.progress.ProgressPlace;
 import br.com.oncast.ontrack.client.ui.places.report.ReportPlace;
@@ -31,8 +30,6 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -44,6 +41,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -65,12 +63,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Resources resources;
 
 	interface Resources extends ClientBundle {
-		@Source("bg-expand-minus.png")
-		ImageResource containerStateOpened();
-
-		@Source("bg-expand-plus.png")
-		ImageResource containerStateClosed();
-
 		@Source("stats_0.png")
 		ImageResource progress0();
 
@@ -98,17 +90,11 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		@Source("stats_8.png")
 		ImageResource progress8();
 
-		@Source("switch-kanban.png")
-		ImageResource kanbanIcon();
-
 		@Source("timesheet.png")
 		ImageResource timesheetIcon();
 
 		@Source("report.png")
 		ImageResource reportIcon();
-
-		@Source("priority-expand.png")
-		ImageResource menuIcon();
 
 		@Source("bg-later.png")
 		ImageResource laterImage();
@@ -142,25 +128,19 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected UIObject header;
 
 	@UiField
-	protected Image containerStateIcon;
+	protected SimplePanel containerStateIcon;
 
 	@UiField
 	protected EditableLabel descriptionLabel;
 
 	@UiField
-	protected Image impedimentIcon;
-
-	@UiField
-	protected Image detailLink;
+	protected FocusPanel detailLink;
 
 	@UiField
 	protected Image progressIcon;
 
 	@UiField
-	protected Image kanbanLink;
-
-	@UiField
-	protected Image menuIcon;
+	protected FocusPanel menuIcon;
 
 	@UiField
 	protected DivElement bodyContainer;
@@ -213,8 +193,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private MouseCommandsMenu mouseCommandsMenu;
 
 	private ReleaseChartPopup chartPanel;
-
-	private boolean isMenuOpen = false;
 
 	private boolean kanbanSpecific;
 
@@ -272,39 +250,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private void setupDetails() {
 		final DetailService annotationService = ClientServiceProvider.getInstance().getAnnotationService();
 		setHasDetails(annotationService.hasDetails(release.getId()));
-		impedimentIcon.setVisible(annotationService.hasOpenImpediment(release.getId()));
-	}
-
-	@UiHandler("menuMouseOverArea")
-	protected void onMouseOver(final MouseOverEvent event) {
-		menuIcon.setVisible(true);
-	}
-
-	@UiHandler("menuMouseOverArea")
-	protected void onMouseOut(final MouseOutEvent event) {
-		menuIcon.setVisible(isMenuOpen);
-	}
-
-	@UiHandler("menuMouseOverArea")
-	protected void onHeaderClick(final ClickEvent event) {
-		if (isContainerStateOpen) infoWidget.toogle();
-	}
-
-	@UiHandler("menuIcon")
-	protected void showMenu(final ClickEvent event) {
-		configPopup().popup(getMouseActionMenu())
-				.alignHorizontal(RIGHT, new AlignmentReference(menuIcon, RIGHT))
-				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(menuIcon, VerticalAlignment.BOTTOM, 0))
-				.onClose(new PopupCloseListener() {
-					@Override
-					public void onHasClosed() {
-						menuIcon.setVisible(false);
-						isMenuOpen = false;
-					}
-				})
-				.pop();
-		isMenuOpen = true;
-		event.stopPropagation();
 	}
 
 	@UiHandler("detailLink")
@@ -322,11 +267,12 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		event.stopPropagation();
 	}
 
-	@UiHandler("kanbanLink")
+	@UiHandler("menuIcon")
 	protected void onClick(final ClickEvent event) {
-		final ClientServiceProvider provider = ClientServiceProvider.getInstance();
-		final UUID projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
-		provider.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
+		configPopup().popup(getMouseActionMenu())
+				.alignHorizontal(RIGHT, new AlignmentReference(menuIcon, RIGHT))
+				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(menuIcon, VerticalAlignment.BOTTOM, 0))
+				.pop();
 		event.stopPropagation();
 	}
 
@@ -340,6 +286,16 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 		if (mouseCommandsMenu != null) return mouseCommandsMenu;
 
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
+		if (!kanbanSpecific) {
+			itens.add(new TextAndImageCommandMenuItem(resources.reportIcon(), messages.kanban(), new Command() {
+				@Override
+				public void execute() {
+					final ClientServiceProvider provider = ClientServiceProvider.getInstance();
+					final UUID projectId = provider.getProjectRepresentationProvider().getCurrent().getId();
+					provider.getApplicationPlaceController().goTo(new ProgressPlace(projectId, release.getId()));
+				}
+			}));
+		}
 		itens.add(new TextAndImageCommandMenuItem(resources.reportIcon(), messages.report(), new Command() {
 			@Override
 			public void execute() {
@@ -385,7 +341,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private boolean updateChildReleaseWidgets() {
-		kanbanLink.setVisible(release.hasDirectScopes() && !kanbanSpecific);
+		menuIcon.setVisible(release.hasDirectScopes() && !kanbanSpecific);
 		releaseContainer.setVisible(isContainerStateOpen && release.hasChildren());
 		return releaseContainer.update(release.getChildren());
 	}
@@ -444,7 +400,15 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	public void setContainerState(final boolean shouldOpen, final boolean shouldFireEvent) {
 		if (isContainerStateOpen == shouldOpen) return;
 
-		containerStateIcon.setResource(shouldOpen ? resources.containerStateOpened() : resources.containerStateClosed());
+		if (shouldOpen) {
+			containerStateIcon.setStyleName("icon-caret-right", false);
+			containerStateIcon.setStyleName("icon-caret-down", true);
+		}
+		else {
+			containerStateIcon.setStyleName("icon-caret-down", false);
+			containerStateIcon.setStyleName("icon-caret-right", true);
+		}
+
 		header.setStyleName(style.headerClosed(), !shouldOpen);
 
 		final boolean shouldShowReleaseContainer = shouldOpen && release.hasChildren();
@@ -500,10 +464,6 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	public void setHasDetails(final boolean hasDetails) {
-		detailLink.setResource(hasDetails ? resources.detailLinkWithDetails() : resources.detailLink());
-	}
-
-	public void setHasImpediments(final boolean hasImpediments) {
-		impedimentIcon.setVisible(hasImpediments);
+		detailLink.setStyleName("icon-plus-sign", true);
 	}
 }

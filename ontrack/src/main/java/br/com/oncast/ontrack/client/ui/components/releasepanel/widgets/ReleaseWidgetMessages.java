@@ -24,4 +24,8 @@ public interface ReleaseWidgetMessages extends BaseMessages {
 	@DefaultMessage("Timesheet")
 	String timesheet();
 
+	@Description("go to kanban menu text")
+	@DefaultMessage("Kanban")
+	String kanban();
+
 }
