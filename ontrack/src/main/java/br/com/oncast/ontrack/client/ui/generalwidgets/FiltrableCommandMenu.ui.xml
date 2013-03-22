@@ -11,7 +11,6 @@
 
 		.rootPanel {
 			width: auto;
-			margin: -1px;
 		}
 		
 		@def inputHeight 30px;
@@ -57,10 +56,6 @@
 			cursor: pointer;
 		}
 
-		.searchIcon:hover {
-			color: COLOR_HOVER_4;
-		}
-		
 		.filterArea {
 			width: 100%;
 
@@ -71,13 +66,11 @@
 			outline: none;
 			border: none;
 			padding: 0;
-			margin: 6px 0px;
+			margin: 7px 0px;
 		}
 		
 		.menu {
-			border: TEXTINPUT_BORDER;
-			border-top: none;
-			border-bottom: none;
+			border: none;
 			text-shadow: none;
 		}
 		
@@ -86,9 +79,9 @@
 			cursor: default;
 			
 			bottom: 0px;
-			right: 0px;
-		    font-size: FONT_SIZE_SMALL;
-		    color: COLOR_GRAY_LIGHT;
+			right: 2px;
+			font-size: 8pt;
+			color: COLOR_BORDER_MENUBAR;
 		    
 		    display: inline-block;
 		    white-space: nowrap;
@@ -104,7 +97,7 @@
 				</div>
 				<g:TextBox ui:field="filterArea" styleName="{style.filterArea}" />
 				<g:Label ui:field="helpLabel" styleName="{style.helpLabel}">
-					<ui:msg description="filtrable command menu help text">Hit TAB to complete</ui:msg>
+					<ui:msg description="filtrable command menu help text">TAB to complete</ui:msg>
 				</g:Label>
 			</g:HTMLPanel>
 			

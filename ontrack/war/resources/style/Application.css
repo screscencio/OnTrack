@@ -210,7 +210,6 @@ html,body {
 
 .gwt-MenuBar-vertical {
 	color: #999999;
-	border: none;
 	font-family: 'Muli', sans-serif;
 	font-size: inherit;
 }
@@ -269,7 +268,6 @@ html,body {
 	cursor: pointer;
 	color: #666;
 	background: #d1d1d1;
-	background-color: #d1d1d1;
 	border-top: 1px solid #999;
 	white-space: nowrap;
 }
@@ -280,7 +278,6 @@ html,body {
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem {
 	background: transparent;
-	background-color: transparent;
 	font-family: 'Muli', sans-serif;
 	font-size: 12pt;
 	color: #960;
@@ -294,7 +291,33 @@ html,body {
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
-	background-color: #B2C9CC;
+	background: #B2C9CC;
+}
+
+.gwt-MenuBar-vertical .gwt-MenuItem {
+	transition: font-size 300ms cubic-bezier(0.15,1,0,1) 250ms;
+	-webkit-transition: font-size 300ms cubic-bezier(0.15,1,0,1) 250ms;
+	-moz-transition: font-size 300ms cubic-bezier(0.15,1,0,1) 250ms;
+	-o-transition: font-size 300ms cubic-bezier(0.15,1,0,1) 250ms;
+	-ms-transition: font-size 300ms cubic-bezier(0.15,1,0,1) 250ms;
+}
+
+.gwt-MenuItem.gwt-MenuItem-noGrow {
+	transition: none;
+	-webkit-transition: none;
+	-moz-transition: none;
+	-o-transition: none;
+	-ms-transition: none;
+}
+
+.gwt-MenuBar-vertical .gwt-MenuItem-selected {
+	background: #B2C9CC;
+	font-size: 150%;
+}
+
+.gwt-MenuItem-noGrow.gwt-MenuItem-selected {
+	background: #B2C9CC;
+	font-size: 100%;
 }
 
 .gwt-MenuBar-breadcrumb .gwt-MenuItem-selected {

@@ -43,4 +43,9 @@ public class TagCommandMenuItem implements CommandMenuItem {
 		command.execute();
 		return true;
 	}
+
+	public TagCommandMenuItem setGrowAnimation(final boolean enabled) {
+		widgetMenuItem.setStyleName("gwt-MenuItem-noGrow", !enabled);
+		return this;
+	}
 }

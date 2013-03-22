@@ -8,11 +8,11 @@ import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSub
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationListWidget;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.NotificationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.PasswordChangeWidget;
-import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ProjectMenuWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.HorizontalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
+import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectSelectionWidget;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -156,7 +156,7 @@ public class ApplicationMenu extends Composite {
 	}
 
 	private void createProjectMenu() {
-		final PopupConfig config = PopupConfig.configPopup().popup(new ProjectMenuWidget())
+		final PopupConfig config = PopupConfig.configPopup().popup(ProjectSelectionWidget.forProjectSwitchingMenu())
 				.alignVertical(VerticalAlignment.TOP, new AlignmentReference(applicationMenuPanel, VerticalAlignment.BOTTOM, 1))
 				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(projectMenuItem, HorizontalAlignment.CENTER));
 		projectMenuItem.setPopupConfig(config);

@@ -92,8 +92,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 	}
 
 	private static FiltrableCommandMenu createForProjectSwitchingMenu() {
-		return configureFiltrableMenu(FiltrableCommandMenu.forProjectSwitchingMenu(createCustomItemFactory(), 265,
-				FILTRABLE_MENU_MAX_HEIGHT));
+		return configureFiltrableMenu(new FiltrableCommandMenu(createCustomItemFactory(), 325, FILTRABLE_MENU_MAX_HEIGHT, true));
 	}
 
 	private static FiltrableCommandMenu createDefaultFiltrableCommandMenu() {
@@ -126,7 +125,7 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 							public void execute() {
 								createNewProject(inputText);
 							}
-						});
+						}).setGrowAnimation(false);
 			}
 
 			private CommandMenuItem getProjectCreationQuotaRequisitionItem() {
@@ -134,13 +133,13 @@ public class ProjectSelectionWidget extends Composite implements HasCloseHandler
 			}
 
 			private CommandMenuItem createProjectCreationQuotaRequisitionItem() {
-				return new TextAndImageCommandMenuItem(ProjectCreationQuotaRequestResources.INSTANCE.quotaRequestIcon(), messages.askForMoreProjects(),
+				return new TextAndImageCommandMenuItem("icon-ban-circle", messages.askForMoreProjects(),
 						new Command() {
 							@Override
 							public void execute() {
 								requestProjectCreationQuota();
 							}
-						});
+						}).setGrowAnimation(false);
 			}
 
 			@Override

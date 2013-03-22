@@ -9,7 +9,7 @@ public interface ProjectSelectionWidgetMessages extends BaseMessages {
 	String selectionHelpText();
 
 	@Description("option shown for user while inputing project name")
-	@DefaultMessage("Create project ''{0}'' ({1} creations available)")
+	@DefaultMessage("Create ''{0}'' ({1} available)")
 	String createNewProject(String projectName, int projectQuota);
 
 	@Description("message shown for user when project quota is exceeded")

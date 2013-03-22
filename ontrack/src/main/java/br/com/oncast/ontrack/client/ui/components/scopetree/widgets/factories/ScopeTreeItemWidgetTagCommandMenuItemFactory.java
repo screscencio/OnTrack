@@ -49,7 +49,7 @@ public class ScopeTreeItemWidgetTagCommandMenuItemFactory implements ScopeTreeIt
 								.getColorPack().getBackground()));
 						cachedColors = SERVICE_PROVIDER.getColorProviderService().pickColorPack();
 					}
-				});
+				}).setGrowAnimation(false);
 	}
 
 	@Override
