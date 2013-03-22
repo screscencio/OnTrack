@@ -196,12 +196,12 @@ public class ReleaseChartDataProviderTest {
 		final Float inferedVelocity = 5.6f;
 
 		Mockito.when(release.hasDeclaredEstimatedVelocity()).thenReturn(false);
-		Mockito.when(estimatorMock.getInferedEstimatedVelocityOnDay(Mockito.any(Release.class))).thenReturn(inferedVelocity);
+		Mockito.when(estimatorMock.getEstimatedVelocity(Mockito.any(Release.class))).thenReturn(inferedVelocity);
 
 		assertEquals(inferedVelocity, getProvider().getEstimatedVelocity());
 
 		Mockito.verify(release, Mockito.never()).getEstimatedVelocity();
-		Mockito.verify(estimatorMock).getInferedEstimatedVelocityOnDay(Mockito.any(Release.class));
+		Mockito.verify(estimatorMock).getEstimatedVelocity(Mockito.any(Release.class));
 	}
 
 	@Test

@@ -174,5 +174,4 @@ public enum HumanDateFormatter {
 		onlyNumbers = DEFAULT_ONLY_NUMBERS;
 		return differenceText;
 	}
-
 }
