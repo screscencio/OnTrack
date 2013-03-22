@@ -9,10 +9,10 @@
 		.projectsContainer {
 			position: absolute;
 			
-			top: PADDING_LARGE;
-			left: PADDING_LARGE;
-			right: PADDING_LARGE;
-			bottom: PADDING_LARGE;
+			top: PADDING_MEDIUM;
+			left: PADDING_MEDIUM;
+			right: PADDING_MEDIUM;
+			bottom: PADDING_MEDIUM;
 			
 			overflow-x: hidden;
 			overflow-y: auto;

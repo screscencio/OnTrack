@@ -10,7 +10,6 @@
 	
 		.title {
 			width: 100%;
-			text-transform: uppercase;
 			text-align: center;
 			color: COLOR_GRAY_DARK;
 			cursor: default;
@@ -20,6 +19,7 @@
 		.details {
 			margin-top: 5px;
 			width: 100%;
+			white-space: nowrap;
 		}
 		
 		.detailLabel {

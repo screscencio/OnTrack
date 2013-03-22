@@ -18,33 +18,39 @@
 		}
 		
 		.header {
-			position: absolute;
-			top: 5px;
-			left: 0px;
-			right: 0px;
-			
-			padding: 5px PADDING_LARGE;
-
-			border: RELEASE_WIDGET_BORDER;
-			margin: 1px;
+			padding: PADDING_SMALL;
+		}
 		
-			background: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED;
-			box-shadow: inset 0px 1px 0px 0px #e9e9e9, 0px 1px 3px #9F9F9F;
+		@sprite .containerStateOpen {
+			gwt-image: 'containerStateOpenImg';
+		}
+		
+		@sprite .containerStateClosed {
+			gwt-image: 'containerStateClosedImg';
+		}
+		
+		.containerStateToggleButton {
+			margin-right: PADDING_MEDIUM;
+			cursor: pointer;
+		}
+		
+		.name {
+			font-size: FONT_SIZE_LARGE;
+		}
+		
+		@sprite .planningLink {
+			gwt-image: 'planningIcon';
 			
-			color: COLOR_RELEASE_WIDGET_HEADER_TEXT_OPENED;
-			font-family: FONT_DEFAULT;
-			font-size: FONT_SIZE_LARGE;				
-			text-shadow: RELEASE_WIDGET_HEADER_TEXT_SHADOW;
-			filter: RELEASE_WIDGET_HEADER_TEXT_SHADOW_IE;
+			cursor: pointer;
 		}
 		
 		.body {
-			margin: 0px 6px;
+			padding: 5px;
+			background: #999;
 		}
 		
 		.content {
 			position: relative;
-			margin-top: 19px;
 			height: 400px;
 		}
 		
@@ -63,17 +69,12 @@
 		
 		.releaseContainer {
 			position: absolute;
-			
-			top: 0px;
-			right: 0px;
+			top: -5px;
+			right: -7px;
 			bottom: 240px;
-			left: 0px;
-			
+			left: -7px;
 			overflow: auto;
-			
-			background: white;
-			border: BORDER_DEFAULT;
-			border-radius: 3px;
+			background: #666;
 			padding: PADDING_SMALL;
 		}
 		
@@ -94,13 +95,11 @@
 			width: 250px;
 			height: 223px;
 			
-			border: BORDER_DEFAULT;
-			border-radius: 3px;
 			padding: PADDING_SMALL;
 			
-			background: white;
+			background: #fafafa;
 			
-			margin-right: PADDING_MEDIUM;
+			margin-right: PADDING_SMALL;
 		}
 		
 		.scopeListContainer {
@@ -132,39 +131,18 @@
 			overflow: auto;
 		}
 		
-		.spacer {
-			height: 11px;
-		}
-		
-		@sprite .containerStateOpen {
-			gwt-image: 'containerStateOpenImg';
-		}
-		
-		@sprite .containerStateClosed {
-			gwt-image: 'containerStateClosedImg';
-		}
-		
-		.containerStateToggleButton {
-			margin-right: PADDING_MEDIUM;
-			cursor: pointer;
-		}
-		
-		.name {
-			font-size: FONT_SIZE_LARGE;
-			text-transform: uppercase;
-		}
-		
-		@sprite .planningLink {
-			gwt-image: 'planningIcon';
-			
-			cursor: pointer;
-		}
-		
 	</ui:style>
-	<g:HTMLPanel styleName="{style.root}">
 	
-		<layout:ApplicationPopupBoxContainer styleName="{style.body}">
-			<g:SimplePanel styleName="{style.spacer}"/>
+	<g:HTMLPanel styleName="{style.root}">
+		<g:HorizontalPanel styleName="{style.header}" verticalAlignment="middle">
+			<g:FocusPanel ui:field="containerStateToggleButton" styleName="{style.containerStateToggleButton}"/>
+			<g:cell width="100%">
+				<g:Label ui:field="name" styleName="{style.name}"/>
+			</g:cell>
+			<g:FocusPanel ui:field="planningLink" styleName="{style.planningLink}"/>
+		</g:HorizontalPanel>
+		
+		<g:HTMLPanel styleName="{style.body}">
 			<g:DeckPanel ui:field="loadingDeck" styleName="{style.content}">
 				<g:SimplePanel styleName="{style.loadingIndicatorPanel}">
 					<g:SimplePanel styleName="{style.loadingIndicator}" />
@@ -189,17 +167,7 @@
 					</g:FocusPanel>
 				</g:HTMLPanel>
 			</g:DeckPanel>
-		</layout:ApplicationPopupBoxContainer>
-		
-		<g:HorizontalPanel styleName="{style.header}" verticalAlignment="middle">
-			<g:FocusPanel ui:field="containerStateToggleButton" styleName="{style.containerStateToggleButton}"/>
-			<g:cell width="100%">
-				<g:Label ui:field="name" styleName="{style.name}"/>
-			</g:cell>
-			<g:FocusPanel ui:field="planningLink" styleName="{style.planningLink}"/>
-		</g:HorizontalPanel>
-		
-		<g:SimplePanel styleName="{style.spacer}"/>
+		</g:HTMLPanel>
 		
 	</g:HTMLPanel>
 </ui:UiBinder> 

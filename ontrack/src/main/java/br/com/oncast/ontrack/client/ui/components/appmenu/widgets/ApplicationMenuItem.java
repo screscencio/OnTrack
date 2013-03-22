@@ -25,8 +25,6 @@ public class ApplicationMenuItem extends Composite implements HasText {
 	interface ApplicationMenuItemUiBinder extends UiBinder<Widget, ApplicationMenuItem> {}
 
 	interface ApplicationMenuItemStyle extends CssResource {
-		String arrowUp();
-
 		String menuItemSelected();
 
 		String biggerFont();
@@ -109,7 +107,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 		popup.onOpen(new PopupOpenListener() {
 			@Override
 			public void onWillOpen() {
-				arrow.addStyleName(style.arrowUp());
+				arrow.addStyleName("icon-caret-up");
 				container.addStyleName(style.menuItemSelected());
 				isOpen = true;
 			}
@@ -118,7 +116,7 @@ public class ApplicationMenuItem extends Composite implements HasText {
 
 			@Override
 			public void onHasClosed() {
-				arrow.removeStyleName(style.arrowUp());
+				arrow.removeStyleName("icon-caret-up");
 				container.removeStyleName(style.menuItemSelected());
 				isOpen = false;
 			}
