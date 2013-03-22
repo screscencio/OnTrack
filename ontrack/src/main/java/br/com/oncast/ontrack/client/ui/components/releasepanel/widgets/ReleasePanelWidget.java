@@ -176,7 +176,6 @@ public class ReleasePanelWidget extends Composite {
 						if (widget == null) return;
 
 						widget.setHasDetails(event.hasDetails());
-						widget.setHasImpediments(event.hasOpenImpediments());
 					}
 				}));
 	}

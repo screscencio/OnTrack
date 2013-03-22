@@ -17,13 +17,20 @@
 				margin-bottom: PADDING_MEDIUM;
 			}
 			
-			.header {
+			.releaseHeader {
 				width: 100%;
 				height: 36px;
 				
 				font-size: FONT_SIZE_LARGE;	
 				line-height: 36px;
 				padding: 0px 8px;
+				
+				background: COLOR_BACKGROUND_RELEASE_HEADER;
+				color: COLOR_TEXT_RELEASE_HEADER;
+				
+				-webkit-box-shadow: SHADOW_SECONDARY;
+				-moz-box-shadow: SHADOW_SECONDARY;
+				box-shadow: SHADOW_SECONDARY;
 			}
 			
 			.containerStateToogleClickableArea {
@@ -131,27 +138,23 @@
 	<g:HTMLPanel styleName="{style.rootPanel}">
 		<g:FocusPanel ui:field="menuMouseOverArea">
 			<g:HTMLPanel>
-				<g:HorizontalPanel ui:field="header" styleName="{style.header}" verticalAlignment="middle">
-					<g:Image resource="{resources.containerStateOpened}" ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem}" />
+				<g:HorizontalPanel ui:field="header" styleName="{style.releaseHeader}" verticalAlignment="middle">
+					<g:FocusPanel ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem} icon-caret-down" />
 					<g:cell width="100%" height="100%">
 						<g:FocusPanel styleName="{style.containerStateToogleClickableArea}">
 							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
 						</g:FocusPanel>
 					</g:cell>
-					<g:Image ui:field="impedimentIcon" resource="{resources.impedimentIcon}" styleName="{style.headerItem} {style.annotationIcon}" title="Impediments">
-						<ui:attribute name="title" description="impediment icon release widget" />
-					</g:Image>
-					<g:Image ui:field="detailLink" resource="{resources.detailLink}" styleName="{style.headerItem} {style.annotationIcon}" title="Details">
+					<g:FocusPanel ui:field="detailLink" styleName="{style.headerItem} {style.annotationIcon} icon-info-sign" title="Details">
 						<ui:attribute name="title" description="detailLink icon release widget" />
-					</g:Image>
+					</g:FocusPanel>
 					<g:Image ui:field="progressIcon" resource="{resources.progress0}" styleName="{style.headerItem} {style.progressIcon}" title="Progress">
 						<ui:attribute name="title" description="progress icon release widget" />
 					</g:Image>
-					<g:Image ui:field="kanbanLink" resource="{resources.kanbanIcon}" styleName="{style.headerItem} {style.kanbanIcon}" title="Kanban">
-						<ui:attribute name="title" description="kanban icon release widget" />
-					</g:Image>
+					<g:FocusPanel ui:field="menuIcon" styleName="{style.headerItem} {style.kanbanIcon} icon-plus-sign" title="More">
+						<ui:attribute name="title" description="menu icon release widget" />
+					</g:FocusPanel>
 				</g:HorizontalPanel>
-				<g:Image resource="{resources.menuIcon}" styleName="{style.menuLink}" ui:field="menuIcon" visible="false"/>
 			</g:HTMLPanel>
 		</g:FocusPanel>
 		<div ui:field="bodyContainer" class="{style.body}">
