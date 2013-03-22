@@ -3,7 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:image field="progressBackground" src="../../../components/scopetree/widgets/searchbar/pattern_background.png"/>
 	<ui:image field="containerStateOpenImg" src="../../releasepanel/widgets/bg-expand-minus.png"/>
 	<ui:image field="containerStateClosedImg" src="../../releasepanel/widgets/bg-expand-plus.png"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.organization.widgets.ReleaseSummaryWidget.ReleaseSummaryWidgetStyle">
@@ -13,17 +12,16 @@
 		}
 		
 		.rootSelected {
-			box-shadow: 0px 0px 4px COLOR_GRAY;
+			box-shadow: 0 0 5px 1px #3d93b1;
 		}
 	
 		.header {
 			position: relative;
 			padding: 5px 15px;
-			border: 1px solid #999;
 			cursor: pointer;
-			border-radius: 2px;
 			background: #EDEDED;
 			color: COLOR_GRAY_DARK;
+			box-shadow: none;
 		}
 		
 		.headerContainer {
@@ -31,27 +29,24 @@
 			height: 100%;
 		}
 		
-		@sprite .progressBar {
-			gwt-image: 'progressBackground';
-			background-repeat: repeat;
-			background-color: COLOR_BLUE_LIGHT;
+		.progressBar {
+			overflow: hidden;
 			width: auto;
 			height: auto;
-			
 			position: absolute;
-			top: 0px;
-			left: 0px;
-			bottom: 0px;
-			
-			opacity: 1;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			background: #999;
 		}
 		
 		.headerSelected {
-			background: COLOR_YELLOW;
+			background: #ACBAC1;
+			background: #B2C9CC;
 		}
 		
 		.headerSelected .progressBar {
-			opacity: 0.5;
+			opacity: 0.6;
 		}
 		
 		.headerDone {
@@ -80,11 +75,9 @@
 			
 			height: 9px;
 			width: 9px;
-			border-radius: 2px;
 			background-position: center;
 			
 			cursor: pointer;
-			border: 1px solid COLOR_GRAY;
 		}
 		
 		.titleLabel {
@@ -103,11 +96,8 @@
 		.content {
 			padding: 5px 3px;
 			padding-top: 6px;
-			border: 1px solid #999;
 			border-radius: 0px 0px 2px 2px;
-			border-top: none;
-			margin-top: -1px;
-			background-color: rgba(245, 245, 245, 0.3);
+			background-color: rgba(255, 255, 255, 0.5);
 		}
 		
 	</ui:style>

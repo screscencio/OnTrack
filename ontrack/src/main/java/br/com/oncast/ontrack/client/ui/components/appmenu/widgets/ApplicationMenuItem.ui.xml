@@ -2,8 +2,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="arrowUp" src="up.png"/>
-	<ui:image field="arrowDown" src="down.png"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem.ApplicationMenuItemStyle">
 	
 		.menuItem {
@@ -21,14 +19,6 @@
 			font-size: FONT_SIZE_LARGE;
 		}
 		
-		@sprite .arrowDown {
-			gwt-image: 'arrowDown';
-		}
-		
-		@sprite .arrowUp {
-			gwt-image: 'arrowUp';
-		}
-		
 		.arrowUp, .arrowDown {
 			height: 54px;
 			background-position: center;
@@ -42,7 +32,7 @@
 		<g:HorizontalPanel ui:field="container" styleName="{style.hoverPanel}">
 			<g:SimplePanel ui:field="content"/>
 			<g:SimplePanel ui:field="menuHeader" styleName="{style.menuItem}" />
-			<g:Label ui:field="arrow" styleName="{style.arrowDown}" />
+			<g:Label ui:field="arrow" styleName="icon-caret-down {style.arrowDown}" />
 		</g:HorizontalPanel>
 	</g:FocusPanel>
 </ui:UiBinder> 

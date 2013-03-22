@@ -2,6 +2,7 @@ package br.com.oncast.ontrack.client.ui.components.appmenu;
 
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.authentication.UserLogoutCallback;
+import br.com.oncast.ontrack.client.services.places.ApplicationPlaceController;
 import br.com.oncast.ontrack.client.services.user.UserDataServiceImpl.UserSpecificInformationChangeListener;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationMenuItem;
 import br.com.oncast.ontrack.client.ui.components.appmenu.widgets.ApplicationSubmenu;
@@ -13,6 +14,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.Horizon
 import br.com.oncast.ontrack.client.ui.generalwidgets.AlignmentReference.VerticalAlignment;
 import br.com.oncast.ontrack.client.ui.generalwidgets.PopupConfig;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ProjectSelectionWidget;
+import br.com.oncast.ontrack.client.ui.places.organization.OrganizationPlace;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.client.ui.places.projectSelection.ProjectSelectionPlace;
 import br.com.oncast.ontrack.shared.model.user.User;
@@ -22,10 +24,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -41,8 +47,18 @@ public class ApplicationMenu extends Composite {
 
 	interface ApplicationMenuWidgetUiBinder extends UiBinder<Widget, ApplicationMenu> {}
 
+	interface ApplicationMenuWidgetStyle extends CssResource {
+		String logoDisabled();
+	}
+
+	@UiField
+	protected ApplicationMenuWidgetStyle style;
+
 	@UiField
 	protected HTMLPanel applicationMenuPanel;
+
+	@UiField
+	protected FocusPanel logo;
 
 	@UiField
 	protected ApplicationMenuItem projectMenuItem;
@@ -70,6 +86,8 @@ public class ApplicationMenu extends Composite {
 	public ApplicationMenu(final boolean enableProjectDependantMenus) {
 		initWidget(uiBinder.createAndBindUi(this));
 
+		if (getPlaceController().getCurrentPlace() instanceof OrganizationPlace) logo.setStyleName(style.logoDisabled());
+
 		hideBackButton();
 
 		if (enableProjectDependantMenus) createProjectMenu();
@@ -82,17 +100,35 @@ public class ApplicationMenu extends Composite {
 		backButton.addClickHandler(enableProjectDependantMenus ? new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				final UUID projectId = SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
-				SERVICE_PROVIDER.getApplicationPlaceController().goTo(new PlanningPlace(projectId));
+				final UUID projectId = getCurrentProjectId();
+				goTo(new PlanningPlace(projectId));
 			}
+
 		} : new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				SERVICE_PROVIDER.getApplicationPlaceController().goTo(new ProjectSelectionPlace());
+				goTo(new ProjectSelectionPlace());
 			}
 		});
 
 		backButton.setTitle(enableProjectDependantMenus ? messages.backToProject() : messages.backToProjectSelection());
+	}
+
+	@UiHandler("logo")
+	void onLogoClick(final ClickEvent e) {
+		getPlaceController().goTo(new OrganizationPlace(getCurrentProjectId()));
+	}
+
+	private void goTo(final Place place) {
+		getPlaceController().goTo(place);
+	}
+
+	private ApplicationPlaceController getPlaceController() {
+		return SERVICE_PROVIDER.getApplicationPlaceController();
+	}
+
+	private UUID getCurrentProjectId() {
+		return SERVICE_PROVIDER.getProjectRepresentationProvider().getCurrent().getId();
 	}
 
 	@Override

@@ -6,9 +6,10 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:image field="logo" src="../../logo-new.png"/>
+	<ui:image field="logoImg" src="logo.png"/>
+	<ui:image field="logoImgHover" src="logo-hover.png"/>
 	<ui:image field="backBtnImg" src="go_back_arrow.png"/>
-	<ui:style src="../../style/default.css">
+	<ui:style src="../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.appmenu.ApplicationMenu.ApplicationMenuWidgetStyle">
 
 		.rootPanel {
 			position: relative;
@@ -22,10 +23,37 @@
             bottom: 0px;
 		}
 		
-		.logo {
+		@sprite .logo {
+			gwt-image: 'logoImg';
+			background-size: 36px;
+			background-position: center;
+			
+			width: 54px;
+			height: 54px;
+			
 			float: left;
-			background-size: 36px !important;
-			background-position: center !important;
+			cursor: pointer;
+			
+			-webkit-transition: background-size 200ms cubic-bezier(.43,.5,1,.5);
+		}
+		
+		@sprite .logo:hover {
+			gwt-image: 'logoImgHover';
+			background-size: 45px;
+			background-position: center;
+			width: 54px;
+			height: 54px;
+		}
+		
+		@sprite .logoDisabled {
+			gwt-image: 'logoImg';
+			background-size: 36px;
+			background-position: center;
+			
+			width: 54px;
+			height: 54px;
+			
+			float: left;
 		}
 		
         .menuItemContainer, .menuItem, .backButtonContainer {
@@ -64,7 +92,9 @@
 
 	<g:FlowPanel styleName="{style.rootPanel}">
 		<g:HTMLPanel ui:field="applicationMenuPanel" styleName="{style.menuBar}" >
-			<g:Image resource="{logo}" styleName="{style.logo}" width="54px" height="54px"/>
+			<g:FocusPanel ui:field="logo" styleName="{style.logo}" title="See the summary of my projects">
+				<ui:attribute name="title" description="Tooltip for OrganizationPlace link"/>
+			</g:FocusPanel>
 		    <div class="{style.backButtonContainer}">
     			<g:Image ui:field="backButton" resource="{backBtnImg}" styleName="{style.backButton}"/>
 		    </div>
