@@ -8,8 +8,6 @@
 			width: 100%;
 			height: 100%;
 			
-			margin: -1px;
-			border: 1px solid #AAA;
 			cursor: pointer;
 			border-radius: 2px;
 			text-align: center;

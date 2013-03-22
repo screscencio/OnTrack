@@ -18,12 +18,11 @@ public class ScopeTreeItemWidgetReleaseCommandMenuItemFactory implements ScopeTr
 	@Override
 	public SimpleCommandMenuItem createCustomItem(final String inputText) {
 		return new SimpleCommandMenuItem(messages.create(inputText), inputText, new Command() {
-
 			@Override
 			public void execute() {
 				controller.bindRelease(inputText);
 			}
-		});
+		}).setGrowAnimation(false);
 	}
 
 	@Override

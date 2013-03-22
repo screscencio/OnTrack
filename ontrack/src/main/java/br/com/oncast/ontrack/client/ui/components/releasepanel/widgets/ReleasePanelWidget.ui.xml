@@ -18,29 +18,24 @@
 	   	}
 	   	
 	   	.noReleaseContainer {
-			position: relative;
-			padding: 30px 0px;
-			text-shadow: TEXT_SHADOW_ENGRAVED_METAL;
 			width: 100%;
+			
+			text-shadow: TEXT_SHADOW_TERTIARY;
+			text-align: center;
 		}
 	   	
 	   	.noReleaseLabel {
-			color: COLOR_GRAY;
-			text-align: center;
 			width: 100%;
-			margin-bottom: 5px;
+
+			color: COLOR_TEXT_TERTIARY;
 			font-size: FONT_SIZE_MEDIUM;
-			font-family: FONT_DEFAULT;
+			
+			margin: 36px 0px;
+			margin-bottom: 10px;
 		}
 		
 		.helpLabel {
-			position: absolute;
-			bottom: 5px;
-			left: 0px;
-			right: 0px;
-			
-			color: COLOR_GRAY_LIGHT;
-			text-align: center;
+			color: COLOR_BORDER_MENUBAR;
 		}
 			
 	</ui:style>

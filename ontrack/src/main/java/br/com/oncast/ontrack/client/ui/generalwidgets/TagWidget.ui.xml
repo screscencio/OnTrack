@@ -2,8 +2,11 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+	
 	<ui:style>
-		
+		@external .gwt-MenuItem-selected;
+		@external .gwt-MenuItem-noGrow;
+	
 		.panel {
 			position: relative;
 			width: 100%;
@@ -11,22 +14,57 @@
 		}
 		
 		.label {
-			padding-right: 25px;
+			padding-right: 10px;
 		}
 		
 		.color {
-			position: absolute;
-			top: -5px;
-			right: 2px;
-			width: 21px;
-			height: 19px;
-			padding-top: 2px;
+			width: 18px;
+			height: 18px;
+			line-height: 18px;
+			
+			transition: 
+				width 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				height 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				line-height 300ms cubic-bezier(0.15,1,0,1) 250ms;
+			-webkit-transition:
+				width 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				height 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				line-height 300ms cubic-bezier(0.15,1,0,1) 250ms;
+			-moz-transition:
+				width 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				height 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				line-height 300ms cubic-bezier(0.15,1,0,1) 250ms;
+			-o-transition:
+				width 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				height 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				line-height 300ms cubic-bezier(0.15,1,0,1) 250ms;
+			-ms-transition: 
+				width 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				height 300ms cubic-bezier(0.15,1,0,1) 250ms,
+				line-height 300ms cubic-bezier(0.15,1,0,1) 250ms;
+		}
+		
+		.gwt-MenuItem-selected .color {
+			width: 28px;
+			height: 28px;
+			line-height: 28px;
+		}
+		
+		
+		.gwt-MenuItem-noGrow.gwt-MenuItem-selected .color {
+			width: 18px;
+			height: 18px;
+			line-height: 18px;
 		}
 		
 	</ui:style>
 	
-	<g:HorizontalPanel styleName="{style.panel}" >
-		<g:Label ui:field="label" styleName="{style.label}" />
-		<gw:EditableColorPackWidget ui:field="color" styleName="{style.color}"/>
+	<g:HorizontalPanel styleName="{style.panel}">
+		<g:cell width="100%">
+			<g:Label ui:field="label" styleName="{style.label}"/>
+		</g:cell>
+		<g:cell verticalAlignment="middle">
+			<gw:EditableColorPackWidget ui:field="color" styleName="{style.color}"/>
+		</g:cell>
 	</g:HorizontalPanel>
 </ui:UiBinder> 

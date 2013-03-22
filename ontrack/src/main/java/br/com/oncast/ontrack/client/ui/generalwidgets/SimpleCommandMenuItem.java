@@ -9,6 +9,7 @@ public class SimpleCommandMenuItem implements CommandMenuItem {
 	private final String text;
 	private MenuItem menuItem;
 	private final String value;
+	private boolean growAnimation = true;
 
 	public SimpleCommandMenuItem(final String text, final Command command) {
 		this.text = text;
@@ -41,7 +42,9 @@ public class SimpleCommandMenuItem implements CommandMenuItem {
 	@Override
 	public MenuItem getMenuItem() {
 		if (menuItem != null) return menuItem;
-		return menuItem = new MenuItem(text, true, command);
+		menuItem = new MenuItem(text, true, command);
+		menuItem.setStyleName("gwt-MenuItem-noGrow", !growAnimation);
+		return menuItem;
 	}
 
 	@Override
@@ -54,5 +57,10 @@ public class SimpleCommandMenuItem implements CommandMenuItem {
 		if (command == null) return false;
 		command.execute();
 		return true;
+	}
+
+	public SimpleCommandMenuItem setGrowAnimation(final boolean animated) {
+		growAnimation = animated;
+		return this;
 	}
 }

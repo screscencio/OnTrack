@@ -30,7 +30,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -47,17 +46,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	interface FiltrableCommandMenuUiBinder extends UiBinder<Widget, FiltrableCommandMenu> {}
 
-	private static FiltrableCommandMenuUiBinder defaultUiBinder = GWT.create(FiltrableCommandMenuUiBinder.class);
-
-	@UiTemplate("FiltrableCommandMenuForProjectSwitchingMenu.ui.xml")
-	interface FiltrableCommandMenuForProjectSwitchingMenuUiBinder extends UiBinder<Widget, FiltrableCommandMenu> {}
-
-	private static FiltrableCommandMenuForProjectSwitchingMenuUiBinder projectSwitchingMenuUiBinder = GWT
-			.create(FiltrableCommandMenuForProjectSwitchingMenuUiBinder.class);
-
-	public static FiltrableCommandMenu forProjectSwitchingMenu(final CustomCommandMenuItemFactory customItemFactory, final int maxWidth, final int maxHeight) {
-		return new FiltrableCommandMenu(projectSwitchingMenuUiBinder, customItemFactory, maxWidth, maxHeight);
-	}
+	private static FiltrableCommandMenuUiBinder uiBinder = GWT.create(FiltrableCommandMenuUiBinder.class);
 
 	@UiField
 	protected ScrollPanel scrollPanel;
@@ -88,15 +77,18 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 	private boolean firstTime;
 
+	private final boolean forProjectSwitchingMenu;
+
 	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory, final int width, final int maxHeight) {
-		this(defaultUiBinder, customItemFactory, width, maxHeight);
+		this(customItemFactory, width, maxHeight, false);
 	}
 
-	private FiltrableCommandMenu(final UiBinder<Widget, FiltrableCommandMenu> binder, final CustomCommandMenuItemFactory customItemFactory,
+	public FiltrableCommandMenu(final CustomCommandMenuItemFactory customItemFactory,
 			final int width,
-			final int maxHeight) {
+			final int maxHeight, final boolean forProjectSwitchingMenu) {
+		this.forProjectSwitchingMenu = forProjectSwitchingMenu;
 
-		initWidget(binder.createAndBindUi(this));
+		initWidget(uiBinder.createAndBindUi(this));
 		this.customItemFactory = customItemFactory;
 		scrollPanel.getElement().getStyle().setProperty("maxHeight", maxHeight + "px");
 		focusPanel.setWidth(width + "px");
@@ -142,7 +134,7 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 	@UiHandler("filterArea")
 	protected void handleKeyUp(final KeyUpEvent event) {
 		if (BrowserKeyCodes.isModifierKey(event.getNativeKeyCode())) return;
-		if (firstTime) {
+		if (!isForProjectSwitchinMenu() && firstTime) {
 			firstTime = false;
 			return;
 		}
@@ -162,6 +154,10 @@ public class FiltrableCommandMenu extends Composite implements HasCloseHandlers<
 
 		helpLabel.setVisible(filterArea.getText().isEmpty());
 		eatEvent(event);
+	}
+
+	private boolean isForProjectSwitchinMenu() {
+		return forProjectSwitchingMenu;
 	}
 
 	@UiHandler("filterArea")
