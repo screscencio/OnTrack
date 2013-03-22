@@ -26,7 +26,7 @@ public class ReleaseEstimator {
 
 	public WorkingDay getEstimatedEndDayUsingInferedEstimatedVelocity(final Release release) {
 		final WorkingDay startDay = getEstimatedStartDayFor(release);
-		return getEstimatedEndDay(startDay, release.getEffortSum(), getInferedEstimatedVelocityOnDay(release));
+		return getEstimatedEndDay(startDay, release.getEffortSum(), getEstimatedVelocity(release));
 
 	}
 
@@ -34,7 +34,7 @@ public class ReleaseEstimator {
 		if (release.hasDeclaredEndDay()) return release.getEndDay();
 
 		final WorkingDay startDay = getEstimatedStartDayFor(release);
-		final float estimatedVelocity = release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : getInferedEstimatedVelocityOnDay(release);
+		final float estimatedVelocity = release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : getEstimatedVelocity(release);
 
 		return getEstimatedEndDay(startDay, release.getEffortSum(), estimatedVelocity);
 	}
@@ -45,7 +45,7 @@ public class ReleaseEstimator {
 		return startDay.add(ceilling(effortSum / estimatedVelocity) - DURATION_OF_START_DAY);
 	}
 
-	public float getInferedEstimatedVelocityOnDay(final Release release) {
+	public float getEstimatedVelocity(final Release release) {
 		return Math.max(MIN_VELOCITY, getRawInferedEstimatedVelocityOnDay(release));
 	}
 

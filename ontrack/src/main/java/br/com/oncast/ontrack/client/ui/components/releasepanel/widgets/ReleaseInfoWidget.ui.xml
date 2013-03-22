@@ -1,6 +1,11 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:t="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+
 	<ui:style>
 	
 		.rootPanel {
@@ -32,12 +37,40 @@
 		}
 				
 		.value {
-			font-size: 30px;
+			font-size: 25px;
 			font-weight: bold;
+			cursor: default;
 		}
 	
 		.description {
-			font-size: 10px;
+			font-size: 9px;
+			cursor: default;
+		}
+		
+		.speedLabel {
+			font-size: 12px;
+			display: inline-block;
+			margin: 0px 2px;
+		}
+		
+		.speedInput {
+			font-size: 7px;
+			background: #c7c8ca;
+			color: #6d6e71;
+			border-radius: 2px;
+			margin: 0px auto;
+			width: 50%;
+			padding: 2px;
+			cursor: pointer;
+		}
+		
+		.speedMetric {
+			display: inline-block;
+		}
+		
+		.speedDescription {
+			margin-top: 6px;
+			margin-bottom: -7px;
 		}
 
 	</ui:style>
@@ -47,20 +80,33 @@
 			<table class="{style.column-container}">
 				<tr>
 					<td class="{style.column}">
-						<div class="{style.value}">19</div>
-						<div class="{style.description}">Value</div>					
+						<g:Label ui:field="valueLabel" styleName="{style.value}" />
+						<div class="{style.description}">
+							<ui:msg description="value">Value</ui:msg>
+						</div>					
 					</td>
 					<td class="{style.column}">
-						<div class="{style.value}">21</div>
-						<div class="{style.description}">Effort</div>					
+						<g:Label ui:field="effortLabel" styleName="{style.value}" />
+						<div class="{style.description}">
+							<ui:msg description="effort">Effort</ui:msg>
+						</div>					
 					</td>
 					<td class="{style.column}">
-						<div class="{style.value}">-----</div>
-						<div class="{style.description}">Speed</div>					
+						<g:FocusPanel ui:field="speedFocus" styleName="{style.speedInput}">
+							<g:FlowPanel>
+								<t:EditableLabel ui:field="speedLabel" addStyleNames="{style.speedLabel}"/>
+								<g:Label styleName="{style.speedMetric}">
+									<ui:msg description="speedMetric">ep/day</ui:msg>
+								</g:Label>
+							</g:FlowPanel>
+						</g:FocusPanel>
+						<div class="{style.description} {style.speedDescription}">
+							<ui:msg description="speed">Speed</ui:msg>
+						</div>					
 					</td>
 					<td class="{style.column}">
-						<div class="{style.value}">2</div>
-						<div class="{style.description}">Weeks</div>					
+						<g:Label ui:field="durationValueLabel" styleName="{style.value}" />
+						<g:Label ui:field="durationUnitLabel" styleName="{style.description}" />
 					</td>
 				</tr>
 			</table>

@@ -20,6 +20,7 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.dnd.DropControllerFactory;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.KanbanAction;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
+import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocityAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRemoveRollbackAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
@@ -139,6 +140,7 @@ public class ReleasePanelWidget extends Composite {
 						action instanceof ReleaseUpdatePriorityAction ||
 						action instanceof ReleaseScopeUpdatePriorityAction ||
 						action instanceof ReleaseRenameAction ||
+						action instanceof ReleaseDeclareEstimatedVelocityAction ||
 						action instanceof KanbanAction) update();
 
 				if (action instanceof ScopeBindReleaseAction || action instanceof ReleaseScopeUpdatePriorityAction) {

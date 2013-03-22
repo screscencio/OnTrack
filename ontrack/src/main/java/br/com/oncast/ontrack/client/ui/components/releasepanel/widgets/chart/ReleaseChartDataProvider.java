@@ -43,7 +43,7 @@ public class ReleaseChartDataProvider {
 
 	public float getEstimatedVelocity() {
 		return release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : releaseEstimator
-				.getInferedEstimatedVelocityOnDay(release);
+				.getEstimatedVelocity(release);
 	}
 
 	public WorkingDay getEstimatedStartDay() {
