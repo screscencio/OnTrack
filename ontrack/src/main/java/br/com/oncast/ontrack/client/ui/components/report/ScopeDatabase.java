@@ -58,11 +58,11 @@ public class ScopeDatabase {
 		}
 
 		public Long getCycleTime() {
-			return scope.getProgress().getCycletime();
+			return scope.getProgress().getCycleTime();
 		}
 
 		public Long getLeadTime() {
-			return scope.getProgress().getLeadtime();
+			return scope.getProgress().getLeadTime();
 		}
 
 		public String getHumandReadableId() {

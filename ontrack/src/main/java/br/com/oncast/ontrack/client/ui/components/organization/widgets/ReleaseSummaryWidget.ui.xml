@@ -3,8 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
 	
-	<ui:image field="containerStateOpenImg" src="../../releasepanel/widgets/bg-expand-minus.png"/>
-	<ui:image field="containerStateClosedImg" src="../../releasepanel/widgets/bg-expand-plus.png"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.organization.widgets.ReleaseSummaryWidget.ReleaseSummaryWidgetStyle">
 	
 		.rootPanel {
@@ -12,7 +10,7 @@
 		}
 		
 		.rootSelected {
-			box-shadow: 0 0 5px 1px #3d93b1;
+			box-shadow: SHADOW_SELECTED_HEADER;
 		}
 	
 		.header {
@@ -37,12 +35,11 @@
 			top: 0;
 			left: 0;
 			bottom: 0;
-			background: #999;
+			background: COLOR_BORDER_MENUBAR;
 		}
 		
 		.headerSelected {
-			background: #ACBAC1;
-			background: #B2C9CC;
+			background: COLOR_SELECTED_HEADER;
 		}
 		
 		.headerSelected .progressBar {
@@ -58,14 +55,6 @@
 			background: transparent;
 			color: COLOR_GRAY;
 			cursor: default;
-		}
-		
-		@sprite .containerStateOpen {
-			gwt-image: 'containerStateOpenImg';
-		}
-		
-		@sprite .containerStateClosed {
-			gwt-image: 'containerStateClosedImg';
 		}
 		
 		.containerStateToggleButton {
@@ -96,7 +85,6 @@
 		.content {
 			padding: 5px 3px;
 			padding-top: 6px;
-			border-radius: 0px 0px 2px 2px;
 			background-color: rgba(255, 255, 255, 0.5);
 		}
 		

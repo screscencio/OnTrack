@@ -46,10 +46,6 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 
 		String headerUnplanned();
 
-		String containerStateOpen();
-
-		String containerStateClosed();
-
 	}
 
 	@UiField
@@ -190,8 +186,8 @@ public class ReleaseSummaryWidget extends Composite implements ModelWidget<Relea
 		content.setVisible(b);
 		containerState = b;
 
-		containerStateToggleButton.setStyleName(style.containerStateOpen(), containerState);
-		containerStateToggleButton.setStyleName(style.containerStateClosed(), !containerState);
+		containerStateToggleButton.setStyleName("icon-caret-down", containerState);
+		containerStateToggleButton.setStyleName("icon-caret-right", !containerState);
 	}
 
 }

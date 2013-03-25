@@ -33,7 +33,7 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 
 	public WorkingDay add(final int nWorkingDays) {
 		final boolean forward = nWorkingDays >= 0;
-		int abs = Math.abs(nWorkingDays);
+		final int abs = Math.abs(nWorkingDays);
 		for (int i = 0; i < abs; i++) {
 			addOneWorkingDay(forward);
 		}
@@ -125,7 +125,7 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 
 	@Override
 	public String toString() {
-		return getDayAndMonthString() + "/" + (javaDate.getYear() + INITIAL_YEAR);
+		return getDayAndMonthString() + "/" + getYear();
 	}
 
 	public String getDayAndMonthString() {
@@ -134,6 +134,10 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 
 	public String getDayMonthShortYearString() {
 		return getDayAndMonthString() + "/" + fillWithZeroIfDataHasJustOneDigit(javaDate.getYear() % 100);
+	}
+
+	public int getYear() {
+		return javaDate.getYear() + INITIAL_YEAR;
 	}
 
 	private String fillWithZeroIfDataHasJustOneDigit(final int date) {
@@ -158,4 +162,5 @@ public class WorkingDay implements Comparable<WorkingDay>, Serializable {
 		}
 		return earliest;
 	}
+
 }

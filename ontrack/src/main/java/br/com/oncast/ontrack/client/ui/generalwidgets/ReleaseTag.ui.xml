@@ -14,7 +14,6 @@
 			vertical-align: top;
 			
 			font-size: 11px;
-			color: #b5955c;
 		}
 		
 		.tag:hover {
@@ -35,9 +34,9 @@
 			left: 0px;
 	
             padding-left: 3px;
-			background-color: #005B89;
-			text-align: justify;
+			background-color: COLOR_BACKGROUND_RELEASE_TAG;
 			color: COLOR_TEXT_TERTIARY;
+			text-align: justify;
         }
         
         @sprite .leftBg {

@@ -2,7 +2,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="progressBackground" src="../../../components/scopetree/widgets/searchbar/pattern_background.png"/>
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.organization.widgets.ScopeSummaryWidget.ScopeSummaryWidgetStyle">
 	
 		.header {
@@ -10,7 +9,12 @@
 			padding: PADDING_SMALL;
 			border: 1px solid COLOR_GRAY;
 			background: COLOR_SEMI_WHITE;
-			margin-bottom: -1px;
+			margin: 2px 0px;
+			box-shadow: none;
+		}
+		
+		.header:first-child {
+			margin-top: 0px;
 		}
 		
 		.headerContainer {
@@ -18,17 +22,15 @@
 			height: 100%;
 		}
 		
-		@sprite .progressBar {
-			gwt-image: 'progressBackground';
-			background-repeat: repeat;
-			background-color: COLOR_BLUE_LIGHT;
+		.progressBar {
+			overflow: hidden;
 			width: auto;
 			height: auto;
-			
 			position: absolute;
 			top: 0px;
 			left: 0px;
 			bottom: 0px;
+			background: COLOR_BORDER_MENUBAR;
 			
 			opacity: 0.6;
 		}
@@ -54,11 +56,13 @@
 		.progressLabel {
 			position: relative;
 			white-space: nowrap;
-			background: COLOR_GREEN;
+			
+			background: COLOR_BACKGROUND_RELEASE_TAG;
+			color: COLOR_TEXT_TERTIARY;
+			text-align: justify;
 			border-radius: 2px;
 			padding: 1px 2px;
 			vertical-align: middle;
-			color: white;
 		}
 		
 	</ui:style>
@@ -71,7 +75,7 @@
 					<g:Label ui:field="title" styleName="{style.titleLabel}"/>
 				</g:cell>
 				<g:cell verticalAlignment="middle">
-					<g:Label ui:field="progress" styleName="{style.progressLabel}"/>
+					<g:Label ui:field="progress" styleName="{style.progressLabel} {style.noSelection}"/>
 				</g:cell>
 			</g:HorizontalPanel>
 		</g:HTMLPanel>

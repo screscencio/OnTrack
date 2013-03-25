@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
+	
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
+	
+	<ui:style>
+	
+		.informationBlock {
+			float: left;
+		}
+	
+	</ui:style>
+	
+	<g:FocusPanel>
+		<g:HTMLPanel>
+			<gw:InformationBlockWidget ui:field="effort" addStyleNames="{style.informationBlock}" posfix="ep" title="Total effort">
+				<ui:attribute name="title" description="Total effort"/>
+				<ui:msg description="effort">Effort</ui:msg>
+			</gw:InformationBlockWidget>
+			<gw:InformationBlockWidget ui:field="value" addStyleNames="{style.informationBlock}" posfix="vp" title="Total value">
+				<ui:attribute name="title" description="Total value"/>
+				<ui:msg description="value">Value</ui:msg>
+			</gw:InformationBlockWidget>
+			<gw:InformationBlockWidget ui:field="cycletime" addStyleNames="{style.informationBlock}" title="Average cycletime">
+				<ui:attribute name="title" description="Average cycletime"/>
+				<ui:msg description="cycletime">Cycletime</ui:msg>
+			</gw:InformationBlockWidget>
+			<gw:InformationBlockWidget ui:field="estimatedSpeed" addStyleNames="{style.informationBlock}" posfix="ep/day" title="Estimated speed">
+				<ui:attribute name="title" description="Estimated speed"/>
+				<ui:attribute name="posfix" description="ep/day"/>
+				<ui:msg description="estimated">Estimated</ui:msg>
+			</gw:InformationBlockWidget>
+			<gw:InformationBlockWidget ui:field="actualSpeed" addStyleNames="{style.informationBlock}" posfix="ep/day" title="Actual speed">
+				<ui:attribute name="title" description="Actual speed"/>
+				<ui:attribute name="posfix" description="ep/day"/>
+				<ui:msg description="actual">Actual</ui:msg>
+			</gw:InformationBlockWidget>
+			<gw:InformationBlockWidget ui:field="leadtime" addStyleNames="{style.informationBlock}" title="Average leadtime">
+				<ui:attribute name="title" description="Average leadtime"/>
+				<ui:msg description="leadtime">Leadtime</ui:msg>
+			</gw:InformationBlockWidget>
+			<gw:InformationBlockWidget ui:field="startDay" addStyleNames="{style.informationBlock}" title="Estimated release start day">
+				<ui:attribute name="title" description="Estimated release start day"/>
+				<ui:msg description="start">Start</ui:msg>
+			</gw:InformationBlockWidget>
+			<gw:InformationBlockWidget ui:field="endDay" addStyleNames="{style.informationBlock}" title="Estimated release end day">
+				<ui:attribute name="title" description="Estimated release end day"/>
+				<ui:msg description="end">End</ui:msg>
+			</gw:InformationBlockWidget>
+			<gw:InformationBlockWidget ui:field="duration" addStyleNames="{style.informationBlock}" title="Estimated release duration">
+				<ui:attribute name="title" description="Estimated release duration"/>
+				<ui:msg description="duration">Duration</ui:msg>
+			</gw:InformationBlockWidget>
+		</g:HTMLPanel>
+	</g:FocusPanel>
+	
+</ui:UiBinder> 

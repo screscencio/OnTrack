@@ -1,6 +1,7 @@
 package br.com.oncast.ontrack.client.ui.components.organization.widgets;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer;
@@ -8,7 +9,6 @@ import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.ContainerAlignment;
 import br.com.oncast.ontrack.client.WidgetVisibilityEnsurer.Orientation;
 import br.com.oncast.ontrack.client.services.ClientServiceProvider;
 import br.com.oncast.ontrack.client.services.context.ProjectContextLoadCallback;
-import br.com.oncast.ontrack.client.ui.components.annotations.widgets.ReleaseDetailWidget;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChart;
 import br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart.ReleaseChartDataProvider;
 import br.com.oncast.ontrack.client.ui.events.ReleaseSelectionEvent;
@@ -19,10 +19,12 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.AnimatedContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidget;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetContainer;
 import br.com.oncast.ontrack.client.ui.generalwidgets.ModelWidgetFactory;
+import br.com.oncast.ontrack.client.ui.generalwidgets.release.ReleaseDetailsInBlockWidget;
 import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
+import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -31,7 +33,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -54,20 +55,11 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	interface ProjectSummaryWidgetUiBinder extends UiBinder<Widget, ProjectSummaryWidget> {}
 
-	interface ProjectSummaryWidgetStyle extends CssResource {
-		String containerStateOpen();
-
-		String containerStateClosed();
-	}
-
-	@UiField
-	ProjectSummaryWidgetStyle style;
-
 	@UiField
 	Label name;
 
 	@UiField
-	ReleaseDetailWidget releaseDetail;
+	ReleaseDetailsInBlockWidget releaseDetail;
 
 	@UiField
 	FocusPanel releaseContainer;
@@ -76,7 +68,7 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	ModelWidgetContainer<Release, ReleaseSummaryWidget> releases;
 
 	@UiField
-	Label scopesListTitle;
+	DeckPanel scopesDeck;
 
 	@UiField(provided = true)
 	ModelWidgetContainer<Scope, ScopeSummaryWidget> scopesList;
@@ -191,13 +183,14 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 	}
 
 	private void updateDetails(final Release release) {
-		releaseDetail.setSubject(release);
+		releaseDetail.setRelease(release);
 
-		scopesListTitle.setText(release.isLeaf() ? messages.scope() : messages.unplannedScope());
-		scopesList.update(release.getScopeList());
-		final ClientServiceProvider serviceProvider = ClientServiceProvider.getInstance();
-		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, serviceProvider.getReleaseEstimatorProvider().get(),
-				serviceProvider.getActionExecutionService());
+		final List<Scope> scopeList = release.getScopeList();
+		scopesList.update(scopeList);
+		scopesDeck.showWidget(scopeList.isEmpty() ? 0 : 1);
+		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getProjectRelease()), ClientServiceProvider
+				.getInstance()
+				.getActionExecutionService());
 
 		chart = new ReleaseChart(false);
 		chartPanel.setWidget(chart);
@@ -237,8 +230,8 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 	public void setContainerState(final boolean b) {
 		loadingDeck.setVisible(b);
-		containerStateToggleButton.setStyleName(style.containerStateOpen(), b);
-		containerStateToggleButton.setStyleName(style.containerStateClosed(), !b);
+		containerStateToggleButton.setStyleName("icon-caret-down", b);
+		containerStateToggleButton.setStyleName("icon-caret-right", !b);
 
 		if (b) {
 			setupSelectionEventHandlers();

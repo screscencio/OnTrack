@@ -1,0 +1,62 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets">
+	
+	<ui:style src="../style/default.css">
+		
+		.root {
+			width: 75px;
+			height: 75px;
+			margin: 2px;
+			
+			background: COLOR_BORDER_PRIMARY;
+			color: COLOR_TEXT_TERTIARY;
+		}
+		
+		.container {
+			margin: 0px auto;
+			padding: 6px 0px;
+			
+			text-align: center;
+			cursor: default;
+		}
+		
+		.value {
+			font-size: 30px;
+			font-weight: bold;
+		}
+		
+		.decimal {
+			font-size: 14px;
+			font-weight: normal;
+		}
+
+		.posfix {
+			font-size: 10px;
+			font-weight: normal;
+			display: block;
+			margin-top: -8px;
+			margin-bottom: 5px;
+			height: 12px;
+		}
+	
+		.description {
+			font-size: 12px;
+			height: 14px;
+		}
+		
+	</ui:style>
+	
+	<g:FocusPanel styleName="{style.root}">
+		<g:HTMLPanel styleName="{style.container} {style.noSelection}">
+			<div class="{style.value}">
+				<span ui:field="value"></span><span ui:field="decimal" class="{style.decimal}"></span>
+				<span ui:field="posfix" class="{style.posfix}"></span>
+			</div>
+			
+			<w:FastLabel ui:field="description" styleName="{style.description}" />
+		</g:HTMLPanel>
+	</g:FocusPanel>
+	
+</ui:UiBinder> 

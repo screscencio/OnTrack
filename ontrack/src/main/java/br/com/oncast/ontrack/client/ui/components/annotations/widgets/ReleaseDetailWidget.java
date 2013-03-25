@@ -12,10 +12,8 @@ import br.com.oncast.ontrack.client.utils.date.HumanDateFormatter;
 import br.com.oncast.ontrack.shared.model.action.ActionContext;
 import br.com.oncast.ontrack.shared.model.action.ModelAction;
 import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
-import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
@@ -129,59 +127,10 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 		final WorkingDay endDay = dataProvider.getEstimatedEndDay();
 		this.period.setText(format(startDay) + " - " + format(endDay));
 		this.duration.setText(HumanDateFormatter.getDifferenceText(endDay.getJavaDate().getTime() - startDay.getJavaDate().getTime(), 1));
-		final Long cycleTimeAverage = getAverage(getCycletimeExtractor());
-		this.cycletime.setText(formatInfo(cycleTimeAverage, getDeviant(getCycletimeExtractor(), cycleTimeAverage)));
-		final Long leadtimeAverage = getAverage(getLeadtimeExtractor());
-		this.leadtime.setText(formatInfo(leadtimeAverage, getDeviant(getLeadtimeExtractor(), leadtimeAverage)));
-	}
-
-	private Extractor getCycletimeExtractor() {
-		return new Extractor() {
-			@Override
-			public Long getValue(final Progress progress) {
-				return progress.getCycletime();
-			}
-		};
-	}
-
-	private Extractor getLeadtimeExtractor() {
-		return new Extractor() {
-			@Override
-			public Long getValue(final Progress progress) {
-				return progress.getLeadtime();
-			}
-		};
-	}
-
-	private Long getDeviant(final Extractor extractor, final Long average) {
-		Long deviant = 0L;
-		int scopeCount = 0;
-		for (final Scope scope : this.release.getAllScopesIncludingDescendantReleases()) {
-			if (!scope.getProgress().isDone()) continue;
-			scopeCount++;
-			final Long variance = extractor.getValue(scope.getProgress()) - average;
-			deviant += variance * variance;
-		}
-
-		if (scopeCount <= 1) return null;
-		return (long) Math.sqrt(deviant / (scopeCount - 1));
-	}
-
-	private Long getAverage(final Extractor extractor) {
-		Long average = 0L;
-		int scopeCount = 0;
-		for (final Scope scope : this.release.getAllScopesIncludingDescendantReleases()) {
-			if (!scope.getProgress().isDone()) continue;
-			scopeCount++;
-			average += extractor.getValue(scope.getProgress());
-		}
-
-		if (scopeCount == 0) return null;
-		return average / scopeCount;
-	}
-
-	private interface Extractor {
-		Long getValue(Progress progress);
+		final Long cycleTimeAverage = release.getAverageCycleTime();
+		this.cycletime.setText(formatInfo(cycleTimeAverage, release.getCycleTimeDeviant()));
+		final Long leadtimeAverage = release.getAverageLeadTime();
+		this.leadtime.setText(formatInfo(leadtimeAverage, release.getLeadTimeDeviant()));
 	}
 
 	private String formatInfo(final Long value, final Long deviation) {
