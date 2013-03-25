@@ -21,6 +21,7 @@ import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProvid
 import br.com.oncast.ontrack.client.services.context.ProjectRepresentationProviderImpl;
 import br.com.oncast.ontrack.client.services.details.DetailService;
 import br.com.oncast.ontrack.client.services.details.DetailServiceImpl;
+import br.com.oncast.ontrack.client.services.estimator.ReleaseEstimatorProvider;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackService;
 import br.com.oncast.ontrack.client.services.feedback.FeedbackServiceImpl;
 import br.com.oncast.ontrack.client.services.instruction.UserGuidService;
@@ -51,8 +52,6 @@ import br.com.oncast.ontrack.shared.config.RequestConfigurations;
 import br.com.oncast.ontrack.shared.exceptions.authentication.NotAuthenticatedException;
 import br.com.oncast.ontrack.shared.exceptions.authorization.AuthorizationException;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
-import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
@@ -105,6 +104,7 @@ public class ClientServiceProvider {
 	private ClientMetricsService clientMetricsService;
 
 	private TimesheetService timesheetService;
+	private ReleaseEstimatorProvider releaseEstimatorProvider;
 
 	private static ClientServiceProvider instance;
 
@@ -265,9 +265,9 @@ public class ClientServiceProvider {
 				getContextProviderService()) : userAssociationService;
 	}
 
-	public ReleaseEstimator getReleaseEstimator() {
-		final Release rootRelease = getContextProviderService().getCurrent().getProjectRelease();
-		return new ReleaseEstimator(rootRelease);
+	public ReleaseEstimatorProvider getReleaseEstimatorProvider() {
+		return releaseEstimatorProvider == null ? releaseEstimatorProvider = new ReleaseEstimatorProvider(getContextProviderService())
+				: releaseEstimatorProvider;
 	}
 
 	public static ProjectContext getCurrentProjectContext() {

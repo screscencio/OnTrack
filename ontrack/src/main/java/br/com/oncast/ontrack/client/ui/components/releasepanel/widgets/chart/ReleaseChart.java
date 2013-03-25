@@ -43,7 +43,6 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareEstimatedVelocity
 import br.com.oncast.ontrack.shared.model.action.ReleaseDeclareStartDayAction;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
 
@@ -122,16 +121,13 @@ public class ReleaseChart extends Composite {
 	}
 
 	public void setRelease(final Release release) {
-		setRelease(release, new ReleaseChartDataProvider(release, getReleaseEstimator(), ClientServiceProvider.getInstance().getActionExecutionService()));
+		setRelease(release, new ReleaseChartDataProvider(release, ClientServiceProvider.getInstance().getReleaseEstimatorProvider().get(),
+				ClientServiceProvider.getInstance().getActionExecutionService()));
 	}
 
 	public void setRelease(final Release release, final ReleaseChartDataProvider dataProvider) {
 		this.release = release;
 		this.dataProvider = dataProvider;
-	}
-
-	private ReleaseEstimator getReleaseEstimator() {
-		return ClientServiceProvider.getInstance().getReleaseEstimator();
 	}
 
 	@Override

@@ -30,7 +30,6 @@ import br.com.oncast.ontrack.shared.model.progress.ProgressDefinitionManager;
 import br.com.oncast.ontrack.shared.model.release.Release;
 import br.com.oncast.ontrack.shared.model.release.Release.Condition;
 import br.com.oncast.ontrack.shared.model.release.ReleaseDescriptionParser;
-import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.scope.exceptions.ScopeNotFoundException;
@@ -338,10 +337,4 @@ public class ProjectContext implements HasUUID {
 	public Float getDeclaredTimeSpent(final UUID scopeId, final UUID userId) {
 		return project.getDeclaredTimeSpent(scopeId, userId);
 	}
-
-	public ReleaseEstimator getReleaseEstimator() {
-		// FIXME LOBO Lazy load release estimator
-		return new ReleaseEstimator(getProjectRelease());
-	}
-
 }

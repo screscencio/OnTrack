@@ -20,6 +20,7 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -109,6 +110,15 @@ public class ReleaseInfoWidget extends Composite {
 		}
 	}
 
+	interface ReleaseInfoWidgetStyle extends CssResource {
+		String speedInputDeclared();
+
+		String speedInputInfered();
+	}
+
+	@UiField
+	ReleaseInfoWidgetStyle style;
+
 	@UiField
 	SimplePanel container;
 
@@ -145,11 +155,9 @@ public class ReleaseInfoWidget extends Composite {
 
 	private float estimatedVelocity;
 
-	// FIXME LOBO Set title for effort
-	// FIXME LOBO Set title for value
 	public ReleaseInfoWidget(final Release release) {
 		this.release = release;
-		releaseEstimator = ClientServiceProvider.getCurrentProjectContext().getReleaseEstimator();
+		releaseEstimator = ClientServiceProvider.getInstance().getReleaseEstimatorProvider().get();
 		speedLabel = new EditableLabel(new EditableLabelEditionHandler() {
 
 			@Override
@@ -219,11 +227,11 @@ public class ReleaseInfoWidget extends Composite {
 		// FIXME LOBO REmove the split workaround.
 		durationValueLabel.setText(differenceText[0]);
 		durationUnitLabel.setText(differenceText[1]);
-		// FIXME LOBO Set title to instruct that if started today it would finish in ...
 	}
 
 	private void updateSpeed() {
-		// FIXME LOBO Show different styles and titles when infered / when declared
+		speedFocus.setStyleName(style.speedInputDeclared(), release.hasDeclaredEstimatedVelocity());
+		speedFocus.setStyleName(style.speedInputInfered(), !release.hasDeclaredEstimatedVelocity());
 		estimatedVelocity = release.hasDeclaredEstimatedVelocity() ? release.getEstimatedVelocity() : releaseEstimator
 				.getEstimatedVelocity(release);
 		speedLabel.setValue(round(estimatedVelocity));
