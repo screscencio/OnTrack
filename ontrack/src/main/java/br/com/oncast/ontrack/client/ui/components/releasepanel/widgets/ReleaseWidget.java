@@ -29,6 +29,7 @@ import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -40,7 +41,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
@@ -63,59 +63,10 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected Resources resources;
 
 	interface Resources extends ClientBundle {
-		@Source("stats_0.png")
-		ImageResource progress0();
-
-		@Source("stats_1.png")
-		ImageResource progress1();
-
-		@Source("stats_2.png")
-		ImageResource progress2();
-
-		@Source("stats_3.png")
-		ImageResource progress3();
-
-		@Source("stats_4.png")
-		ImageResource progress4();
-
-		@Source("stats_5.png")
-		ImageResource progress5();
-
-		@Source("stats_6.png")
-		ImageResource progress6();
-
-		@Source("stats_7.png")
-		ImageResource progress7();
-
-		@Source("stats_8.png")
-		ImageResource progress8();
-
-		@Source("timesheet.png")
-		ImageResource timesheetIcon();
-
-		@Source("report.png")
-		ImageResource reportIcon();
 
 		@Source("bg-later.png")
 		ImageResource laterImage();
 
-		@Source("down.png")
-		ImageResource menuReleaseDecreasePriority();
-
-		@Source("up.png")
-		ImageResource menuReleaseIncreasePriority();
-
-		@Source("trash.png")
-		ImageResource menuReleaseDelete();
-
-		@Source("info_full.png")
-		ImageResource detailLinkWithDetails();
-
-		@Source("../../scopetree/widgets/open_impediment.png")
-		ImageResource impedimentIcon();
-
-		@Source("info_empty.png")
-		ImageResource detailLink();
 	}
 
 	@UiField
@@ -137,7 +88,10 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	protected FocusPanel detailLink;
 
 	@UiField
-	protected Image progressIcon;
+	protected FocusPanel progressIcon;
+
+	@UiField
+	protected SimplePanel progressBar;
 
 	@UiField
 	protected FocusPanel menuIcon;
@@ -184,7 +138,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	private String currentReleaseDescription;
 
 	// IMPORTANT Used to refresh DOM only when needed.
-	private float lastProgress;
+	private double lastProgress;
 
 	private final Release release;
 
@@ -287,7 +241,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 		if (!kanbanSpecific) {
-			itens.add(new TextAndImageCommandMenuItem(resources.reportIcon(), messages.kanban(), new Command() {
+			itens.add(new TextAndImageCommandMenuItem("icon-tasks", messages.kanban(), new Command() {
 				@Override
 				public void execute() {
 					final ClientServiceProvider provider = ClientServiceProvider.getInstance();
@@ -296,35 +250,35 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				}
 			}));
 		}
-		itens.add(new TextAndImageCommandMenuItem(resources.reportIcon(), messages.report(), new Command() {
+		itens.add(new TextAndImageCommandMenuItem("icon-th-list", messages.report(), new Command() {
 			@Override
 			public void execute() {
 				final UUID project = ClientServiceProvider.getCurrentProjectContext().getId();
 				ClientServiceProvider.getInstance().getApplicationPlaceController().open(new ReportPlace(project, release.getId()));
 			}
 		}));
-		if (release.hasDirectScopes()) itens.add(new TextAndImageCommandMenuItem(resources.timesheetIcon(), messages.timesheet(), new Command() {
+		if (release.hasDirectScopes()) itens.add(new TextAndImageCommandMenuItem("icon-time", messages.timesheet(), new Command() {
 			@Override
 			public void execute() {
 				ClientServiceProvider.getInstance().getTimesheetService().showTimesheetFor(release.getId());
 			}
 		}));
 		if (!kanbanSpecific) {
-			itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseIncreasePriority(), messages.increasePriority(), new Command() {
+			itens.add(new TextAndImageCommandMenuItem("icon-arrow-up", messages.increasePriority(), new Command() {
 
 				@Override
 				public void execute() {
 					releasePanelInteractionHandler.onReleaseIncreasePriorityRequest(release);
 				}
 			}));
-			itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDecreasePriority(), messages.decreasePriority(), new Command() {
+			itens.add(new TextAndImageCommandMenuItem("icon-arrow-down", messages.decreasePriority(), new Command() {
 
 				@Override
 				public void execute() {
 					releasePanelInteractionHandler.onReleaseDecreasePriorityRequest(release);
 				}
 			}));
-			itens.add(new TextAndImageCommandMenuItem(resources.menuReleaseDelete(), messages.deleteRelease(), new Command() {
+			itens.add(new TextAndImageCommandMenuItem("icon-trash", messages.deleteRelease(), new Command() {
 
 				@Override
 				public void execute() {
@@ -368,29 +322,20 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 	}
 
 	private void updateProgress() {
-		final float progress = getProgressPercentage();
+		final double progress = getProgressPercentage();
 		if (lastProgress == progress) return;
-		lastProgress = progress;
 
-		final float aux = 100F / 8F;
-		if (progress == 0) progressIcon.setResource(resources.progress0());
-		else if (progress <= 1 * aux) progressIcon.setResource(resources.progress1());
-		else if (progress <= 2 * aux) progressIcon.setResource(resources.progress2());
-		else if (progress <= 3 * aux) progressIcon.setResource(resources.progress3());
-		else if (progress <= 4 * aux) progressIcon.setResource(resources.progress4());
-		else if (progress <= 5 * aux) progressIcon.setResource(resources.progress5());
-		else if (progress <= 6 * aux) progressIcon.setResource(resources.progress6());
-		else if (progress < 100) progressIcon.setResource(resources.progress7());
-		else progressIcon.setResource(resources.progress8());
+		progressBar.getElement().getStyle().setWidth(progress, Unit.PCT);
+		lastProgress = progress;
 	}
 
-	private float getProgressPercentage() {
+	private double getProgressPercentage() {
 		final float effortSum = release.getEffortSum();
 		if (effortSum == 0) return 0;
 
 		final float concludedEffortSum = release.getAccomplishedEffortSum();
 		final float percentage = 100 * concludedEffortSum / effortSum;
-		return percentage;
+		return Math.ceil(percentage);
 	}
 
 	public void setContainerState(final boolean shouldOpen) {

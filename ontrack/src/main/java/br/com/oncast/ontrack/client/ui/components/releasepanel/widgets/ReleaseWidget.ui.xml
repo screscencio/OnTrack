@@ -48,9 +48,7 @@
 				margin-bottom: -1px;
 			}
 			
-			.progressIcon {
-				margin-bottom: -3px;
-			}
+			
 			
 			.kanbanIcon {
 				margin-bottom: -2px;
@@ -133,6 +131,47 @@
 			.chartPanel:FOCUS {
 				outline: 0px;
 			}
+			
+			.progressIcon, .progressLabel {
+				width: 100px;
+			}
+			
+			.progressIcon {
+				position: relative;
+				margin-bottom: -1px;
+				height: 12px;
+			}
+			
+			.progressLabel {
+				font-size: 10px;
+				line-height: 11px;
+				text-align: center;
+				border: solid 1px #fff;
+			}
+			
+			.progressLabelComplete {
+				color: #ffffff;
+				background-color: rgb(116, 116, 116);
+			}
+			
+			.progressLabelUncomplete {
+				color: #000;
+				background-color: #ffffff;
+			}
+			
+			.progressBar {
+				overflow: hidden;
+				
+				margin-left: 1px;
+				width: 0%;
+			}
+			
+			.progressBar, .progressLabel {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				bottom: 0px;
+			}
 		</ui:style>
 
 	<g:HTMLPanel styleName="{style.rootPanel}">
@@ -148,9 +187,17 @@
 					<g:FocusPanel ui:field="detailLink" styleName="{style.headerItem} {style.annotationIcon} icon-info-sign" title="Details">
 						<ui:attribute name="title" description="detailLink icon release widget" />
 					</g:FocusPanel>
-					<g:Image ui:field="progressIcon" resource="{resources.progress0}" styleName="{style.headerItem} {style.progressIcon}" title="Progress">
+					<g:FocusPanel ui:field="progressIcon" styleName="{style.headerItem} {style.progressIcon}" title="Progress">
 						<ui:attribute name="title" description="progress icon release widget" />
-					</g:Image>
+						<g:FlowPanel>
+							<g:SimplePanel>
+								<g:Label styleName="{style.progressLabel} {style.progressLabelUncomplete}">%</g:Label>
+							</g:SimplePanel>
+							<g:SimplePanel ui:field="progressBar" styleName="{style.progressBar}">
+								<g:Label styleName="{style.progressLabel} {style.progressLabelComplete}">%</g:Label>
+							</g:SimplePanel>
+						</g:FlowPanel>
+					</g:FocusPanel>
 					<g:FocusPanel ui:field="menuIcon" styleName="{style.headerItem} {style.kanbanIcon} icon-plus-sign" title="More">
 						<ui:attribute name="title" description="menu icon release widget" />
 					</g:FocusPanel>

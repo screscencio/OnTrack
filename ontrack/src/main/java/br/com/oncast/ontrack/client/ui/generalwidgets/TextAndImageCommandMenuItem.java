@@ -1,6 +1,5 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets;
 
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Command;
@@ -23,14 +22,6 @@ public class TextAndImageCommandMenuItem implements CommandMenuItem {
 		this.imageStyle = imageStyle;
 		this.text = text;
 		this.value = value;
-		this.command = command;
-	}
-
-	// FIXME Xizz Remove this and update the release widget
-	public TextAndImageCommandMenuItem(final ImageResource reportIcon, final String text, final Command command) {
-		this.imageStyle = "icon-ban-circle";
-		this.text = text;
-		this.value = text;
 		this.command = command;
 	}
 
