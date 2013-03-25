@@ -30,17 +30,6 @@ html,body {
 		min-width: 21cm;
 		height: auto;
 	}
-	
-	.reportPanel-burnUp {
-/* 		width: 765px; */
-/* 		margin: 0px auto; */
-	}
-
-}
-
-.reportPanel-burnUp {
-/* 	width: 765px; */
-/* 	margin: 0px auto; */
 }
 
 .hasWarningTips {

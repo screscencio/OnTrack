@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.release.exceptions.ReleaseNotFoundException;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.HasUUID;
@@ -492,6 +493,71 @@ public class Release implements Serializable, HasUUID {
 			parent = parent.getParent();
 		}
 		return ancestors;
+	}
+
+	public Long getAverageCycleTime() {
+		return getAverage(getCycleTimeExtractor());
+	}
+
+	public Long getAverageLeadTime() {
+		return getAverage(getLeadTimeExtractor());
+	}
+
+	public Long getCycleTimeDeviant() {
+		return getDeviant(getCycleTimeExtractor(), getAverageCycleTime());
+	}
+
+	public Long getLeadTimeDeviant() {
+		return getDeviant(getLeadTimeExtractor(), getAverageLeadTime());
+	}
+
+	private Extractor getCycleTimeExtractor() {
+		return new Extractor() {
+			@Override
+			public Long getValue(final Progress progress) {
+				return progress.getCycleTime();
+			}
+		};
+	}
+
+	private Extractor getLeadTimeExtractor() {
+		return new Extractor() {
+			@Override
+			public Long getValue(final Progress progress) {
+				return progress.getLeadTime();
+			}
+		};
+	}
+
+	private Long getDeviant(final Extractor extractor, final Long average) {
+		Long deviant = 0L;
+		int scopeCount = 0;
+		for (final Scope scope : getAllScopesIncludingDescendantReleases()) {
+			if (!scope.getProgress().isDone()) continue;
+			scopeCount++;
+			final Long variance = extractor.getValue(scope.getProgress()) - average;
+			deviant += variance * variance;
+		}
+
+		if (scopeCount <= 1) return null;
+		return (long) Math.sqrt(deviant / (scopeCount - 1));
+	}
+
+	private Long getAverage(final Extractor extractor) {
+		Long average = 0L;
+		int scopeCount = 0;
+		for (final Scope scope : getAllScopesIncludingDescendantReleases()) {
+			if (!scope.getProgress().isDone()) continue;
+			scopeCount++;
+			average += extractor.getValue(scope.getProgress());
+		}
+
+		if (scopeCount == 0) return null;
+		return average / scopeCount;
+	}
+
+	private interface Extractor {
+		Long getValue(Progress progress);
 	}
 
 }

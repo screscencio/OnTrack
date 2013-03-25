@@ -4,6 +4,7 @@ import static br.com.oncast.ontrack.client.utils.date.DateUnit.DAY;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.HOUR;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.MINUTE;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.MONTH;
+import static br.com.oncast.ontrack.client.utils.date.DateUnit.SECOND;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.WEEK;
 import static br.com.oncast.ontrack.client.utils.date.DateUnit.YEAR;
 
@@ -18,7 +19,7 @@ public enum HumanDateFormatter {
 	JUST_NOW(1 * MINUTE, "yyyyMMddHHmm") {
 		@Override
 		protected String formatDifferenceTime(final long difference) {
-			return onlyNumbers ? "0" : messages.lessThanAMinute();
+			return mountDifferenceText(difference, SECOND, messages.second(), messages.seconds());
 		}
 
 		@Override

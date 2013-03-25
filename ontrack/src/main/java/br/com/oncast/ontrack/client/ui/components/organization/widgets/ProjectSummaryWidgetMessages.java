@@ -4,14 +4,6 @@ import br.com.oncast.ontrack.client.i18n.BaseMessages;
 
 public interface ProjectSummaryWidgetMessages extends BaseMessages {
 
-	@DefaultMessage("Scope")
-	@Description("Title for release's scope")
-	String scope();
-
-	@DefaultMessage("Unplanned Scope")
-	@Description("Title for release's unplanned scope")
-	String unplannedScope();
-
 	@DefaultMessage("The requested project was not found.")
 	@Description("shown when the requested project was not found in the server")
 	String projectNotFound();

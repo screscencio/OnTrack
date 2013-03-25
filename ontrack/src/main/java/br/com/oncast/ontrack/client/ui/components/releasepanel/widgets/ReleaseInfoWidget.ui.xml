@@ -24,15 +24,15 @@
 			margin: 0px auto;
 			margin-top: -2px;
 			margin-bottom: -2px;
-			background-color: #c7c8ca;
+			background-color: COLOR_TEXT_TERTIARY;
 		}
 		
 		.column {
 			margin: 0px auto;
 			padding: 3px;
 
-			background: #6d6e71;
-			color: #c7c8ca;
+			background: COLOR_BORDER_PRIMARY;
+			color: COLOR_TEXT_TERTIARY;
 			text-align: center;
 		}
 				
@@ -70,8 +70,8 @@
 
 		.speedInputDeclared {
 			font-size: 7px;
-			background: #c7c8ca;
-			color: #6d6e71;
+			background: COLOR_TEXT_TERTIARY;
+			color: COLOR_BORDER_PRIMARY;
 			border-radius: 2px;
 			margin: 0px auto;
 			width: 50%;
