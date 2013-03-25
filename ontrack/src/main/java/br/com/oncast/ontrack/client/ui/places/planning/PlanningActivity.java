@@ -65,7 +65,7 @@ public class PlanningActivity extends AbstractActivity {
 		actionExecutionService.addActionExecutionListener(activityActionExecutionListener);
 		activityActionExecutionListener.setActionExecutionListeners(getActionExecutionSuccessListeners(view));
 
-		view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
+		view.getApplicationMenu().setProjectName(ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent().getName());
 		view.getApplicationMenu().setBackButtonVisibility(false);
 		view.getApplicationMenu().clearCustomMenuItems();
 
