@@ -15,7 +15,6 @@ import br.com.oncast.ontrack.shared.model.action.ReleaseRenameAction;
 import br.com.oncast.ontrack.shared.model.progress.Progress;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 import br.com.oncast.ontrack.shared.utils.WorkingDay;
@@ -88,17 +87,11 @@ public class ReleaseDetailWidget extends Composite implements SubjectDetailWidge
 
 	public ReleaseDetailWidget setSubject(final Release release) {
 		this.release = release;
-		this.dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getRootRelease()), ClientServiceProvider.getInstance()
-				.getActionExecutionService());
+		final ClientServiceProvider serviceProvider = ClientServiceProvider.getInstance();
+		this.dataProvider = new ReleaseChartDataProvider(release, serviceProvider.getReleaseEstimatorProvider().get(),
+				serviceProvider.getActionExecutionService());
 		update();
 		return this;
-	}
-
-	private Release getRootRelease() {
-		Release root = release;
-		while (!root.isRoot())
-			root = root.getParent();
-		return root;
 	}
 
 	@Override

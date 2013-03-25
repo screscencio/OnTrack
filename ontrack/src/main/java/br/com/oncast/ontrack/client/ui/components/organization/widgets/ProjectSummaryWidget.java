@@ -23,7 +23,6 @@ import br.com.oncast.ontrack.client.ui.places.planning.PlanningPlace;
 import br.com.oncast.ontrack.shared.model.project.ProjectContext;
 import br.com.oncast.ontrack.shared.model.project.ProjectRepresentation;
 import br.com.oncast.ontrack.shared.model.release.Release;
-import br.com.oncast.ontrack.shared.model.release.ReleaseEstimator;
 import br.com.oncast.ontrack.shared.model.scope.Scope;
 import br.com.oncast.ontrack.shared.model.uuid.UUID;
 
@@ -196,9 +195,9 @@ public class ProjectSummaryWidget extends Composite implements ModelWidget<Proje
 
 		scopesListTitle.setText(release.isLeaf() ? messages.scope() : messages.unplannedScope());
 		scopesList.update(release.getScopeList());
-		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, new ReleaseEstimator(getProjectRelease()), ClientServiceProvider
-				.getInstance()
-				.getActionExecutionService());
+		final ClientServiceProvider serviceProvider = ClientServiceProvider.getInstance();
+		final ReleaseChartDataProvider dataProvider = new ReleaseChartDataProvider(release, serviceProvider.getReleaseEstimatorProvider().get(),
+				serviceProvider.getActionExecutionService());
 
 		chart = new ReleaseChart(false);
 		chartPanel.setWidget(chart);

@@ -6,7 +6,7 @@
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
 	ui:generateLocales="default">
 
-	<ui:style>
+	<ui:style type="br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.ReleaseInfoWidget.ReleaseInfoWidgetStyle">
 	
 		.rootPanel {
 			margin: 0px 2px 0px 2px;
@@ -53,7 +53,22 @@
 			margin: 0px 2px;
 		}
 		
-		.speedInput {
+		.speedLabel > input {
+		}
+		
+		.speedInputInfered {
+			font-size: 7px;
+			border: 1px solid #c7c8ca; 
+			background: #6d6e71;
+			color: #c7c8ca;
+			border-radius: 2px;
+			margin: 0px auto;
+			width: 50%;
+			padding: 2px;
+			cursor: pointer;
+		}
+
+		.speedInputDeclared {
 			font-size: 7px;
 			background: #c7c8ca;
 			color: #6d6e71;
@@ -72,7 +87,7 @@
 			margin-top: 6px;
 			margin-bottom: -7px;
 		}
-
+		
 	</ui:style>
 	
 	<g:SimplePanel ui:field="container" styleName="{style.rootPanel}">
@@ -80,19 +95,24 @@
 			<table class="{style.column-container}">
 				<tr>
 					<td class="{style.column}">
-						<g:Label ui:field="valueLabel" styleName="{style.value}" />
+						<g:Label ui:field="valueLabel" styleName="{style.value}" title="Total value">
+							<ui:attribute name="title" description="Release Info Total value" />
+						</g:Label>
 						<div class="{style.description}">
 							<ui:msg description="value">Value</ui:msg>
 						</div>					
 					</td>
 					<td class="{style.column}">
-						<g:Label ui:field="effortLabel" styleName="{style.value}" />
+						<g:Label ui:field="effortLabel" styleName="{style.value}" title="Total effort">
+							<ui:attribute name='title' description='Release Info Total effort' />
+						</g:Label>
 						<div class="{style.description}">
 							<ui:msg description="effort">Effort</ui:msg>
 						</div>					
 					</td>
 					<td class="{style.column}">
-						<g:FocusPanel ui:field="speedFocus" styleName="{style.speedInput}">
+						<g:FocusPanel ui:field="speedFocus" title="Estimated speed">
+							<ui:attribute name='title' description='Release Info Estimated speed'/>
 							<g:FlowPanel>
 								<t:EditableLabel ui:field="speedLabel" addStyleNames="{style.speedLabel}"/>
 								<g:Label styleName="{style.speedMetric}">
@@ -105,7 +125,9 @@
 						</div>					
 					</td>
 					<td class="{style.column}">
-						<g:Label ui:field="durationValueLabel" styleName="{style.value}" />
+						<g:Label ui:field="durationValueLabel" styleName="{style.value}" title="Estimated release duration - considering the current moment">
+							<ui:attribute name='title' description='Release Info Estimated release duration considering the current moment'/>
+						</g:Label>
 						<g:Label ui:field="durationUnitLabel" styleName="{style.description}" />
 					</td>
 				</tr>
