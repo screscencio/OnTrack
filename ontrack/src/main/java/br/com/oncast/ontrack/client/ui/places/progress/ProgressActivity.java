@@ -92,7 +92,7 @@ public class ProgressActivity extends AbstractActivity {
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
 		if (view == null) throw new RuntimeException("The view wasnt initialized correctly.");
 
-		view.getApplicationMenu().setProjectName(projectContext.getProjectRepresentation().getName());
+		view.getApplicationMenu().setProjectName(ClientServiceProvider.getInstance().getProjectRepresentationProvider().getCurrent().getName());
 		view.getApplicationMenu().setBackButtonVisibility(true);
 
 		updateViewData();
