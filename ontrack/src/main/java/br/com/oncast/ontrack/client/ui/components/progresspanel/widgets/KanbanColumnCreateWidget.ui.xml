@@ -2,11 +2,20 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:image field="image" src="add_column.png" />
-	<ui:style>
+	<ui:style src="../../../style/default.css">
+		
+		.createIcon {
+			color: COLOR_BACKGROUND_HEADER;
+			opacity: 0.6;
+		}
+		
+		.createIcon:hover {
+			opacity: 1;
+		}
+			
 	</ui:style>
 	
 	<g:FocusPanel ui:field="rootPanel">
-		<g:Image ui:field="create" resource="{image}" />
+		<g:FocusPanel ui:field="create" styleName="{style.createIcon} icon-plus-sign" />
 	</g:FocusPanel>
 </ui:UiBinder> 

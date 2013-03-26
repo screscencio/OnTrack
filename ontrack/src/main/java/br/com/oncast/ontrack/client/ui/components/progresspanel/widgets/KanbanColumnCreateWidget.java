@@ -14,7 +14,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public class KanbanColumnCreateWidget extends Composite {
@@ -33,7 +32,7 @@ public class KanbanColumnCreateWidget extends Composite {
 	FocusPanel rootPanel;
 
 	@UiField
-	Image create;
+	FocusPanel create;
 
 	public KanbanColumnCreateWidget(final ProgressPanelWidgetInteractionHandler interactionHandler, final String preciousColumnDescription) {
 		this.interactionHandler = interactionHandler;
@@ -52,7 +51,8 @@ public class KanbanColumnCreateWidget extends Composite {
 				interactionHandler.onKanbanColumnCreate(text, previousColumnDescription);
 				return true;
 			}
-		})).alignVertical(VerticalAlignment.TOP, new AlignmentReference(create, VerticalAlignment.BOTTOM, 0)).alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(create, HorizontalAlignment.CENTER))
+		})).alignVertical(VerticalAlignment.TOP, new AlignmentReference(create, VerticalAlignment.BOTTOM, 0))
+				.alignHorizontal(HorizontalAlignment.CENTER, new AlignmentReference(create, HorizontalAlignment.CENTER))
 				.pop();
 	}
 }

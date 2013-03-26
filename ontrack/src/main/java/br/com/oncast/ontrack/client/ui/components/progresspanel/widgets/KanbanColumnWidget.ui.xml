@@ -5,66 +5,37 @@
 	xmlns:ow='urn:import:br.com.oncast.ontrack.client.ui.components.progresspanel.widgets'
 	>
 	
-	<ui:data src="delete_column.png" field="deleteColumnImg" />
-	<ui:data src="delete_column_hover.png" field="deleteColumnHoverImg" />
 	<ui:style src="../../../style/default.css" type="br.com.oncast.ontrack.client.ui.components.progresspanel.widgets.KanbanColumnWidget.KanbanColumnWidgetStyle">
-	
-	   @url deleteImgUrl deleteColumnImg;
-	   @url deleteHoverImgUrl deleteColumnHoverImg;
 	
 		.rootPanel {
 			height: 100%;
-			width: 250px;
+			width: 244px;
 		}
-
+		
         .createButton {
 			position: absolute;
-			right: -27px;
-			top: 10px;
+			right: -20px;
+			top: 5px;
 	
             cursor: pointer;
         }
 
-		.titlePanel {
-			position: relative;
-	
-			height: 36px;
-			width: 214px;
-			margin: 10px 0px;
-			vertical-align: middle;
-			
-            background: KANBAN_TITLE_BACKGROUND_COLOR;
-	        -webkit-box-shadow: KANBAN_TITLE_SHADOW;
-	        -moz-box-shadow: KANBAN_TITLE_SHADOW;
-	        box-shadow: KANBAN_TITLE_SHADOW;
-            
-            border: KANBAN_TITLE_BORDER;
-            border-color: KANBAN_TITLE_BORDER_COLORS;
-            color: KANBAN_TITLE_TEXT_COLOR;
-            font-family: FONT_DEFAULT;
-            font-size: FONT_SIZE_LARGE;             
-            text-shadow: KANBAN_TITLE_TEXT_SHADOW;
-            filter: KANBAN_TITLE_TEXT_SHADOW_IE;
-		}
-		
         .titleLabel {
-        	padding-top: 8px;
-        	border-top: 1px solid #DEDEDE;
             text-align: center;
-            
+            line-height: 26px;
         }
 		
 		.scopeContainer {
 			height: 100%;
-	
-            overflow-y: auto;
-            overflow-x: hidden;
-            
-            padding: 2px;
+			overflow-y: auto;
+			overflow-x: hidden;
+			padding: 3px;
+			width: 215px;
         }
         
         .highlightBlock {
 			height: 100%;
+			background: COLOR_BACKGROUND_MENUBAR;
         }
         
 		.draggable {
@@ -81,27 +52,19 @@
 		
 		.deleteButton {
 			position: absolute;
-			top: 12px;
+			top: 0px;
 			right: 5px;
-			width: 9px;
-			height: 9px;
-
 			cursor: pointer;
-			border: 1px solid transparent;
-			
-			background-image: deleteImgUrl;
-			background-repeat: no-repeat;
-			background-position: center;
+			opacity: 0.6;
+			line-height: 26px;
 		}
 		
 		.deleteButton:hover {
-			background-image: deleteHoverImgUrl;
-			background-color: #efefef;
-            border: 1px solid #ededed;
+			opacity: 1;
 		}
 		
 		.highlight {
-			background-color: #e5e5e5;
+			background: rgba(215, 235, 255, 0.5)
 		}
 		
 	</ui:style>
@@ -109,10 +72,10 @@
 	<g:FocusPanel ui:field="rootPanel" styleName="{style.rootPanel}">
 		<g:VerticalPanel ui:field="highlightBlock" styleName="{style.highlightBlock}">
 			<g:cell height="1">
-				<g:HTMLPanel styleName="{style.titlePanel}">
+				<g:HTMLPanel styleName="{style.header}">
 					<g:FocusPanel ui:field="draggableAnchor" styleName="{style.draggable}" />
 					<g:Label ui:field="title" styleName="{style.titleLabel}"/>
-					<g:Label ui:field="deleteButton" styleName="{style.deleteButton}" />
+					<g:Label ui:field="deleteButton" styleName="{style.deleteButton} icon-remove-sign" />
 					<ow:KanbanColumnCreateWidget ui:field="createColumn" styleName="{style.createButton}" />
 				</g:HTMLPanel>
 			</g:cell>

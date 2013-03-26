@@ -14,14 +14,14 @@
 			position: absolute;
 			top: 5px;
 			left: 5px;
-			height: 40px;;
+			height: 44px;
 			width: 480px;
 			overflow: hidden;
 		}
 		
 		.releasePanel {
 			position: absolute;
-			top: 50px;
+			top: 54px;
 			left: 0px;
 			bottom: 0px;
 			width: 480px;
@@ -45,11 +45,6 @@
 			
 			width: 350px;
 			height: 198px;
-
-			-webkit-box-shadow: POPUP_SHADOW;
-		    -moz-box-shadow: POPUP_SHADOW;
-		    box-shadow: POPUP_SHADOW;
-		    border: POPUP_BORDER;
 		}
 		
 		.detailPanel {
@@ -58,11 +53,6 @@
 			left: 0px;
 			right: 360px;
 			height: 197px;
-
-			-webkit-box-shadow: POPUP_SHADOW;
-		    -moz-box-shadow: POPUP_SHADOW;
-		    box-shadow: POPUP_SHADOW;
-		    border: POPUP_BORDER;
 		}
 
 		.kanbanPanel {
@@ -73,11 +63,6 @@
 			bottom: 0px;
 			overflow: auto;
 			
-			-webkit-box-shadow: POPUP_SHADOW;
-		    -moz-box-shadow: POPUP_SHADOW;
-		    box-shadow: POPUP_SHADOW;
-		    border: POPUP_BORDER;
-		    
 		    background-image: bgPixelUrl;
 		    background-repeat: repeat;
 		}
