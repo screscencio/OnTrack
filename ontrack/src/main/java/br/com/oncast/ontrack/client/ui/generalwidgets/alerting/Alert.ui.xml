@@ -19,25 +19,28 @@
             max-height: 35px;
             min-height: 35px;
 
-            background-color: COLOR_MENUBOX_BACKGROUND;
+            background-color: COLOR_BACKGROUND_TERTIARY;
             -webkit-box-shadow: ALERT_SHADOW;
             -moz-box-shadow: ALERT_SHADOW;
             box-shadow: ALERT_SHADOW;
-            border: POPUP_BORDER;
-            border-top: 0px;
 
 			background-repeat: no-repeat;
 			background-position: 0px 0px;
+			position: initial !important;
 		}
 		
 		.alertText {
-            color: COLOR_MENUBOX_TEXT;
+            color: COLOR_TEXT_PRIMARY;
             font-family: FONT_DEFAULT;
             font-size: FONT_SIZE_MEDIUM;
 
             margin-right: 10px;
-            margin-left: 50px;
-            display: block;
+            margin-left: 10px;
+            display: inline-block;
+		}
+		
+		.alertIcon {
+			margin-left: 10px;
 		}
 
 	</ui:style>
@@ -46,6 +49,7 @@
         <div ui:field="alertDiv" class="{style.alertPanel}">
             <table height="100%" width="100%">
                 <tr><td>
+                	<span ui:field="alertIcon" class="{style.alertIcon} icon-large"></span>
 		            <div class='{style.alertText}' ui:field='alertText'></div>
                 </td></tr>
             </table>

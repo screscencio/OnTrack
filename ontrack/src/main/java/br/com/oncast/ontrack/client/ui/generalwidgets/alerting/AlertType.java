@@ -1,21 +1,26 @@
 package br.com.oncast.ontrack.client.ui.generalwidgets.alerting;
 
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.SafeUri;
+import br.com.oncast.ontrack.shared.model.color.Color;
 
 public enum AlertType {
-	WARNING(AlertingBackgroundImages.INSTANCE.warningBgImg()),
-	ERROR(AlertingBackgroundImages.INSTANCE.errorBgImg()),
-	SUCCESS(AlertingBackgroundImages.INSTANCE.successBgImg()),
-	INFO(AlertingBackgroundImages.INSTANCE.infoBgImg());
+	WARNING("icon-exclamation-sign", Color.ORANGE_LIGHT),
+	ERROR("icon-remove-sign", Color.RED),
+	SUCCESS("icon-ok-sign", Color.DARK_GREEN),
+	INFO("icon-info-sign", Color.INFO);
 
-	private final ImageResource resource;
+	private final String resource;
+	private final Color color;
 
-	private AlertType(final ImageResource resource) {
+	private AlertType(final String resource, final Color color) {
 		this.resource = resource;
+		this.color = color;
 	}
 
-	SafeUri getIconSafeUri() {
-		return resource.getSafeUri();
+	String getIconClass() {
+		return resource;
+	}
+
+	public Color getColor() {
+		return color;
 	}
 }
