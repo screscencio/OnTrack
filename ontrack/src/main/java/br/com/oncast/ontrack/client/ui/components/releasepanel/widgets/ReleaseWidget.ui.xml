@@ -151,8 +151,6 @@
 			
 			.progressBar {
 				overflow: hidden;
-				
-				margin-left: 1px;
 				width: 0%;
 			}
 			

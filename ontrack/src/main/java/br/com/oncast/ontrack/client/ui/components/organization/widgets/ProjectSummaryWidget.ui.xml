@@ -5,7 +5,11 @@
 	xmlns:w="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets"
 	xmlns:ow="urn:import:br.com.oncast.ontrack.client.ui.components.organization.widgets"
 	xmlns:rw="urn:import:br.com.oncast.ontrack.client.ui.generalwidgets.release"
-	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'>
+	xmlns:chart='urn:import:br.com.oncast.ontrack.client.ui.components.releasepanel.widgets.chart'
+	
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+	ui:generateLocales="default">
 	
 	<ui:image field="loadingImg" src="loading.gif"/>
 	<ui:style src="../../../style/default.css">
@@ -172,7 +176,7 @@
 								<g:HTMLPanel styleName="{style.detailsContainer} {style.scopeListContainer}">
 									<g:DeckPanel ui:field="scopesDeck" styleName="{style.scopesListDeck}">
 										<g:Label styleName="{style.noScopesLabel}">
-											<ui:msg description="no direct scopes label">No direct scopes</ui:msg>
+											<ui:msg description="no direct scopes label">No direct scope</ui:msg>
 										</g:Label>
 										<g:HTMLPanel>
 											<g:Label styleName="{style.scopesListLabel}">

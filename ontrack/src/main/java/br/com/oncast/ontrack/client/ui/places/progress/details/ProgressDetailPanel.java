@@ -17,7 +17,6 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -70,8 +69,7 @@ public class ProgressDetailPanel extends Composite {
 		container.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(final SelectionEvent<Integer> event) {
-				final Widget w = container.getTabWidget(event.getSelectedItem());
-				if (w instanceof Focusable) ((Focusable) w).setFocus(true);
+				if (event.getSelectedItem() == 2) tasksWidget.setFocus(true);
 			}
 		});
 	}
@@ -87,14 +85,15 @@ public class ProgressDetailPanel extends Composite {
 
 	public void setSelected(final Scope scope) {
 		this.scope = scope;
-		descriptionWidget.setSelected(scope);
-		checklistWidget.setSelected(scope);
-		tasksWidget.setSelected(scope);
 		if (scope == null || !scope.isStory()) {
 			getTasksHeader().addClassName(style.tabHeaderLabelDisabled());
 			if (container.getSelectedIndex() == 2) container.selectTab(0);
 		}
 		else getTasksHeader().removeClassName(style.tabHeaderLabelDisabled());
+
+		descriptionWidget.setSelected(scope);
+		checklistWidget.setSelected(scope);
+		tasksWidget.setSelected(scope);
 	}
 
 	private void initializeComponents(final Release release) {
