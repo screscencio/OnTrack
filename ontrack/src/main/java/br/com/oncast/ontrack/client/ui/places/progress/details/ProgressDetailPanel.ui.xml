@@ -20,6 +20,7 @@
 		.detailPanel {
 			background-color: COLOR_BACKGROUND_SECONDARY;
 			overflow: auto;
+			overflow-x: hidden;
 		}
 		
 		

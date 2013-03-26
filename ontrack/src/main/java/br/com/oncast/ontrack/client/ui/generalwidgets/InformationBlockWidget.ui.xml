@@ -52,7 +52,7 @@
 		
 	</ui:style>
 	
-	<g:FocusPanel styleName="{style.root}">
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.root}">
 		<g:HTMLPanel styleName="{style.container} {style.noSelection}">
 			<div class="{style.value}">
 				<span ui:field="value"></span><span ui:field="decimal" class="{style.decimal}"></span>
