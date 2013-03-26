@@ -13,7 +13,6 @@
 		}
 		
 		.title {
-			text-transform: uppercase;
 			cursor: default;
 			padding: 10px 0px 6px 23px;
 			text-align: left;

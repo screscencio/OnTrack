@@ -18,7 +18,7 @@
 			
 			font-weight: bold;
 			text-align: center;
-			text-transform: uppercase;
+			color: COLOR_TEXT_SECONDARY;
 
 			padding: PADDING_MEDIUM;
 			border: 1px solid transparent;

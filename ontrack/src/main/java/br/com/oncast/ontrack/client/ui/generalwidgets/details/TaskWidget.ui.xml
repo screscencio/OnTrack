@@ -10,7 +10,7 @@
 		}
 		
 		.targetHighlight {
-			background: COLOR_YELLOW;
+			background: COLOR_SELECTED_HEADER;
 		}
 
 		.description {}

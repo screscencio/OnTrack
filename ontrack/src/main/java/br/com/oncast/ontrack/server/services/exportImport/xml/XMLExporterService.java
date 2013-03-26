@@ -99,7 +99,7 @@ public class XMLExporterService {
 	private UserXMLNode associatePasswordTo(final User user) throws PersistenceException {
 		final UserXMLNode userXMLNode = new UserXMLNode(user);
 		final List<Password> passwordsForUser = persistanceService.retrievePasswordsForUser(user.getId());
-		userXMLNode.setPassword(passwordsForUser.get(passwordsForUser.size() - 1));
+		if (!passwordsForUser.isEmpty()) userXMLNode.setPassword(passwordsForUser.get(passwordsForUser.size() - 1));
 		return userXMLNode;
 	}
 

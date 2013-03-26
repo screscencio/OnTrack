@@ -10,7 +10,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CheckListWidget extends Composite {
@@ -19,13 +18,8 @@ public class CheckListWidget extends Composite {
 
 	interface CheckListWidgetUiBinder extends UiBinder<Widget, CheckListWidget> {}
 
-	private static CheckListWidgetMessages messages = GWT.create(CheckListWidgetMessages.class);
-
 	@UiField
 	protected ChecklistsContainerWidget container;
-
-	@UiField
-	protected Label label;
 
 	private final Release release;
 	private Scope scope;
@@ -61,7 +55,6 @@ public class CheckListWidget extends Composite {
 	}
 
 	private void update() throws DescriptionNotFoundException {
-		label.setText(messages.checklistFor(getCurrentTitle()));
 		container.setSubjectId(getCurrentId());
 	}
 
