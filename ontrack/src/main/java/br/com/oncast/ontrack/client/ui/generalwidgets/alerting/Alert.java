@@ -4,10 +4,12 @@ import br.com.oncast.ontrack.client.ui.generalwidgets.animation.AnimationCallbac
 import br.com.oncast.ontrack.client.ui.generalwidgets.animation.SlideAnimation;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,6 +27,9 @@ public class Alert extends Composite {
 
 	@UiField
 	DivElement alertText;
+
+	@UiField
+	SpanElement alertIcon;
 
 	@UiField
 	DivElement alertDiv;
@@ -54,14 +59,15 @@ public class Alert extends Composite {
 	public void show(final String message, final AlertType type, final AnimationCallback animationCallback) {
 		setMessage(message);
 		setBackground(type);
-		new Timer() {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
 			@Override
-			public void run() {
+			public void execute() {
 				final SlideAnimation animation = new SlideAnimation(true, alertContainer, alertDiv, animationCallback);
 				animation.run(ANIMATION_DURATION);
+
 			}
-		}.schedule(1);
+		});
 	}
 
 	private void setMessage(final String message) {
@@ -69,6 +75,7 @@ public class Alert extends Composite {
 	}
 
 	private void setBackground(final AlertType type) {
-		getElement().getFirstChildElement().getStyle().setBackgroundImage("url('" + type.getIconSafeUri().asString() + "')");
+		alertIcon.addClassName(type.getIconClass());
+		alertIcon.getStyle().setColor(type.getColor().toHex());
 	}
 }
