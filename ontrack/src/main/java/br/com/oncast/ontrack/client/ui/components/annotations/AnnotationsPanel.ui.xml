@@ -15,7 +15,7 @@
 			top: 130px;
 			right: 40px;
 			left: 40px;
-			height: 410px;
+			bottom: 130px;
 			opacity: 0;
 		}
 
@@ -27,7 +27,7 @@
 			left: 0px;
 			min-width: 720px;
 			
-			color: COLOR_MENUBOX_TEXT;
+			color: #717375;
 			background-color: #E0E1E2;
 		}
 		
