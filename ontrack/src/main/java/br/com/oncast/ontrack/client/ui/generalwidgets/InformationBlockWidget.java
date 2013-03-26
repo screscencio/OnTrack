@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -16,6 +17,9 @@ public class InformationBlockWidget extends Composite implements HasText {
 	private static InformationBlockWidgetUiBinder uiBinder = GWT.create(InformationBlockWidgetUiBinder.class);
 
 	interface InformationBlockWidgetUiBinder extends UiBinder<Widget, InformationBlockWidget> {}
+
+	@UiField
+	FocusPanel rootPanel;
 
 	@UiField
 	SpanElement value;
@@ -42,6 +46,10 @@ public class InformationBlockWidget extends Composite implements HasText {
 	public void setText(final String text) {
 		this.description.setText(text);
 
+	}
+
+	public void setColor(final String colorCode) {
+		rootPanel.getElement().getStyle().setBackgroundColor(colorCode);
 	}
 
 	public void setValue(final Float number) {

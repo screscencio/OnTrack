@@ -30,7 +30,7 @@
 			top: 0px;
 			left: 0px;
 			bottom: 0px;
-			background: COLOR_BORDER_MENUBAR;
+			background: #88a1b9;
 			
 			opacity: 0.6;
 		}

@@ -11,7 +11,7 @@
 			margin: 2px;
 			
 			background: COLOR_BORDER_PRIMARY;
-			color: COLOR_TEXT_TERTIARY;
+			color: COLOR_TEXT_PRIMARY;
 		}
 		
 		.container {
@@ -34,6 +34,7 @@
 
 		.posfix {
 			font-size: 10px;
+			letter-spacing: 1px;
 			font-weight: normal;
 			display: block;
 			margin-top: -8px;
@@ -44,11 +45,12 @@
 		.description {
 			font-size: 12px;
 			height: 14px;
+			letter-spacing: 1px;
 		}
 		
 	</ui:style>
 	
-	<g:FocusPanel styleName="{style.root}">
+	<g:FocusPanel ui:field="rootPanel" styleName="{style.root}">
 		<g:HTMLPanel styleName="{style.container} {style.noSelection}">
 			<div class="{style.value}">
 				<span ui:field="value"></span><span ui:field="decimal" class="{style.decimal}"></span>

@@ -62,13 +62,10 @@
 			right: 0px;
 			bottom: 0px;
 			overflow: auto;
-			
-		    background-image: bgPixelUrl;
-		    background-repeat: repeat;
 		}
 		
 		.kanbanPanelOnDragTarget{
-			background-color: COLOR_YELLOW;
+			background-color: COLOR_BACKGROUND_MENUBAR;
 		}
 		
 	</ui:style>

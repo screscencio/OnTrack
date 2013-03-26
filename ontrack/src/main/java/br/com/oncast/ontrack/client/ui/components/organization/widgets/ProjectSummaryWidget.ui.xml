@@ -128,6 +128,15 @@
 			height: auto !important;
 		}
 		
+		.scopesListLabel {
+			font-size: FONT_SIZE_LARGE;
+			line-height: 25px;
+			text-align: center;
+			width: 100%;
+			letter-spacing: 1px;
+			color: COLOR_TEXT_PRIMARY;
+		}
+		
 		.noScopesLabel {
 			line-height: 36px;
 			font-size: 18px;
@@ -165,7 +174,12 @@
 										<g:Label styleName="{style.noScopesLabel}">
 											<ui:msg description="no direct scopes label">No direct scopes</ui:msg>
 										</g:Label>
-										<w:ModelWidgetContainer ui:field="scopesList" styleName="{style.scopesList}"/>
+										<g:HTMLPanel>
+											<g:Label styleName="{style.scopesListLabel}">
+												<ui:msg description="scope">Scope</ui:msg>
+											</g:Label>
+											<w:ModelWidgetContainer ui:field="scopesList" styleName="{style.scopesList}"/>
+										</g:HTMLPanel>
 									</g:DeckPanel>
 								</g:HTMLPanel>
 							</g:cell>

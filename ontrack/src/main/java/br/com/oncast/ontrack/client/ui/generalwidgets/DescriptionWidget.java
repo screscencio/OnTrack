@@ -14,21 +14,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DescriptionWidget extends Composite {
 
 	private static final ClientServiceProvider SERVICE_PROVIDER = ClientServiceProvider.getInstance();
 	private static final ContextProviderService CONTEXT_PROVIDER_SERVICE = SERVICE_PROVIDER.getContextProviderService();
-	private static final DescriptionWidgetMessages MESSAGES = GWT.create(DescriptionWidgetMessages.class);
 
 	private static DescriptionWidgetUiBinder uiBinder = GWT.create(DescriptionWidgetUiBinder.class);
 
 	interface DescriptionWidgetUiBinder extends UiBinder<Widget, DescriptionWidget> {}
-
-	@UiField
-	Label label;
 
 	@UiField(provided = true)
 	DescriptionRichTextLabel descriptionLabel;
@@ -85,7 +80,6 @@ public class DescriptionWidget extends Composite {
 	}
 
 	private void update() throws DescriptionNotFoundException {
-		label.setText(MESSAGES.descriptionOf(getCurrentTitle()));
 		descriptionLabel.setText("");
 		final Description description = CONTEXT_PROVIDER_SERVICE.getCurrent().findDescriptionFor(getCurrentId());
 		descriptionLabel.setText(description.getDescription());

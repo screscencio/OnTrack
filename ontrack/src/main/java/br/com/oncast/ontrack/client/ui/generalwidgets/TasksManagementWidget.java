@@ -35,7 +35,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,9 +56,6 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 
 	@UiField
 	SimplePanel taskListScroll;
-
-	@UiField
-	Label label;
 
 	@UiField
 	Button addTask;
@@ -168,7 +164,6 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 	}
 
 	public void update() {
-		label.setText(getCurrentTitle());
 		newTaskDescription.setEnabled(isStory());
 
 		tasksList.update(getTasks());
@@ -200,10 +195,6 @@ public class TasksManagementWidget extends Composite implements Focusable, TaskW
 	private void clearDescription() {
 		newTaskDescription.setText("");
 		updateSubmit();
-	}
-
-	private String getCurrentTitle() {
-		return isStory() ? messages.tasksOf(scope.getDescription()) : messages.noStorySelected();
 	}
 
 	private boolean isStory() {
