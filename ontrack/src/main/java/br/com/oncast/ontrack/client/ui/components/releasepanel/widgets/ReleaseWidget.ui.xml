@@ -46,43 +46,29 @@
 			.headerItem, .descriptionLabel {
 				cursor: pointer;
 				margin: 0px 4px;
+				line-height: 36px;
+				vertical-align: middle;
 			}
 			
-			.headerContainerStateImage {
-				margin-bottom: -1px;
+			.menuIcon {
+				font-size: 10px;
+				border: 1px solid COLOR_TEXT_PRIMARY;
+				padding: 1px 2px;
+				border-radius: 2px;
 			}
 			
-			
-			
-			.kanbanIcon {
-				margin-bottom: -2px;
-			}
-			
-			.annotationIcon {
-				margin-bottom: -2px;
-				background-size: 14px !important;
-				width: 14px !important;
-				height: 14px !important;
+			.detailIcon {
+				margin-left: 0px;
 			}
 			
 			.descriptionLabel {
 				position: absolute;
 				top: 0px;
-				left: 0px;
+				left: 4px;
 				bottom: 0px;
 				right: 0px;
 				
 				cursor: auto;
-			}
-			
-			.menuLink {
-				cursor: pointer;
-				
-				background-color: COLOR_RELEASE_WIDGET_HEADER_BACKGROUND_OPENED;
-				
-				position: absolute;
-				top: 10px;
-				right: -11px;
 			}
 			
 			.body {
@@ -150,17 +136,17 @@
 				font-size: 10px;
 				line-height: 11px;
 				text-align: center;
-				border: solid 1px #fff;
+				border: solid 1px COLOR_TEXT_PRIMARY;
 			}
 			
 			.progressLabelComplete {
-				color: #ffffff;
+				color: COLOR_TEXT_PRIMARY;
 				background-color: rgb(116, 116, 116);
 			}
 			
 			.progressLabelUncomplete {
 				color: #000;
-				background-color: #ffffff;
+				background-color: COLOR_TEXT_PRIMARY;
 			}
 			
 			.progressBar {
@@ -182,13 +168,13 @@
 		<g:FocusPanel ui:field="menuMouseOverArea">
 			<g:HTMLPanel>
 				<g:HorizontalPanel ui:field="header" styleName="{style.releaseHeader}" verticalAlignment="middle">
-					<g:FocusPanel ui:field="containerStateIcon" styleName="{style.headerContainerStateImage} {style.headerItem} icon-caret-down" />
+					<g:FocusPanel ui:field="containerStateIcon" styleName="{style.headerItem} icon-caret-down" />
 					<g:cell width="100%" height="100%">
 						<g:FocusPanel styleName="{style.containerStateToogleClickableArea}">
 							<t:EditableLabel ui:field="descriptionLabel" addStyleNames="{style.descriptionLabel}"/>
 						</g:FocusPanel>
 					</g:cell>
-					<g:FocusPanel ui:field="detailLink" styleName="{style.headerItem} {style.annotationIcon} icon-info-sign" title="Details">
+					<g:FocusPanel ui:field="detailLink" styleName="{style.headerItem} {style.detailIcon} icon-info-sign" title="Details">
 						<ui:attribute name="title" description="detailLink icon release widget" />
 					</g:FocusPanel>
 					<g:FocusPanel ui:field="progressIcon" styleName="{style.headerItem} {style.progressIcon}" title="Progress">
@@ -202,7 +188,7 @@
 							</g:SimplePanel>
 						</g:FlowPanel>
 					</g:FocusPanel>
-					<g:FocusPanel ui:field="menuIcon" styleName="{style.headerItem} {style.kanbanIcon} icon-plus-sign" title="More">
+					<g:FocusPanel ui:field="menuIcon" styleName="{style.headerItem} {style.menuIcon} icon-reorder" title="More">
 						<ui:attribute name="title" description="menu icon release widget" />
 					</g:FocusPanel>
 				</g:HorizontalPanel>

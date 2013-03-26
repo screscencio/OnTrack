@@ -241,7 +241,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 
 		final List<CommandMenuItem> itens = new ArrayList<CommandMenuItem>();
 		if (!kanbanSpecific) {
-			itens.add(new TextAndImageCommandMenuItem("icon-tasks", messages.kanban(), new Command() {
+			itens.add(new TextAndImageCommandMenuItem("icon-columns", messages.kanban(), new Command() {
 				@Override
 				public void execute() {
 					final ClientServiceProvider provider = ClientServiceProvider.getInstance();
@@ -250,7 +250,7 @@ public class ReleaseWidget extends Composite implements ModelWidget<Release> {
 				}
 			}));
 		}
-		itens.add(new TextAndImageCommandMenuItem("icon-th-list", messages.report(), new Command() {
+		itens.add(new TextAndImageCommandMenuItem("icon-file-alt", messages.report(), new Command() {
 			@Override
 			public void execute() {
 				final UUID project = ClientServiceProvider.getCurrentProjectContext().getId();

@@ -75,6 +75,7 @@ public class ReleaseDetailsInBlockWidget extends Composite implements ModelWidge
 		formatTimeDifference(cycletime, release.getAverageCycleTime());
 		formatTimeDifference(leadtime, release.getAverageLeadTime());
 		updateDuration();
+
 		return false;
 	}
 
